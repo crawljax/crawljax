@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.crawljax.forms.InputValue" table="InputValue">
+        <id name="id">
+            <generator class="native"/>
+        </id>
+        <property name="value" length="100000"/>
+        <property name="checked" type="true_false"/>
+    </class>
+</hibernate-mapping>

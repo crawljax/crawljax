@@ -1,0 +1,142 @@
+package com.crawljax.util;
+
+import javax.xml.xpath.XPathExpressionException;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.state.Element;
+import com.crawljax.core.state.Eventable;
+
+/**
+ * @author danny
+ * @version $Id: ElementResolver.java 6276 2009-12-23 15:37:09Z frank $ class for finding and
+ *          checking elements
+ */
+public class ElementResolver {
+	private static final Logger LOGGER = Logger.getLogger(ElementResolver.class.getName());
+
+	// private ElementResolverSettings settings = new
+	// ElementResolverSettings();
+
+	private final EmbeddedBrowser browser;
+	private final Eventable eventable;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param eventable
+	 *            Eventable.
+	 * @param browser
+	 *            The browser.
+	 */
+	public ElementResolver(Eventable eventable, EmbeddedBrowser browser) {
+		this.browser = browser;
+		this.eventable = eventable;
+	}
+
+	/**
+	 * @return equivalent xpath of element equivalent to Eventable
+	 */
+	public String resolve() {
+		return resolve(false);
+	}
+
+	/**
+	 * @param logging
+	 *            Whether to do logging.
+	 * @return equivalent xpath of element equivalent to Eventable
+	 */
+	public String resolve(boolean logging) {
+		Document dom = null;
+		try {
+			dom = Helper.getDocument(browser.getDom());
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+
+		try {
+			String xpathEventable = eventable.getIdentification().getValue();
+			Node nodeSameXpath = Helper.getElementByXpath(dom, xpathEventable);
+			if (nodeSameXpath != null) {
+				Element elementSameXpath = new Element(nodeSameXpath);
+				if (logging) {
+					LOGGER.info("Try element with same xpath expression");
+				}
+				if (equivalent(elementSameXpath, logging)) {
+					return xpathEventable;
+				}
+			}
+
+			if (logging) {
+				LOGGER.info("Search other candidate elements");
+			}
+			NodeList candidateElements =
+			        Helper.getElementsByXpath(dom, "//"
+			                + eventable.getElement().getTag().toUpperCase());
+			if (logging) {
+				LOGGER.info("Candidates: " + candidateElements.getLength());
+			}
+			for (int i = 0; i < candidateElements.getLength(); i++) {
+				Element candidateElement = new Element(candidateElements.item(i));
+				if (equivalent(candidateElement, logging)) {
+					return XPathHelper.getXpathExpression(candidateElements.item(i));
+				}
+			}
+
+		} catch (XPathExpressionException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+		if (logging) {
+			LOGGER.info("No equivalent element found");
+		}
+		return null;
+	}
+
+	/**
+	 * Comparator against other element.
+	 * 
+	 * @param otherElement
+	 *            The other element.
+	 * @param logging
+	 *            Whether to do logging.
+	 * @return Whether the elements are equal.
+	 */
+	public boolean equivalent(Element otherElement, boolean logging) {
+		if (eventable.getElement().equals(otherElement)) {
+			if (logging) {
+				LOGGER.info("Element equal");
+			}
+			return true;
+		}
+
+		if (eventable.getElement().equalAttributes(otherElement)) {
+			if (logging) {
+				LOGGER.info("Element attributes equal");
+			}
+			return true;
+		}
+
+		if (eventable.getElement().equalId(otherElement)) {
+			if (logging) {
+				LOGGER.info("Element ID equal");
+			}
+			return true;
+		}
+
+		if (!eventable.getElement().getText().equals("")) {
+			if (eventable.getElement().equalText(otherElement)) {
+				if (logging) {
+					LOGGER.info("Element text equal");
+				}
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+}
