@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<title>Changes Crawljax</title>
+		<author email="a.mesbah@tudelft.nl">Ali Mesbah</author>
+	</properties>
+	<body>
+		<release version="1.8" date="2009-12-29" description="Update">
+			
+			<action dev="mesbah" type="fix">
+				This is a major release. See http://crawljax.com
+			</action>
+			
+			<action dev="danny" type="update">
+				New configuration API which is now the preferred way of configuration.
+			</action>
+			
+			<action dev="danny" type="update">
+				The use of a database optional (by default turned off).
+			</action>
+			
+			<action dev="danny" type="update">
+				New Plugin Types.
+			</action>
+			
+			<action dev="danny" type="update">
+				Oracle Comparators for comparing states.
+			</action>
+			
+			<action dev="danny" type="update">
+				Easy to write Invariants.
+			</action>
+			
+			<action dev="danny" type="update">
+				Totally new form handling.
+			</action>
+			
+			<action dev="danny" type="update">
+				CrawlConditions and other options for better guiding the crawling.
+			</action>
+			
+			<action dev="danny" type="update">
+				WaitConditions to improve crawling slow application.
+			</action>
+			
+			<action dev="danny" type="update">
+				ElementResolver for more robust finding and clicking elements.
+			</action>
+			
+			<action dev="frank" type="update">
+				Moved proxy to a seperate plugin in order to make core less complex.
+			</action>
+			
+			<action dev="mesbah" type="update">
+				Dropped JPF and Watij.
+			</action>
+			
+			<action dev="danny" type="update">
+				Added examples.
+			</action>
+			
+			<action dev="danny" type="update">
+				Conditions for dynamic state checking.
+			</action>
+			
+			<action dev="mesbah" type="fix">
+				mesbah, danny, frank, stefan: Bug fixes.
+			</action>
+			
+			<action dev="mesbah" type="update">
+				mesbah, danny: Performance improvements.
+			</action>
+			
+			<action dev="mesbah" type="update">
+				mesbah, danny, frank, stefan: Lots of other improvements.
+			</action>
+
+			<action dev="mesbah" type="fix">
+				mesbah, danny, frank, stefan: Improved Javadoc comments.
+			</action>
+			
+			<action dev="mesbah" type="fix">
+				mesbah, danny, frank, stefan: Fixed checkstyle warnings.
+			</action>
+ 
+		</release>
+		<release version="1.7" date="2009-03-20" description="Update">
+
+			<action dev="mesbah" type="fix">
+				XPath bug in Watij on XMLNS attribute of the HTML tag is resolved.
+			</action>
+			<action dev="mesbah" type="update">
+				Use the Levenshtein method of Apache Commons Lang lib, which is faster.
+			</action>
+			<action dev="mesbah" type="update">
+				Mirror generator as a postCrawling plugin.
+			</action>
+			<action dev="mesbah" type="add">
+				WebDriver's browsers (IE, Firefox) can be used as embedded browser. 
+			</action>
+			<action dev="mesbah" type="update">
+				Configuration file is extended with new properteis.
+			</action>
+			<action dev="mesbah" type="update">
+				Many Bug fixes.
+			</action>
+			<action dev="corpaul" type="update">
+				A proxy is integrated into Crawljax.
+			</action>
+			
+			<action dev="corpaul" type="add">
+				A number of plugins (called DIVA) for spotting security violations in 
+				web widget interactions.
+			</action>
+			
+			<action dev="corpaul" type="update">
+				Use of wildcards for tag inclusion and exclusion in the crawljax.properties.
+			</action>
+		</release>
+	
+		<release version="1.6" date="2008-11-10" description="Update">
+			<action dev="mesbah" type="fix">
+				Missing hibernate properties files included in the jar.
+			</action>
+		</release>
+
+		<release version="1.5" date="2008-09-06" description="Update">
+			<action dev="mesbah" type="update">
+				Many bug-fixes and improvements.
+			</action>
+
+			<action dev="mesbah" type="update">
+				A plugin architectur is added which consists of three
+				hooks: preCrawling, inCrawling, and postCrawling.
+			</action>
+
+			<action dev="mesbah" type="update">
+				All classes are Jalopied and Checkstyled.
+			</action>
+
+			<action dev="mesbah" type="fix" issue="42">
+				Check the existence of all the required properties.
+			</action>
+		</release>
+
+		<release version="1.1" date="2008-03-25" description="Update">
+			<action dev="mesbah" type="update">
+				A number of new functionalities added.
+			</action>
+		</release>
+
+		<release version="1.0" date="2008-01-13"
+			description="First release">
+			<action dev="mesbah" type="update">
+				Updated the README.
+			</action>
+		</release>
+	</body>
+</document>

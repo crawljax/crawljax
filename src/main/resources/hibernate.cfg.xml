@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+		<!-- Enable Hibernate's automatic session context management 
+			<property name="current_session_context_class">thread</property> -->
+
+	<mapping resource="com/crawljax/core/state/StateVertix.hbm.xml" />	
+	<mapping resource="com/crawljax/core/state/Eventable.hbm.xml" />
+    <mapping resource="com/crawljax/core/state/Identification.hbm.xml" />
+	<mapping resource="com/crawljax/core/state/Edge.hbm.xml" />	
+	<mapping resource="com/crawljax/core/state/Element.hbm.xml"/>	
+	<mapping resource="com/crawljax/core/state/Attribute.hbm.xml" />	
+    
+   	<mapping resource="com/crawljax/forms/FormInput.hbm.xml" />							
+	<mapping resource="com/crawljax/forms/InputValue.hbm.xml" />							
+
+	</session-factory>
+
+</hibernate-configuration>
+
