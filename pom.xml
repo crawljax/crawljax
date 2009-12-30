@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax</artifactId>
@@ -407,9 +408,9 @@
 	</reporting>
 
 	<scm>
-		<connection>scm:svn:https://svn.st.ewi.tudelft.nl/svn/spci/trunk/code/crawljax</connection>
-		<developerConnection>scm:svn:https://svn.st.ewi.tudelft.nl/svn/spci/trunk/code/crawljax</developerConnection>
-		<url>https://svn.st.ewi.tudelft.nl/svn/spci/trunk/code/crawljax</url>
+		<connection>scm:svn:https://crawljax.googlecode.com/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn/trunk/</developerConnection>
+		<url>https://crawljax.googlecode.com/svn/trunk/</url>
 	</scm>
 
 	<licenses>
