@@ -46,7 +46,9 @@ public final class PrettyHTML {
 					// only indent if element is not a single element (like
 					// <img src='..' />)
 					if (!temp[0].endsWith("/") || temp.length == 1) {
-						indent++;
+						if (!temp[0].startsWith("!--")) {
+							indent++;
+						}
 					}
 					// if there is text after the element, print it
 					if (temp.length > 1 && !temp[1].trim().equals("")) {
