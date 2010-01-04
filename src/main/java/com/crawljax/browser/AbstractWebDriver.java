@@ -269,7 +269,7 @@ public class AbstractWebDriver implements EmbeddedBrowser {
 			((FirefoxDriver) browser).saveScreenshot(file);
 			removeCanvasGeneratedByFirefoxDriverForScreenshots();
 		} else {
-			logger.info("WARNING: screenshot nog supported");
+			logger.warn("Screenshot not supported.");
 		}
 	}
 
