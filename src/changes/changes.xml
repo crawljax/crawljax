@@ -5,6 +5,11 @@
 		<author email="a.mesbah@tudelft.nl">Ali Mesbah</author>
 	</properties>
 	<body>
+		<release version="1.9" date="2009-12-29" description="Update">
+			<action dev="frank" type="update">
+				Development version.
+			</action>
+		</release>
 		<release version="1.8" date="2009-12-29" description="Update">
 			
 			<action dev="mesbah" type="fix">
