@@ -422,8 +422,8 @@
 	</licenses>
 
 	<issueManagement>
-		<system>Bugzilla</system>
-		<url>http://spci.st.ewi.tudelft.nl/bugzilla/</url>
+		<system>Google Code</system>
+		<url>https://code.google.com/p/crawljax/issues/list</url>
 	</issueManagement>
 
 	<distributionManagement>
