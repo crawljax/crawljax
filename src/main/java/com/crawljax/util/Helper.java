@@ -805,7 +805,7 @@ public final class Helper {
 	 * @return The new, correct path.
 	 */
 	public static String addFolderSlashIfNeeded(String folderName) {
-		if (folderName.equals("") || !folderName.endsWith("/")) {
+		if (!folderName.equals("") || !folderName.endsWith("/")) {
 			return folderName + "/";
 		} else {
 			return folderName;
