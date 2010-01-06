@@ -4,8 +4,6 @@
 package com.crawljax.condition;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.util.Helper;
-
 
 /**
  * @author Danny
@@ -36,9 +34,8 @@ public class JavaScriptCondition extends AbstractCondition {
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
 		String js =
-		        "try{ if(" + expression + "){" + Helper.useJSReturn(browser) + "'1';}else{"
-		                + Helper.useJSReturn(browser) + "'0';}}catch(e){"
-		                + Helper.useJSReturn(browser) + "'0';}";
+		        "try{ if(" + expression + "){return '1';}else{" + "return '0';}}catch(e){"
+		                + " return '0';}";
 		try {
 			Object object = browser.executeJavaScript(js);
 			if (object == null) {

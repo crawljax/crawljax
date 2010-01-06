@@ -5,14 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.apache.log4j.Logger;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.alg.KShortestPaths;
 import org.jgrapht.graph.DirectedMultigraph;
-
-import com.crawljax.util.Helper;
 
 /**
  * The State-Flow Graph is a directed graph with states on the vertices and clickables on the edges.
@@ -219,13 +218,18 @@ public class StateFlowGraph {
 	 */
 
 	public int getMeanStateStringSize() {
+		Mean mean = new Mean();
 		List<Integer> list = new ArrayList<Integer>();
 
 		for (StateVertix state : getAllStates()) {
 			list.add(new Integer(state.getDomSize()));
 		}
 
-		return new Double(Helper.calculateMean(list)).intValue();
+		/* calculate the mean */
+		for (Integer num : list) {
+			mean.increment(num.intValue());
+		}
+		return new Double(mean.getResult()).intValue();
 	}
 
 	/**

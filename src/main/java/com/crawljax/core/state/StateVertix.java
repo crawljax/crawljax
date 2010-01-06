@@ -3,7 +3,6 @@ package com.crawljax.core.state;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.crawljax.util.Helper;
 import com.crawljax.util.database.HibernateUtil;
 
 /**
@@ -166,7 +165,7 @@ public class StateVertix {
 	 * @return the size of the dom
 	 */
 	public int getDomSize() {
-		return Helper.countByte(this.getDom());
+		return getDom().getBytes().length;
 	}
 
 	/**
