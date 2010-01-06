@@ -6,12 +6,12 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.crawljax.oraclecomparator.Comparator;
-import com.crawljax.oraclecomparator.comparators.AttributeOracle;
-import com.crawljax.oraclecomparator.comparators.DateOracle;
-import com.crawljax.oraclecomparator.comparators.PlainStructureOracle;
-import com.crawljax.oraclecomparator.comparators.RegexOracle;
-import com.crawljax.oraclecomparator.comparators.SimpleOracle;
-import com.crawljax.oraclecomparator.comparators.StyleOracle;
+import com.crawljax.oraclecomparator.comparators.AttributeComparator;
+import com.crawljax.oraclecomparator.comparators.DateComparator;
+import com.crawljax.oraclecomparator.comparators.PlainStructureComparator;
+import com.crawljax.oraclecomparator.comparators.RegexComparator;
+import com.crawljax.oraclecomparator.comparators.SimpleComparator;
+import com.crawljax.oraclecomparator.comparators.StyleComparator;
 
 /**
  * @author danny
@@ -22,7 +22,7 @@ public class OracleTest {
 	@Test
 	public void testDateOracle() {
 
-		Comparator oracle = new DateOracle();
+		Comparator oracle = new DateComparator();
 		String[] tests =
 		        {
 		        /* dates with days */
@@ -86,7 +86,7 @@ public class OracleTest {
 	@Test
 	public void testStyleOracle() {
 
-		Comparator oracle = new StyleOracle();
+		Comparator oracle = new StyleComparator();
 		String[] tests =
 		        {
 		                /* IGNORE_TAGS */
@@ -142,7 +142,7 @@ public class OracleTest {
 
 	@Test
 	public void testSimpleOracle() {
-		Comparator oracle = new SimpleOracle();
+		Comparator oracle = new SimpleComparator();
 		String[] tests =
 		        { "<HTML>\n\n<SPAN>\n    foo\n</SPAN></HTML>|"
 		                + "<HTML>\n<SPAN>\n    foo     \n\n</SPAN>\n</HTML>", };
@@ -162,7 +162,7 @@ public class OracleTest {
 
 	@Test
 	public void testRegexOracle() {
-		RegexOracle oracle = new RegexOracle("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}");
+		RegexComparator oracle = new RegexComparator("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}");
 		String[] tests = { "<HTML>192.168.1.1</HTML>|<HTML>10.0.0.138</HTML>", };
 		for (String t : tests) {
 			String[] test = t.split("\\|");
@@ -182,7 +182,7 @@ public class OracleTest {
 	public void testAttributeOracle() {
 		String control = "<HTML><A href=\"foo.html\" myattr=\"true\">foo</A><HTML>";
 		String test = "<HTML><A href=\"foo.html\" myattr=\"false\">foo</A><HTML>";
-		AttributeOracle oracle = new AttributeOracle("myattr");
+		AttributeComparator oracle = new AttributeComparator("myattr");
 		oracle.setOriginalDom(control);
 		oracle.setNewDom(test);
 		boolean equivalent = oracle.isEquivalent();
@@ -198,7 +198,7 @@ public class OracleTest {
 		String control =
 		        "<HTML><A href=\"foo.html\" jquery12421421=\"bla\" myattr=\"true\">foo</A><HTML>";
 		String test = "<HTML><A></A><HTML>";
-		PlainStructureOracle oracle = new PlainStructureOracle(control, test);
+		PlainStructureComparator oracle = new PlainStructureComparator(control, test);
 		boolean equivalent = oracle.isEquivalent();
 		if (!equivalent) {
 			System.out.println("Stripped original: " + oracle.getOriginalDom() + "\n"
