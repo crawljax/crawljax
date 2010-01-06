@@ -1,6 +1,8 @@
 package com.crawljax.browser;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -11,6 +13,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.w3c.dom.Document;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
@@ -124,10 +127,36 @@ public class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public String getDom() throws CrawljaxException {
 		try {
-			return Helper.toUniformDOM(browser.getPageSource());
+			return toUniformDOM(browser.getPageSource());
 		} catch (Exception e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * @param html
+	 *            The html string.
+	 * @return uniform version of dom with predefined attributes stripped
+	 * @throws Exception
+	 *             On error.
+	 */
+	private static String toUniformDOM(final String html) throws Exception {
+		Pattern p =
+		        Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
+		                | Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(html);
+		String htmlFormatted = m.replaceAll("");
+
+		p = Pattern.compile("<\\?xml:(.*?)>");
+		m = p.matcher(html);
+		htmlFormatted = m.replaceAll("");
+
+		// html = html.replace("<?xml:namespace prefix = gwt >", "");
+
+		Document doc = Helper.getDocument(htmlFormatted);
+		htmlFormatted = Helper.getDocumentToString(doc);
+		htmlFormatted = Helper.filterAttributes(htmlFormatted);
+		return htmlFormatted;
 	}
 
 	/**
