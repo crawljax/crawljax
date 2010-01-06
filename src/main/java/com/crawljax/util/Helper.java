@@ -36,7 +36,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
@@ -51,18 +50,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.crawljax.browser.EmbeddedBrowser;
-
 /**
  * @author mesbah
  * @version $Id: Helper.java 6339 2009-12-28 11:46:49Z danny $
  */
 public final class Helper {
 
-	public static final String[] DEFAULT_STRIP_ATTRIBUTES =
-	        { "closure_hashcode_(\\w)*", "jquery[0-9]+" };
-
-	// TODO: ali, remove variables below?
 	private static final int BASE_LENGTH = 3;
 
 	private static final int START_LENGTH = 7;
@@ -312,65 +305,6 @@ public final class Helper {
 	}
 
 	/**
-	 * @param list
-	 *            the list of numbers.
-	 * @return the mean of the numbers in the list.
-	 */
-
-	public static double calculateMean(List<Integer> list) {
-		final Mean mean = new Mean();
-
-		for (Integer num : list) {
-			mean.increment(num.intValue());
-		}
-
-		return mean.getResult();
-	}
-
-	/**
-	 * @param str
-	 *            DOCUMENT ME!
-	 * @return DOCUMENT ME!
-	 */
-	public static int countByte(String str) {
-		return str.getBytes().length;
-	}
-
-	/**
-	 * @param email
-	 *            the string to check
-	 * @return true if text has the email pattern.
-	 */
-	public static boolean isEmail(String email) {
-		// Set the email pattern string
-		final Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
-		Matcher m = p.matcher(email);
-
-		if (m.matches()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param href
-	 *            the string to check
-	 * @return true if href has the pdf or ps pattern.
-	 */
-	public static boolean isPDForPS(String href) {
-		// Set the email pattern string
-		final Pattern p = Pattern.compile(".+.pdf|.+.ps");
-		Matcher m = p.matcher(href);
-
-		if (m.matches()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Checks the existence of the directory. If it does not exist, the method creates it.
 	 * 
 	 * @param dir
@@ -512,55 +446,6 @@ public final class Helper {
 		FileWriter fw = new FileWriter(filename, append);
 		fw.write(text + "\n");
 		fw.close();
-	}
-
-	/**
-	 * @param xpath
-	 *            The xpath of the element.
-	 * @return The JavaScript to get an element.
-	 */
-	public static String getJSGetElement(String xpath) {
-		String js =
-		        ""
-		                + "function ATUSA_getElementInNodes(nodes, tagName, number){"
-		                + "try{"
-		                + "var pos = 1;"
-		                + "for(i=0; i<nodes.length; i++){"
-		                + "if(nodes[i]!=null && nodes[i].tagName!=null && "
-		                + "nodes[i].tagName.toLowerCase() == tagName){"
-		                + "if(number==pos){"
-		                + "return nodes[i];"
-		                + "}else{"
-		                + "pos++;"
-		                + "}"
-		                + "}"
-		                + "}"
-		                + "}catch(e){}"
-		                + "return null;"
-		                + "}"
-		                + "function ATUSA_getElementByXpath(xpath){"
-		                + "try{"
-		                + "var elements = xpath.toLowerCase().split('/');"
-		                + "var curNode = document.body;"
-		                + "var tagName, number;"
-		                + "for(j=0; j<elements.length; j++){"
-		                + "if(elements[j]!=''){"
-		                + "if(elements[j].indexOf('[')==-1){"
-		                + "tagName = elements[j];"
-		                + "number = 1;"
-		                + "}else{"
-		                + "tagName = elements[j].substring(0, elements[j].indexOf('['));"
-		                + "number = elements[j].substring(elements[j].indexOf('[')+1, "
-		                + "elements[j].lastIndexOf(']'));"
-		                + "}"
-		                + "if(tagName!='body' && tagName!='html'){"
-		                + "curNode = ATUSA_getElementInNodes(curNode.childNodes, tagName, number);"
-		                + "if(curNode==null){" + "return null;" + "}" + "}" + "}" + "}"
-		                + "}catch(e){return null;}" + "return curNode;" + "}"
-		                + "try{var ATUSA_element = ATUSA_getElementByXpath('" + xpath
-		                + "');}catch(e){return null;}";
-
-		return js;
 	}
 
 	/**
@@ -722,17 +607,6 @@ public final class Helper {
 		Pattern p = Pattern.compile(regex, Pattern.DOTALL);
 		Matcher m = p.matcher(string);
 		return m.replaceAll(replace);
-	}
-
-	/**
-	 * @param browser
-	 *            The browser.
-	 * @return "return " if browser is not an IEBrowser instance. Needed for javascript code
-	 */
-	public static String useJSReturn(EmbeddedBrowser browser) {
-
-		return "return ";
-
 	}
 
 	/**

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -179,10 +181,10 @@ public class CandidateElementExtractor {
 					String href = element.getAttribute("href");
 					boolean isExternal =
 					        Helper.isLinkExternal(PropertyHelper.getSiteUrlValue(), href);
-					boolean isEmail = Helper.isEmail(href);
+					boolean isEmail = isEmail(href);
 					Helper.LOGGER.debug("HREF: " + href + "isExternal= " + isExternal);
 
-					if (!(isExternal || isEmail || Helper.isPDForPS(href))) {
+					if (!(isExternal || isEmail || isPDForPS(href))) {
 						result.add(element);
 						numberofExaminedElements++;
 					}
@@ -206,6 +208,40 @@ public class CandidateElementExtractor {
 
 			return resultExcluded;
 		}
+	}
+
+	/**
+	 * @param email
+	 *            the string to check
+	 * @return true if text has the email pattern.
+	 */
+	private boolean isEmail(String email) {
+		// Set the email pattern string
+		final Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+		Matcher m = p.matcher(email);
+
+		if (m.matches()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param href
+	 *            the string to check
+	 * @return true if href has the pdf or ps pattern.
+	 */
+	private boolean isPDForPS(String href) {
+		// Set the email pattern string
+		final Pattern p = Pattern.compile(".+.pdf|.+.ps");
+		Matcher m = p.matcher(href);
+
+		if (m.matches()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
