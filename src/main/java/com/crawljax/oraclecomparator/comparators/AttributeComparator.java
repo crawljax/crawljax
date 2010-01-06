@@ -11,7 +11,7 @@ import com.crawljax.oraclecomparator.AbstractComparator;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class AttributeOracle extends AbstractComparator {
+public class AttributeComparator extends AbstractComparator {
 
 	private final List<String> ignoreAttributes = new ArrayList<String>();
 
@@ -19,7 +19,7 @@ public class AttributeOracle extends AbstractComparator {
 	 * @param attributes
 	 *            the attributes to ignore
 	 */
-	public AttributeOracle(String... attributes) {
+	public AttributeComparator(String... attributes) {
 		for (String attribute : attributes) {
 			ignoreAttributes.add(attribute);
 		}

@@ -8,14 +8,14 @@ import com.crawljax.oraclecomparator.AbstractComparator;
 /**
  * @author Danny
  */
-public class PlainStructureOracle extends AbstractComparator {
+public class PlainStructureComparator extends AbstractComparator {
 
 	private boolean removeAttributes = true;
 
 	/**
 	 * Default argument less constructor.
 	 */
-	public PlainStructureOracle() {
+	public PlainStructureComparator() {
 	}
 
 	/**
@@ -24,7 +24,7 @@ public class PlainStructureOracle extends AbstractComparator {
 	 * @param newDom
 	 *            The new DOM.
 	 */
-	public PlainStructureOracle(String originalDom, String newDom) {
+	public PlainStructureComparator(String originalDom, String newDom) {
 		super(originalDom, newDom);
 	}
 
