@@ -27,8 +27,8 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.oraclecomparator.comparators.DateOracle;
-import com.crawljax.oraclecomparator.comparators.StyleOracle;
+import com.crawljax.oraclecomparator.comparators.DateComparator;
+import com.crawljax.oraclecomparator.comparators.StyleComparator;
 
 /**
  * Large test for Crawljax. Crawls a test site and then inspects whether it is crawled correctly See
@@ -348,8 +348,8 @@ public class LargeCrawljaxTest {
 	}
 
 	private static void addOracleComparators(CrawlSpecification crawler) {
-		crawler.addOracleComparator("style", new StyleOracle());
-		crawler.addOracleComparator("date", new DateOracle());
+		crawler.addOracleComparator("style", new StyleComparator());
+		crawler.addOracleComparator("date", new DateComparator());
 	}
 
 	private static void addCrawlConditions(CrawlSpecification crawler) {
