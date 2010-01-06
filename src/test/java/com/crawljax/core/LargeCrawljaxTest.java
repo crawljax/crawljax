@@ -27,8 +27,8 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.oracle.oracles.DateOracle;
-import com.crawljax.oracle.oracles.StyleOracle;
+import com.crawljax.oraclecomparator.comparators.DateOracle;
+import com.crawljax.oraclecomparator.comparators.StyleOracle;
 
 /**
  * Large test for Crawljax. Crawls a test site and then inspects whether it is crawled correctly See

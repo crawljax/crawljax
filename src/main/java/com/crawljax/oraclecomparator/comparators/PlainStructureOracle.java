@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.crawljax.oracle.oracles;
+package com.crawljax.oraclecomparator.comparators;
 
-import com.crawljax.oracle.AbstractOracle;
+import com.crawljax.oraclecomparator.AbstractComparator;
 
 /**
  * @author Danny
  */
-public class PlainStructureOracle extends AbstractOracle {
+public class PlainStructureOracle extends AbstractComparator {
 
 	private boolean removeAttributes = true;
 

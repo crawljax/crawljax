@@ -1,4 +1,4 @@
-package com.crawljax.oracle;
+package com.crawljax.oraclecomparator;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import com.crawljax.util.Helper;
  * @author Danny
  * @version $Id: AbstractOracle.java 6388 2009-12-29 13:36:00Z mesbah $
  */
-public abstract class AbstractOracle implements Oracle {
+public abstract class AbstractComparator implements Comparator {
 
 	private String originalDom;
 	private String newDom;
@@ -18,7 +18,7 @@ public abstract class AbstractOracle implements Oracle {
 	/**
 	 * Constructor.
 	 */
-	public AbstractOracle() {
+	public AbstractComparator() {
 
 	}
 
@@ -28,7 +28,7 @@ public abstract class AbstractOracle implements Oracle {
 	 * @param newDom
 	 *            The new DOM.
 	 */
-	public AbstractOracle(String originalDom, String newDom) {
+	public AbstractComparator(String originalDom, String newDom) {
 		this.originalDom = originalDom;
 		this.newDom = newDom;
 	}
@@ -39,7 +39,7 @@ public abstract class AbstractOracle implements Oracle {
 	 */
 	protected boolean compare() {
 		boolean equivalent = false;
-		if (OracleComparator.COMPARE_IGNORE_CASE) {
+		if (StateComparator.COMPARE_IGNORE_CASE) {
 			equivalent = getOriginalDom().equalsIgnoreCase(getNewDom());
 		} else {
 			equivalent = getOriginalDom().equals(getNewDom());

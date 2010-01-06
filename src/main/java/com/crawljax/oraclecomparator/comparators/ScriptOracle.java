@@ -1,21 +1,21 @@
 /**
  * 
  */
-package com.crawljax.oracle.oracles;
+package com.crawljax.oraclecomparator.comparators;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
-import com.crawljax.oracle.AbstractOracle;
+import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
 
 /**
  * @author danny
  * @version $Id: ScriptOracle.java 6376 2009-12-29 10:51:05Z frank $
  */
-public class ScriptOracle extends AbstractOracle {
+public class ScriptOracle extends AbstractComparator {
 
-	private static final Logger LOGGER = Logger.getLogger(AbstractOracle.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(AbstractComparator.class.getName());
 
 	/**
 	 * Default argument less constructor.

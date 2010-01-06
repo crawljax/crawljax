@@ -5,12 +5,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.crawljax.oracle.oracles.AttributeOracle;
-import com.crawljax.oracle.oracles.DateOracle;
-import com.crawljax.oracle.oracles.PlainStructureOracle;
-import com.crawljax.oracle.oracles.RegexOracle;
-import com.crawljax.oracle.oracles.SimpleOracle;
-import com.crawljax.oracle.oracles.StyleOracle;
+import com.crawljax.oraclecomparator.Comparator;
+import com.crawljax.oraclecomparator.comparators.AttributeOracle;
+import com.crawljax.oraclecomparator.comparators.DateOracle;
+import com.crawljax.oraclecomparator.comparators.PlainStructureOracle;
+import com.crawljax.oraclecomparator.comparators.RegexOracle;
+import com.crawljax.oraclecomparator.comparators.SimpleOracle;
+import com.crawljax.oraclecomparator.comparators.StyleOracle;
 
 /**
  * @author danny
@@ -21,7 +22,7 @@ public class OracleTest {
 	@Test
 	public void testDateOracle() {
 
-		Oracle oracle = new DateOracle();
+		Comparator oracle = new DateOracle();
 		String[] tests =
 		        {
 		        /* dates with days */
@@ -85,7 +86,7 @@ public class OracleTest {
 	@Test
 	public void testStyleOracle() {
 
-		Oracle oracle = new StyleOracle();
+		Comparator oracle = new StyleOracle();
 		String[] tests =
 		        {
 		                /* IGNORE_TAGS */
@@ -141,7 +142,7 @@ public class OracleTest {
 
 	@Test
 	public void testSimpleOracle() {
-		Oracle oracle = new SimpleOracle();
+		Comparator oracle = new SimpleOracle();
 		String[] tests =
 		        { "<HTML>\n\n<SPAN>\n    foo\n</SPAN></HTML>|"
 		                + "<HTML>\n<SPAN>\n    foo     \n\n</SPAN>\n</HTML>", };

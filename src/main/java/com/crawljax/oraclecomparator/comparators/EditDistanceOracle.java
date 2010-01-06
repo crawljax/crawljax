@@ -1,6 +1,6 @@
-package com.crawljax.oracle.oracles;
+package com.crawljax.oraclecomparator.comparators;
 
-import com.crawljax.oracle.AbstractOracle;
+import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.EditDistance;
 
 /**
@@ -10,7 +10,7 @@ import com.crawljax.util.EditDistance;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class EditDistanceOracle extends AbstractOracle {
+public class EditDistanceOracle extends AbstractComparator {
 
 	private double treshold = 1;
 

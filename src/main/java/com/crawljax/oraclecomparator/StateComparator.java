@@ -1,4 +1,4 @@
-package com.crawljax.oracle;
+package com.crawljax.oraclecomparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
-import com.crawljax.oracle.oracles.SimpleOracle;
+import com.crawljax.oraclecomparator.comparators.SimpleOracle;
 
 /**
  * Defines an Oracle Comparator which used multiple Oracles to decide whether two states are
@@ -16,13 +16,13 @@ import com.crawljax.oracle.oracles.SimpleOracle;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class OracleComparator {
+public class StateComparator {
 
-	private static final Logger LOGGER = Logger.getLogger(OracleComparator.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(StateComparator.class.getName());
 
 	public static final boolean COMPARE_IGNORE_CASE = true;
-	private List<ComparatorWithPreconditions> comparatorsWithPreconditions =
-	        new ArrayList<ComparatorWithPreconditions>();
+	private List<OracleComparator> comparatorsWithPreconditions =
+	        new ArrayList<OracleComparator>();
 
 	private String originalDom;
 	private String newDom;
@@ -30,14 +30,14 @@ public class OracleComparator {
 	private String strippedOriginalDom;
 	private String strippedNewDom;
 
-	private static List<ComparatorWithPreconditions> lastUsedOraclePreConditions =
-	        new ArrayList<ComparatorWithPreconditions>();
+	private static List<OracleComparator> lastUsedOraclePreConditions =
+	        new ArrayList<OracleComparator>();
 
 	/**
 	 * @param comparatorsWithPreconditions
 	 *            comparators with one or more preconditions
 	 */
-	public OracleComparator(List<ComparatorWithPreconditions> comparatorsWithPreconditions) {
+	public StateComparator(List<OracleComparator> comparatorsWithPreconditions) {
 		this.comparatorsWithPreconditions = comparatorsWithPreconditions;
 	}
 
@@ -46,14 +46,14 @@ public class OracleComparator {
 	 *            the comparatorsWithPreconditions to set
 	 */
 	public void setOraclePreConditions(
-	        List<ComparatorWithPreconditions> comparatorsWithPreconditions) {
+	        List<OracleComparator> comparatorsWithPreconditions) {
 		if (comparatorsWithPreconditions != null) {
 			this.comparatorsWithPreconditions = comparatorsWithPreconditions;
 		}
 
 		// always end with SimpleOracle to remove newline differences which
 		// could be caused by other oracles
-		this.comparatorsWithPreconditions.add(new ComparatorWithPreconditions("SimpleComparator",
+		this.comparatorsWithPreconditions.add(new OracleComparator("SimpleComparator",
 		        new SimpleOracle()));
 	}
 
@@ -78,7 +78,7 @@ public class OracleComparator {
 			setOraclePreConditions(null);
 		}
 		// System.out.println("Comparing: " + comparatorsWithPreconditions);
-		for (ComparatorWithPreconditions oraclePreCondition : comparatorsWithPreconditions) {
+		for (OracleComparator oraclePreCondition : comparatorsWithPreconditions) {
 
 			// checking the preconditions
 			boolean preConditionsSucceed = true;
@@ -95,7 +95,7 @@ public class OracleComparator {
 			// use oracle if precondition succeeds
 			if (preConditionsSucceed) {
 
-				Oracle oracle = oraclePreCondition.getOracle();
+				Comparator oracle = oraclePreCondition.getOracle();
 				LOGGER.debug("Using " + oracle.getClass().getSimpleName() + ": "
 				        + oraclePreCondition.getId());
 				lastUsedOraclePreConditions.add(oraclePreCondition);
@@ -122,7 +122,7 @@ public class OracleComparator {
 	 * @return the stripped fom by the oracle comparators
 	 */
 	public String getStrippedDom(EmbeddedBrowser browser) {
-		OracleComparator oc = new OracleComparator(comparatorsWithPreconditions);
+		StateComparator oc = new StateComparator(comparatorsWithPreconditions);
 		try {
 			oc.compare("", browser.getDom(), browser);
 		} catch (Exception e) {
@@ -162,14 +162,14 @@ public class OracleComparator {
 	/**
 	 * @return the lastUsedOracles
 	 */
-	public List<ComparatorWithPreconditions> getLastUsedOraclePreConditions() {
+	public List<OracleComparator> getLastUsedOraclePreConditions() {
 		return lastUsedOraclePreConditions;
 	}
 
 	/**
 	 * @return the oraclePreConditions
 	 */
-	public List<ComparatorWithPreconditions> getOraclePreConditions() {
+	public List<OracleComparator> getOraclePreConditions() {
 		return comparatorsWithPreconditions;
 	}
 

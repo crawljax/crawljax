@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.crawljax.oracle.oracles;
+package com.crawljax.oraclecomparator.comparators;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.crawljax.oracle.AbstractOracle;
+import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
 
 /**
@@ -21,7 +21,7 @@ import com.crawljax.util.Helper;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class XPathExpressionOracle extends AbstractOracle {
+public class XPathExpressionOracle extends AbstractComparator {
 
 	private static final Logger LOGGER = Logger.getLogger(XPathExpressionOracle.class.getName());
 

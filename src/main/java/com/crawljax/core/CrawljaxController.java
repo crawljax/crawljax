@@ -22,8 +22,8 @@ import com.crawljax.core.state.Edge;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.oracle.ComparatorWithPreconditions;
-import com.crawljax.oracle.OracleComparator;
+import com.crawljax.oraclecomparator.OracleComparator;
+import com.crawljax.oraclecomparator.StateComparator;
 import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.database.HibernateUtil;
 
@@ -51,7 +51,7 @@ public class CrawljaxController {
 
 	private final String propertiesFile;
 
-	private final OracleComparator oracleComparator;
+	private final StateComparator oracleComparator;
 	private final InvariantChecker invariantChecker = new InvariantChecker();
 	private final CrawlConditionChecker crawlConditionChecker = new CrawlConditionChecker();
 	private final EventableConditionChecker eventableConditionChecker =
@@ -63,7 +63,7 @@ public class CrawljaxController {
 
 	private final CrawljaxConfiguration crawljaxConfiguration;
 
-	private final List<ComparatorWithPreconditions> comparatorsWithPreconditions;
+	private final List<OracleComparator> comparatorsWithPreconditions;
 
 	/**
 	 * The constructor.
@@ -80,8 +80,8 @@ public class CrawljaxController {
 	public CrawljaxController(final String propertiesfile) {
 		this.propertiesFile = propertiesfile;
 		this.crawljaxConfiguration = null;
-		this.comparatorsWithPreconditions = new ArrayList<ComparatorWithPreconditions>();
-		oracleComparator = new OracleComparator(this.comparatorsWithPreconditions);
+		this.comparatorsWithPreconditions = new ArrayList<OracleComparator>();
+		oracleComparator = new StateComparator(this.comparatorsWithPreconditions);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class CrawljaxController {
 		CrawlSpecificationReader crawlerReader =
 		        new CrawlSpecificationReader(configReader.getCrawlSpecification());
 		this.comparatorsWithPreconditions = crawlerReader.getOracleComparators();
-		oracleComparator = new OracleComparator(crawlerReader.getOracleComparators());
+		oracleComparator = new StateComparator(crawlerReader.getOracleComparators());
 		invariantChecker.setInvariants(crawlerReader.getInvariants());
 		crawlConditionChecker.setCrawlConditions(crawlerReader.getCrawlConditions());
 		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
