@@ -8,8 +8,7 @@ import junit.framework.TestCase;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * 
- DOCUMENT ME!
+ * TODO: DOCUMENT ME!
  * 
  * @author mesbah
  * @version $Id: EditDistanceTest.java 6288 2009-12-23 16:31:08Z frank $
@@ -17,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
 public class EditDistanceTest extends TestCase {
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 */
 	public void testGetThreshold() {
 		String x = "<form>bl</form>";
@@ -30,7 +29,7 @@ public class EditDistanceTest extends TestCase {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 */
 	public void testIsClone() {
 		String x = "<form>BL</form>";

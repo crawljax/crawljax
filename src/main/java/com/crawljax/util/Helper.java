@@ -69,10 +69,10 @@ public final class Helper {
 
 	/**
 	 * @param location
-	 *            DOCUMENT ME!
+	 *            TODO: DOCUMENT ME!
 	 * @param link
-	 *            DOCUMENT ME!
-	 * @return DOCUMENT ME!
+	 *            TODO: DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 	public static boolean isLinkExternal(String location, String link) {
 		boolean check = false;

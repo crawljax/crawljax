@@ -48,7 +48,7 @@ public class FormInput {
 	}
 
 	/**
-	 * @return DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 	public long getId() {
 		return id;
@@ -56,14 +56,14 @@ public class FormInput {
 
 	/**
 	 * @param id
-	 *            DOCUMENT ME!
+	 *            TODO: DOCUMENT ME!
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 	public String getType() {
 		return type;
@@ -71,7 +71,7 @@ public class FormInput {
 
 	/**
 	 * @param type
-	 *            DOCUMENT ME!
+	 *            TODO: DOCUMENT ME!
 	 */
 	public void setType(String type) {
 		if (!"".equals(type)) {

@@ -12,8 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
- DOCUMENT ME!
+ * TODO: DOCUMENT ME!
  * 
  * @author mesbah
  * @version $Id: StateVertixTest.java 6302 2009-12-24 17:02:51Z danny $
