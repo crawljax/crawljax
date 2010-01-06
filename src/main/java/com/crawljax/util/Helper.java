@@ -569,32 +569,6 @@ public final class Helper {
 	}
 
 	/**
-	 * @param html
-	 *            The html string.
-	 * @return uniform version of dom with predefined attributes stripped
-	 * @throws Exception
-	 *             On error.
-	 */
-	public static String toUniformDOM(final String html) throws Exception {
-		Pattern p =
-		        Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
-		                | Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(html);
-		String htmlFormatted = m.replaceAll("");
-
-		p = Pattern.compile("<\\?xml:(.*?)>");
-		m = p.matcher(html);
-		htmlFormatted = m.replaceAll("");
-
-		// html = html.replace("<?xml:namespace prefix = gwt >", "");
-
-		Document doc = Helper.getDocument(htmlFormatted);
-		htmlFormatted = Helper.getDocumentToString(doc);
-		htmlFormatted = filterAttributes(htmlFormatted);
-		return htmlFormatted;
-	}
-
-	/**
 	 * @param string
 	 *            The original string.
 	 * @param regex
@@ -607,21 +581,6 @@ public final class Helper {
 		Pattern p = Pattern.compile(regex, Pattern.DOTALL);
 		Matcher m = p.matcher(string);
 		return m.replaceAll(replace);
-	}
-
-	/**
-	 * @param differences
-	 *            List of differences.
-	 * @param max
-	 *            Max length of result.
-	 * @return subset of size max of the differences list. Returns all differences when max=0
-	 */
-	public static List<Difference> subsetDifferences(List<Difference> differences, int max) {
-		if (max > differences.size() || max == 0) {
-			return differences;
-		} else {
-			return differences.subList(0, max);
-		}
 	}
 
 	/**
