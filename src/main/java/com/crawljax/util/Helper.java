@@ -664,36 +664,6 @@ public final class Helper {
 		return contents.toString();
 	}
 
-	// public static String getJavaScriptEventHandlerFunctions() {
-	// File f = new File("ATUSA_events.js");
-	// String js = getContent(f)
-	// + "supportDomEvent = "
-	// + (PropertyHelper.getSupportDomEventsValue() ? "true" : "false")
-	// + ";"
-	// + "supportAddEvents = "
-	// + (PropertyHelper.getSupportAddEventsValue() ? "true" : "false")
-	// + ";" + "supportJQuery = "
-	// + (PropertyHelper.getSupportJQueryValue() ? "true" : "false")
-	// + ";";
-	// return js;
-	// }
-
-	// public static void createEventWrappers(EmbeddedBrowser browser) {
-	// return;
-	// String js = getJavaScriptEventHandlerFunctions();
-	// for (TagElement tag : PropertyHelper.getCrawlTagElements()) {
-	// js += "ATUSA_wrapElements('" + tag.getName() + "');";
-	// }
-	// try {
-	// browser.executeJavaScript(js);
-	// } catch (Exception e) {
-	// LOGGER.error("Error with wrapping event handlers: "
-	// + e.getMessage(), e);
-	// // System.exit(0);
-	// }
-
-	// }
-
 	/**
 	 * Filters attributes from the HTML string.
 	 * 
