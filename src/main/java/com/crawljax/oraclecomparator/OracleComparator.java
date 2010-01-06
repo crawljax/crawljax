@@ -1,4 +1,4 @@
-package com.crawljax.oracle;
+package com.crawljax.oraclecomparator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +10,11 @@ import com.crawljax.condition.Condition;
  * @version $Id: ComparatorWithPreconditions.java 6382 2009-12-29 12:38:11Z danny $ This class
  *          contains the oracle and its precondition(s)
  */
-public class ComparatorWithPreconditions {
+public class OracleComparator {
 
 	private final List<Condition> preConditions;
 	private final String id;
-	private final Oracle oracle;
+	private final Comparator oracle;
 
 	/**
 	 * @param id
@@ -22,7 +22,7 @@ public class ComparatorWithPreconditions {
 	 * @param oracle
 	 *            the Oracle
 	 */
-	public ComparatorWithPreconditions(String id, Oracle oracle) {
+	public OracleComparator(String id, Comparator oracle) {
 		this(id, oracle, new ArrayList<Condition>());
 	}
 
@@ -34,7 +34,7 @@ public class ComparatorWithPreconditions {
 	 * @param preConditions
 	 *            the preconditions that must be satisfied before the oracle comparator is used
 	 */
-	public ComparatorWithPreconditions(String id, Oracle oracle, List<Condition> preConditions) {
+	public OracleComparator(String id, Comparator oracle, List<Condition> preConditions) {
 		this.id = id;
 		this.oracle = oracle;
 		this.preConditions = preConditions;
@@ -48,7 +48,7 @@ public class ComparatorWithPreconditions {
 	 * @param preConditions
 	 *            the preconditions that must be satisfied before the oracle comparator is used
 	 */
-	public ComparatorWithPreconditions(String id, Oracle oracle, Condition... preConditions) {
+	public OracleComparator(String id, Comparator oracle, Condition... preConditions) {
 		this.id = id;
 		this.oracle = oracle;
 		this.preConditions = new ArrayList<Condition>();
@@ -67,7 +67,7 @@ public class ComparatorWithPreconditions {
 	/**
 	 * @return the Oracle
 	 */
-	public Oracle getOracle() {
+	public Comparator getOracle() {
 		return oracle;
 	}
 

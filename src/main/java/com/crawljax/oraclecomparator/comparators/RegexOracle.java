@@ -1,9 +1,9 @@
-package com.crawljax.oracle.oracles;
+package com.crawljax.oraclecomparator.comparators;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.crawljax.oracle.AbstractOracle;
+import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
 
 /**
@@ -13,7 +13,7 @@ import com.crawljax.util.Helper;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class RegexOracle extends AbstractOracle {
+public class RegexOracle extends AbstractComparator {
 
 	// NOTE: the ordering can be important
 	private final List<String> regexs = new ArrayList<String>();

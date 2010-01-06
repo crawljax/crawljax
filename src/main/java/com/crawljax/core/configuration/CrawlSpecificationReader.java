@@ -5,7 +5,7 @@ import java.util.List;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.oracle.ComparatorWithPreconditions;
+import com.crawljax.oraclecomparator.OracleComparator;
 
 
 /**
@@ -45,7 +45,7 @@ public class CrawlSpecificationReader {
 	/**
 	 * @return the oracleComparators
 	 */
-	public List<ComparatorWithPreconditions> getOracleComparators() {
+	public List<OracleComparator> getOracleComparators() {
 		return crawlSpecification.getOracleComparators();
 	}
 

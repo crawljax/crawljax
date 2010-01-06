@@ -1,4 +1,4 @@
-package com.crawljax.oracle.oracles;
+package com.crawljax.oraclecomparator.comparators;
 
 import java.util.Arrays;
 

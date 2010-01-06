@@ -8,8 +8,8 @@ import com.crawljax.condition.browserwaiter.ExpectedCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.oracle.ComparatorWithPreconditions;
-import com.crawljax.oracle.Oracle;
+import com.crawljax.oraclecomparator.OracleComparator;
+import com.crawljax.oraclecomparator.Comparator;
 
 /**
  * Specifies the crawl options for a single crawl session. The user must specify which HTML elements
@@ -54,8 +54,8 @@ public class CrawlSpecification {
 	private boolean testInvariantsWhileCrawling = true;
 	private final List<Invariant> invariants = new ArrayList<Invariant>();
 
-	private final List<ComparatorWithPreconditions> oracleComparators =
-	        new ArrayList<ComparatorWithPreconditions>();
+	private final List<OracleComparator> oracleComparators =
+	        new ArrayList<OracleComparator>();
 	private final List<WaitCondition> waitConditions = new ArrayList<WaitCondition>();
 	private final List<CrawlCondition> crawlConditions = new ArrayList<CrawlCondition>();
 
@@ -255,7 +255,7 @@ public class CrawlSpecification {
 	/**
 	 * @return the oracleComparators
 	 */
-	protected List<ComparatorWithPreconditions> getOracleComparators() {
+	protected List<OracleComparator> getOracleComparators() {
 		return oracleComparators;
 	}
 
@@ -267,8 +267,8 @@ public class CrawlSpecification {
 	 * @param oracleComparator
 	 *            the oracle to be added.
 	 */
-	public void addOracleComparator(String id, Oracle oracleComparator) {
-		this.oracleComparators.add(new ComparatorWithPreconditions(id, oracleComparator));
+	public void addOracleComparator(String id, Comparator oracleComparator) {
+		this.oracleComparators.add(new OracleComparator(id, oracleComparator));
 	}
 
 	/**
@@ -281,9 +281,9 @@ public class CrawlSpecification {
 	 * @param preConditions
 	 *            the preconditions to be met.
 	 */
-	public void addOracleComparator(String id, Oracle oracleComparator,
+	public void addOracleComparator(String id, Comparator oracleComparator,
 	        Condition... preConditions) {
-		this.oracleComparators.add(new ComparatorWithPreconditions(id, oracleComparator,
+		this.oracleComparators.add(new OracleComparator(id, oracleComparator,
 		        preConditions));
 	}
 

@@ -1,9 +1,9 @@
-package com.crawljax.oracle.oracles;
+package com.crawljax.oraclecomparator.comparators;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.crawljax.oracle.AbstractOracle;
+import com.crawljax.oraclecomparator.AbstractComparator;
 
 /**
  * Oracle Comparator that ignores the specified attributes.
@@ -11,7 +11,7 @@ import com.crawljax.oracle.AbstractOracle;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class AttributeOracle extends AbstractOracle {
+public class AttributeOracle extends AbstractComparator {
 
 	private final List<String> ignoreAttributes = new ArrayList<String>();
 

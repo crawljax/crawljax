@@ -1,4 +1,4 @@
-package com.crawljax.oracle;
+package com.crawljax.oraclecomparator;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import org.custommonkey.xmlunit.Difference;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id: Oracle.java 6284 2009-12-23 16:17:41Z frank $
  */
-public interface Oracle {
+public interface Comparator {
 
 	/**
 	 * @return The differences between the two DOMs

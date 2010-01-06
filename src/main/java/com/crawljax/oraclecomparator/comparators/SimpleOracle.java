@@ -1,11 +1,11 @@
-package com.crawljax.oracle.oracles;
+package com.crawljax.oraclecomparator.comparators;
 
-import com.crawljax.oracle.AbstractOracle;
+import com.crawljax.oraclecomparator.AbstractComparator;
 
 /**
  * Simple oracle which can ignore whitespaces and linebreaks.
  */
-public class SimpleOracle extends AbstractOracle {
+public class SimpleOracle extends AbstractComparator {
 
 	/**
 	 * Default argument less constructor.

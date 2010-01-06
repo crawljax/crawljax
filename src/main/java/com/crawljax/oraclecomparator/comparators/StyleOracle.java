@@ -1,4 +1,4 @@
-package com.crawljax.oracle.oracles;
+package com.crawljax.oraclecomparator.comparators;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Attr;
@@ -7,13 +7,13 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.crawljax.oracle.AbstractOracle;
+import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
 
 /**
  * Oracle which can ignore style attributes.
  */
-public class StyleOracle extends AbstractOracle {
+public class StyleOracle extends AbstractComparator {
 
 	private static final Logger LOGGER = Logger.getLogger(StyleOracle.class.getName());
 
