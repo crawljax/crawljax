@@ -113,23 +113,6 @@ public final class Helper {
 	}
 
 	/**
-	 * Saves content in file. Creates the folder if it does not exists
-	 * 
-	 * @param content
-	 *            file content
-	 * @param fileName
-	 *            the file name.
-	 * @throws IOException
-	 *             if fails.
-	 */
-	public static void saveFile(String content, String fileName) throws IOException {
-		checkFolderForFile(fileName);
-		FileWriter out = new FileWriter(new File(fileName));
-		out.write(content);
-		out.close();
-	}
-
-	/**
 	 * @param url
 	 *            the URL string.
 	 * @return the base part of the URL.
