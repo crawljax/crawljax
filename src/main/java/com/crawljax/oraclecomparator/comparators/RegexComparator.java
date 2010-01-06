@@ -13,7 +13,7 @@ import com.crawljax.util.Helper;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class RegexOracle extends AbstractComparator {
+public class RegexComparator extends AbstractComparator {
 
 	// NOTE: the ordering can be important
 	private final List<String> regexs = new ArrayList<String>();
@@ -21,14 +21,14 @@ public class RegexOracle extends AbstractComparator {
 	/**
 	 * Default Constructor without any regular expressions.
 	 */
-	public RegexOracle() {
+	public RegexComparator() {
 	}
 
 	/**
 	 * @param regexs
 	 *            the regular expressions
 	 */
-	public RegexOracle(String... regexs) {
+	public RegexComparator(String... regexs) {
 		for (String regex : regexs) {
 			this.regexs.add(regex);
 		}

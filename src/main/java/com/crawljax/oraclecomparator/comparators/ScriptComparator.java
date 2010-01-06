@@ -13,14 +13,14 @@ import com.crawljax.util.Helper;
  * @author danny
  * @version $Id: ScriptOracle.java 6376 2009-12-29 10:51:05Z frank $
  */
-public class ScriptOracle extends AbstractComparator {
+public class ScriptComparator extends AbstractComparator {
 
 	private static final Logger LOGGER = Logger.getLogger(AbstractComparator.class.getName());
 
 	/**
 	 * Default argument less constructor.
 	 */
-	public ScriptOracle() {
+	public ScriptComparator() {
 	}
 
 	/**
@@ -29,7 +29,7 @@ public class ScriptOracle extends AbstractComparator {
 	 * @param newDom
 	 *            The new DOM.
 	 */
-	public ScriptOracle(String originalDom, String newDom) {
+	public ScriptComparator(String originalDom, String newDom) {
 		super(originalDom, newDom);
 	}
 

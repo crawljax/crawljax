@@ -13,9 +13,9 @@ import com.crawljax.util.Helper;
 /**
  * Oracle which can ignore style attributes.
  */
-public class StyleOracle extends AbstractComparator {
+public class StyleComparator extends AbstractComparator {
 
-	private static final Logger LOGGER = Logger.getLogger(StyleOracle.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(StyleComparator.class.getName());
 
 	private static final String[] IGNORE_ATTRIBUTES =
 	        { "align", "bgcolor", "height", "valign", "width", "type", "dir" };
@@ -27,7 +27,7 @@ public class StyleOracle extends AbstractComparator {
 	/**
 	 * Default argument less constructor.
 	 */
-	public StyleOracle() {
+	public StyleComparator() {
 		super();
 	}
 
@@ -37,7 +37,7 @@ public class StyleOracle extends AbstractComparator {
 	 * @param newDom
 	 *            The new DOM.
 	 */
-	public StyleOracle(String originalDom, String newDom) {
+	public StyleComparator(String originalDom, String newDom) {
 		super(originalDom, newDom);
 	}
 

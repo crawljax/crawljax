@@ -21,9 +21,9 @@ import com.crawljax.util.Helper;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class XPathExpressionOracle extends AbstractComparator {
+public class XPathExpressionComparator extends AbstractComparator {
 
-	private static final Logger LOGGER = Logger.getLogger(XPathExpressionOracle.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(XPathExpressionComparator.class.getName());
 
 	private final List<String> expressions = new ArrayList<String>();
 
@@ -31,7 +31,7 @@ public class XPathExpressionOracle extends AbstractComparator {
 	 * @param expressions
 	 *            the xpath expressions to ignore
 	 */
-	public XPathExpressionOracle(List<String> expressions) {
+	public XPathExpressionComparator(List<String> expressions) {
 		this.expressions.addAll(expressions);
 	}
 
@@ -39,7 +39,7 @@ public class XPathExpressionOracle extends AbstractComparator {
 	 * @param expressions
 	 *            the xpath expressions to ignore
 	 */
-	public XPathExpressionOracle(String... expressions) {
+	public XPathExpressionComparator(String... expressions) {
 		for (String expression : expressions) {
 			this.expressions.add(expression);
 		}
@@ -48,7 +48,7 @@ public class XPathExpressionOracle extends AbstractComparator {
 	/**
 	 * 
 	 */
-	public XPathExpressionOracle() {
+	public XPathExpressionComparator() {
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class XPathExpressionOracle extends AbstractComparator {
 	 * @param newDom
 	 *            The new DOM.
 	 */
-	public XPathExpressionOracle(String originalDom, String newDom) {
+	public XPathExpressionComparator(String originalDom, String newDom) {
 		super(originalDom, newDom);
 	}
 

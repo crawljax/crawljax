@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
-import com.crawljax.oraclecomparator.comparators.SimpleOracle;
+import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 
 /**
  * Defines an Oracle Comparator which used multiple Oracles to decide whether two states are
@@ -54,7 +54,7 @@ public class StateComparator {
 		// always end with SimpleOracle to remove newline differences which
 		// could be caused by other oracles
 		this.comparatorsWithPreconditions.add(new OracleComparator("SimpleComparator",
-		        new SimpleOracle()));
+		        new SimpleComparator()));
 	}
 
 	/**

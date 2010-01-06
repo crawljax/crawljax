@@ -5,12 +5,12 @@ import com.crawljax.oraclecomparator.AbstractComparator;
 /**
  * Simple oracle which can ignore whitespaces and linebreaks.
  */
-public class SimpleOracle extends AbstractComparator {
+public class SimpleComparator extends AbstractComparator {
 
 	/**
 	 * Default argument less constructor.
 	 */
-	public SimpleOracle() {
+	public SimpleComparator() {
 		super();
 	}
 
@@ -20,7 +20,7 @@ public class SimpleOracle extends AbstractComparator {
 	 * @param newDom
 	 *            The new DOM.
 	 */
-	public SimpleOracle(String originalDom, String newDom) {
+	public SimpleComparator(String originalDom, String newDom) {
 		super(originalDom, newDom);
 	}
 

@@ -10,14 +10,14 @@ import com.crawljax.util.EditDistance;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class EditDistanceOracle extends AbstractComparator {
+public class EditDistanceComparator extends AbstractComparator {
 
 	private double treshold = 1;
 
 	/**
 	 * Default constructor with edit distance treshold = 1.
 	 */
-	public EditDistanceOracle() {
+	public EditDistanceComparator() {
 
 	}
 
@@ -25,7 +25,7 @@ public class EditDistanceOracle extends AbstractComparator {
 	 * @param treshold
 	 *            the edit distance treshold. 1 is no difference, 0 is totally different
 	 */
-	public EditDistanceOracle(double treshold) {
+	public EditDistanceComparator(double treshold) {
 		this.treshold = treshold;
 	}
 

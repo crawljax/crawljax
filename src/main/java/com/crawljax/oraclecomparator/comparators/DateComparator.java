@@ -8,7 +8,7 @@ import java.util.Arrays;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $id$
  */
-public class DateOracle extends RegexOracle {
+public class DateComparator extends RegexComparator {
 
 	// NOTE: the ordering is important
 	private String[] patterns =
@@ -53,7 +53,7 @@ public class DateOracle extends RegexOracle {
 	/**
 	 * Default Constructor.
 	 */
-	public DateOracle() {
+	public DateComparator() {
 		super();
 		addRegularExpressions(Arrays.asList(this.patterns));
 	}
