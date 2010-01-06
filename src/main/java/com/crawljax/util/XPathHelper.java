@@ -21,7 +21,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * DOCUMENT ME!
+ * TODO: DOCUMENT ME!
  * 
  * @author mesbah
  * @version $Id: XPathHelper.java 6370 2009-12-29 07:59:21Z frank $
@@ -71,7 +71,7 @@ public final class XPathHelper {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
 	 * @param parent
 	 *            parent node.

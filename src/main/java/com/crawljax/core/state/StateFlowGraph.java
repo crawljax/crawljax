@@ -110,7 +110,7 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
 	 * @param stateVertix
 	 *            the state.
@@ -127,18 +127,18 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
 	 * @param clickable
-	 *            DOCUMENT ME!
-	 * @return DOCUMENT ME!
+	 *            TODO: DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 	public StateVertix getTargetState(Eventable clickable) {
 		return sfg.getEdgeTarget(clickable);
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
 	 * @param source
 	 *            the source state.
@@ -164,7 +164,7 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
 	 * @return all the states on the graph.
 	 */
@@ -173,20 +173,20 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 	public Set<Eventable> getAllEdges() {
 		return sfg.edgeSet();
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
 	 * @param state
-	 *            DOCUMENT ME!
-	 * @return DOCUMENT ME!
+	 *            TODO: DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 	public StateVertix getStateInGraph(StateVertix state) {
 		Set<StateVertix> states = getAllStates();
@@ -201,20 +201,20 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
 	 * @param state
-	 *            DOCUMENT ME!
-	 * @return DOCUMENT ME!
+	 *            TODO: DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 	public boolean containsVertex(StateVertix state) {
 		return sfg.containsVertex(state);
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
-	 * @return DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 
 	public int getMeanStateStringSize() {
@@ -288,8 +288,8 @@ public class StateFlowGraph {
 
 	/**
 	 * @param index
-	 *            DOCUMENT ME!
-	 * @return DOCUMENT ME!
+	 *            TODO: DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 	public List<List<GraphPath<StateVertix, Eventable>>> getAllPossiblePaths(StateVertix index) {
 		final List<List<GraphPath<StateVertix, Eventable>>> results =

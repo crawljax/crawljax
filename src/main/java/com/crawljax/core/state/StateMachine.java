@@ -91,7 +91,7 @@ public class StateMachine {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
 	 * @return the current State.
 	 */
@@ -100,7 +100,7 @@ public class StateMachine {
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * TODO: DOCUMENT ME!
 	 * 
 	 * @return the stateFlowGraph
 	 */
@@ -116,7 +116,7 @@ public class StateMachine {
 	}
 
 	/**
-	 * @return DOCUMENT ME!
+	 * @return TODO: DOCUMENT ME!
 	 */
 	public StateVertix getPreviousState() {
 		return previousState;
