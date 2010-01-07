@@ -567,7 +567,7 @@ public final class PropertyHelper {
 	}
 
 	/**
-	 * @returnTODO: DOCUMENT ME!
+	 * @return the max value for crawling time.
 	 */
 	public static int getCrawlMaxTimeValue() {
 		return crawlMaxTimeValue;

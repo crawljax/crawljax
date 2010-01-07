@@ -224,7 +224,7 @@ public class FormHandler {
 	 *            The xpath of the element.
 	 * @return The JavaScript to get an element.
 	 */
-	private static String getJSGetElement(String xpath) {
+	public static String getJSGetElement(String xpath) {
 		String js =
 		        ""
 		                + "function ATUSA_getElementInNodes(nodes, tagName, number){"
