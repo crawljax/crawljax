@@ -152,14 +152,14 @@ public class CrawljaxController {
 
 		startCrawl = System.currentTimeMillis();
 
+		CrawljaxPluginsUtil.runPreCrawlingPlugins(browser);
+
 		try {
 			crawler.goToInitialURL();
 		} catch (CrawljaxException e) {
 			LOGGER.fatal("Failed to load the site: " + e.getMessage(), e);
 			throw e;
 		}
-
-		CrawljaxPluginsUtil.runPreCrawlingPlugins(browser);
 
 		indexState =
 		        new StateVertix(browser.getCurrentUrl(), "index", browser.getDom(),
