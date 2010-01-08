@@ -2,6 +2,7 @@ package com.crawljax.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
@@ -191,28 +192,29 @@ public class CrawljaxController {
 
 		browser.close();
 
-		long timePageGenStart = System.currentTimeMillis();
-
-		long timePageGenCalc = System.currentTimeMillis() - timePageGenStart;
-
 		for (Eventable c : stateMachine.getStateFlowGraph().getAllEdges()) {
 			LOGGER.info("Interaction Element= " + c.toString());
 		}
 
-		LOGGER.info("PERFORMANCE-> Crawl-time(ms): " + timeCrawlCalc);
-		LOGGER.info("PERFORMANCE-> Genenration(ms): " + timePageGenCalc);
+		LOGGER.info("Total Crawling time("
+		        + timeCrawlCalc
+		        + "ms) ~= "
+		        + String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(timeCrawlCalc),
+		                TimeUnit.MILLISECONDS.toSeconds(timeCrawlCalc)
+		                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
+		                                .toMinutes(timeCrawlCalc))));
 		LOGGER.info("EXAMINED ELEMENTS: "
 		        + candidateElementExtractor.getNumberofExaminedElements());
 		LOGGER.info("CLICKABLES: " + stateMachine.getStateFlowGraph().getAllEdges().size());
 		LOGGER.info("STATES: " + stateMachine.getStateFlowGraph().getAllStates().size());
-		LOGGER.info("Dom size (byte): "
+		LOGGER.info("Dom average size (byte): "
 		        + stateMachine.getStateFlowGraph().getMeanStateStringSize());
 
 		LOGGER.info("Starting PostCrawlingPlugins...");
 
 		CrawljaxPluginsUtil.runPostCrawlingPlugins(session);
 
-		LOGGER.info("DONE!!!!");
+		LOGGER.info("DONE!!!");
 	}
 
 	/**
