@@ -21,7 +21,7 @@ public class StateComparator {
 	private static final Logger LOGGER = Logger.getLogger(StateComparator.class.getName());
 
 	public static final boolean COMPARE_IGNORE_CASE = true;
-	private List<OracleComparator> comparatorsWithPreconditions =
+	private List<OracleComparator> oracleComparator =
 	        new ArrayList<OracleComparator>();
 
 	private String originalDom;
@@ -38,7 +38,7 @@ public class StateComparator {
 	 *            comparators with one or more preconditions
 	 */
 	public StateComparator(List<OracleComparator> comparatorsWithPreconditions) {
-		this.comparatorsWithPreconditions = comparatorsWithPreconditions;
+		this.oracleComparator = comparatorsWithPreconditions;
 	}
 
 	/**
@@ -48,12 +48,12 @@ public class StateComparator {
 	public void setOraclePreConditions(
 	        List<OracleComparator> comparatorsWithPreconditions) {
 		if (comparatorsWithPreconditions != null) {
-			this.comparatorsWithPreconditions = comparatorsWithPreconditions;
+			this.oracleComparator = comparatorsWithPreconditions;
 		}
 
 		// always end with SimpleOracle to remove newline differences which
 		// could be caused by other oracles
-		this.comparatorsWithPreconditions.add(new OracleComparator("SimpleComparator",
+		this.oracleComparator.add(new OracleComparator("SimpleComparator",
 		        new SimpleComparator()));
 	}
 
@@ -73,12 +73,12 @@ public class StateComparator {
 		this.newDom = newDom;
 		this.strippedOriginalDom = originalDom;
 		this.strippedNewDom = newDom;
-		if (comparatorsWithPreconditions.size() == 0) {
+		if (oracleComparator.size() == 0) {
 			// add default simpleOracle
 			setOraclePreConditions(null);
 		}
 		// System.out.println("Comparing: " + comparatorsWithPreconditions);
-		for (OracleComparator oraclePreCondition : comparatorsWithPreconditions) {
+		for (OracleComparator oraclePreCondition : oracleComparator) {
 
 			// checking the preconditions
 			boolean preConditionsSucceed = true;
@@ -122,7 +122,7 @@ public class StateComparator {
 	 * @return the stripped fom by the oracle comparators
 	 */
 	public String getStrippedDom(EmbeddedBrowser browser) {
-		StateComparator oc = new StateComparator(comparatorsWithPreconditions);
+		StateComparator oc = new StateComparator(oracleComparator);
 		try {
 			oc.compare("", browser.getDom(), browser);
 		} catch (Exception e) {
@@ -170,7 +170,7 @@ public class StateComparator {
 	 * @return the oraclePreConditions
 	 */
 	public List<OracleComparator> getOraclePreConditions() {
-		return comparatorsWithPreconditions;
+		return oracleComparator;
 	}
 
 }
