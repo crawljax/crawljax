@@ -52,7 +52,7 @@ public class CrawljaxController {
 
 	private final String propertiesFile;
 
-	private final StateComparator oracleComparator;
+	private final StateComparator stateComparator;
 	private final InvariantChecker invariantChecker = new InvariantChecker();
 	private final CrawlConditionChecker crawlConditionChecker = new CrawlConditionChecker();
 	private final EventableConditionChecker eventableConditionChecker =
@@ -64,7 +64,7 @@ public class CrawljaxController {
 
 	private final CrawljaxConfiguration crawljaxConfiguration;
 
-	private final List<OracleComparator> comparatorsWithPreconditions;
+	private final List<OracleComparator> oracleComparator;
 
 	/**
 	 * The constructor.
@@ -81,8 +81,8 @@ public class CrawljaxController {
 	public CrawljaxController(final String propertiesfile) {
 		this.propertiesFile = propertiesfile;
 		this.crawljaxConfiguration = null;
-		this.comparatorsWithPreconditions = new ArrayList<OracleComparator>();
-		oracleComparator = new StateComparator(this.comparatorsWithPreconditions);
+		this.oracleComparator = new ArrayList<OracleComparator>();
+		stateComparator = new StateComparator(this.oracleComparator);
 	}
 
 	/**
@@ -95,8 +95,8 @@ public class CrawljaxController {
 		CrawljaxConfigurationReader configReader = new CrawljaxConfigurationReader(config);
 		CrawlSpecificationReader crawlerReader =
 		        new CrawlSpecificationReader(configReader.getCrawlSpecification());
-		this.comparatorsWithPreconditions = crawlerReader.getOracleComparators();
-		oracleComparator = new StateComparator(crawlerReader.getOracleComparators());
+		this.oracleComparator = crawlerReader.getOracleComparators();
+		stateComparator = new StateComparator(crawlerReader.getOracleComparators());
 		invariantChecker.setInvariants(crawlerReader.getInvariants());
 		crawlConditionChecker.setCrawlConditions(crawlerReader.getCrawlConditions());
 		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
@@ -164,7 +164,7 @@ public class CrawljaxController {
 
 		indexState =
 		        new StateVertix(browser.getCurrentUrl(), "index", browser.getDom(),
-		                oracleComparator.getStrippedDom(browser));
+		                stateComparator.getStrippedDom(browser));
 
 		stateMachine = new StateMachine(indexState);
 		if (crawljaxConfiguration != null) {
@@ -316,7 +316,7 @@ public class CrawljaxController {
 					if (crawler.fireEvent(eventable)) {
 						StateVertix newState =
 						        new StateVertix(browser.getCurrentUrl(), getStateName(), browser
-						                .getDom(), oracleComparator.getStrippedDom(browser));
+						                .getDom(), stateComparator.getStrippedDom(browser));
 
 						if (isDomChanged(currentHold, newState)) {
 							fired = true;
