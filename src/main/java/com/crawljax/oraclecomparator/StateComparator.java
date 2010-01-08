@@ -21,8 +21,7 @@ public class StateComparator {
 	private static final Logger LOGGER = Logger.getLogger(StateComparator.class.getName());
 
 	public static final boolean COMPARE_IGNORE_CASE = true;
-	private List<OracleComparator> oracleComparator =
-	        new ArrayList<OracleComparator>();
+	private List<OracleComparator> oracleComparator = new ArrayList<OracleComparator>();
 
 	private String originalDom;
 	private String newDom;
@@ -45,16 +44,15 @@ public class StateComparator {
 	 * @param comparatorsWithPreconditions
 	 *            the comparatorsWithPreconditions to set
 	 */
-	public void setOraclePreConditions(
-	        List<OracleComparator> comparatorsWithPreconditions) {
+	public void setOraclePreConditions(List<OracleComparator> comparatorsWithPreconditions) {
 		if (comparatorsWithPreconditions != null) {
 			this.oracleComparator = comparatorsWithPreconditions;
 		}
 
 		// always end with SimpleOracle to remove newline differences which
 		// could be caused by other oracles
-		this.oracleComparator.add(new OracleComparator("SimpleComparator",
-		        new SimpleComparator()));
+		this.oracleComparator
+		        .add(new OracleComparator("SimpleComparator", new SimpleComparator()));
 	}
 
 	/**
@@ -122,6 +120,9 @@ public class StateComparator {
 	 * @return the stripped fom by the oracle comparators
 	 */
 	public String getStrippedDom(EmbeddedBrowser browser) {
+
+		// TODO for danny, why is there a new object created here
+		// each time this method is called?
 		StateComparator oc = new StateComparator(oracleComparator);
 		try {
 			oc.compare("", browser.getDom(), browser);
