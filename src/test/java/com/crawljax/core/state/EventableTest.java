@@ -94,4 +94,19 @@ public class EventableTest {
 			fail(e.getMessage());
 		}
 	}
+
+	@Test
+	public void testEdge() {
+		StateVertix s1 = new StateVertix("stateSource", "dom1");
+		StateVertix s2 = new StateVertix("stateTarget", "dom2");
+
+		Eventable e = new Eventable();
+		Edge edge = new Edge(s1, s2);
+		e.setEdge(edge);
+		assertNotNull("Edge not null", edge);
+
+		assertEquals(s1, e.getEdge().getFromStateVertix());
+		assertEquals(s2, e.getEdge().getToStateVertix());
+
+	}
 }
