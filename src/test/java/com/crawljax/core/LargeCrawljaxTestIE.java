@@ -35,7 +35,8 @@ import com.crawljax.oraclecomparator.comparators.StyleComparator;
  * Large test for Crawljax. Crawls a test site and then inspects whether it is crawled correctly See
  * src/test/site for the web site
  * 
- * @author dannyroest@gmail.com (Danny Roest)
+ * @author Danny Roest
+ * @author mesbah
  * @version $Id$
  */
 public class LargeCrawljaxTestIE {
