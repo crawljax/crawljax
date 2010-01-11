@@ -3,8 +3,6 @@
  */
 package com.crawljax.core.state;
 
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -190,36 +188,6 @@ public class Eventable extends DefaultEdge {
 	 */
 	public void setEventType(String eventType) {
 		this.eventType = eventType;
-	}
-
-	/**
-	 * @return TODO: DOCUMENT ME!
-	 */
-	// TODO: Ali, replace with edge.getToStateVertix()?
-	@SuppressWarnings("unchecked")
-	public StateVertix getTarget() {
-		Class clazz = this.getClass().getSuperclass().getSuperclass();
-		Field[] fields = clazz.getDeclaredFields();
-		AccessibleObject.setAccessible(fields, true);
-
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
-			String fieldName = field.getName();
-
-			try {
-				// Warning: Field.get(Object) creates wrappers objects
-				// for primitive types.
-				if ("target".equals(fieldName)) {
-					StateVertix fieldValue = (StateVertix) field.get(this);
-
-					return fieldValue;
-				}
-			} catch (IllegalAccessException ex) {
-				throw new InternalError("Unexpected IllegalAccessException: " + ex.getMessage());
-			}
-		}
-
-		return null;
 	}
 
 	/**
