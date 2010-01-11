@@ -189,7 +189,7 @@ public class FormHandler {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 		return formInputs;
 	}
