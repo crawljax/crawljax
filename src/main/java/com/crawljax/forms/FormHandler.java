@@ -71,7 +71,7 @@ public class FormHandler {
 					if (text.equals("")) {
 						return;
 					}
-					String js = getJSGetElement(XPathHelper.getXpathExpression(element));
+					String js = Helper.getJSGetElement(XPathHelper.getXpathExpression(element));
 					js += "try{ATUSA_element.value='" + text + "';}catch(e){}";
 					browser.executeJavaScript(js);
 				}
@@ -79,7 +79,8 @@ public class FormHandler {
 				// check/uncheck checkboxes
 				if (input.getType().equals("checkbox")) {
 					for (InputValue inputValue : input.getInputValues()) {
-						String js = getJSGetElement(XPathHelper.getXpathExpression(element));
+						String js =
+						        Helper.getJSGetElement(XPathHelper.getXpathExpression(element));
 						boolean check;
 						if (!randomFieldValue) {
 							check = inputValue.isChecked();
@@ -103,7 +104,9 @@ public class FormHandler {
 				if (input.getType().equals("radio")) {
 					for (InputValue inputValue : input.getInputValues()) {
 						if (inputValue.isChecked()) {
-							String js = getJSGetElement(XPathHelper.getXpathExpression(element));
+							String js =
+							        Helper.getJSGetElement(XPathHelper
+							                .getXpathExpression(element));
 							js += "try{ATUSA_element.checked=true;}catch(e){}";
 							browser.executeJavaScript(js);
 						}
@@ -114,7 +117,8 @@ public class FormHandler {
 				if (input.getType().startsWith("select")) {
 					for (InputValue inputValue : input.getInputValues()) {
 						// if(browser.getDriver()==null){
-						String js = getJSGetElement(XPathHelper.getXpathExpression(element));
+						String js =
+						        Helper.getJSGetElement(XPathHelper.getXpathExpression(element));
 						js +=
 						        "try{" + "for(i=0; i<ATUSA_element.options.length; i++){"
 						                + "if(ATUSA_element.options[i].value=='"
@@ -219,52 +223,4 @@ public class FormHandler {
 		}
 	}
 
-	/**
-	 * @param xpath
-	 *            The xpath of the element.
-	 * @return The JavaScript to get an element.
-	 */
-	public static String getJSGetElement(String xpath) {
-		String js =
-		        ""
-		                + "function ATUSA_getElementInNodes(nodes, tagName, number){"
-		                + "try{"
-		                + "var pos = 1;"
-		                + "for(i=0; i<nodes.length; i++){"
-		                + "if(nodes[i]!=null && nodes[i].tagName!=null && "
-		                + "nodes[i].tagName.toLowerCase() == tagName){"
-		                + "if(number==pos){"
-		                + "return nodes[i];"
-		                + "}else{"
-		                + "pos++;"
-		                + "}"
-		                + "}"
-		                + "}"
-		                + "}catch(e){}"
-		                + "return null;"
-		                + "}"
-		                + "function ATUSA_getElementByXpath(xpath){"
-		                + "try{"
-		                + "var elements = xpath.toLowerCase().split('/');"
-		                + "var curNode = document.body;"
-		                + "var tagName, number;"
-		                + "for(j=0; j<elements.length; j++){"
-		                + "if(elements[j]!=''){"
-		                + "if(elements[j].indexOf('[')==-1){"
-		                + "tagName = elements[j];"
-		                + "number = 1;"
-		                + "}else{"
-		                + "tagName = elements[j].substring(0, elements[j].indexOf('['));"
-		                + "number = elements[j].substring(elements[j].indexOf('[')+1, "
-		                + "elements[j].lastIndexOf(']'));"
-		                + "}"
-		                + "if(tagName!='body' && tagName!='html'){"
-		                + "curNode = ATUSA_getElementInNodes(curNode.childNodes, tagName, number);"
-		                + "if(curNode==null){" + "return null;" + "}" + "}" + "}" + "}"
-		                + "}catch(e){return null;}" + "return curNode;" + "}"
-		                + "try{var ATUSA_element = ATUSA_getElementByXpath('" + xpath
-		                + "');}catch(e){return null;}";
-
-		return js;
-	}
 }
