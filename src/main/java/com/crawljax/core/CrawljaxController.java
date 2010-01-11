@@ -487,14 +487,14 @@ public class CrawljaxController {
 					LOGGER.info("Backtracking by firing " + clickable.getEventType()
 					        + " on element: " + clickable);
 
-					updateCrawlPath(curState, clickable.getTarget(), clickable);
+					updateCrawlPath(curState, clickable.getEdge().getFromStateVertix(), clickable);
 
 					crawler.handleInputElements(clickable);
 					crawler.fireEvent(clickable);
 					if (!crawlConditionChecker.check(browser)) {
 						return;
 					}
-					curState = clickable.getTarget();
+					curState = clickable.getEdge().getFromStateVertix();
 					CrawljaxPluginsUtil.runOnRevisitStatePlugins(session, curState);
 				}
 			}
