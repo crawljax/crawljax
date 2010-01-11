@@ -134,15 +134,14 @@ public final class PropertyHelper {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
-	 * 
 	 * @param propertiesFile
-	 *            TODO: DOCUMENT ME!
+	 *            thie properties file.
 	 * @throws ConfigurationException
-	 *             TODO: DOCUMENT ME!
+	 *             if configuration fails.
 	 */
 	public static void init(String propertiesFile) throws ConfigurationException {
 		PropertyHelper.propertiesFileName = propertiesFile;
+		crawljaxConfiguration = null;
 		init(new PropertiesConfiguration(propertiesFile));
 	}
 
@@ -161,6 +160,7 @@ public final class PropertyHelper {
 		if (PropertyHelper.crawljaxConfiguration.getConfiguration() == null) {
 			throw new ConfigurationException("Configuration cannot be null!");
 		}
+
 		init(PropertyHelper.crawljaxConfiguration.getConfiguration());
 	}
 
