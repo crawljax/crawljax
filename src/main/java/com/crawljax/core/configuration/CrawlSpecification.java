@@ -15,20 +15,31 @@ import com.crawljax.oraclecomparator.OracleComparator;
  * Specifies the crawl options for a single crawl session. The user must specify which HTML elements
  * should be clicked during the crawl session.
  * <p/>
- * The scope can be restricted using {@link #setDepth(int)}and {@link #setMaximumStates(int)}. The
- * duration can be restricted using {@link #setMaximumRuntime(int)}.
+ * The scope can be restricted using {@link #setDepth(int)}and {@link #setMaximumStates(int)}.<br />
+ * The duration can be restricted using {@link #setMaximumRuntime(int)}.
  * <p/>
  * By default Crawljax fills in random values for input fields
- * {@link #setRandomInputInForms(boolean)}. Specific input for form elements can be defined with
- * {@link #setInputSpecification(InputSpecification)}. Default values: Maximum runtime: 3600 seconds
- * Time to wait after initial pageload: 500 milliseconds Time to wait after clicking HTML elements:
- * 500 milliseconds Enter random form input data: true EXAMPLE: CrawlSpecification crawler = new
- * CrawlSpecification("http://www.google.com"); //click these elements crawler.click("a");
- * crawler.click("input").withAttribute("type", "submit"); onLoginPageCondition = new
- * UrlCondition("#login"); crawler.when(onLoginPageCondition).click("a").withText("Login"); //but
- * don't click these crawler.dontClick("a").underXpath("//DIV[@id='guser']");
- * crawler.dontClick("a").withText("Language Tools"); //restrict the scope of the crawling
- * crawler.setCrawlMaximumStates(15); crawler.setCrawlDepth(2);
+ * {@link #setRandomInputInForms(boolean)}.<br />
+ * Specific input for form elements can be defined with
+ * {@link #setInputSpecification(InputSpecification)}.<br />
+ * Default values: Maximum runtime: 3600 seconds<br />
+ * Time to wait after initial pageload: 500 milliseconds<br />
+ * Time to wait after clicking HTML elements: 500 milliseconds<br />
+ * Enter random form input data: true
+ * <p/>
+ * EXAMPLE:<br />
+ * CrawlSpecification crawler = new CrawlSpecification("http://www.google.com");<br />
+ * //click these elements<br />
+ * crawler.click("a");<br />
+ * crawler.click("input").withAttribute("type", "submit");<br />
+ * onLoginPageCondition = new UrlCondition("#login");<br />
+ * crawler.when(onLoginPageCondition).click("a").withText("Login");<br />
+ * //but don't click these<br />
+ * crawler.dontClick("a").underXpath("//DIV[@id='guser']");
+ * crawler.dontClick("a").withText("Language Tools"); <br />
+ * //restrict the scope of the crawling<br />
+ * crawler.setCrawlMaximumStates(15);<br />
+ * crawler.setCrawlDepth(2);
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
  */
@@ -70,7 +81,7 @@ public class CrawlSpecification {
 
 	/**
 	 * Specifies that Crawljax should click all the default clickable elements. These include: All
-	 * anchor tags All buttons Any div
+	 * anchor tags All buttons
 	 */
 	public void clickDefaultElements() {
 		crawlActions.click("a");
