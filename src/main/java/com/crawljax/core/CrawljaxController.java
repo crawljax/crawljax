@@ -366,7 +366,7 @@ public class CrawljaxController {
 		if (cloneState != null) {
 			newState = cloneState.clone();
 		}
-		LOGGER.info("State " + newState.getName() + " added to the StateMachine.");
+
 		stateMachine.changeState(newState);
 		LOGGER.info("StateMachine's Pointer changed to: "
 		        + stateMachine.getCurrentState().getName() + " FROM " + currentHold.getName());

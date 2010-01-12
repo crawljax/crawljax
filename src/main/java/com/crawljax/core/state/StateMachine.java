@@ -82,6 +82,7 @@ public class StateMachine {
 			cloneState = newState;
 		} else {
 			stateFlowGraph.addState(newState);
+			LOGGER.info("State " + newState.getName() + " added to the StateMachine.");
 		}
 		Edge e = new Edge(currentState, newState);
 		eventable.setEdge(e);
