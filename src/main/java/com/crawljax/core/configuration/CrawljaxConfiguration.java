@@ -118,6 +118,9 @@ public final class CrawljaxConfiguration {
 		// CrawlSpecificatoin
 		config.addProperty("site.url", getCrawlSpecification().getUrl());
 		config.addProperty("database.use", getUseDatabaseAsInt());
+
+		config.addProperty("click.once", getCrawlSpecification().getClickOnce());
+
 		config.addProperty("robot.events", ConfigurationHelper
 		        .listToString(getCrawlSpecification().getCrawlEvents()));
 		config.addProperty("crawl.tags", ConfigurationHelper

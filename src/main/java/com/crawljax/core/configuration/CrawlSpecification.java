@@ -8,8 +8,8 @@ import com.crawljax.condition.browserwaiter.ExpectedCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.oraclecomparator.OracleComparator;
 import com.crawljax.oraclecomparator.Comparator;
+import com.crawljax.oraclecomparator.OracleComparator;
 
 /**
  * Specifies the crawl options for a single crawl session. The user must specify which HTML elements
@@ -54,10 +54,10 @@ public class CrawlSpecification {
 	private boolean testInvariantsWhileCrawling = true;
 	private final List<Invariant> invariants = new ArrayList<Invariant>();
 
-	private final List<OracleComparator> oracleComparators =
-	        new ArrayList<OracleComparator>();
+	private final List<OracleComparator> oracleComparators = new ArrayList<OracleComparator>();
 	private final List<WaitCondition> waitConditions = new ArrayList<WaitCondition>();
 	private final List<CrawlCondition> crawlConditions = new ArrayList<CrawlCondition>();
+	private boolean clicklOnce = true;
 
 	/**
 	 * @param url
@@ -283,8 +283,7 @@ public class CrawlSpecification {
 	 */
 	public void addOracleComparator(String id, Comparator oracleComparator,
 	        Condition... preConditions) {
-		this.oracleComparators.add(new OracleComparator(id, oracleComparator,
-		        preConditions));
+		this.oracleComparators.add(new OracleComparator(id, oracleComparator, preConditions));
 	}
 
 	/**
@@ -390,6 +389,25 @@ public class CrawlSpecification {
 	public void addCrawlCondition(String description, Condition crawlCondition,
 	        Condition... preConditions) {
 		this.crawlConditions.add(new CrawlCondition(description, crawlCondition, preConditions));
+	}
+
+	/**
+	 * @return the crawl once value.
+	 */
+	public Integer getClickOnce() {
+		if (this.clicklOnce) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * @param clickOnce
+	 *            the crawl once value;
+	 */
+	public void setClickOnce(boolean clickOnce) {
+		this.clicklOnce = clickOnce;
 	}
 
 }
