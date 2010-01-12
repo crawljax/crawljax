@@ -101,7 +101,8 @@ public class LargeCrawljaxTestIE {
 	public static void setUpBeforeClass() throws Exception {
 		if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
 			System.out.println("IE cannot be tested on this platform!");
-			System.exit(1);
+			// System.exit(1);
+			return;
 		}
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification());
