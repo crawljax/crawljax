@@ -110,9 +110,10 @@ public class CandidateElementExtractor {
 				for (CandidateElement candidateElement : candidateElements) {
 					String elementUniqueString = candidateElement.getUniqueString();
 
-					if (!CHECKEDELEMENTS.contains(elementUniqueString)) {
+					if (!PropertyHelper.getClickOnceValue()
+					        || !CHECKEDELEMENTS.contains(elementUniqueString)) {
 
-						LOGGER.info("Found new candidate: "
+						LOGGER.info("Found new candidate element: "
 						        + new Eventable(candidateElement, "").toString());
 
 						if (eventableCondition != null) {
