@@ -248,7 +248,9 @@ public class CrawljaxController {
 		if (crawlConditionChecker.check(browser)) {
 			LOGGER.info("Looking in state: " + stateMachine.getCurrentState().getName()
 			        + " for candidate elements with ");
-			clickTags(candidateElementExtractor.extract());
+			clickTags(candidateElementExtractor.extract(PropertyHelper.getCrawlTagElements(),
+			        PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
+			                .getClickOnceValue()));
 
 		} else {
 			LOGGER.info("State " + stateMachine.getCurrentState().getName()

@@ -13,6 +13,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -22,12 +23,11 @@ import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.forms.FormInputValueHelper;
 import com.crawljax.util.Helper;
-import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.XPathHelper;
 
 /**
- * This class extracts candidate elements from the DOM tree, based on the crawl.tags provided by the
- * user.
+ * This class extracts candidate elements from the DOM tree, based on the tags provided by the user.
+ * Elements can also be excluded.
  * 
  * @author mesbah
  * @version $Id: CandidateElementExtractor.java 6399 2009-12-29 14:34:27Z mesbah $
@@ -39,7 +39,7 @@ public class CandidateElementExtractor {
 
 	private final EventableConditionChecker eventableConditionChecker;
 	private final EmbeddedBrowser browser;
-	private static final Set<String> CHECKEDELEMENTS = new LinkedHashSet<String>();
+	private final Set<String> checkedElements = new LinkedHashSet<String>();
 
 	/**
 	 * The number of checked elements, as a statistics measure to know how many elements were
@@ -70,18 +70,29 @@ public class CandidateElementExtractor {
 	 * This method extracts candidate elements from the current DOM tree in the browser, based on
 	 * the crawl tags defined by the user.
 	 * 
-	 * @return a list of candidate elements.
+	 * @param crawlTagElements
+	 *            a list of TagElements to include.
+	 * @param crawlExcludeTagElements
+	 *            a list of TagElements to exclude.
+	 * @param clickOnce
+	 *            true if each candidate elements should be included only once.
+	 * @return a list of candidate elements that are not excluded.
 	 * @throws CrawljaxException
 	 *             if the method fails.
 	 */
-	public List<CandidateElement> extract() throws CrawljaxException {
+	public List<CandidateElement> extract(List<TagElement> crawlTagElements,
+	        List<TagElement> crawlExcludeTagElements, boolean clickOnce) throws CrawljaxException {
 		List<CandidateElement> tagElements = new ArrayList<CandidateElement>();
-		for (TagElement tag : PropertyHelper.getCrawlTagElements()) {
+
+		for (TagElement tag : crawlTagElements) {
 			LOGGER.info("TAG: " + tag.toString());
 			// TODO DELTA DIFF
 			List<Element> temp;
 			try {
-				temp = getNodeListForTagElement(browser, tag, eventableConditionChecker);
+				temp =
+				        getNodeListForTagElement(browser, tag, eventableConditionChecker,
+				                crawlExcludeTagElements);
+
 			} catch (Exception e) {
 				throw new CrawljaxException(e.getMessage(), e);
 			}
@@ -110,8 +121,7 @@ public class CandidateElementExtractor {
 				for (CandidateElement candidateElement : candidateElements) {
 					String elementUniqueString = candidateElement.getUniqueString();
 
-					if (!PropertyHelper.getClickOnceValue()
-					        || !CHECKEDELEMENTS.contains(elementUniqueString)) {
+					if (!clickOnce || !checkedElements.contains(elementUniqueString)) {
 
 						LOGGER.info("Found new candidate element: "
 						        + new Eventable(candidateElement, "").toString());
@@ -122,12 +132,12 @@ public class CandidateElementExtractor {
 						tagElements.add(candidateElement);
 						// TODO add element to checkedElements after the
 						// event is fired!
-						CHECKEDELEMENTS.add(elementUniqueString);
+						checkedElements.add(elementUniqueString);
 						// also add string without 'atusa' attribute to
 						// make sure an
 						// form action element is only clicked for its
 						// defined values
-						CHECKEDELEMENTS.add(candidateElement.getGeneralString());
+						checkedElements.add(candidateElement.getGeneralString());
 					}
 				}
 			}
@@ -145,8 +155,9 @@ public class CandidateElementExtractor {
 	 * @throws XPathExpressionException
 	 */
 	private List<Element> getNodeListForTagElement(EmbeddedBrowser browser,
-	        TagElement tagElement, EventableConditionChecker eventableConditionChecker)
-	        throws SAXException, IOException, CrawljaxException, XPathExpressionException {
+	        TagElement tagElement, EventableConditionChecker eventableConditionChecker,
+	        List<TagElement> crawlExcludeTagElements) throws SAXException, IOException,
+	        CrawljaxException, XPathExpressionException {
 		Document dom = Helper.getDocument(browser.getDom());
 		NodeList nodeList = dom.getElementsByTagName(tagElement.getName());
 		Set<TagAttribute> attributes = tagElement.getAttributes();
@@ -174,16 +185,15 @@ public class CandidateElementExtractor {
 			}
 			// check if element is a candidate
 			if (matchesXpath
-			        && !CHECKEDELEMENTS.contains(element.getNodeName() + ": "
+			        && !checkedElements.contains(element.getNodeName() + ": "
 			                + Helper.getAllElementAttributes(element))
 			        && isElementVisible(dom, browser, element)
 			        && !filterElement(attributes, element)) {
 				if ("A".equalsIgnoreCase(tagElement.getName())) {
 					String href = element.getAttribute("href");
-					boolean isExternal =
-					        Helper.isLinkExternal(PropertyHelper.getSiteUrlValue(), href);
+					boolean isExternal = Helper.isLinkExternal(browser.getCurrentUrl(), href);
 					boolean isEmail = isEmail(href);
-					Helper.LOGGER.debug("HREF: " + href + "isExternal= " + isExternal);
+					LOGGER.debug("HREF: " + href + "isExternal= " + isExternal);
 
 					if (!(isExternal || isEmail || isPDForPS(href))) {
 						result.add(element);
@@ -196,13 +206,12 @@ public class CandidateElementExtractor {
 			}
 		}
 
-		if ((PropertyHelper.getCrawlExcludeTagElements() == null)
-		        || (PropertyHelper.getCrawlExcludeTagElements().size() == 0)) {
+		if ((crawlExcludeTagElements == null) || (crawlExcludeTagElements.size() == 0)) {
 			return result;
 		} else {
 			List<Element> resultExcluded = new ArrayList<Element>();
 			for (Element e : result) {
-				if (!isExcluded(dom, e, eventableConditionChecker)) {
+				if (!isExcluded(dom, e, eventableConditionChecker, crawlExcludeTagElements)) {
 					resultExcluded.add(e);
 				}
 			}
@@ -234,7 +243,6 @@ public class CandidateElementExtractor {
 	 * @return true if href has the pdf or ps pattern.
 	 */
 	private boolean isPDForPS(String href) {
-		// Set the email pattern string
 		final Pattern p = Pattern.compile(".+.pdf|.+.ps");
 		Matcher m = p.matcher(href);
 
@@ -246,11 +254,22 @@ public class CandidateElementExtractor {
 	}
 
 	/**
-	 * Returns true if element should be excluded.
+	 * @return true if element should be excluded. Also when an ancestor of the given element is
+	 *         marked for exclusion, which allows for recursive exclusion of elements from
+	 *         candidates.
 	 */
 	private boolean isExcluded(Document dom, Element element,
-	        EventableConditionChecker eventableConditionChecker) {
-		for (TagElement tag : PropertyHelper.getCrawlExcludeTagElements()) {
+	        EventableConditionChecker eventableConditionChecker, List<TagElement> excluded) {
+
+		Node parent = element.getParentNode();
+
+		if (parent instanceof Element) {
+			if (isExcluded(dom, (Element) parent, eventableConditionChecker, excluded)) {
+				return true;
+			}
+		}
+
+		for (TagElement tag : excluded) {
 
 			if (element.getTagName().equalsIgnoreCase(tag.getName())) {
 				boolean matchesXPath = false;
@@ -264,23 +283,24 @@ public class CandidateElementExtractor {
 					                                .getXpathExpression(element));
 				} catch (Exception e) {
 					// xpath could not be found or determined, so dont filter
-					// element element because of xpath
+					// element because of xpath
 					matchesXPath = false;
 				}
 
 				if (matchesXPath) {
-					Helper.LOGGER.info("Excluded element because of xpath: "
+					LOGGER.info("Excluded element because of xpath: "
 					        + new Eventable(element, "").toString());
 					return true;
 				}
 				if (!filterElement(tag.getAttributes(), element)
 				        && tag.getAttributes().size() > 0) {
-					Helper.LOGGER.info("Excluded element because of attributes: "
+					LOGGER.info("Excluded element because of attributes: "
 					        + new Eventable(element, "").toString());
 					return true;
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -301,8 +321,9 @@ public class CandidateElementExtractor {
 		NodeList nodes = Helper.getElementsByXpath(dom, xpath);
 
 		if (nodes.getLength() > 0) {
-			Helper.LOGGER.debug("Element: " + Helper.getAllElementAttributes(element)
-			        + " is invisible!");
+			LOGGER
+			        .debug("Element: " + Helper.getAllElementAttributes(element)
+			                + " is invisible!");
 
 			return false;
 		}
@@ -319,7 +340,7 @@ public class CandidateElementExtractor {
 			return false;
 		}
 		for (TagAttribute attr : attributes) {
-			Helper.LOGGER.debug("Checking element " + Helper.getElementString(element)
+			LOGGER.debug("Checking element " + Helper.getElementString(element)
 			        + "AttributeName: " + attr.getName() + " value: " + attr.getValue());
 
 			if (attr.matchesValue(element.getAttribute(attr.getName()))) {
