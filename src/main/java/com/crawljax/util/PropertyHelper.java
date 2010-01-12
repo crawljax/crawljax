@@ -76,6 +76,10 @@ public final class PropertyHelper {
 	private static String useDatabase = "database.use";
 	private static int useDatabaseValue = 0;
 
+	// if each candidate clickable should be clicked only once
+	private static String clickOnce = "click.once";
+	private static int clickOnceValue = 1;
+
 	private static int testInvariantsWhileCrawlingValue = 1;
 
 	private static String debugVariables = "reportbuilder.debugvariables";
@@ -200,6 +204,10 @@ public final class PropertyHelper {
 		reportScreenshotsValue = getPropertyAsInt(reportScreenshots);
 
 		useDatabaseValue = getPropertyAsInt(useDatabase);
+
+		if (config.containsKey(clickOnce)) {
+			clickOnceValue = getPropertyAsInt(clickOnce);
+		}
 
 		debugVariablesValues = getPropertyAsList(debugVariables);
 
@@ -873,5 +881,12 @@ public final class PropertyHelper {
 	 */
 	public static String getPropertiesFileName() {
 		return propertiesFileName;
+	}
+
+	/**
+	 * @return if each candidate clickable should be clicked only once.
+	 */
+	public static boolean getClickOnceValue() {
+		return clickOnceValue == 1;
 	}
 }
