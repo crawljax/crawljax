@@ -283,6 +283,7 @@ public class LargeCrawljaxTest {
 		crawler.setWaitTimeAfterEvent(100);
 		crawler.setWaitTimeAfterReloadUrl(100);
 		crawler.setDepth(3);
+		crawler.setClickOnce(true);
 
 		addCrawlElements(crawler);
 
