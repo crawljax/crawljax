@@ -394,12 +394,8 @@ public class CrawlSpecification {
 	/**
 	 * @return the crawl once value.
 	 */
-	public Integer getClickOnce() {
-		if (this.clicklOnce) {
-			return 1;
-		} else {
-			return 0;
-		}
+	protected boolean getClickOnce() {
+		return this.clicklOnce;
 	}
 
 	/**
