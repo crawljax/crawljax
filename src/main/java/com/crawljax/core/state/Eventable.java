@@ -28,7 +28,11 @@ public class Eventable extends DefaultEdge {
 	private String eventType;
 	private Identification identification;
 	private Element element;
-	private Edge edge;
+
+	private StateVertix sourceStateVertix;
+
+	private StateVertix targetStateVertix;
+
 	private List<FormInput> relatedFormInputs = new ArrayList<FormInput>();
 
 	/**
@@ -164,25 +168,6 @@ public class Eventable extends DefaultEdge {
 	}
 
 	/**
-	 * Retrieve the edge associated with this eventalbe.
-	 * 
-	 * @return the edge associated
-	 */
-	public synchronized Edge getEdge() {
-		return edge;
-	}
-
-	/**
-	 * Set the Edge assosiaded witht this eventable.
-	 * 
-	 * @param edge
-	 *            the Edge to set
-	 */
-	public synchronized void setEdge(Edge edge) {
-		this.edge = edge;
-	}
-
-	/**
 	 * @param eventType
 	 *            the eventType to set
 	 */
@@ -224,4 +209,33 @@ public class Eventable extends DefaultEdge {
 		this.relatedFormInputs = relatedFormInputs;
 	}
 
+	/**
+	 * @return the source state.
+	 */
+	public StateVertix getSourceStateVertix() {
+		return sourceStateVertix;
+	}
+
+	/**
+	 * @param sourceStateVertix
+	 *            the source state to set.
+	 */
+	public void setSourceStateVertix(StateVertix sourceStateVertix) {
+		this.sourceStateVertix = sourceStateVertix;
+	}
+
+	/**
+	 * @return the target state.
+	 */
+	public StateVertix getTargetStateVertix() {
+		return targetStateVertix;
+	}
+
+	/**
+	 * @param targetStateVertix
+	 *            the target state.
+	 */
+	public void setTargetStateVertix(StateVertix targetStateVertix) {
+		this.targetStateVertix = targetStateVertix;
+	}
 }
