@@ -53,7 +53,6 @@ public final class CrawljaxConfiguration {
 
 	private CrawlSpecification crawlSpecification = new CrawlSpecification("");
 	private HibernateConfiguration hibernateConfiguration = new HibernateConfiguration();
-	private ReportConfiguration reportConfiguration = new ReportConfiguration();
 	private ProxyConfiguration proxyConfiguration = null;
 
 	/**
@@ -101,25 +100,17 @@ public final class CrawljaxConfiguration {
 		config.addProperty("output.path", getOutputFolder());
 		config.addProperty("project.path.relative", getProjectRelativePath());
 
-		config.addProperty("report.max.state.differences", getReportConfiguration()
-		        .getReportMaxStateDifferences());
-		config.addProperty("reportbuilder.debugvariables", ConfigurationHelper
-		        .listToString(getReportConfiguration().getReportDebugVariables()));
-		config.addProperty("report.differences.all", ConfigurationHelper
-		        .booleanToInt(getReportConfiguration().getReportShowAllStateDifferences()));
-		config.addProperty("report.screenshots", ConfigurationHelper
-		        .booleanToInt(getReportConfiguration().getReportIncludeScreenshots()));
-
 		config.addProperty("hibernate.hbm2ddl.auto", getHibernateConfiguration()
 		        .getDatabaseScheme());
 		config.addProperty("invariantcontroller.testcrawling", ConfigurationHelper
 		        .booleanToInt(getCrawlSpecification().getTestInvariantsWhileCrawling()));
 
-		// CrawlSpecificatoin
+		// CrawlSpecification
 		config.addProperty("site.url", getCrawlSpecification().getUrl());
 		config.addProperty("database.use", getUseDatabaseAsInt());
 
-		config.addProperty("click.once", getCrawlSpecification().getClickOnce());
+		config.addProperty("click.once", ConfigurationHelper.booleanToInt(getCrawlSpecification()
+		        .getClickOnce()));
 
 		config.addProperty("robot.events", ConfigurationHelper
 		        .listToString(getCrawlSpecification().getCrawlEvents()));
@@ -145,21 +136,6 @@ public final class CrawljaxConfiguration {
 		}
 
 		return config;
-	}
-
-	/**
-	 * @return The reportConfiguration which contains report settings.
-	 */
-	protected ReportConfiguration getReportConfiguration() {
-		return reportConfiguration;
-	}
-
-	/**
-	 * @param reportConfiguration
-	 *            Which contains report settings.
-	 */
-	public void setReportConfiguration(ReportConfiguration reportConfiguration) {
-		this.reportConfiguration = reportConfiguration;
 	}
 
 	/**

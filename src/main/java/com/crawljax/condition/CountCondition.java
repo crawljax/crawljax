@@ -1,16 +1,12 @@
 package com.crawljax.condition;
 
-/*
- * This class counts how many time its condition is satisfied. if number of satisfied > max number,
- * then it returns, otherwise return true;
- */
-
 import org.w3c.dom.NodeList;
 
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
- * A combination of a condition and preconditions.
+ * Condition that counts how many times a condition is specified and returns true iff the specified
+ * condition is satisfied less than the specified number.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id: CountCondition.java 6301 2009-12-24 16:36:24Z mesbah $
@@ -23,7 +19,7 @@ public class CountCondition implements Condition {
 
 	/**
 	 * @param maxCount
-	 *            number of times the condition checked.
+	 *            number of times the condition can be satisfied.
 	 * @param condition
 	 *            the condition.
 	 */

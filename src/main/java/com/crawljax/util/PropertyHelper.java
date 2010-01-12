@@ -65,14 +65,6 @@ public final class PropertyHelper {
 	private static String hibernateSchema = "hibernate.hbm2ddl.auto";
 	private static String hibernateSchemaValue;
 
-	private static String reportMaxStateDifferences = "report.max.state.differences";
-	private static final int DEFAULT_MAX_STATE_DIFFERENCES = 15;
-	private static int reportMaxStateDifferencesValue = DEFAULT_MAX_STATE_DIFFERENCES;
-	private static String reportDifferencesAll = "report.differences.all";
-	private static int reportDifferencesAllValue = 0;
-	private static String reportScreenshots = "report.screenshots";
-	private static int reportScreenshotsValue = 1;
-
 	private static String useDatabase = "database.use";
 	private static int useDatabaseValue = 0;
 
@@ -198,10 +190,6 @@ public final class PropertyHelper {
 			crawlFormRandomInputValue = getPropertyAsInt(crawlFormRandomInput);
 		}
 		hibernatePropertiesValue = getProperty(hibernateProperties);
-
-		reportMaxStateDifferencesValue = getPropertyAsInt(reportMaxStateDifferences);
-		reportDifferencesAllValue = getPropertyAsInt(reportDifferencesAll);
-		reportScreenshotsValue = getPropertyAsInt(reportScreenshots);
 
 		useDatabaseValue = getPropertyAsInt(useDatabase);
 
@@ -781,27 +769,6 @@ public final class PropertyHelper {
 	 */
 	public static String getHibernateSchemaValue() {
 		return hibernateSchemaValue;
-	}
-
-	/**
-	 * @return the reportMaxStateDifferencesValue
-	 */
-	public static int getReportMaxStateDifferencesValue() {
-		return reportMaxStateDifferencesValue;
-	}
-
-	/**
-	 * @return the reportDifferencesAllValue
-	 */
-	public static boolean getReportDifferencesAllValue() {
-		return reportDifferencesAllValue == 1;
-	}
-
-	/**
-	 * @return the reportScreenshotsValue
-	 */
-	public static boolean getReportScreenshotsValue() {
-		return reportScreenshotsValue == 1;
 	}
 
 	/**
