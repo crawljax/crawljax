@@ -84,10 +84,13 @@ public class StateMachine {
 			stateFlowGraph.addState(newState);
 			LOGGER.info("State " + newState.getName() + " added to the StateMachine.");
 		}
-		Edge e = new Edge(currentState, newState);
-		eventable.setEdge(e);
+
+		eventable.setSourceStateVertix(currentState);
+		eventable.setTargetStateVertix(newState);
 		HibernateUtil.insert(eventable);
+
 		stateFlowGraph.addEdge(currentState, newState, eventable);
+
 		return cloneState;
 	}
 
