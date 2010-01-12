@@ -3,6 +3,8 @@
  */
 package com.crawljax.core.state;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +30,6 @@ public class Eventable extends DefaultEdge {
 	private String eventType;
 	private Identification identification;
 	private Element element;
-
-	private StateVertix sourceStateVertix;
-
-	private StateVertix targetStateVertix;
 
 	private List<FormInput> relatedFormInputs = new ArrayList<FormInput>();
 
@@ -213,29 +211,37 @@ public class Eventable extends DefaultEdge {
 	 * @return the source state.
 	 */
 	public StateVertix getSourceStateVertix() {
-		return sourceStateVertix;
-	}
-
-	/**
-	 * @param sourceStateVertix
-	 *            the source state to set.
-	 */
-	public void setSourceStateVertix(StateVertix sourceStateVertix) {
-		this.sourceStateVertix = sourceStateVertix;
+		return getSuperField("source");
 	}
 
 	/**
 	 * @return the target state.
 	 */
 	public StateVertix getTargetStateVertix() {
-		return targetStateVertix;
+		return getSuperField("target");
 	}
 
-	/**
-	 * @param targetStateVertix
-	 *            the target state.
-	 */
-	public void setTargetStateVertix(StateVertix targetStateVertix) {
-		this.targetStateVertix = targetStateVertix;
+	private StateVertix getSuperField(String name) {
+		Class clazz = this.getClass().getSuperclass().getSuperclass();
+		Field[] fields = clazz.getDeclaredFields();
+		AccessibleObject.setAccessible(fields, true);
+
+		for (Field field : fields) {
+			String fieldName = field.getName();
+
+			try {
+				// Warning: Field.get(Object) creates wrappers objects
+				// for primitive types.
+				if (name.equals(fieldName)) {
+					StateVertix fieldValue = (StateVertix) field.get(this);
+
+					return fieldValue;
+				}
+			} catch (IllegalAccessException ex) {
+				throw new InternalError("Unexpected IllegalAccessException: " + ex.getMessage());
+			}
+		}
+
+		return null;
 	}
 }

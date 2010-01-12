@@ -85,8 +85,8 @@ public class StateMachine {
 			LOGGER.info("State " + newState.getName() + " added to the StateMachine.");
 		}
 
-		eventable.setSourceStateVertix(currentState);
-		eventable.setTargetStateVertix(newState);
+		// eventable.setSourceStateVertix(currentState);
+		// eventable.setTargetStateVertix(newState);
 		HibernateUtil.insert(eventable);
 
 		stateFlowGraph.addEdge(currentState, newState, eventable);
