@@ -101,12 +101,11 @@ public class EventableTest {
 		StateVertix s2 = new StateVertix("stateTarget", "dom2");
 
 		Eventable e = new Eventable();
-		Edge edge = new Edge(s1, s2);
-		e.setEdge(edge);
-		assertNotNull("Edge not null", edge);
+		e.setSourceStateVertix(s1);
+		e.setTargetStateVertix(s2);
 
-		assertEquals(s1, e.getEdge().getFromStateVertix());
-		assertEquals(s2, e.getEdge().getToStateVertix());
+		assertEquals(s1, e.getSourceStateVertix());
+		assertEquals(s2, e.getTargetStateVertix());
 
 	}
 }
