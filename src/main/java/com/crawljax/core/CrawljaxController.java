@@ -19,7 +19,6 @@ import com.crawljax.core.configuration.CrawlSpecificationReader;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
-import com.crawljax.core.state.Edge;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
@@ -304,7 +303,7 @@ public class CrawljaxController {
 			if (conditionsSatisifed) {
 				for (String eventType : eventTypes) {
 					Eventable eventable = new Eventable(candidateElement, eventType);
-					eventable.setEdge(new Edge(currentHold, null));
+					eventable.setSourceStateVertix(currentHold);
 
 					// load input element values
 					if (handleInputElements) {
@@ -489,14 +488,14 @@ public class CrawljaxController {
 					LOGGER.info("Backtracking by firing " + clickable.getEventType()
 					        + " on element: " + clickable);
 
-					updateCrawlPath(curState, clickable.getEdge().getFromStateVertix(), clickable);
+					updateCrawlPath(curState, clickable.getTargetStateVertix(), clickable);
 
 					crawler.handleInputElements(clickable);
 					crawler.fireEvent(clickable);
 					if (!crawlConditionChecker.check(browser)) {
 						return;
 					}
-					curState = clickable.getEdge().getFromStateVertix();
+					curState = clickable.getTargetStateVertix();
 					CrawljaxPluginsUtil.runOnRevisitStatePlugins(session, curState);
 				}
 			}
