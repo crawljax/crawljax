@@ -303,7 +303,7 @@ public class CrawljaxController {
 			if (conditionsSatisifed) {
 				for (String eventType : eventTypes) {
 					Eventable eventable = new Eventable(candidateElement, eventType);
-					eventable.setSourceStateVertix(currentHold);
+					// eventable.setSourceStateVertix(currentHold);
 
 					// load input element values
 					if (handleInputElements) {
