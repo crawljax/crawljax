@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  * @author mesbah
- * @version $Id: StateFlowGraphTest.java 6264 2009-12-22 14:28:03Z frank $
+ * @version $Id$
  */
 public class StateFlowGraphTest {
 	private StateFlowGraph graph;

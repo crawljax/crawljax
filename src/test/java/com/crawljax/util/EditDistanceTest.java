@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
  * TODO: DOCUMENT ME!
  * 
  * @author mesbah
- * @version $Id: EditDistanceTest.java 6288 2009-12-23 16:31:08Z frank $
+ * @version $Id$
  */
 public class EditDistanceTest extends TestCase {
 

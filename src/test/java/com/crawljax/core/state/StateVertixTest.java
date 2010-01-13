@@ -15,7 +15,7 @@ import org.junit.Test;
  * TODO: DOCUMENT ME!
  * 
  * @author mesbah
- * @version $Id: StateVertixTest.java 6302 2009-12-24 17:02:51Z danny $
+ * @version $Id$
  */
 public class StateVertixTest {
 	private StateVertix s;

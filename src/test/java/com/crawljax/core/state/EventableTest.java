@@ -18,7 +18,7 @@ import com.crawljax.util.Helper;
 
 /**
  * @author mesbah
- * @version $Id: EventableTest.java 6275 2009-12-23 14:13:05Z stefan $
+ * @version $Id$
  */
 public class EventableTest {
 
