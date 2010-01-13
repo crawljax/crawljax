@@ -44,7 +44,7 @@ public class CrawljaxController {
 	private CrawlSession session;
 
 	private long startCrawl;
-	public static final ArrayList<Eventable> EXACTEVENTPATH = new ArrayList<Eventable>();
+	private static final ArrayList<Eventable> EXACTEVENTPATH = new ArrayList<Eventable>();
 	private boolean fired = false;
 
 	private List<Eventable> currentCrawlPath;
@@ -412,7 +412,7 @@ public class CrawljaxController {
 			LOGGER.info("RECURSIVE Call crawl; Current DEPTH= " + depth);
 			if (!crawl()) {
 				/*
-				 * apparently one of the condition was not satisfied anymore, so stop crawling by
+				 * apparently one of the conditions was not satisfied anymore, so stop crawling by
 				 * returning false
 				 */
 				return false;
