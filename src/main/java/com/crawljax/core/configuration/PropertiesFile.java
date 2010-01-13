@@ -19,43 +19,50 @@ public class PropertiesFile {
 	private static String outputFolderName = "output.path";
 	private static String genFilepath = "generated.pages.filepath";
 	private static String siteUrl = "site.url";
-	private static String siteIndexablePath = "site.indexable.path";
-	private static String baseUrl = "site.base.url";
 	private static String crawlDepth = "crawl.depth";
 	private static String crawlMaxStates = "crawl.max.states";
 	private static String crawlMaxTime = "crawl.max.runtime";
 	private static String crawlThrehold = "crawl.threshold";
+
+	// TODO danny, is this used?
 	private static String robotEvents = "robot.events";
+
 	private static String crawlTags = "crawl.tags";
 	private static String crawlExludeTags = "crawl.tags.exclude";
 	private static String crawlFilterAttributes = "crawl.filter.attributes";
 
 	private static String hibernateProperties = "hibernate.properties";
 
+	// TODO danny, is this used?
 	private static String crawlManualEnterForm = "crawl.forms.manual";
 	private static String crawlFormRandomInput = "crawl.forms.randominput";
+
 	private static String formProperties = "forms.properties";
-	private static String formPropertiesValue = "forms.properties";
+
 	private static String browser = "browser";
+
 	private static String crawlWaitReload = "crawl.wait.reload";
 	private static String crawlWaitEvent = "crawl.wait.event";
 	private static String hibernateSchema = "hibernate.hbm2ddl.auto";
 	private static String useDatabase = "database.use";
 	// if each candidate clickable should be clicked only once
 	private static String clickOnce = "click.once";
+
+	// TODO danny, can these be removed?
 	private static String debugVariables = "reportbuilder.debugvariables";
 	private static String detectEventHandlers = "eventHandlers.detect";
 	private static String supportDomEvents = "eventHandlers.supportDomEvents";
 	private static String supportAddEvents = "eventHandlers.supportAddEvents";
 	private static String supportJQuery = "eventHandlers.supportJQuery";
+
 	private static String genFilepathValue = "target/generated-sources/";
+
 	private static String proxyEnabled = "proxy.enabled";
-	private static String seleniumTestsuitePath = "selenium.testsuite.path";
-	private static String maxHistorySizeText = "history.maxsize";
+
 	/**
-	 * default is IE.
+	 * default is Firefox.
 	 */
-	private static String browserValue = "ie";
+	private static String browserValue = "firefox";
 
 	/**
 	 * Initialize and read out properties from filename.
