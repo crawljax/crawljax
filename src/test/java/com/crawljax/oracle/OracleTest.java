@@ -15,7 +15,7 @@ import com.crawljax.oraclecomparator.comparators.StyleComparator;
 
 /**
  * @author danny
- * @version $Id: OracleTest.java 6387 2009-12-29 13:20:30Z danny $
+ * @version $Id$
  */
 public class OracleTest {
 

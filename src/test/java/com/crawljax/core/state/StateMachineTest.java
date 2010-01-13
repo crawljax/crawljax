@@ -18,7 +18,7 @@ import com.crawljax.util.PropertyHelper;
 
 /**
  * @author mesbah
- * @version $Id: StateMachineTest.java 6275 2009-12-23 14:13:05Z stefan $
+ * @version $Id$
  */
 public class StateMachineTest {
 	private StateMachine sm;

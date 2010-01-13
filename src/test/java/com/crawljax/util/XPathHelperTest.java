@@ -11,7 +11,7 @@ import org.w3c.dom.Document;
  * TODO: DOCUMENT ME!
  * 
  * @author mesbah
- * @version $Id: XPathHelperTest.java 6288 2009-12-23 16:31:08Z frank $
+ * @version $Id$
  */
 public class XPathHelperTest extends TestCase {
 	/**
