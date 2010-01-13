@@ -312,4 +312,65 @@ public class StateFlowGraphTest {
 			x++;
 		}
 	}
+
+	@Test
+	public void guidedCrawlingFlag() {
+		StateFlowGraph g = new StateFlowGraph();
+		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
+		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
+		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
+		StateVertix state5 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
+		g.addState(index);
+		g.addState(state2);
+		g.addState(state3);
+		g.addState(state4);
+		g.addState(state5);
+
+		assertEquals(5, g.getAllStates().size());
+
+		StateVertix state6 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
+		state6.setGuidedCrawling(false);
+		g.addState(state6);
+
+		assertEquals(5, g.getAllStates().size());
+
+		state6.setGuidedCrawling(true);
+
+		g.addState(state6);
+
+		assertEquals(6, g.getAllStates().size());
+
+	}
+
+	@Test
+	public void testEdges() throws Exception {
+		assertNotNull(graph);
+
+		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
+		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
+		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
+
+		assertTrue(graph.addState(index));
+		assertTrue(graph.addState(state2));
+		assertTrue(graph.addState(state3));
+		assertTrue(graph.addState(state4));
+
+		Eventable e1 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
+
+		Eventable e2 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
+
+		Eventable e3 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
+
+		assertTrue(graph.addEdge(index, state2, e1));
+		assertFalse(graph.addEdge(index, state2, e1));
+		assertFalse(graph.addEdge(index, state2, e3));
+
+		assertFalse(graph.addEdge(state2, state3, e1));
+		assertTrue(graph.addEdge(state2, state3, e2));
+
+		assertTrue(graph.addEdge(index, state4, e3));
+
+	}
 }
