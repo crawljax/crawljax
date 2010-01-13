@@ -96,6 +96,11 @@ public class PropertiesFile {
 
 	}
 
+	/**
+	 * @param file
+	 *            Properties file.
+	 * @return The CrawljaxConfiguration object that represents the file.
+	 */
 	private CrawlSpecification getCrawlSpecification(PropertiesConfiguration file) {
 
 		CrawlSpecification crawler = new CrawlSpecification(file.getString(siteUrl));
