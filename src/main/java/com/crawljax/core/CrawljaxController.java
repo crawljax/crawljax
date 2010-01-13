@@ -31,7 +31,7 @@ import com.crawljax.util.database.HibernateUtil;
  * The Crawljax Controller class is the core of Crawljax.
  * 
  * @author mesbah
- * @version $Id: CrawljaxController.java 6397 2009-12-29 14:31:57Z mesbah $
+ * @version $Id$
  */
 public class CrawljaxController {
 	private static final Logger LOGGER = Logger.getLogger(CrawljaxController.class.getName());

@@ -12,7 +12,7 @@ import com.crawljax.oraclecomparator.OracleComparator;
  * Reader class for crawlspecification. For internal use only
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: CrawlSpecificationReader.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public class CrawlSpecificationReader {
 

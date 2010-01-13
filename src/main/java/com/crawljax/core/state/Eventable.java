@@ -22,7 +22,7 @@ import com.crawljax.util.XPathHelper;
  * can change the DOM state.
  * 
  * @author mesbah
- * @version $Id: Eventable.java 6374 2009-12-29 09:31:52Z frank $
+ * @version $Id$
  */
 public class Eventable extends DefaultEdge {
 	private static final long serialVersionUID = 3229708706467350994L;

@@ -30,7 +30,7 @@ import com.crawljax.util.XPathHelper;
  * Elements can also be excluded.
  * 
  * @author mesbah
- * @version $Id: CandidateElementExtractor.java 6399 2009-12-29 14:34:27Z mesbah $
+ * @version $Id$
  */
 public class CandidateElementExtractor {
 

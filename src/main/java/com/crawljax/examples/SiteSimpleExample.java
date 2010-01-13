@@ -14,7 +14,7 @@ import com.crawljax.core.configuration.InputSpecification;
  * Crawls google.com in IE.
  * 
  * @author danny
- * @version @version $Id: $
+ * @version @version $Id$
  */
 public final class SiteSimpleExample {
 

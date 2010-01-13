@@ -6,7 +6,7 @@ package com.crawljax.core.plugin;
  * absolute path.
  * 
  * @author Frank Groeneveld <frankgroeneveld@gmail.com>
- * @version $Id: GeneratesOutput.java 6388 2009-12-29 13:36:00Z mesbah $
+ * @version $Id$
  */
 public interface GeneratesOutput extends Plugin {
 

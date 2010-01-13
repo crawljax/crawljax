@@ -11,7 +11,7 @@ import com.crawljax.util.database.HibernateUtil;
  * The State Machine.
  * 
  * @author mesbah
- * @version $Id: StateMachine.java 6275 2009-12-23 14:13:05Z stefan $
+ * @version $Id$
  */
 public class StateMachine {
 	private static final Logger LOGGER = Logger.getLogger(StateMachine.class.getName());

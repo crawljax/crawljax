@@ -13,7 +13,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * in the browser.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: Condition.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public interface Condition {
 

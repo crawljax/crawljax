@@ -22,7 +22,7 @@ import com.crawljax.util.PropertyHelper;
 
 /**
  * @author mesbah
- * @version $Id: AbstractWebDriver.java 6426 2009-12-29 17:21:03Z stefan $
+ * @version $Id$
  */
 public class AbstractWebDriver implements EmbeddedBrowser {
 	private static Logger logger = Logger.getLogger(WebDriver.class.getName());

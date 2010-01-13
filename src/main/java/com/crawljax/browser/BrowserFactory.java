@@ -9,7 +9,7 @@ import com.crawljax.util.PropertyHelper;
  * The factory class returns an instance of the desired browser as specified in the properties file.
  * 
  * @author mesbah
- * @version $Id: BrowserFactory.java 6362 2009-12-28 15:18:08Z frank $
+ * @version $Id$
  */
 public final class BrowserFactory {
 

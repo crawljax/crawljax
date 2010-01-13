@@ -11,7 +11,7 @@ import com.crawljax.util.Helper;
 
 /**
  * @author danny
- * @version $Id: ScriptOracle.java 6376 2009-12-29 10:51:05Z frank $
+ * @version $Id$
  */
 public class ScriptComparator extends AbstractComparator {
 

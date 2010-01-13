@@ -14,7 +14,7 @@ import com.crawljax.condition.Condition;
 
 /**
  * @author danny
- * @version $Id: CrawlConditionChecker.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  *          Controller class for the crawl conditions
  */
 public class CrawlConditionChecker {

@@ -11,7 +11,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Checks the wait conditions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: WaitConditionChecker.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public class WaitConditionChecker {
 

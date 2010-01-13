@@ -6,7 +6,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Condition that returns true iff no elements are found with expression.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: NotXPathCondition.java 6301 2009-12-24 16:36:24Z mesbah $
+ * @version $Id$
  */
 public class NotXPathCondition extends AbstractCondition {
 

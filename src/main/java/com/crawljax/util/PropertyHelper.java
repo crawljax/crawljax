@@ -21,7 +21,7 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 
 /**
  * @author mesbah
- * @version $Id: PropertyHelper.java 6381 2009-12-29 12:26:47Z frank $
+ * @version $Id$
  */
 public final class PropertyHelper {
 	private static final Logger LOGGER = Logger.getLogger(PropertyHelper.class.getName());

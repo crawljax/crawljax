@@ -8,7 +8,7 @@ import com.crawljax.core.configuration.ProxyConfiguration;
 
 /**
  * @author mesbah
- * @version $Id: WebDriverFirefox.java 6362 2009-12-28 15:18:08Z frank $
+ * @version $Id$
  */
 public class WebDriverFirefox extends AbstractWebDriver {
 

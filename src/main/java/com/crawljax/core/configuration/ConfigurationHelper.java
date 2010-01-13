@@ -6,7 +6,7 @@ import java.util.List;
  * Helper class for configurations.
  * 
  * @author Danny Roest (dannyroest@gmail.com)
- * @version $Id: ConfigurationHelper.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public final class ConfigurationHelper {
 

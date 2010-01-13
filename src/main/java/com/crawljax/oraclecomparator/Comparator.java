@@ -8,7 +8,7 @@ import org.custommonkey.xmlunit.Difference;
  * Interface for oracle comparators.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: Oracle.java 6284 2009-12-23 16:17:41Z frank $
+ * @version $Id$
  */
 public interface Comparator {
 

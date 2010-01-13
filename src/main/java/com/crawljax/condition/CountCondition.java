@@ -9,7 +9,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * condition is satisfied less than the specified number.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: CountCondition.java 6301 2009-12-24 16:36:24Z mesbah $
+ * @version $Id$
  */
 public class CountCondition implements Condition {
 

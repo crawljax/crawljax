@@ -7,7 +7,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 
 /**
  * @author Danny
- * @version $Id: JavaScriptCondition.java 6234 2009-12-18 13:46:37Z mesbah $ A condition in the form
+ * @version $Id$ A condition in the form
  *          of a JavaScript expression which returns true if the expression return true
  */
 public class JavaScriptCondition extends AbstractCondition {

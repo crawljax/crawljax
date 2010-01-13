@@ -10,7 +10,7 @@ import javax.xml.namespace.NamespaceContext;
 
 /**
  * @author mesbah
- * @version $Id: HtmlNamespace.java 6276 2009-12-23 15:37:09Z frank $
+ * @version $Id$
  */
 public class HtmlNamespace implements NamespaceContext {
 	/**

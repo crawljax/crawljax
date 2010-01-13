@@ -12,7 +12,7 @@ import com.crawljax.util.Helper;
  * 
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id: Element.java 6374 2009-12-29 09:31:52Z frank $
+ * @version $Id$
  */
 public class Element {
 

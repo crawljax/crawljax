@@ -10,7 +10,7 @@ import com.crawljax.browser.AbstractWebDriver;
  * Checks whether an elements exists.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: ExpectedElementCondition.java 6388 2009-12-29 13:36:00Z mesbah $
+ * @version $Id$
  */
 public class ExpectedElementCondition extends AbstractExpectedCondition {
 

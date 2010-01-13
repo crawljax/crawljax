@@ -17,7 +17,7 @@ import com.crawljax.util.PropertyHelper;
  * Hibernate Utility class.
  * 
  * @author mesbah
- * @version $Id: HibernateUtil.java 6312 2009-12-25 11:59:02Z mesbah $
+ * @version $Id$
  */
 public final class HibernateUtil {
 

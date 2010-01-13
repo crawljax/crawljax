@@ -13,7 +13,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * should all be satisfied for the specified url.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: WaitCondition.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public class WaitCondition {
 	private static final Logger LOGGER = Logger.getLogger(WaitCondition.class.getName());

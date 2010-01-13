@@ -6,7 +6,7 @@ import org.openqa.selenium.By;
  * Checks whether an element is visible.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: ExpectedVisibleCondition.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public class ExpectedVisibleCondition extends AbstractExpectedCondition {
 
