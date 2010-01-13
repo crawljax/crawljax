@@ -18,6 +18,7 @@ public class StateVertix {
 	private String dom;
 	private final String strippedDom;
 	private final String url;
+	private boolean guidedCrawling = false;
 
 	/**
 	 * Default constructor to support saving instances of this class as an XML.
@@ -76,29 +77,6 @@ public class StateVertix {
 		return dom;
 	}
 
-	// /**
-	// * Sets the stripped hash of the dom.
-	// *
-	// * @param browser
-	// * the browser where the dom is currently in
-	// * @param comparatorsWithPreconditions
-	// * the comparators used
-	// */
-	// public void setDom(EmbeddedBrowser browser,
-	// List<ComparatorWithPreconditions> comparatorsWithPreconditions) {
-	// try {
-	// this.dom = browser.getDom();
-	// OracleComparator oc = new OracleComparator(comparatorsWithPreconditions);
-	// oc.compare("", dom, browser);
-	// String strippedDom = oc.getStrippedNewDom();
-	// this.strippedDom = strippedDom;
-	// this.strippedHashCode = new HashCodeBuilder().append(strippedDom).toHashCode();
-	// this.url = browser.getCurrentUrl();
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-
 	/**
 	 * @return the stripped dom by the oracle comparators
 	 */
@@ -146,7 +124,9 @@ public class StateVertix {
 			return true;
 		}
 		final StateVertix rhs = (StateVertix) obj;
-		return new EqualsBuilder().append(this.strippedDom, rhs.getStrippedDom()).isEquals();
+
+		return new EqualsBuilder().append(this.strippedDom, rhs.getStrippedDom()).append(
+		        this.guidedCrawling, rhs.guidedCrawling).isEquals();
 	}
 
 	/**
@@ -184,7 +164,7 @@ public class StateVertix {
 	}
 
 	/**
-	 * Retrive the state vertex from Database.
+	 * Retrieve the state vertex from Database.
 	 * 
 	 * @param id
 	 *            the Id to search
@@ -208,6 +188,21 @@ public class StateVertix {
 	 */
 	public void setDom(String dom) {
 		this.dom = dom;
+	}
+
+	/**
+	 * @return if this state is created through guided crawling.
+	 */
+	public boolean isGuidedCrawling() {
+		return guidedCrawling;
+	}
+
+	/**
+	 * @param guidedCrawling
+	 *            true if set through guided crawling.
+	 */
+	public void setGuidedCrawling(boolean guidedCrawling) {
+		this.guidedCrawling = guidedCrawling;
 	}
 
 }
