@@ -1,11 +1,10 @@
 package com.crawljax.core.configuration;
 
 /**
- * Specifies attribute for CrawlElements.
- * 
- * Internal use only
+ * Specifies attribute for CrawlElements. Internal use only.
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
+ * @version $Id$
  */
 public class CrawlAttribute {
 
@@ -14,9 +13,11 @@ public class CrawlAttribute {
 
 	/**
 	 * Note use a % as wildcard in name of value.
-	 *
-	 * @param name Name.
-	 * @param value Value.
+	 * 
+	 * @param name
+	 *            Name.
+	 * @param value
+	 *            Value.
 	 */
 	protected CrawlAttribute(String name, String value) {
 		this.name = name;

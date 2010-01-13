@@ -12,6 +12,7 @@ import com.crawljax.condition.Condition;
  * . See also {@link Condition}
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
+ * @version $Id$
  */
 public class CrawlActions {
 

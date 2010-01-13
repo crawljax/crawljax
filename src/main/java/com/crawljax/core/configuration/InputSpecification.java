@@ -26,6 +26,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  * the Other field if enabled in {@link CrawlSpecification#}
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
+ * @version $Id$
  */
 public final class InputSpecification {
 

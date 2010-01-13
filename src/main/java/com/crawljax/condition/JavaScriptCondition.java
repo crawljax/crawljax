@@ -6,9 +6,11 @@ package com.crawljax.condition;
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
+ * A condition in the form of a JavaScript expression which returns true if the expression return
+ * true.
+ * 
  * @author Danny
- * @version $Id$ A condition in the form
- *          of a JavaScript expression which returns true if the expression return true
+ * @version $Id$
  */
 public class JavaScriptCondition extends AbstractCondition {
 

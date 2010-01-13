@@ -5,6 +5,7 @@ package com.crawljax.core.configuration;
  * FormAction is not designed to be instantiated directly.
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
+ * @version $Id$
  */
 public class FormAction {
 

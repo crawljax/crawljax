@@ -13,8 +13,8 @@ import com.crawljax.core.state.Eventable;
 
 /**
  * @author danny
- * @version $Id$ class for finding and
- *          checking elements
+ * @version $Id$ class for finding
+ *          and checking elements
  */
 public class ElementResolver {
 	private static final Logger LOGGER = Logger.getLogger(ElementResolver.class.getName());

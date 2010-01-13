@@ -42,6 +42,7 @@ import com.crawljax.oraclecomparator.OracleComparator;
  * crawler.setCrawlDepth(2);
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
+ * @version $Id$
  */
 public class CrawlSpecification {
 

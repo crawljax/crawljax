@@ -7,7 +7,7 @@ package com.crawljax.forms;
  * Value for a FormInput.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
+ * @version $Id$
  */
 public class InputValue {
 

@@ -4,6 +4,8 @@
 package com.crawljax.core;
 
 /**
+ * TODO: Document this.
+ * 
  * @author mesbah
  * @version $Id$
  */

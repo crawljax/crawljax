@@ -6,16 +6,16 @@ package com.crawljax.condition.invariant;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.log4j.Logger;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
 
 /**
+ * Controller class for the invariants.
+ * 
  * @author danny
  * @version $Id$
- *          Controller class for the invariants
  */
 public class InvariantChecker {
 
@@ -32,7 +32,9 @@ public class InvariantChecker {
 
 	/**
 	 * Constructor with invariant list.
-	 * @param invariants The invariant list.
+	 * 
+	 * @param invariants
+	 *            The invariant list.
 	 */
 	public InvariantChecker(List<Invariant> invariants) {
 		this.invariants = invariants;
@@ -41,7 +43,8 @@ public class InvariantChecker {
 	private List<Invariant> failedInvariants = new ArrayList<Invariant>();
 
 	/**
-	 * @param browser The browser.
+	 * @param browser
+	 *            The browser.
 	 * @return true iff browser satisfies ALL the invariants
 	 */
 	public boolean check(EmbeddedBrowser browser) {
@@ -54,7 +57,7 @@ public class InvariantChecker {
 					boolean check;
 					check = condition.check(browser);
 					LOGGER.debug("Checking Invariant: " + invariant.getDescription()
-					                + " - PreCondition: " + condition.toString() + ": " + check);
+					        + " - PreCondition: " + condition.toString() + ": " + check);
 					if (!check) {
 						conditionsSucceed = false;
 						break;
@@ -65,7 +68,7 @@ public class InvariantChecker {
 					LOGGER.debug("Checking Invariant: " + invariant.getDescription());
 					if (!invariantCondition.check(browser)) {
 						LOGGER.debug("Invariant '" + invariant.getDescription() + "' failed: "
-						                + invariant.getDescription());
+						        + invariant.getDescription());
 						failedInvariants.add(invariant);
 					}
 				}

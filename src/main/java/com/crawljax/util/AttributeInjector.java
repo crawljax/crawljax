@@ -9,6 +9,8 @@ import org.w3c.dom.html.HTMLElement;
 
 /**
  * Attribute injector class.
+ * 
+ * @version $Id$
  */
 public final class AttributeInjector {
 

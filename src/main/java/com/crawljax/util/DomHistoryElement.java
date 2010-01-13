@@ -12,6 +12,7 @@ import com.crawljax.core.state.Eventable;
  * element which has the requestForProxyId attribute.
  * 
  * @author corpaul
+ * @version $Id$
  */
 public class DomHistoryElement {
 	/**

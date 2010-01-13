@@ -6,7 +6,6 @@ import java.util.List;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 
-
 /**
  * Represents the HTML elements which should be crawled. It represents all the HTML elements in the
  * DOM that match the specified tag name. 1) <a class="foo" .. 2) <div... 3) <a href="http://
@@ -29,6 +28,7 @@ import com.crawljax.condition.eventablecondition.EventableCondition;
  * 
  * @see CrawlSpecification
  * @author DannyRoest@gmail.com (Danny Roest)
+ * @version $Id$
  */
 public final class CrawlElement {
 

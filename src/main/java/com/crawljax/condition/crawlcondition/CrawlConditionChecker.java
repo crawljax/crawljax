@@ -6,16 +6,16 @@ package com.crawljax.condition.crawlcondition;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.apache.log4j.Logger;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
 
 /**
+ * Controller class for the crawl conditions.
+ * 
  * @author danny
  * @version $Id$
- *          Controller class for the crawl conditions
  */
 public class CrawlConditionChecker {
 
@@ -34,7 +34,9 @@ public class CrawlConditionChecker {
 
 	/**
 	 * Constructor.
-	 * @param crawlConditions Crawlconditions
+	 * 
+	 * @param crawlConditions
+	 *            Crawlconditions
 	 */
 	public CrawlConditionChecker(List<CrawlCondition> crawlConditions) {
 		this.crawlConditions = crawlConditions;
@@ -56,9 +58,10 @@ public class CrawlConditionChecker {
 	}
 
 	/**
-	 * @param browser The browser.
-	 * @return true iff there are no conditions to test OR the browser satisfies
-	 *         ONE OR MORE of the crawlConditions
+	 * @param browser
+	 *            The browser.
+	 * @return true iff there are no conditions to test OR the browser satisfies ONE OR MORE of the
+	 *         crawlConditions
 	 */
 	public boolean check(EmbeddedBrowser browser) {
 

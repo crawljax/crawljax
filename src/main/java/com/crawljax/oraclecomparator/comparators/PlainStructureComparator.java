@@ -6,7 +6,10 @@ package com.crawljax.oraclecomparator.comparators;
 import com.crawljax.oraclecomparator.AbstractComparator;
 
 /**
+ * TODO: Document this.
+ * 
  * @author Danny
+ * @version $Id$
  */
 public class PlainStructureComparator extends AbstractComparator {
 
