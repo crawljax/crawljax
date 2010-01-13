@@ -12,6 +12,8 @@ import com.crawljax.util.Helper;
 
 /**
  * Oracle which can ignore style attributes.
+ * 
+ * @version $Id$
  */
 public class StyleComparator extends AbstractComparator {
 

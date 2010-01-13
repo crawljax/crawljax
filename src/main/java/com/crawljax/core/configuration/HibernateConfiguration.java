@@ -7,6 +7,7 @@ import java.io.InputStream;
  * Represents the configuration for Hibernate.
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
+ * @version $Id$
  */
 public class HibernateConfiguration {
 

@@ -5,6 +5,7 @@ package com.crawljax.core.configuration;
  * ProxyServerPlugin interface.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
+ * @version $Id$
  */
 public class ProxyConfiguration {
 

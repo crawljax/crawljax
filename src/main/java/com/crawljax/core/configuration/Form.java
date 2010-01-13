@@ -30,6 +30,8 @@ import java.util.List;
 
 /**
  * Form configuration.
+ * 
+ * @version $Id$
  */
 public class Form {
 

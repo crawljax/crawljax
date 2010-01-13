@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 
 /**
  * XMLObject helper.
+ * 
+ * @version $Id$
  */
 public final class XMLObject {
 

@@ -8,7 +8,10 @@ import org.w3c.dom.Document;
 import com.crawljax.util.XPathHelper;
 
 /**
+ * TODO: Document this, what is this class for?
+ * 
  * @author mesbah
+ * @version $Id$
  */
 public class EventableConditionChecker {
 

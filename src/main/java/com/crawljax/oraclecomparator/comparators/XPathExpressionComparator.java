@@ -19,11 +19,12 @@ import com.crawljax.util.Helper;
  * Oracle which can ignore element/attributes by xpath expression.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
+ * @version $Id$
  */
 public class XPathExpressionComparator extends AbstractComparator {
 
-	private static final Logger LOGGER = Logger.getLogger(XPathExpressionComparator.class.getName());
+	private static final Logger LOGGER =
+	        Logger.getLogger(XPathExpressionComparator.class.getName());
 
 	private final List<String> expressions = new ArrayList<String>();
 

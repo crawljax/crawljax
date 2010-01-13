@@ -11,7 +11,7 @@ import com.crawljax.util.Helper;
  * specified regular expressions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
+ * @version $Id$
  */
 public class RegexComparator extends AbstractComparator {
 

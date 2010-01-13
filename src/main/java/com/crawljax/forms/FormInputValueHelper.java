@@ -40,7 +40,7 @@ import com.crawljax.util.XPathHelper;
  * Helper class for FormHandler.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
+ * @version $Id$
  */
 public final class FormInputValueHelper {
 

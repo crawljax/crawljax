@@ -2,7 +2,6 @@ package com.crawljax.core.configuration;
 
 import java.util.List;
 
-
 import org.apache.commons.configuration.Configuration;
 
 import com.crawljax.browser.EmbeddedBrowser;
@@ -13,6 +12,7 @@ import com.crawljax.core.plugin.Plugin;
  * Reader for CrawljaxConfiguration. For internal use only!
  * 
  * @author Danny
+ * @version $Id$
  */
 public class CrawljaxConfigurationReader {
 

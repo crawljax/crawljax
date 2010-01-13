@@ -14,6 +14,7 @@ package com.crawljax.core.configuration;
  * @see Form
  * @see Form#field(String)
  * @author DannyRoest@gmail.com (Danny Roest)
+ * @version $Id$
  */
 public class FormInputField extends InputField {
 
