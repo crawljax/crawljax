@@ -61,8 +61,6 @@ public class LargeCrawljaxTestIE {
 	private static final NotRegexCondition ALLOW_BUTTON_CLICK =
 	        new NotRegexCondition("DONT_CLICK_BUTTONS_ON_THIS_PAGE");
 
-	private static final String INDEX = "src/test/site/index.html";
-
 	private static final String TITLE_RESULT_RANDOM_INPUT = "RESULT_RANDOM_INPUT";
 	private static final String REGEX_RESULT_RANDOM_INPUT =
 	        "[a-zA-Z]{8};" + "[a-zA-Z]{8};" + "(true|false);" + "(true|false);" + "OPTION[1234];"
