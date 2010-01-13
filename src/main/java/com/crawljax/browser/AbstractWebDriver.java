@@ -80,7 +80,6 @@ public class AbstractWebDriver implements EmbeddedBrowser {
 	 * @param eventable
 	 *            The HTML event type (onclick, onmouseover, ...).
 	 * @throws Exception
-	 * @throws Exception
 	 *             if fails.
 	 */
 	private boolean fireEventWait(WebElement webElement, Eventable eventable)
