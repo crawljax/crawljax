@@ -19,7 +19,7 @@ import com.crawljax.util.PropertyHelper;
  * @author Danny Roest dannyroest@gmail.com
  * @author Stefan Lenselink S.R.Lenselink@student.tudelft.nl
  * @author Ali Mesbah amesbah@gmail.com
- * @version $Id: CrawljaxPluginsUtil.java 6396 2009-12-29 14:13:49Z stefan $
+ * @version $Id$
  */
 public final class CrawljaxPluginsUtil {
 

@@ -18,7 +18,7 @@ import com.crawljax.util.PropertyHelper;
  * Class that performs crawl actions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: Crawler.java 6399 2009-12-29 14:34:27Z mesbah $
+ * @version $Id$
  */
 public class Crawler {
 

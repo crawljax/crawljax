@@ -6,7 +6,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Conditions that returns true iff the browser's current url contains url. Note: Case insesitive
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: UrlCondition.java 6301 2009-12-24 16:36:24Z mesbah $
+ * @version $Id$
  */
 public class UrlCondition extends AbstractCondition {
 

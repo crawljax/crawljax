@@ -13,7 +13,7 @@ import com.crawljax.core.state.Eventable;
 
 /**
  * @author mesbah
- * @version $Id: FormInput.java 6359 2009-12-28 14:37:49Z danny $
+ * @version $Id$
  */
 public class FormInput {
 

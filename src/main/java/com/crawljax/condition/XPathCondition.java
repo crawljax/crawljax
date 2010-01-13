@@ -12,7 +12,7 @@ import com.crawljax.util.Helper;
  * element names must be in upper case and attributes in lower case.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: XPathCondition.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public class XPathCondition extends AbstractCondition {
 

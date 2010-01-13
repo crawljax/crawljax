@@ -8,7 +8,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Conditions that returns true iff element found with By is visible.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: VisibleCondition.java 6301 2009-12-24 16:36:24Z mesbah $
+ * @version $Id$
  */
 public class VisibleCondition extends AbstractCondition {
 

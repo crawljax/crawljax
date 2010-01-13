@@ -9,7 +9,7 @@ import com.crawljax.util.database.HibernateUtil;
  * The state vertix class which represents a state in the browser.
  * 
  * @author mesbah
- * @version $Id: StateVertix.java 6374 2009-12-29 09:31:52Z frank $
+ * @version $Id$
  */
 public class StateVertix {
 

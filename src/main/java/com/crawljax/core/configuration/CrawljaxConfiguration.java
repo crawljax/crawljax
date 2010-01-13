@@ -34,7 +34,7 @@ import com.crawljax.util.PropertyHelper;
  * crawler = new CrawlSpecification("http://www.google.com"); crawler.click("a");
  * crawljaxConfig.setCrawlSpecification(crawler);
  * 
- * @version $Id: CrawljaxConfiguration.java 6381 2009-12-29 12:26:47Z frank $
+ * @version $Id$
  */
 public final class CrawljaxConfiguration {
 

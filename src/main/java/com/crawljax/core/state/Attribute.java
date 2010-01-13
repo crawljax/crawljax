@@ -6,7 +6,7 @@ package com.crawljax.core.state;
  * @see {@link Element#Element(org.w3c.dom.Node)}
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id: Attribute.java 6374 2009-12-29 09:31:52Z frank $
+ * @version $Id$
  */
 public class Attribute {
 

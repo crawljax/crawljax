@@ -9,7 +9,7 @@ import org.w3c.dom.NodeList;
  * Abstract class for Condition.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: AbstractCondition.java 6388 2009-12-29 13:36:00Z mesbah $
+ * @version $Id$
  */
 public abstract class AbstractCondition implements Condition {
 

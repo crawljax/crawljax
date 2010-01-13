@@ -6,7 +6,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * A condition which returns true iff the expression does NOT occur in the DOM.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: NotRegexCondition.java 6301 2009-12-24 16:36:24Z mesbah $
+ * @version $Id$
  */
 public class NotRegexCondition extends AbstractCondition {
 

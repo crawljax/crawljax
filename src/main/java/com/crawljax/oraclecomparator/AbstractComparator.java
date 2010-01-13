@@ -8,7 +8,7 @@ import com.crawljax.util.Helper;
 
 /**
  * @author Danny
- * @version $Id: AbstractOracle.java 6388 2009-12-29 13:36:00Z mesbah $
+ * @version $Id$
  */
 public abstract class AbstractComparator implements Comparator {
 

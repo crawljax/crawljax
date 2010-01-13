@@ -9,7 +9,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Logic operations for conditions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: Logic.java 6388 2009-12-29 13:36:00Z mesbah $
+ * @version $Id$
  */
 public final class Logic {
 

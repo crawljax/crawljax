@@ -9,7 +9,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * the Plugin is a the current running instance of EmbeddedBrowser.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: PreCrawlingPlugin.java 6396 2009-12-29 14:13:49Z stefan $
+ * @version $Id$
  */
 public interface PreCrawlingPlugin extends Plugin {
 

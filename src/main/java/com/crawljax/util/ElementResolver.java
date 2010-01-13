@@ -13,7 +13,7 @@ import com.crawljax.core.state.Eventable;
 
 /**
  * @author danny
- * @version $Id: ElementResolver.java 6276 2009-12-23 15:37:09Z frank $ class for finding and
+ * @version $Id$ class for finding and
  *          checking elements
  */
 public class ElementResolver {

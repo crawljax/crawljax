@@ -5,7 +5,7 @@ package com.crawljax.core;
 
 /**
  * @author mesbah
- * @version $Id: CrawljaxException.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public class CrawljaxException extends Exception {
 

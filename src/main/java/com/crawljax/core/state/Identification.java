@@ -9,7 +9,7 @@ import org.openqa.selenium.By;
  * and the value for that method.
  * 
  * @author mesbah
- * @version $Id: Identification.java 6374 2009-12-29 09:31:52Z frank $
+ * @version $Id$
  */
 public class Identification implements Serializable {
 	private static final long serialVersionUID = -1608879189549535808L;

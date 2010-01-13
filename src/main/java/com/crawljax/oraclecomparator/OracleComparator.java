@@ -7,7 +7,7 @@ import com.crawljax.condition.Condition;
 
 /**
  * @author danny
- * @version $Id: ComparatorWithPreconditions.java 6382 2009-12-29 12:38:11Z danny $ This class
+ * @version $Id$ This class
  *          contains the oracle and its precondition(s)
  */
 public class OracleComparator {

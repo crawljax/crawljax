@@ -24,7 +24,7 @@ import org.w3c.dom.NodeList;
  * TODO: DOCUMENT ME!
  * 
  * @author mesbah
- * @version $Id: XPathHelper.java 6370 2009-12-29 07:59:21Z frank $
+ * @version $Id$
  */
 public final class XPathHelper {
 	private static final Logger LOGGER = Logger.getLogger(XPathHelper.class.getName());

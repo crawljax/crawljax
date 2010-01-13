@@ -17,7 +17,7 @@ import org.jgrapht.graph.DirectedMultigraph;
  * The State-Flow Graph is a directed graph with states on the vertices and clickables on the edges.
  * 
  * @author mesbah
- * @version $Id: StateFlowGraph.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public class StateFlowGraph {
 	private static final Logger LOGGER = Logger.getLogger(StateFlowGraph.class.getName());

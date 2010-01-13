@@ -6,7 +6,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Interface for defining conditions to wait for.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: ExpectedCondition.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public interface ExpectedCondition {
 

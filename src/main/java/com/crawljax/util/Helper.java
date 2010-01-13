@@ -52,7 +52,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author mesbah
- * @version $Id: Helper.java 6339 2009-12-28 11:46:49Z danny $
+ * @version $Id$
  */
 public final class Helper {
 

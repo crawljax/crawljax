@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
  * The Edit Distance class.
  *
  * @author mesbah
- * @version $Id: EditDistance.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public final class EditDistance {
 	private static final Logger LOGGER = Logger.getLogger(EditDistance.class.getName());

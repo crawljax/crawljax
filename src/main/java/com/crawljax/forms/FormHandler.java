@@ -23,7 +23,7 @@ import com.crawljax.util.XPathHelper;
  * values.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: FormHandler.java 6320 2009-12-25 20:53:02Z danny $
+ * @version $Id$
  */
 public class FormHandler {
 	private static final Logger LOGGER = Logger.getLogger(FormHandler.class.getName());

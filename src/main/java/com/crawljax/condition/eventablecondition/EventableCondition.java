@@ -13,7 +13,7 @@ import com.crawljax.util.XPathHelper;
  * properties files .
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: EventableCondition.java 6278 2009-12-23 15:53:21Z frank $
+ * @version $Id$
  */
 public class EventableCondition {
 

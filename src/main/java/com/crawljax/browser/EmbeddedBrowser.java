@@ -12,7 +12,7 @@ import com.crawljax.core.state.Eventable;
 
 /**
  * @author mesbah
- * @version $Id: EmbeddedBrowser.java 6399 2009-12-29 14:34:27Z mesbah $
+ * @version $Id$
  */
 public interface EmbeddedBrowser {
 

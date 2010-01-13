@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * @author mesbah
- * @version $Id: TagElement.java 6234 2009-12-18 13:46:37Z mesbah $
+ * @version $Id$
  */
 public class TagElement {
 	private Set<TagAttribute> attributes = new HashSet<TagAttribute>();

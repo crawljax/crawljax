@@ -5,7 +5,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 
 /**
  * @author mesbah
- * @version $Id: WebDriverIE.java 6297 2009-12-24 15:55:56Z mesbah $
+ * @version $Id$
  */
 public class WebDriverIE extends AbstractWebDriver {
 
