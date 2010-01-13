@@ -221,19 +221,27 @@ public class CrawljaxController {
 	 * 
 	 * @throws CrawljaxException
 	 *             if a failure occurs.
+	 * @return Whether to continue crawling.
 	 */
-	private void crawl() throws CrawljaxException {
-		checkConstraints();
+	private boolean crawl() throws CrawljaxException {
+		if (!checkConstraints()) {
+			/* stop crawling */
+			return false;
+		}
 
 		if (depth >= PropertyHelper.getCrawlDepthValue()
 		        && PropertyHelper.getCrawlDepthValue() != 0) {
 			LOGGER.info("DEPTH " + depth + " reached returning from rec call. Given depth: "
 			        + PropertyHelper.getCrawlDepthValue());
 
-			return;
+			/* max depth reached doesn't mean completely stop crawling, so return true */
+			return true;
 		}
 
 		extractCandidates();
+
+		/* continue crawling */
+		return true;
 	}
 
 	/**
@@ -260,24 +268,39 @@ public class CrawljaxController {
 	/**
 	 * Checks the state and time constraints.
 	 * 
-	 * @throws CrawljaxException
-	 *             a crawljaxexception.
+	 * @return Whether to continue crawling.
 	 */
-	private void checkConstraints() throws CrawljaxException {
+	private boolean checkConstraints() {
 		long timePassed = System.currentTimeMillis() - startCrawl;
 
 		if ((PropertyHelper.getCrawlMaxTimeValue() != 0)
 		        && (timePassed > PropertyHelper.getCrawlMaxTimeValue())) {
-			throw new CrawljaxException("Max time " + PropertyHelper.getCrawlMaxTimeValue()
-			        + " passed!");
+
+			/* remove all possible candidates left */
+			EXACTEVENTPATH.clear();
+
+			LOGGER.info("Max time " + PropertyHelper.getCrawlMaxTimeValue() + " passed!");
+
+			/* stop crawling */
+			return false;
+
 		}
 
 		if ((PropertyHelper.getCrawlMaxStatesValue() != 0)
 		        && (stateMachine.getStateFlowGraph().getAllStates().size() >= PropertyHelper
 		                .getCrawlMaxStatesValue())) {
-			throw new CrawljaxException("Max number of states "
-			        + PropertyHelper.getCrawlMaxStatesValue() + " reached!");
+
+			/* remove all possible candidates left */
+			EXACTEVENTPATH.clear();
+
+			LOGGER.info("Max number of states " + PropertyHelper.getCrawlMaxStatesValue()
+			        + " reached!");
+
+			/* stop crawling */
+			return false;
 		}
+		/* continue crawling */
+		return true;
 	}
 
 	/**
@@ -332,7 +355,9 @@ public class CrawljaxController {
 							        && eventType.equals(eventTypes.get(eventTypes.size() - 1))) {
 								backTrack = false;
 							}
-							updateStateMachine(currentHold, eventable, newState, backTrack);
+							if (!updateStateMachine(currentHold, eventable, newState, backTrack)) {
+								return;
+							}
 						}
 					}
 
@@ -358,7 +383,7 @@ public class CrawljaxController {
 	 * @throws CrawljaxException
 	 *             an exception.
 	 */
-	private void updateStateMachine(final StateVertix currentHold, final Eventable event,
+	private boolean updateStateMachine(final StateVertix currentHold, final Eventable event,
 	        StateVertix newState, final boolean backTrack) throws CrawljaxException {
 
 		EXACTEVENTPATH.add(event);
@@ -385,7 +410,13 @@ public class CrawljaxController {
 			depth++;
 
 			LOGGER.info("RECURSIVE Call crawl; Current DEPTH= " + depth);
-			crawl();
+			if (!crawl()) {
+				/*
+				 * apparently one of the condition was not satisfied anymore, so stop crawling by
+				 * returning false
+				 */
+				return false;
+			}
 			depth--;
 		}
 
@@ -413,6 +444,9 @@ public class CrawljaxController {
 			// don't go back. only remove the currentEvent from the list
 			EXACTEVENTPATH.remove(EXACTEVENTPATH.indexOf(event));
 		}
+
+		/* continue crawling */
+		return true;
 	}
 
 	/**
