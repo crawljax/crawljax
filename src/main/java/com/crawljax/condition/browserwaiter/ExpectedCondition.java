@@ -14,7 +14,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 public interface ExpectedCondition {
 
 	/**
-	 * Is the expected condition satisfied
+	 * Is the expected condition satisfied.
 	 * 
 	 * @param browser
 	 *            the browser to execute the check on
