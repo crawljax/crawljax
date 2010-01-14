@@ -15,16 +15,16 @@ import com.crawljax.util.PropertyHelper;
  * The factory class returns an instance of the desired browser as specified in the properties file.
  * 
  * @author mesbah
+ * @author stefan
  * @version $Id$
  */
 public final class BrowserFactory {
 
-	private static final Queue<EmbeddedBrowser> freeBrowerList =
-	        new LinkedList<EmbeddedBrowser>();
-	private static final ArrayList<EmbeddedBrowser> takenBrowerList =
+	private static final Queue<EmbeddedBrowser> FREE_BROWSERS = new LinkedList<EmbeddedBrowser>();
+	private static final ArrayList<EmbeddedBrowser> TAKEN_BROWSERS =
 	        new ArrayList<EmbeddedBrowser>();
 
-	private static Logger LOGGER = Logger.getLogger(BrowserFactory.class);
+	private static final Logger LOGGER = Logger.getLogger(BrowserFactory.class);
 
 	/**
 	 * hidden constructor.
@@ -37,7 +37,7 @@ public final class BrowserFactory {
 	 * 
 	 * @return the name of the type that will be used
 	 */
-	public static final String getBrowserTypeString() {
+	public static String getBrowserTypeString() {
 		return findBrowserClass().getName();
 	}
 
@@ -58,13 +58,13 @@ public final class BrowserFactory {
 	}
 
 	/**
-	 * Internal used to requestBrowser
+	 * Internal used to requestBrowser.
 	 * 
 	 * @see {@link #requestBrowser()}
 	 * @return the new browser
 	 */
-	private static final EmbeddedBrowser makeABrowser() {
-		if (freeBrowerList.size() == 0 && takenBrowerList.size() == 0
+	private static EmbeddedBrowser makeABrowser() {
+		if (FREE_BROWSERS.size() == 0 && TAKEN_BROWSERS.size() == 0
 		        && PropertyHelper.getCrawljaxConfiguration() != null) {
 			// This should be the first browser? use the one from the config
 			// More are 'cloned' later....
@@ -83,11 +83,11 @@ public final class BrowserFactory {
 	}
 
 	/**
-	 * Close all browser windows
+	 * Close all browser windows.
 	 */
 	public static synchronized void close() {
 		Queue<EmbeddedBrowser> deleteList = new LinkedList<EmbeddedBrowser>();
-		for (EmbeddedBrowser b : freeBrowerList) {
+		for (EmbeddedBrowser b : FREE_BROWSERS) {
 			try {
 				b.close();
 				deleteList.add(b);
@@ -95,9 +95,9 @@ public final class BrowserFactory {
 				LOGGER.error("Faild to close free Browser " + b, e);
 			}
 		}
-		freeBrowerList.removeAll(deleteList);
+		FREE_BROWSERS.removeAll(deleteList);
 		deleteList = new LinkedList<EmbeddedBrowser>();
-		for (EmbeddedBrowser b : takenBrowerList) {
+		for (EmbeddedBrowser b : TAKEN_BROWSERS) {
 			try {
 				b.close();
 				deleteList.add(b);
@@ -105,7 +105,7 @@ public final class BrowserFactory {
 				LOGGER.error("Faild to close taken Browser " + b, e);
 			}
 		}
-		takenBrowerList.removeAll(deleteList);
+		TAKEN_BROWSERS.removeAll(deleteList);
 	}
 
 	/**
@@ -115,20 +115,20 @@ public final class BrowserFactory {
 	 *            the browser which is not needed anymore
 	 */
 	public static synchronized void freeBrowser(EmbeddedBrowser browser) {
-		takenBrowerList.remove(browser);
-		freeBrowerList.add(browser);
+		TAKEN_BROWSERS.remove(browser);
+		FREE_BROWSERS.add(browser);
 	}
 
 	/**
-	 * Place a request for a browser
+	 * Place a request for a browser.
 	 * 
 	 * @return a new Browser instance which is currently free
 	 */
 	public static synchronized EmbeddedBrowser requestBrowser() {
 		EmbeddedBrowser browser;
-		if (freeBrowerList.size() > 0) {
+		if (FREE_BROWSERS.size() > 0) {
 			// Retrieve a free browser from the list
-			browser = freeBrowerList.poll();
+			browser = FREE_BROWSERS.poll();
 			if (browser == null) {
 				LOGGER.error("Faild to fulfil a request for a browser");
 			}
@@ -137,7 +137,7 @@ public final class BrowserFactory {
 			// Create a new Browser
 			browser = makeABrowser();
 		}
-		takenBrowerList.add(browser);
+		TAKEN_BROWSERS.add(browser);
 
 		return browser;
 	}
@@ -149,7 +149,7 @@ public final class BrowserFactory {
 	 * @return true if the taken list of Browsers is empty
 	 */
 	public static synchronized boolean isFinished() {
-		return takenBrowerList.isEmpty();
+		return TAKEN_BROWSERS.isEmpty();
 	}
 
 }
