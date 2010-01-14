@@ -74,8 +74,8 @@ public final class SiteSimpleExample {
 	 *            none.
 	 */
 	public static void main(String[] args) {
-		CrawljaxController crawljax = new CrawljaxController(getConfig());
 		try {
+			CrawljaxController crawljax = new CrawljaxController(getConfig());
 			crawljax.run();
 		} catch (CrawljaxException e) {
 			e.printStackTrace();

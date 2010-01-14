@@ -71,8 +71,8 @@ public final class CrawljaxAdvancedExampleSettings {
 	 *            the command line arguments
 	 */
 	public static void main(String[] args) {
-		CrawljaxController crawljax = new CrawljaxController(getCrawljaxConfiguration());
 		try {
+			CrawljaxController crawljax = new CrawljaxController(getCrawljaxConfiguration());
 			crawljax.run();
 		} catch (CrawljaxException e) {
 			e.printStackTrace();
