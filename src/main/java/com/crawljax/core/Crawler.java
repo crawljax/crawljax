@@ -95,12 +95,10 @@ public class Crawler implements Runnable {
 	 * 
 	 * @param mother
 	 *            the main CrawljaxController
-	 * @param currentState
-	 *            the state the crawl process start with
 	 * @param loadIndex
 	 *            true if the index need to be loaded
 	 */
-	private Crawler(CrawljaxController mother, boolean loadIndex) {
+	public Crawler(CrawljaxController mother, boolean loadIndex) {
 		this.controller = mother;
 		this.candidateExtractor = new CandidateElementExtractor(this);
 		if (loadIndex) {
@@ -232,7 +230,7 @@ public class Crawler implements Runnable {
 	 * @throws Exception
 	 *             an exception when a Browser encounters an error
 	 */
-	private void goBackExact() throws Exception {
+	private void goBackExact() {
 
 		/**
 		 * Thread safe
@@ -281,11 +279,11 @@ public class Crawler implements Runnable {
 	/**
 	 * @param elements
 	 *            the list of candidate elements.
-	 * @throws Exception
+	 * @throws CrawljaxException
 	 *             an exception.
 	 */
 	private int clickTag(final CandidateElement candidateElement, String eventType,
-	        boolean handleInputElements, StateVertix currentHold) throws Exception {
+	        boolean handleInputElements, StateVertix currentHold) throws CrawljaxException {
 
 		Eventable eventable = new Eventable(candidateElement, eventType);
 
@@ -324,7 +322,7 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Return the Exacteventpath
+	 * Return the Exacteventpath.
 	 * 
 	 * @return the exacteventpath
 	 */
@@ -335,10 +333,10 @@ public class Crawler implements Runnable {
 	/**
 	 * Crawl through the clickables.
 	 * 
-	 * @throws Exception
-	 *             an exception.
+	 * @throws CrawljaxException
+	 *             if an exception is thrown.
 	 */
-	private boolean crawl() throws Exception {
+	private boolean crawl() throws CrawljaxException {
 		if (!this.controller.checkConstraints()) {
 			/* stop crawling */
 			return false;
@@ -350,20 +348,7 @@ public class Crawler implements Runnable {
 			return true;
 		}
 
-		if (this.candidates == null) {
-			if (controller.getCrawlConditionChecker().check(browser)) {
-				LOGGER.info("Looking in state: " + this.currentState.getName()
-				        + " for candidate elements with ");
-				this.candidates =
-				        this.candidateExtractor.extract(PropertyHelper.getCrawlTagElements(),
-				                PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
-				                        .getClickOnceValue());
-			} else {
-				LOGGER.info("State " + this.currentState.getName()
-				        + " dit not satisfy the CrawlConditions.");
-				this.candidates = new ArrayList<CandidateElement>();
-			}
-		}
+		checkCandidates();
 
 		boolean resetTypes = true;
 		if (this.eventTypes == null || this.eventTypes.size() == 0) {
@@ -399,8 +384,8 @@ public class Crawler implements Runnable {
 						continue;
 					}
 					/**
-					 * clickResult: 1 = Dom Changed & No Clone 0 = Dom Changed & Clone -1 = Dom Not
-					 * Changed
+					 * clickResult: 1 = Dom Changed & No Clone. 0 = Dom Changed & Clone. -1 = Dom
+					 * Not Changed
 					 */
 					int clickResult =
 					        clickTag(candidateElement, eventType, handleInputElements,
@@ -515,10 +500,27 @@ public class Crawler implements Runnable {
 		return true;
 	}
 
+	private void checkCandidates() throws CrawljaxException {
+		if (this.candidates == null) {
+			if (controller.getCrawlConditionChecker().check(browser)) {
+				LOGGER.info("Looking in state: " + this.currentState.getName()
+				        + " for candidate elements with ");
+				this.candidates =
+				        this.candidateExtractor.extract(PropertyHelper.getCrawlTagElements(),
+				                PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
+				                        .getClickOnceValue());
+			} else {
+				LOGGER.info("State " + this.currentState.getName()
+				        + " dit not satisfy the CrawlConditions.");
+				this.candidates = new ArrayList<CandidateElement>();
+			}
+		}
+	}
+
 	/**
-	 * The main function stated by the ExecutorService. Crawlers add themselfs to the list by
+	 * The main function stated by the ExecutorService. Crawlers add themselves to the list by
 	 * calling {@link CrawljaxController#addWorkToQueue(Crawler)}. When the ExecutorService finds a
-	 * free thread this method is called and when this method ends the Thread is released a gain and
+	 * free thread this method is called and when this method ends the Thread is released again and
 	 * a new Thread is started
 	 * 
 	 * @see java.util.concurrent.Executors#newFixedThreadPool(int)
@@ -543,7 +545,7 @@ public class Crawler implements Runnable {
 
 		/**
 		 * Always do a state machine rewind because we are about to begin form scratch. TODO Stefan
-		 * make Thread Save a.k.a this code only works in single thread..
+		 * make Thread Safe a.k.a this code only works in single thread..
 		 */
 		controller.rewindStateMachine();
 
@@ -595,6 +597,9 @@ public class Crawler implements Runnable {
 		return browser;
 	}
 
+	/**
+	 * @return the eventable condition checker.
+	 */
 	public EventableConditionChecker getEventableConditionChecker() {
 		return this.controller.getEventableConditionChecker();
 	}

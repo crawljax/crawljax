@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnable> {
 
 	/**
-	 * Auto generated serialVersionUID
+	 * Auto generated serialVersionUID.
 	 */
 	private static final long serialVersionUID = 4656244727801517204L;
 

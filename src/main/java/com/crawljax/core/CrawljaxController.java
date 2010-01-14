@@ -252,11 +252,9 @@ public class CrawljaxController {
 	 * Checks the state and time constraints. This function is ThreadSafe
 	 * 
 	 * @return true if all conditions are met.
-	 * @throws CrawljaxException
-	 *             a crawljaxexception.
 	 */
 	@GuardedBy("stateMachine")
-	public boolean checkConstraints() throws CrawljaxException {
+	public boolean checkConstraints() {
 		long timePassed = System.currentTimeMillis() - startCrawl;
 
 		if ((PropertyHelper.getCrawlMaxTimeValue() != 0)
