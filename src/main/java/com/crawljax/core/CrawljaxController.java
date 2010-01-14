@@ -135,6 +135,9 @@ public class CrawljaxController {
 			PropertyHelper.init(propertiesFile);
 		}
 
+		LOGGER.info("Embedded browser implementation: " + BrowserFactory.getBrowserTypeString());
+		crawler = new Crawler(this);
+
 		HibernateUtil.initialize();
 
 		LOGGER.info("Used plugins:");
@@ -164,8 +167,6 @@ public class CrawljaxController {
 	 */
 	public final void run() throws CrawljaxException, ConfigurationException {
 
-		LOGGER.info("Embedded browser implementation: " + BrowserFactory.getBrowserTypeString());
-		crawler = new Crawler(this);
 		browser = crawler.getBrowser();
 
 		startCrawl = System.currentTimeMillis();
