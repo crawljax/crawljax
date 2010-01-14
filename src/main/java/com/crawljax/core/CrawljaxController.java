@@ -65,9 +65,7 @@ public class CrawljaxController {
 
 	private final Set<String> checkedElements = new LinkedHashSet<String>();
 
-	private final ThreadPoolExecutor workQueue =
-	        new ThreadPoolExecutor(PropertyHelper.getCrawNumberOfThreadsValue(), PropertyHelper
-	                .getCrawNumberOfThreadsValue(), 0L, TimeUnit.MILLISECONDS, new CrawlQueue());
+	private final ThreadPoolExecutor workQueue;
 
 	private boolean foundNewState;
 
@@ -75,8 +73,11 @@ public class CrawljaxController {
 
 	/**
 	 * The constructor.
+	 * 
+	 * @throws ConfigurationException
+	 *             if the configuration fails.
 	 */
-	public CrawljaxController() {
+	public CrawljaxController() throws ConfigurationException {
 		this("crawljax.properties");
 		LOGGER.warn("No custom setting is provided! Using the default settings.");
 	}
@@ -84,19 +85,24 @@ public class CrawljaxController {
 	/**
 	 * @param propertiesfile
 	 *            the properties file.
+	 * @throws ConfigurationException
+	 *             if the configuration fails.
 	 */
-	public CrawljaxController(final String propertiesfile) {
+	public CrawljaxController(final String propertiesfile) throws ConfigurationException {
 		this.propertiesFile = propertiesfile;
 		this.crawljaxConfiguration = null;
 		this.oracleComparator = new ArrayList<OracleComparator>();
 		stateComparator = new StateComparator(this.oracleComparator);
+		workQueue = init();
 	}
 
 	/**
 	 * @param config
 	 *            the crawljax configuration.
+	 * @throws ConfigurationException
+	 *             if the configuration fails.
 	 */
-	public CrawljaxController(final CrawljaxConfiguration config) {
+	public CrawljaxController(final CrawljaxConfiguration config) throws ConfigurationException {
 		this.propertiesFile = null;
 		this.crawljaxConfiguration = config;
 		CrawljaxConfigurationReader configReader = new CrawljaxConfigurationReader(config);
@@ -108,6 +114,7 @@ public class CrawljaxController {
 		crawlConditionChecker.setCrawlConditions(crawlerReader.getCrawlConditions());
 		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
 		eventableConditionChecker.setEventableConditions(configReader.getEventableConditions());
+		workQueue = init();
 	}
 
 	/**
@@ -115,7 +122,7 @@ public class CrawljaxController {
 	 *             if the configuration fails.
 	 * @NotThreadSafe
 	 */
-	public void init() throws ConfigurationException {
+	private ThreadPoolExecutor init() throws ConfigurationException {
 		LOGGER.info("Starting Crawljax...");
 		LOGGER.info("Loading properties...");
 
@@ -139,11 +146,11 @@ public class CrawljaxController {
 			        .getProxyConfiguration());
 		}
 
-		LOGGER.info("Embedded browser implementation: " + BrowserFactory.getBrowserTypeString());
-		crawler = new Crawler(this);
-		browser = crawler.getBrowser();
-
 		LOGGER.info("Crawljax initialized!");
+
+		return new ThreadPoolExecutor(PropertyHelper.getCrawNumberOfThreadsValue(),
+		        PropertyHelper.getCrawNumberOfThreadsValue(), 0L, TimeUnit.MILLISECONDS,
+		        new CrawlQueue());
 	}
 
 	/**
@@ -156,7 +163,10 @@ public class CrawljaxController {
 	 * @NotThreadSafe
 	 */
 	public final void run() throws CrawljaxException, ConfigurationException {
-		init();
+
+		LOGGER.info("Embedded browser implementation: " + BrowserFactory.getBrowserTypeString());
+		crawler = new Crawler(this);
+		browser = crawler.getBrowser();
 
 		startCrawl = System.currentTimeMillis();
 
@@ -240,6 +250,7 @@ public class CrawljaxController {
 	/**
 	 * Checks the state and time constraints. This function is ThreadSafe
 	 * 
+	 * @return true if all conditions are met.
 	 * @throws CrawljaxException
 	 *             a crawljaxexception.
 	 */
@@ -284,10 +295,11 @@ public class CrawljaxController {
 	 *            the new state.
 	 * @param crawler
 	 *            used to feet to checkInvariants
+	 * @return true if the new state is not found in the state machine.
 	 * @NotThreadSafe
 	 */
 	public boolean updateStateMachine(final StateVertix currentHold, final Eventable event,
-	        StateVertix newState, Crawler crawler) throws Exception {
+	        StateVertix newState, Crawler crawler) {
 		StateVertix cloneState = stateMachine.addStateToCurrentState(newState, event);
 		foundNewState = true;
 		if (cloneState != null) {
@@ -350,7 +362,7 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Return the name of the (new)State
+	 * Return the name of the (new)State.
 	 * 
 	 * @return State name the name of the state
 	 */
@@ -404,13 +416,14 @@ public class CrawljaxController {
 
 	/**
 	 * @NotThreadSafe
-	 * @param currentHold
+	 * @param state
+	 *            the state to change the state machines pointer to.
 	 */
-	public void changeStateMachineState(StateVertix currentHold) {
+	public void changeStateMachineState(StateVertix state) {
 		synchronized (stateMachine) {
 			LOGGER.debug("AFTER: sm.current: " + stateMachine.getCurrentState().getName()
-			        + " hold.current: " + currentHold.getName());
-			stateMachine.changeState(currentHold);
+			        + " hold.current: " + state.getName());
+			stateMachine.changeState(state);
 			LOGGER.info("StateMachine's Pointer changed back to: "
 			        + stateMachine.getCurrentState().getName());
 		}
@@ -455,7 +468,7 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Mark a given element as checked to prevent duplicate work
+	 * Mark a given element as checked to prevent duplicate work.
 	 * 
 	 * @param element
 	 *            the elements that is checked
@@ -478,7 +491,7 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Retrieve the index state
+	 * Retrieve the index state.
 	 * 
 	 * @return the indexState of the current crawl
 	 */
@@ -487,7 +500,7 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Return the Checker of the CrawlConditions
+	 * Return the Checker of the CrawlConditions.
 	 * 
 	 * @return the crawlConditionChecker
 	 */
@@ -505,10 +518,11 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * TODO Check thread safety
+	 * TODO Check thread safety.
 	 * 
 	 * @param browser
-	 * @return
+	 *            the browser instance.
+	 * @return a stripped string of the DOM tree taken from the browser.
 	 */
 	public String getStripedDom(EmbeddedBrowser browser) {
 		return this.stateComparator.getStrippedDom(browser);
