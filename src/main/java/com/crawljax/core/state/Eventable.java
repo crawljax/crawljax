@@ -24,7 +24,7 @@ import com.crawljax.util.XPathHelper;
  * @author mesbah
  * @version $Id$
  */
-public class Eventable extends DefaultEdge {
+public class Eventable extends DefaultEdge implements Cloneable {
 	private static final long serialVersionUID = 3229708706467350994L;
 	private long id;
 	private String eventType;
@@ -208,6 +208,37 @@ public class Eventable extends DefaultEdge {
 	}
 
 	/**
+	 * Return a new clone of this object.
+	 * 
+	 * @return the cloned Eventalbe
+	 */
+	@Override
+	public Eventable clone() {
+		Eventable e = new Eventable();
+
+		ArrayList<FormInput> fi = new ArrayList<FormInput>();
+		for (FormInput formInput : this.relatedFormInputs) {
+			fi.add(formInput.clone());
+		}
+		if (this.element != null) {
+			e.setElement(this.element.clone());
+		}
+		e.setEventType(this.eventType);
+		e.setId(this.id);
+		if (this.identification != null) {
+			e.setIdentification(this.identification.clone());
+		}
+		e.setRelatedFormInputs(fi);
+
+		e.setSourceStateVertix(this.getSourceStateVertix());
+		e.setTargetStateVertix(this.getTargetStateVertix());
+
+		return e;
+	}
+
+	/* Horrible stuff happening below, don't look at it! */
+
+	/**
 	 * @return the source state.
 	 */
 	public StateVertix getSourceStateVertix() {
@@ -221,27 +252,59 @@ public class Eventable extends DefaultEdge {
 		return getSuperField("target");
 	}
 
+	/**
+	 * @param vertix
+	 *            the new value for source
+	 */
+	public void setSourceStateVertix(StateVertix vertix) {
+		setSuperField("source", vertix);
+	}
+
+	/**
+	 * @param vertix
+	 *            the new value for target
+	 */
+	public void setTargetStateVertix(StateVertix vertix) {
+		setSuperField("target", vertix);
+	}
+
 	private StateVertix getSuperField(String name) {
-		Class clazz = this.getClass().getSuperclass().getSuperclass();
+		try {
+			return (StateVertix) searchSuperField(name).get(this);
+		} catch (IllegalArgumentException e) {
+			// TODO Log
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Log
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private Field searchSuperField(String name) {
+		Class<?> clazz = this.getClass().getSuperclass().getSuperclass();
 		Field[] fields = clazz.getDeclaredFields();
 		AccessibleObject.setAccessible(fields, true);
 
 		for (Field field : fields) {
 			String fieldName = field.getName();
 
-			try {
-				// Warning: Field.get(Object) creates wrappers objects
-				// for primitive types.
-				if (name.equals(fieldName)) {
-					StateVertix fieldValue = (StateVertix) field.get(this);
-
-					return fieldValue;
-				}
-			} catch (IllegalAccessException ex) {
-				throw new InternalError("Unexpected IllegalAccessException: " + ex.getMessage());
+			if (name.equals(fieldName)) {
+				return field;
 			}
 		}
+		throw new InternalError("Field was not found!");
+	}
 
-		return null;
+	private void setSuperField(String name, StateVertix vertix) {
+		try {
+			searchSuperField(name).set(this, vertix);
+		} catch (IllegalArgumentException e) {
+			// TODO Log
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Log
+			e.printStackTrace();
+		}
 	}
 }

@@ -125,4 +125,9 @@ public class StateMachine {
 	public StateVertix getPreviousState() {
 		return previousState;
 	}
+
+	public void rewind() {
+		this.currentState = this.initialState;
+		this.previousState = null;
+	}
 }

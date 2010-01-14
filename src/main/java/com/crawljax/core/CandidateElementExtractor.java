@@ -2,7 +2,6 @@ package com.crawljax.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -37,33 +36,14 @@ public class CandidateElementExtractor {
 	private static final Logger LOGGER =
 	        Logger.getLogger(CandidateElementExtractor.class.getName());
 
-	private final EventableConditionChecker eventableConditionChecker;
-	private final EmbeddedBrowser browser;
-	private final Set<String> checkedElements = new LinkedHashSet<String>();
+	private final Crawler crawler;
 
 	/**
-	 * The number of checked elements, as a statistics measure to know how many elements were
-	 * actually examined.
+	 * @param c
+	 *            the Crawler which uses this Extractor
 	 */
-	private int numberofExaminedElements = 0;
-
-	/**
-	 * @return the examinedcandidateElements
-	 */
-	public int getNumberofExaminedElements() {
-		return numberofExaminedElements;
-	}
-
-	/**
-	 * @param browser
-	 *            the embedded browser.
-	 * @param eventableConditionChecker
-	 *            the eventable condition checker.
-	 */
-	public CandidateElementExtractor(EmbeddedBrowser browser,
-	        EventableConditionChecker eventableConditionChecker) {
-		this.browser = browser;
-		this.eventableConditionChecker = eventableConditionChecker;
+	public CandidateElementExtractor(Crawler c) {
+		this.crawler = c;
 	}
 
 	/**
@@ -90,16 +70,16 @@ public class CandidateElementExtractor {
 			List<Element> temp;
 			try {
 				temp =
-				        getNodeListForTagElement(browser, tag, eventableConditionChecker,
-				                crawlExcludeTagElements);
-
+				        getNodeListForTagElement(this.crawler.getBrowser(), tag, this.crawler
+				                .getEventableConditionChecker(), crawlExcludeTagElements);
 			} catch (Exception e) {
 				throw new CrawljaxException(e.getMessage(), e);
 			}
 
 			for (Element sourceElement : temp) {
 				EventableCondition eventableCondition =
-				        eventableConditionChecker.getEventableCondition(tag.getId());
+				        this.crawler.getEventableConditionChecker().getEventableCondition(
+				                tag.getId());
 				String xpath = XPathHelper.getXpathExpression(sourceElement);
 				// get multiple candidate elements when there are input
 				// fields connected to this element
@@ -111,8 +91,8 @@ public class CandidateElementExtractor {
 					// add multiple candidate elements, for every input
 					// value combination
 					candidateElements =
-					        FormInputValueHelper.getCandidateElementsForInputs(browser,
-					                sourceElement, eventableCondition);
+					        FormInputValueHelper.getCandidateElementsForInputs(this.crawler
+					                .getBrowser(), sourceElement, eventableCondition);
 				} else {
 					// just add default element
 					candidateElements.add(new CandidateElement(sourceElement, xpath));
@@ -120,9 +100,7 @@ public class CandidateElementExtractor {
 
 				for (CandidateElement candidateElement : candidateElements) {
 					String elementUniqueString = candidateElement.getUniqueString();
-
-					if (!clickOnce || !checkedElements.contains(elementUniqueString)) {
-
+					if (!clickOnce || !crawler.elementIsAlreadyChecked(elementUniqueString)) {
 						LOGGER.info("Found new candidate element: "
 						        + new Eventable(candidateElement, "").toString());
 
@@ -132,12 +110,12 @@ public class CandidateElementExtractor {
 						tagElements.add(candidateElement);
 						// TODO add element to checkedElements after the
 						// event is fired!
-						checkedElements.add(elementUniqueString);
+						crawler.markElementAsChecked(elementUniqueString);
 						// also add string without 'atusa' attribute to
 						// make sure an
 						// form action element is only clicked for its
 						// defined values
-						checkedElements.add(candidateElement.getGeneralString());
+						crawler.markElementAsChecked(candidateElement.getGeneralString());
 					}
 				}
 			}
@@ -185,7 +163,7 @@ public class CandidateElementExtractor {
 			}
 			// check if element is a candidate
 			if (matchesXpath
-			        && !checkedElements.contains(element.getNodeName() + ": "
+			        && !crawler.elementIsAlreadyChecked(element.getNodeName() + ": "
 			                + Helper.getAllElementAttributes(element))
 			        && isElementVisible(dom, browser, element)
 			        && !filterElement(attributes, element)) {
@@ -197,11 +175,11 @@ public class CandidateElementExtractor {
 
 					if (!(isExternal || isEmail || isPDForPS(href))) {
 						result.add(element);
-						numberofExaminedElements++;
+						crawler.increaseNumberExaminedElements();
 					}
 				} else {
 					result.add(element);
-					numberofExaminedElements++;
+					crawler.increaseNumberExaminedElements();
 				}
 			}
 		}
@@ -344,7 +322,8 @@ public class CandidateElementExtractor {
 			        + "AttributeName: " + attr.getName() + " value: " + attr.getValue());
 
 			if (attr.matchesValue(element.getAttribute(attr.getName()))) {
-				// make sure that if attribute value is % the element should have this attribute
+				// make sure that if attribute value is % the element should
+				// have this attribute
 				if (attr.getValue().equals("%")
 				        && element.getAttributeNode(attr.getName()) == null) {
 					return true;

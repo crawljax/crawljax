@@ -7,12 +7,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 /**
  * A combination of a condition and preconditions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@ThreadSafe
 public abstract class ConditionType {
 
 	private final List<Condition> preConditions = new ArrayList<Condition>();
@@ -72,16 +76,22 @@ public abstract class ConditionType {
 	/**
 	 * @return the preconditions
 	 */
-	public List<Condition> getPreConditions() {
-		return preConditions;
+	@GuardedBy("preConditions")
+	public synchronized List<Condition> getPreConditions() {
+		synchronized (preConditions) {
+			return preConditions;
+		}
 	}
 
 	/**
 	 * @param preCondition
 	 *            the precondition.
 	 */
+	@GuardedBy("preConditions")
 	public void addPreCondition(Condition preCondition) {
-		this.preConditions.add(preCondition);
+		synchronized (preConditions) {
+			this.preConditions.add(preCondition);
+		}
 	}
 
 }

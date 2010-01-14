@@ -129,6 +129,7 @@ public final class CrawljaxConfiguration {
 		        * ONE_SECOND);
 		config.addProperty("crawl.forms.randominput", ConfigurationHelper
 		        .booleanToInt(getCrawlSpecification().getRandomInputInForms()));
+		config.addProperty("crawl.numberOfThreads", getCrawlSpecification().getNumberOfThreads());
 
 		if (getProxyConfiguration() != null) {
 			config.addProperty("proxy.enabled", 1);

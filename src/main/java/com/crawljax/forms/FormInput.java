@@ -15,7 +15,7 @@ import com.crawljax.core.state.Eventable;
  * @author mesbah
  * @version $Id$
  */
-public class FormInput {
+public class FormInput implements Cloneable {
 
 	private long id;
 	private String type = "text";
@@ -192,4 +192,24 @@ public class FormInput {
 		this.eventable = eventable;
 	}
 
+	/**
+	 * Get a clone of this object. {@inheritDoc}
+	 */
+	@Override
+	public FormInput clone() {
+		Set<InputValue> iv = new HashSet<InputValue>();
+		for (InputValue inputValue : this.inputValues) {
+			iv.add(inputValue.clone());
+		}
+		FormInput fi = new FormInput();
+		if (this.eventable != null) {
+			fi.setEventable(this.eventable.clone());
+		}
+		fi.setId(this.id);
+		fi.setMultiple(this.multiple);
+		fi.setName(this.name);
+		fi.setType(this.type);
+		fi.setInputValues(iv);
+		return fi;
+	}
 }

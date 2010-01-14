@@ -11,7 +11,7 @@ import org.openqa.selenium.By;
  * @author mesbah
  * @version $Id$
  */
-public class Identification implements Serializable {
+public class Identification implements Serializable, Cloneable {
 	private static final long serialVersionUID = -1608879189549535808L;
 	private long id;
 	private String how;
@@ -115,5 +115,17 @@ public class Identification implements Serializable {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get a clone of this object. {@inheritDoc}
+	 */
+	@Override
+	public Identification clone() {
+		Identification id = new Identification();
+		id.setHow(this.how);
+		id.setId(this.id);
+		id.setValue(this.value);
+		return id;
 	}
 }
