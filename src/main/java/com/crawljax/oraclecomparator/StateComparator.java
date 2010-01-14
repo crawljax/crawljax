@@ -127,7 +127,7 @@ public class StateComparator {
 		try {
 			oc.compare("", browser.getDom(), browser);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 		return oc.getStrippedNewDom();
 	}
