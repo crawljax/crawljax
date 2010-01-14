@@ -30,14 +30,14 @@ public class CandidateElementExtractorTest {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		CrawlSpecification spec = new CrawlSpecification(url);
 		config.setCrawlSpecification(spec);
-		CrawljaxController controller = new CrawljaxController(config);
+		Crawler crawler = null;
 		try {
-			controller.init();
+			CrawljaxController controller = new CrawljaxController(config);
+			crawler = controller.getCrawler();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
 		}
-		Crawler crawler = controller.getCrawler();
 
 		try {
 			Thread.sleep(400);
@@ -72,14 +72,16 @@ public class CandidateElementExtractorTest {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		CrawlSpecification spec = new CrawlSpecification(url);
 		config.setCrawlSpecification(spec);
-		CrawljaxController controller = new CrawljaxController(config);
+		Crawler crawler = null;
 		try {
-			controller.init();
+			CrawljaxController controller = new CrawljaxController(config);
+			crawler = controller.getCrawler();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
 		}
-		Crawler crawler = controller.getCrawler();
+
+		assertNotNull(crawler);
 
 		try {
 			Thread.sleep(400);

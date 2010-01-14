@@ -8,8 +8,8 @@ public class CrawljaxWithPropertiesFileTest {
 
 	@Test
 	public void runCrawljax() {
-		CrawljaxController crawljax = new CrawljaxController();
 		try {
+			CrawljaxController crawljax = new CrawljaxController();
 			crawljax.run();
 		} catch (Exception e) {
 			e.printStackTrace();
