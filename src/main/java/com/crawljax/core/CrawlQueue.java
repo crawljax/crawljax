@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * This class implements a BlockingQueue with Runnable as its Generic type and extends Stack with
  * also Runnable as generic type. This class is used in the ThreadPoolExecutor and its used to store
- * spearate threads in a Queue like fashion (FILO).
+ * separate threads in a Queue like fashion (FILO).
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
