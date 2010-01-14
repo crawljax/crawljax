@@ -9,7 +9,7 @@ package com.crawljax.forms;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
-public class InputValue {
+public class InputValue implements Cloneable {
 
 	private long id;
 	private String value;
@@ -94,4 +94,15 @@ public class InputValue {
 		this.checked = checked;
 	}
 
+	/**
+	 * Get a clone of this object. {@inheritDoc}
+	 */
+	@Override
+	public InputValue clone() {
+		InputValue ip = new InputValue();
+		ip.setChecked(this.checked);
+		ip.setId(this.id);
+		ip.setValue(this.value);
+		return ip;
+	}
 }

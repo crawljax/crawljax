@@ -14,7 +14,7 @@ import com.crawljax.util.Helper;
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
-public class Element {
+public class Element implements Cloneable {
 
 	private Node node;
 	private long id;
@@ -202,10 +202,26 @@ public class Element {
 	}
 
 	/**
+	 * Get a clone of this object. {@inheritDoc}
+	 */
+	@Override
+	public Element clone() {
+		Element e = new Element();
+		ArrayList<Attribute> nl = new ArrayList<Attribute>();
+		for (Attribute attribute : this.attributes) {
+			nl.add(attribute.clone());
+		}
+		e.setAttributes(nl);
+		e.setId(this.id);
+		e.setTag(this.tag);
+		e.setText(this.text);
+		return e;
+	}
+
+	/**
 	 * @return The node.
 	 */
 	public Node getNode() {
 		return node;
 	}
-
 }

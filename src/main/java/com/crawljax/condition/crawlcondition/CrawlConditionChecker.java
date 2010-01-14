@@ -6,6 +6,9 @@ package com.crawljax.condition.crawlcondition;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 import org.apache.log4j.Logger;
 
 import com.crawljax.browser.EmbeddedBrowser;
@@ -17,6 +20,7 @@ import com.crawljax.condition.Condition;
  * @author danny
  * @version $Id$
  */
+@ThreadSafe
 public class CrawlConditionChecker {
 
 	private static final Logger LOGGER = Logger.getLogger(CrawlConditionChecker.class.getName());
@@ -45,7 +49,8 @@ public class CrawlConditionChecker {
 	/**
 	 * @return the crawlConditions
 	 */
-	public List<CrawlCondition> getCrawlConditions() {
+	@GuardedBy("this")
+	public synchronized List<CrawlCondition> getCrawlConditions() {
 		return crawlConditions;
 	}
 
@@ -53,7 +58,8 @@ public class CrawlConditionChecker {
 	 * @param crawlConditions
 	 *            the crawlConditions to set
 	 */
-	public void setCrawlConditions(List<CrawlCondition> crawlConditions) {
+	@GuardedBy("this")
+	public synchronized void setCrawlConditions(List<CrawlCondition> crawlConditions) {
 		this.crawlConditions = crawlConditions;
 	}
 

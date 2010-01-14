@@ -2,6 +2,7 @@ package com.crawljax.condition.browserwaiter;
 
 import java.util.List;
 
+import net.jcip.annotations.ThreadSafe;
 
 import org.apache.log4j.Logger;
 
@@ -13,6 +14,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@ThreadSafe
 public class WaitConditionChecker {
 
 	private static final Logger LOGGER = Logger.getLogger(WaitConditionChecker.class.getName());
@@ -28,7 +30,9 @@ public class WaitConditionChecker {
 
 	/**
 	 * Constructor with wait conditions.
-	 * @param waitConditions The wait conditions.
+	 * 
+	 * @param waitConditions
+	 *            The wait conditions.
 	 */
 	public WaitConditionChecker(List<WaitCondition> waitConditions) {
 		this.waitConditions = waitConditions;
@@ -42,15 +46,16 @@ public class WaitConditionChecker {
 	}
 
 	/**
-	 * @param waitConditions the waitConditions to set
+	 * @param waitConditions
+	 *            the waitConditions to set
 	 */
 	public void setWaitConditions(List<WaitCondition> waitConditions) {
 		this.waitConditions = waitConditions;
 	}
 
 	/**
-	 * 
-	 * @param browser The browser to use.
+	 * @param browser
+	 *            The browser to use.
 	 */
 	public void wait(EmbeddedBrowser browser) {
 		if (waitConditions == null) {

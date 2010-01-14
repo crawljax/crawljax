@@ -3,6 +3,8 @@ package com.crawljax.condition.browserwaiter;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
 
 import org.apache.log4j.Logger;
 
@@ -15,6 +17,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@ThreadSafe
 public class WaitCondition {
 	private static final Logger LOGGER = Logger.getLogger(WaitCondition.class.getName());
 
@@ -75,41 +78,40 @@ public class WaitCondition {
 	 *            The browser to use.
 	 * @return -1 if browser does not match url. 0 by timeout. 1 if all conditions are satisfied
 	 */
+	@GuardedBy("browser")
 	public int testAndWait(EmbeddedBrowser browser) {
-		if (!browser.getCurrentUrl().toLowerCase().contains(this.url.toLowerCase())) {
-			return -1;
-		}
-		List<ExpectedCondition> toCheckwaitConditions = new ArrayList<ExpectedCondition>();
-		toCheckwaitConditions.addAll(expectedConditions);
-		long currentTime = System.currentTimeMillis();
-		long maxTime = currentTime + this.timeOut;
-		long repeatTime = this.pollingTime;
-		LOGGER.info("Waiting for " + toCheckwaitConditions.size() + " conditions");
-		int index = 0;
-		while (index < toCheckwaitConditions.size() && currentTime <= maxTime) {
-			ExpectedCondition checkCondition = toCheckwaitConditions.get(index);
-			LOGGER.debug("Waiting for: " + checkCondition);
-			if (checkCondition.getBrowser() == null) {
-				checkCondition.setBrowser(browser);
+		synchronized (browser) {
+			if (!browser.getCurrentUrl().toLowerCase().contains(this.url.toLowerCase())) {
+				return -1;
 			}
-
-			if (checkCondition.isSatisfied()) {
-				index++;
-			} else {
-				try {
-					Thread.sleep(repeatTime);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+			List<ExpectedCondition> toCheckwaitConditions = new ArrayList<ExpectedCondition>();
+			toCheckwaitConditions.addAll(expectedConditions);
+			long currentTime = System.currentTimeMillis();
+			long maxTime = currentTime + this.timeOut;
+			long repeatTime = this.pollingTime;
+			LOGGER.info("Waiting for " + toCheckwaitConditions.size() + " conditions");
+			int index = 0;
+			while (index < toCheckwaitConditions.size() && currentTime <= maxTime) {
+				ExpectedCondition checkCondition = toCheckwaitConditions.get(index);
+				LOGGER.debug("Waiting for: " + checkCondition);
+				if (checkCondition.isSatisfied(browser)) {
+					index++;
+				} else {
+					try {
+						Thread.sleep(repeatTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
+				currentTime = System.currentTimeMillis();
 			}
-			currentTime = System.currentTimeMillis();
-		}
-		if (currentTime >= maxTime) {
-			LOGGER.info("TIMEOUT WaitCondition url " + getUrl() + "; Timout while waiting for "
-			        + toCheckwaitConditions.get(index));
-			return 0;
-		} else {
-			return 1;
+			if (currentTime >= maxTime) {
+				LOGGER.info("TIMEOUT WaitCondition url " + getUrl()
+				        + "; Timout while waiting for " + toCheckwaitConditions.get(index));
+				return 0;
+			} else {
+				return 1;
+			}
 		}
 	}
 

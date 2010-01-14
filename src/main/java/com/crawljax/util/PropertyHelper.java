@@ -46,6 +46,7 @@ public final class PropertyHelper {
 	private static String crawlTags = "crawl.tags";
 	private static String crawlExludeTags = "crawl.tags.exclude";
 	private static String crawlFilterAttributes = "crawl.filter.attributes";
+	private static String crawlNumberOfThreads = "crawl.numberOfThreads";
 
 	private static String hibernateProperties = "hibernate.properties";
 	private static String hibernatePropertiesValue = "hibernate.properties";
@@ -108,6 +109,8 @@ public final class PropertyHelper {
 	private static int proxyEnabledValue = 0;
 
 	private static int domTidyValue = 0;
+
+	private static int crawNumberOfThreadsValue = 1;
 
 	private static String seleniumTestsuitePath = "selenium.testsuite.path";
 
@@ -174,6 +177,7 @@ public final class PropertyHelper {
 		siteIndexablePathValue = getProperty(siteIndexablePath);
 		baseUrlValue = getProperty(baseUrl);
 		crawlDepthValue = getPropertyAsInt(crawlDepth);
+		crawNumberOfThreadsValue = getPropertyAsInt(crawlNumberOfThreads);
 		// crawlThreholdValue = getPropertyAsDouble(crawlThrehold);
 		robotEventsValues = getPropertyAsList(robotEvents);
 		crawlTagsValues = getPropertyAsList(crawlTags);
@@ -848,6 +852,13 @@ public final class PropertyHelper {
 	 */
 	public static String getPropertiesFileName() {
 		return propertiesFileName;
+	}
+
+	/**
+	 * @return the crawNumberOfThreadsValue
+	 */
+	public static final int getCrawNumberOfThreadsValue() {
+		return crawNumberOfThreadsValue;
 	}
 
 	/**

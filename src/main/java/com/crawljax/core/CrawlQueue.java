@@ -1,0 +1,87 @@
+/**
+ * 
+ */
+package com.crawljax.core;
+
+import java.util.Collection;
+import java.util.Stack;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * This class implements a BlockingQueue with Runnable as its Generic type and extends Stack with
+ * also Runnable as generic type. This class is used in the ThreadPoolExecutor and its used to store
+ * spearate threads in a Queue like fashion (FILO).
+ * 
+ * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
+ * @version $Id$
+ */
+public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnable> {
+
+	/**
+	 * Auto generated serialVersionUID
+	 */
+	private static final long serialVersionUID = 4656244727801517204L;
+
+	@Override
+	public int drainTo(Collection<? super Runnable> c) {
+		// Is never used, TODO Stefan a implementation whould be nice
+		return 0;
+	}
+
+	@Override
+	public int drainTo(Collection<? super Runnable> c, int maxRunnablelements) {
+		// Is never used, TODO Stefan a implementation whould be nice
+		return 0;
+	}
+
+	@Override
+	public boolean offer(Runnable e) {
+		return this.add(e);
+	}
+
+	@Override
+	public boolean offer(Runnable e, long timeout, TimeUnit unit) throws InterruptedException {
+		return this.add(e);
+	}
+
+	@Override
+	public Runnable poll(long timeout, TimeUnit unit) throws InterruptedException {
+		return remove();
+	}
+
+	@Override
+	public void put(Runnable e) throws InterruptedException {
+		this.add(e);
+
+	}
+
+	@Override
+	public int remainingCapacity() {
+		return Integer.MAX_VALUE;
+	}
+
+	@Override
+	public Runnable take() throws InterruptedException {
+		return remove();
+	}
+
+	@Override
+	public Runnable element() {
+		return this.get(this.size() - 1);
+	}
+
+	@Override
+	public Runnable poll() {
+		return remove();
+	}
+
+	@Override
+	public Runnable remove() {
+		if (this.size() <= 0) {
+			return null;
+		}
+		return this.remove(this.size() - 1);
+	}
+
+}

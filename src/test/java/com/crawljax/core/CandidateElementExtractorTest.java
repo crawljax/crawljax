@@ -7,30 +7,37 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.WebDriverFirefox;
-import com.crawljax.condition.eventablecondition.EventableConditionChecker;
+import com.crawljax.browser.BrowserFactory;
+import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.util.PropertyHelper;
 
 public class CandidateElementExtractorTest {
 
-	private static EmbeddedBrowser browser;
 	private static String url = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
 
 	@BeforeClass
 	public static void startup() {
-		browser = new WebDriverFirefox();
 
+	}
+
+	@Test
+	public void testExtract() {
+		CrawljaxConfiguration config = new CrawljaxConfiguration();
+		CrawlSpecification spec = new CrawlSpecification(url);
+		config.setCrawlSpecification(spec);
+		CrawljaxController controller = new CrawljaxController(config);
 		try {
-			browser.goToUrl(url);
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
+			controller.init();
+		} catch (ConfigurationException e1) {
+			e1.printStackTrace();
+			fail(e1.getMessage());
 		}
+		Crawler crawler = controller.getCrawler();
 
 		try {
 			Thread.sleep(400);
@@ -38,12 +45,7 @@ public class CandidateElementExtractorTest {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
-	}
-
-	@Test
-	public void testExtract() {
-		CandidateElementExtractor extractor =
-		        new CandidateElementExtractor(browser, new EventableConditionChecker());
+		CandidateElementExtractor extractor = new CandidateElementExtractor(crawler);
 		assertNotNull(extractor);
 		try {
 
@@ -62,12 +64,30 @@ public class CandidateElementExtractorTest {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+		BrowserFactory.close();
 	}
 
 	@Test
 	public void testExtractExclude() {
-		CandidateElementExtractor extractor =
-		        new CandidateElementExtractor(browser, new EventableConditionChecker());
+		CrawljaxConfiguration config = new CrawljaxConfiguration();
+		CrawlSpecification spec = new CrawlSpecification(url);
+		config.setCrawlSpecification(spec);
+		CrawljaxController controller = new CrawljaxController(config);
+		try {
+			controller.init();
+		} catch (ConfigurationException e1) {
+			e1.printStackTrace();
+			fail(e1.getMessage());
+		}
+		Crawler crawler = controller.getCrawler();
+
+		try {
+			Thread.sleep(400);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		CandidateElementExtractor extractor = new CandidateElementExtractor(crawler);
 		assertNotNull(extractor);
 
 		try {
@@ -93,10 +113,6 @@ public class CandidateElementExtractorTest {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
-	}
-
-	@AfterClass
-	public static void closeup() {
-		browser.close();
+		BrowserFactory.close();
 	}
 }

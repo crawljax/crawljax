@@ -1,8 +1,13 @@
 package com.crawljax.core;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import net.jcip.annotations.GuardedBy;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
@@ -11,7 +16,6 @@ import com.crawljax.browser.BrowserFactory;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.condition.crawlcondition.CrawlConditionChecker;
-import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.condition.invariant.InvariantChecker;
@@ -35,7 +39,6 @@ import com.crawljax.util.database.HibernateUtil;
  */
 public class CrawljaxController {
 	private static final Logger LOGGER = Logger.getLogger(CrawljaxController.class.getName());
-	private static int depth = 0;
 
 	private int stateCounter = 1;
 	private StateVertix indexState;
@@ -44,10 +47,6 @@ public class CrawljaxController {
 	private CrawlSession session;
 
 	private long startCrawl;
-	private static final ArrayList<Eventable> EXACTEVENTPATH = new ArrayList<Eventable>();
-	private boolean fired = false;
-
-	private List<Eventable> currentCrawlPath;
 
 	private final String propertiesFile;
 
@@ -59,11 +58,20 @@ public class CrawljaxController {
 
 	private final WaitConditionChecker waitConditionChecker = new WaitConditionChecker();
 	private Crawler crawler;
-	private CandidateElementExtractor candidateElementExtractor;
 
 	private final CrawljaxConfiguration crawljaxConfiguration;
 
 	private final List<OracleComparator> oracleComparator;
+
+	private final Set<String> checkedElements = new LinkedHashSet<String>();
+
+	private final ThreadPoolExecutor workQueue =
+	        new ThreadPoolExecutor(PropertyHelper.getCrawNumberOfThreadsValue(), PropertyHelper
+	                .getCrawNumberOfThreadsValue(), 0L, TimeUnit.MILLISECONDS, new CrawlQueue());
+
+	private boolean foundNewState;
+
+	private int numberofExaminedElements;
 
 	/**
 	 * The constructor.
@@ -105,8 +113,9 @@ public class CrawljaxController {
 	/**
 	 * @throws ConfigurationException
 	 *             if the configuration fails.
+	 * @NotThreadSafe
 	 */
-	private void init() throws ConfigurationException {
+	public void init() throws ConfigurationException {
 		LOGGER.info("Starting Crawljax...");
 		LOGGER.info("Loading properties...");
 
@@ -130,11 +139,9 @@ public class CrawljaxController {
 			        .getProxyConfiguration());
 		}
 
-		browser = BrowserFactory.getBrowser();
-		LOGGER.info("Embedded browser implementation: " + browser.getClass().getName());
-		crawler = new Crawler(browser, waitConditionChecker);
-		candidateElementExtractor =
-		        new CandidateElementExtractor(browser, eventableConditionChecker);
+		LOGGER.info("Embedded browser implementation: " + BrowserFactory.getBrowserTypeString());
+		crawler = new Crawler(this);
+		browser = crawler.getBrowser();
 
 		LOGGER.info("Crawljax initialized!");
 	}
@@ -146,6 +153,7 @@ public class CrawljaxController {
 	 *             If the browser cannot be instantiated.
 	 * @throws ConfigurationException
 	 *             if crawljax configuration fails.
+	 * @NotThreadSafe
 	 */
 	public final void run() throws CrawljaxException, ConfigurationException {
 		init();
@@ -179,17 +187,31 @@ public class CrawljaxController {
 
 		try {
 
-			crawl();
+			addWorkToQueue(crawler);
 
-		} catch (CrawljaxException e) {
-			LOGGER.error(e.getMessage(), e);
+			// TODO Stefan Ok this is not so nice....
+			while (!BrowserFactory.isFinished()) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					LOGGER.error("The waiting on the browsers to be finished was Interruped", e);
+				}
+			}
 		} catch (OutOfMemoryError om) {
 			LOGGER.error(om.getMessage(), om);
 		}
 
 		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
 
-		browser.close();
+		/**
+		 * Shutdown the ThreadPool, closing all the possible open Crawler instances
+		 */
+		this.workQueue.shutdownNow();
+
+		/**
+		 * Close all the opened browsers
+		 */
+		BrowserFactory.close();
 
 		for (Eventable c : stateMachine.getStateFlowGraph().getAllEdges()) {
 			LOGGER.info("Interaction Element= " + c.toString());
@@ -202,8 +224,7 @@ public class CrawljaxController {
 		                TimeUnit.MILLISECONDS.toSeconds(timeCrawlCalc)
 		                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
 		                                .toMinutes(timeCrawlCalc))));
-		LOGGER.info("EXAMINED ELEMENTS: "
-		        + candidateElementExtractor.getNumberofExaminedElements());
+		LOGGER.info("EXAMINED ELEMENTS: " + numberofExaminedElements);
 		LOGGER.info("CLICKABLES: " + stateMachine.getStateFlowGraph().getAllEdges().size());
 		LOGGER.info("STATES: " + stateMachine.getStateFlowGraph().getAllStates().size());
 		LOGGER.info("Dom average size (byte): "
@@ -217,158 +238,41 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Crawl through the clickables.
+	 * Checks the state and time constraints. This function is ThreadSafe
 	 * 
 	 * @throws CrawljaxException
-	 *             if a failure occurs.
-	 * @return Whether to continue crawling.
+	 *             a crawljaxexception.
 	 */
-	private boolean crawl() throws CrawljaxException {
-		if (!checkConstraints()) {
-			/* stop crawling */
-			return false;
-		}
-
-		if (depth >= PropertyHelper.getCrawlDepthValue()
-		        && PropertyHelper.getCrawlDepthValue() != 0) {
-			LOGGER.info("DEPTH " + depth + " reached returning from rec call. Given depth: "
-			        + PropertyHelper.getCrawlDepthValue());
-
-			/* max depth reached doesn't mean completely stop crawling, so return true */
-			return true;
-		}
-
-		extractCandidates();
-
-		/* continue crawling */
-		return true;
-	}
-
-	/**
-	 * Find candidate elements.
-	 * 
-	 * @throws CrawljaxException
-	 *             if a failure occurs.
-	 */
-	private void extractCandidates() throws CrawljaxException {
-
-		if (crawlConditionChecker.check(browser)) {
-			LOGGER.info("Looking in state: " + stateMachine.getCurrentState().getName()
-			        + " for candidate elements with ");
-			clickTags(candidateElementExtractor.extract(PropertyHelper.getCrawlTagElements(),
-			        PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
-			                .getClickOnceValue()));
-
-		} else {
-			LOGGER.info("State " + stateMachine.getCurrentState().getName()
-			        + " dit not satisfy the CrawlConditions.");
-		}
-	}
-
-	/**
-	 * Checks the state and time constraints.
-	 * 
-	 * @return Whether to continue crawling.
-	 */
-	private boolean checkConstraints() {
+	@GuardedBy("stateMachine")
+	public boolean checkConstraints() throws CrawljaxException {
 		long timePassed = System.currentTimeMillis() - startCrawl;
 
 		if ((PropertyHelper.getCrawlMaxTimeValue() != 0)
 		        && (timePassed > PropertyHelper.getCrawlMaxTimeValue())) {
 
 			/* remove all possible candidates left */
-			EXACTEVENTPATH.clear();
-
-			LOGGER.info("Max time " + PropertyHelper.getCrawlMaxTimeValue() + " passed!");
-
+			// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
+			LOGGER.info("Max time " + PropertyHelper.getCrawlMaxTimeValue() + "passed!");
 			/* stop crawling */
 			return false;
-
 		}
 
-		if ((PropertyHelper.getCrawlMaxStatesValue() != 0)
-		        && (stateMachine.getStateFlowGraph().getAllStates().size() >= PropertyHelper
-		                .getCrawlMaxStatesValue())) {
+		synchronized (stateMachine) {
+			if ((PropertyHelper.getCrawlMaxStatesValue() != 0)
+			        && (stateMachine.getStateFlowGraph().getAllStates().size() >= PropertyHelper
+			                .getCrawlMaxStatesValue())) {
+				/* remove all possible candidates left */
+				// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
 
-			/* remove all possible candidates left */
-			EXACTEVENTPATH.clear();
+				LOGGER.info("Max number of states " + PropertyHelper.getCrawlMaxStatesValue()
+				        + " reached!");
 
-			LOGGER.info("Max number of states " + PropertyHelper.getCrawlMaxStatesValue()
-			        + " reached!");
-
-			/* stop crawling */
-			return false;
+				/* stop crawling */
+				return false;
+			}
 		}
 		/* continue crawling */
 		return true;
-	}
-
-	/**
-	 * @param elements
-	 *            the list of candidate elements.
-	 * @throws CrawljaxException
-	 *             if an exception occurs.
-	 */
-	private void clickTags(final List<CandidateElement> elements) throws CrawljaxException {
-		StateVertix currentHold = stateMachine.getCurrentState().clone();
-		List<String> eventTypes = PropertyHelper.getRobotEventsValues();
-
-		LOGGER.info("Starting preStateCrawlingPlugins...");
-		CrawljaxPluginsUtil.runPreStateCrawlingPlugins(session, elements);
-
-		boolean handleInputElements = true;
-		for (CandidateElement candidateElement : elements) {
-			EventableCondition eventableCondition = candidateElement.getEventableCondition();
-			boolean conditionsSatisifed = true;
-			if (eventableCondition != null) {
-				conditionsSatisifed = eventableCondition.checkAllConditionsSatisfied(browser);
-			}
-			if (conditionsSatisifed) {
-				for (String eventType : eventTypes) {
-					Eventable eventable = new Eventable(candidateElement, eventType);
-					// eventable.setSourceStateVertix(currentHold);
-
-					// load input element values
-					if (handleInputElements) {
-						crawler.handleInputElements(eventable);
-						handleInputElements = false;
-					}
-
-					LOGGER.info("Firing " + eventable.getEventType() + " on element: "
-					        + eventable + "; State: " + currentHold.getName());
-
-					if (crawler.fireEvent(eventable)) {
-						StateVertix newState =
-						        new StateVertix(browser.getCurrentUrl(), getStateName(), browser
-						                .getDom(), stateComparator.getStrippedDom(browser));
-
-						if (isDomChanged(currentHold, newState)) {
-							fired = true;
-							handleInputElements = true;
-							boolean backTrack = true;
-
-							LOGGER.info("Starting onNewStatePlugins...");
-
-							// if eventable is last eventable in state, do not
-							// backtrack
-							if (candidateElement.equals(elements.get(elements.size() - 1))
-							        && eventType.equals(eventTypes.get(eventTypes.size() - 1))) {
-								backTrack = false;
-							}
-							if (!updateStateMachine(currentHold, eventable, newState, backTrack)) {
-								return;
-							}
-						}
-					}
-
-				}
-			} else {
-				Eventable eventable = new Eventable(candidateElement, "");
-				LOGGER.info("Conditions not satisfied for element: " + eventable + "; State: "
-				        + currentHold.getName());
-
-			}
-		}
 	}
 
 	/**
@@ -378,18 +282,16 @@ public class CrawljaxController {
 	 *            the event edge.
 	 * @param newState
 	 *            the new state.
-	 * @param backTrack
-	 *            backtrack to a previous version.
-	 * @throws CrawljaxException
-	 *             an exception.
+	 * @param crawler
+	 *            used to feet to checkInvariants
+	 * @NotThreadSafe
 	 */
-	private boolean updateStateMachine(final StateVertix currentHold, final Eventable event,
-	        StateVertix newState, final boolean backTrack) throws CrawljaxException {
-
-		EXACTEVENTPATH.add(event);
-
+	public boolean updateStateMachine(final StateVertix currentHold, final Eventable event,
+	        StateVertix newState, Crawler crawler) throws Exception {
 		StateVertix cloneState = stateMachine.addStateToCurrentState(newState, event);
+		foundNewState = true;
 		if (cloneState != null) {
+			foundNewState = false;
 			newState = cloneState.clone();
 		}
 
@@ -398,70 +300,44 @@ public class CrawljaxController {
 		        + stateMachine.getCurrentState().getName() + " FROM " + currentHold.getName());
 
 		if (PropertyHelper.getTestInvariantsWhileCrawlingValue()) {
-			checkInvariants(browser);
+			checkInvariants(crawler);
 		}
 
-		session.setCurrentState(newState);
+		synchronized (session) {
+			/**
+			 * Only one thread at the time may set the currentState in the session and expose it to
+			 * the OnNewStatePlugins. Garranty it will not be interleaved
+			 */
+			session.setCurrentState(newState);
 
-		updateCrawlPath(currentHold, newState, event);
-
-		if (cloneState == null) {
-			CrawljaxPluginsUtil.runOnNewStatePlugins(session);
-			depth++;
-
-			LOGGER.info("RECURSIVE Call crawl; Current DEPTH= " + depth);
-			if (!crawl()) {
-				/*
-				 * apparently one of the conditions was not satisfied anymore, so stop crawling by
-				 * returning false
-				 */
+			if (cloneState == null) {
+				CrawljaxPluginsUtil.runOnNewStatePlugins(session);
+				// recurse
+				return true;
+			} else {
+				// non recurse
 				return false;
 			}
-			depth--;
 		}
-
-		// go back to the previous state
-		LOGGER.debug("AFTER: sm.current: " + stateMachine.getCurrentState().getName()
-		        + " hold.current: " + currentHold.getName());
-
-		stateMachine.changeState(currentHold);
-		LOGGER.info("StateMachine's Pointer changed back to: "
-		        + stateMachine.getCurrentState().getName());
-
-		if (currentCrawlPath != null) {
-			// only save crawlPath when an event is actually fired
-			if (fired) {
-				session.addCrawlPath(currentCrawlPath);
-			}
-			currentCrawlPath = null;
-			fired = false;
-		}
-
-		if (backTrack) {
-			// go back via previous clickables
-			goBackExact(event);
-		} else {
-			// don't go back. only remove the currentEvent from the list
-			EXACTEVENTPATH.remove(EXACTEVENTPATH.indexOf(event));
-		}
-
-		/* continue crawling */
-		return true;
 	}
 
 	/**
+	 * Test to see if the (new) dom is changed with regards to the old dom. This method is Thread
+	 * safe, at least as the equals call of StateVertix is Thread safe and the stateBefor and
+	 * stateAfter do not change on interleaving.
+	 * 
 	 * @param stateBefore
 	 *            the state before the event.
 	 * @param stateAfter
 	 *            the state after the event.
 	 * @return true if the state is changed according to the compare method of the oracle.
 	 */
-	private boolean isDomChanged(final StateVertix stateBefore, final StateVertix stateAfter) {
+	public final boolean isDomChanged(final StateVertix stateBefore, final StateVertix stateAfter) {
 		boolean isChanged = false;
 
 		// do not need Oracle Comparators now, because hash of stripped domis
 		// already calculated
-		// isChanged = !oracleComparator.compare(stateBefore.getDom(),
+		// isChanged = !stateComparator.compare(stateBefore.getDom(),
 		// stateAfter.getDom(), browser);
 		isChanged = !stateAfter.equals(stateBefore);
 		if (isChanged) {
@@ -474,82 +350,174 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * @return State name
+	 * Return the name of the (new)State
+	 * 
+	 * @return State name the name of the state
 	 */
-	private String getStateName() {
-		stateCounter++;
+	@GuardedBy("this")
+	public synchronized String getStateName() {
+		if (foundNewState) {
+			stateCounter++;
+		}
 		String state = "state" + stateCounter;
 		return state;
 	}
 
 	/**
-	 * Adds current state and eventable to current crawlpath for exact test generation.
-	 * 
-	 * @param currentState
-	 *            the current state.
-	 * @param newState
-	 *            the new state.
-	 * @param eventable
-	 *            the edge.
+	 * @param crawler
+	 *            the Crawler to execute the invariants from
 	 */
-	private void updateCrawlPath(final StateVertix currentState, final StateVertix newState,
-	        final Eventable eventable) {
-		if (currentCrawlPath == null) {
-			currentCrawlPath = new ArrayList<Eventable>();
-		}
-		currentCrawlPath.add(eventable);
-	}
-
-	/**
-	 * @param currentEvent
-	 *            the current clickable.
-	 * @throws CrawljaxException
-	 *             if a failure occurs.
-	 */
-	private void goBackExact(final Eventable currentEvent) throws CrawljaxException {
-		LOGGER.info("Reloading Page for navigating back.");
-		crawler.goToInitialURL();
-		StateVertix curState = stateMachine.getInitialState();
-		if (EXACTEVENTPATH.size() > 0) {
-			// remove the currentEvent from the list
-			EXACTEVENTPATH.remove(EXACTEVENTPATH.indexOf(currentEvent));
-			if (EXACTEVENTPATH.size() > 0) {
-				for (Eventable clickable : EXACTEVENTPATH) {
-					// Thread.sleep(500);
-					if (!crawlConditionChecker.check(browser)) {
-						return;
-					}
-					LOGGER.info("Backtracking by firing " + clickable.getEventType()
-					        + " on element: " + clickable);
-
-					updateCrawlPath(curState, clickable.getTargetStateVertix(), clickable);
-
-					crawler.handleInputElements(clickable);
-					crawler.fireEvent(clickable);
-					if (!crawlConditionChecker.check(browser)) {
-						return;
-					}
-					curState = clickable.getTargetStateVertix();
-					CrawljaxPluginsUtil.runOnRevisitStatePlugins(session, curState);
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Checks whether there are any invariants violated and runs the OnInvariantViolation plugins to
-	 * process the failed invariants.
-	 * 
-	 * @param embeddedBrowser
-	 *            the current browser instance
-	 */
-	private void checkInvariants(final EmbeddedBrowser embeddedBrowser) {
-		if (!invariantChecker.check(embeddedBrowser)) {
+	private void checkInvariants(Crawler crawler) {
+		if (!invariantChecker.check(crawler.getBrowser())) {
 			final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
 			for (Invariant failedInvariant : failedInvariants) {
 				CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
 			}
 		}
+	}
+
+	/**
+	 * @return the eventableConditionChecker
+	 * @NotTheadSafe The Condition classes contains 1 not Thread safe implementation
+	 *               (XPathCondition)
+	 */
+	public final EventableConditionChecker getEventableConditionChecker() {
+		return eventableConditionChecker;
+	}
+
+	/**
+	 * @return the oracleComparator
+	 * @NotTheadSafe The Condition classes contains 1 not Thread safe implementation
+	 *               (XPathCondition)
+	 */
+	public final List<OracleComparator> getOracleComparator() {
+		return oracleComparator;
+	}
+
+	/**
+	 * @NotThreadSafe
+	 * @return the session
+	 */
+	public final CrawlSession getSession() {
+		return session;
+	}
+
+	/**
+	 * @NotThreadSafe
+	 * @param currentHold
+	 */
+	public void changeStateMachineState(StateVertix currentHold) {
+		synchronized (stateMachine) {
+			LOGGER.debug("AFTER: sm.current: " + stateMachine.getCurrentState().getName()
+			        + " hold.current: " + currentHold.getName());
+			stateMachine.changeState(currentHold);
+			LOGGER.info("StateMachine's Pointer changed back to: "
+			        + stateMachine.getCurrentState().getName());
+		}
+	}
+
+	/**
+	 * @NotThreadSafe
+	 */
+	public void rewindStateMachine() {
+		/**
+		 * TODO Stefan There is some performance loss using this technique The state machine can
+		 * also be hard forced into the new 'start' state...
+		 */
+		stateMachine.rewind();
+	}
+
+	/**
+	 * Add work (Crawler) to the Queue of work that need to be done.
+	 * 
+	 * @param work
+	 *            the work (Crawler) to add to the Queue
+	 */
+	@GuardedBy("workQueue")
+	public final void addWorkToQueue(Crawler work) {
+		synchronized (workQueue) {
+			workQueue.execute(work);
+		}
+	}
+
+	/**
+	 * Check if a given element is already checked, preventing duplicate work.
+	 * 
+	 * @param element
+	 *            the to search for if its already checked
+	 * @return true if the element is already checked
+	 */
+	@GuardedBy("checkedElements")
+	public boolean elementIsAlreadyChecked(String element) {
+		synchronized (checkedElements) {
+			return this.checkedElements.contains(element);
+		}
+	}
+
+	/**
+	 * Mark a given element as checked to prevent duplicate work
+	 * 
+	 * @param element
+	 *            the elements that is checked
+	 */
+	@GuardedBy("checkedElements")
+	public void markElementAsChecked(String element) {
+		synchronized (checkedElements) {
+			this.checkedElements.add(element);
+		}
+	}
+
+	/**
+	 * Wait for a given condition.
+	 * 
+	 * @param browser
+	 *            the browser which requires a wait condition
+	 */
+	public void doBrowserWait(EmbeddedBrowser browser) {
+		this.waitConditionChecker.wait(browser);
+	}
+
+	/**
+	 * Retrieve the index state
+	 * 
+	 * @return the indexState of the current crawl
+	 */
+	public final StateVertix getIndexState() {
+		return this.indexState;
+	}
+
+	/**
+	 * Return the Checker of the CrawlConditions
+	 * 
+	 * @return the crawlConditionChecker
+	 */
+	public final CrawlConditionChecker getCrawlConditionChecker() {
+		return crawlConditionChecker;
+	}
+
+	/**
+	 * increase the number of checked elements, as a statistics measure to know how many elements
+	 * were actually examined.
+	 */
+	@GuardedBy("this")
+	public synchronized void increaseNumberExaminedElements() {
+		numberofExaminedElements++;
+	}
+
+	/**
+	 * TODO Check thread safety
+	 * 
+	 * @param browser
+	 * @return
+	 */
+	public String getStripedDom(EmbeddedBrowser browser) {
+		return this.stateComparator.getStrippedDom(browser);
+	}
+
+	/**
+	 * @return the crawler
+	 */
+	public final Crawler getCrawler() {
+		return crawler;
 	}
 }

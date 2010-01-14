@@ -1,5 +1,7 @@
 package com.crawljax.condition.browserwaiter;
 
+import net.jcip.annotations.ThreadSafe;
+
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
@@ -8,24 +10,16 @@ import com.crawljax.browser.EmbeddedBrowser;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@ThreadSafe
 public interface ExpectedCondition {
 
 	/**
+	 * Is the expected condition satisfied
 	 * 
-	 * @return Whether the condition is statisfied. 
+	 * @param browser
+	 *            the browser to execute the check on
+	 * @return Whether the condition is satisfied.
 	 */
-	boolean isSatisfied();
-
-	/**
-	 * Returns the browser.
-	 * @return The browser.
-	 */
-	EmbeddedBrowser getBrowser();
-
-	/**
-	 * Sets the browser.
-	 * @param browser The browser.
-	 */
-	void setBrowser(EmbeddedBrowser browser);
+	boolean isSatisfied(EmbeddedBrowser browser);
 
 }
