@@ -19,7 +19,7 @@ public final class CrawljaxSimpleExampleSettings {
 
 	private static final String URL = "http://www.google.com";
 	private static final int MAX_DEPTH = 2;
-	private static final int MAX_NUMBER_STATES = 5;
+	private static final int MAX_NUMBER_STATES = 8;
 
 	private CrawljaxSimpleExampleSettings() {
 
@@ -34,6 +34,7 @@ public final class CrawljaxSimpleExampleSettings {
 
 	private static CrawlSpecification getCrawlSpecification() {
 		CrawlSpecification crawler = new CrawlSpecification(URL);
+		crawler.setNumberOfThreads(1);
 
 		// click these elements
 		crawler.click("a");
@@ -63,8 +64,8 @@ public final class CrawljaxSimpleExampleSettings {
 	 *            the command line args
 	 */
 	public static void main(String[] args) {
-		CrawljaxController crawljax = new CrawljaxController(getCrawljaxConfiguration());
 		try {
+			CrawljaxController crawljax = new CrawljaxController(getCrawljaxConfiguration());
 			crawljax.run();
 		} catch (CrawljaxException e) {
 			e.printStackTrace();

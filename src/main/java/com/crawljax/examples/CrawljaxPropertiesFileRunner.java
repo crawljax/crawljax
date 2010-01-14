@@ -41,8 +41,8 @@ public final class CrawljaxPropertiesFileRunner {
 			}
 		}
 
-		CrawljaxController crawljax = new CrawljaxController();
 		try {
+			CrawljaxController crawljax = new CrawljaxController();
 			crawljax.run();
 		} catch (CrawljaxException e) {
 			e.printStackTrace();
