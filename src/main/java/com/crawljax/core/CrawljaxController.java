@@ -193,8 +193,9 @@ public class CrawljaxController {
 
 		CrawljaxPluginsUtil.runOnNewStatePlugins(session);
 
-		LOGGER.info("Start crawling with " + PropertyHelper.getCrawlTagsValues().size()
-		        + " tags and threshold-coefficient " + PropertyHelper.getCrawlThreholdValue());
+		LOGGER
+		        .info("Start crawling with " + PropertyHelper.getCrawlTagsValues().size()
+		                + " tags");
 
 		try {
 

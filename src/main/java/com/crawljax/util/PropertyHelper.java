@@ -3,7 +3,6 @@
  */
 package com.crawljax.util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -34,13 +33,12 @@ public final class PropertyHelper {
 	private static String outputFolderName = "output.path";
 	private static String outputFolder = "";
 
+	private static String genFilepath = "generated.pages.filepath";
 	private static String siteUrl = "site.url";
 	private static String baseUrl = "site.base.url";
 	private static String crawlDepth = "crawl.depth";
 	private static String crawlMaxStates = "crawl.max.states";
 	private static String crawlMaxTime = "crawl.max.runtime";
-	private static String crawlThrehold = "crawl.threshold";
-
 	private static String crawlTags = "crawl.tags";
 	private static String crawlExludeTags = "crawl.tags.exclude";
 	private static String crawlFilterAttributes = "crawl.filter.attributes";
@@ -50,6 +48,7 @@ public final class PropertyHelper {
 	private static String hibernateProperties = "hibernate.properties";
 	private static String hibernatePropertiesValue = "hibernate.properties";
 
+	private static String crawlManualEnterForm = "crawl.forms.manual";
 	private static String crawlFormRandomInput = "crawl.forms.randominput";
 	private static int crawlFormRandomInputValue = 1;
 
@@ -73,21 +72,21 @@ public final class PropertyHelper {
 
 	private static int testInvariantsWhileCrawlingValue = 1;
 
+	private static String debugVariables = "reportbuilder.debugvariables";
+	private static List<String> debugVariablesValues;
+
 	/* event handlers */
 	private static String detectEventHandlers = "eventHandlers.detect";
 	private static int detectEventHandlersValue = 1;
 
 	private static String siteUrlValue;
-	private static String siteIndexablePathValue;
 	private static String baseUrlValue;
 	private static int crawlDepthValue;
-	private static double crawlThreholdValue;
 	private static List<String> robotEventsValues;
 	private static List<String> crawlTagsValues;
 	private static List<String> crawlFilterAttributesValues;
 	private static List<TagElement> crawlTagElements = new ArrayList<TagElement>();
 	private static List<TagElement> crawlExcludeTagElements = new ArrayList<TagElement>();
-	private static List<String> atusaPluginsValues;
 	private static int crawlMaxStatesValue = 0;
 	private static int crawlMaxTimeValue = 0;
 
@@ -98,10 +97,6 @@ public final class PropertyHelper {
 	private static int domTidyValue = 0;
 
 	private static int crawNumberOfThreadsValue = 1;
-
-	private static String seleniumTestsuitePath = "selenium.testsuite.path";
-
-	private static String seleniumTestsuitePathValue;
 
 	private static String propertiesFileName;
 
@@ -159,6 +154,7 @@ public final class PropertyHelper {
 		baseUrlValue = getProperty(baseUrl);
 		crawlDepthValue = getPropertyAsInt(crawlDepth);
 		crawNumberOfThreadsValue = getPropertyAsInt(crawlNumberOfThreads);
+
 		crawlTagsValues = getPropertyAsList(crawlTags);
 		crawlFilterAttributesValues = getPropertyAsList(crawlFilterAttributes);
 		browserValue = getProperty(browser);
@@ -180,15 +176,13 @@ public final class PropertyHelper {
 			clickOnceValue = getPropertyAsInt(clickOnce);
 		}
 
+		debugVariablesValues = getPropertyAsList(debugVariables);
+
 		setTagElements();
 		setTagExcludeElements();
 
 		if (config.containsKey(proxyEnabled)) {
 			proxyEnabledValue = getPropertyAsInt(proxyEnabled);
-		}
-
-		if (config.containsKey(seleniumTestsuitePath)) {
-			seleniumTestsuitePathValue = getProperty(seleniumTestsuitePath);
 		}
 
 		hibernateSchemaValue = getProperty(hibernateSchema);
@@ -279,16 +273,6 @@ public final class PropertyHelper {
 			return false;
 		}
 
-		try {
-			// make sure the report is written to an existing path
-			if (seleniumTestsuitePathValue != null) {
-				Helper.directoryCheck(seleniumTestsuitePathValue);
-			}
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-			return false;
-		}
-
 		return true;
 	}
 
@@ -356,6 +340,13 @@ public final class PropertyHelper {
 	}
 
 	/**
+	 * @return the genFilepath.
+	 */
+	public static String getGenFilepath() {
+		return genFilepath;
+	}
+
+	/**
 	 * @return the siteUrl
 	 */
 	public static String getSiteUrl() {
@@ -374,13 +365,6 @@ public final class PropertyHelper {
 	 */
 	public static String getCrawlDepth() {
 		return crawlDepth;
-	}
-
-	/**
-	 * @return the crawlThrehold
-	 */
-	public static String getCrawlThrehold() {
-		return crawlThrehold;
 	}
 
 	/**
@@ -412,13 +396,6 @@ public final class PropertyHelper {
 	}
 
 	/**
-	 * @return the siteIndexablePathValue
-	 */
-	public static String getSiteIndexablePathValue() {
-		return siteIndexablePathValue;
-	}
-
-	/**
 	 * @return the baseUrlValue
 	 */
 	public static String getBaseUrlValue() {
@@ -430,13 +407,6 @@ public final class PropertyHelper {
 	 */
 	public static int getCrawlDepthValue() {
 		return crawlDepthValue;
-	}
-
-	/**
-	 * @return the crawlThreholdValue
-	 */
-	public static double getCrawlThreholdValue() {
-		return crawlThreholdValue;
 	}
 
 	/**
@@ -628,6 +598,13 @@ public final class PropertyHelper {
 	}
 
 	/**
+	 * @return the crawlManualEnterForm
+	 */
+	public static String getCrawlManualEnterForm() {
+		return crawlManualEnterForm;
+	}
+
+	/**
 	 * @return the crawlManualEnterFormValue
 	 */
 	public static boolean getCrawlManualEnterFormValue() {
@@ -646,13 +623,6 @@ public final class PropertyHelper {
 	 */
 	public static boolean getCrawlFormWithRandomValues() {
 		return crawlFormRandomInputValue == 1;
-	}
-
-	/**
-	 * @return TODO: DOCUMENT ME!
-	 */
-	public static List<String> getAtusaPluginsValues() {
-		return atusaPluginsValues;
 	}
 
 	/**
@@ -676,16 +646,6 @@ public final class PropertyHelper {
 		return domTidyValue == 1;
 	}
 
-	// selenium
-	/**
-	 * Return the path in which the Selenium report should be created.
-	 * 
-	 * @return the genFilepathValue
-	 */
-	public static String getSeleniumTestsuitePathValue() {
-		return seleniumTestsuitePathValue;
-	}
-
 	/**
 	 * Returns the hibernate schema name.
 	 * 
@@ -700,6 +660,13 @@ public final class PropertyHelper {
 	 */
 	public static boolean getTestInvariantsWhileCrawlingValue() {
 		return testInvariantsWhileCrawlingValue == 1;
+	}
+
+	/**
+	 * @return the debugVariablesValues
+	 */
+	public static List<String> getDebugVariablesValues() {
+		return debugVariablesValues;
 	}
 
 	/**
