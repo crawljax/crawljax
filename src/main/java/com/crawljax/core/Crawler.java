@@ -56,12 +56,12 @@ public class Crawler implements Runnable {
 	/**
 	 * The path followed from the index to the current state.
 	 */
-	private ArrayList<Eventable> exactEventPath = new ArrayList<Eventable>();
+	private List<Eventable> exactEventPath = new ArrayList<Eventable>();
 
 	/**
 	 * The path followed from the index to the current state.
 	 */
-	private ArrayList<Eventable> crawlPath = new ArrayList<Eventable>();
+	private List<Eventable> crawlPath = new ArrayList<Eventable>();
 
 	/**
 	 * Restart from these candidates.
@@ -80,6 +80,8 @@ public class Crawler implements Runnable {
 
 	private boolean fired = false;
 
+	private String name = "automatic";
+
 	/**
 	 * Crawler constructor for a new 'starting from scratch(index)' crawler.
 	 * 
@@ -90,6 +92,22 @@ public class Crawler implements Runnable {
 		this(mother, true);
 	}
 
+	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, boolean reload,
+	        String name) {
+		this(mother, reload);
+		this.exactEventPath = exactEventPath;
+		this.name = name;
+		LOGGER.info(getName() + " ExactPaths: " + exactEventPath.size());
+		for (Eventable e : exactEventPath) {
+			LOGGER.info("Eventable: " + e);
+		}
+	}
+
+	private String getName() {
+
+		return "CRAWLER-NAME: " + this.name + " ";
+	}
+
 	/**
 	 * Private crawler constructor for a new crawler. only used from internal
 	 * 
@@ -98,12 +116,12 @@ public class Crawler implements Runnable {
 	 * @param loadIndex
 	 *            true if the index need to be loaded
 	 */
-	public Crawler(CrawljaxController mother, boolean loadIndex) {
+	private Crawler(CrawljaxController mother, boolean loadIndex) {
 		this.controller = mother;
 		this.candidateExtractor = new CandidateElementExtractor(this);
 		if (loadIndex) {
 			/**
-			 * The index page is requested to load so load a browser and reloas the initialURL
+			 * The index page is requested to load so load a browser and reloads the initialURL
 			 */
 			browser = BrowserFactory.requestBrowser();
 			try {
@@ -142,7 +160,7 @@ public class Crawler implements Runnable {
 	 *             an exception when the index page can not be loaded
 	 */
 	public void goToInitialURL() throws CrawljaxException {
-		LOGGER.info("Loading Page " + PropertyHelper.getSiteUrlValue());
+		LOGGER.info(getName() + "Loading Page " + PropertyHelper.getSiteUrlValue());
 		browser.goToUrl(PropertyHelper.getSiteUrlValue());
 		/**
 		 * Thread safe
@@ -177,7 +195,7 @@ public class Crawler implements Runnable {
 			String newXPath = new ElementResolver(eventable, browser).resolve();
 			if (newXPath != null) {
 				if (!xpath.equals(newXPath)) {
-					LOGGER.info("XPath changed from " + xpath + " to " + newXPath);
+					LOGGER.info(getName() + "XPath changed from " + xpath + " to " + newXPath);
 				}
 				if (browser.fireEvent(new Eventable(new Identification("xpath", newXPath),
 				        eventType))) {
@@ -245,7 +263,7 @@ public class Crawler implements Runnable {
 					return;
 				}
 
-				LOGGER.info("Backtracking by firing " + clickable.getEventType()
+				LOGGER.info(getName() + "Backtracking by firing " + clickable.getEventType()
 				        + " on element: " + clickable);
 
 				/**
@@ -260,6 +278,7 @@ public class Crawler implements Runnable {
 				this.handleInputElements(clickable);
 				if (this.fireEvent(clickable)) {
 
+					// TODO ali, do not increase depth if eventable is from guidedcrawling
 					depth++;
 
 					/**
@@ -282,7 +301,7 @@ public class Crawler implements Runnable {
 	 * @throws CrawljaxException
 	 *             an exception.
 	 */
-	private int clickTag(final CandidateElement candidateElement, String eventType,
+	public int clickTag(final CandidateElement candidateElement, String eventType,
 	        boolean handleInputElements, StateVertix currentHold) throws CrawljaxException {
 
 		Eventable eventable = new Eventable(candidateElement, eventType);
@@ -292,8 +311,8 @@ public class Crawler implements Runnable {
 			this.handleInputElements(eventable);
 		}
 
-		LOGGER.info("Firing " + eventable.getEventType() + " on element: " + eventable
-		        + "; State: " + currentHold.getName());
+		LOGGER.info(getName() + "Firing " + eventable.getEventType() + " on element: "
+		        + eventable + "; State: " + currentHold.getName());
 
 		if (this.fireEvent(eventable)) {
 			// String dom = new String(browser.getDom());
@@ -307,6 +326,8 @@ public class Crawler implements Runnable {
 					// Dom changed
 					// No Clone
 					exactEventPath.add(eventable);
+					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller, controller
+					        .getSession(), getExacteventpath());
 					this.currentState = newState;
 					return 1;
 				} else {
@@ -326,7 +347,7 @@ public class Crawler implements Runnable {
 	 * 
 	 * @return the exacteventpath
 	 */
-	public final ArrayList<Eventable> getExacteventpath() {
+	public final List<Eventable> getExacteventpath() {
 		return exactEventPath;
 	}
 
@@ -343,7 +364,8 @@ public class Crawler implements Runnable {
 		}
 		if (depth >= PropertyHelper.getCrawlDepthValue()
 		        && PropertyHelper.getCrawlDepthValue() != 0) {
-			LOGGER.info("DEPTH " + depth + " reached returning from rec call. Given depth: "
+			LOGGER.info(getName() + "DEPTH " + depth
+			        + " reached returning from rec call. Given depth: "
 			        + PropertyHelper.getCrawlDepthValue());
 			return true;
 		}
@@ -358,7 +380,7 @@ public class Crawler implements Runnable {
 
 		StateVertix currentHold = this.currentState.clone();
 
-		LOGGER.info("Starting preStateCrawlingPlugins...");
+		LOGGER.info(getName() + "Starting preStateCrawlingPlugins...");
 		CrawljaxPluginsUtil.runPreStateCrawlingPlugins(controller.getSession(), candidates);
 
 		boolean handleInputElements = true;
@@ -398,7 +420,7 @@ public class Crawler implements Runnable {
 							this.controller.getSession().addCrawlPath(crawlPath);
 
 							// GO Back
-							LOGGER.info("Reloading Page for navigating back.");
+							LOGGER.info(getName() + "Reloading Page for navigating back.");
 							try {
 								this.goToInitialURL();
 							} catch (Exception e) {
@@ -424,7 +446,7 @@ public class Crawler implements Runnable {
 							boolean lastEventType =
 							        eventType.equals(eventTypes.get(eventTypes.size() - 1));
 							if (lastCandidate && lastEventType) {
-								LOGGER.info("No more items to process"
+								LOGGER.info(getName() + "No more items to process"
 								        + " for this depth so not forking...");
 							} else {
 								if (!lastEventType) {
@@ -445,8 +467,8 @@ public class Crawler implements Runnable {
 				reStoreEvents = false;
 			} else {
 				Eventable eventable = new Eventable(candidateElement, "");
-				LOGGER.info("Conditions not satisfied for element: " + eventable + "; State: "
-				        + this.currentState.getName());
+				LOGGER.info(getName() + "Conditions not satisfied for element: " + eventable
+				        + "; State: " + this.currentState.getName());
 			}
 
 			if (resetTypes) {
@@ -455,19 +477,7 @@ public class Crawler implements Runnable {
 			}
 		}
 		if (reStoreCandidates) {
-			ArrayList<Eventable> path = new ArrayList<Eventable>();
-			for (Eventable eventable : this.exactEventPath) {
-				Eventable e = eventable.clone();
-				path.add(e);
-				// path.add(eventable);
-			}
-			// Remove the last entry because we want to be able to go back
-			// into the original state where the last change (last in list)
-			// was made
-
-			if (path.size() > 0) {
-				path.remove(path.size() - 1);
-			}
+			ArrayList<Eventable> path = getCurrentExactPaths();
 
 			/**
 			 * Make clone of everything that might be reused
@@ -487,7 +497,7 @@ public class Crawler implements Runnable {
 			 * An event has been fired so we are one level deeper
 			 */
 			depth++;
-			LOGGER.info("RECURSIVE Call crawl; Current DEPTH= " + depth);
+			LOGGER.info(getName() + "RECURSIVE Call crawl; Current DEPTH= " + depth);
 			if (!this.crawl()) {
 				// Crawling has stoped
 				// TODO STOP ALL Threads??
@@ -500,17 +510,34 @@ public class Crawler implements Runnable {
 		return true;
 	}
 
+	private ArrayList<Eventable> getCurrentExactPaths() {
+		ArrayList<Eventable> path = new ArrayList<Eventable>();
+		for (Eventable eventable : this.exactEventPath) {
+			Eventable e = eventable.clone();
+			path.add(e);
+			// path.add(eventable);
+		}
+		// Remove the last entry because we want to be able to go back
+		// into the original state where the last change (last in list)
+		// was made
+
+		if (path.size() > 0) {
+			path.remove(path.size() - 1);
+		}
+		return path;
+	}
+
 	private void checkCandidates() throws CrawljaxException {
 		if (this.candidates == null) {
 			if (controller.getCrawlConditionChecker().check(browser)) {
-				LOGGER.info("Looking in state: " + this.currentState.getName()
+				LOGGER.info(getName() + "Looking in state: " + this.currentState.getName()
 				        + " for candidate elements with ");
 				this.candidates =
 				        this.candidateExtractor.extract(PropertyHelper.getCrawlTagElements(),
 				                PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
 				                        .getClickOnceValue());
 			} else {
-				LOGGER.info("State " + this.currentState.getName()
+				LOGGER.info(getName() + "State " + this.currentState.getName()
 				        + " dit not satisfy the CrawlConditions.");
 				this.candidates = new ArrayList<CandidateElement>();
 			}
@@ -529,12 +556,14 @@ public class Crawler implements Runnable {
 	@Override
 	public void run() {
 
+		LOGGER.info(getName());
+
 		/**
 		 * If the browser is null place a request for a browser from the BrowserFactory
 		 */
 		if (this.browser == null) {
 			this.browser = BrowserFactory.requestBrowser();
-			LOGGER.info("Reloading Page for navigating back.");
+			LOGGER.info(getName() + "Reloading Page for navigating back.");
 			try {
 				this.goToInitialURL();
 			} catch (Exception e) {
@@ -558,7 +587,7 @@ public class Crawler implements Runnable {
 				this.currentState =
 				        exactEventPath.get(exactEventPath.size() - 1).getTargetStateVertix();
 			} catch (Exception e) {
-				LOGGER.error("Faild to backtrack", e);
+				LOGGER.error(getName() + "Faild to backtrack", e);
 			}
 		} else {
 			this.currentState = controller.getIndexState();
@@ -569,6 +598,7 @@ public class Crawler implements Runnable {
 			/**
 			 * Hand over the main crawling
 			 */
+
 			this.crawl();
 
 			/**
@@ -579,7 +609,7 @@ public class Crawler implements Runnable {
 				controller.getSession().addCrawlPath(crawlPath);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Crawl faild!", e);
+			LOGGER.error(getName() + "Crawl faild!", e);
 		} finally {
 			/**
 			 * At last failure or non release the browser
