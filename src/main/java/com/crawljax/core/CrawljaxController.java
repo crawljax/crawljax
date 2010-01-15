@@ -135,19 +135,18 @@ public class CrawljaxController {
 			PropertyHelper.init(propertiesFile);
 		}
 
-		LOGGER.info("Embedded browser implementation: " + BrowserFactory.getBrowserTypeString());
-		crawler = new Crawler(this);
-
-		HibernateUtil.initialize();
-
 		LOGGER.info("Used plugins:");
-
 		CrawljaxPluginsUtil.loadPlugins();
 
 		if (PropertyHelper.getCrawljaxConfiguration() != null) {
 			CrawljaxPluginsUtil.runProxyServerPlugins(PropertyHelper.getCrawljaxConfiguration()
 			        .getProxyConfiguration());
 		}
+
+		LOGGER.info("Embedded browser implementation: " + BrowserFactory.getBrowserTypeString());
+		crawler = new Crawler(this);
+
+		HibernateUtil.initialize();
 
 		LOGGER.info("Crawljax initialized!");
 
