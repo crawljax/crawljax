@@ -126,6 +126,9 @@ public class StateMachine {
 		return previousState;
 	}
 
+	/**
+	 * reset the state machine to the initial state.
+	 */
 	public void rewind() {
 		this.currentState = this.initialState;
 		this.previousState = null;
