@@ -8,8 +8,10 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.ProxyConfiguration;
+import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertix;
 import com.crawljax.util.PropertyHelper;
 
@@ -216,6 +218,30 @@ public final class CrawljaxPluginsUtil {
 			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
 				if (plugin instanceof ProxyServerPlugin) {
 					((ProxyServerPlugin) plugin).proxyServer(config);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Load and run the guidedCrawlingPlugins. guidedServerPlugins are used to have control of the
+	 * crawling on certain states.
+	 * 
+	 * @param controller
+	 *            the crawljax controller instance.
+	 * @param session
+	 *            the current crawl session.
+	 * @param exactEventPaths
+	 *            the exact crawled event paths. Used to bring the browser back to the state the
+	 *            crawler was before guided crawling.
+	 */
+	public static void runGuidedCrawlingPlugins(CrawljaxController controller,
+	        CrawlSession session, final List<Eventable> exactEventPaths) {
+		if (PropertyHelper.getCrawljaxConfiguration() != null) {
+			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+				if (plugin instanceof GuidedCrawlingPlugin) {
+					((GuidedCrawlingPlugin) plugin).guidedCrawling(controller, session,
+					        exactEventPaths);
 				}
 			}
 		}
