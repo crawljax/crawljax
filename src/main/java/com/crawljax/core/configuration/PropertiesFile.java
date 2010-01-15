@@ -23,6 +23,7 @@ public class PropertiesFile {
 	private static String crawlMaxStates = "crawl.max.states";
 	private static String crawlMaxTime = "crawl.max.runtime";
 	private static String crawlThrehold = "crawl.threshold";
+	private static String crawlNumberOfThreads = "crawl.numberOfThreads";
 
 	// TODO danny, is this used?
 	private static String robotEvents = "robot.events";
@@ -126,6 +127,8 @@ public class PropertiesFile {
 		crawler.setWaitTimeAfterReloadUrl(file.getInt(crawlWaitReload));
 
 		crawler.setRandomInputInForms(file.getInt(crawlFormRandomInput) == 1);
+
+		crawler.setNumberOfThreads(file.getInt(crawlNumberOfThreads));
 
 		return crawler;
 	}

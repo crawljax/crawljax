@@ -46,6 +46,7 @@ public final class PropertyHelper {
 	private static String crawlTags = "crawl.tags";
 	private static String crawlExludeTags = "crawl.tags.exclude";
 	private static String crawlFilterAttributes = "crawl.filter.attributes";
+	/* TODO: all, There is no implementation for this? */
 	private static String crawlNumberOfThreads = "crawl.numberOfThreads";
 
 	private static String hibernateProperties = "hibernate.properties";
