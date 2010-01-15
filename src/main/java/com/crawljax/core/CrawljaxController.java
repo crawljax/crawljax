@@ -41,6 +41,9 @@ import com.crawljax.util.database.HibernateUtil;
  * @version $Id$
  */
 public class CrawljaxController {
+
+	private static final int THOUSAND = 1000;
+
 	private static final Logger LOGGER = Logger.getLogger(CrawljaxController.class.getName());
 
 	private StateVertix indexState;
@@ -68,24 +71,24 @@ public class CrawljaxController {
 	private final ThreadPoolExecutor workQueue;
 
 	/**
-	 * Use AtomicInteger to denote the stateCounter, in doing so its thread-safe
+	 * Use AtomicInteger to denote the stateCounter, in doing so its thread-safe.
 	 */
 	private final AtomicInteger stateCounter = new AtomicInteger(1);
 
 	/**
-	 * Use the ConcurrentHashMap to make sure the foundNewStateMap is thread-safe
+	 * Use the ConcurrentHashMap to make sure the foundNewStateMap is thread-safe.
 	 */
 	private final Map<Thread, Boolean> foundNewStateMap =
 	        new ConcurrentHashMap<Thread, Boolean>();
 
 	/**
-	 * Use the AtomicInteger to prevent Problems when increasing
+	 * Use the AtomicInteger to prevent Problems when increasing.
 	 */
 	private final AtomicInteger numberofExaminedElements = new AtomicInteger();
 
 	/**
 	 * Use the ConcurrentLinkedQueue to prevent Thread problems when checking and storing
-	 * checkedElements
+	 * checkedElements.
 	 */
 	private final Collection<String> checkedElements = new ConcurrentLinkedQueue<String>();
 
@@ -166,6 +169,8 @@ public class CrawljaxController {
 
 		HibernateUtil.initialize();
 
+		LOGGER.info("Number of threads: " + PropertyHelper.getCrawNumberOfThreadsValue());
+
 		LOGGER.info("Crawljax initialized!");
 
 		return new ThreadPoolExecutor(PropertyHelper.getCrawNumberOfThreadsValue(),
@@ -221,7 +226,7 @@ public class CrawljaxController {
 			// TODO Stefan Ok this is not so nice....
 			while (!BrowserFactory.isFinished()) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(THOUSAND);
 				} catch (InterruptedException e) {
 					LOGGER.error("The waiting on the browsers to be finished was Interruped", e);
 				}
@@ -304,7 +309,7 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * TODO Stefan move the synchronized
+	 * TODO Stefan move the synchronized.
 	 * 
 	 * @param currentHold
 	 *            the placeholder for the current stateVertix.
@@ -312,7 +317,7 @@ public class CrawljaxController {
 	 *            the event edge.
 	 * @param newState
 	 *            the new state.
-	 * @param crawler
+	 * @param browser
 	 *            used to feet to checkInvariants
 	 * @return true if the new state is not found in the state machine.
 	 * @NotThreadSafe
@@ -365,7 +370,7 @@ public class CrawljaxController {
 	public final boolean isDomChanged(final StateVertix stateBefore, final StateVertix stateAfter) {
 		boolean isChanged = false;
 
-		// do not need Oracle Comparators now, because hash of stripped domis
+		// do not need Oracle Comparators now, because hash of stripped dom is
 		// already calculated
 		// isChanged = !stateComparator.compare(stateBefore.getDom(),
 		// stateAfter.getDom(), browser);
@@ -436,7 +441,7 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * TODO Stefan move the synchronized
+	 * TODO Stefan move the synchronized.
 	 * 
 	 * @NotThreadSafe
 	 * @param state
@@ -453,7 +458,7 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * TODO Stefan move the synchronized
+	 * TODO Stefan move the synchronized.
 	 * 
 	 * @NotThreadSafe
 	 */
