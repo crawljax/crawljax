@@ -89,7 +89,14 @@ public class Crawler implements Runnable {
 	 *            the main CrawljaxController
 	 */
 	public Crawler(CrawljaxController mother) {
-		this(mother, true);
+		this(mother, false);
+		if (this.browser == null) {
+			/**
+			 * The Crawler is created with only a controller so propably its requested from the
+			 * CrawljaxController Create a new Browser to prevent null pointers :)
+			 */
+			browser = BrowserFactory.requestBrowser();
+		}
 	}
 
 	/**
