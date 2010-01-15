@@ -38,7 +38,7 @@ public final class PropertyHelper {
 	private static String crawlDepth = "crawl.depth";
 	private static String crawlMaxStates = "crawl.max.states";
 	private static String crawlMaxTime = "crawl.max.runtime";
-	private static String crawlThrehold = "crawl.threshold";
+
 	private static String robotEvents = "robot.events";
 	private static String crawlTags = "crawl.tags";
 	private static String crawlExludeTags = "crawl.tags.exclude";
@@ -362,13 +362,6 @@ public final class PropertyHelper {
 	 */
 	public static String getCrawlDepth() {
 		return crawlDepth;
-	}
-
-	/**
-	 * @return the crawlThrehold
-	 */
-	public static String getCrawlThrehold() {
-		return crawlThrehold;
 	}
 
 	/**

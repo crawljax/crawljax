@@ -1,9 +1,15 @@
 package com.crawljax.core.configuration;
 
 import java.io.File;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+
+import com.crawljax.core.TagAttribute;
+import com.crawljax.core.TagElement;
 
 /**
  * This class is used to create a CrawljaxConfiguration object configured with settings from a file.
@@ -114,7 +120,83 @@ public class PropertiesFile {
 
 		crawler.setNumberOfThreads(file.getInt(CRAWLNUMBEROFTHREADS));
 
+		setClickTags(file, crawler);
+
 		return crawler;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setClickTags(PropertiesConfiguration file, CrawlSpecification crawler) {
+		List<String> tags = file.getList(CRAWLTAGS);
+
+		/* walk through all elements */
+		for (String tag : tags) {
+			/* call the correct api stuff on the crawler for tag */
+			parseTagElement(tag, crawler);
+		}
+	}
+
+	/**
+	 * Parses the tag elements.
+	 * 
+	 * @param text
+	 *            The string containing the tag elements.
+	 */
+	public void parseTagElement(String text, CrawlSpecification crawler) {
+		if (text.equals("")) {
+			return;
+		}
+		TagElement tagElement = new TagElement();
+		Pattern pattern =
+		        Pattern.compile("\\w+:\\{(\\w+=?(\\-*\\s*[\\w%]\\s*)+\\;?\\s?)*}"
+		                + "(\\[\\w+\\])?");
+
+		Pattern patternTagName = Pattern.compile("\\w+");
+
+		Pattern patternAttributes = Pattern.compile("\\{(\\w+=(\\-*\\s*[\\w%]\\s*)+\\;?\\s?)*}");
+
+		Pattern patternAttribute = Pattern.compile("(\\w+)=((\\-*\\s*[\\w%]\\s*)+)");
+
+		Pattern patternId = Pattern.compile("(\\[)(\\w+)(\\])");
+
+		Matcher matcher = pattern.matcher(text);
+
+		if (matcher.matches()) {
+			String substring = matcher.group();
+			matcher = patternTagName.matcher(substring);
+
+			if (matcher.find()) {
+				tagElement.setName(matcher.group().trim());
+			}
+
+			matcher = patternAttributes.matcher(substring);
+
+			// attributes
+			if (matcher.find()) {
+				String attributes = (matcher.group());
+				// parse attributes
+				matcher = patternAttribute.matcher(attributes);
+
+				while (matcher.find()) {
+					String name = matcher.group(1).trim();
+					String value = matcher.group(2).trim();
+					tagElement.getAttributes().add(new TagAttribute(name, value));
+				}
+			}
+
+			// id
+			matcher = patternId.matcher(substring);
+			if (matcher.find()) {
+				String id = matcher.group(2);
+				tagElement.setId(id);
+			}
+
+		}
+
+		CrawlElement element = crawler.click(tagElement.getName());
+		for (TagAttribute attrib : tagElement.getAttributes()) {
+			element.withAttribute(attrib.getName(), attrib.getValue());
+		}
 	}
 
 	/**
