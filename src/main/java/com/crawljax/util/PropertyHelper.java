@@ -3,7 +3,6 @@
  */
 package com.crawljax.util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -34,9 +33,7 @@ public final class PropertyHelper {
 	private static String outputFolderName = "output.path";
 	private static String outputFolder = "";
 
-	private static String genFilepath = "generated.pages.filepath";
 	private static String siteUrl = "site.url";
-	private static String siteIndexablePath = "site.indexable.path";
 	private static String baseUrl = "site.base.url";
 	private static String crawlDepth = "crawl.depth";
 	private static String crawlMaxStates = "crawl.max.states";
@@ -51,7 +48,6 @@ public final class PropertyHelper {
 	private static String hibernateProperties = "hibernate.properties";
 	private static String hibernatePropertiesValue = "hibernate.properties";
 
-	private static String crawlManualEnterForm = "crawl.forms.manual";
 	private static String crawlFormRandomInput = "crawl.forms.randominput";
 	private static int crawlFormRandomInputValue = 1;
 
@@ -75,26 +71,13 @@ public final class PropertyHelper {
 
 	private static int testInvariantsWhileCrawlingValue = 1;
 
-	private static String debugVariables = "reportbuilder.debugvariables";
-	private static List<String> debugVariablesValues;
-
 	/* event handlers */
 	private static String detectEventHandlers = "eventHandlers.detect";
 	private static int detectEventHandlersValue = 1;
 
-	private static String supportDomEvents = "eventHandlers.supportDomEvents";
-	private static int supportDomEventsValue = 1;
-	private static String supportAddEvents = "eventHandlers.supportAddEvents";
-	private static int supportAddEventsValue = 1;
-	private static String supportJQuery = "eventHandlers.supportJQuery";
-	private static int supportJQueryValue = 1;
-
 	private static String siteUrlValue;
-	private static String genFilepathValue = "target/generated-sources/";
-	private static String siteIndexablePathValue;
 	private static String baseUrlValue;
 	private static int crawlDepthValue;
-	private static double crawlThreholdValue;
 	private static List<String> robotEventsValues;
 	private static List<String> crawlTagsValues;
 	private static List<String> crawlFilterAttributesValues;
@@ -111,10 +94,6 @@ public final class PropertyHelper {
 	private static int domTidyValue = 0;
 
 	private static int crawNumberOfThreadsValue = 1;
-
-	private static String seleniumTestsuitePath = "selenium.testsuite.path";
-
-	private static String seleniumTestsuitePathValue;
 
 	private static String maxHistorySizeText = "history.maxsize";
 
@@ -173,8 +152,6 @@ public final class PropertyHelper {
 		projectRelativePathValue = getProperty(projectRelativePath);
 
 		siteUrlValue = getProperty(siteUrl);
-		genFilepathValue = getProperty(genFilepath);
-		siteIndexablePathValue = getProperty(siteIndexablePath);
 		baseUrlValue = getProperty(baseUrl);
 		crawlDepthValue = getPropertyAsInt(crawlDepth);
 		crawNumberOfThreadsValue = getPropertyAsInt(crawlNumberOfThreads);
@@ -201,8 +178,6 @@ public final class PropertyHelper {
 			clickOnceValue = getPropertyAsInt(clickOnce);
 		}
 
-		debugVariablesValues = getPropertyAsList(debugVariables);
-
 		setTagElements();
 		setTagExcludeElements();
 
@@ -210,9 +185,6 @@ public final class PropertyHelper {
 			proxyEnabledValue = getPropertyAsInt(proxyEnabled);
 		}
 
-		if (config.containsKey(seleniumTestsuitePath)) {
-			seleniumTestsuitePathValue = getProperty(seleniumTestsuitePath);
-		}
 		if (config.containsKey(maxHistorySizeText)) {
 			maxHistorySize = getPropertyAsInt(maxHistorySizeText);
 		}
@@ -299,29 +271,9 @@ public final class PropertyHelper {
 			return false;
 		}
 
-		try {
-			if (genFilepathValue != null && !genFilepathValue.equals("")) {
-				Helper.directoryCheck(genFilepathValue);
-			}
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-
-			return false;
-		}
-
 		if (isEmpty(hibernateSchemaValue)) {
 			LOGGER.error("Property " + hibernateSchema + " is not set.");
 
-			return false;
-		}
-
-		try {
-			// make sure the report is written to an existing path
-			if (seleniumTestsuitePathValue != null) {
-				Helper.directoryCheck(seleniumTestsuitePathValue);
-			}
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
 			return false;
 		}
 
@@ -392,24 +344,10 @@ public final class PropertyHelper {
 	}
 
 	/**
-	 * @return the genFilepath.
-	 */
-	public static String getGenFilepath() {
-		return genFilepath;
-	}
-
-	/**
 	 * @return the siteUrl
 	 */
 	public static String getSiteUrl() {
 		return siteUrl;
-	}
-
-	/**
-	 * @return the siteIndexablePath
-	 */
-	public static String getSiteIndexablePath() {
-		return siteIndexablePath;
 	}
 
 	/**
@@ -431,13 +369,6 @@ public final class PropertyHelper {
 	 */
 	public static String getCrawlThrehold() {
 		return crawlThrehold;
-	}
-
-	/**
-	 * @return the robotEvents
-	 */
-	public static String getRobotEvents() {
-		return robotEvents;
 	}
 
 	/**
@@ -469,20 +400,6 @@ public final class PropertyHelper {
 	}
 
 	/**
-	 * @return the genFilepathValue
-	 */
-	public static String getGenFilepathValue() {
-		return genFilepathValue;
-	}
-
-	/**
-	 * @return the siteIndexablePathValue
-	 */
-	public static String getSiteIndexablePathValue() {
-		return siteIndexablePathValue;
-	}
-
-	/**
 	 * @return the baseUrlValue
 	 */
 	public static String getBaseUrlValue() {
@@ -494,13 +411,6 @@ public final class PropertyHelper {
 	 */
 	public static int getCrawlDepthValue() {
 		return crawlDepthValue;
-	}
-
-	/**
-	 * @return the crawlThreholdValue
-	 */
-	public static double getCrawlThreholdValue() {
-		return crawlThreholdValue;
 	}
 
 	/**
@@ -692,13 +602,6 @@ public final class PropertyHelper {
 	}
 
 	/**
-	 * @return the crawlManualEnterForm
-	 */
-	public static String getCrawlManualEnterForm() {
-		return crawlManualEnterForm;
-	}
-
-	/**
 	 * @return the crawlManualEnterFormValue
 	 */
 	public static boolean getCrawlManualEnterFormValue() {
@@ -747,16 +650,6 @@ public final class PropertyHelper {
 		return domTidyValue == 1;
 	}
 
-	// selenium
-	/**
-	 * Return the path in which the Selenium report should be created.
-	 * 
-	 * @return the genFilepathValue
-	 */
-	public static String getSeleniumTestsuitePathValue() {
-		return seleniumTestsuitePathValue;
-	}
-
 	/**
 	 * Return the max history size.
 	 * 
@@ -783,13 +676,6 @@ public final class PropertyHelper {
 	}
 
 	/**
-	 * @return the debugVariablesValues
-	 */
-	public static List<String> getDebugVariablesValues() {
-		return debugVariablesValues;
-	}
-
-	/**
 	 * @return the detectEventHandlers
 	 */
 	public static String getDetectEventHandlers() {
@@ -804,48 +690,6 @@ public final class PropertyHelper {
 	}
 
 	/**
-	 * @return the supportDomEvents
-	 */
-	public static String getSupportDomEvents() {
-		return supportDomEvents;
-	}
-
-	/**
-	 * @return the supportDomEventsValue
-	 */
-	public static boolean getSupportDomEventsValue() {
-		return supportDomEventsValue == 1;
-	}
-
-	/**
-	 * @return the supportAddEvents
-	 */
-	public static String getSupportAddEvents() {
-		return supportAddEvents;
-	}
-
-	/**
-	 * @return the supportAddEventsValue
-	 */
-	public static boolean getSupportAddEventsValue() {
-		return supportAddEventsValue == 1;
-	}
-
-	/**
-	 * @return the supportJQuery
-	 */
-	public static String getSupportJQuery() {
-		return supportJQuery;
-	}
-
-	/**
-	 * @return the supportJQueryValue
-	 */
-	public static boolean getSupportJQueryValue() {
-		return supportJQueryValue == 1;
-	}
-
-	/**
 	 * Get filename of the properties file in use.
 	 * 
 	 * @return Filename.
@@ -857,7 +701,7 @@ public final class PropertyHelper {
 	/**
 	 * @return the crawNumberOfThreadsValue
 	 */
-	public static final int getCrawNumberOfThreadsValue() {
+	public static int getCrawNumberOfThreadsValue() {
 		return crawNumberOfThreadsValue;
 	}
 
