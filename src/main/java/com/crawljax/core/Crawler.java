@@ -89,7 +89,7 @@ public class Crawler implements Runnable {
 	 *            the main CrawljaxController
 	 */
 	public Crawler(CrawljaxController mother) {
-		this(mother, false);
+		this(mother, true);
 	}
 
 	/**
