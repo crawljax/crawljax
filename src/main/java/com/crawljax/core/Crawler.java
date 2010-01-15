@@ -92,6 +92,16 @@ public class Crawler implements Runnable {
 		this(mother, true);
 	}
 
+	/**
+	 * @param mother
+	 *            the main CrawljaxController
+	 * @param exactEventPath
+	 *            the event path up till this moment.
+	 * @param reload
+	 *            if true the browser first will be reloaded.
+	 * @param name
+	 *            a name for this crawler (default is automatic).
+	 */
 	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, boolean reload,
 	        String name) {
 		this(mother, reload);
