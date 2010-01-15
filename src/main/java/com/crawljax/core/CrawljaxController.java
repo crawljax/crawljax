@@ -1,11 +1,14 @@
 package com.crawljax.core;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -40,7 +43,6 @@ import com.crawljax.util.database.HibernateUtil;
 public class CrawljaxController {
 	private static final Logger LOGGER = Logger.getLogger(CrawljaxController.class.getName());
 
-	private int stateCounter = 1;
 	private StateVertix indexState;
 	private EmbeddedBrowser browser;
 	private StateMachine stateMachine;
@@ -63,13 +65,29 @@ public class CrawljaxController {
 
 	private final List<OracleComparator> oracleComparator;
 
-	private final Set<String> checkedElements = new LinkedHashSet<String>();
-
 	private final ThreadPoolExecutor workQueue;
 
-	private boolean foundNewState;
+	/**
+	 * Use AtomicInteger to denote the stateCounter, in doing so its thread-safe
+	 */
+	private final AtomicInteger stateCounter = new AtomicInteger(1);
 
-	private int numberofExaminedElements;
+	/**
+	 * Use the ConcurrentHashMap to make sure the foundNewStateMap is thread-safe
+	 */
+	private final Map<Thread, Boolean> foundNewStateMap =
+	        new ConcurrentHashMap<Thread, Boolean>();
+
+	/**
+	 * Use the AtomicInteger to prevent Problems when increasing
+	 */
+	private final AtomicInteger numberofExaminedElements = new AtomicInteger();
+
+	/**
+	 * Use the ConcurrentLinkedQueue to prevent Thread problems when checking and storing
+	 * checkedElements
+	 */
+	private final Collection<String> checkedElements = new ConcurrentLinkedQueue<String>();
 
 	/**
 	 * The constructor.
@@ -235,7 +253,7 @@ public class CrawljaxController {
 		                TimeUnit.MILLISECONDS.toSeconds(timeCrawlCalc)
 		                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
 		                                .toMinutes(timeCrawlCalc))));
-		LOGGER.info("EXAMINED ELEMENTS: " + numberofExaminedElements);
+		LOGGER.info("EXAMINED ELEMENTS: " + numberofExaminedElements.get());
 		LOGGER.info("CLICKABLES: " + stateMachine.getStateFlowGraph().getAllEdges().size());
 		LOGGER.info("STATES: " + stateMachine.getStateFlowGraph().getAllStates().size());
 		LOGGER.info("Dom average size (byte): "
@@ -249,11 +267,11 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Checks the state and time constraints. This function is ThreadSafe
+	 * Checks the state and time constraints. This function is nearly Thread-safe
 	 * 
 	 * @return true if all conditions are met.
 	 */
-	@GuardedBy("stateMachine")
+	@GuardedBy("stateMachine.getStateFlowGraph()")
 	public boolean checkConstraints() {
 		long timePassed = System.currentTimeMillis() - startCrawl;
 
@@ -267,7 +285,7 @@ public class CrawljaxController {
 			return false;
 		}
 
-		synchronized (stateMachine) {
+		synchronized (stateMachine.getStateFlowGraph()) {
 			if ((PropertyHelper.getCrawlMaxStatesValue() != 0)
 			        && (stateMachine.getStateFlowGraph().getAllStates().size() >= PropertyHelper
 			                .getCrawlMaxStatesValue())) {
@@ -286,6 +304,8 @@ public class CrawljaxController {
 	}
 
 	/**
+	 * TODO Stefan move the synchronized
+	 * 
 	 * @param currentHold
 	 *            the placeholder for the current stateVertix.
 	 * @param event
@@ -297,12 +317,12 @@ public class CrawljaxController {
 	 * @return true if the new state is not found in the state machine.
 	 * @NotThreadSafe
 	 */
-	public boolean updateStateMachine(final StateVertix currentHold, final Eventable event,
-	        StateVertix newState, Crawler crawler) {
+	public synchronized boolean updateStateMachine(final StateVertix currentHold,
+	        final Eventable event, StateVertix newState, EmbeddedBrowser browser) {
 		StateVertix cloneState = stateMachine.addStateToCurrentState(newState, event);
-		foundNewState = true;
+		foundNewStateMap.put(Thread.currentThread(), true);
 		if (cloneState != null) {
-			foundNewState = false;
+			foundNewStateMap.put(Thread.currentThread(), false);
 			newState = cloneState.clone();
 		}
 
@@ -311,7 +331,7 @@ public class CrawljaxController {
 		        + stateMachine.getCurrentState().getName() + " FROM " + currentHold.getName());
 
 		if (PropertyHelper.getTestInvariantsWhileCrawlingValue()) {
-			checkInvariants(crawler);
+			checkInvariants(browser);
 		}
 
 		synchronized (session) {
@@ -334,8 +354,7 @@ public class CrawljaxController {
 
 	/**
 	 * Test to see if the (new) dom is changed with regards to the old dom. This method is Thread
-	 * safe, at least as the equals call of StateVertix is Thread safe and the stateBefor and
-	 * stateAfter do not change on interleaving.
+	 * safe.
 	 * 
 	 * @param stateBefore
 	 *            the state before the event.
@@ -361,16 +380,17 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Return the name of the (new)State.
+	 * Return the name of the (new)State. By using the AtomicInteger the stateCounter is thread-safe
 	 * 
 	 * @return State name the name of the state
 	 */
-	@GuardedBy("this")
-	public synchronized String getStateName() {
-		if (foundNewState) {
-			stateCounter++;
+	public final String getStateName() {
+		Thread thread = Thread.currentThread();
+		Boolean value = foundNewStateMap.get(thread);
+		if (value != null && value) {
+			stateCounter.getAndIncrement();
 		}
-		String state = "state" + stateCounter;
+		String state = "state" + stateCounter.get();
 		return state;
 	}
 
@@ -378,8 +398,8 @@ public class CrawljaxController {
 	 * @param crawler
 	 *            the Crawler to execute the invariants from
 	 */
-	private void checkInvariants(Crawler crawler) {
-		if (!invariantChecker.check(crawler.getBrowser())) {
+	private void checkInvariants(EmbeddedBrowser browser) {
+		if (!invariantChecker.check(browser)) {
 			final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
 			for (Invariant failedInvariant : failedInvariants) {
 				CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
@@ -406,7 +426,9 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * @NotThreadSafe
+	 * Retrieve the current session, there is only one session active at a time. So this method by
+	 * it self is Thread-Safe but actions on the session are NOT!
+	 * 
 	 * @return the session
 	 */
 	public final CrawlSession getSession() {
@@ -414,11 +436,13 @@ public class CrawljaxController {
 	}
 
 	/**
+	 * TODO Stefan move the synchronized
+	 * 
 	 * @NotThreadSafe
 	 * @param state
 	 *            the state to change the state machines pointer to.
 	 */
-	public void changeStateMachineState(StateVertix state) {
+	public synchronized void changeStateMachineState(StateVertix state) {
 		synchronized (stateMachine) {
 			LOGGER.debug("AFTER: sm.current: " + stateMachine.getCurrentState().getName()
 			        + " hold.current: " + state.getName());
@@ -429,9 +453,11 @@ public class CrawljaxController {
 	}
 
 	/**
+	 * TODO Stefan move the synchronized
+	 * 
 	 * @NotThreadSafe
 	 */
-	public void rewindStateMachine() {
+	public synchronized void rewindStateMachine() {
 		/**
 		 * TODO Stefan There is some performance loss using this technique The state machine can
 		 * also be hard forced into the new 'start' state...
@@ -440,7 +466,7 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Add work (Crawler) to the Queue of work that need to be done.
+	 * Add work (Crawler) to the Queue of work that need to be done. The class is thread-safe.
 	 * 
 	 * @param work
 	 *            the work (Crawler) to add to the Queue
@@ -453,44 +479,41 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Check if a given element is already checked, preventing duplicate work.
+	 * Check if a given element is already checked, preventing duplicate work. This is implemented
+	 * in a ConcurrentLinkedQueue to support thread-safety
 	 * 
 	 * @param element
 	 *            the to search for if its already checked
 	 * @return true if the element is already checked
 	 */
-	@GuardedBy("checkedElements")
-	public boolean elementIsAlreadyChecked(String element) {
-		synchronized (checkedElements) {
-			return this.checkedElements.contains(element);
-		}
+	public final boolean elementIsAlreadyChecked(String element) {
+		return this.checkedElements.contains(element);
 	}
 
 	/**
-	 * Mark a given element as checked to prevent duplicate work.
+	 * Mark a given element as checked to prevent duplicate work. This is implemented in a
+	 * ConcurrentLinkedQueue to support thread-safety
 	 * 
 	 * @param element
 	 *            the elements that is checked
 	 */
-	@GuardedBy("checkedElements")
-	public void markElementAsChecked(String element) {
-		synchronized (checkedElements) {
-			this.checkedElements.add(element);
-		}
+	public final void markElementAsChecked(String element) {
+		this.checkedElements.add(element);
 	}
 
 	/**
-	 * Wait for a given condition.
+	 * Wait for a given condition. This call is thread safe as the underlying object is thread-safe.
 	 * 
 	 * @param browser
 	 *            the browser which requires a wait condition
 	 */
-	public void doBrowserWait(EmbeddedBrowser browser) {
+	public final void doBrowserWait(EmbeddedBrowser browser) {
 		this.waitConditionChecker.wait(browser);
 	}
 
 	/**
-	 * Retrieve the index state.
+	 * Retrieve the index state. This class is supposed to be thread safe, but be care full that no
+	 * one changes the indexState...
 	 * 
 	 * @return the indexState of the current crawl
 	 */
@@ -499,7 +522,8 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Return the Checker of the CrawlConditions.
+	 * Return the Checker of the CrawlConditions. This call itself is thread-safe but the
+	 * crawlconditionCheck is nearly thread-safe, the failedCrawlConditions could cause trouble.
 	 * 
 	 * @return the crawlConditionChecker
 	 */
@@ -509,15 +533,18 @@ public class CrawljaxController {
 
 	/**
 	 * increase the number of checked elements, as a statistics measure to know how many elements
-	 * were actually examined.
+	 * were actually examined. Its thread safe by using the AtomicInteger
+	 * 
+	 * @see java.util.concurrent.atomic.AtomicInteger
 	 */
-	@GuardedBy("this")
-	public synchronized void increaseNumberExaminedElements() {
-		numberofExaminedElements++;
+	public final void increaseNumberExaminedElements() {
+		numberofExaminedElements.getAndIncrement();
 	}
 
 	/**
-	 * TODO Check thread safety.
+	 * get the stripped version of the dom currently in the browser. This call is nearly thread
+	 * safe, maybe there is a corner case in the StateComparator with the private static field
+	 * lastUsedOraclePreConditions which is never read nevertheless.
 	 * 
 	 * @param browser
 	 *            the browser instance.
@@ -532,5 +559,44 @@ public class CrawljaxController {
 	 */
 	public final Crawler getCrawler() {
 		return crawler;
+	}
+
+	private String formatRunningTime() {
+		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
+		return String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(timeCrawlCalc),
+		        TimeUnit.MILLISECONDS.toSeconds(timeCrawlCalc)
+		                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
+		                        .toMinutes(timeCrawlCalc)));
+	}
+
+	/**
+	 * Terminate the crawling, Stop all threads this will cause the controller which is sleeping to
+	 * reactive and do the final work....
+	 */
+	@GuardedBy("this")
+	public final synchronized void terminate() {
+		LOGGER.warn("After " + this.formatRunningTime()
+		        + " the crawling process was requested to terminate @ " + Thread.currentThread());
+		LOGGER.info("Trying to stop all the threads");
+		// TODO Stefan do the actual termination of all the threads. Also test if it works!
+		LOGGER.info("There are " + workQueue.getActiveCount() + " threads active");
+		workQueue.shutdownNow();
+
+		if (workQueue.isShutdown()) {
+			LOGGER.info("ThreadPoolExecuter is shutdown");
+		} else {
+			LOGGER.warn("ThreadPoolExecuter is not shutdown");
+		}
+		if (workQueue.isTerminated()) {
+			LOGGER.info("All threads are terminated");
+		} else {
+			LOGGER.warn("Not All threads are terminated, there still are "
+			        + workQueue.getActiveCount() + " threads active");
+		}
+		LOGGER.info("Trying to close all browsers");
+		/**
+		 * Needs some more testing when Threads are not finished, the browser gets locked...
+		 */
+		BrowserFactory.close();
 	}
 }

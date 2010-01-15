@@ -15,8 +15,19 @@ import com.crawljax.util.database.HibernateUtil;
  */
 public class StateMachine {
 	private static final Logger LOGGER = Logger.getLogger(StateMachine.class.getName());
+	/**
+	 * One-to-one releation with the StateFlowGraph, the stateFlowGraph variable is never changed
+	 */
 	private final StateFlowGraph stateFlowGraph;
+
+	/**
+	 * One-to-one releation with the initalState, the initalState is never changed
+	 */
 	private final StateVertix initialState;
+
+	/**
+	 * TODO Stefan Current and previous state often changes; thus given problems.
+	 */
 	private StateVertix currentState;
 	private StateVertix previousState;
 

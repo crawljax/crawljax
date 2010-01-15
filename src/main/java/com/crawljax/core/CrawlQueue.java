@@ -8,6 +8,8 @@ import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import net.jcip.annotations.GuardedBy;
+
 /**
  * This class implements a BlockingQueue with Runnable as its Generic type and extends Stack with
  * also Runnable as generic type. This class is used in the ThreadPoolExecutor and its used to store
@@ -25,14 +27,24 @@ public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnabl
 
 	@Override
 	public int drainTo(Collection<? super Runnable> c) {
-		// Is never used, TODO Stefan a implementation whould be nice
-		return 0;
+		return drainTo(c, Integer.MAX_VALUE);
 	}
 
 	@Override
-	public int drainTo(Collection<? super Runnable> c, int maxRunnablelements) {
-		// Is never used, TODO Stefan a implementation whould be nice
-		return 0;
+	public synchronized int drainTo(Collection<? super Runnable> c, int maxRunnablelements) {
+		int counter = 0;
+		for (Runnable object : this) {
+			counter++;
+			if (counter < maxRunnablelements) {
+				c.add(object);
+			} else {
+				break;
+			}
+		}
+		for (Object object : c) {
+			this.remove(object);
+		}
+		return counter;
 	}
 
 	@Override
@@ -67,7 +79,8 @@ public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnabl
 	}
 
 	@Override
-	public Runnable element() {
+	@GuardedBy("this")
+	public synchronized Runnable element() {
 		return this.get(this.size() - 1);
 	}
 
@@ -77,7 +90,8 @@ public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnabl
 	}
 
 	@Override
-	public Runnable remove() {
+	@GuardedBy("this")
+	public synchronized Runnable remove() {
 		if (this.size() <= 0) {
 			return null;
 		}
