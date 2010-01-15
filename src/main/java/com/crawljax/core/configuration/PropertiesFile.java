@@ -27,7 +27,7 @@ public class PropertiesFile {
 	private static final String CRAWLEXCLUDETAGS = "crawl.tags.exclude";
 	private static final String CRAWLFILTERATTRIBUTES = "crawl.filter.attributes";
 
-	private static String HIBERNATEPROPERTIES = "hibernate.properties";
+	private static final String HIBERNATEPROPERTIES = "hibernate.properties";
 
 	private static final String CRAWLFORMRANDOMINPUT = "crawl.forms.randominput";
 
