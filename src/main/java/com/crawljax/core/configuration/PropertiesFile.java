@@ -17,16 +17,11 @@ public class PropertiesFile {
 
 	private static final String PROJECTRELATIVEPATH = "project.path.relative";
 	private static final String OUTPUTFOLDERNAME = "output.path";
-	private static final String GENFILEPATH = "generated.pages.filepath";
 	private static final String SITEURL = "site.url";
 	private static final String CRAWLDEPTH = "crawl.depth";
 	private static final String CRAWLMAXSTATES = "crawl.max.states";
 	private static final String CRAWLMAXTIME = "crawl.max.runtime";
-	private static final String CRAWLTHRESHOLD = "crawl.threshold";
 	private static final String CRAWLNUMBEROFTHREADS = "crawl.numberOfThreads";
-
-	// TODO danny, is this used?
-	private static final String ROBOTEVENTS = "robot.events";
 
 	private static final String CRAWLTAGS = "crawl.tags";
 	private static final String CRAWLEXCLUDETAGS = "crawl.tags.exclude";
@@ -34,8 +29,6 @@ public class PropertiesFile {
 
 	private static String HIBERNATEPROPERTIES = "hibernate.properties";
 
-	// TODO danny, is this used?
-	private static final String CRAWLMANUALFORMS = "crawl.forms.manual";
 	private static final String CRAWLFORMRANDOMINPUT = "crawl.forms.randominput";
 
 	private static final String formProperties = "forms.properties";
@@ -48,15 +41,6 @@ public class PropertiesFile {
 	private static final String useDatabase = "database.use";
 	// if each candidate clickable should be clicked only once
 	private static String clickOnce = "click.once";
-
-	// TODO danny, can these be removed?
-	private static final String debugVariables = "reportbuilder.debugvariables";
-	private static final String detectEventHandlers = "eventHandlers.detect";
-	private static final String supportDomEvents = "eventHandlers.supportDomEvents";
-	private static final String supportAddEvents = "eventHandlers.supportAddEvents";
-	private static final String supportJQuery = "eventHandlers.supportJQuery";
-
-	private static final String genFilepathValue = "target/generated-sources/";
 
 	private static final String proxyEnabled = "proxy.enabled";
 
