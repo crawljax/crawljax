@@ -597,7 +597,7 @@ public class Crawler implements Runnable {
 				this.currentState =
 				        exactEventPath.get(exactEventPath.size() - 1).getTargetStateVertix();
 			} catch (Exception e) {
-				LOGGER.error(getName() + "Faild to backtrack", e);
+				LOGGER.error(getName() + "Failed to backtrack", e);
 			}
 		} else {
 			this.currentState = controller.getIndexState();
@@ -619,7 +619,7 @@ public class Crawler implements Runnable {
 				controller.getSession().addCrawlPath(crawlPath);
 			}
 		} catch (Exception e) {
-			LOGGER.error(getName() + "Crawl faild!", e);
+			LOGGER.error(getName() + "Crawl failed!", e);
 		} finally {
 			/**
 			 * At last failure or non release the browser

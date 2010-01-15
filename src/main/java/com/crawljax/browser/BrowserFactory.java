@@ -92,7 +92,7 @@ public final class BrowserFactory {
 				b.close();
 				deleteList.add(b);
 			} catch (Exception e) {
-				LOGGER.error("Faild to close free Browser " + b, e);
+				LOGGER.error("Failed to close free Browser " + b, e);
 			}
 		}
 		FREE_BROWSERS.removeAll(deleteList);
@@ -102,7 +102,7 @@ public final class BrowserFactory {
 				b.close();
 				deleteList.add(b);
 			} catch (Exception e) {
-				LOGGER.error("Faild to close taken Browser " + b, e);
+				LOGGER.error("Failed to close taken Browser " + b, e);
 			}
 		}
 		TAKEN_BROWSERS.removeAll(deleteList);
@@ -130,7 +130,7 @@ public final class BrowserFactory {
 			// Retrieve a free browser from the list
 			browser = FREE_BROWSERS.poll();
 			if (browser == null) {
-				LOGGER.error("Faild to fulfil a request for a browser");
+				LOGGER.error("Failed to fulfill a request for a browser");
 			}
 		} else {
 			// There is no browser free...
