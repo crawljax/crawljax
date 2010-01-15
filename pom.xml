@@ -226,6 +226,9 @@
 					<exclude>*.txt</exclude>
 				</excludes>
 			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>	
 		</resources>
 
 		<plugins>
