@@ -2,6 +2,7 @@ package com.crawljax.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -30,6 +31,9 @@ public class Crawler implements Runnable {
 
 	private static final Logger LOGGER = Logger.getLogger(Crawler.class.getName());
 
+	private static final AtomicInteger totalThreadIdCounter = new AtomicInteger();
+
+	private final int threadId;
 	/**
 	 * The main browser window 1 to 1 relation; Every Thread (instance of Crawljax) will get on
 	 * browser assigned in the run function.
@@ -136,6 +140,7 @@ public class Crawler implements Runnable {
 	private Crawler(CrawljaxController mother, boolean loadIndex) {
 		this.controller = mother;
 		this.candidateExtractor = new CandidateElementExtractor(this);
+		this.threadId = totalThreadIdCounter.incrementAndGet();
 		if (loadIndex) {
 			/**
 			 * The index page is requested to load so load a browser and reloads the initialURL
@@ -339,7 +344,8 @@ public class Crawler implements Runnable {
 
 			if (controller.isDomChanged(currentHold, newState)) {
 				crawlPath.add(eventable);
-				if (controller.updateStateMachine(currentHold, eventable, newState, this)) {
+				if (controller.updateStateMachine(currentHold, eventable, newState, this
+				        .getBrowser())) {
 					// Dom changed
 					// No Clone
 					exactEventPath.add(eventable);
@@ -516,9 +522,8 @@ public class Crawler implements Runnable {
 			depth++;
 			LOGGER.info(getName() + "RECURSIVE Call crawl; Current DEPTH= " + depth);
 			if (!this.crawl()) {
-				// Crawling has stoped
-				// TODO STOP ALL Threads??
-				// CLOSE ALL BROWSERS
+				// Crawling has stopped
+				controller.terminate();
 				return false;
 			}
 			this.controller.changeStateMachineState(currentHold);
@@ -683,4 +688,10 @@ public class Crawler implements Runnable {
 	public void markElementAsChecked(String element) {
 		controller.markElementAsChecked(element);
 	}
+
+	@Override
+	public String toString() {
+		return "Crawler Thread " + this.threadId + ": " + this.getName();
+	}
+
 }
