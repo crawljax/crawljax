@@ -39,6 +39,15 @@ public class CandidateElementExtractorTest {
 			fail(e1.getMessage());
 		}
 
+		assertNotNull(crawler);
+
+		try {
+			crawler.goToInitialURL();
+		} catch (CrawljaxException e1) {
+			e1.printStackTrace();
+			fail(e1.getMessage());
+		}
+
 		try {
 			Thread.sleep(400);
 		} catch (InterruptedException e) {
@@ -82,6 +91,13 @@ public class CandidateElementExtractorTest {
 		}
 
 		assertNotNull(crawler);
+
+		try {
+			crawler.goToInitialURL();
+		} catch (CrawljaxException e1) {
+			e1.printStackTrace();
+			fail(e1.getMessage());
+		}
 
 		try {
 			Thread.sleep(400);
