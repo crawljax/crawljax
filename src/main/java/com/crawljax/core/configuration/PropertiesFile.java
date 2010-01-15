@@ -15,50 +15,50 @@ public class PropertiesFile {
 
 	private CrawljaxConfiguration config;
 
-	private static String projectRelativePath = "project.path.relative";
-	private static String outputFolderName = "output.path";
-	private static String genFilepath = "generated.pages.filepath";
-	private static String siteUrl = "site.url";
-	private static String crawlDepth = "crawl.depth";
-	private static String crawlMaxStates = "crawl.max.states";
-	private static String crawlMaxTime = "crawl.max.runtime";
-	private static String crawlThrehold = "crawl.threshold";
-	private static String crawlNumberOfThreads = "crawl.numberOfThreads";
+	private static final String PROJECTRELATIVEPATH = "project.path.relative";
+	private static final String OUTPUTFOLDERNAME = "output.path";
+	private static final String GENFILEPATH = "generated.pages.filepath";
+	private static final String SITEURL = "site.url";
+	private static final String CRAWLDEPTH = "crawl.depth";
+	private static final String CRAWLMAXSTATES = "crawl.max.states";
+	private static final String CRAWLMAXTIME = "crawl.max.runtime";
+	private static final String CRAWLTHRESHOLD = "crawl.threshold";
+	private static final String CRAWLNUMBEROFTHREADS = "crawl.numberOfThreads";
 
 	// TODO danny, is this used?
-	private static String robotEvents = "robot.events";
+	private static final String ROBOTEVENTS = "robot.events";
 
-	private static String crawlTags = "crawl.tags";
-	private static String crawlExludeTags = "crawl.tags.exclude";
-	private static String crawlFilterAttributes = "crawl.filter.attributes";
+	private static final String CRAWLTAGS = "crawl.tags";
+	private static final String CRAWLEXCLUDETAGS = "crawl.tags.exclude";
+	private static final String CRAWLFILTERATTRIBUTES = "crawl.filter.attributes";
 
-	private static String hibernateProperties = "hibernate.properties";
+	private static String HIBERNATEPROPERTIES = "hibernate.properties";
 
 	// TODO danny, is this used?
-	private static String crawlManualEnterForm = "crawl.forms.manual";
-	private static String crawlFormRandomInput = "crawl.forms.randominput";
+	private static final String CRAWLMANUALFORMS = "crawl.forms.manual";
+	private static final String CRAWLFORMRANDOMINPUT = "crawl.forms.randominput";
 
-	private static String formProperties = "forms.properties";
+	private static final String formProperties = "forms.properties";
 
-	private static String browser = "browser";
+	private static final String browser = "browser";
 
-	private static String crawlWaitReload = "crawl.wait.reload";
-	private static String crawlWaitEvent = "crawl.wait.event";
-	private static String hibernateSchema = "hibernate.hbm2ddl.auto";
-	private static String useDatabase = "database.use";
+	private static final String crawlWaitReload = "crawl.wait.reload";
+	private static final String crawlWaitEvent = "crawl.wait.event";
+	private static final String hibernateSchema = "hibernate.hbm2ddl.auto";
+	private static final String useDatabase = "database.use";
 	// if each candidate clickable should be clicked only once
 	private static String clickOnce = "click.once";
 
 	// TODO danny, can these be removed?
-	private static String debugVariables = "reportbuilder.debugvariables";
-	private static String detectEventHandlers = "eventHandlers.detect";
-	private static String supportDomEvents = "eventHandlers.supportDomEvents";
-	private static String supportAddEvents = "eventHandlers.supportAddEvents";
-	private static String supportJQuery = "eventHandlers.supportJQuery";
+	private static final String debugVariables = "reportbuilder.debugvariables";
+	private static final String detectEventHandlers = "eventHandlers.detect";
+	private static final String supportDomEvents = "eventHandlers.supportDomEvents";
+	private static final String supportAddEvents = "eventHandlers.supportAddEvents";
+	private static final String supportJQuery = "eventHandlers.supportJQuery";
 
-	private static String genFilepathValue = "target/generated-sources/";
+	private static final String genFilepathValue = "target/generated-sources/";
 
-	private static String proxyEnabled = "proxy.enabled";
+	private static final String proxyEnabled = "proxy.enabled";
 
 	/**
 	 * default is Firefox.
@@ -91,10 +91,10 @@ public class PropertiesFile {
 	 *            The properties file.
 	 */
 	private void read(PropertiesConfiguration file) {
-		if (file.containsKey(outputFolderName)) {
-			config.setOutputFolder(file.getString(outputFolderName));
+		if (file.containsKey(OUTPUTFOLDERNAME)) {
+			config.setOutputFolder(file.getString(OUTPUTFOLDERNAME));
 		}
-		config.setProjectRelativePath(file.getString(projectRelativePath));
+		config.setProjectRelativePath(file.getString(PROJECTRELATIVEPATH));
 
 		config.setCrawlSpecification(getCrawlSpecification(file));
 
@@ -111,24 +111,24 @@ public class PropertiesFile {
 	 */
 	private CrawlSpecification getCrawlSpecification(PropertiesConfiguration file) {
 
-		CrawlSpecification crawler = new CrawlSpecification(file.getString(siteUrl));
+		CrawlSpecification crawler = new CrawlSpecification(file.getString(SITEURL));
 
 		/*
 		 * TODO: use getBoolean. we use getInt for backward compatibility. in the future we can use
 		 * file.getBoolean
 		 */
 		crawler.setClickOnce(file.getInt(clickOnce) == 1);
-		crawler.setDepth(file.getInt(crawlDepth));
+		crawler.setDepth(file.getInt(CRAWLDEPTH));
 
-		crawler.setMaximumStates(file.getInt(crawlMaxStates));
-		crawler.setMaximumRuntime(file.getInt(crawlMaxTime));
+		crawler.setMaximumStates(file.getInt(CRAWLMAXSTATES));
+		crawler.setMaximumRuntime(file.getInt(CRAWLMAXTIME));
 
 		crawler.setWaitTimeAfterEvent(file.getInt(crawlWaitEvent));
 		crawler.setWaitTimeAfterReloadUrl(file.getInt(crawlWaitReload));
 
-		crawler.setRandomInputInForms(file.getInt(crawlFormRandomInput) == 1);
+		crawler.setRandomInputInForms(file.getInt(CRAWLFORMRANDOMINPUT) == 1);
 
-		crawler.setNumberOfThreads(file.getInt(crawlNumberOfThreads));
+		crawler.setNumberOfThreads(file.getInt(CRAWLNUMBEROFTHREADS));
 
 		return crawler;
 	}
