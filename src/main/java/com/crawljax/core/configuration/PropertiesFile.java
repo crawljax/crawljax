@@ -31,18 +31,18 @@ public class PropertiesFile {
 
 	private static final String CRAWLFORMRANDOMINPUT = "crawl.forms.randominput";
 
-	private static final String formProperties = "forms.properties";
+	private static final String FORMPPROPERTIES = "forms.properties";
 
-	private static final String browser = "browser";
+	private static final String BROWSER = "BROWSER";
 
-	private static final String crawlWaitReload = "crawl.wait.reload";
-	private static final String crawlWaitEvent = "crawl.wait.event";
-	private static final String hibernateSchema = "hibernate.hbm2ddl.auto";
-	private static final String useDatabase = "database.use";
+	private static final String CRAWLWAITRELOAD = "crawl.wait.reload";
+	private static final String CRAWLWAITEVENT = "crawl.wait.event";
+	private static final String HIBERNATESCHEMA = "hibernate.hbm2ddl.auto";
+	private static final String USEDATABASE = "database.use";
 	// if each candidate clickable should be clicked only once
 	private static String clickOnce = "click.once";
 
-	private static final String proxyEnabled = "proxy.enabled";
+	private static final String PROXYENABLED = "proxy.enabled";
 
 	/**
 	 * default is Firefox.
@@ -82,7 +82,7 @@ public class PropertiesFile {
 
 		config.setCrawlSpecification(getCrawlSpecification(file));
 
-		if (file.containsKey(proxyEnabled) && file.getBoolean(proxyEnabled)) {
+		if (file.containsKey(PROXYENABLED) && file.getBoolean(PROXYENABLED)) {
 			config.setProxyConfiguration(new ProxyConfiguration());
 		}
 
@@ -107,8 +107,8 @@ public class PropertiesFile {
 		crawler.setMaximumStates(file.getInt(CRAWLMAXSTATES));
 		crawler.setMaximumRuntime(file.getInt(CRAWLMAXTIME));
 
-		crawler.setWaitTimeAfterEvent(file.getInt(crawlWaitEvent));
-		crawler.setWaitTimeAfterReloadUrl(file.getInt(crawlWaitReload));
+		crawler.setWaitTimeAfterEvent(file.getInt(CRAWLWAITEVENT));
+		crawler.setWaitTimeAfterReloadUrl(file.getInt(CRAWLWAITRELOAD));
 
 		crawler.setRandomInputInForms(file.getInt(CRAWLFORMRANDOMINPUT) == 1);
 
