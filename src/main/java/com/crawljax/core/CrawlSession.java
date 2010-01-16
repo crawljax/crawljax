@@ -27,10 +27,8 @@ public class CrawlSession {
 	private final CrawljaxConfiguration crawljaxConfiguration;
 
 	/**
-	 * TODO: Ali, Danny; used by plugins in test cases. Plugins should not need a session
-	 * 
 	 * @param browser
-	 *            the Embedded browser
+	 *            the Embedded browser.
 	 */
 	public CrawlSession(EmbeddedBrowser browser) {
 		this.browser = browser;
@@ -112,7 +110,7 @@ public class CrawlSession {
 	 * @param crawlPath
 	 *            the eventable list
 	 */
-	protected void addCrawlPath(List<Eventable> crawlPath) {
+	public void addCrawlPath(List<Eventable> crawlPath) {
 		this.crawlPaths.add(crawlPath);
 	}
 
