@@ -65,12 +65,22 @@ public class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public void goToUrl(String url) throws CrawljaxException {
 		browser.navigate().to(url);
+		handlePopups();
 		try {
 			Thread.sleep(PropertyHelper.getCrawlWaitReloadValue());
 		} catch (InterruptedException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
 
+	}
+
+	/**
+	 * alert, prompt, and confirm behave as if the OK button is always clicked.
+	 */
+	private void handlePopups() {
+		executeJavaScript("window.alert = function(msg){return true;};"
+		        + "window.confirm = function(msg){return true;};"
+		        + "window.prompt = function(msg){return true;};");
 	}
 
 	/**
