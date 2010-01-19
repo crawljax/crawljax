@@ -71,15 +71,26 @@ public final class BrowserFactory {
 			return PropertyHelper.getCrawljaxConfiguration().getBrowser();
 		}
 
-		EmbeddedBrowser browser = null;
-		try {
-			browser = findBrowserClass().newInstance();
-		} catch (InstantiationException e) {
-			LOGGER.error("Cannot create a new Browser!", e);
-		} catch (IllegalAccessException e) {
-			LOGGER.error("Cannot create a new Browser!", e);
+		EmbeddedBrowser newBrowser = null;
+		EmbeddedBrowser currentBrowser = null;
+		if (PropertyHelper.getCrawljaxConfiguration() != null) {
+			currentBrowser = PropertyHelper.getCrawljaxConfiguration().getBrowser();
 		}
-		return browser;
+		if (currentBrowser != null) {
+			// Clone the Browser
+			newBrowser = currentBrowser.clone();
+		} else {
+			// There is no browser specified so try to find the class to use and instance it by
+			// reflection
+			try {
+				newBrowser = findBrowserClass().newInstance();
+			} catch (InstantiationException e) {
+				LOGGER.error("Cannot create a new Browser!", e);
+			} catch (IllegalAccessException e) {
+				LOGGER.error("Cannot create a new Browser!", e);
+			}
+		}
+		return newBrowser;
 	}
 
 	/**

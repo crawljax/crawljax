@@ -7,9 +7,9 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.openqa.selenium.WebDriver;
 
-import com.crawljax.browser.AbstractWebDriver;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.WebDriverFirefox;
+import com.crawljax.browser.WebDriverOther;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.util.Helper;
@@ -245,11 +245,16 @@ public final class CrawljaxConfiguration {
 	}
 
 	/**
+	 * Deprecated function to specify the browser used. Replaced by
+	 * {@link CrawljaxConfiguration#setBrowser(EmbeddedBrowser)}.
+	 * 
+	 * @see #setBrowser(EmbeddedBrowser)
 	 * @param driver
 	 *            The Webdriver driver used to crawl. By default {@link WebDriverFirefox} is used.
 	 */
+	@Deprecated
 	public void setBrowser(WebDriver driver) {
-		this.browser = new AbstractWebDriver(driver);
+		this.browser = new WebDriverOther(driver);
 	}
 
 	/**

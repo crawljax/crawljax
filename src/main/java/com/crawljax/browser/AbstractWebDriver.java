@@ -24,7 +24,7 @@ import com.crawljax.util.PropertyHelper;
  * @author mesbah
  * @version $Id$
  */
-public class AbstractWebDriver implements EmbeddedBrowser {
+public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	private static Logger logger = Logger.getLogger(WebDriver.class.getName());
 	private WebDriver browser;
 
@@ -323,4 +323,7 @@ public class AbstractWebDriver implements EmbeddedBrowser {
 			logger.info("Could not remove the screenshot canvas from the DOM.");
 		}
 	}
+
+	@Override
+	public abstract EmbeddedBrowser clone();
 }
