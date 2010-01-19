@@ -363,41 +363,11 @@ public class StateFlowGraphTest {
 
 		Eventable e3 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
 
-		assertTrue(graph.addEdge(index, state2, e1));
-		assertFalse(graph.addEdge(index, state2, e1));
-		assertFalse(graph.addEdge(index, state2, e3));
-
-		assertFalse(graph.addEdge(state2, state3, e1));
-		assertTrue(graph.addEdge(state2, state3, e2));
-
-		assertTrue(graph.addEdge(index, state4, e3));
-
-	}
-
-	public void testEdgesMore() throws Exception {
-		assertNotNull(graph);
-
-		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
-		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
-
-		assertTrue(graph.addState(index));
-		assertTrue(graph.addState(state2));
-		assertTrue(graph.addState(state3));
-		assertTrue(graph.addState(state4));
-
-		Eventable e1 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
-
-		Eventable e2 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
-
-		Eventable e3 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
-
 		Eventable e4 = new Eventable(new Identification("xpath", "/5/index"), "onclick");
 
 		Eventable e5 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
 		Eventable e6 = new Eventable(new Identification("xpath", "/5/index"), "onclick");
-
+		
 		assertTrue(graph.addEdge(index, state2, e1));
 		assertFalse(graph.addEdge(index, state2, e1));
 		assertFalse(graph.addEdge(index, state2, e3));
@@ -409,7 +379,5 @@ public class StateFlowGraphTest {
 		assertTrue(graph.addEdge(index, state4, e4));
 		assertFalse(graph.addEdge(index, state4, e5));
 		assertFalse(graph.addEdge(index, state4, e6));
-
 	}
-
 }

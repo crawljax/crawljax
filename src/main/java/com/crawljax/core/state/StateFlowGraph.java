@@ -69,7 +69,7 @@ public class StateFlowGraph {
 	 */
 	public boolean addEdge(StateVertix sourceVertex, StateVertix targetVertex, Eventable clickable) {
 		if (sfg.containsEdge(sourceVertex, targetVertex)
-		        && clickable.equals(sfg.getEdge(sourceVertex, targetVertex))) {
+		        && sfg.getAllEdges(sourceVertex, targetVertex).contains(clickable)) {
 			return false;
 		}
 
