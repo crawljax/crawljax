@@ -26,11 +26,9 @@ public class PopUpTest {
 	public void run() {
 		try {
 			crawljax.run();
-			assertEquals("Clickables", 2, crawljax.getSession().getStateMachine()
-			        .getStateFlowGraph().getAllEdges().size());
+			assertEquals("Clickables", 2, crawljax.getStateFlowGraph().getAllEdges().size());
 
-			assertEquals("States", 3, crawljax.getSession().getStateMachine().getStateFlowGraph()
-			        .getAllStates().size());
+			assertEquals("States", 3, crawljax.getStateFlowGraph().getAllStates().size());
 
 		} catch (ConfigurationException e) {
 			e.printStackTrace();

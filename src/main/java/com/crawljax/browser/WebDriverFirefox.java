@@ -58,7 +58,7 @@ public class WebDriverFirefox extends AbstractWebDriver {
 		firefoxLocation = location;
 	}
 
-	private static final FirefoxProfile makeProfile(ProxyConfiguration config) {
+	private static FirefoxProfile makeProfile(ProxyConfiguration config) {
 		FirefoxProfile profile = new FirefoxProfile();
 		profile.setPreference("network.proxy.http", config.getHostname());
 		profile.setPreference("network.proxy.http_port", config.getPort());

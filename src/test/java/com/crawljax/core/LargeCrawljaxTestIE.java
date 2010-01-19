@@ -383,7 +383,7 @@ public class LargeCrawljaxTestIE {
 	}
 
 	private StateFlowGraph getStateFlowGraph() {
-		return session.getStateMachine().getStateFlowGraph();
+		return session.getStateFlowGraph();
 	}
 
 }

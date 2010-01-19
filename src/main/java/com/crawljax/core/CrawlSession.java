@@ -9,7 +9,7 @@ import java.util.List;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateMachine;
+import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
 
 /**
@@ -21,10 +21,11 @@ import com.crawljax.core.state.StateVertix;
 public class CrawlSession {
 
 	private final EmbeddedBrowser browser;
-	private final StateMachine stateMachine;
+	private final StateFlowGraph stateFlowGraph;
 	private final List<List<Eventable>> crawlPaths = new ArrayList<List<Eventable>>();
 	private StateVertix currentState;
-	private final CrawljaxConfiguration crawljaxConfiguration;
+	private final StateVertix initialState;
+	private CrawljaxConfiguration crawljaxConfiguration;
 
 	/**
 	 * @param browser
@@ -32,41 +33,41 @@ public class CrawlSession {
 	 */
 	public CrawlSession(EmbeddedBrowser browser) {
 		this.browser = browser;
-		this.stateMachine = null;
+		this.stateFlowGraph = null;
 		this.currentState = null;
 		this.crawljaxConfiguration = null;
+		this.initialState = null;
 	}
 
 	/**
 	 * @param browser
 	 *            the embedded browser instance.
-	 * @param stateMachine
-	 *            the state machine.
+	 * @param stateFlowGraph
+	 *            the state flow graph.
 	 * @param state
 	 *            the current state.
 	 */
-	public CrawlSession(EmbeddedBrowser browser, StateMachine stateMachine, StateVertix state) {
+	public CrawlSession(EmbeddedBrowser browser, StateFlowGraph stateFlowGraph, StateVertix state) {
 		this.browser = browser;
-		this.stateMachine = stateMachine;
+		this.stateFlowGraph = stateFlowGraph;
 		this.currentState = state;
+		this.initialState = state;
 		this.crawljaxConfiguration = null;
 	}
 
 	/**
 	 * @param browser
 	 *            the embedded browser instance.
-	 * @param stateMachine
-	 *            the state machine.
+	 * @param stateFlowGraph
+	 *            the state flow graph
 	 * @param state
 	 *            the current state.
 	 * @param crawljaxConfiguration
 	 *            the configuration.
 	 */
-	public CrawlSession(EmbeddedBrowser browser, StateMachine stateMachine, StateVertix state,
-	        CrawljaxConfiguration crawljaxConfiguration) {
-		this.browser = browser;
-		this.stateMachine = stateMachine;
-		this.currentState = state;
+	public CrawlSession(EmbeddedBrowser browser, StateFlowGraph stateFlowGraph,
+	        StateVertix state, CrawljaxConfiguration crawljaxConfiguration) {
+		this(browser, stateFlowGraph, state);
 		this.crawljaxConfiguration = crawljaxConfiguration;
 	}
 
@@ -78,10 +79,10 @@ public class CrawlSession {
 	}
 
 	/**
-	 * @return the stateMachine
+	 * @return the stateFlowGraph
 	 */
-	public StateMachine getStateMachine() {
-		return stateMachine;
+	public StateFlowGraph getStateFlowGraph() {
+		return stateFlowGraph;
 	}
 
 	/**
@@ -119,6 +120,13 @@ public class CrawlSession {
 	 */
 	public CrawljaxConfiguration getCrawljaxConfiguration() {
 		return crawljaxConfiguration;
+	}
+
+	/**
+	 * @return the initialState
+	 */
+	public final StateVertix getInitialState() {
+		return initialState;
 	}
 
 }

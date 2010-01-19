@@ -19,6 +19,9 @@ public class WebDriverOther extends AbstractWebDriver {
 
 	/**
 	 * Creates a new WebDriverOther object.
+	 * 
+	 * @param driver
+	 *            the Generic WebDriver driver to use
 	 */
 	@Deprecated
 	public WebDriverOther(WebDriver driver) {
