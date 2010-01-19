@@ -101,8 +101,7 @@ public class LargeCrawljaxTest {
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification());
 		addPlugins(crawljaxConfiguration);
-		crawljaxConfiguration.setBrowser(new WebDriverFirefox(
-		        "/home/af09014/applications/firefox/firefox"));
+		crawljaxConfiguration.setBrowser(new WebDriverFirefox());
 		CrawljaxController crawljax = new CrawljaxController(crawljaxConfiguration);
 		crawljax.run();
 	}
