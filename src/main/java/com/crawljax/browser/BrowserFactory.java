@@ -15,7 +15,7 @@ import com.crawljax.util.PropertyHelper;
  * The factory class returns an instance of the desired browser as specified in the properties file.
  * 
  * @author mesbah
- * @author stefan
+ * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
 public final class BrowserFactory {
@@ -25,6 +25,20 @@ public final class BrowserFactory {
 	        new ArrayList<EmbeddedBrowser>();
 
 	private static final Logger LOGGER = Logger.getLogger(BrowserFactory.class);
+
+	/**
+	 * The booting flag indicates that the BrowserFactory is still in process of booting. If the
+	 * value is changed from true to false and the booting is still in progress no new browsers will
+	 * be made.
+	 */
+	private static boolean booting = false;
+
+	/**
+	 * This field is set to true when the creation of browsers is finished.
+	 */
+	private static boolean doneBooting = false;
+
+	private static final int TEN = 10;
 
 	/**
 	 * hidden constructor.
@@ -98,6 +112,16 @@ public final class BrowserFactory {
 	 */
 	public static synchronized void close() {
 		Queue<EmbeddedBrowser> deleteList = new LinkedList<EmbeddedBrowser>();
+		if (booting) {
+			booting = false;
+			while (!doneBooting) {
+				try {
+					Thread.sleep(TEN);
+				} catch (InterruptedException e) {
+					LOGGER.error("Closing of the browsers faild du to an Interrupt", e);
+				}
+			}
+		}
 		for (EmbeddedBrowser b : FREE_BROWSERS) {
 			try {
 				b.close();
@@ -139,7 +163,9 @@ public final class BrowserFactory {
 		EmbeddedBrowser browser;
 		if (FREE_BROWSERS.size() > 0) {
 			// Retrieve a free browser from the list
-			browser = FREE_BROWSERS.poll();
+			synchronized (FREE_BROWSERS) {
+				browser = FREE_BROWSERS.poll();
+			}
 			if (browser == null) {
 				LOGGER.error("Failed to fulfill a request for a browser");
 			}
@@ -150,6 +176,26 @@ public final class BrowserFactory {
 		}
 		TAKEN_BROWSERS.add(browser);
 
+		if (!booting && !doneBooting) {
+			booting = true;
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					while (booting
+					        && (FREE_BROWSERS.size() + TAKEN_BROWSERS.size()) != PropertyHelper
+					                .getCrawNumberOfThreadsValue()) {
+
+						EmbeddedBrowser b = makeABrowser();
+						synchronized (FREE_BROWSERS) {
+							FREE_BROWSERS.add(b);
+						}
+					}
+					booting = false;
+					doneBooting = true;
+				}
+			}).start();
+		}
 		return browser;
 	}
 

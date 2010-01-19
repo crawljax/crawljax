@@ -13,6 +13,7 @@ import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
@@ -53,17 +54,13 @@ public class Crawler implements Runnable {
 	private int depth = 0;
 
 	/**
-	 * The current state this Thread is in.
-	 */
-	private StateVertix currentState;
-
-	/**
 	 * The path followed from the index to the current state.
 	 */
 	private List<Eventable> exactEventPath = new ArrayList<Eventable>();
 
 	/**
-	 * The path followed from the index to the current state.
+	 * TODO Stefan why is there two times the same variable? What is the difference and could it be
+	 * merged? The path followed from the index to the current state.
 	 */
 	private List<Eventable> crawlPath = new ArrayList<Eventable>();
 
@@ -86,6 +83,10 @@ public class Crawler implements Runnable {
 
 	private String name = "automatic";
 
+	private StateMachine stateMachine;
+
+	private String stateName;
+
 	/**
 	 * Crawler constructor for a new 'starting from scratch(index)' crawler.
 	 * 
@@ -101,6 +102,7 @@ public class Crawler implements Runnable {
 			 */
 			browser = BrowserFactory.requestBrowser();
 		}
+		stateMachine = null;
 	}
 
 	/**
@@ -141,6 +143,9 @@ public class Crawler implements Runnable {
 		this.controller = mother;
 		this.candidateExtractor = new CandidateElementExtractor(this);
 		this.threadId = TOTAL_THREAD_ID_COUNT.incrementAndGet();
+		stateMachine =
+		        new StateMachine(controller.getStateFlowGraph(), controller.getIndexState());
+		stateName = controller.getLastStateName();
 		if (loadIndex) {
 			/**
 			 * The index page is requested to load so load a browser and reloads the initialURL
@@ -290,10 +295,7 @@ public class Crawler implements Runnable {
 				LOGGER.info(getName() + "Backtracking by firing " + clickable.getEventType()
 				        + " on element: " + clickable);
 
-				/**
-				 * TODO Stefan make Thread Save a.k.a this code only works in single thread..
-				 */
-				controller.changeStateMachineState(clickable.getTargetStateVertix());
+				stateMachine.changeState(clickable.getTargetStateVertix());
 
 				curState = clickable.getTargetStateVertix();
 
@@ -345,19 +347,24 @@ public class Crawler implements Runnable {
 		if (this.fireEvent(eventable)) {
 			// String dom = new String(browser.getDom());
 			StateVertix newState =
-			        new StateVertix(browser.getCurrentUrl(), controller.getStateName(), browser
-			                .getDom(), this.controller.getStripedDom(browser));
+			        new StateVertix(browser.getCurrentUrl(), stateName, browser.getDom(),
+			                this.controller.getStripedDom(browser));
 
 			if (controller.isDomChanged(currentHold, newState)) {
 				crawlPath.add(eventable);
-				if (controller.updateStateMachine(currentHold, eventable, newState, this
-				        .getBrowser())) {
+				if (stateMachine.update(currentHold, eventable, newState, this.getBrowser(),
+				        this.controller)) {
 					// Dom changed
 					// No Clone
+
+					// Fix the name of the new StateVertix
+					this.stateName = controller.getNewStateName();
+					stateMachine.getCurrentState().setName(stateName);
+
 					exactEventPath.add(eventable);
+
 					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller, controller
 					        .getSession(), getExacteventpath());
-					this.currentState = newState;
 					return 1;
 				} else {
 					// Dom changed
@@ -406,7 +413,7 @@ public class Crawler implements Runnable {
 			this.eventTypes = PropertyHelper.getRobotEventsValues();
 		}
 
-		StateVertix currentHold = this.currentState.clone();
+		StateVertix currentHold = stateMachine.getCurrentState().clone();
 
 		LOGGER.info(getName() + "Starting preStateCrawlingPlugins...");
 		CrawljaxPluginsUtil.runPreStateCrawlingPlugins(controller.getSession(), candidates);
@@ -457,16 +464,16 @@ public class Crawler implements Runnable {
 
 							/**
 							 * Always do a state machine rewind because we are about to begin form
-							 * scratch. TODO Stefan make Thread Save a.k.a this code only works in
-							 * single thread..
+							 * scratch.
 							 */
 							depth = 0;
-							controller.rewindStateMachine();
+							stateMachine.rewind();
 							this.crawlPath = new ArrayList<Eventable>();
 							this.goBackExact();
 							recursion = false;
 						} else {
 							fired = true;
+
 							recursion = true;
 							boolean lastCandidate =
 							        candidateElement
@@ -496,7 +503,7 @@ public class Crawler implements Runnable {
 			} else {
 				Eventable eventable = new Eventable(candidateElement, "");
 				LOGGER.info(getName() + "Conditions not satisfied for element: " + eventable
-				        + "; State: " + this.currentState.getName());
+				        + "; State: " + stateMachine.getCurrentState().getName());
 			}
 
 			if (resetTypes) {
@@ -512,7 +519,6 @@ public class Crawler implements Runnable {
 			 */
 			Crawler c = new Crawler(this.controller, path, reThreadElements, reThreadEventTypes);
 			controller.addWorkToQueue(c);
-			// this.currentState = currentHold;
 		}
 		if (recursion) {
 			/**
@@ -531,7 +537,7 @@ public class Crawler implements Runnable {
 				controller.terminate();
 				return false;
 			}
-			this.controller.changeStateMachineState(currentHold);
+			stateMachine.changeState(currentHold);
 		}
 
 		return true;
@@ -557,14 +563,15 @@ public class Crawler implements Runnable {
 	private void checkCandidates() throws CrawljaxException {
 		if (this.candidates == null) {
 			if (controller.getCrawlConditionChecker().check(browser)) {
-				LOGGER.info(getName() + "Looking in state: " + this.currentState.getName()
+				LOGGER.info(getName() + "Looking in state: "
+				        + stateMachine.getCurrentState().getName()
 				        + " for candidate elements with ");
 				this.candidates =
 				        this.candidateExtractor.extract(PropertyHelper.getCrawlTagElements(),
 				                PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
 				                        .getClickOnceValue());
 			} else {
-				LOGGER.info(getName() + "State " + this.currentState.getName()
+				LOGGER.info(getName() + "State " + stateMachine.getCurrentState().getName()
 				        + " dit not satisfy the CrawlConditions.");
 				this.candidates = new ArrayList<CandidateElement>();
 			}
@@ -599,11 +606,7 @@ public class Crawler implements Runnable {
 			}
 		}
 
-		/**
-		 * Always do a state machine rewind because we are about to begin form scratch. TODO Stefan
-		 * make Thread Safe a.k.a this code only works in single thread..
-		 */
-		controller.rewindStateMachine();
+		stateMachine.rewind();
 
 		/**
 		 * Do we need to go back into a previous state?
@@ -611,13 +614,9 @@ public class Crawler implements Runnable {
 		if (exactEventPath.size() > 0) {
 			try {
 				this.goBackExact();
-				this.currentState =
-				        exactEventPath.get(exactEventPath.size() - 1).getTargetStateVertix();
 			} catch (Exception e) {
 				LOGGER.error(getName() + "Failed to backtrack", e);
 			}
-		} else {
-			this.currentState = controller.getIndexState();
 		}
 
 		try {
@@ -697,6 +696,40 @@ public class Crawler implements Runnable {
 	@Override
 	public String toString() {
 		return "Crawler Thread " + this.threadId + ": " + this.getName();
+	}
+
+	/**
+	 * Set the stateMachine that must be used, becarefull! This must only be called during the init
+	 * of the CrawljaxController.
+	 * 
+	 * @throws CrawljaxException
+	 *             will be thrown when the stateMachine is allready set!
+	 * @param machine
+	 *            the stateMachine to set.
+	 */
+	public void setStateMachine(final StateMachine machine) throws CrawljaxException {
+		if (stateMachine != null) {
+			throw new CrawljaxException(
+			        "The stateMachine is allready specified can not be overwritten!");
+		}
+		this.stateMachine = machine;
+	}
+
+	/**
+	 * Request a lock on the examinedElements datastructure. Becarefull a requested lock MUST be
+	 * returned by hand! using the {@link #releaseExaminedElementsMutex()}
+	 * 
+	 * @see Crawler#releaseExaminedElementsMutex()
+	 */
+	public void requestExaminedElementsMutex() {
+		controller.requestExaminedElementsMutex();
+	}
+
+	/**
+	 * Release the lock for the examinedElements datastructure.
+	 */
+	public void releaseExaminedElementsMutex() {
+		controller.releaseExaminedElementsMutex();
 	}
 
 }

@@ -3,9 +3,8 @@ package com.crawljax.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,6 +26,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
 import com.crawljax.oraclecomparator.OracleComparator;
@@ -48,7 +48,7 @@ public class CrawljaxController {
 
 	private StateVertix indexState;
 	private EmbeddedBrowser browser;
-	private StateMachine stateMachine;
+	private StateFlowGraph stateFlowGraph;
 	private CrawlSession session;
 
 	private long startCrawl;
@@ -68,18 +68,22 @@ public class CrawljaxController {
 
 	private final List<OracleComparator> oracleComparator;
 
+	private String lastStateName;
+
+	/**
+	 * Central thread starting engine.
+	 */
 	private final ThreadPoolExecutor workQueue;
+
+	/**
+	 * Mutex used for the lock on examinedElements.
+	 */
+	private final Semaphore examinedElementsMutex = new Semaphore(1);
 
 	/**
 	 * Use AtomicInteger to denote the stateCounter, in doing so its thread-safe.
 	 */
 	private final AtomicInteger stateCounter = new AtomicInteger(1);
-
-	/**
-	 * Use the ConcurrentHashMap to make sure the foundNewStateMap is thread-safe.
-	 */
-	private final Map<Thread, Boolean> foundNewStateMap =
-	        new ConcurrentHashMap<Thread, Boolean>();
 
 	/**
 	 * Use the AtomicInteger to prevent Problems when increasing.
@@ -206,11 +210,21 @@ public class CrawljaxController {
 		        new StateVertix(browser.getCurrentUrl(), "index", browser.getDom(),
 		                stateComparator.getStrippedDom(browser));
 
-		stateMachine = new StateMachine(indexState);
+		// TODO Stefan do something with locking
+		stateFlowGraph = new StateFlowGraph();
+		stateFlowGraph.requestStateFlowGraphMutex();
+		stateFlowGraph.addState(indexState);
+		stateFlowGraph.releaseStateFlowGraphMutex();
+
+		// TODO Stefan delete
+		StateMachine stateMachine = new StateMachine(stateFlowGraph, indexState);
+		crawler.setStateMachine(stateMachine);
+
 		if (crawljaxConfiguration != null) {
-			session = new CrawlSession(browser, stateMachine, indexState, crawljaxConfiguration);
+			session =
+			        new CrawlSession(browser, stateFlowGraph, indexState, crawljaxConfiguration);
 		} else {
-			session = new CrawlSession(browser, stateMachine, indexState);
+			session = new CrawlSession(browser, stateFlowGraph, indexState);
 		}
 
 		CrawljaxPluginsUtil.runOnNewStatePlugins(session);
@@ -223,7 +237,9 @@ public class CrawljaxController {
 
 			addWorkToQueue(crawler);
 
-			// TODO Stefan Ok this is not so nice....
+			// TODO Stefan it could be possible that a browser is released and a newOne is about to
+			// be
+			// taken but not ready taken...
 			while (!BrowserFactory.isFinished()) {
 				try {
 					Thread.sleep(THOUSAND);
@@ -247,22 +263,15 @@ public class CrawljaxController {
 		 */
 		BrowserFactory.close();
 
-		for (Eventable c : stateMachine.getStateFlowGraph().getAllEdges()) {
+		for (Eventable c : stateFlowGraph.getAllEdges()) {
 			LOGGER.info("Interaction Element= " + c.toString());
 		}
 
-		LOGGER.info("Total Crawling time("
-		        + timeCrawlCalc
-		        + "ms) ~= "
-		        + String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(timeCrawlCalc),
-		                TimeUnit.MILLISECONDS.toSeconds(timeCrawlCalc)
-		                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-		                                .toMinutes(timeCrawlCalc))));
+		LOGGER.info("Total Crawling time(" + timeCrawlCalc + "ms) ~= " + formatRunningTime());
 		LOGGER.info("EXAMINED ELEMENTS: " + numberofExaminedElements.get());
-		LOGGER.info("CLICKABLES: " + stateMachine.getStateFlowGraph().getAllEdges().size());
-		LOGGER.info("STATES: " + stateMachine.getStateFlowGraph().getAllStates().size());
-		LOGGER.info("Dom average size (byte): "
-		        + stateMachine.getStateFlowGraph().getMeanStateStringSize());
+		LOGGER.info("CLICKABLES: " + stateFlowGraph.getAllEdges().size());
+		LOGGER.info("STATES: " + stateFlowGraph.getAllStates().size());
+		LOGGER.info("Dom average size (byte): " + stateFlowGraph.getMeanStateStringSize());
 
 		LOGGER.info("Starting PostCrawlingPlugins...");
 
@@ -276,7 +285,7 @@ public class CrawljaxController {
 	 * 
 	 * @return true if all conditions are met.
 	 */
-	@GuardedBy("stateMachine.getStateFlowGraph()")
+	@GuardedBy("stateFlowGraph")
 	public boolean checkConstraints() {
 		long timePassed = System.currentTimeMillis() - startCrawl;
 
@@ -290,9 +299,9 @@ public class CrawljaxController {
 			return false;
 		}
 
-		synchronized (stateMachine.getStateFlowGraph()) {
+		synchronized (stateFlowGraph) {
 			if ((PropertyHelper.getCrawlMaxStatesValue() != 0)
-			        && (stateMachine.getStateFlowGraph().getAllStates().size() >= PropertyHelper
+			        && (stateFlowGraph.getAllStates().size() >= PropertyHelper
 			                .getCrawlMaxStatesValue())) {
 				/* remove all possible candidates left */
 				// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
@@ -306,55 +315,6 @@ public class CrawljaxController {
 		}
 		/* continue crawling */
 		return true;
-	}
-
-	/**
-	 * TODO Stefan move the synchronized.
-	 * 
-	 * @param currentHold
-	 *            the placeholder for the current stateVertix.
-	 * @param event
-	 *            the event edge.
-	 * @param newState
-	 *            the new state.
-	 * @param browser
-	 *            used to feet to checkInvariants
-	 * @return true if the new state is not found in the state machine.
-	 * @NotThreadSafe
-	 */
-	public synchronized boolean updateStateMachine(final StateVertix currentHold,
-	        final Eventable event, StateVertix newState, EmbeddedBrowser browser) {
-		StateVertix cloneState = stateMachine.addStateToCurrentState(newState, event);
-		foundNewStateMap.put(Thread.currentThread(), true);
-		if (cloneState != null) {
-			foundNewStateMap.put(Thread.currentThread(), false);
-			newState = cloneState.clone();
-		}
-
-		stateMachine.changeState(newState);
-		LOGGER.info("StateMachine's Pointer changed to: "
-		        + stateMachine.getCurrentState().getName() + " FROM " + currentHold.getName());
-
-		if (PropertyHelper.getTestInvariantsWhileCrawlingValue()) {
-			checkInvariants(browser);
-		}
-
-		synchronized (session) {
-			/**
-			 * Only one thread at the time may set the currentState in the session and expose it to
-			 * the OnNewStatePlugins. Garranty it will not be interleaved
-			 */
-			session.setCurrentState(newState);
-
-			if (cloneState == null) {
-				CrawljaxPluginsUtil.runOnNewStatePlugins(session);
-				// recurse
-				return true;
-			} else {
-				// non recurse
-				return false;
-			}
-		}
 	}
 
 	/**
@@ -389,21 +349,20 @@ public class CrawljaxController {
 	 * 
 	 * @return State name the name of the state
 	 */
-	public final String getStateName() {
-		Thread thread = Thread.currentThread();
-		Boolean value = foundNewStateMap.get(thread);
-		if (value != null && value) {
-			stateCounter.getAndIncrement();
-		}
+	public final String getNewStateName() {
+		stateCounter.getAndIncrement();
 		String state = "state" + stateCounter.get();
+		lastStateName = state;
 		return state;
 	}
 
 	/**
-	 * @param crawler
-	 *            the Crawler to execute the invariants from
+	 * Check the invariants. TODO Stefan Check Thread-Safety
+	 * 
+	 * @param browser
+	 *            the browser to feed to the invariants
 	 */
-	private void checkInvariants(EmbeddedBrowser browser) {
+	public void checkInvariants(EmbeddedBrowser browser) {
 		if (!invariantChecker.check(browser)) {
 			final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
 			for (Invariant failedInvariant : failedInvariants) {
@@ -441,36 +400,6 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * TODO Stefan move the synchronized.
-	 * 
-	 * @NotThreadSafe
-	 * @param state
-	 *            the state to change the state machines pointer to.
-	 */
-	public synchronized void changeStateMachineState(StateVertix state) {
-		synchronized (stateMachine) {
-			LOGGER.debug("AFTER: sm.current: " + stateMachine.getCurrentState().getName()
-			        + " hold.current: " + state.getName());
-			stateMachine.changeState(state);
-			LOGGER.info("StateMachine's Pointer changed back to: "
-			        + stateMachine.getCurrentState().getName());
-		}
-	}
-
-	/**
-	 * TODO Stefan move the synchronized.
-	 * 
-	 * @NotThreadSafe
-	 */
-	public synchronized void rewindStateMachine() {
-		/**
-		 * TODO Stefan There is some performance loss using this technique The state machine can
-		 * also be hard forced into the new 'start' state...
-		 */
-		stateMachine.rewind();
-	}
-
-	/**
 	 * Add work (Crawler) to the Queue of work that need to be done. The class is thread-safe.
 	 * 
 	 * @param work
@@ -491,7 +420,12 @@ public class CrawljaxController {
 	 *            the to search for if its already checked
 	 * @return true if the element is already checked
 	 */
+	@GuardedBy("examinedElementsMutex")
 	public final boolean elementIsAlreadyChecked(String element) {
+		if (examinedElementsMutex.availablePermits() != 0) {
+			LOGGER.warn("possible code executing without required permit!", new Throwable(
+			        "possible code executing without required permit!").fillInStackTrace());
+		}
 		return this.checkedElements.contains(element);
 	}
 
@@ -502,7 +436,12 @@ public class CrawljaxController {
 	 * @param element
 	 *            the elements that is checked
 	 */
+	@GuardedBy("examinedElementsMutex")
 	public final void markElementAsChecked(String element) {
+		if (examinedElementsMutex.availablePermits() != 0) {
+			LOGGER.warn("possible code executing without required permit!", new Throwable(
+			        "possible code executing without required permit!").fillInStackTrace());
+		}
 		this.checkedElements.add(element);
 	}
 
@@ -547,15 +486,14 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * get the stripped version of the dom currently in the browser. This call is nearly thread
-	 * safe, maybe there is a corner case in the StateComparator with the private static field
-	 * lastUsedOraclePreConditions which is never read nevertheless.
+	 * get the stripped version of the dom currently in the browser. This call is thread safe, must
+	 * be synchronized because there is thread-intefearing bug in the stateComparator.
 	 * 
 	 * @param browser
 	 *            the browser instance.
 	 * @return a stripped string of the DOM tree taken from the browser.
 	 */
-	public String getStripedDom(EmbeddedBrowser browser) {
+	public synchronized String getStripedDom(EmbeddedBrowser browser) {
 		return this.stateComparator.getStrippedDom(browser);
 	}
 
@@ -604,4 +542,45 @@ public class CrawljaxController {
 		 */
 		BrowserFactory.close();
 	}
+
+	/**
+	 * Return the central data component, the call itself is thread safe. All operations / actions
+	 * on the stateFlowGraph should be done very carefully!
+	 * 
+	 * @return the stateFlowGraph used to store all states and edges
+	 */
+	public final StateFlowGraph getStateFlowGraph() {
+		return stateFlowGraph;
+	}
+
+	/**
+	 * Request a lock on the examinedElements datastructure. Becarefull a requested lock MUST be
+	 * returned by hand! using the {@link #releaseExaminedElementsMutex()}
+	 * 
+	 * @see CrawljaxController#releaseExaminedElementsMutex()
+	 */
+	public void requestExaminedElementsMutex() {
+		try {
+			examinedElementsMutex.acquire();
+		} catch (InterruptedException e) {
+			LOGGER.error("the acquire of the ExaminedElementsMutex is interuped", e);
+		}
+	}
+
+	/**
+	 * Release the lock for the examinedElements datastructure.
+	 */
+	public void releaseExaminedElementsMutex() {
+		examinedElementsMutex.release();
+	}
+
+	/**
+	 * Return the last known state name, this call and set operation are not thread safe.
+	 * 
+	 * @return the lastStateName known in the Controller
+	 */
+	public final String getLastStateName() {
+		return lastStateName;
+	}
+
 }

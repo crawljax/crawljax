@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.crawljax.browser.WebDriverFirefox;
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.condition.RegexCondition;
@@ -100,6 +101,8 @@ public class LargeCrawljaxTest {
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification());
 		addPlugins(crawljaxConfiguration);
+		crawljaxConfiguration.setBrowser(new WebDriverFirefox(
+		        "/home/af09014/applications/firefox/firefox"));
 		CrawljaxController crawljax = new CrawljaxController(crawljaxConfiguration);
 		crawljax.run();
 	}
@@ -379,7 +382,7 @@ public class LargeCrawljaxTest {
 	}
 
 	private StateFlowGraph getStateFlowGraph() {
-		return session.getStateMachine().getStateFlowGraph();
+		return session.getStateFlowGraph();
 	}
 
 }

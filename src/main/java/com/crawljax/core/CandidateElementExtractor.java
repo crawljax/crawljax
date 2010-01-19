@@ -64,6 +64,8 @@ public class CandidateElementExtractor {
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce) throws CrawljaxException {
 		List<CandidateElement> tagElements = new ArrayList<CandidateElement>();
 
+		crawler.requestExaminedElementsMutex();
+
 		for (TagElement tag : crawlTagElements) {
 			LOGGER.info("TAG: " + tag.toString());
 			// TODO DELTA DIFF
@@ -120,6 +122,9 @@ public class CandidateElementExtractor {
 				}
 			}
 		}
+
+		crawler.releaseExaminedElementsMutex();
+
 		LOGGER.info("Found " + tagElements.size() + " new candidate elements to analyze!");
 		return tagElements;
 	}
