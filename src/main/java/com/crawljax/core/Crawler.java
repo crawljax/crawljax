@@ -31,7 +31,7 @@ public class Crawler implements Runnable {
 
 	private static final Logger LOGGER = Logger.getLogger(Crawler.class.getName());
 
-	private static final AtomicInteger totalThreadIdCounter = new AtomicInteger();
+	private static final AtomicInteger TOTAL_THREAD_ID_COUNT = new AtomicInteger();
 
 	private final int threadId;
 	/**
@@ -140,7 +140,7 @@ public class Crawler implements Runnable {
 	private Crawler(CrawljaxController mother, boolean loadIndex) {
 		this.controller = mother;
 		this.candidateExtractor = new CandidateElementExtractor(this);
-		this.threadId = totalThreadIdCounter.incrementAndGet();
+		this.threadId = TOTAL_THREAD_ID_COUNT.incrementAndGet();
 		if (loadIndex) {
 			/**
 			 * The index page is requested to load so load a browser and reloads the initialURL
@@ -254,6 +254,7 @@ public class Crawler implements Runnable {
 	 */
 	public void handleInputElements(Eventable eventable) {
 		List<FormInput> formInputs = eventable.getRelatedFormInputs();
+
 		FormHandler formHandler = new FormHandler(browser);
 		for (FormInput formInput : formHandler.getFormInputs()) {
 			if (!formInputs.contains(formInput)) {
@@ -262,6 +263,7 @@ public class Crawler implements Runnable {
 		}
 		eventable.setRelatedFormInputs(formInputs);
 		formHandler.handleFormElements(formInputs);
+
 	}
 
 	/**
@@ -318,15 +320,19 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * @param elements
-	 *            the list of candidate elements.
+	 * @param eventable
+	 *            the element to execute an action on.
+	 * @param handleInputElements
+	 *            if inputs should be handled.
+	 * @param currentHold
+	 *            the current state kept for comparison.
+	 * @return 1 If Dom Changed and the new state is not found in the state machine. 0 If Dom
+	 *         Changed and new state is a Clone. -1 If Dom is Not Changed at all.
 	 * @throws CrawljaxException
 	 *             an exception.
 	 */
-	public int clickTag(final CandidateElement candidateElement, String eventType,
-	        boolean handleInputElements, StateVertix currentHold) throws CrawljaxException {
-
-		Eventable eventable = new Eventable(candidateElement, eventType);
+	public int clickTag(final Eventable eventable, boolean handleInputElements,
+	        StateVertix currentHold) throws CrawljaxException {
 
 		// load input element values
 		if (handleInputElements) {
@@ -382,7 +388,6 @@ public class Crawler implements Runnable {
 	 */
 	private boolean crawl() throws CrawljaxException {
 		if (!this.controller.checkConstraints()) {
-			/* stop crawling */
 			return false;
 		}
 		if (depth >= PropertyHelper.getCrawlDepthValue()
@@ -433,8 +438,8 @@ public class Crawler implements Runnable {
 					 * Not Changed
 					 */
 					int clickResult =
-					        clickTag(candidateElement, eventType, handleInputElements,
-					                currentHold);
+					        clickTag(new Eventable(candidateElement, eventType),
+					                handleInputElements, currentHold);
 					if (clickResult >= 0) {
 
 						if (clickResult == 0) {
