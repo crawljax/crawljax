@@ -16,4 +16,9 @@ public class WebDriverIE extends AbstractWebDriver {
 		super(Logger.getLogger(WebDriverIE.class.getName()));
 		setBrowser(new InternetExplorerDriver());
 	}
+
+	@Override
+	public EmbeddedBrowser clone() {
+		return new WebDriverIE();
+	}
 }

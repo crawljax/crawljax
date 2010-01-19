@@ -14,7 +14,7 @@ import com.crawljax.core.state.Eventable;
  * @author mesbah
  * @version $Id$
  */
-public interface EmbeddedBrowser {
+public interface EmbeddedBrowser extends Cloneable {
 
 	/**
 	 * Opens the url in the browser.
@@ -107,4 +107,11 @@ public interface EmbeddedBrowser {
 	 * @return The current browser url.
 	 */
 	String getCurrentUrl();
+
+	/**
+	 * Make a clone of the current EmbeddedBrowser using the custom settings as provided earlier.
+	 * 
+	 * @return a new instance of a EmbeddedBrowser
+	 */
+	EmbeddedBrowser clone();
 }
