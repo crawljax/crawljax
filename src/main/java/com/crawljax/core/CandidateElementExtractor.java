@@ -20,6 +20,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInputValueHelper;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
@@ -100,11 +101,13 @@ public class CandidateElementExtractor {
 					candidateElements.add(new CandidateElement(sourceElement, xpath));
 				}
 
+				addIframeTransitions(candidateElements);
+
 				for (CandidateElement candidateElement : candidateElements) {
 					String elementUniqueString = candidateElement.getUniqueString();
 					if (!clickOnce || !crawler.elementIsAlreadyChecked(elementUniqueString)) {
 						LOGGER.info("Found new candidate element: "
-						        + new Eventable(candidateElement, "").toString());
+						        + candidateElement.getUniqueString());
 
 						if (eventableCondition != null) {
 							candidateElement.setEventableCondition(eventableCondition);
@@ -127,6 +130,28 @@ public class CandidateElementExtractor {
 
 		LOGGER.info("Found " + tagElements.size() + " new candidate elements to analyze!");
 		return tagElements;
+	}
+
+	private void addIframeTransitions(List<CandidateElement> candidateElements)
+	        throws CrawljaxException {
+
+		try {
+			Document doc = Helper.getDocument(crawler.getBrowser().getDom());
+			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
+
+			for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
+				CandidateElement candidateElement =
+				        new CandidateElement((Element) frameNodes.item(i), "switchto.iframe",
+				                new Identification("index", Integer.toString(i)));
+
+				candidateElements.add(candidateElement);
+
+			}
+
+		} catch (Exception e) {
+			throw new CrawljaxException(e.getMessage(), e);
+		}
+
 	}
 
 	/**

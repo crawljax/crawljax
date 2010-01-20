@@ -36,19 +36,22 @@ public class Element implements Cloneable {
 	 *            the node used to retrieve the name and the text content from
 	 */
 	public Element(Node node) {
-		this.node = node;
-		this.tag = node.getNodeName();
-		if (node.getTextContent() == null) {
-			this.text = "";
-		} else {
-			this.text = Helper.removeNewLines(node.getTextContent()).trim();
+		if (node != null) {
+			this.node = node;
+			this.tag = node.getNodeName();
+			if (node.getTextContent() == null) {
+				this.text = "";
+			} else {
+				this.text = Helper.removeNewLines(node.getTextContent()).trim();
+			}
+			attributes = new ArrayList<Attribute>();
+			for (int i = 0; i < node.getAttributes().getLength(); i++) {
+				Node attr = node.getAttributes().item(i);
+				Attribute attribute = new Attribute(attr.getNodeName(), attr.getNodeValue());
+				attributes.add(attribute);
+			}
 		}
-		attributes = new ArrayList<Attribute>();
-		for (int i = 0; i < node.getAttributes().getLength(); i++) {
-			Node attr = node.getAttributes().item(i);
-			Attribute attribute = new Attribute(attr.getNodeName(), attr.getNodeValue());
-			attributes.add(attribute);
-		}
+
 	}
 
 	@Override

@@ -83,6 +83,8 @@ public class Crawler implements Runnable {
 
 	private String name = "automatic";
 
+	private boolean goBackExact = true;
+
 	private StateMachine stateMachine;
 
 	private String stateName;
@@ -112,12 +114,15 @@ public class Crawler implements Runnable {
 	 *            the event path up till this moment.
 	 * @param reload
 	 *            if true the browser first will be reloaded.
+	 * @param goBackExact
+	 *            true if the crawler should relaod to get to a previous state.
 	 * @param name
 	 *            a name for this crawler (default is automatic).
 	 */
 	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, boolean reload,
-	        String name) {
+	        String name, boolean goBackExact) {
 		this(mother, reload);
+		this.goBackExact = goBackExact;
 		this.exactEventPath = exactEventPath;
 		this.name = name;
 		LOGGER.info(getName() + " ExactPaths: " + exactEventPath.size());
@@ -128,7 +133,7 @@ public class Crawler implements Runnable {
 
 	private String getName() {
 
-		return "CRAWLER-NAME: " + this.name + " ";
+		return this.name + ": ";
 	}
 
 	/**
@@ -204,45 +209,55 @@ public class Crawler implements Runnable {
 	 *            the eventable to fire
 	 * @return true iff the event is fired
 	 */
-	public boolean fireEvent(final Eventable eventable) {
+	public boolean fireEvent(Eventable eventable) {
 		try {
-			/**
-			 * The path in the page to the 'clickable' (link, div, span, etc)
-			 */
-			String xpath = eventable.getIdentification().getValue();
 
-			/**
-			 * The type of event to execute on the 'clickable' like onClick, mouseOver, hover, etc
-			 */
-			String eventType = eventable.getEventType();
+			if (eventable.getEventType().equals("onclick")) {
 
-			/**
-			 * Try to find a 'better' / 'quicker' xpath
-			 */
-			String newXPath = new ElementResolver(eventable, browser).resolve();
-			if (newXPath != null) {
-				if (!xpath.equals(newXPath)) {
-					LOGGER.info(getName() + "XPath changed from " + xpath + " to " + newXPath);
-				}
-				if (browser.fireEvent(new Eventable(new Identification("xpath", newXPath),
-				        eventType))) {
+				/**
+				 * The path in the page to the 'clickable' (link, div, span, etc)
+				 */
+				String xpath = eventable.getIdentification().getValue();
 
-					/**
-					 * Let the controller execute its specified wait operation on the browser Thread
-					 * safe
-					 */
-					controller.doBrowserWait(browser);
+				/**
+				 * The type of event to execute on the 'clickable' like onClick, mouseOver, hover,
+				 * etc
+				 */
+				String eventType = eventable.getEventType();
 
-					/**
-					 * Close opened windows
-					 */
-					browser.closeOtherWindows();
-
-					return true;
-				} else {
-					return false;
+				/**
+				 * Try to find a 'better' / 'quicker' xpath
+				 */
+				String newXPath = new ElementResolver(eventable, browser).resolve();
+				if (newXPath != null) {
+					if (!xpath.equals(newXPath)) {
+						LOGGER
+						        .info(getName() + "XPath changed from " + xpath + " to "
+						                + newXPath);
+						eventable =
+						        new Eventable(new Identification("xpath", newXPath), eventType);
+					}
 				}
 			}
+
+			if (browser.fireEvent(eventable)) {
+
+				/**
+				 * Let the controller execute its specified wait operation on the browser Thread
+				 * safe
+				 */
+				controller.doBrowserWait(browser);
+
+				/**
+				 * Close opened windows
+				 */
+				browser.closeOtherWindows();
+
+				return true;
+			} else {
+				return false;
+			}
+
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 		}
@@ -292,7 +307,7 @@ public class Crawler implements Runnable {
 					return;
 				}
 
-				LOGGER.info(getName() + "Backtracking by firing " + clickable.getEventType()
+				LOGGER.info(getName() + "Backtracking by executing " + clickable.getEventType()
 				        + " on element: " + clickable);
 
 				stateMachine.changeState(clickable.getTargetStateVertix());
@@ -302,6 +317,7 @@ public class Crawler implements Runnable {
 				crawlPath.add(clickable);
 
 				this.handleInputElements(clickable);
+
 				if (this.fireEvent(clickable)) {
 
 					// TODO ali, do not increase depth if eventable is from guidedcrawling
@@ -317,6 +333,7 @@ public class Crawler implements Runnable {
 				if (!controller.getCrawlConditionChecker().check(browser)) {
 					return;
 				}
+
 			}
 		}
 	}
@@ -341,14 +358,14 @@ public class Crawler implements Runnable {
 			this.handleInputElements(eventable);
 		}
 
-		LOGGER.info(getName() + "Firing " + eventable.getEventType() + " on element: "
+		LOGGER.info(getName() + "Executing " + eventable.getEventType() + " on element: "
 		        + eventable + "; State: " + currentHold.getName());
 
 		if (this.fireEvent(eventable)) {
 			// String dom = new String(browser.getDom());
 			StateVertix newState =
-			        new StateVertix(browser.getCurrentUrl(), stateName, browser.getDom(),
-			                this.controller.getStripedDom(browser));
+			        new StateVertix(browser.getCurrentUrl(), controller.getNewStateName(),
+			                browser.getDom(), this.controller.getStripedDom(browser));
 
 			if (controller.isDomChanged(currentHold, newState)) {
 				crawlPath.add(eventable);
@@ -358,8 +375,9 @@ public class Crawler implements Runnable {
 					// No Clone
 
 					// Fix the name of the new StateVertix
-					this.stateName = controller.getNewStateName();
-					stateMachine.getCurrentState().setName(stateName);
+					// TODO Ali: why is this not done in the state machine itself?
+					// this.stateName = controller.getNewStateName();
+					// stateMachine.getCurrentState().setName(stateName);
 
 					exactEventPath.add(eventable);
 
@@ -405,7 +423,7 @@ public class Crawler implements Runnable {
 			return true;
 		}
 
-		checkCandidates();
+		getCandidates();
 
 		boolean resetTypes = true;
 		if (this.eventTypes == null || this.eventTypes.size() == 0) {
@@ -444,9 +462,17 @@ public class Crawler implements Runnable {
 					 * clickResult: 1 = Dom Changed & No Clone. 0 = Dom Changed & Clone. -1 = Dom
 					 * Not Changed
 					 */
-					int clickResult =
-					        clickTag(new Eventable(candidateElement, eventType),
-					                handleInputElements, currentHold);
+					int clickResult;
+
+					if (candidateElement.getEventType().endsWith("switchto.iframe")) {
+						clickResult =
+						        clickTag(new Eventable(candidateElement, candidateElement
+						                .getEventType()), handleInputElements, currentHold);
+					} else {
+						clickResult =
+						        clickTag(new Eventable(candidateElement, eventType),
+						                handleInputElements, currentHold);
+					}
 					if (clickResult >= 0) {
 
 						if (clickResult == 0) {
@@ -512,13 +538,13 @@ public class Crawler implements Runnable {
 			}
 		}
 		if (reStoreCandidates) {
-			ArrayList<Eventable> path = getCurrentExactPaths();
-
 			/**
 			 * Make clone of everything that might be reused
 			 */
-			Crawler c = new Crawler(this.controller, path, reThreadElements, reThreadEventTypes);
-			controller.addWorkToQueue(c);
+
+			controller.addWorkToQueue(new Crawler(this.controller, getCurrentExactPaths(true),
+			        reThreadElements, reThreadEventTypes));
+			// this.currentState = currentHold;
 		}
 		if (recursion) {
 			/**
@@ -543,7 +569,7 @@ public class Crawler implements Runnable {
 		return true;
 	}
 
-	private ArrayList<Eventable> getCurrentExactPaths() {
+	private ArrayList<Eventable> getCurrentExactPaths(boolean removeLastElement) {
 		ArrayList<Eventable> path = new ArrayList<Eventable>();
 		for (Eventable eventable : this.exactEventPath) {
 			Eventable e = eventable.clone();
@@ -554,13 +580,14 @@ public class Crawler implements Runnable {
 		// into the original state where the last change (last in list)
 		// was made
 
-		if (path.size() > 0) {
+		if (removeLastElement && path.size() > 0) {
 			path.remove(path.size() - 1);
 		}
+
 		return path;
 	}
 
-	private void checkCandidates() throws CrawljaxException {
+	private void getCandidates() throws CrawljaxException {
 		if (this.candidates == null) {
 			if (controller.getCrawlConditionChecker().check(browser)) {
 				LOGGER.info(getName() + "Looking in state: "
@@ -590,14 +617,13 @@ public class Crawler implements Runnable {
 	@Override
 	public void run() {
 
-		LOGGER.info(getName());
-
 		/**
 		 * If the browser is null place a request for a browser from the BrowserFactory
 		 */
 		if (this.browser == null) {
 			this.browser = BrowserFactory.requestBrowser();
-			LOGGER.info(getName() + "Reloading Page for navigating back.");
+			LOGGER.info(getName()
+			        + "Reloading Page for navigating back since browser is not initialized.");
 			try {
 				this.goToInitialURL();
 			} catch (Exception e) {
@@ -611,7 +637,7 @@ public class Crawler implements Runnable {
 		/**
 		 * Do we need to go back into a previous state?
 		 */
-		if (exactEventPath.size() > 0) {
+		if (exactEventPath.size() > 0 && this.goBackExact) {
 			try {
 				this.goBackExact();
 			} catch (Exception e) {

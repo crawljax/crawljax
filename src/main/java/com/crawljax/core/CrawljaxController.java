@@ -174,7 +174,7 @@ public class CrawljaxController {
 		HibernateUtil.initialize();
 
 		LOGGER.info("Number of threads: " + PropertyHelper.getCrawNumberOfThreadsValue());
-
+		LOGGER.info("Crawl depth: " + PropertyHelper.getCrawlDepthValue());
 		LOGGER.info("Crawljax initialized!");
 
 		return new ThreadPoolExecutor(PropertyHelper.getCrawNumberOfThreadsValue(),

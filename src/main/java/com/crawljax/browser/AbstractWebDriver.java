@@ -216,12 +216,20 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	public synchronized boolean fireEvent(Eventable eventable) throws CrawljaxException {
 		try {
 
-			WebElement webElement =
-			        browser.findElement(eventable.getIdentification().getWebDriverBy());
+			if (eventable.getEventType().equals("onclick")) {
+				WebElement webElement =
+				        browser.findElement(eventable.getIdentification().getWebDriverBy());
 
-			if (webElement != null) {
-				return fireEventWait(webElement, eventable);
+				if (webElement != null) {
+					return fireEventWait(webElement, eventable);
+				}
 			}
+
+			if (eventable.getEventType().equals("switchto.iframe")) {
+				browser.switchTo().frame(eventable.getIdentification().getValue());
+				return true;
+			}
+
 			return false;
 		} catch (NoSuchElementException e) {
 			logger.info("Could not fire eventable: " + eventable.toString());
@@ -326,4 +334,5 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 	@Override
 	public abstract EmbeddedBrowser clone();
+
 }
