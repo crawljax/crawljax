@@ -758,4 +758,11 @@ public class Crawler implements Runnable {
 		controller.releaseExaminedElementsMutex();
 	}
 
+	/**
+	 * @return the state machine.
+	 */
+	public StateMachine getStateMachine() {
+		return stateMachine;
+	}
+
 }
