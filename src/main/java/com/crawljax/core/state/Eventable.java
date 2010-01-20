@@ -75,8 +75,10 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	 *            the event type.
 	 */
 	public Eventable(CandidateElement candidateElement, String eventType) {
-		this(new Identification("xpath", candidateElement.getXpath()), eventType);
-		this.element = new Element(candidateElement.getElement());
+		this(candidateElement.getIdentification(), eventType);
+		if (candidateElement.getElement() != null) {
+			this.element = new Element(candidateElement.getElement());
+		}
 		this.relatedFormInputs = candidateElement.getFormInputs();
 	}
 
