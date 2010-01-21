@@ -38,11 +38,18 @@ public interface EmbeddedBrowser extends Cloneable {
 	boolean fireEvent(Eventable event) throws CrawljaxException;
 
 	/**
-	 * @return the DOM string.
+	 * @return the DOM string with all the iframe contents.
 	 * @throws CrawljaxException
 	 *             if fails.
 	 */
 	String getDom() throws CrawljaxException;
+
+	/**
+	 * @return the DOM string without the iframe contents
+	 * @throws CrawljaxException
+	 *             if fails.
+	 */
+	String getDomWithoutIframeContent() throws CrawljaxException;
 
 	/**
 	 * Closes the browser.
