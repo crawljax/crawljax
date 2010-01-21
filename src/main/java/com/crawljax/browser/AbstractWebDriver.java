@@ -141,7 +141,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public String getDom() throws CrawljaxException {
 		try {
-			return toUniformDOM(getDomTreeWithFrames());
+			return toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
 		} catch (Exception e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
@@ -154,9 +154,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 * @throws Exception
 	 *             On error.
 	 */
-	private static String toUniformDOM(Document doc) throws Exception {
-
-		String html = Helper.getDocumentToString(doc);
+	private static String toUniformDOM(String html) throws Exception {
 
 		Pattern p =
 		        Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
@@ -170,7 +168,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 		// html = html.replace("<?xml:namespace prefix = gwt >", "");
 
-		doc = Helper.getDocument(htmlFormatted);
+		Document doc = Helper.getDocument(htmlFormatted);
 		htmlFormatted = Helper.getDocumentToString(doc);
 		htmlFormatted = Helper.filterAttributes(htmlFormatted);
 		return htmlFormatted;
@@ -405,6 +403,22 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			appendFrameContent(windowHandle, toAppendElement, document, frameIdentification);
 
 			browser.switchTo().window(windowHandle);
+		}
+
+	}
+
+	/**
+	 * @return the dom without the iframe contents.
+	 * @throws CrawljaxException
+	 *             if it fails.
+	 * @see com.crawljax.browser.EmbeddedBrowser#getDomWithoutIframeContent().
+	 */
+	public String getDomWithoutIframeContent() throws CrawljaxException {
+
+		try {
+			return toUniformDOM(browser.getPageSource());
+		} catch (Exception e) {
+			throw new CrawljaxException(e.getMessage(), e);
 		}
 
 	}

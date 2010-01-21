@@ -28,6 +28,10 @@ public class AbstractWebDriverTest {
 			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
 			assertEquals(3, frameNodes.getLength());
 
+			doc = Helper.getDocument(driver.getDomWithoutIframeContent());
+			frameNodes = doc.getElementsByTagName("IFRAME");
+			assertEquals(2, frameNodes.getLength());
+
 		} catch (SAXException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
