@@ -407,9 +407,9 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
 			Element importedElement = (Element) document.importNode(toAppendElement, true);
 			frameElement.appendChild(importedElement);
-			System.out.println("going recursive...");
+
 			appendFrameContent(windowHandle, importedElement, document, frameIdentification);
-			System.out.println("out of recursive...");
+
 		}
 
 	}
