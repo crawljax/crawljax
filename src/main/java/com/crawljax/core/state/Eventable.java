@@ -8,12 +8,16 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.log4j.Logger;
 import org.jgrapht.graph.DefaultEdge;
 import org.w3c.dom.Node;
 
 import com.crawljax.core.CandidateElement;
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.XPathHelper;
 
@@ -26,12 +30,13 @@ import com.crawljax.util.XPathHelper;
  */
 public class Eventable extends DefaultEdge implements Cloneable {
 	private static final long serialVersionUID = 3229708706467350994L;
+	private static final Logger LOGGER = Logger.getLogger(Eventable.class.getName());
 	private long id;
 	private String eventType;
 	private Identification identification;
 	private Element element;
-
 	private List<FormInput> relatedFormInputs = new ArrayList<FormInput>();
+	private String relatedFrame = "";
 
 	/**
 	 * Default constructor to support saving instances of this class as an XML.
@@ -54,6 +59,21 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	}
 
 	/**
+	 * Create a new Eventable for a identification and eventType.
+	 * 
+	 * @param identification
+	 *            the identification object.
+	 * @param eventType
+	 *            the event.
+	 * @param relatedFrame
+	 *            the frame containing this element.
+	 */
+	public Eventable(Identification identification, String eventType, String relatedFrame) {
+		this(identification, eventType);
+		this.relatedFrame = relatedFrame;
+	}
+
+	/**
 	 * Create a new Eventable for a node and eventType.
 	 * 
 	 * @param node
@@ -72,7 +92,7 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	 * @param candidateElement
 	 *            The CandidateElement element.
 	 * @param eventType
-	 *            the event type.
+	 *            the event type. TODO ali remove
 	 */
 	public Eventable(CandidateElement candidateElement, String eventType) {
 		this(candidateElement.getIdentification(), eventType);
@@ -232,8 +252,13 @@ public class Eventable extends DefaultEdge implements Cloneable {
 		}
 		e.setRelatedFormInputs(fi);
 
-		e.setSourceStateVertix(this.getSourceStateVertix());
-		e.setTargetStateVertix(this.getTargetStateVertix());
+		try {
+			e.setSourceStateVertix(this.getSourceStateVertix());
+			e.setTargetStateVertix(this.getTargetStateVertix());
+		} catch (CrawljaxException e1) {
+			LOGGER.error(e1.getMessage(), e1);
+			throw new RuntimeErrorException(new Error(e1.getMessage()));
+		}
 
 		return e;
 	}
@@ -257,16 +282,18 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	/**
 	 * @param vertix
 	 *            the new value for source
+	 * @throws CrawljaxException
 	 */
-	public void setSourceStateVertix(StateVertix vertix) {
+	private void setSourceStateVertix(StateVertix vertix) throws CrawljaxException {
 		setSuperField("source", vertix);
 	}
 
 	/**
 	 * @param vertix
 	 *            the new value for target
+	 * @throws CrawljaxException
 	 */
-	public void setTargetStateVertix(StateVertix vertix) {
+	private void setTargetStateVertix(StateVertix vertix) throws CrawljaxException {
 		setSuperField("target", vertix);
 	}
 
@@ -298,15 +325,22 @@ public class Eventable extends DefaultEdge implements Cloneable {
 		throw new InternalError("Field was not found!");
 	}
 
-	private void setSuperField(String name, StateVertix vertix) {
+	private void setSuperField(String name, StateVertix vertix) throws CrawljaxException {
 		try {
 			searchSuperField(name).set(this, vertix);
 		} catch (IllegalArgumentException e) {
-			// TODO Log
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+			throw new CrawljaxException(e.getMessage(), e);
 		} catch (IllegalAccessException e) {
-			// TODO Log
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+			throw new CrawljaxException(e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * @return the relatedFrame
+	 */
+	public String getRelatedFrame() {
+		return relatedFrame;
 	}
 }
