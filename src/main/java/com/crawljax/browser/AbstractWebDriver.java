@@ -1,6 +1,7 @@
 package com.crawljax.browser;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +14,11 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
@@ -136,7 +141,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public String getDom() throws CrawljaxException {
 		try {
-			return toUniformDOM(browser.getPageSource());
+			return toUniformDOM(getDomTreeWithFrames());
 		} catch (Exception e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
@@ -149,7 +154,10 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 * @throws Exception
 	 *             On error.
 	 */
-	private static String toUniformDOM(final String html) throws Exception {
+	private static String toUniformDOM(Document doc) throws Exception {
+
+		String html = Helper.getDocumentToString(doc);
+
 		Pattern p =
 		        Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
 		                | Pattern.CASE_INSENSITIVE);
@@ -162,7 +170,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 		// html = html.replace("<?xml:namespace prefix = gwt >", "");
 
-		Document doc = Helper.getDocument(htmlFormatted);
+		doc = Helper.getDocument(htmlFormatted);
 		htmlFormatted = Helper.getDocumentToString(doc);
 		htmlFormatted = Helper.filterAttributes(htmlFormatted);
 		return htmlFormatted;
@@ -216,18 +224,15 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	public synchronized boolean fireEvent(Eventable eventable) throws CrawljaxException {
 		try {
 
-			if (eventable.getEventType().equals("onclick")) {
-				WebElement webElement =
-				        browser.findElement(eventable.getIdentification().getWebDriverBy());
-
-				if (webElement != null) {
-					return fireEventWait(webElement, eventable);
-				}
+			if (eventable.getRelatedFrame() != null && !eventable.getRelatedFrame().equals("")) {
+				browser.switchTo().frame(eventable.getRelatedFrame());
 			}
 
-			if (eventable.getEventType().equals("switchto.iframe")) {
-				browser.switchTo().frame(eventable.getIdentification().getValue());
-				return true;
+			WebElement webElement =
+			        browser.findElement(eventable.getIdentification().getWebDriverBy());
+
+			if (webElement != null) {
+				return fireEventWait(webElement, eventable);
 			}
 
 			return false;
@@ -332,7 +337,75 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		}
 	}
 
+	private String getFrameIdentification(Element frame, int index) {
+
+		Attr attr = (Attr) frame.getAttributeNode("name");
+		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
+			return attr.getNodeValue();
+		}
+
+		attr = (Attr) frame.getAttributeNode("id");
+		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
+			return attr.getNodeValue();
+		}
+
+		return "" + index;
+	}
+
 	@Override
 	public abstract EmbeddedBrowser clone();
 
+	/**
+	 * @return a Document object containing the contents of iframes as well.
+	 * @throws CrawljaxException
+	 *             if an exception is thrown.
+	 */
+	private Document getDomTreeWithFrames() throws CrawljaxException {
+
+		Document document;
+		try {
+			document = Helper.getDocument(browser.getPageSource());
+			appendFrameContent(browser.getWindowHandle(), document.getDocumentElement(),
+			        document, "");
+		} catch (SAXException e) {
+			throw new CrawljaxException(e.getMessage(), e);
+		} catch (IOException e) {
+			throw new CrawljaxException(e.getMessage(), e);
+		}
+
+		return document;
+	}
+
+	private void appendFrameContent(String windowHandle, Element orig, Document document,
+	        String topFrame) throws SAXException, IOException {
+
+		NodeList frameNodes = orig.getElementsByTagName("IFRAME");
+
+		int nodes = frameNodes.getLength();
+		browser.switchTo().window(windowHandle);
+
+		for (int i = 0; i < nodes; i++) {
+			String frameIdentification = "";
+
+			if (topFrame != null && !topFrame.equals("")) {
+				frameIdentification += topFrame + ".";
+			}
+
+			Element frameElement = (Element) frameNodes.item(i);
+			frameIdentification += getFrameIdentification(frameElement, i);
+
+			logger.info("frame-identification: " + frameIdentification);
+
+			String toAppend = browser.switchTo().frame(frameIdentification).getPageSource();
+
+			Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
+			toAppendElement = (Element) document.importNode(toAppendElement, true);
+			frameElement.appendChild(toAppendElement);
+
+			appendFrameContent(windowHandle, toAppendElement, document, frameIdentification);
+
+			browser.switchTo().window(windowHandle);
+		}
+
+	}
 }
