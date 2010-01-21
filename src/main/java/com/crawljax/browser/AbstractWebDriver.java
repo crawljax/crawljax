@@ -141,7 +141,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public String getDom() throws CrawljaxException {
 		try {
-			return toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
+			// return toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
+			return getDomWithoutIframeContent();
 		} catch (Exception e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
