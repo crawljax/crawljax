@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,6 +127,62 @@ public class CandidateElementExtractorTest {
 
 			assertNotNull(candidates);
 			assertEquals(11, candidates.size());
+
+		} catch (CrawljaxException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		BrowserFactory.close();
+	}
+
+	@Test
+	public void testExtractIframeContents() {
+		CrawljaxConfiguration config = new CrawljaxConfiguration();
+		File index = new File("src/test/site/iframe/index.html");
+		CrawlSpecification spec = new CrawlSpecification("file://" + index.getAbsolutePath());
+
+		config.setCrawlSpecification(spec);
+		Crawler crawler = null;
+		try {
+			CrawljaxController controller = new CrawljaxController(config);
+			crawler = controller.getCrawler();
+		} catch (ConfigurationException e1) {
+			e1.printStackTrace();
+			fail(e1.getMessage());
+		}
+
+		assertNotNull(crawler);
+
+		try {
+			crawler.goToInitialURL();
+		} catch (CrawljaxException e1) {
+			e1.printStackTrace();
+			fail(e1.getMessage());
+		}
+
+		try {
+			Thread.sleep(400);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		CandidateElementExtractor extractor = new CandidateElementExtractor(crawler);
+		assertNotNull(extractor);
+		try {
+			String inc = "a:{}";
+			TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
+			List<TagElement> includes = new ArrayList<TagElement>();
+			includes.add(tagElementInc);
+
+			List<CandidateElement> candidates =
+			        extractor.extract(includes, new ArrayList<TagElement>(), true);
+
+			for (CandidateElement e : candidates) {
+				System.out.println("candidate: " + e.getUniqueString());
+			}
+
+			assertNotNull(candidates);
+			assertEquals(8, candidates.size());
 
 		} catch (CrawljaxException e) {
 			e.printStackTrace();
