@@ -10,13 +10,15 @@ import java.util.regex.Pattern;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.WebDriver;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.AbstractWebDriver;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.state.Eventable;
@@ -63,23 +65,51 @@ public class CandidateElementExtractor {
 	 */
 	public List<CandidateElement> extract(List<TagElement> crawlTagElements,
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce) throws CrawljaxException {
-		List<CandidateElement> tagElements = new ArrayList<CandidateElement>();
+		List<CandidateElement> results = new ArrayList<CandidateElement>();
 
 		crawler.requestExaminedElementsMutex();
 
+		try {
+			Document dom = Helper.getDocument(crawler.getBrowser().getDomWithoutIframeContent());
+			extractElements(dom, crawlTagElements, crawlExcludeTagElements, clickOnce, results,
+			        "");
+		} catch (SAXException e) {
+			LOGGER.error(e.getMessage(), e);
+			throw new CrawljaxException(e.getMessage(), e);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+			throw new CrawljaxException(e.getMessage(), e);
+		}
+
+		crawler.releaseExaminedElementsMutex();
+
+		LOGGER.info("Found " + results.size() + " new candidate elements to analyze!");
+		return results;
+	}
+
+	private void extractElements(Document dom, List<TagElement> crawlTagElements,
+	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
+	        List<CandidateElement> results, String relatedFrame) throws CrawljaxException,
+	        SAXException, IOException {
+
 		for (TagElement tag : crawlTagElements) {
 			LOGGER.info("TAG: " + tag.toString());
-			// TODO DELTA DIFF
-			List<Element> temp;
+
+			List<Element> foundElements;
 			try {
-				temp =
-				        getNodeListForTagElement(this.crawler.getBrowser(), tag, this.crawler
+
+				foundElements =
+				        getNodeListForTagElement(dom, tag, this.crawler
 				                .getEventableConditionChecker(), crawlExcludeTagElements);
+
+				getFramesCandidates(dom, crawlTagElements, crawlExcludeTagElements, clickOnce,
+				        results, relatedFrame);
+
 			} catch (Exception e) {
 				throw new CrawljaxException(e.getMessage(), e);
 			}
 
-			for (Element sourceElement : temp) {
+			for (Element sourceElement : foundElements) {
 				EventableCondition eventableCondition =
 				        this.crawler.getEventableConditionChecker().getEventableCondition(
 				                tag.getId());
@@ -98,10 +128,9 @@ public class CandidateElementExtractor {
 					                .getBrowser(), sourceElement, eventableCondition);
 				} else {
 					// just add default element
-					candidateElements.add(new CandidateElement(sourceElement, xpath));
+					candidateElements.add(new CandidateElement(sourceElement, new Identification(
+					        "xpath", xpath), relatedFrame));
 				}
-
-				addIframeTransitions(candidateElements);
 
 				for (CandidateElement candidateElement : candidateElements) {
 					String elementUniqueString = candidateElement.getUniqueString();
@@ -112,7 +141,7 @@ public class CandidateElementExtractor {
 						if (eventableCondition != null) {
 							candidateElement.setEventableCondition(eventableCondition);
 						}
-						tagElements.add(candidateElement);
+						results.add(candidateElement);
 						// TODO add element to checkedElements after the
 						// event is fired!
 						crawler.markElementAsChecked(elementUniqueString);
@@ -125,33 +154,65 @@ public class CandidateElementExtractor {
 				}
 			}
 		}
-
-		crawler.releaseExaminedElementsMutex();
-
-		LOGGER.info("Found " + tagElements.size() + " new candidate elements to analyze!");
-		return tagElements;
 	}
 
-	private void addIframeTransitions(List<CandidateElement> candidateElements)
-	        throws CrawljaxException {
+	private void getFramesCandidates(Document dom, List<TagElement> crawlTagElements,
+	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
+	        List<CandidateElement> results, String relatedFrame) throws CrawljaxException {
 
-		try {
-			Document doc = Helper.getDocument(crawler.getBrowser().getDom());
-			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
+		if (crawler.getBrowser() instanceof AbstractWebDriver) {
+			WebDriver driver = ((AbstractWebDriver) crawler.getBrowser()).getDriver();
 
-			for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
-				CandidateElement candidateElement =
-				        new CandidateElement((Element) frameNodes.item(i), "switchto.iframe",
-				                new Identification("index", Integer.toString(i)));
+			String handle = driver.getWindowHandle();
 
-				candidateElements.add(candidateElement);
+			try {
 
+				NodeList frameNodes = dom.getElementsByTagName("IFRAME");
+
+				for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
+
+					String frameIdentification = "";
+
+					if (relatedFrame != null && !relatedFrame.equals("")) {
+						frameIdentification += relatedFrame + ".";
+					}
+
+					Element frameElement = (Element) frameNodes.item(i);
+
+					frameIdentification += getFrameIdentification(frameElement, i);
+
+					LOGGER.debug("frame Identification: " + frameIdentification);
+
+					driver.switchTo().frame(frameIdentification);
+
+					Document frameDom = Helper.getDocument(driver.getPageSource());
+
+					extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
+					        clickOnce, results, frameIdentification);
+				}
+
+				driver.switchTo().window(handle);
+
+			} catch (Exception e) {
+				throw new CrawljaxException(e.getMessage(), e);
 			}
-
-		} catch (Exception e) {
-			throw new CrawljaxException(e.getMessage(), e);
 		}
 
+	}
+
+	private String getFrameIdentification(Element frame, int index) {
+
+		Attr attr = (Attr) frame.getAttributeNode("name");
+		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
+			return attr.getNodeValue();
+		}
+
+		attr = (Attr) frame.getAttributeNode("id");
+		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
+			return attr.getNodeValue();
+		}
+
+		return "" + index;
 	}
 
 	/**
@@ -162,11 +223,11 @@ public class CandidateElementExtractor {
 	 * @throws SAXException
 	 * @throws XPathExpressionException
 	 */
-	private List<Element> getNodeListForTagElement(EmbeddedBrowser browser,
-	        TagElement tagElement, EventableConditionChecker eventableConditionChecker,
+	private List<Element> getNodeListForTagElement(Document dom, TagElement tagElement,
+	        EventableConditionChecker eventableConditionChecker,
 	        List<TagElement> crawlExcludeTagElements) throws SAXException, IOException,
 	        CrawljaxException, XPathExpressionException {
-		Document dom = Helper.getDocument(browser.getDom());
+
 		NodeList nodeList = dom.getElementsByTagName(tagElement.getName());
 		Set<TagAttribute> attributes = tagElement.getAttributes();
 
@@ -195,11 +256,13 @@ public class CandidateElementExtractor {
 			if (matchesXpath
 			        && !crawler.elementIsAlreadyChecked(element.getNodeName() + ": "
 			                + Helper.getAllElementAttributes(element))
-			        && isElementVisible(dom, browser, element)
-			        && !filterElement(attributes, element)) {
+			        && isElementVisible(dom, element) && !filterElement(attributes, element)) {
 				if ("A".equalsIgnoreCase(tagElement.getName())) {
 					String href = element.getAttribute("href");
-					boolean isExternal = Helper.isLinkExternal(browser.getCurrentUrl(), href);
+					boolean isExternal =
+					        Helper
+					                .isLinkExternal(this.crawler.getBrowser().getCurrentUrl(),
+					                        href);
 					boolean isEmail = isEmail(href);
 					LOGGER.debug("HREF: " + href + "isExternal= " + isExternal);
 
@@ -316,7 +379,7 @@ public class CandidateElementExtractor {
 	 * @TODO find also whether CSS makes the element invisible!!! --> use WebDriver! Via webdriver
 	 *       checking can be very slow
 	 */
-	private boolean isElementVisible(Document dom, EmbeddedBrowser browser, Element element)
+	private boolean isElementVisible(Document dom, Element element)
 	        throws XPathExpressionException {
 
 		String xpath =

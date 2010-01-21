@@ -100,6 +100,7 @@ public class Eventable extends DefaultEdge implements Cloneable {
 			this.element = new Element(candidateElement.getElement());
 		}
 		this.relatedFormInputs = candidateElement.getFormInputs();
+		this.relatedFrame = candidateElement.getRelatedFrame();
 	}
 
 	/**
