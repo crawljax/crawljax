@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<title>Nested IFrame</title>
+<head>
+	<script type="text/javascript" >
+	
+	function toggle1() {
+		if(document.getElementById("button001").value == "Click Me !")
+			document.getElementById("button001").value = "I'm clicked";
+		else
+			document.getElementById("button001").value = "Click Me !";
+		//document.getElementById("button002").disabled = false;		
+	}
+	
+	function toggle2() {
+		//document.getElementById("button001").disabled = false;
+		document.getElementById("button002").disabled = true;		
+	}
+	
+	</script>
+</head>
+
+<body>                            
+	<input id="button001" style="display:block" class="btn" type="button" 
+        name="firstButton" onclick="toggle1();" value="Click Me !" /> 
+	<input id="button002" style="display:block" class="btn" type="button" 
+        name="secondButton" onclick="toggle2();" value="Click Me Too!" />
+</body>
+
+</html>
