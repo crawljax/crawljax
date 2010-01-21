@@ -157,7 +157,7 @@ public final class FormInputValueHelper {
 
 		Document dom;
 		try {
-			dom = Helper.getDocument(browser.getDom());
+			dom = Helper.getDocument(browser.getDomWithoutIframeContent());
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return candidateElements;

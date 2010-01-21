@@ -19,28 +19,26 @@ import com.crawljax.util.Helper;
  */
 public class CandidateElement {
 
-	// default is onclick
-	private String eventType = "onclick";
-
 	private Identification identification;
 
 	private Element element;
 
 	private List<FormInput> formInputs = new ArrayList<FormInput>();
 	private EventableCondition eventableCondition;
+	private String relatedFrame = "";
 
 	/**
-	 * @param eventType
-	 *            the event type.
 	 * @param element
 	 *            the element.
 	 * @param identification
 	 *            the identification.
+	 * @param relatedFrame
+	 *            the frame this element belongs to.
 	 */
-	public CandidateElement(Element element, String eventType, Identification identification) {
-		this.eventType = eventType;
+	public CandidateElement(Element element, Identification identification, String relatedFrame) {
 		this.identification = identification;
 		this.element = element;
+		this.relatedFrame = relatedFrame;
 	}
 
 	/**
@@ -67,7 +65,9 @@ public class CandidateElement {
 
 		}
 
-		result += Helper.getElementAttributes(this.element, exclude) + " " + this.identification;
+		result +=
+		        Helper.getElementAttributes(this.element, exclude) + " " + this.identification
+		                + " " + relatedFrame;
 
 		return result;
 	}
@@ -85,7 +85,7 @@ public class CandidateElement {
 			                + Helper.getAllElementAttributes(this.element) + " ";
 		}
 
-		result += this.identification + " " + eventType;
+		result += this.identification + " " + relatedFrame;
 
 		return result;
 	}
@@ -135,10 +135,10 @@ public class CandidateElement {
 	}
 
 	/**
-	 * @return the event type.
+	 * @return the relatedFrame
 	 */
-	public String getEventType() {
-		return eventType;
+	public String getRelatedFrame() {
+		return relatedFrame;
 	}
 
 }

@@ -212,7 +212,8 @@ public class Crawler implements Runnable {
 	public boolean fireEvent(Eventable eventable) {
 		try {
 
-			if (eventable.getEventType().equals("onclick")) {
+			if (eventable.getIdentification().getHow().equals("xpath")
+			        && eventable.getRelatedFrame().equals("")) {
 
 				/**
 				 * The path in the page to the 'clickable' (link, div, span, etc)
@@ -231,9 +232,8 @@ public class Crawler implements Runnable {
 				String newXPath = new ElementResolver(eventable, browser).resolve();
 				if (newXPath != null) {
 					if (!xpath.equals(newXPath)) {
-						LOGGER
-						        .info(getName() + "XPath changed from " + xpath + " to "
-						                + newXPath);
+						LOGGER.info(getName() + "XPath changed from " + xpath + " to " + newXPath
+						        + " relatedFrame:" + eventable.getRelatedFrame());
 						eventable =
 						        new Eventable(new Identification("xpath", newXPath), eventType);
 					}
@@ -462,17 +462,10 @@ public class Crawler implements Runnable {
 					 * clickResult: 1 = Dom Changed & No Clone. 0 = Dom Changed & Clone. -1 = Dom
 					 * Not Changed
 					 */
-					int clickResult;
+					int clickResult =
+					        clickTag(new Eventable(candidateElement, eventType),
+					                handleInputElements, currentHold);
 
-					if (candidateElement.getEventType().endsWith("switchto.iframe")) {
-						clickResult =
-						        clickTag(new Eventable(candidateElement, candidateElement
-						                .getEventType()), handleInputElements, currentHold);
-					} else {
-						clickResult =
-						        clickTag(new Eventable(candidateElement, eventType),
-						                handleInputElements, currentHold);
-					}
 					if (clickResult >= 0) {
 
 						if (clickResult == 0) {
