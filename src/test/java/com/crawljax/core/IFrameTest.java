@@ -1,5 +1,8 @@
 package com.crawljax.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -25,16 +28,19 @@ public class IFrameTest {
 
 	@Test
 	public void run() {
-		/*
-		 * try { crawljax.run(); assertEquals("Clickables", 9,
-		 * crawljax.getStateFlowGraph().getAllEdges().size()); System.out.println(
-		 * "Actually Clickables should be 10, but webdrive does not support nested iframes yet!");
-		 * assertEquals("States", 9, crawljax.getStateFlowGraph().getAllStates().size()); System.out
-		 * .
-		 * println("Actually States should be 11, but webdrive does not support nested iframes yet!"
-		 * ); } catch (ConfigurationException e) { e.printStackTrace(); fail(e.getMessage()); }
-		 * catch (CrawljaxException e) { e.printStackTrace(); fail(e.getMessage()); }
-		 */}
+
+		try {
+			crawljax.run();
+			assertEquals("Clickables", 14, crawljax.getStateFlowGraph().getAllEdges().size());
+			assertEquals("States", 13, crawljax.getStateFlowGraph().getAllStates().size());
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		} catch (CrawljaxException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
 
 	private static CrawlSpecification getCrawlSpecification() {
 		File index = new File("src/test/site/iframe/index.html");
@@ -43,6 +49,7 @@ public class IFrameTest {
 		crawler.setWaitTimeAfterReloadUrl(100);
 		crawler.setDepth(3);
 		crawler.click("a");
+		crawler.click("input");
 
 		return crawler;
 	}
