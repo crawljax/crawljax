@@ -2,6 +2,8 @@ package com.crawljax.browser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -141,8 +143,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public String getDom() throws CrawljaxException {
 		try {
-			// return toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
-			return getDomWithoutIframeContent();
+			return toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
 		} catch (Exception e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
@@ -380,30 +381,35 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 		NodeList frameNodes = orig.getElementsByTagName("IFRAME");
 
-		int nodes = frameNodes.getLength();
 		browser.switchTo().window(windowHandle);
 
-		for (int i = 0; i < nodes; i++) {
+		List<Element> nodeList = new ArrayList<Element>();
+
+		for (int i = 0; i < frameNodes.getLength(); i++) {
+			Element frameElement = (Element) frameNodes.item(i);
+			nodeList.add(frameElement);
+		}
+
+		for (int i = 0; i < nodeList.size(); i++) {
 			String frameIdentification = "";
 
 			if (topFrame != null && !topFrame.equals("")) {
 				frameIdentification += topFrame + ".";
 			}
 
-			Element frameElement = (Element) frameNodes.item(i);
+			Element frameElement = nodeList.get(i);
 			frameIdentification += getFrameIdentification(frameElement, i);
 
-			logger.info("frame-identification: " + frameIdentification);
+			// logger.info("frame-identification: " + frameIdentification);
 
 			String toAppend = browser.switchTo().frame(frameIdentification).getPageSource();
 
 			Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
-			toAppendElement = (Element) document.importNode(toAppendElement, true);
-			frameElement.appendChild(toAppendElement);
-
-			appendFrameContent(windowHandle, toAppendElement, document, frameIdentification);
-
-			browser.switchTo().window(windowHandle);
+			Element importedElement = (Element) document.importNode(toAppendElement, true);
+			frameElement.appendChild(importedElement);
+			System.out.println("going recursive...");
+			appendFrameContent(windowHandle, importedElement, document, frameIdentification);
+			System.out.println("out of recursive...");
 		}
 
 	}

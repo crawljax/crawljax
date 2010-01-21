@@ -24,13 +24,14 @@ public class AbstractWebDriverTest {
 		Document doc;
 		try {
 			driver.goToUrl("file://" + index.getAbsolutePath());
+			System.out.println("DOM with frames: " + driver.getDom());
 			doc = Helper.getDocument(driver.getDom());
 			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
-			assertEquals(3, frameNodes.getLength());
+			assertEquals(5, frameNodes.getLength());
 
 			doc = Helper.getDocument(driver.getDomWithoutIframeContent());
 			frameNodes = doc.getElementsByTagName("IFRAME");
-			assertEquals(2, frameNodes.getLength());
+			assertEquals(3, frameNodes.getLength());
 
 		} catch (SAXException e) {
 			e.printStackTrace();
