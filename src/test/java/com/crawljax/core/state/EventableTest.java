@@ -98,19 +98,15 @@ public class EventableTest {
 	@Test
 	public void testEdge() {
 
-		StateFlowGraph sfg = new StateFlowGraph();
-
 		StateVertix s1 = new StateVertix("stateSource", "dom1");
 		StateVertix s2 = new StateVertix("stateTarget", "dom2");
+		StateFlowGraph sfg = new StateFlowGraph(s1);
 
-		sfg.requestStateFlowGraphMutex();
-		sfg.addState(s1);
 		sfg.addState(s2);
 
 		Eventable e = new Eventable();
 
 		sfg.addEdge(s1, s2, e);
-		sfg.releaseStateFlowGraphMutex();
 		assertEquals(s1, e.getSourceStateVertix());
 		assertEquals(s2, e.getTargetStateVertix());
 

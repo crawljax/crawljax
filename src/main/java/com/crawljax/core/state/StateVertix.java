@@ -1,24 +1,45 @@
 package com.crawljax.core.state;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.log4j.Logger;
 
+import com.crawljax.core.CandidateCrawlAction;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.CandidateElementExtractor;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.database.HibernateUtil;
 
 /**
- * The state vertix class which represents a state in the browser.
+ * The state vertix class which represents a state in the browser. This class implements the
+ * Iterable interface because on a StateVertix it is possible to iterate over the possible
+ * CandidateElements found in this state. When iterating over the possible candidate elements every
+ * time a candidate is returned its removed from the list so it is a one time only access to the
+ * candidates.
  * 
  * @author mesbah
  * @version $Id$
  */
-public class StateVertix {
+public class StateVertix implements Iterable<CandidateCrawlAction> {
 
+	private static final Logger LOGGER = Logger.getLogger(StateVertix.class);
 	private long id;
 	private String name;
 	private String dom;
 	private final String strippedDom;
 	private final String url;
 	private boolean guidedCrawling = false;
+
+	/**
+	 * This list is used to store the possible candidates. If it is null its not initialised if it's
+	 * a empty list its empty.
+	 */
+	private List<CandidateCrawlAction> candidateActions;
 
 	/**
 	 * Default constructor to support saving instances of this class as an XML.
@@ -203,6 +224,89 @@ public class StateVertix {
 	 */
 	public void setGuidedCrawling(boolean guidedCrawling) {
 		this.guidedCrawling = guidedCrawling;
+	}
+
+	/**
+	 * search for new Candidates from this state. The search for candidates is only done when no
+	 * list is available yet (candidateActions == null).
+	 * 
+	 * @param candidateExtractor
+	 *            the CandidateElementExtractor to use.
+	 */
+	public void searchForCandidateElements(CandidateElementExtractor candidateExtractor) {
+		if (candidateActions == null) {
+			candidateActions = new ArrayList<CandidateCrawlAction>();
+			try {
+				List<CandidateElement> candidateList =
+				        candidateExtractor.extract(PropertyHelper.getCrawlTagElements(),
+				                PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
+				                        .getClickOnceValue(), this);
+				List<String> eventTypes = PropertyHelper.getRobotEventsValues();
+				for (CandidateElement candidateElement : candidateList) {
+					for (String eventType : eventTypes) {
+						candidateActions
+						        .add(new CandidateCrawlAction(candidateElement, eventType));
+					}
+				}
+			} catch (CrawljaxException e) {
+				LOGGER.error("Catched excption while searching for candidates in state "
+				        + getName(), e);
+			}
+		}
+	}
+
+	/**
+	 * Are there any more candidates to explore?
+	 * 
+	 * @return true if there are candidates left in this state. false otherwise.
+	 */
+	public boolean hasMoreToExplore() {
+		return candidateActions != null && !candidateActions.isEmpty();
+	}
+
+	/**
+	 * Return a list of UnprocessedCandidates in a List.
+	 * 
+	 * @return a list of candidates which are unprocessed.
+	 */
+	public List<CandidateElement> getUnprocessedCandidateElements() {
+		List<CandidateElement> list = new ArrayList<CandidateElement>();
+		if (candidateActions == null) {
+			return list;
+		}
+		CandidateElement last = null;
+		for (CandidateCrawlAction candidateAction : candidateActions) {
+			if (last != candidateAction.getCandidateElement()) {
+				last = candidateAction.getCandidateElement();
+				list.add(last);
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * Retrieve a Iterator to iterate with. Made in a anonymous-innerclass.
+	 * 
+	 * @return the iterator which deletes every element returned.
+	 */
+	@Override
+	public Iterator<CandidateCrawlAction> iterator() {
+		return new Iterator<CandidateCrawlAction>() {
+
+			@Override
+			public boolean hasNext() {
+				return hasMoreToExplore();
+			}
+
+			@Override
+			public CandidateCrawlAction next() {
+				return candidateActions.remove(0);
+			}
+
+			@Override
+			public void remove() {
+			}
+		};
 	}
 
 }

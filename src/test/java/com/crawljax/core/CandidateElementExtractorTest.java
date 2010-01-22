@@ -15,11 +15,13 @@ import org.junit.Test;
 import com.crawljax.browser.BrowserFactory;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.state.StateVertix;
 import com.crawljax.util.PropertyHelper;
 
 public class CandidateElementExtractorTest {
 
 	private static String url = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
+	private static final StateVertix DUMMY_STATE = new StateVertix("DUMMY", "");
 
 	@BeforeClass
 	public static void startup() {
@@ -35,46 +37,49 @@ public class CandidateElementExtractorTest {
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
 			crawler = controller.getCrawler();
+
+			assertNotNull(crawler);
+
+			try {
+				crawler.goToInitialURL();
+			} catch (CrawljaxException e1) {
+				e1.printStackTrace();
+				fail(e1.getMessage());
+			}
+
+			try {
+				Thread.sleep(400);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+			CandidateElementExtractor extractor =
+			        new CandidateElementExtractor(controller.getElementChecker(), crawler
+			                .getBrowser());
+			assertNotNull(extractor);
+			try {
+
+				String inc = "a:{}";
+				TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
+				List<TagElement> includes = new ArrayList<TagElement>();
+				includes.add(tagElementInc);
+
+				List<CandidateElement> candidates =
+				        extractor.extract(includes, new ArrayList<TagElement>(), true,
+				                DUMMY_STATE);
+
+				assertNotNull(candidates);
+				assertEquals(15, candidates.size());
+
+			} catch (CrawljaxException e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+			BrowserFactory.close();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
 		}
-
-		assertNotNull(crawler);
-
-		try {
-			crawler.goToInitialURL();
-		} catch (CrawljaxException e1) {
-			e1.printStackTrace();
-			fail(e1.getMessage());
-		}
-
-		try {
-			Thread.sleep(400);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		CandidateElementExtractor extractor = new CandidateElementExtractor(crawler);
-		assertNotNull(extractor);
-		try {
-
-			String inc = "a:{}";
-			TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
-			List<TagElement> includes = new ArrayList<TagElement>();
-			includes.add(tagElementInc);
-
-			List<CandidateElement> candidates =
-			        extractor.extract(includes, new ArrayList<TagElement>(), true);
-
-			assertNotNull(candidates);
-			assertEquals(15, candidates.size());
-
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		BrowserFactory.close();
 	}
 
 	@Test
@@ -86,53 +91,56 @@ public class CandidateElementExtractorTest {
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
 			crawler = controller.getCrawler();
+
+			assertNotNull(crawler);
+
+			try {
+				crawler.goToInitialURL();
+			} catch (CrawljaxException e1) {
+				e1.printStackTrace();
+				fail(e1.getMessage());
+			}
+
+			try {
+				Thread.sleep(400);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+			CandidateElementExtractor extractor =
+			        new CandidateElementExtractor(controller.getElementChecker(), crawler
+			                .getBrowser());
+			assertNotNull(extractor);
+
+			try {
+
+				String inc = "a:{}";
+				TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
+				List<TagElement> includes = new ArrayList<TagElement>();
+				includes.add(tagElementInc);
+
+				// now exclude some elements
+				String exc = "div:{id=menubar}";
+
+				List<TagElement> excludes = new ArrayList<TagElement>();
+				TagElement tagElementExc = PropertyHelper.parseTagElements(exc);
+				excludes.add(tagElementExc);
+
+				List<CandidateElement> candidates =
+				        extractor.extract(includes, excludes, true, DUMMY_STATE);
+
+				assertNotNull(candidates);
+				assertEquals(11, candidates.size());
+
+			} catch (CrawljaxException e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+			BrowserFactory.close();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
 		}
-
-		assertNotNull(crawler);
-
-		try {
-			crawler.goToInitialURL();
-		} catch (CrawljaxException e1) {
-			e1.printStackTrace();
-			fail(e1.getMessage());
-		}
-
-		try {
-			Thread.sleep(400);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		CandidateElementExtractor extractor = new CandidateElementExtractor(crawler);
-		assertNotNull(extractor);
-
-		try {
-
-			String inc = "a:{}";
-			TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
-			List<TagElement> includes = new ArrayList<TagElement>();
-			includes.add(tagElementInc);
-
-			// now exclude some elements
-			String exc = "div:{id=menubar}";
-
-			List<TagElement> excludes = new ArrayList<TagElement>();
-			TagElement tagElementExc = PropertyHelper.parseTagElements(exc);
-			excludes.add(tagElementExc);
-
-			List<CandidateElement> candidates = extractor.extract(includes, excludes, true);
-
-			assertNotNull(candidates);
-			assertEquals(11, candidates.size());
-
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		BrowserFactory.close();
 	}
 
 	@Test
@@ -146,48 +154,51 @@ public class CandidateElementExtractorTest {
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
 			crawler = controller.getCrawler();
+
+			assertNotNull(crawler);
+
+			try {
+				crawler.goToInitialURL();
+			} catch (CrawljaxException e1) {
+				e1.printStackTrace();
+				fail(e1.getMessage());
+			}
+
+			try {
+				Thread.sleep(400);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+			CandidateElementExtractor extractor =
+			        new CandidateElementExtractor(controller.getElementChecker(), crawler
+			                .getBrowser());
+			assertNotNull(extractor);
+			try {
+				String inc = "a:{}";
+				TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
+				List<TagElement> includes = new ArrayList<TagElement>();
+				includes.add(tagElementInc);
+
+				List<CandidateElement> candidates =
+				        extractor.extract(includes, new ArrayList<TagElement>(), true,
+				                DUMMY_STATE);
+
+				for (CandidateElement e : candidates) {
+					System.out.println("candidate: " + e.getUniqueString());
+				}
+
+				assertNotNull(candidates);
+				assertEquals(8, candidates.size());
+
+			} catch (CrawljaxException e) {
+				e.printStackTrace();
+				fail(e.getMessage());
+			}
+			BrowserFactory.close();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
 		}
-
-		assertNotNull(crawler);
-
-		try {
-			crawler.goToInitialURL();
-		} catch (CrawljaxException e1) {
-			e1.printStackTrace();
-			fail(e1.getMessage());
-		}
-
-		try {
-			Thread.sleep(400);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		CandidateElementExtractor extractor = new CandidateElementExtractor(crawler);
-		assertNotNull(extractor);
-		try {
-			String inc = "a:{}";
-			TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
-			List<TagElement> includes = new ArrayList<TagElement>();
-			includes.add(tagElementInc);
-
-			List<CandidateElement> candidates =
-			        extractor.extract(includes, new ArrayList<TagElement>(), true);
-
-			for (CandidateElement e : candidates) {
-				System.out.println("candidate: " + e.getUniqueString());
-			}
-
-			assertNotNull(candidates);
-			assertEquals(8, candidates.size());
-
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		BrowserFactory.close();
 	}
 }

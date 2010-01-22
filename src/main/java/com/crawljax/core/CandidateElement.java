@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
@@ -19,9 +20,9 @@ import com.crawljax.util.Helper;
  */
 public class CandidateElement {
 
-	private Identification identification;
+	private final Identification identification;
 
-	private Element element;
+	private final Element element;
 
 	private List<FormInput> formInputs = new ArrayList<FormInput>();
 	private EventableCondition eventableCondition;
@@ -113,13 +114,6 @@ public class CandidateElement {
 	}
 
 	/**
-	 * @return its EventableCondition (can be null)
-	 */
-	public EventableCondition getEventableCondition() {
-		return eventableCondition;
-	}
-
-	/**
 	 * @param eventableCondition
 	 *            the EventableCondition
 	 */
@@ -139,6 +133,23 @@ public class CandidateElement {
 	 */
 	public String getRelatedFrame() {
 		return relatedFrame;
+	}
+
+	/**
+	 * Check all eventable Condition for correctness.
+	 * 
+	 * @see #eventableCondition
+	 * @see EventableCondition#checkAllConditionsSatisfied(EmbeddedBrowser)
+	 * @param browser
+	 *            the current browser instance that contains the current dom
+	 * @return true if all conditions are satisfied or no conditions are specified
+	 */
+	public boolean allConditionsSatisfied(EmbeddedBrowser browser) {
+		if (eventableCondition != null) {
+			return eventableCondition.checkAllConditionsSatisfied(browser);
+		}
+		// No condition specified so return true....
+		return true;
 	}
 
 }

@@ -19,10 +19,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.crawljax.browser.AbstractWebDriver;
+import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.StateVertix;
 import com.crawljax.forms.FormInputValueHelper;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
@@ -39,14 +41,21 @@ public class CandidateElementExtractor {
 	private static final Logger LOGGER =
 	        Logger.getLogger(CandidateElementExtractor.class.getName());
 
-	private final Crawler crawler;
+	private final ExtractorManager checkedElements;
+	private final EmbeddedBrowser browser;
 
 	/**
-	 * @param c
-	 *            the Crawler which uses this Extractor
+	 * Create a new CandidateElementExtractor.
+	 * 
+	 * @param checker
+	 *            the ExtractorManager to use for marking handled elements and retrieve the
+	 *            EventableConditionChecker
+	 * @param browser
+	 *            the current browser instance used in the Crawler
 	 */
-	public CandidateElementExtractor(Crawler c) {
-		this.crawler = c;
+	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser) {
+		checkedElements = checker;
+		this.browser = browser;
 	}
 
 	/**
@@ -59,18 +68,27 @@ public class CandidateElementExtractor {
 	 *            a list of TagElements to exclude.
 	 * @param clickOnce
 	 *            true if each candidate elements should be included only once.
+	 * @param currentState
+	 *            the state in which this extract method is requested.
 	 * @return a list of candidate elements that are not excluded.
 	 * @throws CrawljaxException
 	 *             if the method fails.
 	 */
 	public List<CandidateElement> extract(List<TagElement> crawlTagElements,
-	        List<TagElement> crawlExcludeTagElements, boolean clickOnce) throws CrawljaxException {
+	        List<TagElement> crawlExcludeTagElements, boolean clickOnce, StateVertix currentState)
+	        throws CrawljaxException {
 		List<CandidateElement> results = new ArrayList<CandidateElement>();
 
-		crawler.requestExaminedElementsMutex();
+		if (!checkedElements.checkCrawlCondition(browser)) {
+			LOGGER.info("State " + currentState.getName()
+			        + " dit not satisfy the CrawlConditions.");
+			return results;
+		}
+		LOGGER.info("Looking in state: " + currentState.getName()
+		        + " for candidate elements with ");
 
 		try {
-			Document dom = Helper.getDocument(crawler.getBrowser().getDomWithoutIframeContent());
+			Document dom = Helper.getDocument(browser.getDomWithoutIframeContent());
 			extractElements(dom, crawlTagElements, crawlExcludeTagElements, clickOnce, results,
 			        "");
 		} catch (SAXException e) {
@@ -80,8 +98,6 @@ public class CandidateElementExtractor {
 			LOGGER.error(e.getMessage(), e);
 			throw new CrawljaxException(e.getMessage(), e);
 		}
-
-		crawler.releaseExaminedElementsMutex();
 
 		LOGGER.info("Found " + results.size() + " new candidate elements to analyze!");
 		return results;
@@ -99,7 +115,7 @@ public class CandidateElementExtractor {
 			try {
 
 				foundElements =
-				        getNodeListForTagElement(dom, tag, this.crawler
+				        getNodeListForTagElement(dom, tag, checkedElements
 				                .getEventableConditionChecker(), crawlExcludeTagElements);
 
 				getFramesCandidates(dom, crawlTagElements, crawlExcludeTagElements, clickOnce,
@@ -111,7 +127,7 @@ public class CandidateElementExtractor {
 
 			for (Element sourceElement : foundElements) {
 				EventableCondition eventableCondition =
-				        this.crawler.getEventableConditionChecker().getEventableCondition(
+				        checkedElements.getEventableConditionChecker().getEventableCondition(
 				                tag.getId());
 				String xpath = XPathHelper.getXpathExpression(sourceElement);
 				// get multiple candidate elements when there are input
@@ -124,8 +140,8 @@ public class CandidateElementExtractor {
 					// add multiple candidate elements, for every input
 					// value combination
 					candidateElements =
-					        FormInputValueHelper.getCandidateElementsForInputs(this.crawler
-					                .getBrowser(), sourceElement, eventableCondition);
+					        FormInputValueHelper.getCandidateElementsForInputs(browser,
+					                sourceElement, eventableCondition);
 				} else {
 					// just add default element
 					candidateElements.add(new CandidateElement(sourceElement, new Identification(
@@ -133,8 +149,7 @@ public class CandidateElementExtractor {
 				}
 
 				for (CandidateElement candidateElement : candidateElements) {
-					String elementUniqueString = candidateElement.getUniqueString();
-					if (!clickOnce || !crawler.elementIsAlreadyChecked(elementUniqueString)) {
+					if (!clickOnce || checkedElements.markChecked(candidateElement)) {
 						LOGGER.info("Found new candidate element: "
 						        + candidateElement.getUniqueString());
 
@@ -142,14 +157,11 @@ public class CandidateElementExtractor {
 							candidateElement.setEventableCondition(eventableCondition);
 						}
 						results.add(candidateElement);
-						// TODO add element to checkedElements after the
-						// event is fired!
-						crawler.markElementAsChecked(elementUniqueString);
-						// also add string without 'atusa' attribute to
-						// make sure an
-						// form action element is only clicked for its
-						// defined values
-						crawler.markElementAsChecked(candidateElement.getGeneralString());
+						/**
+						 * TODO add element to checkedElements after the event is fired! also add
+						 * string without 'atusa' attribute to make sure an form action element is
+						 * only clicked for its defined values
+						 */
 					}
 				}
 			}
@@ -160,8 +172,8 @@ public class CandidateElementExtractor {
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
 	        List<CandidateElement> results, String relatedFrame) throws CrawljaxException {
 
-		if (crawler.getBrowser() instanceof AbstractWebDriver) {
-			WebDriver driver = ((AbstractWebDriver) crawler.getBrowser()).getDriver();
+		if (browser instanceof AbstractWebDriver) {
+			WebDriver driver = ((AbstractWebDriver) browser).getDriver();
 
 			String handle = driver.getWindowHandle();
 
@@ -202,12 +214,12 @@ public class CandidateElementExtractor {
 
 	private String getFrameIdentification(Element frame, int index) {
 
-		Attr attr = (Attr) frame.getAttributeNode("name");
+		Attr attr = frame.getAttributeNode("name");
 		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
 			return attr.getNodeValue();
 		}
 
-		attr = (Attr) frame.getAttributeNode("id");
+		attr = frame.getAttributeNode("id");
 		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
 			return attr.getNodeValue();
 		}
@@ -252,27 +264,27 @@ public class CandidateElementExtractor {
 					// element
 				}
 			}
+
+			// TODO Stefan This is a possible Thread-Interleaving problem, as isChecked can return
+			// false and when needed to add it can return true.
 			// check if element is a candidate
 			if (matchesXpath
-			        && !crawler.elementIsAlreadyChecked(element.getNodeName() + ": "
+			        && !checkedElements.isChecked(element.getNodeName() + ": "
 			                + Helper.getAllElementAttributes(element))
 			        && isElementVisible(dom, element) && !filterElement(attributes, element)) {
 				if ("A".equalsIgnoreCase(tagElement.getName())) {
 					String href = element.getAttribute("href");
-					boolean isExternal =
-					        Helper
-					                .isLinkExternal(this.crawler.getBrowser().getCurrentUrl(),
-					                        href);
+					boolean isExternal = Helper.isLinkExternal(browser.getCurrentUrl(), href);
 					boolean isEmail = isEmail(href);
 					LOGGER.debug("HREF: " + href + "isExternal= " + isExternal);
 
 					if (!(isExternal || isEmail || isPDForPS(href))) {
 						result.add(element);
-						crawler.increaseNumberExaminedElements();
+						checkedElements.increaseElementsCounter();
 					}
 				} else {
 					result.add(element);
-					crawler.increaseNumberExaminedElements();
+					checkedElements.increaseElementsCounter();
 				}
 			}
 		}

@@ -20,25 +20,18 @@ import com.crawljax.util.database.HibernateUtil;
 public class StateMachine {
 	private static final Logger LOGGER = Logger.getLogger(StateMachine.class.getName());
 	/**
-	 * One-to-one releation with the StateFlowGraph, the stateFlowGraph variable is never changed.
+	 * One-to-one relation with the StateFlowGraph, the stateFlowGraph variable is never changed.
 	 */
 	private final StateFlowGraph stateFlowGraph;
 
 	/**
-	 * One-to-one releation with the initalState, the initalState is never changed.
+	 * One-to-one relation with the initalState, the initalState is never changed.
 	 */
 	private StateVertix initialState;
 
-	/**
-	 * TODO Stefan Current and previous state often changes; thus given problems.
-	 */
 	private StateVertix currentState;
 
-	@SuppressWarnings("unused")
-	@Deprecated
 	private StateVertix previousState;
-
-	private boolean haveLock = false;
 
 	/**
 	 * Create a new StateMachine.
@@ -65,24 +58,19 @@ public class StateMachine {
 	public boolean changeState(StateVertix nextState) {
 		LOGGER.debug("AFTER: sm.current: " + currentState.getName() + " hold.current: "
 		        + nextState.getName());
-		if (!haveLock) {
-			stateFlowGraph.requestStateFlowGraphMutex();
-		}
+
 		if (stateFlowGraph.canGoTo(currentState, nextState)) {
-			if (!haveLock) {
-				stateFlowGraph.releaseStateFlowGraphMutex();
-			}
+
 			LOGGER.debug("Changed To state: " + nextState.getName() + " From: "
 			        + currentState.getName());
+
 			this.previousState = this.currentState;
 			currentState = nextState;
+
 			LOGGER.info("StateMachine's Pointer changed to: " + currentState);
 
 			return true;
 		} else {
-			if (!haveLock) {
-				stateFlowGraph.releaseStateFlowGraphMutex();
-			}
 			LOGGER.info("Cannot change To state: " + nextState.getName() + " From: "
 			        + currentState.getName());
 			return false;
@@ -102,26 +90,25 @@ public class StateMachine {
 	private StateVertix addStateToCurrentState(StateVertix newState, Eventable eventable) {
 		LOGGER.debug("currentState: " + currentState.getName());
 		LOGGER.debug("newState: " + newState.getName());
-		currentState = stateFlowGraph.getStateInGraph(currentState);
-		StateVertix cloneState = null;
-		if (stateFlowGraph.containsVertex(newState)) {
-			String name = newState.getName();
-			newState = stateFlowGraph.getStateInGraph(newState);
-			LOGGER.info("CLONE State detected: " + name + " and " + newState.getName()
-			        + " are the same.");
+
+		// Add the state to the stateFlowGraph. Store the result
+		StateVertix cloneState = stateFlowGraph.addState(newState);
+
+		// Is there a clone detected?
+		if (cloneState != null) {
+			LOGGER.info("CLONE State detected: " + newState.getName() + " and "
+			        + cloneState.getName() + " are the same.");
 			LOGGER.debug("CLONE CURRENTSTATE: " + currentState.getName());
-			LOGGER.debug("CLONE STATE: " + newState.getName());
+			LOGGER.debug("CLONE STATE: " + cloneState.getName());
 			LOGGER.debug("CLONE CLICKABLE: " + eventable);
-			cloneState = newState;
 		} else {
-			stateFlowGraph.addState(newState);
 			LOGGER.info("State " + newState.getName() + " added to the StateMachine.");
 		}
 
-		// eventable.setSourceStateVertix(currentState);
-		// eventable.setTargetStateVertix(newState);
+		// Store in DB
 		HibernateUtil.insert(eventable);
 
+		// Add the Edge
 		stateFlowGraph.addEdge(currentState, newState, eventable);
 
 		return cloneState;
@@ -145,8 +132,8 @@ public class StateMachine {
 	}
 
 	/**
-	 * @param currentHold
-	 *            the placeholder for the current stateVertix.
+	 * TODO Stefan Remove the controller argument.
+	 * 
 	 * @param event
 	 *            the event edge.
 	 * @param newState
@@ -157,21 +144,19 @@ public class StateMachine {
 	 *            the CrawljaxController to inquire for the checkInvariants
 	 * @return true if the new state is not found in the state machine.
 	 */
-	public boolean update(final StateVertix currentHold, final Eventable event,
-	        StateVertix newState, EmbeddedBrowser browser, CrawljaxController controller) {
-		stateFlowGraph.requestStateFlowGraphMutex();
-		haveLock = true;
+	public boolean update(final Eventable event, StateVertix newState, EmbeddedBrowser browser,
+	        CrawljaxController controller) {
 		StateVertix cloneState = this.addStateToCurrentState(newState, event);
 
 		if (cloneState != null) {
-			newState = cloneState.clone();
+			// Why cloning?
+			newState = cloneState;
 		}
 
 		this.changeState(newState);
-		stateFlowGraph.releaseStateFlowGraphMutex();
-		haveLock = false;
+
 		LOGGER.info("StateMachine's Pointer changed to: " + this.currentState.getName()
-		        + " FROM " + currentHold.getName());
+		        + " FROM " + previousState.getName());
 
 		if (PropertyHelper.getTestInvariantsWhileCrawlingValue()) {
 			controller.checkInvariants(browser);
@@ -183,7 +168,7 @@ public class StateMachine {
 		synchronized (controller.getSession()) {
 			/**
 			 * Only one thread at the time may set the currentState in the session and expose it to
-			 * the OnNewStatePlugins. Garranty it will not be interleaved
+			 * the OnNewStatePlugins. Guaranty it will not be interleaved
 			 */
 			controller.getSession().setCurrentState(newState);
 
