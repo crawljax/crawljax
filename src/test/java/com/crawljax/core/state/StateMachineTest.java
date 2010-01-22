@@ -22,14 +22,7 @@ import com.crawljax.util.PropertyHelper;
 public class StateMachineTest {
 	private StateMachine sm;
 	private final StateVertix state = new StateVertix("index", "<table><div>state</div></table>");
-	private final StateFlowGraph sfg = new StateFlowGraph();
-
-	public StateMachineTest() {
-		// Add the inital state, must be done as init.
-		sfg.requestStateFlowGraphMutex();
-		sfg.addState(state);
-		sfg.releaseStateFlowGraphMutex();
-	}
+	private final StateFlowGraph sfg = new StateFlowGraph(state);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

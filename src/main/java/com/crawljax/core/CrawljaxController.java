@@ -1,10 +1,7 @@
 package com.crawljax.core;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -76,25 +73,12 @@ public class CrawljaxController {
 	private final ThreadPoolExecutor workQueue;
 
 	/**
-	 * Mutex used for the lock on examinedElements.
-	 */
-	private final Semaphore examinedElementsMutex = new Semaphore(1);
-
-	/**
 	 * Use AtomicInteger to denote the stateCounter, in doing so its thread-safe.
 	 */
 	private final AtomicInteger stateCounter = new AtomicInteger(1);
 
-	/**
-	 * Use the AtomicInteger to prevent Problems when increasing.
-	 */
-	private final AtomicInteger numberofExaminedElements = new AtomicInteger();
-
-	/**
-	 * Use the ConcurrentLinkedQueue to prevent Thread problems when checking and storing
-	 * checkedElements.
-	 */
-	private final Collection<String> checkedElements = new ConcurrentLinkedQueue<String>();
+	private final CandidateElementManager elementChecker =
+	        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 
 	/**
 	 * The constructor.
@@ -179,7 +163,7 @@ public class CrawljaxController {
 
 		return new ThreadPoolExecutor(PropertyHelper.getCrawNumberOfThreadsValue(),
 		        PropertyHelper.getCrawNumberOfThreadsValue(), 0L, TimeUnit.MILLISECONDS,
-		        new CrawlQueue());
+		        new CrawlQueue(), new CrawlThreadFactory());
 	}
 
 	/**
@@ -210,13 +194,8 @@ public class CrawljaxController {
 		        new StateVertix(browser.getCurrentUrl(), "index", browser.getDom(),
 		                stateComparator.getStrippedDom(browser));
 
-		// TODO Stefan do something with locking
-		stateFlowGraph = new StateFlowGraph();
-		stateFlowGraph.requestStateFlowGraphMutex();
-		stateFlowGraph.addState(indexState);
-		stateFlowGraph.releaseStateFlowGraphMutex();
+		stateFlowGraph = new StateFlowGraph(indexState);
 
-		// TODO Stefan delete
 		StateMachine stateMachine = new StateMachine(stateFlowGraph, indexState);
 		crawler.setStateMachine(stateMachine);
 
@@ -268,7 +247,7 @@ public class CrawljaxController {
 		}
 
 		LOGGER.info("Total Crawling time(" + timeCrawlCalc + "ms) ~= " + formatRunningTime());
-		LOGGER.info("EXAMINED ELEMENTS: " + numberofExaminedElements.get());
+		LOGGER.info("EXAMINED ELEMENTS: " + elementChecker.numberOfExaminedElements());
 		LOGGER.info("CLICKABLES: " + stateFlowGraph.getAllEdges().size());
 		LOGGER.info("STATES: " + stateFlowGraph.getAllStates().size());
 		LOGGER.info("Dom average size (byte): " + stateFlowGraph.getMeanStateStringSize());
@@ -357,27 +336,22 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Check the invariants. TODO Stefan Check Thread-Safety
+	 * Check the invariants. TODO Stefan move to the Crawler. When done so make a new instance of
+	 * invariantChecker. there is no need for any synch.
 	 * 
 	 * @param browser
 	 *            the browser to feed to the invariants
 	 */
+	@GuardedBy("invariantChecker")
 	public void checkInvariants(EmbeddedBrowser browser) {
-		if (!invariantChecker.check(browser)) {
-			final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
-			for (Invariant failedInvariant : failedInvariants) {
-				CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
+		synchronized (invariantChecker) {
+			if (!invariantChecker.check(browser)) {
+				final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
+				for (Invariant failedInvariant : failedInvariants) {
+					CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
+				}
 			}
 		}
-	}
-
-	/**
-	 * @return the eventableConditionChecker
-	 * @NotTheadSafe The Condition classes contains 1 not Thread safe implementation
-	 *               (XPathCondition)
-	 */
-	public final EventableConditionChecker getEventableConditionChecker() {
-		return eventableConditionChecker;
 	}
 
 	/**
@@ -413,39 +387,6 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Check if a given element is already checked, preventing duplicate work. This is implemented
-	 * in a ConcurrentLinkedQueue to support thread-safety
-	 * 
-	 * @param element
-	 *            the to search for if its already checked
-	 * @return true if the element is already checked
-	 */
-	@GuardedBy("examinedElementsMutex")
-	public final boolean elementIsAlreadyChecked(String element) {
-		if (examinedElementsMutex.availablePermits() != 0) {
-			LOGGER.warn("possible code executing without required permit!", new Throwable(
-			        "possible code executing without required permit!").fillInStackTrace());
-		}
-		return this.checkedElements.contains(element);
-	}
-
-	/**
-	 * Mark a given element as checked to prevent duplicate work. This is implemented in a
-	 * ConcurrentLinkedQueue to support thread-safety
-	 * 
-	 * @param element
-	 *            the elements that is checked
-	 */
-	@GuardedBy("examinedElementsMutex")
-	public final void markElementAsChecked(String element) {
-		if (examinedElementsMutex.availablePermits() != 0) {
-			LOGGER.warn("possible code executing without required permit!", new Throwable(
-			        "possible code executing without required permit!").fillInStackTrace());
-		}
-		this.checkedElements.add(element);
-	}
-
-	/**
 	 * Wait for a given condition. This call is thread safe as the underlying object is thread-safe.
 	 * 
 	 * @param browser
@@ -476,18 +417,8 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * increase the number of checked elements, as a statistics measure to know how many elements
-	 * were actually examined. Its thread safe by using the AtomicInteger
-	 * 
-	 * @see java.util.concurrent.atomic.AtomicInteger
-	 */
-	public final void increaseNumberExaminedElements() {
-		numberofExaminedElements.getAndIncrement();
-	}
-
-	/**
 	 * get the stripped version of the dom currently in the browser. This call is thread safe, must
-	 * be synchronized because there is thread-intefearing bug in the stateComparator.
+	 * be synchronised because there is thread-intefearing bug in the stateComparator.
 	 * 
 	 * @param browser
 	 *            the browser instance.
@@ -504,6 +435,11 @@ public class CrawljaxController {
 		return crawler;
 	}
 
+	/**
+	 * Format the time the current crawl run has taken into a more readable format.
+	 * 
+	 * @return the formatted time in X min, X sec layout.
+	 */
 	private String formatRunningTime() {
 		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
 		return String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(timeCrawlCalc),
@@ -554,33 +490,22 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Request a lock on the examinedElements datastructure. Becarefull a requested lock MUST be
-	 * returned by hand! using the {@link #releaseExaminedElementsMutex()}
-	 * 
-	 * @see CrawljaxController#releaseExaminedElementsMutex()
-	 */
-	public void requestExaminedElementsMutex() {
-		try {
-			examinedElementsMutex.acquire();
-		} catch (InterruptedException e) {
-			LOGGER.error("the acquire of the ExaminedElementsMutex is interuped", e);
-		}
-	}
-
-	/**
-	 * Release the lock for the examinedElements datastructure.
-	 */
-	public void releaseExaminedElementsMutex() {
-		examinedElementsMutex.release();
-	}
-
-	/**
 	 * Return the last known state name, this call and set operation are not thread safe.
 	 * 
 	 * @return the lastStateName known in the Controller
 	 */
 	public final String getLastStateName() {
 		return lastStateName;
+	}
+
+	/**
+	 * The current element checker in use. This call is thread-safe because it returns a final
+	 * field.
+	 * 
+	 * @return the elementChecker used to register the checked elements.
+	 */
+	public final ExtractorManager getElementChecker() {
+		return elementChecker;
 	}
 
 }

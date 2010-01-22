@@ -6,7 +6,6 @@ package com.crawljax.core.state;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jgrapht.GraphPath;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -22,16 +20,9 @@ import org.junit.Test;
  * @version $Id$
  */
 public class StateFlowGraphTest {
-	private StateFlowGraph graph;
-
-	@Before
-	public void setUp() throws Exception {
-		graph = new StateFlowGraph();
-	}
 
 	@Test
 	public void testSFG() throws Exception {
-		assertNotNull(graph);
 
 		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
 		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
@@ -39,15 +30,15 @@ public class StateFlowGraphTest {
 		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
 		StateVertix state5 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
 
-		StateVertix DOUBLE = new StateVertix("index", "<table><div>index</div></table>");
-		graph.requestStateFlowGraphMutex();
-		assertTrue(graph.addState(index));
-		assertTrue(graph.addState(state2));
-		assertTrue(graph.addState(state3));
-		assertTrue(graph.addState(state4));
-		assertTrue(graph.addState(state5));
+		StateFlowGraph graph = new StateFlowGraph(index);
 
-		assertFalse(graph.addState(DOUBLE));
+		StateVertix DOUBLE = new StateVertix("index", "<table><div>index</div></table>");
+		assertTrue(graph.addState(state2) == null);
+		assertTrue(graph.addState(state3) == null);
+		assertTrue(graph.addState(state4) == null);
+		assertTrue(graph.addState(state5) == null);
+
+		assertFalse(graph.addState(DOUBLE) == null);
 
 		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification("xpath",
 		        "/body/div[4]"), "onclick")));
@@ -106,37 +97,33 @@ public class StateFlowGraphTest {
 		Set<StateVertix> allStates = graph.getAllStates();
 
 		assertTrue(allStates.size() == 5);
-		graph.releaseStateFlowGraphMutex();
 	}
 
 	@Test
 	public void testCloneStates() throws Exception {
-		assertNotNull(graph);
-
 		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
 		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
 		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state2</div></table>");
 
+		StateFlowGraph graph = new StateFlowGraph(index);
+
 		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
-		graph.requestStateFlowGraphMutex();
-		assertTrue(graph.addState(index));
-		assertTrue(graph.addState(state2));
-		assertTrue(graph.addState(state4));
+		assertTrue(graph.addState(state2) == null);
+		assertTrue(graph.addState(state4) == null);
 		// assertFalse(graph.addState(state3));
 		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification("xpath",
 		        "/body/div[4]"), "onclick")));
 
-		if (graph.containsVertex(state3)) {
-			StateVertix state_clone = graph.getStateInGraph(state3);
-			assertEquals(state3, state_clone);
-		}
+		// if (graph.containsVertex(state3)) {
+		// StateVertix state_clone = graph.getStateInGraph(state3);
+		// assertEquals(state3, state_clone);
+		// }
 
 		assertTrue(graph.addEdge(state4, state3, new Eventable(new Identification("xpath",
 		        "/home/a"), "onclick")));
 		// System.out.println(graph.toString());
-		assertNull(graph.getStateInGraph(new StateVertix("STATE_TEST",
-		        "<table><div>TEST</div></table>")));
-		graph.releaseStateFlowGraphMutex();
+		// assertNull(graph.getStateInGraph(new StateVertix("STATE_TEST",
+		// "<table><div>TEST</div></table>")));
 	}
 
 	@Test
@@ -152,44 +139,38 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
-		StateFlowGraph g = new StateFlowGraph();
-		g.requestStateFlowGraphMutex();
-		g.addState(new StateVertix("", HTML1));
+		StateFlowGraph g = new StateFlowGraph(new StateVertix("", HTML1));
 		g.addState(new StateVertix("", HTML2));
 
 		assertEquals(206, g.getMeanStateStringSize());
-		g.releaseStateFlowGraphMutex();
 	}
 
 	@Test
 	public void testDoubleEvents() {
-		StateFlowGraph sfg = new StateFlowGraph();
+
 		StateVertix state1 = new StateVertix("STATE_ONE", "<table><div>state1</div></table>");
 		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
+		StateFlowGraph sfg = new StateFlowGraph(state1);
 
 		Eventable c1 = new Eventable(new Identification("xpath", "/body/div[4]"), "onclick");
 		Eventable c2 =
 		        new Eventable(new Identification("xpath", "/body/div[4]/div[2]"), "onclick");
-		sfg.requestStateFlowGraphMutex();
 		sfg.addState(state1);
 		sfg.addState(state2);
 
 		sfg.addEdge(state1, state2, c1);
 		sfg.addEdge(state1, state2, c2);
 		assertEquals(2, sfg.getAllEdges().size());
-		sfg.releaseStateFlowGraphMutex();
 	}
 
 	@Test
 	public void testAllPossiblePaths() {
-		StateFlowGraph g = new StateFlowGraph();
 		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
 		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
 		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
 		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
 		StateVertix state5 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
-		g.requestStateFlowGraphMutex();
-		g.addState(index);
+		StateFlowGraph g = new StateFlowGraph(index);
 		g.addState(state2);
 		g.addState(state3);
 		g.addState(state4);
@@ -246,19 +227,16 @@ public class StateFlowGraphTest {
 		//
 		// x++;
 		// }
-		g.releaseStateFlowGraphMutex();
 	}
 
 	@Test
 	public void largetTest() {
-		StateFlowGraph g = new StateFlowGraph();
 		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
 		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
 		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
 		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
 		StateVertix state5 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
-		g.requestStateFlowGraphMutex();
-		g.addState(index);
+		StateFlowGraph g = new StateFlowGraph(index);
 		g.addState(state2);
 		g.addState(state3);
 		g.addState(state4);
@@ -318,19 +296,16 @@ public class StateFlowGraphTest {
 
 			x++;
 		}
-		g.releaseStateFlowGraphMutex();
 	}
 
 	@Test
 	public void guidedCrawlingFlag() {
-		StateFlowGraph g = new StateFlowGraph();
 		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
 		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
 		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
 		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
 		StateVertix state5 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
-		g.requestStateFlowGraphMutex();
-		g.addState(index);
+		StateFlowGraph g = new StateFlowGraph(index);
 		g.addState(state2);
 		g.addState(state3);
 		g.addState(state4);
@@ -347,24 +322,21 @@ public class StateFlowGraphTest {
 		state6.setGuidedCrawling(true);
 
 		g.addState(state6);
-		g.releaseStateFlowGraphMutex();
 		assertEquals(6, g.getAllStates().size());
 
 	}
 
 	@Test
 	public void testEdges() throws Exception {
-		assertNotNull(graph);
 
 		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
 		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
 		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
 		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
-		graph.requestStateFlowGraphMutex();
-		assertTrue(graph.addState(index));
-		assertTrue(graph.addState(state2));
-		assertTrue(graph.addState(state3));
-		assertTrue(graph.addState(state4));
+		StateFlowGraph graph = new StateFlowGraph(index);
+		assertTrue(graph.addState(state2) == null);
+		assertTrue(graph.addState(state3) == null);
+		assertTrue(graph.addState(state4) == null);
 
 		Eventable e1 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
 
@@ -388,6 +360,5 @@ public class StateFlowGraphTest {
 		assertTrue(graph.addEdge(index, state4, e4));
 		assertFalse(graph.addEdge(index, state4, e5));
 		assertFalse(graph.addEdge(index, state4, e6));
-		graph.releaseStateFlowGraphMutex();
 	}
 }

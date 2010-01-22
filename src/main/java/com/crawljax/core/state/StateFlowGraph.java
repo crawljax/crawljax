@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Semaphore;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -27,13 +26,15 @@ public class StateFlowGraph {
 
 	private final DirectedGraph<StateVertix, Eventable> sfg;
 
-	private final Semaphore stateFlowGraphMutex = new Semaphore(1);
-
 	/**
 	 * The constructor.
+	 * 
+	 * @param initialState
+	 *            the state to start from.
 	 */
-	public StateFlowGraph() {
+	public StateFlowGraph(StateVertix initialState) {
 		sfg = new DirectedMultigraph<StateVertix, Eventable>(Eventable.class);
+		sfg.addVertex(initialState);
 	}
 
 	/**
@@ -46,16 +47,18 @@ public class StateFlowGraph {
 	 * 
 	 * @param stateVertix
 	 *            the state to be added.
-	 * @return true if this graph did not already contain the specified vertex.
+	 * @return the clone if one is detected null otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	@GuardedBy("stateFlowGraphMutex")
-	public boolean addState(StateVertix stateVertix) {
-		if (stateFlowGraphMutex.availablePermits() != 0) {
-			LOGGER.warn("possible code executing without required permit!", new Throwable(
-			        "possible code executing without required permit!").fillInStackTrace());
+	@GuardedBy("sfg")
+	public StateVertix addState(StateVertix stateVertix) {
+		synchronized (sfg) {
+			if (!sfg.addVertex(stateVertix)) {
+				// Graph already contained the vertix
+				return this.getStateInGraph(stateVertix);
+			}
 		}
-		return sfg.addVertex(stateVertix);
+		return null;
 	}
 
 	/**
@@ -77,18 +80,18 @@ public class StateFlowGraph {
 	 * @return true if this graph did not already contain the specified edge.
 	 * @see org.jgrapht.Graph#addEdge(Object, Object, Object)
 	 */
-	@GuardedBy("stateFlowGraphMutex")
+	@GuardedBy("sfg")
 	public boolean addEdge(StateVertix sourceVert, StateVertix targetVert, Eventable clickable) {
-		if (stateFlowGraphMutex.availablePermits() != 0) {
-			LOGGER.warn("possible code executing without required permit!", new Throwable(
-			        "possible code executing without required permit!").fillInStackTrace());
-		}
-		if (sfg.containsEdge(sourceVert, targetVert)
-		        && sfg.getAllEdges(sourceVert, targetVert).contains(clickable)) {
-			return false;
-		}
+		synchronized (sfg) {
+			// TODO Ali; Why is this code (if-stmt) here? Its the same as what happens in sfg.addEge
+			// imo (21-01-10 Stefan).
+			if (sfg.containsEdge(sourceVert, targetVert)
+			        && sfg.getAllEdges(sourceVert, targetVert).contains(clickable)) {
+				return false;
+			}
 
-		return sfg.addEdge(sourceVert, targetVert, clickable);
+			return sfg.addEdge(sourceVert, targetVert, clickable);
+		}
 	}
 
 	/**
@@ -153,7 +156,7 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Is it possible to go from s1 -> s2?
 	 * 
 	 * @param source
 	 *            the source state.
@@ -161,13 +164,11 @@ public class StateFlowGraph {
 	 *            the target state.
 	 * @return true if it is possible (edge exists in graph) to go from source to target.
 	 */
-	@GuardedBy("stateFlowGraphMutex")
+	@GuardedBy("sfg")
 	public boolean canGoTo(StateVertix source, StateVertix target) {
-		if (stateFlowGraphMutex.availablePermits() != 0) {
-			LOGGER.warn("possible code executing without required permit!", new Throwable(
-			        "possible code executing without required permit!").fillInStackTrace());
+		synchronized (sfg) {
+			return sfg.containsEdge(source, target) || sfg.containsEdge(target, source);
 		}
-		return sfg.containsEdge(source, target) || sfg.containsEdge(target, source);
 	}
 
 	/**
@@ -184,7 +185,7 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Return all the states in the StateFlowGraph.
 	 * 
 	 * @return all the states on the graph.
 	 */
@@ -193,27 +194,23 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Return all the edges in the StateFlowGraph.
 	 * 
-	 * @return TODO: DOCUMENT ME!
+	 * @return a Set of all edges in the StateFlowGraph
 	 */
 	public Set<Eventable> getAllEdges() {
 		return sfg.edgeSet();
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Retrieve the copy of a state from the StateFlowGraph for a given StateVertix. Basically it
+	 * performs v.equals(u).
 	 * 
 	 * @param state
-	 *            TODO: DOCUMENT ME!
-	 * @return TODO: DOCUMENT ME!
+	 *            the StateVertix to search
+	 * @return the copy of the StateVertix in the StateFlowGraph where v.equals(u)
 	 */
-	@GuardedBy("stateFlowGraphMutex")
-	public StateVertix getStateInGraph(StateVertix state) {
-		if (stateFlowGraphMutex.availablePermits() != 0) {
-			LOGGER.warn("possible code executing without required permit!", new Throwable(
-			        "possible code executing without required permit!").fillInStackTrace());
-		}
+	private StateVertix getStateInGraph(StateVertix state) {
 		Set<StateVertix> states = getAllStates();
 
 		for (StateVertix st : states) {
@@ -226,18 +223,15 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Checks to see if a certain StateVertix already exists in the StateFlowGraph. Depreciated
+	 * because its never used anywhere?
 	 * 
 	 * @param state
-	 *            TODO: DOCUMENT ME!
-	 * @return TODO: DOCUMENT ME!
+	 *            the state to check of existence
+	 * @return true if the StateFlowGraph contains the given StateVertix
 	 */
-	@GuardedBy("stateFlowGraphMutex")
+	@Deprecated
 	public boolean containsVertex(StateVertix state) {
-		if (stateFlowGraphMutex.availablePermits() != 0) {
-			LOGGER.warn("possible code executing without required permit!", new Throwable(
-			        "possible code executing without required permit!").fillInStackTrace());
-		}
 		return sfg.containsVertex(state);
 	}
 
@@ -344,26 +338,4 @@ public class StateFlowGraph {
 
 		return results;
 	}
-
-	/**
-	 * Request a lock on the stateFlowGraph datastructure. Becarefull a requested lock MUST be
-	 * returned by hand! using the {@link #releaseExaminedElementsMutex()}
-	 * 
-	 * @see StateFlowGraph#releaseExaminedElementsMutex()
-	 */
-	public void requestStateFlowGraphMutex() {
-		try {
-			stateFlowGraphMutex.acquire();
-		} catch (InterruptedException e) {
-			LOGGER.error("The acquire of the stateFlowGraphMutex was interrupted", e);
-		}
-	}
-
-	/**
-	 * Release the lock for the stateFlowGraph datastructure.
-	 */
-	public void releaseStateFlowGraphMutex() {
-		stateFlowGraphMutex.release();
-	}
-
 }

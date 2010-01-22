@@ -182,14 +182,19 @@ public final class BrowserFactory {
 
 				@Override
 				public void run() {
+					int totalNumberOfBrowsers = FREE_BROWSERS.size() + TAKEN_BROWSERS.size();
+					// TODO Stefan in a corner case it could happen that there is one extra borwser
+					// Opened...
 					while (booting
-					        && (FREE_BROWSERS.size() + TAKEN_BROWSERS.size()) != PropertyHelper
+					        && totalNumberOfBrowsers < PropertyHelper
 					                .getCrawNumberOfThreadsValue()) {
 
 						EmbeddedBrowser b = makeABrowser();
 						synchronized (FREE_BROWSERS) {
 							FREE_BROWSERS.add(b);
+							totalNumberOfBrowsers = FREE_BROWSERS.size() + TAKEN_BROWSERS.size();
 						}
+
 					}
 					booting = false;
 					doneBooting = true;
