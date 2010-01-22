@@ -355,7 +355,9 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			return attr.getNodeValue();
 		}
 
-		return "" + index;
+		// return "" + index;
+		return null;
+
 	}
 
 	@Override
@@ -404,18 +406,22 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			}
 
 			Element frameElement = nodeList.get(i);
-			frameIdentification += getFrameIdentification(frameElement, i);
 
-			// logger.info("frame-identification: " + frameIdentification);
+			String nameId = getFrameIdentification(frameElement, i);
 
-			String toAppend = browser.switchTo().frame(frameIdentification).getPageSource();
+			if (nameId != null) {
+				frameIdentification += nameId;
 
-			Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
-			Element importedElement = (Element) document.importNode(toAppendElement, true);
-			frameElement.appendChild(importedElement);
+				logger.info("frame-identification: " + frameIdentification);
 
-			appendFrameContent(windowHandle, importedElement, document, frameIdentification);
+				String toAppend = browser.switchTo().frame(frameIdentification).getPageSource();
 
+				Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
+				Element importedElement = (Element) document.importNode(toAppendElement, true);
+				frameElement.appendChild(importedElement);
+
+				appendFrameContent(windowHandle, importedElement, document, frameIdentification);
+			}
 		}
 
 	}
