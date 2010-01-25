@@ -16,7 +16,6 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -343,23 +342,6 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		}
 	}
 
-	private String getFrameIdentification(Element frame, int index) {
-
-		Attr attr = (Attr) frame.getAttributeNode("name");
-		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
-			return attr.getNodeValue();
-		}
-
-		attr = (Attr) frame.getAttributeNode("id");
-		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
-			return attr.getNodeValue();
-		}
-
-		// return "" + index;
-		return null;
-
-	}
-
 	@Override
 	public abstract EmbeddedBrowser clone();
 
@@ -407,12 +389,12 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 			Element frameElement = nodeList.get(i);
 
-			String nameId = getFrameIdentification(frameElement, i);
+			String nameId = Helper.getFrameIdentification(frameElement);
 
 			if (nameId != null) {
 				frameIdentification += nameId;
 
-				logger.info("frame-identification: " + frameIdentification);
+				logger.debug("frame-identification: " + frameIdentification);
 
 				String toAppend = browser.switchTo().frame(frameIdentification).getPageSource();
 

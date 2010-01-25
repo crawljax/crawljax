@@ -697,4 +697,25 @@ public final class Helper {
 		return js;
 	}
 
+	/**
+	 * @param frame
+	 *            the frame element.
+	 * @return the name or id of this element if they are present, otherwise null.
+	 */
+	public static String getFrameIdentification(Element frame) {
+
+		Attr attr = (Attr) frame.getAttributeNode("name");
+		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
+			return attr.getNodeValue();
+		}
+
+		attr = (Attr) frame.getAttributeNode("id");
+		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
+			return attr.getNodeValue();
+		}
+
+		return null;
+
+	}
+
 }

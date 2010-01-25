@@ -11,7 +11,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -191,16 +190,20 @@ public class CandidateElementExtractor {
 
 					Element frameElement = (Element) frameNodes.item(i);
 
-					frameIdentification += getFrameIdentification(frameElement, i);
+					String nameId = Helper.getFrameIdentification(frameElement);
 
-					LOGGER.debug("frame Identification: " + frameIdentification);
+					if (nameId != null) {
+						frameIdentification += nameId;
 
-					driver.switchTo().frame(frameIdentification);
+						LOGGER.debug("frame Identification: " + frameIdentification);
 
-					Document frameDom = Helper.getDocument(driver.getPageSource());
+						driver.switchTo().frame(frameIdentification);
 
-					extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
-					        clickOnce, results, frameIdentification);
+						Document frameDom = Helper.getDocument(driver.getPageSource());
+
+						extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
+						        clickOnce, results, frameIdentification);
+					}
 				}
 
 				driver.switchTo().window(handle);
@@ -210,21 +213,6 @@ public class CandidateElementExtractor {
 			}
 		}
 
-	}
-
-	private String getFrameIdentification(Element frame, int index) {
-
-		Attr attr = frame.getAttributeNode("name");
-		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
-			return attr.getNodeValue();
-		}
-
-		attr = frame.getAttributeNode("id");
-		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
-			return attr.getNodeValue();
-		}
-
-		return "" + index;
 	}
 
 	/**
