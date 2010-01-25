@@ -116,7 +116,11 @@ public class Crawler implements Runnable {
 			 * browser here would result in NOT loading the initial page in the run operation! This
 			 * MUST be done by hand!
 			 */
-			browser = BrowserFactory.requestBrowser();
+			try {
+				browser = BrowserFactory.requestBrowser();
+			} catch (InterruptedException e) {
+				LOGGER.error("The request for a browser as interuped", e);
+			}
 		}
 		/**
 		 * Reset the state machine to null, dropping the existing state machine, as this call is
@@ -533,13 +537,16 @@ public class Crawler implements Runnable {
 		 * If the browser is null place a request for a browser from the BrowserFactory
 		 */
 		if (this.browser == null) {
-			this.browser = BrowserFactory.requestBrowser();
+			try {
+				this.browser = BrowserFactory.requestBrowser();
+			} catch (InterruptedException e1) {
+				LOGGER.error("The request for a browser as interuped", e1);
+			}
 			LOGGER.info("Reloading Page for navigating back since browser is not initialized.");
 			try {
 				this.goToInitialURL();
 			} catch (Exception e) {
 				LOGGER.error("Could not load the initialURL", e);
-				e.printStackTrace();
 			}
 		}
 

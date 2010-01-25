@@ -40,7 +40,7 @@ public class CrawlThreadFactory implements ThreadFactory {
 			LOGGER.warn("Can not determine name of the Crawler for creating a new Thread", e);
 		}
 		String crawlerName = "Crawler " + id;
-		if (!name.toString().trim().equals("")) {
+		if (name != null && !name.toString().trim().equals("")) {
 			crawlerName += " (" + name.toString() + ")";
 		}
 		return new Thread(r, crawlerName);
