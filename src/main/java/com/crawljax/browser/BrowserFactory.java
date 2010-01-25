@@ -3,9 +3,12 @@
  */
 package com.crawljax.browser;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -13,32 +16,37 @@ import com.crawljax.util.PropertyHelper;
 
 /**
  * The factory class returns an instance of the desired browser as specified in the properties file.
+ * TODO Stefan; add getCrawlNumberOfBrowsers to the config and implement.
  * 
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
 public final class BrowserFactory {
-
-	private static final Queue<EmbeddedBrowser> FREE_BROWSERS = new LinkedList<EmbeddedBrowser>();
-	private static final ArrayList<EmbeddedBrowser> TAKEN_BROWSERS =
-	        new ArrayList<EmbeddedBrowser>();
-
 	private static final Logger LOGGER = Logger.getLogger(BrowserFactory.class);
 
 	/**
-	 * The booting flag indicates that the BrowserFactory is still in process of booting. If the
-	 * value is changed from true to false and the booting is still in progress no new browsers will
-	 * be made.
+	 * BlockingQueue used to block for the moment when a browser comes available.
 	 */
-	private static boolean booting = false;
+	private static final BlockingQueue<EmbeddedBrowser> AVAILABLE =
+	        new ArrayBlockingQueue<EmbeddedBrowser>(PropertyHelper.getCrawNumberOfThreadsValue(),
+	                true);
 
 	/**
-	 * This field is set to true when the creation of browsers is finished.
+	 * ConcurrentLinkedQueue used to store the taken browsers.
 	 */
-	private static boolean doneBooting = false;
+	private static final ConcurrentLinkedQueue<EmbeddedBrowser> TAKEN =
+	        new ConcurrentLinkedQueue<EmbeddedBrowser>();
 
-	private static final int TEN = 10;
+	/**
+	 * Boot class used to handle and monitor the boot process.
+	 */
+	private static final BrowserBooter BOOTER = new BrowserBooter();
+
+	/**
+	 * The amount of time used to wait between every check for the close operation.
+	 */
+	private static final int SHUTDOWNTIMEOUT = 100;
 
 	/**
 	 * hidden constructor.
@@ -77,8 +85,8 @@ public final class BrowserFactory {
 	 * @see {@link #requestBrowser()}
 	 * @return the new browser
 	 */
-	private static EmbeddedBrowser makeABrowser() {
-		if (FREE_BROWSERS.size() == 0 && TAKEN_BROWSERS.size() == 0
+	private static EmbeddedBrowser createBrowser() {
+		if (AVAILABLE.isEmpty() && TAKEN.isEmpty()
 		        && PropertyHelper.getCrawljaxConfiguration() != null) {
 			// This should be the first browser? use the one from the config
 			// More are 'cloned' later....
@@ -112,17 +120,10 @@ public final class BrowserFactory {
 	 */
 	public static synchronized void close() {
 		Queue<EmbeddedBrowser> deleteList = new LinkedList<EmbeddedBrowser>();
-		if (booting) {
-			booting = false;
-			while (!doneBooting) {
-				try {
-					Thread.sleep(TEN);
-				} catch (InterruptedException e) {
-					LOGGER.error("Closing of the browsers faild du to an Interrupt", e);
-				}
-			}
+		if (useBooting()) {
+			BOOTER.shutdown();
 		}
-		for (EmbeddedBrowser b : FREE_BROWSERS) {
+		for (EmbeddedBrowser b : AVAILABLE) {
 			try {
 				b.close();
 				deleteList.add(b);
@@ -130,9 +131,9 @@ public final class BrowserFactory {
 				LOGGER.error("Failed to close free Browser " + b, e);
 			}
 		}
-		FREE_BROWSERS.removeAll(deleteList);
+		AVAILABLE.removeAll(deleteList);
 		deleteList = new LinkedList<EmbeddedBrowser>();
-		for (EmbeddedBrowser b : TAKEN_BROWSERS) {
+		for (EmbeddedBrowser b : TAKEN) {
 			try {
 				b.close();
 				deleteList.add(b);
@@ -140,78 +141,141 @@ public final class BrowserFactory {
 				LOGGER.error("Failed to close taken Browser " + b, e);
 			}
 		}
-		TAKEN_BROWSERS.removeAll(deleteList);
+		TAKEN.removeAll(deleteList);
 	}
 
 	/**
-	 * Return the browser, release the current browser for further operations.
+	 * Return the browser, release the current browser for further operations. This method is
+	 * Synchronised to prevent problems in combination with isFinished.
 	 * 
 	 * @param browser
 	 *            the browser which is not needed anymore
 	 */
 	public static synchronized void freeBrowser(EmbeddedBrowser browser) {
-		TAKEN_BROWSERS.remove(browser);
-		FREE_BROWSERS.add(browser);
+		TAKEN.remove(browser);
+		AVAILABLE.add(browser);
 	}
 
 	/**
 	 * Place a request for a browser.
 	 * 
 	 * @return a new Browser instance which is currently free
+	 * @throws InterruptedException
+	 *             the InterruptedException is thrown when the AVAILABE list is interrupted.
 	 */
-	public static synchronized EmbeddedBrowser requestBrowser() {
-		EmbeddedBrowser browser;
-		if (FREE_BROWSERS.size() > 0) {
-			// Retrieve a free browser from the list
-			synchronized (FREE_BROWSERS) {
-				browser = FREE_BROWSERS.poll();
-			}
-			if (browser == null) {
-				LOGGER.error("Failed to fulfill a request for a browser");
-			}
+	public static EmbeddedBrowser requestBrowser() throws InterruptedException {
+		EmbeddedBrowser browser = null;
+		if (useBooting()) {
+			BOOTER.start();
+			browser = waitForBrowser();
 		} else {
-			// There is no browser free...
-			// Create a new Browser
-			browser = makeABrowser();
-		}
-		TAKEN_BROWSERS.add(browser);
-
-		if (!booting && !doneBooting) {
-			booting = true;
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					int totalNumberOfBrowsers = FREE_BROWSERS.size() + TAKEN_BROWSERS.size();
-					// TODO Stefan in a corner case it could happen that there is one extra borwser
-					// Opened...
-					while (booting
-					        && totalNumberOfBrowsers < PropertyHelper
-					                .getCrawNumberOfThreadsValue()) {
-
-						EmbeddedBrowser b = makeABrowser();
-						synchronized (FREE_BROWSERS) {
-							FREE_BROWSERS.add(b);
-							totalNumberOfBrowsers = FREE_BROWSERS.size() + TAKEN_BROWSERS.size();
-						}
-
-					}
-					booting = false;
-					doneBooting = true;
-				}
-			}).start();
+			if (AVAILABLE.size() > 0) {
+				browser = AVAILABLE.take();
+			} else {
+				browser = createBrowser();
+			}
+			TAKEN.add(browser);
 		}
 		return browser;
 	}
 
+	private static boolean useBooting() {
+		// TODO Stefan Config...
+		return true;
+	}
+
 	/**
-	 * Are all takenBrowsers free (again)?
+	 * This call blocks until a browser comes available.
 	 * 
-	 * @see ArrayList#isEmpty()
+	 * @return the browser currently reserved.
+	 * @throws InterruptedException
+	 *             when AVAILABLE.take is Interrupted
+	 */
+	private static EmbeddedBrowser waitForBrowser() throws InterruptedException {
+		EmbeddedBrowser b = AVAILABLE.take();
+		TAKEN.add(b);
+		return b;
+	}
+
+	/**
+	 * Are all takenBrowsers free (again)? this method is Synchronised to prevent problems in
+	 * combination with freeBrowser.
+	 * 
 	 * @return true if the taken list of Browsers is empty
 	 */
 	public static synchronized boolean isFinished() {
-		return TAKEN_BROWSERS.isEmpty();
+		return TAKEN.isEmpty();
 	}
 
+	/**
+	 * This private class is used to boot all the browsers.
+	 * 
+	 * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
+	 */
+	private static class BrowserBooter extends Thread {
+		private boolean finished = false;
+		private final AtomicInteger createdBrowserCount = new AtomicInteger(0);
+
+		@Override
+		public void run() {
+			int i = 0;
+			if (AVAILABLE.isEmpty() && TAKEN.isEmpty()
+			        && PropertyHelper.getCrawljaxConfiguration() != null) {
+				AVAILABLE.add(PropertyHelper.getCrawljaxConfiguration().getBrowser());
+				i = 1;
+			}
+
+			createdBrowserCount.set(i);
+
+			// Loop to the requested number of browsers
+			for (; i < PropertyHelper.getCrawNumberOfThreadsValue(); i++) {
+				// Create a new Thread
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						AVAILABLE.add(createBrowser());
+						createdBrowserCount.incrementAndGet();
+					}
+				}).start();
+			}
+			finished = true;
+		}
+
+		/**
+		 * Shut down the booter, this not really shutsdown the booter but wait for all child Threads
+		 * to start.
+		 */
+		private void shutdown() {
+			if (allBrowsersLoaded()) {
+				return;
+			}
+			LOGGER.warn("Waiting for all browsers to be started fully"
+			        + " before starting to close them");
+			while (!BOOTER.allBrowsersLoaded()) {
+				try {
+					Thread.sleep(SHUTDOWNTIMEOUT);
+				} catch (InterruptedException e) {
+					LOGGER.error("Closing of the browsers faild du to an Interrupt", e);
+				}
+			}
+		}
+
+		/**
+		 * Start this Thread, the Thread will only be started when it is called the first time.
+		 */
+		@Override
+		public synchronized void start() {
+			if (!finished && !isAlive()) {
+				super.start();
+			}
+		}
+
+		/**
+		 * @return true is all requested browsers are loaded.
+		 */
+		private boolean allBrowsersLoaded() {
+			return createdBrowserCount.get() >= PropertyHelper.getCrawNumberOfThreadsValue();
+		}
+	}
 }
