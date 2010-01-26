@@ -18,7 +18,7 @@
 
 	<developers>
 		<developer>
-			<id>mesbah</id>
+			<id>amesbah</id>
 			<name>Ali Mesbah</name>
 			<email>a.mesbah@gmail.com</email>
 			<url>http://www.st.ewi.tudelft.nl/~mesbah/</url>
@@ -27,7 +27,7 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>danny</id>
+			<id>dannyroest</id>
 			<name>Danny Roest</name>
 			<email>dannyroest@gmail.com</email>
 			<url>http://twitter.com/dannyroest</url>
@@ -36,7 +36,7 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>frank</id>
+			<id>frankgroeneveld</id>
 			<name>Frank Groeneveld</name>
 			<email>frankgroeneveld@gmail.com</email>
 			<url>http://techfield.org/</url>
@@ -45,7 +45,7 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>stefan</id>
+			<id>lenselinkstefan</id>
 			<name>Stefan Lenselink</name>
 			<email>S.R.Lenselink@student.tudelft.nl</email>
 			<url>http://bu130.nl</url>
@@ -54,7 +54,7 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>arie</id>
+			<id>arie.van.deursen</id>
 			<name>Arie van Deursen</name>
 			<email>arie.vanDeursen@tudelft.nl</email>
 			<url>http://www.st.ewi.tudelft.nl/~arie/</url>
