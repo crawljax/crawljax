@@ -77,11 +77,6 @@ public class Crawler implements Runnable {
 	private String name = "";
 
 	/**
-	 * TODO Ali; describe this variable.
-	 */
-	private boolean goBackExact = true;
-
-	/**
 	 * The sateMachine for this Crawler, keeping track of the path crawled by this Crawler. TODO
 	 * Stefan its better to have this final...
 	 */
@@ -138,18 +133,10 @@ public class Crawler implements Runnable {
 	 *            the event path up till this moment.
 	 * @param name
 	 *            a name for this crawler (default is empty).
-	 * @param goBackExact
-	 *            true if the crawler should reload to get to a previous state.
 	 */
-	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, String name,
-	        boolean goBackExact) {
+	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, String name) {
 		this(mother, exactEventPath);
-		this.goBackExact = goBackExact;
 		this.name = name;
-		LOGGER.info("ExactPaths: " + exactEventPath.size());
-		for (Eventable e : exactEventPath) {
-			LOGGER.info("Eventable: " + e);
-		}
 	}
 
 	/**
@@ -291,7 +278,7 @@ public class Crawler implements Runnable {
 					return;
 				}
 
-				LOGGER.info("Backtracking by executing " + clickable.getEventType()
+				LOGGER.info(this.name + " Backtracking by executing " + clickable.getEventType()
 				        + " on element: " + clickable);
 
 				stateMachine.changeState(clickable.getTargetStateVertix());
@@ -362,7 +349,7 @@ public class Crawler implements Runnable {
 					exactEventPath.add(eventable);
 
 					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller, controller
-					        .getSession(), getExacteventpath());
+					        .getSession(), getExacteventpath(), this.stateMachine);
 
 					return ClickResult.newState;
 				} else {
@@ -559,7 +546,7 @@ public class Crawler implements Runnable {
 		/**
 		 * Do we need to go back into a previous state?
 		 */
-		if (exactEventPath.size() > 0 && this.goBackExact) {
+		if (exactEventPath.size() > 0) {
 			try {
 				this.goBackExact();
 			} catch (Exception e) {
