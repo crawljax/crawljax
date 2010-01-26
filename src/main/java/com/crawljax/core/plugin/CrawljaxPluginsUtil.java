@@ -12,6 +12,7 @@ import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
 import com.crawljax.util.PropertyHelper;
 
@@ -234,14 +235,18 @@ public final class CrawljaxPluginsUtil {
 	 * @param exactEventPaths
 	 *            the exact crawled event paths. Used to bring the browser back to the state the
 	 *            crawler was before guided crawling.
+	 * @param stateMachine
+	 *            the state machine.
 	 */
 	public static void runGuidedCrawlingPlugins(CrawljaxController controller,
-	        CrawlSession session, final List<Eventable> exactEventPaths) {
+	        CrawlSession session, final List<Eventable> exactEventPaths,
+	        final StateMachine stateMachine) {
 		if (PropertyHelper.getCrawljaxConfiguration() != null) {
+			StateVertix currentState = session.getCurrentState();
 			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
 				if (plugin instanceof GuidedCrawlingPlugin) {
-					((GuidedCrawlingPlugin) plugin).guidedCrawling(controller, session,
-					        exactEventPaths);
+					((GuidedCrawlingPlugin) plugin).guidedCrawling(currentState, controller,
+					        session, exactEventPaths, stateMachine);
 				}
 			}
 		}
