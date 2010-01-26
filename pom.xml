@@ -213,16 +213,8 @@
 			<artifactId>jcip-annotations</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
-
 
 	</dependencies>
-
-	<properties>
-		<genrated.tests.dir>
-			${project.build.sourceDirectory}/generated/
-		</genrated.tests.dir>
-	</properties>
 
 	<build>
 		<directory>target</directory>
@@ -268,20 +260,6 @@
 				<version>2.7</version>
 				<configuration>
 					<useProjectReferences>false</useProjectReferences>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>${genrated.tests.dir}</directory>
-							<includes>
-								<include>**/*Test*</include>
-							</includes>
-						</fileset>
-					</filesets>
 				</configuration>
 			</plugin>
 
