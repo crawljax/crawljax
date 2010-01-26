@@ -417,9 +417,9 @@
 	</reporting>
 
 	<scm>
-		<connection>scm:svn:https://crawljax.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn/trunk/</developerConnection>
-		<url>https://crawljax.googlecode.com/svn/trunk/</url>
+		<connection>scm:svn:http://crawljax.googlecode.com/svn</connection>
+		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn</developerConnection>
+		<url>http://crawljax.googlecode.com/svn</url>
 	</scm>
 
 	<licenses>
