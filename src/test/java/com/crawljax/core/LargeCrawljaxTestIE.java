@@ -2,6 +2,7 @@ package com.crawljax.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +101,7 @@ public class LargeCrawljaxTestIE {
 		if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
 			System.out.println("IE cannot be tested on this platform!");
 			// System.exit(1);
-			return;
+			fail("IE cannot be tested on this platform!");
 		}
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification());
