@@ -59,6 +59,7 @@ public final class BrowserFactory {
 	 */
 	private BrowserFactory() {
 		booter = new BrowserBooter(this);
+		assert (!booter.isAlive());
 	}
 
 	/**
@@ -110,7 +111,9 @@ public final class BrowserFactory {
 		        && PropertyHelper.getCrawljaxConfiguration() != null) {
 			// This should be the first browser? use the one from the config
 			// More are 'cloned' later....
-			return PropertyHelper.getCrawljaxConfiguration().getBrowser();
+			EmbeddedBrowser browser = PropertyHelper.getCrawljaxConfiguration().getBrowser();
+			assert (browser != null);
+			return browser;
 		}
 
 		EmbeddedBrowser newBrowser = null;
@@ -132,6 +135,7 @@ public final class BrowserFactory {
 				LOGGER.error("Cannot create a new Browser!", e);
 			}
 		}
+		assert (newBrowser != null);
 		return newBrowser;
 	}
 
@@ -166,8 +170,12 @@ public final class BrowserFactory {
 		}
 		factory.taken.removeAll(deleteList);
 
+		assert (factory.available.isEmpty());
+		assert (factory.taken.isEmpty());
+
 		// Delete the factory instance.
 		instance = null;
+		assert (instance == null);
 	}
 
 	/**
@@ -179,8 +187,11 @@ public final class BrowserFactory {
 	 */
 	public static synchronized void freeBrowser(EmbeddedBrowser browser) {
 		BrowserFactory factory = instance();
+		assert (browser != null);
 		factory.taken.remove(browser);
 		factory.available.add(browser);
+		assert (!factory.taken.contains(browser));
+		assert (factory.available.contains(browser));
 	}
 
 	/**
@@ -204,6 +215,8 @@ public final class BrowserFactory {
 			}
 			factory.taken.add(browser);
 		}
+		assert (browser != null);
+		assert (factory.taken.contains(browser));
 		return browser;
 	}
 
@@ -221,6 +234,7 @@ public final class BrowserFactory {
 	 */
 	private EmbeddedBrowser waitForBrowser() throws InterruptedException {
 		EmbeddedBrowser b = available.take();
+		assert (b != null);
 		taken.add(b);
 		return b;
 	}
@@ -248,6 +262,7 @@ public final class BrowserFactory {
 		private final BrowserFactory factory;
 
 		public BrowserBooter(BrowserFactory factory) {
+			assert (factory != null);
 			this.factory = factory;
 			started = new AtomicBoolean(false);
 			createdBrowserCount = new AtomicInteger(0);
@@ -263,6 +278,8 @@ public final class BrowserFactory {
 			}
 
 			createdBrowserCount.set(i);
+
+			assert (createdBrowserCount.get() <= 1);
 
 			// Loop to the requested number of browsers
 			for (; i < PropertyHelper.getCrawNumberOfThreadsValue(); i++) {
@@ -298,6 +315,7 @@ public final class BrowserFactory {
 					LOGGER.error("Closing of the browsers faild du to an Interrupt", e);
 				}
 			}
+			assert (allBrowsersLoaded());
 		}
 
 		/**
@@ -308,12 +326,15 @@ public final class BrowserFactory {
 			if (!finished && started.compareAndSet(false, true)) {
 				super.start();
 			}
+			assert (started.get());
 		}
 
 		/**
 		 * @return true is all requested browsers are loaded.
 		 */
 		private boolean allBrowsersLoaded() {
+			assert (PropertyHelper.getCrawNumberOfThreadsValue() > 0);
+
 			return createdBrowserCount.get() >= PropertyHelper.getCrawNumberOfThreadsValue();
 		}
 	}
