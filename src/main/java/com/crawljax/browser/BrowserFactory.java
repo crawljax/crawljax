@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
@@ -28,30 +29,49 @@ public final class BrowserFactory {
 	/**
 	 * BlockingQueue used to block for the moment when a browser comes available.
 	 */
-	private static final BlockingQueue<EmbeddedBrowser> AVAILABLE =
+	private final BlockingQueue<EmbeddedBrowser> available =
 	        new ArrayBlockingQueue<EmbeddedBrowser>(PropertyHelper.getCrawNumberOfThreadsValue(),
 	                true);
 
 	/**
 	 * ConcurrentLinkedQueue used to store the taken browsers.
 	 */
-	private static final ConcurrentLinkedQueue<EmbeddedBrowser> TAKEN =
+	private final ConcurrentLinkedQueue<EmbeddedBrowser> taken =
 	        new ConcurrentLinkedQueue<EmbeddedBrowser>();
 
 	/**
 	 * Boot class used to handle and monitor the boot process.
 	 */
-	private static final BrowserBooter BOOTER = new BrowserBooter();
+	private final BrowserBooter booter;
 
 	/**
 	 * The amount of time used to wait between every check for the close operation.
 	 */
-	private static final int SHUTDOWNTIMEOUT = 100;
+	private final int shutdownTimeout = 100;
+
+	/**
+	 * Private instance running in HEAP-space.
+	 */
+	private static BrowserFactory instance;
 
 	/**
 	 * hidden constructor.
 	 */
 	private BrowserFactory() {
+		booter = new BrowserBooter(this);
+	}
+
+	/**
+	 * Return a new instance of the current BrowserFactory in use. The instance must be returned by
+	 * Finally calling {@link #close()}.
+	 * 
+	 * @return the current running instance of the BrowserFactory.
+	 */
+	private static synchronized BrowserFactory instance() {
+		if (instance == null) {
+			instance = new BrowserFactory();
+		}
+		return instance;
 	}
 
 	/**
@@ -85,8 +105,8 @@ public final class BrowserFactory {
 	 * @see {@link #requestBrowser()}
 	 * @return the new browser
 	 */
-	private static EmbeddedBrowser createBrowser() {
-		if (AVAILABLE.isEmpty() && TAKEN.isEmpty()
+	private EmbeddedBrowser createBrowser() {
+		if (available.isEmpty() && taken.isEmpty()
 		        && PropertyHelper.getCrawljaxConfiguration() != null) {
 			// This should be the first browser? use the one from the config
 			// More are 'cloned' later....
@@ -119,29 +139,35 @@ public final class BrowserFactory {
 	 * Close all browser windows.
 	 */
 	public static synchronized void close() {
+		BrowserFactory factory = instance();
 		Queue<EmbeddedBrowser> deleteList = new LinkedList<EmbeddedBrowser>();
 		if (useBooting()) {
-			BOOTER.shutdown();
+			factory.booter.shutdown();
 		}
-		for (EmbeddedBrowser b : AVAILABLE) {
+		for (EmbeddedBrowser b : factory.available) {
 			try {
 				b.close();
-				deleteList.add(b);
 			} catch (Exception e) {
 				LOGGER.error("Failed to close free Browser " + b, e);
+			} finally {
+				deleteList.add(b);
 			}
 		}
-		AVAILABLE.removeAll(deleteList);
+		factory.available.removeAll(deleteList);
 		deleteList = new LinkedList<EmbeddedBrowser>();
-		for (EmbeddedBrowser b : TAKEN) {
+		for (EmbeddedBrowser b : factory.taken) {
 			try {
 				b.close();
-				deleteList.add(b);
 			} catch (Exception e) {
 				LOGGER.error("Failed to close taken Browser " + b, e);
+			} finally {
+				deleteList.add(b);
 			}
 		}
-		TAKEN.removeAll(deleteList);
+		factory.taken.removeAll(deleteList);
+
+		// Delete the factory instance.
+		instance = null;
 	}
 
 	/**
@@ -152,8 +178,9 @@ public final class BrowserFactory {
 	 *            the browser which is not needed anymore
 	 */
 	public static synchronized void freeBrowser(EmbeddedBrowser browser) {
-		TAKEN.remove(browser);
-		AVAILABLE.add(browser);
+		BrowserFactory factory = instance();
+		factory.taken.remove(browser);
+		factory.available.add(browser);
 	}
 
 	/**
@@ -164,17 +191,18 @@ public final class BrowserFactory {
 	 *             the InterruptedException is thrown when the AVAILABE list is interrupted.
 	 */
 	public static EmbeddedBrowser requestBrowser() throws InterruptedException {
-		EmbeddedBrowser browser = null;
+		BrowserFactory factory = instance();
+		EmbeddedBrowser browser;
 		if (useBooting()) {
-			BOOTER.start();
-			browser = waitForBrowser();
+			factory.booter.start();
+			browser = factory.waitForBrowser();
 		} else {
-			if (AVAILABLE.size() > 0) {
-				browser = AVAILABLE.take();
+			if (factory.available.size() > 0) {
+				browser = factory.available.take();
 			} else {
-				browser = createBrowser();
+				browser = factory.createBrowser();
 			}
-			TAKEN.add(browser);
+			factory.taken.add(browser);
 		}
 		return browser;
 	}
@@ -189,11 +217,11 @@ public final class BrowserFactory {
 	 * 
 	 * @return the browser currently reserved.
 	 * @throws InterruptedException
-	 *             when AVAILABLE.take is Interrupted
+	 *             when available.take is Interrupted
 	 */
-	private static EmbeddedBrowser waitForBrowser() throws InterruptedException {
-		EmbeddedBrowser b = AVAILABLE.take();
-		TAKEN.add(b);
+	private EmbeddedBrowser waitForBrowser() throws InterruptedException {
+		EmbeddedBrowser b = available.take();
+		taken.add(b);
 		return b;
 	}
 
@@ -204,7 +232,8 @@ public final class BrowserFactory {
 	 * @return true if the taken list of Browsers is empty
 	 */
 	public static synchronized boolean isFinished() {
-		return TAKEN.isEmpty();
+		BrowserFactory instance = instance();
+		return instance.taken.isEmpty();
 	}
 
 	/**
@@ -214,14 +243,22 @@ public final class BrowserFactory {
 	 */
 	private static class BrowserBooter extends Thread {
 		private boolean finished = false;
-		private final AtomicInteger createdBrowserCount = new AtomicInteger(0);
+		private final AtomicBoolean started;
+		private final AtomicInteger createdBrowserCount;
+		private final BrowserFactory factory;
+
+		public BrowserBooter(BrowserFactory factory) {
+			this.factory = factory;
+			started = new AtomicBoolean(false);
+			createdBrowserCount = new AtomicInteger(0);
+		}
 
 		@Override
 		public void run() {
 			int i = 0;
-			if (AVAILABLE.isEmpty() && TAKEN.isEmpty()
+			if (factory.available.isEmpty() && factory.taken.isEmpty()
 			        && PropertyHelper.getCrawljaxConfiguration() != null) {
-				AVAILABLE.add(PropertyHelper.getCrawljaxConfiguration().getBrowser());
+				factory.available.add(PropertyHelper.getCrawljaxConfiguration().getBrowser());
 				i = 1;
 			}
 
@@ -234,7 +271,7 @@ public final class BrowserFactory {
 
 					@Override
 					public void run() {
-						AVAILABLE.add(createBrowser());
+						factory.available.add(factory.createBrowser());
 						createdBrowserCount.incrementAndGet();
 					}
 				}).start();
@@ -247,14 +284,16 @@ public final class BrowserFactory {
 		 * to start.
 		 */
 		private void shutdown() {
-			if (allBrowsersLoaded()) {
+			if (allBrowsersLoaded() || !started.get()) {
 				return;
 			}
 			LOGGER.warn("Waiting for all browsers to be started fully"
-			        + " before starting to close them");
-			while (!BOOTER.allBrowsersLoaded()) {
+			        + " before starting to close them. Created browsers "
+			        + createdBrowserCount.get() + " configed browsers "
+			        + PropertyHelper.getCrawNumberOfThreadsValue());
+			while (!allBrowsersLoaded()) {
 				try {
-					Thread.sleep(SHUTDOWNTIMEOUT);
+					Thread.sleep(factory.shutdownTimeout);
 				} catch (InterruptedException e) {
 					LOGGER.error("Closing of the browsers faild du to an Interrupt", e);
 				}
@@ -266,7 +305,7 @@ public final class BrowserFactory {
 		 */
 		@Override
 		public synchronized void start() {
-			if (!finished && !isAlive()) {
+			if (!finished && started.compareAndSet(false, true)) {
 				super.start();
 			}
 		}
