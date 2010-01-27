@@ -330,8 +330,9 @@ public final class Helper {
 	 *             an IO exception.
 	 */
 	public static void checkFolderForFile(String fname) throws IOException {
-		if (fname.lastIndexOf("/") > 0) {
-			String folder = fname.substring(0, fname.lastIndexOf("/"));
+
+		if (fname.lastIndexOf(File.separator) > 0) {
+			String folder = fname.substring(0, fname.lastIndexOf(File.separator));
 			Helper.directoryCheck(folder);
 		}
 	}
