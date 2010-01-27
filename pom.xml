@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax</artifactId>
 	<packaging>jar</packaging>
-	<version>1.9-SNAPSHOT</version>
+	<version>1.9</version>
 	<name>Crawljax</name>
 	<description>
 		Crawling Ajax applications through dynamic analysis and
@@ -295,26 +294,7 @@
 							<goal>announcement-generate</goal>
 						</goals>
 					</execution>
-					<execution>
-						<id>announcement-mail</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>announcement-mail</goal>
-						</goals>
-					</execution>
 				</executions>
-				<configuration>
-					<smtpHost>mail.st.ewi.tudelft.nl</smtpHost>
-					<smtpPort implementation="java.lang.Integer">
-						25
-					</smtpPort>
-					<toAddresses>
-						<toAddress implementation="java.lang.String">
-							crawljax@googlegroups.com
-						</toAddress>
-					</toAddresses>
-				</configuration>
-
 			</plugin>
 
 			<plugin>
@@ -329,15 +309,6 @@
 					<outputDirectory>target</outputDirectory>
 					<workDirectory>target/assembly/work</workDirectory>
 				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
@@ -409,9 +380,9 @@
 	</reporting>
 
 	<scm>
-		<connection>scm:svn:http://crawljax.googlecode.com/svn</connection>
-		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn</developerConnection>
-		<url>http://crawljax.googlecode.com/svn</url>
+		<connection>scm:svn:http://crawljax.googlecode.com/svn/tags/crawljax-1.9</connection>
+		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn/tags/crawljax-1.9</developerConnection>
+		<url>http://crawljax.googlecode.com/svn/tags/crawljax-1.9</url>
 	</scm>
 
 	<licenses>
@@ -428,25 +399,15 @@
 	</issueManagement>
 
 	<distributionManagement>
-		<repository>
-			<id>crawljaxRepo</id>
-			<name>Crawljax Repository</name>
-			<url>
-				scp://spci.st.ewi.tudelft.nl:/home/mesbah/crawljax/releases
-			</url>
-		</repository>
-		<snapshotRepository>
-			<id>crawljaxSnapshotRepo</id>
-			<name>Crawljax Snapshot Repository</name>
-			<url>
-				scp://spci.st.ewi.tudelft.nl:/home/mesbah/crawljax/snapshots
-			</url>
-		</snapshotRepository>
-		<site>
-			<id>spci.st.ewi.tudelft.nl</id>
-			<url>scp://spci.st.ewi.tudelft.nl/home/mesbah/crawljax</url>
-		</site>
-	</distributionManagement>
+        <repository>
+            <id>crawljaxRepo</id>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>crawljaxSnapshotRepo</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 	<mailingLists>
 		<mailingList>
@@ -457,5 +418,35 @@
 			<archive>http://groups.google.com/group/crawljax</archive>
 		</mailingList>
 	</mailingLists>
+	
+	<profiles>
+     <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.0-alpha-4</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+     </profile>
+	</profiles>
 
 </project>
