@@ -295,26 +295,7 @@
 							<goal>announcement-generate</goal>
 						</goals>
 					</execution>
-					<execution>
-						<id>announcement-mail</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>announcement-mail</goal>
-						</goals>
-					</execution>
 				</executions>
-				<configuration>
-					<smtpHost>mail.st.ewi.tudelft.nl</smtpHost>
-					<smtpPort implementation="java.lang.Integer">
-						25
-					</smtpPort>
-					<toAddresses>
-						<toAddress implementation="java.lang.String">
-							crawljax@googlegroups.com
-						</toAddress>
-					</toAddresses>
-				</configuration>
-
 			</plugin>
 
 			<plugin>
@@ -329,15 +310,6 @@
 					<outputDirectory>target</outputDirectory>
 					<workDirectory>target/assembly/work</workDirectory>
 				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
@@ -428,25 +400,15 @@
 	</issueManagement>
 
 	<distributionManagement>
-		<repository>
-			<id>crawljaxRepo</id>
-			<name>Crawljax Repository</name>
-			<url>
-				scp://spci.st.ewi.tudelft.nl:/home/mesbah/crawljax/releases
-			</url>
-		</repository>
-		<snapshotRepository>
-			<id>crawljaxSnapshotRepo</id>
-			<name>Crawljax Snapshot Repository</name>
-			<url>
-				scp://spci.st.ewi.tudelft.nl:/home/mesbah/crawljax/snapshots
-			</url>
-		</snapshotRepository>
-		<site>
-			<id>spci.st.ewi.tudelft.nl</id>
-			<url>scp://spci.st.ewi.tudelft.nl/home/mesbah/crawljax</url>
-		</site>
-	</distributionManagement>
+        <repository>
+            <id>crawljaxRepo</id>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>crawljaxSnapshotRepo</id>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 	<mailingLists>
 		<mailingList>
