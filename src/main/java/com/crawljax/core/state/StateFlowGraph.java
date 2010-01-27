@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -25,6 +26,12 @@ public class StateFlowGraph {
 	private static final Logger LOGGER = Logger.getLogger(StateFlowGraph.class.getName());
 
 	private final DirectedGraph<StateVertix, Eventable> sfg;
+
+	/**
+	 * Intermediate counter for the number of states, not relaying on getAllStates.size() because of
+	 * Thread-safety.
+	 */
+	private final AtomicInteger stateCounter = new AtomicInteger(1);
 
 	/**
 	 * The constructor.
@@ -56,7 +63,23 @@ public class StateFlowGraph {
 			if (!sfg.addVertex(stateVertix)) {
 				// Graph already contained the vertix
 				return this.getStateInGraph(stateVertix);
+			} else {
+				/**
+				 * A new State has been added so check to see if the name is correct, remember this
+				 * is the only place states can be added and we are now locked so getAllStates.size
+				 * works correctly.
+				 */
+				// the -1 is for the "index" state.
+				int totalNumberOfStates = this.getAllStates().size() - 1;
+				String correctName = makeStateName(totalNumberOfStates);
+				if (!stateVertix.getName().equals("index")
+				        && !stateVertix.getName().equals(correctName)) {
+					LOGGER.info("Correcting state name from  " + stateVertix.getName() + " to "
+					        + correctName);
+					stateVertix.setName(correctName);
+				}
 			}
+			stateCounter.set(this.getAllStates().size() - 1);
 		}
 		return null;
 	}
@@ -337,5 +360,28 @@ public class StateFlowGraph {
 		}
 
 		return results;
+	}
+
+	/**
+	 * Return the name of the (new)State. By using the AtomicInteger the stateCounter is thread-safe
+	 * 
+	 * @return State name the name of the state
+	 */
+	public String getNewStateName() {
+		stateCounter.getAndIncrement();
+		String state = makeStateName(stateCounter.get());
+		return state;
+	}
+
+	/**
+	 * Make a new state name given its id. Separated to get a central point when changeing the names
+	 * of states.
+	 * 
+	 * @param id
+	 *            the id where this name needs to be for.
+	 * @return the String containing the new name.
+	 */
+	private String makeStateName(int id) {
+		return "state" + id;
 	}
 }

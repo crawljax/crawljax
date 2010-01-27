@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -17,7 +16,6 @@ import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.condition.crawlcondition.CrawlConditionChecker;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.condition.invariant.InvariantChecker;
 import com.crawljax.core.configuration.CrawlSpecificationReader;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
@@ -39,12 +37,13 @@ import com.crawljax.util.database.HibernateUtil;
  */
 public class CrawljaxController {
 
-	private static final int THOUSAND = 1000;
+	private static final int TERMINATIONWAITTIMEOUT = 1000;
 
 	private static final Logger LOGGER = Logger.getLogger(CrawljaxController.class.getName());
 
 	private StateVertix indexState;
 	private EmbeddedBrowser browser;
+
 	private StateFlowGraph stateFlowGraph;
 	private CrawlSession session;
 
@@ -53,7 +52,6 @@ public class CrawljaxController {
 	private final String propertiesFile;
 
 	private final StateComparator stateComparator;
-	private final InvariantChecker invariantChecker = new InvariantChecker();
 	private final CrawlConditionChecker crawlConditionChecker = new CrawlConditionChecker();
 	private final EventableConditionChecker eventableConditionChecker =
 	        new EventableConditionChecker();
@@ -63,19 +61,12 @@ public class CrawljaxController {
 
 	private final CrawljaxConfiguration crawljaxConfiguration;
 
-	private final List<OracleComparator> oracleComparator;
-
-	private String lastStateName;
+	private final List<Invariant> invariantList;
 
 	/**
 	 * Central thread starting engine.
 	 */
 	private final ThreadPoolExecutor workQueue;
-
-	/**
-	 * Use AtomicInteger to denote the stateCounter, in doing so its thread-safe.
-	 */
-	private final AtomicInteger stateCounter = new AtomicInteger(1);
 
 	private final CandidateElementManager elementChecker =
 	        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
@@ -100,8 +91,8 @@ public class CrawljaxController {
 	public CrawljaxController(final String propertiesfile) throws ConfigurationException {
 		this.propertiesFile = propertiesfile;
 		this.crawljaxConfiguration = null;
-		this.oracleComparator = new ArrayList<OracleComparator>();
-		stateComparator = new StateComparator(this.oracleComparator);
+		stateComparator = new StateComparator(new ArrayList<OracleComparator>());
+		invariantList = new ArrayList<Invariant>();
 		workQueue = init();
 	}
 
@@ -117,9 +108,9 @@ public class CrawljaxController {
 		CrawljaxConfigurationReader configReader = new CrawljaxConfigurationReader(config);
 		CrawlSpecificationReader crawlerReader =
 		        new CrawlSpecificationReader(configReader.getCrawlSpecification());
-		this.oracleComparator = crawlerReader.getOracleComparators();
+
 		stateComparator = new StateComparator(crawlerReader.getOracleComparators());
-		invariantChecker.setInvariants(crawlerReader.getInvariants());
+		invariantList = crawlerReader.getInvariants();
 		crawlConditionChecker.setCrawlConditions(crawlerReader.getCrawlConditions());
 		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
 		eventableConditionChecker.setEventableConditions(configReader.getEventableConditions());
@@ -196,14 +187,15 @@ public class CrawljaxController {
 
 		stateFlowGraph = new StateFlowGraph(indexState);
 
-		StateMachine stateMachine = new StateMachine(stateFlowGraph, indexState);
+		StateMachine stateMachine = new StateMachine(stateFlowGraph, indexState, invariantList);
 		crawler.setStateMachine(stateMachine);
 
 		if (crawljaxConfiguration != null) {
 			session =
-			        new CrawlSession(browser, stateFlowGraph, indexState, crawljaxConfiguration);
+			        new CrawlSession(browser, stateFlowGraph, indexState, startCrawl,
+			                crawljaxConfiguration);
 		} else {
-			session = new CrawlSession(browser, stateFlowGraph, indexState);
+			session = new CrawlSession(browser, stateFlowGraph, indexState, startCrawl);
 		}
 
 		CrawljaxPluginsUtil.runOnNewStatePlugins(session);
@@ -217,11 +209,10 @@ public class CrawljaxController {
 			addWorkToQueue(crawler);
 
 			// TODO Stefan it could be possible that a browser is released and a newOne is about to
-			// be
-			// taken but not ready taken...
+			// be taken but not ready taken...
 			while (!BrowserFactory.isFinished()) {
 				try {
-					Thread.sleep(THOUSAND);
+					Thread.sleep(TERMINATIONWAITTIMEOUT);
 				} catch (InterruptedException e) {
 					LOGGER.error("The waiting on the browsers to be finished was Interruped", e);
 				}
@@ -260,110 +251,6 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Checks the state and time constraints. This function is nearly Thread-safe
-	 * 
-	 * @return true if all conditions are met.
-	 */
-	@GuardedBy("stateFlowGraph")
-	public boolean checkConstraints() {
-		long timePassed = System.currentTimeMillis() - startCrawl;
-
-		if ((PropertyHelper.getCrawlMaxTimeValue() != 0)
-		        && (timePassed > PropertyHelper.getCrawlMaxTimeValue())) {
-
-			/* remove all possible candidates left */
-			// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
-			LOGGER.info("Max time " + PropertyHelper.getCrawlMaxTimeValue() + "passed!");
-			/* stop crawling */
-			return false;
-		}
-
-		synchronized (stateFlowGraph) {
-			if ((PropertyHelper.getCrawlMaxStatesValue() != 0)
-			        && (stateFlowGraph.getAllStates().size() >= PropertyHelper
-			                .getCrawlMaxStatesValue())) {
-				/* remove all possible candidates left */
-				// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
-
-				LOGGER.info("Max number of states " + PropertyHelper.getCrawlMaxStatesValue()
-				        + " reached!");
-
-				/* stop crawling */
-				return false;
-			}
-		}
-		/* continue crawling */
-		return true;
-	}
-
-	/**
-	 * Test to see if the (new) dom is changed with regards to the old dom. This method is Thread
-	 * safe.
-	 * 
-	 * @param stateBefore
-	 *            the state before the event.
-	 * @param stateAfter
-	 *            the state after the event.
-	 * @return true if the state is changed according to the compare method of the oracle.
-	 */
-	public final boolean isDomChanged(final StateVertix stateBefore, final StateVertix stateAfter) {
-		boolean isChanged = false;
-
-		// do not need Oracle Comparators now, because hash of stripped dom is
-		// already calculated
-		// isChanged = !stateComparator.compare(stateBefore.getDom(),
-		// stateAfter.getDom(), browser);
-		isChanged = !stateAfter.equals(stateBefore);
-		if (isChanged) {
-			LOGGER.info("Dom is Changed!");
-		} else {
-			LOGGER.info("Dom Not Changed!");
-		}
-
-		return isChanged;
-	}
-
-	/**
-	 * Return the name of the (new)State. By using the AtomicInteger the stateCounter is thread-safe
-	 * 
-	 * @return State name the name of the state
-	 */
-	public final String getNewStateName() {
-		stateCounter.getAndIncrement();
-		String state = "state" + stateCounter.get();
-		lastStateName = state;
-		return state;
-	}
-
-	/**
-	 * Check the invariants. TODO Stefan move to the Crawler. When done so make a new instance of
-	 * invariantChecker. there is no need for any synch.
-	 * 
-	 * @param browser
-	 *            the browser to feed to the invariants
-	 */
-	@GuardedBy("invariantChecker")
-	public void checkInvariants(EmbeddedBrowser browser) {
-		synchronized (invariantChecker) {
-			if (!invariantChecker.check(browser)) {
-				final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
-				for (Invariant failedInvariant : failedInvariants) {
-					CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
-				}
-			}
-		}
-	}
-
-	/**
-	 * @return the oracleComparator
-	 * @NotTheadSafe The Condition classes contains 1 not Thread safe implementation
-	 *               (XPathCondition)
-	 */
-	public final List<OracleComparator> getOracleComparator() {
-		return oracleComparator;
-	}
-
-	/**
 	 * Retrieve the current session, there is only one session active at a time. So this method by
 	 * it self is Thread-Safe but actions on the session are NOT!
 	 * 
@@ -397,26 +284,6 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Retrieve the index state. This class is supposed to be thread safe, but be care full that no
-	 * one changes the indexState...
-	 * 
-	 * @return the indexState of the current crawl
-	 */
-	public final StateVertix getIndexState() {
-		return this.indexState;
-	}
-
-	/**
-	 * Return the Checker of the CrawlConditions. This call itself is thread-safe but the
-	 * crawlconditionCheck is nearly thread-safe, the failedCrawlConditions could cause trouble.
-	 * 
-	 * @return the crawlConditionChecker
-	 */
-	public final CrawlConditionChecker getCrawlConditionChecker() {
-		return crawlConditionChecker;
-	}
-
-	/**
 	 * get the stripped version of the dom currently in the browser. This call is thread safe, must
 	 * be synchronised because there is thread-intefearing bug in the stateComparator.
 	 * 
@@ -424,6 +291,7 @@ public class CrawljaxController {
 	 *            the browser instance.
 	 * @return a stripped string of the DOM tree taken from the browser.
 	 */
+	@GuardedBy("this")
 	public synchronized String getStripedDom(EmbeddedBrowser browser) {
 		return this.stateComparator.getStrippedDom(browser);
 	}
@@ -480,25 +348,6 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Return the central data component, the call itself is thread safe. All operations / actions
-	 * on the stateFlowGraph should be done very carefully!
-	 * 
-	 * @return the stateFlowGraph used to store all states and edges
-	 */
-	public final StateFlowGraph getStateFlowGraph() {
-		return stateFlowGraph;
-	}
-
-	/**
-	 * Return the last known state name, this call and set operation are not thread safe.
-	 * 
-	 * @return the lastStateName known in the Controller
-	 */
-	public final String getLastStateName() {
-		return lastStateName;
-	}
-
-	/**
 	 * The current element checker in use. This call is thread-safe because it returns a final
 	 * field.
 	 * 
@@ -506,6 +355,15 @@ public class CrawljaxController {
 	 */
 	public final ExtractorManager getElementChecker() {
 		return elementChecker;
+	}
+
+	/**
+	 * Make a new StateMachine supplied with the data in this controller.
+	 * 
+	 * @return a new StateMachine.
+	 */
+	public StateMachine buildNewStateMachine() {
+		return new StateMachine(this.stateFlowGraph, this.indexState, this.invariantList);
 	}
 
 }
