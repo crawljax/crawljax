@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax</artifactId>
 	<packaging>jar</packaging>
-	<version>1.9-SNAPSHOT</version>
+	<version>1.9</version>
 	<name>Crawljax</name>
 	<description>
 		Crawling Ajax applications through dynamic analysis and
@@ -381,9 +380,9 @@
 	</reporting>
 
 	<scm>
-		<connection>scm:svn:http://crawljax.googlecode.com/svn</connection>
-		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn</developerConnection>
-		<url>http://crawljax.googlecode.com/svn</url>
+		<connection>scm:svn:http://crawljax.googlecode.com/svn/tags/crawljax-1.9</connection>
+		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn/tags/crawljax-1.9</developerConnection>
+		<url>http://crawljax.googlecode.com/svn/tags/crawljax-1.9</url>
 	</scm>
 
 	<licenses>
@@ -419,5 +418,35 @@
 			<archive>http://groups.google.com/group/crawljax</archive>
 		</mailingList>
 	</mailingLists>
+	
+	<profiles>
+     <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.0-alpha-4</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+     </profile>
+	</profiles>
 
 </project>
