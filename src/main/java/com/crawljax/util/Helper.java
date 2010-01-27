@@ -718,4 +718,28 @@ public final class Helper {
 
 	}
 
+	/**
+	 * @param document
+	 *            the document object.
+	 * @param filePathname
+	 *            the path name of the file to be written to.
+	 */
+	public static void writeDocumentToHTMLFile(Document document, String filePathname) {
+		try {
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+			transformer.setOutputProperty(OutputKeys.METHOD, "html");
+
+			Result result = new StreamResult(new FileOutputStream(filePathname));
+			transformer.transform(new DOMSource(document), result);
+		} catch (TransformerConfigurationException e) {
+			LOGGER.error(e.getMessage(), e);
+		} catch (TransformerException e) {
+			LOGGER.error(e.getMessage(), e);
+		} catch (FileNotFoundException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+	}
+
 }
