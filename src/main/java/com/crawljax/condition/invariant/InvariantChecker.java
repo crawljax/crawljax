@@ -24,13 +24,6 @@ public class InvariantChecker {
 	private List<Invariant> invariants;
 
 	/**
-	 * Default constructor.
-	 */
-	public InvariantChecker() {
-
-	}
-
-	/**
 	 * Constructor with invariant list.
 	 * 
 	 * @param invariants
@@ -40,7 +33,7 @@ public class InvariantChecker {
 		this.invariants = invariants;
 	}
 
-	private List<Invariant> failedInvariants = new ArrayList<Invariant>();
+	private final List<Invariant> failedInvariants = new ArrayList<Invariant>();
 
 	/**
 	 * @param browser

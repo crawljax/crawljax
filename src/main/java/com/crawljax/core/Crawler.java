@@ -3,6 +3,8 @@ package com.crawljax.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.jcip.annotations.GuardedBy;
+
 import org.apache.log4j.Logger;
 
 import com.crawljax.browser.BrowserFactory;
@@ -10,6 +12,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
 import com.crawljax.forms.FormHandler;
@@ -82,10 +85,6 @@ public class Crawler implements Runnable {
 	 */
 	private StateMachine stateMachine;
 
-	// TODO Stefan delete or use!
-	@SuppressWarnings("unused")
-	private final String stateName;
-
 	/**
 	 * Enum for describing what has happened after a {@link Crawler#clickTag(Eventable, boolean)}
 	 * has been performed.
@@ -150,10 +149,7 @@ public class Crawler implements Runnable {
 	private Crawler(CrawljaxController mother, List<Eventable> returnPath) {
 		this.exactEventPath = returnPath;
 		this.controller = mother;
-		stateMachine =
-		        new StateMachine(controller.getStateFlowGraph(), controller.getIndexState());
-		// TODO Stefan what to do with this?
-		stateName = controller.getLastStateName();
+		stateMachine = controller.buildNewStateMachine();
 	}
 
 	/**
@@ -268,17 +264,17 @@ public class Crawler implements Runnable {
 		/**
 		 * Thread safe
 		 */
-		StateVertix curState = controller.getIndexState();
+		StateVertix curState = controller.getSession().getInitialState();
 
 		// remove the currentEvent from the list
 		if (exactEventPath.size() > 0) {
 			for (Eventable clickable : exactEventPath) {
 
-				if (!controller.getCrawlConditionChecker().check(browser)) {
+				if (!controller.getElementChecker().checkCrawlCondition(browser)) {
 					return;
 				}
 
-				LOGGER.info(this.name + " Backtracking by executing " + clickable.getEventType()
+				LOGGER.info("Backtracking by executing " + clickable.getEventType()
 				        + " on element: " + clickable);
 
 				stateMachine.changeState(clickable.getTargetStateVertix());
@@ -301,7 +297,7 @@ public class Crawler implements Runnable {
 					        curState);
 				}
 
-				if (!controller.getCrawlConditionChecker().check(browser)) {
+				if (!controller.getElementChecker().checkCrawlCondition(browser)) {
 					return;
 				}
 
@@ -332,12 +328,14 @@ public class Crawler implements Runnable {
 		if (this.fireEvent(eventable)) {
 			// String dom = new String(browser.getDom());
 			StateVertix newState =
-			        new StateVertix(browser.getCurrentUrl(), controller.getNewStateName(),
-			                browser.getDom(), this.controller.getStripedDom(browser));
+			        new StateVertix(browser.getCurrentUrl(), controller.getSession()
+			                .getStateFlowGraph().getNewStateName(), browser.getDom(),
+			                this.controller.getStripedDom(browser));
 
-			if (controller.isDomChanged(stateMachine.getCurrentState(), newState)) {
+			if (isDomChanged(stateMachine.getCurrentState(), newState)) {
 				crawlPath.add(eventable);
-				if (stateMachine.update(eventable, newState, this.getBrowser(), this.controller)) {
+				if (stateMachine.update(eventable, newState, this.getBrowser(), this.controller
+				        .getSession())) {
 					// Dom changed
 					// No Clone
 
@@ -401,7 +399,7 @@ public class Crawler implements Runnable {
 			return true;
 		}
 
-		if (!this.controller.checkConstraints()) {
+		if (!checkConstraints()) {
 			return false;
 		}
 
@@ -615,6 +613,70 @@ public class Crawler implements Runnable {
 	 */
 	public StateMachine getStateMachine() {
 		return stateMachine;
+	}
+
+	/**
+	 * Test to see if the (new) dom is changed with regards to the old dom. This method is Thread
+	 * safe.
+	 * 
+	 * @param stateBefore
+	 *            the state before the event.
+	 * @param stateAfter
+	 *            the state after the event.
+	 * @return true if the state is changed according to the compare method of the oracle.
+	 */
+	private boolean isDomChanged(final StateVertix stateBefore, final StateVertix stateAfter) {
+		boolean isChanged = false;
+
+		// do not need Oracle Comparators now, because hash of stripped dom is
+		// already calculated
+		// isChanged = !stateComparator.compare(stateBefore.getDom(),
+		// stateAfter.getDom(), browser);
+		isChanged = !stateAfter.equals(stateBefore);
+		if (isChanged) {
+			LOGGER.info("Dom is Changed!");
+		} else {
+			LOGGER.info("Dom Not Changed!");
+		}
+
+		return isChanged;
+	}
+
+	/**
+	 * Checks the state and time constraints. This function is nearly Thread-safe
+	 * 
+	 * @return true if all conditions are met.
+	 */
+	@GuardedBy("stateFlowGraph")
+	private boolean checkConstraints() {
+		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
+
+		if ((PropertyHelper.getCrawlMaxTimeValue() != 0)
+		        && (timePassed > PropertyHelper.getCrawlMaxTimeValue())) {
+
+			/* remove all possible candidates left */
+			// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
+			LOGGER.info("Max time " + PropertyHelper.getCrawlMaxTimeValue() + "passed!");
+			/* stop crawling */
+			return false;
+		}
+		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
+		// TODO Stefan is this needed?
+		synchronized (graph) {
+			if ((PropertyHelper.getCrawlMaxStatesValue() != 0)
+			        && (graph.getAllStates().size() >= PropertyHelper.getCrawlMaxStatesValue())) {
+				/* remove all possible candidates left */
+				// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
+
+				LOGGER.info("Max number of states " + PropertyHelper.getCrawlMaxStatesValue()
+				        + " reached!");
+
+				/* stop crawling */
+				return false;
+			}
+		}
+		/* continue crawling */
+		return true;
 	}
 
 }

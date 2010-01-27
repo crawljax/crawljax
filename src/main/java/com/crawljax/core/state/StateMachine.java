@@ -3,10 +3,15 @@
  */
 package com.crawljax.core.state;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.CrawljaxController;
+import com.crawljax.condition.invariant.Invariant;
+import com.crawljax.condition.invariant.InvariantChecker;
+import com.crawljax.core.CrawlSession;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.database.HibernateUtil;
@@ -27,11 +32,28 @@ public class StateMachine {
 	/**
 	 * One-to-one relation with the initalState, the initalState is never changed.
 	 */
-	private StateVertix initialState;
+	private final StateVertix initialState;
 
 	private StateVertix currentState;
 
 	private StateVertix previousState;
+
+	/**
+	 * The invariantChecker to use when updating the state machine.
+	 */
+	private final InvariantChecker invariantChecker;
+
+	/**
+	 * Create a new StateMachine with a empty Invariant list in the {@link InvariantChecker}.
+	 * 
+	 * @param sfg
+	 *            the state flow graph that is shared.
+	 * @param indexState
+	 *            the state representing the Index vertix
+	 */
+	public StateMachine(StateFlowGraph sfg, StateVertix indexState) {
+		this(sfg, indexState, new ArrayList<Invariant>());
+	}
 
 	/**
 	 * Create a new StateMachine.
@@ -40,11 +62,14 @@ public class StateMachine {
 	 *            the state flow graph that is shared.
 	 * @param indexState
 	 *            the state representing the Index vertix
+	 * @param invariantList
+	 *            the invariants to use in the InvariantChecker.
 	 */
-	public StateMachine(StateFlowGraph sfg, StateVertix indexState) {
+	public StateMachine(StateFlowGraph sfg, StateVertix indexState, List<Invariant> invariantList) {
 		stateFlowGraph = sfg;
 		this.initialState = indexState;
 		currentState = initialState;
+		invariantChecker = new InvariantChecker(invariantList);
 	}
 
 	/**
@@ -140,16 +165,15 @@ public class StateMachine {
 	 *            the new state.
 	 * @param browser
 	 *            used to feet to checkInvariants
-	 * @param controller
-	 *            the CrawljaxController to inquire for the checkInvariants
+	 * @param session
+	 *            the current Session
 	 * @return true if the new state is not found in the state machine.
 	 */
 	public boolean update(final Eventable event, StateVertix newState, EmbeddedBrowser browser,
-	        CrawljaxController controller) {
+	        CrawlSession session) {
 		StateVertix cloneState = this.addStateToCurrentState(newState, event);
 
 		if (cloneState != null) {
-			// Why cloning?
 			newState = cloneState;
 		}
 
@@ -159,21 +183,21 @@ public class StateMachine {
 		        + " FROM " + previousState.getName());
 
 		if (PropertyHelper.getTestInvariantsWhileCrawlingValue()) {
-			controller.checkInvariants(browser);
+			checkInvariants(browser, session);
 		}
 
 		/**
 		 * TODO Stefan FIX this getSession stuff...
 		 */
-		synchronized (controller.getSession()) {
+		synchronized (session) {
 			/**
 			 * Only one thread at the time may set the currentState in the session and expose it to
 			 * the OnNewStatePlugins. Guaranty it will not be interleaved
 			 */
-			controller.getSession().setCurrentState(newState);
+			session.setCurrentState(newState);
 
 			if (cloneState == null) {
-				CrawljaxPluginsUtil.runOnNewStatePlugins(controller.getSession());
+				CrawljaxPluginsUtil.runOnNewStatePlugins(session);
 				// recurse
 				return true;
 			} else {
@@ -184,20 +208,18 @@ public class StateMachine {
 	}
 
 	/**
-	 * @param initialState
-	 *            the initialState to set
-	 */
-	public final void setInitialState(StateVertix initialState) {
-		this.initialState = initialState;
-		this.currentState = initialState;
-	}
-
-	/**
-	 * Return the number of states in the StateFlowGraph.
+	 * Check the invariants. This call is nearly thread safe only calls to set/get affected nodes in
+	 * a Invariant may produce wrong output.
 	 * 
-	 * @return the number of states in the StateFlowGraph
+	 * @param browser
+	 *            the browser to feed to the invariants
 	 */
-	public int getNumberOfStates() {
-		return this.stateFlowGraph.getAllStates().size();
+	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
+		if (!invariantChecker.check(browser)) {
+			final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
+			for (Invariant failedInvariant : failedInvariants) {
+				CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
+			}
+		}
 	}
 }

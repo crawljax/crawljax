@@ -25,18 +25,15 @@ public class CrawlSession {
 	private final List<List<Eventable>> crawlPaths = new ArrayList<List<Eventable>>();
 	private StateVertix currentState;
 	private final StateVertix initialState;
-	private CrawljaxConfiguration crawljaxConfiguration;
+	private final CrawljaxConfiguration crawljaxConfiguration;
+	private final long startTime;
 
 	/**
 	 * @param browser
 	 *            the Embedded browser.
 	 */
 	public CrawlSession(EmbeddedBrowser browser) {
-		this.browser = browser;
-		this.stateFlowGraph = null;
-		this.currentState = null;
-		this.crawljaxConfiguration = null;
-		this.initialState = null;
+		this(browser, null, null, 0);
 	}
 
 	/**
@@ -46,13 +43,12 @@ public class CrawlSession {
 	 *            the state flow graph.
 	 * @param state
 	 *            the current state.
+	 * @param startTime
+	 *            the time this session started in milliseconds.
 	 */
-	public CrawlSession(EmbeddedBrowser browser, StateFlowGraph stateFlowGraph, StateVertix state) {
-		this.browser = browser;
-		this.stateFlowGraph = stateFlowGraph;
-		this.currentState = state;
-		this.initialState = state;
-		this.crawljaxConfiguration = null;
+	public CrawlSession(EmbeddedBrowser browser, StateFlowGraph stateFlowGraph,
+	        StateVertix state, long startTime) {
+		this(browser, stateFlowGraph, state, startTime, null);
 	}
 
 	/**
@@ -62,13 +58,19 @@ public class CrawlSession {
 	 *            the state flow graph
 	 * @param state
 	 *            the current state.
+	 * @param startTime
+	 *            the time this session started in milliseconds.
 	 * @param crawljaxConfiguration
 	 *            the configuration.
 	 */
 	public CrawlSession(EmbeddedBrowser browser, StateFlowGraph stateFlowGraph,
-	        StateVertix state, CrawljaxConfiguration crawljaxConfiguration) {
-		this(browser, stateFlowGraph, state);
+	        StateVertix state, long startTime, CrawljaxConfiguration crawljaxConfiguration) {
 		this.crawljaxConfiguration = crawljaxConfiguration;
+		this.browser = browser;
+		this.stateFlowGraph = stateFlowGraph;
+		this.currentState = state;
+		this.initialState = state;
+		this.startTime = startTime;
 	}
 
 	/**
@@ -127,6 +129,13 @@ public class CrawlSession {
 	 */
 	public final StateVertix getInitialState() {
 		return initialState;
+	}
+
+	/**
+	 * @return the startTime
+	 */
+	public final long getStartTime() {
+		return startTime;
 	}
 
 }
