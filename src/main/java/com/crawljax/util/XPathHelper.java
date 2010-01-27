@@ -159,8 +159,7 @@ public final class XPathHelper {
 		}
 		if (nodeList.getLength() > 0) {
 			if (nodeList.getLength() > 1) {
-				LOGGER.info("WARNING: Expression " + xpathExpression
-				        + " returned more than one element.");
+				LOGGER.warn("Expression " + xpathExpression + " returned more than one element.");
 			}
 			return getXpathExpression(nodeList.item(0));
 		}

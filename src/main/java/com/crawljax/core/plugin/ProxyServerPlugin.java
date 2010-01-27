@@ -5,7 +5,7 @@ import com.crawljax.core.configuration.ProxyConfiguration;
 /**
  * Plugin interface to provide a proxy with settings to Crawljax.
  * 
- * @author Frank Groeneveld <frankgroeneveld@gmail.com>
+ * @author Frank Groeneveld <frankgroeneveld+crawljax@gmail.com>
  * @version $Id$
  */
 public interface ProxyServerPlugin extends Plugin {

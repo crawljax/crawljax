@@ -107,7 +107,7 @@ public class StyleComparator extends AbstractComparator {
 			}
 			return dom;
 		} catch (Exception e) {
-			LOGGER.info("WARNING: error with StyleOracle: " + e.getMessage());
+			LOGGER.warn("Error with StyleOracle: " + e.getMessage());
 			LOGGER.error(e.getMessage(), e);
 		}
 		return dom;
@@ -125,7 +125,7 @@ public class StyleComparator extends AbstractComparator {
 			}
 			return dom;
 		} catch (Exception e) {
-			LOGGER.info("WARNING: error with StyleOracle: " + e.getMessage());
+			LOGGER.warn("Error with StyleOracle: " + e.getMessage());
 			// LOGGER.error(e.getMessage(), e);
 		}
 		return dom;

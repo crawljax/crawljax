@@ -146,7 +146,7 @@ public final class HibernateUtil {
 			transaction.commit();
 			session.flush();
 		} catch (Exception e) {
-			LOGGER.info("Warning: " + e.getMessage());
+			LOGGER.warn(e.getMessage());
 			// no unqiue object exception. Do we really care?
 		} finally {
 			closeSession();
