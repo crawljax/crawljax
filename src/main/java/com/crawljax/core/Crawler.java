@@ -113,7 +113,7 @@ public class Crawler implements Runnable {
 			try {
 				browser = BrowserFactory.requestBrowser();
 			} catch (InterruptedException e) {
-				LOGGER.error("The request for a browser as interuped", e);
+				LOGGER.error("The request for a browser was interuped", e);
 			}
 		}
 		/**
@@ -525,9 +525,9 @@ public class Crawler implements Runnable {
 			try {
 				this.browser = BrowserFactory.requestBrowser();
 			} catch (InterruptedException e1) {
-				LOGGER.error("The request for a browser as interuped", e1);
+				LOGGER.error("The request for a browser was interuped", e1);
 			}
-			LOGGER.info("Reloading Page for navigating back since browser is not initialized.");
+			LOGGER.info("Reloading page for navigating back since browser is not initialized.");
 			try {
 				this.goToInitialURL();
 			} catch (Exception e) {

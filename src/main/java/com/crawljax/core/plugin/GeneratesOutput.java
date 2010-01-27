@@ -5,7 +5,7 @@ package com.crawljax.core.plugin;
  * directory this plugin should use for its output. Note that the output path should be used as an
  * absolute path.
  * 
- * @author Frank Groeneveld <frankgroeneveld@gmail.com>
+ * @author Frank Groeneveld <frankgroeneveld+crawljax@gmail.com>
  * @version $Id$
  */
 public interface GeneratesOutput extends Plugin {

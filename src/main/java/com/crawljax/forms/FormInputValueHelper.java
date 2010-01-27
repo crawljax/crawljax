@@ -150,7 +150,7 @@ public final class FormInputValueHelper {
 		int maxValues = getMaxNumberOfValues(eventableCondition.getLinkedInputFields());
 
 		if (maxValues == 0) {
-			LOGGER.info("WARNING: No input values found for element: "
+			LOGGER.warn("No input values found for element: "
 			        + Helper.getElementString(sourceElement));
 			return candidateElements;
 		}
@@ -173,7 +173,7 @@ public final class FormInputValueHelper {
 					        getFormInputWithIndexValue(browser, element, curValueIndex);
 					formInputsForCurrentIndex.add(formInput);
 				} else {
-					LOGGER.debug("WARNING: Could not find input element for: " + fieldName);
+					LOGGER.warn("Could not find input element for: " + fieldName);
 				}
 			}
 

@@ -14,7 +14,7 @@ import com.crawljax.core.TagElement;
 /**
  * This class is used to create a CrawljaxConfiguration object configured with settings from a file.
  * 
- * @author Frank Groeneveld
+ * @author Frank Groeneveld <frankgroeneveld+crawljax@gmail.com>
  * @version $Id$
  */
 public class PropertiesFile {
@@ -37,7 +37,7 @@ public class PropertiesFile {
 
 	private static final String CRAWLFORMRANDOMINPUT = "crawl.forms.randominput";
 
-	private static final String FORMPPROPERTIES = "forms.properties";
+	private static final String FORMPROPERTIES = "forms.properties";
 
 	private static final String BROWSER = "BROWSER";
 
@@ -49,11 +49,6 @@ public class PropertiesFile {
 	private static String clickOnce = "click.once";
 
 	private static final String PROXYENABLED = "proxy.enabled";
-
-	/**
-	 * default is Firefox.
-	 */
-	private static String browserValue = "firefox";
 
 	/**
 	 * Initialize and read out properties from filename.

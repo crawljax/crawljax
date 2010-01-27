@@ -26,7 +26,7 @@ public class CrawlThreadFactory implements ThreadFactory {
 		/**
 		 * This is a bit nasty code but it works...
 		 */
-		Object name = new String("");
+		Object name = "";
 		try {
 			Field[] fields = r.getClass().getDeclaredFields();
 			for (Field field : fields) {

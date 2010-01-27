@@ -312,7 +312,7 @@ public final class BrowserFactory {
 				try {
 					Thread.sleep(factory.shutdownTimeout);
 				} catch (InterruptedException e) {
-					LOGGER.error("Closing of the browsers faild du to an Interrupt", e);
+					LOGGER.error("Closing of the browsers faild due to an Interrupt", e);
 				}
 			}
 			assert (allBrowsersLoaded());

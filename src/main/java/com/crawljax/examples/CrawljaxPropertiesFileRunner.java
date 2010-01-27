@@ -9,7 +9,7 @@ import com.crawljax.util.PropertyHelper;
 /**
  * Default Crawljax runner class that loads its settings from a properties file.
  * 
- * @author Frank Groeneveld <frankgroeneveld@gmail.com>
+ * @author Frank Groeneveld <frankgroeneveld+crawljax@gmail.com>
  */
 public final class CrawljaxPropertiesFileRunner {
 
