@@ -1,5 +1,5 @@
 /**
- * Created Dec 20, 2007
+ * Created Dec 20, 2007.
  */
 package com.crawljax.core.state;
 
@@ -7,85 +7,346 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.BeforeClass;
+import java.util.ArrayList;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.NodeList;
 
+import com.crawljax.browser.DummyBrowser;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.Condition;
+import com.crawljax.condition.invariant.Invariant;
+import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.OnInvariantViolationPlugin;
+import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.util.PropertyHelper;
 
 /**
  * @author mesbah
+ * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
 public class StateMachineTest {
 	private StateMachine sm;
-	private final StateVertix state = new StateVertix("index", "<table><div>state</div></table>");
-	private final StateFlowGraph sfg = new StateFlowGraph(state);
+	private final StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	private final DummyBrowser dummyBrowser = new DummyBrowser();
 
-		CrawljaxConfiguration config = new CrawljaxConfiguration();
-		config.setCrawlSpecification(new CrawlSpecification("http://www.crawljax.com"));
-		PropertyHelper.init(config);
+	private static boolean hit = false;
+
+	/**
+	 * Run before every test case.
+	 */
+	@Before
+	public void initStateMachine() {
+		StateFlowGraph sfg = new StateFlowGraph(index);
+		sm = new StateMachine(sfg, index);
 	}
 
+	/**
+	 * Init ok?
+	 */
 	@Test
 	public void testStateMachine() {
-		sm = new StateMachine(sfg, state);
 		assertNotNull(sm);
 		assertNotNull(sm.getCurrentState());
-		assertEquals(sm.getCurrentState(), state);
+		assertEquals(sm.getCurrentState(), index);
 	}
 
+	/**
+	 * Test the Change State operation.
+	 */
 	@Test
 	public void testChangeState() {
-		sm = new StateMachine(sfg, state);
-
-		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
-		assertFalse(sm.changeState(state2));
-		assertNotSame(sm.getCurrentState(), state2);
-		// TODO Stefan Fix this unit test!
-		// Eventable c = new Eventable(new Identification("xpath", "/bla"), "onclick");
-		// sm.addStateToCurrentState(state2, c);
-		// assertTrue(sm.changeState(state2));
-		// assertEquals(sm.getCurrentState(), state2);
-	}
-
-	@Test
-	public void testAddState() {
-		sm = new StateMachine(sfg, state);
-
 		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
 
+		/**
+		 * Can not change index because not added.
+		 */
 		assertFalse(sm.changeState(state2));
 		assertNotSame(sm.getCurrentState(), state2);
 
-		// TODO Stefan Fix this unit test!
-		// Eventable c = new Eventable(new Identification("xpath", "/bla"), "onclick");
-		// sm.addStateToCurrentState(state2, c);
-		// assertTrue(sm.changeState(state2));
-		// assertEquals(sm.getCurrentState(), state2);
+		/**
+		 * Add index.
+		 */
+		Eventable c = new Eventable(new Identification("xpath", "/bla"), "onclick");
+		assertTrue(sm.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		/**
+		 * Name is correctly changed
+		 */
+		assertEquals("State name changed correctly", "state1", state2.getName());
+
+		/**
+		 * Current index is the new index
+		 */
+		assertEquals(sm.getCurrentState(), state2);
+
+		/**
+		 * Change back.
+		 */
+		assertTrue(sm.changeState(index));
+		assertEquals(sm.getCurrentState(), index);
 	}
 
+	/**
+	 * Test the Clone state behaviour.
+	 */
 	@Test
-	public void testAddStateToCurrentState() {
-		sm = new StateMachine(sfg, state);
-
+	public void testCloneState() {
+		// state2.equals(state3)
 		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("state3", "<table><div>state3</div></table>");
-
+		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
+		/**
+		 * Can not change to state2 because not inserted yet.
+		 */
+		assertFalse(sm.changeState(state2));
 		assertNotSame(sm.getCurrentState(), state2);
-		// TODO Stefan Fix this unit test!
-		// Eventable c = new Eventable(new Identification("xpath", "/body/div[3]/a"), "onclick");
-		// sm.addStateToCurrentState(state2, c);
-		// assertTrue(sm.changeState(state2));
-		// assertEquals(sm.getCurrentState(), state2);
-		// sm.addStateToCurrentState(state3, c);
-		// sm.changeState(state);
-		// sm.addStateToCurrentState(state3, c);
-		// assertEquals(3, sm.getNumberOfStates());
+
+		Eventable c = new Eventable(new Identification("xpath", "/bla"), "onclick");
+		assertTrue(sm.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		/**
+		 * Name is correctly changed
+		 */
+		assertEquals("State name changed correctly", "state1", state2.getName());
+
+		// can not change to state2 because we are already in state2
+		assertFalse(sm.changeState(state2));
+		assertSame(sm.getCurrentState(), state2);
+
+		// state2.equals(state3)
+		assertEquals("state2 equals state3", state2, state3);
+
+		// state2 != state3 because other objects.
+		assertNotSame("state2 != state3", state2, state3);
+
+		Eventable c2 = new Eventable(new Identification("xpath", "/bla2"), "onclick");
+
+		// False because its CLONE!
+		assertFalse(sm.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		// state2.equals(state3)
+		assertEquals("state2 equals state3", state2, state3);
+
+		// state2 == sm.getCurrentState() because changed in update.
+		assertSame("state2 == state3", state2, sm.getCurrentState());
+
+		/**
+		 * Name is correctly changed
+		 */
+		assertEquals("State name changed correctly", "state1", sm.getCurrentState().getName());
+
+	}
+
+	/**
+	 * Test the Rewind Operation.
+	 */
+	@Test
+	public void testRewind() {
+		// state2.equals(state3)
+		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
+		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
+		StateVertix state4 = new StateVertix("state4", "<table><div>state4</div></table>");
+		/**
+		 * Can not change to state2 because not inserted yet.
+		 */
+		assertFalse(sm.changeState(state2));
+		assertNotSame(sm.getCurrentState(), state2);
+
+		Eventable c = new Eventable(new Identification("xpath", "/bla"), "onclick");
+		assertTrue(sm.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		/**
+		 * Name is correctly changed
+		 */
+		assertEquals("State name changed correctly", "state1", state2.getName());
+
+		// can not change to state2 because we are already in state2
+		assertFalse(sm.changeState(state2));
+		assertSame(sm.getCurrentState(), state2);
+
+		// state2.equals(state3)
+		assertEquals("state2 equals state3", state2, state3);
+
+		// !state2.equals(state4)
+		assertFalse("state2 not equals state4", state2.equals(state4));
+
+		Eventable c2 = new Eventable(new Identification("xpath", "/bla2"), "onclick");
+
+		// False because its CLONE!
+		assertFalse(sm.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		Eventable c3 = new Eventable(new Identification("xpath", "/bla2"), "onclick");
+
+		// True because its not yet known
+		assertTrue(sm.update(c3, state4, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		sm.rewind();
+
+		assertEquals("CurrentState == index", index, sm.getCurrentState());
+
+		// Now we can go from index -> state2
+		assertTrue(sm.changeState(state2));
+
+		// Now we can go from state2 -> state2
+		assertTrue(sm.changeState(state2));
+
+		// Now we can go from state2 -> state4
+		assertTrue(sm.changeState(state4));
+
+		sm.rewind();
+
+		assertEquals("CurrentState == index", index, sm.getCurrentState());
+
+		// Now we can not go from index -> state4
+		assertFalse(sm.changeState(state4));
+
+	}
+
+	/**
+	 * Make sure Invariants are executed!
+	 */
+	@Test
+	public void testInvariants() {
+		// state2.equals(state3)
+		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
+		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
+
+		ArrayList<Invariant> iList = new ArrayList<Invariant>();
+		hit = false;
+		iList.add(new Invariant("Test123", new Condition() {
+
+			@Override
+			public NodeList getAffectedNodes() {
+				return null;
+			}
+
+			@Override
+			public boolean check(EmbeddedBrowser browser) {
+				hit = true;
+				return false;
+			}
+		}));
+		StateMachine smLocal = new StateMachine(new StateFlowGraph(index), index, iList);
+
+		Eventable c = new Eventable(new Identification("xpath", "/bla"), "onclick");
+
+		assertTrue(smLocal.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		// New State so hit must be true;
+		assertTrue("Invariants are exeucted", hit);
+		hit = false;
+		assertFalse("Hit reseted", hit);
+
+		Eventable c2 = new Eventable(new Identification("xpath", "/bla"), "onclick");
+
+		assertFalse(smLocal.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
+		// CLONE State so hit must be true;
+		assertTrue("Invariants are exeucted", hit);
+	}
+
+	/**
+	 * Make sure On new State Plugin executed.
+	 * 
+	 * @throws ConfigurationException
+	 *             when failure configuring Properties
+	 */
+	@Test
+	public void testOnNewStatePlugin() throws ConfigurationException {
+		hit = false;
+		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
+		CrawlSpecification spec = new CrawlSpecification("about:plugins");
+		cfg.setCrawlSpecification(spec);
+		cfg.addPlugin(new OnNewStatePlugin() {
+
+			@Override
+			public void onNewState(CrawlSession session) {
+				hit = true;
+			}
+		});
+		PropertyHelper.init(cfg);
+
+		// state2.equals(state3)
+		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
+		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
+
+		Eventable c = new Eventable(new Identification("xpath", "/bla"), "onclick");
+
+		assertTrue(sm.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		// New State so hit must be true;
+		assertTrue("Plugins are exeucted", hit);
+		hit = false;
+		assertFalse("Hit reseted", hit);
+
+		Eventable c2 = new Eventable(new Identification("xpath", "/bla"), "onclick");
+
+		assertFalse(sm.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		// CLONE State so no plugin execution
+		assertFalse("Plugins are NOT exeucted", hit);
+	}
+
+	/**
+	 * Make sure InvariantViolationPlugin executed.
+	 * 
+	 * @throws ConfigurationException
+	 *             when failure configuring Properties
+	 */
+	@Test
+	public void testInvariantFailurePlugin() throws ConfigurationException {
+		hit = false;
+		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
+		CrawlSpecification spec = new CrawlSpecification("about:plugins");
+		cfg.setCrawlSpecification(spec);
+		cfg.addPlugin(new OnInvariantViolationPlugin() {
+			@Override
+			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
+				hit = true;
+			}
+		});
+		PropertyHelper.init(cfg);
+
+		ArrayList<Invariant> iList = new ArrayList<Invariant>();
+		iList.add(new Invariant("Test123", new Condition() {
+
+			@Override
+			public NodeList getAffectedNodes() {
+				return null;
+			}
+
+			@Override
+			public boolean check(EmbeddedBrowser browser) {
+				return false;
+			}
+		}));
+		StateMachine smLocal = new StateMachine(new StateFlowGraph(index), index, iList);
+		// state2.equals(state3)
+		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
+		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
+
+		Eventable c = new Eventable(new Identification("xpath", "/bla"), "onclick");
+
+		assertTrue(smLocal.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		// New State so hit must be true;
+		assertTrue("InvariantViolationPlugin are exeucted", hit);
+		hit = false;
+		assertFalse("Hit reseted", hit);
+
+		Eventable c2 = new Eventable(new Identification("xpath", "/bla"), "onclick");
+
+		assertFalse(smLocal.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
+
+		// New State so plugin execution
+		assertTrue("InvariantViolationPlugin are exeucted", hit);
 	}
 }
