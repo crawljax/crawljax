@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -210,32 +209,6 @@ public final class Helper {
 			info += Helper.getAllElementAttributes(element) + " ";
 		}
 		return info;
-	}
-
-	/**
-	 * @param document
-	 *            The Document object.
-	 * @param filePathname
-	 *            the filename to write the document to.
-	 */
-	public static void writeDocumentToFile(Document document, String filePathname) {
-		try {
-			TransformerFactory tFactory = TransformerFactory.newInstance();
-			Transformer transformer = tFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.setOutputProperty(OutputKeys.METHOD, "text");
-
-			DOMSource source = new DOMSource(document);
-			Result result = new StreamResult(new FileOutputStream(filePathname));
-			transformer.transform(source, result);
-		} catch (TransformerConfigurationException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (TransformerException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (FileNotFoundException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
 	}
 
 	/**
@@ -721,27 +694,37 @@ public final class Helper {
 	}
 
 	/**
+	 * Write the document object to a file.
+	 * 
 	 * @param document
 	 *            the document object.
 	 * @param filePathname
 	 *            the path name of the file to be written to.
+	 * @param method
+	 *            the output method: for instance html, xml, text
+	 * @param indent
+	 *            amount of indentation. -1 to use the default.
+	 * @throws TransformerException
+	 *             if an exception occurs.
+	 * @throws IOException
+	 *             if an IO exception occurs.
 	 */
-	public static void writeDocumentToHTMLFile(Document document, String filePathname) {
-		try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.setOutputProperty(OutputKeys.METHOD, "html");
+	public static void writeDocumentToFile(Document document, String filePathname, String method,
+	        int indent) throws TransformerException, IOException {
 
-			Result result = new StreamResult(new FileOutputStream(filePathname));
-			transformer.transform(new DOMSource(document), result);
-		} catch (TransformerConfigurationException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (TransformerException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (FileNotFoundException e) {
-			LOGGER.error(e.getMessage(), e);
+		checkFolderForFile(filePathname);
+		Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+		transformer.setOutputProperty(OutputKeys.METHOD, method);
+
+		if (indent > -1) {
+			transformer.setOutputProperty(
+			        org.apache.xml.serializer.OutputPropertiesFactory.S_KEY_INDENT_AMOUNT,
+			        Integer.toString(indent));
 		}
+		transformer.transform(new DOMSource(document), new StreamResult(new FileOutputStream(
+		        filePathname)));
 	}
 
 }
