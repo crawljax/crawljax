@@ -2,7 +2,6 @@ package com.crawljax.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.GuardedBy;
@@ -37,8 +36,6 @@ import com.crawljax.util.database.HibernateUtil;
  */
 public class CrawljaxController {
 
-	private static final int TERMINATIONWAITTIMEOUT = 1000;
-
 	private static final Logger LOGGER = Logger.getLogger(CrawljaxController.class.getName());
 
 	private StateVertix indexState;
@@ -66,7 +63,7 @@ public class CrawljaxController {
 	/**
 	 * Central thread starting engine.
 	 */
-	private final ThreadPoolExecutor workQueue;
+	private final CrawlerExecutor workQueue;
 
 	private final CandidateElementManager elementChecker =
 	        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
@@ -122,7 +119,7 @@ public class CrawljaxController {
 	 *             if the configuration fails.
 	 * @NotThreadSafe
 	 */
-	private ThreadPoolExecutor init() throws ConfigurationException {
+	private CrawlerExecutor init() throws ConfigurationException {
 		LOGGER.info("Starting Crawljax...");
 		LOGGER.info("Loading properties...");
 
@@ -152,9 +149,7 @@ public class CrawljaxController {
 		LOGGER.info("Crawl depth: " + PropertyHelper.getCrawlDepthValue());
 		LOGGER.info("Crawljax initialized!");
 
-		return new ThreadPoolExecutor(PropertyHelper.getCrawNumberOfThreadsValue(),
-		        PropertyHelper.getCrawNumberOfThreadsValue(), 0L, TimeUnit.MILLISECONDS,
-		        new CrawlQueue(), new CrawlThreadFactory());
+		return new CrawlerExecutor();
 	}
 
 	/**
@@ -204,29 +199,16 @@ public class CrawljaxController {
 		        .info("Start crawling with " + PropertyHelper.getCrawlTagsValues().size()
 		                + " tags");
 
+		addWorkToQueue(crawler);
+
 		try {
-
-			addWorkToQueue(crawler);
-
-			// TODO Stefan it could be possible that a browser is released and a newOne is about to
-			// be taken but not ready taken...
-			while (!BrowserFactory.isFinished()) {
-				try {
-					Thread.sleep(TERMINATIONWAITTIMEOUT);
-				} catch (InterruptedException e) {
-					LOGGER.error("The waiting on the browsers to be finished was Interruped", e);
-				}
-			}
-		} catch (OutOfMemoryError om) {
-			LOGGER.error(om.getMessage(), om);
+			// Block until the all the jobs are done
+			workQueue.waitForTermination();
+		} catch (InterruptedException e) {
+			LOGGER.error(e.getMessage(), e);
 		}
 
 		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
-
-		/**
-		 * Shutdown the ThreadPool, closing all the possible open Crawler instances
-		 */
-		this.workQueue.shutdownNow();
 
 		/**
 		 * Close all the opened browsers
@@ -256,7 +238,7 @@ public class CrawljaxController {
 	 * 
 	 * @return the session
 	 */
-	public final CrawlSession getSession() {
+	public CrawlSession getSession() {
 		return session;
 	}
 

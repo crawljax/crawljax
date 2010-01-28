@@ -85,7 +85,7 @@ public class CandidateElementManager implements ExtractorManager {
 	 * 
 	 * @param element
 	 *            the element that is checked
-	 * @return true if !(contains(element.generalString) || contains(element.uniqueString))
+	 * @return true if !contains(element.uniqueString)
 	 */
 	@GuardedBy("elements")
 	@Override

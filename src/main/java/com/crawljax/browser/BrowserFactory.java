@@ -190,8 +190,8 @@ public final class BrowserFactory {
 		assert (browser != null);
 		factory.taken.remove(browser);
 		factory.available.add(browser);
-		assert (!factory.taken.contains(browser));
-		assert (factory.available.contains(browser));
+		// assert (!factory.taken.contains(browser));
+		// assert (factory.available.contains(browser));
 	}
 
 	/**

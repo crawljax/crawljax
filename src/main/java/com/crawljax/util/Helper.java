@@ -174,12 +174,13 @@ public final class Helper {
 
 		if (element != null) {
 			NamedNodeMap attributes = element.getAttributes();
-
-			for (int i = 0; i < attributes.getLength(); i++) {
-				Attr attr = (Attr) attributes.item(i);
-				if (!exclude.contains(attr.getNodeName())) {
-					buffer.append(attr.getNodeName() + "=");
-					buffer.append(attr.getNodeValue() + " ");
+			if (attributes != null) {
+				for (int i = 0; i < attributes.getLength(); i++) {
+					Attr attr = (Attr) attributes.item(i);
+					if (!exclude.contains(attr.getNodeName())) {
+						buffer.append(attr.getNodeName() + "=");
+						buffer.append(attr.getNodeValue() + " ");
+					}
 				}
 			}
 		}
@@ -705,12 +706,12 @@ public final class Helper {
 	 */
 	public static String getFrameIdentification(Element frame) {
 
-		Attr attr = (Attr) frame.getAttributeNode("name");
+		Attr attr = frame.getAttributeNode("name");
 		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
 			return attr.getNodeValue();
 		}
 
-		attr = (Attr) frame.getAttributeNode("id");
+		attr = frame.getAttributeNode("id");
 		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
 			return attr.getNodeValue();
 		}
