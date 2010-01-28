@@ -111,8 +111,6 @@ public class CrawlerExecutorTest {
 				String tName = Thread.currentThread().getName();
 				if (tName.equals(compare)) {
 					success = true;
-				} else {
-					System.out.println("Boe!: " + tName + "!=" + compare);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
