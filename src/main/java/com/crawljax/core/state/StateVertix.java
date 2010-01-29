@@ -1,5 +1,6 @@
 package com.crawljax.core.state;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,11 +8,14 @@ import java.util.List;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.crawljax.core.CandidateCrawlAction;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.util.Helper;
 import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.database.HibernateUtil;
 
@@ -307,6 +311,17 @@ public class StateVertix implements Iterable<CandidateCrawlAction> {
 			public void remove() {
 			}
 		};
+	}
+
+	/**
+	 * @return a Document instance of the dom string.
+	 * @throws SAXException
+	 *             if an exception is thrown.
+	 * @throws IOException
+	 *             if an exception is thrown.
+	 */
+	public Document getDocument() throws SAXException, IOException {
+		return Helper.getDocument(this.dom);
 	}
 
 }
