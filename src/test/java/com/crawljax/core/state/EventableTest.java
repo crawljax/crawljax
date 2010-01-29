@@ -25,7 +25,7 @@ public class EventableTest {
 	@Test
 	public void testHashCode() {
 		String xpath = "/body/div[3]";
-		Identification id = new Identification("xpath", xpath);
+		Identification id = new Identification(Identification.How.xpath, xpath);
 		String eventType = "onclick";
 
 		Eventable c = new Eventable(id, eventType);
@@ -33,7 +33,7 @@ public class EventableTest {
 
 		assertEquals(temp.hashCode(), c.hashCode());
 
-		temp = new Eventable(new Identification("id", "34"), eventType);
+		temp = new Eventable(new Identification(Identification.How.id, "34"), eventType);
 		assertNotSame(temp.hashCode(), c.hashCode());
 
 		temp = new Eventable(id, "onmouseover");
@@ -42,7 +42,9 @@ public class EventableTest {
 
 	@Test
 	public void testToString() {
-		Eventable c = new Eventable(new Identification("xpath", "/body/div[3]"), "onclick");
+		Eventable c =
+		        new Eventable(new Identification(Identification.How.xpath, "/body/div[3]"),
+		                "onclick");
 
 		assertNotNull(c.toString());
 	}
@@ -52,10 +54,15 @@ public class EventableTest {
 	 */
 	@Test
 	public void testEqualsObject() {
-		Eventable c = new Eventable(new Identification("xpath", "/body/div[3]"), "onclick");
-		Eventable b = new Eventable(new Identification("xpath", "/body/div[3]"), "onclick");
-		Eventable d = new Eventable(new Identification("id", "23"), "onclick");
-		Eventable e = new Eventable(new Identification("id", "23"), "onmouseover");
+		Eventable c =
+		        new Eventable(new Identification(Identification.How.xpath, "/body/div[3]"),
+		                "onclick");
+		Eventable b =
+		        new Eventable(new Identification(Identification.How.xpath, "/body/div[3]"),
+		                "onclick");
+		Eventable d = new Eventable(new Identification(Identification.How.id, "23"), "onclick");
+		Eventable e =
+		        new Eventable(new Identification(Identification.How.id, "23"), "onmouseover");
 		assertTrue(c.equals(b));
 		assertFalse(c.equals(d));
 		assertFalse(d.equals(e));
@@ -63,7 +70,9 @@ public class EventableTest {
 
 	@Test
 	public void testGetInfo() {
-		Eventable c = new Eventable(new Identification("xpath", "/body/div[3]"), "onclick");
+		Eventable c =
+		        new Eventable(new Identification(Identification.How.xpath, "/body/div[3]"),
+		                "onclick");
 		String info = " onclick xpath /body/div[3]";
 		assertEquals(info, c.toString());
 	}

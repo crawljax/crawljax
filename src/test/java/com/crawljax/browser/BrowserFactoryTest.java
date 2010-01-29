@@ -1,5 +1,7 @@
 package com.crawljax.browser;
 
+import static org.junit.Assert.fail;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
 
@@ -88,10 +90,15 @@ public class BrowserFactoryTest {
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
 		PropertyHelper.init(cfg);
-		BrowserFactory.requestBrowser();
-		BrowserFactory.requestBrowser();
-		EmbeddedBrowser b1 = BrowserFactory.requestBrowser();
-		BrowserFactory.freeBrowser(b1);
-		BrowserFactory.close();
+		try {
+			BrowserFactory.requestBrowser();
+			BrowserFactory.requestBrowser();
+			EmbeddedBrowser b1 = BrowserFactory.requestBrowser();
+			BrowserFactory.freeBrowser(b1);
+			BrowserFactory.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 }
