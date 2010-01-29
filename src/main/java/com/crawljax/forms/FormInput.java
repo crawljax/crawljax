@@ -6,10 +6,13 @@ package com.crawljax.forms;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
 
 /**
  * @author mesbah
@@ -19,7 +22,9 @@ public class FormInput implements Cloneable {
 
 	private long id;
 	private String type = "text";
-	private String name;
+
+	private Identification identification;
+
 	private Set<InputValue> inputValues = new HashSet<InputValue>();
 	private Eventable eventable;
 	// public int index;
@@ -36,19 +41,19 @@ public class FormInput implements Cloneable {
 	/**
 	 * @param type
 	 *            the type of the input elements (e.g. text, checkbox)
-	 * @param name
-	 *            the id or name of the elements
+	 * @param identification
+	 *            the identification.
 	 * @param value
 	 *            the value of the elements. 1 for checked
 	 */
-	public FormInput(String type, String name, String value) {
+	public FormInput(String type, Identification identification, String value) {
 		this.type = type;
-		this.name = name;
+		this.identification = identification;
 		inputValues.add(new InputValue(value, value.equals("1")));
 	}
 
 	/**
-	 * @return TODO: DOCUMENT ME!
+	 * @return the id.
 	 */
 	public long getId() {
 		return id;
@@ -56,14 +61,14 @@ public class FormInput implements Cloneable {
 
 	/**
 	 * @param id
-	 *            TODO: DOCUMENT ME!
+	 *            the id.
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @return TODO: DOCUMENT ME!
+	 * @return the input type.
 	 */
 	public String getType() {
 		return type;
@@ -71,7 +76,7 @@ public class FormInput implements Cloneable {
 
 	/**
 	 * @param type
-	 *            TODO: DOCUMENT ME!
+	 *            the input type.
 	 */
 	public void setType(String type) {
 		if (!"".equals(type)) {
@@ -79,33 +84,24 @@ public class FormInput implements Cloneable {
 		}
 	}
 
-	/**
-	 * @return DOCUMENT ME!
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            DOCUMENT ME!
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || getType() == null || getName() == null) {
+		if (!(obj instanceof FormInput)) {
 			return false;
 		}
-		FormInput formInput = (FormInput) obj;
-		return getName().equals(formInput.getName()) && getType().equals(formInput.getType());
+
+		if (this == obj) {
+			return true;
+		}
+		final FormInput rhs = (FormInput) obj;
+
+		return new EqualsBuilder().append(this.identification, rhs.getIdentification()).append(
+		        this.type, rhs.getType()).isEquals();
 	}
 
 	@Override
 	public int hashCode() {
-		return getName().hashCode() + getType().hashCode();
+		return new HashCodeBuilder().append(this.identification).append(this.type).toHashCode();
 	}
 
 	/**
@@ -130,14 +126,14 @@ public class FormInput implements Cloneable {
 
 	/**
 	 * @param inputs
-	 *            DOCUMENT ME!
-	 * @param name
-	 *            DOCUMENT ME!
-	 * @return DOCUMENT ME!
+	 *            form input set.
+	 * @param identification
+	 *            the identification to check.
+	 * @return true if set contains a FormInput that has the same identification.
 	 */
-	public static boolean containsInput(Set<FormInput> inputs, String name) {
+	public static boolean containsInput(Set<FormInput> inputs, Identification identification) {
 		for (FormInput input : inputs) {
-			if (input.getName().equalsIgnoreCase(name)) {
+			if (input.getIdentification().equals(identification)) {
 				return true;
 			}
 		}
@@ -147,14 +143,14 @@ public class FormInput implements Cloneable {
 
 	/**
 	 * @param inputs
-	 *            DOCUMENT ME!
-	 * @param name
-	 *            DOCUMENT ME!
-	 * @return DOCUMENT ME!
+	 *            form input set.
+	 * @param identification
+	 *            the identification to check.
+	 * @return a FormInput object that has the same identification.
 	 */
-	public static FormInput getInput(Set<FormInput> inputs, String name) {
+	public static FormInput getInput(Set<FormInput> inputs, Identification identification) {
 		for (FormInput input : inputs) {
-			if (input.getName().equalsIgnoreCase(name)) {
+			if (input.getIdentification().equals(identification)) {
 				return input;
 			}
 		}
@@ -207,9 +203,24 @@ public class FormInput implements Cloneable {
 		}
 		fi.setId(this.id);
 		fi.setMultiple(this.multiple);
-		fi.setName(this.name);
+		fi.setIdentification(this.identification);
 		fi.setType(this.type);
 		fi.setInputValues(iv);
 		return fi;
+	}
+
+	/**
+	 * @return the identification
+	 */
+	public Identification getIdentification() {
+		return identification;
+	}
+
+	/**
+	 * @param identification
+	 *            the identification to set
+	 */
+	public void setIdentification(Identification identification) {
+		this.identification = identification;
 	}
 }

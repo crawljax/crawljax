@@ -17,21 +17,16 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.crawljax.browser.AbstractWebDriver;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.configuration.InputSpecificationReader;
+import com.crawljax.core.state.Identification;
 import com.crawljax.util.Helper;
 import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.XPathHelper;
@@ -44,13 +39,12 @@ import com.crawljax.util.XPathHelper;
  */
 public final class FormInputValueHelper {
 
-	private static final int RANDOM_STRING_LENGTH = 8;
+	private static final Logger LOGGER = Logger.getLogger(FormInputValueHelper.class.getName());
+	public static final int RANDOM_STRING_LENGTH = 8;
 
 	private FormInputValueHelper() {
 
 	}
-
-	private static final Logger LOGGER = Logger.getLogger(FormInputValueHelper.class.getName());
 
 	private static Map<String, String> formFields = new HashMap<String, String>();
 	private static Map<String, ArrayList<String>> formFieldNames =
@@ -199,31 +193,41 @@ public final class FormInputValueHelper {
 	 * @param dom
 	 *            the document
 	 * @return returns the belonging node to input in dom
+	 * @throws XPathExpressionException
+	 *             if a failure is occured.
 	 */
-	public static Node getBelongingNode(FormInput input, Document dom) {
-		String xpath = "";
-		String element = "";
-		try {
-			if (input.getType().equalsIgnoreCase("select")
-			        || input.getType().equalsIgnoreCase("textarea")) {
-				element = input.getType().toUpperCase();
-			} else {
-				element = "INPUT";
-			}
-			xpath =
-			        "//" + element + "[@name='" + input.getName() + "' or @id='"
-			                + input.getName() + "']";
-			Node node = Helper.getElementByXpath(dom, xpath);
+	public static Node getBelongingNode(FormInput input, Document dom)
+	        throws XPathExpressionException {
 
-			if (node == null) {
-				LOGGER.info("Cannot find element " + element + " id/name: " + input.getName());
-			}
-			return node;
-		} catch (XPathExpressionException e) {
-			LOGGER.error("Error with xpath: " + xpath + " for element " + element + " id/name: "
-			        + input.getName(), e);
-			return null;
+		Node result = null;
+
+		switch (input.getIdentification().getHow()) {
+			case xpath:
+				result = Helper.getElementByXpath(dom, input.getIdentification().getValue());
+
+			case id:
+			case name:
+				String xpath = "";
+				String element = "";
+
+				if (input.getType().equalsIgnoreCase("select")
+				        || input.getType().equalsIgnoreCase("textarea")) {
+					element = input.getType().toUpperCase();
+				} else {
+					element = "INPUT";
+				}
+				xpath =
+				        "//" + element + "[@name='" + input.getIdentification().getValue()
+				                + "' or @id='" + input.getIdentification().getValue() + "']";
+				result = Helper.getElementByXpath(dom, xpath);
+
+			default:
+				LOGGER.info("Cannot find element with identification "
+				        + input.getIdentification());
+
 		}
+
+		return result;
 	}
 
 	/**
@@ -231,13 +235,22 @@ public final class FormInputValueHelper {
 	 * @return returns the id of the element if set, else the name. If none found, returns null
 	 * @throws Exception
 	 */
-	private static String getName(Node element) throws Exception {
+	private static Identification getIdentification(Node element) throws Exception {
 		NamedNodeMap attributes = element.getAttributes();
 		if (attributes.getNamedItem("id") != null) {
-			return attributes.getNamedItem("id").getNodeValue();
+			return new Identification(Identification.How.id, attributes.getNamedItem("id")
+			        .getNodeValue());
 		} else if (attributes.getNamedItem("name") != null) {
-			return attributes.getNamedItem("name").getNodeValue();
+			return new Identification(Identification.How.name, attributes.getNamedItem("name")
+			        .getNodeValue());
 		}
+
+		// try to find the xpath
+		String xpathExpr = XPathHelper.getXpathExpression(element);
+		if (xpathExpr != null && !xpathExpr.equals("")) {
+			return new Identification(Identification.How.xpath, xpathExpr);
+		}
+
 		return null;
 	}
 
@@ -267,19 +280,20 @@ public final class FormInputValueHelper {
 	}
 
 	private static FormInput getFormInput(EmbeddedBrowser browser, Node element, int indexValue) {
-		String name;
+		Identification identification;
 		try {
-			name = getName(element);
-			if (name == null) {
+			identification = getIdentification(element);
+			if (identification == null) {
 				return null;
 			}
 		} catch (Exception e) {
 			return null;
 		}
-		String id = FormInputValueHelper.fieldMatches(name);
+		// CHECK
+		String id = FormInputValueHelper.fieldMatches(identification.getValue());
 		FormInput input = new FormInput();
 		input.setType(getElementType(element));
-		input.setName(name);
+		input.setIdentification(identification);
 		Set<InputValue> values = new HashSet<InputValue>();
 
 		if (id != null && fieldValues.containsKey(id)) {
@@ -311,76 +325,10 @@ public final class FormInputValueHelper {
 			input.setInputValues(values);
 		} else {
 			// field is not specified, lets try a random value
-			return getInputWithRandomValue(browser, input, element);
+			return browser.getInputWithRandomValue(input);
 
 		}
 		return input;
-	}
-
-	/**
-	 * TODO: make not webdriver dependent? TODO: add settings for default random values
-	 * 
-	 * @param browser
-	 * @param input
-	 * @param element
-	 * @return FormInput with random value assign if possible
-	 */
-	private static FormInput getInputWithRandomValue(EmbeddedBrowser browser, FormInput input,
-	        Node element) {
-		if (!PropertyHelper.getCrawlFormWithRandomValues()) {
-			return null;
-		}
-
-		if (browser instanceof AbstractWebDriver) {
-			WebDriver driver = ((AbstractWebDriver) browser).getDriver();
-
-			WebElement webElement;
-			try {
-				webElement =
-				        driver.findElement(By.xpath(XPathHelper.getXpathExpression(element)));
-				if (!((RenderedWebElement) webElement).isDisplayed()) {
-					return null;
-				}
-			} catch (Exception e) {
-				return null;
-			}
-			Set<InputValue> values = new HashSet<InputValue>();
-
-			// create some random value
-			// if(input.getType().toLowerCase().startsWith("text")/* &&
-			// webElement.getValue().equals("")*/){
-			if (input.getType().toLowerCase().startsWith("text")) {
-				values.add(new InputValue(new RandomInputValueGenerator()
-				        .getRandomString(RANDOM_STRING_LENGTH), true));
-			} else if (input.getType().equalsIgnoreCase("checkbox")
-			        || input.getType().equalsIgnoreCase("radio") && !webElement.isSelected()) {
-				if (new RandomInputValueGenerator().getCheck()) {
-					values.add(new InputValue("1", true));
-				} else {
-					values.add(new InputValue("0", false));
-
-				}
-			} else if (input.getType().equalsIgnoreCase("select")) {
-				try {
-					Select select = new Select(webElement);
-					WebElement option =
-					        (WebElement) new RandomInputValueGenerator().getRandomOption(select
-					                .getOptions());
-					values.add(new InputValue(option.getText(), true));
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
-					return null;
-				}
-			}
-
-			if (values.size() == 0) {
-				return null;
-			}
-			input.setInputValues(values);
-			return input;
-		}
-
-		return null;
 	}
 
 	/**
