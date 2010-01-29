@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.forms.FormInput;
 
 /**
  * @author mesbah
@@ -121,4 +122,11 @@ public interface EmbeddedBrowser extends Cloneable {
 	 * @return a new instance of a EmbeddedBrowser
 	 */
 	EmbeddedBrowser clone();
+
+	/**
+	 * @param inputForm
+	 *            the input form.
+	 * @return a FormInput filled with random data.
+	 */
+	FormInput getInputWithRandomValue(FormInput inputForm);
 }
