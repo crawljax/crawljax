@@ -201,10 +201,13 @@ public final class FormInputValueHelper {
 
 		Node result = null;
 
+		System.err.println(input.getIdentification().getHow());
+		
 		switch (input.getIdentification().getHow()) {
 			case xpath:
 				result = Helper.getElementByXpath(dom, input.getIdentification().getValue());
-
+				break;
+				
 			case id:
 			case name:
 				String xpath = "";
@@ -220,10 +223,12 @@ public final class FormInputValueHelper {
 				        "//" + element + "[@name='" + input.getIdentification().getValue()
 				                + "' or @id='" + input.getIdentification().getValue() + "']";
 				result = Helper.getElementByXpath(dom, xpath);
+				break;
 
 			default:
 				LOGGER.info("Cannot find element with identification "
 				        + input.getIdentification());
+				break;
 
 		}
 
