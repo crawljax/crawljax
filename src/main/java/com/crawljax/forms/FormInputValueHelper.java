@@ -194,7 +194,7 @@ public final class FormInputValueHelper {
 	 *            the document
 	 * @return returns the belonging node to input in dom
 	 * @throws XPathExpressionException
-	 *             if a failure is occured.
+	 *             if a failure is occurred.
 	 */
 	public static Node getBelongingNode(FormInput input, Document dom)
 	        throws XPathExpressionException {
@@ -205,7 +205,7 @@ public final class FormInputValueHelper {
 			case xpath:
 				result = Helper.getElementByXpath(dom, input.getIdentification().getValue());
 				break;
-				
+
 			case id:
 			case name:
 				String xpath = "";
@@ -224,8 +224,8 @@ public final class FormInputValueHelper {
 				break;
 
 			default:
-				LOGGER.info("Cannot find element with identification "
-				        + input.getIdentification());
+				LOGGER.info("Identification " + input.getIdentification()
+				        + " not supported yet for form inpus.");
 				break;
 
 		}
