@@ -201,8 +201,6 @@ public final class FormInputValueHelper {
 
 		Node result = null;
 
-		System.err.println(input.getIdentification().getHow());
-		
 		switch (input.getIdentification().getHow()) {
 			case xpath:
 				result = Helper.getElementByXpath(dom, input.getIdentification().getValue());
