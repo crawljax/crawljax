@@ -3,7 +3,9 @@ package com.crawljax.browser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +18,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -23,6 +26,10 @@ import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.forms.FormInput;
+import com.crawljax.forms.FormInputValueHelper;
+import com.crawljax.forms.InputValue;
+import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.Helper;
 import com.crawljax.util.PropertyHelper;
 
@@ -421,6 +428,63 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		} catch (Exception e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
+
+	}
+
+	/**
+	 * @param input
+	 *            the input to be filled.
+	 * @return FormInput with random value assigned if possible
+	 */
+	public FormInput getInputWithRandomValue(FormInput input) {
+		if (!PropertyHelper.getCrawlFormWithRandomValues()) {
+			return null;
+		}
+
+		WebElement webElement;
+		try {
+			webElement = browser.findElement(input.getIdentification().getWebDriverBy());
+			if (!((RenderedWebElement) webElement).isDisplayed()) {
+				return null;
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return null;
+		}
+
+		Set<InputValue> values = new HashSet<InputValue>();
+
+		// create some random value
+
+		if (input.getType().toLowerCase().startsWith("text")) {
+			values.add(new InputValue(new RandomInputValueGenerator()
+			        .getRandomString(FormInputValueHelper.RANDOM_STRING_LENGTH), true));
+		} else if (input.getType().equalsIgnoreCase("checkbox")
+		        || input.getType().equalsIgnoreCase("radio") && !webElement.isSelected()) {
+			if (new RandomInputValueGenerator().getCheck()) {
+				values.add(new InputValue("1", true));
+			} else {
+				values.add(new InputValue("0", false));
+
+			}
+		} else if (input.getType().equalsIgnoreCase("select")) {
+			try {
+				Select select = new Select(webElement);
+				WebElement option =
+				        (WebElement) new RandomInputValueGenerator().getRandomOption(select
+				                .getOptions());
+				values.add(new InputValue(option.getText(), true));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				return null;
+			}
+		}
+
+		if (values.size() == 0) {
+			return null;
+		}
+		input.setInputValues(values);
+		return input;
 
 	}
 
