@@ -84,8 +84,8 @@ public class StateVertixTest {
 		assertFalse(stateNotEqual.equals(sv));
 
 		assertFalse(stateEqual.equals(null));
-		assertFalse(stateEqual.equals(new Eventable(
-		        new Identification("xpath", "/body/div[3]/a"), "onclick")));
+		assertFalse(stateEqual.equals(new Eventable(new Identification(Identification.How.xpath,
+		        "/body/div[3]/a"), "onclick")));
 
 		sv.setGuidedCrawling(true);
 		assertFalse(stateEqual.equals(sv));

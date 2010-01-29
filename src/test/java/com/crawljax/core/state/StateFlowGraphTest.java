@@ -15,6 +15,8 @@ import java.util.Set;
 import org.jgrapht.GraphPath;
 import org.junit.Test;
 
+import com.crawljax.core.state.Identification.How;
+
 /**
  * @author mesbah
  * @version $Id$
@@ -40,20 +42,20 @@ public class StateFlowGraphTest {
 
 		assertFalse(graph.addState(DOUBLE) == null);
 
-		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification("xpath",
+		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification(How.xpath,
 		        "/body/div[4]"), "onclick")));
 
-		assertTrue(graph.addEdge(state2, index, new Eventable(new Identification("xpath",
+		assertTrue(graph.addEdge(state2, index, new Eventable(new Identification(How.xpath,
 		        "/body/div[89]"), "onclick")));
 
-		assertTrue(graph.addEdge(state2, state3, new Eventable(new Identification("xpath",
+		assertTrue(graph.addEdge(state2, state3, new Eventable(new Identification(How.xpath,
 		        "/home/a"), "onclick")));
-		assertTrue(graph.addEdge(index, state4, new Eventable(new Identification("xpath",
+		assertTrue(graph.addEdge(index, state4, new Eventable(new Identification(How.xpath,
 		        "/body/div[2]/div"), "onclick")));
-		assertTrue(graph.addEdge(state2, state5, new Eventable(new Identification("xpath",
+		assertTrue(graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath,
 		        "/body/div[5]"), "onclick")));
 
-		assertFalse(graph.addEdge(state2, state5, new Eventable(new Identification("xpath",
+		assertFalse(graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath,
 		        "/body/div[5]"), "onclick")));
 
 		Set<Eventable> clickables = graph.getOutgoingClickables(state2);
@@ -111,7 +113,7 @@ public class StateFlowGraphTest {
 		assertTrue(graph.addState(state2) == null);
 		assertTrue(graph.addState(state4) == null);
 		// assertFalse(graph.addState(state3));
-		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification("xpath",
+		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification(How.xpath,
 		        "/body/div[4]"), "onclick")));
 
 		// if (graph.containsVertex(state3)) {
@@ -119,7 +121,7 @@ public class StateFlowGraphTest {
 		// assertEquals(state3, state_clone);
 		// }
 
-		assertTrue(graph.addEdge(state4, state3, new Eventable(new Identification("xpath",
+		assertTrue(graph.addEdge(state4, state3, new Eventable(new Identification(How.xpath,
 		        "/home/a"), "onclick")));
 		// System.out.println(graph.toString());
 		// assertNull(graph.getStateInGraph(new StateVertix("STATE_TEST",
@@ -152,9 +154,9 @@ public class StateFlowGraphTest {
 		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
 		StateFlowGraph sfg = new StateFlowGraph(state1);
 
-		Eventable c1 = new Eventable(new Identification("xpath", "/body/div[4]"), "onclick");
+		Eventable c1 = new Eventable(new Identification(How.xpath, "/body/div[4]"), "onclick");
 		Eventable c2 =
-		        new Eventable(new Identification("xpath", "/body/div[4]/div[2]"), "onclick");
+		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[2]"), "onclick");
 		sfg.addState(state1);
 		sfg.addState(state2);
 
@@ -176,22 +178,32 @@ public class StateFlowGraphTest {
 		g.addState(state4);
 		g.addState(state5);
 
-		g.addEdge(index, state2,
-		        new Eventable(new Identification("xpath", "/index/2"), "onclick"));
-		g.addEdge(state2, index,
-		        new Eventable(new Identification("xpath", "/2/index"), "onclick"));
-		g.addEdge(state2, state3, new Eventable(new Identification("xpath", "/2/3"), "onclick"));
-		g.addEdge(index, state4,
-		        new Eventable(new Identification("xpath", "/index/4"), "onclick"));
-		g.addEdge(state2, state5, new Eventable(new Identification("xpath", "/2/5"), "onclick"));
-		g.addEdge(state4, index,
-		        new Eventable(new Identification("xpath", "/4/index"), "onclick"));
-		g.addEdge(index, state5,
-		        new Eventable(new Identification("xpath", "/index/5"), "onclick"));
-		g.addEdge(state4, state2, new Eventable(new Identification("xpath", "/4/2"), "onclick"));
-		g.addEdge(state3, state5, new Eventable(new Identification("xpath", "/3/5"), "onclick"));
+		g.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
+		        "onclick"));
+		g.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
+		        "onclick"));
+		g
+		        .addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
+		                "onclick"));
+		g.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
+		        "onclick"));
+		g
+		        .addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
+		                "onclick"));
+		g.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
+		        "onclick"));
+		g.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
+		        "onclick"));
+		g
+		        .addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
+		                "onclick"));
+		g
+		        .addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
+		                "onclick"));
 
-		g.addEdge(state3, state4, new Eventable(new Identification("xpath", "/3/4"), "onclick"));
+		g
+		        .addEdge(state3, state4, new Eventable(new Identification(How.xpath, "/3/4"),
+		                "onclick"));
 
 		List<List<GraphPath<StateVertix, Eventable>>> results = g.getAllPossiblePaths(index);
 
@@ -242,20 +254,28 @@ public class StateFlowGraphTest {
 		g.addState(state4);
 		g.addState(state5);
 
-		g.addEdge(index, state2,
-		        new Eventable(new Identification("xpath", "/index/2"), "onclick"));
-		g.addEdge(state2, index,
-		        new Eventable(new Identification("xpath", "/2/index"), "onclick"));
-		g.addEdge(state2, state3, new Eventable(new Identification("xpath", "/2/3"), "onclick"));
-		g.addEdge(index, state4,
-		        new Eventable(new Identification("xpath", "/index/4"), "onclick"));
-		g.addEdge(state2, state5, new Eventable(new Identification("xpath", "/2/5"), "onclick"));
-		g.addEdge(state4, index,
-		        new Eventable(new Identification("xpath", "/4/index"), "onclick"));
-		g.addEdge(index, state5,
-		        new Eventable(new Identification("xpath", "/index/5"), "onclick"));
-		g.addEdge(state4, state2, new Eventable(new Identification("xpath", "/4/2"), "onclick"));
-		g.addEdge(state3, state5, new Eventable(new Identification("xpath", "/3/5"), "onclick"));
+		g.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
+		        "onclick"));
+		g.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
+		        "onclick"));
+		g
+		        .addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
+		                "onclick"));
+		g.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
+		        "onclick"));
+		g
+		        .addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
+		                "onclick"));
+		g.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
+		        "onclick"));
+		g.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
+		        "onclick"));
+		g
+		        .addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
+		                "onclick"));
+		g
+		        .addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
+		                "onclick"));
 
 		List<List<GraphPath<StateVertix, Eventable>>> results = g.getAllPossiblePaths(index);
 
@@ -338,16 +358,16 @@ public class StateFlowGraphTest {
 		assertTrue(graph.addState(state3) == null);
 		assertTrue(graph.addState(state4) == null);
 
-		Eventable e1 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
+		Eventable e1 = new Eventable(new Identification(How.xpath, "/4/index"), "onclick");
 
-		Eventable e2 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
+		Eventable e2 = new Eventable(new Identification(How.xpath, "/4/index"), "onclick");
 
-		Eventable e3 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
+		Eventable e3 = new Eventable(new Identification(How.xpath, "/4/index"), "onclick");
 
-		Eventable e4 = new Eventable(new Identification("xpath", "/5/index"), "onclick");
+		Eventable e4 = new Eventable(new Identification(How.xpath, "/5/index"), "onclick");
 
-		Eventable e5 = new Eventable(new Identification("xpath", "/4/index"), "onclick");
-		Eventable e6 = new Eventable(new Identification("xpath", "/5/index"), "onclick");
+		Eventable e5 = new Eventable(new Identification(How.xpath, "/4/index"), "onclick");
+		Eventable e6 = new Eventable(new Identification(How.xpath, "/5/index"), "onclick");
 
 		assertTrue(graph.addEdge(index, state2, e1));
 		assertFalse(graph.addEdge(index, state2, e1));

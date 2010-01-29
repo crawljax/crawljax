@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.forms.FormInput;
 
 /**
  * Real Empty class for place holding {@link EmbeddedBrowser} in UnitTests. There is absolutely NO
@@ -80,5 +81,10 @@ public class DummyBrowser implements EmbeddedBrowser {
 	@Override
 	public EmbeddedBrowser clone() {
 		return new DummyBrowser();
+	}
+
+	@Override
+	public FormInput getInputWithRandomValue(FormInput inputForm) {
+		return null;
 	}
 }
