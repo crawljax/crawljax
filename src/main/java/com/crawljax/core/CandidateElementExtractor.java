@@ -144,7 +144,7 @@ public class CandidateElementExtractor {
 				} else {
 					// just add default element
 					candidateElements.add(new CandidateElement(sourceElement, new Identification(
-					        "xpath", xpath), relatedFrame));
+					        Identification.How.xpath, xpath), relatedFrame));
 				}
 
 				for (CandidateElement candidateElement : candidateElements) {

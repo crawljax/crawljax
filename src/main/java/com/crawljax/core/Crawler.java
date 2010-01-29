@@ -202,7 +202,8 @@ public class Crawler implements Runnable {
 						LOGGER.info("XPath changed from " + xpath + " to " + newXPath
 						        + " relatedFrame:" + eventable.getRelatedFrame());
 						eventable =
-						        new Eventable(new Identification("xpath", newXPath), eventType);
+						        new Eventable(new Identification(Identification.How.xpath,
+						                newXPath), eventType);
 					}
 				}
 			}

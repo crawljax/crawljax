@@ -53,7 +53,7 @@ public class CandidateElement {
 	 *            the xpath expression of the element
 	 */
 	public CandidateElement(Element element, String xpath) {
-		this(element, new Identification("xpath", xpath), "");
+		this(element, new Identification(Identification.How.xpath, xpath), "");
 	}
 
 	/**
