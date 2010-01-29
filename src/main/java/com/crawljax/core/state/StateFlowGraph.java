@@ -169,11 +169,9 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
-	 * 
 	 * @param clickable
-	 *            TODO: DOCUMENT ME!
-	 * @return TODO: DOCUMENT ME!
+	 *            the edge.
+	 * @return the target state of this edge.
 	 */
 	public StateVertix getTargetState(Eventable clickable) {
 		return sfg.getEdgeTarget(clickable);
@@ -247,24 +245,8 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * Checks to see if a certain StateVertix already exists in the StateFlowGraph. Depreciated
-	 * because its never used anywhere?
-	 * 
-	 * @param state
-	 *            the state to check of existence
-	 * @return true if the StateFlowGraph contains the given StateVertix
+	 * @return Dom string average size (byte).
 	 */
-	@Deprecated
-	public boolean containsVertex(StateVertix state) {
-		return sfg.containsVertex(state);
-	}
-
-	/**
-	 * TODO: DOCUMENT ME!
-	 * 
-	 * @return TODO: DOCUMENT ME!
-	 */
-
 	public int getMeanStateStringSize() {
 		Mean mean = new Mean();
 		List<Integer> list = new ArrayList<Integer>();
@@ -281,7 +263,7 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * @return the sfg
+	 * @return the state-flow graph.
 	 */
 	public DirectedGraph<StateVertix, Eventable> getSfg() {
 		return sfg;
@@ -335,9 +317,11 @@ public class StateFlowGraph {
 	}
 
 	/**
+	 * This method returns all possible paths from the index state using the Kshortest paths.
+	 * 
 	 * @param index
-	 *            TODO: DOCUMENT ME!
-	 * @return TODO: DOCUMENT ME!
+	 *            the initial state.
+	 * @return a list of GraphPath lists.
 	 */
 	public List<List<GraphPath<StateVertix, Eventable>>> getAllPossiblePaths(StateVertix index) {
 		final List<List<GraphPath<StateVertix, Eventable>>> results =
@@ -375,8 +359,8 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * Make a new state name given its id. Separated to get a central point when changeing the names
-	 * of states.
+	 * Make a new state name given its id. Separated to get a central point when changing the names
+	 * of states. The automatic state names start with "state" and guided ones with "guide".
 	 * 
 	 * @param id
 	 *            the id where this name needs to be for.
