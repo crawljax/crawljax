@@ -16,6 +16,9 @@ import org.openqa.selenium.By;
 public class Identification implements Serializable, Cloneable {
 	private static final long serialVersionUID = -1608879189549535808L;
 
+	/**
+	 * The method used for identifying elements on the DOM tree.
+	 */
 	public enum How {
 		xpath, name, id, tag, text, partialText
 	}
