@@ -71,7 +71,8 @@ public class StateFlowGraph {
 				 */
 				// the -1 is for the "index" state.
 				int totalNumberOfStates = this.getAllStates().size() - 1;
-				String correctName = makeStateName(totalNumberOfStates);
+				String correctName =
+				        makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
 				if (!stateVertix.getName().equals("index")
 				        && !stateVertix.getName().equals(correctName)) {
 					LOGGER.info("Correcting state name from  " + stateVertix.getName() + " to "
@@ -369,7 +370,7 @@ public class StateFlowGraph {
 	 */
 	public String getNewStateName() {
 		stateCounter.getAndIncrement();
-		String state = makeStateName(stateCounter.get());
+		String state = makeStateName(stateCounter.get(), false);
 		return state;
 	}
 
@@ -381,7 +382,12 @@ public class StateFlowGraph {
 	 *            the id where this name needs to be for.
 	 * @return the String containing the new name.
 	 */
-	private String makeStateName(int id) {
+	private String makeStateName(int id, boolean guided) {
+
+		if (guided) {
+			return "guided" + id;
+		}
+
 		return "state" + id;
 	}
 }
