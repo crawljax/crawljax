@@ -50,8 +50,8 @@ public class IFrameTest {
 		crawler.setWaitTimeAfterEvent(100);
 		crawler.setWaitTimeAfterReloadUrl(100);
 		crawler.setDepth(3);
-		crawler.click("a");
-		crawler.click("input");
+		crawler.lookFor("a");
+		crawler.lookFor("input");
 
 		return crawler;
 	}

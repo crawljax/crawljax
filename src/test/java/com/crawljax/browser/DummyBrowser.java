@@ -1,5 +1,7 @@
 package com.crawljax.browser;
 
+import org.openqa.selenium.WebElement;
+
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
@@ -84,5 +86,10 @@ public class DummyBrowser implements EmbeddedBrowser {
 	@Override
 	public boolean elementExists(Identification identification) {
 		return false;
+	}
+
+	@Override
+	public WebElement getWebElement(Identification identification) {
+		return null;
 	}
 }

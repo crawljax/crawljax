@@ -11,6 +11,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.crawljax.core.state.Eventable.EventType;
+
 /**
  * TODO: DOCUMENT ME!
  * 
@@ -85,7 +87,7 @@ public class StateVertixTest {
 
 		assertFalse(stateEqual.equals(null));
 		assertFalse(stateEqual.equals(new Eventable(new Identification(Identification.How.xpath,
-		        "/body/div[3]/a"), "onclick")));
+		        "/body/div[3]/a"), EventType.click)));
 
 		sv.setGuidedCrawling(true);
 		assertFalse(stateEqual.equals(sv));

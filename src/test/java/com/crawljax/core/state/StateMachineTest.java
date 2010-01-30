@@ -26,6 +26,7 @@ import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
 import com.crawljax.core.plugin.OnNewStatePlugin;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.util.PropertyHelper;
 
@@ -77,7 +78,7 @@ public class StateMachineTest {
 		/**
 		 * Add index.
 		 */
-		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), "onclick");
+		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 		assertTrue(sm.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
 
 		/**
@@ -111,7 +112,7 @@ public class StateMachineTest {
 		assertFalse(sm.changeState(state2));
 		assertNotSame(sm.getCurrentState(), state2);
 
-		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), "onclick");
+		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 		assertTrue(sm.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
 
 		/**
@@ -129,7 +130,7 @@ public class StateMachineTest {
 		// state2 != state3 because other objects.
 		assertNotSame("state2 != state3", state2, state3);
 
-		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla2"), "onclick");
+		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// False because its CLONE!
 		assertFalse(sm.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
@@ -162,7 +163,7 @@ public class StateMachineTest {
 		assertFalse(sm.changeState(state2));
 		assertNotSame(sm.getCurrentState(), state2);
 
-		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), "onclick");
+		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 		assertTrue(sm.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
 
 		/**
@@ -180,12 +181,12 @@ public class StateMachineTest {
 		// !state2.equals(state4)
 		assertFalse("state2 not equals state4", state2.equals(state4));
 
-		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla2"), "onclick");
+		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// False because its CLONE!
 		assertFalse(sm.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
 
-		Eventable c3 = new Eventable(new Identification(How.xpath, "/bla2"), "onclick");
+		Eventable c3 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// True because its not yet known
 		assertTrue(sm.update(c3, state4, dummyBrowser, new CrawlSession(dummyBrowser)));
@@ -238,7 +239,7 @@ public class StateMachineTest {
 		}));
 		StateMachine smLocal = new StateMachine(new StateFlowGraph(index), index, iList);
 
-		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), "onclick");
+		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertTrue(smLocal.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
 
@@ -247,7 +248,7 @@ public class StateMachineTest {
 		hit = false;
 		assertFalse("Hit reseted", hit);
 
-		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), "onclick");
+		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertFalse(smLocal.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
 		// CLONE State so hit must be true;
@@ -279,7 +280,7 @@ public class StateMachineTest {
 		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
 		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
 
-		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), "onclick");
+		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertTrue(sm.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
 
@@ -288,7 +289,7 @@ public class StateMachineTest {
 		hit = false;
 		assertFalse("Hit reseted", hit);
 
-		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), "onclick");
+		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertFalse(sm.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
 
@@ -334,7 +335,7 @@ public class StateMachineTest {
 		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
 		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
 
-		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), "onclick");
+		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertTrue(smLocal.update(c, state2, dummyBrowser, new CrawlSession(dummyBrowser)));
 
@@ -343,7 +344,7 @@ public class StateMachineTest {
 		hit = false;
 		assertFalse("Hit reseted", hit);
 
-		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), "onclick");
+		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertFalse(smLocal.update(c2, state3, dummyBrowser, new CrawlSession(dummyBrowser)));
 

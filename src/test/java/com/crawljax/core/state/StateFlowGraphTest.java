@@ -15,6 +15,7 @@ import java.util.Set;
 import org.jgrapht.GraphPath;
 import org.junit.Test;
 
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
 
 /**
@@ -43,20 +44,20 @@ public class StateFlowGraphTest {
 		assertFalse(graph.addState(DOUBLE) == null);
 
 		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification(How.xpath,
-		        "/body/div[4]"), "onclick")));
+		        "/body/div[4]"), EventType.click)));
 
 		assertTrue(graph.addEdge(state2, index, new Eventable(new Identification(How.xpath,
-		        "/body/div[89]"), "onclick")));
+		        "/body/div[89]"), EventType.click)));
 
 		assertTrue(graph.addEdge(state2, state3, new Eventable(new Identification(How.xpath,
-		        "/home/a"), "onclick")));
+		        "/home/a"), EventType.click)));
 		assertTrue(graph.addEdge(index, state4, new Eventable(new Identification(How.xpath,
-		        "/body/div[2]/div"), "onclick")));
+		        "/body/div[2]/div"), EventType.click)));
 		assertTrue(graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath,
-		        "/body/div[5]"), "onclick")));
+		        "/body/div[5]"), EventType.click)));
 
 		assertFalse(graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath,
-		        "/body/div[5]"), "onclick")));
+		        "/body/div[5]"), EventType.click)));
 
 		Set<Eventable> clickables = graph.getOutgoingClickables(state2);
 		assertEquals(3, clickables.size());
@@ -114,7 +115,7 @@ public class StateFlowGraphTest {
 		assertTrue(graph.addState(state4) == null);
 		// assertFalse(graph.addState(state3));
 		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification(How.xpath,
-		        "/body/div[4]"), "onclick")));
+		        "/body/div[4]"), EventType.click)));
 
 		// if (graph.containsVertex(state3)) {
 		// StateVertix state_clone = graph.getStateInGraph(state3);
@@ -122,7 +123,7 @@ public class StateFlowGraphTest {
 		// }
 
 		assertTrue(graph.addEdge(state4, state3, new Eventable(new Identification(How.xpath,
-		        "/home/a"), "onclick")));
+		        "/home/a"), EventType.click)));
 		// System.out.println(graph.toString());
 		// assertNull(graph.getStateInGraph(new StateVertix("STATE_TEST",
 		// "<table><div>TEST</div></table>")));
@@ -154,9 +155,11 @@ public class StateFlowGraphTest {
 		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
 		StateFlowGraph sfg = new StateFlowGraph(state1);
 
-		Eventable c1 = new Eventable(new Identification(How.xpath, "/body/div[4]"), "onclick");
+		Eventable c1 =
+		        new Eventable(new Identification(How.xpath, "/body/div[4]"), EventType.click);
 		Eventable c2 =
-		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[2]"), "onclick");
+		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[2]"),
+		                EventType.click);
 		sfg.addState(state1);
 		sfg.addState(state2);
 
@@ -179,31 +182,26 @@ public class StateFlowGraphTest {
 		g.addState(state5);
 
 		g.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
-		        "onclick"));
+		        EventType.click));
 		g.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
-		        "onclick"));
-		g
-		        .addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
-		                "onclick"));
+		        EventType.click));
+		g.addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
+		        EventType.click));
 		g.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
-		        "onclick"));
-		g
-		        .addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
-		                "onclick"));
+		        EventType.click));
+		g.addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
+		        EventType.click));
 		g.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
-		        "onclick"));
+		        EventType.click));
 		g.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
-		        "onclick"));
-		g
-		        .addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
-		                "onclick"));
-		g
-		        .addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
-		                "onclick"));
+		        EventType.click));
+		g.addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
+		        EventType.click));
+		g.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
+		        EventType.click));
 
-		g
-		        .addEdge(state3, state4, new Eventable(new Identification(How.xpath, "/3/4"),
-		                "onclick"));
+		g.addEdge(state3, state4, new Eventable(new Identification(How.xpath, "/3/4"),
+		        EventType.click));
 
 		List<List<GraphPath<StateVertix, Eventable>>> results = g.getAllPossiblePaths(index);
 
@@ -255,27 +253,23 @@ public class StateFlowGraphTest {
 		g.addState(state5);
 
 		g.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
-		        "onclick"));
+		        EventType.click));
 		g.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
-		        "onclick"));
-		g
-		        .addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
-		                "onclick"));
+		        EventType.click));
+		g.addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
+		        EventType.click));
 		g.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
-		        "onclick"));
-		g
-		        .addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
-		                "onclick"));
+		        EventType.click));
+		g.addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
+		        EventType.click));
 		g.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
-		        "onclick"));
+		        EventType.click));
 		g.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
-		        "onclick"));
-		g
-		        .addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
-		                "onclick"));
-		g
-		        .addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
-		                "onclick"));
+		        EventType.click));
+		g.addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
+		        EventType.click));
+		g.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
+		        EventType.click));
 
 		List<List<GraphPath<StateVertix, Eventable>>> results = g.getAllPossiblePaths(index);
 
@@ -358,16 +352,16 @@ public class StateFlowGraphTest {
 		assertTrue(graph.addState(state3) == null);
 		assertTrue(graph.addState(state4) == null);
 
-		Eventable e1 = new Eventable(new Identification(How.xpath, "/4/index"), "onclick");
+		Eventable e1 = new Eventable(new Identification(How.xpath, "/4/index"), EventType.click);
 
-		Eventable e2 = new Eventable(new Identification(How.xpath, "/4/index"), "onclick");
+		Eventable e2 = new Eventable(new Identification(How.xpath, "/4/index"), EventType.click);
 
-		Eventable e3 = new Eventable(new Identification(How.xpath, "/4/index"), "onclick");
+		Eventable e3 = new Eventable(new Identification(How.xpath, "/4/index"), EventType.click);
 
-		Eventable e4 = new Eventable(new Identification(How.xpath, "/5/index"), "onclick");
+		Eventable e4 = new Eventable(new Identification(How.xpath, "/5/index"), EventType.click);
 
-		Eventable e5 = new Eventable(new Identification(How.xpath, "/4/index"), "onclick");
-		Eventable e6 = new Eventable(new Identification(How.xpath, "/5/index"), "onclick");
+		Eventable e5 = new Eventable(new Identification(How.xpath, "/4/index"), EventType.click);
+		Eventable e6 = new Eventable(new Identification(How.xpath, "/5/index"), EventType.click);
 
 		assertTrue(graph.addEdge(index, state2, e1));
 		assertFalse(graph.addEdge(index, state2, e1));
