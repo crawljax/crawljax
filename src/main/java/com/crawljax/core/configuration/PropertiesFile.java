@@ -136,8 +136,10 @@ public class PropertiesFile {
 	 * 
 	 * @param text
 	 *            The string containing the tag elements.
+	 * @param crawlSpec
+	 *            the crawlSpecification.
 	 */
-	public void parseTagElement(String text, CrawlSpecification crawler) {
+	public void parseTagElement(String text, CrawlSpecification crawlSpec) {
 		if (text.equals("")) {
 			return;
 		}
@@ -188,7 +190,7 @@ public class PropertiesFile {
 
 		}
 
-		CrawlElement element = crawler.click(tagElement.getName());
+		CrawlElement element = crawlSpec.click(tagElement.getName());
 		for (TagAttribute attrib : tagElement.getAttributes()) {
 			element.withAttribute(attrib.getName(), attrib.getValue());
 		}
