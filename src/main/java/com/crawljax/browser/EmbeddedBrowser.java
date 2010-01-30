@@ -3,8 +3,6 @@
  */
 package com.crawljax.browser;
 
-import org.openqa.selenium.By;
-
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
@@ -89,13 +87,13 @@ public interface EmbeddedBrowser extends Cloneable {
 	Object executeJavaScript(String script) throws CrawljaxException;
 
 	/**
-	 * Checks if an element is visible. TODO: replace By by Identification
+	 * Checks if an element is visible.
 	 * 
-	 * @param locater
-	 *            Locater to use.
-	 * @return Whether it is visible.
+	 * @param identification
+	 *            identification to use.
+	 * @return true if the element is visible.
 	 */
-	boolean isVisible(By locater);
+	boolean isVisible(Identification identification);
 
 	/**
 	 * @return The current browser url.

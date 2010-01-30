@@ -1,8 +1,7 @@
 package com.crawljax.condition;
 
-import org.openqa.selenium.By;
-
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.state.Identification;
 
 /**
  * Conditions that returns true iff element found with By is visible.
@@ -12,19 +11,19 @@ import com.crawljax.browser.EmbeddedBrowser;
  */
 public class VisibleCondition extends AbstractCondition {
 
-	private final By locater;
+	private final Identification identification;
 
 	/**
-	 * @param locater
-	 *            the locator.
+	 * @param identification
+	 *            the identification.
 	 */
-	public VisibleCondition(By locater) {
-		this.locater = locater;
+	public VisibleCondition(Identification identification) {
+		this.identification = identification;
 	}
 
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
-		return browser.isVisible(locater);
+		return browser.isVisible(identification);
 	}
 
 }
