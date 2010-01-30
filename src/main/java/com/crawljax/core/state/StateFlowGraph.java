@@ -34,13 +34,20 @@ public class StateFlowGraph {
 	private final AtomicInteger stateCounter = new AtomicInteger(1);
 
 	/**
+	 * Empty constructor.
+	 */
+	public StateFlowGraph() {
+		sfg = new DirectedMultigraph<StateVertix, Eventable>(Eventable.class);
+	}
+
+	/**
 	 * The constructor.
 	 * 
 	 * @param initialState
 	 *            the state to start from.
 	 */
 	public StateFlowGraph(StateVertix initialState) {
-		sfg = new DirectedMultigraph<StateVertix, Eventable>(Eventable.class);
+		this();
 		sfg.addVertex(initialState);
 	}
 
