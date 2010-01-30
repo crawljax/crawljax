@@ -1,11 +1,10 @@
 package com.crawljax.browser;
 
-import java.io.File;
-
 import org.openqa.selenium.By;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 
 /**
@@ -17,11 +16,6 @@ import com.crawljax.forms.FormInput;
  * @version $Id$
  */
 public class DummyBrowser implements EmbeddedBrowser {
-
-	@Override
-	public boolean canGoBack() {
-		return false;
-	}
 
 	@Override
 	public void close() {
@@ -75,10 +69,6 @@ public class DummyBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
-	public void saveScreenShot(File pngFile) {
-	}
-
-	@Override
 	public EmbeddedBrowser clone() {
 		return new DummyBrowser();
 	}
@@ -86,5 +76,15 @@ public class DummyBrowser implements EmbeddedBrowser {
 	@Override
 	public FormInput getInputWithRandomValue(FormInput inputForm) {
 		return null;
+	}
+
+	@Override
+	public String getFrameDom(String iframeIdentification) {
+		return null;
+	}
+
+	@Override
+	public boolean elementExists(Identification identification) {
+		return false;
 	}
 }
