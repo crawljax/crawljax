@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -247,16 +246,20 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	}
 
 	/**
-	 * Determines whether locater is visible.
+	 * Determines whether the corresponding element is visible.
 	 * 
-	 * @param locater
+	 * @param identification
 	 *            The element to search for.
-	 * @return Whether it is visible.
+	 * @return true if the element is visible
 	 */
-	public boolean isVisible(By locater) {
+	public boolean isVisible(Identification identification) {
 		try {
-			WebElement el = browser.findElement(locater);
-			return ((RenderedWebElement) el).isDisplayed();
+			WebElement el = browser.findElement(identification.getWebDriverBy());
+			if (el != null) {
+				return ((RenderedWebElement) el).isDisplayed();
+			}
+
+			return false;
 		} catch (Exception e) {
 			return false;
 		}

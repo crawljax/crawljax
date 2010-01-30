@@ -1,8 +1,7 @@
 package com.crawljax.condition;
 
-import org.openqa.selenium.By;
-
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.state.Identification;
 
 /**
  * Conditions that returns true iff element found with By is visible.
@@ -15,11 +14,11 @@ public class NotVisibleCondition extends AbstractCondition {
 	private final VisibleCondition visibleCondition;
 
 	/**
-	 * @param locater
-	 *            the locator.
+	 * @param identification
+	 *            the identification.
 	 */
-	public NotVisibleCondition(By locater) {
-		this.visibleCondition = new VisibleCondition(locater);
+	public NotVisibleCondition(Identification identification) {
+		this.visibleCondition = new VisibleCondition(identification);
 	}
 
 	@Override
