@@ -47,7 +47,7 @@ public class PopUpTest {
 		crawler.setWaitTimeAfterEvent(100);
 		crawler.setWaitTimeAfterReloadUrl(100);
 		crawler.setDepth(3);
-		crawler.click("a");
+		crawler.lookFor("a");
 
 		return crawler;
 	}

@@ -34,7 +34,7 @@ public class CrawlerTest {
 		CrawlSpecification spec =
 		        new CrawlSpecification("file://"
 		                + new File("src/test/site/crawler/index.html").getAbsolutePath());
-		spec.click("a");
+		spec.lookFor("a");
 		config.setCrawlSpecification(spec);
 		return config;
 	}
