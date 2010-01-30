@@ -3,6 +3,8 @@
  */
 package com.crawljax.browser;
 
+import org.openqa.selenium.WebElement;
+
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
@@ -127,4 +129,11 @@ public interface EmbeddedBrowser extends Cloneable {
 	 * @return true if the element can be found in the browser's DOM tree.
 	 */
 	boolean elementExists(Identification identification);
+
+	/**
+	 * @param identification
+	 *            the identification of the element to be found.
+	 * @return the corresponding WebElement from the browser.
+	 */
+	WebElement getWebElement(Identification identification);
 }

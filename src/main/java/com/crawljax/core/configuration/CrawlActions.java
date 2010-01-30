@@ -29,13 +29,14 @@ public class CrawlActions {
 
 	/**
 	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
-	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}.
+	 * click("a") will only include 1 if clickOnce is true (default). This set can be restricted by
+	 * {@link #dontClick(String)}.
 	 * 
 	 * @param tagName
 	 *            the tag name of the elements to be included
 	 * @return this CrawlElement
 	 */
-	public CrawlElement click(String tagName) {
+	public CrawlElement lookFor(String tagName) {
 		CrawlElement crawlTag = new CrawlElement();
 		crawlTag.setTagName(tagName);
 		setTempConditions(crawlTag);

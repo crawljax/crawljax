@@ -15,6 +15,7 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
@@ -191,7 +192,7 @@ public class Crawler implements Runnable {
 				 * The type of event to execute on the 'clickable' like onClick, mouseOver, hover,
 				 * etc
 				 */
-				String eventType = eventable.getEventType();
+				EventType eventType = eventable.getEventType();
 
 				/**
 				 * Try to find a 'better' / 'quicker' xpath
@@ -257,10 +258,10 @@ public class Crawler implements Runnable {
 	/**
 	 * Reload the browser following the {@link #exactEventPath} to the given currentEvent.
 	 * 
-	 * @throws Exception
-	 *             an exception when a Browser encounters an error
+	 * @throws CrawljaxException
+	 *             if the crawler encounters an error.
 	 */
-	private void goBackExact() {
+	private void goBackExact() throws CrawljaxException {
 
 		/**
 		 * Thread safe
@@ -417,7 +418,7 @@ public class Crawler implements Runnable {
 
 		for (CandidateCrawlAction action : orrigionalState) {
 			CandidateElement candidateElement = action.getCandidateElement();
-			String eventType = action.getEventType();
+			EventType eventType = action.getEventType();
 
 			if (candidateElement.allConditionsSatisfied(browser)) {
 				ClickResult clickResult =
@@ -450,9 +451,9 @@ public class Crawler implements Runnable {
 						break;
 				}
 			} else {
-				Eventable eventable = new Eventable(candidateElement, "");
-				LOGGER.info("Conditions not satisfied for element: " + eventable + "; State: "
-				        + stateMachine.getCurrentState().getName());
+
+				LOGGER.info("Conditions not satisfied for element: " + candidateElement
+				        + "; State: " + stateMachine.getCurrentState().getName());
 			}
 		}
 		return true;

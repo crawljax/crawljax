@@ -15,6 +15,7 @@ import com.crawljax.core.CandidateCrawlAction;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.Helper;
 import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.database.HibernateUtil;
@@ -246,14 +247,26 @@ public class StateVertix implements Iterable<CandidateCrawlAction> {
 				                PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
 				                        .getClickOnceValue(), this);
 				List<String> eventTypes = PropertyHelper.getRobotEventsValues();
+
 				for (CandidateElement candidateElement : candidateList) {
 					for (String eventType : eventTypes) {
-						candidateActions
-						        .add(new CandidateCrawlAction(candidateElement, eventType));
+						if (eventType.equals(EventType.click.toString())) {
+							candidateActions.add(new CandidateCrawlAction(candidateElement,
+							        EventType.click));
+						} else {
+							if (eventType.equals(EventType.hover.toString())) {
+								candidateActions.add(new CandidateCrawlAction(candidateElement,
+								        EventType.hover));
+							} else {
+								LOGGER
+								        .warn("The Event Type: " + eventType
+								                + " is not supported.");
+							}
+						}
 					}
 				}
 			} catch (CrawljaxException e) {
-				LOGGER.error("Catched excption while searching for candidates in state "
+				LOGGER.error("Catched exception while searching for candidates in state "
 				        + getName(), e);
 			}
 		}
