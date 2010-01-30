@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.By;
 
 import com.crawljax.browser.WebDriverFirefox;
 import com.crawljax.condition.NotRegexCondition;
@@ -26,8 +25,10 @@ import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.Identification.How;
 import com.crawljax.oraclecomparator.comparators.DateComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
 
@@ -320,8 +321,8 @@ public class LargeCrawljaxTest {
 	}
 
 	private static void addWaitConditions(CrawlSpecification crawler) {
-		crawler.waitFor("testWaitCondition.html", 2000, new ExpectedVisibleCondition(By
-		        .id("SLOW_WIDGET")));
+		crawler.waitFor("testWaitCondition.html", 2000, new ExpectedVisibleCondition(
+		        new Identification(How.id, "SLOW_WIDGET")));
 	}
 
 	private static void addInvariants(CrawlSpecification crawler) {
