@@ -37,8 +37,8 @@ import com.crawljax.util.PropertyHelper;
  * @version $Id$
  */
 public abstract class AbstractWebDriver implements EmbeddedBrowser {
-	private static Logger logger = Logger.getLogger(WebDriver.class.getName());
-	private WebDriver browser;
+	private final Logger logger;
+	private final WebDriver browser;
 
 	/**
 	 * Constructor.
@@ -50,7 +50,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public AbstractWebDriver(WebDriver driver, Logger logger) {
 		this.browser = driver;
-		AbstractWebDriver.logger = logger;
+		this.logger = logger;
 	}
 
 	/**
