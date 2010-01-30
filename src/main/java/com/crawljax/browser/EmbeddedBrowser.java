@@ -3,12 +3,11 @@
  */
 package com.crawljax.browser;
 
-import java.io.File;
-
 import org.openqa.selenium.By;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 
 /**
@@ -63,11 +62,6 @@ public interface EmbeddedBrowser extends Cloneable {
 	void closeOtherWindows();
 
 	/**
-	 * @return true if browser can go back to the previous state.
-	 */
-	boolean canGoBack();
-
-	/**
 	 * Go back to the previous state.
 	 */
 	void goBack();
@@ -93,14 +87,6 @@ public interface EmbeddedBrowser extends Cloneable {
 	 *             On error.
 	 */
 	Object executeJavaScript(String script) throws CrawljaxException;
-
-	/**
-	 * Creates a PNG screenshot of the browser in full screen mode.
-	 * 
-	 * @param pngFile
-	 *            The filename to save the screenshot on.
-	 */
-	void saveScreenShot(File pngFile);
 
 	/**
 	 * Checks if an element is visible. TODO: replace By by Identification
@@ -129,4 +115,18 @@ public interface EmbeddedBrowser extends Cloneable {
 	 * @return a FormInput filled with random data.
 	 */
 	FormInput getInputWithRandomValue(FormInput inputForm);
+
+	/**
+	 * @param iframeIdentification
+	 *            the iframe's name or id.
+	 * @return the DOM string of the corresponding iframe.
+	 */
+	String getFrameDom(String iframeIdentification);
+
+	/**
+	 * @param identification
+	 *            the identification of the element to be checked.
+	 * @return true if the element can be found in the browser's DOM tree.
+	 */
+	boolean elementExists(Identification identification);
 }

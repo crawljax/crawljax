@@ -1,6 +1,5 @@
 package com.crawljax.browser;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,6 +25,7 @@ import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 import com.crawljax.forms.FormInputValueHelper;
 import com.crawljax.forms.InputValue;
@@ -42,31 +42,16 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	private WebDriver browser;
 
 	/**
-	 * @param browser
-	 *            the browser to set
-	 */
-	protected void setBrowser(WebDriver browser) {
-		this.browser = browser;
-	}
-
-	/**
-	 * Public constructor.
-	 * 
-	 * @param logger
-	 *            the log4j logger.
-	 */
-	public AbstractWebDriver(Logger logger) {
-		AbstractWebDriver.logger = logger;
-	}
-
-	/**
 	 * Constructor.
 	 * 
 	 * @param driver
 	 *            The WebDriver to use.
+	 * @param logger
+	 *            the logger instance.
 	 */
-	public AbstractWebDriver(WebDriver driver) {
+	public AbstractWebDriver(WebDriver driver, Logger logger) {
 		this.browser = driver;
+		AbstractWebDriver.logger = logger;
 	}
 
 	/**
@@ -190,15 +175,6 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	}
 
 	/**
-	 * @return true if succeeds.
-	 * @see com.crawljax.browser.EmbeddedBrowser#canGoBack()
-	 */
-	public boolean canGoBack() {
-		// NOT IMPLEMENTED
-		return false;
-	}
-
-	/**
 	 * @param clickable
 	 *            The clickable object.
 	 * @param text
@@ -249,20 +225,13 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			return result;
 
 		} catch (NoSuchElementException e) {
-			logger.info("Could not fire eventable: " + eventable.toString());
+			logger.warn("Could not fire eventable: " + eventable.toString());
 			return false;
 		} catch (RuntimeException e) {
 			logger.error("Caught Exception: " + e.getMessage(), e);
 
 			return false;
 		}
-	}
-
-	/**
-	 * @return the browser instance.
-	 */
-	public WebDriver getBrowser() {
-		return browser;
 	}
 
 	/**
@@ -300,13 +269,6 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		return browser.getCurrentUrl();
 	}
 
-	/**
-	 * @return the webdriver instance.
-	 */
-	public WebDriver getDriver() {
-		return this.browser;
-	}
-
 	@Override
 	public void closeOtherWindows() {
 		if (browser instanceof FirefoxDriver) {
@@ -321,32 +283,6 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			}
 		}
 
-	}
-
-	/**
-	 * @param file
-	 *            the file to write to the filename to save the screenshot in.
-	 */
-	public void saveScreenShot(File file) {
-		if (browser instanceof FirefoxDriver) {
-			((FirefoxDriver) browser).saveScreenshot(file);
-			removeCanvasGeneratedByFirefoxDriverForScreenshots();
-		} else {
-			logger.warn("Screenshot not supported.");
-		}
-	}
-
-	private void removeCanvasGeneratedByFirefoxDriverForScreenshots() {
-		String js = "";
-		js += "var canvas = document.getElementById('fxdriver-screenshot-canvas');";
-		js += "if(canvas != null){";
-		js += "canvas.parentNode.removeChild(canvas);";
-		js += "}";
-		try {
-			executeJavaScript(js);
-		} catch (Exception e) {
-			logger.info("Could not remove the screenshot canvas from the DOM.");
-		}
 	}
 
 	@Override
@@ -486,6 +422,30 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		input.setInputValues(values);
 		return input;
 
+	}
+
+	@Override
+	public String getFrameDom(String iframeIdentification) {
+		String handle = browser.getWindowHandle();
+
+		browser.switchTo().frame(iframeIdentification);
+
+		// make a copy of the dom before changing into the top page
+		String frameDom = new String(browser.getPageSource());
+
+		browser.switchTo().window(handle);
+
+		return frameDom;
+	}
+
+	/**
+	 * @param identification
+	 *            the identification of the element.
+	 * @return true if the element can be found in the DOM tree.
+	 */
+	public boolean elementExists(Identification identification) {
+		WebElement el = browser.findElement(identification.getWebDriverBy());
+		return el != null;
 	}
 
 }
