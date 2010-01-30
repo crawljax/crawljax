@@ -19,7 +19,6 @@ import org.xml.sax.SAXException;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertix;
 import com.crawljax.forms.FormInputValueHelper;
@@ -348,14 +347,12 @@ public class CandidateElementExtractor {
 				}
 
 				if (matchesXPath) {
-					LOGGER.info("Excluded element because of xpath: "
-					        + new Eventable(element, "").toString());
+					LOGGER.info("Excluded element because of xpath: " + element);
 					return true;
 				}
 				if (!filterElement(tag.getAttributes(), element)
 				        && tag.getAttributes().size() > 0) {
-					LOGGER.info("Excluded element because of attributes: "
-					        + new Eventable(element, "").toString());
+					LOGGER.info("Excluded element because of attributes: " + element);
 					return true;
 				}
 			}

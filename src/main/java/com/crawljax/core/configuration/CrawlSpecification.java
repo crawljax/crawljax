@@ -8,6 +8,7 @@ import com.crawljax.condition.browserwaiter.ExpectedCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.Comparator;
 import com.crawljax.oraclecomparator.OracleComparator;
 
@@ -30,13 +31,13 @@ import com.crawljax.oraclecomparator.OracleComparator;
  * EXAMPLE:<br />
  * CrawlSpecification crawler = new CrawlSpecification("http://www.google.com");<br />
  * //click these elements<br />
- * crawler.click("a");<br />
- * crawler.click("input").withAttribute("type", "submit");<br />
+ * crawler.lookFor("a");<br />
+ * crawler.lookFor("input").withAttribute("type", "submit");<br />
  * onLoginPageCondition = new UrlCondition("#login");<br />
  * crawler.when(onLoginPageCondition).click("a").withText("Login");<br />
  * //but don't click these<br />
- * crawler.dontClick("a").underXpath("//DIV[@id='guser']");
- * crawler.dontClick("a").withText("Language Tools"); <br />
+ * crawler.ignore("a").underXpath("//DIV[@id='guser']");
+ * crawler.ignore("a").withText("Language Tools"); <br />
  * //restrict the scope of the crawling<br />
  * crawler.setCrawlMaximumStates(15);<br />
  * crawler.setCrawlDepth(2);
@@ -52,7 +53,8 @@ public class CrawlSpecification {
 
 	private final String url;
 
-	private final List<String> crawlEvents = new ArrayList<String>();
+	private List<EventType> crawlEvents = new ArrayList<EventType>();
+
 	private int depth = 0;
 	private int maximumStates = 0;
 	private int maximumRuntime = DEFAULT_MAXIMUMRUNTIME; // in seconds
@@ -77,7 +79,7 @@ public class CrawlSpecification {
 	 *            the site to crawl
 	 */
 	public CrawlSpecification(String url) {
-		this.crawlEvents.add("onclick");
+		this.crawlEvents.add(EventType.click);
 		this.url = url;
 	}
 
@@ -86,26 +88,26 @@ public class CrawlSpecification {
 	 * anchor tags All buttons
 	 */
 	public void clickDefaultElements() {
-		crawlActions.click("a");
-		crawlActions.click("button");
-		crawlActions.click("input").withAttribute("type", "submit");
-		crawlActions.click("input").withAttribute("type", "button");
+		crawlActions.lookFor("a");
+		crawlActions.lookFor("button");
+		crawlActions.lookFor("input").withAttribute("type", "submit");
+		crawlActions.lookFor("input").withAttribute("type", "button");
 	}
 
 	/**
 	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
-	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}.
+	 * click("a") will only include 1 This set can be restricted by {@link #ignore(String)}.
 	 * 
 	 * @param tagName
 	 *            the tag name of the elements to be included
 	 * @return this CrawlElement
 	 */
-	public CrawlElement click(String tagName) {
-		return crawlActions.click(tagName);
+	public CrawlElement lookFor(String tagName) {
+		return crawlActions.lookFor(tagName);
 	}
 
 	/**
-	 * Set of HTML elements Crawljax will NOT click during crawling When an HTML is present in the
+	 * Set of HTML elements Crawljax will NOT examine during crawling When an HTML is present in the
 	 * click and dontClick sets, then the element will not be clicked. For example: 1) <a
 	 * href="#">Some text</a> 2) <a class="foo" .../> 3) <div class="foo" .../> click("a")
 	 * dontClick("a").withAttribute("class", "foo"); Will include only include HTML element 2
@@ -114,7 +116,7 @@ public class CrawlSpecification {
 	 *            the tag name of the elements to be excluded
 	 * @return this CrawlElement
 	 */
-	public CrawlElement dontClick(String tagName) {
+	public CrawlElement ignore(String tagName) {
 		return crawlActions.dontClick(tagName);
 	}
 
@@ -239,7 +241,7 @@ public class CrawlSpecification {
 	/**
 	 * @return the events that should be fired (e.g. onclick)
 	 */
-	protected List<String> getCrawlEvents() {
+	protected List<EventType> getCrawlEvents() {
 		return crawlEvents;
 	}
 
@@ -432,6 +434,14 @@ public class CrawlSpecification {
 	 */
 	public void setClickOnce(boolean clickOnce) {
 		this.clicklOnce = clickOnce;
+	}
+
+	/**
+	 * @param crawlEvents
+	 *            the crawlEvents to set
+	 */
+	public void setCrawlEvents(List<EventType> crawlEvents) {
+		this.crawlEvents = crawlEvents;
 	}
 
 }

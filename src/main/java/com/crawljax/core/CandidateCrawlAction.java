@@ -1,5 +1,7 @@
 package com.crawljax.core;
 
+import com.crawljax.core.state.Eventable.EventType;
+
 /**
  * This class corresponds the combination of a CandidateElement and a single eventType.
  * 
@@ -8,7 +10,7 @@ package com.crawljax.core;
  */
 public class CandidateCrawlAction {
 	private final CandidateElement candidateElement;
-	private final String eventType;
+	private final EventType eventType;
 
 	/**
 	 * The Constructor for the CandidateCrawlAction, build a new instance with the CandidateElement
@@ -19,7 +21,7 @@ public class CandidateCrawlAction {
 	 * @param eventType
 	 *            the eventType to execute on the Candidate Element.
 	 */
-	public CandidateCrawlAction(CandidateElement candidateElement, String eventType) {
+	public CandidateCrawlAction(CandidateElement candidateElement, EventType eventType) {
 		this.candidateElement = candidateElement;
 		this.eventType = eventType;
 	}
@@ -34,7 +36,7 @@ public class CandidateCrawlAction {
 	/**
 	 * @return the eventType
 	 */
-	public final String getEventType() {
+	public final EventType getEventType() {
 		return eventType;
 	}
 }

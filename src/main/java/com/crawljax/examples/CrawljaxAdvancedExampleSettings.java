@@ -37,11 +37,11 @@ public final class CrawljaxAdvancedExampleSettings {
 
 		// click these elements
 		crawler.clickDefaultElements();
-		crawler.click("div").withAttribute("class", "clickable");
+		crawler.lookFor("div").withAttribute("class", "clickable");
 
 		// but don't click these
-		crawler.dontClick("a").withAttribute("class", "ignore");
-		crawler.dontClick("a").underXPath("//DIV[@id='footer']");
+		crawler.ignore("a").withAttribute("class", "ignore");
+		crawler.ignore("a").underXPath("//DIV[@id='footer']");
 
 		crawler.setWaitTimeAfterReloadUrl(WAIT_TIME_AFTER_RELOAD);
 		crawler.setWaitTimeAfterEvent(WAIT_TIME_AFTER_EVENT);

@@ -32,11 +32,18 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	private static final long serialVersionUID = 3229708706467350994L;
 	private static final Logger LOGGER = Logger.getLogger(Eventable.class.getName());
 	private long id;
-	private String eventType;
+	private EventType eventType;
 	private Identification identification;
 	private Element element;
 	private List<FormInput> relatedFormInputs = new ArrayList<FormInput>();
 	private String relatedFrame = "";
+
+	/**
+	 * The event type.
+	 */
+	public enum EventType {
+		click, hover
+	}
 
 	/**
 	 * Default constructor to support saving instances of this class as an XML.
@@ -51,9 +58,9 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	 * @param identification
 	 *            the identification object.
 	 * @param eventType
-	 *            the event.
+	 *            the event type.
 	 */
-	public Eventable(Identification identification, String eventType) {
+	public Eventable(Identification identification, EventType eventType) {
 		this.identification = identification;
 		this.eventType = eventType;
 	}
@@ -68,7 +75,7 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	 * @param relatedFrame
 	 *            the frame containing this element.
 	 */
-	public Eventable(Identification identification, String eventType, String relatedFrame) {
+	public Eventable(Identification identification, EventType eventType, String relatedFrame) {
 		this(identification, eventType);
 		this.relatedFrame = relatedFrame;
 	}
@@ -81,7 +88,7 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	 * @param eventType
 	 *            the event type.
 	 */
-	public Eventable(Node node, String eventType) {
+	public Eventable(Node node, EventType eventType) {
 		this(new Identification(Identification.How.xpath, XPathHelper.getXpathExpression(node)),
 		        eventType);
 		this.element = new Element(node);
@@ -95,7 +102,7 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	 * @param eventType
 	 *            the event type. TODO ali remove
 	 */
-	public Eventable(CandidateElement candidateElement, String eventType) {
+	public Eventable(CandidateElement candidateElement, EventType eventType) {
 		this(candidateElement.getIdentification(), eventType);
 		if (candidateElement.getElement() != null) {
 			this.element = new Element(candidateElement.getElement());
@@ -155,7 +162,7 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	/**
 	 * @return the eventType.
 	 */
-	public String getEventType() {
+	public EventType getEventType() {
 		return eventType;
 	}
 
@@ -193,7 +200,7 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	 * @param eventType
 	 *            the eventType to set
 	 */
-	public void setEventType(String eventType) {
+	public void setEventType(EventType eventType) {
 		this.eventType = eventType;
 	}
 
@@ -269,15 +276,19 @@ public class Eventable extends DefaultEdge implements Cloneable {
 
 	/**
 	 * @return the source state.
+	 * @throws CrawljaxException
+	 *             if the source cannot be found.
 	 */
-	public StateVertix getSourceStateVertix() {
+	public StateVertix getSourceStateVertix() throws CrawljaxException {
 		return getSuperField("source");
 	}
 
 	/**
 	 * @return the target state.
+	 * @throws CrawljaxException
+	 *             if the target cannot be found.
 	 */
-	public StateVertix getTargetStateVertix() {
+	public StateVertix getTargetStateVertix() throws CrawljaxException {
 		return getSuperField("target");
 	}
 
@@ -299,17 +310,15 @@ public class Eventable extends DefaultEdge implements Cloneable {
 		setSuperField("target", vertix);
 	}
 
-	private StateVertix getSuperField(String name) {
+	private StateVertix getSuperField(String name) throws CrawljaxException {
 		try {
 			return (StateVertix) searchSuperField(name).get(this);
 		} catch (IllegalArgumentException e) {
-			// TODO Log
-			e.printStackTrace();
+			throw new CrawljaxException(e.getMessage(), e);
 		} catch (IllegalAccessException e) {
-			// TODO Log
-			e.printStackTrace();
+			throw new CrawljaxException(e.getMessage(), e);
 		}
-		return null;
+
 	}
 
 	private Field searchSuperField(String name) {

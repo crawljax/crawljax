@@ -190,7 +190,7 @@ public class PropertiesFile {
 
 		}
 
-		CrawlElement element = crawlSpec.click(tagElement.getName());
+		CrawlElement element = crawlSpec.lookFor(tagElement.getName());
 		for (TagAttribute attrib : tagElement.getAttributes()) {
 			element.withAttribute(attrib.getName(), attrib.getValue());
 		}

@@ -56,7 +56,6 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	/**
 	 * @param url
 	 *            The URL.
-	 * @throws InterruptedException
 	 * @throws CrawljaxException
 	 *             if fails.
 	 */
@@ -91,21 +90,28 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	private boolean fireEventWait(WebElement webElement, Eventable eventable)
 	        throws CrawljaxException {
-		String eventType = eventable.getEventType();
 
-		if ("onclick".equals(eventType)) {
-			try {
-				webElement.click();
-			} catch (ElementNotVisibleException e1) {
-				logger.info("Element not visible, so cannot be clicked: "
-				        + webElement.getTagName().toUpperCase() + " " + webElement.getText());
+		switch (eventable.getEventType()) {
+			case click:
+				try {
+					webElement.click();
+				} catch (ElementNotVisibleException e1) {
+					logger.info("Element not visible, so cannot be clicked: "
+					        + webElement.getTagName().toUpperCase() + " " + webElement.getText());
+					return false;
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+					return false;
+				}
+				break;
+			case hover:
+				// todo
+				break;
+
+			default:
+				logger.info("EventType " + eventable.getEventType()
+				        + " not supported in WebDriver.");
 				return false;
-			} catch (Exception e) {
-				logger.error(e.getMessage());
-				return false;
-			}
-		} else {
-			logger.info("EventType " + eventType + " not supported in WebDriver.");
 		}
 
 		try {
@@ -113,6 +119,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		} catch (InterruptedException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
+
 		return true;
 	}
 
@@ -449,6 +456,15 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	public boolean elementExists(Identification identification) {
 		WebElement el = browser.findElement(identification.getWebDriverBy());
 		return el != null;
+	}
+
+	/**
+	 * @param identification
+	 *            the identification of the element.
+	 * @return the found element.
+	 */
+	public WebElement getWebElement(Identification identification) {
+		return browser.findElement(identification.getWebDriverBy());
 	}
 
 }
