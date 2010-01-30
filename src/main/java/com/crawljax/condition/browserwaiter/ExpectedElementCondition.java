@@ -3,12 +3,8 @@ package com.crawljax.condition.browserwaiter;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import com.crawljax.browser.AbstractWebDriver;
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.state.Identification;
 
 /**
  * Checks whether an elements exists.
@@ -19,40 +15,33 @@ import com.crawljax.browser.EmbeddedBrowser;
 @ThreadSafe
 public class ExpectedElementCondition implements ExpectedCondition {
 
-	private final By locater;
+	private final Identification identification;
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param locater
-	 *            Locater to use.
+	 * @param identification
+	 *            the identification to use.
 	 */
-	public ExpectedElementCondition(By locater) {
-		this.locater = locater;
+	public ExpectedElementCondition(Identification identification) {
+		this.identification = identification;
 	}
 
 	@Override
-	@GuardedBy("browser, driver")
+	@GuardedBy("browser")
 	public boolean isSatisfied(EmbeddedBrowser browser) {
-		if (browser instanceof AbstractWebDriver) {
-			WebDriver driver = ((AbstractWebDriver) browser).getDriver();
-			synchronized (browser) {
-				synchronized (driver) {
-					try {
-						WebElement el = driver.findElement(locater);
-						return el != null;
-					} catch (Exception e) {
-						return false;
-					}
-				}
+		synchronized (browser) {
+			try {
+				return browser.elementExists(identification);
+			} catch (Exception e) {
+				return false;
 			}
 		}
-		return false;
 	}
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + ": " + this.locater;
+		return this.getClass().getSimpleName() + ": " + this.identification;
 	}
 
 }
