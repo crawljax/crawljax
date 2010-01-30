@@ -25,8 +25,7 @@ public class WebDriverOther extends AbstractWebDriver {
 	 */
 	@Deprecated
 	public WebDriverOther(WebDriver driver) {
-		super(Logger.getLogger(WebDriverOther.class.getName()));
-		setBrowser(driver);
+		super(driver, Logger.getLogger(WebDriverOther.class.getName()));
 		webDriver = driver;
 	}
 
@@ -49,4 +48,5 @@ public class WebDriverOther extends AbstractWebDriver {
 		        "Now returning a new Firefox Driver!");
 		return new WebDriverOther(new FirefoxDriver());
 	}
+
 }

@@ -9,16 +9,28 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
  */
 public class WebDriverIE extends AbstractWebDriver {
 
+	private static final Logger LOGGER = Logger.getLogger(WebDriverIE.class.getName());
+
 	/**
-	 * Creates a new IEBrowser object.
+	 * Creates a new WebDriverIE object.
+	 * 
+	 * @param driver
+	 *            the WebDriver InternetExplorerDriver.
+	 */
+	public WebDriverIE(InternetExplorerDriver driver) {
+		super(driver, LOGGER);
+	}
+
+	/**
+	 * the empty constructor.
 	 */
 	public WebDriverIE() {
-		super(Logger.getLogger(WebDriverIE.class.getName()));
-		setBrowser(new InternetExplorerDriver());
+		this(new InternetExplorerDriver());
 	}
 
 	@Override
 	public EmbeddedBrowser clone() {
 		return new WebDriverIE();
 	}
+
 }

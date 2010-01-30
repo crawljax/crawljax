@@ -20,13 +20,15 @@ public class WebDriverFirefox extends AbstractWebDriver {
 
 	private ProxyConfiguration proxyConfiguration = null;
 	private String firefoxLocation = null;
+	private static final Logger LOGGER = Logger.getLogger(WebDriverFirefox.class.getName());
+	private FirefoxDriver driver;
 
 	/**
 	 * Creates a new FirefoxDriver object based on a given driver as WebDriver.
 	 */
 	private WebDriverFirefox(FirefoxDriver driver) {
-		super(Logger.getLogger(WebDriverFirefox.class.getName()));
-		setBrowser(driver);
+		super(driver, LOGGER);
+		this.driver = driver;
 	}
 
 	/**
@@ -85,5 +87,29 @@ public class WebDriverFirefox extends AbstractWebDriver {
 		}
 
 		return new WebDriverFirefox(new FirefoxDriver(binary, profile));
+	}
+
+	/**
+	 * @param file
+	 *            the file to write to the filename to save the screenshot in.
+	 */
+	public void saveScreenShot(File file) {
+
+		driver.saveScreenshot(file);
+		removeCanvasGeneratedByFirefoxDriverForScreenshots();
+
+	}
+
+	private void removeCanvasGeneratedByFirefoxDriverForScreenshots() {
+		String js = "";
+		js += "var canvas = document.getElementById('fxdriver-screenshot-canvas');";
+		js += "if(canvas != null){";
+		js += "canvas.parentNode.removeChild(canvas);";
+		js += "}";
+		try {
+			executeJavaScript(js);
+		} catch (Exception e) {
+			LOGGER.warn("Could not remove the screenshot canvas from the DOM.");
+		}
 	}
 }
