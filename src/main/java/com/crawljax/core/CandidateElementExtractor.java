@@ -10,14 +10,12 @@ import java.util.regex.Pattern;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.WebDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.crawljax.browser.AbstractWebDriver;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
@@ -171,46 +169,37 @@ public class CandidateElementExtractor {
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
 	        List<CandidateElement> results, String relatedFrame) throws CrawljaxException {
 
-		if (browser instanceof AbstractWebDriver) {
-			WebDriver driver = ((AbstractWebDriver) browser).getDriver();
+		try {
 
-			String handle = driver.getWindowHandle();
+			NodeList frameNodes = dom.getElementsByTagName("IFRAME");
 
-			try {
+			for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
 
-				NodeList frameNodes = dom.getElementsByTagName("IFRAME");
+				String frameIdentification = "";
 
-				for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
-
-					String frameIdentification = "";
-
-					if (relatedFrame != null && !relatedFrame.equals("")) {
-						frameIdentification += relatedFrame + ".";
-					}
-
-					Element frameElement = (Element) frameNodes.item(i);
-
-					String nameId = Helper.getFrameIdentification(frameElement);
-
-					if (nameId != null) {
-						frameIdentification += nameId;
-
-						LOGGER.debug("frame Identification: " + frameIdentification);
-
-						driver.switchTo().frame(frameIdentification);
-
-						Document frameDom = Helper.getDocument(driver.getPageSource());
-
-						extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
-						        clickOnce, results, frameIdentification);
-					}
+				if (relatedFrame != null && !relatedFrame.equals("")) {
+					frameIdentification += relatedFrame + ".";
 				}
 
-				driver.switchTo().window(handle);
+				Element frameElement = (Element) frameNodes.item(i);
 
-			} catch (Exception e) {
-				throw new CrawljaxException(e.getMessage(), e);
+				String nameId = Helper.getFrameIdentification(frameElement);
+
+				if (nameId != null) {
+					frameIdentification += nameId;
+
+					LOGGER.debug("frame Identification: " + frameIdentification);
+
+					Document frameDom =
+					        Helper.getDocument(browser.getFrameDom(frameIdentification));
+
+					extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
+					        clickOnce, results, frameIdentification);
+				}
 			}
+
+		} catch (Exception e) {
+			throw new CrawljaxException(e.getMessage(), e);
 		}
 
 	}
