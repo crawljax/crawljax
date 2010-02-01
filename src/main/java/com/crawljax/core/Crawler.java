@@ -33,6 +33,8 @@ public class Crawler implements Runnable {
 
 	private static final Logger LOGGER = Logger.getLogger(Crawler.class.getName());
 
+	private static final int ONE_SECOND = 1000;
+
 	/**
 	 * The main browser window 1 to 1 relation; Every Thread will get on browser assigned in the run
 	 * function.
@@ -654,11 +656,11 @@ public class Crawler implements Runnable {
 		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
 
 		if ((PropertyHelper.getCrawlMaxTimeValue() != 0)
-		        && (timePassed > PropertyHelper.getCrawlMaxTimeValue())) {
+		        && (timePassed > PropertyHelper.getCrawlMaxTimeValue() * ONE_SECOND)) {
 
 			/* remove all possible candidates left */
 			// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
-			LOGGER.info("Max time " + PropertyHelper.getCrawlMaxTimeValue() + "passed!");
+			LOGGER.info("Max time " + PropertyHelper.getCrawlMaxTimeValue() + " seconds passed!");
 			/* stop crawling */
 			return false;
 		}

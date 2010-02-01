@@ -38,8 +38,6 @@ import com.crawljax.util.PropertyHelper;
  */
 public final class CrawljaxConfiguration {
 
-	private static final int ONE_SECOND = 1000;
-
 	private EmbeddedBrowser browser;
 
 	private String outputFolder = "";
@@ -125,8 +123,7 @@ public final class CrawljaxConfiguration {
 		        .getWaitTimeAfterReloadUrl());
 		config.addProperty("crawl.wait.event", getCrawlSpecification().getWaitTimeAfterEvent());
 		config.addProperty("crawl.max.states", getCrawlSpecification().getMaximumStates());
-		config.addProperty("crawl.max.runtime", getCrawlSpecification().getMaximumRuntime()
-		        * ONE_SECOND);
+		config.addProperty("crawl.max.runtime", getCrawlSpecification().getMaximumRuntime());
 		config.addProperty("crawl.forms.randominput", ConfigurationHelper
 		        .booleanToInt(getCrawlSpecification().getRandomInputInForms()));
 		config.addProperty("crawl.numberOfThreads", getCrawlSpecification().getNumberOfThreads());
@@ -198,6 +195,7 @@ public final class CrawljaxConfiguration {
 				eventableConditions.add(eventableCondition);
 			}
 		}
+
 		return eventableConditions;
 	}
 

@@ -451,20 +451,6 @@ public final class PropertyHelper {
 	/**
 	 * @return TODO: DOCUMENT ME!
 	 */
-	public static String getCrawlMaxStates() {
-		return crawlMaxStates;
-	}
-
-	/**
-	 * @return TODO: DOCUMENT ME!
-	 */
-	public static String getCrawlMaxTime() {
-		return crawlMaxTime;
-	}
-
-	/**
-	 * @return TODO: DOCUMENT ME!
-	 */
 	public static int getCrawlMaxStatesValue() {
 		return crawlMaxStatesValue;
 	}
