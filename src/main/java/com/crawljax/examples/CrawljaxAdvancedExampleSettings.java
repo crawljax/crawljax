@@ -36,7 +36,7 @@ public final class CrawljaxAdvancedExampleSettings {
 		CrawlSpecification crawler = new CrawlSpecification(URL);
 
 		// click these elements
-		crawler.clickDefaultElements();
+		crawler.lookForDefaultElements();
 		crawler.lookFor("div").withAttribute("class", "clickable");
 
 		// but don't click these

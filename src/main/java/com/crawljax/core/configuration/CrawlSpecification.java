@@ -87,7 +87,7 @@ public class CrawlSpecification {
 	 * Specifies that Crawljax should click all the default clickable elements. These include: All
 	 * anchor tags All buttons
 	 */
-	public void clickDefaultElements() {
+	public void lookForDefaultElements() {
 		crawlActions.lookFor("a");
 		crawlActions.lookFor("button");
 		crawlActions.lookFor("input").withAttribute("type", "submit");
