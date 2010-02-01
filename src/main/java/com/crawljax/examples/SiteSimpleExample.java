@@ -35,7 +35,7 @@ public final class SiteSimpleExample {
 	private static CrawlSpecification getCrawlSpecification() {
 		CrawlSpecification crawler = new CrawlSpecification(URL);
 
-		crawler.clickDefaultElements();
+		crawler.lookForDefaultElements();
 		crawler.ignore(ALL_ANCHORS).underXPath(HEADER_XPATH);
 		crawler.ignore(ALL_ANCHORS).withText(LANGUAGE_TOOLS);
 
