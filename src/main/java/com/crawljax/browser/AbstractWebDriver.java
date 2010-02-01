@@ -15,7 +15,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -281,18 +280,15 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 	@Override
 	public void closeOtherWindows() {
-		if (browser instanceof FirefoxDriver) {
-			for (String handle : browser.getWindowHandles()) {
-				if (!handle.equals(browser.getWindowHandle())) {
-					String current = browser.getWindowHandle();
-					browser.switchTo().window(handle);
-					logger.info("Closing other window with title \"" + browser.getTitle() + "\"");
-					browser.close();
-					browser.switchTo().window(current);
-				}
+		for (String handle : browser.getWindowHandles()) {
+			if (!handle.equals(browser.getWindowHandle())) {
+				String current = browser.getWindowHandle();
+				browser.switchTo().window(handle);
+				logger.info("Closing other window with title \"" + browser.getTitle() + "\"");
+				browser.close();
+				browser.switchTo().window(current);
 			}
 		}
-
 	}
 
 	@Override
