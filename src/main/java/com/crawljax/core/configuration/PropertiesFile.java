@@ -33,18 +33,18 @@ public class PropertiesFile {
 	private static final String CRAWLEXCLUDETAGS = "crawl.tags.exclude";
 	private static final String CRAWLFILTERATTRIBUTES = "crawl.filter.attributes";
 
-	private static final String HIBERNATEPROPERTIES = "hibernate.properties";
-
 	private static final String CRAWLFORMRANDOMINPUT = "crawl.forms.randominput";
 
-	private static final String FORMPROPERTIES = "forms.properties";
-
-	private static final String BROWSER = "BROWSER";
+	/*
+	 * TODO all, support this in the future? Or require to use API? private static final String
+	 * HIBERNATEPROPERTIES = "hibernate.properties"; private static final String FORMPROPERTIES =
+	 * "forms.properties"; private static final String HIBERNATESCHEMA = "hibernate.hbm2ddl.auto";
+	 * private static final String USEDATABASE = "database.use";
+	 */
 
 	private static final String CRAWLWAITRELOAD = "crawl.wait.reload";
 	private static final String CRAWLWAITEVENT = "crawl.wait.event";
-	private static final String HIBERNATESCHEMA = "hibernate.hbm2ddl.auto";
-	private static final String USEDATABASE = "database.use";
+
 	// if each candidate clickable should be clicked only once
 	private static String clickOnce = "click.once";
 
