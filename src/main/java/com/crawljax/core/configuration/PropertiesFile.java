@@ -75,6 +75,7 @@ public class PropertiesFile {
 	 * @param file
 	 *            The properties file.
 	 */
+	@SuppressWarnings("unchecked")
 	private void read(PropertiesConfiguration file) {
 		if (file.containsKey(OUTPUTFOLDERNAME)) {
 			config.setOutputFolder(file.getString(OUTPUTFOLDERNAME));
@@ -82,6 +83,8 @@ public class PropertiesFile {
 		config.setProjectRelativePath(file.getString(PROJECTRELATIVEPATH));
 
 		config.setCrawlSpecification(getCrawlSpecification(file));
+
+		config.setFilterAttributeNames((List<String>) file.getList(CRAWLFILTERATTRIBUTES));
 
 		if (file.containsKey(PROXYENABLED) && file.getBoolean(PROXYENABLED)) {
 			config.setProxyConfiguration(new ProxyConfiguration());
@@ -120,14 +123,43 @@ public class PropertiesFile {
 		return crawler;
 	}
 
+	/**
+	 * Sets the click and ignore tags using the API
+	 * 
+	 * @param file
+	 *            Configuration file.
+	 * @param crawler
+	 *            Crawlspecification to set them on.
+	 */
 	@SuppressWarnings("unchecked")
 	private void setClickTags(PropertiesConfiguration file, CrawlSpecification crawler) {
+		/* set click tags */
 		List<String> tags = file.getList(CRAWLTAGS);
+		TagElement tagElement;
 
 		/* walk through all elements */
 		for (String tag : tags) {
 			/* call the correct api stuff on the crawler for tag */
-			parseTagElement(tag, crawler);
+			tagElement = parseTagElement(tag, crawler);
+
+			CrawlElement element = crawler.lookFor(tagElement.getName());
+			for (TagAttribute attrib : tagElement.getAttributes()) {
+				element.withAttribute(attrib.getName(), attrib.getValue());
+			}
+		}
+
+		/* do the same for the exclude tags */
+		tags = file.getList(CRAWLEXCLUDETAGS);
+
+		/* walk through all elements */
+		for (String tag : tags) {
+			/* call the correct api stuff on the crawler for tag */
+			tagElement = parseTagElement(tag, crawler);
+
+			CrawlElement element = crawler.ignore(tagElement.getName());
+			for (TagAttribute attrib : tagElement.getAttributes()) {
+				element.withAttribute(attrib.getName(), attrib.getValue());
+			}
 		}
 	}
 
@@ -138,10 +170,11 @@ public class PropertiesFile {
 	 *            The string containing the tag elements.
 	 * @param crawlSpec
 	 *            the crawlSpecification.
+	 * @return the TagElement;
 	 */
-	public void parseTagElement(String text, CrawlSpecification crawlSpec) {
+	public TagElement parseTagElement(String text, CrawlSpecification crawlSpec) {
 		if (text.equals("")) {
-			return;
+			return null;
 		}
 		TagElement tagElement = new TagElement();
 		Pattern pattern =
@@ -190,10 +223,7 @@ public class PropertiesFile {
 
 		}
 
-		CrawlElement element = crawlSpec.lookFor(tagElement.getName());
-		for (TagAttribute attrib : tagElement.getAttributes()) {
-			element.withAttribute(attrib.getName(), attrib.getValue());
-		}
+		return tagElement;
 	}
 
 	/**
