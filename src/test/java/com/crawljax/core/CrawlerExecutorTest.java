@@ -28,35 +28,16 @@ public class CrawlerExecutorTest {
 	public void testCorrectNamesSingleThread() throws InterruptedException {
 		TestThread t1 = new TestThread("Thread 1 Crawler 1");
 		TestThread t2 = new TestThread("Thread 1 Crawler 2 (Automatic)", "Automatic");
-		TestThread t3 = new TestThread("Thread 1 Crawler 3");
-		TestThread t4 = new TestThread("Thread 1 Crawler 4 (Automatic)", "Automatic");
-		TestThread t5 = new TestThread("Thread 1 Crawler 5");
-		TestThread t6 = new TestThread("Thread 1 Crawler 6 (Automatic)", "Automatic");
-		TestThread t7 = new TestThread("Thread 1 Crawler 7");
-		TestThread t8 = new TestThread("Thread 1 Crawler 8 (Automatic)", "Automatic");
 
 		// First to start
 		excutor.execute(t1);
 
-		// Other in Stack way...
-		excutor.execute(t8);
-		excutor.execute(t7);
-		excutor.execute(t6);
-		excutor.execute(t5);
-		excutor.execute(t4);
-		excutor.execute(t3);
 		excutor.execute(t2);
 
 		excutor.waitForTermination();
 
 		Assert.assertTrue("Thread 1 ok", t1.success);
 		Assert.assertTrue("Thread 2 ok", t2.success);
-		Assert.assertTrue("Thread 3 ok", t3.success);
-		Assert.assertTrue("Thread 4 ok", t4.success);
-		Assert.assertTrue("Thread 5 ok", t5.success);
-		Assert.assertTrue("Thread 6 ok", t6.success);
-		Assert.assertTrue("Thread 7 ok", t7.success);
-		Assert.assertTrue("Thread 8 ok", t8.success);
 	}
 
 	/**
@@ -64,6 +45,8 @@ public class CrawlerExecutorTest {
 	 * 
 	 * @throws InterruptedException
 	 *             the the waitForTermination fails.
+	 * @throws ConfigurationException
+	 *             when config fails
 	 */
 	@Test
 	public void testCorrectNamesMultiThread() throws InterruptedException, ConfigurationException {
