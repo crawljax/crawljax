@@ -168,8 +168,27 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 		Document doc = Helper.getDocument(htmlFormatted);
 		htmlFormatted = Helper.getDocumentToString(doc);
-		htmlFormatted = Helper.filterAttributes(htmlFormatted);
+		htmlFormatted = filterAttributes(htmlFormatted);
 		return htmlFormatted;
+	}
+
+	/**
+	 * Filters attributes from the HTML string.
+	 * 
+	 * @param html
+	 *            The HTML to filter.
+	 * @return The filtered HTML string.
+	 */
+	private static String filterAttributes(String html) {
+		if (PropertyHelper.getCrawlFilterAttributesValues() != null) {
+			for (String attribute : PropertyHelper.getCrawlFilterAttributesValues()) {
+				String regex = "\\s" + attribute + "=\"[^\"]*\"";
+				Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+				Matcher m = p.matcher(html);
+				html = m.replaceAll("");
+			}
+		}
+		return html;
 	}
 
 	/**
