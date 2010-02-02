@@ -409,7 +409,9 @@ public class Crawler implements Runnable {
 
 		// Store the currentState to be able to 'back-track' later.
 		StateVertix orrigionalState = stateMachine.getCurrentState();
-		orrigionalState.searchForCandidateElements(candidateExtractor);
+		orrigionalState.searchForCandidateElements(candidateExtractor, PropertyHelper
+		        .getCrawlTagElements(), PropertyHelper.getCrawlExcludeTagElements(),
+		        PropertyHelper.getClickOnceValue(), PropertyHelper.getRobotEventsValues());
 
 		LOGGER.info("Starting preStateCrawlingPlugins...");
 
