@@ -15,9 +15,9 @@ import com.crawljax.core.CandidateCrawlAction;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.TagElement;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.Helper;
-import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.database.HibernateUtil;
 
 /**
@@ -237,16 +237,24 @@ public class StateVertix implements Iterable<CandidateCrawlAction> {
 	 * 
 	 * @param candidateExtractor
 	 *            the CandidateElementExtractor to use.
+	 * @param crawlTagElements
+	 *            the tag elements to examine.
+	 * @param crawlExcludeTagElements
+	 *            the elements to exclude.
+	 * @param clickOnce
+	 *            if true examine each element once.
+	 * @param eventTypes
+	 *            the event types.
 	 */
-	public void searchForCandidateElements(CandidateElementExtractor candidateExtractor) {
+	public void searchForCandidateElements(CandidateElementExtractor candidateExtractor,
+	        List<TagElement> crawlTagElements, List<TagElement> crawlExcludeTagElements,
+	        boolean clickOnce, List<String> eventTypes) {
 		if (candidateActions == null) {
 			candidateActions = new ArrayList<CandidateCrawlAction>();
 			try {
 				List<CandidateElement> candidateList =
-				        candidateExtractor.extract(PropertyHelper.getCrawlTagElements(),
-				                PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
-				                        .getClickOnceValue(), this);
-				List<String> eventTypes = PropertyHelper.getRobotEventsValues();
+				        candidateExtractor.extract(crawlTagElements, crawlExcludeTagElements,
+				                clickOnce, this);
 
 				for (CandidateElement candidateElement : candidateList) {
 					for (String eventType : eventTypes) {
