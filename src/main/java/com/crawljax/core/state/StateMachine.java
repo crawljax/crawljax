@@ -13,7 +13,6 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.condition.invariant.InvariantChecker;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
-import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.database.HibernateUtil;
 
 /**
@@ -182,9 +181,7 @@ public class StateMachine {
 		LOGGER.info("StateMachine's Pointer changed to: " + this.currentState.getName()
 		        + " FROM " + previousState.getName());
 
-		if (PropertyHelper.getTestInvariantsWhileCrawlingValue()) {
-			checkInvariants(browser, session);
-		}
+		checkInvariants(browser, session);
 
 		/**
 		 * TODO Stefan FIX this getSession stuff...
@@ -215,10 +212,13 @@ public class StateMachine {
 	 *            the browser to feed to the invariants
 	 */
 	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
-		if (!invariantChecker.check(browser)) {
-			final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
-			for (Invariant failedInvariant : failedInvariants) {
-				CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
+		if (invariantChecker.getInvariants() != null
+		        && invariantChecker.getInvariants().size() > 0) {
+			if (!invariantChecker.check(browser)) {
+				final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
+				for (Invariant failedInvariant : failedInvariants) {
+					CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
+				}
 			}
 		}
 	}
