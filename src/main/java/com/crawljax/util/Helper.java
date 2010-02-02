@@ -525,25 +525,6 @@ public final class Helper {
 	}
 
 	/**
-	 * Filters attributes from the HTML string.
-	 * 
-	 * @param html
-	 *            The HTML to filter.
-	 * @return The filtered HTML string.
-	 */
-	public static String filterAttributes(String html) {
-		if (PropertyHelper.getCrawlFilterAttributesValues() != null) {
-			for (String attribute : PropertyHelper.getCrawlFilterAttributesValues()) {
-				String regex = "\\s" + attribute + "=\"[^\"]*\"";
-				Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-				Matcher m = p.matcher(html);
-				html = m.replaceAll("");
-			}
-		}
-		return html;
-	}
-
-	/**
 	 * @param string
 	 *            The original string.
 	 * @param regex
