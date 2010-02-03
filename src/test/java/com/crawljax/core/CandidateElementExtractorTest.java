@@ -60,7 +60,7 @@ public class CandidateElementExtractorTest {
 			try {
 
 				String inc = "a:{}";
-				TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
+				TagElement tagElementInc = PropertyHelper.parseTagElement(inc);
 				List<TagElement> includes = new ArrayList<TagElement>();
 				includes.add(tagElementInc);
 
@@ -115,7 +115,7 @@ public class CandidateElementExtractorTest {
 			try {
 
 				String inc = "a:{}";
-				TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
+				TagElement tagElementInc = PropertyHelper.parseTagElement(inc);
 				List<TagElement> includes = new ArrayList<TagElement>();
 				includes.add(tagElementInc);
 
@@ -123,7 +123,7 @@ public class CandidateElementExtractorTest {
 				String exc = "div:{id=menubar}";
 
 				List<TagElement> excludes = new ArrayList<TagElement>();
-				TagElement tagElementExc = PropertyHelper.parseTagElements(exc);
+				TagElement tagElementExc = PropertyHelper.parseTagElement(exc);
 				excludes.add(tagElementExc);
 
 				List<CandidateElement> candidates =
@@ -176,7 +176,7 @@ public class CandidateElementExtractorTest {
 			assertNotNull(extractor);
 			try {
 				String inc = "a:{}";
-				TagElement tagElementInc = PropertyHelper.parseTagElements(inc);
+				TagElement tagElementInc = PropertyHelper.parseTagElement(inc);
 				List<TagElement> includes = new ArrayList<TagElement>();
 				includes.add(tagElementInc);
 

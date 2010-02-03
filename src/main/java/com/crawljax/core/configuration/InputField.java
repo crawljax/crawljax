@@ -120,7 +120,7 @@ public class InputField {
 	 * @param field
 	 *            the field to add to the fieldValues
 	 */
-	protected void addFieldValue(String field) {
+	public void addFieldValue(String field) {
 		this.fieldValues.add(field);
 	}
 

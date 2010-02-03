@@ -1,7 +1,9 @@
 package com.crawljax.core.configuration;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -140,7 +142,7 @@ public class PropertiesFile {
 		/* walk through all elements */
 		for (String tag : tags) {
 			/* call the correct api stuff on the crawler for tag */
-			tagElement = parseTagElement(tag, crawler);
+			tagElement = parseTagElement(tag);
 
 			CrawlElement element = crawler.lookFor(tagElement.getName());
 			for (TagAttribute attrib : tagElement.getAttributes()) {
@@ -154,7 +156,7 @@ public class PropertiesFile {
 		/* walk through all elements */
 		for (String tag : tags) {
 			/* call the correct api stuff on the crawler for tag */
-			tagElement = parseTagElement(tag, crawler);
+			tagElement = parseTagElement(tag);
 
 			CrawlElement element = crawler.ignore(tagElement.getName());
 			for (TagAttribute attrib : tagElement.getAttributes()) {
@@ -168,15 +170,16 @@ public class PropertiesFile {
 	 * 
 	 * @param text
 	 *            The string containing the tag elements.
-	 * @param crawlSpec
-	 *            the crawlSpecification.
 	 * @return the TagElement;
 	 */
-	public TagElement parseTagElement(String text, CrawlSpecification crawlSpec) {
+	public TagElement parseTagElement(String text) {
 		if (text.equals("")) {
 			return null;
 		}
-		TagElement tagElement = new TagElement();
+		String name = null;
+		Set<TagAttribute> attributes = new HashSet<TagAttribute>();
+		String id = null;
+
 		Pattern pattern =
 		        Pattern.compile("\\w+:\\{(\\w+=?(\\-*\\s*[\\w%]\\s*)+\\;?\\s?)*}"
 		                + "(\\[\\w+\\])?");
@@ -196,34 +199,38 @@ public class PropertiesFile {
 			matcher = patternTagName.matcher(substring);
 
 			if (matcher.find()) {
-				tagElement.setName(matcher.group().trim());
+				name = matcher.group().trim();
 			}
 
 			matcher = patternAttributes.matcher(substring);
 
 			// attributes
 			if (matcher.find()) {
-				String attributes = (matcher.group());
+				String tmp = matcher.group();
 				// parse attributes
-				matcher = patternAttribute.matcher(attributes);
+				matcher = patternAttribute.matcher(tmp);
 
 				while (matcher.find()) {
-					String name = matcher.group(1).trim();
+					String attrName = matcher.group(1).trim();
 					String value = matcher.group(2).trim();
-					tagElement.getAttributes().add(new TagAttribute(name, value));
+					attributes.add(new TagAttribute(attrName, value));
 				}
 			}
 
 			// id
 			matcher = patternId.matcher(substring);
 			if (matcher.find()) {
-				String id = matcher.group(2);
-				tagElement.setId(id);
+				id = matcher.group(2);
 			}
 
+			TagElement el = new TagElement(attributes, name);
+			if (id != null) {
+				el.setId(id);
+			}
+			return el;
 		}
 
-		return tagElement;
+		return null;
 	}
 
 	/**

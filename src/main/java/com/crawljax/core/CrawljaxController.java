@@ -195,9 +195,8 @@ public class CrawljaxController {
 
 		CrawljaxPluginsUtil.runOnNewStatePlugins(session);
 
-		LOGGER
-		        .info("Start crawling with " + PropertyHelper.getCrawlTagsValues().size()
-		                + " tags");
+		LOGGER.info("Start crawling with " + PropertyHelper.getCrawlTagElements().size()
+		        + " tags");
 
 		addWorkToQueue(crawler);
 
