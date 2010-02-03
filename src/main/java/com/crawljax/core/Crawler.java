@@ -179,7 +179,7 @@ public class Crawler implements Runnable {
 	 *            the eventable to fire
 	 * @return true iff the event is fired
 	 */
-	public boolean fireEvent(Eventable eventable) {
+	private boolean fireEvent(Eventable eventable) {
 		try {
 
 			if (eventable.getIdentification().getHow().equals("xpath")
@@ -226,6 +226,12 @@ public class Crawler implements Runnable {
 
 				return true; // A event fired
 			} else {
+				/**
+				 * Execute the OnFireEventFailedPlugins with the current crawlPath with the
+				 * crawlPath removed 1 state to represent the path TO here.
+				 */
+				CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable, crawlPath.subList(0,
+				        crawlPath.size() - 1));
 				return false; // no event fired
 			}
 
@@ -243,7 +249,7 @@ public class Crawler implements Runnable {
 	 * @param eventable
 	 *            the eventable element.
 	 */
-	public void handleInputElements(Eventable eventable) {
+	private void handleInputElements(Eventable eventable) {
 		List<FormInput> formInputs = eventable.getRelatedFormInputs();
 
 		FormHandler formHandler = new FormHandler(browser);
@@ -342,11 +348,6 @@ public class Crawler implements Runnable {
 				        .getSession())) {
 					// Dom changed
 					// No Clone
-
-					// Fix the name of the new StateVertix
-					// TODO Ali: why is this not done in the state machine itself?
-					// this.stateName = controller.getNewStateName();
-					// stateMachine.getCurrentState().setName(stateName);
 
 					exactEventPath.add(eventable);
 
@@ -513,17 +514,11 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * The main function stated by the ExecutorService. Crawlers add themselves to the list by
-	 * calling {@link CrawljaxController#addWorkToQueue(Crawler)}. When the ExecutorService finds a
-	 * free thread this method is called and when this method ends the Thread is released again and
-	 * a new Thread is started
-	 * 
-	 * @see java.util.concurrent.Executors#newFixedThreadPool(int)
-	 * @see java.util.concurrent.ExecutorService {@inheritDoc}
+	 * Initialise the Crawler, retrieve a Browser and go to the initail url when no browser was
+	 * present. rewind the state machine and goBack to the state if there is exactEventPath is
+	 * specified.
 	 */
-	@Override
-	public void run() {
-
+	public void init() {
 		/**
 		 * If the browser is null place a request for a browser from the BrowserFactory
 		 */
@@ -557,29 +552,56 @@ public class Crawler implements Runnable {
 				LOGGER.error("Failed to backtrack", e);
 			}
 		}
+	}
+
+	/**
+	 * Terminate and clean up this Crawler, release the aquired browser. Notice that other Crawlers
+	 * might still be active.
+	 */
+	public void shutdown() {
+		BrowserFactory.freeBrowser(this.browser);
+	}
+
+	/**
+	 * The main function stated by the ExecutorService. Crawlers add themselves to the list by
+	 * calling {@link CrawljaxController#addWorkToQueue(Crawler)}. When the ExecutorService finds a
+	 * free thread this method is called and when this method ends the Thread is released again and
+	 * a new Thread is started
+	 * 
+	 * @see java.util.concurrent.Executors#newFixedThreadPool(int)
+	 * @see java.util.concurrent.ExecutorService {@inheritDoc}
+	 */
+	@Override
+	public void run() {
+
+		/**
+		 * Init the Crawler
+		 */
+		this.init();
 
 		try {
 
 			/**
 			 * Hand over the main crawling
 			 */
-
 			this.crawl();
 
 			/**
 			 * Crawling is done; so the crawlPath of the current branch is known
 			 */
-			// TODO Stefan Delete the fired variable if possible?
+			// TODO Stefan Delete the fired variable if possible? Or move this is not the correct
+			// location.
 			if (fired) {
 				controller.getSession().addCrawlPath(crawlPath);
 			}
+
 		} catch (Exception e) {
 			LOGGER.error("Crawl failed!", e);
 		} finally {
 			/**
-			 * At last failure or non release the browser
+			 * At last failure or non shutdown the Crawler.
 			 */
-			BrowserFactory.freeBrowser(this.browser);
+			this.shutdown();
 		}
 	}
 
@@ -659,9 +681,6 @@ public class Crawler implements Runnable {
 
 		if ((PropertyHelper.getCrawlMaxTimeValue() != 0)
 		        && (timePassed > PropertyHelper.getCrawlMaxTimeValue() * ONE_SECOND)) {
-
-			/* remove all possible candidates left */
-			// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
 			LOGGER.info("Max time " + PropertyHelper.getCrawlMaxTimeValue() + " seconds passed!");
 			/* stop crawling */
 			return false;
@@ -671,12 +690,8 @@ public class Crawler implements Runnable {
 		synchronized (graph) {
 			if ((PropertyHelper.getCrawlMaxStatesValue() != 0)
 			        && (graph.getAllStates().size() >= PropertyHelper.getCrawlMaxStatesValue())) {
-				/* remove all possible candidates left */
-				// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
-
 				LOGGER.info("Max number of states " + PropertyHelper.getCrawlMaxStatesValue()
 				        + " reached!");
-
 				/* stop crawling */
 				return false;
 			}
