@@ -31,13 +31,13 @@ import com.crawljax.oraclecomparator.OracleComparator;
  * EXAMPLE:<br />
  * CrawlSpecification crawler = new CrawlSpecification("http://www.google.com");<br />
  * //click these elements<br />
- * crawler.lookFor("a");<br />
- * crawler.lookFor("input").withAttribute("type", "submit");<br />
+ * crawler.click("a");<br />
+ * crawler.click("input").withAttribute("type", "submit");<br />
  * onLoginPageCondition = new UrlCondition("#login");<br />
  * crawler.when(onLoginPageCondition).click("a").withText("Login");<br />
  * //but don't click these<br />
- * crawler.ignore("a").underXpath("//DIV[@id='guser']");
- * crawler.ignore("a").withText("Language Tools"); <br />
+ * crawler.dontClick("a").underXpath("//DIV[@id='guser']");
+ * crawler.dontClick("a").withText("Language Tools"); <br />
  * //restrict the scope of the crawling<br />
  * crawler.setCrawlMaximumStates(15);<br />
  * crawler.setCrawlDepth(2);
@@ -87,7 +87,7 @@ public class CrawlSpecification {
 	 * Specifies that Crawljax should click all the default clickable elements. These include: All
 	 * anchor tags All buttons
 	 */
-	public void lookForDefaultElements() {
+	public void clickDefaultElements() {
 		crawlActions.click("a");
 		crawlActions.click("button");
 		crawlActions.click("input").withAttribute("type", "submit");
@@ -96,13 +96,13 @@ public class CrawlSpecification {
 
 	/**
 	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
-	 * click("a") will only include 1 This set can be restricted by {@link #ignore(String)}.
+	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}.
 	 * 
 	 * @param tagName
 	 *            the tag name of the elements to be included
 	 * @return this CrawlElement
 	 */
-	public CrawlElement lookFor(String tagName) {
+	public CrawlElement click(String tagName) {
 		return crawlActions.click(tagName);
 	}
 
@@ -116,7 +116,7 @@ public class CrawlSpecification {
 	 *            the tag name of the elements to be excluded
 	 * @return this CrawlElement
 	 */
-	public CrawlElement ignore(String tagName) {
+	public CrawlElement dontClick(String tagName) {
 		return crawlActions.dontClick(tagName);
 	}
 

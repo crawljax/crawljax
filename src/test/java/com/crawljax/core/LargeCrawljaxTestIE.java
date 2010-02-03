@@ -343,15 +343,15 @@ public class LargeCrawljaxTestIE {
 	}
 
 	private static void addCrawlElements(CrawlSpecification crawler) {
-		crawler.lookFor("a");
-		crawler.lookFor("div").withText(CLICK_TEXT);
-		crawler.lookFor("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
+		crawler.click("a");
+		crawler.click("div").withText(CLICK_TEXT);
+		crawler.click("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
 		crawler.when(ALLOW_BUTTON_CLICK).click("button");
 		crawler.when(REGEX_CONDITION_TRUE).click("div").withAttribute(ATTRIBUTE, "condition");
 
-		crawler.ignore("a").withText(DONT_CLICK_TEXT);
-		crawler.ignore("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);
-		crawler.ignore("a").underXPath("//DIV[@id='" + DONT_CLICK_UNDER_XPATH_ID + "']");
+		crawler.dontClick("a").withText(DONT_CLICK_TEXT);
+		crawler.dontClick("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);
+		crawler.dontClick("a").underXPath("//DIV[@id='" + DONT_CLICK_UNDER_XPATH_ID + "']");
 	}
 
 	private static void addOracleComparators(CrawlSpecification crawler) {
