@@ -80,6 +80,10 @@ public class StateMachine {
 	 * @return true if currentState is successfully changed.
 	 */
 	public boolean changeState(StateVertix nextState) {
+		if (nextState == null) {
+			// TODO Stefan; Throw nullpointer exception??
+			return false;
+		}
 		LOGGER.debug("AFTER: sm.current: " + currentState.getName() + " hold.current: "
 		        + nextState.getName());
 

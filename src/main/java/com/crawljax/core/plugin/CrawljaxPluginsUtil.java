@@ -252,4 +252,24 @@ public final class CrawljaxPluginsUtil {
 		}
 	}
 
+	/**
+	 * Load and run the OnFireEventFailedPlugins, this call has been made from the fireEvent when
+	 * the event is not fireable. the Path is the Path leading TO this eventable (not included).
+	 * 
+	 * @param eventable
+	 *            the eventable not able to fire.
+	 * @param path
+	 *            the path TO this eventable.
+	 */
+	public static void runOnFireEventFailedPlugins(Eventable eventable, List<Eventable> path) {
+		if (PropertyHelper.getCrawljaxConfiguration() != null) {
+			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+				if (plugin instanceof OnFireEventFailedPlugin) {
+					((OnFireEventFailedPlugin) plugin).onFireEventFaild(eventable, path);
+				}
+			}
+		}
+
+	}
+
 }
