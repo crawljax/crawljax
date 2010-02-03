@@ -113,15 +113,4 @@ public class InputField {
 	protected List<String> getFieldValues() {
 		return fieldValues;
 	}
-
-	/**
-	 * Add a field to the field values.
-	 * 
-	 * @param field
-	 *            the field to add to the fieldValues
-	 */
-	protected void addFieldValue(String field) {
-		this.fieldValues.add(field);
-	}
-
 }
