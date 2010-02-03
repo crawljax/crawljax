@@ -172,8 +172,7 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Try to fire a given event on the Browser. TODO This method has been made public for the
-	 * CrossBrowserTest only.
+	 * Try to fire a given event on the Browser.
 	 * 
 	 * @param eventable
 	 *            the eventable to fire
@@ -243,8 +242,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Enters the form data. First, the related input elements (if any) to the eventable are filled
-	 * in and then it tries to fill in the remaining input elements. TODO this function has been
-	 * made public for CrossBrowserTester only
+	 * in and then it tries to fill in the remaining input elements.
 	 * 
 	 * @param eventable
 	 *            the eventable element.
