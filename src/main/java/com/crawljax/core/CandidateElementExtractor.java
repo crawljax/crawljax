@@ -105,6 +105,10 @@ public class CandidateElementExtractor {
 	        SAXException, IOException {
 
 		for (TagElement tag : crawlTagElements) {
+			if (tag == null) {
+				continue;
+			}
+
 			LOGGER.info("TAG: " + tag.toString());
 
 			List<Element> foundElements;
