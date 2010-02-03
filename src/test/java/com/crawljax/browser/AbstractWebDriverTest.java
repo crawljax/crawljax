@@ -19,7 +19,7 @@ public class AbstractWebDriverTest {
 	@Test
 	public void testGetDocument() {
 		File index = new File("src/test/site/iframe/index.html");
-		AbstractWebDriver driver = new WebDriverFirefox();
+		AbstractWebDriver driver = new WebDriverFirefox(null, 100, 100);
 
 		Document doc;
 		try {

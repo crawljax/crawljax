@@ -5,9 +5,10 @@ import static org.junit.Assert.fail;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
 
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.util.PropertyHelper;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 
 /**
  * This test, test the (public) operations from the BrowserFactory.
@@ -17,6 +18,8 @@ import com.crawljax.util.PropertyHelper;
  */
 public class BrowserFactoryTest {
 	private static final int TIMEOUT = 10000; // 10 Sec.
+	private BrowserFactory factory =
+	        new BrowserFactory(BrowserType.firefox, 1, null, null, 400, 500);
 
 	/**
 	 * Request don't release and close the factory.
@@ -26,8 +29,9 @@ public class BrowserFactoryTest {
 	 */
 	@Test
 	public void testRequestClose() throws InterruptedException {
-		BrowserFactory.requestBrowser();
-		BrowserFactory.close();
+
+		factory.requestBrowser();
+		factory.close();
 	}
 
 	/**
@@ -38,9 +42,9 @@ public class BrowserFactoryTest {
 	 */
 	@Test
 	public void testRequestReleaseClose() throws InterruptedException {
-		EmbeddedBrowser b = BrowserFactory.requestBrowser();
-		BrowserFactory.freeBrowser(b);
-		BrowserFactory.close();
+		EmbeddedBrowser b = factory.requestBrowser();
+		factory.freeBrowser(b);
+		factory.close();
 	}
 
 	/**
@@ -51,9 +55,9 @@ public class BrowserFactoryTest {
 	 */
 	@Test(timeout = TIMEOUT)
 	public void testDoubleClose() throws InterruptedException {
-		BrowserFactory.requestBrowser();
-		BrowserFactory.close();
-		BrowserFactory.close();
+		factory.requestBrowser();
+		factory.close();
+		factory.close();
 
 	}
 
@@ -62,7 +66,7 @@ public class BrowserFactoryTest {
 	 */
 	@Test(timeout = TIMEOUT)
 	public void testCloseOnly() {
-		BrowserFactory.close();
+		factory.close();
 	}
 
 	/**
@@ -70,8 +74,8 @@ public class BrowserFactoryTest {
 	 */
 	@Test(timeout = TIMEOUT)
 	public void testCloseOnlyTwoTimes() {
-		BrowserFactory.close();
-		BrowserFactory.close();
+		factory.close();
+		factory.close();
 	}
 
 	/**
@@ -89,13 +93,21 @@ public class BrowserFactoryTest {
 		spec.setNumberOfThreads(4);
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
-		PropertyHelper.init(cfg);
+
+		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
+
 		try {
-			BrowserFactory.requestBrowser();
-			BrowserFactory.requestBrowser();
-			EmbeddedBrowser b1 = BrowserFactory.requestBrowser();
-			BrowserFactory.freeBrowser(b1);
-			BrowserFactory.close();
+
+			BrowserFactory factory =
+			        new BrowserFactory(reader.getBrowser(), reader.getCrawlSpecificationReader()
+			                .getNumberOfThreads(), reader.getProxyConfiguration(), null, 1, 1);
+
+			factory.requestBrowser();
+			factory.requestBrowser();
+			EmbeddedBrowser b1 = factory.requestBrowser();
+			factory.freeBrowser(b1);
+
+			factory.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());

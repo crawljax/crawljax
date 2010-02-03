@@ -45,7 +45,7 @@ public class HelperTest {
 	 */
 	@Test
 	public void testGetDocumentFromBrowser() {
-		EmbeddedBrowser browser = new WebDriverFirefox();
+		EmbeddedBrowser browser = new WebDriverFirefox(null, 200, 300);
 		File index = new File(INDEX);
 		String html = "";
 		try {

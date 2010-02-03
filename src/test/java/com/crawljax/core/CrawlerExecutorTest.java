@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.util.PropertyHelper;
 
 /**
  * Test the CrawlerExecutor ThreadPoolExecutor. Basically it test only the correct naming.
@@ -16,7 +15,7 @@ import com.crawljax.util.PropertyHelper;
  * @version $Id$
  */
 public class CrawlerExecutorTest {
-	private CrawlerExecutor excutor = new CrawlerExecutor();
+	private CrawlerExecutor excutor = new CrawlerExecutor(1);
 
 	/**
 	 * Test for single thread setup.
@@ -54,9 +53,8 @@ public class CrawlerExecutorTest {
 		spec.setNumberOfThreads(2);
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
-		PropertyHelper.init(cfg);
 
-		excutor = new CrawlerExecutor();
+		excutor = new CrawlerExecutor(2);
 		TestThread t1 = new TestThread("Thread 1 Crawler 1");
 		TestThread t2 = new TestThread("Thread 2 Crawler 2 (Automatic)", "Automatic");
 		excutor.execute(t1);
