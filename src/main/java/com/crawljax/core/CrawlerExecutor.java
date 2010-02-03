@@ -8,14 +8,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
-import com.crawljax.util.PropertyHelper;
-
 /**
  * Main Executor inheriting {@link ThreadPoolExecutor} to implement the beforeExecute, afterExecute
  * and terminated. Every time a new Crawler is added to this Executor by its
  * {@link #execute(Runnable)} function a new Thread is created when there are no more free threads.
  * If there is a free (old) unused thread left the Crawler will be loaded into that Thread. So
- * Threads will be reused, at most {@link PropertyHelper#getCrawNumberOfThreadsValue()} will be
+ * Threads will be reused, at most numberOfThreads {@link CrawlerExecutor(numberOfThreads)} will be
  * created. The number of Crawlers active at the same time will be the maximum of the number of
  * Threads. If there are no more Threads left, Crawlers will be stored in a workQueue until a Thread
  * will become available.
@@ -47,10 +45,12 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	/**
 	 * Default CrawlerExecutor. using the configured number of threads, no timeout a Stack as
 	 * workQueue to support Depth-first crawling and the local ThreadFactory.
+	 * 
+	 * @param numberOfThreads
+	 *            number of threads.
 	 */
-	public CrawlerExecutor() {
-		super(PropertyHelper.getCrawNumberOfThreadsValue(), PropertyHelper
-		        .getCrawNumberOfThreadsValue(), 0L, TimeUnit.MILLISECONDS, new CrawlQueue());
+	public CrawlerExecutor(int numberOfThreads) {
+		super(numberOfThreads, numberOfThreads, 0L, TimeUnit.MILLISECONDS, new CrawlQueue());
 		setThreadFactory(new CrawlerThreadFactory());
 		// setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 	}

@@ -7,8 +7,8 @@ import net.jcip.annotations.GuardedBy;
 
 import org.apache.log4j.Logger;
 
-import com.crawljax.browser.BrowserFactory;
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
@@ -19,7 +19,6 @@ import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
-import com.crawljax.util.PropertyHelper;
 
 /**
  * Class that performs crawl actions. It is designed to be run inside a Thread
@@ -88,6 +87,10 @@ public class Crawler implements Runnable {
 	 */
 	private StateMachine stateMachine;
 
+	private final CrawljaxConfigurationReader configurationReader;
+
+	private FormHandler formHandler;
+
 	/**
 	 * Enum for describing what has happened after a {@link Crawler#clickTag(Eventable, boolean)}
 	 * has been performed.
@@ -114,7 +117,7 @@ public class Crawler implements Runnable {
 			 * MUST be done by hand!
 			 */
 			try {
-				browser = BrowserFactory.requestBrowser();
+				browser = mother.getBrowserFactory().requestBrowser();
 			} catch (InterruptedException e) {
 				LOGGER.error("The request for a browser was interuped", e);
 			}
@@ -153,6 +156,7 @@ public class Crawler implements Runnable {
 		this.exactEventPath = returnPath;
 		this.controller = mother;
 		stateMachine = controller.buildNewStateMachine();
+		this.configurationReader = controller.getConfigurationReader();
 	}
 
 	/**
@@ -162,8 +166,9 @@ public class Crawler implements Runnable {
 	 *             an exception when the index page can not be loaded
 	 */
 	public void goToInitialURL() throws CrawljaxException {
-		LOGGER.info("Loading Page " + PropertyHelper.getSiteUrlValue());
-		browser.goToUrl(PropertyHelper.getSiteUrlValue());
+		LOGGER.info("Loading Page "
+		        + configurationReader.getCrawlSpecificationReader().getSiteUrl());
+		browser.goToUrl(configurationReader.getCrawlSpecificationReader().getSiteUrl());
 		/**
 		 * Thread safe
 		 */
@@ -172,7 +177,8 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Try to fire a given event on the Browser.
+	 * Try to fire a given event on the Browser. TODO This method has been made public for the
+	 * CrossBrowserTest only.
 	 * 
 	 * @param eventable
 	 *            the eventable to fire
@@ -250,7 +256,6 @@ public class Crawler implements Runnable {
 	private void handleInputElements(Eventable eventable) {
 		List<FormInput> formInputs = eventable.getRelatedFormInputs();
 
-		FormHandler formHandler = new FormHandler(browser);
 		for (FormInput formInput : formHandler.getFormInputs()) {
 			if (!formInputs.contains(formInput)) {
 				formInputs.add(formInput);
@@ -381,10 +386,11 @@ public class Crawler implements Runnable {
 	 * @return true if the limit has been reached
 	 */
 	private boolean depthLimitReached(int depth) {
-		if (depth >= PropertyHelper.getCrawlDepthValue()
-		        && PropertyHelper.getCrawlDepthValue() != 0) {
+
+		if (this.depth >= configurationReader.getCrawlSpecificationReader().getDepth()
+		        && configurationReader.getCrawlSpecificationReader().getDepth() != 0) {
 			LOGGER.info("DEPTH " + depth + " reached returning from rec call. Given depth: "
-			        + PropertyHelper.getCrawlDepthValue());
+			        + configurationReader.getCrawlSpecificationReader().getDepth());
 			return true;
 		} else {
 			return false;
@@ -408,9 +414,9 @@ public class Crawler implements Runnable {
 
 		// Store the currentState to be able to 'back-track' later.
 		StateVertix orrigionalState = stateMachine.getCurrentState();
-		orrigionalState.searchForCandidateElements(candidateExtractor, PropertyHelper
-		        .getCrawlTagElements(), PropertyHelper.getCrawlExcludeTagElements(),
-		        PropertyHelper.getClickOnceValue(), PropertyHelper.getRobotEventsValues());
+		orrigionalState.searchForCandidateElements(candidateExtractor, configurationReader
+		        .getTagElements(), configurationReader.getExcludeTagElements(),
+		        configurationReader.getCrawlSpecificationReader().getClickOnce());
 
 		LOGGER.info("Starting preStateCrawlingPlugins...");
 
@@ -522,7 +528,7 @@ public class Crawler implements Runnable {
 		 */
 		if (this.browser == null) {
 			try {
-				this.browser = BrowserFactory.requestBrowser();
+				this.browser = controller.getBrowserFactory().requestBrowser();
 			} catch (InterruptedException e1) {
 				LOGGER.error("The request for a browser was interuped", e1);
 			}
@@ -536,7 +542,11 @@ public class Crawler implements Runnable {
 
 		// TODO Stefan ideally this should be placed in the constructor
 		this.candidateExtractor =
-		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser());
+		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
+		                formHandler);
+		this.formHandler =
+		        new FormHandler(browser, configurationReader.getInputSpecification(),
+		                configurationReader.getCrawlSpecificationReader().getRandomInputInForms());
 
 		stateMachine.rewind();
 
@@ -550,6 +560,7 @@ public class Crawler implements Runnable {
 				LOGGER.error("Failed to backtrack", e);
 			}
 		}
+
 	}
 
 	/**
@@ -557,7 +568,7 @@ public class Crawler implements Runnable {
 	 * might still be active.
 	 */
 	public void shutdown() {
-		BrowserFactory.freeBrowser(this.browser);
+		controller.getBrowserFactory().freeBrowser(this.browser);
 	}
 
 	/**
@@ -592,7 +603,6 @@ public class Crawler implements Runnable {
 			if (fired) {
 				controller.getSession().addCrawlPath(crawlPath);
 			}
-
 		} catch (Exception e) {
 			LOGGER.error("Crawl failed!", e);
 		} finally {
@@ -676,20 +686,26 @@ public class Crawler implements Runnable {
 	@GuardedBy("stateFlowGraph")
 	private boolean checkConstraints() {
 		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
+		int maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime();
+		if ((maxCrawlTime != 0) && (timePassed > maxCrawlTime * ONE_SECOND)) {
 
-		if ((PropertyHelper.getCrawlMaxTimeValue() != 0)
-		        && (timePassed > PropertyHelper.getCrawlMaxTimeValue() * ONE_SECOND)) {
-			LOGGER.info("Max time " + PropertyHelper.getCrawlMaxTimeValue() + " seconds passed!");
+			/* remove all possible candidates left */
+			// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
+			LOGGER.info("Max time " + maxCrawlTime + " seconds passed!");
 			/* stop crawling */
 			return false;
 		}
 		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
 		// TODO Stefan is this needed?
+		int maxNumberOfStates =
+		        configurationReader.getCrawlSpecificationReader().getMaxNumberOfStates();
 		synchronized (graph) {
-			if ((PropertyHelper.getCrawlMaxStatesValue() != 0)
-			        && (graph.getAllStates().size() >= PropertyHelper.getCrawlMaxStatesValue())) {
-				LOGGER.info("Max number of states " + PropertyHelper.getCrawlMaxStatesValue()
-				        + " reached!");
+			if ((maxNumberOfStates != 0) && (graph.getAllStates().size() >= maxNumberOfStates)) {
+				/* remove all possible candidates left */
+				// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
+
+				LOGGER.info("Max number of states " + maxNumberOfStates + " reached!");
+
 				/* stop crawling */
 				return false;
 			}

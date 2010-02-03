@@ -1,5 +1,6 @@
 package com.crawljax.core.configuration;
 
+
 /**
  * Specifies attribute for CrawlElements. Internal use only.
  * 

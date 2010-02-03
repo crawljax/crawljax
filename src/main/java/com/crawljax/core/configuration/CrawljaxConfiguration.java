@@ -5,15 +5,11 @@ import java.util.List;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.openqa.selenium.WebDriver;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.WebDriverFirefox;
-import com.crawljax.browser.WebDriverOther;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.util.Helper;
-import com.crawljax.util.PropertyHelper;
 
 /**
  * Specifies the settings Crawljax. The methods in this class fall into two categories:Oz
@@ -28,7 +24,7 @@ import com.crawljax.util.PropertyHelper;
  * {@link CrawljaxConfiguration#setHibernateConfiguration(HibernateConfiguration)} See also
  * {@link HibernateConfiguration}
  * <p/>
- * DEFAULT VAlUES: Browser: WebDriverFirefox Project Full Path: empty Project Relative Path: empty
+ * DEFAULT VAlUES: Browser: webdriver firefox Project Full Path: empty Project Relative Path: empty
  * Filter attributes: closure_hashcode_(\\w)*, jquery[0-9]+ Test invariants while crawling: true
  * EXAMPLE: CrawljaxConfiguration crawljaxConfig = new CrawljaxConfiguration(); CrawlSpecification
  * crawler = new CrawlSpecification("http://www.google.com"); crawler.click("a");
@@ -38,7 +34,7 @@ import com.crawljax.util.PropertyHelper;
  */
 public final class CrawljaxConfiguration {
 
-	private EmbeddedBrowser browser;
+	private BrowserType browser = BrowserType.firefox;
 
 	private String outputFolder = "";
 	private String projectRelativePath = "";
@@ -216,43 +212,18 @@ public final class CrawljaxConfiguration {
 	}
 
 	/**
-	 * @return The browser used to crawl. See {@link EmbeddedBrowser}. By default
-	 *         {@link WebDriverFirefox} is used.
+	 * @return The browser used to crawl. By default firefox is used.
 	 */
-	protected EmbeddedBrowser getBrowser() {
-		if (browser == null) {
-			if (PropertyHelper.getCrawljaxConfiguration() != null
-			        && PropertyHelper.getCrawljaxConfiguration().getProxyConfiguration() != null) {
-				browser =
-				        new WebDriverFirefox(PropertyHelper.getCrawljaxConfiguration()
-				                .getProxyConfiguration());
-			} else {
-				browser = new WebDriverFirefox();
-			}
-		}
+	protected BrowserType getBrowser() {
 		return browser;
 	}
 
 	/**
 	 * @param browser
-	 *            The browser used to crawl. See {@link EmbeddedBrowser}. By default
-	 *            {@link WebDriverFirefox} is used.
+	 *            The browser used to crawl.
 	 */
-	public void setBrowser(EmbeddedBrowser browser) {
+	public void setBrowser(BrowserType browser) {
 		this.browser = browser;
-	}
-
-	/**
-	 * Deprecated function to specify the browser used. Replaced by
-	 * {@link CrawljaxConfiguration#setBrowser(EmbeddedBrowser)}.
-	 * 
-	 * @see #setBrowser(EmbeddedBrowser)
-	 * @param driver
-	 *            The Webdriver driver used to crawl. By default {@link WebDriverFirefox} is used.
-	 */
-	@Deprecated
-	public void setBrowser(WebDriver driver) {
-		this.browser = new WebDriverOther(driver);
 	}
 
 	/**

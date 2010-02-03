@@ -28,7 +28,7 @@ public class TagElement {
 		this.name = name;
 	}
 
-	/**
+    /**
 	 * @return the attribute set.
 	 */
 	public Set<TagAttribute> getAttributes() {
@@ -80,12 +80,14 @@ public class TagElement {
 			ret += name.toUpperCase();
 		}
 		int i = 0;
-		for (TagAttribute att : attributes) {
-			if (i == 0) {
-				ret += ": ";
+		if (attributes != null) {
+			for (TagAttribute att : attributes) {
+				if (i == 0) {
+					ret += ": ";
+				}
+				ret += att.getName() + "=\"" + att.getValue() + "\" ";
+				i++;
 			}
-			ret += att.getName() + "=\"" + att.getValue() + "\" ";
-			i++;
 		}
 		return ret;
 	}

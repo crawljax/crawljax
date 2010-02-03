@@ -24,20 +24,23 @@ import org.xml.sax.SAXException;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
+import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
-import com.crawljax.forms.FormInputValueHelper;
 import com.crawljax.forms.InputValue;
 import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.Helper;
-import com.crawljax.util.PropertyHelper;
 
 /**
  * @author mesbah
  * @version $Id$
  */
 public abstract class AbstractWebDriver implements EmbeddedBrowser {
+	private final long crawlWaitEvent;
 	private final Logger logger;
 	private final WebDriver browser;
+
+	private final List<String> filterAttributes;
+	private final long crawlWaitReload;
 
 	/**
 	 * Constructor.
@@ -46,10 +49,20 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 *            The WebDriver to use.
 	 * @param logger
 	 *            the logger instance.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
 	 */
-	public AbstractWebDriver(WebDriver driver, Logger logger) {
+	public AbstractWebDriver(WebDriver driver, Logger logger, List<String> filterAttributes,
+	        long crawlWaitReload, long crawlWaitEvent) {
 		this.browser = driver;
 		this.logger = logger;
+		this.filterAttributes = filterAttributes;
+		this.crawlWaitEvent = crawlWaitEvent;
+		this.crawlWaitReload = crawlWaitReload;
 	}
 
 	/**
@@ -62,7 +75,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		browser.navigate().to(url);
 		handlePopups();
 		try {
-			Thread.sleep(PropertyHelper.getCrawlWaitReloadValue());
+			Thread.sleep(this.crawlWaitReload);
 		} catch (InterruptedException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
@@ -114,7 +127,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		}
 
 		try {
-			Thread.sleep(PropertyHelper.getCrawlWaitEventValue());
+			Thread.sleep(this.crawlWaitEvent);
 		} catch (InterruptedException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
@@ -152,7 +165,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 * @throws Exception
 	 *             On error.
 	 */
-	private static String toUniformDOM(String html) throws Exception {
+	private String toUniformDOM(String html) throws Exception {
 
 		Pattern p =
 		        Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
@@ -179,9 +192,9 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 *            The HTML to filter.
 	 * @return The filtered HTML string.
 	 */
-	private static String filterAttributes(String html) {
-		if (PropertyHelper.getCrawlFilterAttributesValues() != null) {
-			for (String attribute : PropertyHelper.getCrawlFilterAttributesValues()) {
+	private String filterAttributes(String html) {
+		if (this.filterAttributes != null) {
+			for (String attribute : this.filterAttributes) {
 				String regex = "\\s" + attribute + "=\"[^\"]*\"";
 				Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 				Matcher m = p.matcher(html);
@@ -399,9 +412,6 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 * @return FormInput with random value assigned if possible
 	 */
 	public FormInput getInputWithRandomValue(FormInput input) {
-		if (!PropertyHelper.getCrawlFormWithRandomValues()) {
-			return null;
-		}
 
 		WebElement webElement;
 		try {
@@ -420,7 +430,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 		if (input.getType().toLowerCase().startsWith("text")) {
 			values.add(new InputValue(new RandomInputValueGenerator()
-			        .getRandomString(FormInputValueHelper.RANDOM_STRING_LENGTH), true));
+			        .getRandomString(FormHandler.RANDOM_STRING_LENGTH), true));
 		} else if (input.getType().equalsIgnoreCase("checkbox")
 		        || input.getType().equalsIgnoreCase("radio") && !webElement.isSelected()) {
 			if (new RandomInputValueGenerator().getCheck()) {
@@ -481,6 +491,27 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public WebElement getWebElement(Identification identification) {
 		return browser.findElement(identification.getWebDriverBy());
+	}
+
+	/**
+	 * @return the period to wait after an event.
+	 */
+	protected long getCrawlWaitEvent() {
+		return crawlWaitEvent;
+	}
+
+	/**
+	 * @return the list of attributes to be filtered from DOM.
+	 */
+	protected List<String> getFilterAttributes() {
+		return filterAttributes;
+	}
+
+	/**
+	 * @return the period to waint after a reload.
+	 */
+	protected long getCrawlWaitReload() {
+		return crawlWaitReload;
 	}
 
 }

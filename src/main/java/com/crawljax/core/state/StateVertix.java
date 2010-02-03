@@ -243,12 +243,15 @@ public class StateVertix implements Iterable<CandidateCrawlAction> {
 	 *            the elements to exclude.
 	 * @param clickOnce
 	 *            if true examine each element once.
-	 * @param eventTypes
-	 *            the event types.
 	 */
 	public void searchForCandidateElements(CandidateElementExtractor candidateExtractor,
 	        List<TagElement> crawlTagElements, List<TagElement> crawlExcludeTagElements,
-	        boolean clickOnce, List<String> eventTypes) {
+	        boolean clickOnce) {
+
+		// TODO read the eventtypes from the crawl elements instead
+		List<String> eventTypes = new ArrayList<String>();
+		eventTypes.add(EventType.click.toString());
+
 		if (candidateActions == null) {
 			candidateActions = new ArrayList<CandidateCrawlAction>();
 			try {

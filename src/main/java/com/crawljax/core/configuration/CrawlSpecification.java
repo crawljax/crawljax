@@ -88,10 +88,10 @@ public class CrawlSpecification {
 	 * anchor tags All buttons
 	 */
 	public void lookForDefaultElements() {
-		crawlActions.lookFor("a");
-		crawlActions.lookFor("button");
-		crawlActions.lookFor("input").withAttribute("type", "submit");
-		crawlActions.lookFor("input").withAttribute("type", "button");
+		crawlActions.click("a");
+		crawlActions.click("button");
+		crawlActions.click("input").withAttribute("type", "submit");
+		crawlActions.click("input").withAttribute("type", "button");
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class CrawlSpecification {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement lookFor(String tagName) {
-		return crawlActions.lookFor(tagName);
+		return crawlActions.click(tagName);
 	}
 
 	/**

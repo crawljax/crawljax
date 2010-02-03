@@ -17,6 +17,13 @@ import com.crawljax.forms.FormInput;
 public interface EmbeddedBrowser extends Cloneable {
 
 	/**
+	 * Browser types.
+	 */
+	public enum BrowserType {
+		firefox, ie
+	}
+
+	/**
 	 * Opens the url in the browser.
 	 * 
 	 * @param url

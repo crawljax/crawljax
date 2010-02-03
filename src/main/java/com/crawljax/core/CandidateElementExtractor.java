@@ -21,7 +21,7 @@ import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.forms.FormInputValueHelper;
+import com.crawljax.forms.FormHandler;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
 
@@ -40,6 +40,8 @@ public class CandidateElementExtractor {
 	private final ExtractorManager checkedElements;
 	private final EmbeddedBrowser browser;
 
+	private final FormHandler formHandler;
+
 	/**
 	 * Create a new CandidateElementExtractor.
 	 * 
@@ -48,10 +50,14 @@ public class CandidateElementExtractor {
 	 *            EventableConditionChecker
 	 * @param browser
 	 *            the current browser instance used in the Crawler
+	 * @param formHandler
+	 *            the form handler.
 	 */
-	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser) {
+	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser,
+	        FormHandler formHandler) {
 		checkedElements = checker;
 		this.browser = browser;
+		this.formHandler = formHandler;
 	}
 
 	/**
@@ -136,8 +142,8 @@ public class CandidateElementExtractor {
 					// add multiple candidate elements, for every input
 					// value combination
 					candidateElements =
-					        FormInputValueHelper.getCandidateElementsForInputs(browser,
-					                sourceElement, eventableCondition);
+					        formHandler.getCandidateElementsForInputs(sourceElement,
+					                eventableCondition);
 				} else {
 					// just add default element
 					candidateElements.add(new CandidateElement(sourceElement, new Identification(
@@ -224,6 +230,8 @@ public class CandidateElementExtractor {
 
 		NodeList nodeList = dom.getElementsByTagName(tagElement.getName());
 		Set<TagAttribute> attributes = tagElement.getAttributes();
+
+		
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
@@ -397,7 +405,7 @@ public class CandidateElementExtractor {
 	 */
 	private boolean filterElement(Set<TagAttribute> attributes, Element element) {
 		int matchCounter = 0;
-		if (element == null) {
+		if (element == null || attributes == null) {
 			return false;
 		}
 		for (TagAttribute attr : attributes) {
