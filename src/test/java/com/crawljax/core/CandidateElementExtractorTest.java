@@ -6,17 +6,18 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.crawljax.browser.BrowserFactory;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.util.PropertyHelper;
+import com.crawljax.forms.FormHandler;
 
 public class CandidateElementExtractorTest {
 
@@ -53,14 +54,16 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
+			FormHandler formHandler =
+			        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
+			                .getInputSpecification(), true);
 			CandidateElementExtractor extractor =
 			        new CandidateElementExtractor(controller.getElementChecker(), crawler
-			                .getBrowser());
+			                .getBrowser(), formHandler);
 			assertNotNull(extractor);
 			try {
 
-				String inc = "a:{}";
-				TagElement tagElementInc = PropertyHelper.parseTagElement(inc);
+				TagElement tagElementInc = new TagElement(null, "a");
 				List<TagElement> includes = new ArrayList<TagElement>();
 				includes.add(tagElementInc);
 
@@ -75,7 +78,7 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			BrowserFactory.close();
+			controller.getBrowserFactory().close();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
@@ -107,15 +110,17 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
+			FormHandler formHandler =
+			        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
+			                .getInputSpecification(), true);
 			CandidateElementExtractor extractor =
 			        new CandidateElementExtractor(controller.getElementChecker(), crawler
-			                .getBrowser());
+			                .getBrowser(), formHandler);
 			assertNotNull(extractor);
 
 			try {
 
-				String inc = "a:{}";
-				TagElement tagElementInc = PropertyHelper.parseTagElement(inc);
+				TagElement tagElementInc = new TagElement(null, "a");
 				List<TagElement> includes = new ArrayList<TagElement>();
 				includes.add(tagElementInc);
 
@@ -123,7 +128,10 @@ public class CandidateElementExtractorTest {
 				String exc = "div:{id=menubar}";
 
 				List<TagElement> excludes = new ArrayList<TagElement>();
-				TagElement tagElementExc = PropertyHelper.parseTagElement(exc);
+				TagAttribute attr = new TagAttribute("id", "menubar");
+				Set<TagAttribute> attributes = new HashSet<TagAttribute>();
+				attributes.add(attr);
+				TagElement tagElementExc = new TagElement(attributes, "div");
 				excludes.add(tagElementExc);
 
 				List<CandidateElement> candidates =
@@ -136,7 +144,7 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			BrowserFactory.close();
+			controller.getBrowserFactory().close();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
@@ -170,13 +178,16 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
+			FormHandler formHandler =
+			        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
+			                .getInputSpecification(), true);
 			CandidateElementExtractor extractor =
 			        new CandidateElementExtractor(controller.getElementChecker(), crawler
-			                .getBrowser());
+			                .getBrowser(), formHandler);
 			assertNotNull(extractor);
 			try {
-				String inc = "a:{}";
-				TagElement tagElementInc = PropertyHelper.parseTagElement(inc);
+
+				TagElement tagElementInc = new TagElement(null, "a");
 				List<TagElement> includes = new ArrayList<TagElement>();
 				includes.add(tagElementInc);
 
@@ -195,7 +206,8 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			BrowserFactory.close();
+			controller.getBrowserFactory().close();
+
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());

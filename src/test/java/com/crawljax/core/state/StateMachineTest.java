@@ -24,11 +24,12 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
-import com.crawljax.util.PropertyHelper;
 
 /**
  * @author mesbah
@@ -274,7 +275,7 @@ public class StateMachineTest {
 				hit = true;
 			}
 		});
-		PropertyHelper.init(cfg);
+		CrawljaxPluginsUtil.loadPlugins(new CrawljaxConfigurationReader(cfg).getPlugins());
 
 		// state2.equals(state3)
 		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
@@ -315,7 +316,7 @@ public class StateMachineTest {
 				hit = true;
 			}
 		});
-		PropertyHelper.init(cfg);
+		CrawljaxPluginsUtil.loadPlugins(new CrawljaxConfigurationReader(cfg).getPlugins());
 
 		ArrayList<Invariant> iList = new ArrayList<Invariant>();
 		iList.add(new Invariant("Test123", new Condition() {

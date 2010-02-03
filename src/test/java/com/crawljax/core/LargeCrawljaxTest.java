@@ -1,5 +1,6 @@
 package com.crawljax.core;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -11,7 +12,7 @@ import java.util.regex.Pattern;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.crawljax.browser.WebDriverFirefox;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.condition.RegexCondition;
@@ -102,7 +103,7 @@ public class LargeCrawljaxTest {
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification());
 		addPlugins(crawljaxConfiguration);
-		crawljaxConfiguration.setBrowser(new WebDriverFirefox());
+		crawljaxConfiguration.setBrowser(BrowserType.firefox);
 		CrawljaxController crawljax = new CrawljaxController(crawljaxConfiguration);
 		crawljax.run();
 	}
@@ -155,7 +156,7 @@ public class LargeCrawljaxTest {
 				}
 			}
 		}
-		assertTrue("All results are found", resultsFound.size() == MULTIPLE_INPUT_RESULTS.length);
+		assertEquals("All results are found", MULTIPLE_INPUT_RESULTS.length, resultsFound.size());
 	}
 
 	/**
@@ -343,8 +344,8 @@ public class LargeCrawljaxTest {
 		crawler.lookFor("a");
 		crawler.lookFor("div").withText(CLICK_TEXT);
 		crawler.lookFor("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
-		crawler.when(ALLOW_BUTTON_CLICK).lookFor("button");
-		crawler.when(REGEX_CONDITION_TRUE).lookFor("div").withAttribute(ATTRIBUTE, "condition");
+		crawler.when(ALLOW_BUTTON_CLICK).click("button");
+		crawler.when(REGEX_CONDITION_TRUE).click("div").withAttribute(ATTRIBUTE, "condition");
 
 		crawler.ignore("a").withText(DONT_CLICK_TEXT);
 		crawler.ignore("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);

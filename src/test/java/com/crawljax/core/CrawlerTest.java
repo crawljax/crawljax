@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.crawljax.browser.BrowserFactory;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
@@ -61,7 +60,7 @@ public class CrawlerTest {
 		TestController controller = new TestController(buildController(), index);
 
 		// Prevent dead-lock
-		BrowserFactory.freeBrowser(controller.getCrawler().getBrowser());
+		controller.getBrowserFactory().freeBrowser(controller.getCrawler().getBrowser());
 
 		for (List<Eventable> path : paths) {
 			Crawler c = new Crawler(controller, path, "Follow Path");
@@ -72,7 +71,7 @@ public class CrawlerTest {
 			                path, c.getExacteventpath());
 		}
 
-		BrowserFactory.close();
+		controller.getBrowserFactory().close();
 	}
 
 	private class TestController extends CrawljaxController {
