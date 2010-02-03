@@ -541,12 +541,13 @@ public class Crawler implements Runnable {
 		}
 
 		// TODO Stefan ideally this should be placed in the constructor
-		this.candidateExtractor =
-		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
-		                formHandler);
 		this.formHandler =
 		        new FormHandler(browser, configurationReader.getInputSpecification(),
 		                configurationReader.getCrawlSpecificationReader().getRandomInputInForms());
+
+		this.candidateExtractor =
+		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
+		                formHandler);
 
 		stateMachine.rewind();
 
