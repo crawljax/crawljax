@@ -144,7 +144,7 @@ public class PropertiesFile {
 			/* call the correct api stuff on the crawler for tag */
 			tagElement = parseTagElement(tag);
 
-			CrawlElement element = crawler.lookFor(tagElement.getName());
+			CrawlElement element = crawler.click(tagElement.getName());
 			for (TagAttribute attrib : tagElement.getAttributes()) {
 				element.withAttribute(attrib.getName(), attrib.getValue());
 			}
@@ -158,7 +158,7 @@ public class PropertiesFile {
 			/* call the correct api stuff on the crawler for tag */
 			tagElement = parseTagElement(tag);
 
-			CrawlElement element = crawler.ignore(tagElement.getName());
+			CrawlElement element = crawler.dontClick(tagElement.getName());
 			for (TagAttribute attrib : tagElement.getAttributes()) {
 				element.withAttribute(attrib.getName(), attrib.getValue());
 			}

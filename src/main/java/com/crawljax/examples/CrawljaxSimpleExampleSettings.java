@@ -37,12 +37,12 @@ public final class CrawljaxSimpleExampleSettings {
 		crawler.setNumberOfThreads(1);
 
 		// click these elements
-		crawler.lookFor("a");
-		crawler.lookFor("input").withAttribute("type", "submit");
+		crawler.click("a");
+		crawler.click("input").withAttribute("type", "submit");
 
 		// except these
-		crawler.ignore("a").underXPath("//DIV[@id='guser']");
-		crawler.ignore("a").withText("Language Tools");
+		crawler.dontClick("a").underXPath("//DIV[@id='guser']");
+		crawler.dontClick("a").withText("Language Tools");
 
 		crawler.setInputSpecification(getInputSpecification());
 

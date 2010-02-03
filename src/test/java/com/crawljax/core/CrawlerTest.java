@@ -23,8 +23,6 @@ import com.crawljax.core.state.StateVertix;
  */
 public class CrawlerTest {
 
-	private Eventable last;
-	private List<Eventable> newPath;
 	private List<List<Eventable>> paths;
 	private StateVertix index;
 
@@ -33,7 +31,7 @@ public class CrawlerTest {
 		CrawlSpecification spec =
 		        new CrawlSpecification("file://"
 		                + new File("src/test/site/crawler/index.html").getAbsolutePath());
-		spec.lookFor("a");
+		spec.click("a");
 		config.setCrawlSpecification(spec);
 		return config;
 	}
