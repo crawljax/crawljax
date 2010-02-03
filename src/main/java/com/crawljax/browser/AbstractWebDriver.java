@@ -249,6 +249,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			return result;
 
 		} catch (NoSuchElementException e) {
+			System.err.println(e.getMessage());
 			logger.warn("Could not fire eventable: " + eventable.toString());
 			return false;
 		} catch (RuntimeException e) {

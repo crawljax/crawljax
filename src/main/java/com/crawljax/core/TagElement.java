@@ -29,13 +29,6 @@ public class TagElement {
 	}
 
 	/**
-	 * The empty constructor.
-	 */
-	public TagElement() {
-		super();
-	}
-
-	/**
 	 * @return the attribute set.
 	 */
 	public Set<TagAttribute> getAttributes() {
