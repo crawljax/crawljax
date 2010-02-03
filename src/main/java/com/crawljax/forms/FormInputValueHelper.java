@@ -57,24 +57,26 @@ public final class FormInputValueHelper {
 	 */
 	public FormInputValueHelper(InputSpecification inputSpecification, boolean randomInput) {
 
-		config = new InputSpecificationReader(inputSpecification).getConfiguration();
 		this.randomInput = randomInput;
+		if (inputSpecification != null) {
+			config = new InputSpecificationReader(inputSpecification).getConfiguration();
 
-		Iterator keyIterator = config.getKeys();
-		while (keyIterator.hasNext()) {
-			String fieldInfo = keyIterator.next().toString();
-			String id = fieldInfo.split("\\.")[0];
-			String property = fieldInfo.split("\\.")[1];
-			if (property.equalsIgnoreCase("fields")) {
-				if (!formFields.containsKey(id)) {
-					for (String fieldName : getPropertyAsList(fieldInfo)) {
-						formFields.put(fieldName, id);
+			Iterator keyIterator = config.getKeys();
+			while (keyIterator.hasNext()) {
+				String fieldInfo = keyIterator.next().toString();
+				String id = fieldInfo.split("\\.")[0];
+				String property = fieldInfo.split("\\.")[1];
+				if (property.equalsIgnoreCase("fields")) {
+					if (!formFields.containsKey(id)) {
+						for (String fieldName : getPropertyAsList(fieldInfo)) {
+							formFields.put(fieldName, id);
+						}
+						formFieldNames.put(id, getPropertyAsList(fieldInfo));
 					}
-					formFieldNames.put(id, getPropertyAsList(fieldInfo));
 				}
-			}
-			if (property.equalsIgnoreCase("values")) {
-				fieldValues.put(id, getPropertyAsList(fieldInfo));
+				if (property.equalsIgnoreCase("values")) {
+					fieldValues.put(id, getPropertyAsList(fieldInfo));
+				}
 			}
 		}
 
