@@ -1,6 +1,7 @@
 package com.crawljax.browser;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -26,16 +27,25 @@ public class WebDriverFirefox extends AbstractWebDriver {
 	/**
 	 * Creates a new FirefoxDriver object based on a given driver as WebDriver.
 	 */
-	private WebDriverFirefox(FirefoxDriver driver) {
-		super(driver, LOGGER);
+	private WebDriverFirefox(FirefoxDriver driver, List<String> filterAttributes,
+	        long crawlWaitReload, long crawlWaitEvent) {
+		super(driver, LOGGER, filterAttributes, crawlWaitReload, crawlWaitEvent);
 		this.driver = driver;
 	}
 
 	/**
 	 * Creates a new FirefoxDriver object, use the default FirefoxDriver as WebDriver.
+	 * 
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
 	 */
-	public WebDriverFirefox() {
-		this(new FirefoxDriver());
+	public WebDriverFirefox(List<String> filterAttributes, long crawlWaitReload,
+	        long crawlWaitEvent) {
+		this(new FirefoxDriver(), filterAttributes, crawlWaitReload, crawlWaitEvent);
 	}
 
 	/**
@@ -43,9 +53,17 @@ public class WebDriverFirefox extends AbstractWebDriver {
 	 * 
 	 * @param config
 	 *            Proxy configuration options.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
 	 */
-	public WebDriverFirefox(ProxyConfiguration config) {
-		this(new FirefoxDriver(makeProfile(config)));
+	public WebDriverFirefox(ProxyConfiguration config, List<String> filterAttributes,
+	        long crawlWaitReload, long crawlWaitEvent) {
+		this(new FirefoxDriver(makeProfile(config)), filterAttributes, crawlWaitReload,
+		        crawlWaitEvent);
 		proxyConfiguration = config;
 	}
 
@@ -54,9 +72,17 @@ public class WebDriverFirefox extends AbstractWebDriver {
 	 * 
 	 * @param location
 	 *            the location where to find the Firefox version to use
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
 	 */
-	public WebDriverFirefox(String location) {
-		this(new FirefoxDriver(new FirefoxBinary(new File(location)), null));
+	public WebDriverFirefox(String location, List<String> filterAttributes, long crawlWaitReload,
+	        long crawlWaitEvent) {
+		this(new FirefoxDriver(new FirefoxBinary(new File(location)), null), filterAttributes,
+		        crawlWaitReload, crawlWaitEvent);
 		firefoxLocation = location;
 	}
 
@@ -88,7 +114,8 @@ public class WebDriverFirefox extends AbstractWebDriver {
 			binary = new FirefoxBinary();
 		}
 
-		return new WebDriverFirefox(new FirefoxDriver(binary, profile));
+		return new WebDriverFirefox(new FirefoxDriver(binary, profile), getFilterAttributes(),
+		        getCrawlWaitReload(), getCrawlWaitEvent());
 	}
 
 	/**

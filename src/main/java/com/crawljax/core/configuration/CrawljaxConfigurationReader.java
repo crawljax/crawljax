@@ -1,12 +1,15 @@
 package com.crawljax.core.configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.configuration.Configuration;
 
-import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.TagElement;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.util.PropertyHelper;
 
 /**
  * Reader for CrawljaxConfiguration. For internal use only!
@@ -17,6 +20,7 @@ import com.crawljax.core.plugin.Plugin;
 public class CrawljaxConfigurationReader {
 
 	private final CrawljaxConfiguration crawljaxConfiguration;
+	private final CrawlSpecificationReader crawlSpecificationReader;
 
 	/**
 	 * Construct a new reader wrapper.
@@ -26,18 +30,15 @@ public class CrawljaxConfigurationReader {
 	 */
 	public CrawljaxConfigurationReader(CrawljaxConfiguration crawljaxConfiguration) {
 		this.crawljaxConfiguration = crawljaxConfiguration;
-	}
+		this.crawlSpecificationReader =
+		        new CrawlSpecificationReader(crawljaxConfiguration.getCrawlSpecification());
 
-	/**
-	 * @return The crawl specification.
-	 */
-	public CrawlSpecification getCrawlSpecification() {
-		return crawljaxConfiguration.getCrawlSpecification();
 	}
 
 	/**
 	 * @return a PropertiesConfiguration. For use by PropertyHelper only!
 	 */
+	@Deprecated
 	public Configuration getConfiguration() {
 		return crawljaxConfiguration.getConfiguration();
 	}
@@ -52,7 +53,7 @@ public class CrawljaxConfigurationReader {
 	/**
 	 * @return The browser.
 	 */
-	public EmbeddedBrowser getBrowser() {
+	public BrowserType getBrowser() {
 		return crawljaxConfiguration.getBrowser();
 	}
 
@@ -91,6 +92,74 @@ public class CrawljaxConfigurationReader {
 	 */
 	public ProxyConfiguration getProxyConfiguration() {
 		return crawljaxConfiguration.getProxyConfiguration();
+	}
+
+	/**
+	 * @return the crawlSpecificationReader
+	 */
+	public CrawlSpecificationReader getCrawlSpecificationReader() {
+
+		return crawlSpecificationReader;
+	}
+
+	/**
+	 * @return a list of all included CrawlElements.
+	 */
+	public List<CrawlElement> getAllIncludedCrawlElements() {
+
+		return crawljaxConfiguration.getAllIncludedCrawlElements();
+	}
+
+	/**
+	 * @return a list of tag elements.
+	 */
+	public List<TagElement> getTagElements() {
+
+		List<TagElement> tagelements = new ArrayList<TagElement>();
+
+		String props = ConfigurationHelper.listToString(getAllIncludedCrawlElements());
+
+		String[] tags = props.split(",");
+
+		for (String text : tags) {
+
+			TagElement tagElement = PropertyHelper.parseTagElement(text.trim());
+			if (tagElement != null) {
+				tagelements.add(tagElement);
+			}
+		}
+
+		return tagelements;
+	}
+
+	/**
+	 * @return a list of TagElements.
+	 */
+	public List<TagElement> getExcludeTagElements() {
+
+		List<TagElement> tagelements = new ArrayList<TagElement>();
+
+		String props =
+		        ConfigurationHelper.listToString(crawljaxConfiguration.getCrawlSpecification()
+		                .crawlActions().getCrawlElementsExcluded());
+		String[] tags = props.split(",");
+
+		for (String text : tags) {
+			TagElement tagElement = PropertyHelper.parseTagElement(text.trim());
+			if (tagElement != null) {
+				tagelements.add(tagElement);
+			}
+		}
+
+		return tagelements;
+
+	}
+
+	/**
+	 * @return a list of attributes to be filtered from the DOM string.
+	 */
+	public List<String> getFilterAttributeNames() {
+		return crawljaxConfiguration.getFilterAttributeNames();
 	}
 
 }

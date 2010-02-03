@@ -25,7 +25,7 @@ public class WebDriverOther extends AbstractWebDriver {
 	 */
 	@Deprecated
 	public WebDriverOther(WebDriver driver) {
-		super(driver, Logger.getLogger(WebDriverOther.class.getName()));
+		super(driver, Logger.getLogger(WebDriverOther.class.getName()), null, 1, 1);
 		webDriver = driver;
 	}
 

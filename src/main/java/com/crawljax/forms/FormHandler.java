@@ -11,10 +11,14 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
 
@@ -31,16 +35,26 @@ public class FormHandler {
 	private boolean randomFieldValue = false;
 	private final EmbeddedBrowser browser;
 
+	public static final int RANDOM_STRING_LENGTH = 8;
+
 	private static final double HALF = 0.5;
+
+	private FormInputValueHelper formInputValueHelper;
 
 	/**
 	 * Public constructor.
 	 * 
 	 * @param browser
 	 *            the embedded browser.
+	 * @param inputSpecification
+	 *            the input specification.
+	 * @param randomInput
+	 *            if random data should be generated on the input fields.
 	 */
-	public FormHandler(EmbeddedBrowser browser) {
+	public FormHandler(EmbeddedBrowser browser, InputSpecification inputSpecification,
+	        boolean randomInput) {
 		this.browser = browser;
+		this.formInputValueHelper = new FormInputValueHelper(inputSpecification, randomInput);
 	}
 
 	private static final String[] ALLOWED_INPUT_TYPES =
@@ -183,7 +197,7 @@ public class FormHandler {
 			List<Node> nodes = getInputElements(dom);
 			for (Node node : nodes) {
 				FormInput formInput =
-				        FormInputValueHelper.getFormInputWithDefaultValue(browser, node);
+				        formInputValueHelper.getFormInputWithDefaultValue(browser, node);
 				if (formInput != null) {
 					formInputs.add(formInput);
 				}
@@ -216,11 +230,25 @@ public class FormHandler {
 			dom = Helper.getDocument(browser.getDom());
 			for (FormInput input : formInputs) {
 				LOGGER.debug("Filling in: " + input);
-				setInputElementValue(FormInputValueHelper.getBelongingNode(input, dom), input);
+				setInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
 			}
 		} catch (Exception e) {
 			LOGGER.warn("Could not handle form elements");
 		}
+	}
+
+	/**
+	 * @param sourceElement
+	 *            the form element
+	 * @param eventableCondition
+	 *            the belonging eventable condition for sourceElement
+	 * @return a list with Candidate elements for the inputs.
+	 */
+	public List<CandidateElement> getCandidateElementsForInputs(Element sourceElement,
+	        EventableCondition eventableCondition) {
+
+		return formInputValueHelper.getCandidateElementsForInputs(browser, sourceElement,
+		        eventableCondition);
 	}
 
 }

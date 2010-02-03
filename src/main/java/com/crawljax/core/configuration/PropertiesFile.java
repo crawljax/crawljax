@@ -126,7 +126,7 @@ public class PropertiesFile {
 	}
 
 	/**
-	 * Sets the click and ignore tags using the API
+	 * Sets the click and ignore tags using the API.
 	 * 
 	 * @param file
 	 *            Configuration file.

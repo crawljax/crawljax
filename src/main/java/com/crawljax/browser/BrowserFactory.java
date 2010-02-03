@@ -4,6 +4,7 @@
 package com.crawljax.browser;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -13,7 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
-import com.crawljax.util.PropertyHelper;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.core.configuration.ProxyConfiguration;
 
 /**
  * The factory class returns an instance of the desired browser as specified in the properties file.
@@ -29,9 +31,7 @@ public final class BrowserFactory {
 	/**
 	 * BlockingQueue used to block for the moment when a browser comes available.
 	 */
-	private final BlockingQueue<EmbeddedBrowser> available =
-	        new ArrayBlockingQueue<EmbeddedBrowser>(PropertyHelper.getCrawNumberOfThreadsValue(),
-	                true);
+	private final BlockingQueue<EmbeddedBrowser> available;
 
 	/**
 	 * ConcurrentLinkedQueue used to store the taken browsers.
@@ -49,55 +49,62 @@ public final class BrowserFactory {
 	 */
 	private final int shutdownTimeout = 100;
 
+	private final BrowserType browserType;
+
+	private final ProxyConfiguration proxyConfiguration;
+
+	private final int numberOfThreads;
+
+	private long crawlWaitReload;
+
+	private List<String> filterAttributes;
+
+	private long crawlWaitEvent;
+
 	/**
-	 * Private instance running in HEAP-space.
+	 * @return the number of threads.
 	 */
-	private static BrowserFactory instance;
+	protected int getNumberOfThreads() {
+		return numberOfThreads;
+	}
+
+	/**
+	 * @return the browser type.
+	 */
+	public BrowserType getBrowserType() {
+		return browserType;
+	}
 
 	/**
 	 * hidden constructor.
+	 * 
+	 * @param type
+	 *            the browser type.
+	 * @param numberOfThreads
+	 *            number of threads to use.
+	 * @param proxyConfig
+	 *            the proxy configuration (can be null).
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
 	 */
-	private BrowserFactory() {
+	public BrowserFactory(BrowserType type, int numberOfThreads, ProxyConfiguration proxyConfig,
+	        List<String> filterAttributes, long crawlWaitReload, long crawlWaitEvent) {
+
+		this.available = new ArrayBlockingQueue<EmbeddedBrowser>(numberOfThreads, true);
+		this.browserType = type;
+		this.proxyConfiguration = proxyConfig;
+		this.numberOfThreads = numberOfThreads;
+		this.filterAttributes = filterAttributes;
+		this.crawlWaitReload = crawlWaitReload;
+		this.crawlWaitEvent = crawlWaitEvent;
 		booter = new BrowserBooter(this);
+
 		assert (!booter.isAlive());
-	}
 
-	/**
-	 * Return a new instance of the current BrowserFactory in use. The instance must be returned by
-	 * Finally calling {@link #close()}.
-	 * 
-	 * @return the current running instance of the BrowserFactory.
-	 */
-	private static synchronized BrowserFactory instance() {
-		if (instance == null) {
-			instance = new BrowserFactory();
-		}
-		return instance;
-	}
-
-	/**
-	 * What is the type of browser that will be used?
-	 * 
-	 * @return the name of the type that will be used
-	 */
-	public static String getBrowserTypeString() {
-		return findBrowserClass().getName();
-	}
-
-	/**
-	 * Internal used to retrieve the class which should be used to init a new browser.
-	 * 
-	 * @return the Class that should be used.
-	 */
-	private static Class<? extends EmbeddedBrowser> findBrowserClass() {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			return PropertyHelper.getCrawljaxConfiguration().getBrowser().getClass();
-		}
-		String browser = PropertyHelper.getBrowserValue();
-		if ("webdriver.ie".equals(browser)) {
-			return WebDriverIE.class;
-		}
-		return WebDriverFirefox.class;
 	}
 
 	/**
@@ -107,48 +114,63 @@ public final class BrowserFactory {
 	 * @return the new browser
 	 */
 	private EmbeddedBrowser createBrowser() {
-		if (available.isEmpty() && taken.isEmpty()
-		        && PropertyHelper.getCrawljaxConfiguration() != null) {
+
+		if (available.isEmpty() && taken.isEmpty()) {
 			// This should be the first browser? use the one from the config
 			// More are 'cloned' later....
-			EmbeddedBrowser browser = PropertyHelper.getCrawljaxConfiguration().getBrowser();
-			assert (browser != null);
-			return browser;
+			return getBrowserInstance();
+
 		}
 
 		EmbeddedBrowser newBrowser = null;
-		EmbeddedBrowser currentBrowser = null;
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			currentBrowser = PropertyHelper.getCrawljaxConfiguration().getBrowser();
-		}
+		EmbeddedBrowser currentBrowser = available.element();
+
 		if (currentBrowser != null) {
 			// Clone the Browser
 			newBrowser = currentBrowser.clone();
 		} else {
 			// There is no browser specified so try to find the class to use and instance it by
 			// reflection
-			try {
-				newBrowser = findBrowserClass().newInstance();
-			} catch (InstantiationException e) {
-				LOGGER.error("Cannot create a new Browser!", e);
-			} catch (IllegalAccessException e) {
-				LOGGER.error("Cannot create a new Browser!", e);
-			}
+
+			newBrowser = getBrowserInstance();
+
 		}
 		assert (newBrowser != null);
 		return newBrowser;
+
+	}
+
+	private EmbeddedBrowser getBrowserInstance() {
+
+		switch (browserType) {
+			case firefox:
+				if (proxyConfiguration != null) {
+					return new WebDriverFirefox(proxyConfiguration, this.filterAttributes,
+					        this.crawlWaitReload, this.crawlWaitEvent);
+				}
+				return new WebDriverFirefox(this.filterAttributes, this.crawlWaitReload,
+				        this.crawlWaitEvent);
+
+			case ie:
+				return new WebDriverIE(this.filterAttributes, this.crawlWaitReload,
+				        this.crawlWaitEvent);
+
+			default:
+				return new WebDriverFirefox(this.filterAttributes, this.crawlWaitReload,
+				        this.crawlWaitEvent);
+		}
 	}
 
 	/**
 	 * Close all browser windows.
 	 */
-	public static synchronized void close() {
-		BrowserFactory factory = instance();
+	public synchronized void close() {
+
 		Queue<EmbeddedBrowser> deleteList = new LinkedList<EmbeddedBrowser>();
 		if (useBooting()) {
-			factory.booter.shutdown();
+			booter.shutdown();
 		}
-		for (EmbeddedBrowser b : factory.available) {
+		for (EmbeddedBrowser b : available) {
 			try {
 				b.close();
 			} catch (Exception e) {
@@ -157,9 +179,9 @@ public final class BrowserFactory {
 				deleteList.add(b);
 			}
 		}
-		factory.available.removeAll(deleteList);
+		available.removeAll(deleteList);
 		deleteList = new LinkedList<EmbeddedBrowser>();
-		for (EmbeddedBrowser b : factory.taken) {
+		for (EmbeddedBrowser b : taken) {
 			try {
 				b.close();
 			} catch (Exception e) {
@@ -168,14 +190,11 @@ public final class BrowserFactory {
 				deleteList.add(b);
 			}
 		}
-		factory.taken.removeAll(deleteList);
+		taken.removeAll(deleteList);
 
-		assert (factory.available.isEmpty());
-		assert (factory.taken.isEmpty());
+		assert (available.isEmpty());
+		assert (taken.isEmpty());
 
-		// Delete the factory instance.
-		instance = null;
-		assert (instance == null);
 	}
 
 	/**
@@ -185,11 +204,11 @@ public final class BrowserFactory {
 	 * @param browser
 	 *            the browser which is not needed anymore
 	 */
-	public static synchronized void freeBrowser(EmbeddedBrowser browser) {
-		BrowserFactory factory = instance();
+	public synchronized void freeBrowser(EmbeddedBrowser browser) {
+
 		assert (browser != null);
-		factory.taken.remove(browser);
-		factory.available.add(browser);
+		taken.remove(browser);
+		available.add(browser);
 		// assert (!factory.taken.contains(browser));
 		// assert (factory.available.contains(browser));
 	}
@@ -201,22 +220,22 @@ public final class BrowserFactory {
 	 * @throws InterruptedException
 	 *             the InterruptedException is thrown when the AVAILABE list is interrupted.
 	 */
-	public static EmbeddedBrowser requestBrowser() throws InterruptedException {
-		BrowserFactory factory = instance();
+	public EmbeddedBrowser requestBrowser() throws InterruptedException {
+
 		EmbeddedBrowser browser;
 		if (useBooting()) {
-			factory.booter.start();
-			browser = factory.waitForBrowser();
+			booter.start();
+			browser = waitForBrowser();
 		} else {
-			if (factory.available.size() > 0) {
-				browser = factory.available.take();
+			if (available.size() > 0) {
+				browser = available.take();
 			} else {
-				browser = factory.createBrowser();
+				browser = createBrowser();
 			}
-			factory.taken.add(browser);
+			taken.add(browser);
 		}
 		assert (browser != null);
-		assert (factory.taken.contains(browser));
+		assert (taken.contains(browser));
 		return browser;
 	}
 
@@ -232,7 +251,7 @@ public final class BrowserFactory {
 	 * @throws InterruptedException
 	 *             when available.take is Interrupted
 	 */
-	private EmbeddedBrowser waitForBrowser() throws InterruptedException {
+	private synchronized EmbeddedBrowser waitForBrowser() throws InterruptedException {
 		EmbeddedBrowser b = available.take();
 		assert (b != null);
 		taken.add(b);
@@ -245,9 +264,9 @@ public final class BrowserFactory {
 	 * 
 	 * @return true if the taken list of Browsers is empty
 	 */
-	public static synchronized boolean isFinished() {
-		BrowserFactory instance = instance();
-		return instance.taken.isEmpty();
+	public synchronized boolean isFinished() {
+
+		return taken.isEmpty();
 	}
 
 	/**
@@ -255,7 +274,7 @@ public final class BrowserFactory {
 	 * 
 	 * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
 	 */
-	private static class BrowserBooter extends Thread {
+	private class BrowserBooter extends Thread {
 		private boolean finished = false;
 		private final AtomicBoolean started;
 		private final AtomicInteger createdBrowserCount;
@@ -271,18 +290,13 @@ public final class BrowserFactory {
 		@Override
 		public void run() {
 			int i = 0;
-			if (factory.available.isEmpty() && factory.taken.isEmpty()
-			        && PropertyHelper.getCrawljaxConfiguration() != null) {
-				factory.available.add(PropertyHelper.getCrawljaxConfiguration().getBrowser());
-				i = 1;
-			}
 
 			createdBrowserCount.set(i);
 
 			assert (createdBrowserCount.get() <= 1);
 
 			// Loop to the requested number of browsers
-			for (; i < PropertyHelper.getCrawNumberOfThreadsValue(); i++) {
+			for (; i < factory.getNumberOfThreads(); i++) {
 				// Create a new Thread
 				new Thread(new Runnable() {
 
@@ -307,7 +321,7 @@ public final class BrowserFactory {
 			LOGGER.warn("Waiting for all browsers to be started fully"
 			        + " before starting to close them. Created browsers "
 			        + createdBrowserCount.get() + " configed browsers "
-			        + PropertyHelper.getCrawNumberOfThreadsValue());
+			        + factory.getNumberOfThreads());
 			while (!allBrowsersLoaded()) {
 				try {
 					Thread.sleep(factory.shutdownTimeout);
@@ -333,9 +347,7 @@ public final class BrowserFactory {
 		 * @return true is all requested browsers are loaded.
 		 */
 		private boolean allBrowsersLoaded() {
-			assert (PropertyHelper.getCrawNumberOfThreadsValue() > 0);
-
-			return createdBrowserCount.get() >= PropertyHelper.getCrawNumberOfThreadsValue();
+			return createdBrowserCount.get() >= factory.getNumberOfThreads();
 		}
 	}
 }

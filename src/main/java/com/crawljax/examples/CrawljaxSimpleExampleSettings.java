@@ -2,7 +2,7 @@ package com.crawljax.examples;
 
 import org.apache.commons.configuration.ConfigurationException;
 
-import com.crawljax.browser.WebDriverFirefox;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
@@ -28,7 +28,7 @@ public final class CrawljaxSimpleExampleSettings {
 	private static CrawljaxConfiguration getCrawljaxConfiguration() {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		config.setCrawlSpecification(getCrawlSpecification());
-		config.setBrowser(new WebDriverFirefox());
+		config.setBrowser(BrowserType.firefox);
 		return config;
 	}
 

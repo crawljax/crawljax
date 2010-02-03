@@ -1,6 +1,5 @@
 package com.crawljax.core;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -23,9 +22,7 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.oraclecomparator.OracleComparator;
 import com.crawljax.oraclecomparator.StateComparator;
-import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.database.HibernateUtil;
 
 /**
@@ -46,8 +43,6 @@ public class CrawljaxController {
 
 	private long startCrawl;
 
-	private final String propertiesFile;
-
 	private final StateComparator stateComparator;
 	private final CrawlConditionChecker crawlConditionChecker = new CrawlConditionChecker();
 	private final EventableConditionChecker eventableConditionChecker =
@@ -57,6 +52,7 @@ public class CrawljaxController {
 	private Crawler crawler;
 
 	private final CrawljaxConfiguration crawljaxConfiguration;
+	private final CrawljaxConfigurationReader configurationReader;
 
 	private final List<Invariant> invariantList;
 
@@ -68,30 +64,7 @@ public class CrawljaxController {
 	private final CandidateElementManager elementChecker =
 	        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 
-	/**
-	 * The constructor.
-	 * 
-	 * @throws ConfigurationException
-	 *             if the configuration fails.
-	 */
-	public CrawljaxController() throws ConfigurationException {
-		this("crawljax.properties");
-		LOGGER.warn("No custom setting is provided! Using the default settings.");
-	}
-
-	/**
-	 * @param propertiesfile
-	 *            the properties file.
-	 * @throws ConfigurationException
-	 *             if the configuration fails.
-	 */
-	public CrawljaxController(final String propertiesfile) throws ConfigurationException {
-		this.propertiesFile = propertiesfile;
-		this.crawljaxConfiguration = null;
-		stateComparator = new StateComparator(new ArrayList<OracleComparator>());
-		invariantList = new ArrayList<Invariant>();
-		workQueue = init();
-	}
+	private final BrowserFactory browserFactory;
 
 	/**
 	 * @param config
@@ -100,17 +73,27 @@ public class CrawljaxController {
 	 *             if the configuration fails.
 	 */
 	public CrawljaxController(final CrawljaxConfiguration config) throws ConfigurationException {
-		this.propertiesFile = null;
 		this.crawljaxConfiguration = config;
-		CrawljaxConfigurationReader configReader = new CrawljaxConfigurationReader(config);
+		configurationReader = new CrawljaxConfigurationReader(config);
 		CrawlSpecificationReader crawlerReader =
-		        new CrawlSpecificationReader(configReader.getCrawlSpecification());
+		        configurationReader.getCrawlSpecificationReader();
 
 		stateComparator = new StateComparator(crawlerReader.getOracleComparators());
 		invariantList = crawlerReader.getInvariants();
 		crawlConditionChecker.setCrawlConditions(crawlerReader.getCrawlConditions());
 		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
-		eventableConditionChecker.setEventableConditions(configReader.getEventableConditions());
+		eventableConditionChecker.setEventableConditions(configurationReader
+		        .getEventableConditions());
+
+		browserFactory =
+		        new BrowserFactory(
+		                configurationReader.getBrowser(),
+		                configurationReader.getCrawlSpecificationReader().getNumberOfThreads(),
+		                configurationReader.getProxyConfiguration(),
+		                configurationReader.getFilterAttributeNames(),
+		                configurationReader.getCrawlSpecificationReader().getWaitAfterReloadUrl(),
+		                configurationReader.getCrawlSpecificationReader().getWaitAfterEvent());
+
 		workQueue = init();
 	}
 
@@ -123,33 +106,35 @@ public class CrawljaxController {
 		LOGGER.info("Starting Crawljax...");
 		LOGGER.info("Loading properties...");
 
-		if (crawljaxConfiguration != null) {
-			PropertyHelper.init(crawljaxConfiguration);
-		} else {
-			if (propertiesFile == null || propertiesFile.equals("")) {
-				throw new ConfigurationException("No properties specified");
-			}
-			PropertyHelper.init(propertiesFile);
-		}
+		/*
+		 * if (crawljaxConfiguration != null) { PropertyHelper.init(crawljaxConfiguration); } else {
+		 * if (propertiesFile == null || propertiesFile.equals("")) { throw new
+		 * ConfigurationException("No properties specified"); } PropertyHelper.init(propertiesFile);
+		 * }
+		 */
 
 		LOGGER.info("Used plugins:");
-		CrawljaxPluginsUtil.loadPlugins();
+		CrawljaxPluginsUtil.loadPlugins(configurationReader.getPlugins());
 
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			CrawljaxPluginsUtil.runProxyServerPlugins(PropertyHelper.getCrawljaxConfiguration()
-			        .getProxyConfiguration());
+		if (configurationReader.getProxyConfiguration() != null) {
+			CrawljaxPluginsUtil
+			        .runProxyServerPlugins(configurationReader.getProxyConfiguration());
 		}
 
-		LOGGER.info("Embedded browser implementation: " + BrowserFactory.getBrowserTypeString());
+		LOGGER.info("Embedded browser implementation: " + browserFactory.getBrowserType());
+
 		crawler = new Crawler(this);
 
 		HibernateUtil.initialize();
 
-		LOGGER.info("Number of threads: " + PropertyHelper.getCrawNumberOfThreadsValue());
-		LOGGER.info("Crawl depth: " + PropertyHelper.getCrawlDepthValue());
+		LOGGER.info("Number of threads: "
+		        + configurationReader.getCrawlSpecificationReader().getNumberOfThreads());
+		LOGGER.info("Crawl depth: "
+		        + configurationReader.getCrawlSpecificationReader().getDepth());
 		LOGGER.info("Crawljax initialized!");
 
-		return new CrawlerExecutor();
+		return new CrawlerExecutor(configurationReader.getCrawlSpecificationReader()
+		        .getNumberOfThreads());
 	}
 
 	/**
@@ -195,8 +180,8 @@ public class CrawljaxController {
 
 		CrawljaxPluginsUtil.runOnNewStatePlugins(session);
 
-		LOGGER.info("Start crawling with " + PropertyHelper.getCrawlTagElements().size()
-		        + " tags");
+		LOGGER.info("Start crawling with "
+		        + configurationReader.getAllIncludedCrawlElements().size() + " crawl elements");
 
 		addWorkToQueue(crawler);
 
@@ -212,7 +197,7 @@ public class CrawljaxController {
 		/**
 		 * Close all the opened browsers
 		 */
-		BrowserFactory.close();
+		browserFactory.close();
 
 		for (Eventable c : stateFlowGraph.getAllEdges()) {
 			LOGGER.info("Interaction Element= " + c.toString());
@@ -325,7 +310,7 @@ public class CrawljaxController {
 		/**
 		 * Needs some more testing when Threads are not finished, the browser gets locked...
 		 */
-		BrowserFactory.close();
+		browserFactory.close();
 	}
 
 	/**
@@ -345,6 +330,20 @@ public class CrawljaxController {
 	 */
 	public StateMachine buildNewStateMachine() {
 		return new StateMachine(this.stateFlowGraph, this.indexState, this.invariantList);
+	}
+
+	/**
+	 * @return the configurationReader
+	 */
+	public CrawljaxConfigurationReader getConfigurationReader() {
+		return configurationReader;
+	}
+
+	/**
+	 * @return the browser factory.
+	 */
+	public BrowserFactory getBrowserFactory() {
+		return browserFactory;
 	}
 
 }
