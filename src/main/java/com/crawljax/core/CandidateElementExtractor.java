@@ -105,10 +105,6 @@ public class CandidateElementExtractor {
 	        SAXException, IOException {
 
 		for (TagElement tag : crawlTagElements) {
-			if (tag == null) {
-				continue;
-			}
-
 			LOGGER.info("TAG: " + tag.toString());
 
 			List<Element> foundElements;
@@ -220,10 +216,14 @@ public class CandidateElementExtractor {
 	        List<TagElement> crawlExcludeTagElements) throws SAXException, IOException,
 	        CrawljaxException, XPathExpressionException {
 
+		List<Element> result = new ArrayList<Element>();
+
+		if (tagElement.getName() == null) {
+			return result;
+		}
+
 		NodeList nodeList = dom.getElementsByTagName(tagElement.getName());
 		Set<TagAttribute> attributes = tagElement.getAttributes();
-
-		List<Element> result = new ArrayList<Element>();
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
