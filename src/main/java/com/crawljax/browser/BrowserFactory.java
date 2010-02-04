@@ -55,11 +55,11 @@ public final class BrowserFactory {
 
 	private final int numberOfThreads;
 
-	private long crawlWaitReload;
+	private final long crawlWaitReload;
 
-	private List<String> filterAttributes;
+	private final List<String> filterAttributes;
 
-	private long crawlWaitEvent;
+	private final long crawlWaitEvent;
 
 	/**
 	 * @return the number of threads.
@@ -205,23 +205,20 @@ public final class BrowserFactory {
 	 *            the browser which is not needed anymore
 	 */
 	public synchronized void freeBrowser(EmbeddedBrowser browser) {
-
 		assert (browser != null);
 		taken.remove(browser);
 		available.add(browser);
-		// assert (!factory.taken.contains(browser));
-		// assert (factory.available.contains(browser));
 	}
 
 	/**
-	 * Place a request for a browser.
+	 * Place a request for a browser. TODO Stefan; if the number of browsers can be specified, the
+	 * non boot code must check if the number of browsers is not exceeded.
 	 * 
 	 * @return a new Browser instance which is currently free
 	 * @throws InterruptedException
 	 *             the InterruptedException is thrown when the AVAILABE list is interrupted.
 	 */
 	public EmbeddedBrowser requestBrowser() throws InterruptedException {
-
 		EmbeddedBrowser browser;
 		if (useBooting()) {
 			booter.start();
@@ -239,7 +236,7 @@ public final class BrowserFactory {
 		return browser;
 	}
 
-	private static boolean useBooting() {
+	private boolean useBooting() {
 		// TODO Stefan Config...
 		return true;
 	}
@@ -251,7 +248,7 @@ public final class BrowserFactory {
 	 * @throws InterruptedException
 	 *             when available.take is Interrupted
 	 */
-	private synchronized EmbeddedBrowser waitForBrowser() throws InterruptedException {
+	private EmbeddedBrowser waitForBrowser() throws InterruptedException {
 		EmbeddedBrowser b = available.take();
 		assert (b != null);
 		taken.add(b);

@@ -565,8 +565,9 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Terminate and clean up this Crawler, release the aquired browser. Notice that other Crawlers
-	 * might still be active.
+	 * Terminate and clean up this Crawler, release the acquired browser. Notice that other Crawlers
+	 * might still be active. So this function does NOT shutdown all Crawlers active that should be
+	 * done with {@link CrawlerExecutor#shutdown()}
 	 */
 	public void shutdown() {
 		controller.getBrowserFactory().freeBrowser(this.browser);
