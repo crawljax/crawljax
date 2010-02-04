@@ -55,6 +55,7 @@ public final class FormInputValueHelper {
 	 * @param randomInput
 	 *            if random data should be used on the input fields.
 	 */
+	@SuppressWarnings(value = { "unchecked" })
 	public FormInputValueHelper(InputSpecification inputSpecification, boolean randomInput) {
 
 		this.randomInput = randomInput;
