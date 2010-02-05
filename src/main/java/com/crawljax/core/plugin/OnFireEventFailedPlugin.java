@@ -20,6 +20,6 @@ public interface OnFireEventFailedPlugin extends Plugin {
 	 * @param pathToFailure
 	 *            the list of eventable lead TO this failed eventable, the eventable excluded.
 	 */
-	void onFireEventFaild(Eventable eventable, List<Eventable> pathToFailure);
+	void onFireEventFailed(Eventable eventable, List<Eventable> pathToFailure);
 
 }
