@@ -59,7 +59,9 @@ public class Crawler implements Runnable {
 
 	/**
 	 * TODO Stefan why is there two times the same variable? What is the difference and could it be
-	 * merged? The path followed from the index to the current state.
+	 * merged? The path followed from the index to the current state. Danny: From the state-flow
+	 * graph one cannot derive which paths are crawled. This is for example required for regression
+	 * testing.
 	 */
 	private final List<Eventable> crawlPath = new ArrayList<Eventable>();
 
