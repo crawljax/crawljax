@@ -235,8 +235,12 @@ public class Crawler implements Runnable {
 				 * Execute the OnFireEventFailedPlugins with the current crawlPath with the
 				 * crawlPath removed 1 state to represent the path TO here.
 				 */
+				int limit = crawlPath.size() - 1;
+				if (limit < 0) {
+					limit = 0;
+				}
 				CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable, crawlPath.subList(0,
-				        crawlPath.size() - 1));
+				        limit));
 				return false; // no event fired
 			}
 
