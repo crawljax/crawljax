@@ -268,7 +268,7 @@ public final class CrawljaxPluginsUtil {
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnFireEventFailedPlugin) {
-					((OnFireEventFailedPlugin) plugin).onFireEventFaild(eventable, path);
+					((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
 				}
 			}
 		}

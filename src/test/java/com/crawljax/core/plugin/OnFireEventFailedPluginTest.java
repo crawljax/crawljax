@@ -50,7 +50,7 @@ public class OnFireEventFailedPluginTest {
 		});
 		config.addPlugin(new OnFireEventFailedPlugin() {
 			@Override
-			public void onFireEventFaild(Eventable eventable, List<Eventable> pathToFailure) {
+			public void onFireEventFailed(Eventable eventable, List<Eventable> pathToFailure) {
 				hit++;
 			}
 		});
