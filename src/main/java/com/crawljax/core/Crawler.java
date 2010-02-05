@@ -347,7 +347,7 @@ public class Crawler implements Runnable {
 			StateVertix newState =
 			        new StateVertix(browser.getCurrentUrl(), controller.getSession()
 			                .getStateFlowGraph().getNewStateName(), browser.getDom(),
-			                this.controller.getStripedDom(browser));
+			                this.controller.getStrippedDom(browser));
 
 			if (isDomChanged(stateMachine.getCurrentState(), newState)) {
 				crawlPath.add(eventable);

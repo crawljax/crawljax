@@ -258,7 +258,7 @@ public class CrawljaxController {
 	 * @return a stripped string of the DOM tree taken from the browser.
 	 */
 	@GuardedBy("this")
-	public synchronized String getStripedDom(EmbeddedBrowser browser) {
+	public synchronized String getStrippedDom(EmbeddedBrowser browser) {
 		return this.stateComparator.getStrippedDom(browser);
 	}
 
