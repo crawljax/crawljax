@@ -59,11 +59,6 @@ public class Element implements Cloneable {
 		String str = "";
 		if (!this.getText().equals("")) {
 			str = "\"" + getText() + "\" ";
-		} else {
-			String id = getElementId();
-			if (id != null) {
-				str = "ID: " + id;
-			}
 		}
 		str += getTag().toUpperCase() + ":";
 		if (getAttributes() != null) {
