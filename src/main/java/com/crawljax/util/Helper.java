@@ -536,7 +536,10 @@ public final class Helper {
 	public static String replaceString(String string, String regex, String replace) {
 		Pattern p = Pattern.compile(regex, Pattern.DOTALL);
 		Matcher m = p.matcher(string);
-		return m.replaceAll(replace);
+		String replaced = m.replaceAll(replace);
+		p = Pattern.compile("  ", Pattern.DOTALL);
+		m = p.matcher(replaced);
+		return m.replaceAll(" ");
 	}
 
 	/**
