@@ -129,6 +129,7 @@ public class StateMachine {
 			LOGGER.debug("CLONE CURRENTSTATE: " + currentState.getName());
 			LOGGER.debug("CLONE STATE: " + cloneState.getName());
 			LOGGER.debug("CLONE CLICKABLE: " + eventable);
+			newState.setName(cloneState.getName());
 		} else {
 			LOGGER.info("State " + newState.getName() + " added to the StateMachine.");
 		}
