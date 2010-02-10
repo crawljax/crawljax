@@ -88,7 +88,7 @@ public class CrawljaxController {
 		browserFactory =
 		        new BrowserFactory(
 		                configurationReader.getBrowser(),
-		                configurationReader.getCrawlSpecificationReader().getNumberOfThreads(),
+		                configurationReader.getThreadConfigurationReader(),
 		                configurationReader.getProxyConfiguration(),
 		                configurationReader.getFilterAttributeNames(),
 		                configurationReader.getCrawlSpecificationReader().getWaitAfterReloadUrl(),
@@ -128,13 +128,13 @@ public class CrawljaxController {
 		HibernateUtil.initialize();
 
 		LOGGER.info("Number of threads: "
-		        + configurationReader.getCrawlSpecificationReader().getNumberOfThreads());
+		        + configurationReader.getThreadConfigurationReader().getNumberThreads());
 		LOGGER.info("Crawl depth: "
 		        + configurationReader.getCrawlSpecificationReader().getDepth());
 		LOGGER.info("Crawljax initialized!");
 
-		return new CrawlerExecutor(configurationReader.getCrawlSpecificationReader()
-		        .getNumberOfThreads());
+		return new CrawlerExecutor(configurationReader.getThreadConfigurationReader()
+		        .getNumberThreads());
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class CrawljaxController {
 		if (crawljaxConfiguration != null) {
 			session =
 			        new CrawlSession(browser, stateFlowGraph, indexState, startCrawl,
-			                crawljaxConfiguration);
+			                new CrawljaxConfigurationReader(crawljaxConfiguration));
 		} else {
 			session = new CrawlSession(browser, stateFlowGraph, indexState, startCrawl);
 		}

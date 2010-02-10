@@ -13,13 +13,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.WebDriverException;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.ProxyConfiguration;
+import com.crawljax.core.configuration.ThreadConfigurationReader;
 
 /**
  * The factory class returns an instance of the desired browser as specified in the properties file.
- * TODO Stefan; add getCrawlNumberOfBrowsers to the config and implement.
  * 
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
@@ -53,19 +54,36 @@ public final class BrowserFactory {
 
 	private final ProxyConfiguration proxyConfiguration;
 
-	private final int numberOfThreads;
-
 	private final long crawlWaitReload;
 
 	private final List<String> filterAttributes;
 
 	private final long crawlWaitEvent;
 
+	private final ThreadConfigurationReader threadConfig;
+
+	private int retries = 0;
+
+	private final AtomicInteger activeBrowserCount = new AtomicInteger(0);
+
+	/* Config values */
+
 	/**
-	 * @return the number of threads.
+	 * Is the browser booting in use?
+	 * 
+	 * @return true if the browser booting is in use.
 	 */
-	protected int getNumberOfThreads() {
-		return numberOfThreads;
+	private boolean useBooting() {
+		return threadConfig.isBrowserBooting();
+	}
+
+	/**
+	 * Get the number of Browsers from the config.
+	 * 
+	 * @return the number of browsers.
+	 */
+	private int getNumberOfBrowsers() {
+		return threadConfig.getNumberBrowsers();
 	}
 
 	/**
@@ -76,12 +94,30 @@ public final class BrowserFactory {
 	}
 
 	/**
+	 * @return the number of retries a creation of browser can have.
+	 * @see com.crawljax.core.configuration.ThreadConfigurationReader#
+	 *      getNumberBrowserCreateRetries()
+	 */
+	private int getNumberBrowserCreateRetries() {
+		return threadConfig.getNumberBrowserCreateRetries();
+	}
+
+	/**
+	 * @return the time in milliseconds to sleep after a browser creation failure.
+	 * @see com.crawljax.core.configuration.ThreadConfigurationReader#
+	 *      getSleepTimeOnBrowserCreationFailure()
+	 */
+	private int getSleepTimeOnBrowserCreationFailure() {
+		return threadConfig.getSleepTimeOnBrowserCreationFailure();
+	}
+
+	/**
 	 * hidden constructor.
 	 * 
 	 * @param type
 	 *            the browser type.
-	 * @param numberOfThreads
-	 *            number of threads to use.
+	 * @param threadConfig
+	 *            the config holder for thread config values.
 	 * @param proxyConfig
 	 *            the proxy configuration (can be null).
 	 * @param filterAttributes
@@ -91,16 +127,19 @@ public final class BrowserFactory {
 	 * @param crawlWaitEvent
 	 *            the period to wait after an event is fired.
 	 */
-	public BrowserFactory(BrowserType type, int numberOfThreads, ProxyConfiguration proxyConfig,
-	        List<String> filterAttributes, long crawlWaitReload, long crawlWaitEvent) {
+	public BrowserFactory(BrowserType type, ThreadConfigurationReader threadConfig,
+	        ProxyConfiguration proxyConfig, List<String> filterAttributes, long crawlWaitReload,
+	        long crawlWaitEvent) {
 
-		this.available = new ArrayBlockingQueue<EmbeddedBrowser>(numberOfThreads, true);
+		this.available =
+		        new ArrayBlockingQueue<EmbeddedBrowser>(threadConfig.getNumberBrowsers(), true);
 		this.browserType = type;
 		this.proxyConfiguration = proxyConfig;
-		this.numberOfThreads = numberOfThreads;
+		this.threadConfig = threadConfig;
 		this.filterAttributes = filterAttributes;
 		this.crawlWaitReload = crawlWaitReload;
 		this.crawlWaitEvent = crawlWaitEvent;
+
 		booter = new BrowserBooter(this);
 
 		assert (!booter.isAlive());
@@ -112,6 +151,9 @@ public final class BrowserFactory {
 	 * 
 	 * @see {@link #requestBrowser()}
 	 * @return the new browser
+	 * @throws WebDriverException
+	 *             a WebDriverException is thrown by the WebDriver when creation of the browser
+	 *             failed.
 	 */
 	private EmbeddedBrowser createBrowser() {
 
@@ -129,17 +171,22 @@ public final class BrowserFactory {
 			// Clone the Browser
 			newBrowser = currentBrowser.clone();
 		} else {
-			// There is no browser specified so try to find the class to use and instance it by
-			// reflection
-
+			// There is no browser specified so try to find the class to use and instance it
 			newBrowser = getBrowserInstance();
-
 		}
 		assert (newBrowser != null);
 		return newBrowser;
 
 	}
 
+	/**
+	 * Depended on the {@link #browserType} a new instance is made.
+	 * 
+	 * @return the new Object holding the EmbeddedBrowser instance.
+	 * @throws WebDriverException
+	 *             a WebDriverException is thrown by the WebDriver when creation of the browser
+	 *             failed.
+	 */
 	private EmbeddedBrowser getBrowserInstance() {
 
 		switch (browserType) {
@@ -211,34 +258,55 @@ public final class BrowserFactory {
 	}
 
 	/**
-	 * Place a request for a browser. TODO Stefan; if the number of browsers can be specified, the
-	 * non boot code must check if the number of browsers is not exceeded.
+	 * Place a request for a browser.
 	 * 
 	 * @return a new Browser instance which is currently free
 	 * @throws InterruptedException
 	 *             the InterruptedException is thrown when the AVAILABE list is interrupted.
 	 */
 	public EmbeddedBrowser requestBrowser() throws InterruptedException {
-		EmbeddedBrowser browser;
+		EmbeddedBrowser browser = null;
 		if (useBooting()) {
 			booter.start();
 			browser = waitForBrowser();
 		} else {
 			if (available.size() > 0) {
+				// There are browsers available
 				browser = available.take();
+				taken.add(browser);
+			} else if (activeBrowserCount.getAndIncrement() < getNumberOfBrowsers()) {
+				// We are not at the limit of the number of browsers so create one
+				try {
+					browser = createBrowser();
+				} catch (WebDriverException e) {
+					LOGGER.error("Faild to create a browser!", e);
+					if (getNumberBrowserCreateRetries() > 0
+					        && retries < getNumberBrowserCreateRetries()) {
+						retries++;
+
+						// Do we need to sleep after a crash?
+						if (getSleepTimeOnBrowserCreationFailure() > 0) {
+							Thread.sleep(getSleepTimeOnBrowserCreationFailure());
+						}
+
+						browser = requestBrowser();
+					}
+					if (browser == null) {
+						activeBrowserCount.decrementAndGet();
+						LOGGER.fatal("I could (might) not rescue a browser creation!", e);
+						throw e;
+					}
+				}
+				taken.add(browser);
 			} else {
-				browser = createBrowser();
+				// The max number of browsers has been made, so wait for a browser to become
+				// available.
+				browser = waitForBrowser();
 			}
-			taken.add(browser);
 		}
 		assert (browser != null);
 		assert (taken.contains(browser));
 		return browser;
-	}
-
-	private boolean useBooting() {
-		// TODO Stefan Config...
-		return true;
 	}
 
 	/**
@@ -275,6 +343,7 @@ public final class BrowserFactory {
 		private boolean finished = false;
 		private final AtomicBoolean started;
 		private final AtomicInteger createdBrowserCount;
+		private final AtomicInteger failedCreatedBrowserCount;
 		private final BrowserFactory factory;
 
 		public BrowserBooter(BrowserFactory factory) {
@@ -282,6 +351,7 @@ public final class BrowserFactory {
 			this.factory = factory;
 			started = new AtomicBoolean(false);
 			createdBrowserCount = new AtomicInteger(0);
+			failedCreatedBrowserCount = new AtomicInteger(0);
 		}
 
 		@Override
@@ -293,14 +363,38 @@ public final class BrowserFactory {
 			assert (createdBrowserCount.get() <= 1);
 
 			// Loop to the requested number of browsers
-			for (; i < factory.getNumberOfThreads(); i++) {
+			for (; i < factory.getNumberOfBrowsers(); i++) {
 				// Create a new Thread
 				new Thread(new Runnable() {
+					private int bootRetries = 0;
 
 					@Override
 					public void run() {
-						factory.available.add(factory.createBrowser());
-						createdBrowserCount.incrementAndGet();
+						try {
+							factory.available.add(factory.createBrowser());
+							createdBrowserCount.incrementAndGet();
+						} catch (WebDriverException e) {
+							LOGGER.error("Creation of Browser faild!", e);
+							if (factory.getNumberBrowserCreateRetries() > 0
+							        && bootRetries < factory.getNumberBrowserCreateRetries()) {
+								bootRetries++;
+
+								// Do we need to sleep after a crash?
+								if (factory.getSleepTimeOnBrowserCreationFailure() > 0) {
+									try {
+										Thread.sleep(getSleepTimeOnBrowserCreationFailure());
+									} catch (InterruptedException e1) {
+										LOGGER.error("Interruped while sleepting "
+										        + "timeout before retry of "
+										        + "creation of new browser instance", e1);
+									}
+								}
+								run();
+							} else {
+								failedCreatedBrowserCount.incrementAndGet();
+								LOGGER.error("Could not rescure browser creation!", e);
+							}
+						}
 					}
 				}).start();
 			}
@@ -318,7 +412,7 @@ public final class BrowserFactory {
 			LOGGER.warn("Waiting for all browsers to be started fully"
 			        + " before starting to close them. Created browsers "
 			        + createdBrowserCount.get() + " configed browsers "
-			        + factory.getNumberOfThreads());
+			        + factory.getNumberOfBrowsers());
 			while (!allBrowsersLoaded()) {
 				try {
 					Thread.sleep(factory.shutdownTimeout);
@@ -341,10 +435,11 @@ public final class BrowserFactory {
 		}
 
 		/**
-		 * @return true is all requested browsers are loaded.
+		 * @return true is all requested browsers are loaded or at least there was an attempt for!.
 		 */
 		private boolean allBrowsersLoaded() {
-			return createdBrowserCount.get() >= factory.getNumberOfThreads();
+			return (failedCreatedBrowserCount.get() + createdBrowserCount.get()) >= factory
+			        .getNumberOfBrowsers();
 		}
 	}
 }

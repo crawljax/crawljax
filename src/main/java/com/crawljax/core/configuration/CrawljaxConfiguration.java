@@ -48,6 +48,7 @@ public final class CrawljaxConfiguration {
 	private CrawlSpecification crawlSpecification = new CrawlSpecification("");
 	private HibernateConfiguration hibernateConfiguration = new HibernateConfiguration();
 	private ProxyConfiguration proxyConfiguration = null;
+	private ThreadConfiguration threadConfiguration = new ThreadConfiguration();
 
 	/**
 	 * Constructor.
@@ -122,7 +123,7 @@ public final class CrawljaxConfiguration {
 		config.addProperty("crawl.max.runtime", getCrawlSpecification().getMaximumRuntime());
 		config.addProperty("crawl.forms.randominput", ConfigurationHelper
 		        .booleanToInt(getCrawlSpecification().getRandomInputInForms()));
-		config.addProperty("crawl.numberOfThreads", getCrawlSpecification().getNumberOfThreads());
+		config.addProperty("crawl.numberOfThreads", getThreadConfiguration().getNumberThreads());
 
 		if (getProxyConfiguration() != null) {
 			config.addProperty("proxy.enabled", 1);
@@ -147,6 +148,21 @@ public final class CrawljaxConfiguration {
 	 */
 	protected ProxyConfiguration getProxyConfiguration() {
 		return proxyConfiguration;
+	}
+
+	/**
+	 * @param threadConfiguration
+	 *            the threadConfiguration to set
+	 */
+	public void setThreadConfiguration(ThreadConfiguration threadConfiguration) {
+		this.threadConfiguration = threadConfiguration;
+	}
+
+	/**
+	 * @return the threadConfiguration
+	 */
+	protected ThreadConfiguration getThreadConfiguration() {
+		return threadConfiguration;
 	}
 
 	/**

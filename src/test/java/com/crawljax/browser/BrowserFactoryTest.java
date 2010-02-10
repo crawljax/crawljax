@@ -9,6 +9,8 @@ import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.ThreadConfiguration;
+import com.crawljax.core.configuration.ThreadConfigurationReader;
 
 /**
  * This test, test the (public) operations from the BrowserFactory.
@@ -18,8 +20,9 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
  */
 public class BrowserFactoryTest {
 	private static final int TIMEOUT = 10000; // 10 Sec.
-	private BrowserFactory factory =
-	        new BrowserFactory(BrowserType.firefox, 1, null, null, 400, 500);
+	private final BrowserFactory factory =
+	        new BrowserFactory(BrowserType.firefox, new ThreadConfigurationReader(
+	                new ThreadConfiguration(1)), null, null, 400, 500);
 
 	/**
 	 * Request don't release and close the factory.
@@ -89,18 +92,18 @@ public class BrowserFactoryTest {
 	@Test(timeout = TIMEOUT)
 	public void testMultipleBrowsers() throws ConfigurationException, InterruptedException {
 		CrawlSpecification spec = new CrawlSpecification("about:blank");
-		// TODO Stefan. when NuberOfBrowsers specified; use that in stead...
-		spec.setNumberOfThreads(4);
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
+		cfg.setThreadConfiguration(new ThreadConfiguration(4));
 
 		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
 
 		try {
 
 			BrowserFactory factory =
-			        new BrowserFactory(reader.getBrowser(), reader.getCrawlSpecificationReader()
-			                .getNumberOfThreads(), reader.getProxyConfiguration(), null, 1, 1);
+			        new BrowserFactory(reader.getBrowser(),
+			                reader.getThreadConfigurationReader(),
+			                reader.getProxyConfiguration(), null, 1, 1);
 
 			factory.requestBrowser();
 			factory.requestBrowser();

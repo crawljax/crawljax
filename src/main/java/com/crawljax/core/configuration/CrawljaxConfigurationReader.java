@@ -21,6 +21,7 @@ public class CrawljaxConfigurationReader {
 
 	private final CrawljaxConfiguration crawljaxConfiguration;
 	private final CrawlSpecificationReader crawlSpecificationReader;
+	private final ThreadConfigurationReader threadConfigurationReader;
 
 	/**
 	 * Construct a new reader wrapper.
@@ -32,7 +33,8 @@ public class CrawljaxConfigurationReader {
 		this.crawljaxConfiguration = crawljaxConfiguration;
 		this.crawlSpecificationReader =
 		        new CrawlSpecificationReader(crawljaxConfiguration.getCrawlSpecification());
-
+		this.threadConfigurationReader =
+		        new ThreadConfigurationReader(crawljaxConfiguration.getThreadConfiguration());
 	}
 
 	/**
@@ -41,6 +43,16 @@ public class CrawljaxConfigurationReader {
 	@Deprecated
 	public Configuration getConfiguration() {
 		return crawljaxConfiguration.getConfiguration();
+	}
+
+	/**
+	 * TODO this call must be removed to maintain a "Reader"-only implementation.
+	 * 
+	 * @return a CrawljaxConfiguration. For use by cross-browser tester plugin!
+	 */
+	@Deprecated
+	public CrawljaxConfiguration getCrawljaxConfiguration() {
+		return crawljaxConfiguration;
 	}
 
 	/**
@@ -162,4 +174,10 @@ public class CrawljaxConfigurationReader {
 		return crawljaxConfiguration.getFilterAttributeNames();
 	}
 
+	/**
+	 * @return the thread configruation.
+	 */
+	public ThreadConfigurationReader getThreadConfigurationReader() {
+		return this.threadConfigurationReader;
+	}
 }

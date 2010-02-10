@@ -161,8 +161,6 @@ public class StateMachine {
 	}
 
 	/**
-	 * TODO Stefan Remove the controller argument.
-	 * 
 	 * @param event
 	 *            the event edge.
 	 * @param newState
