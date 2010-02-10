@@ -97,8 +97,7 @@ public class EventableTest {
 			/*
 			 * String infoexpected = "DIV: id=firstdiv, xpath /HTML[1]/BODY[1]/DIV[1] onclick";
 			 */
-			String infoexpected =
-			        "ID: firstdivDIV: id=\"firstdiv\" click xpath " + "/HTML[1]/BODY[1]/DIV[1]";
+			String infoexpected = "DIV: id=\"firstdiv\" click xpath " + "/HTML[1]/BODY[1]/DIV[1]";
 			System.out.println(clickable);
 			assertEquals(infoexpected, clickable.toString());
 		} catch (Exception e) {

@@ -69,13 +69,6 @@ public class CrawlSpecificationReader {
 	}
 
 	/**
-	 * @return the number of threads.
-	 */
-	public int getNumberOfThreads() {
-		return crawlSpecification.getNumberOfThreads();
-	}
-
-	/**
 	 * @return the depth level.
 	 */
 	public int getDepth() {

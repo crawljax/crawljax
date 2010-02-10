@@ -21,7 +21,7 @@ import com.crawljax.core.TagElement;
  */
 public class PropertiesFile {
 
-	private CrawljaxConfiguration config;
+	private final CrawljaxConfiguration config;
 
 	private static final String PROJECTRELATIVEPATH = "project.path.relative";
 	private static final String OUTPUTFOLDERNAME = "output.path";
@@ -86,7 +86,7 @@ public class PropertiesFile {
 
 		config.setCrawlSpecification(getCrawlSpecification(file));
 
-		config.setFilterAttributeNames((List<String>) file.getList(CRAWLFILTERATTRIBUTES));
+		config.setFilterAttributeNames(file.getList(CRAWLFILTERATTRIBUTES));
 
 		if (file.containsKey(PROXYENABLED) && file.getBoolean(PROXYENABLED)) {
 			config.setProxyConfiguration(new ProxyConfiguration());
@@ -117,8 +117,6 @@ public class PropertiesFile {
 		crawler.setWaitTimeAfterReloadUrl(file.getInt(CRAWLWAITRELOAD));
 
 		crawler.setRandomInputInForms(file.getInt(CRAWLFORMRANDOMINPUT) == 1);
-
-		crawler.setNumberOfThreads(file.getInt(CRAWLNUMBEROFTHREADS));
 
 		setClickTags(file, crawler);
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
@@ -25,7 +25,7 @@ public class CrawlSession {
 	private final List<List<Eventable>> crawlPaths = new ArrayList<List<Eventable>>();
 	private StateVertix currentState;
 	private final StateVertix initialState;
-	private final CrawljaxConfiguration crawljaxConfiguration;
+	private final CrawljaxConfigurationReader crawljaxConfiguration;
 	private final long startTime;
 
 	/**
@@ -64,7 +64,7 @@ public class CrawlSession {
 	 *            the configuration.
 	 */
 	public CrawlSession(EmbeddedBrowser browser, StateFlowGraph stateFlowGraph,
-	        StateVertix state, long startTime, CrawljaxConfiguration crawljaxConfiguration) {
+	        StateVertix state, long startTime, CrawljaxConfigurationReader crawljaxConfiguration) {
 		this.crawljaxConfiguration = crawljaxConfiguration;
 		this.browser = browser;
 		this.stateFlowGraph = stateFlowGraph;
@@ -120,7 +120,7 @@ public class CrawlSession {
 	/**
 	 * @return the crawljaxConfiguration
 	 */
-	public CrawljaxConfiguration getCrawljaxConfiguration() {
+	public CrawljaxConfigurationReader getCrawljaxConfiguration() {
 		return crawljaxConfiguration;
 	}
 

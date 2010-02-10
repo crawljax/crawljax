@@ -281,7 +281,7 @@ public class LargeCrawljaxTest {
 
 	/* setting up */
 
-	private static CrawlSpecification getCrawlSpecification() {
+	protected static CrawlSpecification getCrawlSpecification() {
 		File index = new File(INDEX);
 		CrawlSpecification crawler = new CrawlSpecification("file://" + index.getAbsolutePath());
 		crawler.setWaitTimeAfterEvent(100);
@@ -361,7 +361,7 @@ public class LargeCrawljaxTest {
 		crawler.addCrawlCondition("DONT_CRAWL_ME", new NotRegexCondition("DONT_CRAWL_ME"));
 	}
 
-	private static void addPlugins(CrawljaxConfiguration crawljaxConfiguration) {
+	protected static void addPlugins(CrawljaxConfiguration crawljaxConfiguration) {
 		// plugin to retrieve session data
 		crawljaxConfiguration.addPlugin(new PostCrawlingPlugin() {
 

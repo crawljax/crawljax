@@ -8,6 +8,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.configuration.ThreadConfiguration;
 
 /**
  * Simple Example.
@@ -28,13 +29,21 @@ public final class CrawljaxSimpleExampleSettings {
 	private static CrawljaxConfiguration getCrawljaxConfiguration() {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		config.setCrawlSpecification(getCrawlSpecification());
+		config.setThreadConfiguration(getThreadConfiguration());
 		config.setBrowser(BrowserType.firefox);
 		return config;
 	}
 
+	private static ThreadConfiguration getThreadConfiguration() {
+		ThreadConfiguration tc = new ThreadConfiguration();
+		tc.setBrowserBooting(true);
+		tc.setNumberBrowsers(1);
+		tc.setNumberThreads(1);
+		return tc;
+	}
+
 	private static CrawlSpecification getCrawlSpecification() {
 		CrawlSpecification crawler = new CrawlSpecification(URL);
-		crawler.setNumberOfThreads(1);
 
 		// click these elements
 		crawler.click("a");

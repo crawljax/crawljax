@@ -60,7 +60,6 @@ public class CrawlSpecification {
 	private int maximumRuntime = DEFAULT_MAXIMUMRUNTIME; // in seconds
 	private int waitTimeAfterReloadUrl = DEFAULT_WAITTIMEAFTERRELOADURL; // in milliseconds
 	private int waitTimeAfterEvent = DEFAULT_WAITTIMEAFTEREVENT; // in milliseconds
-	private int numberOfThreads = 1;
 	private final CrawlActions crawlActions = new CrawlActions();
 
 	private boolean randomInputInForms = true;
@@ -258,21 +257,6 @@ public class CrawlSpecification {
 	 */
 	public void setInputSpecification(InputSpecification inputSpecification) {
 		this.inputSpecification = inputSpecification;
-	}
-
-	/**
-	 * @param numberOfThreads
-	 *            the numberOfThreads to set
-	 */
-	public void setNumberOfThreads(int numberOfThreads) {
-		this.numberOfThreads = numberOfThreads;
-	}
-
-	/**
-	 * @return the numberOfThreads
-	 */
-	public int getNumberOfThreads() {
-		return numberOfThreads;
 	}
 
 	/**
