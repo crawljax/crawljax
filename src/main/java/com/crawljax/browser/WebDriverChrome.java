@@ -7,7 +7,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 /**
  * @author amesbah
- * @version $Id: WebDriverChrome.java 218 amesbah $
+ * @version $Id$
  */
 public class WebDriverChrome extends AbstractWebDriver {
 
