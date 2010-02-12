@@ -246,10 +246,12 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		try {
 			String handle = browser.getWindowHandle();
 
+			boolean handleChanged = false;
 			boolean result = false;
 
 			if (eventable.getRelatedFrame() != null && !eventable.getRelatedFrame().equals("")) {
 				browser.switchTo().frame(eventable.getRelatedFrame());
+				handleChanged = true;
 			}
 
 			WebElement webElement =
@@ -259,7 +261,9 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 				result = fireEventWait(webElement, eventable);
 			}
 
-			browser.switchTo().window(handle);
+			if (handleChanged) {
+				browser.switchTo().window(handle);
+			}
 
 			return result;
 
