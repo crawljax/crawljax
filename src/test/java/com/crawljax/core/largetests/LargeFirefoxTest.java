@@ -11,6 +11,7 @@ import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.ThreadConfiguration;
 
 public class LargeFirefoxTest extends LargeTestSuper {
 
@@ -28,6 +29,7 @@ public class LargeFirefoxTest extends LargeTestSuper {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
+		crawljaxConfiguration.setThreadConfiguration(new ThreadConfiguration(3, 3, true));
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification("file://"
 		        + new File(INDEX).getAbsolutePath(), waitAfterEvent, waitAfterReload));
 		addPlugins(crawljaxConfiguration);
