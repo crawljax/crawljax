@@ -95,12 +95,14 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 * Fires the event and waits for a specified time.
 	 * 
 	 * @param webElement
+	 *            the element to fire event on.
 	 * @param eventable
 	 *            The HTML event type (onclick, onmouseover, ...).
-	 * @throws Exception
+	 * @return true if firing event is successful.
+	 * @throws CrawljaxException
 	 *             if fails.
 	 */
-	private boolean fireEventWait(WebElement webElement, Eventable eventable)
+	protected boolean fireEventWait(WebElement webElement, Eventable eventable)
 	        throws CrawljaxException {
 
 		switch (eventable.getEventType()) {

@@ -202,6 +202,10 @@ public final class BrowserFactory {
 				return new WebDriverIE(this.filterAttributes, this.crawlWaitReload,
 				        this.crawlWaitEvent);
 
+			case chrome:
+				return new WebDriverChrome(this.filterAttributes, this.crawlWaitReload,
+				        this.crawlWaitEvent);
+
 			default:
 				return new WebDriverFirefox(this.filterAttributes, this.crawlWaitReload,
 				        this.crawlWaitEvent);

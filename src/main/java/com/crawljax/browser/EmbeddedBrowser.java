@@ -20,7 +20,7 @@ public interface EmbeddedBrowser extends Cloneable {
 	 * Browser types.
 	 */
 	public enum BrowserType {
-		firefox, ie
+		firefox, ie, chrome
 	}
 
 	/**
