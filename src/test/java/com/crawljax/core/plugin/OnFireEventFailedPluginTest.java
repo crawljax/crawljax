@@ -6,6 +6,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ import com.crawljax.core.state.Eventable;
  */
 public class OnFireEventFailedPluginTest {
 	private static CrawljaxController controller;
-
+	private static CrawljaxConfiguration config;
 	private static int hit;
 
 	@BeforeClass
@@ -36,7 +37,7 @@ public class OnFireEventFailedPluginTest {
 		                + new File("src/test/site/crawler/index.html").getAbsolutePath());
 		spec.clickDefaultElements();
 
-		CrawljaxConfiguration config = new CrawljaxConfiguration();
+		config = new CrawljaxConfiguration();
 		config.setCrawlSpecification(spec);
 		config.addPlugin(new PreStateCrawlingPlugin() {
 
@@ -66,4 +67,10 @@ public class OnFireEventFailedPluginTest {
 		        "The FireEventFaild Plugin has been executed the correct amount of times", hit,
 		        controller.getElementChecker().numberOfExaminedElements());
 	}
+
+	@AfterClass
+	public static void cleanUp() {
+		CrawljaxPluginsUtil.loadPlugins(null);
+	}
+
 }
