@@ -11,12 +11,11 @@ import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.ThreadConfiguration;
 
 public class LargeFirefoxTest extends LargeTestSuper {
 
-	private static final int waitAfterEvent = 100;
-	private static final int waitAfterReload = 100;
+	private static final int waitAfterEvent = 200;
+	private static final int waitAfterReload = 200;
 	private static BrowserType browser = BrowserType.firefox;
 	private static final String INDEX = "src/test/site/index.html";
 
@@ -29,7 +28,7 @@ public class LargeFirefoxTest extends LargeTestSuper {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
-		crawljaxConfiguration.setThreadConfiguration(new ThreadConfiguration(3, 3, true));
+		// crawljaxConfiguration.setThreadConfiguration(new ThreadConfiguration(3, 3, true));
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification("file://"
 		        + new File(INDEX).getAbsolutePath(), waitAfterEvent, waitAfterReload));
 		addPlugins(crawljaxConfiguration);
