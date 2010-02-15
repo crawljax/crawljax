@@ -51,4 +51,8 @@ public class WebDriverChrome extends AbstractWebDriver {
 		        getCrawlWaitReload(), getCrawlWaitEvent());
 	}
 
+	@Override
+	public void closeOtherWindows() {
+		LOGGER.info("Closing other windows not implemented for ChromeDriver");
+	}
 }
