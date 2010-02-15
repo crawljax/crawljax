@@ -52,11 +52,11 @@ public final class CrawljaxPluginsUtil {
 	 *            the list of plugins.
 	 */
 	public static void loadPlugins(List<Plugin> plugins) {
+		CrawljaxPluginsUtil.plugins = plugins;
 		if (plugins == null || plugins.size() == 0) {
 			LOGGER.warn("No plugins loaded because CrawljaxConfiguration is empty");
 			return;
 		}
-		CrawljaxPluginsUtil.plugins = plugins;
 		for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 			/**
 			 * Log the name of the plugin loaded
