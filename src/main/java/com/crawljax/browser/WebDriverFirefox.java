@@ -22,7 +22,7 @@ public class WebDriverFirefox extends AbstractWebDriver {
 	private ProxyConfiguration proxyConfiguration = null;
 	private String firefoxLocation = null;
 	private static final Logger LOGGER = Logger.getLogger(WebDriverFirefox.class.getName());
-	private FirefoxDriver driver;
+	private final FirefoxDriver driver;
 
 	/**
 	 * Creates a new FirefoxDriver object based on a given driver as WebDriver.
@@ -62,8 +62,7 @@ public class WebDriverFirefox extends AbstractWebDriver {
 	 */
 	public WebDriverFirefox(ProxyConfiguration config, List<String> filterAttributes,
 	        long crawlWaitReload, long crawlWaitEvent) {
-		this(new FirefoxDriver(makeProfile(config)), filterAttributes, crawlWaitReload,
-		        crawlWaitEvent);
+		this(makeProfile(config), filterAttributes, crawlWaitReload, crawlWaitEvent);
 		proxyConfiguration = config;
 	}
 
@@ -84,6 +83,23 @@ public class WebDriverFirefox extends AbstractWebDriver {
 		this(new FirefoxDriver(new FirefoxBinary(new File(location)), null), filterAttributes,
 		        crawlWaitReload, crawlWaitEvent);
 		firefoxLocation = location;
+	}
+
+	/**
+	 * Creates a webdriver firefox instance for a given profile configuration.
+	 * 
+	 * @param profile
+	 *            the profile configuration to read the config from
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 */
+	public WebDriverFirefox(FirefoxProfile profile, List<String> filterAttributes,
+	        long crawlWaitReload, long crawlWaitEvent) {
+		this(new FirefoxDriver(profile), filterAttributes, crawlWaitReload, crawlWaitReload);
 	}
 
 	private static FirefoxProfile makeProfile(ProxyConfiguration config) {
