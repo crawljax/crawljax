@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.FirefoxProfile;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.ProxyConfiguration;
@@ -112,6 +113,24 @@ public final class BrowserFactory {
 	}
 
 	/**
+	 * Use Fast booting?
+	 * 
+	 * @return true if fast booting of browsers is enabled.
+	 */
+	private boolean useFastBooting() {
+		return threadConfig.getUseFastBooting();
+	}
+
+	/**
+	 * Retrieve / generate the port number to use.
+	 * 
+	 * @return the port number that must be used.
+	 */
+	private int getPortNumber() {
+		return threadConfig.getPortNumber();
+	}
+
+	/**
 	 * hidden constructor.
 	 * 
 	 * @param type
@@ -195,6 +214,14 @@ public final class BrowserFactory {
 					return new WebDriverFirefox(proxyConfiguration, this.filterAttributes,
 					        this.crawlWaitReload, this.crawlWaitEvent);
 				}
+
+				if (useFastBooting()) {
+					FirefoxProfile fp = new FirefoxProfile();
+					fp.setPort(getPortNumber());
+					return new WebDriverFirefox(fp, this.filterAttributes, this.crawlWaitReload,
+					        this.crawlWaitEvent);
+				}
+
 				return new WebDriverFirefox(this.filterAttributes, this.crawlWaitReload,
 				        this.crawlWaitEvent);
 
@@ -216,7 +243,6 @@ public final class BrowserFactory {
 	 * Close all browser windows.
 	 */
 	public synchronized void close() {
-
 		Queue<EmbeddedBrowser> deleteList = new LinkedList<EmbeddedBrowser>();
 		if (useBooting()) {
 			booter.shutdown();
@@ -424,7 +450,6 @@ public final class BrowserFactory {
 					LOGGER.error("Closing of the browsers faild due to an Interrupt", e);
 				}
 			}
-			assert (allBrowsersLoaded());
 		}
 
 		/**
