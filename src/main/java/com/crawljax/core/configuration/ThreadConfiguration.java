@@ -1,5 +1,7 @@
 package com.crawljax.core.configuration;
 
+import org.openqa.selenium.firefox.FirefoxDriver;
+
 /**
  * This class denotes all the configuration variable that can be set with regard to the number of
  * Threads active.
@@ -8,6 +10,9 @@ package com.crawljax.core.configuration;
  * @version $Id$
  */
 public class ThreadConfiguration {
+
+	private final int baseFreePortNumber = 32768;
+	private final int limitFreePortNumber = 65535;
 
 	/**
 	 * Default SleepTimeOnBrowserCreationFailure == 10 seconds == 10000 Millisecond.
@@ -50,6 +55,21 @@ public class ThreadConfiguration {
 	 * The number of milliseconds to sleep when a browser can not be created.
 	 */
 	private int sleepTimeOnBrowserCreationFailure = defaultSleepTimeOnBrowserCreationFailure;
+
+	/**
+	 * This field indicates if the fastBooting algorithm must be used.
+	 */
+	private boolean useFastBooting = false;
+
+	/**
+	 * Use a random port number.
+	 */
+	private boolean useRandomPortNumberCreation = true;
+
+	/**
+	 * The last returned port number.
+	 */
+	private int lastPort = FirefoxDriver.DEFAULT_PORT;
 
 	/**
 	 * Initialise everything directly.
@@ -178,6 +198,49 @@ public class ThreadConfiguration {
 	 */
 	public final void setSleepTimeOnBrowserCreationFailure(int sleepTimeOnBrowserCreationFailure) {
 		this.sleepTimeOnBrowserCreationFailure = sleepTimeOnBrowserCreationFailure;
+	}
+
+	/**
+	 * Is the fast booting algorithm in use?
+	 * 
+	 * @return true if the fast booting is in use
+	 */
+	public boolean getUseFastBooting() {
+		return this.useFastBooting;
+	}
+
+	/**
+	 * Determine a port number depending on the configuration value.
+	 * 
+	 * @return the port number to use;
+	 */
+	public int getPortNumber() {
+		if (getUseFastBooting()) {
+			if (useRandomPortNumberCreation) {
+				return baseFreePortNumber
+				        + (int) (Math.random() * (limitFreePortNumber - baseFreePortNumber));
+			} else {
+				return this.lastPort++;
+			}
+		} else {
+			return this.lastPort;
+		}
+	}
+
+	/**
+	 * @param useFastBooting
+	 *            the useFastBooting to set
+	 */
+	public final void setUseFastBooting(boolean useFastBooting) {
+		this.useFastBooting = useFastBooting;
+	}
+
+	/**
+	 * @param useRandomPortNumberCreation
+	 *            the useRandomPortNumberCreation to set
+	 */
+	public final void setUseRandomPortNumberCreation(boolean useRandomPortNumberCreation) {
+		this.useRandomPortNumberCreation = useRandomPortNumberCreation;
 	}
 
 }

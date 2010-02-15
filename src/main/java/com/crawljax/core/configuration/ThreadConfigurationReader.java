@@ -60,4 +60,21 @@ public class ThreadConfigurationReader {
 		return threadConfiguration.getSleepTimeOnBrowserCreationFailure();
 	}
 
+	/**
+	 * Use Fast booting?
+	 * 
+	 * @return true if fast booting of browsers is enabled.
+	 */
+	public boolean getUseFastBooting() {
+		return threadConfiguration.getUseFastBooting();
+	}
+
+	/**
+	 * Retrieve / generate the port number to use.
+	 * 
+	 * @return the port number that must be used.
+	 */
+	public int getPortNumber() {
+		return threadConfiguration.getPortNumber();
+	}
 }
