@@ -1,5 +1,9 @@
 package com.crawljax.browser;
 
+import java.io.File;
+
+import javax.transaction.NotSupportedException;
+
 import org.openqa.selenium.WebElement;
 
 import com.crawljax.core.CrawljaxException;
@@ -91,5 +95,10 @@ public class DummyBrowser implements EmbeddedBrowser {
 	@Override
 	public WebElement getWebElement(Identification identification) {
 		return null;
+	}
+
+	@Override
+	public void saveScreenShot(File file) throws NotSupportedException {
+
 	}
 }
