@@ -3,6 +3,10 @@
  */
 package com.crawljax.browser;
 
+import java.io.File;
+
+import javax.transaction.NotSupportedException;
+
 import org.openqa.selenium.WebElement;
 
 import com.crawljax.core.CrawljaxException;
@@ -143,4 +147,12 @@ public interface EmbeddedBrowser extends Cloneable {
 	 * @return the corresponding WebElement from the browser.
 	 */
 	WebElement getWebElement(Identification identification);
+
+	/**
+	 * @param file
+	 *            the file to write the screenshot to (png).
+	 * @throws NotSupportedException
+	 *             if saving screenshots is not supported by the implementing class.
+	 */
+	void saveScreenShot(File file) throws NotSupportedException;
 }

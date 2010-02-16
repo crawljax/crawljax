@@ -1,6 +1,9 @@
 package com.crawljax.browser;
 
+import java.io.File;
 import java.util.List;
+
+import javax.transaction.NotSupportedException;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -48,6 +51,12 @@ public class WebDriverIE extends AbstractWebDriver {
 	public EmbeddedBrowser clone() {
 		return new WebDriverIE(new InternetExplorerDriver(), getFilterAttributes(),
 		        getCrawlWaitReload(), getCrawlWaitEvent());
+	}
+
+	@Override
+	public void saveScreenShot(File file) throws NotSupportedException {
+		LOGGER.warn("screenshot not supprted by WebDriver IE");
+		throw new NotSupportedException("screenshot not supprted by WebDriver IE");
 	}
 
 }

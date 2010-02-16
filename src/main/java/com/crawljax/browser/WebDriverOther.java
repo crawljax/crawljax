@@ -1,5 +1,9 @@
 package com.crawljax.browser;
 
+import java.io.File;
+
+import javax.transaction.NotSupportedException;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -47,6 +51,12 @@ public class WebDriverOther extends AbstractWebDriver {
 		Logger.getLogger(WebDriverOther.class.getName()).error(
 		        "Now returning a new Firefox Driver!");
 		return new WebDriverOther(new FirefoxDriver());
+	}
+
+	@Override
+	@Deprecated
+	public void saveScreenShot(File file) throws NotSupportedException {
+
 	}
 
 }
