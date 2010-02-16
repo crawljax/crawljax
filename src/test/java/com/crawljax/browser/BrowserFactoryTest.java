@@ -3,6 +3,7 @@ package com.crawljax.browser;
 import static org.junit.Assert.fail;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -89,6 +90,7 @@ public class BrowserFactoryTest {
 	 * @throws InterruptedException
 	 *             when the request for a browser is interupped
 	 */
+	@Ignore
 	@Test(timeout = TIMEOUT)
 	public void testMultipleBrowsers() throws ConfigurationException, InterruptedException {
 		CrawlSpecification spec = new CrawlSpecification("about:blank");
