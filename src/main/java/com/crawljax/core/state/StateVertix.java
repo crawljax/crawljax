@@ -1,6 +1,7 @@
 package com.crawljax.core.state;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,8 +31,9 @@ import com.crawljax.util.database.HibernateUtil;
  * @author mesbah
  * @version $Id$
  */
-public class StateVertix implements Iterable<CandidateCrawlAction> {
+public class StateVertix implements Iterable<CandidateCrawlAction>, Serializable {
 
+	private static final long serialVersionUID = 123400017983488L;
 	private static final Logger LOGGER = Logger.getLogger(StateVertix.class);
 	private long id;
 	private String name;
@@ -129,7 +131,14 @@ public class StateVertix implements Iterable<CandidateCrawlAction> {
 	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(this.strippedDom).toHashCode();
+		HashCodeBuilder builder = new HashCodeBuilder();
+		if (strippedDom == null || "".equals(strippedDom)) {
+			builder.append(dom);
+		} else {
+			builder.append(strippedDom);
+		}
+
+		return builder.toHashCode();
 	}
 
 	/**
