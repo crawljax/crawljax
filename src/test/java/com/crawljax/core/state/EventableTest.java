@@ -10,6 +10,9 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -124,6 +127,52 @@ public class EventableTest {
 			e1.printStackTrace();
 			fail(e1.getMessage());
 		}
+
+	}
+
+	@Test
+	public void testSets() {
+		Eventable c =
+		        new Eventable(new Identification(Identification.How.xpath, "/body/div[3]"),
+		                EventType.click);
+		c.setId(1);
+		Eventable b =
+		        new Eventable(new Identification(Identification.How.xpath, "/body/div[3]"),
+		                EventType.click);
+		c.setId(2);
+		Eventable d =
+		        new Eventable(new Identification(Identification.How.id, "23"), EventType.click);
+		c.setId(3);
+		Eventable e =
+		        new Eventable(new Identification(Identification.How.id, "23"), EventType.hover);
+		c.setId(4);
+		assertTrue(c.equals(b));
+		assertEquals(c.hashCode(), b.hashCode());
+
+		Set<Eventable> setOne = new HashSet<Eventable>();
+		setOne.add(b);
+		setOne.add(c);
+		setOne.add(d);
+		setOne.add(e);
+
+		assertEquals(3, setOne.size());
+
+		Set<Eventable> setTwo = new HashSet<Eventable>();
+		setTwo.add(b);
+		setTwo.add(c);
+		setTwo.add(d);
+
+		assertEquals(2, setTwo.size());
+
+		Set<Eventable> intersection = new HashSet<Eventable>(setOne);
+		intersection.retainAll(setTwo);
+
+		assertEquals(2, intersection.size());
+
+		Set<Eventable> difference = new HashSet<Eventable>(setOne);
+		difference.removeAll(setTwo);
+
+		assertEquals(1, difference.size());
 
 	}
 }
