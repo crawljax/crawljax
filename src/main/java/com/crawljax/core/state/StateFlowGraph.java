@@ -57,15 +57,36 @@ public class StateFlowGraph {
 	 * u.equals(v). If this graph already contains such vertex, the call leaves this graph unchanged
 	 * and returns false. In combination with the restriction on constructors, this ensures that
 	 * graphs never contain duplicate vertices. Throws java.lang.NullPointerException - if the
-	 * specified vertex is null.
+	 * specified vertex is null. This method automatically updates the state name to reflect the
+	 * internal state counter.
 	 * 
 	 * @param stateVertix
 	 *            the state to be added.
 	 * @return the clone if one is detected null otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	@GuardedBy("sfg")
 	public StateVertix addState(StateVertix stateVertix) {
+		return addState(stateVertix, true);
+	}
+
+	/**
+	 * Adds a state (as a vertix) to the State-Flow Graph if not already present. More formally,
+	 * adds the specified vertex, v, to this graph if this graph contains no vertex u such that
+	 * u.equals(v). If this graph already contains such vertex, the call leaves this graph unchanged
+	 * and returns false. In combination with the restriction on constructors, this ensures that
+	 * graphs never contain duplicate vertices. Throws java.lang.NullPointerException - if the
+	 * specified vertex is null.
+	 * 
+	 * @param stateVertix
+	 *            the state to be added.
+	 * @param correctName
+	 *            if true the name of the state will be corrected according to the internal state
+	 *            counter.
+	 * @return the clone if one is detected null otherwise.
+	 * @see org.jgrapht.Graph#addVertex(Object)
+	 */
+	@GuardedBy("sfg")
+	public StateVertix addState(StateVertix stateVertix, boolean correctName) {
 		synchronized (sfg) {
 			if (!sfg.addVertex(stateVertix)) {
 				// Graph already contained the vertix
@@ -76,15 +97,17 @@ public class StateFlowGraph {
 				 * is the only place states can be added and we are now locked so getAllStates.size
 				 * works correctly.
 				 */
-				// the -1 is for the "index" state.
-				int totalNumberOfStates = this.getAllStates().size() - 1;
-				String correctName =
-				        makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
-				if (!stateVertix.getName().equals("index")
-				        && !stateVertix.getName().equals(correctName)) {
-					LOGGER.info("Correcting state name from  " + stateVertix.getName() + " to "
-					        + correctName);
-					stateVertix.setName(correctName);
+				if (correctName) {
+					// the -1 is for the "index" state.
+					int totalNumberOfStates = this.getAllStates().size() - 1;
+					String correctedName =
+					        makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
+					if (!stateVertix.getName().equals("index")
+					        && !stateVertix.getName().equals(correctedName)) {
+						LOGGER.info("Correcting state name from  " + stateVertix.getName()
+						        + " to " + correctedName);
+						stateVertix.setName(correctedName);
+					}
 				}
 			}
 			stateCounter.set(this.getAllStates().size() - 1);
