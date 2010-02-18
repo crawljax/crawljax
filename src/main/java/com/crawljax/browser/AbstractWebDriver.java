@@ -73,9 +73,9 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public void goToUrl(String url) throws CrawljaxException {
 		browser.navigate().to(url);
-		handlePopups();
 		try {
 			Thread.sleep(this.crawlWaitReload);
+			handlePopups();
 		} catch (InterruptedException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
