@@ -3,6 +3,7 @@
  */
 package com.crawljax.core.state;
 
+import java.io.Serializable;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import com.crawljax.util.XPathHelper;
  * @author mesbah
  * @version $Id$
  */
-public class Eventable extends DefaultEdge implements Cloneable {
+public class Eventable extends DefaultEdge implements Cloneable, Serializable {
 	private static final long serialVersionUID = 3229708706467350994L;
 	private static final Logger LOGGER = Logger.getLogger(Eventable.class.getName());
 	private long id;
@@ -133,7 +134,10 @@ public class Eventable extends DefaultEdge implements Cloneable {
 	 */
 	@Override
 	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
+		String[] exclude = new String[1];
+		exclude[0] = "id";
+
+		return HashCodeBuilder.reflectionHashCode(this, exclude);
 	}
 
 	/**
