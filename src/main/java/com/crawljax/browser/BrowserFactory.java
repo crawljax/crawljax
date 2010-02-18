@@ -175,24 +175,7 @@ public final class BrowserFactory {
 	 *             failed.
 	 */
 	private EmbeddedBrowser createBrowser() {
-
-		if (available.isEmpty() && taken.isEmpty()) {
-			// This should be the first browser? use the one from the config
-			// More are 'cloned' later....
-			return getBrowserInstance();
-
-		}
-
-		EmbeddedBrowser newBrowser = null;
-		EmbeddedBrowser currentBrowser = available.element();
-
-		if (currentBrowser != null) {
-			// Clone the Browser
-			newBrowser = currentBrowser.clone();
-		} else {
-			// There is no browser specified so try to find the class to use and instance it
-			newBrowser = getBrowserInstance();
-		}
+		EmbeddedBrowser newBrowser = getBrowserInstance();
 		assert (newBrowser != null);
 		return newBrowser;
 
