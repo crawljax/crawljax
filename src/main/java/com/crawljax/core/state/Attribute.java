@@ -59,7 +59,7 @@ public class Attribute implements Cloneable {
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		return name.trim();
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class Attribute implements Cloneable {
 	 * @return the value
 	 */
 	public String getValue() {
-		return value;
+		return value.trim();
 	}
 
 	/**
