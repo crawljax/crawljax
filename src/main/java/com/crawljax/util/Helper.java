@@ -634,7 +634,7 @@ public final class Helper {
 		                + "function ATUSA_getElementByXpath(xpath){"
 		                + "try{"
 		                + "var elements = xpath.toLowerCase().split('/');"
-		                + "var curNode = document.body;"
+		                + "var curNode = window.document.body;"
 		                + "var tagName, number;"
 		                + "for(j=0; j<elements.length; j++){"
 		                + "if(elements[j]!=''){"
