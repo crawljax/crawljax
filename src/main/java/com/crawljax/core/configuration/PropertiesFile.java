@@ -29,7 +29,6 @@ public class PropertiesFile {
 	private static final String CRAWLDEPTH = "crawl.depth";
 	private static final String CRAWLMAXSTATES = "crawl.max.states";
 	private static final String CRAWLMAXTIME = "crawl.max.runtime";
-	private static final String CRAWLNUMBEROFTHREADS = "crawl.numberOfThreads";
 
 	private static final String CRAWLTAGS = "crawl.tags";
 	private static final String CRAWLEXCLUDETAGS = "crawl.tags.exclude";

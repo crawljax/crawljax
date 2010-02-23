@@ -124,9 +124,6 @@ public class CandidateElementExtractorTest {
 				List<TagElement> includes = new ArrayList<TagElement>();
 				includes.add(tagElementInc);
 
-				// now exclude some elements
-				String exc = "div:{id=menubar}";
-
 				List<TagElement> excludes = new ArrayList<TagElement>();
 				TagAttribute attr = new TagAttribute("id", "menubar");
 				Set<TagAttribute> attributes = new HashSet<TagAttribute>();

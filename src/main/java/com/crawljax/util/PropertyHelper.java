@@ -81,11 +81,9 @@ public final class PropertyHelper {
 	private static String baseUrlValue;
 	private static int crawlDepthValue;
 	private static List<String> robotEventsValues;
-	private static List<String> crawlTagsValues;
 	private static List<String> crawlFilterAttributesValues;
 	private static List<TagElement> crawlTagElements = new ArrayList<TagElement>();
 	private static List<TagElement> crawlExcludeTagElements = new ArrayList<TagElement>();
-	private static List<String> atusaPluginsValues;
 	private static int crawlMaxStatesValue = 0;
 	private static int crawlMaxTimeValue = 0;
 
@@ -159,7 +157,6 @@ public final class PropertyHelper {
 		crawNumberOfThreadsValue = getPropertyAsInt(crawlNumberOfThreads);
 		// crawlThreholdValue = getPropertyAsDouble(crawlThrehold);
 		robotEventsValues = getPropertyAsList(robotEvents);
-		crawlTagsValues = getPropertyAsList(crawlTags);
 		crawlFilterAttributesValues = getPropertyAsList(crawlFilterAttributes);
 		browserValue = getProperty(browser);
 		crawlWaitReloadValue = getPropertyAsInt(crawlWaitReload);
