@@ -89,7 +89,7 @@ public class CrawlerExecutorTest {
 		@Override
 		public void run() {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(500);
 				String tName = Thread.currentThread().getName();
 				if (tName.equals(compare)) {
 					success = true;
