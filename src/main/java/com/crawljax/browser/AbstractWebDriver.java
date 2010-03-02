@@ -220,8 +220,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 *            The input.
 	 * @return true if succeeds.
 	 */
-	public boolean input(Eventable clickable, String text) {
-		WebElement field = browser.findElement(clickable.getIdentification().getWebDriverBy());
+	public boolean input(Identification identification, String text) {
+		WebElement field = browser.findElement(identification.getWebDriverBy());
 
 		if (field != null) {
 			field.sendKeys(text);
@@ -244,12 +244,12 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public synchronized boolean fireEvent(Eventable eventable) throws CrawljaxException {
 		try {
-			String handle = browser.getWindowHandle();
 
 			boolean handleChanged = false;
 			boolean result = false;
 
 			if (eventable.getRelatedFrame() != null && !eventable.getRelatedFrame().equals("")) {
+				logger.debug("switching to frame: " + eventable.getRelatedFrame());
 				browser.switchTo().frame(eventable.getRelatedFrame());
 				handleChanged = true;
 			}
@@ -262,7 +262,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			}
 
 			if (handleChanged) {
-				browser.switchTo().window(handle);
+				browser.switchTo().defaultContent();
 			}
 
 			return result;
@@ -319,12 +319,14 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 	@Override
 	public void closeOtherWindows() {
+		String current = browser.getWindowHandle();
 		for (String handle : browser.getWindowHandles()) {
 			if (!handle.equals(browser.getWindowHandle())) {
-				String current = browser.getWindowHandle();
+
 				browser.switchTo().window(handle);
 				logger.info("Closing other window with title \"" + browser.getTitle() + "\"");
 				browser.close();
+				// browser.switchTo().defaultContent();
 				browser.switchTo().window(current);
 			}
 		}
@@ -343,8 +345,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		Document document;
 		try {
 			document = Helper.getDocument(browser.getPageSource());
-			appendFrameContent(browser.getWindowHandle(), document.getDocumentElement(),
-			        document, "");
+			appendFrameContent(document.getDocumentElement(), document, "");
 		} catch (SAXException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		} catch (IOException e) {
@@ -354,12 +355,10 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		return document;
 	}
 
-	private void appendFrameContent(String windowHandle, Element orig, Document document,
-	        String topFrame) throws SAXException, IOException {
+	private void appendFrameContent(Element orig, Document document, String topFrame)
+	        throws SAXException, IOException {
 
 		NodeList frameNodes = orig.getElementsByTagName("IFRAME");
-
-		browser.switchTo().window(windowHandle);
 
 		List<Element> nodeList = new ArrayList<Element>();
 
@@ -382,15 +381,25 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			if (nameId != null) {
 				frameIdentification += nameId;
 
-				logger.debug("frame-identification: " + frameIdentification);
+				String handle = new String(browser.getWindowHandle());
 
-				String toAppend = browser.switchTo().frame(frameIdentification).getPageSource();
+				logger.debug("The current H: " + handle);
+
+				logger.debug("switching to frame: " + frameIdentification);
+				browser.switchTo().frame(frameIdentification);
+				String toAppend = new String(browser.getPageSource());
+
+				logger.debug("frame dom: " + toAppend);
+
+				browser.switchTo().defaultContent();
+
+				logger.debug("default handle window source: " + browser.getPageSource());
 
 				Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
 				Element importedElement = (Element) document.importNode(toAppendElement, true);
 				frameElement.appendChild(importedElement);
 
-				appendFrameContent(windowHandle, importedElement, document, frameIdentification);
+				appendFrameContent(importedElement, document, frameIdentification);
 			}
 		}
 
@@ -405,7 +414,11 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	public String getDomWithoutIframeContent() throws CrawljaxException {
 
 		try {
-			return toUniformDOM(browser.getPageSource());
+			String dom = browser.getPageSource();
+			// logger.debug("driver.source: " + dom);
+			String result = toUniformDOM(dom);
+			// logger.debug("driver.source toUniformDom: " + result);
+			return result;
 		} catch (Exception e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
@@ -468,14 +481,14 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 	@Override
 	public String getFrameDom(String iframeIdentification) {
-		String handle = browser.getWindowHandle();
 
+		logger.debug("switching to frame: " + iframeIdentification);
 		browser.switchTo().frame(iframeIdentification);
 
 		// make a copy of the dom before changing into the top page
 		String frameDom = new String(browser.getPageSource());
 
-		browser.switchTo().window(handle);
+		browser.switchTo().defaultContent();
 
 		return frameDom;
 	}
