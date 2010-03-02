@@ -63,7 +63,7 @@ public class DummyBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
-	public boolean input(Eventable eventable, String text) throws CrawljaxException {
+	public boolean input(Identification eventable, String text) throws CrawljaxException {
 		return false;
 	}
 
