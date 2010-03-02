@@ -78,15 +78,15 @@ public interface EmbeddedBrowser extends Cloneable {
 	void goBack();
 
 	/**
-	 * @param eventable
-	 *            the event.
+	 * @param identification
+	 *            the identification.
 	 * @param text
 	 *            the text.
 	 * @return true if succeeded.
 	 * @throws CrawljaxException
 	 *             if fails.
 	 */
-	boolean input(Eventable eventable, String text) throws CrawljaxException;
+	boolean input(Identification identification, String text) throws CrawljaxException;
 
 	/**
 	 * Execute JavaScript in the browser.
