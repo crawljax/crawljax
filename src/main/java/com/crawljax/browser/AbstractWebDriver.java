@@ -214,8 +214,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	}
 
 	/**
-	 * @param clickable
-	 *            The clickable object.
+	 * @param identification
+	 *            The identification object.
 	 * @param text
 	 *            The input.
 	 * @return true if succeeds.
