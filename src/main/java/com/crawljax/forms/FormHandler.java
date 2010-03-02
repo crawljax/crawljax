@@ -227,7 +227,7 @@ public class FormHandler {
 	public void handleFormElements(List<FormInput> formInputs) {
 		Document dom;
 		try {
-			dom = Helper.getDocument(browser.getDom());
+			dom = Helper.getDocument(browser.getDomWithoutIframeContent());
 			for (FormInput input : formInputs) {
 				LOGGER.debug("Filling in: " + input);
 				setInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
