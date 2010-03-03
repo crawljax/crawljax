@@ -251,12 +251,25 @@ public final class Helper {
 	 * @return the changed dom.
 	 */
 	public static Document removeScriptTags(Document dom) {
+		return removeTags(dom, "SCRIPT");
+	}
+
+	/**
+	 * Removes all the given tags from the document.
+	 * 
+	 * @param dom
+	 *            the document object.
+	 * @param tagName
+	 *            the tag name, examples: script, style, meta
+	 * @return the changed dom.
+	 */
+	public static Document removeTags(Document dom, String tagName) {
 		if (dom != null) {
 			// NodeList list = dom.getElementsByTagName("SCRIPT");
 
 			NodeList list;
 			try {
-				list = Helper.getElementsByXpath(dom, "//SCRIPT");
+				list = Helper.getElementsByXpath(dom, "//" + tagName.toUpperCase());
 
 				while (list.getLength() > 0) {
 					Node sc = list.item(0);
@@ -265,7 +278,7 @@ public final class Helper {
 						sc.getParentNode().removeChild(sc);
 					}
 
-					list = Helper.getElementsByXpath(dom, "//SCRIPT");
+					list = Helper.getElementsByXpath(dom, "//" + tagName.toUpperCase());
 					// list = dom.getElementsByTagName("SCRIPT");
 				}
 			} catch (XPathExpressionException e) {
