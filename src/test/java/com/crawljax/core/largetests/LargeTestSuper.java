@@ -31,6 +31,10 @@ import com.crawljax.core.state.Identification.How;
 import com.crawljax.oraclecomparator.comparators.DateComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
 
+/**
+ * This is the base abstract class for all different kind of largeTests. Sub classes tests specific
+ * browser implementations like FireFox, Chrome, IE, etc.
+ */
 public abstract class LargeTestSuper {
 
 	private static CrawlSession session;
@@ -47,6 +51,8 @@ public abstract class LargeTestSuper {
 	private static List<Invariant> violatedInvariants = new ArrayList<Invariant>();
 	private static final int VIOLATED_INVARIANTS = 1;
 	private static final String VIOLATED_INVARIANT_DESCRIPTION = "expectedInvariantViolation";
+	private static final String INVARIANT_TEXT = "TEST_INVARIANTS";
+	private static boolean violatedInvariantStateIsCorrect = false;
 
 	private static final RegexCondition REGEX_CONDITION_TRUE =
 	        new RegexCondition("REGEX_CONDITION_TRUE");
@@ -191,6 +197,15 @@ public abstract class LargeTestSuper {
 	}
 
 	/**
+	 * Test correct state in violatedInvariants plugin call.
+	 */
+	@Test
+	public void testCorrectStateOnViolatedInvariants() {
+		assertTrue("OnViolatedInvariantPlugin session object has the correct currentState",
+		        violatedInvariantStateIsCorrect);
+	}
+
+	/**
 	 * Tests waitconditions with a slow widget.
 	 */
 	@Test
@@ -254,6 +269,17 @@ public abstract class LargeTestSuper {
 
 	/* setting up */
 
+	/**
+	 * retrieve / build the crawlspecification for the given arguments.
+	 * 
+	 * @param url
+	 *            the url where the large test run is located.
+	 * @param waintAfterEvent
+	 *            the amount of time in ms to wait after an event is fired.
+	 * @param waitAfterReload
+	 *            the amount of time in ms to wait after a reload.
+	 * @return the new CrawlSpecification.
+	 */
 	protected static CrawlSpecification getCrawlSpecification(String url, int waintAfterEvent,
 	        int waitAfterReload) {
 
@@ -307,7 +333,7 @@ public abstract class LargeTestSuper {
 		crawler.addInvariant(VIOLATED_INVARIANT_DESCRIPTION, neverDivWithInvariantViolationId);
 
 		// should never fail
-		RegexCondition onInvariantsPagePreCondition = new RegexCondition("TEST_INVARIANTS");
+		RegexCondition onInvariantsPagePreCondition = new RegexCondition(INVARIANT_TEXT);
 		XPathCondition expectElement =
 		        new XPathCondition("//DIV[@id='SHOULD_ALWAYS_BE_ON_THIS_PAGE']");
 		crawler.addInvariant("testInvariantWithPrecondiions", expectElement,
@@ -335,6 +361,12 @@ public abstract class LargeTestSuper {
 		crawler.addCrawlCondition("DONT_CRAWL_ME", new NotRegexCondition("DONT_CRAWL_ME"));
 	}
 
+	/**
+	 * Add the plugins to the given crawljaxConfiguration.
+	 * 
+	 * @param crawljaxConfiguration
+	 *            the configuration to add the plugins to.
+	 */
 	protected static void addPlugins(CrawljaxConfiguration crawljaxConfiguration) {
 		// plugin to retrieve session data
 		crawljaxConfiguration.addPlugin(new PostCrawlingPlugin() {
@@ -352,6 +384,9 @@ public abstract class LargeTestSuper {
 			@Override
 			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
 				LargeTestSuper.violatedInvariants.add(invariant);
+				if (session.getCurrentState().getDom().contains(INVARIANT_TEXT)) {
+					violatedInvariantStateIsCorrect = true;
+				}
 			}
 		});
 	}

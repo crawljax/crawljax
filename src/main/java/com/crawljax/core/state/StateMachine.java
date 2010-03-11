@@ -184,8 +184,6 @@ public class StateMachine {
 		LOGGER.info("StateMachine's Pointer changed to: " + this.currentState.getName()
 		        + " FROM " + previousState.getName());
 
-		checkInvariants(browser, session);
-
 		/**
 		 * TODO Stefan FIX this getSession stuff...
 		 */
@@ -195,6 +193,8 @@ public class StateMachine {
 			 * the OnNewStatePlugins. Guaranty it will not be interleaved
 			 */
 			session.setCurrentState(newState);
+
+			checkInvariants(browser, session);
 
 			if (cloneState == null) {
 				CrawljaxPluginsUtil.runOnNewStatePlugins(session);
