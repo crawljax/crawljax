@@ -224,6 +224,9 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		WebElement field = browser.findElement(identification.getWebDriverBy());
 
 		if (field != null) {
+			// first clear the field
+			field.clear();
+			// then fill in
 			field.sendKeys(text);
 
 			// this.activeElement = field;
