@@ -432,6 +432,14 @@ public class Crawler implements Runnable {
 		boolean handleInputElements = true;
 
 		for (CandidateCrawlAction action : orrigionalState) {
+			if (depthLimitReached(depth)) {
+				return true;
+			}
+
+			if (!checkConstraints()) {
+				return false;
+			}
+
 			CandidateElement candidateElement = action.getCandidateElement();
 			EventType eventType = action.getEventType();
 
