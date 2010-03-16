@@ -71,13 +71,13 @@ public final class XPathHelper {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Get siblings of the same type as element from parent
 	 * 
 	 * @param parent
 	 *            parent node.
 	 * @param element
 	 *            element.
-	 * @return
+	 * @return List of sibling (from element) under parent
 	 */
 	private static List<Node> getSiblings(Node parent, Node element) {
 		List<Node> result = new ArrayList<Node>();
@@ -189,11 +189,6 @@ public final class XPathHelper {
 		}
 		return formatted;
 	}
-
-	// public static void main(String[] args) {
-	// System.out.println(formatXPath("//DIV[@class='foo']"));
-	// System.out.println(formatXPath("/jeee/JEUJ/fooo/div[@KWAAK=\"false\"]"));
-	// }
 
 	/**
 	 * @param xpath
