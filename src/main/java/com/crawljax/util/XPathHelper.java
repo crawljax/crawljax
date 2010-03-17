@@ -107,33 +107,23 @@ public final class XPathHelper {
 				buffer.append(Integer.toString(i + 1));
 				buffer.append("]");
 				NamedNodeMap attribs = node.getAttributes();
-				if (attribs.getLength() != 0) {
-					StringBuilder attrBuffer = new StringBuilder();
-
+				if (attribs.getLength() > 0) {
+					buffer.append("[");
 					for (int j = 0; j < attribs.getLength(); j++) {
-						Node attrib = attribs.item(i);
+						Node attrib = attribs.item(j);
 
 						if (attrib == null) {
 							continue;
 						}
 
 						if (j != 0) {
-							attrBuffer.append(" and ");
+							buffer.append(" and ");
 						}
 
-						attrBuffer.append("@" + attrib.getNodeName() + "=\"");
-						attrBuffer.append(attrib.getNodeValue() + "\"");
+						buffer.append("@" + attrib.getNodeName() + "=\"");
+						buffer.append(attrib.getNodeValue() + "\"");
 					}
-
-					/*
-					 * only append [ ... ] if there really were attributes (ie, the list of attribs
-					 * might not be empty, but there can be NULL's in there
-					 */
-					if (attrBuffer.length() != 0) {
-						buffer.append("[");
-						buffer.append(attrBuffer);
-						buffer.append("]");
-					}
+					buffer.append("]");
 				}
 			}
 		}
