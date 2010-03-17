@@ -727,4 +727,32 @@ public final class Helper {
 		        filePathname)));
 	}
 
+	/**
+	 * Returns the file contents without stripping line-endings.
+	 * 
+	 * @param file
+	 *            File to read out.
+	 * @return Contents including line-endings.
+	 */
+	public static String getContentWithLineEndings(File file) {
+		StringBuilder contents = new StringBuilder();
+
+		try {
+			BufferedReader input = new BufferedReader(new FileReader(file));
+			try {
+				String line = null; // not declared within while loop
+				while ((line = input.readLine()) != null) {
+					contents.append(line);
+					contents.append("\n");
+				}
+			} finally {
+				input.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return contents.toString();
+	}
+
 }
