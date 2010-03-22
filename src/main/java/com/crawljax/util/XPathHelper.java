@@ -17,7 +17,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -45,7 +44,7 @@ public final class XPathHelper {
 		Node parent = node.getParentNode();
 
 		if ((parent == null) || parent.getNodeName().contains("#document")) {
-			return "/" + getXPathNameStep(node) + "[1]";
+			return "/" + node.getNodeName() + "[1]";
 		}
 
 		StringBuffer buffer = new StringBuffer();
@@ -55,7 +54,7 @@ public final class XPathHelper {
 			buffer.append("/");
 		}
 
-		buffer.append(getXPathNameStep(node));
+		buffer.append(node.getNodeName());
 
 		List<Node> mySiblings = getSiblings(parent, node);
 
@@ -66,65 +65,6 @@ public final class XPathHelper {
 				buffer.append("[");
 				buffer.append(Integer.toString(i + 1));
 				buffer.append("]");
-			}
-		}
-		return buffer.toString();
-	}
-
-	/**
-	 * Reverse Engineers an XPath Expression of a given Node in the DOM. This method is more
-	 * specific than getXpathExpression because it also adds the attributes of the nodes to the
-	 * expression.
-	 * 
-	 * @param node
-	 *            the given node.
-	 * @return string xpath expression (e.g.,
-	 *         "/html[1]/body[1][@class="content"]/div[3][@class="sidebar"]").
-	 */
-	public static String getSpecificXpathExpression(Node node) {
-		Node parent = node.getParentNode();
-
-		if ((parent == null) || parent.getNodeName().contains("#document")) {
-			return "/" + getXPathNameStep(node) + "[1]";
-		}
-
-		StringBuffer buffer = new StringBuffer();
-
-		if (parent != node) {
-			buffer.append(getSpecificXpathExpression(parent));
-			buffer.append("/");
-		}
-
-		buffer.append(getXPathNameStep(node));
-
-		List<Node> mySiblings = getSiblings(parent, node);
-
-		for (int i = 0; i < mySiblings.size(); i++) {
-			Node el = mySiblings.get(i);
-
-			if (el.equals(node)) {
-				buffer.append("[");
-				buffer.append(Integer.toString(i + 1));
-				buffer.append("]");
-				NamedNodeMap attribs = node.getAttributes();
-				if (attribs.getLength() > 0) {
-					buffer.append("[");
-					for (int j = 0; j < attribs.getLength(); j++) {
-						Node attrib = attribs.item(j);
-
-						if (attrib == null) {
-							continue;
-						}
-
-						if (j != 0) {
-							buffer.append(" and ");
-						}
-
-						buffer.append("@" + attrib.getNodeName() + "=\"");
-						buffer.append(attrib.getNodeValue() + "\"");
-					}
-					buffer.append("]");
-				}
 			}
 		}
 		return buffer.toString();
@@ -139,7 +79,7 @@ public final class XPathHelper {
 	 *            element.
 	 * @return List of sibling (from element) under parent
 	 */
-	private static List<Node> getSiblings(Node parent, Node element) {
+	public static List<Node> getSiblings(Node parent, Node element) {
 		List<Node> result = new ArrayList<Node>();
 		NodeList list = parent.getChildNodes();
 
@@ -152,10 +92,6 @@ public final class XPathHelper {
 		}
 
 		return result;
-	}
-
-	private static String getXPathNameStep(Node element) {
-		return element.getNodeName();
 	}
 
 	/**
