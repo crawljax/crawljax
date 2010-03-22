@@ -1,12 +1,17 @@
 package com.crawljax.browser;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.internal.FileHandler;
 
 import com.crawljax.core.configuration.ProxyConfiguration;
 
@@ -139,8 +144,14 @@ public class WebDriverFirefox extends AbstractWebDriver {
 	 *            the file to write to the filename to save the screenshot in.
 	 */
 	public void saveScreenShot(File file) {
+		File tmpfile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-		driver.saveScreenshot(file);
+		try {
+			FileHandler.copy(tmpfile, file);
+		} catch (IOException e) {
+			throw new WebDriverException(e);
+		}
+
 		removeCanvasGeneratedByFirefoxDriverForScreenshots();
 	}
 
