@@ -4,7 +4,7 @@ import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.EditDistance;
 
 /**
- * Oracle Comparator that used the LevenStein Edit Distance to determince wheter two states are
+ * Oracle Comparator that uses the Levenshtein Edit Distance to determince wheter two states are
  * equivalent.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
