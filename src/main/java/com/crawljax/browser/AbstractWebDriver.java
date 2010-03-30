@@ -56,8 +56,9 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 * @param crawlWaitEvent
 	 *            the period to wait after an event is fired.
 	 */
-	public AbstractWebDriver(WebDriver driver, Logger logger, List<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent) {
+	public AbstractWebDriver(WebDriver driver, Logger logger,
+			List<String> filterAttributes, long crawlWaitReload,
+			long crawlWaitEvent) {
 		this.browser = driver;
 		this.logger = logger;
 		this.filterAttributes = filterAttributes;
@@ -87,8 +88,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	private void handlePopups() {
 		executeJavaScript("window.alert = function(msg){return true;};"
-		        + "window.confirm = function(msg){return true;};"
-		        + "window.prompt = function(msg){return true;};");
+				+ "window.confirm = function(msg){return true;};"
+				+ "window.prompt = function(msg){return true;};");
 	}
 
 	/**
@@ -103,29 +104,30 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 *             if fails.
 	 */
 	protected boolean fireEventWait(WebElement webElement, Eventable eventable)
-	        throws CrawljaxException {
+			throws CrawljaxException {
 
 		switch (eventable.getEventType()) {
-			case click:
-				try {
-					webElement.click();
-				} catch (ElementNotVisibleException e1) {
-					logger.info("Element not visible, so cannot be clicked: "
-					        + webElement.getTagName().toUpperCase() + " " + webElement.getText());
-					return false;
-				} catch (Exception e) {
-					logger.error(e.getMessage());
-					return false;
-				}
-				break;
-			case hover:
-				// todo
-				break;
-
-			default:
-				logger.info("EventType " + eventable.getEventType()
-				        + " not supported in WebDriver.");
+		case click:
+			try {
+				webElement.click();
+			} catch (ElementNotVisibleException e1) {
+				logger.info("Element not visible, so cannot be clicked: "
+						+ webElement.getTagName().toUpperCase() + " "
+						+ webElement.getText());
 				return false;
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+				return false;
+			}
+			break;
+		case hover:
+			// todo
+			break;
+
+		default:
+			logger.info("EventType " + eventable.getEventType()
+					+ " not supported in WebDriver.");
+			return false;
 		}
 
 		try {
@@ -154,7 +156,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public String getDom() throws CrawljaxException {
 		try {
-			return toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
+			return toUniformDOM(Helper
+					.getDocumentToString(getDomTreeWithFrames()));
 		} catch (Exception e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
@@ -169,9 +172,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	private String toUniformDOM(String html) throws Exception {
 
-		Pattern p =
-		        Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
-		                | Pattern.CASE_INSENSITIVE);
+		Pattern p = Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
+				| Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(html);
 		String htmlFormatted = m.replaceAll("");
 
@@ -245,20 +247,23 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 * @throws CrawljaxException
 	 *             On failure.
 	 */
-	public synchronized boolean fireEvent(Eventable eventable) throws CrawljaxException {
+	public synchronized boolean fireEvent(Eventable eventable)
+			throws CrawljaxException {
 		try {
 
 			boolean handleChanged = false;
 			boolean result = false;
 
-			if (eventable.getRelatedFrame() != null && !eventable.getRelatedFrame().equals("")) {
-				logger.debug("switching to frame: " + eventable.getRelatedFrame());
+			if (eventable.getRelatedFrame() != null
+					&& !eventable.getRelatedFrame().equals("")) {
+				logger.debug("switching to frame: "
+						+ eventable.getRelatedFrame());
 				browser.switchTo().frame(eventable.getRelatedFrame());
 				handleChanged = true;
 			}
 
-			WebElement webElement =
-			        browser.findElement(eventable.getIdentification().getWebDriverBy());
+			WebElement webElement = browser.findElement(eventable
+					.getIdentification().getWebDriverBy());
 
 			if (webElement != null) {
 				result = fireEventWait(webElement, eventable);
@@ -302,7 +307,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 */
 	public boolean isVisible(Identification identification) {
 		try {
-			WebElement el = browser.findElement(identification.getWebDriverBy());
+			WebElement el = browser
+					.findElement(identification.getWebDriverBy());
 			if (el != null) {
 				return ((RenderedWebElement) el).isDisplayed();
 			}
@@ -327,7 +333,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 			if (!handle.equals(browser.getWindowHandle())) {
 
 				browser.switchTo().window(handle);
-				logger.info("Closing other window with title \"" + browser.getTitle() + "\"");
+				logger.info("Closing other window with title \""
+						+ browser.getTitle() + "\"");
 				browser.close();
 				// browser.switchTo().defaultContent();
 				browser.switchTo().window(current);
@@ -358,8 +365,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		return document;
 	}
 
-	private void appendFrameContent(Element orig, Document document, String topFrame)
-	        throws SAXException, IOException {
+	private void appendFrameContent(Element orig, Document document,
+			String topFrame) throws SAXException, IOException {
 
 		NodeList frameNodes = orig.getElementsByTagName("IFRAME");
 
@@ -388,21 +395,33 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 				logger.debug("The current H: " + handle);
 
-				logger.debug("switching to frame: " + frameIdentification);
-				browser.switchTo().frame(frameIdentification);
-				String toAppend = new String(browser.getPageSource());
+				try {
 
-				logger.debug("frame dom: " + toAppend);
+					logger.debug("switching to frame: " + frameIdentification);
+					browser.switchTo().frame(frameIdentification);
+					String toAppend = new String(browser.getPageSource());
 
-				browser.switchTo().defaultContent();
+					logger.debug("frame dom: " + toAppend);
 
-				logger.debug("default handle window source: " + browser.getPageSource());
+					browser.switchTo().defaultContent();
 
-				Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
-				Element importedElement = (Element) document.importNode(toAppendElement, true);
-				frameElement.appendChild(importedElement);
+					logger.debug("default handle window source: "
+							+ browser.getPageSource());
 
-				appendFrameContent(importedElement, document, frameIdentification);
+					Element toAppendElement = Helper.getDocument(toAppend)
+							.getDocumentElement();
+					Element importedElement = (Element) document.importNode(
+							toAppendElement, true);
+					frameElement.appendChild(importedElement);
+
+					appendFrameContent(importedElement, document,
+							frameIdentification);
+
+				} catch (Exception e) {
+					logger.info("Got exception while inspecting a frame:"
+							+ frameIdentification + " continuing...", e);
+				}
+
 			}
 		}
 
@@ -437,7 +456,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 		WebElement webElement;
 		try {
-			webElement = browser.findElement(input.getIdentification().getWebDriverBy());
+			webElement = browser.findElement(input.getIdentification()
+					.getWebDriverBy());
 			if (!((RenderedWebElement) webElement).isDisplayed()) {
 				return null;
 			}
@@ -452,9 +472,10 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 		if (input.getType().toLowerCase().startsWith("text")) {
 			values.add(new InputValue(new RandomInputValueGenerator()
-			        .getRandomString(FormHandler.RANDOM_STRING_LENGTH), true));
+					.getRandomString(FormHandler.RANDOM_STRING_LENGTH), true));
 		} else if (input.getType().equalsIgnoreCase("checkbox")
-		        || input.getType().equalsIgnoreCase("radio") && !webElement.isSelected()) {
+				|| input.getType().equalsIgnoreCase("radio")
+				&& !webElement.isSelected()) {
 			if (new RandomInputValueGenerator().getCheck()) {
 				values.add(new InputValue("1", true));
 			} else {
@@ -464,9 +485,8 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		} else if (input.getType().equalsIgnoreCase("select")) {
 			try {
 				Select select = new Select(webElement);
-				WebElement option =
-				        (WebElement) new RandomInputValueGenerator().getRandomOption(select
-				                .getOptions());
+				WebElement option = (WebElement) new RandomInputValueGenerator()
+						.getRandomOption(select.getOptions());
 				values.add(new InputValue(option.getText(), true));
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
