@@ -1,21 +1,26 @@
 package com.crawljax.core.configuration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.configuration.Configuration;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.TagAttribute;
 import com.crawljax.core.TagElement;
 import com.crawljax.core.plugin.Plugin;
-import com.crawljax.util.PropertyHelper;
 
 /**
  * Reader for CrawljaxConfiguration. For internal use only!
  * 
  * @author Danny
- * @version $Id$
+ * @version $Id: CrawljaxConfigurationReader.java 233 2010-02-10 15:22:34Z lenselinkstefan@gmail.com
+ *          $
  */
 public class CrawljaxConfigurationReader {
 
@@ -135,7 +140,7 @@ public class CrawljaxConfigurationReader {
 
 		for (String text : tags) {
 
-			TagElement tagElement = PropertyHelper.parseTagElement(text.trim());
+			TagElement tagElement = parseTagElement(text.trim());
 			if (tagElement != null) {
 				tagelements.add(tagElement);
 			}
@@ -157,7 +162,7 @@ public class CrawljaxConfigurationReader {
 		String[] tags = props.split(",");
 
 		for (String text : tags) {
-			TagElement tagElement = PropertyHelper.parseTagElement(text.trim());
+			TagElement tagElement = parseTagElement(text.trim());
 			if (tagElement != null) {
 				tagelements.add(tagElement);
 			}
@@ -179,5 +184,74 @@ public class CrawljaxConfigurationReader {
 	 */
 	public ThreadConfigurationReader getThreadConfigurationReader() {
 		return this.threadConfigurationReader;
+	}
+
+	/**
+	 * Parses the tag elements. This has to be deprecated, because its an old part of
+	 * PropertyHelper.
+	 * 
+	 * @param text
+	 *            The string containing the tag elements.
+	 * @return The tag element.
+	 */
+	private TagElement parseTagElement(String text) {
+		if (text.equals("")) {
+			return null;
+		}
+		String name = null;
+		Set<TagAttribute> attributes = new HashSet<TagAttribute>();
+		String id = null;
+
+		Pattern pattern =
+		        Pattern.compile("\\w+:\\{(\\w+=?(\\-*\\s*[\\w%]\\s*)+\\;?\\s?)*}"
+		                + "(\\[\\w+\\])?");
+
+		Pattern patternTagName = Pattern.compile("\\w+");
+
+		Pattern patternAttributes = Pattern.compile("\\{(\\w+=(\\-*\\s*[\\w%]\\s*)+\\;?\\s?)*}");
+
+		Pattern patternAttribute = Pattern.compile("(\\w+)=((\\-*\\s*[\\w%]\\s*)+)");
+
+		Pattern patternId = Pattern.compile("(\\[)(\\w+)(\\])");
+
+		Matcher matcher = pattern.matcher(text);
+
+		if (matcher.matches()) {
+			String substring = matcher.group();
+			matcher = patternTagName.matcher(substring);
+
+			if (matcher.find()) {
+				name = matcher.group().trim();
+			}
+
+			matcher = patternAttributes.matcher(substring);
+
+			// attributes
+			if (matcher.find()) {
+				String tmp = matcher.group();
+				// parse attributes
+				matcher = patternAttribute.matcher(tmp);
+
+				while (matcher.find()) {
+					String attrName = matcher.group(1).trim();
+					String value = matcher.group(2).trim();
+					attributes.add(new TagAttribute(attrName, value));
+				}
+			}
+
+			// id
+			matcher = patternId.matcher(substring);
+			if (matcher.find()) {
+				id = matcher.group(2);
+			}
+
+			TagElement el = new TagElement(attributes, name);
+			if (id != null) {
+				el.setId(id);
+			}
+			return el;
+		}
+
+		return null;
 	}
 }
