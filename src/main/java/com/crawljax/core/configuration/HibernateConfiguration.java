@@ -42,6 +42,8 @@ public class HibernateConfiguration {
 		buffer.append("hibernate.connection.username " + getUserName() + "\n");
 		buffer.append("hibernate.connection.password " + getPassword() + "\n");
 
+		buffer.append("hibernate.hbm2ddl.auto" + getDatabaseSchema() + "\n");
+
 		// default properties
 		buffer.append("hibernate.query.substitutions yes 'Y', no 'N'\n");
 		buffer.append("hibernate.dialect org.hibernate.dialect.MySQLDialect\n");
@@ -61,6 +63,11 @@ public class HibernateConfiguration {
 		InputStream is = new ByteArrayInputStream(buffer.toString().getBytes());
 
 		return is;
+	}
+
+	private String getDatabaseSchema() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**

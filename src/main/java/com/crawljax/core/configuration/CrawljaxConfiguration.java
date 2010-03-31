@@ -46,7 +46,7 @@ public final class CrawljaxConfiguration {
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 
 	private CrawlSpecification crawlSpecification = new CrawlSpecification("");
-	private HibernateConfiguration hibernateConfiguration = new HibernateConfiguration();
+	private HibernateConfiguration hibernateConfiguration = null;
 	private ProxyConfiguration proxyConfiguration = null;
 	private ThreadConfiguration threadConfiguration = new ThreadConfiguration();
 

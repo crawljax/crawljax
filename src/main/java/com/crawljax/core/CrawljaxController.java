@@ -106,13 +106,6 @@ public class CrawljaxController {
 		LOGGER.info("Starting Crawljax...");
 		LOGGER.info("Loading properties...");
 
-		/*
-		 * if (crawljaxConfiguration != null) { PropertyHelper.init(crawljaxConfiguration); } else {
-		 * if (propertiesFile == null || propertiesFile.equals("")) { throw new
-		 * ConfigurationException("No properties specified"); } PropertyHelper.init(propertiesFile);
-		 * }
-		 */
-
 		LOGGER.info("Used plugins:");
 		CrawljaxPluginsUtil.loadPlugins(configurationReader.getPlugins());
 
@@ -125,7 +118,7 @@ public class CrawljaxController {
 
 		crawler = new Crawler(this);
 
-		HibernateUtil.initialize();
+		HibernateUtil.initialize(configurationReader.getHibernateConfiguration());
 
 		LOGGER.info("Number of threads: "
 		        + configurationReader.getThreadConfigurationReader().getNumberThreads());

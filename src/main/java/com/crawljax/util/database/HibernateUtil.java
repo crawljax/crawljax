@@ -1,6 +1,5 @@
 package com.crawljax.util.database;
 
-import java.io.FileInputStream;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -10,8 +9,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import com.crawljax.core.configuration.HibernateConfiguration;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.util.PropertyHelper;
 
 /**
  * Hibernate Utility class.
@@ -20,6 +19,8 @@ import com.crawljax.util.PropertyHelper;
  * @version $Id$
  */
 public final class HibernateUtil {
+
+	private static HibernateConfiguration hibernateConfig;
 
 	private HibernateUtil() {
 
@@ -33,12 +34,7 @@ public final class HibernateUtil {
 	 * @return Whether to use the database.
 	 */
 	public static boolean useDatabase() {
-		if (PropertyHelper.getCrawljaxConfiguration() == null) {
-			return PropertyHelper.useDatabase();
-		}
-
-		return PropertyHelper.getCrawljaxConfiguration().getUseDatabase();
-
+		return hibernateConfig != null;
 	}
 
 	/**
@@ -54,33 +50,23 @@ public final class HibernateUtil {
 	 * @param hbm2ddlAuto
 	 *            Whether to create, update, drop the tables first.
 	 */
-	public static void initialize(String hbm2ddlAuto) {
+	public static void initialize(HibernateConfiguration hibConfig) {
+		hibernateConfig = hibConfig;
+
 		if (!useDatabase()) {
 			return;
 		}
+
 		try {
 			Configuration config = new Configuration();
 			Properties p = new Properties();
-			if (PropertyHelper.getCrawljaxConfiguration() == null) {
-				// load from file
-				LOGGER.info("Loading Hibernate config from: "
-				        + PropertyHelper.getHibernatePropertiesValue());
-				p.load(new FileInputStream(PropertyHelper.getHibernatePropertiesValue()));
-			} else {
-				// load from config
-				LOGGER.info("Loading Hibernate config from CrawljaxConfiguration");
-				p.load(PropertyHelper.getCrawljaxConfiguration().getHibernateConfiguration()
-				        .getConfiguration());
 
-			}
+			// load from config
+			LOGGER.info("Loading Hibernate config from CrawljaxConfiguration");
+			p.load(hibConfig.getConfiguration());
+
 			config.setProperties(p);
 
-			if (hbm2ddlAuto != null && !"".equals(hbm2ddlAuto)) {
-				config.setProperty("hibernate.hbm2ddl.auto", hbm2ddlAuto);
-			} else {
-				config.setProperty("hibernate.hbm2ddl.auto", PropertyHelper
-				        .getHibernateSchemaValue());
-			}
 			sessionFactory = config.configure().buildSessionFactory();
 		} catch (Throwable ex) {
 			LOGGER.fatal("Initial SessionFactory creation failed." + ex);
