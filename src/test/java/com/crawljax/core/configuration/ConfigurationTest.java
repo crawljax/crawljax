@@ -19,10 +19,6 @@ public class ConfigurationTest {
 		config.setCrawlSpecification(new CrawlSpecification("http://www.crawljax.com"));
 		config.setOutputFolder(OUTPUT_FOLDER_WITHOUT_SLASH);
 		assertEquals(OUTPUT_FOLDER_WITH_SLASH, config.getOutputFolder());
-
-		// config.setOutputFolder(OUTPUT_FOLDER_WITHOUT_SLASH);
-		// PropertyHelper.init(config);
-		// assertEquals(OUTPUT_FOLDER_WITH_SLASH, PropertyHelper.getOutputFolder());
 	}
 
 }
