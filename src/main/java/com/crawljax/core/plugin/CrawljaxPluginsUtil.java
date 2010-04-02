@@ -78,10 +78,10 @@ public final class CrawljaxPluginsUtil {
 	 *            the browser instance to load to the plugin.
 	 */
 	public static void runPreCrawlingPlugins(EmbeddedBrowser browser) {
+		LOGGER.info("Running PreCrawlingPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof PreCrawlingPlugin) {
-					LOGGER.debug("Running preCrawlingPlugin " + plugin.getClass().getName());
 					((PreCrawlingPlugin) plugin).preCrawling(browser);
 				}
 			}
@@ -98,6 +98,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the embedded browser instance to load in the plugin.
 	 */
 	public static void runOnUrlLoadPlugins(EmbeddedBrowser browser) {
+		LOGGER.info("Running OnUrlLoadPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnUrlLoadPlugin) {
@@ -116,6 +117,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the session to load in the plugin
 	 */
 	public static void runOnNewStatePlugins(CrawlSession session) {
+		LOGGER.info("Running OnNewStatePlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnNewStatePlugin) {
@@ -137,6 +139,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the session to load in the plugin
 	 */
 	public static void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session) {
+		LOGGER.info("Running OnInvriantViolationPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnInvariantViolationPlugin) {
@@ -156,6 +159,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the session to load in the plugin
 	 */
 	public static void runPostCrawlingPlugins(CrawlSession session) {
+		LOGGER.info("Running PostCrawlingPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof PostCrawlingPlugin) {
@@ -176,6 +180,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the state the 'back tracking' operation is currently in
 	 */
 	public static void runOnRevisitStatePlugins(CrawlSession session, StateVertix currentState) {
+		LOGGER.info("Running OnRevisitStatePlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnRevisitStatePlugin) {
@@ -198,6 +203,7 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runPreStateCrawlingPlugins(CrawlSession session,
 	        List<CandidateElement> candidateElements) {
+		LOGGER.info("Running PreStateCrawlingPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof PreStateCrawlingPlugin) {
@@ -218,6 +224,7 @@ public final class CrawljaxPluginsUtil {
 	 *            The ProxyConfiguration to use.
 	 */
 	public static void runProxyServerPlugins(ProxyConfiguration config) {
+		LOGGER.info("Running ProxyServerPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof ProxyServerPlugin) {
@@ -244,6 +251,7 @@ public final class CrawljaxPluginsUtil {
 	public static void runGuidedCrawlingPlugins(CrawljaxController controller,
 	        CrawlSession session, final List<Eventable> exactEventPaths,
 	        final StateMachine stateMachine) {
+		LOGGER.info("Running GuidedCrawlingPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			StateVertix currentState = session.getCurrentState();
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
@@ -265,6 +273,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the path TO this eventable.
 	 */
 	public static void runOnFireEventFailedPlugins(Eventable eventable, List<Eventable> path) {
+		LOGGER.info("Running OnFireEventFailedPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnFireEventFailedPlugin) {

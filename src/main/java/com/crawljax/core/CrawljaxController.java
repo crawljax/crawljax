@@ -201,8 +201,6 @@ public class CrawljaxController {
 		LOGGER.info("STATES: " + stateFlowGraph.getAllStates().size());
 		LOGGER.info("Dom average size (byte): " + stateFlowGraph.getMeanStateStringSize());
 
-		LOGGER.info("Starting PostCrawlingPlugins...");
-
 		CrawljaxPluginsUtil.runPostCrawlingPlugins(session);
 
 		LOGGER.info("DONE!!!");

@@ -423,8 +423,6 @@ public class Crawler implements Runnable {
 		        .getTagElements(), configurationReader.getExcludeTagElements(),
 		        configurationReader.getCrawlSpecificationReader().getClickOnce());
 
-		LOGGER.info("Starting preStateCrawlingPlugins...");
-
 		CrawljaxPluginsUtil.runPreStateCrawlingPlugins(controller.getSession(), orrigionalState
 		        .getUnprocessedCandidateElements());
 
