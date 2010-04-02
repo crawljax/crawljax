@@ -179,8 +179,7 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Try to fire a given event on the Browser. TODO This method has been made public for the
-	 * CrossBrowserTest only.
+	 * Try to fire a given event on the Browser.
 	 * 
 	 * @param eventable
 	 *            the eventable to fire
