@@ -193,14 +193,15 @@ public class CrawljaxConfigurationReader {
 		String id = null;
 
 		Pattern pattern =
-		        Pattern.compile("\\w+:\\{(\\w+=?(\\-*\\s*[\\w%]\\s*)+\\;?\\s?)*}"
+		        Pattern.compile("\\w+:\\{(\\w+=?(\\-*\\s*[\\w# \\.%]\\s*)+\\;?\\s?)*}"
 		                + "(\\[\\w+\\])?");
 
 		Pattern patternTagName = Pattern.compile("\\w+");
 
-		Pattern patternAttributes = Pattern.compile("\\{(\\w+=(\\-*\\s*[\\w%]\\s*)+\\;?\\s?)*}");
+		Pattern patternAttributes =
+		        Pattern.compile("\\{(\\w+=(\\-*\\s*[\\w%# \\.]\\s*)+\\;?\\s?)*}");
 
-		Pattern patternAttribute = Pattern.compile("(\\w+)=((\\-*\\s*[\\w%]\\s*)+)");
+		Pattern patternAttribute = Pattern.compile("(\\w+)=((\\-*\\s*[\\w%# \\.]\\s*)+)");
 
 		Pattern patternId = Pattern.compile("(\\[)(\\w+)(\\])");
 
