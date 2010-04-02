@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * TODO: DOCUMENT ME!
+ * Test the edit distance algorithm.
  * 
  * @author mesbah
  * @version $Id$
@@ -16,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
 public class EditDistanceTest extends TestCase {
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Check if threshold calculation works.
 	 */
 	public void testGetThreshold() {
 		String x = "<form>bl</form>";
@@ -29,7 +29,7 @@ public class EditDistanceTest extends TestCase {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Check if clone detection algorithm works correctly.
 	 */
 	public void testIsClone() {
 		String x = "<form>BL</form>";
