@@ -104,7 +104,6 @@ public class CrawljaxController {
 	 */
 	private CrawlerExecutor init() throws ConfigurationException {
 		LOGGER.info("Starting Crawljax...");
-		LOGGER.info("Loading properties...");
 
 		LOGGER.info("Used plugins:");
 		CrawljaxPluginsUtil.loadPlugins(configurationReader.getPlugins());
@@ -301,7 +300,7 @@ public class CrawljaxController {
 		}
 		LOGGER.info("Trying to close all browsers");
 		/**
-		 * Needs some more testing when Threads are not finished, the browser gets locked...
+		 * TODO: Needs some more testing when Threads are not finished, the browser gets locked...
 		 */
 		browserFactory.close();
 	}
