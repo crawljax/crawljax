@@ -512,33 +512,6 @@ public final class Helper {
 	}
 
 	/**
-	 * Get the contents of a file.
-	 * 
-	 * @param file
-	 *            The name of the file.
-	 * @return The contents as a String.
-	 */
-	public static String getContent(File file) {
-		StringBuilder contents = new StringBuilder();
-
-		try {
-			BufferedReader input = new BufferedReader(new FileReader(file));
-			try {
-				String line = null; // not declared within while loop
-				while ((line = input.readLine()) != null) {
-					contents.append(line);
-				}
-			} finally {
-				input.close();
-			}
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-
-		return contents.toString();
-	}
-
-	/**
 	 * @param string
 	 *            The original string.
 	 * @param regex
@@ -732,7 +705,7 @@ public final class Helper {
 	 *            File to read out.
 	 * @return Contents including line-endings.
 	 */
-	public static String getContentWithLineEndings(File file) {
+	public static String getContent(File file) {
 		StringBuilder contents = new StringBuilder();
 
 		try {
