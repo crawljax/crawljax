@@ -18,7 +18,9 @@ public class HibernateConfiguration {
 
 	public static final String CREATE_DROP = "create-drop";
 	public static final String UPDATE = "create-update";
-	private String databaseScheme = CREATE_DROP;
+	public static final String CREATE = "create";
+	public static final String VALIDATE = "validate";
+	private String databaseScheme = null;
 
 	/**
 	 * Create a new HibernatConfiguration object.
@@ -42,7 +44,9 @@ public class HibernateConfiguration {
 		buffer.append("hibernate.connection.username " + getUserName() + "\n");
 		buffer.append("hibernate.connection.password " + getPassword() + "\n");
 
-		buffer.append("hibernate.hbm2ddl.auto" + getDatabaseSchema() + "\n");
+		if (getDatabaseSchema() != null) {
+			buffer.append("hibernate.hbm2ddl.auto" + getDatabaseSchema() + "\n");
+		}
 
 		// default properties
 		buffer.append("hibernate.query.substitutions yes 'Y', no 'N'\n");
@@ -66,8 +70,7 @@ public class HibernateConfiguration {
 	}
 
 	private String getDatabaseSchema() {
-		// TODO Auto-generated method stub
-		return null;
+		return databaseScheme;
 	}
 
 	/**

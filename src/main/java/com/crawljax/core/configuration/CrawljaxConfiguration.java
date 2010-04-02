@@ -3,9 +3,6 @@ package com.crawljax.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.PropertiesConfiguration;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.plugin.Plugin;
@@ -82,55 +79,6 @@ public final class CrawljaxConfiguration {
 		} else {
 			return null;
 		}
-	}
-
-	/**
-	 * @return A PropertiesConfiguration. For use by PropertyHelper only!
-	 */
-	protected Configuration getConfiguration() {
-		if (getCrawlSpecification() == null) {
-			return null;
-		}
-		Configuration config = new PropertiesConfiguration();
-		config.addProperty("output.path", getOutputFolder());
-		config.addProperty("project.path.relative", getProjectRelativePath());
-
-		config.addProperty("hibernate.hbm2ddl.auto", getHibernateConfiguration()
-		        .getDatabaseScheme());
-		config.addProperty("invariantcontroller.testcrawling", ConfigurationHelper
-		        .booleanToInt(getCrawlSpecification().getTestInvariantsWhileCrawling()));
-
-		// CrawlSpecification
-		config.addProperty("site.url", getCrawlSpecification().getUrl());
-		config.addProperty("database.use", getUseDatabaseAsInt());
-
-		config.addProperty("click.once", ConfigurationHelper.booleanToInt(getCrawlSpecification()
-		        .getClickOnce()));
-
-		config.addProperty("robot.events", ConfigurationHelper
-		        .listToString(getCrawlSpecification().getCrawlEvents()));
-		config.addProperty("crawl.tags", ConfigurationHelper
-		        .listToString(getAllIncludedCrawlElements()));
-		config.addProperty("crawl.tags.exclude", ConfigurationHelper
-		        .listToString(getCrawlSpecification().crawlActions().getCrawlElementsExcluded()));
-		config.addProperty("crawl.filter.attributes", ConfigurationHelper
-		        .listToString(getFilterAttributeNames()));
-		config.addProperty("crawl.depth", getCrawlSpecification().getDepth());
-		config.addProperty("crawl.wait.reload", getCrawlSpecification()
-		        .getWaitTimeAfterReloadUrl());
-		config.addProperty("crawl.wait.event", getCrawlSpecification().getWaitTimeAfterEvent());
-		config.addProperty("crawl.max.states", getCrawlSpecification().getMaximumStates());
-		config.addProperty("crawl.max.runtime", getCrawlSpecification().getMaximumRuntime());
-		config.addProperty("crawl.forms.randominput", ConfigurationHelper
-		        .booleanToInt(getCrawlSpecification().getRandomInputInForms()));
-		config.addProperty("crawl.numberOfThreads", getThreadConfiguration().getNumberThreads());
-
-		if (getProxyConfiguration() != null) {
-			config.addProperty("proxy.enabled", 1);
-			config.addProperty("proxy.port", getProxyConfiguration().getPort());
-		}
-
-		return config;
 	}
 
 	/**

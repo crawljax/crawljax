@@ -7,7 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * TODO: Document this.
+ * Class used to desribe html elements. Used internally to describe which elements to click for
+ * example.
  * 
  * @author mesbah
  * @version $Id$
@@ -28,7 +29,7 @@ public class TagElement {
 		this.name = name;
 	}
 
-    /**
+	/**
 	 * @return the attribute set.
 	 */
 	public Set<TagAttribute> getAttributes() {
