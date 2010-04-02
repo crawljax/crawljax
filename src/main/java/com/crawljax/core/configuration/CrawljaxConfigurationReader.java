@@ -7,8 +7,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.configuration.Configuration;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.TagAttribute;
@@ -40,14 +38,6 @@ public class CrawljaxConfigurationReader {
 		        new CrawlSpecificationReader(crawljaxConfiguration.getCrawlSpecification());
 		this.threadConfigurationReader =
 		        new ThreadConfigurationReader(crawljaxConfiguration.getThreadConfiguration());
-	}
-
-	/**
-	 * @return a PropertiesConfiguration. For use by PropertyHelper only!
-	 */
-	@Deprecated
-	public Configuration getConfiguration() {
-		return crawljaxConfiguration.getConfiguration();
 	}
 
 	/**
