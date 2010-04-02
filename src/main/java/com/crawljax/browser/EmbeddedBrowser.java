@@ -15,6 +15,8 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 
 /**
+ * Browser interface used by Crawjax.
+ * 
  * @author mesbah
  * @version $Id$
  */

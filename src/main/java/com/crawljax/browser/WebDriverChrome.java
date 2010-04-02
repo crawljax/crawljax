@@ -11,6 +11,8 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 /**
+ * Google Chrome implementation of AbstractWebDriver.
+ * 
  * @author amesbah
  * @version $Id$
  */
