@@ -308,8 +308,7 @@ public final class Helper {
 	}
 
 	/**
-	 * Checks whether the folder exists for fname, and creates it if neccessary TODO: anyone, check,
-	 * probably does not work correctly.
+	 * Checks whether the folder exists for fname, and creates it if neccessary.
 	 * 
 	 * @param fname
 	 *            folder name.
