@@ -8,14 +8,14 @@ import junit.framework.TestCase;
 import org.w3c.dom.Document;
 
 /**
- * TODO: DOCUMENT ME!
+ * Test class for the XPathHelper class.
  * 
  * @author mesbah
  * @version $Id$
  */
 public class XPathHelperTest extends TestCase {
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Check if XPath building works correctly.
 	 */
 	public void testGetXpathExpression() {
 		final String html =

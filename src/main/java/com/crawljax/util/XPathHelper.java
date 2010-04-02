@@ -21,7 +21,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * TODO: DOCUMENT ME!
+ * Utility class that contains methods used by Crawljax and some plugin to deal with XPath
+ * resolving, constructing etc.
  * 
  * @author mesbah
  * @version $Id$

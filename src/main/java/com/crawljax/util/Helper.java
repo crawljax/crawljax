@@ -1,6 +1,3 @@
-/**
- * Created Oct 16, 2007
- */
 package com.crawljax.util;
 
 import java.io.BufferedReader;
@@ -50,6 +47,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
+ * Utility class that contains a number of helper functions used by Crawljax and some plugins.
+ * 
  * @author mesbah
  * @version $Id$
  */
@@ -68,10 +67,10 @@ public final class Helper {
 
 	/**
 	 * @param location
-	 *            TODO: DOCUMENT ME!
+	 *            Current location.
 	 * @param link
-	 *            TODO: DOCUMENT ME!
-	 * @return TODO: DOCUMENT ME!
+	 *            Link to check.
+	 * @return Whether location and link are on the same domain.
 	 */
 	public static boolean isLinkExternal(String location, String link) {
 		boolean check = false;
