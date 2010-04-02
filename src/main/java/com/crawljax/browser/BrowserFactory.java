@@ -131,7 +131,7 @@ public final class BrowserFactory {
 	}
 
 	/**
-	 * hidden constructor.
+	 * Default constructor.
 	 * 
 	 * @param type
 	 *            the browser type.

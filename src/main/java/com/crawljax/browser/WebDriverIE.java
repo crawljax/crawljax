@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 /**
+ * The Internet Explorer implementation of AbstractWebdriver.
+ * 
  * @author mesbah
  * @version $Id$
  */
