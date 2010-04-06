@@ -118,7 +118,7 @@ public class CrawljaxConfigurationReader {
 	}
 
 	/**
-	 * @return a list of tag elements.
+	 * @return A list of tag elements.
 	 */
 	public List<TagElement> getTagElements() {
 
@@ -217,10 +217,10 @@ public class CrawljaxConfigurationReader {
 
 			matcher = patternAttributes.matcher(substring);
 
-			// attributes
+			/* Find the tag attributes */
 			if (matcher.find()) {
 				String tmp = matcher.group();
-				// parse attributes
+				/* Parse the attributes */
 				matcher = patternAttribute.matcher(tmp);
 
 				while (matcher.find()) {
@@ -230,7 +230,7 @@ public class CrawljaxConfigurationReader {
 				}
 			}
 
-			// id
+			/* Get the id */
 			matcher = patternId.matcher(substring);
 			if (matcher.find()) {
 				id = matcher.group(2);
