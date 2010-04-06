@@ -702,8 +702,6 @@ public class Crawler implements Runnable {
 		int maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime();
 		if ((maxCrawlTime != 0) && (timePassed > maxCrawlTime * ONE_SECOND)) {
 
-			/* remove all possible candidates left */
-			// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
 			LOGGER.info("Max time " + maxCrawlTime + " seconds passed!");
 			/* stop crawling */
 			return false;
@@ -714,9 +712,6 @@ public class Crawler implements Runnable {
 		        configurationReader.getCrawlSpecificationReader().getMaxNumberOfStates();
 		synchronized (graph) {
 			if ((maxNumberOfStates != 0) && (graph.getAllStates().size() >= maxNumberOfStates)) {
-				/* remove all possible candidates left */
-				// EXACTEVENTPATH.clear(); TODO Stefan: FIX this!
-
 				LOGGER.info("Max number of states " + maxNumberOfStates + " reached!");
 
 				/* stop crawling */
