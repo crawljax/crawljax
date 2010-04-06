@@ -419,7 +419,7 @@ public final class Helper {
 	}
 
 	/**
-	 * Save a string to a file.
+	 * Save a string to a file and append a newline character to that string.
 	 * 
 	 * @param filename
 	 *            The filename to save to.
