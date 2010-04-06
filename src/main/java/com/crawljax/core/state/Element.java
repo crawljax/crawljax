@@ -69,9 +69,6 @@ public class Element implements Cloneable {
 		return str;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object object) {
 		if (object == null || !(object instanceof Element)) {
@@ -80,12 +77,16 @@ public class Element implements Cloneable {
 		return toString().equals(((Element) object).toString());
 	}
 
-	/**
-	 * TODO is this the correct hashCode implementation? {@inheritDoc}
-	 */
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((node == null) ? 0 : node.hashCode());
+		result = prime * result + ((tag == null) ? 0 : tag.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
 	}
 
 	/**
