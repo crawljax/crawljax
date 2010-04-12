@@ -33,8 +33,9 @@ public class DontClickUnderXPath {
 		                                .getAbsolutePath());
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 
-		crawler.click("li");
-		crawler.dontClick("li").underXPath("//UL[class=\"dontclick\"]");
+		crawler.click("li").underXPath("//UL[class=\"dontclick\"]");
+		// crawler.click("li");
+		// crawler.dontClick("li").underXPath("//UL[class=\"dontclick\"]");
 
 		config.setCrawlSpecification(crawler);
 
@@ -60,7 +61,11 @@ public class DontClickUnderXPath {
 
 	@Test
 	public void dontClickTest() {
-		assertEquals("There should be no outgoing links", 0, session.getStateFlowGraph().getSfg()
-		        .outDegreeOf(session.getInitialState()));
+		/*
+		 * Note that the code in issue 16 is for dontclick, but for click underxpath it doesn't seem
+		 * to work either.
+		 */
+		assertEquals("There should be two outgoing links", 2, session.getStateFlowGraph()
+		        .getSfg().outDegreeOf(session.getInitialState()));
 	}
 }
