@@ -1,11 +1,16 @@
 package com.crawljax.core.configuration;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 
 /**
@@ -18,17 +23,18 @@ public class DontClickUnderXPath {
 	private static CrawlSession session = null;
 
 	@BeforeClass
-	public static void oneTimeSetUp() {
+	public static void beforeClass() {
+
 		CrawlSpecification crawler =
 		        new CrawlSpecification(
 		                "file://"
 		                        + new File(
-		                                "src/test/com/crawljax/core/configuration/dontclickunderxpath.html")
+		                                "src/test/java/com/crawljax/core/configuration/dontclickunderxpath.html")
 		                                .getAbsolutePath());
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 
 		crawler.click("li");
-		crawler.dontClick("li").underXPath("//UL[class='dontclick']");
+		crawler.dontClick("li").underXPath("//UL[class=\"dontclick\"]");
 
 		config.setCrawlSpecification(crawler);
 
@@ -40,10 +46,21 @@ public class DontClickUnderXPath {
 			}
 
 		});
+
+		try {
+			CrawljaxController crawljax = new CrawljaxController(config);
+
+			crawljax.run();
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		} catch (CrawljaxException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
 	public void dontClickTest() {
-		/* TODO: check number of candidate elements here, but first make beforeclass work :S */
+		assertEquals("There should be no outgoing links", 0, session.getStateFlowGraph().getSfg()
+		        .outDegreeOf(session.getInitialState()));
 	}
 }

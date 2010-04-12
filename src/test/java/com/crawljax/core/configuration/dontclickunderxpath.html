@@ -1,12 +1,18 @@
 <html>
-	<head></head>
+	<head>
+		<script type="text/javascript">
+			function test() {
+				document.location.href = "http://crawljax.com/";
+			}
+		</script>
+	</head>
 	
 	<body>
-		<ul class='dontclick'>
-			<li onclick="dontclickunderxpath></li>
+		<ul class="dontclick">
+			<li onclick="javascript:test();">Test</li>
 		</ul>
-		<ul class='dontclick'>
-			<li></li>
+		<ul class="dontclick">
+			<li onclick="javascript:test();">Test</li>
 		</ul>
 	</body>
 </html>
