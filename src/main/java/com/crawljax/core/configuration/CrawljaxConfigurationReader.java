@@ -65,13 +65,6 @@ public class CrawljaxConfigurationReader {
 	}
 
 	/**
-	 * @return The hibernate configuration.
-	 */
-	public HibernateConfiguration getHibernateConfiguration() {
-		return crawljaxConfiguration.getHibernateConfiguration();
-	}
-
-	/**
 	 * @return The input specification.
 	 */
 	public InputSpecification getInputSpecification() {

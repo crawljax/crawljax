@@ -13,7 +13,6 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.condition.invariant.InvariantChecker;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
-import com.crawljax.util.database.HibernateUtil;
 
 /**
  * The State Machine.
@@ -133,9 +132,6 @@ public class StateMachine {
 		} else {
 			LOGGER.info("State " + newState.getName() + " added to the StateMachine.");
 		}
-
-		// Store in DB
-		HibernateUtil.insert(eventable);
 
 		// Add the Edge
 		stateFlowGraph.addEdge(currentState, newState, eventable);
