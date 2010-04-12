@@ -23,7 +23,6 @@ import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
 import com.crawljax.oraclecomparator.StateComparator;
-import com.crawljax.util.database.HibernateUtil;
 
 /**
  * The Crawljax Controller class is the core of Crawljax.
@@ -116,8 +115,6 @@ public class CrawljaxController {
 		LOGGER.info("Embedded browser implementation: " + browserFactory.getBrowserType());
 
 		crawler = new Crawler(this);
-
-		HibernateUtil.initialize(configurationReader.getHibernateConfiguration());
 
 		LOGGER.info("Number of threads: "
 		        + configurationReader.getThreadConfigurationReader().getNumberThreads());

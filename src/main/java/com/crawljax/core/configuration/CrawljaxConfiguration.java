@@ -43,7 +43,6 @@ public final class CrawljaxConfiguration {
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 
 	private CrawlSpecification crawlSpecification = new CrawlSpecification("");
-	private HibernateConfiguration hibernateConfiguration = null;
 	private ProxyConfiguration proxyConfiguration = null;
 	private ThreadConfiguration threadConfiguration = new ThreadConfiguration();
 
@@ -157,22 +156,6 @@ public final class CrawljaxConfiguration {
 		}
 
 		return eventableConditions;
-	}
-
-	/**
-	 * @return The HibernateConfiguration which contains the Hibernate Database settings.
-	 */
-	protected HibernateConfiguration getHibernateConfiguration() {
-		return hibernateConfiguration;
-	}
-
-	/**
-	 * @param hibernateConfiguration
-	 *            Which contains the Hibernate Database settings.
-	 */
-	public void setHibernateConfiguration(HibernateConfiguration hibernateConfiguration) {
-		this.useDatabase = true;
-		this.hibernateConfiguration = hibernateConfiguration;
 	}
 
 	/**

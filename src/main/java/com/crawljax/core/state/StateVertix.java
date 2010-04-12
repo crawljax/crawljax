@@ -19,7 +19,6 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.TagElement;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.Helper;
-import com.crawljax.util.database.HibernateUtil;
 
 /**
  * The state vertix class which represents a state in the browser. This class implements the
@@ -196,17 +195,6 @@ public class StateVertix implements Iterable<CandidateCrawlAction>, Serializable
 	 */
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	/**
-	 * Retrieve the state vertex from Database.
-	 * 
-	 * @param id
-	 *            the Id to search
-	 * @return returns the StateVertix with id id
-	 */
-	public static StateVertix getStateVertix(long id) {
-		return (StateVertix) HibernateUtil.currentSession().get(StateVertix.class, new Long(id));
 	}
 
 	/**
