@@ -34,7 +34,7 @@ public class ThreadConfiguration {
 	 * The maximum number of opened browsers to use. Default if this is not set it is set to the
 	 * number of threads {@link #numberThreads}
 	 */
-	private int numberBrowsers;
+	private final int numberBrowsers;
 
 	/**
 	 * Internal only flag variable.
@@ -44,27 +44,28 @@ public class ThreadConfiguration {
 	/**
 	 * is the Booting (pre-loading) of browsers in use? Default to true;
 	 */
-	private boolean browserBooting = true;
+	private boolean browserBooting = false;
 
 	/**
 	 * The total number of retries when a browser can not be created.
 	 */
-	private int numberBrowserCreateRetries = 2;
+	private final int numberBrowserCreateRetries = 0;
 
 	/**
 	 * The number of milliseconds to sleep when a browser can not be created.
 	 */
-	private int sleepTimeOnBrowserCreationFailure = defaultSleepTimeOnBrowserCreationFailure;
+	private final int sleepTimeOnBrowserCreationFailure =
+	        defaultSleepTimeOnBrowserCreationFailure;
 
 	/**
 	 * This field indicates if the fastBooting algorithm must be used.
 	 */
-	private boolean useFastBooting = false;
+	private final boolean useFastBooting = false;
 
 	/**
 	 * Use a random port number.
 	 */
-	private boolean useRandomPortNumberCreation = true;
+	private final boolean useRandomPortNumberCreation = true;
 
 	/**
 	 * The last returned port number.
@@ -81,7 +82,7 @@ public class ThreadConfiguration {
 	 * @param useBooting
 	 *            is the booting in use?
 	 */
-	public ThreadConfiguration(int browsers, int threads, boolean useBooting) {
+	private ThreadConfiguration(int browsers, int threads, boolean useBooting) {
 		numberThreadsSet = true;
 		numberBrowsersSet = true;
 		numberBrowsers = browsers;
@@ -90,22 +91,10 @@ public class ThreadConfiguration {
 	}
 
 	/**
-	 * Specify only the number of browsers. This constructor makes the number of threads equal to
-	 * the number of browsers.
-	 * 
-	 * @param browsers
-	 *            the number of browsers to use.
-	 */
-	public ThreadConfiguration(int browsers) {
-		this(browsers, browsers, true);
-		numberThreadsSet = false;
-	}
-
-	/**
 	 * Default 'init' constructor.
 	 */
 	public ThreadConfiguration() {
-		this(1, 1, true);
+		this(1, 1, false);
 		/**
 		 * Default everything.
 		 */
@@ -124,15 +113,6 @@ public class ThreadConfiguration {
 	}
 
 	/**
-	 * @param numberThreads
-	 *            the numberThreads to set
-	 */
-	public final void setNumberThreads(int numberThreads) {
-		numberThreadsSet = true;
-		this.numberThreads = numberThreads;
-	}
-
-	/**
 	 * @return the numberBrowsers
 	 */
 	public final int getNumberBrowsers() {
@@ -143,27 +123,10 @@ public class ThreadConfiguration {
 	}
 
 	/**
-	 * @param numberBrowsers
-	 *            the numberBrowsers to set
-	 */
-	public final void setNumberBrowsers(int numberBrowsers) {
-		numberBrowsersSet = true;
-		this.numberBrowsers = numberBrowsers;
-	}
-
-	/**
 	 * @return the browserBooting
 	 */
 	public final boolean isBrowserBooting() {
 		return browserBooting;
-	}
-
-	/**
-	 * @param browserBooting
-	 *            the browserBooting to set
-	 */
-	public final void setBrowserBooting(boolean browserBooting) {
-		this.browserBooting = browserBooting;
 	}
 
 	/**
@@ -174,30 +137,10 @@ public class ThreadConfiguration {
 	}
 
 	/**
-	 * The total number of retries when a browser can not be created.
-	 * 
-	 * @param numberBrowserCreateRetries
-	 *            the numberBrowserCreateRetries to set
-	 */
-	public final void setNumberBrowserCreateRetries(int numberBrowserCreateRetries) {
-		this.numberBrowserCreateRetries = numberBrowserCreateRetries;
-	}
-
-	/**
 	 * @return the number of milliseconds to sleep when a browser can not be created.
 	 */
 	public final int getSleepTimeOnBrowserCreationFailure() {
 		return sleepTimeOnBrowserCreationFailure;
-	}
-
-	/**
-	 * The number of milliseconds to sleep when a browser can not be created.
-	 * 
-	 * @param sleepTimeOnBrowserCreationFailure
-	 *            the sleepTimeOnBrowserCreationFailure to set
-	 */
-	public final void setSleepTimeOnBrowserCreationFailure(int sleepTimeOnBrowserCreationFailure) {
-		this.sleepTimeOnBrowserCreationFailure = sleepTimeOnBrowserCreationFailure;
 	}
 
 	/**
@@ -227,20 +170,5 @@ public class ThreadConfiguration {
 		}
 	}
 
-	/**
-	 * @param useFastBooting
-	 *            the useFastBooting to set
-	 */
-	public final void setUseFastBooting(boolean useFastBooting) {
-		this.useFastBooting = useFastBooting;
-	}
-
-	/**
-	 * @param useRandomPortNumberCreation
-	 *            the useRandomPortNumberCreation to set
-	 */
-	public final void setUseRandomPortNumberCreation(boolean useRandomPortNumberCreation) {
-		this.useRandomPortNumberCreation = useRandomPortNumberCreation;
-	}
-
+	// TODO Stefan insert all Set operations from r312
 }

@@ -53,7 +53,8 @@ public class CrawlerExecutorTest {
 		CrawlSpecification spec = new CrawlSpecification("about:plugins");
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
-		cfg.setThreadConfiguration(new ThreadConfiguration(2));
+		cfg.setThreadConfiguration(new ThreadConfiguration()); // TODO Stefan after 1.9 release set
+															   // to 2
 
 		excutor = new CrawlerExecutor(2);
 		TestThread t1 = new TestThread("Thread 1 Crawler 1");
