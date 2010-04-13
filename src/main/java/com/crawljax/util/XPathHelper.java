@@ -72,7 +72,7 @@ public final class XPathHelper {
 	}
 
 	/**
-	 * Get siblings of the same type as element from parent
+	 * Get siblings of the same type as element from parent.
 	 * 
 	 * @param parent
 	 *            parent node.
