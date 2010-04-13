@@ -16,7 +16,7 @@
 				Properties file is no longer supported.
 			</action>
 			<action dev="mesbah" type="add">
-				Support for iframe crawling.
+				Support for iframe crawling. Works great in Firefox if iframes have unique IDs or NAME attributes.
 			</action>
 			<action dev="frank" type="fix" issue="7">
 				Fix a bug where hashes, dots and spaces were not allowed in attribute values of clickables.
@@ -34,7 +34,7 @@
 				Upgrade WebDriver dependency to Selenium 2.0a2.
 			</action>
 			<action dev="mesbah" type="add">
-				Added support for Google Chrome 4.0. Newer version do not work because of WebDriver issues.
+				Added support for Google Chrome 4.0. Works with versions lower than 5 currently (due to WebDriver issues).
 			</action>
 			<action dev="mesbah" type="fix" issue="2">
 				Handle popups such as alert by always "clicking" OK. This is a workaround and doesn't always work.
@@ -52,7 +52,7 @@
 				runOnFireEventFailedPlugins failed in some cases, prevented from happening
 			</action>
 			<action dev="stefan" type="add">
-				OnFireEventFailed Plugins; enable an extension point when an fireEvent failed.
+				OnFireEventFailed Plugins; enable an extension point when a fireEvent failed.
 			</action>
 		</release>
 		<release version="1.8" date="2009-12-29" description="Update">
