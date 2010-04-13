@@ -17,19 +17,18 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
  * 
  * @author Frank Groeneveld
  */
-public class DontClickUnderXPath {
+public class UnderXPathTest {
 
 	private static CrawlSession session = null;
+
+	private static final String FILENAME =
+	        "src/test/java/com/crawljax/core/configuration/underxpath.html";
 
 	@Test
 	public void testDontClickUnderXPath() {
 
 		CrawlSpecification crawler =
-		        new CrawlSpecification(
-		                "file://"
-		                        + new File(
-		                                "src/test/java/com/crawljax/core/configuration/dontclickunderxpath.html")
-		                                .getAbsolutePath());
+		        new CrawlSpecification("file://" + new File(FILENAME).getAbsolutePath());
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 
 		crawler.click("li");
@@ -41,7 +40,7 @@ public class DontClickUnderXPath {
 
 			@Override
 			public void postCrawling(CrawlSession session) {
-				DontClickUnderXPath.session = session;
+				UnderXPathTest.session = session;
 			}
 
 		});
@@ -65,11 +64,7 @@ public class DontClickUnderXPath {
 	public void testClickUnderXPath() {
 
 		CrawlSpecification crawler =
-		        new CrawlSpecification(
-		                "file://"
-		                        + new File(
-		                                "src/test/java/com/crawljax/core/configuration/dontclickunderxpath.html")
-		                                .getAbsolutePath());
+		        new CrawlSpecification("file://" + new File(FILENAME).getAbsolutePath());
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 
 		crawler.click("li").underXPath("//UL[@class=\"dontclick\"]");
@@ -80,7 +75,7 @@ public class DontClickUnderXPath {
 
 			@Override
 			public void postCrawling(CrawlSession session) {
-				DontClickUnderXPath.session = session;
+				UnderXPathTest.session = session;
 			}
 
 		});
