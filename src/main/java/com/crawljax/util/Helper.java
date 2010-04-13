@@ -74,7 +74,8 @@ public final class Helper {
 	 */
 	public static boolean isLinkExternal(String location, String link) {
 		boolean check = false;
-		if (location.startsWith("file") && link.startsWith("http")) {
+		if (location.startsWith("file") && link.startsWith("http") || link.startsWith("file")
+		        && location.startsWith("http")) {
 			return true;
 		}
 

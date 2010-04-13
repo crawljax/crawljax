@@ -1,6 +1,8 @@
 package com.crawljax.util;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -79,5 +81,12 @@ public class HelperTest {
 		}
 		browser = null;
 
+	}
+
+	@Test
+	public void isLinkExternal() {
+		assertTrue(Helper.isLinkExternal("http://crawljax.com", "http://google.com"));
+		assertTrue(Helper.isLinkExternal("http://crawljax.com", "file:///test/"));
+		assertFalse(Helper.isLinkExternal("http://crawljax.com", "http://crawljax.com/about"));
 	}
 }
