@@ -6,7 +6,7 @@ The ${developmentTeam} is pleased to announce the ${finalName} release!
 ${introduction}
 
 #if ($release.getAction().size() == 0)
-No changes defined in ths version.
+No changes defined in this version.
 #else
 Changes in this version include:
 
