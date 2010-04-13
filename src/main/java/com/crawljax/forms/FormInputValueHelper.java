@@ -165,7 +165,7 @@ public final class FormInputValueHelper {
 
 			CandidateElement candidateElement =
 			        new CandidateElement(cloneElement, XPathHelper
-			                .getXpathExpression(sourceElement));
+			                .getXPathExpression(sourceElement));
 			candidateElement.setFormInputs(formInputsForCurrentIndex);
 			candidateElements.add(candidateElement);
 		}
@@ -233,7 +233,7 @@ public final class FormInputValueHelper {
 		}
 
 		// try to find the xpath
-		String xpathExpr = XPathHelper.getXpathExpression(element);
+		String xpathExpr = XPathHelper.getXPathExpression(element);
 		if (xpathExpr != null && !xpathExpr.equals("")) {
 			return new Identification(Identification.How.xpath, xpathExpr);
 		}

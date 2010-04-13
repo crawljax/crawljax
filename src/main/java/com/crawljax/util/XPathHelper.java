@@ -41,7 +41,7 @@ public final class XPathHelper {
 	 *            the given node.
 	 * @return string xpath expression (e.g., "/html[1]/body[1]/div[3]").
 	 */
-	public static String getXpathExpression(Node node) {
+	public static String getXPathExpression(Node node) {
 		Node parent = node.getParentNode();
 
 		if ((parent == null) || parent.getNodeName().contains("#document")) {
@@ -51,7 +51,7 @@ public final class XPathHelper {
 		StringBuffer buffer = new StringBuffer();
 
 		if (parent != node) {
-			buffer.append(getXpathExpression(parent));
+			buffer.append(getXPathExpression(parent));
 			buffer.append("/");
 		}
 
@@ -138,29 +138,30 @@ public final class XPathHelper {
 	}
 
 	/**
-	 * Returns the xpath of the first node retrieved by xpathExpression. Example: //DIV[@id='foo']
+	 * Returns the XPaths of all nodes retrieved by xpathExpression. Example: //DIV[@id='foo']
 	 * returns /HTM[1]/BODY[1]/DIV[2]
 	 * 
 	 * @param dom
 	 *            The dom.
 	 * @param xpathExpression
 	 *            The expression to find the element.
-	 * @return the xpath of the first node retrieved by xpathExpression.
+	 * @return list of XPaths retrieved by xpathExpression.
 	 */
-	public static String getXpathForXPathExpression(Document dom, String xpathExpression) {
+	public static List<String> getXpathForXPathExpressions(Document dom, String xpathExpression) {
 		NodeList nodeList;
 		try {
-			nodeList = Helper.getElementsByXpath(dom, xpathExpression);
+			nodeList = XPathHelper.evaluateXpathExpression(dom, xpathExpression);
 		} catch (XPathExpressionException e) {
 			return null;
 		}
+		List<String> result = new ArrayList<String>();
 		if (nodeList.getLength() > 0) {
-			if (nodeList.getLength() > 1) {
-				LOGGER.warn("Expression " + xpathExpression + " returned more than one element.");
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				Node n = nodeList.item(i);
+				result.add(getXPathExpression(n));
 			}
-			return getXpathExpression(nodeList.item(0));
 		}
-		return null;
+		return result;
 	}
 
 	/**

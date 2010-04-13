@@ -228,21 +228,6 @@ public final class Helper {
 	}
 
 	/**
-	 * @param dom
-	 *            the DOM document.
-	 * @param xpath
-	 *            the xpath.
-	 * @return The element found on DOM having the xpath position.
-	 * @throws XPathExpressionException
-	 *             if the xpath fails.
-	 */
-	public static NodeList getElementsByXpath(Document dom, String xpath)
-	        throws XPathExpressionException {
-		XPath xp = XPathFactory.newInstance().newXPath();
-		return (NodeList) xp.evaluate(xpath, dom, XPathConstants.NODESET);
-	}
-
-	/**
 	 * Removes all the <SCRIPT/> tags from the document.
 	 * 
 	 * @param dom
@@ -268,7 +253,7 @@ public final class Helper {
 
 			NodeList list;
 			try {
-				list = Helper.getElementsByXpath(dom, "//" + tagName.toUpperCase());
+				list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
 
 				while (list.getLength() > 0) {
 					Node sc = list.item(0);
@@ -277,7 +262,7 @@ public final class Helper {
 						sc.getParentNode().removeChild(sc);
 					}
 
-					list = Helper.getElementsByXpath(dom, "//" + tagName.toUpperCase());
+					list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
 					// list = dom.getElementsByTagName("SCRIPT");
 				}
 			} catch (XPathExpressionException e) {

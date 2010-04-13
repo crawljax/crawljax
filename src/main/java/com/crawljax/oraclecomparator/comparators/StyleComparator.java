@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
 
 /**
  * Oracle which can ignore style attributes.
@@ -67,7 +68,7 @@ public class StyleComparator extends AbstractComparator {
 
 	private Document stripStyleAttributes(Document dom) {
 		try {
-			NodeList nl = Helper.getElementsByXpath(dom, "//*[@style]/@style");
+			NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//*[@style]/@style");
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node attribute = nl.item(i);
 				if (attribute != null) {
@@ -88,7 +89,7 @@ public class StyleComparator extends AbstractComparator {
 	private Document stripElements(Document dom) {
 		try {
 			for (String tag : IGNORE_TAGS) {
-				NodeList nl = Helper.getElementsByXpath(dom, "//" + tag.toUpperCase());
+				NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//" + tag.toUpperCase());
 				for (int i = 0; i < nl.getLength(); i++) {
 					Node removeNode = nl.item(i);
 					Node parent = removeNode.getParentNode();
@@ -117,7 +118,7 @@ public class StyleComparator extends AbstractComparator {
 		try {
 			for (String attributeName : IGNORE_ATTRIBUTES) {
 				String attribute = attributeName.toLowerCase();
-				NodeList nl = Helper.getElementsByXpath(dom, "//*[@" + attribute + "]");
+				NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//*[@" + attribute + "]");
 				for (int i = 0; i < nl.getLength(); i++) {
 					NamedNodeMap attributes = nl.item(i).getAttributes();
 					attributes.removeNamedItem(attribute);

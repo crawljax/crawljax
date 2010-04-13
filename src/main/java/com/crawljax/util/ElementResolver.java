@@ -75,7 +75,7 @@ public class ElementResolver {
 				LOGGER.info("Search other candidate elements");
 			}
 			NodeList candidateElements =
-			        Helper.getElementsByXpath(dom, "//"
+			        XPathHelper.evaluateXpathExpression(dom, "//"
 			                + eventable.getElement().getTag().toUpperCase());
 			if (logging) {
 				LOGGER.info("Candidates: " + candidateElements.getLength());
@@ -83,7 +83,7 @@ public class ElementResolver {
 			for (int i = 0; i < candidateElements.getLength(); i++) {
 				Element candidateElement = new Element(candidateElements.item(i));
 				if (equivalent(candidateElement, logging)) {
-					return XPathHelper.getXpathExpression(candidateElements.item(i));
+					return XPathHelper.getXPathExpression(candidateElements.item(i));
 				}
 			}
 
