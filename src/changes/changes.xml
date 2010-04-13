@@ -27,8 +27,8 @@
 			<action dev="stefan" type="fix">
 				Fix bug where wrong currentState was stored in in CrawlSession when OnInvariantViolation was called.
 			</action>
-			<action dev="frank" type="fix">
-				Make Crawljax work with Firefox 2.0. You also need a patched webdriver.
+			<action dev="stefan" type="fix">
+				Make Crawljax work with Firefox 2.0. You also need a patched webdriver. (http://code.google.com/p/selenium/issues/detail?id=387)
 			</action>
 			<action dev="frank" type="update">
 				Upgrade WebDriver dependency to Selenium 2.0a2.
@@ -44,6 +44,15 @@
 			</action>
 			<action dev="frank" type="fix">
 				Fix bug where a Crawljax would write to / if the output directory was not set.
+			</action>
+			<action dev="stefan" type="fix" issue="5">
+				changed CrawljaxConfiguration to CrawljaxConfigurationReader in CrawlSession
+			</action>
+			<action dev="stefan" type="fix" issue="8">
+				runOnFireEventFailedPlugins failed in some cases, prevented from happening
+			</action>
+			<action dev="stefan" type="add">
+				OnFireEventFailed Plugins; enable an extension point when an fireEvent failed.
 			</action>
 		</release>
 		<release version="1.8" date="2009-12-29" description="Update">
