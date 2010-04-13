@@ -4,7 +4,19 @@ import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 
-public class JarRunner {
+/**
+ * @author frank, mesbah
+ */
+public final class JarRunner {
+
+	private JarRunner() {
+
+	}
+
+	/**
+	 * @param args
+	 *            URL.
+	 */
 	public static void main(String[] args) {
 		if (args.length < 1) {
 			System.err.println("Please give an url as first argument to Crawljax");
