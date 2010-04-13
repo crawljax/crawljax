@@ -97,7 +97,10 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 		                + crawlerName;
 
 		t.setName(threadName);
-		LOGGER.info("Starting new Crawler: " + threadName);
+		/*
+		 * TODO: Stefan, uncomment for 2.0 release LOGGER.info("Starting new Crawler: " +
+		 * threadName);
+		 */
 	}
 
 	@Override
