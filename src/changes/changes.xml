@@ -9,6 +9,9 @@
 			<action dev="all" type="update">
 				Ali, Danny, Frank, Stefan: Various improvements and polishments. 
 			</action>
+			<action dev="frank" type="fix" issue="16">
+				Fix a bug where underXPath would only work for XPaths that result in one element.
+			</action>
 			<action dev="frank" type="remove">
 				Hibernate has been removed.
 			</action>
