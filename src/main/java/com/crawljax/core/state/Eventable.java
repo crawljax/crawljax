@@ -90,7 +90,7 @@ public class Eventable extends DefaultEdge implements Cloneable, Serializable {
 	 *            the event type.
 	 */
 	public Eventable(Node node, EventType eventType) {
-		this(new Identification(Identification.How.xpath, XPathHelper.getXpathExpression(node)),
+		this(new Identification(Identification.How.xpath, XPathHelper.getXPathExpression(node)),
 		        eventType);
 		this.element = new Element(node);
 	}

@@ -85,14 +85,19 @@ public class EventableConditionChecker {
 	        EventableCondition eventableCondition, String xpath) throws Exception {
 		if (eventableCondition == null || eventableCondition.getInXPath() == null
 		        || eventableCondition.getInXPath().equals("")) {
-			throw new Exception("Eventable has no xpath condition");
+			throw new Exception("Eventable has no XPath condition");
 		}
-		String fullXpath =
-		        XPathHelper.getXpathForXPathExpression(dom, eventableCondition.getInXPath());
-		if (fullXpath == null) {
-			throw new Exception("Element for xpath condition not found");
+		List<String> expressions =
+		        XPathHelper.getXpathForXPathExpressions(dom, eventableCondition.getInXPath());
+
+		/* check all expressions */
+		for (String fullXpath : expressions) {
+			if (xpath.startsWith(fullXpath)) {
+				return true;
+			}
 		}
-		return xpath.startsWith(fullXpath);
+
+		return false;
 	}
 
 }

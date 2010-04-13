@@ -28,17 +28,17 @@ public class XPathHelperTest extends TestCase {
 
 			// first div
 			String expectedXpath = "/HTML[1]/BODY[1]/DIV[1]";
-			String xpathExpr = XPathHelper.getXpathExpression(dom.getElementById("firstdiv"));
+			String xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("firstdiv"));
 			assertEquals(expectedXpath, xpathExpr);
 
 			// span
 			expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]";
-			xpathExpr = XPathHelper.getXpathExpression(dom.getElementById("thespan"));
+			xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("thespan"));
 			assertEquals(expectedXpath, xpathExpr);
 
 			// a
 			expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]/A[1]";
-			xpathExpr = XPathHelper.getXpathExpression(dom.getElementById("thea"));
+			xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("thea"));
 			assertEquals(expectedXpath, xpathExpr);
 		} catch (Exception e) {
 			fail(e.getMessage());

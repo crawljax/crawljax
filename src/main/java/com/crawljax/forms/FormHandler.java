@@ -85,7 +85,7 @@ public class FormHandler {
 					if (text.equals("")) {
 						return;
 					}
-					String js = Helper.getJSGetElement(XPathHelper.getXpathExpression(element));
+					String js = Helper.getJSGetElement(XPathHelper.getXPathExpression(element));
 					js += "try{ATUSA_element.value='" + text + "';}catch(e){}";
 					browser.executeJavaScript(js);
 				}
@@ -94,7 +94,7 @@ public class FormHandler {
 				if (input.getType().equals("checkbox")) {
 					for (InputValue inputValue : input.getInputValues()) {
 						String js =
-						        Helper.getJSGetElement(XPathHelper.getXpathExpression(element));
+						        Helper.getJSGetElement(XPathHelper.getXPathExpression(element));
 						boolean check;
 						if (!randomFieldValue) {
 							check = inputValue.isChecked();
@@ -120,7 +120,7 @@ public class FormHandler {
 						if (inputValue.isChecked()) {
 							String js =
 							        Helper.getJSGetElement(XPathHelper
-							                .getXpathExpression(element));
+							                .getXPathExpression(element));
 							js += "try{ATUSA_element.checked=true;}catch(e){}";
 							browser.executeJavaScript(js);
 						}
@@ -132,7 +132,7 @@ public class FormHandler {
 					for (InputValue inputValue : input.getInputValues()) {
 						// if(browser.getDriver()==null){
 						String js =
-						        Helper.getJSGetElement(XPathHelper.getXpathExpression(element));
+						        Helper.getJSGetElement(XPathHelper.getXPathExpression(element));
 						js +=
 						        "try{" + "for(i=0; i<ATUSA_element.options.length; i++){"
 						                + "if(ATUSA_element.options[i].value=='"
@@ -158,7 +158,7 @@ public class FormHandler {
 	private List<Node> getInputElements(Document dom) {
 		List<Node> nodes = new ArrayList<Node>();
 		try {
-			NodeList nodeList = Helper.getElementsByXpath(dom, "//INPUT");
+			NodeList nodeList = XPathHelper.evaluateXpathExpression(dom, "//INPUT");
 			List<String> allowedTypes = new ArrayList<String>(Arrays.asList(ALLOWED_INPUT_TYPES));
 
 			for (int i = 0; i < nodeList.getLength(); i++) {
@@ -170,11 +170,11 @@ public class FormHandler {
 					nodes.add(nodeList.item(i));
 				}
 			}
-			nodeList = Helper.getElementsByXpath(dom, "//TEXTAREA");
+			nodeList = XPathHelper.evaluateXpathExpression(dom, "//TEXTAREA");
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				nodes.add(nodeList.item(i));
 			}
-			nodeList = Helper.getElementsByXpath(dom, "//SELECT");
+			nodeList = XPathHelper.evaluateXpathExpression(dom, "//SELECT");
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				nodes.add(nodeList.item(i));
 			}
