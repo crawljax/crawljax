@@ -6,7 +6,7 @@
 	</properties>
 	<body>
 		<release version="1.9" date="2010-04-20" description="New major release. Improve and polish Crawljax, add some new features">
-			<action dev="frank" type="update">
+			<action dev="all" type="update">
 				Ali, Danny, Frank, Stefan: Various improvements and polishments. 
 			</action>
 			<action dev="frank" type="remove">

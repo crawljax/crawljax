@@ -304,7 +304,7 @@
 				<artifactId>maven-changes-plugin</artifactId>
 				<configuration>
 					<issueLinkTemplate>
-						%URL%/show_bug.cgi?id=%ISSUE% </issueLinkTemplate>
+						%URL%/detail?id=%ISSUE% </issueLinkTemplate>
 				</configuration>
 				<reportSets>
 					<reportSet>
