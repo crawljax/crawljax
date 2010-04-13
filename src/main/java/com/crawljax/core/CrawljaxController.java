@@ -116,8 +116,10 @@ public class CrawljaxController {
 
 		crawler = new Crawler(this);
 
-		LOGGER.info("Number of threads: "
-		        + configurationReader.getThreadConfigurationReader().getNumberThreads());
+		/*
+		 * TODO: Stefan, uncomment for 2.0 LOGGER.info("Number of threads: " +
+		 * configurationReader.getThreadConfigurationReader().getNumberThreads());
+		 */
 		LOGGER.info("Crawl depth: "
 		        + configurationReader.getCrawlSpecificationReader().getDepth());
 		LOGGER.info("Crawljax initialized!");
