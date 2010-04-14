@@ -3,6 +3,7 @@ package com.crawljax.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -134,5 +135,29 @@ public class HelperTest {
 	public void getVarFromQueryString() {
 		assertEquals("home", Helper.getVarFromQueryString("page",
 		        "?sub=1&userid=123&page=home&goto=0"));
+	}
+
+	@Test
+	public void writeAndGetContents() {
+		File f = new File("helper-write-and-get-contents-test.txt");
+		if (!f.exists()) {
+			try {
+				Helper.writeDocumentToFile(Helper
+				        .getDocument("<html><body><p>Test</p></body></html>"), f.getName(),
+				        "html", 2);
+
+				assertNotSame("", Helper.getContent(f));
+
+				assertNotSame("", Helper.getTemplateAsString(f.getName()));
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			f.delete();
+		} else {
+			fail("File could not me created because it already exists.");
+		}
+
 	}
 }
