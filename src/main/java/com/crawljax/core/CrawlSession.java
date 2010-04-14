@@ -27,7 +27,9 @@ public class CrawlSession {
 	private final StateVertix initialState;
 	private final CrawljaxConfigurationReader crawljaxConfiguration;
 	private final long startTime;
-	private List<Eventable> exactEventPath;
+	// TODO Stefan; optimise / change this behaviour this is not the most speedy solution
+	private final ThreadLocal<List<Eventable>> exactEventPath =
+	        new ThreadLocal<List<Eventable>>();
 
 	/**
 	 * @param browser
@@ -143,7 +145,7 @@ public class CrawlSession {
 	 * @return the exactEventPath
 	 */
 	public List<Eventable> getExactEventPath() {
-		return exactEventPath;
+		return exactEventPath.get();
 	}
 
 	/**
@@ -151,7 +153,7 @@ public class CrawlSession {
 	 *            the exactEventPath to set
 	 */
 	public void setExactEventPath(List<Eventable> exactEventPath) {
-		this.exactEventPath = exactEventPath;
+		this.exactEventPath.set(exactEventPath);
 	}
 
 }
