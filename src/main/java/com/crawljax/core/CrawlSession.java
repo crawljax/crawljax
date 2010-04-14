@@ -27,6 +27,7 @@ public class CrawlSession {
 	private final StateVertix initialState;
 	private final CrawljaxConfigurationReader crawljaxConfiguration;
 	private final long startTime;
+	private List<Eventable> exactEventPath;
 
 	/**
 	 * @param browser
@@ -136,6 +137,21 @@ public class CrawlSession {
 	 */
 	public final long getStartTime() {
 		return startTime;
+	}
+
+	/**
+	 * @return the exactEventPath
+	 */
+	public List<Eventable> getExactEventPath() {
+		return exactEventPath;
+	}
+
+	/**
+	 * @param exactEventPath
+	 *            the exactEventPath to set
+	 */
+	public void setExactEventPath(List<Eventable> exactEventPath) {
+		this.exactEventPath = exactEventPath;
 	}
 
 }
