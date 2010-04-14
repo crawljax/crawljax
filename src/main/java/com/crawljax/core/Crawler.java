@@ -352,6 +352,7 @@ public class Crawler implements Runnable {
 
 			if (isDomChanged(stateMachine.getCurrentState(), newState)) {
 				crawlPath.add(eventable);
+				this.controller.getSession().setExactEventPath(getExacteventpath());
 				if (stateMachine.update(eventable, newState, this.getBrowser(), this.controller
 				        .getSession())) {
 					// Dom changed
