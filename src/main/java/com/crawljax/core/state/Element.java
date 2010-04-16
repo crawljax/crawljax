@@ -16,6 +16,8 @@ import com.crawljax.util.Helper;
  */
 public class Element implements Cloneable {
 
+	private static final int HASHCONST = 32;
+
 	private Node node;
 	private long id;
 	private String tag;
@@ -79,13 +81,26 @@ public class Element implements Cloneable {
 
 	@Override
 	public int hashCode() {
+
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + ((node == null) ? 0 : node.hashCode());
-		result = prime * result + ((tag == null) ? 0 : tag.hashCode());
-		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		result = prime * result;
+		if (attributes != null) {
+			result += attributes.hashCode();
+		}
+		result = prime * result + (int) (id ^ (id >>> HASHCONST));
+		result = prime * result;
+		if (node != null) {
+			result += node.hashCode();
+		}
+		result = prime * result;
+		if (tag != null) {
+			tag.hashCode();
+		}
+		result = prime * result;
+		if (text != null) {
+			text.hashCode();
+		}
 		return result;
 	}
 
