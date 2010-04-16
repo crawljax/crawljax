@@ -7,7 +7,6 @@
 			<includes>
 				<include>docs/license.txt</include>
 				<include>docs/README.txt</include>
-				<include>*.properties</include>
 			</includes>
 		</fileSet>
 		<fileSet>
