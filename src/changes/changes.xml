@@ -1,13 +1,61 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<document>
+<document xmlns="http://maven.apache.org/changes/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">  
 	<properties>
 		<title>Changes Crawljax</title>
 		<author email="a.mesbah@tudelft.nl">Ali Mesbah</author>
 	</properties>
 	<body>
-		<release version="1.9" date="2009-12-29" description="Update">
+		<release version="1.9" date="2010-04-20" description="New major release. Improve and polish Crawljax, add some new features">
+			<action dev="all" type="update">
+				Ali, Danny, Frank, Stefan: Various improvements and polishments. 
+			</action>
+			<action dev="frank" type="fix" issue="16">
+				Fix a bug where underXPath would only work for XPaths that result in one element.
+			</action>
+			<action dev="frank" type="remove">
+				Hibernate has been removed.
+			</action>
+			<action dev="frank" type="remove" issue="5">
+				Properties file is no longer supported.
+			</action>
+			<action dev="mesbah" type="add">
+				Support for iframe crawling. Works great in Firefox if iframes have unique IDs or NAME attributes.
+			</action>
+			<action dev="frank" type="fix" issue="7">
+				Fix a bug where hashes, dots and spaces were not allowed in attribute values of clickables.
+			</action>
+			<action dev="frank" type="update" issue="9">
+				Extended Crawljax Exceptions with more information about the system used. This is helpful to debug problems.
+			</action>
+			<action dev="stefan" type="fix">
+				Fix bug where wrong currentState was stored in in CrawlSession when OnInvariantViolation was called.
+			</action>
+			<action dev="stefan" type="fix">
+				Make Crawljax work with Firefox 2.0. You also need a patched webdriver. (http://code.google.com/p/selenium/issues/detail?id=387)
+			</action>
 			<action dev="frank" type="update">
-				Development version.
+				Upgrade WebDriver dependency to Selenium 2.0a2.
+			</action>
+			<action dev="mesbah" type="add">
+				Added support for Google Chrome 4.0. Works with versions lower than 5 currently (due to WebDriver issues).
+			</action>
+			<action dev="mesbah" type="fix" issue="2">
+				Handle popups such as alert by always "clicking" OK. This is a workaround and doesn't always work.
+			</action>
+			<action dev="danny" type="update">
+				Rename oracle comparators. The names are more logical now.
+			</action>
+			<action dev="frank" type="fix">
+				Fix bug where a Crawljax would write to / if the output directory was not set.
+			</action>
+			<action dev="stefan" type="fix" issue="5">
+				changed CrawljaxConfiguration to CrawljaxConfigurationReader in CrawlSession
+			</action>
+			<action dev="stefan" type="fix" issue="8">
+				runOnFireEventFailedPlugins failed in some cases, prevented from happening
+			</action>
+			<action dev="stefan" type="add">
+				OnFireEventFailed Plugins; enable an extension point when a fireEvent failed.
 			</action>
 		</release>
 		<release version="1.8" date="2009-12-29" description="Update">

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.crawljax.condition.Condition;
+import com.crawljax.core.state.Eventable.EventType;
 
 /**
  * Specifies the actions for CrawlElements NOTE: In general CrawlActions is not designed to be
@@ -29,14 +30,15 @@ public class CrawlActions {
 
 	/**
 	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
-	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}.
+	 * click("a") will only include 1 if clickOnce is true (default). This set can be restricted by
+	 * {@link #dontClick(String)}.
 	 * 
 	 * @param tagName
 	 *            the tag name of the elements to be included
 	 * @return this CrawlElement
 	 */
 	public CrawlElement click(String tagName) {
-		CrawlElement crawlTag = new CrawlElement();
+		CrawlElement crawlTag = new CrawlElement(EventType.click);
 		crawlTag.setTagName(tagName);
 		setTempConditions(crawlTag);
 		crawlElements.add(crawlTag);
@@ -54,7 +56,7 @@ public class CrawlActions {
 	 * @return crawlTag the CrawlElement
 	 */
 	public CrawlElement dontClick(String tagName) {
-		CrawlElement crawlTag = new CrawlElement();
+		CrawlElement crawlTag = new CrawlElement(EventType.click);
 		crawlTag.setTagName(tagName);
 		setTempConditions(crawlTag);
 		crawlElementsExcluded.add(crawlTag);

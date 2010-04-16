@@ -1,11 +1,18 @@
 package com.crawljax.browser;
 
+import static org.junit.Assert.fail;
+import junit.framework.Assert;
+
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.util.PropertyHelper;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.ThreadConfiguration;
+import com.crawljax.core.configuration.ThreadConfigurationReader;
 
 /**
  * This test, test the (public) operations from the BrowserFactory.
@@ -14,7 +21,10 @@ import com.crawljax.util.PropertyHelper;
  * @version $Id$
  */
 public class BrowserFactoryTest {
-	private static final int TIMEOUT = 10000; // 10 Sec.
+	private static final int TIMEOUT = 100000; // 100 Sec.
+	private final BrowserFactory factory =
+	        new BrowserFactory(BrowserType.firefox, new ThreadConfigurationReader(
+	                new ThreadConfiguration()), null, null, 400, 500);
 
 	/**
 	 * Request don't release and close the factory.
@@ -24,8 +34,9 @@ public class BrowserFactoryTest {
 	 */
 	@Test
 	public void testRequestClose() throws InterruptedException {
-		BrowserFactory.requestBrowser();
-		BrowserFactory.close();
+
+		factory.requestBrowser();
+		factory.close();
 	}
 
 	/**
@@ -36,9 +47,9 @@ public class BrowserFactoryTest {
 	 */
 	@Test
 	public void testRequestReleaseClose() throws InterruptedException {
-		EmbeddedBrowser b = BrowserFactory.requestBrowser();
-		BrowserFactory.freeBrowser(b);
-		BrowserFactory.close();
+		EmbeddedBrowser b = factory.requestBrowser();
+		factory.freeBrowser(b);
+		factory.close();
 	}
 
 	/**
@@ -49,9 +60,9 @@ public class BrowserFactoryTest {
 	 */
 	@Test(timeout = TIMEOUT)
 	public void testDoubleClose() throws InterruptedException {
-		BrowserFactory.requestBrowser();
-		BrowserFactory.close();
-		BrowserFactory.close();
+		factory.requestBrowser();
+		factory.close();
+		factory.close();
 
 	}
 
@@ -60,7 +71,7 @@ public class BrowserFactoryTest {
 	 */
 	@Test(timeout = TIMEOUT)
 	public void testCloseOnly() {
-		BrowserFactory.close();
+		factory.close();
 	}
 
 	/**
@@ -68,8 +79,8 @@ public class BrowserFactoryTest {
 	 */
 	@Test(timeout = TIMEOUT)
 	public void testCloseOnlyTwoTimes() {
-		BrowserFactory.close();
-		BrowserFactory.close();
+		factory.close();
+		factory.close();
 	}
 
 	/**
@@ -80,18 +91,141 @@ public class BrowserFactoryTest {
 	 * @throws InterruptedException
 	 *             when the request for a browser is interupped
 	 */
+	// TODO Stefan Enable when MT full released
+	@Ignore
 	@Test(timeout = TIMEOUT)
 	public void testMultipleBrowsers() throws ConfigurationException, InterruptedException {
 		CrawlSpecification spec = new CrawlSpecification("about:blank");
-		// TODO Stefan. when NuberOfBrowsers specified; use that in stead...
-		spec.setNumberOfThreads(4);
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
-		PropertyHelper.init(cfg);
-		BrowserFactory.requestBrowser();
-		BrowserFactory.requestBrowser();
-		EmbeddedBrowser b1 = BrowserFactory.requestBrowser();
-		BrowserFactory.freeBrowser(b1);
-		BrowserFactory.close();
+		// cfg.setThreadConfiguration(new ThreadConfiguration(4));
+
+		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
+
+		try {
+
+			BrowserFactory factory =
+			        new BrowserFactory(reader.getBrowser(),
+			                reader.getThreadConfigurationReader(),
+			                reader.getProxyConfiguration(), null, 1, 1);
+
+			factory.requestBrowser();
+			factory.requestBrowser();
+			EmbeddedBrowser b1 = factory.requestBrowser();
+			factory.freeBrowser(b1);
+
+			factory.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	/**
+	 * Test opening 4 browsers, 3 requested, 1 returned. close should be done within TIMEOUT. This
+	 * time using the fast boot option
+	 * 
+	 * @throws ConfigurationException
+	 *             when config is not correct
+	 * @throws InterruptedException
+	 *             when the request for a browser is interupped
+	 */
+	// TODO Stefan Enable when MT full released
+	@Ignore
+	@Test(timeout = TIMEOUT)
+	public void testMultipleBrowsersFastBoot() throws ConfigurationException,
+	        InterruptedException {
+		CrawlSpecification spec = new CrawlSpecification("about:blank");
+		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
+		cfg.setCrawlSpecification(spec);
+		// ThreadConfiguration tc = new ThreadConfiguration(4);
+		// tc.setUseFastBooting(true);
+		// cfg.setThreadConfiguration(tc);
+
+		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
+
+		try {
+
+			BrowserFactory factory =
+			        new BrowserFactory(reader.getBrowser(),
+			                reader.getThreadConfigurationReader(),
+			                reader.getProxyConfiguration(), null, 1, 1);
+
+			factory.requestBrowser();
+			factory.requestBrowser();
+			EmbeddedBrowser b1 = factory.requestBrowser();
+			factory.freeBrowser(b1);
+
+			factory.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+
+	/**
+	 * Test opening 4 browsers, 3 requested, 1 returned. close should be done within TIMEOUT.
+	 * Checking that the fast boot option is faster than the non fast boot option.
+	 * 
+	 * @throws ConfigurationException
+	 *             when config is not correct
+	 * @throws InterruptedException
+	 *             when the request for a browser is interupped
+	 */
+	// TODO Stefan Enable when MT full released
+	@Ignore
+	@Test(timeout = TIMEOUT)
+	public void testMultipleBrowsersFastBootIsIndeadFaster() throws ConfigurationException,
+	        InterruptedException {
+		CrawlSpecification spec = new CrawlSpecification("about:blank");
+		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
+		cfg.setCrawlSpecification(spec);
+		// ThreadConfiguration tc = new ThreadConfiguration(4);
+		// tc.setUseFastBooting(false);
+		// cfg.setThreadConfiguration(tc);
+
+		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
+
+		long runtimeNonFastBoot = 0;
+		try {
+			long start = System.currentTimeMillis();
+			BrowserFactory factory =
+			        new BrowserFactory(reader.getBrowser(),
+			                reader.getThreadConfigurationReader(),
+			                reader.getProxyConfiguration(), null, 1, 1);
+
+			factory.requestBrowser();
+			factory.requestBrowser();
+			EmbeddedBrowser b1 = factory.requestBrowser();
+			factory.freeBrowser(b1);
+
+			factory.close();
+			runtimeNonFastBoot = System.currentTimeMillis() - start;
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
+		// tc.setUseFastBooting(true);
+
+		try {
+			long start = System.currentTimeMillis();
+			BrowserFactory factory =
+			        new BrowserFactory(reader.getBrowser(),
+			                reader.getThreadConfigurationReader(),
+			                reader.getProxyConfiguration(), null, 1, 1);
+
+			factory.requestBrowser();
+			factory.requestBrowser();
+			EmbeddedBrowser b1 = factory.requestBrowser();
+			factory.freeBrowser(b1);
+
+			factory.close();
+			long runtimeFastBoot = System.currentTimeMillis() - start;
+			Assert.assertTrue("Fast boot is faster", runtimeNonFastBoot > runtimeFastBoot);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 }

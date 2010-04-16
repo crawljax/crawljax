@@ -21,7 +21,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * TODO: DOCUMENT ME!
+ * Utility class that contains methods used by Crawljax and some plugin to deal with XPath
+ * resolving, constructing etc.
  * 
  * @author mesbah
  * @version $Id$
@@ -40,21 +41,21 @@ public final class XPathHelper {
 	 *            the given node.
 	 * @return string xpath expression (e.g., "/html[1]/body[1]/div[3]").
 	 */
-	public static String getXpathExpression(Node node) {
+	public static String getXPathExpression(Node node) {
 		Node parent = node.getParentNode();
 
 		if ((parent == null) || parent.getNodeName().contains("#document")) {
-			return "/" + getXPathNameStep(node) + "[1]";
+			return "/" + node.getNodeName() + "[1]";
 		}
 
 		StringBuffer buffer = new StringBuffer();
 
 		if (parent != node) {
-			buffer.append(getXpathExpression(parent));
+			buffer.append(getXPathExpression(parent));
 			buffer.append("/");
 		}
 
-		buffer.append(getXPathNameStep(node));
+		buffer.append(node.getNodeName());
 
 		List<Node> mySiblings = getSiblings(parent, node);
 
@@ -71,15 +72,15 @@ public final class XPathHelper {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Get siblings of the same type as element from parent.
 	 * 
 	 * @param parent
 	 *            parent node.
 	 * @param element
 	 *            element.
-	 * @return
+	 * @return List of sibling (from element) under parent
 	 */
-	private static List<Node> getSiblings(Node parent, Node element) {
+	public static List<Node> getSiblings(Node parent, Node element) {
 		List<Node> result = new ArrayList<Node>();
 		NodeList list = parent.getChildNodes();
 
@@ -92,10 +93,6 @@ public final class XPathHelper {
 		}
 
 		return result;
-	}
-
-	private static String getXPathNameStep(Node element) {
-		return element.getNodeName();
 	}
 
 	/**
@@ -141,29 +138,30 @@ public final class XPathHelper {
 	}
 
 	/**
-	 * Returns the xpath of the first node retrieved by xpathExpression. Example: //DIV[@id='foo']
+	 * Returns the XPaths of all nodes retrieved by xpathExpression. Example: //DIV[@id='foo']
 	 * returns /HTM[1]/BODY[1]/DIV[2]
 	 * 
 	 * @param dom
 	 *            The dom.
 	 * @param xpathExpression
 	 *            The expression to find the element.
-	 * @return the xpath of the first node retrieved by xpathExpression.
+	 * @return list of XPaths retrieved by xpathExpression.
 	 */
-	public static String getXpathForXPathExpression(Document dom, String xpathExpression) {
+	public static List<String> getXpathForXPathExpressions(Document dom, String xpathExpression) {
 		NodeList nodeList;
 		try {
-			nodeList = Helper.getElementsByXpath(dom, xpathExpression);
+			nodeList = XPathHelper.evaluateXpathExpression(dom, xpathExpression);
 		} catch (XPathExpressionException e) {
 			return null;
 		}
+		List<String> result = new ArrayList<String>();
 		if (nodeList.getLength() > 0) {
-			if (nodeList.getLength() > 1) {
-				LOGGER.warn("Expression " + xpathExpression + " returned more than one element.");
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				Node n = nodeList.item(i);
+				result.add(getXPathExpression(n));
 			}
-			return getXpathExpression(nodeList.item(0));
 		}
-		return null;
+		return result;
 	}
 
 	/**
@@ -189,11 +187,6 @@ public final class XPathHelper {
 		}
 		return formatted;
 	}
-
-	// public static void main(String[] args) {
-	// System.out.println(formatXPath("//DIV[@class='foo']"));
-	// System.out.println(formatXPath("/jeee/JEUJ/fooo/div[@KWAAK=\"false\"]"));
-	// }
 
 	/**
 	 * @param xpath
@@ -347,15 +340,18 @@ public final class XPathHelper {
 	 *         text()
 	 */
 	public static String stripXPathToElement(String xpath) {
-		if (xpath.toLowerCase().indexOf("/text()") != -1) {
-			xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/text()"));
+		if (xpath != null && !xpath.equals("")) {
+			if (xpath.toLowerCase().indexOf("/text()") != -1) {
+				xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/text()"));
+			}
+			if (xpath.toLowerCase().indexOf("/comment()") != -1) {
+				xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/comment()"));
+			}
+			if (xpath.indexOf("@") != -1) {
+				xpath = xpath.substring(0, xpath.indexOf("@") - 1);
+			}
 		}
-		if (xpath.toLowerCase().indexOf("/comment()") != -1) {
-			xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/comment()"));
-		}
-		if (xpath.indexOf("@") != -1) {
-			xpath = xpath.substring(0, xpath.indexOf("@") - 1);
-		}
+
 		return xpath;
 	}
 

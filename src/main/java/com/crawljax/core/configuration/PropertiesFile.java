@@ -1,7 +1,9 @@
 package com.crawljax.core.configuration;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +21,7 @@ import com.crawljax.core.TagElement;
  */
 public class PropertiesFile {
 
-	private CrawljaxConfiguration config;
+	private final CrawljaxConfiguration config;
 
 	private static final String PROJECTRELATIVEPATH = "project.path.relative";
 	private static final String OUTPUTFOLDERNAME = "output.path";
@@ -27,24 +29,23 @@ public class PropertiesFile {
 	private static final String CRAWLDEPTH = "crawl.depth";
 	private static final String CRAWLMAXSTATES = "crawl.max.states";
 	private static final String CRAWLMAXTIME = "crawl.max.runtime";
-	private static final String CRAWLNUMBEROFTHREADS = "crawl.numberOfThreads";
 
 	private static final String CRAWLTAGS = "crawl.tags";
 	private static final String CRAWLEXCLUDETAGS = "crawl.tags.exclude";
 	private static final String CRAWLFILTERATTRIBUTES = "crawl.filter.attributes";
 
-	private static final String HIBERNATEPROPERTIES = "hibernate.properties";
-
 	private static final String CRAWLFORMRANDOMINPUT = "crawl.forms.randominput";
 
-	private static final String FORMPROPERTIES = "forms.properties";
-
-	private static final String BROWSER = "BROWSER";
+	/*
+	 * TODO all, support this in the future? Or require to use API? private static final String
+	 * HIBERNATEPROPERTIES = "hibernate.properties"; private static final String FORMPROPERTIES =
+	 * "forms.properties"; private static final String HIBERNATESCHEMA = "hibernate.hbm2ddl.auto";
+	 * private static final String USEDATABASE = "database.use";
+	 */
 
 	private static final String CRAWLWAITRELOAD = "crawl.wait.reload";
 	private static final String CRAWLWAITEVENT = "crawl.wait.event";
-	private static final String HIBERNATESCHEMA = "hibernate.hbm2ddl.auto";
-	private static final String USEDATABASE = "database.use";
+
 	// if each candidate clickable should be clicked only once
 	private static String clickOnce = "click.once";
 
@@ -75,6 +76,7 @@ public class PropertiesFile {
 	 * @param file
 	 *            The properties file.
 	 */
+	@SuppressWarnings("unchecked")
 	private void read(PropertiesConfiguration file) {
 		if (file.containsKey(OUTPUTFOLDERNAME)) {
 			config.setOutputFolder(file.getString(OUTPUTFOLDERNAME));
@@ -82,6 +84,8 @@ public class PropertiesFile {
 		config.setProjectRelativePath(file.getString(PROJECTRELATIVEPATH));
 
 		config.setCrawlSpecification(getCrawlSpecification(file));
+
+		config.setFilterAttributeNames(file.getList(CRAWLFILTERATTRIBUTES));
 
 		if (file.containsKey(PROXYENABLED) && file.getBoolean(PROXYENABLED)) {
 			config.setProxyConfiguration(new ProxyConfiguration());
@@ -113,21 +117,48 @@ public class PropertiesFile {
 
 		crawler.setRandomInputInForms(file.getInt(CRAWLFORMRANDOMINPUT) == 1);
 
-		crawler.setNumberOfThreads(file.getInt(CRAWLNUMBEROFTHREADS));
-
 		setClickTags(file, crawler);
 
 		return crawler;
 	}
 
+	/**
+	 * Sets the click and ignore tags using the API.
+	 * 
+	 * @param file
+	 *            Configuration file.
+	 * @param crawler
+	 *            Crawlspecification to set them on.
+	 */
 	@SuppressWarnings("unchecked")
 	private void setClickTags(PropertiesConfiguration file, CrawlSpecification crawler) {
+		/* set click tags */
 		List<String> tags = file.getList(CRAWLTAGS);
+		TagElement tagElement;
 
 		/* walk through all elements */
 		for (String tag : tags) {
 			/* call the correct api stuff on the crawler for tag */
-			parseTagElement(tag, crawler);
+			tagElement = parseTagElement(tag);
+
+			CrawlElement element = crawler.click(tagElement.getName());
+			for (TagAttribute attrib : tagElement.getAttributes()) {
+				element.withAttribute(attrib.getName(), attrib.getValue());
+			}
+		}
+
+		/* do the same for the exclude tags */
+		tags = file.getList(CRAWLEXCLUDETAGS);
+
+		/* walk through all elements */
+		for (String tag : tags) {
+			/* call the correct api stuff on the crawler for tag */
+			tagElement = parseTagElement(tag);
+
+			CrawlElement element = crawler.dontClick(tagElement.getName());
+			for (TagAttribute attrib : tagElement.getAttributes()) {
+				element.withAttribute(attrib.getName(), attrib.getValue());
+			}
 		}
 	}
 
@@ -136,12 +167,16 @@ public class PropertiesFile {
 	 * 
 	 * @param text
 	 *            The string containing the tag elements.
+	 * @return the TagElement;
 	 */
-	public void parseTagElement(String text, CrawlSpecification crawler) {
+	public TagElement parseTagElement(String text) {
 		if (text.equals("")) {
-			return;
+			return null;
 		}
-		TagElement tagElement = new TagElement();
+		String name = null;
+		Set<TagAttribute> attributes = new HashSet<TagAttribute>();
+		String id = null;
+
 		Pattern pattern =
 		        Pattern.compile("\\w+:\\{(\\w+=?(\\-*\\s*[\\w%]\\s*)+\\;?\\s?)*}"
 		                + "(\\[\\w+\\])?");
@@ -161,37 +196,38 @@ public class PropertiesFile {
 			matcher = patternTagName.matcher(substring);
 
 			if (matcher.find()) {
-				tagElement.setName(matcher.group().trim());
+				name = matcher.group().trim();
 			}
 
 			matcher = patternAttributes.matcher(substring);
 
 			// attributes
 			if (matcher.find()) {
-				String attributes = (matcher.group());
+				String tmp = matcher.group();
 				// parse attributes
-				matcher = patternAttribute.matcher(attributes);
+				matcher = patternAttribute.matcher(tmp);
 
 				while (matcher.find()) {
-					String name = matcher.group(1).trim();
+					String attrName = matcher.group(1).trim();
 					String value = matcher.group(2).trim();
-					tagElement.getAttributes().add(new TagAttribute(name, value));
+					attributes.add(new TagAttribute(attrName, value));
 				}
 			}
 
 			// id
 			matcher = patternId.matcher(substring);
 			if (matcher.find()) {
-				String id = matcher.group(2);
-				tagElement.setId(id);
+				id = matcher.group(2);
 			}
 
+			TagElement el = new TagElement(attributes, name);
+			if (id != null) {
+				el.setId(id);
+			}
+			return el;
 		}
 
-		CrawlElement element = crawler.click(tagElement.getName());
-		for (TagAttribute attrib : tagElement.getAttributes()) {
-			element.withAttribute(attrib.getName(), attrib.getValue());
-		}
+		return null;
 	}
 
 	/**

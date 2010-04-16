@@ -28,7 +28,7 @@ public class FormInputField extends InputField {
 	 */
 	public FormInputField setValues(String... values) {
 		for (String value : values) {
-			this.addFieldValue(value);
+			this.setValue(value);
 		}
 		return this;
 	}
@@ -43,9 +43,9 @@ public class FormInputField extends InputField {
 	public FormInputField setValues(boolean... values) {
 		for (boolean value : values) {
 			if (value) {
-				this.addFieldValue("1");
+				this.setValue("1");
 			} else {
-				this.addFieldValue("0");
+				this.setValue("0");
 			}
 		}
 		return this;

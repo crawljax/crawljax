@@ -2,7 +2,7 @@ package com.crawljax.examples;
 
 import org.apache.commons.configuration.ConfigurationException;
 
-import com.crawljax.browser.WebDriverIE;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.UrlCondition;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
@@ -61,7 +61,7 @@ public final class SiteSimpleExample {
 
 	private static CrawljaxConfiguration getConfig() {
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
-		crawljaxConfiguration.setBrowser(new WebDriverIE());
+		crawljaxConfiguration.setBrowser(BrowserType.ie);
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification());
 
 		// Generate a crawl report

@@ -10,21 +10,18 @@ import java.util.regex.Pattern;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.WebDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.crawljax.browser.AbstractWebDriver;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.forms.FormInputValueHelper;
+import com.crawljax.forms.FormHandler;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
 
@@ -43,6 +40,8 @@ public class CandidateElementExtractor {
 	private final ExtractorManager checkedElements;
 	private final EmbeddedBrowser browser;
 
+	private final FormHandler formHandler;
+
 	/**
 	 * Create a new CandidateElementExtractor.
 	 * 
@@ -51,10 +50,14 @@ public class CandidateElementExtractor {
 	 *            EventableConditionChecker
 	 * @param browser
 	 *            the current browser instance used in the Crawler
+	 * @param formHandler
+	 *            the form handler.
 	 */
-	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser) {
+	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser,
+	        FormHandler formHandler) {
 		checkedElements = checker;
 		this.browser = browser;
+		this.formHandler = formHandler;
 	}
 
 	/**
@@ -128,7 +131,7 @@ public class CandidateElementExtractor {
 				EventableCondition eventableCondition =
 				        checkedElements.getEventableConditionChecker().getEventableCondition(
 				                tag.getId());
-				String xpath = XPathHelper.getXpathExpression(sourceElement);
+				String xpath = XPathHelper.getXPathExpression(sourceElement);
 				// get multiple candidate elements when there are input
 				// fields connected to this element
 
@@ -139,12 +142,12 @@ public class CandidateElementExtractor {
 					// add multiple candidate elements, for every input
 					// value combination
 					candidateElements =
-					        FormInputValueHelper.getCandidateElementsForInputs(browser,
-					                sourceElement, eventableCondition);
+					        formHandler.getCandidateElementsForInputs(sourceElement,
+					                eventableCondition);
 				} else {
 					// just add default element
 					candidateElements.add(new CandidateElement(sourceElement, new Identification(
-					        "xpath", xpath), relatedFrame));
+					        Identification.How.xpath, xpath), relatedFrame));
 				}
 
 				for (CandidateElement candidateElement : candidateElements) {
@@ -171,46 +174,42 @@ public class CandidateElementExtractor {
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
 	        List<CandidateElement> results, String relatedFrame) throws CrawljaxException {
 
-		if (browser instanceof AbstractWebDriver) {
-			WebDriver driver = ((AbstractWebDriver) browser).getDriver();
+		try {
 
-			String handle = driver.getWindowHandle();
+			NodeList frameNodes = dom.getElementsByTagName("IFRAME");
 
-			try {
+			for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
 
-				NodeList frameNodes = dom.getElementsByTagName("IFRAME");
+				String frameIdentification = "";
 
-				for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
+				if (relatedFrame != null && !relatedFrame.equals("")) {
+					frameIdentification += relatedFrame + ".";
+				}
 
-					String frameIdentification = "";
+				Element frameElement = (Element) frameNodes.item(i);
 
-					if (relatedFrame != null && !relatedFrame.equals("")) {
-						frameIdentification += relatedFrame + ".";
-					}
+				String nameId = Helper.getFrameIdentification(frameElement);
 
-					Element frameElement = (Element) frameNodes.item(i);
+				if (nameId != null) {
+					frameIdentification += nameId;
 
-					String nameId = Helper.getFrameIdentification(frameElement);
+					LOGGER.debug("frame Identification: " + frameIdentification);
 
-					if (nameId != null) {
-						frameIdentification += nameId;
-
-						LOGGER.debug("frame Identification: " + frameIdentification);
-
-						driver.switchTo().frame(frameIdentification);
-
-						Document frameDom = Helper.getDocument(driver.getPageSource());
+					try {
+						Document frameDom =
+						        Helper.getDocument(browser.getFrameDom(frameIdentification));
 
 						extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
 						        clickOnce, results, frameIdentification);
+					} catch (Exception e) {
+						LOGGER.info("Got exception while inspecting a frame:"
+						        + frameIdentification + " continuing...", e);
 					}
 				}
-
-				driver.switchTo().window(handle);
-
-			} catch (Exception e) {
-				throw new CrawljaxException(e.getMessage(), e);
 			}
+
+		} catch (Exception e) {
+			throw new CrawljaxException(e.getMessage(), e);
 		}
 
 	}
@@ -228,10 +227,14 @@ public class CandidateElementExtractor {
 	        List<TagElement> crawlExcludeTagElements) throws SAXException, IOException,
 	        CrawljaxException, XPathExpressionException {
 
+		List<Element> result = new ArrayList<Element>();
+
+		if (tagElement.getName() == null) {
+			return result;
+		}
+
 		NodeList nodeList = dom.getElementsByTagName(tagElement.getName());
 		Set<TagAttribute> attributes = tagElement.getAttributes();
-
-		List<Element> result = new ArrayList<Element>();
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
@@ -245,7 +248,7 @@ public class CandidateElementExtractor {
 					        eventableConditionChecker
 					                .checkXpathStartsWithXpathEventableCondition(dom,
 					                        eventableCondition, XPathHelper
-					                                .getXpathExpression(element));
+					                                .getXPathExpression(element));
 				} catch (Exception e) {
 					matchesXpath = false;
 					// xpath could not be found or determined, so dont allow
@@ -253,7 +256,8 @@ public class CandidateElementExtractor {
 				}
 			}
 
-			// TODO Stefan This is a possible Thread-Interleaving problem, as isChecked can return
+			// TODO Stefan This is a possible Thread-Interleaving problem, as
+			// isChecked can return
 			// false and when needed to add it can return true.
 			// check if element is a candidate
 			if (matchesXpath
@@ -351,7 +355,7 @@ public class CandidateElementExtractor {
 					        eventableConditionChecker
 					                .checkXpathStartsWithXpathEventableCondition(dom,
 					                        eventableCondition, XPathHelper
-					                                .getXpathExpression(element));
+					                                .getXPathExpression(element));
 				} catch (Exception e) {
 					// xpath could not be found or determined, so dont filter
 					// element because of xpath
@@ -359,14 +363,12 @@ public class CandidateElementExtractor {
 				}
 
 				if (matchesXPath) {
-					LOGGER.info("Excluded element because of xpath: "
-					        + new Eventable(element, "").toString());
+					LOGGER.info("Excluded element because of xpath: " + element);
 					return true;
 				}
 				if (!filterElement(tag.getAttributes(), element)
 				        && tag.getAttributes().size() > 0) {
-					LOGGER.info("Excluded element because of attributes: "
-					        + new Eventable(element, "").toString());
+					LOGGER.info("Excluded element because of attributes: " + element);
 					return true;
 				}
 			}
@@ -383,13 +385,13 @@ public class CandidateElementExtractor {
 	        throws XPathExpressionException {
 
 		String xpath =
-		        XPathHelper.getXpathExpression(element)
+		        XPathHelper.getXPathExpression(element)
 		                + "/ancestor::*[contains(@style, 'DISPLAY: none') "
 		                + "or contains(@style, 'DISPLAY:none')"
 		                + "or contains(@style, 'display: none')"
 		                + " or contains(@style, 'display:none')]";
 
-		NodeList nodes = Helper.getElementsByXpath(dom, xpath);
+		NodeList nodes = XPathHelper.evaluateXpathExpression(dom, xpath);
 
 		if (nodes.getLength() > 0) {
 			LOGGER
@@ -407,7 +409,7 @@ public class CandidateElementExtractor {
 	 */
 	private boolean filterElement(Set<TagAttribute> attributes, Element element) {
 		int matchCounter = 0;
-		if (element == null) {
+		if (element == null || attributes == null) {
 			return false;
 		}
 		for (TagAttribute attr : attributes) {

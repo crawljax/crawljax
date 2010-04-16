@@ -34,14 +34,39 @@ public class StateFlowGraph {
 	private final AtomicInteger stateCounter = new AtomicInteger(1);
 
 	/**
+	 * Empty constructor.
+	 */
+	public StateFlowGraph() {
+		sfg = new DirectedMultigraph<StateVertix, Eventable>(Eventable.class);
+	}
+
+	/**
 	 * The constructor.
 	 * 
 	 * @param initialState
 	 *            the state to start from.
 	 */
 	public StateFlowGraph(StateVertix initialState) {
-		sfg = new DirectedMultigraph<StateVertix, Eventable>(Eventable.class);
+		this();
 		sfg.addVertex(initialState);
+	}
+
+	/**
+	 * Adds a state (as a vertix) to the State-Flow Graph if not already present. More formally,
+	 * adds the specified vertex, v, to this graph if this graph contains no vertex u such that
+	 * u.equals(v). If this graph already contains such vertex, the call leaves this graph unchanged
+	 * and returns false. In combination with the restriction on constructors, this ensures that
+	 * graphs never contain duplicate vertices. Throws java.lang.NullPointerException - if the
+	 * specified vertex is null. This method automatically updates the state name to reflect the
+	 * internal state counter.
+	 * 
+	 * @param stateVertix
+	 *            the state to be added.
+	 * @return the clone if one is detected null otherwise.
+	 * @see org.jgrapht.Graph#addVertex(Object)
+	 */
+	public StateVertix addState(StateVertix stateVertix) {
+		return addState(stateVertix, true);
 	}
 
 	/**
@@ -54,11 +79,14 @@ public class StateFlowGraph {
 	 * 
 	 * @param stateVertix
 	 *            the state to be added.
+	 * @param correctName
+	 *            if true the name of the state will be corrected according to the internal state
+	 *            counter.
 	 * @return the clone if one is detected null otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
 	@GuardedBy("sfg")
-	public StateVertix addState(StateVertix stateVertix) {
+	public StateVertix addState(StateVertix stateVertix, boolean correctName) {
 		synchronized (sfg) {
 			if (!sfg.addVertex(stateVertix)) {
 				// Graph already contained the vertix
@@ -69,14 +97,17 @@ public class StateFlowGraph {
 				 * is the only place states can be added and we are now locked so getAllStates.size
 				 * works correctly.
 				 */
-				// the -1 is for the "index" state.
-				int totalNumberOfStates = this.getAllStates().size() - 1;
-				String correctName = makeStateName(totalNumberOfStates);
-				if (!stateVertix.getName().equals("index")
-				        && !stateVertix.getName().equals(correctName)) {
-					LOGGER.info("Correcting state name from  " + stateVertix.getName() + " to "
-					        + correctName);
-					stateVertix.setName(correctName);
+				if (correctName) {
+					// the -1 is for the "index" state.
+					int totalNumberOfStates = this.getAllStates().size() - 1;
+					String correctedName =
+					        makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
+					if (!stateVertix.getName().equals("index")
+					        && !stateVertix.getName().equals(correctedName)) {
+						LOGGER.info("Correcting state name from  " + stateVertix.getName()
+						        + " to " + correctedName);
+						stateVertix.setName(correctedName);
+					}
 				}
 			}
 			stateCounter.set(this.getAllStates().size() - 1);
@@ -168,11 +199,9 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
-	 * 
 	 * @param clickable
-	 *            TODO: DOCUMENT ME!
-	 * @return TODO: DOCUMENT ME!
+	 *            the edge.
+	 * @return the target state of this edge.
 	 */
 	public StateVertix getTargetState(Eventable clickable) {
 		return sfg.getEdgeTarget(clickable);
@@ -246,24 +275,8 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * Checks to see if a certain StateVertix already exists in the StateFlowGraph. Depreciated
-	 * because its never used anywhere?
-	 * 
-	 * @param state
-	 *            the state to check of existence
-	 * @return true if the StateFlowGraph contains the given StateVertix
+	 * @return Dom string average size (byte).
 	 */
-	@Deprecated
-	public boolean containsVertex(StateVertix state) {
-		return sfg.containsVertex(state);
-	}
-
-	/**
-	 * TODO: DOCUMENT ME!
-	 * 
-	 * @return TODO: DOCUMENT ME!
-	 */
-
 	public int getMeanStateStringSize() {
 		Mean mean = new Mean();
 		List<Integer> list = new ArrayList<Integer>();
@@ -280,7 +293,7 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * @return the sfg
+	 * @return the state-flow graph.
 	 */
 	public DirectedGraph<StateVertix, Eventable> getSfg() {
 		return sfg;
@@ -334,9 +347,11 @@ public class StateFlowGraph {
 	}
 
 	/**
+	 * This method returns all possible paths from the index state using the Kshortest paths.
+	 * 
 	 * @param index
-	 *            TODO: DOCUMENT ME!
-	 * @return TODO: DOCUMENT ME!
+	 *            the initial state.
+	 * @return a list of GraphPath lists.
 	 */
 	public List<List<GraphPath<StateVertix, Eventable>>> getAllPossiblePaths(StateVertix index) {
 		final List<List<GraphPath<StateVertix, Eventable>>> results =
@@ -369,19 +384,24 @@ public class StateFlowGraph {
 	 */
 	public String getNewStateName() {
 		stateCounter.getAndIncrement();
-		String state = makeStateName(stateCounter.get());
+		String state = makeStateName(stateCounter.get(), false);
 		return state;
 	}
 
 	/**
-	 * Make a new state name given its id. Separated to get a central point when changeing the names
-	 * of states.
+	 * Make a new state name given its id. Separated to get a central point when changing the names
+	 * of states. The automatic state names start with "state" and guided ones with "guide".
 	 * 
 	 * @param id
 	 *            the id where this name needs to be for.
 	 * @return the String containing the new name.
 	 */
-	private String makeStateName(int id) {
+	private String makeStateName(int id, boolean guided) {
+
+		if (guided) {
+			return "guided" + id;
+		}
+
 		return "state" + id;
 	}
 }

@@ -14,7 +14,6 @@ import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.util.PropertyHelper;
 
 /**
  * Class for invoking the plugin. The methods in this class are invoked from the Crawljax Core.
@@ -30,6 +29,7 @@ public final class CrawljaxPluginsUtil {
 	 * Make a new Log4j object used to do the logging.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(CrawljaxPluginsUtil.class.getName());
+	private static List<Plugin> plugins;
 
 	/**
 	 * Non instanceable constructor; does nothing never used, this constructor prevents the
@@ -46,15 +46,18 @@ public final class CrawljaxPluginsUtil {
 	}
 
 	/**
-	 * Load the Plugins.
+	 * Set the Plugins.
+	 * 
+	 * @param plugins
+	 *            the list of plugins.
 	 */
-	public static void loadPlugins() {
-		if (PropertyHelper.getCrawljaxConfiguration() == null
-		        || PropertyHelper.getCrawljaxConfiguration().getPlugins().size() == 0) {
+	public static void loadPlugins(List<Plugin> plugins) {
+		CrawljaxPluginsUtil.plugins = plugins;
+		if (plugins == null || plugins.size() == 0) {
 			LOGGER.warn("No plugins loaded because CrawljaxConfiguration is empty");
 			return;
 		}
-		for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+		for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 			/**
 			 * Log the name of the plugin loaded
 			 */
@@ -75,10 +78,10 @@ public final class CrawljaxPluginsUtil {
 	 *            the browser instance to load to the plugin.
 	 */
 	public static void runPreCrawlingPlugins(EmbeddedBrowser browser) {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+		LOGGER.info("Running PreCrawlingPlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof PreCrawlingPlugin) {
-					LOGGER.debug("Running preCrawlingPlugin " + plugin.getClass().getName());
 					((PreCrawlingPlugin) plugin).preCrawling(browser);
 				}
 			}
@@ -95,8 +98,9 @@ public final class CrawljaxPluginsUtil {
 	 *            the embedded browser instance to load in the plugin.
 	 */
 	public static void runOnUrlLoadPlugins(EmbeddedBrowser browser) {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+		LOGGER.info("Running OnUrlLoadPlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnUrlLoadPlugin) {
 					((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
 				}
@@ -113,8 +117,9 @@ public final class CrawljaxPluginsUtil {
 	 *            the session to load in the plugin
 	 */
 	public static void runOnNewStatePlugins(CrawlSession session) {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+		LOGGER.info("Running OnNewStatePlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnNewStatePlugin) {
 					((OnNewStatePlugin) plugin).onNewState(session);
 				}
@@ -134,8 +139,9 @@ public final class CrawljaxPluginsUtil {
 	 *            the session to load in the plugin
 	 */
 	public static void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session) {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+		LOGGER.info("Running OnInvriantViolationPlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnInvariantViolationPlugin) {
 					((OnInvariantViolationPlugin) plugin)
 					        .onInvariantViolation(invariant, session);
@@ -153,8 +159,9 @@ public final class CrawljaxPluginsUtil {
 	 *            the session to load in the plugin
 	 */
 	public static void runPostCrawlingPlugins(CrawlSession session) {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+		LOGGER.info("Running PostCrawlingPlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof PostCrawlingPlugin) {
 					((PostCrawlingPlugin) plugin).postCrawling(session);
 				}
@@ -173,8 +180,9 @@ public final class CrawljaxPluginsUtil {
 	 *            the state the 'back tracking' operation is currently in
 	 */
 	public static void runOnRevisitStatePlugins(CrawlSession session, StateVertix currentState) {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+		LOGGER.info("Running OnRevisitStatePlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof OnRevisitStatePlugin) {
 					((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
 				}
@@ -195,8 +203,9 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runPreStateCrawlingPlugins(CrawlSession session,
 	        List<CandidateElement> candidateElements) {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+		LOGGER.info("Running PreStateCrawlingPlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof PreStateCrawlingPlugin) {
 					((PreStateCrawlingPlugin) plugin)
 					        .preStateCrawling(session, candidateElements);
@@ -215,8 +224,9 @@ public final class CrawljaxPluginsUtil {
 	 *            The ProxyConfiguration to use.
 	 */
 	public static void runProxyServerPlugins(ProxyConfiguration config) {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
-			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+		LOGGER.info("Running ProxyServerPlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof ProxyServerPlugin) {
 					((ProxyServerPlugin) plugin).proxyServer(config);
 				}
@@ -241,15 +251,37 @@ public final class CrawljaxPluginsUtil {
 	public static void runGuidedCrawlingPlugins(CrawljaxController controller,
 	        CrawlSession session, final List<Eventable> exactEventPaths,
 	        final StateMachine stateMachine) {
-		if (PropertyHelper.getCrawljaxConfiguration() != null) {
+		LOGGER.info("Running GuidedCrawlingPlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
 			StateVertix currentState = session.getCurrentState();
-			for (Plugin plugin : PropertyHelper.getCrawljaxConfiguration().getPlugins()) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
 				if (plugin instanceof GuidedCrawlingPlugin) {
 					((GuidedCrawlingPlugin) plugin).guidedCrawling(currentState, controller,
 					        session, exactEventPaths, stateMachine);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Load and run the OnFireEventFailedPlugins, this call has been made from the fireEvent when
+	 * the event is not fireable. the Path is the Path leading TO this eventable (not included).
+	 * 
+	 * @param eventable
+	 *            the eventable not able to fire.
+	 * @param path
+	 *            the path TO this eventable.
+	 */
+	public static void runOnFireEventFailedPlugins(Eventable eventable, List<Eventable> path) {
+		LOGGER.info("Running OnFireEventFailedPlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
+				if (plugin instanceof OnFireEventFailedPlugin) {
+					((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
+				}
+			}
+		}
+
 	}
 
 }

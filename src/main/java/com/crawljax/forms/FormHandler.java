@@ -11,10 +11,14 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
 
@@ -31,16 +35,26 @@ public class FormHandler {
 	private boolean randomFieldValue = false;
 	private final EmbeddedBrowser browser;
 
+	public static final int RANDOM_STRING_LENGTH = 8;
+
 	private static final double HALF = 0.5;
+
+	private FormInputValueHelper formInputValueHelper;
 
 	/**
 	 * Public constructor.
 	 * 
 	 * @param browser
 	 *            the embedded browser.
+	 * @param inputSpecification
+	 *            the input specification.
+	 * @param randomInput
+	 *            if random data should be generated on the input fields.
 	 */
-	public FormHandler(EmbeddedBrowser browser) {
+	public FormHandler(EmbeddedBrowser browser, InputSpecification inputSpecification,
+	        boolean randomInput) {
 		this.browser = browser;
+		this.formInputValueHelper = new FormInputValueHelper(inputSpecification, randomInput);
 	}
 
 	private static final String[] ALLOWED_INPUT_TYPES =
@@ -56,7 +70,7 @@ public class FormHandler {
 	 */
 	private void setInputElementValue(Node element, FormInput input) {
 
-		LOGGER.debug("INPUTFIELD: " + input.getName() + " (" + input.getType() + ")");
+		LOGGER.debug("INPUTFIELD: " + input.getIdentification() + " (" + input.getType() + ")");
 		if (element == null) {
 			return;
 		}
@@ -71,7 +85,7 @@ public class FormHandler {
 					if (text.equals("")) {
 						return;
 					}
-					String js = Helper.getJSGetElement(XPathHelper.getXpathExpression(element));
+					String js = Helper.getJSGetElement(XPathHelper.getXPathExpression(element));
 					js += "try{ATUSA_element.value='" + text + "';}catch(e){}";
 					browser.executeJavaScript(js);
 				}
@@ -80,7 +94,7 @@ public class FormHandler {
 				if (input.getType().equals("checkbox")) {
 					for (InputValue inputValue : input.getInputValues()) {
 						String js =
-						        Helper.getJSGetElement(XPathHelper.getXpathExpression(element));
+						        Helper.getJSGetElement(XPathHelper.getXPathExpression(element));
 						boolean check;
 						if (!randomFieldValue) {
 							check = inputValue.isChecked();
@@ -106,7 +120,7 @@ public class FormHandler {
 						if (inputValue.isChecked()) {
 							String js =
 							        Helper.getJSGetElement(XPathHelper
-							                .getXpathExpression(element));
+							                .getXPathExpression(element));
 							js += "try{ATUSA_element.checked=true;}catch(e){}";
 							browser.executeJavaScript(js);
 						}
@@ -118,7 +132,7 @@ public class FormHandler {
 					for (InputValue inputValue : input.getInputValues()) {
 						// if(browser.getDriver()==null){
 						String js =
-						        Helper.getJSGetElement(XPathHelper.getXpathExpression(element));
+						        Helper.getJSGetElement(XPathHelper.getXPathExpression(element));
 						js +=
 						        "try{" + "for(i=0; i<ATUSA_element.options.length; i++){"
 						                + "if(ATUSA_element.options[i].value=='"
@@ -144,7 +158,7 @@ public class FormHandler {
 	private List<Node> getInputElements(Document dom) {
 		List<Node> nodes = new ArrayList<Node>();
 		try {
-			NodeList nodeList = Helper.getElementsByXpath(dom, "//INPUT");
+			NodeList nodeList = XPathHelper.evaluateXpathExpression(dom, "//INPUT");
 			List<String> allowedTypes = new ArrayList<String>(Arrays.asList(ALLOWED_INPUT_TYPES));
 
 			for (int i = 0; i < nodeList.getLength(); i++) {
@@ -156,11 +170,11 @@ public class FormHandler {
 					nodes.add(nodeList.item(i));
 				}
 			}
-			nodeList = Helper.getElementsByXpath(dom, "//TEXTAREA");
+			nodeList = XPathHelper.evaluateXpathExpression(dom, "//TEXTAREA");
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				nodes.add(nodeList.item(i));
 			}
-			nodeList = Helper.getElementsByXpath(dom, "//SELECT");
+			nodeList = XPathHelper.evaluateXpathExpression(dom, "//SELECT");
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				nodes.add(nodeList.item(i));
 			}
@@ -183,7 +197,7 @@ public class FormHandler {
 			List<Node> nodes = getInputElements(dom);
 			for (Node node : nodes) {
 				FormInput formInput =
-				        FormInputValueHelper.getFormInputWithDefaultValue(browser, node);
+				        formInputValueHelper.getFormInputWithDefaultValue(browser, node);
 				if (formInput != null) {
 					formInputs.add(formInput);
 				}
@@ -213,14 +227,28 @@ public class FormHandler {
 	public void handleFormElements(List<FormInput> formInputs) {
 		Document dom;
 		try {
-			dom = Helper.getDocument(browser.getDom());
+			dom = Helper.getDocument(browser.getDomWithoutIframeContent());
 			for (FormInput input : formInputs) {
 				LOGGER.debug("Filling in: " + input);
-				setInputElementValue(FormInputValueHelper.getBelongingNode(input, dom), input);
+				setInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
 			}
 		} catch (Exception e) {
 			LOGGER.warn("Could not handle form elements");
 		}
+	}
+
+	/**
+	 * @param sourceElement
+	 *            the form element
+	 * @param eventableCondition
+	 *            the belonging eventable condition for sourceElement
+	 * @return a list with Candidate elements for the inputs.
+	 */
+	public List<CandidateElement> getCandidateElementsForInputs(Element sourceElement,
+	        EventableCondition eventableCondition) {
+
+		return formInputValueHelper.getCandidateElementsForInputs(browser, sourceElement,
+		        eventableCondition);
 	}
 
 }

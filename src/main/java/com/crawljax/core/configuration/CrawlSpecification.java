@@ -8,6 +8,7 @@ import com.crawljax.condition.browserwaiter.ExpectedCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.Comparator;
 import com.crawljax.oraclecomparator.OracleComparator;
 
@@ -52,13 +53,13 @@ public class CrawlSpecification {
 
 	private final String url;
 
-	private final List<String> crawlEvents = new ArrayList<String>();
+	private List<EventType> crawlEvents = new ArrayList<EventType>();
+
 	private int depth = 0;
 	private int maximumStates = 0;
 	private int maximumRuntime = DEFAULT_MAXIMUMRUNTIME; // in seconds
 	private int waitTimeAfterReloadUrl = DEFAULT_WAITTIMEAFTERRELOADURL; // in milliseconds
 	private int waitTimeAfterEvent = DEFAULT_WAITTIMEAFTEREVENT; // in milliseconds
-	private int numberOfThreads = 1;
 	private final CrawlActions crawlActions = new CrawlActions();
 
 	private boolean randomInputInForms = true;
@@ -77,7 +78,7 @@ public class CrawlSpecification {
 	 *            the site to crawl
 	 */
 	public CrawlSpecification(String url) {
-		this.crawlEvents.add("onclick");
+		this.crawlEvents.add(EventType.click);
 		this.url = url;
 	}
 
@@ -105,7 +106,7 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * Set of HTML elements Crawljax will NOT click during crawling When an HTML is present in the
+	 * Set of HTML elements Crawljax will NOT examine during crawling When an HTML is present in the
 	 * click and dontClick sets, then the element will not be clicked. For example: 1) <a
 	 * href="#">Some text</a> 2) <a class="foo" .../> 3) <div class="foo" .../> click("a")
 	 * dontClick("a").withAttribute("class", "foo"); Will include only include HTML element 2
@@ -239,7 +240,7 @@ public class CrawlSpecification {
 	/**
 	 * @return the events that should be fired (e.g. onclick)
 	 */
-	protected List<String> getCrawlEvents() {
+	protected List<EventType> getCrawlEvents() {
 		return crawlEvents;
 	}
 
@@ -256,21 +257,6 @@ public class CrawlSpecification {
 	 */
 	public void setInputSpecification(InputSpecification inputSpecification) {
 		this.inputSpecification = inputSpecification;
-	}
-
-	/**
-	 * @param numberOfThreads
-	 *            the numberOfThreads to set
-	 */
-	public void setNumberOfThreads(int numberOfThreads) {
-		this.numberOfThreads = numberOfThreads;
-	}
-
-	/**
-	 * @return the numberOfThreads
-	 */
-	public int getNumberOfThreads() {
-		return numberOfThreads;
 	}
 
 	/**
@@ -432,6 +418,14 @@ public class CrawlSpecification {
 	 */
 	public void setClickOnce(boolean clickOnce) {
 		this.clicklOnce = clickOnce;
+	}
+
+	/**
+	 * @param crawlEvents
+	 *            the crawlEvents to set
+	 */
+	public void setCrawlEvents(List<EventType> crawlEvents) {
+		this.crawlEvents = crawlEvents;
 	}
 
 }

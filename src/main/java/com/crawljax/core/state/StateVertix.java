@@ -1,5 +1,7 @@
 package com.crawljax.core.state;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,13 +9,16 @@ import java.util.List;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import com.crawljax.core.CandidateCrawlAction;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.util.PropertyHelper;
-import com.crawljax.util.database.HibernateUtil;
+import com.crawljax.core.TagElement;
+import com.crawljax.core.state.Eventable.EventType;
+import com.crawljax.util.Helper;
 
 /**
  * The state vertix class which represents a state in the browser. This class implements the
@@ -25,8 +30,9 @@ import com.crawljax.util.database.HibernateUtil;
  * @author mesbah
  * @version $Id$
  */
-public class StateVertix implements Iterable<CandidateCrawlAction> {
+public class StateVertix implements Iterable<CandidateCrawlAction>, Serializable {
 
+	private static final long serialVersionUID = 123400017983488L;
 	private static final Logger LOGGER = Logger.getLogger(StateVertix.class);
 	private long id;
 	private String name;
@@ -124,7 +130,14 @@ public class StateVertix implements Iterable<CandidateCrawlAction> {
 	 */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder().append(this.strippedDom).toHashCode();
+		HashCodeBuilder builder = new HashCodeBuilder();
+		if (strippedDom == null || "".equals(strippedDom)) {
+			builder.append(dom);
+		} else {
+			builder.append(strippedDom);
+		}
+
+		return builder.toHashCode();
 	}
 
 	/**
@@ -185,17 +198,6 @@ public class StateVertix implements Iterable<CandidateCrawlAction> {
 	}
 
 	/**
-	 * Retrieve the state vertex from Database.
-	 * 
-	 * @param id
-	 *            the Id to search
-	 * @return returns the StateVertix with id id
-	 */
-	public static StateVertix getStateVertix(long id) {
-		return (StateVertix) HibernateUtil.currentSession().get(StateVertix.class, new Long(id));
-	}
-
-	/**
 	 * @param name
 	 *            the name to set
 	 */
@@ -232,24 +234,47 @@ public class StateVertix implements Iterable<CandidateCrawlAction> {
 	 * 
 	 * @param candidateExtractor
 	 *            the CandidateElementExtractor to use.
+	 * @param crawlTagElements
+	 *            the tag elements to examine.
+	 * @param crawlExcludeTagElements
+	 *            the elements to exclude.
+	 * @param clickOnce
+	 *            if true examine each element once.
 	 */
-	public void searchForCandidateElements(CandidateElementExtractor candidateExtractor) {
+	public void searchForCandidateElements(CandidateElementExtractor candidateExtractor,
+	        List<TagElement> crawlTagElements, List<TagElement> crawlExcludeTagElements,
+	        boolean clickOnce) {
+
+		// TODO read the eventtypes from the crawl elements instead
+		List<String> eventTypes = new ArrayList<String>();
+		eventTypes.add(EventType.click.toString());
+
 		if (candidateActions == null) {
 			candidateActions = new ArrayList<CandidateCrawlAction>();
 			try {
 				List<CandidateElement> candidateList =
-				        candidateExtractor.extract(PropertyHelper.getCrawlTagElements(),
-				                PropertyHelper.getCrawlExcludeTagElements(), PropertyHelper
-				                        .getClickOnceValue(), this);
-				List<String> eventTypes = PropertyHelper.getRobotEventsValues();
+				        candidateExtractor.extract(crawlTagElements, crawlExcludeTagElements,
+				                clickOnce, this);
+
 				for (CandidateElement candidateElement : candidateList) {
 					for (String eventType : eventTypes) {
-						candidateActions
-						        .add(new CandidateCrawlAction(candidateElement, eventType));
+						if (eventType.equals(EventType.click.toString())) {
+							candidateActions.add(new CandidateCrawlAction(candidateElement,
+							        EventType.click));
+						} else {
+							if (eventType.equals(EventType.hover.toString())) {
+								candidateActions.add(new CandidateCrawlAction(candidateElement,
+								        EventType.hover));
+							} else {
+								LOGGER
+								        .warn("The Event Type: " + eventType
+								                + " is not supported.");
+							}
+						}
 					}
 				}
 			} catch (CrawljaxException e) {
-				LOGGER.error("Catched excption while searching for candidates in state "
+				LOGGER.error("Catched exception while searching for candidates in state "
 				        + getName(), e);
 			}
 		}
@@ -307,6 +332,17 @@ public class StateVertix implements Iterable<CandidateCrawlAction> {
 			public void remove() {
 			}
 		};
+	}
+
+	/**
+	 * @return a Document instance of the dom string.
+	 * @throws SAXException
+	 *             if an exception is thrown.
+	 * @throws IOException
+	 *             if an exception is thrown.
+	 */
+	public Document getDocument() throws SAXException, IOException {
+		return Helper.getDocument(this.dom);
 	}
 
 }

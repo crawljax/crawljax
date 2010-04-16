@@ -1,6 +1,10 @@
 package com.crawljax.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -45,7 +49,7 @@ public class HelperTest {
 	 */
 	@Test
 	public void testGetDocumentFromBrowser() {
-		EmbeddedBrowser browser = new WebDriverFirefox();
+		EmbeddedBrowser browser = new WebDriverFirefox(null, 200, 300);
 		File index = new File(INDEX);
 		String html = "";
 		try {
@@ -78,6 +82,82 @@ public class HelperTest {
 			fail(e.getMessage());
 		}
 		browser = null;
+
+	}
+
+	@Test
+	public void isLinkExternal() {
+		assertTrue(Helper.isLinkExternal("http://crawljax.com", "http://google.com"));
+		assertTrue(Helper.isLinkExternal("http://crawljax.com", "file:///test/"));
+		assertFalse(Helper.isLinkExternal("http://crawljax.com/download",
+		        "http://crawljax.com/about"));
+	}
+
+	@Test
+	public void getBaseUrl() {
+		assertEquals("http://crawljax.com", Helper.getBaseUrl("http://crawljax.com/about/"));
+
+	}
+
+	@Test
+	public void getElementAttributes() {
+		Document dom;
+		try {
+			dom =
+			        Helper.getDocumentNoBalance("<html><body><div class=\"bla\" "
+			                + "id=\"test\">Bla</div></body></html>");
+			assertEquals("class=bla id=test", Helper.getAllElementAttributes(dom
+			        .getElementById("test")));
+		} catch (Exception e) {
+			fail("Exception caught");
+		}
+	}
+
+	@Test
+	public void directoryCheck() {
+		String directory = "test-123-123";
+		File dir = new File(directory);
+		if (!dir.exists()) {
+			try {
+				Helper.directoryCheck(directory);
+			} catch (IOException e) {
+				fail("Error creating directory");
+			}
+			if (!dir.exists()) {
+				fail("Directory not created");
+			} else {
+				dir.delete();
+			}
+		}
+	}
+
+	@Test
+	public void getVarFromQueryString() {
+		assertEquals("home", Helper.getVarFromQueryString("page",
+		        "?sub=1&userid=123&page=home&goto=0"));
+	}
+
+	@Test
+	public void writeAndGetContents() {
+		File f = new File("helper-write-and-get-contents-test.txt");
+		if (!f.exists()) {
+			try {
+				Helper.writeDocumentToFile(Helper
+				        .getDocument("<html><body><p>Test</p></body></html>"), f.getName(),
+				        "html", 2);
+
+				assertNotSame("", Helper.getContent(f));
+
+				assertNotSame("", Helper.getTemplateAsString(f.getName()));
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			f.delete();
+		} else {
+			fail("File could not me created because it already exists.");
+		}
 
 	}
 }

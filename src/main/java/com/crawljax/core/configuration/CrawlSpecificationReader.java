@@ -7,7 +7,6 @@ import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.oraclecomparator.OracleComparator;
 
-
 /**
  * Reader class for crawlspecification. For internal use only
  * 
@@ -19,8 +18,8 @@ public class CrawlSpecificationReader {
 	private final CrawlSpecification crawlSpecification;
 
 	/**
-	 * 
-	 * @param crawlSpecification The specification to wrap around.
+	 * @param crawlSpecification
+	 *            The specification to wrap around.
 	 */
 	public CrawlSpecificationReader(CrawlSpecification crawlSpecification) {
 		super();
@@ -35,8 +34,7 @@ public class CrawlSpecificationReader {
 	}
 
 	/**
-	 * @return the number the number of milliseconds to wait after an event is
-	 *         fired
+	 * @return the number the number of milliseconds to wait after an event is fired
 	 */
 	public int getWaitAfterEvent() {
 		return this.crawlSpecification.getWaitTimeAfterEvent();
@@ -70,4 +68,46 @@ public class CrawlSpecificationReader {
 		return crawlSpecification.getCrawlConditions();
 	}
 
+	/**
+	 * @return the depth level.
+	 */
+	public int getDepth() {
+		return crawlSpecification.getDepth();
+	}
+
+	/**
+	 * @return the URL of the site.
+	 */
+	public String getSiteUrl() {
+		return crawlSpecification.getUrl();
+	}
+
+	/**
+	 * @return true if each candidate element should be examined only once.
+	 */
+	public boolean getClickOnce() {
+		return crawlSpecification.getClickOnce();
+	}
+
+	/**
+	 * @return the maximum crawling time.
+	 */
+	public int getMaximumRunTime() {
+		return crawlSpecification.getMaximumRuntime();
+	}
+
+	/**
+	 * @return maximum number of states to be crawled.
+	 */
+	public int getMaxNumberOfStates() {
+
+		return crawlSpecification.getMaximumStates();
+	}
+
+	/**
+	 * @return true if random input should be generated for input fileds.
+	 */
+	public boolean getRandomInputInForms() {
+		return crawlSpecification.getRandomInputInForms();
+	}
 }

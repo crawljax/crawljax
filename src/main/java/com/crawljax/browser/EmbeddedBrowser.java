@@ -5,16 +5,29 @@ package com.crawljax.browser;
 
 import java.io.File;
 
-import org.openqa.selenium.By;
+import javax.transaction.NotSupportedException;
+
+import org.openqa.selenium.WebElement;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
+import com.crawljax.forms.FormInput;
 
 /**
+ * Browser interface used by Crawjax.
+ * 
  * @author mesbah
  * @version $Id$
  */
 public interface EmbeddedBrowser extends Cloneable {
+
+	/**
+	 * Browser types.
+	 */
+	public enum BrowserType {
+		firefox, ie, chrome
+	}
 
 	/**
 	 * Opens the url in the browser.
@@ -62,25 +75,20 @@ public interface EmbeddedBrowser extends Cloneable {
 	void closeOtherWindows();
 
 	/**
-	 * @return true if browser can go back to the previous state.
-	 */
-	boolean canGoBack();
-
-	/**
 	 * Go back to the previous state.
 	 */
 	void goBack();
 
 	/**
-	 * @param eventable
-	 *            the event.
+	 * @param identification
+	 *            the identification.
 	 * @param text
 	 *            the text.
 	 * @return true if succeeded.
 	 * @throws CrawljaxException
 	 *             if fails.
 	 */
-	boolean input(Eventable eventable, String text) throws CrawljaxException;
+	boolean input(Identification identification, String text) throws CrawljaxException;
 
 	/**
 	 * Execute JavaScript in the browser.
@@ -94,21 +102,13 @@ public interface EmbeddedBrowser extends Cloneable {
 	Object executeJavaScript(String script) throws CrawljaxException;
 
 	/**
-	 * Creates a PNG screenshot of the browser in full screen mode.
+	 * Checks if an element is visible.
 	 * 
-	 * @param pngFile
-	 *            The filename to save the screenshot on.
+	 * @param identification
+	 *            identification to use.
+	 * @return true if the element is visible.
 	 */
-	void saveScreenShot(File pngFile);
-
-	/**
-	 * Checks if an element is visible. TODO: replace By by Identification
-	 * 
-	 * @param locater
-	 *            Locater to use.
-	 * @return Whether it is visible.
-	 */
-	boolean isVisible(By locater);
+	boolean isVisible(Identification identification);
 
 	/**
 	 * @return The current browser url.
@@ -121,4 +121,40 @@ public interface EmbeddedBrowser extends Cloneable {
 	 * @return a new instance of a EmbeddedBrowser
 	 */
 	EmbeddedBrowser clone();
+
+	/**
+	 * @param inputForm
+	 *            the input form.
+	 * @return a FormInput filled with random data.
+	 */
+	FormInput getInputWithRandomValue(FormInput inputForm);
+
+	/**
+	 * @param iframeIdentification
+	 *            the iframe's name or id.
+	 * @return the DOM string of the corresponding iframe.
+	 */
+	String getFrameDom(String iframeIdentification);
+
+	/**
+	 * @param identification
+	 *            the identification of the element to be checked.
+	 * @return true if the element can be found in the browser's DOM tree.
+	 */
+	boolean elementExists(Identification identification);
+
+	/**
+	 * @param identification
+	 *            the identification of the element to be found.
+	 * @return the corresponding WebElement from the browser.
+	 */
+	WebElement getWebElement(Identification identification);
+
+	/**
+	 * @param file
+	 *            the file to write the screenshot to (png).
+	 * @throws NotSupportedException
+	 *             if saving screenshots is not supported by the implementing class.
+	 */
+	void saveScreenShot(File file) throws NotSupportedException;
 }

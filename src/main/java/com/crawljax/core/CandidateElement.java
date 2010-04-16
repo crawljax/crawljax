@@ -29,6 +29,8 @@ public class CandidateElement {
 	private String relatedFrame = "";
 
 	/**
+	 * Constructor for a element a identification and a relatedFrame.
+	 * 
 	 * @param element
 	 *            the element.
 	 * @param identification
@@ -43,14 +45,15 @@ public class CandidateElement {
 	}
 
 	/**
+	 * Constructor for a element a xpath-identification and no relatedFrame.
+	 * 
 	 * @param element
 	 *            the element
 	 * @param xpath
 	 *            the xpath expression of the element
 	 */
 	public CandidateElement(Element element, String xpath) {
-		this.element = element;
-		identification = new Identification("xpath", xpath);
+		this(element, new Identification(Identification.How.xpath, xpath), "");
 	}
 
 	/**

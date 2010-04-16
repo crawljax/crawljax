@@ -13,8 +13,6 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.condition.invariant.InvariantChecker;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
-import com.crawljax.util.PropertyHelper;
-import com.crawljax.util.database.HibernateUtil;
 
 /**
  * The State Machine.
@@ -81,6 +79,10 @@ public class StateMachine {
 	 * @return true if currentState is successfully changed.
 	 */
 	public boolean changeState(StateVertix nextState) {
+		if (nextState == null) {
+			// TODO Stefan; Throw nullpointer exception??
+			return false;
+		}
 		LOGGER.debug("AFTER: sm.current: " + currentState.getName() + " hold.current: "
 		        + nextState.getName());
 
@@ -126,12 +128,10 @@ public class StateMachine {
 			LOGGER.debug("CLONE CURRENTSTATE: " + currentState.getName());
 			LOGGER.debug("CLONE STATE: " + cloneState.getName());
 			LOGGER.debug("CLONE CLICKABLE: " + eventable);
+			newState.setName(cloneState.getName());
 		} else {
 			LOGGER.info("State " + newState.getName() + " added to the StateMachine.");
 		}
-
-		// Store in DB
-		HibernateUtil.insert(eventable);
 
 		// Add the Edge
 		stateFlowGraph.addEdge(currentState, newState, eventable);
@@ -157,8 +157,6 @@ public class StateMachine {
 	}
 
 	/**
-	 * TODO Stefan Remove the controller argument.
-	 * 
 	 * @param event
 	 *            the event edge.
 	 * @param newState
@@ -182,10 +180,6 @@ public class StateMachine {
 		LOGGER.info("StateMachine's Pointer changed to: " + this.currentState.getName()
 		        + " FROM " + previousState.getName());
 
-		if (PropertyHelper.getTestInvariantsWhileCrawlingValue()) {
-			checkInvariants(browser, session);
-		}
-
 		/**
 		 * TODO Stefan FIX this getSession stuff...
 		 */
@@ -195,6 +189,8 @@ public class StateMachine {
 			 * the OnNewStatePlugins. Guaranty it will not be interleaved
 			 */
 			session.setCurrentState(newState);
+
+			checkInvariants(browser, session);
 
 			if (cloneState == null) {
 				CrawljaxPluginsUtil.runOnNewStatePlugins(session);
@@ -215,10 +211,13 @@ public class StateMachine {
 	 *            the browser to feed to the invariants
 	 */
 	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
-		if (!invariantChecker.check(browser)) {
-			final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
-			for (Invariant failedInvariant : failedInvariants) {
-				CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
+		if (invariantChecker.getInvariants() != null
+		        && invariantChecker.getInvariants().size() > 0) {
+			if (!invariantChecker.check(browser)) {
+				final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
+				for (Invariant failedInvariant : failedInvariants) {
+					CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
+				}
 			}
 		}
 	}

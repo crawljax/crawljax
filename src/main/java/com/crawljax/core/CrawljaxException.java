@@ -10,12 +10,14 @@ package com.crawljax.core;
 public class CrawljaxException extends Exception {
 
 	private static final long serialVersionUID = 8597985648361590779L;
+	private static final String SYSTEMINFO =
+	        "\nAdditional system information:\n" + System.getProperties();
 
 	/**
 	 * Constructs a <code>ContractorException</code> with null as its detail message.
 	 */
 	public CrawljaxException() {
-		super();
+		super(SYSTEMINFO);
 	}
 
 	/**
@@ -25,7 +27,7 @@ public class CrawljaxException extends Exception {
 	 *            the detail message.
 	 */
 	public CrawljaxException(final String message) {
-		super(message);
+		super(message + SYSTEMINFO);
 	}
 
 	/**
@@ -38,7 +40,7 @@ public class CrawljaxException extends Exception {
 	 *            or unknown).
 	 */
 	public CrawljaxException(final String message, final Throwable cause) {
-		super(message, cause);
+		super(message + SYSTEMINFO, cause);
 	}
 
 	/**
@@ -51,6 +53,6 @@ public class CrawljaxException extends Exception {
 	 *            or unknown).
 	 */
 	public CrawljaxException(final Throwable cause) {
-		super(cause);
+		super(SYSTEMINFO, cause);
 	}
 }

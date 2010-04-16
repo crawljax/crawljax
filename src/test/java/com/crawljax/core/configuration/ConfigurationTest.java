@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
 
-import com.crawljax.util.PropertyHelper;
-
 /**
  * @author droest@google.com (Your Name Here)
  */
@@ -20,12 +18,7 @@ public class ConfigurationTest {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		config.setCrawlSpecification(new CrawlSpecification("http://www.crawljax.com"));
 		config.setOutputFolder(OUTPUT_FOLDER_WITHOUT_SLASH);
-		PropertyHelper.init(config);
-		assertEquals(OUTPUT_FOLDER_WITH_SLASH, PropertyHelper.getOutputFolder());
-
-		// config.setOutputFolder(OUTPUT_FOLDER_WITHOUT_SLASH);
-		// PropertyHelper.init(config);
-		// assertEquals(OUTPUT_FOLDER_WITH_SLASH, PropertyHelper.getOutputFolder());
+		assertEquals(OUTPUT_FOLDER_WITH_SLASH, config.getOutputFolder());
 	}
 
 }

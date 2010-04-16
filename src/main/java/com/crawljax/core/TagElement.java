@@ -7,7 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * TODO: Document this.
+ * Class used to desribe html elements. Used internally to describe which elements to click for
+ * example.
  * 
  * @author mesbah
  * @version $Id$
@@ -26,13 +27,6 @@ public class TagElement {
 	public TagElement(Set<TagAttribute> attributes, String name) {
 		this.attributes = attributes;
 		this.name = name;
-	}
-
-	/**
-	 * The empty constructor.
-	 */
-	public TagElement() {
-		super();
 	}
 
 	/**
@@ -87,12 +81,14 @@ public class TagElement {
 			ret += name.toUpperCase();
 		}
 		int i = 0;
-		for (TagAttribute att : attributes) {
-			if (i == 0) {
-				ret += ": ";
+		if (attributes != null) {
+			for (TagAttribute att : attributes) {
+				if (i == 0) {
+					ret += ": ";
+				}
+				ret += att.getName() + "=\"" + att.getValue() + "\" ";
+				i++;
 			}
-			ret += att.getName() + "=\"" + att.getValue() + "\" ";
-			i++;
 		}
 		return ret;
 	}

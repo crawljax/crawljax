@@ -2,12 +2,13 @@ package com.crawljax.examples;
 
 import org.apache.commons.configuration.ConfigurationException;
 
-import com.crawljax.browser.WebDriverFirefox;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.configuration.ThreadConfiguration;
 
 /**
  * Simple Example.
@@ -28,13 +29,19 @@ public final class CrawljaxSimpleExampleSettings {
 	private static CrawljaxConfiguration getCrawljaxConfiguration() {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		config.setCrawlSpecification(getCrawlSpecification());
-		config.setBrowser(new WebDriverFirefox());
+		config.setThreadConfiguration(getThreadConfiguration());
+		config.setBrowser(BrowserType.firefox);
 		return config;
+	}
+
+	private static ThreadConfiguration getThreadConfiguration() {
+		ThreadConfiguration tc = new ThreadConfiguration();
+			//TODO Stefan reinsert usable ThreadConfiguration options
+		return tc;
 	}
 
 	private static CrawlSpecification getCrawlSpecification() {
 		CrawlSpecification crawler = new CrawlSpecification(URL);
-		crawler.setNumberOfThreads(1);
 
 		// click these elements
 		crawler.click("a");

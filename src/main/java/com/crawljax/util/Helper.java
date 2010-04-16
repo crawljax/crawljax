@@ -1,13 +1,9 @@
-/**
- * Created Oct 16, 2007
- */
 package com.crawljax.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -51,6 +47,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
+ * Utility class that contains a number of helper functions used by Crawljax and some plugins.
+ * 
  * @author mesbah
  * @version $Id$
  */
@@ -69,14 +67,15 @@ public final class Helper {
 
 	/**
 	 * @param location
-	 *            TODO: DOCUMENT ME!
+	 *            Current location.
 	 * @param link
-	 *            TODO: DOCUMENT ME!
-	 * @return TODO: DOCUMENT ME!
+	 *            Link to check.
+	 * @return Whether location and link are on the same domain.
 	 */
 	public static boolean isLinkExternal(String location, String link) {
 		boolean check = false;
-		if (location.startsWith("file") && link.startsWith("http")) {
+		if (location.startsWith("file") && link.startsWith("http") || link.startsWith("file")
+		        && location.startsWith("http")) {
 			return true;
 		}
 
@@ -174,12 +173,13 @@ public final class Helper {
 
 		if (element != null) {
 			NamedNodeMap attributes = element.getAttributes();
-
-			for (int i = 0; i < attributes.getLength(); i++) {
-				Attr attr = (Attr) attributes.item(i);
-				if (!exclude.contains(attr.getNodeName())) {
-					buffer.append(attr.getNodeName() + "=");
-					buffer.append(attr.getNodeValue() + " ");
+			if (attributes != null) {
+				for (int i = 0; i < attributes.getLength(); i++) {
+					Attr attr = (Attr) attributes.item(i);
+					if (!exclude.contains(attr.getNodeName())) {
+						buffer.append(attr.getNodeName() + "=");
+						buffer.append(attr.getNodeValue() + " ");
+					}
 				}
 			}
 		}
@@ -212,32 +212,6 @@ public final class Helper {
 	}
 
 	/**
-	 * @param document
-	 *            The Document object.
-	 * @param filePathname
-	 *            the filename to write the document to.
-	 */
-	public static void writeDocumentToFile(Document document, String filePathname) {
-		try {
-			TransformerFactory tFactory = TransformerFactory.newInstance();
-			Transformer transformer = tFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.setOutputProperty(OutputKeys.METHOD, "text");
-
-			DOMSource source = new DOMSource(document);
-			Result result = new StreamResult(new FileOutputStream(filePathname));
-			transformer.transform(source, result);
-		} catch (TransformerConfigurationException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (TransformerException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (FileNotFoundException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-	}
-
-	/**
 	 * @param dom
 	 *            the DOM document.
 	 * @param xpath
@@ -255,21 +229,6 @@ public final class Helper {
 	}
 
 	/**
-	 * @param dom
-	 *            the DOM document.
-	 * @param xpath
-	 *            the xpath.
-	 * @return The element found on DOM having the xpath position.
-	 * @throws XPathExpressionException
-	 *             if the xpath fails.
-	 */
-	public static NodeList getElementsByXpath(Document dom, String xpath)
-	        throws XPathExpressionException {
-		XPath xp = XPathFactory.newInstance().newXPath();
-		return (NodeList) xp.evaluate(xpath, dom, XPathConstants.NODESET);
-	}
-
-	/**
 	 * Removes all the <SCRIPT/> tags from the document.
 	 * 
 	 * @param dom
@@ -277,12 +236,25 @@ public final class Helper {
 	 * @return the changed dom.
 	 */
 	public static Document removeScriptTags(Document dom) {
+		return removeTags(dom, "SCRIPT");
+	}
+
+	/**
+	 * Removes all the given tags from the document.
+	 * 
+	 * @param dom
+	 *            the document object.
+	 * @param tagName
+	 *            the tag name, examples: script, style, meta
+	 * @return the changed dom.
+	 */
+	public static Document removeTags(Document dom, String tagName) {
 		if (dom != null) {
 			// NodeList list = dom.getElementsByTagName("SCRIPT");
 
 			NodeList list;
 			try {
-				list = Helper.getElementsByXpath(dom, "//SCRIPT");
+				list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
 
 				while (list.getLength() > 0) {
 					Node sc = list.item(0);
@@ -291,7 +263,7 @@ public final class Helper {
 						sc.getParentNode().removeChild(sc);
 					}
 
-					list = Helper.getElementsByXpath(dom, "//SCRIPT");
+					list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
 					// list = dom.getElementsByTagName("SCRIPT");
 				}
 			} catch (XPathExpressionException e) {
@@ -321,8 +293,7 @@ public final class Helper {
 	}
 
 	/**
-	 * Checks whether the folder exists for fname, and creates it if neccessary TODO: anyone, check,
-	 * probably does not work correctly.
+	 * Checks whether the folder exists for fname, and creates it if neccessary.
 	 * 
 	 * @param fname
 	 *            folder name.
@@ -377,6 +348,9 @@ public final class Helper {
 			Result result = new StreamResult(stringWriter);
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer transformer = factory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			transformer.setOutputProperty(OutputKeys.METHOD, "html");
 			transformer.transform(source, result);
 			return stringWriter.getBuffer().toString();
 		} catch (TransformerConfigurationException e) {
@@ -431,7 +405,7 @@ public final class Helper {
 	}
 
 	/**
-	 * Save a string to a file.
+	 * Save a string to a file and append a newline character to that string.
 	 * 
 	 * @param filename
 	 *            The filename to save to.
@@ -524,52 +498,6 @@ public final class Helper {
 	}
 
 	/**
-	 * Get the contents of a file.
-	 * 
-	 * @param file
-	 *            The name of the file.
-	 * @return The contents as a String.
-	 */
-	public static String getContent(File file) {
-		StringBuilder contents = new StringBuilder();
-
-		try {
-			BufferedReader input = new BufferedReader(new FileReader(file));
-			try {
-				String line = null; // not declared within while loop
-				while ((line = input.readLine()) != null) {
-					contents.append(line);
-				}
-			} finally {
-				input.close();
-			}
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-
-		return contents.toString();
-	}
-
-	/**
-	 * Filters attributes from the HTML string.
-	 * 
-	 * @param html
-	 *            The HTML to filter.
-	 * @return The filtered HTML string.
-	 */
-	public static String filterAttributes(String html) {
-		if (PropertyHelper.getCrawlFilterAttributesValues() != null) {
-			for (String attribute : PropertyHelper.getCrawlFilterAttributesValues()) {
-				String regex = "\\s" + attribute + "=\"[^\"]*\"";
-				Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-				Matcher m = p.matcher(html);
-				html = m.replaceAll("");
-			}
-		}
-		return html;
-	}
-
-	/**
 	 * @param string
 	 *            The original string.
 	 * @param regex
@@ -581,7 +509,10 @@ public final class Helper {
 	public static String replaceString(String string, String regex, String replace) {
 		Pattern p = Pattern.compile(regex, Pattern.DOTALL);
 		Matcher m = p.matcher(string);
-		return m.replaceAll(replace);
+		String replaced = m.replaceAll(replace);
+		p = Pattern.compile("  ", Pattern.DOTALL);
+		m = p.matcher(replaced);
+		return m.replaceAll(" ");
 	}
 
 	/**
@@ -676,7 +607,7 @@ public final class Helper {
 		                + "function ATUSA_getElementByXpath(xpath){"
 		                + "try{"
 		                + "var elements = xpath.toLowerCase().split('/');"
-		                + "var curNode = document.body;"
+		                + "var curNode = window.document.body;"
 		                + "var tagName, number;"
 		                + "for(j=0; j<elements.length; j++){"
 		                + "if(elements[j]!=''){"
@@ -705,12 +636,12 @@ public final class Helper {
 	 */
 	public static String getFrameIdentification(Element frame) {
 
-		Attr attr = (Attr) frame.getAttributeNode("name");
+		Attr attr = frame.getAttributeNode("name");
 		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
 			return attr.getNodeValue();
 		}
 
-		attr = (Attr) frame.getAttributeNode("id");
+		attr = frame.getAttributeNode("id");
 		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
 			return attr.getNodeValue();
 		}
@@ -720,27 +651,65 @@ public final class Helper {
 	}
 
 	/**
+	 * Write the document object to a file.
+	 * 
 	 * @param document
 	 *            the document object.
 	 * @param filePathname
 	 *            the path name of the file to be written to.
+	 * @param method
+	 *            the output method: for instance html, xml, text
+	 * @param indent
+	 *            amount of indentation. -1 to use the default.
+	 * @throws TransformerException
+	 *             if an exception occurs.
+	 * @throws IOException
+	 *             if an IO exception occurs.
 	 */
-	public static void writeDocumentToHTMLFile(Document document, String filePathname) {
-		try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.setOutputProperty(OutputKeys.METHOD, "html");
+	public static void writeDocumentToFile(Document document, String filePathname, String method,
+	        int indent) throws TransformerException, IOException {
 
-			Result result = new StreamResult(new FileOutputStream(filePathname));
-			transformer.transform(new DOMSource(document), result);
-		} catch (TransformerConfigurationException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (TransformerException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (FileNotFoundException e) {
-			LOGGER.error(e.getMessage(), e);
+		checkFolderForFile(filePathname);
+		Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+		transformer.setOutputProperty(OutputKeys.METHOD, method);
+
+		if (indent > -1) {
+			transformer.setOutputProperty(
+			        org.apache.xml.serializer.OutputPropertiesFactory.S_KEY_INDENT_AMOUNT,
+			        Integer.toString(indent));
 		}
+		transformer.transform(new DOMSource(document), new StreamResult(new FileOutputStream(
+		        filePathname)));
+	}
+
+	/**
+	 * Returns the file contents without stripping line-endings.
+	 * 
+	 * @param file
+	 *            File to read out.
+	 * @return Contents including line-endings.
+	 */
+	public static String getContent(File file) {
+		StringBuilder contents = new StringBuilder();
+
+		try {
+			BufferedReader input = new BufferedReader(new FileReader(file));
+			try {
+				String line = null; // not declared within while loop
+				while ((line = input.readLine()) != null) {
+					contents.append(line);
+					contents.append("\n");
+				}
+			} finally {
+				input.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return contents.toString();
 	}
 
 }

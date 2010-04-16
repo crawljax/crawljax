@@ -3,17 +3,10 @@ package com.crawljax.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.openqa.selenium.WebDriver;
-
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.WebDriverFirefox;
-import com.crawljax.browser.WebDriverOther;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.util.Helper;
-import com.crawljax.util.PropertyHelper;
 
 /**
  * Specifies the settings Crawljax. The methods in this class fall into two categories:Oz
@@ -28,7 +21,7 @@ import com.crawljax.util.PropertyHelper;
  * {@link CrawljaxConfiguration#setHibernateConfiguration(HibernateConfiguration)} See also
  * {@link HibernateConfiguration}
  * <p/>
- * DEFAULT VAlUES: Browser: WebDriverFirefox Project Full Path: empty Project Relative Path: empty
+ * DEFAULT VAlUES: Browser: webdriver firefox Project Full Path: empty Project Relative Path: empty
  * Filter attributes: closure_hashcode_(\\w)*, jquery[0-9]+ Test invariants while crawling: true
  * EXAMPLE: CrawljaxConfiguration crawljaxConfig = new CrawljaxConfiguration(); CrawlSpecification
  * crawler = new CrawlSpecification("http://www.google.com"); crawler.click("a");
@@ -38,9 +31,7 @@ import com.crawljax.util.PropertyHelper;
  */
 public final class CrawljaxConfiguration {
 
-	private static final int ONE_SECOND = 1000;
-
-	private EmbeddedBrowser browser;
+	private BrowserType browser = BrowserType.firefox;
 
 	private String outputFolder = "";
 	private String projectRelativePath = "";
@@ -52,8 +43,8 @@ public final class CrawljaxConfiguration {
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 
 	private CrawlSpecification crawlSpecification = new CrawlSpecification("");
-	private HibernateConfiguration hibernateConfiguration = new HibernateConfiguration();
 	private ProxyConfiguration proxyConfiguration = null;
+	private ThreadConfiguration threadConfiguration = new ThreadConfiguration();
 
 	/**
 	 * Constructor.
@@ -90,56 +81,6 @@ public final class CrawljaxConfiguration {
 	}
 
 	/**
-	 * @return A PropertiesConfiguration. For use by PropertyHelper only!
-	 */
-	protected Configuration getConfiguration() {
-		if (getCrawlSpecification() == null) {
-			return null;
-		}
-		Configuration config = new PropertiesConfiguration();
-		config.addProperty("output.path", getOutputFolder());
-		config.addProperty("project.path.relative", getProjectRelativePath());
-
-		config.addProperty("hibernate.hbm2ddl.auto", getHibernateConfiguration()
-		        .getDatabaseScheme());
-		config.addProperty("invariantcontroller.testcrawling", ConfigurationHelper
-		        .booleanToInt(getCrawlSpecification().getTestInvariantsWhileCrawling()));
-
-		// CrawlSpecification
-		config.addProperty("site.url", getCrawlSpecification().getUrl());
-		config.addProperty("database.use", getUseDatabaseAsInt());
-
-		config.addProperty("click.once", ConfigurationHelper.booleanToInt(getCrawlSpecification()
-		        .getClickOnce()));
-
-		config.addProperty("robot.events", ConfigurationHelper
-		        .listToString(getCrawlSpecification().getCrawlEvents()));
-		config.addProperty("crawl.tags", ConfigurationHelper
-		        .listToString(getAllIncludedCrawlElements()));
-		config.addProperty("crawl.tags.exclude", ConfigurationHelper
-		        .listToString(getCrawlSpecification().crawlActions().getCrawlElementsExcluded()));
-		config.addProperty("crawl.filter.attributes", ConfigurationHelper
-		        .listToString(getFilterAttributeNames()));
-		config.addProperty("crawl.depth", getCrawlSpecification().getDepth());
-		config.addProperty("crawl.wait.reload", getCrawlSpecification()
-		        .getWaitTimeAfterReloadUrl());
-		config.addProperty("crawl.wait.event", getCrawlSpecification().getWaitTimeAfterEvent());
-		config.addProperty("crawl.max.states", getCrawlSpecification().getMaximumStates());
-		config.addProperty("crawl.max.runtime", getCrawlSpecification().getMaximumRuntime()
-		        * ONE_SECOND);
-		config.addProperty("crawl.forms.randominput", ConfigurationHelper
-		        .booleanToInt(getCrawlSpecification().getRandomInputInForms()));
-		config.addProperty("crawl.numberOfThreads", getCrawlSpecification().getNumberOfThreads());
-
-		if (getProxyConfiguration() != null) {
-			config.addProperty("proxy.enabled", 1);
-			config.addProperty("proxy.port", getProxyConfiguration().getPort());
-		}
-
-		return config;
-	}
-
-	/**
 	 * Enable the crawljax proxy extension.
 	 * 
 	 * @param proxyConfiguration
@@ -154,6 +95,21 @@ public final class CrawljaxConfiguration {
 	 */
 	protected ProxyConfiguration getProxyConfiguration() {
 		return proxyConfiguration;
+	}
+
+	/**
+	 * @param threadConfiguration
+	 *            the threadConfiguration to set
+	 */
+	public void setThreadConfiguration(ThreadConfiguration threadConfiguration) {
+		this.threadConfiguration = threadConfiguration;
+	}
+
+	/**
+	 * @return the threadConfiguration
+	 */
+	protected ThreadConfiguration getThreadConfiguration() {
+		return threadConfiguration;
 	}
 
 	/**
@@ -198,63 +154,23 @@ public final class CrawljaxConfiguration {
 				eventableConditions.add(eventableCondition);
 			}
 		}
+
 		return eventableConditions;
 	}
 
 	/**
-	 * @return The HibernateConfiguration which contains the Hibernate Database settings.
+	 * @return The browser used to crawl. By default firefox is used.
 	 */
-	protected HibernateConfiguration getHibernateConfiguration() {
-		return hibernateConfiguration;
-	}
-
-	/**
-	 * @param hibernateConfiguration
-	 *            Which contains the Hibernate Database settings.
-	 */
-	public void setHibernateConfiguration(HibernateConfiguration hibernateConfiguration) {
-		this.useDatabase = true;
-		this.hibernateConfiguration = hibernateConfiguration;
-	}
-
-	/**
-	 * @return The browser used to crawl. See {@link EmbeddedBrowser}. By default
-	 *         {@link WebDriverFirefox} is used.
-	 */
-	protected EmbeddedBrowser getBrowser() {
-		if (browser == null) {
-			if (PropertyHelper.getCrawljaxConfiguration() != null
-			        && PropertyHelper.getCrawljaxConfiguration().getProxyConfiguration() != null) {
-				browser =
-				        new WebDriverFirefox(PropertyHelper.getCrawljaxConfiguration()
-				                .getProxyConfiguration());
-			} else {
-				browser = new WebDriverFirefox();
-			}
-		}
+	protected BrowserType getBrowser() {
 		return browser;
 	}
 
 	/**
 	 * @param browser
-	 *            The browser used to crawl. See {@link EmbeddedBrowser}. By default
-	 *            {@link WebDriverFirefox} is used.
+	 *            The browser used to crawl.
 	 */
-	public void setBrowser(EmbeddedBrowser browser) {
+	public void setBrowser(BrowserType browser) {
 		this.browser = browser;
-	}
-
-	/**
-	 * Deprecated function to specify the browser used. Replaced by
-	 * {@link CrawljaxConfiguration#setBrowser(EmbeddedBrowser)}.
-	 * 
-	 * @see #setBrowser(EmbeddedBrowser)
-	 * @param driver
-	 *            The Webdriver driver used to crawl. By default {@link WebDriverFirefox} is used.
-	 */
-	@Deprecated
-	public void setBrowser(WebDriver driver) {
-		this.browser = new WebDriverOther(driver);
 	}
 
 	/**

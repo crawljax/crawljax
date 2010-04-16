@@ -14,6 +14,7 @@ import org.w3c.dom.NodeList;
 
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
 
 /**
  * Oracle which can ignore element/attributes by xpath expression.
@@ -83,7 +84,7 @@ public class XPathExpressionComparator extends AbstractComparator {
 			Document doc = Helper.getDocument(dom);
 			for (String expression : expressions) {
 				curExpression = expression;
-				NodeList nodeList = Helper.getElementsByXpath(doc, expression);
+				NodeList nodeList = XPathHelper.evaluateXpathExpression(doc, expression);
 
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					Node node = nodeList.item(i);

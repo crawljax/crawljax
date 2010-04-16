@@ -1,5 +1,7 @@
 package com.crawljax.core.configuration;
 
+import com.crawljax.core.state.Eventable.EventType;
+
 /**
  * Represents a form action, e.g. a link that is clicked that handles the form NOTE: In general
  * FormAction is not designed to be instantiated directly.
@@ -17,7 +19,7 @@ public class FormAction {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement beforeClickElement(String tagName) {
-		this.crawlElement = new CrawlElement();
+		this.crawlElement = new CrawlElement(EventType.click);
 		this.crawlElement.setTagName(tagName);
 		return crawlElement;
 	}

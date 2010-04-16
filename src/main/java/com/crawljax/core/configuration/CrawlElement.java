@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.state.Eventable.EventType;
 
 /**
  * Represents the HTML elements which should be crawled. It represents all the HTML elements in the
@@ -38,13 +39,18 @@ public final class CrawlElement {
 	private final String id;
 	private String underXpath;
 	private List<String> inputFieldIds = new ArrayList<String>();
+	private final EventType eventType;
 
 	/**
 	 * To create a CrawlElement representing an HTML element <a>MyLink</a> the tag name would be
 	 * "a".
+	 * 
+	 * @param eventType
+	 *            the event type for this crawl element.
 	 */
-	protected CrawlElement() {
+	protected CrawlElement(EventType eventType) {
 		this.id = "id" + hashCode();
+		this.eventType = eventType;
 	}
 
 	/**
@@ -232,4 +238,12 @@ public final class CrawlElement {
 	protected void setInputFieldIds(List<String> ids) {
 		inputFieldIds = ids;
 	}
+
+	/**
+	 * @return the eventType
+	 */
+	public EventType getEventType() {
+		return eventType;
+	}
+
 }

@@ -121,15 +121,13 @@ public class StateComparator {
 	 */
 	public String getStrippedDom(EmbeddedBrowser browser) {
 
-		// TODO for danny, why is there a new object created here
-		// each time this method is called?
-		StateComparator oc = new StateComparator(oracleComparator);
+		// StateComparator oc = new StateComparator(oracleComparator);
 		try {
-			oc.compare("", browser.getDom(), browser);
+			compare("", browser.getDom(), browser);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-		return oc.getStrippedNewDom();
+		return getStrippedNewDom();
 	}
 
 	/**

@@ -2,6 +2,8 @@ package com.crawljax.core.state;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.openqa.selenium.By;
 
 /**
@@ -13,8 +15,16 @@ import org.openqa.selenium.By;
  */
 public class Identification implements Serializable, Cloneable {
 	private static final long serialVersionUID = -1608879189549535808L;
+
+	/**
+	 * The method used for identifying elements on the DOM tree.
+	 */
+	public enum How {
+		xpath, name, id, tag, text, partialText
+	}
+
 	private long id;
-	private String how;
+	private How how;
 	private String value;
 
 	/**
@@ -32,7 +42,7 @@ public class Identification implements Serializable, Cloneable {
 	 * @param value
 	 *            the value of the identification method.
 	 */
-	public Identification(String how, String value) {
+	public Identification(How how, String value) {
 		this.how = how;
 		this.value = value;
 	}
@@ -40,7 +50,7 @@ public class Identification implements Serializable, Cloneable {
 	/**
 	 * @return the how
 	 */
-	public String getHow() {
+	public How getHow() {
 		return how;
 	}
 
@@ -48,7 +58,7 @@ public class Identification implements Serializable, Cloneable {
 	 * @param how
 	 *            the how to set
 	 */
-	public void setHow(String how) {
+	public void setHow(How how) {
 		this.how = how;
 	}
 
@@ -98,23 +108,31 @@ public class Identification implements Serializable, Cloneable {
 	 * @return the correct By specification of the current Identification.
 	 */
 	public By getWebDriverBy() {
-		if (how.equals("name")) {
-			return By.name(this.value);
+
+		switch (how) {
+			case name:
+				return By.name(this.value);
+
+			case xpath:
+				return By.xpath(this.value);
+
+			case id:
+				return By.id(this.value);
+
+			case tag:
+				return By.tagName(this.value);
+
+			case text:
+				return By.linkText(this.value);
+
+			case partialText:
+				return By.partialLinkText(this.value);
+
+			default:
+				return null;
+
 		}
 
-		if (how.equals("xpath")) {
-			return By.xpath(this.value);
-		}
-
-		if (how.equals("id")) {
-			return By.id(this.value);
-		}
-
-		if (how.equals("tag")) {
-			return By.tagName(this.value);
-		}
-
-		return null;
 	}
 
 	/**
@@ -127,5 +145,25 @@ public class Identification implements Serializable, Cloneable {
 		id.setId(this.id);
 		id.setValue(this.value);
 		return id;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Identification)) {
+			return false;
+		}
+
+		if (this == obj) {
+			return true;
+		}
+		final Identification rhs = (Identification) obj;
+
+		return new EqualsBuilder().append(this.how, rhs.getHow()).append(this.value,
+		        rhs.getValue()).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder().append(this.how).append(this.value).toHashCode();
 	}
 }

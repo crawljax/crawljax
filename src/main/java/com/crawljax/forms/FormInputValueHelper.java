@@ -14,76 +14,54 @@ import java.util.regex.Pattern;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.crawljax.browser.AbstractWebDriver;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
+import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.configuration.InputSpecificationReader;
+import com.crawljax.core.state.Identification;
 import com.crawljax.util.Helper;
-import com.crawljax.util.PropertyHelper;
 import com.crawljax.util.XPathHelper;
 
 /**
  * Helper class for FormHandler.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
+ * @author ali mesbah
  * @version $Id$
  */
 public final class FormInputValueHelper {
 
-	private static final int RANDOM_STRING_LENGTH = 8;
-
-	private FormInputValueHelper() {
-
-	}
-
 	private static final Logger LOGGER = Logger.getLogger(FormInputValueHelper.class.getName());
 
-	private static Map<String, String> formFields = new HashMap<String, String>();
-	private static Map<String, ArrayList<String>> formFieldNames =
+	private Map<String, String> formFields = new HashMap<String, String>();
+	private Map<String, ArrayList<String>> formFieldNames =
 	        new HashMap<String, ArrayList<String>>();
-	private static Map<String, ArrayList<String>> fieldValues =
-	        new HashMap<String, ArrayList<String>>();
+	private Map<String, ArrayList<String>> fieldValues = new HashMap<String, ArrayList<String>>();
 
-	private static Configuration config;
+	private Configuration config;
 
-	static {
-		try {
-			readProperties();
-		} catch (ConfigurationException e) {
-			LOGGER.error("Could not read forms properties file", e);
-		}
-	}
+	private boolean randomInput;
 
 	/**
-	 * Reads the configuration.
-	 * 
-	 * @throws ConfigurationException
-	 *             when cannot read the configuration
+	 * @param inputSpecification
+	 *            the input specification.
+	 * @param randomInput
+	 *            if random data should be used on the input fields.
 	 */
-	@SuppressWarnings("unchecked")
-	public static void readProperties() throws ConfigurationException {
-		if (config == null) {
-			if (PropertyHelper.getCrawljaxConfiguration() == null) {
-				config = new PropertiesConfiguration(PropertyHelper.getFormPropertiesValue());
-			} else {
-				config =
-				        new InputSpecificationReader(PropertyHelper.getCrawljaxConfiguration()
-				                .getInputSpecification()).getConfiguration();
-			}
+	@SuppressWarnings(value = { "unchecked" })
+	public FormInputValueHelper(InputSpecification inputSpecification, boolean randomInput) {
+
+		this.randomInput = randomInput;
+		if (inputSpecification != null) {
+			config = new InputSpecificationReader(inputSpecification).getConfiguration();
+
 			Iterator keyIterator = config.getKeys();
 			while (keyIterator.hasNext()) {
 				String fieldInfo = keyIterator.next().toString();
@@ -102,9 +80,10 @@ public final class FormInputValueHelper {
 				}
 			}
 		}
+
 	}
 
-	private static Element getBelongingElement(Document dom, String fieldName) {
+	private Element getBelongingElement(Document dom, String fieldName) {
 		List<String> names = getNamesForInputFieldId(fieldName);
 		if (names != null) {
 			for (String name : names) {
@@ -123,7 +102,7 @@ public final class FormInputValueHelper {
 		return null;
 	}
 
-	private static int getMaxNumberOfValues(List<String> fieldNames) {
+	private int getMaxNumberOfValues(List<String> fieldNames) {
 		int maxValues = 0;
 		// check the maximum number of form inputValues
 		for (String fieldName : fieldNames) {
@@ -144,7 +123,7 @@ public final class FormInputValueHelper {
 	 *            the belonging eventable condition for sourceElement
 	 * @return a list with Candidate elements for the inputs
 	 */
-	public static List<CandidateElement> getCandidateElementsForInputs(EmbeddedBrowser browser,
+	public List<CandidateElement> getCandidateElementsForInputs(EmbeddedBrowser browser,
 	        Element sourceElement, EventableCondition eventableCondition) {
 		List<CandidateElement> candidateElements = new ArrayList<CandidateElement>();
 		int maxValues = getMaxNumberOfValues(eventableCondition.getLinkedInputFields());
@@ -186,7 +165,7 @@ public final class FormInputValueHelper {
 
 			CandidateElement candidateElement =
 			        new CandidateElement(cloneElement, XPathHelper
-			                .getXpathExpression(sourceElement));
+			                .getXPathExpression(sourceElement));
 			candidateElement.setFormInputs(formInputsForCurrentIndex);
 			candidateElements.add(candidateElement);
 		}
@@ -199,31 +178,43 @@ public final class FormInputValueHelper {
 	 * @param dom
 	 *            the document
 	 * @return returns the belonging node to input in dom
+	 * @throws XPathExpressionException
+	 *             if a failure is occurred.
 	 */
-	public static Node getBelongingNode(FormInput input, Document dom) {
-		String xpath = "";
-		String element = "";
-		try {
-			if (input.getType().equalsIgnoreCase("select")
-			        || input.getType().equalsIgnoreCase("textarea")) {
-				element = input.getType().toUpperCase();
-			} else {
-				element = "INPUT";
-			}
-			xpath =
-			        "//" + element + "[@name='" + input.getName() + "' or @id='"
-			                + input.getName() + "']";
-			Node node = Helper.getElementByXpath(dom, xpath);
+	public Node getBelongingNode(FormInput input, Document dom) throws XPathExpressionException {
 
-			if (node == null) {
-				LOGGER.info("Cannot find element " + element + " id/name: " + input.getName());
-			}
-			return node;
-		} catch (XPathExpressionException e) {
-			LOGGER.error("Error with xpath: " + xpath + " for element " + element + " id/name: "
-			        + input.getName(), e);
-			return null;
+		Node result = null;
+
+		switch (input.getIdentification().getHow()) {
+			case xpath:
+				result = Helper.getElementByXpath(dom, input.getIdentification().getValue());
+				break;
+
+			case id:
+			case name:
+				String xpath = "";
+				String element = "";
+
+				if (input.getType().equalsIgnoreCase("select")
+				        || input.getType().equalsIgnoreCase("textarea")) {
+					element = input.getType().toUpperCase();
+				} else {
+					element = "INPUT";
+				}
+				xpath =
+				        "//" + element + "[@name='" + input.getIdentification().getValue()
+				                + "' or @id='" + input.getIdentification().getValue() + "']";
+				result = Helper.getElementByXpath(dom, xpath);
+				break;
+
+			default:
+				LOGGER.info("Identification " + input.getIdentification()
+				        + " not supported yet for form inputs.");
+				break;
+
 		}
+
+		return result;
 	}
 
 	/**
@@ -231,13 +222,22 @@ public final class FormInputValueHelper {
 	 * @return returns the id of the element if set, else the name. If none found, returns null
 	 * @throws Exception
 	 */
-	private static String getName(Node element) throws Exception {
+	private Identification getIdentification(Node element) throws Exception {
 		NamedNodeMap attributes = element.getAttributes();
 		if (attributes.getNamedItem("id") != null) {
-			return attributes.getNamedItem("id").getNodeValue();
+			return new Identification(Identification.How.id, attributes.getNamedItem("id")
+			        .getNodeValue());
 		} else if (attributes.getNamedItem("name") != null) {
-			return attributes.getNamedItem("name").getNodeValue();
+			return new Identification(Identification.How.name, attributes.getNamedItem("name")
+			        .getNodeValue());
 		}
+
+		// try to find the xpath
+		String xpathExpr = XPathHelper.getXPathExpression(element);
+		if (xpathExpr != null && !xpathExpr.equals("")) {
+			return new Identification(Identification.How.xpath, xpathExpr);
+		}
+
 		return null;
 	}
 
@@ -248,7 +248,7 @@ public final class FormInputValueHelper {
 	 *            the element in the dom
 	 * @return the first related formInput belonging to element in the browser
 	 */
-	public static FormInput getFormInputWithDefaultValue(EmbeddedBrowser browser, Node element) {
+	public FormInput getFormInputWithDefaultValue(EmbeddedBrowser browser, Node element) {
 		return getFormInput(browser, element, 0);
 	}
 
@@ -261,25 +261,26 @@ public final class FormInputValueHelper {
 	 *            the i-th specified value. if i>#values, first value is used
 	 * @return the specified value with index indexValue for the belonging elements
 	 */
-	public static FormInput getFormInputWithIndexValue(EmbeddedBrowser browser, Node element,
+	public FormInput getFormInputWithIndexValue(EmbeddedBrowser browser, Node element,
 	        int indexValue) {
 		return getFormInput(browser, element, indexValue);
 	}
 
-	private static FormInput getFormInput(EmbeddedBrowser browser, Node element, int indexValue) {
-		String name;
+	private FormInput getFormInput(EmbeddedBrowser browser, Node element, int indexValue) {
+		Identification identification;
 		try {
-			name = getName(element);
-			if (name == null) {
+			identification = getIdentification(element);
+			if (identification == null) {
 				return null;
 			}
 		} catch (Exception e) {
 			return null;
 		}
-		String id = FormInputValueHelper.fieldMatches(name);
+		// CHECK
+		String id = fieldMatches(identification.getValue());
 		FormInput input = new FormInput();
 		input.setType(getElementType(element));
-		input.setName(name);
+		input.setIdentification(identification);
 		Set<InputValue> values = new HashSet<InputValue>();
 
 		if (id != null && fieldValues.containsKey(id)) {
@@ -310,77 +311,14 @@ public final class FormInputValueHelper {
 
 			input.setInputValues(values);
 		} else {
+
+			if (this.randomInput) {
+				return browser.getInputWithRandomValue(input);
+			}
 			// field is not specified, lets try a random value
-			return getInputWithRandomValue(browser, input, element);
 
 		}
 		return input;
-	}
-
-	/**
-	 * TODO: make not webdriver dependent? TODO: add settings for default random values
-	 * 
-	 * @param browser
-	 * @param input
-	 * @param element
-	 * @return FormInput with random value assign if possible
-	 */
-	private static FormInput getInputWithRandomValue(EmbeddedBrowser browser, FormInput input,
-	        Node element) {
-		if (!PropertyHelper.getCrawlFormWithRandomValues()) {
-			return null;
-		}
-
-		if (browser instanceof AbstractWebDriver) {
-			WebDriver driver = ((AbstractWebDriver) browser).getDriver();
-
-			WebElement webElement;
-			try {
-				webElement =
-				        driver.findElement(By.xpath(XPathHelper.getXpathExpression(element)));
-				if (!((RenderedWebElement) webElement).isDisplayed()) {
-					return null;
-				}
-			} catch (Exception e) {
-				return null;
-			}
-			Set<InputValue> values = new HashSet<InputValue>();
-
-			// create some random value
-			// if(input.getType().toLowerCase().startsWith("text")/* &&
-			// webElement.getValue().equals("")*/){
-			if (input.getType().toLowerCase().startsWith("text")) {
-				values.add(new InputValue(new RandomInputValueGenerator()
-				        .getRandomString(RANDOM_STRING_LENGTH), true));
-			} else if (input.getType().equalsIgnoreCase("checkbox")
-			        || input.getType().equalsIgnoreCase("radio") && !webElement.isSelected()) {
-				if (new RandomInputValueGenerator().getCheck()) {
-					values.add(new InputValue("1", true));
-				} else {
-					values.add(new InputValue("0", false));
-
-				}
-			} else if (input.getType().equalsIgnoreCase("select")) {
-				try {
-					Select select = new Select(webElement);
-					WebElement option =
-					        (WebElement) new RandomInputValueGenerator().getRandomOption(select
-					                .getOptions());
-					values.add(new InputValue(option.getText(), true));
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
-					return null;
-				}
-			}
-
-			if (values.size() == 0) {
-				return null;
-			}
-			input.setInputValues(values);
-			return input;
-		}
-
-		return null;
 	}
 
 	/**
@@ -388,7 +326,7 @@ public final class FormInputValueHelper {
 	 *            the property.
 	 * @return the values as a List.
 	 */
-	private static ArrayList<String> getPropertyAsList(String property) {
+	private ArrayList<String> getPropertyAsList(String property) {
 		ArrayList<String> result = new ArrayList<String>();
 		String[] array = config.getStringArray(property);
 		for (int i = 0; i < array.length; i++) {
@@ -397,7 +335,7 @@ public final class FormInputValueHelper {
 		return result;
 	}
 
-	private static String fieldMatches(String fieldName) {
+	private String fieldMatches(String fieldName) {
 		for (String field : formFields.keySet()) {
 			Pattern p = Pattern.compile(field, Pattern.CASE_INSENSITIVE);
 			Matcher m = p.matcher(fieldName);
@@ -408,21 +346,21 @@ public final class FormInputValueHelper {
 		return null;
 	}
 
-	private static List<String> getValuesForName(String inputFieldId) {
+	private List<String> getValuesForName(String inputFieldId) {
 		if (!fieldValues.containsKey(inputFieldId)) {
 			return null;
 		}
 		return fieldValues.get(inputFieldId);
 	}
 
-	private static List<String> getNamesForInputFieldId(String inputFieldId) {
+	private List<String> getNamesForInputFieldId(String inputFieldId) {
 		if (!formFieldNames.containsKey(inputFieldId)) {
 			return null;
 		}
 		return formFieldNames.get(inputFieldId);
 	}
 
-	private static String getElementType(Node node) {
+	private String getElementType(Node node) {
 		if (node.getAttributes().getNamedItem("type") != null) {
 			return node.getAttributes().getNamedItem("type").getNodeValue().toLowerCase();
 		} else if (node.getNodeName().equalsIgnoreCase("input")) {
