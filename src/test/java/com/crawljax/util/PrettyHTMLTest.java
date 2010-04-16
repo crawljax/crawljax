@@ -5,12 +5,15 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
+import org.junit.Ignore;
+
 public class PrettyHTMLTest {
 
 	private static final String TESTFILE = "src/test/java/com/crawljax/util/tuduDombefore.html";
 	private static final String CONTROLFILE =
 	        "src/test/java/com/crawljax/util/tuduDombefore.html.tidy";
 
+	@Ignore
 	public void prettifyHTML() {
 		String testdom = Helper.getContent(new File(TESTFILE));
 		String controldom = Helper.getContent(new File(CONTROLFILE));
