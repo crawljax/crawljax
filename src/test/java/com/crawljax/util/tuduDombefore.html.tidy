@@ -1,0 +1,1336 @@
+<HTML>
+	<HEAD>
+		<TITLE>
+			Tudu Lists mine
+		</TITLE>
+		<META http-equiv=content-type content="text/javascript; charset=utf-8"/>
+		<META http-equiv=content-script-type content=text/javascript/>
+		<META
+	content="Tudu Lists, tudu, free, Open Source, todo, Todo List, Todo Lists, Sourceforge, Spring, Spring Framework, Java, J2EE, AJAX, DWR"
+	name=Keywords/>
+		<META
+	content="Tudu Lists is a free (non-commercial) on-line application for managing todo lists."
+	name=Description/>
+		<LINK href="/tudu-dwr/images/favicon.ico" rel="shortcut icon"/>
+		<LINK href="/tudu-dwr/images/animated_favicon.gif" type=image/gif
+	rel=icon/>
+		<LINK href="/tudu-dwr/css/global.css" type=text/css rel=stylesheet/>
+		<LINK media=screen href="/tudu-dwr/css/tabs.css" type=text/css
+	rel=stylesheet/>
+		<LINK title=calendar-blue media=all
+	href="/tudu-dwr/css/calendar-blue.css" type=text/css rel=stylesheet/>
+		<SCRIPT type=text/javascript>
+			function tracker(ajaxCall) { }
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/scripts/tabs.js" type=text/javascript>
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/scripts/scriptaculous/prototype.js"
+	type=text/javascript>
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/scripts/scriptaculous/scriptaculous.js"
+	type=text/javascript>
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/scripts/scriptaculous/builder.js"
+	type=text/javascript>
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/scripts/scriptaculous/effects.js"
+	type=text/javascript>
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/scripts/scriptaculous/dragdrop.js"
+	type=text/javascript>
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/scripts/scriptaculous/controls.js"
+	type=text/javascript>
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/scripts/scriptaculous/slider.js"
+	type=text/javascript>
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/secure/dwr/engine.js" type=text/javascript>
+		</SCRIPT>
+		<SCRIPT src="/tudu-dwr/secure/dwr/util.js" type=text/javascript>
+		</SCRIPT>
+	</HEAD>
+	<BODY onload=initMenu();DWRUtil.useLoadingMessage();>
+		<TABLE width="100%">
+			<TBODY>
+				<TR>
+					<TD width=152>
+						<A href="http://tudu.sourceforge.net">
+							<IMG
+				height=30 alt="Tudu Lists" src="/tudu-dwr/images/tudu_logo.png"
+				width=150 border=0/>
+						</A>
+					</TD>
+					<TD>
+						<UL class=menuList>
+							<LI/>
+							<A title="My info" href="/tudu-dwr/secure/myInfo.action"
+					myIndex="0">
+								My info
+							</A>
+							<LI class=selected/>
+							<A title="My Todos"
+					href="/tudu-dwr/secure/showTodos.action" myIndex="1">
+								My Todos
+							</A>
+							<LI>
+								<A title="Log out" href="/tudu-dwr/logout.action"
+					myIndex="2">
+									Log out
+								</A>
+							</LI>
+						</UL>
+					</TD>
+				</TR>
+			</TBODY>
+		</TABLE>
+		<TABLE id=page align=center>
+			<TBODY>
+				<TR>
+					<TD>
+						<DIV id=title>
+							Tudu Lists v. 2.2
+						</DIV>
+					</TD>
+					<TD>
+						<DIV id=username>
+							<IMG src="/tudu-dwr/images/user_suit.png"/>
+							ali
+						</DIV>
+					</TD>
+				</TR>
+				<TR>
+					<TD align=middle colSpan=2>
+						<DIV id=content/>
+						<SCRIPT src="/tudu-dwr/scripts/calendar.js"
+				type=text/javascript>
+						</SCRIPT>
+						<SCRIPT
+				src="/tudu-dwr/scripts/calendar-en.js" type=text/javascript/>
+						<SCRIPT src="/tudu-dwr/scripts/calendar-setup.js"
+				type=text/javascript>
+						</SCRIPT>
+						<SCRIPT
+				src="/tudu-dwr/secure/dwr/interface/todos.js" type=text/javascript/>
+						<SCRIPT src="/tudu-dwr/secure/dwr/interface/todo_lists.js"
+				type=text/javascript>
+						</SCRIPT>
+						<SCRIPT type=text/javascript>
+							dwr.util.setEscapeHtml(false);
+
+// Error handling
+function errorHandler(msg) {
+  //alert(msg);
+}
+dwr.engine.setErrorHandler(errorHandler);
+
+// Keyboard listener
+var keyboardListener = "on";
+document.onkeydown = function(e) {
+ if(!e) e = window.event;
+ if(e.keyCode==13 && keyboardListener=="on") {
+  if ($("addNewTodoDiv").style.display=="inline") {
+   addTodo();
+  } else if ($("editTodoDiv").style.display=="inline") {
+   editTodo();
+  }
+ }
+}
+
+// Hide the add, edit, share, ... layers.
+function hideTodosLayers() {
+ $("addNewTodoDiv").style.display='none';
+ document.forms.addNewTodoForm.description.value = '';
+ document.forms.addNewTodoForm.priority.value = '';
+ document.forms.addNewTodoForm.dueDate.value = '';
+ document.forms.addNewTodoForm.notes.value = '';
+ $("editTodoDiv").style.display='none';
+ document.forms.editTodoForm.description.value = '';
+ document.forms.editTodoForm.priority.value = '';
+ document.forms.editTodoForm.dueDate.value = '';
+ document.forms.editTodoForm.notes.value = '';
+ $("addNewListDiv").style.display='none';
+ document.forms.addNewListForm.name.value = '';
+ document.forms.addNewListForm.rssAllowed.checked = false;
+ $("editListDiv").style.display='none';
+ document.forms.editListForm.name.value = '';
+ document.forms.editListForm.rssAllowed.checked = false;
+ $("shareListDiv").style.display='none';
+ document.forms.shareListForm.login.value = '';
+}
+
+// Show the "add a new todo" layer.
+function showAddTodo() {
+ hideTodosLayers();
+ var listId = document.forms.todoForm.listId.value;
+ createAssignedUserList('addNewTodoAssignedUser', listId);
+ $("addNewTodoDiv").style.display="inline";
+ document.forms.addNewTodoForm.description.focus();
+ tracker('/ajax/showAddTodo');
+}
+
+// Show the "edit a todo" layer.
+function showEditTodo(todoId) {
+ hideTodosLayers();
+ document.forms.editTodoForm.todoId.value = todoId;
+ var listId = document.forms.todoForm.listId.value;
+ dwr.engine.beginBatch();
+ createAssignedUserList('editTodoAssignedUser', listId);
+ todos.getTodoById(todoId, replyGetTodoById);
+ dwr.engine.endBatch();
+ $("editTodoDiv").style.display="inline";
+ document.forms.editTodoForm.description.focus();
+ tracker('/ajax/showEditTodo');
+}
+
+var replyGetTodoById = function(todo) {
+ document.forms.editTodoForm.description.value = todo.description;
+ document.forms.editTodoForm.priority.value = todo.priority;
+ document.forms.editTodoForm.dueDate.value = todo.dueDate;
+ if (todo.notes == null) {
+  document.forms.editTodoForm.notes.value = '';
+ } else {
+  document.forms.editTodoForm.notes.value = todo.notes;
+ }
+ dwr.util.setValue('editTodoAssignedUser', todo.assignedUserLogin);
+}  
+
+function createAssignedUserList(id, listId) {
+ dwr.util.removeAllOptions(id);
+ dwr.util.addOptions(id, ['ali']);
+ dwr.util.addOptions(id, [{desc:'-- Not assigned --',id:''}],'id','desc');
+ var reply = function(data) {
+  dwr.util.addOptions(id, data);
+ }
+ todo_lists.getTodoListUsers(listId, reply);
+}
+
+//Render the main todo table.
+function renderTableListId(listId) {
+ hideTodosLayers();
+ document.forms.todoForm.listId.value = listId;
+ todos.forceRenderTodos(listId, replyRenderTable);
+ tracker('/ajax/renderTableListId');
+}
+
+var tableDate;
+//Render the main todo table.
+function renderTable() {
+ var listId = document.forms.todoForm.listId.value;
+ if (tableDate == null) {
+  todos.forceRenderTodos(listId, replyRenderTable);
+ } else {
+  todos.renderTodos(listId, tableDate, replyRenderTable);
+ }
+ tracker('/ajax/renderTable');
+}
+
+//Render the main todo table with the todos due in the next 4 days
+function renderNextDays() {
+ document.forms.todoForm.listId.value = null;
+ todos.renderNextDays(replyRenderTable);
+ tracker('/ajax/renderNextDays');
+}
+
+//Render the main todo table with the todos assigned to the current user
+function renderAssignedToMe() {
+ document.forms.todoForm.listId.value = null;
+ todos.renderAssignedToMe(replyRenderTable);
+ tracker('/ajax/renderAssignedToMe');
+}
+
+var replyRenderTable = function(data) {
+ if (data.length
+						</SCRIPT>
+						<TABLE/>
+						<TBODY/>
+						<TR/>
+						<TD
+							style="BORDER-RIGHT: #c0c0c0 1px solid; BORDER-TOP: #c0c0c0 1px solid; VERTICAL-ALIGN: top; BORDER-LEFT: #c0c0c0 1px solid; WIDTH: 150px; BORDER-BOTTOM: #c0c0c0 1px solid"/>
+						<DIV id=menuDiv>
+							<SCRIPT type=text/javascript>
+								//Render the menu
+var menuDate;
+function renderMenu() {
+ todos.getCurrentTodoLists(menuDate, replyCurrentTodoLists);
+ menuDate = new Date();
+ Effect.Appear("todoListsMenuBody");
+ tracker('/ajax/renderMenu');
+}
+        
+var replyCurrentTodoLists = function(data) {
+ if (data != null) {
+   dwr.util.removeAllRows("todoListsMenuBody");
+   dwr.util.addRows("todoListsMenuBody", data, [ selectTodoListLink ]);
+ }
+}
+
+function selectTodoListLink(data) {
+ return "
+								<a href=\"javascript:renderTableListId('"
+  + data.listId + "')\">
+									" + data.description + "
+								</a>";
+}
+
+// Show the "add a new todo list" layer.
+function showAddTodoList() {
+ hideTodosLayers();
+ $("addNewListDiv").style.display="inline";
+ document.forms.addNewListForm.name.focus();
+}
+        
+//Cancel the Add Todo List action
+function cancelAddTodoList() {
+ $("addNewListDiv").style.display='none';
+}
+
+//Add a todo list
+function addTodoList(name) {
+ var name = document.forms.addNewListForm.name.value;
+ var rssAllowed = 0;
+ if (document.forms.addNewListForm.rssAllowed.checked) {
+  rssAllowed = 1;
+ }
+ $("addNewListDiv").style.display='none';
+ dwr.engine.beginBatch();
+ todo_lists.addTodoList(name, rssAllowed);
+ todos.forceGetCurrentTodoLists(replyCurrentTodoLists);
+ dwr.engine.endBatch();
+ tracker('/ajax/addTodoList');
+}
+
+// Show the "edit a todo list" layer.
+function showEditTodoList() {
+ hideTodosLayers();
+ var listId = document.forms.todoForm.listId.value;
+ if (listId != null && listId != "null" &&  listId != "") {
+  $("editListDiv").style.display="inline";
+  todo_lists.getTodoList(listId, replyEditTodoList);
+  document.forms.editListForm.name.focus();
+  tracker('/ajax/showEditTodoList');
+ }
+}
+
+var replyEditTodoList = function(list) {
+ document.forms.editListForm.name.value = list.name;
+ var rssAllowed = list.rssAllowed;
+ if (rssAllowed == 1) {
+  document.forms.editListForm.rssAllowed.checked = true;
+ } else {
+  document.forms.editListForm.rssAllowed.checked = false;
+ }
+}
+
+// Edit the current todo list.
+function editTodoList() {
+ var listId = document.forms.todoForm.listId.value;
+ var name = document.forms.editListForm.name.value;
+ var rssAllowed = 0;
+ if (document.forms.editListForm.rssAllowed.checked) {
+  rssAllowed = 1;
+ }
+ $("editListDiv").style.display='none';
+ dwr.engine.beginBatch();
+ todo_lists.editTodoList(listId, name, rssAllowed);
+ todos.forceGetCurrentTodoLists(replyCurrentTodoLists);
+ renderTable();
+ dwr.engine.endBatch();
+ tracker('/ajax/editTodoList');
+}
+
+//Cancel the edit the current list action
+function cancelEditTodoList() {
+ $("editListDiv").style.display='none';
+}
+
+// Show the "share a todo list" layer.
+function showShareTodoList() {
+ hideTodosLayers();
+ var listId = document.forms.todoForm.listId.value;
+ if (listId != null && listId != "null" &&  listId != "") {
+  $("shareListDiv").style.display="inline";
+  todo_lists.getTodoListUsers(listId, replyShareTodoListUsers);
+  document.forms.shareListForm.login.focus();
+  tracker('/ajax/showShareTodoList');
+ }
+}
+
+var replyShareTodoListUsers = function(data) {
+ dwr.util.removeAllRows("usersTableBody");
+ dwr.util.addRows("usersTableBody", data, [ direct, deleteTodoListUserLink ]);
+}
+
+function direct(data) {
+ return data;
+}
+
+function deleteTodoListUserLink(data) {
+ return "
+								<a href=\"javascript:deleteTodoListUser('" + data + "')\">
+									Remove
+								</a>";
+}
+
+// Add a TodoList user.
+function addTodoListUser() {
+ var listId = document.forms.todoForm.listId.value;
+ var login = document.forms.shareListForm.login.value;
+ dwr.engine.beginBatch();
+ todo_lists.addTodoListUser(listId, login, replyAddTodoListUser);
+ todo_lists.getTodoListUsers(listId, replyShareTodoListUsers);
+ dwr.engine.endBatch();
+ tracker('/ajax/addTodoListUser');
+}
+
+var replyAddTodoListUser = function(data) {
+ if (data != null && typeof data == 'object') {
+  alert(dwr.util.toDescriptiveString(data, 2));
+ } else {
+  if (data == "ObjectRetrievalFailureException") {
+   alert("Requested user does not exist.");
+  }
+ }
+}
+
+// Delete a TodoList user.
+function deleteTodoListUser(login) {
+ var listId = document.forms.todoForm.listId.value;
+ dwr.engine.beginBatch();
+ todo_lists.deleteTodoListUser(listId, login);
+ todo_lists.getTodoListUsers(listId, replyShareTodoListUsers);
+ dwr.engine.endBatch();
+ tracker('/ajax/deleteTodoListUser');
+}
+
+// Delete the current todo list.
+function deleteTodoList(listId) {
+ hideTodosLayers();
+ var listId = document.forms.todoForm.listId.value;
+ if (listId != null && listId != "null" &&  listId != "") {
+  var sure = confirm("Are you sure you want to delete this Todo List?");
+  if (sure) {
+   dwr.engine.beginBatch();
+   todo_lists.deleteTodoList(listId);
+   todos.forceGetCurrentTodoLists(replyCurrentTodoLists);
+   document.forms.todoForm.listId.value = null;
+   dwr.util.setValue('todosTable', 
+    "
+								<div class='message'>
+									Todo List successfully deleted.
+								</div>");
+   dwr.engine.endBatch();
+   tracker('/ajax/deleteTodoList');
+  }
+ }
+}
+							</SCRIPT>
+							<TABLE id=menuTable>
+								<THEAD>
+									<TR>
+										<TD style="FONT-WEIGHT: bold">
+											Actions
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A
+										href="javascript:tracker('/ajax/refreshMenu');todos.forceGetCurrentTodoLists(replyCurrentTodoLists);"/>
+											<IMG
+										src="/tudu-dwr/images/page_refresh.png" border=0/>
+											Refresh
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A href="javascript:showAddTodoList()">
+												<IMG
+										src="/tudu-dwr/images/page_add.png" border=0/>
+												Add a new
+									list
+											</A>
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A href="javascript:showEditTodoList();">
+												<IMG
+										src="/tudu-dwr/images/pencil.png" border=0/>
+												Edit current
+									list
+											</A>
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A href="javascript:showShareTodoList();">
+												<IMG
+										src="/tudu-dwr/images/group.png" border=0/>
+												Share current
+									list
+											</A>
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A href="javascript:deleteTodoList();">
+												<IMG
+										src="/tudu-dwr/images/bin_closed.png" border=0/>
+												Delete
+									current list
+											</A>
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											&nbsp;
+										</TD>
+									</TR>
+									<TR>
+										<TD style="FONT-WEIGHT: bold">
+											Filters
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A href="javascript:renderNextDays()">
+												Next 4 days
+											</A>
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A href="javascript:renderAssignedToMe()">
+												Assigned
+									to me
+											</A>
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											&nbsp;
+										</TD>
+									</TR>
+									<TR>
+										<TD style="FONT-WEIGHT: bold">
+											Lists
+										</TD>
+									</TR>
+								</THEAD>
+								<TBODY id=todoListsMenuBody
+								style="FILTER: ; ZOOM: 1; TEXT-ALIGN: left; opacity: 1"
+								_extended="true">
+									<TR>
+										<TD>
+											<A
+										href="javascript:renderTableListId('402881e41c18ad4e011c1943c6e80001')"/>
+											(0/8)
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A
+										href="javascript:renderTableListId('402881e41c18ad4e011c1943e7800003')"/>
+											(0/0)
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A
+										href="javascript:renderTableListId('402881e41c18ad4e011c194405680004')"/>
+											(0/0)
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A
+										href="javascript:renderTableListId('402881e41c18ad4e011c194412680005')"/>
+											(0/0)
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A
+										href="javascript:renderTableListId('402881e41c18ad4e011c1954f382000a')"/>
+											(0/0)
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A
+										href="javascript:renderTableListId('402881e41c18ad4e011c195545f8000c')"/>
+											(0/0)
+										</TD>
+									</TR>
+									<TR>
+										<TD>
+											<A
+										href="javascript:renderTableListId('11deed4b1bf97437011bf97630540001')"/>
+											Welcome!2
+									(0/6)
+										</TD>
+									</TR>
+								</TBODY>
+							</TABLE>
+							<SCRIPT type=text/javascript>
+								// The menu table should be refreshed automatically every 2.4 minutes.
+ function reloadingMenu() {
+  renderMenu();
+  setTimeout('reloadingMenu();', 2.4 * 60 * 1000);
+ }
+ reloadingMenu();
+							</SCRIPT>
+						</DIV>
+					</TD>
+					<TD style="WIDTH: 10px">
+					</TD>
+					<TD
+							style="BORDER-RIGHT: #c0c0c0 1px solid; BORDER-TOP: #c0c0c0 1px solid; VERTICAL-ALIGN: top; BORDER-LEFT: #c0c0c0 1px solid; WIDTH: 100%; BORDER-BOTTOM: #c0c0c0 1px solid; TEXT-ALIGN: center"/>
+					<!-- The "Add a new Todo" layer -->
+					<DIV class=box id=addNewTodoDiv style="DISPLAY: none" align=center>
+						<DIV class=box_head>
+							<H2>
+								Advanced Add
+							</H2>
+						</DIV>
+						<DIV class=box_body>
+							<FORM name=addNewTodoForm action="">
+								<TABLE>
+									<TBODY>
+										<TR>
+											<TD style="TEXT-ALIGN: left">
+												Description
+											</TD>
+											<TD style="TEXT-ALIGN: left" colSpan=3>
+												<INPUT
+										maxLength=255 size=50 name=description/>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: left">
+												Priority
+											</TD>
+											<TD style="TEXT-ALIGN: left">
+												<INPUT maxLength=4 size=5
+										name=priority/>
+											</TD>
+											<TD style="TEXT-ALIGN: left">
+												Due date
+											</TD>
+											<TD style="TEXT-ALIGN: left">
+												<INPUT id=addDueDateId
+										maxLength=10 size=10 name=dueDate/>
+												<IMG
+										id=add_trigger_calendar style="CURSOR: pointer" height=16
+										alt=Calendar src="/tudu-dwr/images/date.png" width=16/>
+												<SPAN
+										style="FONT-SIZE: 80%"/>
+												(mm/dd/yyyy)
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: left">
+												Assigned To
+											</TD>
+											<TD style="TEXT-ALIGN: left" colSpan=3>
+												<SELECT
+										id=addNewTodoAssignedUser name=assignedUser/>
+												<OPTION selected>
+												</OPTION>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: left">
+												Notes
+												<IMG height=16 alt=""
+										src="/tudu-dwr/images/note.png" width=16/>
+											</TD>
+											<TD style="TEXT-ALIGN: left" colSpan=3>
+												<TEXTAREA
+										onblur="keyboardListener='on'"
+										onfocus="keyboardListener='off'" name=notes rows=10 cols=37/>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: center" colSpan=4>
+												[
+												<A
+										onblur="keyboardListener='on'"
+										onfocus="keyboardListener='off'" href="javascript:addTodo();"/>
+												Submit
+												<A onblur="keyboardListener='on'"
+										onfocus="keyboardListener='off'"
+										href="javascript:cancelAddTodo();">
+													Cancel
+												</A> ]
+											</TD>
+										</TR>
+									</TBODY>
+								</TABLE>
+								<BR/>
+							</FORM>
+							<SCRIPT type=text/javascript>
+								Calendar.setup({
+       weekNumbers: false,
+       inputField : "addDueDateId",
+       ifFormat : "%m/%d/%Y",
+       button : "add_trigger_calendar"
+      });
+							</SCRIPT>
+						</DIV>
+					</DIV>
+					<!-- The "Edit a Todo" layer -->
+					<DIV class=box id=editTodoDiv style="DISPLAY: none" align=center>
+						<DIV class=box_head>
+							<H2>
+								Edit a Todo
+							</H2>
+						</DIV>
+						<DIV class=box_body>
+							<FORM name=editTodoForm action="">
+								<INPUT type=hidden
+							name=todoId/>
+								<TABLE>
+									<TBODY>
+										<TR>
+											<TD style="TEXT-ALIGN: left">
+												Description
+											</TD>
+											<TD style="TEXT-ALIGN: left" colSpan=3>
+												<INPUT
+										maxLength=255 size=50 name=description/>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: left">
+												Priority
+											</TD>
+											<TD style="TEXT-ALIGN: left">
+												<INPUT maxLength=4 size=5
+										name=priority/>
+											</TD>
+											<TD style="TEXT-ALIGN: left">
+												Due date
+											</TD>
+											<TD>
+												<INPUT id=editDueDateId maxLength=10 size=10
+										name=dueDate/>
+												<IMG id=edit_trigger_calendar
+										style="CURSOR: pointer" height=16 alt=Calendar
+										src="/tudu-dwr/images/date.png" width=16/>
+												<SPAN
+										style="FONT-SIZE: 80%"/>
+												(mm/dd/yyyy)
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: left">
+												Assigned To
+											</TD>
+											<TD style="TEXT-ALIGN: left" colSpan=3>
+												<SELECT
+										id=editTodoAssignedUser name=assignedUser/>
+												<OPTION selected>
+												</OPTION>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: left">
+												Notes
+												<IMG height=16 alt=""
+										src="/tudu-dwr/images/note.png" width=16/>
+											</TD>
+											<TD style="TEXT-ALIGN: left" colSpan=3>
+												<TEXTAREA
+										onblur="keyboardListener='on'"
+										onfocus="keyboardListener='off'" name=notes rows=10 cols=37/>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: center" colSpan=4>
+												[
+												<A
+										onblur="keyboardListener='on'"
+										onfocus="keyboardListener='off'" href="javascript:editTodo();"/>
+												Submit
+												<A onblur="keyboardListener='on'"
+										onfocus="keyboardListener='off'"
+										href="javascript:cancelEditTodo();">
+													Cancel
+												</A> ]
+											</TD>
+										</TR>
+									</TBODY>
+								</TABLE>
+								<BR/>
+							</FORM>
+							<SCRIPT type=text/javascript>
+								Calendar.setup({
+       weekNumbers: false,
+       inputField : "editDueDateId",
+       ifFormat : "%m/%d/%Y",
+       button : "edit_trigger_calendar"
+      });
+							</SCRIPT>
+						</DIV>
+					</DIV>
+					<!-- The "Add a new list" layer -->
+					<DIV class=box id=addNewListDiv style="DISPLAY: none" align=center>
+						<DIV class=box_head>
+							<H2>
+								Add a new list
+							</H2>
+						</DIV>
+						<DIV class=box_body>
+							<FORM name=addNewListForm onsubmit="addTodoList();return false;"
+							action="">
+								<TABLE>
+									<TBODY>
+										<TR>
+											<TD>
+												Description
+											</TD>
+											<TD>
+												<INPUT maxLength=50 size=25 name=name/>
+											</TD>
+										</TR>
+										<TR>
+											<TD>
+												Allow RSS publication?
+											</TD>
+											<TD>
+												<INPUT type=checkbox name=rssAllowed/>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: center" colSpan=2>
+												[
+												<A
+										href="javascript:addTodoList();"/>
+												Submit
+												<A
+										href="javascript:cancelAddTodoList();"/>
+												Cancel
+											</TD>
+										</TR>
+									</TBODY>
+								</TABLE>
+								<BR/>
+							</FORM>
+						</DIV>
+					</DIV>
+					<!-- The "Edit current list" layer -->
+					<DIV class=box id=editListDiv style="DISPLAY: none" align=center>
+						<DIV class=box_head>
+							<H2>
+								Edit the current Todo List
+							</H2>
+						</DIV>
+						<DIV class=box_body>
+							<FORM name=editListForm onsubmit="editTodoList();return false;"
+							action="">
+								<TABLE>
+									<TBODY>
+										<TR>
+											<TD>
+												Description
+											</TD>
+											<TD>
+												<INPUT maxLength=50 size=25 name=name/>
+											</TD>
+										</TR>
+										<TR>
+											<TD>
+												Allow RSS publication?
+											</TD>
+											<TD>
+												<INPUT type=checkbox name=rssAllowed/>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: center" colSpan=2>
+												[
+												<A
+										href="javascript:editTodoList();"/>
+												Submit
+												<A href="javascript:cancelEditTodoList();">
+													Cancel
+												</A> ]
+											</TD>
+										</TR>
+									</TBODY>
+								</TABLE>
+								<BR/>
+							</FORM>
+						</DIV>
+					</DIV>
+					<!-- The "Share current list" layer -->
+					<DIV class=box id=shareListDiv style="DISPLAY: none" align=center>
+						<DIV class=box_head>
+							<H2>
+								Share the current Todo List
+							</H2>
+						</DIV>
+						<DIV class=box_body>
+							<FORM name=shareListForm action="">
+								<TABLE>
+									<TBODY>
+										<TR>
+											<TD>
+												Share with user
+											</TD>
+											<TD>
+												<INPUT id=login maxLength=50 name=login/>
+												&nbsp;&nbsp;
+												<A href="javascript:addTodoListUser();">
+													Add
+									login
+												</A>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="VERTICAL-ALIGN: top">
+												Current users
+											</TD>
+											<TD>
+												<TABLE id=usersTable>
+													<TBODY id=usersTableBody style="TEXT-ALIGN: left">
+														<TR>
+															<TD>
+															</TD>
+														</TR>
+													</TBODY>
+												</TABLE>
+											</TD>
+										</TR>
+										<TR>
+											<TD style="TEXT-ALIGN: right" colSpan=2>
+												[
+												<A
+										href="javascript:renderTable();hideTodosLayers();"/>
+												Hide
+											</TD>
+										</TR>
+									</TBODY>
+								</TABLE>
+								<BR/>
+							</FORM>
+						</DIV>
+					</DIV>
+					<!-- The main table, displaying the current Todos -->
+					<DIV id=todosTable style="MIN-HEIGHT: 500px">
+						<DIV style="FONT: 18px/ 1.3em Arial, Helvetica, sans-serif">
+						</DIV>
+						<BR/>
+						<TABLE align=center>
+							<TBODY>
+								<TR>
+									<TD
+										style="PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; WIDTH: 0px; PADDING-TOP: 0px; BACKGROUND-COLOR: #8080ff"/>
+									<TD
+										style="PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; WIDTH: 1000px; PADDING-TOP: 0px; BACKGROUND-COLOR: #ff8080"/>
+									<TD>
+										&nbsp;(0%)
+									</TD>
+								</TR>
+							</TBODY>
+						</TABLE>
+						<BR/>
+						<DIV style="TEXT-ALIGN: left">
+							<FORM name=quickAddNewTodoForm onsubmit="return false;">
+								<INPUT
+							onkeydown="if(event.keyCode==13) {quickAddTodo();}" maxLength=255
+							size=30 name=description/>
+								<A
+							href="javascript:quickAddTodo()"/>
+								Quick Add
+								<A
+							href="javascript:showAddTodo()"/>
+								Advanced Add
+								<A
+							href="javascript:deleteAllCompletedTodos()"/>
+								Delete completed
+						Todos
+								<A href="javascript:hideOlderTodos()">
+									Hide older Todos
+								</A>
+							</FORM>
+						</DIV>
+						<DIV style="OVERFLOW: auto; MAX-HEIGHT: 700px">
+							<TABLE class=list>
+								<TBODY>
+									<TR>
+										<TH class=sortable onclick="sortTable('description')">
+											Description
+											<SPAN class=completed>
+												(Click to edit)
+											</SPAN>
+										</TH>
+										<TH class=sorted style="WIDTH: 80px"
+										onclick="sortTable('priority')">
+											Priority
+										</TH>
+										<TH class=sortable style="WIDTH: 80px"
+										onclick="sortTable('due_date')">
+											Due date
+										</TH>
+										<TH style="WIDTH: 90px">
+											Completed
+										</TH>
+										<TH style="WIDTH: 60px">
+											Actions
+										</TH>
+									</TR>
+									<TR class=odd id=402881e41c18ad4e011c1954ae890006>
+										<TD class=""
+										onclick="showQuickEditTodo('402881e41c18ad4e011c1954ae890006')">
+											<DIV id=show-402881e41c18ad4e011c1954ae890006>
+											</DIV>
+											<DIV id=edit-402881e41c18ad4e011c1954ae890006
+										style="DISPLAY: none">
+												<INPUT
+										id=edit-in-402881e41c18ad4e011c1954ae890006
+										onblur="quickEditTodo('402881e41c18ad4e011c1954ae890006',this.value);"
+										size=50/>
+											</DIV>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											0
+										</TD>
+										<TD class="" style="FONT-SIZE: 80%; TEXT-ALIGN: center">
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<INPUT
+										onclick="completeTodo('402881e41c18ad4e011c1954ae890006')"
+										type=checkbox/>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<A
+										href="javascript:showEditTodo('402881e41c18ad4e011c1954ae890006')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/pencil.png"
+										border=0/>
+											<A
+										href="javascript:deleteTodo('402881e41c18ad4e011c1954ae890006')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/bin_closed.png"
+										border=0/>
+										</TD>
+									</TR>
+									<TR class=even id=402881e41c18ad4e011c1954b9090007>
+										<TD class=""
+										onclick="showQuickEditTodo('402881e41c18ad4e011c1954b9090007')">
+											<DIV id=show-402881e41c18ad4e011c1954b9090007>
+											</DIV>
+											<DIV id=edit-402881e41c18ad4e011c1954b9090007
+										style="DISPLAY: none">
+												<INPUT
+										id=edit-in-402881e41c18ad4e011c1954b9090007
+										onblur="quickEditTodo('402881e41c18ad4e011c1954b9090007',this.value);"
+										size=50/>
+											</DIV>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											0
+										</TD>
+										<TD class="" style="FONT-SIZE: 80%; TEXT-ALIGN: center">
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<INPUT
+										onclick="completeTodo('402881e41c18ad4e011c1954b9090007')"
+										type=checkbox/>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<A
+										href="javascript:showEditTodo('402881e41c18ad4e011c1954b9090007')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/pencil.png"
+										border=0/>
+											<A
+										href="javascript:deleteTodo('402881e41c18ad4e011c1954b9090007')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/bin_closed.png"
+										border=0/>
+										</TD>
+									</TR>
+									<TR class=odd id=402881e41c18ad4e011c1954c80d0008>
+										<TD class=""
+										onclick="showQuickEditTodo('402881e41c18ad4e011c1954c80d0008')">
+											<DIV id=show-402881e41c18ad4e011c1954c80d0008>
+											</DIV>
+											<DIV id=edit-402881e41c18ad4e011c1954c80d0008
+										style="DISPLAY: none">
+												<INPUT
+										id=edit-in-402881e41c18ad4e011c1954c80d0008
+										onblur="quickEditTodo('402881e41c18ad4e011c1954c80d0008',this.value);"
+										size=50/>
+											</DIV>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											0
+										</TD>
+										<TD class="" style="FONT-SIZE: 80%; TEXT-ALIGN: center">
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<INPUT
+										onclick="completeTodo('402881e41c18ad4e011c1954c80d0008')"
+										type=checkbox/>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<A
+										href="javascript:showEditTodo('402881e41c18ad4e011c1954c80d0008')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/pencil.png"
+										border=0/>
+											<A
+										href="javascript:deleteTodo('402881e41c18ad4e011c1954c80d0008')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/bin_closed.png"
+										border=0/>
+										</TD>
+									</TR>
+									<TR class=even id=402881e41c18ad4e011c1954e6050009>
+										<TD class=""
+										onclick="showQuickEditTodo('402881e41c18ad4e011c1954e6050009')">
+											<DIV id=show-402881e41c18ad4e011c1954e6050009>
+											</DIV>
+											<DIV id=edit-402881e41c18ad4e011c1954e6050009
+										style="DISPLAY: none">
+												<INPUT
+										id=edit-in-402881e41c18ad4e011c1954e6050009
+										onblur="quickEditTodo('402881e41c18ad4e011c1954e6050009',this.value);"
+										size=50/>
+											</DIV>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											0
+										</TD>
+										<TD class="" style="FONT-SIZE: 80%; TEXT-ALIGN: center">
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<INPUT
+										onclick="completeTodo('402881e41c18ad4e011c1954e6050009')"
+										type=checkbox/>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<A
+										href="javascript:showEditTodo('402881e41c18ad4e011c1954e6050009')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/pencil.png"
+										border=0/>
+											<A
+										href="javascript:deleteTodo('402881e41c18ad4e011c1954e6050009')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/bin_closed.png"
+										border=0/>
+										</TD>
+									</TR>
+									<TR class=odd id=402881e41c18ad4e011c195537a0000b>
+										<TD class=""
+										onclick="showQuickEditTodo('402881e41c18ad4e011c195537a0000b')">
+											<DIV id=show-402881e41c18ad4e011c195537a0000b>
+											</DIV>
+											<DIV id=edit-402881e41c18ad4e011c195537a0000b
+										style="DISPLAY: none">
+												<INPUT
+										id=edit-in-402881e41c18ad4e011c195537a0000b
+										onblur="quickEditTodo('402881e41c18ad4e011c195537a0000b',this.value);"
+										size=50/>
+											</DIV>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											0
+										</TD>
+										<TD class="" style="FONT-SIZE: 80%; TEXT-ALIGN: center">
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<INPUT
+										onclick="completeTodo('402881e41c18ad4e011c195537a0000b')"
+										type=checkbox/>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<A
+										href="javascript:showEditTodo('402881e41c18ad4e011c195537a0000b')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/pencil.png"
+										border=0/>
+											<A
+										href="javascript:deleteTodo('402881e41c18ad4e011c195537a0000b')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/bin_closed.png"
+										border=0/>
+										</TD>
+									</TR>
+									<TR class=even id=402881e41c18ad4e011c1955553a000d>
+										<TD class=""
+										onclick="showQuickEditTodo('402881e41c18ad4e011c1955553a000d')">
+											<DIV id=show-402881e41c18ad4e011c1955553a000d>
+											</DIV>
+											<DIV id=edit-402881e41c18ad4e011c1955553a000d
+										style="DISPLAY: none">
+												<INPUT
+										id=edit-in-402881e41c18ad4e011c1955553a000d
+										onblur="quickEditTodo('402881e41c18ad4e011c1955553a000d',this.value);"
+										size=50/>
+											</DIV>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											0
+										</TD>
+										<TD class="" style="FONT-SIZE: 80%; TEXT-ALIGN: center">
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<INPUT
+										onclick="completeTodo('402881e41c18ad4e011c1955553a000d')"
+										type=checkbox/>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<A
+										href="javascript:showEditTodo('402881e41c18ad4e011c1955553a000d')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/pencil.png"
+										border=0/>
+											<A
+										href="javascript:deleteTodo('402881e41c18ad4e011c1955553a000d')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/bin_closed.png"
+										border=0/>
+										</TD>
+									</TR>
+									<TR class=odd id=402881e41c18ad4e011c1958719f000e>
+										<TD class=""
+										onclick="showQuickEditTodo('402881e41c18ad4e011c1958719f000e')">
+											<DIV id=show-402881e41c18ad4e011c1958719f000e>
+											</DIV>
+											<DIV id=edit-402881e41c18ad4e011c1958719f000e
+										style="DISPLAY: none">
+												<INPUT
+										id=edit-in-402881e41c18ad4e011c1958719f000e
+										onblur="quickEditTodo('402881e41c18ad4e011c1958719f000e',this.value);"
+										size=50/>
+											</DIV>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											0
+										</TD>
+										<TD class="" style="FONT-SIZE: 80%; TEXT-ALIGN: center">
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<INPUT
+										onclick="completeTodo('402881e41c18ad4e011c1958719f000e')"
+										type=checkbox/>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<A
+										href="javascript:showEditTodo('402881e41c18ad4e011c1958719f000e')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/pencil.png"
+										border=0/>
+											<A
+										href="javascript:deleteTodo('402881e41c18ad4e011c1958719f000e')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/bin_closed.png"
+										border=0/>
+										</TD>
+									</TR>
+									<TR class=even id=402881e41c18ad4e011c1958ce95000f>
+										<TD class=""
+										onclick="showQuickEditTodo('402881e41c18ad4e011c1958ce95000f')">
+											<DIV id=show-402881e41c18ad4e011c1958ce95000f>
+											</DIV>
+											<DIV id=edit-402881e41c18ad4e011c1958ce95000f
+										style="DISPLAY: none">
+												<INPUT
+										id=edit-in-402881e41c18ad4e011c1958ce95000f
+										onblur="quickEditTodo('402881e41c18ad4e011c1958ce95000f',this.value);"
+										size=50/>
+											</DIV>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											0
+										</TD>
+										<TD class="" style="FONT-SIZE: 80%; TEXT-ALIGN: center">
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<INPUT
+										onclick="completeTodo('402881e41c18ad4e011c1958ce95000f')"
+										type=checkbox/>
+										</TD>
+										<TD class="" style="TEXT-ALIGN: center">
+											<A
+										href="javascript:showEditTodo('402881e41c18ad4e011c1958ce95000f')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/pencil.png"
+										border=0/>
+											<A
+										href="javascript:deleteTodo('402881e41c18ad4e011c1958ce95000f')"/>
+											<IMG
+										src="http://localhost:8080/tudu-dwr/images/bin_closed.png"
+										border=0/>
+										</TD>
+									</TR>
+								</TBODY>
+							</TABLE>
+						</DIV>
+						<BR/>
+						<BR/>
+						<A
+							href="http://localhost:8080/tudu-dwr/rss/showRssFeed.action?listId=402881e41c18ad4e011c1943c6e80001"/>
+						<IMG
+							height=14 alt=RSS
+							src="http://localhost:8080/tudu-dwr/images/rss.gif" width=30
+							border=0/>
+						<LINK title="RSS feed"
+							href="/tudu-dwr/rss/showRssFeed.action?listId=402881e41c18ad4e011c1943c6e80001"
+							type=application/rss+xml rel=alternate/>
+						|
+						<A
+							href="http://localhost:8080/tudu-dwr/secure/backupTodoList.action?listId=402881e41c18ad4e011c1943c6e80001"/>
+						Backup
+						<IMG height=10 alt=Backup
+							src="http://localhost:8080/tudu-dwr/images/asc.gif" width=9
+							border=0/>
+						<A
+							href="http://localhost:8080/tudu-dwr/secure/restoreTodoList.action?listId=402881e41c18ad4e011c1943c6e80001"/>
+						Restore
+						<IMG height=10 alt=Restore
+							src="http://localhost:8080/tudu-dwr/images/desc.gif" width=9
+							border=0/>
+					</DIV>
+				</TR>
+			</TBODY>
+		</TABLE>
+		<FORM name=todoForm action="">
+			<INPUT type=hidden
+				value=402881e41c18ad4e011c1943c6e80001 name=listId/>
+		</FORM>
+		<SCRIPT type=text/javascript>
+			// The todos table should be refreshed automatically every 2 minutes.
+ function reloadingTable() {
+  renderTable();
+  setTimeout('reloadingTable();', 2 * 60 * 1000);
+ }
+ reloadingTable();
+		</SCRIPT>
+		<TR>
+			<TD id=sourceforge>
+				<A href="http://tudu.sourceforge.net">
+					<IMG
+				height=31 alt=SourceForge.net
+				src="http://sourceforge.net/sflogo.php?group_id=131842&amp;type=1"
+				width=88 border=0/>
+				</A>
+			</TD>
+			<TD id=bug>
+				<IMG src="/tudu-dwr/images/bug.png"/>
+				Did you
+			find a bug? Thanks for
+				<A
+				href="http://sourceforge.net/tracker/?group_id=131842"/>
+				submitting
+			it
+			</TD>
+		</TR>
+	</BODY>
+</HTML>
+
