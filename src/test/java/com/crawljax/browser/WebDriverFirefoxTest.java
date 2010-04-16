@@ -35,6 +35,21 @@ public class WebDriverFirefoxTest {
 		}
 	}
 
+	@Test
+	public void cloneTest() {
+		EmbeddedBrowser newBrowser = browser.clone();
+		try {
+			browser.goToUrl("http://crawljax.com");
+
+			newBrowser.goToUrl("http://google.com");
+			newBrowser.close();
+
+			browser.goToUrl("http://google.com");
+		} catch (CrawljaxException e) {
+			fail("Could not browse to url");
+		}
+	}
+
 	@AfterClass
 	public static void finish() {
 		browser.close();
