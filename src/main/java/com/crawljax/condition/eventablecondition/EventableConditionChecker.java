@@ -8,7 +8,7 @@ import org.w3c.dom.Document;
 import com.crawljax.util.XPathHelper;
 
 /**
- * TODO: Document this, what is this class for?
+ * Check whether the conditions of an eventable are satisfied.
  * 
  * @author mesbah
  * @version $Id$
@@ -18,9 +18,11 @@ public class EventableConditionChecker {
 	private List<EventableCondition> eventableConditions = new ArrayList<EventableCondition>();
 
 	/**
+	 * TODO: remove? not used?
+	 * 
 	 * @return the eventableConditions
 	 */
-	public List<EventableCondition> getEventableConditions() {
+	private List<EventableCondition> getEventableConditions() {
 		return eventableConditions;
 	}
 
@@ -28,26 +30,40 @@ public class EventableConditionChecker {
 	 * @param eventableConditions
 	 *            the eventableConditions to set
 	 */
-	public void setEventableConditions(List<EventableCondition> eventableConditions) {
+	private void setEventableConditions(List<EventableCondition> eventableConditions) {
 		this.eventableConditions = eventableConditions;
 	}
 
 	/**
+	 * TODO: remove? not used?
+	 * 
 	 * @param eventableCondition
 	 *            the eventableCondition to add
 	 */
-	public void addEventableCondition(EventableCondition eventableCondition) {
+	private void addEventableCondition(EventableCondition eventableCondition) {
 		this.eventableConditions.add(eventableCondition);
 	}
 
 	/**
+	 * TODO: remove? not used?
+	 * 
 	 * @param eventableConditions
 	 *            The eventable conditions that should be added.
 	 */
-	public void addEventableConditions(List<EventableCondition> eventableConditions) {
+	private void addEventableConditions(List<EventableCondition> eventableConditions) {
 		for (EventableCondition eventableCondition : eventableConditions) {
 			this.eventableConditions.add(eventableCondition);
 		}
+	}
+
+	/**
+	 * Construct the eventableconditionchecker with its eventable conditions.
+	 * 
+	 * @param eventableConditions
+	 *            The eventable conditions.
+	 */
+	public EventableConditionChecker(List<EventableCondition> eventableConditions) {
+		setEventableConditions(eventableConditions);
 	}
 
 	/**

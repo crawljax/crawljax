@@ -44,8 +44,7 @@ public class CrawljaxController {
 
 	private final StateComparator stateComparator;
 	private final CrawlConditionChecker crawlConditionChecker = new CrawlConditionChecker();
-	private final EventableConditionChecker eventableConditionChecker =
-	        new EventableConditionChecker();
+	private final EventableConditionChecker eventableConditionChecker;
 
 	private final WaitConditionChecker waitConditionChecker = new WaitConditionChecker();
 	private Crawler crawler;
@@ -60,8 +59,7 @@ public class CrawljaxController {
 	 */
 	private final CrawlerExecutor workQueue;
 
-	private final CandidateElementManager elementChecker =
-	        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
+	private final CandidateElementManager elementChecker;
 
 	private final BrowserFactory browserFactory;
 
@@ -81,8 +79,11 @@ public class CrawljaxController {
 		invariantList = crawlerReader.getInvariants();
 		crawlConditionChecker.setCrawlConditions(crawlerReader.getCrawlConditions());
 		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
-		eventableConditionChecker.setEventableConditions(configurationReader
-		        .getEventableConditions());
+		eventableConditionChecker =
+		        new EventableConditionChecker(configurationReader.getEventableConditions());
+
+		elementChecker =
+		        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 
 		browserFactory =
 		        new BrowserFactory(
