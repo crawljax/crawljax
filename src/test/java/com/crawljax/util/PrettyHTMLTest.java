@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 
 import org.junit.Ignore;
+import org.junit.Test;
 
 public class PrettyHTMLTest {
 
@@ -14,6 +15,7 @@ public class PrettyHTMLTest {
 	        "src/test/java/com/crawljax/util/tuduDombefore.html.tidy";
 
 	@Ignore
+	@Test
 	public void prettifyHTML() {
 		String testdom = Helper.getContent(new File(TESTFILE));
 		String controldom = Helper.getContent(new File(CONTROLFILE));
