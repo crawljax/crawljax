@@ -1,6 +1,7 @@
 package com.crawljax.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
@@ -16,6 +17,9 @@ public class PrettyHTMLTest {
 	public void prettifyHTML() {
 		String testdom = Helper.getContent(new File(TESTFILE));
 		String controldom = Helper.getContent(new File(CONTROLFILE));
+
+		assertNotNull("File should be read", testdom);
+		assertNotNull("File should be read", controldom);
 
 		testdom = PrettyHTML.prettyHTML(testdom);
 
