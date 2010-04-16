@@ -218,7 +218,6 @@
 						</manifest>
 					</archive>
 					<excludes>
-						<exclude>**/*.properties</exclude>
 						<exclude>**/jar-with-dependencies.xml</exclude>
 						<exclude>announcements/**</exclude>
 					</excludes>
