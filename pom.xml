@@ -170,7 +170,6 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<excludes>
-					<exclude>*.stg</exclude>
 					<exclude>*.txt</exclude>
 				</excludes>
 			</resource>
@@ -273,6 +272,15 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<tagBase>https://crawljax.googlecode.com/svn/tags</tagBase>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -323,9 +331,9 @@
 	</reporting>
 
 	<scm>
-		<connection>scm:svn:http://crawljax.googlecode.com/svn</connection>
-		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn</developerConnection>
-		<url>http://crawljax.googlecode.com/svn</url>
+		<connection>scm:svn:http://crawljax.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn/trunk</developerConnection>
+		<url>http://crawljax.googlecode.com/svn/trunk</url>
 	</scm>
 
 	<licenses>
@@ -376,7 +384,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.0-alpha-4</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
