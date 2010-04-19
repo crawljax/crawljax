@@ -1,179 +1,233 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<document xmlns="http://maven.apache.org/changes/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">  
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
 	<properties>
 		<title>Changes Crawljax</title>
 		<author email="a.mesbah@tudelft.nl">Ali Mesbah</author>
 	</properties>
 	<body>
-		<release version="1.9" date="2010-04-20" description="New major release. Improve and polish Crawljax, add some new features">
+
+		<release version="2.0" date="2010-04-20"
+			description="New major release. Improve and polish Crawljax, add some new features">
 			<action dev="all" type="update">
-				Ali, Danny, Frank, Stefan: Various improvements and polishments. 
+				Various improvements and polishments.
+			</action>
+		</release>
+
+		<release version="1.9" date="2010-04-20"
+			description="New major release. Improve and polish Crawljax, add some new features">
+			<action dev="all" type="update">
+				Ali, Danny, Frank, Stefan: Various
+				improvements and polishments. 
 			</action>
 			<action dev="frank" type="fix" issue="16">
-				Fix a bug where underXPath would only work for XPaths that result in one element.
+				Fix a bug where
+				underXPath would only work for XPaths that result in one element.
 			</action>
 			<action dev="frank" type="remove">
 				Hibernate has been removed.
 			</action>
 			<action dev="frank" type="remove" issue="5">
-				Properties file is no longer supported.
+				Properties file is no
+				longer supported.
 			</action>
 			<action dev="mesbah" type="add">
-				Support for iframe crawling. Works great in Firefox if iframes have unique IDs or NAME attributes.
+				Support for iframe crawling. Works
+				great in Firefox if iframes have unique IDs or NAME attributes.
 			</action>
 			<action dev="frank" type="fix" issue="7">
-				Fix a bug where hashes, dots and spaces were not allowed in attribute values of clickables.
+				Fix a bug where hashes,
+				dots and spaces were not allowed in attribute values of clickables.
 			</action>
 			<action dev="frank" type="update" issue="9">
-				Extended Crawljax Exceptions with more information about the system used. This is helpful to debug problems.
+				Extended Crawljax
+				Exceptions with more information about the system used. This is
+				helpful to debug problems.
 			</action>
 			<action dev="stefan" type="fix">
-				Fix bug where wrong currentState was stored in in CrawlSession when OnInvariantViolation was called.
+				Fix bug where wrong currentState was
+				stored in in CrawlSession when OnInvariantViolation was called.
 			</action>
 			<action dev="stefan" type="fix">
-				Make Crawljax work with Firefox 2.0. You also need a patched webdriver. (http://code.google.com/p/selenium/issues/detail?id=387)
+				Make Crawljax work with Firefox 2.0.
+				You also need a patched webdriver.
+				(http://code.google.com/p/selenium/issues/detail?id=387)
 			</action>
 			<action dev="frank" type="update">
-				Upgrade WebDriver dependency to Selenium 2.0a2.
+				Upgrade WebDriver dependency to
+				Selenium 2.0a2.
 			</action>
 			<action dev="mesbah" type="add">
-				Added support for Google Chrome 4.0. Works with versions lower than 5 currently (due to WebDriver issues).
+				Added support for Google Chrome 4.0.
+				Works with versions lower than 5 currently (due to WebDriver
+				issues).
 			</action>
 			<action dev="mesbah" type="fix" issue="2">
-				Handle popups such as alert by always "clicking" OK. This is a workaround and doesn't always work.
+				Handle popups such as
+				alert by always "clicking" OK. This is a workaround and doesn't
+				always work.
 			</action>
 			<action dev="danny" type="update">
-				Rename oracle comparators. The names are more logical now.
+				Rename oracle comparators. The names
+				are more logical now.
 			</action>
 			<action dev="frank" type="fix">
-				Fix bug where a Crawljax would write to / if the output directory was not set.
+				Fix bug where a Crawljax would write
+				to / if the output directory was not set.
 			</action>
 			<action dev="stefan" type="fix" issue="5">
-				changed CrawljaxConfiguration to CrawljaxConfigurationReader in CrawlSession
+				changed
+				CrawljaxConfiguration to CrawljaxConfigurationReader in CrawlSession
 			</action>
 			<action dev="stefan" type="fix" issue="8">
-				runOnFireEventFailedPlugins failed in some cases, prevented from happening
+				runOnFireEventFailedPlugins failed in some cases, prevented from
+				happening
 			</action>
 			<action dev="stefan" type="add">
-				OnFireEventFailed Plugins; enable an extension point when a fireEvent failed.
+				OnFireEventFailed Plugins; enable an
+				extension point when a fireEvent failed.
 			</action>
 		</release>
 		<release version="1.8" date="2009-12-29" description="Update">
-			
+
 			<action dev="mesbah" type="fix">
-				This is a major release. See http://crawljax.com
+				This is a major release. See
+				http://crawljax.com
 			</action>
-			
+
 			<action dev="danny" type="update">
-				New configuration API which is now the preferred way of configuration.
+				New configuration API which is now
+				the preferred way of configuration.
 			</action>
-			
+
 			<action dev="danny" type="update">
-				The use of a database optional (by default turned off).
+				The use of a database optional (by
+				default turned off).
 			</action>
-			
+
 			<action dev="danny" type="update">
 				New Plugin Types.
 			</action>
-			
+
 			<action dev="danny" type="update">
-				Oracle Comparators for comparing states.
+				Oracle Comparators for comparing
+				states.
 			</action>
-			
+
 			<action dev="danny" type="update">
 				Easy to write Invariants.
 			</action>
-			
+
 			<action dev="danny" type="update">
 				Totally new form handling.
 			</action>
-			
+
 			<action dev="danny" type="update">
-				CrawlConditions and other options for better guiding the crawling.
+				CrawlConditions and other options for
+				better guiding the crawling.
 			</action>
-			
+
 			<action dev="danny" type="update">
-				WaitConditions to improve crawling slow application.
+				WaitConditions to improve crawling
+				slow application.
 			</action>
-			
+
 			<action dev="danny" type="update">
-				ElementResolver for more robust finding and clicking elements.
+				ElementResolver for more robust
+				finding and clicking elements.
 			</action>
-			
+
 			<action dev="frank" type="update">
-				Moved proxy to a seperate plugin in order to make core less complex.
+				Moved proxy to a seperate plugin in
+				order to make core less complex.
 			</action>
-			
+
 			<action dev="mesbah" type="update">
 				Dropped JPF and Watij.
 			</action>
-			
+
 			<action dev="danny" type="update">
 				Added examples.
 			</action>
-			
+
 			<action dev="danny" type="update">
-				Conditions for dynamic state checking.
-			</action>
-			
-			<action dev="mesbah" type="fix">
-				mesbah, danny, frank, stefan: Bug fixes.
-			</action>
-			
-			<action dev="mesbah" type="update">
-				mesbah, danny: Performance improvements.
-			</action>
-			
-			<action dev="mesbah" type="update">
-				mesbah, danny, frank, stefan: Lots of other improvements.
+				Conditions for dynamic state
+				checking.
 			</action>
 
 			<action dev="mesbah" type="fix">
-				mesbah, danny, frank, stefan: Improved Javadoc comments.
+				mesbah, danny, frank, stefan: Bug
+				fixes.
 			</action>
-			
+
+			<action dev="mesbah" type="update">
+				mesbah, danny: Performance
+				improvements.
+			</action>
+
+			<action dev="mesbah" type="update">
+				mesbah, danny, frank, stefan: Lots
+				of other improvements.
+			</action>
+
 			<action dev="mesbah" type="fix">
-				mesbah, danny, frank, stefan: Fixed checkstyle warnings.
+				mesbah, danny, frank, stefan:
+				Improved Javadoc comments.
 			</action>
- 
+
+			<action dev="mesbah" type="fix">
+				mesbah, danny, frank, stefan: Fixed
+				checkstyle warnings.
+			</action>
+
 		</release>
 		<release version="1.7" date="2009-03-20" description="Update">
 
 			<action dev="mesbah" type="fix">
-				XPath bug in Watij on XMLNS attribute of the HTML tag is resolved.
+				XPath bug in Watij on XMLNS
+				attribute of the HTML tag is resolved.
 			</action>
 			<action dev="mesbah" type="update">
-				Use the Levenshtein method of Apache Commons Lang lib, which is faster.
+				Use the Levenshtein method of Apache
+				Commons Lang lib, which is faster.
 			</action>
 			<action dev="mesbah" type="update">
-				Mirror generator as a postCrawling plugin.
+				Mirror generator as a postCrawling
+				plugin.
 			</action>
 			<action dev="mesbah" type="add">
-				WebDriver's browsers (IE, Firefox) can be used as embedded browser. 
+				WebDriver's browsers (IE, Firefox)
+				can be used as embedded browser. 
 			</action>
 			<action dev="mesbah" type="update">
-				Configuration file is extended with new properteis.
+				Configuration file is extended with
+				new properteis.
 			</action>
 			<action dev="mesbah" type="update">
 				Many Bug fixes.
 			</action>
 			<action dev="corpaul" type="update">
-				A proxy is integrated into Crawljax.
+				A proxy is integrated into
+				Crawljax.
 			</action>
-			
+
 			<action dev="corpaul" type="add">
-				A number of plugins (called DIVA) for spotting security violations in 
+				A number of plugins (called DIVA)
+				for spotting security violations in
 				web widget interactions.
 			</action>
-			
+
 			<action dev="corpaul" type="update">
-				Use of wildcards for tag inclusion and exclusion in the crawljax.properties.
+				Use of wildcards for tag inclusion
+				and exclusion in the crawljax.properties.
 			</action>
 		</release>
-	
+
 		<release version="1.6" date="2008-11-10" description="Update">
 			<action dev="mesbah" type="fix">
-				Missing hibernate properties files included in the jar.
+				Missing hibernate properties files
+				included in the jar.
 			</action>
 		</release>
 
@@ -183,27 +237,30 @@
 			</action>
 
 			<action dev="mesbah" type="update">
-				A plugin architectur is added which consists of three
+				A plugin architectur is added which
+				consists of three
 				hooks: preCrawling, inCrawling, and postCrawling.
 			</action>
 
 			<action dev="mesbah" type="update">
-				All classes are Jalopied and Checkstyled.
+				All classes are Jalopied and
+				Checkstyled.
 			</action>
 
 			<action dev="mesbah" type="fix" issue="42">
-				Check the existence of all the required properties.
+				Check the existence of
+				all the required properties.
 			</action>
 		</release>
 
 		<release version="1.1" date="2008-03-25" description="Update">
 			<action dev="mesbah" type="update">
-				A number of new functionalities added.
+				A number of new functionalities
+				added.
 			</action>
 		</release>
 
-		<release version="1.0" date="2008-01-13"
-			description="First release">
+		<release version="1.0" date="2008-01-13" description="First release">
 			<action dev="mesbah" type="update">
 				Updated the README.
 			</action>
