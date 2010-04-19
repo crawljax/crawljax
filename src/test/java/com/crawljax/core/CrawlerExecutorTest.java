@@ -42,7 +42,8 @@ public class CrawlerExecutorTest {
 	}
 
 	/**
-	 * Test for multi-thread setup.
+	 * Test for multi-thread setup. TODO Stefan; Enable this test when concurrent crawling is done.
+	 * Now It would not run because there is only one thread at the time active.
 	 * 
 	 * @throws InterruptedException
 	 *             the the waitForTermination fails.
