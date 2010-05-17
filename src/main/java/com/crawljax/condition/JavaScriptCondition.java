@@ -3,6 +3,8 @@
  */
 package com.crawljax.condition;
 
+import net.jcip.annotations.Immutable;
+
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
@@ -12,6 +14,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * @author Danny
  * @version $Id$
  */
+@Immutable
 public class JavaScriptCondition extends AbstractCondition {
 
 	private final String expression;

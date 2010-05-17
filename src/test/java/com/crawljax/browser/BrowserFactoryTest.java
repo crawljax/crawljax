@@ -4,12 +4,12 @@ import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.ThreadConfiguration;
 
 /**
  * This test, test the (public) operations from the BrowserFactory.
@@ -87,14 +87,12 @@ public class BrowserFactoryTest {
 	 * @throws InterruptedException
 	 *             when the request for a browser is interupped
 	 */
-	// TODO Stefan Enable when MT full released
-	@Ignore
 	@Test(timeout = TIMEOUT)
 	public void testMultipleBrowsers() throws ConfigurationException, InterruptedException {
 		CrawlSpecification spec = new CrawlSpecification("about:blank");
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
-		// cfg.setThreadConfiguration(new ThreadConfiguration(4));
+		cfg.setThreadConfiguration(new ThreadConfiguration(4));
 
 		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
 
@@ -123,17 +121,15 @@ public class BrowserFactoryTest {
 	 * @throws InterruptedException
 	 *             when the request for a browser is interupped
 	 */
-	// TODO Stefan Enable when MT full released
-	@Ignore
 	@Test(timeout = TIMEOUT)
 	public void testMultipleBrowsersFastBoot() throws ConfigurationException,
 	        InterruptedException {
 		CrawlSpecification spec = new CrawlSpecification("about:blank");
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
-		// ThreadConfiguration tc = new ThreadConfiguration(4);
-		// tc.setUseFastBooting(true);
-		// cfg.setThreadConfiguration(tc);
+		ThreadConfiguration tc = new ThreadConfiguration(4);
+		tc.setUseFastBooting(true);
+		cfg.setThreadConfiguration(tc);
 
 		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
 
@@ -162,17 +158,15 @@ public class BrowserFactoryTest {
 	 * @throws InterruptedException
 	 *             when the request for a browser is interupped
 	 */
-	// TODO Stefan Enable when MT full released
-	@Ignore
 	@Test(timeout = TIMEOUT)
 	public void testMultipleBrowsersFastBootIsIndeadFaster() throws ConfigurationException,
 	        InterruptedException {
 		CrawlSpecification spec = new CrawlSpecification("about:blank");
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
-		// ThreadConfiguration tc = new ThreadConfiguration(4);
-		// tc.setUseFastBooting(false);
-		// cfg.setThreadConfiguration(tc);
+		ThreadConfiguration tc = new ThreadConfiguration(4);
+		tc.setUseFastBooting(false);
+		cfg.setThreadConfiguration(tc);
 
 		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
 
@@ -193,7 +187,7 @@ public class BrowserFactoryTest {
 			fail(e.getMessage());
 		}
 
-		// tc.setUseFastBooting(true);
+		tc.setUseFastBooting(true);
 
 		try {
 			long start = System.currentTimeMillis();

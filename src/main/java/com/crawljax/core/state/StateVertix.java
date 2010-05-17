@@ -3,8 +3,11 @@ package com.crawljax.core.state;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
+
+import net.jcip.annotations.GuardedBy;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -15,6 +18,8 @@ import org.xml.sax.SAXException;
 import com.crawljax.core.CandidateCrawlAction;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CandidateElementExtractor;
+import com.crawljax.core.CrawlQueueManager;
+import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.TagElement;
 import com.crawljax.core.state.Eventable.EventType;
@@ -30,7 +35,7 @@ import com.crawljax.util.Helper;
  * @author mesbah
  * @version $Id$
  */
-public class StateVertix implements Iterable<CandidateCrawlAction>, Serializable {
+public class StateVertix implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 123400017983488L;
 	private static final Logger LOGGER = Logger.getLogger(StateVertix.class);
@@ -45,7 +50,17 @@ public class StateVertix implements Iterable<CandidateCrawlAction>, Serializable
 	 * This list is used to store the possible candidates. If it is null its not initialised if it's
 	 * a empty list its empty.
 	 */
-	private List<CandidateCrawlAction> candidateActions;
+	private LinkedBlockingDeque<CandidateCrawlAction> candidateActions;
+
+	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> registerdCandidateActions =
+	        new ConcurrentHashMap<Crawler, CandidateCrawlAction>();
+	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> workInProgressCandidateActions =
+	        new ConcurrentHashMap<Crawler, CandidateCrawlAction>();
+
+	private final Object candidateActionsSearchLock = new Object();
+
+	private final LinkedBlockingDeque<Crawler> registeredCrawlers =
+	        new LinkedBlockingDeque<Crawler>();
 
 	/**
 	 * Default constructor to support saving instances of this class as an XML.
@@ -240,53 +255,49 @@ public class StateVertix implements Iterable<CandidateCrawlAction>, Serializable
 	 *            the elements to exclude.
 	 * @param clickOnce
 	 *            if true examine each element once.
+	 * @return true if the searchForCandidateElemens has run false otherwise
 	 */
-	public void searchForCandidateElements(CandidateElementExtractor candidateExtractor,
+	@GuardedBy("candidateActionsSearchLock")
+	public boolean searchForCandidateElements(CandidateElementExtractor candidateExtractor,
 	        List<TagElement> crawlTagElements, List<TagElement> crawlExcludeTagElements,
 	        boolean clickOnce) {
-
+		synchronized (candidateActionsSearchLock) {
+			if (candidateActions == null) {
+				candidateActions = new LinkedBlockingDeque<CandidateCrawlAction>();
+			} else {
+				return false;
+			}
+		}
 		// TODO read the eventtypes from the crawl elements instead
 		List<String> eventTypes = new ArrayList<String>();
 		eventTypes.add(EventType.click.toString());
 
-		if (candidateActions == null) {
-			candidateActions = new ArrayList<CandidateCrawlAction>();
-			try {
-				List<CandidateElement> candidateList =
-				        candidateExtractor.extract(crawlTagElements, crawlExcludeTagElements,
-				                clickOnce, this);
+		try {
+			List<CandidateElement> candidateList =
+			        candidateExtractor.extract(crawlTagElements, crawlExcludeTagElements,
+			                clickOnce, this);
 
-				for (CandidateElement candidateElement : candidateList) {
-					for (String eventType : eventTypes) {
-						if (eventType.equals(EventType.click.toString())) {
+			for (CandidateElement candidateElement : candidateList) {
+				for (String eventType : eventTypes) {
+					if (eventType.equals(EventType.click.toString())) {
+						candidateActions.add(new CandidateCrawlAction(candidateElement,
+						        EventType.click));
+					} else {
+						if (eventType.equals(EventType.hover.toString())) {
 							candidateActions.add(new CandidateCrawlAction(candidateElement,
-							        EventType.click));
+							        EventType.hover));
 						} else {
-							if (eventType.equals(EventType.hover.toString())) {
-								candidateActions.add(new CandidateCrawlAction(candidateElement,
-								        EventType.hover));
-							} else {
-								LOGGER
-								        .warn("The Event Type: " + eventType
-								                + " is not supported.");
-							}
+							LOGGER.warn("The Event Type: " + eventType + " is not supported.");
 						}
 					}
 				}
-			} catch (CrawljaxException e) {
-				LOGGER.error("Catched exception while searching for candidates in state "
-				        + getName(), e);
 			}
+		} catch (CrawljaxException e) {
+			LOGGER.error(
+			        "Catched exception while searching for candidates in state " + getName(), e);
 		}
-	}
+		return true;
 
-	/**
-	 * Are there any more candidates to explore?
-	 * 
-	 * @return true if there are candidates left in this state. false otherwise.
-	 */
-	public boolean hasMoreToExplore() {
-		return candidateActions != null && !candidateActions.isEmpty();
 	}
 
 	/**
@@ -310,31 +321,6 @@ public class StateVertix implements Iterable<CandidateCrawlAction>, Serializable
 	}
 
 	/**
-	 * Retrieve a Iterator to iterate with. Made in a anonymous-innerclass.
-	 * 
-	 * @return the iterator which deletes every element returned.
-	 */
-	@Override
-	public Iterator<CandidateCrawlAction> iterator() {
-		return new Iterator<CandidateCrawlAction>() {
-
-			@Override
-			public boolean hasNext() {
-				return hasMoreToExplore();
-			}
-
-			@Override
-			public CandidateCrawlAction next() {
-				return candidateActions.remove(0);
-			}
-
-			@Override
-			public void remove() {
-			}
-		};
-	}
-
-	/**
 	 * @return a Document instance of the dom string.
 	 * @throws SAXException
 	 *             if an exception is thrown.
@@ -345,4 +331,114 @@ public class StateVertix implements Iterable<CandidateCrawlAction>, Serializable
 		return Helper.getDocument(this.dom);
 	}
 
+	/**
+	 * This is the main work divider function, calling this function will first look at the
+	 * registeedCandidateActions to see if the current Crawler has already registered itself at one
+	 * of the jobs. Second it tries to see if the current crawler is not already processing one of
+	 * the actions and return that action and last it tries to find an unregistered candidate. If
+	 * all else fails it tries to return a action that is registered by an other crawler and
+	 * disables that crawler.
+	 * 
+	 * @param requestingCrawler
+	 *            the Crawler placing the request for the Action
+	 * @param manager
+	 *            the manager that can be used to remove a crawler from the queue.
+	 * @return the action that needs to be performed by the Crawler.
+	 */
+	public CandidateCrawlAction pollCandidateCrawlAction(Crawler requestingCrawler,
+	        CrawlQueueManager manager) {
+		CandidateCrawlAction action = registerdCandidateActions.remove(requestingCrawler);
+		if (action != null) {
+			workInProgressCandidateActions.put(requestingCrawler, action);
+			return action;
+		}
+		action = workInProgressCandidateActions.get(requestingCrawler);
+		if (action != null) {
+			return action;
+		}
+		action = candidateActions.pollFirst();
+		if (action != null) {
+			workInProgressCandidateActions.put(requestingCrawler, action);
+			return action;
+		} else {
+			Crawler c = registeredCrawlers.pollFirst();
+			if (c == null) {
+				return null;
+			}
+			do {
+				if (manager.removeWorkFromQueue(c)) {
+					LOGGER.info("Crawler " + c + " REMOVED from Queue!");
+					action = registerdCandidateActions.remove(c);
+					if (action != null) {
+						/*
+						 * We got a action and removed the registeredCandidateActions for the
+						 * crawler, remove the crawler from queue as the first thinng. As the
+						 * crawler might just have started the run method of the crawler must also
+						 * be added with a check hook.
+						 */
+						LOGGER.info("Stolen work from other Crawler");
+						return action;
+					} else {
+						LOGGER.warn("Oh my! I just removed " + c
+						        + " from the queue with no action!");
+					}
+				} else {
+					LOGGER.warn("FAILED TO REMOVE " + c + " from Queue!");
+				}
+				c = registeredCrawlers.pollFirst();
+			} while (c != null);
+		}
+		return null;
+	}
+
+	/**
+	 * Register an assignment to the crawler.
+	 * 
+	 * @param newCrawler
+	 *            the crawler that wants an assignment
+	 * @return true if the crawler has an assignment false otherwise.
+	 */
+	public boolean registerCrawler(Crawler newCrawler) {
+		CandidateCrawlAction action = candidateActions.pollLast();
+		if (action == null) {
+			return false;
+		}
+		registeredCrawlers.offerFirst(newCrawler);
+		registerdCandidateActions.put(newCrawler, action);
+		return true;
+	}
+
+	/**
+	 * Register a Crawler that is going to work, tell if his must go on or abort.
+	 * 
+	 * @param crawler
+	 *            the crawler to register
+	 * @return true if the crawler is successfully registered
+	 */
+	public boolean startWorking(Crawler crawler) {
+		CandidateCrawlAction action = registerdCandidateActions.remove(crawler);
+		registeredCrawlers.remove(crawler);
+		if (action == null) {
+			return false;
+		} else {
+			workInProgressCandidateActions.put(crawler, action);
+			return true;
+		}
+	}
+
+	/**
+	 * Notify the current StateVertix that the given crawler has finished working on the given
+	 * action.
+	 * 
+	 * @param crawler
+	 *            the crawler that is finished
+	 * @param action
+	 *            the action that have been examined
+	 */
+	public void finishedWorking(Crawler crawler, CandidateCrawlAction action) {
+		candidateActions.remove(action);
+		registerdCandidateActions.remove(crawler);
+		workInProgressCandidateActions.remove(crawler);
+		registeredCrawlers.remove(crawler);
+	}
 }

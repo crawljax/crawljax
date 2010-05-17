@@ -1,5 +1,7 @@
 package com.crawljax.condition;
 
+import net.jcip.annotations.Immutable;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.state.Identification;
 
@@ -9,6 +11,7 @@ import com.crawljax.core.state.Identification;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@Immutable
 public class NotVisibleCondition extends AbstractCondition {
 
 	private final VisibleCondition visibleCondition;

@@ -2,14 +2,20 @@ package com.crawljax.oraclecomparator;
 
 import java.util.List;
 
+import net.jcip.annotations.NotThreadSafe;
+
 import org.custommonkey.xmlunit.Difference;
 
 import com.crawljax.util.Helper;
 
 /**
+ * The Abstract base class of all the Comparators. All comparators are not Thread safe as
+ * comparators are shared between Threads and the origionalDom and newDom can not be final.
+ * 
  * @author Danny
  * @version $Id$
  */
+@NotThreadSafe
 public abstract class AbstractComparator implements Comparator {
 
 	private String originalDom;

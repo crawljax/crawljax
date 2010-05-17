@@ -3,7 +3,7 @@
  */
 package com.crawljax.condition;
 
-import net.jcip.annotations.NotThreadSafe;
+import net.jcip.annotations.ThreadSafe;
 
 import org.w3c.dom.NodeList;
 
@@ -15,7 +15,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
-@NotThreadSafe
+@ThreadSafe
 public interface Condition {
 
 	/**

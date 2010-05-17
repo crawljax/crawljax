@@ -3,6 +3,8 @@ package com.crawljax.condition;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.jcip.annotations.Immutable;
+
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
@@ -11,6 +13,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@Immutable
 public class RegexCondition extends AbstractCondition {
 
 	private final String expression;

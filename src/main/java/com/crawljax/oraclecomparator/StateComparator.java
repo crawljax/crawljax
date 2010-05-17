@@ -3,6 +3,8 @@ package com.crawljax.oraclecomparator;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.jcip.annotations.ThreadSafe;
+
 import org.apache.log4j.Logger;
 
 import com.crawljax.browser.EmbeddedBrowser;
@@ -16,41 +18,31 @@ import com.crawljax.oraclecomparator.comparators.SimpleComparator;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@ThreadSafe
 public class StateComparator {
 
 	private static final Logger LOGGER = Logger.getLogger(StateComparator.class.getName());
 
+	/**
+	 * This is an shared public static, as it is final and a primary type no harm can be done. Only
+	 * accessed in {@link AbstractComparator#compare()}.
+	 */
 	public static final boolean COMPARE_IGNORE_CASE = true;
-	private List<OracleComparator> oracleComparator = new ArrayList<OracleComparator>();
 
-	private String originalDom;
-	private String newDom;
+	private final List<OracleComparator> oracleComparator = new ArrayList<OracleComparator>();
 
-	private String strippedOriginalDom;
-	private String strippedNewDom;
-
-	private static List<OracleComparator> lastUsedOraclePreConditions =
-	        new ArrayList<OracleComparator>();
+	private final ThreadLocal<String> strippedOriginalDom = new ThreadLocal<String>();
+	private final ThreadLocal<String> strippedNewDom = new ThreadLocal<String>();
 
 	/**
 	 * @param comparatorsWithPreconditions
 	 *            comparators with one or more preconditions
 	 */
 	public StateComparator(List<OracleComparator> comparatorsWithPreconditions) {
-		this.oracleComparator = comparatorsWithPreconditions;
+		this.oracleComparator.addAll(comparatorsWithPreconditions);
 	}
 
-	/**
-	 * @param comparatorsWithPreconditions
-	 *            the comparatorsWithPreconditions to set
-	 */
-	public void setOraclePreConditions(List<OracleComparator> comparatorsWithPreconditions) {
-		if (comparatorsWithPreconditions != null) {
-			this.oracleComparator = comparatorsWithPreconditions;
-		}
-
-		// always end with SimpleOracle to remove newline differences which
-		// could be caused by other oracles
+	private void addDefaultOracleComparator() {
 		this.oracleComparator
 		        .add(new OracleComparator("SimpleComparator", new SimpleComparator()));
 	}
@@ -66,51 +58,55 @@ public class StateComparator {
 	 *         oracles and pre-conditions.
 	 */
 	public boolean compare(String originalDom, String newDom, EmbeddedBrowser browser) {
-
-		this.originalDom = originalDom;
-		this.newDom = newDom;
-		this.strippedOriginalDom = originalDom;
-		this.strippedNewDom = newDom;
 		if (oracleComparator.size() == 0) {
 			// add default simpleOracle
-			setOraclePreConditions(null);
+			this.addDefaultOracleComparator();
 		}
-		// System.out.println("Comparing: " + comparatorsWithPreconditions);
+
 		for (OracleComparator oraclePreCondition : oracleComparator) {
 
-			// checking the preconditions
-			boolean preConditionsSucceed = true;
-
+			boolean allPreConditionsSucceed = true;
+			// Loop over All the Preconditions of this oracle
 			for (Condition preCondition : oraclePreCondition.getPreConditions()) {
-				boolean check = preCondition.check(browser);
-				LOGGER.debug("Check precondition: " + preCondition.toString() + ": " + check);
-				if (!check) {
-					preConditionsSucceed = false;
+				LOGGER.debug("Check precondition: " + preCondition.toString());
+				if (!preCondition.check(browser)) {
+					allPreConditionsSucceed = false;
 					break;
 				}
 			}
 
-			// use oracle if precondition succeeds
-			if (preConditionsSucceed) {
+			// use oracle if preconditions succeeds
+			if (allPreConditionsSucceed) {
 
 				Comparator oracle = oraclePreCondition.getOracle();
 				LOGGER.debug("Using " + oracle.getClass().getSimpleName() + ": "
 				        + oraclePreCondition.getId());
-				lastUsedOraclePreConditions.add(oraclePreCondition);
-				oracle.setOriginalDom(getStrippedOriginalDom());
-				oracle.setNewDom(getStrippedNewDom());
 
-				boolean equivalent = oracle.isEquivalent();
-				strippedOriginalDom = oracle.getOriginalDom();
-				strippedNewDom = oracle.getNewDom();
+				boolean equivalent = false;
+				// Synchronise on a single oracle setting the doms at first and later retrieve them
+				// after synchronised processing.
+				// TODO Stefan the ultimate Goal is to remove this synchronisation
+				synchronized (oracle) {
+					oracle.setOriginalDom(originalDom);
+					oracle.setNewDom(newDom);
 
-				if (equivalent) {
-					return true;
+					equivalent = oracle.isEquivalent();
+
+					originalDom = oracle.getOriginalDom();
+					newDom = oracle.getNewDom();
 				}
 
+				if (equivalent) {
+					// All preconditions succeeded & the oracle is Equivalent
+					this.strippedOriginalDom.set(originalDom);
+					this.strippedNewDom.set(newDom);
+					return true;
+				}
 			}
 		}
-
+		/* Update the dom values to the last version */
+		this.strippedOriginalDom.set(originalDom);
+		this.strippedNewDom.set(newDom);
 		return false;
 	}
 
@@ -131,45 +127,17 @@ public class StateComparator {
 	}
 
 	/**
-	 * @return the originalDom
-	 */
-	public String getOriginalDom() {
-		return originalDom;
-	}
-
-	/**
-	 * @return the newDom
-	 */
-	public String getNewDom() {
-		return newDom;
-	}
-
-	/**
 	 * @return the strippedOriginalDom
 	 */
 	public String getStrippedOriginalDom() {
-		return strippedOriginalDom;
+		return strippedOriginalDom.get();
 	}
 
 	/**
 	 * @return the strippedNewDom
 	 */
 	public String getStrippedNewDom() {
-		return strippedNewDom;
-	}
-
-	/**
-	 * @return the lastUsedOracles
-	 */
-	public List<OracleComparator> getLastUsedOraclePreConditions() {
-		return lastUsedOraclePreConditions;
-	}
-
-	/**
-	 * @return the oraclePreConditions
-	 */
-	public List<OracleComparator> getOraclePreConditions() {
-		return oracleComparator;
+		return strippedNewDom.get();
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.crawljax.condition;
 
+import net.jcip.annotations.Immutable;
+
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
@@ -9,6 +11,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@Immutable
 public class NotUrlCondition extends AbstractCondition {
 
 	private final UrlCondition urlCondition;

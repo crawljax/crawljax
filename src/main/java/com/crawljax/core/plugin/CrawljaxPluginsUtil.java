@@ -284,4 +284,24 @@ public final class CrawljaxPluginsUtil {
 
 	}
 
+	/**
+	 * Load and run the OnBrowserCreatedPlugins, this call has been made from the browserfactory
+	 * when a new browser has been created and ready to be used by the Crawler. The PreCrawling
+	 * plugins are executed before these plugins are executed except that the precrawling plugins
+	 * are only executed on the first created browser.
+	 * 
+	 * @param newBrowser
+	 *            the new created browser object
+	 */
+	public static void runOnBrowserCreatedPlugins(EmbeddedBrowser newBrowser) {
+		LOGGER.info("Running OnBrowserCreatedPlugins...");
+		if (CrawljaxPluginsUtil.plugins != null) {
+			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
+				if (plugin instanceof OnBrowserCreatedPlugin) {
+					((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
+				}
+			}
+		}
+	}
+
 }

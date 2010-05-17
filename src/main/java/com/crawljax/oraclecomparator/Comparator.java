@@ -2,6 +2,8 @@ package com.crawljax.oraclecomparator;
 
 import java.util.List;
 
+import net.jcip.annotations.NotThreadSafe;
+
 import org.custommonkey.xmlunit.Difference;
 
 /**
@@ -10,6 +12,7 @@ import org.custommonkey.xmlunit.Difference;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@NotThreadSafe
 public interface Comparator {
 
 	/**

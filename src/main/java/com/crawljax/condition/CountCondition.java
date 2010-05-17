@@ -1,5 +1,9 @@
 package com.crawljax.condition;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import net.jcip.annotations.ThreadSafe;
+
 import org.w3c.dom.NodeList;
 
 import com.crawljax.browser.EmbeddedBrowser;
@@ -11,11 +15,12 @@ import com.crawljax.browser.EmbeddedBrowser;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
+@ThreadSafe
 public class CountCondition implements Condition {
 
-	private Condition condition;
-	private int count = 0;
-	private int maxCount = 0;
+	private final Condition condition;
+	private final AtomicInteger count = new AtomicInteger(0);
+	private final AtomicInteger maxCount = new AtomicInteger(0);
 
 	/**
 	 * @param maxCount
@@ -24,16 +29,16 @@ public class CountCondition implements Condition {
 	 *            the condition.
 	 */
 	public CountCondition(int maxCount, Condition condition) {
-		this.maxCount = maxCount;
+		this.maxCount.set(maxCount);
 		this.condition = condition;
 	}
 
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
 		if (condition.check(browser)) {
-			count++;
+			count.getAndIncrement();
 		}
-		return count <= maxCount;
+		return count.get() <= maxCount.get();
 	}
 
 	@Override

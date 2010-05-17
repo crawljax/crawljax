@@ -80,7 +80,7 @@ public class StateMachine {
 	 */
 	public boolean changeState(StateVertix nextState) {
 		if (nextState == null) {
-			// TODO Stefan; Throw nullpointer exception??
+			LOGGER.info("nextState given is null");
 			return false;
 		}
 		LOGGER.debug("AFTER: sm.current: " + currentState.getName() + " hold.current: "
@@ -105,8 +105,7 @@ public class StateMachine {
 	}
 
 	/**
-	 * Adds the newState and the edge between the currentState and the newState on the SFG. TODO
-	 * Stefan insert synchronisation
+	 * Adds the newState and the edge between the currentState and the newState on the SFG.
 	 * 
 	 * @param newState
 	 *            the new state.
@@ -140,7 +139,7 @@ public class StateMachine {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Return the current State in this state machine.
 	 * 
 	 * @return the current State.
 	 */
@@ -180,26 +179,17 @@ public class StateMachine {
 		LOGGER.info("StateMachine's Pointer changed to: " + this.currentState.getName()
 		        + " FROM " + previousState.getName());
 
-		/**
-		 * TODO Stefan FIX this getSession stuff...
-		 */
-		synchronized (session) {
-			/**
-			 * Only one thread at the time may set the currentState in the session and expose it to
-			 * the OnNewStatePlugins. Guaranty it will not be interleaved
-			 */
-			session.setCurrentState(newState);
+		session.setCurrentState(newState);
 
-			checkInvariants(browser, session);
+		checkInvariants(browser, session);
 
-			if (cloneState == null) {
-				CrawljaxPluginsUtil.runOnNewStatePlugins(session);
-				// recurse
-				return true;
-			} else {
-				// non recurse
-				return false;
-			}
+		if (cloneState == null) {
+			CrawljaxPluginsUtil.runOnNewStatePlugins(session);
+			// recurse
+			return true;
+		} else {
+			// non recurse
+			return false;
 		}
 	}
 
@@ -209,6 +199,8 @@ public class StateMachine {
 	 * 
 	 * @param browser
 	 *            the browser to feed to the invariants
+	 * @param session
+	 *            the current CrawlSession
 	 */
 	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
 		if (invariantChecker.getInvariants() != null

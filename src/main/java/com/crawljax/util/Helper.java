@@ -636,12 +636,12 @@ public final class Helper {
 	 */
 	public static String getFrameIdentification(Element frame) {
 
-		Attr attr = frame.getAttributeNode("name");
+		Attr attr = frame.getAttributeNode("id");
 		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
 			return attr.getNodeValue();
 		}
 
-		attr = frame.getAttributeNode("id");
+		attr = frame.getAttributeNode("name");
 		if (attr != null && attr.getNodeValue() != null && !attr.getNodeValue().equals("")) {
 			return attr.getNodeValue();
 		}

@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -245,7 +246,14 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 			if (eventable.getRelatedFrame() != null && !eventable.getRelatedFrame().equals("")) {
 				logger.debug("switching to frame: " + eventable.getRelatedFrame());
-				browser.switchTo().frame(eventable.getRelatedFrame());
+				try {
+					browser.switchTo().frame(eventable.getRelatedFrame());
+				} catch (NoSuchFrameException e) {
+					logger.debug("Frame not found, possibily while back-tracking..", e);
+					// TODO Stefan, This exception is catched to prevent stopping from working
+					// This was the case on the Gmail case; findout if not switching (catching)
+					// Results in good performance...
+				}
 				handleChanged = true;
 			}
 
@@ -347,6 +355,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 				        "Utils.getDocument(respond.context)."
 				                + "getElementsByTagName(\\\"html\\\")[0] is undefined")) {
 					// There is no html tag... ignore!
+					// TODO Stefan find out if this error is a Webdriver bug??
 					logger.info("Skiped parsing dom tree because no html content is defined");
 				} else {
 					throw new CrawljaxException(e.getMessage(), e);

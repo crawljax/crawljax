@@ -20,8 +20,6 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateMachine;
-import com.crawljax.core.state.StateVertix;
 import com.crawljax.oraclecomparator.StateComparator;
 
 /**
@@ -30,14 +28,10 @@ import com.crawljax.oraclecomparator.StateComparator;
  * @author mesbah
  * @version $Id$
  */
-public class CrawljaxController {
+public class CrawljaxController implements CrawlQueueManager {
 
 	private static final Logger LOGGER = Logger.getLogger(CrawljaxController.class.getName());
 
-	private StateVertix indexState;
-	private EmbeddedBrowser browser;
-
-	private StateFlowGraph stateFlowGraph;
 	private CrawlSession session;
 
 	private long startCrawl;
@@ -47,9 +41,10 @@ public class CrawljaxController {
 	private final EventableConditionChecker eventableConditionChecker;
 
 	private final WaitConditionChecker waitConditionChecker = new WaitConditionChecker();
-	private Crawler crawler;
 
-	private final CrawljaxConfiguration crawljaxConfiguration;
+	//TODO Stefan, Can not be final because, must be created aftet the loading of the plugins
+	private Crawler initialCrawler;
+
 	private final CrawljaxConfigurationReader configurationReader;
 
 	private final List<Invariant> invariantList;
@@ -70,7 +65,6 @@ public class CrawljaxController {
 	 *             if the configuration fails.
 	 */
 	public CrawljaxController(final CrawljaxConfiguration config) throws ConfigurationException {
-		this.crawljaxConfiguration = config;
 		configurationReader = new CrawljaxConfigurationReader(config);
 		CrawlSpecificationReader crawlerReader =
 		        configurationReader.getCrawlSpecificationReader();
@@ -108,12 +102,9 @@ public class CrawljaxController {
 
 		LOGGER.info("Embedded browser implementation: " + configurationReader.getBrowser());
 
-		crawler = new Crawler(this);
+		LOGGER.info("Number of threads: "
+		        + configurationReader.getThreadConfigurationReader().getNumberThreads());
 
-		/*
-		 * TODO: Stefan, uncomment for 2.0 LOGGER.info("Number of threads: " +
-		 * configurationReader.getThreadConfigurationReader().getNumberThreads());
-		 */
 		LOGGER.info("Crawl depth: "
 		        + configurationReader.getCrawlSpecificationReader().getDepth());
 		LOGGER.info("Crawljax initialized!");
@@ -133,42 +124,16 @@ public class CrawljaxController {
 	 */
 	public final void run() throws CrawljaxException, ConfigurationException {
 
-		browser = crawler.getBrowser();
-
 		startCrawl = System.currentTimeMillis();
-
-		CrawljaxPluginsUtil.runPreCrawlingPlugins(browser);
-
-		try {
-			crawler.goToInitialURL();
-		} catch (CrawljaxException e) {
-			LOGGER.fatal("Failed to load the site: " + e.getMessage(), e);
-			throw e;
-		}
-
-		indexState =
-		        new StateVertix(browser.getCurrentUrl(), "index", browser.getDom(),
-		                stateComparator.getStrippedDom(browser));
-
-		stateFlowGraph = new StateFlowGraph(indexState);
-
-		StateMachine stateMachine = new StateMachine(stateFlowGraph, indexState, invariantList);
-		crawler.setStateMachine(stateMachine);
-
-		if (crawljaxConfiguration != null) {
-			session =
-			        new CrawlSession(browser, stateFlowGraph, indexState, startCrawl,
-			                new CrawljaxConfigurationReader(crawljaxConfiguration));
-		} else {
-			session = new CrawlSession(browser, stateFlowGraph, indexState, startCrawl);
-		}
-
-		CrawljaxPluginsUtil.runOnNewStatePlugins(session);
 
 		LOGGER.info("Start crawling with "
 		        + configurationReader.getAllIncludedCrawlElements().size() + " crawl elements");
 
-		addWorkToQueue(crawler);
+		// Create the initailCrawler
+		initialCrawler = new InitialCrawler(this);
+
+		// Start the Crawling by adding the initialCrawler to the the workQueue.
+		addWorkToQueue(initialCrawler);
 
 		try {
 			// Block until the all the jobs are done
@@ -180,15 +145,18 @@ public class CrawljaxController {
 		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
 
 		/**
-		 * Close all the opened browsers
+		 * Close all the opened browsers, this is run in separate thread to have the post crawl
+		 * plugins to execute in the meanwhile.
 		 */
-		browserFactory.close();
+		Thread shutdownThread = browserFactory.close();
 
+		StateFlowGraph stateFlowGraph = this.getSession().getStateFlowGraph();
 		for (Eventable c : stateFlowGraph.getAllEdges()) {
 			LOGGER.info("Interaction Element= " + c.toString());
 		}
 
-		LOGGER.info("Total Crawling time(" + timeCrawlCalc + "ms) ~= " + formatRunningTime());
+		LOGGER.info("Total Crawling time(" + timeCrawlCalc + "ms) ~= "
+		        + formatRunningTime(timeCrawlCalc));
 		LOGGER.info("EXAMINED ELEMENTS: " + elementChecker.numberOfExaminedElements());
 		LOGGER.info("CLICKABLES: " + stateFlowGraph.getAllEdges().size());
 		LOGGER.info("STATES: " + stateFlowGraph.getAllStates().size());
@@ -196,6 +164,11 @@ public class CrawljaxController {
 
 		CrawljaxPluginsUtil.runPostCrawlingPlugins(session);
 
+		try {
+			shutdownThread.join();
+		} catch (InterruptedException e) {
+			LOGGER.error("could not wait for browsers to close.", e);
+		}
 		LOGGER.info("DONE!!!");
 	}
 
@@ -215,11 +188,20 @@ public class CrawljaxController {
 	 * @param work
 	 *            the work (Crawler) to add to the Queue
 	 */
-	@GuardedBy("workQueue")
 	public final void addWorkToQueue(Crawler work) {
-		synchronized (workQueue) {
-			workQueue.execute(work);
-		}
+		workQueue.execute(work);
+	}
+
+	/**
+	 * Removes this Crawler from the workQueue if it is present, thus causing it not to be run if it
+	 * has not already started.
+	 * 
+	 * @param crawler
+	 *            the Crawler to remove
+	 * @return true if the crawler was removed
+	 */
+	public boolean removeWorkFromQueue(Crawler crawler) {
+		return workQueue.remove(crawler);
 	}
 
 	/**
@@ -233,14 +215,15 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * get the stripped version of the dom currently in the browser. This call is thread safe, must
-	 * be synchronised because there is thread-intefearing bug in the stateComparator.
+	 * TODO Stefan: Remove this synchronization; performance loss is huge! no synchrnization fails
+	 * because ThreadLocal is not ThreadSafe??? get the stripped version of the dom currently in the
+	 * browser. This call is thread safe, must be synchronised because there is thread-intefearing
+	 * bug in the stateComparator.
 	 * 
 	 * @param browser
 	 *            the browser instance.
 	 * @return a stripped string of the DOM tree taken from the browser.
 	 */
-	@GuardedBy("this")
 	public synchronized String getStrippedDom(EmbeddedBrowser browser) {
 		return this.stateComparator.getStrippedDom(browser);
 	}
@@ -249,16 +232,27 @@ public class CrawljaxController {
 	 * @return the crawler
 	 */
 	public final Crawler getCrawler() {
-		return crawler;
+		return initialCrawler;
+	}
+
+	/**
+	 * Format the time the current crawl run has taken into a more readable format. Taking now as
+	 * the end time of the crawling.
+	 * 
+	 * @return the formatted time in X min, X sec layout.
+	 */
+	private String formatRunningTime() {
+		return formatRunningTime(System.currentTimeMillis() - startCrawl);
 	}
 
 	/**
 	 * Format the time the current crawl run has taken into a more readable format.
 	 * 
+	 * @param timeCrawlCalc
+	 *            the time to display
 	 * @return the formatted time in X min, X sec layout.
 	 */
-	private String formatRunningTime() {
-		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
+	private String formatRunningTime(long timeCrawlCalc) {
 		return String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(timeCrawlCalc),
 		        TimeUnit.MILLISECONDS.toSeconds(timeCrawlCalc)
 		                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
@@ -307,15 +301,6 @@ public class CrawljaxController {
 	}
 
 	/**
-	 * Make a new StateMachine supplied with the data in this controller.
-	 * 
-	 * @return a new StateMachine.
-	 */
-	public StateMachine buildNewStateMachine() {
-		return new StateMachine(this.stateFlowGraph, this.indexState, this.invariantList);
-	}
-
-	/**
 	 * @return the configurationReader
 	 */
 	public CrawljaxConfigurationReader getConfigurationReader() {
@@ -327,6 +312,41 @@ public class CrawljaxController {
 	 */
 	public BrowserFactory getBrowserFactory() {
 		return browserFactory;
+	}
+
+	/**
+	 * Return the used CrawlQueueManager, this method is designed for extension purposes. Being able
+	 * to move the {@link #addWorkToQueue(Crawler)} and {@link #removeWorkFromQueue(Crawler)} out of
+	 * this class using the interface.
+	 * 
+	 * @return the crawlQueueManager that is used.
+	 */
+	public CrawlQueueManager getCrawlQueueManager() {
+		return this;
+	}
+
+	/**
+	 * @return the invariantList
+	 */
+	public final List<Invariant> getInvariantList() {
+		return invariantList;
+	}
+
+	/**
+	 * Install a new CrawlSession.
+	 * 
+	 * @param session
+	 *            set the new value for the session
+	 */
+	public void setSession(CrawlSession session) {
+		this.session = session;
+	}
+
+	/**
+	 * @return the startCrawl
+	 */
+	public final long getStartCrawl() {
+		return startCrawl;
 	}
 
 }

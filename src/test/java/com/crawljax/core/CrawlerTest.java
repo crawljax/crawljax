@@ -1,6 +1,7 @@
 package com.crawljax.core;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -12,7 +13,6 @@ import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
 
 /**
@@ -23,7 +23,7 @@ import com.crawljax.core.state.StateVertix;
  */
 public class CrawlerTest {
 
-	private List<List<Eventable>> paths;
+	private Collection<List<Eventable>> paths;
 	private StateVertix index;
 
 	private CrawljaxConfiguration buildController() throws ConfigurationException {
@@ -58,7 +58,7 @@ public class CrawlerTest {
 		TestController controller = new TestController(buildController(), index);
 
 		// Prevent dead-lock
-		controller.getBrowserFactory().freeBrowser(controller.getCrawler().getBrowser());
+		// controller.getBrowserFactory().freeBrowser(controller.getCrawler().getBrowser());
 
 		for (List<Eventable> path : paths) {
 			Crawler c = new Crawler(controller, path, "Follow Path");
@@ -83,17 +83,12 @@ public class CrawlerTest {
 			i = index;
 			g = new StateFlowGraph(i);
 			localSession =
-			        new CrawlSession(getCrawler().getBrowser(), g, i, System.currentTimeMillis());
+			        new CrawlSession(this.getBrowserFactory(), g, i, System.currentTimeMillis());
 		}
 
 		@Override
 		public CrawlSession getSession() {
 			return localSession;
-		}
-
-		@Override
-		public StateMachine buildNewStateMachine() {
-			return new StateMachine(g, i);
 		}
 	}
 }

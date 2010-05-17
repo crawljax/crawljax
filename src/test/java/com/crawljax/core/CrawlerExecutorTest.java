@@ -3,7 +3,6 @@ package com.crawljax.core;
 import junit.framework.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.crawljax.core.configuration.CrawlSpecification;
@@ -42,24 +41,19 @@ public class CrawlerExecutorTest {
 	}
 
 	/**
-	 * Test for multi-thread setup. TODO Stefan; Enable this test when concurrent crawling is done.
-	 * Now It would not run because there is only one thread at the time active.
+	 * Test for multi-thread setup.
 	 * 
 	 * @throws InterruptedException
 	 *             the the waitForTermination fails.
 	 * @throws ConfigurationException
-	 *             when config fails TODO Stefan check why this method failes in combination with
-	 *             mvn install
+	 *             when config fails
 	 */
-	@Ignore
 	@Test
 	public void testCorrectNamesMultiThread() throws InterruptedException, ConfigurationException {
 		CrawlSpecification spec = new CrawlSpecification("about:plugins");
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
-		cfg.setThreadConfiguration(new ThreadConfiguration()); // TODO Stefan after 1.9 release set
-		// to 2
-
+		cfg.setThreadConfiguration(new ThreadConfiguration(2));
 		excutor = new CrawlerExecutor(2);
 		TestThread t1 = new TestThread("Thread 1 Crawler 1");
 		TestThread t2 = new TestThread("Thread 2 Crawler 2 (Automatic)", "Automatic");

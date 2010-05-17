@@ -3,39 +3,35 @@
  */
 package com.crawljax.condition;
 
-import net.jcip.annotations.GuardedBy;
-import net.jcip.annotations.NotThreadSafe;
+import net.jcip.annotations.ThreadSafe;
 
 import org.w3c.dom.NodeList;
 
 /**
- * Abstract class for Condition. This class and derivatives are NOT Thread safe! The
- * setAfftectedNodes and getAffectedNodes are synchronised BUT with a interleaving from two browsers
- * the getAffected nodes can contain data from a other run.
+ * Abstract class for Condition. This class and derivatives are Thread safe. The setAfftectedNodes
+ * and getAffectedNodes are garded by using the ThreadLocal system.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
-@NotThreadSafe
+@ThreadSafe
 public abstract class AbstractCondition implements Condition {
 
-	private NodeList affectedNodes;
+	private final ThreadLocal<NodeList> affectedNodes = new ThreadLocal<NodeList>();
 
 	/**
 	 * @return the affectedNodes. can be null
 	 */
-	@GuardedBy("this")
-	public synchronized NodeList getAffectedNodes() {
-		return affectedNodes;
+	public NodeList getAffectedNodes() {
+		return affectedNodes.get();
 	}
 
 	/**
 	 * @param affectedNodes
 	 *            the affectedNodes to set
 	 */
-	@GuardedBy("this")
-	protected synchronized void setAffectedNodes(NodeList affectedNodes) {
-		this.affectedNodes = affectedNodes;
+	protected void setAffectedNodes(NodeList affectedNodes) {
+		this.affectedNodes.set(affectedNodes);
 	}
 
 }

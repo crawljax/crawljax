@@ -18,52 +18,13 @@ public class EventableConditionChecker {
 	private List<EventableCondition> eventableConditions = new ArrayList<EventableCondition>();
 
 	/**
-	 * TODO: remove? not used?
-	 * 
-	 * @return the eventableConditions
-	 */
-	private List<EventableCondition> getEventableConditions() {
-		return eventableConditions;
-	}
-
-	/**
-	 * @param eventableConditions
-	 *            the eventableConditions to set
-	 */
-	private void setEventableConditions(List<EventableCondition> eventableConditions) {
-		this.eventableConditions = eventableConditions;
-	}
-
-	/**
-	 * TODO: remove? not used?
-	 * 
-	 * @param eventableCondition
-	 *            the eventableCondition to add
-	 */
-	private void addEventableCondition(EventableCondition eventableCondition) {
-		this.eventableConditions.add(eventableCondition);
-	}
-
-	/**
-	 * TODO: remove? not used?
-	 * 
-	 * @param eventableConditions
-	 *            The eventable conditions that should be added.
-	 */
-	private void addEventableConditions(List<EventableCondition> eventableConditions) {
-		for (EventableCondition eventableCondition : eventableConditions) {
-			this.eventableConditions.add(eventableCondition);
-		}
-	}
-
-	/**
 	 * Construct the eventableconditionchecker with its eventable conditions.
 	 * 
 	 * @param eventableConditions
 	 *            The eventable conditions.
 	 */
 	public EventableConditionChecker(List<EventableCondition> eventableConditions) {
-		setEventableConditions(eventableConditions);
+		this.eventableConditions = eventableConditions;
 	}
 
 	/**

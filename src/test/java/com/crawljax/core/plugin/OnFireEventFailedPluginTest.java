@@ -6,6 +6,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,6 +46,11 @@ public class OnFireEventFailedPluginTest {
 			public void preStateCrawling(CrawlSession session,
 			        List<CandidateElement> candidateElement) {
 				for (CandidateElement candidate : candidateElement) {
+					HTMLAnchorElementImpl impl = (HTMLAnchorElementImpl) candidate.getElement();
+					impl.setName("fail");
+					impl.setId("eventually");
+					impl.setHref("will");
+					impl.setTextContent("This");
 					candidate.getIdentification().setValue("/HTML[1]/BODY[1]/FAILED[1]/A[1]");
 				}
 			}

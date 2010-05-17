@@ -3,16 +3,19 @@ package com.crawljax.oraclecomparator;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.jcip.annotations.Immutable;
+
 import com.crawljax.condition.Condition;
 
 /**
  * @author danny
- * @version $Id$ This class
- *          contains the oracle and its precondition(s)
+ * @version $Id$ This class contains the
+ *          oracle and its precondition(s)
  */
+@Immutable
 public class OracleComparator {
 
-	private final List<Condition> preConditions;
+	private final List<Condition> preConditions = new ArrayList<Condition>();
 	private final String id;
 	private final Comparator oracle;
 
@@ -23,7 +26,8 @@ public class OracleComparator {
 	 *            the Oracle
 	 */
 	public OracleComparator(String id, Comparator oracle) {
-		this(id, oracle, new ArrayList<Condition>());
+		this.id = id;
+		this.oracle = oracle;
 	}
 
 	/**
@@ -35,9 +39,8 @@ public class OracleComparator {
 	 *            the preconditions that must be satisfied before the oracle comparator is used
 	 */
 	public OracleComparator(String id, Comparator oracle, List<Condition> preConditions) {
-		this.id = id;
-		this.oracle = oracle;
-		this.preConditions = preConditions;
+		this(id, oracle);
+		this.preConditions.addAll(preConditions);
 	}
 
 	/**
@@ -49,9 +52,7 @@ public class OracleComparator {
 	 *            the preconditions that must be satisfied before the oracle comparator is used
 	 */
 	public OracleComparator(String id, Comparator oracle, Condition... preConditions) {
-		this.id = id;
-		this.oracle = oracle;
-		this.preConditions = new ArrayList<Condition>();
+		this(id, oracle);
 		for (Condition condition : preConditions) {
 			this.preConditions.add(condition);
 		}

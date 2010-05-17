@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,6 +17,7 @@ import org.openqa.selenium.WebDriverException;
 
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.configuration.ThreadConfigurationReader;
+import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 
 /**
  * The factory class returns an instance of the desired browser as specified in the properties file.
@@ -53,6 +55,12 @@ public final class BrowserFactory {
 	private int retries = 0;
 
 	private final AtomicInteger activeBrowserCount = new AtomicInteger(0);
+
+	private ThreadLocal<EmbeddedBrowser> currentBrowser = new ThreadLocal<EmbeddedBrowser>();
+
+	private final Semaphore preCrawlingBlocker = new Semaphore(0);
+
+	private final AtomicBoolean preCrawlingRun = new AtomicBoolean(false);
 
 	private final BrowserBuilder builder;
 
@@ -123,6 +131,37 @@ public final class BrowserFactory {
 	 */
 	private EmbeddedBrowser createBrowser() {
 		EmbeddedBrowser newBrowser = getBrowserInstance();
+
+		if (taken.size() == 0 && available.size() == 0
+		        && preCrawlingRun.compareAndSet(false, true)) {
+			// this is the first browser && no preCrawling has run or is running
+			// We are the one that will run the preCrawling plugins
+			// preCrawlingRun.compareAndSet(false, true) equals to !preCrawlingRun ->
+			// preCrawlingRun = true
+
+			/**
+			 * Start by running the PreCrawlingPlugins
+			 */
+			CrawljaxPluginsUtil.runPreCrawlingPlugins(newBrowser);
+
+			// Release the blocker for the total amount of browsers -1 (because this one does not
+			// have to block) anymore
+			preCrawlingBlocker.release(this.getNumberOfBrowsers() - 1);
+		} else {
+			// Block until the PreCrawling phase has been executed
+			try {
+				preCrawlingBlocker.acquire();
+			} catch (InterruptedException e) {
+				LOGGER.error(
+				        "Waiting for the preCrawlingPlugins to execute first has been interupped, "
+				                + "continuing with the OnBrowserCreatedPlugins", e);
+			}
+		}
+		/**
+		 * Start by running the OnBrowserCreatedPlugins
+		 */
+		CrawljaxPluginsUtil.runOnBrowserCreatedPlugins(newBrowser);
+
 		assert (newBrowser != null);
 		return newBrowser;
 
@@ -141,38 +180,47 @@ public final class BrowserFactory {
 	}
 
 	/**
-	 * Close all browser windows.
+	 * Close all browser windows. in a Separate Thread
+	 * 
+	 * @return the Thread currently executing the shutdown.
 	 */
-	public synchronized void close() {
-		Queue<EmbeddedBrowser> deleteList = new LinkedList<EmbeddedBrowser>();
-		if (useBooting()) {
-			booter.shutdown();
-		}
-		for (EmbeddedBrowser b : available) {
-			try {
-				b.close();
-			} catch (Exception e) {
-				LOGGER.error("Failed to close free Browser " + b, e);
-			} finally {
-				deleteList.add(b);
+	public synchronized Thread close() {
+		Thread closeBrowsers = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Queue<EmbeddedBrowser> deleteList = new LinkedList<EmbeddedBrowser>();
+				if (useBooting()) {
+					booter.shutdown();
+				}
+				for (EmbeddedBrowser b : available) {
+					try {
+						b.close();
+					} catch (Exception e) {
+						LOGGER.error("Failed to close free Browser " + b, e);
+					} finally {
+						deleteList.add(b);
+					}
+				}
+				available.removeAll(deleteList);
+				deleteList = new LinkedList<EmbeddedBrowser>();
+				for (EmbeddedBrowser b : taken) {
+					try {
+						b.close();
+					} catch (Exception e) {
+						LOGGER.error("Failed to close taken Browser " + b, e);
+					} finally {
+						deleteList.add(b);
+					}
+				}
+				taken.removeAll(deleteList);
+				currentBrowser = new ThreadLocal<EmbeddedBrowser>();
+				assert (available.isEmpty());
+				assert (taken.isEmpty());
 			}
-		}
-		available.removeAll(deleteList);
-		deleteList = new LinkedList<EmbeddedBrowser>();
-		for (EmbeddedBrowser b : taken) {
-			try {
-				b.close();
-			} catch (Exception e) {
-				LOGGER.error("Failed to close taken Browser " + b, e);
-			} finally {
-				deleteList.add(b);
-			}
-		}
-		taken.removeAll(deleteList);
-
-		assert (available.isEmpty());
-		assert (taken.isEmpty());
-
+		});
+		closeBrowsers.setName("Browser closing Thread");
+		closeBrowsers.start();
+		return closeBrowsers;
 	}
 
 	/**
@@ -186,6 +234,7 @@ public final class BrowserFactory {
 		assert (browser != null);
 		taken.remove(browser);
 		available.add(browser);
+		currentBrowser.remove();
 	}
 
 	/**
@@ -205,6 +254,7 @@ public final class BrowserFactory {
 				// There are browsers available
 				browser = available.take();
 				taken.add(browser);
+				currentBrowser.set(browser);
 			} else if (activeBrowserCount.getAndIncrement() < getNumberOfBrowsers()) {
 				// We are not at the limit of the number of browsers so create one
 				try {
@@ -229,6 +279,7 @@ public final class BrowserFactory {
 					}
 				}
 				taken.add(browser);
+				currentBrowser.set(browser);
 			} else {
 				// The max number of browsers has been made, so wait for a browser to become
 				// available.
@@ -251,6 +302,7 @@ public final class BrowserFactory {
 		EmbeddedBrowser b = available.take();
 		assert (b != null);
 		taken.add(b);
+		currentBrowser.set(b);
 		return b;
 	}
 
@@ -304,7 +356,8 @@ public final class BrowserFactory {
 						try {
 							factory.available.add(factory.createBrowser());
 							createdBrowserCount.incrementAndGet();
-						} catch (WebDriverException e) {
+						} catch (Throwable e) {
+							/* Catch ALL exceptions... */
 							LOGGER.error("Creation of Browser faild!", e);
 							if (factory.getNumberBrowserCreateRetries() > 0
 							        && bootRetries < factory.getNumberBrowserCreateRetries()) {
@@ -371,5 +424,14 @@ public final class BrowserFactory {
 			return (failedCreatedBrowserCount.get() + createdBrowserCount.get()) >= factory
 			        .getNumberOfBrowsers();
 		}
+	}
+
+	/**
+	 * Returns the browser associated with this Thread.
+	 * 
+	 * @return the browser associated with this Thread null is non is associated.
+	 */
+	public EmbeddedBrowser getCurrentBrowser() {
+		return this.currentBrowser.get();
 	}
 }

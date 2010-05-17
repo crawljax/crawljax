@@ -37,7 +37,7 @@ public class CandidateElementExtractorTest {
 		Crawler crawler = null;
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
-			crawler = controller.getCrawler();
+			crawler = new InitialCrawler(controller);
 
 			assertNotNull(crawler);
 
@@ -93,7 +93,7 @@ public class CandidateElementExtractorTest {
 		Crawler crawler = null;
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
-			crawler = controller.getCrawler();
+			crawler = new InitialCrawler(controller);
 
 			assertNotNull(crawler);
 
@@ -158,7 +158,7 @@ public class CandidateElementExtractorTest {
 		Crawler crawler = null;
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
-			crawler = controller.getCrawler();
+			crawler = new InitialCrawler(controller);
 
 			assertNotNull(crawler);
 

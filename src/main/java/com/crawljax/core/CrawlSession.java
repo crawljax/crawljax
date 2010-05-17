@@ -3,9 +3,11 @@
  */
 package com.crawljax.core;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.crawljax.browser.BrowserFactory;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
@@ -20,28 +22,57 @@ import com.crawljax.core.state.StateVertix;
  */
 public class CrawlSession {
 
-	private final EmbeddedBrowser browser;
+	/**
+	 * This variable holds the current stateFlowGraph.
+	 */
 	private final StateFlowGraph stateFlowGraph;
-	private final List<List<Eventable>> crawlPaths = new ArrayList<List<Eventable>>();
-	private StateVertix currentState;
+
+	/**
+	 * This ConcurrentLinkedQueue holds all the Paths that are executed during the CrawlSession so
+	 * far.
+	 */
+	private final Collection<List<Eventable>> crawlPaths =
+	        new ConcurrentLinkedQueue<List<Eventable>>();
+
+	/**
+	 * The initial State (indexState).
+	 */
 	private final StateVertix initialState;
+
+	/**
+	 * Variable for reading the Configuration from.
+	 */
 	private final CrawljaxConfigurationReader crawljaxConfiguration;
+
+	/**
+	 * Denote the time the CrawlSession Started in ms since 1970.
+	 */
 	private final long startTime;
 	// TODO Stefan; optimise / change this behaviour this is not the most speedy solution
 	private final ThreadLocal<List<Eventable>> exactEventPath =
 	        new ThreadLocal<List<Eventable>>();
 
 	/**
-	 * @param browser
-	 *            the Embedded browser.
+	 * ThreadLocal store the have a Thread<->Current State relation.
 	 */
-	public CrawlSession(EmbeddedBrowser browser) {
-		this(browser, null, null, 0);
+	private final ThreadLocal<StateVertix> tlState = new ThreadLocal<StateVertix>();
+
+	/**
+	 * The main BrowserFactory where the current Browser is stored.
+	 */
+	private final BrowserFactory browserFactory;
+
+	/**
+	 * @param factory
+	 *            the Embedded browser factory that is in use
+	 */
+	public CrawlSession(BrowserFactory factory) {
+		this(factory, null, null, 0);
 	}
 
 	/**
-	 * @param browser
-	 *            the embedded browser instance.
+	 * @param factory
+	 *            the embedded browser factory that is in use.
 	 * @param stateFlowGraph
 	 *            the state flow graph.
 	 * @param state
@@ -49,14 +80,14 @@ public class CrawlSession {
 	 * @param startTime
 	 *            the time this session started in milliseconds.
 	 */
-	public CrawlSession(EmbeddedBrowser browser, StateFlowGraph stateFlowGraph,
-	        StateVertix state, long startTime) {
-		this(browser, stateFlowGraph, state, startTime, null);
+	public CrawlSession(BrowserFactory factory, StateFlowGraph stateFlowGraph, StateVertix state,
+	        long startTime) {
+		this(factory, stateFlowGraph, state, startTime, null);
 	}
 
 	/**
-	 * @param browser
-	 *            the embedded browser instance.
+	 * @param factory
+	 *            the embedded browser instance factory that is in use.
 	 * @param stateFlowGraph
 	 *            the state flow graph
 	 * @param state
@@ -66,21 +97,21 @@ public class CrawlSession {
 	 * @param crawljaxConfiguration
 	 *            the configuration.
 	 */
-	public CrawlSession(EmbeddedBrowser browser, StateFlowGraph stateFlowGraph,
-	        StateVertix state, long startTime, CrawljaxConfigurationReader crawljaxConfiguration) {
+	public CrawlSession(BrowserFactory factory, StateFlowGraph stateFlowGraph, StateVertix state,
+	        long startTime, CrawljaxConfigurationReader crawljaxConfiguration) {
 		this.crawljaxConfiguration = crawljaxConfiguration;
-		this.browser = browser;
+		this.browserFactory = factory;
 		this.stateFlowGraph = stateFlowGraph;
-		this.currentState = state;
 		this.initialState = state;
 		this.startTime = startTime;
+		tlState.set(state);
 	}
 
 	/**
-	 * @return the browser
+	 * @return the browser or null if there is none
 	 */
 	public EmbeddedBrowser getBrowser() {
-		return browser;
+		return browserFactory.getCurrentBrowser();
 	}
 
 	/**
@@ -94,7 +125,7 @@ public class CrawlSession {
 	 * @return the currentState
 	 */
 	public StateVertix getCurrentState() {
-		return currentState;
+		return tlState.get();
 	}
 
 	/**
@@ -102,13 +133,13 @@ public class CrawlSession {
 	 *            the currentState to set
 	 */
 	public void setCurrentState(StateVertix currentState) {
-		this.currentState = currentState;
+		this.tlState.set(currentState);
 	}
 
 	/**
 	 * @return the crawlPaths
 	 */
-	public List<List<Eventable>> getCrawlPaths() {
+	public Collection<List<Eventable>> getCrawlPaths() {
 		return crawlPaths;
 	}
 

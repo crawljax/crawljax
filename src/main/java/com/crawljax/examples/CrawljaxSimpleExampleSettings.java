@@ -36,7 +36,9 @@ public final class CrawljaxSimpleExampleSettings {
 
 	private static ThreadConfiguration getThreadConfiguration() {
 		ThreadConfiguration tc = new ThreadConfiguration();
-			//TODO Stefan reinsert usable ThreadConfiguration options
+		tc.setBrowserBooting(true);
+		tc.setNumberBrowsers(1);
+		tc.setNumberThreads(1);
 		return tc;
 	}
 
