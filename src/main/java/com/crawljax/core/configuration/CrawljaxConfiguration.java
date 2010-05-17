@@ -3,6 +3,8 @@ package com.crawljax.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crawljax.browser.BrowserBuilder;
+import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.plugin.Plugin;
@@ -33,10 +35,14 @@ public final class CrawljaxConfiguration {
 
 	private BrowserType browser = BrowserType.firefox;
 
+	private BrowserBuilder browserBuilder = new WebDriverBrowserBuilder();
+
+	private String remoteHubUrl = "";
+
 	private String outputFolder = "";
 	private String projectRelativePath = "";
 
-	private boolean useDatabase = false;
+	private final boolean useDatabase = false;
 
 	private List<String> filterAttributeNames = new ArrayList<String>();
 
@@ -171,6 +177,38 @@ public final class CrawljaxConfiguration {
 	 */
 	public void setBrowser(BrowserType browser) {
 		this.browser = browser;
+	}
+
+	/**
+	 * @return the browserBuilder
+	 */
+	protected BrowserBuilder getBrowserBuilder() {
+		return browserBuilder;
+	}
+
+	/**
+	 * Set the remote hub url that needs to be taken when using remote crawling.
+	 * 
+	 * @param remoteHubUrl
+	 *            the url of the remote hub
+	 */
+	public void setRemoteHubUrl(String remoteHubUrl) {
+		this.remoteHubUrl = remoteHubUrl;
+	}
+
+	/**
+	 * @return the remoteHubUrl
+	 */
+	protected String getRemoteHubUrl() {
+		return remoteHubUrl;
+	}
+
+	/**
+	 * @param browserBuilder
+	 *            the browserBuilder to set
+	 */
+	public void setBrowserBuilder(BrowserBuilder browserBuilder) {
+		this.browserBuilder = browserBuilder;
 	}
 
 	/**

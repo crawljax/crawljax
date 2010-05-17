@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.crawljax.browser.BrowserBuilder;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.TagAttribute;
@@ -62,6 +63,20 @@ public class CrawljaxConfigurationReader {
 	 */
 	public BrowserType getBrowser() {
 		return crawljaxConfiguration.getBrowser();
+	}
+
+	/**
+	 * @return the browser builder used.
+	 */
+	public BrowserBuilder getBrowserBuilder() {
+		return crawljaxConfiguration.getBrowserBuilder();
+	}
+
+	/**
+	 * @return the url of the remote hub that must be used.
+	 */
+	public String getRemoteHubUrl() {
+		return crawljaxConfiguration.getRemoteHubUrl();
 	}
 
 	/**

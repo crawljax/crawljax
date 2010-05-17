@@ -85,14 +85,7 @@ public class CrawljaxController {
 		elementChecker =
 		        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 
-		browserFactory =
-		        new BrowserFactory(
-		                configurationReader.getBrowser(),
-		                configurationReader.getThreadConfigurationReader(),
-		                configurationReader.getProxyConfiguration(),
-		                configurationReader.getFilterAttributeNames(),
-		                configurationReader.getCrawlSpecificationReader().getWaitAfterReloadUrl(),
-		                configurationReader.getCrawlSpecificationReader().getWaitAfterEvent());
+		browserFactory = new BrowserFactory(configurationReader);
 
 		workQueue = init();
 	}
@@ -113,7 +106,7 @@ public class CrawljaxController {
 			        .runProxyServerPlugins(configurationReader.getProxyConfiguration());
 		}
 
-		LOGGER.info("Embedded browser implementation: " + browserFactory.getBrowserType());
+		LOGGER.info("Embedded browser implementation: " + configurationReader.getBrowser());
 
 		crawler = new Crawler(this);
 

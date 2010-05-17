@@ -14,6 +14,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.w3c.dom.Document;
@@ -338,7 +339,20 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 
 		Document document;
 		try {
-			document = Helper.getDocument(browser.getPageSource());
+			String s = "";
+			try {
+				s = browser.getPageSource();
+			} catch (WebDriverException e) {
+				if (e.getMessage().contains(
+				        "Utils.getDocument(respond.context)."
+				                + "getElementsByTagName(\\\"html\\\")[0] is undefined")) {
+					// There is no html tag... ignore!
+					logger.info("Skiped parsing dom tree because no html content is defined");
+				} else {
+					throw new CrawljaxException(e.getMessage(), e);
+				}
+			}
+			document = Helper.getDocument(s);
 			appendFrameContent(document.getDocumentElement(), document, "");
 		} catch (SAXException e) {
 			throw new CrawljaxException(e.getMessage(), e);

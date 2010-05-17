@@ -4,7 +4,6 @@
 package com.crawljax.browser;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -14,10 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxProfile;
 
-import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.core.configuration.ProxyConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.configuration.ThreadConfigurationReader;
 
 /**
@@ -51,21 +48,15 @@ public final class BrowserFactory {
 	 */
 	private final int shutdownTimeout = 100;
 
-	private final BrowserType browserType;
-
-	private final ProxyConfiguration proxyConfiguration;
-
-	private final long crawlWaitReload;
-
-	private final List<String> filterAttributes;
-
-	private final long crawlWaitEvent;
-
 	private final ThreadConfigurationReader threadConfig;
 
 	private int retries = 0;
 
 	private final AtomicInteger activeBrowserCount = new AtomicInteger(0);
+
+	private final BrowserBuilder builder;
+
+	private final CrawljaxConfigurationReader configuration;
 
 	/* Config values */
 
@@ -88,13 +79,6 @@ public final class BrowserFactory {
 	}
 
 	/**
-	 * @return the browser type.
-	 */
-	public BrowserType getBrowserType() {
-		return browserType;
-	}
-
-	/**
 	 * @return the number of retries a creation of browser can have.
 	 * @see com.crawljax.core.configuration.ThreadConfigurationReader#
 	 *      getNumberBrowserCreateRetries()
@@ -113,56 +97,19 @@ public final class BrowserFactory {
 	}
 
 	/**
-	 * Use Fast booting?
+	 * The default constructor for the BrowserFactory. It's feeded with a configurationReader to
+	 * read all the configuration settings.
 	 * 
-	 * @return true if fast booting of browsers is enabled.
+	 * @param configurationReader
+	 *            the configurationReader used to read the configuration options from.
 	 */
-	private boolean useFastBooting() {
-		return threadConfig.getUseFastBooting();
-	}
-
-	/**
-	 * Retrieve / generate the port number to use.
-	 * 
-	 * @return the port number that must be used.
-	 */
-	private int getPortNumber() {
-		return threadConfig.getPortNumber();
-	}
-
-	/**
-	 * Default constructor.
-	 * 
-	 * @param type
-	 *            the browser type.
-	 * @param threadConfig
-	 *            the config holder for thread config values.
-	 * @param proxyConfig
-	 *            the proxy configuration (can be null).
-	 * @param filterAttributes
-	 *            the attributes to be filtered from DOM.
-	 * @param crawlWaitReload
-	 *            the period to wait after a reload.
-	 * @param crawlWaitEvent
-	 *            the period to wait after an event is fired.
-	 */
-	public BrowserFactory(BrowserType type, ThreadConfigurationReader threadConfig,
-	        ProxyConfiguration proxyConfig, List<String> filterAttributes, long crawlWaitReload,
-	        long crawlWaitEvent) {
-
+	public BrowserFactory(CrawljaxConfigurationReader configurationReader) {
+		this.configuration = configurationReader;
+		this.threadConfig = configurationReader.getThreadConfigurationReader();
+		this.builder = configurationReader.getBrowserBuilder();
 		this.available =
 		        new ArrayBlockingQueue<EmbeddedBrowser>(threadConfig.getNumberBrowsers(), true);
-		this.browserType = type;
-		this.proxyConfiguration = proxyConfig;
-		this.threadConfig = threadConfig;
-		this.filterAttributes = filterAttributes;
-		this.crawlWaitReload = crawlWaitReload;
-		this.crawlWaitEvent = crawlWaitEvent;
-
-		booter = new BrowserBooter(this);
-
-		assert (!booter.isAlive());
-
+		this.booter = new BrowserBooter(this);
 	}
 
 	/**
@@ -190,36 +137,7 @@ public final class BrowserFactory {
 	 *             failed.
 	 */
 	private EmbeddedBrowser getBrowserInstance() {
-
-		switch (browserType) {
-			case firefox:
-				if (proxyConfiguration != null) {
-					return new WebDriverFirefox(proxyConfiguration, this.filterAttributes,
-					        this.crawlWaitReload, this.crawlWaitEvent);
-				}
-
-				if (useFastBooting()) {
-					FirefoxProfile fp = new FirefoxProfile();
-					fp.setPort(getPortNumber());
-					return new WebDriverFirefox(fp, this.filterAttributes, this.crawlWaitReload,
-					        this.crawlWaitEvent);
-				}
-
-				return new WebDriverFirefox(this.filterAttributes, this.crawlWaitReload,
-				        this.crawlWaitEvent);
-
-			case ie:
-				return new WebDriverIE(this.filterAttributes, this.crawlWaitReload,
-				        this.crawlWaitEvent);
-
-			case chrome:
-				return new WebDriverChrome(this.filterAttributes, this.crawlWaitReload,
-				        this.crawlWaitEvent);
-
-			default:
-				return new WebDriverFirefox(this.filterAttributes, this.crawlWaitReload,
-				        this.crawlWaitEvent);
-		}
+		return builder.buildEmbeddedBrowser(configuration);
 	}
 
 	/**

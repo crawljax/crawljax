@@ -7,12 +7,9 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.ThreadConfiguration;
-import com.crawljax.core.configuration.ThreadConfigurationReader;
 
 /**
  * This test, test the (public) operations from the BrowserFactory.
@@ -23,8 +20,7 @@ import com.crawljax.core.configuration.ThreadConfigurationReader;
 public class BrowserFactoryTest {
 	private static final int TIMEOUT = 100000; // 100 Sec.
 	private final BrowserFactory factory =
-	        new BrowserFactory(BrowserType.firefox, new ThreadConfigurationReader(
-	                new ThreadConfiguration()), null, null, 400, 500);
+	        new BrowserFactory(new CrawljaxConfigurationReader(new CrawljaxConfiguration()));
 
 	/**
 	 * Request don't release and close the factory.
@@ -104,10 +100,7 @@ public class BrowserFactoryTest {
 
 		try {
 
-			BrowserFactory factory =
-			        new BrowserFactory(reader.getBrowser(),
-			                reader.getThreadConfigurationReader(),
-			                reader.getProxyConfiguration(), null, 1, 1);
+			BrowserFactory factory = new BrowserFactory(reader);
 
 			factory.requestBrowser();
 			factory.requestBrowser();
@@ -146,10 +139,7 @@ public class BrowserFactoryTest {
 
 		try {
 
-			BrowserFactory factory =
-			        new BrowserFactory(reader.getBrowser(),
-			                reader.getThreadConfigurationReader(),
-			                reader.getProxyConfiguration(), null, 1, 1);
+			BrowserFactory factory = new BrowserFactory(reader);
 
 			factory.requestBrowser();
 			factory.requestBrowser();
@@ -189,10 +179,7 @@ public class BrowserFactoryTest {
 		long runtimeNonFastBoot = 0;
 		try {
 			long start = System.currentTimeMillis();
-			BrowserFactory factory =
-			        new BrowserFactory(reader.getBrowser(),
-			                reader.getThreadConfigurationReader(),
-			                reader.getProxyConfiguration(), null, 1, 1);
+			BrowserFactory factory = new BrowserFactory(reader);
 
 			factory.requestBrowser();
 			factory.requestBrowser();
@@ -210,10 +197,7 @@ public class BrowserFactoryTest {
 
 		try {
 			long start = System.currentTimeMillis();
-			BrowserFactory factory =
-			        new BrowserFactory(reader.getBrowser(),
-			                reader.getThreadConfigurationReader(),
-			                reader.getProxyConfiguration(), null, 1, 1);
+			BrowserFactory factory = new BrowserFactory(reader);
 
 			factory.requestBrowser();
 			factory.requestBrowser();

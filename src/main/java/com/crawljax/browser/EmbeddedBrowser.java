@@ -26,7 +26,7 @@ public interface EmbeddedBrowser extends Cloneable {
 	 * Browser types.
 	 */
 	public enum BrowserType {
-		firefox, ie, chrome
+		firefox, ie, chrome, remote
 	}
 
 	/**
