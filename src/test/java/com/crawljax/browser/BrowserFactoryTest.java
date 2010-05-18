@@ -32,7 +32,8 @@ public class BrowserFactoryTest {
 	public void testRequestClose() throws InterruptedException {
 
 		factory.requestBrowser();
-		factory.close();
+		Thread closeThread = factory.close();
+		closeThread.join();
 	}
 
 	/**
@@ -45,7 +46,8 @@ public class BrowserFactoryTest {
 	public void testRequestReleaseClose() throws InterruptedException {
 		EmbeddedBrowser b = factory.requestBrowser();
 		factory.freeBrowser(b);
-		factory.close();
+		Thread closeThread = factory.close();
+		closeThread.join();
 	}
 
 	/**
@@ -57,26 +59,34 @@ public class BrowserFactoryTest {
 	@Test(timeout = TIMEOUT)
 	public void testDoubleClose() throws InterruptedException {
 		factory.requestBrowser();
-		factory.close();
-		factory.close();
+		Thread closeThread = factory.close();
+		closeThread.join();
+		closeThread = factory.close();
+		closeThread.join();
 
 	}
 
 	/**
 	 * Test a call to close only.
+	 * @throws InterruptedException 
 	 */
 	@Test(timeout = TIMEOUT)
-	public void testCloseOnly() {
-		factory.close();
+	public void testCloseOnly() throws InterruptedException {
+		Thread closeThread = factory.close();
+		closeThread.join();
 	}
 
 	/**
 	 * Test a call to close only twice.
+	 * @throws InterruptedException 
 	 */
 	@Test(timeout = TIMEOUT)
-	public void testCloseOnlyTwoTimes() {
-		factory.close();
-		factory.close();
+	public void testCloseOnlyTwoTimes() throws InterruptedException {
+		//TODO Stefan, what about two times without join?
+		Thread closeThread = factory.close();
+		closeThread.join();
+		closeThread = factory.close();
+		closeThread.join();
 	}
 
 	/**
@@ -105,7 +115,8 @@ public class BrowserFactoryTest {
 			EmbeddedBrowser b1 = factory.requestBrowser();
 			factory.freeBrowser(b1);
 
-			factory.close();
+			Thread closeThread = factory.close();
+			closeThread.join();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -142,7 +153,8 @@ public class BrowserFactoryTest {
 			EmbeddedBrowser b1 = factory.requestBrowser();
 			factory.freeBrowser(b1);
 
-			factory.close();
+			Thread closeThread = factory.close();
+			closeThread.join();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -179,9 +191,13 @@ public class BrowserFactoryTest {
 			factory.requestBrowser();
 			EmbeddedBrowser b1 = factory.requestBrowser();
 			factory.freeBrowser(b1);
-
-			factory.close();
+			
+			Thread closeThread = factory.close();
+			
 			runtimeNonFastBoot = System.currentTimeMillis() - start;
+			
+			closeThread.join();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -198,8 +214,12 @@ public class BrowserFactoryTest {
 			EmbeddedBrowser b1 = factory.requestBrowser();
 			factory.freeBrowser(b1);
 
-			factory.close();
+			Thread closeThread = factory.close();
+			
 			long runtimeFastBoot = System.currentTimeMillis() - start;
+			
+			closeThread.join();
+			
 			Assert.assertTrue("Fast boot is faster", runtimeNonFastBoot > runtimeFastBoot);
 		} catch (Exception e) {
 			e.printStackTrace();
