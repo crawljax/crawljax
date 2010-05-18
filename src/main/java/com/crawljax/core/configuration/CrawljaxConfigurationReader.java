@@ -126,47 +126,56 @@ public class CrawljaxConfigurationReader {
 	}
 
 	/**
+	 * Convert getAllIncludedCrawlElements to a list of TagElements.
+	 * TODO: Completely skip this step by using either CrawlElement or TagElement everywhere.
 	 * @return A list of tag elements.
 	 */
 	public List<TagElement> getTagElements() {
-
-		List<TagElement> tagelements = new ArrayList<TagElement>();
-
-		String props = ConfigurationHelper.listToString(getAllIncludedCrawlElements());
-
-		String[] tags = props.split(",");
-
-		for (String text : tags) {
-
-			TagElement tagElement = parseTagElement(text.trim());
-			if (tagElement != null) {
-				tagelements.add(tagElement);
+		List<TagElement> tagElements = new ArrayList<TagElement>();
+		
+		for(CrawlElement crawlElement : getAllIncludedCrawlElements()) {
+			Set<TagAttribute> attributes = new HashSet<TagAttribute>();
+			
+			for(CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
+				TagAttribute tag = new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue());
+				attributes.add(tag);
 			}
+			
+			TagElement tagElement = new TagElement(attributes, crawlElement.getTagName());
+			
+			tagElement.setId(crawlElement.getId());
+			
+			tagElements.add(tagElement);
 		}
-
-		return tagelements;
+		
+		return tagElements;
 	}
 
 	/**
+	 * Convert getCrawlElementsExcluded to a list of TagElements.
+	 * TODO: Completely skip this step by using either CrawlElement or TagElement everywhere.
 	 * @return a list of TagElements.
 	 */
 	public List<TagElement> getExcludeTagElements() {
-
-		List<TagElement> tagelements = new ArrayList<TagElement>();
-
-		String props =
-		        ConfigurationHelper.listToString(crawljaxConfiguration.getCrawlSpecification()
-		                .crawlActions().getCrawlElementsExcluded());
-		String[] tags = props.split(",");
-
-		for (String text : tags) {
-			TagElement tagElement = parseTagElement(text.trim());
-			if (tagElement != null) {
-				tagelements.add(tagElement);
+		List<TagElement> tagElements = new ArrayList<TagElement>();
+		
+		for(CrawlElement crawlElement : crawljaxConfiguration.getCrawlSpecification()
+                .crawlActions().getCrawlElementsExcluded()) {
+			Set<TagAttribute> attributes = new HashSet<TagAttribute>();
+			
+			for(CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
+				TagAttribute tag = new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue());
+				attributes.add(tag);
 			}
+			
+			TagElement tagElement = new TagElement(attributes, crawlElement.getTagName());
+			
+			tagElement.setId(crawlElement.getId());
+			
+			tagElements.add(tagElement);
 		}
-
-		return tagelements;
+		
+		return tagElements;
 
 	}
 
@@ -182,75 +191,5 @@ public class CrawljaxConfigurationReader {
 	 */
 	public ThreadConfigurationReader getThreadConfigurationReader() {
 		return this.threadConfigurationReader;
-	}
-
-	/**
-	 * Parses the tag elements. This has to be deprecated, because its an old part of
-	 * PropertyHelper.
-	 * 
-	 * @param text
-	 *            The string containing the tag elements.
-	 * @return The tag element.
-	 */
-	private TagElement parseTagElement(String text) {
-		if (text.equals("")) {
-			return null;
-		}
-		String name = null;
-		Set<TagAttribute> attributes = new HashSet<TagAttribute>();
-		String id = null;
-
-		Pattern pattern =
-		        Pattern.compile("\\w+:\\{(\\w+=?(\\-*\\s*[\\w# \\.%]\\s*)+\\;?\\s?)*}"
-		                + "(\\[\\w+\\])?");
-
-		Pattern patternTagName = Pattern.compile("\\w+");
-
-		Pattern patternAttributes =
-		        Pattern.compile("\\{(\\w+=(\\-*\\s*[\\w%# \\.]\\s*)+\\;?\\s?)*}");
-
-		Pattern patternAttribute = Pattern.compile("(\\w+)=((\\-*\\s*[\\w%# \\.]\\s*)+)");
-
-		Pattern patternId = Pattern.compile("(\\[)(\\w+)(\\])");
-
-		Matcher matcher = pattern.matcher(text);
-
-		if (matcher.matches()) {
-			String substring = matcher.group();
-			matcher = patternTagName.matcher(substring);
-
-			if (matcher.find()) {
-				name = matcher.group().trim();
-			}
-
-			matcher = patternAttributes.matcher(substring);
-
-			/* Find the tag attributes */
-			if (matcher.find()) {
-				String tmp = matcher.group();
-				/* Parse the attributes */
-				matcher = patternAttribute.matcher(tmp);
-
-				while (matcher.find()) {
-					String attrName = matcher.group(1).trim();
-					String value = matcher.group(2).trim();
-					attributes.add(new TagAttribute(attrName, value));
-				}
-			}
-
-			/* Get the id */
-			matcher = patternId.matcher(substring);
-			if (matcher.find()) {
-				id = matcher.group(2);
-			}
-
-			TagElement el = new TagElement(attributes, name);
-			if (id != null) {
-				el.setId(id);
-			}
-			return el;
-		}
-
-		return null;
 	}
 }
