@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.crawljax.browser.BrowserBuilder;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
