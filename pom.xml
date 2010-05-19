@@ -3,7 +3,7 @@
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax</artifactId>
 	<packaging>jar</packaging>
-	<version>1.9</version>
+	<version>1.9.1</version>
 	<name>Crawljax</name>
 	<description>
 		Crawling Ajax applications through dynamic analysis and

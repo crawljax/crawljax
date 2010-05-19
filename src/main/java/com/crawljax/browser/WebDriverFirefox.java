@@ -111,8 +111,7 @@ public class WebDriverFirefox extends AbstractWebDriver {
 		FirefoxProfile profile = new FirefoxProfile();
 		profile.setPreference("network.proxy.http", config.getHostname());
 		profile.setPreference("network.proxy.http_port", config.getPort());
-		/* 1 means HTTP proxy */
-		profile.setPreference("network.proxy.type", 1);
+		profile.setPreference("network.proxy.type", config.getType().toInt());
 		/* use proxy for everything, including localhost */
 		profile.setPreference("network.proxy.no_proxies_on", "");
 		return profile;
