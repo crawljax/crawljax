@@ -13,17 +13,41 @@ public class ProxyConfiguration {
 	 * Type of proxy this is.
 	 */
 	public enum ProxyType {
-		HTTP_PROXY;
+		/**
+		 * Don't use a proxy at all.
+		 */
+		NOTHING (0),
+		/**
+		 * Use a manually configured proxy (using your ProxyConfiguration object).
+		 */
+		MANUAL (1),
+		/**
+		 * Use an automatically configured proxy (using a pax file for example).
+		 */
+		AUTOMATIC (4),
+		/**
+		 * Use the proxy that is configured for your computer (system wide).
+		 */
+		SYSTEM_DEFAULT (5);
+		
+		private int value;
+		private ProxyType(int value) {
+			this.value = value;
+		}
+		
+		public int toInt() {
+			return value;
+		}
 	}
 
 	public static final int DEFAULT_PORT = 1234;
 
 	private int port = DEFAULT_PORT;
 	private String hostname = "localhost";
-	private ProxyType type = ProxyType.HTTP_PROXY;
+	private ProxyType type = ProxyType.MANUAL;
 
 	/**
-	 * @return the port
+	 * @return The port.
 	 */
 	public int getPort() {
 		return port;
@@ -31,21 +55,37 @@ public class ProxyConfiguration {
 
 	/**
 	 * @param port
-	 *            the port to set
+	 *            The port where the proxy is running on.
 	 */
 	public void setPort(int port) {
 		this.port = port;
 	}
 
 	/**
-	 * @return the hostname
+	 * @return The hostname.
 	 */
 	public String getHostname() {
 		return hostname;
 	}
 
 	/**
-	 * @return the type
+	 * 
+	 * @param hostname The hostname of the proxy.
+	 */
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
+
+	/**
+	 * 
+	 * @param type The proxy type. Currently only ProxyType.HTTP_PROXY is supported.
+	 */
+	public void setType(ProxyType type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return The type.
 	 */
 	public ProxyType getType() {
 		return type;
