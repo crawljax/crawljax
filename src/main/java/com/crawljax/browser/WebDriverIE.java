@@ -50,12 +50,6 @@ public class WebDriverIE extends AbstractWebDriver {
 	}
 
 	@Override
-	public EmbeddedBrowser clone() {
-		return new WebDriverIE(new InternetExplorerDriver(), getFilterAttributes(),
-		        getCrawlWaitReload(), getCrawlWaitEvent());
-	}
-
-	@Override
 	public void saveScreenShot(File file) throws NotSupportedException {
 		LOGGER.warn("screenshot not supprted by WebDriver IE");
 		throw new NotSupportedException("screenshot not supprted by WebDriver IE");

@@ -24,8 +24,6 @@ import com.crawljax.core.configuration.ProxyConfiguration;
  */
 public class WebDriverFirefox extends AbstractWebDriver {
 
-	private ProxyConfiguration proxyConfiguration = null;
-	private String firefoxLocation = null;
 	private static final Logger LOGGER = Logger.getLogger(WebDriverFirefox.class.getName());
 	private final FirefoxDriver driver;
 
@@ -68,7 +66,6 @@ public class WebDriverFirefox extends AbstractWebDriver {
 	public WebDriverFirefox(ProxyConfiguration config, List<String> filterAttributes,
 	        long crawlWaitReload, long crawlWaitEvent) {
 		this(makeProfile(config), filterAttributes, crawlWaitReload, crawlWaitEvent);
-		proxyConfiguration = config;
 	}
 
 	/**
@@ -87,7 +84,6 @@ public class WebDriverFirefox extends AbstractWebDriver {
 	        long crawlWaitEvent) {
 		this(new FirefoxDriver(new FirefoxBinary(new File(location)), null), filterAttributes,
 		        crawlWaitReload, crawlWaitEvent);
-		firefoxLocation = location;
 	}
 
 	/**
@@ -115,27 +111,6 @@ public class WebDriverFirefox extends AbstractWebDriver {
 		/* use proxy for everything, including localhost */
 		profile.setPreference("network.proxy.no_proxies_on", "");
 		return profile;
-	}
-
-	@Override
-	public EmbeddedBrowser clone() {
-		FirefoxBinary binary = null;
-		FirefoxProfile profile = null;
-
-		// If there is a proxyConfiguration; create a new Profile
-		if (proxyConfiguration != null) {
-			profile = makeProfile(proxyConfiguration);
-		}
-
-		// If the firefox location was specified, reuse the location
-		if (firefoxLocation != null) {
-			binary = new FirefoxBinary(new File(firefoxLocation));
-		} else {
-			binary = new FirefoxBinary();
-		}
-
-		return new WebDriverFirefox(new FirefoxDriver(binary, profile), getFilterAttributes(),
-		        getCrawlWaitReload(), getCrawlWaitEvent());
 	}
 
 	/**

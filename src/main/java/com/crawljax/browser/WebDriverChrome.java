@@ -55,12 +55,6 @@ public class WebDriverChrome extends AbstractWebDriver {
 	}
 
 	@Override
-	public EmbeddedBrowser clone() {
-		return new WebDriverChrome(new ChromeDriver(), getFilterAttributes(),
-		        getCrawlWaitReload(), getCrawlWaitEvent());
-	}
-
-	@Override
 	public void closeOtherWindows() {
 		LOGGER.info("Closing other windows not implemented for ChromeDriver");
 	}

@@ -73,11 +73,6 @@ public class DummyBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
-	public EmbeddedBrowser clone() {
-		return new DummyBrowser();
-	}
-
-	@Override
 	public FormInput getInputWithRandomValue(FormInput inputForm) {
 		return null;
 	}

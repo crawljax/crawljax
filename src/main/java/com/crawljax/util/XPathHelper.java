@@ -15,7 +15,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -28,7 +27,6 @@ import org.w3c.dom.NodeList;
  * @version $Id$
  */
 public final class XPathHelper {
-	private static final Logger LOGGER = Logger.getLogger(XPathHelper.class.getName());
 	private static final int MAX_SEARCH_LOOPS = 10000;
 
 	private XPathHelper() {

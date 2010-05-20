@@ -116,13 +116,6 @@ public interface EmbeddedBrowser extends Cloneable {
 	String getCurrentUrl();
 
 	/**
-	 * Make a clone of the current EmbeddedBrowser using the custom settings as provided earlier.
-	 * 
-	 * @return a new instance of a EmbeddedBrowser
-	 */
-	EmbeddedBrowser clone();
-
-	/**
 	 * @param inputForm
 	 *            the input form.
 	 * @return a FormInput filled with random data.

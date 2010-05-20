@@ -335,9 +335,6 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 		}
 	}
 
-	@Override
-	public abstract EmbeddedBrowser clone();
-
 	/**
 	 * @return a Document object containing the contents of iframes as well.
 	 * @throws CrawljaxException

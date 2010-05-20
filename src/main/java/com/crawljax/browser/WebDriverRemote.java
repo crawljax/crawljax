@@ -63,12 +63,6 @@ public class WebDriverRemote extends AbstractWebDriver {
 	}
 
 	@Override
-	public EmbeddedBrowser clone() {
-		// TODO Stefan: NOT SUPPORTED (YET)
-		return null;
-	}
-
-	@Override
 	public void saveScreenShot(File file) throws NotSupportedException {
 		// TODO Must be done, Android & FF are capable of taking screenshots!
 	}
