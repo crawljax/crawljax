@@ -22,7 +22,7 @@ import com.crawljax.core.configuration.ProxyConfiguration;
  * @author mesbah
  * @version $Id$
  */
-public class WebDriverFirefox extends AbstractWebDriver {
+public class WebDriverFirefox extends WebDriverBackedEmbeddedBrowser {
 
 	private static final Logger LOGGER = Logger.getLogger(WebDriverFirefox.class.getName());
 	private final FirefoxDriver driver;

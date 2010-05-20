@@ -14,12 +14,12 @@ import org.xml.sax.SAXException;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.util.Helper;
 
-public class AbstractWebDriverTest {
+public class WebDriverBackedEmbeddedBrowserTest {
 
 	@Test
 	public void testGetDocument() {
 		File index = new File("src/test/site/iframe/index.html");
-		AbstractWebDriver driver = new WebDriverFirefox(null, 100, 100);
+		WebDriverBackedEmbeddedBrowser driver = new WebDriverFirefox(null, 100, 100);
 
 		Document doc;
 		try {

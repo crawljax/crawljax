@@ -24,7 +24,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
-public class WebDriverRemote extends AbstractWebDriver {
+public class WebDriverRemote extends WebDriverBackedEmbeddedBrowser {
 	private static final Logger LOGGER = Logger.getLogger(WebDriverRemote.class);
 
 	/**

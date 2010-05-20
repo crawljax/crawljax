@@ -14,7 +14,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
  * @author mesbah
  * @version $Id$
  */
-public class WebDriverIE extends AbstractWebDriver {
+public class WebDriverIE extends WebDriverBackedEmbeddedBrowser {
 
 	private static final Logger LOGGER = Logger.getLogger(WebDriverIE.class.getName());
 

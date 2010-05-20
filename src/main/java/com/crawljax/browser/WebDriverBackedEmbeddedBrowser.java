@@ -36,7 +36,7 @@ import com.crawljax.util.Helper;
  * @author mesbah
  * @version $Id$
  */
-public abstract class AbstractWebDriver implements EmbeddedBrowser {
+public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private final long crawlWaitEvent;
 	private final Logger logger;
 	private final WebDriver browser;
@@ -58,7 +58,7 @@ public abstract class AbstractWebDriver implements EmbeddedBrowser {
 	 * @param crawlWaitEvent
 	 *            the period to wait after an event is fired.
 	 */
-	public AbstractWebDriver(WebDriver driver, Logger logger, List<String> filterAttributes,
+	public WebDriverBackedEmbeddedBrowser(WebDriver driver, Logger logger, List<String> filterAttributes,
 	        long crawlWaitReload, long crawlWaitEvent) {
 		this.browser = driver;
 		this.logger = logger;

@@ -16,7 +16,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
  * @author amesbah
  * @version $Id$
  */
-public class WebDriverChrome extends AbstractWebDriver {
+public class WebDriverChrome extends WebDriverBackedEmbeddedBrowser {
 
 	private static final Logger LOGGER = Logger.getLogger(WebDriverChrome.class.getName());
 	private ChromeDriver driver;
