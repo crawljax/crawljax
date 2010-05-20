@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.NodeList;
 
-import com.crawljax.browser.BrowserFactory;
+import com.crawljax.browser.BrowserPool;
 import com.crawljax.browser.DummyBrowser;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
@@ -42,8 +42,8 @@ public class StateMachineTest {
 	private final StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
 
 	private final DummyBrowser dummyBrowser = new DummyBrowser();
-	private final BrowserFactory dummyFactory =
-	        new BrowserFactory(new CrawljaxConfigurationReader(new CrawljaxConfiguration()));
+	private final BrowserPool dummyFactory =
+	        new BrowserPool(new CrawljaxConfigurationReader(new CrawljaxConfiguration()));
 
 	private static boolean hit = false;
 

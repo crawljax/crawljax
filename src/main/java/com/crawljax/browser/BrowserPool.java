@@ -26,8 +26,8 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
-public final class BrowserFactory {
-	private static final Logger LOGGER = Logger.getLogger(BrowserFactory.class);
+public final class BrowserPool {
+	private static final Logger LOGGER = Logger.getLogger(BrowserPool.class);
 
 	/**
 	 * BlockingQueue used to block for the moment when a browser comes available.
@@ -111,7 +111,7 @@ public final class BrowserFactory {
 	 * @param configurationReader
 	 *            the configurationReader used to read the configuration options from.
 	 */
-	public BrowserFactory(CrawljaxConfigurationReader configurationReader) {
+	public BrowserPool(CrawljaxConfigurationReader configurationReader) {
 		this.configuration = configurationReader;
 		this.threadConfig = configurationReader.getThreadConfigurationReader();
 		this.builder = configurationReader.getBrowserBuilder();
@@ -327,9 +327,9 @@ public final class BrowserFactory {
 		private final AtomicBoolean started;
 		private final AtomicInteger createdBrowserCount;
 		private final AtomicInteger failedCreatedBrowserCount;
-		private final BrowserFactory factory;
+		private final BrowserPool factory;
 
-		public BrowserBooter(BrowserFactory factory) {
+		public BrowserBooter(BrowserPool factory) {
 			assert (factory != null);
 			this.factory = factory;
 			started = new AtomicBoolean(false);

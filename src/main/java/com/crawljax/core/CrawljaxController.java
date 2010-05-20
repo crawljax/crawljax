@@ -8,7 +8,7 @@ import net.jcip.annotations.GuardedBy;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
 
-import com.crawljax.browser.BrowserFactory;
+import com.crawljax.browser.BrowserPool;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.condition.crawlcondition.CrawlConditionChecker;
@@ -56,7 +56,7 @@ public class CrawljaxController implements CrawlQueueManager {
 
 	private final CandidateElementManager elementChecker;
 
-	private final BrowserFactory browserFactory;
+	private final BrowserPool browserFactory;
 
 	/**
 	 * @param config
@@ -79,7 +79,7 @@ public class CrawljaxController implements CrawlQueueManager {
 		elementChecker =
 		        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 
-		browserFactory = new BrowserFactory(configurationReader);
+		browserFactory = new BrowserPool(configurationReader);
 
 		workQueue = init();
 	}
@@ -310,7 +310,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	/**
 	 * @return the browser factory.
 	 */
-	public BrowserFactory getBrowserFactory() {
+	public BrowserPool getBrowserFactory() {
 		return browserFactory;
 	}
 

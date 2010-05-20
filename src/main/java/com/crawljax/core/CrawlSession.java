@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.crawljax.browser.BrowserFactory;
+import com.crawljax.browser.BrowserPool;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
@@ -60,13 +60,13 @@ public class CrawlSession {
 	/**
 	 * The main BrowserFactory where the current Browser is stored.
 	 */
-	private final BrowserFactory browserFactory;
+	private final BrowserPool browserFactory;
 
 	/**
 	 * @param factory
 	 *            the Embedded browser factory that is in use
 	 */
-	public CrawlSession(BrowserFactory factory) {
+	public CrawlSession(BrowserPool factory) {
 		this(factory, null, null, 0);
 	}
 
@@ -80,7 +80,7 @@ public class CrawlSession {
 	 * @param startTime
 	 *            the time this session started in milliseconds.
 	 */
-	public CrawlSession(BrowserFactory factory, StateFlowGraph stateFlowGraph, StateVertix state,
+	public CrawlSession(BrowserPool factory, StateFlowGraph stateFlowGraph, StateVertix state,
 	        long startTime) {
 		this(factory, stateFlowGraph, state, startTime, null);
 	}
@@ -97,7 +97,7 @@ public class CrawlSession {
 	 * @param crawljaxConfiguration
 	 *            the configuration.
 	 */
-	public CrawlSession(BrowserFactory factory, StateFlowGraph stateFlowGraph, StateVertix state,
+	public CrawlSession(BrowserPool factory, StateFlowGraph stateFlowGraph, StateVertix state,
 	        long startTime, CrawljaxConfigurationReader crawljaxConfiguration) {
 		this.crawljaxConfiguration = crawljaxConfiguration;
 		this.browserFactory = factory;

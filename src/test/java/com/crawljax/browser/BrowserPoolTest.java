@@ -17,10 +17,10 @@ import com.crawljax.core.configuration.ThreadConfiguration;
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
-public class BrowserFactoryTest {
+public class BrowserPoolTest {
 	private static final int TIMEOUT = 100000; // 100 Sec.
-	private final BrowserFactory factory =
-	        new BrowserFactory(new CrawljaxConfigurationReader(new CrawljaxConfiguration()));
+	private final BrowserPool factory =
+	        new BrowserPool(new CrawljaxConfigurationReader(new CrawljaxConfiguration()));
 
 	/**
 	 * Request don't release and close the factory.
@@ -68,7 +68,8 @@ public class BrowserFactoryTest {
 
 	/**
 	 * Test a call to close only.
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 */
 	@Test(timeout = TIMEOUT)
 	public void testCloseOnly() throws InterruptedException {
@@ -78,11 +79,12 @@ public class BrowserFactoryTest {
 
 	/**
 	 * Test a call to close only twice.
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 */
 	@Test(timeout = TIMEOUT)
 	public void testCloseOnlyTwoTimes() throws InterruptedException {
-		//TODO Stefan, what about two times without join?
+		// TODO Stefan, what about two times without join?
 		Thread closeThread = factory.close();
 		closeThread.join();
 		closeThread = factory.close();
@@ -108,7 +110,7 @@ public class BrowserFactoryTest {
 
 		try {
 
-			BrowserFactory factory = new BrowserFactory(reader);
+			BrowserPool factory = new BrowserPool(reader);
 
 			factory.requestBrowser();
 			factory.requestBrowser();
@@ -146,7 +148,7 @@ public class BrowserFactoryTest {
 
 		try {
 
-			BrowserFactory factory = new BrowserFactory(reader);
+			BrowserPool factory = new BrowserPool(reader);
 
 			factory.requestBrowser();
 			factory.requestBrowser();
@@ -185,19 +187,19 @@ public class BrowserFactoryTest {
 		long runtimeNonFastBoot = 0;
 		try {
 			long start = System.currentTimeMillis();
-			BrowserFactory factory = new BrowserFactory(reader);
+			BrowserPool factory = new BrowserPool(reader);
 
 			factory.requestBrowser();
 			factory.requestBrowser();
 			EmbeddedBrowser b1 = factory.requestBrowser();
 			factory.freeBrowser(b1);
-			
+
 			Thread closeThread = factory.close();
-			
+
 			runtimeNonFastBoot = System.currentTimeMillis() - start;
-			
+
 			closeThread.join();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -207,7 +209,7 @@ public class BrowserFactoryTest {
 
 		try {
 			long start = System.currentTimeMillis();
-			BrowserFactory factory = new BrowserFactory(reader);
+			BrowserPool factory = new BrowserPool(reader);
 
 			factory.requestBrowser();
 			factory.requestBrowser();
@@ -215,11 +217,11 @@ public class BrowserFactoryTest {
 			factory.freeBrowser(b1);
 
 			Thread closeThread = factory.close();
-			
+
 			long runtimeFastBoot = System.currentTimeMillis() - start;
-			
+
 			closeThread.join();
-			
+
 			Assert.assertTrue("Fast boot is faster", runtimeNonFastBoot > runtimeFastBoot);
 		} catch (Exception e) {
 			e.printStackTrace();
