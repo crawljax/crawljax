@@ -2,7 +2,10 @@ package com.crawljax.browser;
 
 import java.util.List;
 
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 
@@ -35,32 +38,56 @@ public class WebDriverBrowserBuilder implements BrowserBuilder {
 		switch (configuration.getBrowser()) {
 			case firefox:
 				if (configuration.getProxyConfiguration() != null) {
-					return new WebDriverFirefox(configuration.getProxyConfiguration(),
+					FirefoxProfile profile = new FirefoxProfile();
+
+					profile.setPreference("network.proxy.http", configuration
+					        .getProxyConfiguration().getHostname());
+					profile.setPreference("network.proxy.http_port", configuration
+					        .getProxyConfiguration().getPort());
+					profile.setPreference("network.proxy.type", configuration
+					        .getProxyConfiguration().getType().toInt());
+					/* use proxy for everything, including localhost */
+					profile.setPreference("network.proxy.no_proxies_on", "");
+
+					return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(profile),
 					        filterAttributes, crawlWaitReload, crawlWaitEvent);
 				}
 
 				if (configuration.getThreadConfigurationReader().getUseFastBooting()) {
 					FirefoxProfile fp = new FirefoxProfile();
 					fp.setPort(configuration.getThreadConfigurationReader().getPortNumber());
-					return new WebDriverFirefox(fp, filterAttributes, crawlWaitReload,
-					        crawlWaitEvent);
+					return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(fp),
+					        filterAttributes, crawlWaitReload, crawlWaitEvent);
 				}
 
-				return new WebDriverFirefox(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
+				        configuration.getFilterAttributeNames(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case ie:
-				return new WebDriverIE(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				return WebDriverBackedEmbeddedBrowser.withDriver(new InternetExplorerDriver(),
+				        configuration.getFilterAttributeNames(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case chrome:
-				return new WebDriverChrome(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				return WebDriverBackedEmbeddedBrowser.withDriver(new ChromeDriver(),
+				        configuration.getFilterAttributeNames(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case remote:
-				return new WebDriverRemote(filterAttributes, crawlWaitReload, crawlWaitEvent,
-				        configuration.getRemoteHubUrl());
+				return WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
+				        .getRemoteHubUrl(), configuration.getFilterAttributeNames(),
+				        configuration.getCrawlSpecificationReader().getWaitAfterEvent(),
+				        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			default:
-				return new WebDriverFirefox(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
+				        configuration.getFilterAttributeNames(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
 		}
 	}
-
 }

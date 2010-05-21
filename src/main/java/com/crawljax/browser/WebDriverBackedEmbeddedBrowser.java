@@ -1,6 +1,9 @@
 package com.crawljax.browser;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,15 +11,24 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.transaction.NotSupportedException;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,11 +46,12 @@ import com.crawljax.util.Helper;
 
 /**
  * @author mesbah
+ * @author Frank Groeneveld
  * @version $Id$
  */
-public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
+public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private final long crawlWaitEvent;
-	private final Logger logger;
+	private static final Logger LOGGER = Logger.getLogger(WebDriverBackedEmbeddedBrowser.class);
 	private final WebDriver browser;
 
 	private final List<String> filterAttributes;
@@ -58,13 +71,68 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 	 * @param crawlWaitEvent
 	 *            the period to wait after an event is fired.
 	 */
-	public WebDriverBackedEmbeddedBrowser(WebDriver driver, Logger logger, List<String> filterAttributes,
+	private WebDriverBackedEmbeddedBrowser(WebDriver driver, List<String> filterAttributes,
 	        long crawlWaitReload, long crawlWaitEvent) {
 		this.browser = driver;
-		this.logger = logger;
 		this.filterAttributes = filterAttributes;
 		this.crawlWaitEvent = crawlWaitEvent;
 		this.crawlWaitReload = crawlWaitReload;
+	}
+
+	/**
+	 * Create a RemoteWebDriver backed EmbeddedBrowser.
+	 * 
+	 * @param hubUrl
+	 *            Url of the server.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 * @return The EmbeddedBrowser.
+	 */
+	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl,
+	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
+		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setPlatform(Platform.ANY);
+		URL url;
+		try {
+			url = new URL(hubUrl);
+		} catch (MalformedURLException e) {
+			LOGGER.error("The given hub url of the remote server is malformed can not continue!",
+			        e);
+			return null;
+		}
+		HttpCommandExecutor executor = null;
+		try {
+			executor = new HttpCommandExecutor(url);
+		} catch (Exception e) {
+			LOGGER.error("Received unknown exception while creating the "
+			        + "HttpCommandExecutor, can not continue!", e);
+			return null;
+		}
+		return WebDriverBackedEmbeddedBrowser.withDriver(new RemoteWebDriver(executor,
+		        capabilities), filterAttributes, crawlWaitEvent, crawlWaitReload);
+	}
+
+	/**
+	 * Create a WebDriver backed EmbeddedBrowser.
+	 * 
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 * @return The EmbeddedBrowser.
+	 */
+	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver,
+	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
+		return new WebDriverBackedEmbeddedBrowser(driver, filterAttributes, crawlWaitEvent,
+		        crawlWaitReload);
 	}
 
 	/**
@@ -112,11 +180,11 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 				try {
 					webElement.click();
 				} catch (ElementNotVisibleException e1) {
-					logger.info("Element not visible, so cannot be clicked: "
+					LOGGER.info("Element not visible, so cannot be clicked: "
 					        + webElement.getTagName().toUpperCase() + " " + webElement.getText());
 					return false;
 				} catch (Exception e) {
-					logger.error(e.getMessage());
+					LOGGER.error(e.getMessage());
 					return false;
 				}
 				break;
@@ -125,7 +193,7 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 				break;
 
 			default:
-				logger.info("EventType " + eventable.getEventType()
+				LOGGER.info("EventType " + eventable.getEventType()
 				        + " not supported in WebDriver.");
 				return false;
 		}
@@ -141,7 +209,7 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 
 	@Override
 	public void close() {
-		logger.info("Closing the browser...");
+		LOGGER.info("Closing the browser...");
 		// close browser and close every associated window.
 		browser.quit();
 	}
@@ -245,11 +313,11 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 			boolean result = false;
 
 			if (eventable.getRelatedFrame() != null && !eventable.getRelatedFrame().equals("")) {
-				logger.debug("switching to frame: " + eventable.getRelatedFrame());
+				LOGGER.debug("switching to frame: " + eventable.getRelatedFrame());
 				try {
 					browser.switchTo().frame(eventable.getRelatedFrame());
 				} catch (NoSuchFrameException e) {
-					logger.debug("Frame not found, possibily while back-tracking..", e);
+					LOGGER.debug("Frame not found, possibily while back-tracking..", e);
 					// TODO Stefan, This exception is catched to prevent stopping from working
 					// This was the case on the Gmail case; findout if not switching (catching)
 					// Results in good performance...
@@ -272,10 +340,10 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 
 		} catch (NoSuchElementException e) {
 
-			logger.warn("Could not fire eventable: " + eventable.toString());
+			LOGGER.warn("Could not fire eventable: " + eventable.toString());
 			return false;
 		} catch (RuntimeException e) {
-			logger.error("Caught Exception: " + e.getMessage(), e);
+			LOGGER.error("Caught Exception: " + e.getMessage(), e);
 
 			return false;
 		}
@@ -327,7 +395,7 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 			if (!handle.equals(browser.getWindowHandle())) {
 
 				browser.switchTo().window(handle);
-				logger.info("Closing other window with title \"" + browser.getTitle() + "\"");
+				LOGGER.info("Closing other window with title \"" + browser.getTitle() + "\"");
 				browser.close();
 				// browser.switchTo().defaultContent();
 				browser.switchTo().window(current);
@@ -353,7 +421,7 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 				                + "getElementsByTagName(\\\"html\\\")[0] is undefined")) {
 					// There is no html tag... ignore!
 					// TODO Stefan find out if this error is a Webdriver bug??
-					logger.info("Skiped parsing dom tree because no html content is defined");
+					LOGGER.info("Skiped parsing dom tree because no html content is defined");
 				} else {
 					throw new CrawljaxException(e.getMessage(), e);
 				}
@@ -397,19 +465,19 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 
 				String handle = new String(browser.getWindowHandle());
 
-				logger.debug("The current H: " + handle);
+				LOGGER.debug("The current H: " + handle);
 
 				try {
 
-					logger.debug("switching to frame: " + frameIdentification);
+					LOGGER.debug("switching to frame: " + frameIdentification);
 					browser.switchTo().frame(frameIdentification);
 					String toAppend = new String(browser.getPageSource());
 
-					logger.debug("frame dom: " + toAppend);
+					LOGGER.debug("frame dom: " + toAppend);
 
 					browser.switchTo().defaultContent();
 
-					logger.debug("default handle window source: " + browser.getPageSource());
+					LOGGER.debug("default handle window source: " + browser.getPageSource());
 
 					Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
 					Element importedElement =
@@ -419,7 +487,7 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 					appendFrameContent(importedElement, document, frameIdentification);
 
 				} catch (Exception e) {
-					logger.info("Got exception while inspecting a frame:" + frameIdentification
+					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
 					        + " continuing...", e);
 				}
 
@@ -462,7 +530,7 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 				return null;
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return null;
 		}
 
@@ -489,7 +557,7 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 				                .getOptions());
 				values.add(new InputValue(option.getText(), true));
 			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage(), e);
 				return null;
 			}
 		}
@@ -505,7 +573,7 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 	@Override
 	public String getFrameDom(String iframeIdentification) {
 
-		logger.debug("switching to frame: " + iframeIdentification);
+		LOGGER.debug("switching to frame: " + iframeIdentification);
 		browser.switchTo().frame(iframeIdentification);
 
 		// make a copy of the dom before changing into the top page
@@ -554,6 +622,36 @@ public abstract class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser 
 	 */
 	protected long getCrawlWaitReload() {
 		return crawlWaitReload;
+	}
+
+	@Override
+	public void saveScreenShot(File file) throws NotSupportedException {
+		if (browser instanceof TakesScreenshot) {
+			File tmpfile = ((TakesScreenshot) browser).getScreenshotAs(OutputType.FILE);
+
+			try {
+				FileHandler.copy(tmpfile, file);
+			} catch (IOException e) {
+				throw new WebDriverException(e);
+			}
+
+			removeCanvasGeneratedByFirefoxDriverForScreenshots();
+		} else {
+			throw new NotSupportedException("Your current WebDriver doesn't support screenshots.");
+		}
+	}
+
+	private void removeCanvasGeneratedByFirefoxDriverForScreenshots() {
+		String js = "";
+		js += "var canvas = document.getElementById('fxdriver-screenshot-canvas');";
+		js += "if(canvas != null){";
+		js += "canvas.parentNode.removeChild(canvas);";
+		js += "}";
+		try {
+			executeJavaScript(js);
+		} catch (Exception e) {
+			LOGGER.warn("Could not remove the screenshot canvas from the DOM.");
+		}
 	}
 
 }

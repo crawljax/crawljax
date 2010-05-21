@@ -11,11 +11,12 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.WebDriverFirefox;
+import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
 
 /**
  * Test for the Helper class.
@@ -49,7 +50,8 @@ public class HelperTest {
 	 */
 	@Test
 	public void testGetDocumentFromBrowser() {
-		EmbeddedBrowser browser = new WebDriverFirefox(null, 200, 300);
+		EmbeddedBrowser browser =
+		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 200, 300);
 		File index = new File(INDEX);
 		String html = "";
 		try {
