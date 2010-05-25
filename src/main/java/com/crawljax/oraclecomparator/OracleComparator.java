@@ -8,9 +8,10 @@ import net.jcip.annotations.Immutable;
 import com.crawljax.condition.Condition;
 
 /**
+ * This class contains the oracle and its precondition(s).
+ * 
  * @author danny
- * @version $Id$ This class contains the
- *          oracle and its precondition(s)
+ * @version $Id$
  */
 @Immutable
 public class OracleComparator {

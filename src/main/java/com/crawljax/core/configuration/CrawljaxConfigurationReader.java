@@ -124,55 +124,59 @@ public class CrawljaxConfigurationReader {
 	}
 
 	/**
-	 * Convert getAllIncludedCrawlElements to a list of TagElements.
-	 * TODO: Completely skip this step by using either CrawlElement or TagElement everywhere.
+	 * Convert getAllIncludedCrawlElements to a list of TagElements. TODO: Completely skip this step
+	 * by using either CrawlElement or TagElement everywhere.
+	 * 
 	 * @return A list of tag elements.
 	 */
 	public List<TagElement> getTagElements() {
 		List<TagElement> tagElements = new ArrayList<TagElement>();
-		
-		for(CrawlElement crawlElement : getAllIncludedCrawlElements()) {
+
+		for (CrawlElement crawlElement : getAllIncludedCrawlElements()) {
 			Set<TagAttribute> attributes = new HashSet<TagAttribute>();
-			
-			for(CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
-				TagAttribute tag = new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue());
+
+			for (CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
+				TagAttribute tag =
+				        new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue());
 				attributes.add(tag);
 			}
-			
+
 			TagElement tagElement = new TagElement(attributes, crawlElement.getTagName());
-			
+
 			tagElement.setId(crawlElement.getId());
-			
+
 			tagElements.add(tagElement);
 		}
-		
+
 		return tagElements;
 	}
 
 	/**
-	 * Convert getCrawlElementsExcluded to a list of TagElements.
-	 * TODO: Completely skip this step by using either CrawlElement or TagElement everywhere.
+	 * Convert getCrawlElementsExcluded to a list of TagElements. TODO: Completely skip this step by
+	 * using either CrawlElement or TagElement everywhere.
+	 * 
 	 * @return a list of TagElements.
 	 */
 	public List<TagElement> getExcludeTagElements() {
 		List<TagElement> tagElements = new ArrayList<TagElement>();
-		
-		for(CrawlElement crawlElement : crawljaxConfiguration.getCrawlSpecification()
-                .crawlActions().getCrawlElementsExcluded()) {
+
+		for (CrawlElement crawlElement : crawljaxConfiguration.getCrawlSpecification()
+		        .crawlActions().getCrawlElementsExcluded()) {
 			Set<TagAttribute> attributes = new HashSet<TagAttribute>();
-			
-			for(CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
-				TagAttribute tag = new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue());
+
+			for (CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
+				TagAttribute tag =
+				        new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue());
 				attributes.add(tag);
 			}
-			
+
 			TagElement tagElement = new TagElement(attributes, crawlElement.getTagName());
-			
+
 			tagElement.setId(crawlElement.getId());
-			
+
 			tagElements.add(tagElement);
 		}
-		
+
 		return tagElements;
 
 	}
