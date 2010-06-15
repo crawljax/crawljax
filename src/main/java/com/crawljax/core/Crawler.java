@@ -19,7 +19,7 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
 
 /**
- * Class that performs crawl actions. It is designed to be run inside a Thread
+ * Class that performs crawl actions. It is designed to be run inside a Thread.
  * 
  * @see #run()
  * @author dannyroest@gmail.com (Danny Roest)
@@ -41,7 +41,7 @@ public class Crawler implements Runnable {
 	/**
 	 * The central DataController. This is a multiple to 1 relation Every Thread shares an instance
 	 * of the same controller! All operations / fields used in the controller should be checked for
-	 * Thread safety
+	 * thread safety.
 	 */
 	private final CrawljaxController controller;
 
@@ -119,7 +119,7 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Private Crawler constructor for a 'reload' crawler. only used from internal
+	 * Private Crawler constructor for a 'reload' crawler. Only used internally.
 	 * 
 	 * @param mother
 	 *            the main CrawljaxController
@@ -206,8 +206,8 @@ public class Crawler implements Runnable {
 			if (getBrowser().fireEvent(eventable)) {
 
 				/**
-				 * Let the controller execute its specified wait operation on the browser Thread
-				 * safe
+				 * Let the controller execute its specified wait operation on the browser thread
+				 * safe.
 				 */
 				controller.doBrowserWait(getBrowser());
 
@@ -234,7 +234,7 @@ public class Crawler implements Runnable {
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-		return false; // As we are here there was a error... so definitely there is no event fired.
+		return false; // If we arrive here, there was an error, so no event fired.
 	}
 
 	/**
@@ -525,7 +525,7 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Initialise the Crawler, retrieve a Browser and go to the initail url when no browser was
+	 * Initialize the Crawler, retrieve a Browser and go to the initial URL when no browser was
 	 * present. rewind the state machine and goBack to the state if there is exactEventPath is
 	 * specified.
 	 */
@@ -533,8 +533,8 @@ public class Crawler implements Runnable {
 		this.browser = this.getBrowser();
 		if (this.browser == null) {
 			/**
-			 * As the browser is null, request one and got to the initial url, if the browser is
-			 * Already set the browser will be in the initial url.
+			 * As the browser is null, request one and got to the initial URL, if the browser is
+			 * Already set the browser will be in the initial URL.
 			 */
 			try {
 				this.browser = controller.getBrowserFactory().requestBrowser();
@@ -648,7 +648,7 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Test to see if the (new) dom is changed with regards to the old dom. This method is Thread
+	 * Test to see if the (new) DOM is changed with regards to the old DOM. This method is Thread
 	 * safe.
 	 * 
 	 * @param stateBefore
@@ -675,7 +675,7 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Checks the state and time constraints. This function is nearly Thread-safe
+	 * Checks the state and time constraints. This function is nearly Thread-safe.
 	 * 
 	 * @return true if all conditions are met.
 	 */
