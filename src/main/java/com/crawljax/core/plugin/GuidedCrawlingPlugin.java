@@ -20,7 +20,7 @@ public interface GuidedCrawlingPlugin extends Plugin {
 	/**
 	 * @param currentState
 	 *            a copy of the currentState.
-	 * @param controler
+	 * @param controller
 	 *            the crawljax controller instance.
 	 * @param session
 	 *            the crawl session.
@@ -30,7 +30,7 @@ public interface GuidedCrawlingPlugin extends Plugin {
 	 * @param stateMachine
 	 *            the state machine.
 	 */
-	void guidedCrawling(StateVertix currentState, CrawljaxController controler,
+	void guidedCrawling(StateVertix currentState, CrawljaxController controller,
 	        CrawlSession session, List<Eventable> exactEventPaths, StateMachine stateMachine);
 
 }
