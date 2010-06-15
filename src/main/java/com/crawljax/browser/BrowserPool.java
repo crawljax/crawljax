@@ -254,7 +254,6 @@ public final class BrowserPool {
 				// There are browsers available
 				browser = available.take();
 				taken.add(browser);
-				currentBrowser.set(browser);
 			} else if (activeBrowserCount.getAndIncrement() < getNumberOfBrowsers()) {
 				// We are not at the limit of the number of browsers so create one
 				try {
@@ -279,7 +278,6 @@ public final class BrowserPool {
 					}
 				}
 				taken.add(browser);
-				currentBrowser.set(browser);
 			} else {
 				// The max number of browsers has been made, so wait for a browser to become
 				// available.
@@ -288,6 +286,7 @@ public final class BrowserPool {
 		}
 		assert (browser != null);
 		assert (taken.contains(browser));
+		currentBrowser.set(browser);
 		return browser;
 	}
 
