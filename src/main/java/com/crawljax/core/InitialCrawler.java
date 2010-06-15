@@ -77,7 +77,7 @@ public class InitialCrawler extends Crawler {
 			        new StateVertix(this.getBrowser().getCurrentUrl(), "index", this.getBrowser()
 			                .getDom(), controller.getStrippedDom(this.getBrowser()));
 		} catch (CrawljaxException e) {
-			LOGGER.error("Can not build the index state due to an CrawljaxException", e);
+			LOGGER.error("Can not build the index state due to a CrawljaxException", e);
 		}
 
 		/**
