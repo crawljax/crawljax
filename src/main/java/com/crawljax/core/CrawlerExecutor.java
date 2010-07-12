@@ -1,12 +1,12 @@
 package com.crawljax.core;
 
+import org.apache.log4j.Logger;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.log4j.Logger;
 
 /**
  * Main Executor inheriting {@link ThreadPoolExecutor} to implement the beforeExecute, afterExecute
@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * created. The number of Crawlers active at the same time will be the maximum of the number of
  * Threads. If there are no more Threads left, Crawlers will be stored in a workQueue until a Thread
  * will become available.
- * 
+ *
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
@@ -45,7 +45,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	/**
 	 * Default CrawlerExecutor. using the configured number of threads, no timeout a Stack as
 	 * workQueue to support Depth-first crawling and the local ThreadFactory.
-	 * 
+	 *
 	 * @param numberOfThreads
 	 *            number of threads.
 	 */
@@ -97,10 +97,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 		                + crawlerName;
 
 		t.setName(threadName);
-		/*
-		 * TODO: Stefan, uncomment for 2.0 release LOGGER.info("Starting new Crawler: " +
-		 * threadName);
-		 */
+		LOGGER.info("Starting new Crawler: " + threadName);
 	}
 
 	@Override
@@ -114,7 +111,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 
 	/**
 	 * This function blocks until all tasks has been executed.
-	 * 
+	 *
 	 * @throws InterruptedException
 	 *             when this thread is interrupted.
 	 */
@@ -129,7 +126,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	/**
 	 * The most simple implementation of a ThreadFactory, but with a counter and safe for the number
 	 * of threads created. The results are stored in the {@link CrawlerExecutor#threadIdMap}.
-	 * 
+	 *
 	 * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
 	 */
 	private class CrawlerThreadFactory implements ThreadFactory {

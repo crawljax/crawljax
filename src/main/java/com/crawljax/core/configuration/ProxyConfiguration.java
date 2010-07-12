@@ -1,9 +1,9 @@
 package com.crawljax.core.configuration;
 
 /**
- * Class for passing proxy settings to Crawljax' browser factory. It is returned by the
+ * Class for passing proxy settings to Crawljax' browser builder. It is returned by the
  * ProxyServerPlugin interface.
- * 
+ *
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
@@ -38,7 +38,7 @@ public class ProxyConfiguration {
 
 		/**
 		 * Converts the enum to an int (used by Firefox internally).
-		 * 
+		 *
 		 * @return The int representation of the enum value.
 		 */
 		public int toInt() {

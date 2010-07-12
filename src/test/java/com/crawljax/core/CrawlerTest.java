@@ -1,23 +1,23 @@
 package com.crawljax.core;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Test class for the Crawler testing.
- * 
+ *
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
@@ -28,9 +28,8 @@ public class CrawlerTest {
 
 	private CrawljaxConfiguration buildController() throws ConfigurationException {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
-		CrawlSpecification spec =
-		        new CrawlSpecification("file://"
-		                + new File("src/test/site/crawler/index.html").getAbsolutePath());
+		CrawlSpecification spec = new CrawlSpecification(
+		        "file://" + new File("src/test/site/crawler/index.html").getAbsolutePath());
 		spec.click("a");
 		config.setCrawlSpecification(spec);
 		return config;
@@ -58,18 +57,17 @@ public class CrawlerTest {
 		TestController controller = new TestController(buildController(), index);
 
 		// Prevent dead-lock
-		// controller.getBrowserFactory().freeBrowser(controller.getCrawler().getBrowser());
+		// controller.getBrowserPool().freeBrowser(controller.getCrawler().getBrowser());
 
 		for (List<Eventable> path : paths) {
 			Crawler c = new Crawler(controller, path, "Follow Path");
 			c.run();
 			Assert
 			        .assertEquals(
-			                "Path found by Controller driven Crawling equals the path found in the Crawler",
-			                path, c.getExacteventpath());
+			                "Path found by Controller driven Crawling equals the path found in the Crawler", path, c.getExacteventpath());
 		}
 
-		controller.getBrowserFactory().close();
+		controller.getBrowserPool().close();
 	}
 
 	private class TestController extends CrawljaxController {
@@ -83,7 +81,7 @@ public class CrawlerTest {
 			i = index;
 			g = new StateFlowGraph(i);
 			localSession =
-			        new CrawlSession(this.getBrowserFactory(), g, i, System.currentTimeMillis());
+			        new CrawlSession(this.getBrowserPool(), g, i, System.currentTimeMillis());
 		}
 
 		@Override

@@ -4,20 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.state.StateVertix;
+import com.crawljax.forms.FormHandler;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.crawljax.core.configuration.CrawlSpecification;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.StateVertix;
-import com.crawljax.forms.FormHandler;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class CandidateElementExtractorTest {
 
@@ -37,7 +38,7 @@ public class CandidateElementExtractorTest {
 		Crawler crawler = null;
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
-			crawler = new InitialCrawler(controller);
+			crawler = new CEETCrawler(controller);
 
 			assertNotNull(crawler);
 
@@ -54,12 +55,10 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			FormHandler formHandler =
-			        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
-			                .getInputSpecification(), true);
-			CandidateElementExtractor extractor =
-			        new CandidateElementExtractor(controller.getElementChecker(), crawler
-			                .getBrowser(), formHandler);
+			FormHandler formHandler = new FormHandler(crawler.getBrowser(),
+			        controller.getConfigurationReader().getInputSpecification(), true);
+			CandidateElementExtractor extractor = new CandidateElementExtractor(
+			        controller.getElementChecker(), crawler.getBrowser(), formHandler);
 			assertNotNull(extractor);
 			try {
 
@@ -67,9 +66,8 @@ public class CandidateElementExtractorTest {
 				List<TagElement> includes = new ArrayList<TagElement>();
 				includes.add(tagElementInc);
 
-				List<CandidateElement> candidates =
-				        extractor.extract(includes, new ArrayList<TagElement>(), true,
-				                DUMMY_STATE);
+				List<CandidateElement> candidates = extractor.extract(
+				        includes, new ArrayList<TagElement>(), true, DUMMY_STATE);
 
 				assertNotNull(candidates);
 				assertEquals(15, candidates.size());
@@ -78,7 +76,7 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			controller.getBrowserFactory().close();
+			controller.getBrowserPool().close();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
@@ -93,7 +91,7 @@ public class CandidateElementExtractorTest {
 		Crawler crawler = null;
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
-			crawler = new InitialCrawler(controller);
+			crawler = new CEETCrawler(controller);
 
 			assertNotNull(crawler);
 
@@ -110,12 +108,10 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			FormHandler formHandler =
-			        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
-			                .getInputSpecification(), true);
-			CandidateElementExtractor extractor =
-			        new CandidateElementExtractor(controller.getElementChecker(), crawler
-			                .getBrowser(), formHandler);
+			FormHandler formHandler = new FormHandler(crawler.getBrowser(),
+			        controller.getConfigurationReader().getInputSpecification(), true);
+			CandidateElementExtractor extractor = new CandidateElementExtractor(
+			        controller.getElementChecker(), crawler.getBrowser(), formHandler);
 			assertNotNull(extractor);
 
 			try {
@@ -141,7 +137,7 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			controller.getBrowserFactory().close();
+			controller.getBrowserPool().close();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
@@ -158,7 +154,7 @@ public class CandidateElementExtractorTest {
 		Crawler crawler = null;
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
-			crawler = new InitialCrawler(controller);
+			crawler = new CEETCrawler(controller);
 
 			assertNotNull(crawler);
 
@@ -175,12 +171,10 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			FormHandler formHandler =
-			        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
-			                .getInputSpecification(), true);
-			CandidateElementExtractor extractor =
-			        new CandidateElementExtractor(controller.getElementChecker(), crawler
-			                .getBrowser(), formHandler);
+			FormHandler formHandler = new FormHandler(crawler.getBrowser(),
+			        controller.getConfigurationReader().getInputSpecification(), true);
+			CandidateElementExtractor extractor = new CandidateElementExtractor(
+			        controller.getElementChecker(), crawler.getBrowser(), formHandler);
 			assertNotNull(extractor);
 			try {
 
@@ -188,9 +182,8 @@ public class CandidateElementExtractorTest {
 				List<TagElement> includes = new ArrayList<TagElement>();
 				includes.add(tagElementInc);
 
-				List<CandidateElement> candidates =
-				        extractor.extract(includes, new ArrayList<TagElement>(), true,
-				                DUMMY_STATE);
+				List<CandidateElement> candidates = extractor.extract(
+				        includes, new ArrayList<TagElement>(), true, DUMMY_STATE);
 
 				for (CandidateElement e : candidates) {
 					System.out.println("candidate: " + e.getUniqueString());
@@ -203,11 +196,45 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			controller.getBrowserFactory().close();
+			controller.getBrowserPool().close();
 
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
 		}
 	}
+
+	/**
+	 * Internal mock-up crawler retrieving its browser.
+	 *
+	 * @author slenselink@google.com (Stefan Lenselink)
+	 */
+	private class CEETCrawler extends InitialCrawler {
+		private EmbeddedBrowser browser;
+
+		/**
+		 * @param mother
+		 */
+		public CEETCrawler(CrawljaxController mother) {
+			super(mother);
+			try {
+				browser = mother.getBrowserPool().requestBrowser();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see com.crawljax.core.InitialCrawler#getBrowser()
+		 */
+		@Override
+		public EmbeddedBrowser getBrowser() {
+			// TODO Auto-generated method stub
+			return browser;
+		}
+
+	}
+
 }

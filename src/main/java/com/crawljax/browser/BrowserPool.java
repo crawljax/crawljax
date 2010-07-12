@@ -3,6 +3,13 @@
  */
 package com.crawljax.browser;
 
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.ThreadConfigurationReader;
+import com.crawljax.core.plugin.CrawljaxPluginsUtil;
+
+import org.apache.log4j.Logger;
+import org.openqa.selenium.WebDriverException;
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -12,16 +19,9 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Logger;
-import org.openqa.selenium.WebDriverException;
-
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.ThreadConfigurationReader;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
-
 /**
- * The factory class returns an instance of the desired browser as specified in the properties file.
- * 
+ * The Pool class returns an instance of the desired browser as specified in the properties file.
+ *
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
@@ -70,7 +70,7 @@ public final class BrowserPool {
 
 	/**
 	 * Is the browser booting in use?
-	 * 
+	 *
 	 * @return true if the browser booting is in use.
 	 */
 	private boolean useBooting() {
@@ -79,7 +79,7 @@ public final class BrowserPool {
 
 	/**
 	 * Get the number of Browsers from the config.
-	 * 
+	 *
 	 * @return the number of browsers.
 	 */
 	private int getNumberOfBrowsers() {
@@ -105,9 +105,9 @@ public final class BrowserPool {
 	}
 
 	/**
-	 * The default constructor for the BrowserFactory. It's feeded with a configurationReader to
-	 * read all the configuration settings.
-	 * 
+	 * The default constructor for the BrowserPool. It's feeded with a configurationReader to read
+	 * all the configuration settings.
+	 *
 	 * @param configurationReader
 	 *            the configurationReader used to read the configuration options from.
 	 */
@@ -122,7 +122,7 @@ public final class BrowserPool {
 
 	/**
 	 * Internal used to requestBrowser.
-	 * 
+	 *
 	 * @see {@link #requestBrowser()}
 	 * @return the new browser
 	 * @throws WebDriverException
@@ -152,9 +152,9 @@ public final class BrowserPool {
 			try {
 				preCrawlingBlocker.acquire();
 			} catch (InterruptedException e) {
-				LOGGER.error(
-				        "Waiting for the preCrawlingPlugins to execute first has been interupped, "
-				                + "continuing with the OnBrowserCreatedPlugins", e);
+				LOGGER
+				        .error(
+				                        "Waiting for the preCrawlingPlugins to execute first has been interupped, " + "continuing with the OnBrowserCreatedPlugins", e);
 			}
 		}
 		/**
@@ -169,7 +169,7 @@ public final class BrowserPool {
 
 	/**
 	 * Depended on the {@link #browserType} a new instance is made.
-	 * 
+	 *
 	 * @return the new Object holding the EmbeddedBrowser instance.
 	 * @throws WebDriverException
 	 *             a WebDriverException is thrown by the WebDriver when creation of the browser
@@ -181,7 +181,7 @@ public final class BrowserPool {
 
 	/**
 	 * Close all browser windows. in a Separate Thread
-	 * 
+	 *
 	 * @return the Thread currently executing the shutdown.
 	 */
 	public synchronized Thread close() {
@@ -226,7 +226,7 @@ public final class BrowserPool {
 	/**
 	 * Return the browser, release the current browser for further operations. This method is
 	 * Synchronised to prevent problems in combination with isFinished.
-	 * 
+	 *
 	 * @param browser
 	 *            the browser which is not needed anymore
 	 */
@@ -239,7 +239,7 @@ public final class BrowserPool {
 
 	/**
 	 * Place a request for a browser.
-	 * 
+	 *
 	 * @return a new Browser instance which is currently free
 	 * @throws InterruptedException
 	 *             the InterruptedException is thrown when the AVAILABE list is interrupted.
@@ -292,7 +292,7 @@ public final class BrowserPool {
 
 	/**
 	 * This call blocks until a browser comes available.
-	 * 
+	 *
 	 * @return the browser currently reserved.
 	 * @throws InterruptedException
 	 *             when available.take is Interrupted
@@ -301,14 +301,13 @@ public final class BrowserPool {
 		EmbeddedBrowser b = available.take();
 		assert (b != null);
 		taken.add(b);
-		currentBrowser.set(b);
 		return b;
 	}
 
 	/**
 	 * Are all takenBrowsers free (again)? this method is Synchronised to prevent problems in
 	 * combination with freeBrowser.
-	 * 
+	 *
 	 * @return true if the taken list of Browsers is empty
 	 */
 	public synchronized boolean isFinished() {
@@ -318,7 +317,7 @@ public final class BrowserPool {
 
 	/**
 	 * This private class is used to boot all the browsers.
-	 * 
+	 *
 	 * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
 	 */
 	private class BrowserBooter extends Thread {
@@ -326,11 +325,11 @@ public final class BrowserPool {
 		private final AtomicBoolean started;
 		private final AtomicInteger createdBrowserCount;
 		private final AtomicInteger failedCreatedBrowserCount;
-		private final BrowserPool factory;
+		private final BrowserPool pool;
 
-		public BrowserBooter(BrowserPool factory) {
-			assert (factory != null);
-			this.factory = factory;
+		public BrowserBooter(BrowserPool pool) {
+			assert (pool != null);
+			this.pool = pool;
 			started = new AtomicBoolean(false);
 			createdBrowserCount = new AtomicInteger(0);
 			failedCreatedBrowserCount = new AtomicInteger(0);
@@ -345,7 +344,7 @@ public final class BrowserPool {
 			assert (createdBrowserCount.get() <= 1);
 
 			// Loop to the requested number of browsers
-			for (; i < factory.getNumberOfBrowsers(); i++) {
+			for (; i < pool.getNumberOfBrowsers(); i++) {
 				// Create a new Thread
 				new Thread(new Runnable() {
 					private int bootRetries = 0;
@@ -353,17 +352,17 @@ public final class BrowserPool {
 					@Override
 					public void run() {
 						try {
-							factory.available.add(factory.createBrowser());
+							pool.available.add(pool.createBrowser());
 							createdBrowserCount.incrementAndGet();
 						} catch (Throwable e) {
 							/* Catch ALL exceptions... */
 							LOGGER.error("Creation of Browser faild!", e);
-							if (factory.getNumberBrowserCreateRetries() > 0
-							        && bootRetries < factory.getNumberBrowserCreateRetries()) {
+							if (pool.getNumberBrowserCreateRetries() > 0
+							        && bootRetries < pool.getNumberBrowserCreateRetries()) {
 								bootRetries++;
 
 								// Do we need to sleep after a crash?
-								if (factory.getSleepTimeOnBrowserCreationFailure() > 0) {
+								if (pool.getSleepTimeOnBrowserCreationFailure() > 0) {
 									try {
 										Thread.sleep(getSleepTimeOnBrowserCreationFailure());
 									} catch (InterruptedException e1) {
@@ -392,13 +391,14 @@ public final class BrowserPool {
 			if (allBrowsersLoaded() || !started.get()) {
 				return;
 			}
-			LOGGER.warn("Waiting for all browsers to be started fully"
-			        + " before starting to close them. Created browsers "
-			        + createdBrowserCount.get() + " configed browsers "
-			        + factory.getNumberOfBrowsers());
+			LOGGER.warn(
+			        "Waiting for all browsers to be started fully"
+			                + " before starting to close them. Created browsers "
+			                + createdBrowserCount.get() + " configed browsers "
+			                + pool.getNumberOfBrowsers());
 			while (!allBrowsersLoaded()) {
 				try {
-					Thread.sleep(factory.shutdownTimeout);
+					Thread.sleep(pool.shutdownTimeout);
 				} catch (InterruptedException e) {
 					LOGGER.error("Closing of the browsers faild due to an Interrupt", e);
 				}
@@ -420,14 +420,14 @@ public final class BrowserPool {
 		 * @return true is all requested browsers are loaded or at least there was an attempt for!.
 		 */
 		private boolean allBrowsersLoaded() {
-			return (failedCreatedBrowserCount.get() + createdBrowserCount.get()) >= factory
-			        .getNumberOfBrowsers();
+			return (failedCreatedBrowserCount.get() + createdBrowserCount.get())
+			        >= pool.getNumberOfBrowsers();
 		}
 	}
 
 	/**
 	 * Returns the browser associated with this Thread.
-	 * 
+	 *
 	 * @return the browser associated with this Thread null is non is associated.
 	 */
 	public EmbeddedBrowser getCurrentBrowser() {

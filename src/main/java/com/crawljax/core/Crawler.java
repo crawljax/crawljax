@@ -537,7 +537,7 @@ public class Crawler implements Runnable {
 			 * Already set the browser will be in the initial URL.
 			 */
 			try {
-				this.browser = controller.getBrowserFactory().requestBrowser();
+				this.browser = controller.getBrowserPool().requestBrowser();
 			} catch (InterruptedException e1) {
 				LOGGER.error("The request for a browser was interuped", e1);
 			}
@@ -572,7 +572,7 @@ public class Crawler implements Runnable {
 	 * done with {@link CrawlerExecutor#shutdown()}
 	 */
 	public void shutdown() {
-		controller.getBrowserFactory().freeBrowser(this.getBrowser());
+		controller.getBrowserPool().freeBrowser(this.getBrowser());
 	}
 
 	/**
