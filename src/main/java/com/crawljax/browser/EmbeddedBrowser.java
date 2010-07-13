@@ -3,20 +3,18 @@
  */
 package com.crawljax.browser;
 
-import java.io.File;
-
-import javax.transaction.NotSupportedException;
-
-import org.openqa.selenium.WebElement;
-
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 
+import org.openqa.selenium.WebElement;
+
+import java.io.File;
+
 /**
  * Browser interface used by Crawjax.
- * 
+ *
  * @author mesbah
  * @version $Id$
  */
@@ -31,7 +29,7 @@ public interface EmbeddedBrowser extends Cloneable {
 
 	/**
 	 * Opens the url in the browser.
-	 * 
+	 *
 	 * @param url
 	 *            the URL.
 	 * @throws CrawljaxException
@@ -41,7 +39,7 @@ public interface EmbeddedBrowser extends Cloneable {
 
 	/**
 	 * fires the event.
-	 * 
+	 *
 	 * @param event
 	 *            the event.
 	 * @throws CrawljaxException
@@ -92,7 +90,7 @@ public interface EmbeddedBrowser extends Cloneable {
 
 	/**
 	 * Execute JavaScript in the browser.
-	 * 
+	 *
 	 * @param script
 	 *            The script to execute.
 	 * @return The JavaScript return object.
@@ -103,7 +101,7 @@ public interface EmbeddedBrowser extends Cloneable {
 
 	/**
 	 * Checks if an element is visible.
-	 * 
+	 *
 	 * @param identification
 	 *            identification to use.
 	 * @return true if the element is visible.
@@ -146,8 +144,8 @@ public interface EmbeddedBrowser extends Cloneable {
 	/**
 	 * @param file
 	 *            the file to write the screenshot to (png).
-	 * @throws NotSupportedException
+	 * @throws CrawljaxException
 	 *             if saving screenshots is not supported by the implementing class.
 	 */
-	void saveScreenShot(File file) throws NotSupportedException;
+	void saveScreenShot(File file) throws CrawljaxException;
 }

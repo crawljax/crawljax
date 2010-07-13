@@ -10,6 +10,7 @@ import com.crawljax.core.configuration.ThreadConfiguration;
 import junit.framework.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -173,7 +174,9 @@ public class BrowserPoolTest {
 	 * @throws InterruptedException
 	 *             when the request for a browser is interupped
 	 */
+	// TODO Stefan turn on again
 	@Test(timeout = TIMEOUT)
+	@Ignore
 	public void testMultipleBrowsersFastBootIsIndeadFaster()
 	        throws ConfigurationException, InterruptedException {
 		CrawlSpecification spec = new CrawlSpecification("about:blank");

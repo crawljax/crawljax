@@ -4,10 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.transaction.NotSupportedException;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.util.Helper;
 
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -15,8 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.util.Helper;
+import java.io.File;
+import java.io.IOException;
 
 public class WebDriverBackedEmbeddedBrowserTest {
 
@@ -67,7 +65,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 			}
 			try {
 				browser.saveScreenShot(f);
-			} catch (NotSupportedException e) {
+			} catch (CrawljaxException e) {
 				fail(e.getMessage());
 			}
 			assertTrue(f.exists());
