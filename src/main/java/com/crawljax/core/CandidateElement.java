@@ -147,7 +147,7 @@ public class CandidateElement {
 	 *            the current browser instance that contains the current dom
 	 * @return true if all conditions are satisfied or no conditions are specified
 	 */
-	public boolean allConditionsSatisfied(EmbeddedBrowser browser) {
+	public boolean allConditionsSatisfied(EmbeddedBrowser<?> browser) {
 		if (eventableCondition != null) {
 			return eventableCondition.checkAllConditionsSatisfied(browser);
 		}

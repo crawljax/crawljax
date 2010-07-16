@@ -6,7 +6,7 @@ import com.crawljax.util.EditDistance;
 /**
  * Oracle Comparator that uses the Levenshtein Edit Distance to determince wheter two states are
  * equivalent.
- * 
+ *
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
@@ -32,6 +32,7 @@ public class EditDistanceComparator extends AbstractComparator {
 	/**
 	 * @return true if and only if the edit distance threshold is >= the specified treshold
 	 */
+	@Override
 	public boolean isEquivalent() {
 		return EditDistance.isClone(getOriginalDom(), getNewDom(), getTreshold());
 	}

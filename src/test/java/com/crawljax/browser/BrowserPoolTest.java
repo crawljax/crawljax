@@ -46,7 +46,7 @@ public class BrowserPoolTest {
 	 */
 	@Test
 	public void testRequestReleaseClose() throws InterruptedException {
-		EmbeddedBrowser b = pool.requestBrowser();
+		EmbeddedBrowser<?> b = pool.requestBrowser();
 		pool.freeBrowser(b);
 		Thread closeThread = pool.close();
 		closeThread.join();
@@ -116,7 +116,7 @@ public class BrowserPoolTest {
 
 			pool.requestBrowser();
 			pool.requestBrowser();
-			EmbeddedBrowser b1 = pool.requestBrowser();
+			EmbeddedBrowser<?> b1 = pool.requestBrowser();
 			pool.freeBrowser(b1);
 
 			Thread closeThread = pool.close();
@@ -154,7 +154,7 @@ public class BrowserPoolTest {
 
 			pool.requestBrowser();
 			pool.requestBrowser();
-			EmbeddedBrowser b1 = pool.requestBrowser();
+			EmbeddedBrowser<?> b1 = pool.requestBrowser();
 			pool.freeBrowser(b1);
 
 			Thread closeThread = pool.close();
@@ -195,7 +195,7 @@ public class BrowserPoolTest {
 
 			pool.requestBrowser();
 			pool.requestBrowser();
-			EmbeddedBrowser b1 = pool.requestBrowser();
+			EmbeddedBrowser<?> b1 = pool.requestBrowser();
 			pool.freeBrowser(b1);
 
 			Thread closeThread = pool.close();
@@ -217,7 +217,7 @@ public class BrowserPoolTest {
 
 			pool.requestBrowser();
 			pool.requestBrowser();
-			EmbeddedBrowser b1 = pool.requestBrowser();
+			EmbeddedBrowser<?> b1 = pool.requestBrowser();
 			pool.freeBrowser(b1);
 
 			Thread closeThread = pool.close();

@@ -3,18 +3,18 @@
  */
 package com.crawljax.core;
 
+import net.jcip.annotations.GuardedBy;
+
 import java.util.Collection;
 import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import net.jcip.annotations.GuardedBy;
-
 /**
  * This class implements a BlockingQueue with Runnable as its Generic type and extends Stack with
  * also Runnable as generic type. This class is used in the ThreadPoolExecutor and its used to store
  * separate threads in a Queue like fashion (FILO).
- * 
+ *
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
@@ -53,17 +53,17 @@ public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnabl
 	}
 
 	@Override
-	public boolean offer(Runnable e, long timeout, TimeUnit unit) throws InterruptedException {
+	public boolean offer(Runnable e, long timeout, TimeUnit unit) {
 		return this.add(e);
 	}
 
 	@Override
-	public Runnable poll(long timeout, TimeUnit unit) throws InterruptedException {
+	public Runnable poll(long timeout, TimeUnit unit) {
 		return remove();
 	}
 
 	@Override
-	public void put(Runnable e) throws InterruptedException {
+	public void put(Runnable e) {
 		this.add(e);
 
 	}
@@ -74,7 +74,7 @@ public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnabl
 	}
 
 	@Override
-	public Runnable take() throws InterruptedException {
+	public Runnable take() {
 		return remove();
 	}
 

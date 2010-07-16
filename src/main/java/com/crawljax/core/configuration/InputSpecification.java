@@ -23,7 +23,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  * //for checkboxes
  * input.field("agreelicence").setValue(true);
  * </code> Crawljax will set Name, Phone, Mobile, and Agree values. It will enter a random string in
- * the Other field if enabled in {@link CrawlSpecification#}
+ * the Other field if enabled in {@link CrawlSpecification}
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
  * @version $Id$

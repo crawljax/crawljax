@@ -57,7 +57,7 @@ public class StateComparator {
 	 * @return true iff originalDom and newDom are equivalent. Determining equivalence is done with
 	 *         oracles and pre-conditions.
 	 */
-	public boolean compare(String originalDom, String newDom, EmbeddedBrowser browser) {
+	public boolean compare(String originalDom, String newDom, EmbeddedBrowser<?> browser) {
 		if (oracleComparator.size() == 0) {
 			// add default simpleOracle
 			this.addDefaultOracleComparator();
@@ -115,7 +115,7 @@ public class StateComparator {
 	 *            the current browser instance
 	 * @return the stripped fom by the oracle comparators
 	 */
-	public String getStrippedDom(EmbeddedBrowser browser) {
+	public String getStrippedDom(EmbeddedBrowser<?> browser) {
 
 		// StateComparator oc = new StateComparator(oracleComparator);
 		try {

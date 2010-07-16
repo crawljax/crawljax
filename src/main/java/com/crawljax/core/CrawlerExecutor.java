@@ -13,10 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * and terminated. Every time a new Crawler is added to this Executor by its
  * {@link #execute(Runnable)} function a new Thread is created when there are no more free threads.
  * If there is a free (old) unused thread left the Crawler will be loaded into that Thread. So
- * Threads will be reused, at most numberOfThreads {@link CrawlerExecutor(numberOfThreads)} will be
- * created. The number of Crawlers active at the same time will be the maximum of the number of
- * Threads. If there are no more Threads left, Crawlers will be stored in a workQueue until a Thread
- * will become available.
+ * Threads will be reused, at most numberOfThreads will be created. The number of Crawlers active at
+ * the same time will be the maximum of the number of Threads. If there are no more Threads left,
+ * Crawlers will be stored in a workQueue until a Thread will become available.
  *
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$

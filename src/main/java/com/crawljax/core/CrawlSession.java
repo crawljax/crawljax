@@ -113,7 +113,7 @@ public class CrawlSession {
 	/**
 	 * @return the browser or null if there is none
 	 */
-	public EmbeddedBrowser getBrowser() {
+	public EmbeddedBrowser<?> getBrowser() {
 		return browserPool.getCurrentBrowser();
 	}
 

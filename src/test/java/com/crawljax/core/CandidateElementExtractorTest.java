@@ -210,7 +210,7 @@ public class CandidateElementExtractorTest {
 	 * @author slenselink@google.com (Stefan Lenselink)
 	 */
 	private class CEETCrawler extends InitialCrawler {
-		private EmbeddedBrowser browser;
+		private EmbeddedBrowser<?> browser;
 
 		/**
 		 * @param mother
@@ -230,7 +230,7 @@ public class CandidateElementExtractorTest {
 		 * @see com.crawljax.core.InitialCrawler#getBrowser()
 		 */
 		@Override
-		public EmbeddedBrowser getBrowser() {
+		public EmbeddedBrowser<?> getBrowser() {
 			// TODO Auto-generated method stub
 			return browser;
 		}

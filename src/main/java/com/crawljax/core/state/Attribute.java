@@ -2,8 +2,8 @@ package com.crawljax.core.state;
 
 /**
  * This class represents a attribute of a Element.
- * 
- * @see {@link Element#Element(org.w3c.dom.Node)}
+ *
+ * @see Element#Element(org.w3c.dom.Node)
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
@@ -23,7 +23,7 @@ public class Attribute implements Cloneable {
 
 	/**
 	 * Create a new Attribute given a name and a value.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the attribute
 	 * @param value

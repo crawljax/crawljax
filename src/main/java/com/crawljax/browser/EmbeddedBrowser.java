@@ -4,6 +4,7 @@
 package com.crawljax.browser;
 
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
@@ -16,9 +17,11 @@ import java.io.File;
  * Browser interface used by Crawjax.
  *
  * @author mesbah
+ * @param <E>
+ *            The underlying implementation of the Browser used.
  * @version $Id$
  */
-public interface EmbeddedBrowser extends Cloneable {
+public interface EmbeddedBrowser<E> {
 
 	/**
 	 * Browser types.
@@ -148,4 +151,20 @@ public interface EmbeddedBrowser extends Cloneable {
 	 *             if saving screenshots is not supported by the implementing class.
 	 */
 	void saveScreenShot(File file) throws CrawljaxException;
+
+	/**
+	 * Return the underlying implementation of Browser used by this EmbeddedBrowser.
+	 *
+	 * @return the underlying implementation.
+	 */
+	E getBrowser();
+
+	/**
+	 * Update the configuration of the Browser. When this method is called the implementing
+	 * EmbeddedBrowser must updates its internal configuration to the values given as argument.
+	 *
+	 * @param configuration
+	 *            the new configuration values that needs to be updated.
+	 */
+	void updateConfiguration(CrawljaxConfigurationReader configuration);
 }

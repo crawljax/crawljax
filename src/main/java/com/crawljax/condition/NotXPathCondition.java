@@ -24,7 +24,7 @@ public class NotXPathCondition extends AbstractCondition {
 	}
 
 	@Override
-	public boolean check(EmbeddedBrowser browser) {
+	public boolean check(EmbeddedBrowser<?> browser) {
 		return Logic.not(xpathCondition).check(browser);
 	}
 

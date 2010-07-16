@@ -50,7 +50,7 @@ public class HelperTest {
 	 */
 	@Test
 	public void testGetDocumentFromBrowser() {
-		EmbeddedBrowser browser =
+		EmbeddedBrowser<?> browser =
 		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 200, 300);
 		File index = new File(INDEX);
 		String html = "";

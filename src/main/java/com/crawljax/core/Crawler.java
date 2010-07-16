@@ -36,7 +36,7 @@ public class Crawler implements Runnable {
 	 * The main browser window 1 to 1 relation; Every Thread will get on browser assigned in the run
 	 * function.
 	 */
-	private EmbeddedBrowser browser;
+	private EmbeddedBrowser<?> browser;
 
 	/**
 	 * The central DataController. This is a multiple to 1 relation Every Thread shares an instance
@@ -72,12 +72,11 @@ public class Crawler implements Runnable {
 
 	/**
 	 * The name of this Crawler when not default (automatic) this will be added to the Thread name
-	 * in the {@link CrawlThreadFactory} as (name). In the
-	 * {@link CrawlThreadFactory#newThread(Runnable)} the name is retrieved using the
-	 * {@link #toString()} function.
+	 * in the thread as (name). In the {@link CrawlerExecutor#beforeExecute(Thread, Runnable)} the
+	 * name is retrieved using the {@link #toString()} function.
 	 *
 	 * @see Crawler#toString()
-	 * @see CrawlThreadFactory#newThread(Runnable)
+	 * @see CrawlerExecutor#beforeExecute(Thread, Runnable)
 	 */
 	private String name = "";
 
@@ -96,10 +95,10 @@ public class Crawler implements Runnable {
 	private final CrawlQueueManager crawlQueueManager;
 
 	/**
-	 * Enum for describing what has happened after a {@link Crawler#clickTag(Eventable, boolean)}
-	 * has been performed.
+	 * Enum for describing what has happened after a {@link Crawler#clickTag(Eventable)} has been
+	 * performed.
 	 *
-	 * @see Crawler#clickTag(Eventable, boolean)
+	 * @see Crawler#clickTag(Eventable)
 	 */
 	private enum ClickResult {
 		cloneDetected, newState, domUnChanged
@@ -306,8 +305,6 @@ public class Crawler implements Runnable {
 	/**
 	 * @param eventable
 	 *            the element to execute an action on.
-	 * @param handleInputElements
-	 *            if inputs should be handled..
 	 * @return the result of the click operation
 	 * @throws CrawljaxException
 	 *             an exception.
@@ -582,7 +579,7 @@ public class Crawler implements Runnable {
 	 * a new Thread is started
 	 *
 	 * @see java.util.concurrent.Executors#newFixedThreadPool(int)
-	 * @see java.util.concurrent.ExecutorService {@inheritDoc}
+	 * @see java.util.concurrent.ExecutorService
 	 */
 	@Override
 	public void run() {
@@ -637,7 +634,7 @@ public class Crawler implements Runnable {
 	 *
 	 * @return the browser used in this Crawler Thread
 	 */
-	public EmbeddedBrowser getBrowser() {
+	public EmbeddedBrowser<?> getBrowser() {
 		return browser;
 	}
 

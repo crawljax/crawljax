@@ -21,5 +21,5 @@ public interface PreCrawlingPlugin extends Plugin {
 	 * @param browser
 	 *            the current browser loaded with the initial url
 	 */
-	void preCrawling(EmbeddedBrowser browser);
+	void preCrawling(EmbeddedBrowser<?> browser);
 }

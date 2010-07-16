@@ -123,7 +123,7 @@ public final class FormInputValueHelper {
 	 *            the belonging eventable condition for sourceElement
 	 * @return a list with Candidate elements for the inputs
 	 */
-	public List<CandidateElement> getCandidateElementsForInputs(EmbeddedBrowser browser,
+	public List<CandidateElement> getCandidateElementsForInputs(EmbeddedBrowser<?> browser,
 	        Element sourceElement, EventableCondition eventableCondition) {
 		List<CandidateElement> candidateElements = new ArrayList<CandidateElement>();
 		int maxValues = getMaxNumberOfValues(eventableCondition.getLinkedInputFields());
@@ -248,7 +248,7 @@ public final class FormInputValueHelper {
 	 *            the element in the dom
 	 * @return the first related formInput belonging to element in the browser
 	 */
-	public FormInput getFormInputWithDefaultValue(EmbeddedBrowser browser, Node element) {
+	public FormInput getFormInputWithDefaultValue(EmbeddedBrowser<?> browser, Node element) {
 		return getFormInput(browser, element, 0);
 	}
 
@@ -261,12 +261,12 @@ public final class FormInputValueHelper {
 	 *            the i-th specified value. if i>#values, first value is used
 	 * @return the specified value with index indexValue for the belonging elements
 	 */
-	public FormInput getFormInputWithIndexValue(EmbeddedBrowser browser, Node element,
+	public FormInput getFormInputWithIndexValue(EmbeddedBrowser<?> browser, Node element,
 	        int indexValue) {
 		return getFormInput(browser, element, indexValue);
 	}
 
-	private FormInput getFormInput(EmbeddedBrowser browser, Node element, int indexValue) {
+	private FormInput getFormInput(EmbeddedBrowser<?> browser, Node element, int indexValue) {
 		Identification identification;
 		try {
 			identification = getIdentification(element);

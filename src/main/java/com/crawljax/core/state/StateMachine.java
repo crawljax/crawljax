@@ -166,7 +166,7 @@ public class StateMachine {
 	 *            the current Session
 	 * @return true if the new state is not found in the state machine.
 	 */
-	public boolean update(final Eventable event, StateVertix newState, EmbeddedBrowser browser,
+	public boolean update(final Eventable event, StateVertix newState, EmbeddedBrowser<?> browser,
 	        CrawlSession session) {
 		StateVertix cloneState = this.addStateToCurrentState(newState, event);
 
@@ -202,7 +202,7 @@ public class StateMachine {
 	 * @param session
 	 *            the current CrawlSession
 	 */
-	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
+	private void checkInvariants(EmbeddedBrowser<?> browser, CrawlSession session) {
 		if (invariantChecker.getInvariants() != null
 		        && invariantChecker.getInvariants().size() > 0) {
 			if (!invariantChecker.check(browser)) {

@@ -79,7 +79,7 @@ public class WaitCondition {
 	 * @return -1 if browser does not match url. 0 by timeout. 1 if all conditions are satisfied
 	 */
 	@GuardedBy("browser")
-	public int testAndWait(EmbeddedBrowser browser) {
+	public int testAndWait(EmbeddedBrowser<?> browser) {
 		synchronized (browser) {
 			if (!browser.getCurrentUrl().toLowerCase().contains(this.url.toLowerCase())) {
 				return -1;

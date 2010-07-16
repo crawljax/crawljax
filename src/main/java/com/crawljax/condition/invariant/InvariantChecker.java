@@ -40,7 +40,7 @@ public class InvariantChecker {
 	 *            The browser.
 	 * @return true iff browser satisfies ALL the invariants
 	 */
-	public boolean check(EmbeddedBrowser browser) {
+	public boolean check(EmbeddedBrowser<?> browser) {
 		failedInvariants.clear();
 		if (invariants != null) {
 			LOGGER.info("Checking " + invariants.size() + " invariants");

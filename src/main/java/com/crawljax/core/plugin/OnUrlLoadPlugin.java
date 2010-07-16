@@ -19,6 +19,6 @@ public interface OnUrlLoadPlugin extends Plugin {
 	 * @param browser
 	 *            the current browser instance
 	 */
-	void onUrlLoad(EmbeddedBrowser browser);
+	void onUrlLoad(EmbeddedBrowser<?> browser);
 
 }

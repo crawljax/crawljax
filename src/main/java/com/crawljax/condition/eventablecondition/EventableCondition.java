@@ -79,7 +79,7 @@ public class EventableCondition {
 	 *            The browser.
 	 * @return true iff all the conditions are satisfied.
 	 */
-	public boolean checkAllConditionsSatisfied(EmbeddedBrowser browser) {
+	public boolean checkAllConditionsSatisfied(EmbeddedBrowser<?> browser) {
 		for (Condition condition : getConditions()) {
 			if (!condition.check(browser)) {
 				return false;

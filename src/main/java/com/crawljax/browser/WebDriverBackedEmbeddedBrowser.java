@@ -1,6 +1,7 @@
 package com.crawljax.browser;
 
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormHandler;
@@ -45,23 +46,33 @@ import java.util.regex.Pattern;
 /**
  * @author mesbah
  * @author Frank Groeneveld
- * @version $Id$
+ * @version $Id: WebDriverBackedEmbeddedBrowser.java 387 2010-07-13 13:55:49Z slenselink@google.com
+ *          $
  */
-public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
-	private final long crawlWaitEvent;
+public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<WebDriver> {
+	private long crawlWaitEvent;
 	private static final Logger LOGGER = Logger.getLogger(WebDriverBackedEmbeddedBrowser.class);
 	private final WebDriver browser;
 
-	private final List<String> filterAttributes;
-	private final long crawlWaitReload;
+	private List<String> filterAttributes;
+	private long crawlWaitReload;
+
+	/**
+	 * Constructor without configuration values, these must be updated using the
+	 * {@link #updateConfiguration(CrawljaxConfigurationReader)}.
+	 *
+	 * @param driver
+	 *            The WebDriver to use.
+	 */
+	private WebDriverBackedEmbeddedBrowser(WebDriver driver) {
+		this.browser = driver;
+	}
 
 	/**
 	 * Constructor.
 	 *
 	 * @param driver
 	 *            The WebDriver to use.
-	 * @param logger
-	 *            the logger instance.
 	 * @param filterAttributes
 	 *            the attributes to be filtered from DOM.
 	 * @param crawlWaitReload
@@ -71,7 +82,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	private WebDriverBackedEmbeddedBrowser(WebDriver driver, List<String> filterAttributes,
 	        long crawlWaitReload, long crawlWaitEvent) {
-		this.browser = driver;
+		this(driver);
 		this.filterAttributes = filterAttributes;
 		this.crawlWaitEvent = crawlWaitEvent;
 		this.crawlWaitReload = crawlWaitReload;
@@ -92,27 +103,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl,
 	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
-		DesiredCapabilities capabilities = new DesiredCapabilities();
-		capabilities.setPlatform(Platform.ANY);
-		URL url;
-		try {
-			url = new URL(hubUrl);
-		} catch (MalformedURLException e) {
-			LOGGER.error(
-			        "The given hub url of the remote server is malformed can not continue!", e);
-			return null;
-		}
-		HttpCommandExecutor executor = null;
-		try {
-			executor = new HttpCommandExecutor(url);
-		} catch (Exception e) {
-			LOGGER.error("Received unknown exception while creating the "
-			        + "HttpCommandExecutor, can not continue!", e);
-			return null;
-		}
 		return WebDriverBackedEmbeddedBrowser.withDriver(
-		        new RemoteWebDriver(executor, capabilities), filterAttributes, crawlWaitEvent,
-		        crawlWaitReload);
+		        buildRemoteWebDriver(hubUrl), filterAttributes, crawlWaitEvent, crawlWaitReload);
 	}
 
 	/**
@@ -132,6 +124,59 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
 		return new WebDriverBackedEmbeddedBrowser(
 		        driver, filterAttributes, crawlWaitEvent, crawlWaitReload);
+	}
+
+	/**
+	 * Create a RemoteWebDriver backed EmbeddedBrowser.
+	 *
+	 * @param hubUrl
+	 *            Url of the server.
+	 * @return The EmbeddedBrowser.
+	 */
+	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl) {
+
+		return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl));
+	}
+
+	/**
+	 * Private used static method for creation of a RemoteWebDriver. Taking care of the default
+	 * Capabilities and using the HttpCommandExecutor.
+	 *
+	 * @param hubUrl
+	 *            the url of the hub to use.
+	 * @return the RemoteWebDriver instance.
+	 */
+	private static RemoteWebDriver buildRemoteWebDriver(String hubUrl) {
+		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setPlatform(Platform.ANY);
+		URL url;
+		try {
+			url = new URL(hubUrl);
+		} catch (MalformedURLException e) {
+			LOGGER.error(
+			        "The given hub url of the remote server is malformed can not continue!", e);
+			return null;
+		}
+		HttpCommandExecutor executor = null;
+		try {
+			executor = new HttpCommandExecutor(url);
+		} catch (Exception e) {
+			LOGGER.error("Received unknown exception while creating the "
+			        + "HttpCommandExecutor, can not continue!", e);
+			return null;
+		}
+		return new RemoteWebDriver(executor, capabilities);
+	}
+
+	/**
+	 * Create a WebDriver backed EmbeddedBrowser.
+	 *
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @return The EmbeddedBrowser.
+	 */
+	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver) {
+		return new WebDriverBackedEmbeddedBrowser(driver);
 	}
 
 	/**
@@ -317,7 +362,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				} catch (NoSuchFrameException e) {
 					LOGGER.debug("Frame not found, possibily while back-tracking..", e);
 					// TODO Stefan, This exception is catched to prevent stopping from working
-					// This was the case on the Gmail case; findout if not switching (catching)
+					// This was the case on the Gmail case; find out if not switching (catching)
 					// Results in good performance...
 				}
 				handleChanged = true;
@@ -434,8 +479,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		return document;
 	}
 
-	private void appendFrameContent(Element orig, Document document, String topFrame)
-	        throws SAXException, IOException {
+	private void appendFrameContent(Element orig, Document document, String topFrame) {
 
 		NodeList frameNodes = orig.getElementsByTagName("IFRAME");
 
@@ -497,7 +541,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return the dom without the iframe contents.
 	 * @throws CrawljaxException
 	 *             if it fails.
-	 * @see com.crawljax.browser.EmbeddedBrowser#getDomWithoutIframeContent().
+	 * @see com.crawljax.browser.EmbeddedBrowser#getDomWithoutIframeContent()
 	 */
 	public String getDomWithoutIframeContent() throws CrawljaxException {
 
@@ -650,4 +694,17 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		}
 	}
 
+	@Override
+	public WebDriver getBrowser() {
+		return browser;
+	}
+
+	@Override
+	public void updateConfiguration(CrawljaxConfigurationReader configuration) {
+		// Retrieve the config values used
+		this.filterAttributes = configuration.getFilterAttributeNames();
+		this.crawlWaitReload =
+		        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
+		this.crawlWaitEvent = configuration.getCrawlSpecificationReader().getWaitAfterEvent();
+	}
 }

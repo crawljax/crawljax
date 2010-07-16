@@ -1,17 +1,17 @@
 package com.crawljax.condition;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import com.crawljax.browser.EmbeddedBrowser;
 
 import net.jcip.annotations.ThreadSafe;
 
 import org.w3c.dom.NodeList;
 
-import com.crawljax.browser.EmbeddedBrowser;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Condition that counts how many times a condition is specified and returns true iff the specified
  * condition is satisfied less than the specified number.
- * 
+ *
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
@@ -34,7 +34,7 @@ public class CountCondition implements Condition {
 	}
 
 	@Override
-	public boolean check(EmbeddedBrowser browser) {
+	public boolean check(EmbeddedBrowser<?> browser) {
 		if (condition.check(browser)) {
 			count.getAndIncrement();
 		}

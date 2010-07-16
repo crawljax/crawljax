@@ -236,7 +236,7 @@ public class StateMachineTest {
 			}
 
 			@Override
-			public boolean check(EmbeddedBrowser browser) {
+			public boolean check(EmbeddedBrowser<?> browser) {
 				hit = true;
 				return false;
 			}
@@ -330,7 +330,7 @@ public class StateMachineTest {
 			}
 
 			@Override
-			public boolean check(EmbeddedBrowser browser) {
+			public boolean check(EmbeddedBrowser<?> browser) {
 				return false;
 			}
 		}));

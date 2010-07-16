@@ -25,7 +25,7 @@ public class VisibleCondition extends AbstractCondition {
 	}
 
 	@Override
-	public boolean check(EmbeddedBrowser browser) {
+	public boolean check(EmbeddedBrowser<?> browser) {
 		return browser.isVisible(identification);
 	}
 

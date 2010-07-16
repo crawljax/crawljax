@@ -25,7 +25,7 @@ public class NotVisibleCondition extends AbstractCondition {
 	}
 
 	@Override
-	public boolean check(EmbeddedBrowser browser) {
+	public boolean check(EmbeddedBrowser<?> browser) {
 		return Logic.not(visibleCondition).check(browser);
 	}
 

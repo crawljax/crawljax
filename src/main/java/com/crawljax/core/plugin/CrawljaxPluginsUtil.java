@@ -77,7 +77,7 @@ public final class CrawljaxPluginsUtil {
 	 * @param browser
 	 *            the browser instance to load to the plugin.
 	 */
-	public static void runPreCrawlingPlugins(EmbeddedBrowser browser) {
+	public static void runPreCrawlingPlugins(EmbeddedBrowser<?> browser) {
 		LOGGER.info("Running PreCrawlingPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
@@ -97,7 +97,7 @@ public final class CrawljaxPluginsUtil {
 	 * @param browser
 	 *            the embedded browser instance to load in the plugin.
 	 */
-	public static void runOnUrlLoadPlugins(EmbeddedBrowser browser) {
+	public static void runOnUrlLoadPlugins(EmbeddedBrowser<?> browser) {
 		LOGGER.info("Running OnUrlLoadPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
@@ -293,7 +293,7 @@ public final class CrawljaxPluginsUtil {
 	 * @param newBrowser
 	 *            the new created browser object
 	 */
-	public static void runOnBrowserCreatedPlugins(EmbeddedBrowser newBrowser) {
+	public static void runOnBrowserCreatedPlugins(EmbeddedBrowser<?> newBrowser) {
 		LOGGER.info("Running OnBrowserCreatedPlugins...");
 		if (CrawljaxPluginsUtil.plugins != null) {
 			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {

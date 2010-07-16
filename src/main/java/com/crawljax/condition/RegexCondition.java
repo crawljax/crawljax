@@ -27,7 +27,7 @@ public class RegexCondition extends AbstractCondition {
 	}
 
 	@Override
-	public boolean check(EmbeddedBrowser browser) {
+	public boolean check(EmbeddedBrowser<?> browser) {
 		try {
 			String dom = browser.getDom();
 			Pattern p = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);

@@ -1,14 +1,14 @@
 package com.crawljax.core.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.crawljax.browser.BrowserBuilder;
-import com.crawljax.browser.WebDriverBrowserBuilder;
+import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.util.Helper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Specifies the settings Crawljax. The methods in this class fall into two categories:Oz
@@ -18,24 +18,19 @@ import com.crawljax.util.Helper;
  * <li>Properties for the crawling
  * {@link CrawljaxConfiguration#setCrawlSpecification(CrawlSpecification)}</li>
  * </ul>
- * <p/>
- * By default Crawljax uses no database, but this can be enabled via
- * {@link CrawljaxConfiguration#setHibernateConfiguration(HibernateConfiguration)} See also
- * {@link HibernateConfiguration}
- * <p/>
- * DEFAULT VAlUES: Browser: webdriver firefox Project Full Path: empty Project Relative Path: empty
+ *  DEFAULT VAlUES: Browser: webdriver firefox Project Full Path: empty Project Relative Path: empty
  * Filter attributes: closure_hashcode_(\\w)*, jquery[0-9]+ Test invariants while crawling: true
  * EXAMPLE: CrawljaxConfiguration crawljaxConfig = new CrawljaxConfiguration(); CrawlSpecification
  * crawler = new CrawlSpecification("http://www.google.com"); crawler.click("a");
  * crawljaxConfig.setCrawlSpecification(crawler);
- * 
+ *
  * @version $Id$
  */
 public final class CrawljaxConfiguration {
 
 	private BrowserType browser = BrowserType.firefox;
 
-	private BrowserBuilder browserBuilder = new WebDriverBrowserBuilder();
+	private EmbeddedBrowserBuilder browserBuilder = new WebDriverBrowserBuilder();
 
 	private String remoteHubUrl = "";
 
@@ -88,7 +83,7 @@ public final class CrawljaxConfiguration {
 
 	/**
 	 * Enable the crawljax proxy extension.
-	 * 
+	 *
 	 * @param proxyConfiguration
 	 *            The ProxyConfiguration to set.
 	 */
@@ -127,8 +122,9 @@ public final class CrawljaxConfiguration {
 		// and not by another random crawlTag
 		List<CrawlElement> crawlTags = getInputSpecification().getCrawlElements();
 		if (getCrawlSpecification() != null) {
-			for (CrawlElement crawlTag : getCrawlSpecification().crawlActions()
-			        .getCrawlElements()) {
+
+			for (CrawlElement crawlTag :
+			        getCrawlSpecification().crawlActions().getCrawlElements()) {
 				crawlTags.add(crawlTag);
 			}
 		}
@@ -141,8 +137,8 @@ public final class CrawljaxConfiguration {
 	protected List<CrawlElement> getAllCrawlElements() {
 		List<CrawlElement> crawlTags = getAllIncludedCrawlElements();
 		if (getCrawlSpecification() != null) {
-			for (CrawlElement crawlTag : getCrawlSpecification().crawlActions()
-			        .getCrawlElementsExcluded()) {
+			for (CrawlElement crawlTag :
+			        getCrawlSpecification().crawlActions().getCrawlElementsExcluded()) {
 				crawlTags.add(crawlTag);
 			}
 		}
@@ -182,13 +178,13 @@ public final class CrawljaxConfiguration {
 	/**
 	 * @return the browserBuilder
 	 */
-	protected BrowserBuilder getBrowserBuilder() {
+	protected EmbeddedBrowserBuilder getBrowserBuilder() {
 		return browserBuilder;
 	}
 
 	/**
 	 * Set the remote hub url that needs to be taken when using remote crawling.
-	 * 
+	 *
 	 * @param remoteHubUrl
 	 *            the url of the remote hub
 	 */
@@ -207,7 +203,7 @@ public final class CrawljaxConfiguration {
 	 * @param browserBuilder
 	 *            the browserBuilder to set
 	 */
-	public void setBrowserBuilder(BrowserBuilder browserBuilder) {
+	public void setBrowserBuilder(EmbeddedBrowserBuilder browserBuilder) {
 		this.browserBuilder = browserBuilder;
 	}
 
@@ -276,7 +272,7 @@ public final class CrawljaxConfiguration {
 
 	/**
 	 * Sets filter attribute names.
-	 * 
+	 *
 	 * @param filterAttributeNames
 	 *            The attribute names to filter.
 	 */
@@ -313,7 +309,7 @@ public final class CrawljaxConfiguration {
 	 * Add a plugin to the execution. Note that the order of adding is the same as running for the
 	 * same type of plugin. This means that if you add a precrawling plugin p1 and next you add a
 	 * precrawling plugin p2, p1 will be executed before p2.
-	 * 
+	 *
 	 * @param plugin
 	 *            Add a plugin. See {@link Plugin}.
 	 */

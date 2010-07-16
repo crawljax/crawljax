@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.crawljax.browser.BrowserBuilder;
+import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.TagAttribute;
@@ -66,7 +66,7 @@ public class CrawljaxConfigurationReader {
 	/**
 	 * @return the browser builder used.
 	 */
-	public BrowserBuilder getBrowserBuilder() {
+	public EmbeddedBrowserBuilder getBrowserBuilder() {
 		return crawljaxConfiguration.getBrowserBuilder();
 	}
 

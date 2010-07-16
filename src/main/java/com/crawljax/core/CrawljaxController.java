@@ -147,7 +147,7 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		// TODO Stefan; Now we "re-request" a browser instance for the PostCrawlingPlugins Thread,
 		// this is not ideal...
-		EmbeddedBrowser b = null;
+		EmbeddedBrowser<?> b = null;
 		try {
 			b = this.getBrowserPool().requestBrowser();
 		} catch (InterruptedException e1) {
@@ -220,7 +220,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	 * @param browser
 	 *            the browser which requires a wait condition
 	 */
-	public final void doBrowserWait(EmbeddedBrowser browser) {
+	public final void doBrowserWait(EmbeddedBrowser<?> browser) {
 		this.waitConditionChecker.wait(browser);
 	}
 
@@ -234,7 +234,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	 *            the browser instance.
 	 * @return a stripped string of the DOM tree taken from the browser.
 	 */
-	public synchronized String getStrippedDom(EmbeddedBrowser browser) {
+	public synchronized String getStrippedDom(EmbeddedBrowser<?> browser) {
 		return this.stateComparator.getStrippedDom(browser);
 	}
 
