@@ -233,21 +233,28 @@ public class CandidateElementExtractor {
 			return result;
 		}
 
+		EventableCondition eventableCondition =
+		        eventableConditionChecker.getEventableCondition(tagElement.getId());
+		// TODO Stefan; this part of the code should be re-factored, Hack-ed it this way to prevent
+		// performance problems.
+		boolean matchesXpath = true;
+		List<String> expressions = null;
+		if (eventableCondition != null && eventableCondition.getInXPath() != null) {
+
+			expressions =
+			        XPathHelper.getXpathForXPathExpressions(dom, eventableCondition.getInXPath());
+		}
+
 		NodeList nodeList = dom.getElementsByTagName(tagElement.getName());
 		Set<TagAttribute> attributes = tagElement.getAttributes();
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
 			Element element = (Element) nodeList.item(k);
-			boolean matchesXpath = true;
-			EventableCondition eventableCondition =
-			        eventableConditionChecker.getEventableCondition(tagElement.getId());
 			if (eventableCondition != null && eventableCondition.getInXPath() != null) {
 				try {
-					matchesXpath =
-					        eventableConditionChecker.checkXpathStartsWithXpathEventableCondition(
-					                dom, eventableCondition,
-					                XPathHelper.getXPathExpression(element));
+					matchesXpath = eventableConditionChecker.checkXPathUnderXPaths(
+					        XPathHelper.getXPathExpression(element), expressions);
 				} catch (Exception e) {
 					matchesXpath = false;
 					// xpath could not be found or determined, so dont allow

@@ -1,5 +1,20 @@
 package com.crawljax.util;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.custommonkey.xmlunit.DetailedDiff;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
+import org.cyberneko.html.parsers.DOMParser;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,6 +29,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,24 +47,9 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.DetailedDiff;
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.Difference;
-import org.cyberneko.html.parsers.DOMParser;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 /**
  * Utility class that contains a number of helper functions used by Crawljax and some plugins.
- * 
+ *
  * @author mesbah
  * @version $Id$
  */
@@ -61,6 +62,9 @@ public final class Helper {
 	private static final int TEXT_CUTOFF = 50;
 
 	public static final Logger LOGGER = Logger.getLogger(Helper.class.getName());
+
+	private static final ConcurrentHashMap<String, Document> DOM_CACHE =
+	        new ConcurrentHashMap<String, Document>();
 
 	private Helper() {
 	}
@@ -118,8 +122,10 @@ public final class Helper {
 	}
 
 	/**
-	 * transforms a string into a Document object.
-	 * 
+	 * transforms a string into a Document object. TODO This needs more optimizations. As it seems
+	 * the getDocument is called way to much times causing a lot of parsing which is slow and not
+	 * necessary.
+	 *
 	 * @param html
 	 *            the HTML string.
 	 * @return The DOM Document version of the HTML string.
@@ -129,10 +135,18 @@ public final class Helper {
 	 *             if an exception occurs while parsing the HTML string.
 	 */
 	public static Document getDocument(String html) throws SAXException, IOException {
-		DOMParser domParser = new DOMParser();
-		domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-		domParser.parse(new InputSource(new StringReader(html)));
-		return domParser.getDocument();
+		// TODO This caching scheme must not be in here, should be at a more abstract level.
+		Document cacheDoc = DOM_CACHE.get(html);
+		if (cacheDoc == null) {
+			DOMParser domParser = new DOMParser();
+			domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
+			domParser.parse(new InputSource(new StringReader(html)));
+			cacheDoc = domParser.getDocument();
+			DOM_CACHE.put(html, cacheDoc);
+			return cacheDoc;
+		} else {
+			return cacheDoc;
+		}
 	}
 
 	/**
@@ -230,7 +244,7 @@ public final class Helper {
 
 	/**
 	 * Removes all the <SCRIPT/> tags from the document.
-	 * 
+	 *
 	 * @param dom
 	 *            the document object.
 	 * @return the changed dom.
@@ -241,7 +255,7 @@ public final class Helper {
 
 	/**
 	 * Removes all the given tags from the document.
-	 * 
+	 *
 	 * @param dom
 	 *            the document object.
 	 * @param tagName
@@ -278,7 +292,7 @@ public final class Helper {
 
 	/**
 	 * Checks the existence of the directory. If it does not exist, the method creates it.
-	 * 
+	 *
 	 * @param dir
 	 *            the directory to check.
 	 * @throws IOException
@@ -294,7 +308,7 @@ public final class Helper {
 
 	/**
 	 * Checks whether the folder exists for fname, and creates it if neccessary.
-	 * 
+	 *
 	 * @param fname
 	 *            folder name.
 	 * @throws IOException
@@ -311,7 +325,7 @@ public final class Helper {
 	/**
 	 * Retrieve the var value for varName from a HTTP query string (format is
 	 * "var1=val1&var2=val2").
-	 * 
+	 *
 	 * @param varName
 	 *            the name.
 	 * @param haystack
@@ -364,7 +378,7 @@ public final class Helper {
 
 	/**
 	 * Serialize the Document object.
-	 * 
+	 *
 	 * @param dom
 	 *            the document to serialize
 	 * @return the serialized dom String
@@ -406,7 +420,7 @@ public final class Helper {
 
 	/**
 	 * Save a string to a file and append a newline character to that string.
-	 * 
+	 *
 	 * @param filename
 	 *            The filename to save to.
 	 * @param text
@@ -439,7 +453,7 @@ public final class Helper {
 	/**
 	 * Returns the text value of an element (title, alt or contents). Note that the result is 50
 	 * characters or less in length.
-	 * 
+	 *
 	 * @param element
 	 *            The element.
 	 * @return The text value of the element.
@@ -466,7 +480,7 @@ public final class Helper {
 
 	/**
 	 * Get differences between doms.
-	 * 
+	 *
 	 * @param controlDom
 	 *            The control dom.
 	 * @param testDom
@@ -488,7 +502,7 @@ public final class Helper {
 
 	/**
 	 * Removes newlines from a string.
-	 * 
+	 *
 	 * @param html
 	 *            The string.
 	 * @return The new string without the newlines or tabs.
@@ -517,7 +531,7 @@ public final class Helper {
 
 	/**
 	 * Adds a slash to a path if it doesn't end with a slash.
-	 * 
+	 *
 	 * @param folderName
 	 *            The path to append a possible slash.
 	 * @return The new, correct path.
@@ -533,7 +547,7 @@ public final class Helper {
 	/**
 	 * Returns the filename in a path. For example with path = "foo/bar/crawljax.txt" returns
 	 * "crawljax.txt"
-	 * 
+	 *
 	 * @param path
 	 * @return the filename from the path
 	 */
@@ -550,7 +564,7 @@ public final class Helper {
 	/**
 	 * Retrieves the content of the filename. Also reads from JAR Searches for the resource in the
 	 * root folder in the jar
-	 * 
+	 *
 	 * @param fname
 	 *            Filename.
 	 * @return The contents of the file.
@@ -586,45 +600,24 @@ public final class Helper {
 	 * @return The JavaScript to get an element.
 	 */
 	public static String getJSGetElement(String xpath) {
-		String js =
-		        ""
-		                + "function ATUSA_getElementInNodes(nodes, tagName, number){"
-		                + "try{"
-		                + "var pos = 1;"
-		                + "for(i=0; i<nodes.length; i++){"
+		        String js =
+		        "" + "function ATUSA_getElementInNodes(nodes, tagName, number){" + "try{"
+		                + "var pos = 1;" + "for(i=0; i<nodes.length; i++){"
 		                + "if(nodes[i]!=null && nodes[i].tagName!=null && "
-		                + "nodes[i].tagName.toLowerCase() == tagName){"
-		                + "if(number==pos){"
-		                + "return nodes[i];"
-		                + "}else{"
-		                + "pos++;"
-		                + "}"
-		                + "}"
-		                + "}"
-		                + "}catch(e){}"
-		                + "return null;"
-		                + "}"
-		                + "function ATUSA_getElementByXpath(xpath){"
-		                + "try{"
+		                + "nodes[i].tagName.toLowerCase() == tagName){" + "if(number==pos){"
+		                + "return nodes[i];" + "}else{" + "pos++;" + "}" + "}" + "}"
+		                + "}catch(e){}" + "return null;" + "}"
+		                + "function ATUSA_getElementByXpath(xpath){" + "try{"
 		                + "var elements = xpath.toLowerCase().split('/');"
-		                + "var curNode = window.document.body;"
-		                + "var tagName, number;"
-		                + "for(j=0; j<elements.length; j++){"
-		                + "if(elements[j]!=''){"
-		                + "if(elements[j].indexOf('[')==-1){"
-		                + "tagName = elements[j];"
-		                + "number = 1;"
-		                + "}else{"
+		                + "var curNode = window.document.body;" + "var tagName, number;"
+		                + "for(j=0; j<elements.length; j++){" + "if(elements[j]!=''){"
+		                + "if(elements[j].indexOf('[')==-1){" + "tagName = elements[j];"
+		                + "number = 1;" + "}else{"
 		                + "tagName = elements[j].substring(0, elements[j].indexOf('['));"
 		                + "number = elements[j].substring(elements[j].indexOf('[')+1, "
-		                + "elements[j].lastIndexOf(']'));"
-		                + "}"
+		                + "elements[j].lastIndexOf(']'));" + "}"
 		                + "if(tagName!='body' && tagName!='html'){"
-		                + "curNode = ATUSA_getElementInNodes(curNode.childNodes, tagName, number);"
-		                + "if(curNode==null){" + "return null;" + "}" + "}" + "}" + "}"
-		                + "}catch(e){return null;}" + "return curNode;" + "}"
-		                + "try{var ATUSA_element = ATUSA_getElementByXpath('" + xpath
-		                + "');}catch(e){return null;}";
+		                + "curNode = ATUSA_getElementInNodes(curNode.childNodes, tagName, number);" + "if(curNode==null){" + "return null;" + "}" + "}" + "}" + "}" + "}catch(e){return null;}" + "return curNode;" + "}" + "try{var ATUSA_element = ATUSA_getElementByXpath('" + xpath + "');}catch(e){return null;}";
 
 		return js;
 	}
@@ -652,7 +645,7 @@ public final class Helper {
 
 	/**
 	 * Write the document object to a file.
-	 * 
+	 *
 	 * @param document
 	 *            the document object.
 	 * @param filePathname
@@ -666,8 +659,9 @@ public final class Helper {
 	 * @throws IOException
 	 *             if an IO exception occurs.
 	 */
-	public static void writeDocumentToFile(Document document, String filePathname, String method,
-	        int indent) throws TransformerException, IOException {
+	public static void writeDocumentToFile(
+	        Document document, String filePathname, String method, int indent)
+	        throws TransformerException, IOException {
 
 		checkFolderForFile(filePathname);
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -680,13 +674,13 @@ public final class Helper {
 			        org.apache.xml.serializer.OutputPropertiesFactory.S_KEY_INDENT_AMOUNT,
 			        Integer.toString(indent));
 		}
-		transformer.transform(new DOMSource(document), new StreamResult(new FileOutputStream(
-		        filePathname)));
+		transformer.transform(
+		        new DOMSource(document), new StreamResult(new FileOutputStream(filePathname)));
 	}
 
 	/**
 	 * Returns the file contents without stripping line-endings.
-	 * 
+	 *
 	 * @param file
 	 *            File to read out.
 	 * @return Contents including line-endings.

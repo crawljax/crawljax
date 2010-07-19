@@ -3,6 +3,10 @@
  */
 package com.crawljax.util;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,18 +19,18 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 /**
  * Utility class that contains methods used by Crawljax and some plugin to deal with XPath
  * resolving, constructing etc.
- * 
+ *
  * @author mesbah
  * @version $Id$
  */
 public final class XPathHelper {
+	/**
+     * 
+     */
+    private static final String FULL_XPATH_CACHE = "FULL_XPATH_CACHE";
 	private static final int MAX_SEARCH_LOOPS = 10000;
 
 	private XPathHelper() {
@@ -34,16 +38,22 @@ public final class XPathHelper {
 
 	/**
 	 * Reverse Engineers an XPath Expression of a given Node in the DOM.
-	 * 
+	 *
 	 * @param node
 	 *            the given node.
 	 * @return string xpath expression (e.g., "/html[1]/body[1]/div[3]").
 	 */
 	public static String getXPathExpression(Node node) {
+		Object xpathCache = node.getUserData(FULL_XPATH_CACHE);
+		if (xpathCache != null) {
+			return xpathCache.toString();
+		}
 		Node parent = node.getParentNode();
 
 		if ((parent == null) || parent.getNodeName().contains("#document")) {
-			return "/" + node.getNodeName() + "[1]";
+			String xPath = "/" + node.getNodeName() + "[1]";
+			node.setUserData(FULL_XPATH_CACHE, xPath, null);
+			return xPath;
 		}
 
 		StringBuffer buffer = new StringBuffer();
@@ -64,14 +74,18 @@ public final class XPathHelper {
 				buffer.append("[");
 				buffer.append(Integer.toString(i + 1));
 				buffer.append("]");
+				// Found so break;
+				break;
 			}
 		}
-		return buffer.toString();
+		String xPath = buffer.toString();
+		node.setUserData(FULL_XPATH_CACHE, xPath, null);
+		return xPath;
 	}
 
 	/**
 	 * Get siblings of the same type as element from parent.
-	 * 
+	 *
 	 * @param parent
 	 *            parent node.
 	 * @param element
@@ -95,7 +109,7 @@ public final class XPathHelper {
 
 	/**
 	 * Returns the list of nodes which match the expression xpathExpr in the String domStr.
-	 * 
+	 *
 	 * @param domStr
 	 *            the string of the document to search in
 	 * @param xpathExpr
@@ -114,7 +128,7 @@ public final class XPathHelper {
 
 	/**
 	 * Returns the list of nodes which match the expression xpathExpr in the Document dom.
-	 * 
+	 *
 	 * @param dom
 	 *            the Document to search in
 	 * @param xpathExpr
@@ -138,7 +152,7 @@ public final class XPathHelper {
 	/**
 	 * Returns the XPaths of all nodes retrieved by xpathExpression. Example: //DIV[@id='foo']
 	 * returns /HTM[1]/BODY[1]/DIV[2]
-	 * 
+	 *
 	 * @param dom
 	 *            The dom.
 	 * @param xpathExpression
@@ -217,7 +231,7 @@ public final class XPathHelper {
 
 	/**
 	 * returns position of xpath element which match the expression xpath in the String dom.
-	 * 
+	 *
 	 * @param dom
 	 *            the Document to search in
 	 * @param xpath
@@ -238,8 +252,8 @@ public final class XPathHelper {
 				if (element.indexOf("[") != -1) {
 					try {
 						number =
-						        Integer.parseInt(element.substring(element.indexOf("[") + 1,
-						                element.indexOf("]")));
+						        Integer.parseInt(element.substring(
+						                element.indexOf("[") + 1, element.indexOf("]")));
 					} catch (Exception e) {
 						return -1;
 					}
@@ -257,8 +271,8 @@ public final class XPathHelper {
 						// if depth>1 then goto end of current element
 						if (number > 1 && i < number - 1) {
 							pos =
-							        getCloseElementLocation(dom, pos,
-							                stripEndSquareBrackets(element));
+							        getCloseElementLocation(
+							                dom, pos, stripEndSquareBrackets(element));
 							// pos = dom.indexOf("<" +
 							// stripEndSquareBrackets(element), pos) + 1;
 						}
@@ -327,8 +341,8 @@ public final class XPathHelper {
 	 * @return the position where the close element is
 	 */
 	public static int getCloseElementLocation(String dom, String xpath) {
-		return getCloseElementLocation(dom, getXPathLocation(dom, xpath) + 1,
-		        getLastElementXPath(xpath));
+		return getCloseElementLocation(
+		        dom, getXPathLocation(dom, xpath) + 1, getLastElementXPath(xpath));
 	}
 
 	/**

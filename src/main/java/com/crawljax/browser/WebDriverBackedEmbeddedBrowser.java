@@ -287,8 +287,10 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<Web
 
 		// html = html.replace("<?xml:namespace prefix = gwt >", "");
 
-		Document doc = Helper.getDocument(htmlFormatted);
-		htmlFormatted = Helper.getDocumentToString(doc);
+		// TODO (Stefan), Following lines are a serious performance bottle neck...
+		// Document doc = Helper.getDocument(htmlFormatted);
+		// htmlFormatted = Helper.getDocumentToString(doc);
+
 		htmlFormatted = filterAttributes(htmlFormatted);
 		return htmlFormatted;
 	}
