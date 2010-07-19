@@ -135,18 +135,10 @@ public final class Helper {
 	 *             if an exception occurs while parsing the HTML string.
 	 */
 	public static Document getDocument(String html) throws SAXException, IOException {
-		// TODO This caching scheme must not be in here, should be at a more abstract level.
-		Document cacheDoc = DOM_CACHE.get(html);
-		if (cacheDoc == null) {
-			DOMParser domParser = new DOMParser();
-			domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-			domParser.parse(new InputSource(new StringReader(html)));
-			cacheDoc = domParser.getDocument();
-			DOM_CACHE.put(html, cacheDoc);
-			return cacheDoc;
-		} else {
-			return cacheDoc;
-		}
+		DOMParser domParser = new DOMParser();
+		domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
+		domParser.parse(new InputSource(new StringReader(html)));
+		return domParser.getDocument();
 	}
 
 	/**
