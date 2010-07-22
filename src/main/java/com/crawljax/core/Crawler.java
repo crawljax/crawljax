@@ -551,8 +551,9 @@ public class Crawler implements Runnable {
 		                configurationReader
 		                        .getCrawlSpecificationReader().getRandomInputInForms());
 
-		this.candidateExtractor = new CandidateElementExtractor(
-		        controller.getElementChecker(), this.getBrowser(), formHandler);
+		this.candidateExtractor =
+		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
+		                formHandler, configurationReader.getCrawlSpecificationReader());
 		/**
 		 * go back into the previous state.
 		 */

@@ -13,7 +13,7 @@ import com.crawljax.oraclecomparator.OracleComparator;
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
-public class CrawlSpecificationReader {
+public class CrawlSpecificationReader implements IgnoreFrameChecker {
 
 	private final CrawlSpecification crawlSpecification;
 
@@ -109,5 +109,10 @@ public class CrawlSpecificationReader {
 	 */
 	public boolean getRandomInputInForms() {
 		return crawlSpecification.getRandomInputInForms();
+	}
+
+	@Override
+	public boolean isFrameIgnored(String iFrame) {
+		return crawlSpecification.ignoredFrameIdentifiers().contains(iFrame);
 	}
 }

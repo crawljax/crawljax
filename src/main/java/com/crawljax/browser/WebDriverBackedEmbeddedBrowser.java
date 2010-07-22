@@ -1,14 +1,15 @@
 package com.crawljax.browser;
 
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
-import com.crawljax.forms.FormHandler;
-import com.crawljax.forms.FormInput;
-import com.crawljax.forms.InputValue;
-import com.crawljax.forms.RandomInputValueGenerator;
-import com.crawljax.util.Helper;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.ElementNotVisibleException;
@@ -32,16 +33,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.AcceptAllFramesChecker;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.IgnoreFrameChecker;
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
+import com.crawljax.forms.FormHandler;
+import com.crawljax.forms.FormInput;
+import com.crawljax.forms.InputValue;
+import com.crawljax.forms.RandomInputValueGenerator;
+import com.crawljax.util.Helper;
 
 /**
  * @author mesbah
@@ -56,6 +58,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<Web
 
 	private List<String> filterAttributes;
 	private long crawlWaitReload;
+	private IgnoreFrameChecker ignoreFrameChecker = new AcceptAllFramesChecker();
 
 	/**
 	 * Constructor without configuration values, these must be updated using the
@@ -89,6 +92,26 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<Web
 	}
 
 	/**
+	 * Constructor.
+	 * 
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 * @param ignoreFrameChecker
+	 *            the checker used to determine if a certain frame must be ignored.
+	 */
+	private WebDriverBackedEmbeddedBrowser(WebDriver driver, List<String> filterAttributes,
+	        long crawlWaitReload, long crawlWaitEvent, IgnoreFrameChecker ignoreFrameChecker) {
+		this(driver, filterAttributes, crawlWaitReload, crawlWaitEvent);
+		this.ignoreFrameChecker = ignoreFrameChecker;
+	}
+
+	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
 	 *
 	 * @param hubUrl
@@ -108,8 +131,30 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<Web
 	}
 
 	/**
+	 * Create a RemoteWebDriver backed EmbeddedBrowser.
+	 * 
+	 * @param hubUrl
+	 *            Url of the server.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 * @param ignoreFrameChecker
+	 *            the checker used to determine if a certain frame must be ignored.
+	 * @return The EmbeddedBrowser.
+	 */
+	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl,
+	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
+	        IgnoreFrameChecker ignoreFrameChecker) {
+		return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl),
+		        filterAttributes, crawlWaitEvent, crawlWaitReload, ignoreFrameChecker);
+	}
+
+	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
-	 *
+	 * 
 	 * @param driver
 	 *            The WebDriver to use.
 	 * @param filterAttributes
@@ -127,14 +172,35 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<Web
 	}
 
 	/**
+	 * Create a WebDriver backed EmbeddedBrowser.
+	 * 
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 * @param ignoreFrameChecker
+	 *            the checker used to determine if a certain frame must be ignored.
+	 * @return The EmbeddedBrowser.
+	 */
+	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver,
+	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
+	        IgnoreFrameChecker ignoreFrameChecker) {
+		return new WebDriverBackedEmbeddedBrowser(driver, filterAttributes, crawlWaitEvent,
+		        crawlWaitReload, ignoreFrameChecker);
+	}
+
+	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
-	 *
+	 * 
 	 * @param hubUrl
 	 *            Url of the server.
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl) {
-
 		return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl));
 	}
 
@@ -503,7 +569,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<Web
 
 			String nameId = Helper.getFrameIdentification(frameElement);
 
-			if (nameId != null) {
+			if (nameId != null
+			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
 				frameIdentification += nameId;
 
 				String handle = new String(browser.getWindowHandle());
@@ -708,5 +775,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<Web
 		this.crawlWaitReload =
 		        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
 		this.crawlWaitEvent = configuration.getCrawlSpecificationReader().getWaitAfterEvent();
+		this.ignoreFrameChecker = configuration.getCrawlSpecificationReader();
 	}
 }

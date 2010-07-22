@@ -4,21 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.configuration.CrawlSpecification;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.StateVertix;
-import com.crawljax.forms.FormHandler;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.state.StateVertix;
+import com.crawljax.forms.FormHandler;
 
 public class CandidateElementExtractorTest {
 
@@ -57,8 +57,10 @@ public class CandidateElementExtractorTest {
 			}
 			FormHandler formHandler = new FormHandler(crawler.getBrowser(),
 			        controller.getConfigurationReader().getInputSpecification(), true);
-			CandidateElementExtractor extractor = new CandidateElementExtractor(
-			        controller.getElementChecker(), crawler.getBrowser(), formHandler);
+			CandidateElementExtractor extractor =
+			        new CandidateElementExtractor(controller.getElementChecker(),
+			                crawler.getBrowser(), formHandler,
+			                controller.getConfigurationReader().getCrawlSpecificationReader());
 			assertNotNull(extractor);
 			try {
 
@@ -110,8 +112,10 @@ public class CandidateElementExtractorTest {
 			}
 			FormHandler formHandler = new FormHandler(crawler.getBrowser(),
 			        controller.getConfigurationReader().getInputSpecification(), true);
-			CandidateElementExtractor extractor = new CandidateElementExtractor(
-			        controller.getElementChecker(), crawler.getBrowser(), formHandler);
+			CandidateElementExtractor extractor =
+			        new CandidateElementExtractor(controller.getElementChecker(),
+			                crawler.getBrowser(), formHandler,
+			                controller.getConfigurationReader().getCrawlSpecificationReader());
 			assertNotNull(extractor);
 
 			try {
@@ -173,8 +177,10 @@ public class CandidateElementExtractorTest {
 			}
 			FormHandler formHandler = new FormHandler(crawler.getBrowser(),
 			        controller.getConfigurationReader().getInputSpecification(), true);
-			CandidateElementExtractor extractor = new CandidateElementExtractor(
-			        controller.getElementChecker(), crawler.getBrowser(), formHandler);
+			CandidateElementExtractor extractor =
+			        new CandidateElementExtractor(controller.getElementChecker(),
+			                crawler.getBrowser(), formHandler,
+			                controller.getConfigurationReader().getCrawlSpecificationReader());
 			assertNotNull(extractor);
 			try {
 
@@ -206,8 +212,8 @@ public class CandidateElementExtractorTest {
 
 	/**
 	 * Internal mock-up crawler retrieving its browser.
-	 *
-	 * @author slenselink@google.com (Stefan Lenselink)
+	 * 
+	 * @author Stefan Lenselink <slenselink@google.com>
 	 */
 	private class CEETCrawler extends InitialCrawler {
 		private EmbeddedBrowser<?> browser;
@@ -220,18 +226,12 @@ public class CandidateElementExtractorTest {
 			try {
 				browser = mother.getBrowserPool().requestBrowser();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see com.crawljax.core.InitialCrawler#getBrowser()
-		 */
 		@Override
 		public EmbeddedBrowser<?> getBrowser() {
-			// TODO Auto-generated method stub
 			return browser;
 		}
 

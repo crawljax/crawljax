@@ -1,3 +1,4 @@
+// Copyright 2010 Google Inc. All Rights Reserved.
 package com.crawljax.core;
 
 import static org.junit.Assert.assertEquals;
@@ -6,20 +7,30 @@ import static org.junit.Assert.fail;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
 
+import com.crawljax.core.configuration.CrawlSpecification;
+
 /**
- * This class test the correct behavior of iFrames.
+ * This test checks that only one sub-iframes is ignored.
  * 
- * @author mesbah
+ * @author Stefan Lenselink <slenselink@google.com>
  * @version $Id$
  */
-public class IFrameTest extends IFrameSuper {
+public class ExcludeOnlySubIFrameTest extends IFrameSuper {
+
+	@Override
+	protected CrawlSpecification getCrawlSpecification() {
+		CrawlSpecification spec = super.getCrawlSpecification();
+		spec.dontCrawlFrame("frame1.frame10");
+		return spec;
+	}
+
 	@Test
-	public void testIFrameCrawlable() {
+	public void testIFramesNotCrawled() {
 		try {
 			crawljax.run();
-			assertEquals("Clickables", 14,
+			assertEquals("Clickables", 13,
 			        crawljax.getSession().getStateFlowGraph().getAllEdges().size());
-			assertEquals("States", 13,
+			assertEquals("States", 12,
 			        crawljax.getSession().getStateFlowGraph().getAllStates().size());
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
