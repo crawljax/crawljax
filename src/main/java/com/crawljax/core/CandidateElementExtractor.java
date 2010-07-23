@@ -1,21 +1,5 @@
 package com.crawljax.core;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
@@ -25,6 +9,22 @@ import com.crawljax.core.state.StateVertix;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * This class extracts candidate elements from the DOM tree, based on the tags provided by the user.
@@ -46,7 +46,7 @@ public class CandidateElementExtractor {
 
 	/**
 	 * Create a new CandidateElementExtractor.
-	 * 
+	 *
 	 * @param checker
 	 *            the ExtractorManager to use for marking handled elements and retrieve the
 	 *            EventableConditionChecker
@@ -58,11 +58,11 @@ public class CandidateElementExtractor {
 	 *            the checker used to determine if a certain frame must be ignored.
 	 */
 	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser<?> browser,
-	        FormHandler formHandler, IgnoreFrameChecker iFrameIgnoreChecker) {
+	        FormHandler formHandler, IgnoreFrameChecker ignoreFrameChecker) {
 		checkedElements = checker;
 		this.browser = browser;
 		this.formHandler = formHandler;
-		this.ignoreFrameChecker = iFrameIgnoreChecker;
+		this.ignoreFrameChecker = ignoreFrameChecker;
 	}
 
 	/**
