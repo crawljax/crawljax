@@ -1,6 +1,5 @@
 package com.crawljax.browser;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 
 /**
@@ -31,8 +30,10 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 public interface EmbeddedBrowserBuilder {
 
 	/**
-	 * Build a new EmbeddedBrowser to be used during Crawling.
-	 *
+	 * Build a new EmbeddedBrowser to be used during Crawling. This call is made everytime a new
+	 * Browser instance is requested. When running in Multi-Threaded modes with for example 4
+	 * browsers 4 times a call will be made to this function.
+	 * 
 	 * @param configuration
 	 *            The configuration reader object to read the specific configuration options form.
 	 * @return the new created instance of a EmbeddedBrowser<?> to be used.
