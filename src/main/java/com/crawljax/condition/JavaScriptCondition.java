@@ -37,7 +37,7 @@ public class JavaScriptCondition extends AbstractCondition {
 	 * @return Whether the condition is statisfied.
 	 */
 	@Override
-	public boolean check(EmbeddedBrowser<?> browser) {
+	public boolean check(EmbeddedBrowser browser) {
 		String js =
 		        "try{ if(" + expression + "){return '1';}else{" + "return '0';}}catch(e){"
 		                + " return '0';}";

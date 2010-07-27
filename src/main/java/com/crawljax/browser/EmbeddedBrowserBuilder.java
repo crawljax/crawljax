@@ -3,9 +3,9 @@ package com.crawljax.browser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 
 /**
- * This is the main interface for building a concrete EmbeddedBrowser<?> implementation. By default
+ * This is the main interface for building a concrete EmbeddedBrowser implementation. By default
  * Crawljax uses and offers WebDriver implementation, but when other implementation is requested the
- * EmbeddedBrowser<?> Interface must be implemented in a Class and a new class must be created
+ * EmbeddedBrowser Interface must be implemented in a Class and a new class must be created
  * implementing the BrowserBuilder interface. This new class must be supplied as object to the
  * {@link CrawljaxConfiguration#setBrowserBuilder(BrowserBuilder)}.
  * <p/>
@@ -36,7 +36,7 @@ public interface EmbeddedBrowserBuilder {
 	 * 
 	 * @param configuration
 	 *            The configuration reader object to read the specific configuration options form.
-	 * @return the new created instance of a EmbeddedBrowser<?> to be used.
+	 * @return the new created instance of a EmbeddedBrowser to be used.
 	 */
-	EmbeddedBrowser<?> buildEmbeddedBrowser(CrawljaxConfigurationReader configuration);
+	EmbeddedBrowser buildEmbeddedBrowser(CrawljaxConfigurationReader configuration);
 }

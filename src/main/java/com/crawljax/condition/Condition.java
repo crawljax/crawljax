@@ -23,7 +23,7 @@ public interface Condition {
 	 *            The browser.
 	 * @return whether the evaluated condition is satisfied
 	 */
-	boolean check(EmbeddedBrowser<?> browser);
+	boolean check(EmbeddedBrowser browser);
 
 	/**
 	 * @return the affected nodes (can be null)

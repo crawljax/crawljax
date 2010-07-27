@@ -6,7 +6,6 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.io.File;
@@ -19,7 +18,7 @@ import java.io.File;
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
-public class DummyBrowser implements EmbeddedBrowser<WebDriver> {
+public class DummyBrowser implements EmbeddedBrowser {
 
 	@Override
 	public void close() {
@@ -95,11 +94,6 @@ public class DummyBrowser implements EmbeddedBrowser<WebDriver> {
 	@Override
 	public void saveScreenShot(File file) throws CrawljaxException {
 
-	}
-
-	@Override
-	public WebDriver getBrowser() {
-		return null;
 	}
 
 	@Override

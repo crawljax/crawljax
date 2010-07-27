@@ -51,7 +51,7 @@ import com.crawljax.util.Helper;
  * @version $Id: WebDriverBackedEmbeddedBrowser.java 387 2010-07-13 13:55:49Z slenselink@google.com
  *          $
  */
-public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<WebDriver> {
+public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private long crawlWaitEvent;
 	private static final Logger LOGGER = Logger.getLogger(WebDriverBackedEmbeddedBrowser.class);
 	private final WebDriver browser;
@@ -763,7 +763,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser<Web
 		}
 	}
 
-	@Override
+	/**
+	 * @return the WebDriver used as an EmbeddedBrowser.
+	 */
 	public WebDriver getBrowser() {
 		return browser;
 	}

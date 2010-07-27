@@ -125,7 +125,7 @@ public class PluginsTest {
 		config.addPlugin(new OnBrowserCreatedPlugin() {
 
 			@Override
-			public void onBrowserCreated(EmbeddedBrowser<?> newBrowser) {
+			public void onBrowserCreated(EmbeddedBrowser newBrowser) {
 				registerPlugin(OnBrowserCreatedPlugin.class);
 				assertNotNull(newBrowser);
 			}
@@ -163,7 +163,7 @@ public class PluginsTest {
 		config.addPlugin(new OnUrlLoadPlugin() {
 
 			@Override
-			public void onUrlLoad(EmbeddedBrowser<?> browser) {
+			public void onUrlLoad(EmbeddedBrowser browser) {
 				registerPlugin(OnUrlLoadPlugin.class);
 				assertNotNull(browser);
 			}
@@ -187,7 +187,7 @@ public class PluginsTest {
 		config.addPlugin(new PreCrawlingPlugin() {
 
 			@Override
-			public void preCrawling(EmbeddedBrowser<?> browser) {
+			public void preCrawling(EmbeddedBrowser browser) {
 				registerPlugin(PreCrawlingPlugin.class);
 				assertNotNull(browser);
 			}

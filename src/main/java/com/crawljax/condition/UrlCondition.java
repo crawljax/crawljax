@@ -24,7 +24,7 @@ public class UrlCondition extends AbstractCondition {
 	}
 
 	@Override
-	public boolean check(EmbeddedBrowser<?> browser) {
+	public boolean check(EmbeddedBrowser browser) {
 		return browser.getCurrentUrl().toLowerCase().contains(url);
 	}
 

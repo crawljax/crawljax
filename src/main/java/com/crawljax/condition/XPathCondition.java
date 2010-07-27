@@ -32,11 +32,11 @@ public class XPathCondition extends AbstractCondition {
 	}
 
 	@Override
-	public boolean check(EmbeddedBrowser<?> browser) {
+	public boolean check(EmbeddedBrowser browser) {
 		return checkXPathExpression(browser);
 	}
 
-	private boolean checkXPathExpression(EmbeddedBrowser<?> browser) {
+	private boolean checkXPathExpression(EmbeddedBrowser browser) {
 		try {
 			Document document = Helper.getDocument(browser.getDom());
 			NodeList nodeList = XPathHelper.evaluateXpathExpression(document, expression);

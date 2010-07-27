@@ -20,6 +20,6 @@ public interface ExpectedCondition {
 	 *            the browser to execute the check on
 	 * @return Whether the condition is satisfied.
 	 */
-	boolean isSatisfied(EmbeddedBrowser<?> browser);
+	boolean isSatisfied(EmbeddedBrowser browser);
 
 }

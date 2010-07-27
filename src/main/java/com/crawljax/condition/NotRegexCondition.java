@@ -24,7 +24,7 @@ public class NotRegexCondition extends AbstractCondition {
 	}
 
 	@Override
-	public boolean check(EmbeddedBrowser<?> browser) {
+	public boolean check(EmbeddedBrowser browser) {
 		return Logic.not(regexCondition).check(browser);
 	}
 

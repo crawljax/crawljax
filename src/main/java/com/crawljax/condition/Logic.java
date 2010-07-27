@@ -29,7 +29,7 @@ public final class Logic {
 		return new AbstractCondition() {
 
 			@Override
-			public boolean check(EmbeddedBrowser<?> browser) {
+			public boolean check(EmbeddedBrowser browser) {
 				return !condition.check(browser);
 			}
 
@@ -45,7 +45,7 @@ public final class Logic {
 		return new AbstractCondition() {
 
 			@Override
-			public boolean check(EmbeddedBrowser<?> browser) {
+			public boolean check(EmbeddedBrowser browser) {
 				for (Condition condition : conditions) {
 					if (!condition.check(browser)) {
 						return false;
@@ -65,7 +65,7 @@ public final class Logic {
 		return new AbstractCondition() {
 
 			@Override
-			public boolean check(EmbeddedBrowser<?> browser) {
+			public boolean check(EmbeddedBrowser browser) {
 				for (Condition condition : conditions) {
 					if (condition.check(browser)) {
 						return true;
@@ -85,7 +85,7 @@ public final class Logic {
 		return new AbstractCondition() {
 
 			@Override
-			public boolean check(EmbeddedBrowser<?> browser) {
+			public boolean check(EmbeddedBrowser browser) {
 				return not(and(conditions)).check(browser);
 			}
 

@@ -25,7 +25,7 @@ public class InitialCrawler extends Crawler {
 
 	private final CrawljaxController controller;
 
-	private EmbeddedBrowser<?> browser; // should be final but try-catch prevents...
+	private EmbeddedBrowser browser; // should be final but try-catch prevents...
 
 	private StateMachine stateMachine;
 
@@ -41,7 +41,7 @@ public class InitialCrawler extends Crawler {
 	}
 
 	@Override
-	public EmbeddedBrowser<?> getBrowser() {
+	public EmbeddedBrowser getBrowser() {
 		return browser;
 	}
 

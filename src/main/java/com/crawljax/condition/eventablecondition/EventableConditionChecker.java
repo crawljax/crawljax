@@ -70,6 +70,12 @@ public class EventableConditionChecker {
 		return checkXPathUnderXPaths(xpath, expressions);
 	}
 
+	/**
+	 * @param xpath
+	 *            the xpath to check if its under a certain set of full-xPaths.
+	 * @param xpathsList the set of full-length-xPaths
+	 * @return true if the xpath is under one of the full-length-xpaths.
+	 */
 	public boolean checkXPathUnderXPaths(String xpath, List<String> xpathsList) {
 		/* check all expressions */
 		for (String fullXpath : xpathsList) {

@@ -21,6 +21,6 @@ public interface OnBrowserCreatedPlugin extends Plugin {
 	 * @param newBrowser
 	 *            the new created browser object
 	 */
-	void onBrowserCreated(EmbeddedBrowser<?> newBrowser);
+	void onBrowserCreated(EmbeddedBrowser newBrowser);
 
 }

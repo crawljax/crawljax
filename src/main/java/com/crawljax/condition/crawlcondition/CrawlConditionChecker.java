@@ -69,7 +69,7 @@ public class CrawlConditionChecker {
 	 * @return true iff there are no conditions to test OR the browser satisfies ONE OR MORE of the
 	 *         crawlConditions
 	 */
-	public boolean check(EmbeddedBrowser<?> browser) {
+	public boolean check(EmbeddedBrowser browser) {
 
 		failedCrawlConditions = new ArrayList<CrawlCondition>();
 

@@ -57,6 +57,6 @@ public interface ExtractorManager {
 	 *            the browser to execute in the CrawlConditions.
 	 * @return true if one or more CrawlConditions stratifies or non is specified.
 	 */
-	boolean checkCrawlCondition(EmbeddedBrowser<?> browser);
+	boolean checkCrawlCondition(EmbeddedBrowser browser);
 
 }

@@ -34,7 +34,7 @@ public class CountCondition implements Condition {
 	}
 
 	@Override
-	public boolean check(EmbeddedBrowser<?> browser) {
+	public boolean check(EmbeddedBrowser browser) {
 		if (condition.check(browser)) {
 			count.getAndIncrement();
 		}

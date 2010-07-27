@@ -33,7 +33,7 @@ public class FormHandler {
 	private static final Logger LOGGER = Logger.getLogger(FormHandler.class.getName());
 
 	private boolean randomFieldValue = false;
-	private final EmbeddedBrowser<?> browser;
+	private final EmbeddedBrowser browser;
 
 	public static final int RANDOM_STRING_LENGTH = 8;
 
@@ -51,7 +51,7 @@ public class FormHandler {
 	 * @param randomInput
 	 *            if random data should be generated on the input fields.
 	 */
-	public FormHandler(EmbeddedBrowser<?> browser, InputSpecification inputSpecification,
+	public FormHandler(EmbeddedBrowser browser, InputSpecification inputSpecification,
 	        boolean randomInput) {
 		this.browser = browser;
 		this.formInputValueHelper = new FormInputValueHelper(inputSpecification, randomInput);

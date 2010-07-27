@@ -216,7 +216,7 @@ public class CandidateElementExtractorTest {
 	 * @author Stefan Lenselink <slenselink@google.com>
 	 */
 	private class CEETCrawler extends InitialCrawler {
-		private EmbeddedBrowser<?> browser;
+		private EmbeddedBrowser browser;
 
 		/**
 		 * @param mother
@@ -231,7 +231,7 @@ public class CandidateElementExtractorTest {
 		}
 
 		@Override
-		public EmbeddedBrowser<?> getBrowser() {
+		public EmbeddedBrowser getBrowser() {
 			return browser;
 		}
 

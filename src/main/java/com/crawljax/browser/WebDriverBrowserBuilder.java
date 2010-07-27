@@ -27,7 +27,7 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 	 * @return the new build WebDriver based embeddedBrowser
 	 */
 	@Override
-	public EmbeddedBrowser<?> buildEmbeddedBrowser(CrawljaxConfigurationReader configuration) {
+	public EmbeddedBrowser buildEmbeddedBrowser(CrawljaxConfigurationReader configuration) {
 		// Retrieve the config values used
 		List<String> filterAttributes = configuration.getFilterAttributeNames();
 		int crawlWaitReload = configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();

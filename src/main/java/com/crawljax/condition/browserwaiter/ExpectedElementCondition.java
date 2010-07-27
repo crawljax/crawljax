@@ -29,7 +29,7 @@ public class ExpectedElementCondition implements ExpectedCondition {
 
 	@Override
 	@GuardedBy("browser")
-	public boolean isSatisfied(EmbeddedBrowser<?> browser) {
+	public boolean isSatisfied(EmbeddedBrowser browser) {
 		synchronized (browser) {
 			try {
 				return browser.elementExists(identification);

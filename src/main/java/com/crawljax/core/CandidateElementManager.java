@@ -131,7 +131,7 @@ public class CandidateElementManager implements ExtractorManager {
 	 * @return true if one or more CrawlConditions stratifies or non is specified.
 	 */
 	@Override
-	public boolean checkCrawlCondition(EmbeddedBrowser<?> browser) {
+	public boolean checkCrawlCondition(EmbeddedBrowser browser) {
 		return crawlConditionChecker.check(browser);
 	}
 

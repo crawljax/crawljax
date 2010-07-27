@@ -36,7 +36,7 @@ public class Crawler implements Runnable {
 	 * The main browser window 1 to 1 relation; Every Thread will get on browser assigned in the run
 	 * function.
 	 */
-	private EmbeddedBrowser<?> browser;
+	private EmbeddedBrowser browser;
 
 	/**
 	 * The central DataController. This is a multiple to 1 relation Every Thread shares an instance
@@ -635,7 +635,7 @@ public class Crawler implements Runnable {
 	 *
 	 * @return the browser used in this Crawler Thread
 	 */
-	public EmbeddedBrowser<?> getBrowser() {
+	public EmbeddedBrowser getBrowser() {
 		return browser;
 	}
 

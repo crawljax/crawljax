@@ -39,7 +39,7 @@ public class CandidateElementExtractor {
 	        Logger.getLogger(CandidateElementExtractor.class.getName());
 
 	private final ExtractorManager checkedElements;
-	private final EmbeddedBrowser<?> browser;
+	private final EmbeddedBrowser browser;
 
 	private final FormHandler formHandler;
 	private final IgnoreFrameChecker ignoreFrameChecker;
@@ -57,7 +57,7 @@ public class CandidateElementExtractor {
 	 * @param ignoreFrameChecker
 	 *            the checker used to determine if a certain frame must be ignored.
 	 */
-	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser<?> browser,
+	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser,
 	        FormHandler formHandler, IgnoreFrameChecker ignoreFrameChecker) {
 		checkedElements = checker;
 		this.browser = browser;

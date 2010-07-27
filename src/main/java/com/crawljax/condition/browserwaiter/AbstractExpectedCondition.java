@@ -10,7 +10,7 @@ import com.crawljax.browser.EmbeddedBrowser;
  */
 public abstract class AbstractExpectedCondition implements ExpectedCondition {
 
-	private EmbeddedBrowser<?> browser;
+	private EmbeddedBrowser browser;
 
 	/**
 	 * 
@@ -22,7 +22,7 @@ public abstract class AbstractExpectedCondition implements ExpectedCondition {
 	 * Returns the browser.
 	 * @return The browser.
 	 */
-	public EmbeddedBrowser<?> getBrowser() {
+	public EmbeddedBrowser getBrowser() {
 		return browser;
 	}
 
@@ -30,7 +30,7 @@ public abstract class AbstractExpectedCondition implements ExpectedCondition {
 	 * Sets the browser.
 	 * @param browser The browser.
 	 */
-	public void setBrowser(EmbeddedBrowser<?> browser) {
+	public void setBrowser(EmbeddedBrowser browser) {
 		this.browser = browser;
 	}
 }

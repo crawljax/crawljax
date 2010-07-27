@@ -12,9 +12,11 @@ import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 
 /**
+ * class for finding
+ *          and checking elements.
+ * 
  * @author danny
- * @version $Id$ class for finding
- *          and checking elements
+ * @version $Id$ 
  */
 public class ElementResolver {
 	private static final Logger LOGGER = Logger.getLogger(ElementResolver.class.getName());
@@ -22,7 +24,7 @@ public class ElementResolver {
 	// private ElementResolverSettings settings = new
 	// ElementResolverSettings();
 
-	private final EmbeddedBrowser<?> browser;
+	private final EmbeddedBrowser browser;
 	private final Eventable eventable;
 
 	/**
@@ -33,7 +35,7 @@ public class ElementResolver {
 	 * @param browser
 	 *            The browser.
 	 */
-	public ElementResolver(Eventable eventable, EmbeddedBrowser<?> browser) {
+	public ElementResolver(Eventable eventable, EmbeddedBrowser browser) {
 		this.browser = browser;
 		this.eventable = eventable;
 	}

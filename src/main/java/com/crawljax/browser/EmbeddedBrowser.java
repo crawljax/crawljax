@@ -17,11 +17,9 @@ import java.io.File;
  * Browser interface used by Crawjax.
  *
  * @author mesbah
- * @param <E>
- *            The underlying implementation of the Browser used.
  * @version $Id$
  */
-public interface EmbeddedBrowser<E> {
+public interface EmbeddedBrowser {
 
 	/**
 	 * Browser types.
@@ -151,13 +149,6 @@ public interface EmbeddedBrowser<E> {
 	 *             if saving screenshots is not supported by the implementing class.
 	 */
 	void saveScreenShot(File file) throws CrawljaxException;
-
-	/**
-	 * Return the underlying implementation of Browser used by this EmbeddedBrowser.
-	 *
-	 * @return the underlying implementation.
-	 */
-	E getBrowser();
 
 	/**
 	 * Update the configuration of the Browser. When this method is called the implementing

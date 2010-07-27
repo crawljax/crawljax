@@ -32,13 +32,13 @@ public final class BrowserPool {
 	/**
 	 * BlockingQueue used to block for the moment when a browser comes available.
 	 */
-	private final BlockingQueue<EmbeddedBrowser<?>> available;
+	private final BlockingQueue<EmbeddedBrowser> available;
 
 	/**
 	 * ConcurrentLinkedQueue used to store the taken browsers.
 	 */
-	private final ConcurrentLinkedQueue<EmbeddedBrowser<?>> taken =
-	        new ConcurrentLinkedQueue<EmbeddedBrowser<?>>();
+	private final ConcurrentLinkedQueue<EmbeddedBrowser> taken =
+	        new ConcurrentLinkedQueue<EmbeddedBrowser>();
 
 	/**
 	 * Boot class used to handle and monitor the boot process.
@@ -56,8 +56,8 @@ public final class BrowserPool {
 
 	private final AtomicInteger activeBrowserCount = new AtomicInteger(0);
 
-	private ThreadLocal<EmbeddedBrowser<?>> currentBrowser =
-	        new ThreadLocal<EmbeddedBrowser<?>>();
+	private ThreadLocal<EmbeddedBrowser> currentBrowser =
+	        new ThreadLocal<EmbeddedBrowser>();
 
 	private final Semaphore preCrawlingBlocker = new Semaphore(0);
 
@@ -116,7 +116,7 @@ public final class BrowserPool {
 		this.configuration = configurationReader;
 		this.threadConfig = configurationReader.getThreadConfigurationReader();
 		this.builder = configurationReader.getBrowserBuilder();
-		this.available = new ArrayBlockingQueue<EmbeddedBrowser<?>>(
+		this.available = new ArrayBlockingQueue<EmbeddedBrowser>(
 		        threadConfig.getNumberBrowsers(), true);
 		this.booter = new BrowserBooter(this);
 	}
@@ -130,8 +130,8 @@ public final class BrowserPool {
 	 *             a WebDriverException is thrown by the WebDriver when creation of the browser
 	 *             failed.
 	 */
-	private EmbeddedBrowser<?> createBrowser() {
-		EmbeddedBrowser<?> newBrowser = getBrowserInstance();
+	private EmbeddedBrowser createBrowser() {
+		EmbeddedBrowser newBrowser = getBrowserInstance();
 
 		if (taken.size() == 0 && available.size() == 0
 		        && preCrawlingRun.compareAndSet(false, true)) {
@@ -171,13 +171,13 @@ public final class BrowserPool {
 	/**
 	 * Depended on the {@link EmbeddedBrowser.BrowserType} a new instance is made.
 	 *
-	 * @return the new Object holding the EmbeddedBrowser<?> instance.
+	 * @return the new Object holding the EmbeddedBrowser instance.
 	 * @throws WebDriverException
 	 *             a WebDriverException is thrown by the WebDriver when creation of the browser
 	 *             failed.
 	 */
-	private EmbeddedBrowser<?> getBrowserInstance() {
-		EmbeddedBrowser<?> embeddedBrowser = builder.buildEmbeddedBrowser(configuration);
+	private EmbeddedBrowser getBrowserInstance() {
+		EmbeddedBrowser embeddedBrowser = builder.buildEmbeddedBrowser(configuration);
 		embeddedBrowser.updateConfiguration(configuration);
 		return embeddedBrowser;
 	}
@@ -191,11 +191,11 @@ public final class BrowserPool {
 		Thread closeBrowsers = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Queue<EmbeddedBrowser<?>> deleteList = new LinkedList<EmbeddedBrowser<?>>();
+				Queue<EmbeddedBrowser> deleteList = new LinkedList<EmbeddedBrowser>();
 				if (useBooting()) {
 					booter.shutdown();
 				}
-				for (EmbeddedBrowser<?> b : available) {
+				for (EmbeddedBrowser b : available) {
 					try {
 						b.close();
 					} catch (Exception e) {
@@ -205,8 +205,8 @@ public final class BrowserPool {
 					}
 				}
 				available.removeAll(deleteList);
-				deleteList = new LinkedList<EmbeddedBrowser<?>>();
-				for (EmbeddedBrowser<?> b : taken) {
+				deleteList = new LinkedList<EmbeddedBrowser>();
+				for (EmbeddedBrowser b : taken) {
 					try {
 						b.close();
 					} catch (Exception e) {
@@ -216,7 +216,7 @@ public final class BrowserPool {
 					}
 				}
 				taken.removeAll(deleteList);
-				currentBrowser = new ThreadLocal<EmbeddedBrowser<?>>();
+				currentBrowser = new ThreadLocal<EmbeddedBrowser>();
 				assert (available.isEmpty());
 				assert (taken.isEmpty());
 			}
@@ -233,7 +233,7 @@ public final class BrowserPool {
 	 * @param browser
 	 *            the browser which is not needed anymore
 	 */
-	public synchronized void freeBrowser(EmbeddedBrowser<?> browser) {
+	public synchronized void freeBrowser(EmbeddedBrowser browser) {
 		assert (browser != null);
 		taken.remove(browser);
 		available.add(browser);
@@ -247,8 +247,8 @@ public final class BrowserPool {
 	 * @throws InterruptedException
 	 *             the InterruptedException is thrown when the AVAILABE list is interrupted.
 	 */
-	public EmbeddedBrowser<?> requestBrowser() throws InterruptedException {
-		EmbeddedBrowser<?> browser = null;
+	public EmbeddedBrowser requestBrowser() throws InterruptedException {
+		EmbeddedBrowser browser = null;
 		if (useBooting()) {
 			booter.start();
 			browser = waitForBrowser();
@@ -300,8 +300,8 @@ public final class BrowserPool {
 	 * @throws InterruptedException
 	 *             when available.take is Interrupted
 	 */
-	private EmbeddedBrowser<?> waitForBrowser() throws InterruptedException {
-		EmbeddedBrowser<?> b = available.take();
+	private EmbeddedBrowser waitForBrowser() throws InterruptedException {
+		EmbeddedBrowser b = available.take();
 		assert (b != null);
 		taken.add(b);
 		return b;
@@ -433,7 +433,7 @@ public final class BrowserPool {
 	 *
 	 * @return the browser associated with this Thread null is non is associated.
 	 */
-	public EmbeddedBrowser<?> getCurrentBrowser() {
+	public EmbeddedBrowser getCurrentBrowser() {
 		return this.currentBrowser.get();
 	}
 }

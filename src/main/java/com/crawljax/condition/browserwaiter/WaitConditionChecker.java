@@ -57,7 +57,7 @@ public class WaitConditionChecker {
 	 * @param browser
 	 *            The browser to use.
 	 */
-	public void wait(EmbeddedBrowser<?> browser) {
+	public void wait(EmbeddedBrowser browser) {
 		if (waitConditions == null) {
 			return;
 		}
