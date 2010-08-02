@@ -113,6 +113,19 @@ public class CrawlSpecificationReader implements IgnoreFrameChecker {
 
 	@Override
 	public boolean isFrameIgnored(String iFrame) {
-		return crawlSpecification.ignoredFrameIdentifiers().contains(iFrame);
+		for (String ignorePattern : crawlSpecification.ignoredFrameIdentifiers()) {
+			if (ignorePattern.contains("%")) {
+				// replace with a useful wildcard for regex
+				String pattern = ignorePattern.replace("%", ".*");
+				if (iFrame.matches(pattern)) {
+					return true;
+				}
+			} else {
+				if (ignorePattern.contains(iFrame)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
