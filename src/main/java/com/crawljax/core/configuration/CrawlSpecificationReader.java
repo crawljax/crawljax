@@ -113,6 +113,9 @@ public class CrawlSpecificationReader implements IgnoreFrameChecker {
 
 	@Override
 	public boolean isFrameIgnored(String iFrame) {
+		if (!crawlSpecification.isCrawlFrames()) {
+			return true;
+		}
 		for (String ignorePattern : crawlSpecification.ignoredFrameIdentifiers()) {
 			if (ignorePattern.contains("%")) {
 				// replace with a useful wildcard for regex
@@ -121,7 +124,7 @@ public class CrawlSpecificationReader implements IgnoreFrameChecker {
 					return true;
 				}
 			} else {
-				if (ignorePattern.contains(iFrame)) {
+				if (ignorePattern.equals(iFrame)) {
 					return true;
 				}
 			}

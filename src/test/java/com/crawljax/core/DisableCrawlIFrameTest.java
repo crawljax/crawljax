@@ -10,18 +10,17 @@ import org.junit.Test;
 import com.crawljax.core.configuration.CrawlSpecification;
 
 /**
- * This test checks that all iframes are ignored specified with a wild card.
+ * This test checks that all iframes are ignored using crawlspec call.
  * 
  * @author Stefan Lenselink <slenselink@google.com>
  * @version $Id: ExcludeIFrameTest.java 393 2010-07-22 14:07:41Z slenselink@google.com $
  */
-public class ExcludeIFrameWildcardTest extends IFrameSuper {
+public class DisableCrawlIFrameTest extends IFrameSuper {
 
 	@Override
 	protected CrawlSpecification getCrawlSpecification() {
 		CrawlSpecification spec = super.getCrawlSpecification();
-		spec.dontCrawlFrame("frame%");
-		spec.dontCrawlFrame("sub");
+		spec.disableCrawlFrames();
 		return spec;
 	}
 

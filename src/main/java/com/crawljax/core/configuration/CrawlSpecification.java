@@ -1,5 +1,8 @@
 package com.crawljax.core.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.browserwaiter.ExpectedCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
@@ -8,9 +11,6 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.Comparator;
 import com.crawljax.oraclecomparator.OracleComparator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Specifies the crawl options for a single crawl session. The user must specify which HTML elements
@@ -73,6 +73,7 @@ public class CrawlSpecification {
 	private final List<CrawlCondition> crawlConditions = new ArrayList<CrawlCondition>();
 	private boolean clicklOnce = true;
 	private final List<String> ignoredFrameIdentifiers = new ArrayList<String>();
+	private boolean disableCrawlFrames = false;
 
 	/**
 	 * @param url
@@ -445,4 +446,19 @@ public class CrawlSpecification {
 		return ignoredFrameIdentifiers;
 	}
 
+	/**
+	 * disable the crawling of Frames in total.
+	 */
+	public void disableCrawlFrames() {
+		this.disableCrawlFrames = true;
+	}
+
+	/**
+	 * Is the crawling of Frames enabled.
+	 * 
+	 * @return true if frames should be crawled false otherwise.
+	 */
+	protected boolean isCrawlFrames() {
+		return !disableCrawlFrames;
+	}
 }
