@@ -1,14 +1,14 @@
 package com.crawljax.browser;
 
+import java.io.File;
+
+import org.openqa.selenium.WebElement;
+
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
-
-import org.openqa.selenium.WebElement;
-
-import java.io.File;
 
 /**
  * Real Empty class for place holding {@link EmbeddedBrowser} in UnitTests. There is absolutely NO
@@ -19,6 +19,15 @@ import java.io.File;
  * @version $Id$
  */
 public class DummyBrowser implements EmbeddedBrowser {
+
+	private String currentUrl = null;
+
+	public DummyBrowser() {
+	}
+
+	public DummyBrowser(String currentUrl) {
+		this.currentUrl = currentUrl;
+	}
 
 	@Override
 	public void close() {
@@ -40,7 +49,7 @@ public class DummyBrowser implements EmbeddedBrowser {
 
 	@Override
 	public String getCurrentUrl() {
-		return null;
+		return currentUrl;
 	}
 
 	@Override

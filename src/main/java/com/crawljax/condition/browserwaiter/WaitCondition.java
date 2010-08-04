@@ -80,10 +80,15 @@ public class WaitCondition {
 	 */
 	@GuardedBy("browser")
 	public int testAndWait(EmbeddedBrowser browser) {
+		if (expectedConditions.size() == 0) {
+			// No ExpectedConditions return successful wait.
+			return 1;
+		}
 		synchronized (browser) {
 			if (!browser.getCurrentUrl().toLowerCase().contains(this.url.toLowerCase())) {
 				return -1;
 			}
+			ExpectedCondition lastCheckCondition = null;
 			List<ExpectedCondition> toCheckwaitConditions = new ArrayList<ExpectedCondition>();
 			toCheckwaitConditions.addAll(expectedConditions);
 			long currentTime = System.currentTimeMillis();
@@ -93,6 +98,7 @@ public class WaitCondition {
 			int index = 0;
 			while (index < toCheckwaitConditions.size() && currentTime <= maxTime) {
 				ExpectedCondition checkCondition = toCheckwaitConditions.get(index);
+				lastCheckCondition = checkCondition;
 				LOGGER.debug("Waiting for: " + checkCondition);
 				if (checkCondition.isSatisfied(browser)) {
 					index++;
@@ -107,7 +113,7 @@ public class WaitCondition {
 			}
 			if (currentTime >= maxTime) {
 				LOGGER.info("TIMEOUT WaitCondition url " + getUrl()
-				        + "; Timout while waiting for " + toCheckwaitConditions.get(index));
+				        + "; Timout while waiting for " + lastCheckCondition);
 				return 0;
 			} else {
 				return 1;

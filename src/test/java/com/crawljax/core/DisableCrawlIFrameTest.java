@@ -13,7 +13,7 @@ import com.crawljax.core.configuration.CrawlSpecification;
  * This test checks that all iframes are ignored using crawlspec call.
  * 
  * @author Stefan Lenselink <slenselink@google.com>
- * @version $Id: ExcludeIFrameTest.java 393 2010-07-22 14:07:41Z slenselink@google.com $
+ * @version $Id$
  */
 public class DisableCrawlIFrameTest extends IFrameSuper {
 
