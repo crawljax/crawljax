@@ -307,7 +307,7 @@ public class CrawljaxController implements CrawlQueueManager {
 		/**
 		 * TODO: Needs some more testing when Threads are not finished, the browser gets locked...
 		 */
-		browserPool.close();
+		browserPool.shutdown();
 	}
 
 	/**
@@ -367,6 +367,11 @@ public class CrawljaxController implements CrawlQueueManager {
 	 */
 	public final long getStartCrawl() {
 		return startCrawl;
+	}
+
+	@Override
+	public void waitForTermination() throws InterruptedException {
+		this.workQueue.waitForTermination();
 	}
 
 }

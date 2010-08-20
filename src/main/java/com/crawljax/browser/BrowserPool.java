@@ -56,8 +56,7 @@ public final class BrowserPool {
 
 	private final AtomicInteger activeBrowserCount = new AtomicInteger(0);
 
-	private ThreadLocal<EmbeddedBrowser> currentBrowser =
-	        new ThreadLocal<EmbeddedBrowser>();
+	private ThreadLocal<EmbeddedBrowser> currentBrowser = new ThreadLocal<EmbeddedBrowser>();
 
 	private final Semaphore preCrawlingBlocker = new Semaphore(0);
 
@@ -116,8 +115,8 @@ public final class BrowserPool {
 		this.configuration = configurationReader;
 		this.threadConfig = configurationReader.getThreadConfigurationReader();
 		this.builder = configurationReader.getBrowserBuilder();
-		this.available = new ArrayBlockingQueue<EmbeddedBrowser>(
-		        threadConfig.getNumberBrowsers(), true);
+		this.available =
+		        new ArrayBlockingQueue<EmbeddedBrowser>(threadConfig.getNumberBrowsers(), true);
 		this.booter = new BrowserBooter(this);
 	}
 
@@ -435,5 +434,17 @@ public final class BrowserPool {
 	 */
 	public EmbeddedBrowser getCurrentBrowser() {
 		return this.currentBrowser.get();
+	}
+
+	/**
+	 * Shutdown the BrowserPool, releasing all taken browsers, closing them and wait untill all
+	 * browsers are closed.
+	 */
+	public void shutdown() {
+		try {
+			close().join();
+		} catch (InterruptedException e) {
+			LOGGER.error("The shutdown thread of the BrowserPool was Interrupted", e);
+		}
 	}
 }

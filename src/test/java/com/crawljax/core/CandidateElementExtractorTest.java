@@ -4,21 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.StateVertix;
 import com.crawljax.forms.FormHandler;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class CandidateElementExtractorTest {
 
@@ -78,7 +78,7 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			controller.getBrowserPool().close();
+			controller.getBrowserPool().shutdown();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
@@ -141,7 +141,7 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			controller.getBrowserPool().close();
+			controller.getBrowserPool().shutdown();
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
 			fail(e1.getMessage());
@@ -202,7 +202,7 @@ public class CandidateElementExtractorTest {
 				e.printStackTrace();
 				fail(e.getMessage());
 			}
-			controller.getBrowserPool().close();
+			controller.getBrowserPool().shutdown();
 
 		} catch (ConfigurationException e1) {
 			e1.printStackTrace();
@@ -212,7 +212,7 @@ public class CandidateElementExtractorTest {
 
 	/**
 	 * Internal mock-up crawler retrieving its browser.
-	 * 
+	 *
 	 * @author Stefan Lenselink <slenselink@google.com>
 	 */
 	private class CEETCrawler extends InitialCrawler {

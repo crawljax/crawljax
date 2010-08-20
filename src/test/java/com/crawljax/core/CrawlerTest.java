@@ -67,7 +67,7 @@ public class CrawlerTest {
 			                "Path found by Controller driven Crawling equals the path found in the Crawler", path, c.getExacteventpath());
 		}
 
-		controller.getBrowserPool().close();
+		controller.getBrowserPool().shutdown();
 	}
 
 	private class TestController extends CrawljaxController {

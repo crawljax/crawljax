@@ -3,6 +3,8 @@
  */
 package com.crawljax.core;
 
+import java.util.Properties;
+
 /**
  * @author mesbah
  * @version $Id$
@@ -10,8 +12,12 @@ package com.crawljax.core;
 public class CrawljaxException extends Exception {
 
 	private static final long serialVersionUID = 8597985648361590779L;
+	private static final Properties SYSTEM_PROPERTIES = System.getProperties();
+	static {
+		SYSTEM_PROPERTIES.remove("java.class.path");
+	}
 	private static final String SYSTEMINFO =
-	        "\nAdditional system information:\n" + System.getProperties();
+	        "\nAdditional system information:\n" + SYSTEM_PROPERTIES;
 
 	/**
 	 * Constructs a <code>ContractorException</code> with null as its detail message.

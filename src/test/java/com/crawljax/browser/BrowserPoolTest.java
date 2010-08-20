@@ -119,8 +119,7 @@ public class BrowserPoolTest {
 			EmbeddedBrowser b1 = pool.requestBrowser();
 			pool.freeBrowser(b1);
 
-			Thread closeThread = pool.close();
-			closeThread.join();
+			pool.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -157,8 +156,7 @@ public class BrowserPoolTest {
 			EmbeddedBrowser b1 = pool.requestBrowser();
 			pool.freeBrowser(b1);
 
-			Thread closeThread = pool.close();
-			closeThread.join();
+			pool.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());

@@ -1,10 +1,13 @@
 package com.crawljax.util;
 
+import com.google.common.collect.Lists;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
+import org.custommonkey.xmlunit.DifferenceListener;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -27,9 +30,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,16 +61,22 @@ public final class Helper {
 
 	private static final int BASE_LENGTH = 3;
 
-	private static final int START_LENGTH = 7;
-
 	private static final int TEXT_CUTOFF = 50;
 
 	public static final Logger LOGGER = Logger.getLogger(Helper.class.getName());
 
-	private static final ConcurrentHashMap<String, Document> DOM_CACHE =
-	        new ConcurrentHashMap<String, Document>();
-
 	private Helper() {
+	}
+
+	/**
+	 * Internal used function to strip the basePath from a given url.
+	 *
+	 * @param url
+	 *            the url to examine
+	 * @return the base path with file stipped
+	 */
+	private static String getBasePath(URL url) {
+		return url.getPath().replaceAll(url.getFile(), "");
 	}
 
 	/**
@@ -78,34 +88,47 @@ public final class Helper {
 	 */
 	public static boolean isLinkExternal(String location, String link) {
 		boolean check = false;
-		if (location.startsWith("file") && link.startsWith("http") || link.startsWith("file")
-		        && location.startsWith("http")) {
+
+		if (!location.contains("://")) {
+			// location must always contain :// by rule, it not link is handled as not external
+			return false;
+		}
+
+		// This will jump out of the local file location
+		if (location.startsWith("file") && link.startsWith("/")) {
 			return true;
 		}
 
-		if (link.startsWith("http") && location.startsWith("http")) {
-			String subLink = link.substring(START_LENGTH);
-			int index = subLink.indexOf("/");
-
-			if (index > -1) {
-				subLink = subLink.substring(0, index);
+		if (link.contains("://")) {
+			if (location.startsWith("file") && link.startsWith("http") || link.startsWith("file")
+			        && location.startsWith("http")) {
+				// Jump from file to http(s) or from http(s) to file, so external
+				return true;
 			}
-
-			String subLoc = location.substring(START_LENGTH);
-			index = subLoc.indexOf("/");
-
-			if (index > -1) {
-				subLoc = subLoc.substring(0, subLoc.indexOf("/"));
+			try {
+				URL locationUrl = new URL(location);
+				try {
+					URL linkUrl = new URL(link);
+					if (linkUrl.getHost().equals(locationUrl.getHost())) {
+						String locationPath = getBasePath(locationUrl);
+						String linkPath = getBasePath(linkUrl);
+						return !(linkPath.startsWith(locationPath));
+					}
+					return true;
+				} catch (MalformedURLException e) {
+					LOGGER.info("Can not parse link " + link + " to check its externalOf "
+					        + location);
+					return false;
+				}
+			} catch (MalformedURLException e) {
+				LOGGER.info("Can not parse location " + location + " to check if " + link
+				        + " isExternal", e);
+				return false;
 			}
-
-			if (!subLoc.equals(subLink)) {
-				check = true;
-			}
-
-			LOGGER.debug(subLink);
+		} else {
+			// No full url specifier so internal link...
+			return false;
 		}
-
-		return check;
 	}
 
 	/**
@@ -479,11 +502,50 @@ public final class Helper {
 	 *            The test dom.
 	 * @return The differences.
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<Difference> getDifferences(String controlDom, String testDom) {
+		return getDifferences(controlDom, testDom, Lists.<String> newArrayList());
+	}
+
+	/**
+	 * Get differences between doms.
+	 *
+	 * @param controlDom
+	 *            The control dom.
+	 * @param testDom
+	 *            The test dom.
+	 * @param ignoreAttributes
+	 *            The list of attributes to ignore.
+	 * @return The differences.
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Difference> getDifferences(
+	        String controlDom, String testDom, final List<String> ignoreAttributes) {
 		try {
 			Diff d = new Diff(Helper.getDocument(controlDom), Helper.getDocument(testDom));
 			DetailedDiff dd = new DetailedDiff(d);
+			dd.overrideDifferenceListener(new DifferenceListener() {
+
+				@Override
+				public void skippedComparison(Node control, Node test) {
+				}
+
+				@Override
+				public int differenceFound(Difference difference) {
+					if (difference.getControlNodeDetail() == null
+					        || difference.getControlNodeDetail().getNode() == null
+					        || difference.getTestNodeDetail() == null
+					        || difference.getTestNodeDetail().getNode() == null) {
+						return RETURN_ACCEPT_DIFFERENCE;
+					}
+					if (ignoreAttributes.contains(
+					        difference.getTestNodeDetail().getNode().getNodeName())
+					        || ignoreAttributes.contains(
+					                difference.getControlNodeDetail().getNode().getNodeName())) {
+						return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+					}
+					return RETURN_ACCEPT_DIFFERENCE;
+				}
+			});
 
 			return dd.getAllDifferences();
 		} catch (Exception e) {
