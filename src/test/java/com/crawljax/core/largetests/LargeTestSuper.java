@@ -3,13 +3,6 @@ package com.crawljax.core.largetests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.junit.Test;
-
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.condition.RegexCondition;
@@ -17,19 +10,30 @@ import com.crawljax.condition.XPathCondition;
 import com.crawljax.condition.browserwaiter.ExpectedVisibleCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
+import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.core.state.Identification.How;
 import com.crawljax.oraclecomparator.comparators.DateComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This is the base abstract class for all different kind of largeTests. Sub classes tests specific
@@ -386,6 +390,22 @@ public abstract class LargeTestSuper {
 				LargeTestSuper.violatedInvariants.add(invariant);
 				if (session.getCurrentState().getDom().contains(INVARIANT_TEXT)) {
 					violatedInvariantStateIsCorrect = true;
+				}
+			}
+		});
+		
+		crawljaxConfiguration.addPlugin(new OnNewStatePlugin() {
+			@Override
+			public void onNewState(CrawlSession session) {
+				try {
+					if (!session.getCurrentState().equals(session.getInitialState())) {
+						assertEquals("Target State from ExactEventPath equals current state",
+						        session.getExactEventPath().get(
+						                session.getExactEventPath().size() - 1)
+						                .getTargetStateVertix(), session.getCurrentState());
+					}
+				} catch (CrawljaxException e) {
+					Assert.fail(e.getMessage());
 				}
 			}
 		});

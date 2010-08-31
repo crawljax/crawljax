@@ -325,19 +325,20 @@ public class Crawler implements Runnable {
 				// Dom is changed, so data might need be filled in again
 				crawlPath.add(eventable);
 				// TODO Stefan; Fix this behaviour, this causes trouble + performance...
+				exactEventPath.add(eventable);
 				this.controller.getSession().setExactEventPath(getExacteventpath());
 				if (this.getStateMachine().update(
 				        eventable, newState, this.getBrowser(), this.controller.getSession())) {
 					// Dom changed
 					// No Clone
-					exactEventPath.add(eventable);
-
 					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller,
 					        controller.getSession(), getExacteventpath(), this.getStateMachine());
 
 					return ClickResult.newState;
 				} else {
 					// Dom changed; Clone
+					// TODO Stefan; find out if this is necesarry
+					exactEventPath.remove(eventable);
 					return ClickResult.cloneDetected;
 				}
 			}

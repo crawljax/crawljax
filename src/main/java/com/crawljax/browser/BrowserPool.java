@@ -376,7 +376,7 @@ public final class BrowserPool {
 								run();
 							} else {
 								failedCreatedBrowserCount.incrementAndGet();
-								LOGGER.error("Could not rescure browser creation!", e);
+								LOGGER.error("Could not rescue browser creation!", e);
 							}
 						}
 					}
