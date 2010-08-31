@@ -1,15 +1,16 @@
 package com.crawljax.browser;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.AcceptAllFramesChecker;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.IgnoreFrameChecker;
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
+import com.crawljax.forms.FormHandler;
+import com.crawljax.forms.FormInput;
+import com.crawljax.forms.InputValue;
+import com.crawljax.forms.RandomInputValueGenerator;
+import com.crawljax.util.Helper;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.ElementNotVisibleException;
@@ -33,17 +34,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.AcceptAllFramesChecker;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.IgnoreFrameChecker;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
-import com.crawljax.forms.FormHandler;
-import com.crawljax.forms.FormInput;
-import com.crawljax.forms.InputValue;
-import com.crawljax.forms.RandomInputValueGenerator;
-import com.crawljax.util.Helper;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author mesbah
@@ -581,13 +581,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 					LOGGER.debug("switching to frame: " + frameIdentification);
 					browser.switchTo().frame(frameIdentification);
-					String toAppend = new String(browser.getPageSource());
+					String toAppend = browser.getPageSource();
 
 					LOGGER.debug("frame dom: " + toAppend);
 
 					browser.switchTo().defaultContent();
-
-					LOGGER.debug("default handle window source: " + browser.getPageSource());
 
 					Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
 					Element importedElement =
