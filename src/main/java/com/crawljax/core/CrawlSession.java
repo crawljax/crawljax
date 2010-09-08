@@ -6,11 +6,11 @@ package com.crawljax.core;
 import com.crawljax.browser.BrowserPool;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -49,10 +49,9 @@ public class CrawlSession {
 	 * Denote the time the CrawlSession Started in ms since 1970.
 	 */
 	private final long startTime;
-	// TODO Stefan; optimise / change this behaviour this is not the most speedy solution
-	private final ThreadLocal<List<Eventable>> exactEventPath =
-	        new ThreadLocal<List<Eventable>>();
 
+	private final ThreadLocal<CrawlPath> crawlPath = new ThreadLocal<CrawlPath>();
+	
 	/**
 	 * ThreadLocal store the have a Thread<->Current State relation.
 	 */
@@ -106,8 +105,6 @@ public class CrawlSession {
 		this.initialState = state;
 		this.startTime = startTime;
 		tlState.set(state);
-		// Initialize empty
-		setExactEventPath(new ArrayList<Eventable>());
 	}
 
 	/**
@@ -183,22 +180,82 @@ public class CrawlSession {
 
 	/**
 	 * @return the exactEventPath
+	 * @deprecated use the {@link #getCurrentCrawlPath()}
 	 */
+	@Deprecated
 	public List<Eventable> getExactEventPath() {
-		List<Eventable> eventPath = exactEventPath.get();
-		if (eventPath == null) {
-			return new ArrayList<Eventable>();
-		} else {
-			return eventPath;
-		}
+		return this.getCurrentCrawlPath();
 	}
 
 	/**
 	 * @param exactEventPath
 	 *            the exactEventPath to set
+	 * @deprecated not used anymore...
 	 */
+	@Deprecated
 	public void setExactEventPath(List<Eventable> exactEventPath) {
-		this.exactEventPath.set(exactEventPath);
+	}
+
+	/**
+	 * Remove the current path from the set of crawlPaths.
+	 */
+	protected final void removeCrawlPath() {
+		List<Eventable> path = crawlPath.get();
+		if (path == null) {
+			return;
+		}
+		this.crawlPaths.remove(path);
+	}
+
+	/**
+	 * branch the current crawl path, save the old-one and continue with the current.
+	 */
+	protected final void branchCrawlPath() {
+		CrawlPath path = crawlPath.get();
+		if (path == null) {
+			return;
+		}
+		this.addCrawlPath(path.immutableCopy(false));
+	}
+
+	/**
+	 * Add an eventable to the current crawl path.
+	 *
+	 * @param clickable
+	 *            the clickable to add to the current path.
+	 */
+	protected final void addEventableToCrawlPath(Eventable clickable) {
+		CrawlPath path = crawlPath.get();
+		if (path == null) {
+			path = startNewPath();
+		}
+		path.add(clickable);
+	}
+	
+	/**
+	 * Get the current crawl path.
+	 *
+	 * @return the current current crawl path.
+	 */
+	public CrawlPath getCurrentCrawlPath() {
+		CrawlPath path = this.crawlPath.get();
+		if (path == null) {
+			return new CrawlPath();
+		}
+		return path;
+	}
+
+	/**
+	 * start a new Path, because of the thread local every crawlPath is saved on the thread instead
+	 * of on the Crawler, so without (re)starting a new Path the old path continues.
+	 *
+	 * @return the new empty path.
+	 */
+	protected final CrawlPath startNewPath() {
+		CrawlPath path = new CrawlPath();
+		crawlPath.set(path);
+		crawlPaths.add(path);
+		return path;
 	}
 
 }

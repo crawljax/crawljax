@@ -2,6 +2,7 @@ package com.crawljax.core;
 
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
@@ -54,17 +55,24 @@ public class CrawlerTest {
 
 	@Test
 	public void testCrawler() throws ConfigurationException {
-		TestController controller = new TestController(buildController(), index);
+		final TestController controller = new TestController(buildController(), index);
 
 		// Prevent dead-lock
 		// controller.getBrowserPool().freeBrowser(controller.getCrawler().getBrowser());
 
-		for (List<Eventable> path : paths) {
-			Crawler c = new Crawler(controller, path, "Follow Path");
+		for (final List<Eventable> path : paths) {
+			Crawler c = new Crawler(controller, path, "Follow Path") {
+				@Override
+				public void run() {
+					super.init();
+					CrawlPath newPath = controller.getSession().getCurrentCrawlPath();
+					Assert
+					        .assertEquals(
+					                "Path found by Controller driven Crawling equals the path found in the Crawler", path, newPath);
+					super.shutdown();
+				}
+			};
 			c.run();
-			Assert
-			        .assertEquals(
-			                "Path found by Controller driven Crawling equals the path found in the Crawler", path, c.getExacteventpath());
 		}
 
 		controller.getBrowserPool().shutdown();

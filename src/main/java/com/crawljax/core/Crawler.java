@@ -3,6 +3,7 @@ package com.crawljax.core;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
+import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
@@ -15,7 +16,6 @@ import com.crawljax.util.ElementResolver;
 
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,15 +53,7 @@ public class Crawler implements Runnable {
 	/**
 	 * The path followed from the index to the current state.
 	 */
-	private final List<Eventable> exactEventPath = new ArrayList<Eventable>();
-
-	/**
-	 * TODO Stefan why is there two times the same variable? What is the difference and could it be
-	 * merged? The path followed from the index to the current state. Danny: From the state-flow
-	 * graph one cannot derive which paths are crawled. This is for example required for regression
-	 * testing.
-	 */
-	private final List<Eventable> crawlPath = new ArrayList<Eventable>();
+	private final CrawlPath backTrackPath;
 
 	/**
 	 * The utility which is used to extract the candidate clickables.
@@ -113,7 +105,7 @@ public class Crawler implements Runnable {
 	 *            a name for this crawler (default is empty).
 	 */
 	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, String name) {
-		this(mother, exactEventPath);
+		this(mother, new CrawlPath(exactEventPath));
 		this.name = name;
 	}
 
@@ -124,9 +116,23 @@ public class Crawler implements Runnable {
 	 *            the main CrawljaxController
 	 * @param returnPath
 	 *            the path used to return to the last state, this can be a empty list
+	 * @deprecated better to use {@link #Crawler(CrawljaxController, CrawlPath)}
 	 */
+	@Deprecated
 	protected Crawler(CrawljaxController mother, List<Eventable> returnPath) {
-		this.exactEventPath.addAll(returnPath);
+		this(mother, new CrawlPath(returnPath));
+	}
+
+	/**
+	 * Private Crawler constructor for a 'reload' crawler. Only used internally.
+	 *
+	 * @param mother
+	 *            the main CrawljaxController
+	 * @param returnPath
+	 *            the path used to return to the last state, this can be a empty list
+	 */
+	protected Crawler(CrawljaxController mother, CrawlPath returnPath) {
+		this.backTrackPath = returnPath;
 		this.controller = mother;
 		this.configurationReader = controller.getConfigurationReader();
 		this.crawlQueueManager = mother.getCrawlQueueManager();
@@ -221,12 +227,8 @@ public class Crawler implements Runnable {
 				 * Execute the OnFireEventFailedPlugins with the current crawlPath with the
 				 * crawlPath removed 1 state to represent the path TO here.
 				 */
-				int limit = crawlPath.size() - 1;
-				if (limit < 0) {
-					limit = 0;
-				}
-				CrawljaxPluginsUtil.runOnFireEventFailedPlugins(
-				        eventable, crawlPath.subList(0, limit));
+				CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable,
+				        controller.getSession().getCurrentCrawlPath().immutableCopy(true));
 				return false; // no event fired
 			}
 
@@ -256,7 +258,7 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Reload the browser following the {@link #exactEventPath} to the given currentEvent.
+	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
 	 *
 	 * @throws CrawljaxException
 	 *             if the crawler encounters an error.
@@ -267,7 +269,7 @@ public class Crawler implements Runnable {
 		 */
 		StateVertix curState = controller.getSession().getInitialState();
 
-		for (Eventable clickable : exactEventPath) {
+		for (Eventable clickable : backTrackPath) {
 
 			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
 				return;
@@ -280,7 +282,7 @@ public class Crawler implements Runnable {
 
 			curState = clickable.getTargetStateVertix();
 
-			crawlPath.add(clickable);
+			controller.getSession().addEventableToCrawlPath(clickable);
 
 			this.handleInputElements(clickable);
 
@@ -323,22 +325,22 @@ public class Crawler implements Runnable {
 
 			if (isDomChanged(this.getStateMachine().getCurrentState(), newState)) {
 				// Dom is changed, so data might need be filled in again
-				crawlPath.add(eventable);
-				// TODO Stefan; Fix this behaviour, this causes trouble + performance...
-				exactEventPath.add(eventable);
-				this.controller.getSession().setExactEventPath(getExacteventpath());
+				controller.getSession().addEventableToCrawlPath(eventable);
 				if (this.getStateMachine().update(
 				        eventable, newState, this.getBrowser(), this.controller.getSession())) {
 					// Dom changed
 					// No Clone
+					// TODO change the interface of runGuidedCrawlingPlugins to remove the
+					// controller.getSession().getCurrentCrawlPath() call because its from the
+					// session now.
 					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller,
-					        controller.getSession(), getExacteventpath(), this.getStateMachine());
+					        controller.getSession(),
+					        controller.getSession().getCurrentCrawlPath(),
+					        this.getStateMachine());
 
 					return ClickResult.newState;
 				} else {
 					// Dom changed; Clone
-					// TODO Stefan; find out if this is necesarry
-					exactEventPath.remove(eventable);
 					return ClickResult.cloneDetected;
 				}
 			}
@@ -351,9 +353,11 @@ public class Crawler implements Runnable {
 	 * Return the Exacteventpath.
 	 *
 	 * @return the exacteventpath
+	 * @deprecated use {@link CrawlSession#getCurrentCrawlPath()}
 	 */
+	@Deprecated
 	public final List<Eventable> getExacteventpath() {
-		return exactEventPath;
+		return controller.getSession().getCurrentCrawlPath();
 	}
 
 	/**
@@ -381,7 +385,9 @@ public class Crawler implements Runnable {
 			if (c != null) {
 				this.crawlQueueManager.addWorkToQueue(c);
 			}
-			c = new Crawler(this.controller, getCurrentExactPaths(removeLastStateFromEventPath));
+			c =
+			        new Crawler(this.controller,
+			                controller.getSession().getCurrentCrawlPath().immutableCopy(true));
 		} while (state.registerCrawler(c));
 	}
 
@@ -398,7 +404,7 @@ public class Crawler implements Runnable {
 					fired = false;
 					// We are in the clone state so we continue with the cloned version to search
 					// for work.
-					this.controller.getSession().addCrawlPath(crawlPath);
+					this.controller.getSession().branchCrawlPath();
 					spawnThreads(orrigionalState, false);
 					break;
 				case newState:
@@ -498,36 +504,14 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Return the exactEventPath to be used in creating a new Crawler.
-	 *
-	 * @param removeLastElement
-	 *            if set to true the last element will not be in the crawlPath.
-	 * @return the crawlPath leading to the current state.
-	 */
-	private ArrayList<Eventable> getCurrentExactPaths(boolean removeLastElement) {
-		ArrayList<Eventable> path = new ArrayList<Eventable>();
-		for (Eventable eventable : this.exactEventPath) {
-			Eventable e = eventable.clone();
-			path.add(e);
-			// path.add(eventable);
-		}
-		// Remove the last entry because we want to be able to go back
-		// into the original state where the last change (last in list)
-		// was made
-
-		if (removeLastElement && path.size() > 0) {
-			path.remove(path.size() - 1);
-		}
-
-		return path;
-	}
-
-	/**
 	 * Initialize the Crawler, retrieve a Browser and go to the initial URL when no browser was
 	 * present. rewind the state machine and goBack to the state if there is exactEventPath is
 	 * specified.
 	 */
 	public void init() {
+		// Start a new CrawlPath for this Crawler
+		controller.getSession().startNewPath();
+		
 		this.browser = this.getBrowser();
 		if (this.browser == null) {
 			/**
@@ -589,11 +573,9 @@ public class Crawler implements Runnable {
 			// Constrains are not met at start of this Crawler, so stop immediately
 			return;
 		}
-		if (exactEventPath.size() > 0) {
+		if (backTrackPath.last() != null) {
 			try {
-				if (!exactEventPath.get(exactEventPath.size() - 1).getTargetStateVertix()
-				        .startWorking(this)) {
-					LOGGER.warn("BAH!");
+				if (!backTrackPath.last().getTargetStateVertix().startWorking(this)) {
 					return;
 				}
 			} catch (CrawljaxException e) {
@@ -618,8 +600,8 @@ public class Crawler implements Runnable {
 			/**
 			 * Crawling is done; so the crawlPath of the current branch is known
 			 */
-			if (fired) {
-				controller.getSession().addCrawlPath(crawlPath);
+			if (!fired) {
+				controller.getSession().removeCrawlPath();
 			}
 		} catch (Exception e) {
 			LOGGER.error("Crawl failed!", e);

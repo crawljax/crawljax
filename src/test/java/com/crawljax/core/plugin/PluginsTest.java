@@ -59,7 +59,7 @@ public class PluginsTest {
 		assertNotNull(session.getCrawljaxConfiguration());
 		assertNotNull(session.getCrawlPaths());
 		assertNotNull(session.getCurrentState());
-		assertNotNull(session.getExactEventPath());
+		assertNotNull(session.getCurrentCrawlPath());
 		assertNotNull(session.getInitialState());
 		assertNotNull(session.getStateFlowGraph());
 	}
@@ -115,7 +115,7 @@ public class PluginsTest {
 				registerPlugin(GuidedCrawlingPlugin.class);
 				checkCrawlSession(session);
 				assertTrue("exactEventPaths is the same as the session path",
-				        session.getExactEventPath().equals(exactEventPaths));
+				        session.getCurrentCrawlPath().equals(exactEventPaths));
 			}
 		});
 
