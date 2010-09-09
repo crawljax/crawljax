@@ -341,32 +341,7 @@
           </execution>
         </executions>
       </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>selenium-maven-plugin</artifactId>
-        <executions>
-            <execution>
-                <id>xvfb</id>
-                <phase>compile</phase>
-                <goals>
-                    <goal>xvfb</goal>
-                </goals>
-            </execution>
-            
-            <execution>
-                <id>selenium</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                    <goal>start-server</goal>
-                </goals>
-                <configuration>
-                    <background>true</background>
-                </configuration>
-            </execution>
-        </executions>
-    </plugin>
-
+     
     </plugins>
   </build>
 
