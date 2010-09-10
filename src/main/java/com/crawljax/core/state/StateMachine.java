@@ -204,12 +204,10 @@ public class StateMachine {
 	 */
 	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
 		if (invariantChecker.getInvariants() != null
-		        && invariantChecker.getInvariants().size() > 0) {
-			if (!invariantChecker.check(browser)) {
-				final List<Invariant> failedInvariants = invariantChecker.getFailedInvariants();
-				for (Invariant failedInvariant : failedInvariants) {
-					CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
-				}
+		        && invariantChecker.getInvariants().size() > 0
+		        && !invariantChecker.check(browser)) {
+			for (Invariant failedInvariant : invariantChecker.getFailedInvariants()) {
+				CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
 			}
 		}
 	}
