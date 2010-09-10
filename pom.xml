@@ -354,6 +354,15 @@
           <configLocation>${basedir}/checkstyle.xml</configLocation>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<configuration>
+	  <forkMode>once</forkMode>
+	  <argLine>-javaagent:../../../serenity/serenity.jar -Xms512m -Xmx1024m ${included.packages} ${included.adapters}</argLine>
+	</configuration>
+      </plugin>
      
     </plugins>
   </build>
@@ -472,5 +481,11 @@
       </build>
     </profile>
   </profiles>
+
+  <properties>
+    <!-- serenity properties -->
+    <included.packages>-Dincluded.packages=com.crawljax</included.packages>
+    <included.adapters>-Dincluded.adapters=coverage;complexity;dependency</included.adapters>
+  </properties>
 
 </project>
