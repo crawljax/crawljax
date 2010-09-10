@@ -187,13 +187,4 @@ public final class PrettyHTML {
 		return elements;
 	}
 
-	// /**
-	// * @param args
-	// * Arguments of main method.
-	// */
-	// public static void main(String[] args) {
-	// String html = "<a><fout></b><!-- comment --></c><c class='foo'>aap<img />jee</c></a>";
-	// System.out.println(prettyHTML(html));
-	// }
-
 }
