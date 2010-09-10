@@ -12,11 +12,10 @@ public interface IgnoreFrameChecker {
 
 	/**
 	 * Must a given frame identifier be ignored?
-	 *
+	 * 
 	 * @param frameId
 	 *            the frame identifier
 	 * @return true if the specified frame identifier must be ignored
 	 */
-	public abstract boolean isFrameIgnored(String frameId);
-
+	boolean isFrameIgnored(String frameId);
 }
