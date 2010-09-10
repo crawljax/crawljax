@@ -45,11 +45,11 @@ public final class PrettyHTML {
 
 					// only indent if element is not a single element (like
 					// <img src='..' />)
-					if (!temp[0].endsWith("/") || temp.length == 1) {
-						if (!temp[0].startsWith("!--")) {
-							indent++;
-						}
+					if ((!temp[0].endsWith("/") || temp.length == 1)
+					        && !temp[0].startsWith("!--")) {
+						indent++;
 					}
+
 					// if there is text after the element, print it
 					if (temp.length > 1 && !temp[1].trim().equals("")) {
 						prettyHTML += repeatString(strIndent, indent);
@@ -145,16 +145,15 @@ public final class PrettyHTML {
 						// the element is open --> close element on top of
 						// stack
 						int index = stackIndexElements.peek();
-						if (!isSingleElement(elements[index])) {
+						if (!isSingleElement(elements[index])
+						        && elements[index].lastIndexOf(">") != -1) {
 							// close this element
-							if (elements[index].lastIndexOf(">") != -1) {
-								elements[index] =
-								        elements[index].substring(0, elements[index]
-								                .lastIndexOf(">"))
-								                + "/"
-								                + elements[index].substring(elements[index]
-								                        .lastIndexOf(">"));
-							}
+							elements[index] =
+							        elements[index]
+							                .substring(0, elements[index].lastIndexOf(">"))
+							                + "/"
+							                + elements[index].substring(elements[index]
+							                        .lastIndexOf(">"));
 						}
 						stackElements.pop();
 						stackIndexElements.pop();
