@@ -225,6 +225,20 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>1.6</targetJdk>
+	  <formats>
+            <format>xml</format>
+          </formats> 
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
         <version>2.0</version>
         <configuration>
@@ -354,7 +368,7 @@
           <configLocation>${basedir}/checkstyle.xml</configLocation>
         </configuration>
       </plugin>
-  
+
     </plugins>
   </build>
 
