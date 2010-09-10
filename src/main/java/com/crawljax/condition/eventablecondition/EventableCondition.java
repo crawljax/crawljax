@@ -44,17 +44,6 @@ public class EventableCondition {
 	/**
 	 * @param id
 	 *            Identifier.
-	 * @param underXPath
-	 *            XPath it should be under.
-	 */
-	public EventableCondition(String id, String underXPath) {
-		this.id = id;
-		setInXPath(inXPath);
-	}
-
-	/**
-	 * @param id
-	 *            Identifier.
 	 * @param conditions
 	 *            Conditions that should be satisfied.
 	 */
