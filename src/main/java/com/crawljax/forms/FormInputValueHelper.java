@@ -67,13 +67,11 @@ public final class FormInputValueHelper {
 				String fieldInfo = keyIterator.next().toString();
 				String id = fieldInfo.split("\\.")[0];
 				String property = fieldInfo.split("\\.")[1];
-				if (property.equalsIgnoreCase("fields")) {
-					if (!formFields.containsKey(id)) {
-						for (String fieldName : getPropertyAsList(fieldInfo)) {
-							formFields.put(fieldName, id);
-						}
-						formFieldNames.put(id, getPropertyAsList(fieldInfo));
+				if (property.equalsIgnoreCase("fields") && !formFields.containsKey(id)) {
+					for (String fieldName : getPropertyAsList(fieldInfo)) {
+						formFields.put(fieldName, id);
 					}
+					formFieldNames.put(id, getPropertyAsList(fieldInfo));
 				}
 				if (property.equalsIgnoreCase("values")) {
 					fieldValues.put(id, getPropertyAsList(fieldInfo));
