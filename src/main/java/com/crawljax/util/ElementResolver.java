@@ -12,11 +12,10 @@ import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 
 /**
- * class for finding
- *          and checking elements.
+ * class for finding and checking elements.
  * 
  * @author danny
- * @version $Id$ 
+ * @version $Id$
  */
 public class ElementResolver {
 	private static final Logger LOGGER = Logger.getLogger(ElementResolver.class.getName());
@@ -129,13 +128,14 @@ public class ElementResolver {
 			return true;
 		}
 
-		if (!eventable.getElement().getText().equals("")) {
-			if (eventable.getElement().equalText(otherElement)) {
-				if (logging) {
-					LOGGER.info("Element text equal");
-				}
-				return true;
+		if (!eventable.getElement().getText().equals("")
+		        && eventable.getElement().equalText(otherElement)) {
+
+			if (logging) {
+				LOGGER.info("Element text equal");
 			}
+
+			return true;
 		}
 
 		return false;
