@@ -1,26 +1,26 @@
 package com.crawljax.core;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
 
-import org.apache.log4j.Logger;
-
-import java.util.List;
-
 /**
  * Class that performs crawl actions. It is designed to be run inside a Thread.
- *
+ * 
  * @see #run()
  * @author dannyroest@gmail.com (Danny Roest)
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
@@ -66,7 +66,7 @@ public class Crawler implements Runnable {
 	 * The name of this Crawler when not default (automatic) this will be added to the Thread name
 	 * in the thread as (name). In the {@link CrawlerExecutor#beforeExecute(Thread, Runnable)} the
 	 * name is retrieved using the {@link #toString()} function.
-	 *
+	 * 
 	 * @see Crawler#toString()
 	 * @see CrawlerExecutor#beforeExecute(Thread, Runnable)
 	 */
@@ -89,7 +89,7 @@ public class Crawler implements Runnable {
 	/**
 	 * Enum for describing what has happened after a {@link Crawler#clickTag(Eventable)} has been
 	 * performed.
-	 *
+	 * 
 	 * @see Crawler#clickTag(Eventable)
 	 */
 	private enum ClickResult {
@@ -111,7 +111,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Private Crawler constructor for a 'reload' crawler. Only used internally.
-	 *
+	 * 
 	 * @param mother
 	 *            the main CrawljaxController
 	 * @param returnPath
@@ -125,7 +125,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Private Crawler constructor for a 'reload' crawler. Only used internally.
-	 *
+	 * 
 	 * @param mother
 	 *            the main CrawljaxController
 	 * @param returnPath
@@ -137,8 +137,9 @@ public class Crawler implements Runnable {
 		this.configurationReader = controller.getConfigurationReader();
 		this.crawlQueueManager = mother.getCrawlQueueManager();
 		if (controller.getSession() != null) {
-			this.stateMachine = new StateMachine(controller.getSession().getStateFlowGraph(),
-			        controller.getSession().getInitialState(), controller.getInvariantList());
+			this.stateMachine =
+			        new StateMachine(controller.getSession().getStateFlowGraph(), controller
+			                .getSession().getInitialState(), controller.getInvariantList());
 		} else {
 			/**
 			 * Reset the state machine to null, because there is no session where to load the
@@ -150,13 +151,13 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Brings the browser to the initial state.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             an exception when the index page can not be loaded
 	 */
 	public void goToInitialURL() throws CrawljaxException {
-		LOGGER.info(
-		        "Loading Page " + configurationReader.getCrawlSpecificationReader().getSiteUrl());
+		LOGGER.info("Loading Page "
+		        + configurationReader.getCrawlSpecificationReader().getSiteUrl());
 		getBrowser().goToUrl(configurationReader.getCrawlSpecificationReader().getSiteUrl());
 		/**
 		 * Thread safe
@@ -167,7 +168,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Try to fire a given event on the Browser.
-	 *
+	 * 
 	 * @param eventable
 	 *            the eventable to fire
 	 * @return true iff the event is fired
@@ -196,15 +197,12 @@ public class Crawler implements Runnable {
 				 * Try to find a 'better' / 'quicker' xpath
 				 */
 				String newXPath = new ElementResolver(eventable, getBrowser()).resolve();
-				if (newXPath != null) {
-					if (!xpath.equals(newXPath)) {
-						LOGGER.info("XPath changed from " + xpath + " to " + newXPath
-						        + " relatedFrame:" + eventable.getRelatedFrame());
-						eventable =
-						        new Eventable(
-						                new Identification(Identification.How.xpath, newXPath),
-						                eventType);
-					}
+				if (newXPath != null && !xpath.equals(newXPath)) {
+					LOGGER.info("XPath changed from " + xpath + " to " + newXPath
+					        + " relatedFrame:" + eventable.getRelatedFrame());
+					eventable =
+					        new Eventable(new Identification(Identification.How.xpath, newXPath),
+					                eventType);
 				}
 			}
 
@@ -227,8 +225,8 @@ public class Crawler implements Runnable {
 				 * Execute the OnFireEventFailedPlugins with the current crawlPath with the
 				 * crawlPath removed 1 state to represent the path TO here.
 				 */
-				CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable,
-				        controller.getSession().getCurrentCrawlPath().immutableCopy(true));
+				CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable, controller
+				        .getSession().getCurrentCrawlPath().immutableCopy(true));
 				return false; // no event fired
 			}
 
@@ -241,7 +239,7 @@ public class Crawler implements Runnable {
 	/**
 	 * Enters the form data. First, the related input elements (if any) to the eventable are filled
 	 * in and then it tries to fill in the remaining input elements.
-	 *
+	 * 
 	 * @param eventable
 	 *            the eventable element.
 	 */
@@ -259,7 +257,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             if the crawler encounters an error.
 	 */
@@ -294,8 +292,8 @@ public class Crawler implements Runnable {
 				/**
 				 * Run the onRevisitStateValidator(s)
 				 */
-				CrawljaxPluginsUtil.runOnRevisitStatePlugins(
-				        this.controller.getSession(), curState);
+				CrawljaxPluginsUtil.runOnRevisitStatePlugins(this.controller.getSession(),
+				        curState);
 			}
 
 			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
@@ -319,24 +317,23 @@ public class Crawler implements Runnable {
 		        + "; State: " + this.getStateMachine().getCurrentState().getName());
 		if (this.fireEvent(eventable)) {
 			StateVertix newState =
-			        new StateVertix(getBrowser().getCurrentUrl(),
-			                controller.getSession().getStateFlowGraph().getNewStateName(),
-			                getBrowser().getDom(), this.controller.getStrippedDom(getBrowser()));
+			        new StateVertix(getBrowser().getCurrentUrl(), controller.getSession()
+			                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
+			                this.controller.getStrippedDom(getBrowser()));
 
 			if (isDomChanged(this.getStateMachine().getCurrentState(), newState)) {
 				// Dom is changed, so data might need be filled in again
 				controller.getSession().addEventableToCrawlPath(eventable);
-				if (this.getStateMachine().update(
-				        eventable, newState, this.getBrowser(), this.controller.getSession())) {
+				if (this.getStateMachine().update(eventable, newState, this.getBrowser(),
+				        this.controller.getSession())) {
 					// Dom changed
 					// No Clone
 					// TODO change the interface of runGuidedCrawlingPlugins to remove the
 					// controller.getSession().getCurrentCrawlPath() call because its from the
 					// session now.
-					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller,
-					        controller.getSession(),
-					        controller.getSession().getCurrentCrawlPath(),
-					        this.getStateMachine());
+					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller, controller
+					        .getSession(), controller.getSession().getCurrentCrawlPath(), this
+					        .getStateMachine());
 
 					return ClickResult.newState;
 				} else {
@@ -351,7 +348,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Return the Exacteventpath.
-	 *
+	 * 
 	 * @return the exacteventpath
 	 * @deprecated use {@link CrawlSession#getCurrentCrawlPath()}
 	 */
@@ -362,7 +359,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Have we reached the depth limit?
-	 *
+	 * 
 	 * @param depth
 	 *            the current depth. Added as argument so this call can be moved out if desired.
 	 * @return true if the limit has been reached
@@ -386,8 +383,8 @@ public class Crawler implements Runnable {
 				this.crawlQueueManager.addWorkToQueue(c);
 			}
 			c =
-			        new Crawler(this.controller,
-			                controller.getSession().getCurrentCrawlPath().immutableCopy(true));
+			        new Crawler(this.controller, controller.getSession().getCurrentCrawlPath()
+			                .immutableCopy(true));
 		} while (state.registerCrawler(c));
 	}
 
@@ -429,7 +426,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Crawl through the clickables.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             if an exception is thrown.
 	 */
@@ -445,13 +442,13 @@ public class Crawler implements Runnable {
 		// Store the currentState to be able to 'back-track' later.
 		StateVertix orrigionalState = this.getStateMachine().getCurrentState();
 
-		if (orrigionalState.searchForCandidateElements(candidateExtractor,
-		        configurationReader.getTagElements(), configurationReader.getExcludeTagElements(),
+		if (orrigionalState.searchForCandidateElements(candidateExtractor, configurationReader
+		        .getTagElements(), configurationReader.getExcludeTagElements(),
 		        configurationReader.getCrawlSpecificationReader().getClickOnce())) {
 			// Only execute the preStateCrawlingPlugins when it's the first time
 			LOGGER.info("Starting preStateCrawlingPlugins...");
-			CrawljaxPluginsUtil.runPreStateCrawlingPlugins(
-			        controller.getSession(), orrigionalState.getUnprocessedCandidateElements());
+			CrawljaxPluginsUtil.runPreStateCrawlingPlugins(controller.getSession(),
+			        orrigionalState.getUnprocessedCandidateElements());
 		}
 
 		CandidateCrawlAction action =
@@ -481,7 +478,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * A new state has been found!
-	 *
+	 * 
 	 * @param orrigionalState
 	 *            the current state
 	 * @return true if crawling must continue false otherwise.
@@ -511,7 +508,7 @@ public class Crawler implements Runnable {
 	public void init() {
 		// Start a new CrawlPath for this Crawler
 		controller.getSession().startNewPath();
-		
+
 		this.browser = this.getBrowser();
 		if (this.browser == null) {
 			/**
@@ -533,8 +530,7 @@ public class Crawler implements Runnable {
 		// TODO Stefan ideally this should be placed in the constructor
 		this.formHandler =
 		        new FormHandler(getBrowser(), configurationReader.getInputSpecification(),
-		                configurationReader
-		                        .getCrawlSpecificationReader().getRandomInputInForms());
+		                configurationReader.getCrawlSpecificationReader().getRandomInputInForms());
 
 		this.candidateExtractor =
 		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
@@ -563,7 +559,7 @@ public class Crawler implements Runnable {
 	 * calling {@link CrawlQueueManager#addWorkToQueue(Crawler)}. When the ExecutorService finds a
 	 * free thread this method is called and when this method ends the Thread is released again and
 	 * a new Thread is started
-	 *
+	 * 
 	 * @see java.util.concurrent.Executors#newFixedThreadPool(int)
 	 * @see java.util.concurrent.ExecutorService
 	 */
@@ -615,7 +611,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Return the browser used in this Crawler Thread.
-	 *
+	 * 
 	 * @return the browser used in this Crawler Thread
 	 */
 	public EmbeddedBrowser getBrowser() {
@@ -637,7 +633,7 @@ public class Crawler implements Runnable {
 	/**
 	 * Test to see if the (new) DOM is changed with regards to the old DOM. This method is Thread
 	 * safe.
-	 *
+	 * 
 	 * @param stateBefore
 	 *            the state before the event.
 	 * @param stateAfter
@@ -663,7 +659,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Checks the state and time constraints. This function is nearly Thread-safe.
-	 *
+	 * 
 	 * @return true if all conditions are met.
 	 */
 	private boolean checkConstraints() {
