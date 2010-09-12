@@ -182,7 +182,7 @@ public class StateFlowGraph {
 	}
 
 	/**
-	 * TODO: DOCUMENT ME!
+	 * Returns the set of outgoing states.
 	 * 
 	 * @param stateVertix
 	 *            the state.
@@ -278,18 +278,13 @@ public class StateFlowGraph {
 	 * @return Dom string average size (byte).
 	 */
 	public int getMeanStateStringSize() {
-		Mean mean = new Mean();
-		List<Integer> list = new ArrayList<Integer>();
+		final Mean mean = new Mean();
 
 		for (StateVertix state : getAllStates()) {
-			list.add(new Integer(state.getDomSize()));
+			mean.increment(state.getDomSize());
 		}
 
-		/* calculate the mean */
-		for (Integer num : list) {
-			mean.increment(num.intValue());
-		}
-		return new Double(mean.getResult()).intValue();
+		return (int) mean.getResult();
 	}
 
 	/**
