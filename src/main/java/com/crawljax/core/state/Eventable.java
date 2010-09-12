@@ -249,6 +249,8 @@ public class Eventable extends DefaultEdge implements Cloneable, Serializable {
 	 */
 	@Override
 	public Eventable clone() {
+		super.clone();
+
 		Eventable e = new Eventable();
 
 		ArrayList<FormInput> fi = new ArrayList<FormInput>();

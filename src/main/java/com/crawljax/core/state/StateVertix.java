@@ -1,5 +1,20 @@
 package com.crawljax.core.state;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
+
+import net.jcip.annotations.GuardedBy;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
 import com.crawljax.core.CandidateCrawlAction;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CandidateElementExtractor;
@@ -10,28 +25,13 @@ import com.crawljax.core.TagElement;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.Helper;
 
-import net.jcip.annotations.GuardedBy;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingDeque;
-
 /**
  * The state vertix class which represents a state in the browser. This class implements the
  * Iterable interface because on a StateVertix it is possible to iterate over the possible
  * CandidateElements found in this state. When iterating over the possible candidate elements every
  * time a candidate is returned its removed from the list so it is a one time only access to the
  * candidates.
- *
+ * 
  * @author mesbah
  * @version $Id$
  */
@@ -54,8 +54,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> registerdCandidateActions =
 	        new ConcurrentHashMap<Crawler, CandidateCrawlAction>();
-	private final ConcurrentHashMap<Crawler, CandidateCrawlAction>
-	        workInProgressCandidateActions =
+	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> workInProgressCandidateActions =
 	        new ConcurrentHashMap<Crawler, CandidateCrawlAction>();
 
 	private final Object candidateActionsSearchLock = new Object();
@@ -73,7 +72,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Creates a current state without an url and the stripped dom equals the dom.
-	 *
+	 * 
 	 * @param name
 	 *            the name of the state
 	 * @param dom
@@ -85,7 +84,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Defines a State.
-	 *
+	 * 
 	 * @param url
 	 *            the current url of the state
 	 * @param name
@@ -104,7 +103,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Retrieve the name of the StateVertix.
-	 *
+	 * 
 	 * @return the name of the stateVertix
 	 */
 	public String getName() {
@@ -113,7 +112,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Retrieve the DOM String.
-	 *
+	 * 
 	 * @return the dom for this state
 	 */
 	public String getDom() {
@@ -141,7 +140,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Returns a hashcode. Uses reflection to determine the fields to test.
-	 *
+	 * 
 	 * @return the hashCode of this StateVertix
 	 */
 	@Override
@@ -158,7 +157,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Compare this vertix to a other StateVertix.
-	 *
+	 * 
 	 * @param obj
 	 *            the Object to compare this vertix
 	 * @return Return true if equal. Uses reflection.
@@ -181,7 +180,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Returns the name of this state as string.
-	 *
+	 * 
 	 * @return a string representation of the current StateVertix
 	 */
 	@Override
@@ -191,7 +190,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Return the size of the DOM in bytes.
-	 *
+	 * 
 	 * @return the size of the dom
 	 */
 	public int getDomSize() {
@@ -247,7 +246,7 @@ public class StateVertix implements Serializable, Cloneable {
 	/**
 	 * search for new Candidates from this state. The search for candidates is only done when no
 	 * list is available yet (candidateActions == null).
-	 *
+	 * 
 	 * @param candidateExtractor
 	 *            the CandidateElementExtractor to use.
 	 * @param crawlTagElements
@@ -274,18 +273,19 @@ public class StateVertix implements Serializable, Cloneable {
 		eventTypes.add(EventType.click.toString());
 
 		try {
-			List<CandidateElement> candidateList = candidateExtractor.extract(
-			        crawlTagElements, crawlExcludeTagElements, clickOnce, this);
+			List<CandidateElement> candidateList =
+			        candidateExtractor.extract(crawlTagElements, crawlExcludeTagElements,
+			                clickOnce, this);
 
 			for (CandidateElement candidateElement : candidateList) {
 				for (String eventType : eventTypes) {
 					if (eventType.equals(EventType.click.toString())) {
-						candidateActions.add(
-						        new CandidateCrawlAction(candidateElement, EventType.click));
+						candidateActions.add(new CandidateCrawlAction(candidateElement,
+						        EventType.click));
 					} else {
 						if (eventType.equals(EventType.hover.toString())) {
-							candidateActions.add(
-							        new CandidateCrawlAction(candidateElement, EventType.hover));
+							candidateActions.add(new CandidateCrawlAction(candidateElement,
+							        EventType.hover));
 						} else {
 							LOGGER.warn("The Event Type: " + eventType + " is not supported.");
 						}
@@ -302,7 +302,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Return a list of UnprocessedCandidates in a List.
-	 *
+	 * 
 	 * @return a list of candidates which are unprocessed.
 	 */
 	public List<CandidateElement> getUnprocessedCandidateElements() {
@@ -338,15 +338,15 @@ public class StateVertix implements Serializable, Cloneable {
 	 * the actions and return that action and last it tries to find an unregistered candidate. If
 	 * all else fails it tries to return a action that is registered by an other crawler and
 	 * disables that crawler.
-	 *
+	 * 
 	 * @param requestingCrawler
 	 *            the Crawler placing the request for the Action
 	 * @param manager
 	 *            the manager that can be used to remove a crawler from the queue.
 	 * @return the action that needs to be performed by the Crawler.
 	 */
-	public CandidateCrawlAction pollCandidateCrawlAction(
-	        Crawler requestingCrawler, CrawlQueueManager manager) {
+	public CandidateCrawlAction pollCandidateCrawlAction(Crawler requestingCrawler,
+	        CrawlQueueManager manager) {
 		CandidateCrawlAction action = registerdCandidateActions.remove(requestingCrawler);
 		if (action != null) {
 			workInProgressCandidateActions.put(requestingCrawler, action);
@@ -379,8 +379,8 @@ public class StateVertix implements Serializable, Cloneable {
 						LOGGER.info("Stolen work from other Crawler");
 						return action;
 					} else {
-						LOGGER.warn(
-						        "Oh my! I just removed " + c + " from the queue with no action!");
+						LOGGER.warn("Oh my! I just removed " + c
+						        + " from the queue with no action!");
 					}
 				} else {
 					LOGGER.warn("FAILED TO REMOVE " + c + " from Queue!");
@@ -393,7 +393,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Register an assignment to the crawler.
-	 *
+	 * 
 	 * @param newCrawler
 	 *            the crawler that wants an assignment
 	 * @return true if the crawler has an assignment false otherwise.
@@ -410,7 +410,7 @@ public class StateVertix implements Serializable, Cloneable {
 
 	/**
 	 * Register a Crawler that is going to work, tell if his must go on or abort.
-	 *
+	 * 
 	 * @param crawler
 	 *            the crawler to register
 	 * @return true if the crawler is successfully registered
@@ -429,7 +429,7 @@ public class StateVertix implements Serializable, Cloneable {
 	/**
 	 * Notify the current StateVertix that the given crawler has finished working on the given
 	 * action.
-	 *
+	 * 
 	 * @param crawler
 	 *            the crawler that is finished
 	 * @param action
