@@ -11,13 +11,13 @@ import org.openqa.selenium.firefox.FirefoxDriver;
  */
 public class ThreadConfiguration {
 
-	private final int baseFreePortNumber = 32768;
-	private final int limitFreePortNumber = 65535;
+	private static final int BASE_FREE_PORT_NUMBER = 32768;
+	private static final int LIMIT_FREE_PORT_NUMBER = 65535;
 
 	/**
 	 * Default SleepTimeOnBrowserCreationFailure == 10 seconds == 10000 Millisecond.
 	 */
-	private final int defaultSleepTimeOnBrowserCreationFailure = 10000;
+	private static final int DEFAULT_SLEEP_TIME_ON_BROWSER_CREATION_FAILURE = 10000;
 
 	/**
 	 * The number of threads to run at the same time inside Crawljax. Default is 1. when this is not
@@ -54,7 +54,8 @@ public class ThreadConfiguration {
 	/**
 	 * The number of milliseconds to sleep when a browser can not be created.
 	 */
-	private int sleepTimeOnBrowserCreationFailure = defaultSleepTimeOnBrowserCreationFailure;
+	private int sleepTimeOnBrowserCreationFailure =
+	        DEFAULT_SLEEP_TIME_ON_BROWSER_CREATION_FAILURE;
 
 	/**
 	 * This field indicates if the fastBooting algorithm must be used.
@@ -217,8 +218,8 @@ public class ThreadConfiguration {
 	public int getPortNumber() {
 		if (getUseFastBooting()) {
 			if (useRandomPortNumberCreation) {
-				return baseFreePortNumber
-				        + (int) (Math.random() * (limitFreePortNumber - baseFreePortNumber));
+				return BASE_FREE_PORT_NUMBER
+				        + (int) (Math.random() * (LIMIT_FREE_PORT_NUMBER - BASE_FREE_PORT_NUMBER));
 			} else {
 				return this.lastPort++;
 			}

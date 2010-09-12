@@ -37,8 +37,6 @@ public final class CrawljaxConfiguration {
 	private String outputFolder = "";
 	private String projectRelativePath = "";
 
-	private final boolean useDatabase = false;
-
 	private List<String> filterAttributeNames = new ArrayList<String>();
 
 	private List<Plugin> plugins = new ArrayList<Plugin>();
@@ -235,24 +233,6 @@ public final class CrawljaxConfiguration {
 	 */
 	public void setProjectRelativePath(String projectRelativePath) {
 		this.projectRelativePath = projectRelativePath;
-	}
-
-	/**
-	 * @return Whether a database is used.
-	 */
-	protected boolean getUseDatabase() {
-		return useDatabase;
-	}
-
-	/**
-	 * @return Whether a database is used as an integer.
-	 */
-	protected Integer getUseDatabaseAsInt() {
-		if (useDatabase) {
-			return 1;
-		} else {
-			return 0;
-		}
 	}
 
 	/**

@@ -3,29 +3,32 @@
  */
 package com.crawljax.forms;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.eventablecondition.EventableCondition;
-import com.crawljax.core.CandidateElement;
-import com.crawljax.core.configuration.InputSpecification;
-import com.crawljax.util.Helper;
-import com.crawljax.util.XPathHelper;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
+
 /**
  * Handles form values and fills in the form input elements with random values of the defined
  * values.
- *
+ * 
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
@@ -43,7 +46,7 @@ public class FormHandler {
 
 	/**
 	 * Public constructor.
-	 *
+	 * 
 	 * @param browser
 	 *            the embedded browser.
 	 * @param inputSpecification
@@ -63,7 +66,7 @@ public class FormHandler {
 	/**
 	 * Fills in the element with the InputValues for input TODO: improve this by using WebDriver
 	 * options?
-	 *
+	 * 
 	 * @param element
 	 * @param input
 	 */
@@ -117,8 +120,9 @@ public class FormHandler {
 				if (input.getType().equals("radio")) {
 					for (InputValue inputValue : input.getInputValues()) {
 						if (inputValue.isChecked()) {
-							String js = Helper.getJSGetElement(
-							        XPathHelper.getXPathExpression(element));
+							String js =
+							        Helper.getJSGetElement(XPathHelper
+							                .getXPathExpression(element));
 							js += "try{ATUSA_element.checked=true;}catch(e){}";
 							browser.executeJavaScript(js);
 						}
@@ -162,8 +166,9 @@ public class FormHandler {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node candidate = nodeList.item(i);
 				Node typeAttribute = candidate.getAttributes().getNamedItem("type");
-				if (typeAttribute == null || (typeAttribute != null
-				        && allowedTypes.contains(typeAttribute.getNodeValue()))) {
+				if (typeAttribute == null
+				        || (typeAttribute != null && allowedTypes.contains(typeAttribute
+				                .getNodeValue()))) {
 					nodes.add(nodeList.item(i));
 				}
 			}
@@ -207,7 +212,7 @@ public class FormHandler {
 
 	/**
 	 * Handle form elements.
-	 *
+	 * 
 	 * @throws Exception
 	 *             the exception.
 	 */
@@ -217,21 +222,29 @@ public class FormHandler {
 
 	/**
 	 * Fills in form/input elements.
-	 *
+	 * 
 	 * @param formInputs
 	 *            form input list.
 	 */
 	public void handleFormElements(List<FormInput> formInputs) {
 		Document dom;
+
 		try {
 			dom = Helper.getDocument(browser.getDomWithoutIframeContent());
 			for (FormInput input : formInputs) {
 				LOGGER.debug("Filling in: " + input);
 				setInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
 			}
-		} catch (Exception e) {
-			LOGGER.warn("Could not handle form elements");
+		} catch (SAXException e) {
+			LOGGER.error(e.getMessage(), e);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+		} catch (CrawljaxException e) {
+			LOGGER.error(e.getMessage(), e);
+		} catch (XPathExpressionException e) {
+			LOGGER.error(e.getMessage(), e);
 		}
+
 	}
 
 	/**
@@ -241,11 +254,11 @@ public class FormHandler {
 	 *            the belonging eventable condition for sourceElement
 	 * @return a list with Candidate elements for the inputs.
 	 */
-	public List<CandidateElement> getCandidateElementsForInputs(
-	        Element sourceElement, EventableCondition eventableCondition) {
+	public List<CandidateElement> getCandidateElementsForInputs(Element sourceElement,
+	        EventableCondition eventableCondition) {
 
-		return formInputValueHelper.getCandidateElementsForInputs(
-		        browser, sourceElement, eventableCondition);
+		return formInputValueHelper.getCandidateElementsForInputs(browser, sourceElement,
+		        eventableCondition);
 	}
 
 }

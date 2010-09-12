@@ -1,5 +1,6 @@
 package com.crawljax.core.state;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,14 +9,15 @@ import org.w3c.dom.Node;
 import com.crawljax.util.Helper;
 
 /**
- * This class represents a element. Its build from the node name and node text content
+ * This class represents an element. It is built from the node name and node text contents.
  * 
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
-public class Element implements Cloneable {
+public class Element implements Cloneable, Serializable {
 
+	private static final long serialVersionUID = -1608999189549530008L;
 	private static final int HASHCONST = 32;
 
 	private Node node;

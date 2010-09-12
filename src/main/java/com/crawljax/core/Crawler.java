@@ -179,7 +179,7 @@ public class Crawler implements Runnable {
 			// TODO Stefan; FindBugs found this bug, not yet solved
 			// Should be changed with:
 			// eventable.getIdentification().getHow().toString().equals("xpath")
-			if (eventable.getIdentification().getHow().equals("xpath")
+			if (eventable.getIdentification().getHow().toString().equals("xpath")
 			        && eventable.getRelatedFrame().equals("")) {
 
 				/**

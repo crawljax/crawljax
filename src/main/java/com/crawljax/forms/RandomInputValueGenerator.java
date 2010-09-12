@@ -11,9 +11,10 @@ import java.util.Random;
  */
 public class RandomInputValueGenerator {
 
-	private final String textCharactersLowerCase = "abcdefghijklmnopqrstuvwxyz";
-	private final String textCharactersUpperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final String CHARSLOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+	private static final String CHARSUPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	public static final double PROBABILITY_CHECK = 0.5;
+	private final Random random = new Random();
 
 	/**
 	 * @param characters
@@ -21,12 +22,12 @@ public class RandomInputValueGenerator {
 	 * @return a random string
 	 */
 	private String generate(String characters, int length) {
-		String str = new String();
+		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < length; i++) {
 			int index = new Random().nextInt(characters.length());
-			str += characters.substring(index, index + 1);
+			buf.append(characters.substring(index, index + 1));
 		}
-		return str;
+		return buf.toString();
 	}
 
 	/**
@@ -35,14 +36,14 @@ public class RandomInputValueGenerator {
 	 * @return random string
 	 */
 	public String getRandomString(int length) {
-		return generate(textCharactersLowerCase + textCharactersUpperCase, length);
+		return generate(CHARSLOWERCASE + CHARSUPPERCASE, length);
 	}
 
 	/**
 	 * @return whether to check with p=0.5
 	 */
 	public boolean getCheck() {
-		return new Random().nextDouble() > PROBABILITY_CHECK;
+		return random.nextDouble() > PROBABILITY_CHECK;
 	}
 
 	/**

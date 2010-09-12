@@ -636,13 +636,16 @@ public final class Helper {
 				throw new IOException("Cannot find " + fname + " or " + fnameJar);
 			}
 		}
-		InputStreamReader streamReader = new InputStreamReader(inStream);
-		BufferedReader bufferedReader = new BufferedReader(streamReader);
+
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream));
 		String line;
 		StringBuilder stringBuilder = new StringBuilder();
+
 		while ((line = bufferedReader.readLine()) != null) {
 			stringBuilder.append(line + "\n");
 		}
+
+		bufferedReader.close();
 		return stringBuilder.toString();
 	}
 

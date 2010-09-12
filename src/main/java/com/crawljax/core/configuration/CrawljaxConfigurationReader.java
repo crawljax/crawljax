@@ -92,13 +92,6 @@ public class CrawljaxConfigurationReader {
 	}
 
 	/**
-	 * @return Whether to use the database.
-	 */
-	public boolean getUseDatabase() {
-		return crawljaxConfiguration.getUseDatabase();
-	}
-
-	/**
 	 * Method to get the proxy configuration object.
 	 * 
 	 * @return The proxy configuration object.
