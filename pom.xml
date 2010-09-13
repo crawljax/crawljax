@@ -407,6 +407,13 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>cobertura-maven-plugin</artifactId>
+        <configuration>
+          <instumentation>
+            <excludes>
+              <exclude>com/crawljax/examples/*</exclude>
+            </excludes>
+          </instumentation>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
