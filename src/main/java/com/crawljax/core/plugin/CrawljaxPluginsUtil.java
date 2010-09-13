@@ -1,5 +1,7 @@
 package com.crawljax.core.plugin;
 
+import com.google.common.collect.Lists;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
@@ -29,7 +31,7 @@ public final class CrawljaxPluginsUtil {
 	 * Make a new Log4j object used to do the logging.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(CrawljaxPluginsUtil.class.getName());
-	private static List<Plugin> plugins;
+	private static final List<Plugin> PLUGINS = Lists.newArrayList();
 
 	/**
 	 * Non instanceable constructor; does nothing never used, this constructor prevents the
@@ -52,12 +54,12 @@ public final class CrawljaxPluginsUtil {
 	 *            the list of plugins.
 	 */
 	public static void loadPlugins(List<Plugin> plugins) {
-		CrawljaxPluginsUtil.plugins = plugins;
 		if (plugins == null || plugins.size() == 0) {
 			LOGGER.warn("No plugins loaded because CrawljaxConfiguration is empty");
 			return;
 		}
-		for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
+		CrawljaxPluginsUtil.PLUGINS.addAll(plugins);
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			/**
 			 * Log the name of the plugin loaded
 			 */
@@ -79,11 +81,9 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runPreCrawlingPlugins(EmbeddedBrowser browser) {
 		LOGGER.info("Running PreCrawlingPlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof PreCrawlingPlugin) {
-					((PreCrawlingPlugin) plugin).preCrawling(browser);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof PreCrawlingPlugin) {
+				((PreCrawlingPlugin) plugin).preCrawling(browser);
 			}
 		}
 	}
@@ -99,11 +99,9 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runOnUrlLoadPlugins(EmbeddedBrowser browser) {
 		LOGGER.info("Running OnUrlLoadPlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof OnUrlLoadPlugin) {
-					((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof OnUrlLoadPlugin) {
+				((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
 			}
 		}
 	}
@@ -118,11 +116,9 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runOnNewStatePlugins(CrawlSession session) {
 		LOGGER.info("Running OnNewStatePlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof OnNewStatePlugin) {
-					((OnNewStatePlugin) plugin).onNewState(session);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof OnNewStatePlugin) {
+				((OnNewStatePlugin) plugin).onNewState(session);
 			}
 		}
 	}
@@ -140,12 +136,9 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session) {
 		LOGGER.info("Running OnInvriantViolationPlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof OnInvariantViolationPlugin) {
-					((OnInvariantViolationPlugin) plugin).onInvariantViolation(
-					        invariant, session);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof OnInvariantViolationPlugin) {
+				((OnInvariantViolationPlugin) plugin).onInvariantViolation(invariant, session);
 			}
 		}
 	}
@@ -160,11 +153,9 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runPostCrawlingPlugins(CrawlSession session) {
 		LOGGER.info("Running PostCrawlingPlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof PostCrawlingPlugin) {
-					((PostCrawlingPlugin) plugin).postCrawling(session);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof PostCrawlingPlugin) {
+				((PostCrawlingPlugin) plugin).postCrawling(session);
 			}
 		}
 	}
@@ -181,11 +172,9 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runOnRevisitStatePlugins(CrawlSession session, StateVertix currentState) {
 		LOGGER.info("Running OnRevisitStatePlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof OnRevisitStatePlugin) {
-					((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof OnRevisitStatePlugin) {
+				((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
 			}
 		}
 	}
@@ -204,12 +193,9 @@ public final class CrawljaxPluginsUtil {
 	public static void runPreStateCrawlingPlugins(
 	        CrawlSession session, List<CandidateElement> candidateElements) {
 		LOGGER.info("Running PreStateCrawlingPlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof PreStateCrawlingPlugin) {
-					((PreStateCrawlingPlugin) plugin).preStateCrawling(
-					        session, candidateElements);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof PreStateCrawlingPlugin) {
+				((PreStateCrawlingPlugin) plugin).preStateCrawling(session, candidateElements);
 			}
 		}
 	}
@@ -225,11 +211,9 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runProxyServerPlugins(ProxyConfiguration config) {
 		LOGGER.info("Running ProxyServerPlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof ProxyServerPlugin) {
-					((ProxyServerPlugin) plugin).proxyServer(config);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof ProxyServerPlugin) {
+				((ProxyServerPlugin) plugin).proxyServer(config);
 			}
 		}
 	}
@@ -252,13 +236,11 @@ public final class CrawljaxPluginsUtil {
 	        CrawlSession session, final List<Eventable> exactEventPaths,
 	        final StateMachine stateMachine) {
 		LOGGER.info("Running GuidedCrawlingPlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			StateVertix currentState = session.getCurrentState();
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof GuidedCrawlingPlugin) {
-					((GuidedCrawlingPlugin) plugin).guidedCrawling(
-					        currentState, controller, session, exactEventPaths, stateMachine);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof GuidedCrawlingPlugin) {
+				StateVertix currentState = session.getCurrentState();
+				((GuidedCrawlingPlugin) plugin).guidedCrawling(
+				        currentState, controller, session, exactEventPaths, stateMachine);
 			}
 		}
 	}
@@ -274,14 +256,11 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runOnFireEventFailedPlugins(Eventable eventable, List<Eventable> path) {
 		LOGGER.info("Running OnFireEventFailedPlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof OnFireEventFailedPlugin) {
-					((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof OnFireEventFailedPlugin) {
+				((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
 			}
 		}
-
 	}
 
 	/**
@@ -295,13 +274,10 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runOnBrowserCreatedPlugins(EmbeddedBrowser newBrowser) {
 		LOGGER.info("Running OnBrowserCreatedPlugins...");
-		if (CrawljaxPluginsUtil.plugins != null) {
-			for (Plugin plugin : CrawljaxPluginsUtil.plugins) {
-				if (plugin instanceof OnBrowserCreatedPlugin) {
-					((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
-				}
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof OnBrowserCreatedPlugin) {
+				((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
 			}
 		}
 	}
-
 }
