@@ -25,6 +25,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -730,11 +732,10 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	protected long getCrawlWaitReload() {
 		return crawlWaitReload;
 	}
-
-	@Override
-	public void saveScreenShot(File file) throws CrawljaxException {
-		if (browser instanceof TakesScreenshot) {
-			File tmpfile = ((TakesScreenshot) browser).getScreenshotAs(OutputType.FILE);
+	
+	private void takeScreenShotOnBrowser(WebDriver driver, File file) throws CrawljaxException {
+		if (driver instanceof TakesScreenshot) {
+			File tmpfile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
 			try {
 				FileHandler.copy(tmpfile, file);
@@ -743,9 +744,19 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			}
 
 			removeCanvasGeneratedByFirefoxDriverForScreenshots();
+		} else if (driver instanceof RemoteWebDriver) {
+			WebDriver augmentedWebdriver = new Augmenter().augment(driver);
+			takeScreenShotOnBrowser(augmentedWebdriver, file);
+		} else if (driver instanceof WrapsDriver) {
+			takeScreenShotOnBrowser(((WrapsDriver) driver).getWrappedDriver(), file);
 		} else {
 			throw new CrawljaxException("Your current WebDriver doesn't support screenshots.");
 		}
+	}
+
+	@Override
+	public void saveScreenShot(File file) throws CrawljaxException {
+		takeScreenShotOnBrowser(browser, file);
 	}
 
 	private void removeCanvasGeneratedByFirefoxDriverForScreenshots() {
