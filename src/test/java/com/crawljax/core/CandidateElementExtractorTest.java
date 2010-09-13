@@ -215,7 +215,7 @@ public class CandidateElementExtractorTest {
 	 *
 	 * @author Stefan Lenselink <slenselink@google.com>
 	 */
-	private class CEETCrawler extends InitialCrawler {
+	private static class CEETCrawler extends InitialCrawler {
 		private EmbeddedBrowser browser;
 
 		/**

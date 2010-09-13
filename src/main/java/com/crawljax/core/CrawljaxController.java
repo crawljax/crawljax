@@ -37,7 +37,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	private long startCrawl;
 
 	private final StateComparator stateComparator;
-	private final CrawlConditionChecker crawlConditionChecker = new CrawlConditionChecker();
+	private final CrawlConditionChecker crawlConditionChecker;
 	private final EventableConditionChecker eventableConditionChecker;
 
 	private final WaitConditionChecker waitConditionChecker = new WaitConditionChecker();
@@ -71,7 +71,7 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		stateComparator = new StateComparator(crawlerReader.getOracleComparators());
 		invariantList = crawlerReader.getInvariants();
-		crawlConditionChecker.setCrawlConditions(crawlerReader.getCrawlConditions());
+		crawlConditionChecker = new CrawlConditionChecker(crawlerReader.getCrawlConditions());
 		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
 		eventableConditionChecker =
 		        new EventableConditionChecker(configurationReader.getEventableConditions());

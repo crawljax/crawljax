@@ -10,13 +10,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.w3c.dom.NodeList;
-
 import com.crawljax.browser.BrowserPool;
 import com.crawljax.browser.DummyBrowser;
 import com.crawljax.browser.EmbeddedBrowser;
@@ -31,6 +24,13 @@ import com.crawljax.core.plugin.OnInvariantViolationPlugin;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
 
 /**
  * @author mesbah

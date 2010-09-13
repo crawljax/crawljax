@@ -78,7 +78,7 @@ public class CrawlerTest {
 		controller.getBrowserPool().shutdown();
 	}
 
-	private class TestController extends CrawljaxController {
+	private static class TestController extends CrawljaxController {
 		CrawlSession localSession;
 		StateFlowGraph g;
 		StateVertix i;

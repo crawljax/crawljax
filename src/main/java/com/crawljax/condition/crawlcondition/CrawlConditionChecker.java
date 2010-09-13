@@ -3,16 +3,15 @@
  */
 package com.crawljax.condition.crawlcondition;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.Condition;
 
-import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
 import org.apache.log4j.Logger;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.Condition;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller class for the crawl conditions.
@@ -25,16 +24,9 @@ public class CrawlConditionChecker {
 
 	private static final Logger LOGGER = Logger.getLogger(CrawlConditionChecker.class.getName());
 
-	private List<CrawlCondition> crawlConditions;
+	private final List<CrawlCondition> crawlConditions;
 
 	private List<CrawlCondition> failedCrawlConditions;
-
-	/**
-	 * Constructor.
-	 */
-	public CrawlConditionChecker() {
-
-	}
 
 	/**
 	 * Constructor.
@@ -43,23 +35,6 @@ public class CrawlConditionChecker {
 	 *            Crawlconditions
 	 */
 	public CrawlConditionChecker(List<CrawlCondition> crawlConditions) {
-		this.crawlConditions = crawlConditions;
-	}
-
-	/**
-	 * @return the crawlConditions
-	 */
-	@GuardedBy("this")
-	public synchronized List<CrawlCondition> getCrawlConditions() {
-		return crawlConditions;
-	}
-
-	/**
-	 * @param crawlConditions
-	 *            the crawlConditions to set
-	 */
-	@GuardedBy("this")
-	public synchronized void setCrawlConditions(List<CrawlCondition> crawlConditions) {
 		this.crawlConditions = crawlConditions;
 	}
 

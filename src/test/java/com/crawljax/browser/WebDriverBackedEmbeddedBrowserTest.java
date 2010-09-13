@@ -69,7 +69,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 				fail(e.getMessage());
 			}
 			assertTrue(f.exists());
-			f.delete();
+			assertTrue(f.delete());
 		}
 
 		browser.close();

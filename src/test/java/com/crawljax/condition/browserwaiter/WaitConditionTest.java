@@ -1,13 +1,13 @@
 package com.crawljax.condition.browserwaiter;
 
-import java.util.ArrayList;
+import com.crawljax.browser.DummyBrowser;
+import com.crawljax.browser.EmbeddedBrowser;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.crawljax.browser.DummyBrowser;
-import com.crawljax.browser.EmbeddedBrowser;
+import java.util.ArrayList;
 
 /**
  * This test case tests the WaitCondition class. Issue #30 was covered by this test case.
@@ -86,7 +86,7 @@ public class WaitConditionTest {
 	 * 
 	 * @author slenselink@google.com (Stefan Lenselink)
 	 */
-	private class TimeoutExpectedCondition implements ExpectedCondition {
+	private static class TimeoutExpectedCondition implements ExpectedCondition {
 		private int count = 0;
 		@Override
 		public boolean isSatisfied(EmbeddedBrowser browser) {

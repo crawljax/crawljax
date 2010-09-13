@@ -1,14 +1,14 @@
 package com.crawljax.core;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import net.jcip.annotations.GuardedBy;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.crawlcondition.CrawlConditionChecker;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
+
+import net.jcip.annotations.GuardedBy;
+
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The class is a ExtractorManager for the CandidateElements. It basically implements the
@@ -40,6 +40,12 @@ public class CandidateElementManager implements ExtractorManager {
 	 * operation.
 	 */
 	private final CrawlConditionChecker crawlConditionChecker;
+
+	
+	/**
+	 * Used to lock the elements when adding multiple elements.
+	 */
+	private final Object elementsLock = new Object();
 
 	/**
 	 * Create a new CandidateElementManager.
@@ -87,12 +93,12 @@ public class CandidateElementManager implements ExtractorManager {
 	 *            the element that is checked
 	 * @return true if !contains(element.uniqueString)
 	 */
-	@GuardedBy("elements")
+	@GuardedBy("elementsLock")
 	@Override
 	public boolean markChecked(CandidateElement element) {
 		String generalString = element.getGeneralString();
 		String uniqueString = element.getUniqueString();
-		synchronized (elements) {
+		synchronized (elementsLock) {
 			if (elements.contains(uniqueString)) {
 				return false;
 			} else {

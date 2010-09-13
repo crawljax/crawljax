@@ -411,7 +411,7 @@ public final class BrowserPool {
 		 * Start this Thread, the Thread will only be started when it is called the first time.
 		 */
 		@Override
-		public synchronized void start() {
+		public void start() {
 			if (!finished && started.compareAndSet(false, true)) {
 				super.start();
 			}

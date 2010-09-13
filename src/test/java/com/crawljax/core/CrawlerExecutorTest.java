@@ -1,13 +1,13 @@
 package com.crawljax.core;
 
+import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.ThreadConfiguration;
+
 import junit.framework.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
-
-import com.crawljax.core.configuration.CrawlSpecification;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.ThreadConfiguration;
 
 /**
  * Test the CrawlerExecutor ThreadPoolExecutor. Basically it test only the correct naming.
@@ -71,7 +71,7 @@ public class CrawlerExecutorTest {
 	 * 
 	 * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
 	 */
-	private class TestThread implements Runnable {
+	private static class TestThread implements Runnable {
 		private final String compare;
 		private final String name;
 		private boolean success = false;

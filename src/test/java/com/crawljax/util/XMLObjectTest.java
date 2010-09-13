@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
-import org.junit.Test;
 
 public class XMLObjectTest {
 
@@ -40,6 +40,6 @@ public class XMLObjectTest {
 		assertEquals("Bla", object.get(0));
 		assertEquals("Something else", object.get(1));
 
-		f.delete();
+		assertTrue(f.delete());
 	}
 }

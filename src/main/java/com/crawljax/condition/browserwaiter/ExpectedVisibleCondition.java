@@ -1,10 +1,9 @@
 package com.crawljax.condition.browserwaiter;
 
-import net.jcip.annotations.GuardedBy;
-import net.jcip.annotations.ThreadSafe;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.state.Identification;
+
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Checks whether an element is visible.
@@ -28,11 +27,8 @@ public class ExpectedVisibleCondition implements ExpectedCondition {
 	}
 
 	@Override
-	@GuardedBy("browser")
 	public boolean isSatisfied(EmbeddedBrowser browser) {
-		synchronized (browser) {
-			return browser.isVisible(identification);
-		}
+		return browser.isVisible(identification);
 	}
 
 	@Override

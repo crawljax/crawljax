@@ -114,7 +114,8 @@ public class Identification implements Serializable {
 				return By.name(this.value);
 
 			case xpath:
-				return By.xpath(this.value);
+				// Work around HLWK driver bug
+				return By.xpath(this.value.replaceAll("/BODY\\[1\\]/", "/BODY/"));
 
 			case id:
 				return By.id(this.value);

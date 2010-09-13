@@ -169,7 +169,7 @@ public class HelperTest {
 			if (!dir.exists()) {
 				fail("Directory not created");
 			} else {
-				dir.delete();
+				assertTrue(dir.delete());
 			}
 		}
 	}
@@ -197,7 +197,7 @@ public class HelperTest {
 				e.printStackTrace();
 			}
 
-			f.delete();
+			assertTrue(f.delete());
 		} else {
 			fail("File could not me created because it already exists.");
 		}
