@@ -1,12 +1,12 @@
 package com.crawljax.core.state;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.util.Helper;
 
 import org.w3c.dom.Node;
 
-import com.crawljax.util.Helper;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents an element. It is built from the node name and node text contents.
@@ -15,7 +15,7 @@ import com.crawljax.util.Helper;
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
-public class Element implements Cloneable, Serializable {
+public class Element implements Serializable {
 
 	private static final long serialVersionUID = -1608999189549530008L;
 	private static final int HASHCONST = 32;
@@ -215,23 +215,6 @@ public class Element implements Cloneable, Serializable {
 	 */
 	public void setAttributes(List<Attribute> attributes) {
 		this.attributes = attributes;
-	}
-
-	/**
-	 * Get a clone of this object. {@inheritDoc}
-	 */
-	@Override
-	public Element clone() {
-		Element e = new Element();
-		ArrayList<Attribute> nl = new ArrayList<Attribute>();
-		for (Attribute attribute : this.attributes) {
-			nl.add(attribute.clone());
-		}
-		e.setAttributes(nl);
-		e.setId(this.id);
-		e.setTag(this.tag);
-		e.setText(this.text);
-		return e;
 	}
 
 	/**

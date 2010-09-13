@@ -1,10 +1,10 @@
 package com.crawljax.core.state;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.openqa.selenium.By;
+
+import java.io.Serializable;
 
 /**
  * The Identification class, this class is used to denote a specific element. Specifying a method
@@ -13,7 +13,7 @@ import org.openqa.selenium.By;
  * @author mesbah
  * @version $Id$
  */
-public class Identification implements Serializable, Cloneable {
+public class Identification implements Serializable {
 	private static final long serialVersionUID = -1608879189549535808L;
 
 	/**
@@ -133,18 +133,6 @@ public class Identification implements Serializable, Cloneable {
 
 		}
 
-	}
-
-	/**
-	 * Get a clone of this object. {@inheritDoc}
-	 */
-	@Override
-	public Identification clone() {
-		Identification id = new Identification();
-		id.setHow(this.how);
-		id.setId(this.id);
-		id.setValue(this.value);
-		return id;
 	}
 
 	@Override

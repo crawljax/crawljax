@@ -8,7 +8,7 @@ package com.crawljax.core.state;
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
-public class Attribute implements Cloneable {
+public class Attribute {
 
 	private long id;
 	private String name;
@@ -92,17 +92,5 @@ public class Attribute implements Cloneable {
 	 */
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	/**
-	 * Get a clone of this object. {@inheritDoc}
-	 */
-	@Override
-	public Attribute clone() {
-		Attribute a = new Attribute();
-		a.setId(this.id);
-		a.setName(this.name);
-		a.setValue(this.value);
-		return a;
 	}
 }

@@ -1,20 +1,5 @@
 package com.crawljax.core.state;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingDeque;
-
-import net.jcip.annotations.GuardedBy;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import com.crawljax.core.CandidateCrawlAction;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CandidateElementExtractor;
@@ -24,6 +9,21 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.TagElement;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.Helper;
+
+import net.jcip.annotations.GuardedBy;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * The state vertix class which represents a state in the browser. This class implements the
@@ -35,7 +35,7 @@ import com.crawljax.util.Helper;
  * @author mesbah
  * @version $Id$
  */
-public class StateVertix implements Serializable, Cloneable {
+public class StateVertix implements Serializable {
 
 	private static final long serialVersionUID = 123400017983488L;
 	private static final Logger LOGGER = Logger.getLogger(StateVertix.class);
@@ -131,11 +131,6 @@ public class StateVertix implements Serializable, Cloneable {
 	 */
 	public String getUrl() {
 		return url;
-	}
-
-	@Override
-	public StateVertix clone() {
-		return new StateVertix(this.url, this.name, this.dom, this.strippedDom);
 	}
 
 	/**

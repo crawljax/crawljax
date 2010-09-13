@@ -3,13 +3,10 @@
  */
 package com.crawljax.core.state;
 
-import java.io.Serializable;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.forms.FormInput;
+import com.crawljax.util.XPathHelper;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -17,10 +14,11 @@ import org.apache.log4j.Logger;
 import org.jgrapht.graph.DefaultEdge;
 import org.w3c.dom.Node;
 
-import com.crawljax.core.CandidateElement;
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.forms.FormInput;
-import com.crawljax.util.XPathHelper;
+import java.io.Serializable;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Eventable class: an element having an event attached to it (onclick, onmouseover, ...) so that it
@@ -29,7 +27,7 @@ import com.crawljax.util.XPathHelper;
  * @author mesbah
  * @version $Id$
  */
-public class Eventable extends DefaultEdge implements Cloneable, Serializable {
+public class Eventable extends DefaultEdge implements Serializable {
 	private static final long serialVersionUID = 3229708706467350994L;
 	private static final Logger LOGGER = Logger.getLogger(Eventable.class.getName());
 	private long id;
@@ -242,42 +240,6 @@ public class Eventable extends DefaultEdge implements Cloneable, Serializable {
 		this.relatedFormInputs = relatedFormInputs;
 	}
 
-	/**
-	 * Return a new clone of this object.
-	 * 
-	 * @return the cloned Eventalbe
-	 */
-	@Override
-	public Eventable clone() {
-		super.clone();
-
-		Eventable e = new Eventable();
-
-		ArrayList<FormInput> fi = new ArrayList<FormInput>();
-		for (FormInput formInput : this.relatedFormInputs) {
-			fi.add(formInput.clone());
-		}
-		if (this.element != null) {
-			e.setElement(this.element.clone());
-		}
-		e.setEventType(this.eventType);
-		e.setId(this.id);
-		if (this.identification != null) {
-			e.setIdentification(this.identification.clone());
-		}
-		e.setRelatedFormInputs(fi);
-
-		try {
-			e.setSourceStateVertix(this.getSourceStateVertix());
-			e.setTargetStateVertix(this.getTargetStateVertix());
-		} catch (CrawljaxException e1) {
-			LOGGER.error(e1.getMessage(), e1);
-			throw new RuntimeErrorException(new Error(e1.getMessage()));
-		}
-
-		return e;
-	}
-
 	/* Horrible stuff happening below, don't look at it! */
 
 	/**
@@ -296,24 +258,6 @@ public class Eventable extends DefaultEdge implements Cloneable, Serializable {
 	 */
 	public StateVertix getTargetStateVertix() throws CrawljaxException {
 		return getSuperField("target");
-	}
-
-	/**
-	 * @param vertix
-	 *            the new value for source
-	 * @throws CrawljaxException
-	 */
-	private void setSourceStateVertix(StateVertix vertix) throws CrawljaxException {
-		setSuperField("source", vertix);
-	}
-
-	/**
-	 * @param vertix
-	 *            the new value for target
-	 * @throws CrawljaxException
-	 */
-	private void setTargetStateVertix(StateVertix vertix) throws CrawljaxException {
-		setSuperField("target", vertix);
 	}
 
 	private StateVertix getSuperField(String name) throws CrawljaxException {
@@ -340,18 +284,6 @@ public class Eventable extends DefaultEdge implements Cloneable, Serializable {
 			}
 		}
 		throw new InternalError("Field was not found!");
-	}
-
-	private void setSuperField(String name, StateVertix vertix) throws CrawljaxException {
-		try {
-			searchSuperField(name).set(this, vertix);
-		} catch (IllegalArgumentException e) {
-			LOGGER.error(e.getMessage(), e);
-			throw new CrawljaxException(e.getMessage(), e);
-		} catch (IllegalAccessException e) {
-			LOGGER.error(e.getMessage(), e);
-			throw new CrawljaxException(e.getMessage(), e);
-		}
 	}
 
 	/**

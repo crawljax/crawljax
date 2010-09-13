@@ -3,22 +3,22 @@
  */
 package com.crawljax.forms;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author mesbah
  * @version $Id$
  */
-public class FormInput implements Cloneable {
+public class FormInput {
 
 	private long id;
 	private String type = "text";
@@ -186,27 +186,6 @@ public class FormInput implements Cloneable {
 	 */
 	public void setEventable(Eventable eventable) {
 		this.eventable = eventable;
-	}
-
-	/**
-	 * Get a clone of this object. {@inheritDoc}
-	 */
-	@Override
-	public FormInput clone() {
-		Set<InputValue> iv = new HashSet<InputValue>();
-		for (InputValue inputValue : this.inputValues) {
-			iv.add(inputValue.clone());
-		}
-		FormInput fi = new FormInput();
-		if (this.eventable != null) {
-			fi.setEventable(this.eventable.clone());
-		}
-		fi.setId(this.id);
-		fi.setMultiple(this.multiple);
-		fi.setIdentification(this.identification);
-		fi.setType(this.type);
-		fi.setInputValues(iv);
-		return fi;
 	}
 
 	/**

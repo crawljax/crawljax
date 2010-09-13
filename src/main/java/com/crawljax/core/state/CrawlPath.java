@@ -6,7 +6,6 @@ import com.google.common.collect.ForwardingList;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,11 +66,7 @@ public class CrawlPath extends ForwardingList<Eventable> {
 		}
 		
 		// Build copy
-		ArrayList<Eventable> path = Lists.newArrayList();
-		for (Eventable e : this) {
-			// TODO Stefan; is the clone needed?? path.add(e.clone());
-			path.add(e);
-		}
+		List<Eventable> path = Lists.newArrayList(this);
 		
 		// This is safe because checked above
 		if (removeLast) {
