@@ -3,8 +3,9 @@
  */
 package com.crawljax.oraclecomparator.comparators;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.oraclecomparator.AbstractComparator;
+import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Attr;
@@ -12,9 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.Helper;
-import com.crawljax.util.XPathHelper;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Oracle which can ignore element/attributes by xpath expression.
@@ -104,10 +104,6 @@ public class XPathExpressionComparator extends AbstractComparator {
 		return dom;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see nl.tudelft.swerl.util.oracle.OracleAbstract#isEquivalent()
-	 */
 	@Override
 	public boolean isEquivalent() {
 		setOriginalDom(stripXPathExpressions(getOriginalDom()));

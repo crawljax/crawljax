@@ -3,11 +3,11 @@
  */
 package com.crawljax.oraclecomparator.comparators;
 
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 
 /**
  * @author danny
@@ -33,10 +33,6 @@ public class ScriptComparator extends AbstractComparator {
 		super(originalDom, newDom);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see nl.tudelft.swerl.util.oracle.OracleAbstract#isEquivalent()
-	 */
 	@Override
 	public boolean isEquivalent() {
 		try {

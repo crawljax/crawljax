@@ -31,10 +31,6 @@ public class PlainStructureComparator extends AbstractComparator {
 		super(originalDom, newDom);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see nl.tudelft.swerl.util.oracle.OracleAbstract#isEquivalent()
-	 */
 	@Override
 	public boolean isEquivalent() {
 		strip();
