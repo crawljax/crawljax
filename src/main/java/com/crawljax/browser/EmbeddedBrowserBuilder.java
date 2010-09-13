@@ -7,11 +7,12 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
  * Crawljax uses and offers WebDriver implementation, but when other implementation is requested the
  * EmbeddedBrowser Interface must be implemented in a Class and a new class must be created
  * implementing the BrowserBuilder interface. This new class must be supplied as object to the
- * {@link CrawljaxConfiguration#setBrowserBuilder(BrowserBuilder)}.
+ * CrawljaxConfiguration.setBrowserBuilder(BrowserBuilder).
  * <p/>
  * This can be as simple as:
  *
- * <pre>config.setBrowserBuilder(new BrowserBuilder() {
+ * <pre>
+ * config.setBrowserBuilder(new BrowserBuilder() {
  * 	&#064;Override
  * 	public EmbeddedBrowser; buildEmbeddedBrowser(CrawljaxConfigurationReader configuration) {
  * 		return new WebDriverFirefox(configuration.getFilterAttributeNames(),
