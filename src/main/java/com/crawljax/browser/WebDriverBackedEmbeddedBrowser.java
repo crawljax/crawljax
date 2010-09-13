@@ -575,7 +575,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
 				frameIdentification += nameId;
 
-				String handle = new String(browser.getWindowHandle());
+				String handle = browser.getWindowHandle();
 
 				LOGGER.debug("The current H: " + handle);
 
@@ -686,7 +686,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		browser.switchTo().frame(iframeIdentification);
 
 		// make a copy of the dom before changing into the top page
-		String frameDom = new String(browser.getPageSource());
+		String frameDom = browser.getPageSource();
 
 		browser.switchTo().defaultContent();
 

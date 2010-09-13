@@ -2,6 +2,8 @@ package com.crawljax.core.configuration;
 
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import java.util.Random;
+
 /**
  * This class denotes all the configuration variable that can be set with regard to the number of
  * Threads active.
@@ -219,7 +221,7 @@ public class ThreadConfiguration {
 		if (getUseFastBooting()) {
 			if (useRandomPortNumberCreation) {
 				return BASE_FREE_PORT_NUMBER
-				        + (int) (Math.random() * (LIMIT_FREE_PORT_NUMBER - BASE_FREE_PORT_NUMBER));
+				        + new Random().nextInt(LIMIT_FREE_PORT_NUMBER - BASE_FREE_PORT_NUMBER);
 			} else {
 				return this.lastPort++;
 			}

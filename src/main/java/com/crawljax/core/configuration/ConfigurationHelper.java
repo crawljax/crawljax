@@ -18,16 +18,16 @@ public final class ConfigurationHelper {
 	 * @return string representation of list. format: a, b, , c. Empty String allowed
 	 */
 	public static String listToStringEmptyStringAllowed(List<String> items) {
-		String str = "";
+		StringBuffer str = new StringBuffer();
 		int i = 0;
 		for (String item : items) {
 			if (i > 0) {
-				str += ", ";
+				str.append(", ");
 			}
-			str += item;
+			str.append(item);
 			i++;
 		}
-		return str;
+		return str.toString();
 	}
 
 	/**
@@ -35,14 +35,14 @@ public final class ConfigurationHelper {
 	 * @return string representation of list. format: a, b, c
 	 */
 	public static String listToString(List<?> items) {
-		String str = "";
+		StringBuffer str = new StringBuffer();
 		for (Object item : items) {
 			if (!str.equals("")) {
-				str += ", ";
+				str.append(", ");
 			}
-			str += item.toString();
+			str.append(item.toString());
 		}
-		return str;
+		return str.toString();
 	}
 
 	/**

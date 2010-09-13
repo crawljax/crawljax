@@ -1,15 +1,15 @@
 package com.crawljax.oraclecomparator.comparators;
 
+import com.crawljax.oraclecomparator.AbstractComparator;
+import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.Helper;
-import com.crawljax.util.XPathHelper;
 
 /**
  * Oracle which can ignore style attributes.
@@ -135,20 +135,22 @@ public class StyleComparator extends AbstractComparator {
 	private String stripStyleProperties(String styleAttribute) {
 		String[] styleProperties = styleAttribute.split(";");
 		String[] styleProperty;
-		String newStyleAttribute = "";
+		StringBuffer newStyleAttribute = new StringBuffer();
 
 		for (int i = 0; i < styleProperties.length; i++) {
 			styleProperty = styleProperties[i].split(":");
 			if (styleProperty.length == 2) {
 				for (int j = 0; j < ALLOW_STYLE_TYPES.length; j++) {
 					if (styleProperty[0].trim().equalsIgnoreCase(ALLOW_STYLE_TYPES[j])) {
-						newStyleAttribute +=
-						        styleProperty[0].trim() + ": " + styleProperty[1].trim() + ";";
+						newStyleAttribute.append(styleProperty[0].trim());
+						newStyleAttribute.append(": ");
+						newStyleAttribute.append(styleProperty[1].trim());
+						newStyleAttribute.append(";");
 					}
 				}
 			}
 		}
-		return newStyleAttribute;
+		return newStyleAttribute.toString();
 	}
 
 }

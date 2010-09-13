@@ -10,7 +10,6 @@ import com.crawljax.util.XPathHelper;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.log4j.Logger;
 import org.jgrapht.graph.DefaultEdge;
 import org.w3c.dom.Node;
 
@@ -29,7 +28,6 @@ import java.util.List;
  */
 public class Eventable extends DefaultEdge implements Serializable {
 	private static final long serialVersionUID = 3229708706467350994L;
-	private static final Logger LOGGER = Logger.getLogger(Eventable.class.getName());
 	private long id;
 	private EventType eventType;
 	private Identification identification;

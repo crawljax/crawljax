@@ -1,5 +1,23 @@
 package com.crawljax.util;
 
+import com.google.common.collect.Lists;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.custommonkey.xmlunit.DetailedDiff;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
+import org.custommonkey.xmlunit.DifferenceListener;
+import org.cyberneko.html.parsers.DOMParser;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,24 +50,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.DetailedDiff;
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.Difference;
-import org.custommonkey.xmlunit.DifferenceListener;
-import org.cyberneko.html.parsers.DOMParser;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import com.google.common.collect.Lists;
 
 /**
  * Utility class that contains a number of helper functions used by Crawljax and some plugins.
@@ -135,10 +135,8 @@ public final class Helper {
 	 * @return the base part of the URL.
 	 */
 	public static String getBaseUrl(String url) {
-		String temp = new String(url);
-		String head = temp.substring(0, temp.indexOf(":"));
+		String head = url.substring(0, url.indexOf(":"));
 		String subLoc = url.substring(head.length() + BASE_LENGTH);
-
 		return head + "://" + subLoc.substring(0, subLoc.indexOf("/"));
 	}
 
@@ -446,8 +444,13 @@ public final class Helper {
 	public static void writeToFile(String filename, String text, boolean append)
 	        throws IOException {
 		FileWriter fw = new FileWriter(filename, append);
-		fw.write(text + "\n");
-		fw.close();
+		try {
+			fw.write(text + "\n");
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			fw.close();
+		}
 	}
 
 	/**

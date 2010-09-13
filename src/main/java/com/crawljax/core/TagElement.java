@@ -76,20 +76,23 @@ public class TagElement {
 
 	@Override
 	public String toString() {
-		String ret = "";
+		StringBuffer ret = new StringBuffer();
 		if (name != null) {
-			ret += name.toUpperCase();
+			ret.append(name.toUpperCase());
 		}
 		int i = 0;
 		if (attributes != null) {
 			for (TagAttribute att : attributes) {
 				if (i == 0) {
-					ret += ": ";
+					ret.append(": ");
 				}
-				ret += att.getName() + "=\"" + att.getValue() + "\" ";
+				ret.append(att.getName());
+				ret.append("=\"");
+				ret.append(att.getValue());
+				ret.append("\" ");
 				i++;
 			}
 		}
-		return ret;
+		return ret.toString();
 	}
 }

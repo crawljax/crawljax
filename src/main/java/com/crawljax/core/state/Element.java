@@ -60,17 +60,21 @@ public class Element implements Serializable {
 
 	@Override
 	public String toString() {
-		String str = "";
+		StringBuffer str = new StringBuffer();
 		if (!this.getText().equals("")) {
-			str = "\"" + getText() + "\" ";
+			str.append("\"");
+			str.append(getText());
+			str.append("\" ");
 		}
-		str += getTag().toUpperCase() + ":";
+		str.append(getTag().toUpperCase());
+		str.append(":");
 		if (getAttributes() != null) {
 			for (Attribute attribute : getAttributes()) {
-				str += " " + attribute.toString();
+				str.append(" ");
+				str.append(attribute.toString());
 			}
 		}
-		return str;
+		return str.toString();
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public final class PrettyHTML {
 	 */
 	public static String prettyHTML(String html, String strIndent) {
 		String[] elements = html.split("<");
-		String prettyHTML = "";
+		StringBuffer prettyHTML = new StringBuffer();
 		int indent = 0;
 		// preparsing for not closing elements
 		elements = fixElements(elements);
@@ -39,9 +39,9 @@ public final class PrettyHTML {
 
 				if (!element.startsWith("/")) {
 					// open element
-					prettyHTML += repeatString(strIndent, indent);
+					prettyHTML.append(repeatString(strIndent, indent));
 					String[] temp = element.split(">");
-					prettyHTML += "<" + temp[0].trim() + ">\n";
+					prettyHTML.append("<" + temp[0].trim() + ">\n");
 
 					// only indent if element is not a single element (like
 					// <img src='..' />)
@@ -52,21 +52,21 @@ public final class PrettyHTML {
 
 					// if there is text after the element, print it
 					if (temp.length > 1 && !temp[1].trim().equals("")) {
-						prettyHTML += repeatString(strIndent, indent);
-						prettyHTML += temp[1].trim() + "\n";
+						prettyHTML.append(repeatString(strIndent, indent));
+						prettyHTML.append(temp[1].trim() + "\n");
 					}
 				} else {
 					// close element
 					indent--;
-					prettyHTML += repeatString(strIndent, indent);
-					prettyHTML += "<" + element + "\n";
+					prettyHTML.append(repeatString(strIndent, indent));
+					prettyHTML.append("<" + element + "\n");
 				}
 				if (element.endsWith("/>")) {
 					indent--;
 				}
 			}
 		}
-		return prettyHTML;
+		return prettyHTML.toString();
 
 	}
 
@@ -85,11 +85,11 @@ public final class PrettyHTML {
 	 * @return s repreated number of times
 	 */
 	private static String repeatString(String s, int number) {
-		String ret = "";
+		StringBuffer ret = new StringBuffer();
 		for (int i = 0; i < number; i++) {
-			ret += s;
+			ret.append(s);
 		}
-		return ret;
+		return ret.toString();
 	}
 
 	/**

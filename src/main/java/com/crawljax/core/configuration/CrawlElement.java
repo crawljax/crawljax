@@ -1,11 +1,11 @@
 package com.crawljax.core.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable.EventType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the HTML elements which should be crawled. It represents all the HTML elements in the
@@ -139,34 +139,41 @@ public final class CrawlElement {
 
 	@Override
 	public String toString() {
-		String ret = getTagName() + ":{";
+		StringBuffer ret = new StringBuffer(getTagName() + ":{");
 		int i = 0;
 		for (CrawlAttribute crawlAttribute : getCrawlAttributes()) {
 			if (i > 0) {
-				ret += "; ";
+				ret.append("; ");
 			}
 			i++;
-			ret += crawlAttribute.getName() + "=" + crawlAttribute.getValue();
+			ret.append(crawlAttribute.getName());
+			ret.append("=");
+			ret.append(crawlAttribute.getValue());
 		}
-		ret += "}";
+		ret.append("}");
 		if (getId() != null && !getId().equals("")) {
-			ret += "[" + getId() + "]";
+			ret.append("[");
+			ret.append(getId());
+			ret.append("]");
 		}
-		return ret;
+		return ret.toString();
 	}
 
 	/**
 	 * @return a Test string.
 	 */
 	protected String toTestString() {
-		String ret = toString();
-		ret += "\nXpath expression: " + getWithXpathExpression() + "\n";
+		StringBuffer ret = new StringBuffer(toString());
+		ret.append("\nXpath expression: ");
+		ret.append(getWithXpathExpression());
+		ret.append("\n");
 		for (Condition condition : getConditions()) {
-			ret += condition.toString() + "\n";
+			ret.append(condition.toString());
+			ret.append("\n");
 		}
-		ret += "InputFieldIds: " + getInputFieldIds();
-		return ret;
-
+		ret.append("InputFieldIds: ");
+		ret.append(getInputFieldIds());
+		return ret.toString();
 	}
 
 	/**
