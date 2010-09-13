@@ -1,22 +1,22 @@
 package com.crawljax.core;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
+
+import org.apache.log4j.Logger;
+
+import java.util.List;
 
 /**
  * Class that performs crawl actions. It is designed to be run inside a Thread.
@@ -175,10 +175,6 @@ public class Crawler implements Runnable {
 	 */
 	private boolean fireEvent(Eventable eventable) {
 		try {
-
-			// TODO Stefan; FindBugs found this bug, not yet solved
-			// Should be changed with:
-			// eventable.getIdentification().getHow().toString().equals("xpath")
 			if (eventable.getIdentification().getHow().toString().equals("xpath")
 			        && eventable.getRelatedFrame().equals("")) {
 
@@ -376,15 +372,15 @@ public class Crawler implements Runnable {
 		}
 	}
 
-	private void spawnThreads(StateVertix state, boolean removeLastStateFromEventPath) {
+	private void spawnThreads(StateVertix state) {
 		Crawler c = null;
 		do {
 			if (c != null) {
 				this.crawlQueueManager.addWorkToQueue(c);
 			}
 			c =
-			        new Crawler(this.controller, controller.getSession().getCurrentCrawlPath()
-			                .immutableCopy(true));
+			        new Crawler(this.controller,
+			                controller.getSession().getCurrentCrawlPath().immutableCopy(true));
 		} while (state.registerCrawler(c));
 	}
 
@@ -402,12 +398,12 @@ public class Crawler implements Runnable {
 					// We are in the clone state so we continue with the cloned version to search
 					// for work.
 					this.controller.getSession().branchCrawlPath();
-					spawnThreads(orrigionalState, false);
+					spawnThreads(orrigionalState);
 					break;
 				case newState:
 					fired = true;
 					// Recurse because new state found
-					spawnThreads(orrigionalState, true);
+					spawnThreads(orrigionalState);
 					break;
 				case domUnChanged:
 					// Dom not updated, continue with the next
