@@ -37,7 +37,7 @@ public final class ConfigurationHelper {
 	public static String listToString(List<?> items) {
 		StringBuffer str = new StringBuffer();
 		for (Object item : items) {
-			if (!str.equals("")) {
+			if (!str.toString().equals("")) {
 				str.append(", ");
 			}
 			str.append(item.toString());

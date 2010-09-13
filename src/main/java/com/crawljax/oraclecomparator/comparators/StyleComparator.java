@@ -135,22 +135,28 @@ public class StyleComparator extends AbstractComparator {
 	private String stripStyleProperties(String styleAttribute) {
 		String[] styleProperties = styleAttribute.split(";");
 		String[] styleProperty;
-		StringBuffer newStyleAttribute = new StringBuffer();
+		String badWayOfDoingThis = "";
+		StringBuffer buffer = new StringBuffer();
 
 		for (int i = 0; i < styleProperties.length; i++) {
 			styleProperty = styleProperties[i].split(":");
 			if (styleProperty.length == 2) {
 				for (int j = 0; j < ALLOW_STYLE_TYPES.length; j++) {
 					if (styleProperty[0].trim().equalsIgnoreCase(ALLOW_STYLE_TYPES[j])) {
-						newStyleAttribute.append(styleProperty[0].trim());
-						newStyleAttribute.append(": ");
-						newStyleAttribute.append(styleProperty[1].trim());
-						newStyleAttribute.append(";");
+						badWayOfDoingThis +=
+						        styleProperty[0].trim() + ": " + styleProperty[1].trim() + ";";
+						buffer.append(styleProperty[0].trim());
+						buffer.append(": ");
+						buffer.append(styleProperty[1].trim());
+						buffer.append(";");
 					}
 				}
 			}
 		}
-		return newStyleAttribute.toString();
+		// TODO This should be buffer.toString() but a weird behavior of this class results in a
+		// difference.
+		// return buffer.toString();
+		return badWayOfDoingThis;
 	}
 
 }
