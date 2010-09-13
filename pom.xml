@@ -409,9 +409,9 @@
         <artifactId>cobertura-maven-plugin</artifactId>
         <configuration>
           <instumentation>
-            <excludes>
-              <exclude>com/crawljax/examples/*</exclude>
-            </excludes>
+            <ignores>
+              <ignore>com.crawljax.examples.*</ignore>
+            </ignores>
           </instumentation>
         </configuration>
       </plugin>
