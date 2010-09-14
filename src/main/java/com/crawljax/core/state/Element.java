@@ -101,11 +101,11 @@ public class Element implements Serializable {
 		}
 		result = prime * result;
 		if (tag != null) {
-			tag.hashCode();
+			result += tag.hashCode();
 		}
 		result = prime * result;
 		if (text != null) {
-			text.hashCode();
+			result += text.hashCode();
 		}
 		return result;
 	}
