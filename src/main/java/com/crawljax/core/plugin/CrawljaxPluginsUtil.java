@@ -48,13 +48,13 @@ public final class CrawljaxPluginsUtil {
 	}
 
 	/**
-	 * Set the Plugins.
+	 * Set the Plugins, first removes all the currently loaded plugins and add the plugins supplied.
 	 *
 	 * @param plugins
-	 *            the list of plugins.
+	 *            the list of plugins, if plugins is null no plugins are added.
 	 */
 	public static void loadPlugins(List<Plugin> plugins) {
-		PLUGINS.removeAll(PLUGINS);
+		PLUGINS.clear();
 		if (plugins == null || plugins.size() == 0) {
 			LOGGER.warn("No plugins loaded because CrawljaxConfiguration is empty");
 			return;
