@@ -3,6 +3,7 @@
 package com.crawljax.browser;
 
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
