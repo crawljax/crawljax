@@ -2,8 +2,11 @@
 
 package com.crawljax.browser;
 
+import org.junit.Assume;
 import org.junit.Before;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.io.IOException;
@@ -21,19 +24,48 @@ public abstract class FirefoxLinuxCrash {
 	private static final int DEFAULT_SLEEP_TIMEOUT = 500;
 	private WebDriver driver;
 
+	private boolean onPosix() {
+		Platform current = Platform.getCurrent();
+		switch (current) {
+			case LINUX:
+			case MAC:
+			case UNIX:
+				return true;
+			case ANY:
+			case VISTA:
+			case WINDOWS:
+			case XP:
+			case ANDROID:
+			default:
+				return false;
+		}
+	}
+	
 	/**
      * Start a browser, than kill it hard!
-     *
-     * @throws IOException
-     *             when the killall command can not be executed
      * @throws InterruptedException
      *             when the Thread.sleep can not be executed.
      */
     @Before
-    public void setUp() throws IOException, InterruptedException {
-    	driver = new FirefoxDriver();
+	public void setUp() throws InterruptedException {
+		Assume.assumeTrue(onPosix());
+		
+		try {
+			driver = new FirefoxDriver();
+		} catch (WebDriverException e) {
+			Assume.assumeNoException(e);
+		}
+		
+		Assume.assumeNotNull(driver);
+    	
     	Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
-    	Runtime.getRuntime().exec("killall firefox-bin --verbose");
+    	
+    	try {
+			Runtime.getRuntime().exec("killall firefox-bin --verbose");
+		} catch (IOException e) {
+			Assume.assumeNoException(e);
+		}
+		
     	Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
     }
 

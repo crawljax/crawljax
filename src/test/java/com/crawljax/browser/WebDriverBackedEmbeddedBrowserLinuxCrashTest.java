@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * This test is to check what the results are for the {@link EmbeddedBrowser} implemented by
@@ -25,7 +24,7 @@ import java.io.IOException;
  * @version $Id$
  * @author slenselink@google.com (Stefan Lenselink)
  */
-public class WebDriverBackedEmbeddedBrowserLinuxCrash extends FirefoxLinuxCrash {
+public class WebDriverBackedEmbeddedBrowserLinuxCrashTest extends FirefoxLinuxCrash {
 
 	private EmbeddedBrowser browser;
 
@@ -35,12 +34,10 @@ public class WebDriverBackedEmbeddedBrowserLinuxCrash extends FirefoxLinuxCrash 
 	 *
 	 * @throws InterruptedException
 	 *             when the sleep of supper is interrupt
-	 * @throws IOException
-	 *             when the the killall command can not be executed.
 	 */
 	@Override
 	@Before
-	public void setUp() throws IOException, InterruptedException {
+	public void setUp() throws InterruptedException {
 		super.setUp();
 		browser = WebDriverBackedEmbeddedBrowser.withDriver(getCrashedDriver());
 	}
