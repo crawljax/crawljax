@@ -19,7 +19,7 @@ import java.net.ConnectException;
  * @version $Id$
  * @author slenselink@google.com (Stefan Lenselink)
  */
-public class WebDriverFirefoxLinuxCrashTest extends FirefoxLinuxCrash {
+public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	/**
 	 * Test method for {@link WebDriver#close()}.
 	 */

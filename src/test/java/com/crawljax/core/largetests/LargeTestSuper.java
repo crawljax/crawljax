@@ -328,6 +328,8 @@ public abstract class LargeTestSuper {
 	private static void addWaitConditions(CrawlSpecification crawler) {
 		crawler.waitFor("testWaitCondition.html", 2000, new ExpectedVisibleCondition(
 		        new Identification(How.id, "SLOW_WIDGET")));
+		crawler.waitFor(
+		        "", new ExpectedVisibleCondition(new Identification(How.xpath, "/HTML/BODY")));
 	}
 
 	private static void addInvariants(CrawlSpecification crawler) {

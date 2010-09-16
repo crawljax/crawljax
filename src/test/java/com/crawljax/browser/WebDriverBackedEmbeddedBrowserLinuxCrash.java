@@ -24,7 +24,7 @@ import java.io.File;
  * @version $Id$
  * @author slenselink@google.com (Stefan Lenselink)
  */
-public class WebDriverBackedEmbeddedBrowserLinuxCrashTest extends FirefoxLinuxCrash {
+public class WebDriverBackedEmbeddedBrowserLinuxCrash extends FirefoxLinuxCrash {
 
 	private EmbeddedBrowser browser;
 
