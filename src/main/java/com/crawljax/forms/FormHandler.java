@@ -3,11 +3,11 @@
  */
 package com.crawljax.forms;
 
-import com.crawljax.browser.BrowserConnectionException;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
 

@@ -4,6 +4,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.AcceptAllFramesChecker;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.configuration.IgnoreFrameChecker;
+import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormHandler;

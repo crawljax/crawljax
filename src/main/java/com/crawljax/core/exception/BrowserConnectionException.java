@@ -1,10 +1,12 @@
 // Copyright 2010 Google Inc. All Rights Reserved.
 
-package com.crawljax.browser;
+package com.crawljax.core.exception;
+
+import org.openqa.selenium.WebDriverException;
 
 /**
- * This {@link RuntimeException} is thrown when a {@link EmbeddedBrowser} lost connection to its
- * underlying implementation and so crashed.
+ * This {@link RuntimeException} is thrown when a EmbeddedBrowser lost connection to its underlying
+ * implementation and so crashed.
  *
  * @version $Id$
  * @author slenselink@google.com (Stefan Lenselink)
@@ -17,7 +19,7 @@ public class BrowserConnectionException extends RuntimeException {
 	 * @param exception
 	 *            the original exception to wrap.
 	 */
-	public BrowserConnectionException(RuntimeException exception) {
+	public BrowserConnectionException(WebDriverException exception) {
 		super(exception);
 	}
 }

@@ -74,4 +74,24 @@ public class CrawlPath extends ForwardingList<Eventable> {
 		}
 		return new CrawlPath(ImmutableList.copyOf(path));
 	}
+
+	/**
+	 * Build a stack trace for this path. This can be used in generating more meaningful exceptions
+	 * while using Crawljax in conjunction with JUnit for example.
+	 *
+	 * @return a array of StackTraceElements denoting the steps taken by this path. The first
+	 *         element [0] denotes the last {@link Eventable} on this path while the last item
+	 *         denotes the first {@link Eventable} executed.
+	 */
+	public StackTraceElement[] asStackTrace() {
+		int i = 1;
+		StackTraceElement[] list = new StackTraceElement[this.size()];
+		for (Eventable e : this) {
+			list[this.size() - i] =
+			        new StackTraceElement(e.getEventType().toString(),
+			                e.getIdentification().toString(), e.getElement().toString(), i);
+			i++;
+		}
+		return list;
+	}
 }

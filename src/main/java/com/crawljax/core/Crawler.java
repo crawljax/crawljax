@@ -1,8 +1,9 @@
 package com.crawljax.core;
 
-import com.crawljax.browser.BrowserConnectionException;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.exception.BrowserConnectionException;
+import com.crawljax.core.exception.CrawlPathToException;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Eventable;
@@ -587,7 +588,9 @@ public class Crawler implements Runnable {
 		} catch (BrowserConnectionException e) {
 			// The connection of the browser has gone down, most of the times it means that the
 			// browser process has crashed.
-			LOGGER.error("Crawl failed because the used browser died during Crawling", e);
+			LOGGER.error("Crawler failed because the used browser died during Crawling",
+			        new CrawlPathToException("Crawler failed due to browser crash",
+			                controller.getSession().getCurrentCrawlPath(), e));
 			// removeBrowser will throw a RuntimeException if the current browser is the last
 			// browser in the pool.
 			this.controller.getBrowserPool().removeBrowser(
