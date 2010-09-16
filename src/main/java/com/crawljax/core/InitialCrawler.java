@@ -59,25 +59,14 @@ public class InitialCrawler extends Crawler {
 			LOGGER.error("The request for a browser was interuped", e);
 		}
 
-		/**
-		 * Go to the initial URL
-		 */
-		try {
-			goToInitialURL();
-		} catch (CrawljaxException e) {
-			LOGGER.fatal("Failed to load the site: " + e.getMessage(), e);
-		}
+		goToInitialURL();
 
 		/**
 		 * Build the index state
 		 */
-		StateVertix indexState = null;
-		try {
-			indexState = new StateVertix(this.getBrowser().getCurrentUrl(), "index",
-			        this.getBrowser().getDom(), controller.getStrippedDom(this.getBrowser()));
-		} catch (CrawljaxException e) {
-			LOGGER.error("Can not build the index state due to a CrawljaxException", e);
-		}
+		StateVertix indexState =
+		        new StateVertix(this.getBrowser().getCurrentUrl(), "index",
+		                this.getBrowser().getDom(), controller.getStrippedDom(this.getBrowser()));
 
 		/**
 		 * Build the StateFlowGraph

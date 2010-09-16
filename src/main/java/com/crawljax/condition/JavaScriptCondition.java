@@ -3,9 +3,10 @@
  */
 package com.crawljax.condition;
 
-import net.jcip.annotations.Immutable;
-
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.CrawljaxException;
+
+import net.jcip.annotations.Immutable;
 
 /**
  * A condition in the form of a JavaScript expression which returns true if the expression return
@@ -47,8 +48,9 @@ public class JavaScriptCondition extends AbstractCondition {
 				return false;
 			}
 			return object.toString().equals("1");
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (CrawljaxException e) {
+			// Exception is catched, check failed so return false;
+			return false;
 		}
 	}
 

@@ -1,14 +1,13 @@
 package com.crawljax.browser;
 
-import java.io.File;
-
-import org.openqa.selenium.WebElement;
-
-import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
+
+import org.openqa.selenium.WebElement;
+
+import java.io.File;
 
 /**
  * Real Empty class for place holding {@link EmbeddedBrowser} in UnitTests. There is absolutely NO
@@ -38,12 +37,12 @@ public class DummyBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
-	public Object executeJavaScript(String script) throws CrawljaxException {
+	public Object executeJavaScript(String script) {
 		return null;
 	}
 
 	@Override
-	public boolean fireEvent(Eventable event) throws CrawljaxException {
+	public boolean fireEvent(Eventable event) {
 		return false;
 	}
 
@@ -53,12 +52,12 @@ public class DummyBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
-	public String getDom() throws CrawljaxException {
+	public String getDom() {
 		return null;
 	}
 
 	@Override
-	public String getDomWithoutIframeContent() throws CrawljaxException {
+	public String getDomWithoutIframeContent() {
 		return null;
 	}
 
@@ -67,11 +66,11 @@ public class DummyBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
-	public void goToUrl(String url) throws CrawljaxException {
+	public void goToUrl(String url) {
 	}
 
 	@Override
-	public boolean input(Identification eventable, String text) throws CrawljaxException {
+	public boolean input(Identification eventable, String text) {
 		return false;
 	}
 
@@ -101,7 +100,7 @@ public class DummyBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
-	public void saveScreenShot(File file) throws CrawljaxException {
+	public void saveScreenShot(File file) {
 
 	}
 

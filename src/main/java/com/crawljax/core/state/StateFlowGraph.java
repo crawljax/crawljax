@@ -1,11 +1,5 @@
 package com.crawljax.core.state;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import net.jcip.annotations.GuardedBy;
 
 import org.apache.commons.math.stat.descriptive.moment.Mean;
@@ -15,6 +9,12 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.alg.KShortestPaths;
 import org.jgrapht.graph.DirectedMultigraph;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The State-Flow Graph is a directed graph with states on the vertices and clickables on the edges.
@@ -363,7 +363,7 @@ public class StateFlowGraph {
 				List<GraphPath<StateVertix, Eventable>> paths = kPaths.getPaths(state);
 				results.add(paths);
 			} catch (Exception e) {
-
+				// TODO Stefan; which Exception is catched here???Can this be removed?
 				LOGGER.error("Error with " + state.toString(), e);
 			}
 

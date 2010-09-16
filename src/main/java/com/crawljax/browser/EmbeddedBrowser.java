@@ -33,35 +33,27 @@ public interface EmbeddedBrowser {
 	 *
 	 * @param url
 	 *            the URL.
-	 * @throws CrawljaxException
-	 *             if fails.
 	 */
-	void goToUrl(String url) throws CrawljaxException;
+	void goToUrl(String url);
 
 	/**
 	 * fires the event.
 	 *
 	 * @param event
 	 *            the event.
-	 * @throws CrawljaxException
-	 *             on Error.
 	 * @return if fails.
 	 */
-	boolean fireEvent(Eventable event) throws CrawljaxException;
+	boolean fireEvent(Eventable event);
 
 	/**
 	 * @return the DOM string with all the iframe contents.
-	 * @throws CrawljaxException
-	 *             if fails.
 	 */
-	String getDom() throws CrawljaxException;
+	String getDom();
 
 	/**
 	 * @return the DOM string without the iframe contents
-	 * @throws CrawljaxException
-	 *             if fails.
 	 */
-	String getDomWithoutIframeContent() throws CrawljaxException;
+	String getDomWithoutIframeContent();
 
 	/**
 	 * Closes the browser.

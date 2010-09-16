@@ -1,5 +1,23 @@
 package com.crawljax.forms;
 
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.configuration.InputSpecificationReader;
+import com.crawljax.core.state.Identification;
+import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,22 +30,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.commons.configuration.Configuration;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.eventablecondition.EventableCondition;
-import com.crawljax.core.CandidateElement;
-import com.crawljax.core.configuration.InputSpecification;
-import com.crawljax.core.configuration.InputSpecificationReader;
-import com.crawljax.core.state.Identification;
-import com.crawljax.util.Helper;
-import com.crawljax.util.XPathHelper;
 
 /**
  * Helper class for FormHandler.
@@ -134,9 +136,12 @@ public final class FormInputValueHelper {
 
 		Document dom;
 		try {
-			dom = Helper.getDocument(browser.getDomWithoutIframeContent());
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+            dom = Helper.getDocument(browser.getDomWithoutIframeContent());
+		} catch (SAXException e) {
+			LOGGER.error("Catched SAXException while parsing dom", e);
+			return candidateElements;
+		} catch (IOException e) {
+			LOGGER.error("Catched IOException while parsing dom", e);
 			return candidateElements;
 		}
 

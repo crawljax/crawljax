@@ -2,6 +2,7 @@ package com.crawljax.core;
 
 import org.apache.log4j.Logger;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -40,6 +41,8 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	 */
 	private final ConcurrentHashMap<Thread, Integer> threadIdMap =
 	        new ConcurrentHashMap<Thread, Integer>();
+	
+	private boolean aborted = false;
 
 	/**
 	 * Default CrawlerExecutor. using the configured number of threads, no timeout a Stack as
@@ -141,5 +144,24 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 			LOGGER.debug("Created new Thread");
 			return t;
 		}
+	}
+
+	/**
+	 * shutdown the CrawlerExecutor, depending on the argument issue a abort or normal shutdown.
+	 *
+	 * @param isAbort
+	 *            if set to true indicating this is abort instead of normal shutdown.
+	 * @return a list of runnables as where in the system on time of the shutdown.
+	 */
+	public List<Runnable> shutdownNow(boolean isAbort) {
+		this.aborted = isAbort;
+		return super.shutdownNow();
+	}
+
+	/**
+	 * @return true if the shutdown was issues as abort false otherwise.
+	 */
+	public boolean isAborted() {
+		return aborted;
 	}
 }

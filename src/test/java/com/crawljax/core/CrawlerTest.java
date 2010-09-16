@@ -64,7 +64,11 @@ public class CrawlerTest {
 			Crawler c = new Crawler(controller, path, "Follow Path") {
 				@Override
 				public void run() {
-					super.init();
+					try {
+						super.init();
+					} catch (InterruptedException e) {
+						Assert.fail(e.getMessage());
+					}
 					CrawlPath newPath = controller.getSession().getCurrentCrawlPath();
 					Assert
 					        .assertEquals(

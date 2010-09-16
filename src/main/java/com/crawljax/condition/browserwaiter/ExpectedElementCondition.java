@@ -28,11 +28,7 @@ public class ExpectedElementCondition implements ExpectedCondition {
 
 	@Override
 	public boolean isSatisfied(EmbeddedBrowser browser) {
-		try {
-			return browser.elementExists(identification);
-		} catch (Exception e) {
-			return false;
-		}
+		return browser.elementExists(identification);
 	}
 
 	@Override

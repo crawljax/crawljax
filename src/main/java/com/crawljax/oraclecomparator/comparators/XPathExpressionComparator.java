@@ -9,12 +9,17 @@ import com.crawljax.util.XPathHelper;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * Oracle which can ignore element/attributes by xpath expression.
@@ -80,13 +85,14 @@ public class XPathExpressionComparator extends AbstractComparator {
 	 */
 	public String stripXPathExpressions(String dom) {
 		String curExpression = "";
+		Document doc = null;
 		try {
-			Document doc = Helper.getDocument(dom);
+			doc = Helper.getDocument(dom);
 			for (String expression : expressions) {
 				curExpression = expression;
 				NodeList nodeList = XPathHelper.evaluateXpathExpression(doc, expression);
 
-				for (int i = 0; i < nodeList.getLength(); i++) {
+            	for (int i = 0; i < nodeList.getLength(); i++) {
 					Node node = nodeList.item(i);
 					if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
 						((Attr) node).getOwnerElement().removeAttribute(node.getNodeName());
@@ -95,11 +101,24 @@ public class XPathExpressionComparator extends AbstractComparator {
 						parent.removeChild(node);
 					}
 
-				}
+            	}
 			}
-			dom = Helper.getDocumentToString(doc);
-		} catch (Exception e) {
-			LOGGER.error("Error with stripping XPath expression: " + curExpression, e);
+		} catch (XPathExpressionException e) {
+			LOGGER.error(
+			        "XPathExpressionException with stripping XPath expression: " + curExpression,
+			        e);
+		} catch (DOMException e) {
+			LOGGER.error("DOMException with stripping XPath expression: " + curExpression, e);
+		} catch (SAXException e) {
+			LOGGER.error("SAXException with stripping XPath expression: " + curExpression, e);
+		} catch (IOException e) {
+			LOGGER.error("IOException with stripping XPath expression: " + curExpression, e);
+		} finally {
+			if (doc != null) {
+				dom = Helper.getDocumentToString(doc);
+			} else {
+				dom = "";
+			}
 		}
 		return dom;
 	}

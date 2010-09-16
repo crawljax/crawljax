@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -95,7 +96,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param driver
 	 *            The WebDriver to use.
 	 * @param filterAttributes
@@ -134,7 +135,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
-	 * 
+	 *
 	 * @param hubUrl
 	 *            Url of the server.
 	 * @param filterAttributes
@@ -156,7 +157,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
-	 * 
+	 *
 	 * @param driver
 	 *            The WebDriver to use.
 	 * @param filterAttributes
@@ -175,7 +176,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
-	 * 
+	 *
 	 * @param driver
 	 *            The WebDriver to use.
 	 * @param filterAttributes
@@ -191,13 +192,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver,
 	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
 	        IgnoreFrameChecker ignoreFrameChecker) {
-		return new WebDriverBackedEmbeddedBrowser(driver, filterAttributes, crawlWaitEvent,
-		        crawlWaitReload, ignoreFrameChecker);
+		return new WebDriverBackedEmbeddedBrowser(
+		        driver, filterAttributes, crawlWaitEvent, crawlWaitReload, ignoreFrameChecker);
 	}
 
 	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
-	 * 
+	 *
 	 * @param hubUrl
 	 *            Url of the server.
 	 * @return The EmbeddedBrowser.
@@ -229,6 +230,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		try {
 			executor = new HttpCommandExecutor(url);
 		} catch (Exception e) {
+			// TODO Stefan; refactor this catch, this will definitely result in NullPointers, why
+			// not throw RuntimeExcption direct?
 			LOGGER.error("Received unknown exception while creating the "
 			        + "HttpCommandExecutor, can not continue!", e);
 			return null;
@@ -250,27 +253,32 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * @param url
 	 *            The URL.
-	 * @throws CrawljaxException
-	 *             if fails.
 	 */
-	public void goToUrl(String url) throws CrawljaxException {
-		browser.navigate().to(url);
+	public void goToUrl(String url) {
 		try {
+			browser.navigate().to(url);
 			Thread.sleep(this.crawlWaitReload);
 			handlePopups();
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
+			return;
 		} catch (InterruptedException e) {
-			throw new CrawljaxException(e.getMessage(), e);
+			LOGGER.error("goToUrl got interrupted while waiting for the page to be loaded", e);
+			return;
 		}
-
 	}
 
 	/**
 	 * alert, prompt, and confirm behave as if the OK button is always clicked.
 	 */
 	private void handlePopups() {
-		executeJavaScript("window.alert = function(msg){return true;};"
-		        + "window.confirm = function(msg){return true;};"
-		        + "window.prompt = function(msg){return true;};");
+		try {
+			executeJavaScript("window.alert = function(msg){return true;};"
+			        + "window.confirm = function(msg){return true;};"
+			        + "window.prompt = function(msg){return true;};");
+		} catch (CrawljaxException e) {
+			LOGGER.error("Handling of PopUp windows failed", e);
+		}
 	}
 
 	/**
@@ -281,12 +289,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param eventable
 	 *            The HTML event type (onclick, onmouseover, ...).
 	 * @return true if firing event is successful.
-	 * @throws CrawljaxException
-	 *             if fails.
 	 */
-	protected boolean fireEventWait(WebElement webElement, Eventable eventable)
-	        throws CrawljaxException {
-
+	protected boolean fireEventWait(WebElement webElement, Eventable eventable) {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
@@ -295,8 +299,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 					LOGGER.info("Element not visible, so cannot be clicked: "
 					        + webElement.getTagName().toUpperCase() + " " + webElement.getText());
 					return false;
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage());
+				} catch (WebDriverException e) {
+					throwIfConnectionException(e);
 					return false;
 				}
 				break;
@@ -313,25 +317,32 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		try {
 			Thread.sleep(this.crawlWaitEvent);
 		} catch (InterruptedException e) {
-			throw new CrawljaxException(e.getMessage(), e);
+			LOGGER.error("fireEventWait got interrupted during wait process", e);
+			return false;
 		}
-
 		return true;
 	}
 
 	@Override
 	public void close() {
 		LOGGER.info("Closing the browser...");
-		// close browser and close every associated window.
-		browser.quit();
+		try {
+			// close browser and close every associated window.
+			browser.quit();
+		} catch (WebDriverException e) {
+			throw wrapWebDriverExceptionIfConnectionException(e);
+		}
 	}
 
 	@Override
-	public String getDom() throws CrawljaxException {
+	public String getDom() {
 		try {
 			return toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
-		} catch (Exception e) {
-			throw new CrawljaxException(e.getMessage(), e);
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
+			return "";
+		} catch (CrawljaxException e) {
+			return "";
 		}
 	}
 
@@ -339,10 +350,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param html
 	 *            The html string.
 	 * @return uniform version of dom with predefined attributes stripped
-	 * @throws Exception
-	 *             On error.
 	 */
-	private String toUniformDOM(String html) throws Exception {
+	private String toUniformDOM(String html) {
 
 		Pattern p = Pattern.compile(
 		        "<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
@@ -384,7 +393,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	@Override
 	public void goBack() {
-		browser.navigate().back();
+		try {
+			browser.navigate().back();
+		} catch (WebDriverException e) {
+			throw wrapWebDriverExceptionIfConnectionException(e);
+		}
 	}
 
 	/**
@@ -395,19 +408,22 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return true if succeeds.
 	 */
 	public boolean input(Identification identification, String text) {
-		WebElement field = browser.findElement(identification.getWebDriverBy());
+		try {
+			WebElement field = browser.findElement(identification.getWebDriverBy());
+			if (field != null) {
+				// first clear the field
+				field.clear();
+				// then fill in
+				field.sendKeys(text);
 
-		if (field != null) {
-			// first clear the field
-			field.clear();
-			// then fill in
-			field.sendKeys(text);
-
-			// this.activeElement = field;
-			return true;
+				// this.activeElement = field;
+				return true;
+			}
+			return false;
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
+			return false;
 		}
-
-		return false;
 	}
 
 	/**
@@ -416,10 +432,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param eventable
 	 *            The eventable.
 	 * @return true if it is able to fire the event successfully on the element.
-	 * @throws CrawljaxException
-	 *             On failure.
 	 */
-	public synchronized boolean fireEvent(Eventable eventable) throws CrawljaxException {
+	public synchronized boolean fireEvent(Eventable eventable) {
 		try {
 
 			boolean handleChanged = false;
@@ -448,16 +462,12 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			if (handleChanged) {
 				browser.switchTo().defaultContent();
 			}
-
 			return result;
-
 		} catch (NoSuchElementException e) {
-
 			LOGGER.warn("Could not fire eventable: " + eventable.toString());
 			return false;
-		} catch (RuntimeException e) {
-			LOGGER.error("Caught Exception: " + e.getMessage(), e);
-
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
 			return false;
 		}
 	}
@@ -468,10 +478,17 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param code
 	 *            The code to execute.
 	 * @return The return value of the JavaScript.
+	 * @throws CrawljaxException
+	 *             when javascript execution failed.
 	 */
-	public Object executeJavaScript(String code) {
-		JavascriptExecutor js = (JavascriptExecutor) browser;
-		return js.executeScript(code);
+	public Object executeJavaScript(String code) throws CrawljaxException {
+		try {
+			JavascriptExecutor js = (JavascriptExecutor) browser;
+			return js.executeScript(code);
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
+			throw new CrawljaxException(e);
+		}
 	}
 
 	/**
@@ -489,7 +506,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			}
 
 			return false;
-		} catch (Exception e) {
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
 			return false;
 		}
 	}
@@ -498,21 +516,29 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return The current browser url.
 	 */
 	public String getCurrentUrl() {
-		return browser.getCurrentUrl();
+		try {
+			return browser.getCurrentUrl();
+		} catch (WebDriverException e) {
+			throw wrapWebDriverExceptionIfConnectionException(e);
+		}
 	}
 
 	@Override
 	public void closeOtherWindows() {
-		String current = browser.getWindowHandle();
-		for (String handle : browser.getWindowHandles()) {
-			if (!handle.equals(browser.getWindowHandle())) {
+		try {
+			String current = browser.getWindowHandle();
+			for (String handle : browser.getWindowHandles()) {
+				if (!handle.equals(browser.getWindowHandle())) {
 
-				browser.switchTo().window(handle);
-				LOGGER.info("Closing other window with title \"" + browser.getTitle() + "\"");
-				browser.close();
-				// browser.switchTo().defaultContent();
-				browser.switchTo().window(current);
+					browser.switchTo().window(handle);
+					LOGGER.info("Closing other window with title \"" + browser.getTitle() + "\"");
+					browser.close();
+					// browser.switchTo().defaultContent();
+					browser.switchTo().window(current);
+				}
 			}
+		} catch (WebDriverException e) {
+			throw wrapWebDriverExceptionIfConnectionException(e);
 		}
 	}
 
@@ -535,7 +561,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 					// TODO Stefan find out if this error is a Webdriver bug??
 					LOGGER.info("Skiped parsing dom tree because no html content is defined");
 				} else {
-					throw new CrawljaxException(e.getMessage(), e);
+					throw e;
 				}
 			}
 			document = Helper.getDocument(s);
@@ -579,51 +605,50 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 				LOGGER.debug("The current H: " + handle);
 
+				LOGGER.debug("switching to frame: " + frameIdentification);
+				browser.switchTo().frame(frameIdentification);
+				String toAppend = browser.getPageSource();
+
+				LOGGER.debug("frame dom: " + toAppend);
+
+				browser.switchTo().defaultContent();
+
 				try {
-
-					LOGGER.debug("switching to frame: " + frameIdentification);
-					browser.switchTo().frame(frameIdentification);
-					String toAppend = browser.getPageSource();
-
-					LOGGER.debug("frame dom: " + toAppend);
-
-					browser.switchTo().defaultContent();
-
 					Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
 					Element importedElement =
 					        (Element) document.importNode(toAppendElement, true);
 					frameElement.appendChild(importedElement);
 
-					appendFrameContent(importedElement, document, frameIdentification);
-
-				} catch (Exception e) {
+                    appendFrameContent(importedElement, document, frameIdentification);
+				} catch (DOMException e) {
 					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
 					        + " continuing...", e);
-				}
-
+				} catch (SAXException e) {
+					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
+					        + " continuing...", e);
+				} catch (IOException e) {
+					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
+					        + " continuing...", e);
+                }
 			}
 		}
-
 	}
 
 	/**
 	 * @return the dom without the iframe contents.
-	 * @throws CrawljaxException
-	 *             if it fails.
 	 * @see com.crawljax.browser.EmbeddedBrowser#getDomWithoutIframeContent()
 	 */
-	public String getDomWithoutIframeContent() throws CrawljaxException {
-
+	public String getDomWithoutIframeContent() {
 		try {
 			String dom = browser.getPageSource();
 			// logger.debug("driver.source: " + dom);
 			String result = toUniformDOM(dom);
 			// logger.debug("driver.source toUniformDom: " + result);
 			return result;
-		} catch (Exception e) {
-			throw new CrawljaxException(e.getMessage(), e);
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
+			return "";
 		}
-
 	}
 
 	/**
@@ -639,8 +664,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			if (!((RenderedWebElement) webElement).isDisplayed()) {
 				return null;
 			}
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
 			return null;
 		}
 
@@ -665,8 +690,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				WebElement option = (WebElement) new RandomInputValueGenerator().getRandomOption(
 				        select.getOptions());
 				values.add(new InputValue(option.getText(), true));
-			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
+			} catch (WebDriverException e) {
+				throwIfConnectionException(e);
 				return null;
 			}
 		}
@@ -681,16 +706,20 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	@Override
 	public String getFrameDom(String iframeIdentification) {
+		try {
+			LOGGER.debug("switching to frame: " + iframeIdentification);
+			browser.switchTo().frame(iframeIdentification);
 
-		LOGGER.debug("switching to frame: " + iframeIdentification);
-		browser.switchTo().frame(iframeIdentification);
+			// make a copy of the dom before changing into the top page
+			String frameDom = browser.getPageSource();
 
-		// make a copy of the dom before changing into the top page
-		String frameDom = browser.getPageSource();
+			browser.switchTo().defaultContent();
 
-		browser.switchTo().defaultContent();
-
-		return frameDom;
+			return frameDom;
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
+			return "";
+		}
 	}
 
 	/**
@@ -699,8 +728,15 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return true if the element can be found in the DOM tree.
 	 */
 	public boolean elementExists(Identification identification) {
-		WebElement el = browser.findElement(identification.getWebDriverBy());
-		return el != null;
+		try {
+			WebElement el = browser.findElement(identification.getWebDriverBy());
+			// TODO Stefan; I think el will never be null as a NoSuchElementExcpetion will be
+			// thrown, catched below.
+			return el != null;
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
+			return false;
+		}
 	}
 
 	/**
@@ -709,7 +745,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return the found element.
 	 */
 	public WebElement getWebElement(Identification identification) {
-		return browser.findElement(identification.getWebDriverBy());
+		try {
+			return browser.findElement(identification.getWebDriverBy());
+		} catch (WebDriverException e) {
+			throw wrapWebDriverExceptionIfConnectionException(e);
+		}
 	}
 
 	/**
@@ -732,7 +772,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	protected long getCrawlWaitReload() {
 		return crawlWaitReload;
 	}
-	
+
 	private void takeScreenShotOnBrowser(WebDriver driver, File file) throws CrawljaxException {
 		if (driver instanceof TakesScreenshot) {
 			File tmpfile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -740,7 +780,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			try {
 				FileHandler.copy(tmpfile, file);
 			} catch (IOException e) {
-				throw new WebDriverException(e);
+				throw new CrawljaxException(e);
 			}
 
 			removeCanvasGeneratedByFirefoxDriverForScreenshots();
@@ -756,7 +796,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	@Override
 	public void saveScreenShot(File file) throws CrawljaxException {
-		takeScreenShotOnBrowser(browser, file);
+		try {
+			takeScreenShotOnBrowser(browser, file);
+		} catch (WebDriverException e) {
+			throw wrapWebDriverExceptionIfConnectionException(e);
+		}
 	}
 
 	private void removeCanvasGeneratedByFirefoxDriverForScreenshots() {
@@ -767,8 +811,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		js += "}";
 		try {
 			executeJavaScript(js);
-		} catch (Exception e) {
-			LOGGER.warn("Could not remove the screenshot canvas from the DOM.");
+		} catch (CrawljaxException e) {
+			LOGGER.error("Removing of Canvas Generated By FirefoxDriver failed,"
+			        + " most likely leaving it in the browser", e);
 		}
 	}
 
@@ -787,5 +832,24 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
 		this.crawlWaitEvent = configuration.getCrawlSpecificationReader().getWaitAfterEvent();
 		this.ignoreFrameChecker = configuration.getCrawlSpecificationReader();
+	}
+
+	private boolean exceptionIsConnectionException(WebDriverException exception) {
+		return exception != null && exception.getCause() != null
+		        && exception.getCause() instanceof IOException;
+	}
+
+	private RuntimeException wrapWebDriverExceptionIfConnectionException(
+	        WebDriverException exception) {
+		if (exceptionIsConnectionException(exception)) {
+			return new BrowserConnectionException(exception);
+		}
+		return exception;
+	}
+
+	private void throwIfConnectionException(WebDriverException exception) {
+		if (exceptionIsConnectionException(exception)) {
+			throw wrapWebDriverExceptionIfConnectionException(exception);
+		}
 	}
 }

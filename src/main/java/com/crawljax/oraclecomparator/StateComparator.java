@@ -1,15 +1,15 @@
 package com.crawljax.oraclecomparator;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.Condition;
+import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 
 import net.jcip.annotations.ThreadSafe;
 
 import org.apache.log4j.Logger;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.Condition;
-import com.crawljax.oraclecomparator.comparators.SimpleComparator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Defines an Oracle Comparator which used multiple Oracles to decide whether two states are
@@ -118,11 +118,7 @@ public class StateComparator {
 	public String getStrippedDom(EmbeddedBrowser browser) {
 
 		// StateComparator oc = new StateComparator(oracleComparator);
-		try {
-			compare("", browser.getDom(), browser);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-		}
+		compare("", browser.getDom(), browser);
 		return getStrippedNewDom();
 	}
 

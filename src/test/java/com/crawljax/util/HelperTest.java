@@ -50,6 +50,7 @@ public class HelperTest {
 	 */
 	@Test
 	public void testGetDocumentFromBrowser() {
+		// TODO Stefan; Refactor out the direct use of FirefoxDriver
 		EmbeddedBrowser browser =
 		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 200, 300);
 		File index = new File(INDEX);

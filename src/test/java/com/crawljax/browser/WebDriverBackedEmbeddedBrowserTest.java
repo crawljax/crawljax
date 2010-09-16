@@ -21,6 +21,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 	@Test
 	public void testGetDocument() {
 		File index = new File("src/test/site/iframe/index.html");
+		// TODO Stefan; refactor out the direct use of the FirefoxDriver
 		WebDriverBackedEmbeddedBrowser driver =
 		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 100, 100);
 
@@ -42,9 +43,6 @@ public class WebDriverBackedEmbeddedBrowserTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
 		}
 
 		driver.close();
@@ -53,16 +51,13 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 	@Test
 	public void saveScreenShot() {
+		// TODO Stefan; refactor out the direct use of the FirefoxDriver
 		WebDriverBackedEmbeddedBrowser browser =
 		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 500, 500);
 
 		File f = new File("webdriverfirefox-test-screenshot.png");
 		if (!f.exists()) {
-			try {
-				browser.goToUrl("http://google.com");
-			} catch (CrawljaxException e) {
-				fail("Could not go to url.");
-			}
+			browser.goToUrl("http://google.com");
 			try {
 				browser.saveScreenShot(f);
 			} catch (CrawljaxException e) {

@@ -42,7 +42,7 @@ public class CrawljaxController implements CrawlQueueManager {
 
 	private final WaitConditionChecker waitConditionChecker = new WaitConditionChecker();
 
-	// TODO Stefan, Can not be final because, must be created aftet the loading of the plugins
+	// TODO Stefan, Can not be final because, must be created after the loading of the plugins
 	private Crawler initialCrawler;
 
 	private final CrawljaxConfigurationReader configurationReader;
@@ -142,8 +142,20 @@ public class CrawljaxController implements CrawlQueueManager {
 		} catch (InterruptedException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-
+		
+		if (workQueue.isAborted()) {
+			LOGGER.warn("It apears to be that the workQueue was Aborted, "
+			        + "not running postcrawling plugins and not closing the browsers");
+			return;
+		}
+		
 		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
+		
+		/**
+		 * Close all the opened browsers, this is run in separate thread to have the post crawl
+		 * plugins to execute in the meanwhile.
+		 */
+		Thread shutdownThread = browserPool.close();
 
 		// TODO Stefan; Now we "re-request" a browser instance for the PostCrawlingPlugins Thread,
 		// this is not ideal...
@@ -156,30 +168,14 @@ public class CrawljaxController implements CrawlQueueManager {
 		CrawljaxPluginsUtil.runPostCrawlingPlugins(session);
 		this.getBrowserPool().freeBrowser(b);
 
-		/**
-		 * Close all the opened browsers, this is run in separate thread to have the post crawl
-		 * plugins to execute in the meanwhile.
-		 */
-		Thread shutdownThread = browserPool.close();
-
-		StateFlowGraph stateFlowGraph = this.getSession().getStateFlowGraph();
-		for (Eventable c : stateFlowGraph.getAllEdges()) {
-			LOGGER.info("Interaction Element= " + c.toString());
-		}
-
-		LOGGER.info("Total Crawling time(" + timeCrawlCalc + "ms) ~= "
-		        + formatRunningTime(timeCrawlCalc));
-		LOGGER.info("EXAMINED ELEMENTS: " + elementChecker.numberOfExaminedElements());
-		LOGGER.info("CLICKABLES: " + stateFlowGraph.getAllEdges().size());
-		LOGGER.info("STATES: " + stateFlowGraph.getAllStates().size());
-		LOGGER.info("Dom average size (byte): " + stateFlowGraph.getMeanStateStringSize());
+		this.shutdown(timeCrawlCalc);
 
 		try {
 			shutdownThread.join();
 		} catch (InterruptedException e) {
 			LOGGER.error("could not wait for browsers to close.", e);
 		}
-		LOGGER.info("DONE!!!");
+		
 	}
 
 	/**
@@ -282,32 +278,35 @@ public class CrawljaxController implements CrawlQueueManager {
 	/**
 	 * Terminate the crawling, Stop all threads this will cause the controller which is sleeping to
 	 * reactive and do the final work....
+	 *
+	 * @param isAbort
+	 *            if set true the terminate must be as an abort not allowing running PostCrawling
+	 *            plugins.
 	 */
 	@GuardedBy("this")
-	public final synchronized void terminate() {
+	public final synchronized void terminate(boolean isAbort) {
 		LOGGER.warn("After " + this.formatRunningTime()
 		        + " the crawling process was requested to terminate @ " + Thread.currentThread());
-		LOGGER.info("Trying to stop all the threads");
-		// TODO Stefan do the actual termination of all the threads. Also test if it works!
-		LOGGER.info("There are " + workQueue.getActiveCount() + " threads active");
-		workQueue.shutdownNow();
-
-		if (workQueue.isShutdown()) {
-			LOGGER.info("ThreadPoolExecuter is shutdown");
-		} else {
-			LOGGER.warn("ThreadPoolExecuter is not shutdown");
-		}
-		if (workQueue.isTerminated()) {
-			LOGGER.info("All threads are terminated");
-		} else {
-			LOGGER.warn("Not All threads are terminated, there still are "
-			        + workQueue.getActiveCount() + " threads active");
-		}
-		LOGGER.info("Trying to close all browsers");
-		/**
-		 * TODO: Needs some more testing when Threads are not finished, the browser gets locked...
-		 */
 		browserPool.shutdown();
+		workQueue.shutdownNow(isAbort);
+		this.shutdown(System.currentTimeMillis() - startCrawl);
+	}
+
+	/**
+	 * The general shutdown procedure without running plugins or using browsers.
+	 */
+	private void shutdown(long timeCrawlCalc) {
+		StateFlowGraph stateFlowGraph = this.getSession().getStateFlowGraph();
+		for (Eventable c : stateFlowGraph.getAllEdges()) {
+			LOGGER.info("Interaction Element= " + c.toString());
+		}
+		LOGGER.info("Total Crawling time(" + timeCrawlCalc + "ms) ~= "
+		        + formatRunningTime(timeCrawlCalc));
+		LOGGER.info("EXAMINED ELEMENTS: " + elementChecker.numberOfExaminedElements());
+		LOGGER.info("CLICKABLES: " + stateFlowGraph.getAllEdges().size());
+		LOGGER.info("STATES: " + stateFlowGraph.getAllStates().size());
+		LOGGER.info("Dom average size (byte): " + stateFlowGraph.getMeanStateStringSize());
+		LOGGER.info("DONE!!!");
 	}
 
 	/**

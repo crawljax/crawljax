@@ -8,6 +8,9 @@ import com.crawljax.util.Helper;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
 
 /**
  * @author danny
@@ -36,17 +39,20 @@ public class ScriptComparator extends AbstractComparator {
 	@Override
 	public boolean isEquivalent() {
 		try {
-			Document orgDoc = Helper.getDocument(getOriginalDom());
+            Document orgDoc = Helper.getDocument(getOriginalDom());
 			orgDoc = Helper.removeScriptTags(orgDoc);
 			setOriginalDom(Helper.getDocumentToString(orgDoc));
 
-			Document newDoc = Helper.getDocument(getNewDom());
+            Document newDoc = Helper.getDocument(getNewDom());
 			newDoc = Helper.removeScriptTags(newDoc);
 			setNewDom(Helper.getDocumentToString(newDoc));
-		} catch (Exception e) {
-			LOGGER.error("Error with creating DOM document", e);
+		} catch (SAXException e) {
+			LOGGER.error("IOException with creating DOM document", e);
+			return false;
+		} catch (IOException e) {
+			LOGGER.error("IOException with creating DOM document", e);
+			return false;
 		}
 		return super.compare();
 	}
-
 }

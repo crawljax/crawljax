@@ -3,6 +3,7 @@
  */
 package com.crawljax.browser;
 
+import com.crawljax.core.CrawlQueueManager;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.configuration.ThreadConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
@@ -124,7 +125,7 @@ public final class BrowserPool {
 	 * Internal used to requestBrowser.
 	 *
 	 * @see #requestBrowser()
-	 * @return the new browser
+	 * @return the new browser TODO Stefan; this is exposing the WebDriver API
 	 * @throws WebDriverException
 	 *             a WebDriverException is thrown by the WebDriver when creation of the browser
 	 *             failed.
@@ -170,7 +171,8 @@ public final class BrowserPool {
 	/**
 	 * Depended on the {@link EmbeddedBrowser.BrowserType} a new instance is made.
 	 *
-	 * @return the new Object holding the EmbeddedBrowser instance.
+	 * @return the new Object holding the EmbeddedBrowser instance. TODO Stefan; this is exposing
+	 *         the WebDriver API
 	 * @throws WebDriverException
 	 *             a WebDriverException is thrown by the WebDriver when creation of the browser
 	 *             failed.
@@ -197,8 +199,6 @@ public final class BrowserPool {
 				for (EmbeddedBrowser b : available) {
 					try {
 						b.close();
-					} catch (Exception e) {
-						LOGGER.error("Failed to close free Browser " + b, e);
 					} finally {
 						deleteList.add(b);
 					}
@@ -208,8 +208,6 @@ public final class BrowserPool {
 				for (EmbeddedBrowser b : taken) {
 					try {
 						b.close();
-					} catch (Exception e) {
-						LOGGER.error("Failed to close taken Browser " + b, e);
 					} finally {
 						deleteList.add(b);
 					}
@@ -261,6 +259,7 @@ public final class BrowserPool {
 				try {
 					browser = createBrowser();
 				} catch (WebDriverException e) {
+					//TODO Stefan; this is exposing the WebDriver API
 					LOGGER.error("Faild to create a browser!", e);
 					if (getNumberBrowserCreateRetries() > 0
 					        && retries < getNumberBrowserCreateRetries()) {
@@ -445,6 +444,32 @@ public final class BrowserPool {
 			close().join();
 		} catch (InterruptedException e) {
 			LOGGER.error("The shutdown thread of the BrowserPool was Interrupted", e);
+		}
+	}
+
+	/**
+	 * Remove a browser from the pool, do not release it again as it might be faulty. A
+	 * {@link RuntimeException} might be thrown when there are no more browsers left in the pool
+	 * after removing this instance stopping all processing.
+	 *
+	 * @param browser
+	 *            the browser instance to be remove (not null)
+	 * @param terminationHandler
+	 *            the call-back handler to call the terminate function on.
+	 */
+	public synchronized void removeBrowser(
+	        EmbeddedBrowser browser, CrawlQueueManager terminationHandler) {
+		assert (browser != null);
+		
+		// remove from pool
+		taken.remove(browser);
+		currentBrowser.remove();
+		
+		// check if this was the last browser standing if so throw RuntimeException
+		if (taken.size() == 0 && available.size() == 0) {
+			terminationHandler.terminate(true);
+			throw new RuntimeException("All browsers have died; "
+			        + "there are no browsers left in the pool to execute Crawlers on!");
 		}
 	}
 }

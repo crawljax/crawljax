@@ -6,10 +6,16 @@ import com.crawljax.util.XPathHelper;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+
+import javax.xml.xpath.XPathExpressionException;
 
 /**
  * Oracle which can ignore style attributes.
@@ -47,16 +53,17 @@ public class StyleComparator extends AbstractComparator {
 	@Override
 	public boolean isEquivalent() {
 		try {
-
-			setOriginalDom(Helper.getDocumentToString(stripDom(Helper
-			        .getDocument(getOriginalDom()))));
+            setOriginalDom(
+			        Helper.getDocumentToString(stripDom(Helper.getDocument(getOriginalDom()))));
 			setNewDom(Helper.getDocumentToString(stripDom(Helper.getDocument(getNewDom()))));
-
-		} catch (Exception e) {
+		} catch (SAXException e) {
 			LOGGER.error(e.getMessage(), e);
+			return false;
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+			return false;
 		}
 		return super.compare();
-
 	}
 
 	private Document stripDom(Document dom) {
@@ -78,24 +85,27 @@ public class StyleComparator extends AbstractComparator {
 						        attribute.getNodeName());
 					}
 				}
-			}
-			return dom;
-		} catch (Exception e) {
+            }
+        } catch (XPathExpressionException e) {
+			LOGGER.warn("Error with StyleOracle: " + e.getMessage());
+			LOGGER.error(e.getMessage(), e);
+		} catch (DOMException e) {
+			LOGGER.warn("Error with StyleOracle: " + e.getMessage());
 			LOGGER.error(e.getMessage(), e);
 		}
 		return dom;
 	}
 
 	private Document stripElements(Document dom) {
-		try {
-			for (String tag : IGNORE_TAGS) {
+		for (String tag : IGNORE_TAGS) {
+			try {
 				NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//" + tag.toUpperCase());
 				for (int i = 0; i < nl.getLength(); i++) {
 					Node removeNode = nl.item(i);
 					Node parent = removeNode.getParentNode();
 					Node nextSibling = removeNode.getNextSibling();
 
-					NodeList children = removeNode.getChildNodes();
+                	NodeList children = removeNode.getChildNodes();
 					if (children != null && children.getLength() > 0) {
 						if (nextSibling == null) {
 							parent.appendChild(children.item(0));
@@ -105,29 +115,31 @@ public class StyleComparator extends AbstractComparator {
 					}
 					parent.removeChild(removeNode);
 				}
+			} catch (XPathExpressionException e) {
+				LOGGER.warn("Error with StyleOracle: " + e.getMessage());
+				LOGGER.error(e.getMessage(), e);
+			} catch (DOMException e) {
+				LOGGER.warn("Error with StyleOracle: " + e.getMessage());
+				LOGGER.error(e.getMessage(), e);
 			}
-			return dom;
-		} catch (Exception e) {
-			LOGGER.warn("Error with StyleOracle: " + e.getMessage());
-			LOGGER.error(e.getMessage(), e);
 		}
 		return dom;
 	}
 
 	private Document stripAttributes(Document dom) {
-		try {
-			for (String attributeName : IGNORE_ATTRIBUTES) {
-				String attribute = attributeName.toLowerCase();
+		for (String attributeName : IGNORE_ATTRIBUTES) {
+			String attribute = attributeName.toLowerCase();
+			try {
 				NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//*[@" + attribute + "]");
 				for (int i = 0; i < nl.getLength(); i++) {
 					NamedNodeMap attributes = nl.item(i).getAttributes();
 					attributes.removeNamedItem(attribute);
-				}
+                }
+            } catch (XPathExpressionException e) {
+				LOGGER.warn("Error with StyleOracle: " + e.getMessage());
+			} catch (DOMException e) {
+				LOGGER.warn("Error with StyleOracle: " + e.getMessage());
 			}
-			return dom;
-		} catch (Exception e) {
-			LOGGER.warn("Error with StyleOracle: " + e.getMessage());
-			// LOGGER.error(e.getMessage(), e);
 		}
 		return dom;
 	}

@@ -2,8 +2,6 @@ package com.crawljax.core;
 
 import static org.junit.Assert.fail;
 
-import java.io.File;
-
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -12,7 +10,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import java.io.File;
+
 public class NestedFrames {
+	// TODO Stefan; refactor; this is exposing the WebDriver API
 	WebDriver driver = new FirefoxDriver();
 
 	@Test

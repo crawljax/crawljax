@@ -1,5 +1,6 @@
 package com.crawljax.core;
 
+import com.crawljax.browser.BrowserConnectionException;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
@@ -151,11 +152,8 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Brings the browser to the initial state.
-	 * 
-	 * @throws CrawljaxException
-	 *             an exception when the index page can not be loaded
 	 */
-	public void goToInitialURL() throws CrawljaxException {
+	public void goToInitialURL() {
 		LOGGER.info("Loading Page "
 		        + configurationReader.getCrawlSpecificationReader().getSiteUrl());
 		getBrowser().goToUrl(configurationReader.getCrawlSpecificationReader().getSiteUrl());
@@ -174,62 +172,53 @@ public class Crawler implements Runnable {
 	 * @return true iff the event is fired
 	 */
 	private boolean fireEvent(Eventable eventable) {
-		try {
-			if (eventable.getIdentification().getHow().toString().equals("xpath")
-			        && eventable.getRelatedFrame().equals("")) {
+		if (eventable.getIdentification().getHow().toString().equals("xpath")
+		        && eventable.getRelatedFrame().equals("")) {
 
-				/**
-				 * The path in the page to the 'clickable' (link, div, span, etc)
-				 */
-				String xpath = eventable.getIdentification().getValue();
+			/**
+			 * The path in the page to the 'clickable' (link, div, span, etc)
+			 */
+			String xpath = eventable.getIdentification().getValue();
 
-				/**
-				 * The type of event to execute on the 'clickable' like onClick, mouseOver, hover,
-				 * etc
-				 */
-				EventType eventType = eventable.getEventType();
+			/**
+			 * The type of event to execute on the 'clickable' like onClick, mouseOver, hover, etc
+			 */
+			EventType eventType = eventable.getEventType();
 
-				/**
-				 * Try to find a 'better' / 'quicker' xpath
-				 */
-				String newXPath = new ElementResolver(eventable, getBrowser()).resolve();
-				if (newXPath != null && !xpath.equals(newXPath)) {
-					LOGGER.info("XPath changed from " + xpath + " to " + newXPath
-					        + " relatedFrame:" + eventable.getRelatedFrame());
-					eventable =
-					        new Eventable(new Identification(Identification.How.xpath, newXPath),
-					                eventType);
-				}
+			/**
+			 * Try to find a 'better' / 'quicker' xpath
+			 */
+			String newXPath = new ElementResolver(eventable, getBrowser()).resolve();
+			if (newXPath != null && !xpath.equals(newXPath)) {
+				LOGGER.info("XPath changed from " + xpath + " to " + newXPath + " relatedFrame:"
+				        + eventable.getRelatedFrame());
+				eventable = new Eventable(
+				        new Identification(Identification.How.xpath, newXPath), eventType);
 			}
-
-			if (getBrowser().fireEvent(eventable)) {
-
-				/**
-				 * Let the controller execute its specified wait operation on the browser thread
-				 * safe.
-				 */
-				controller.doBrowserWait(getBrowser());
-
-				/**
-				 * Close opened windows
-				 */
-				getBrowser().closeOtherWindows();
-
-				return true; // A event fired
-			} else {
-				/**
-				 * Execute the OnFireEventFailedPlugins with the current crawlPath with the
-				 * crawlPath removed 1 state to represent the path TO here.
-				 */
-				CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable, controller
-				        .getSession().getCurrentCrawlPath().immutableCopy(true));
-				return false; // no event fired
-			}
-
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
 		}
-		return false; // If we arrive here, there was an error, so no event fired.
+
+		if (getBrowser().fireEvent(eventable)) {
+
+			/**
+			 * Let the controller execute its specified wait operation on the browser thread safe.
+			 */
+			controller.doBrowserWait(getBrowser());
+
+			/**
+			 * Close opened windows
+			 */
+			getBrowser().closeOtherWindows();
+
+			return true; // A event fired
+		} else {
+			/**
+			 * Execute the OnFireEventFailedPlugins with the current crawlPath with the crawlPath
+			 * removed 1 state to represent the path TO here.
+			 */
+			CrawljaxPluginsUtil.runOnFireEventFailedPlugins(
+			        eventable, controller.getSession().getCurrentCrawlPath().immutableCopy(true));
+			return false; // no event fired
+		}
 	}
 
 	/**
@@ -253,9 +242,9 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
-	 * 
+	 *
 	 * @throws CrawljaxException
-	 *             if the crawler encounters an error.
+	 *             if the {@link Eventable#getTargetStateVertix()} encounters an error.
 	 */
 	private void goBackExact() throws CrawljaxException {
 		/**
@@ -489,7 +478,7 @@ public class Crawler implements Runnable {
 		LOGGER.info("RECURSIVE Call crawl; Current DEPTH= " + depth);
 		if (!this.crawl()) {
 			// Crawling has stopped
-			controller.terminate();
+			controller.terminate(false);
 			return false;
 		}
 		this.getStateMachine().changeState(orrigionalState);
@@ -500,8 +489,11 @@ public class Crawler implements Runnable {
 	 * Initialize the Crawler, retrieve a Browser and go to the initial URL when no browser was
 	 * present. rewind the state machine and goBack to the state if there is exactEventPath is
 	 * specified.
+	 *
+	 * @throws InterruptedException
+	 *             when the request for a browser is interrupted.
 	 */
-	public void init() {
+	public void init() throws InterruptedException {
 		// Start a new CrawlPath for this Crawler
 		controller.getSession().startNewPath();
 
@@ -511,17 +503,9 @@ public class Crawler implements Runnable {
 			 * As the browser is null, request one and got to the initial URL, if the browser is
 			 * Already set the browser will be in the initial URL.
 			 */
-			try {
-				this.browser = controller.getBrowserPool().requestBrowser();
-			} catch (InterruptedException e1) {
-				LOGGER.error("The request for a browser was interuped", e1);
-			}
+			this.browser = controller.getBrowserPool().requestBrowser();
 			LOGGER.info("Reloading page for navigating back");
-			try {
-				this.goToInitialURL();
-			} catch (Exception e) {
-				LOGGER.error("Could not load the initialURL", e);
-			}
+			this.goToInitialURL();
 		}
 		// TODO Stefan ideally this should be placed in the constructor
 		this.formHandler =
@@ -536,7 +520,7 @@ public class Crawler implements Runnable {
 		 */
 		try {
 			this.goBackExact();
-		} catch (Exception e) {
+		} catch (CrawljaxException e) {
 			LOGGER.error("Failed to backtrack", e);
 		}
 	}
@@ -575,18 +559,23 @@ public class Crawler implements Runnable {
 			}
 		}
 
-		/**
-		 * Init the Crawler
-		 */
-		this.init();
-
 		try {
+			/**
+			 * Init the Crawler
+			 */
+			try {
+				this.init();
+			} catch (InterruptedException e) {
+				if (this.getBrowser() == null) {
+					return;
+				}
+			}
 
 			/**
 			 * Hand over the main crawling
 			 */
 			if (!this.crawl()) {
-				controller.terminate();
+				controller.terminate(false);
 			}
 
 			/**
@@ -595,14 +584,22 @@ public class Crawler implements Runnable {
 			if (!fired) {
 				controller.getSession().removeCrawlPath();
 			}
-		} catch (Exception e) {
+		} catch (BrowserConnectionException e) {
+			// The connection of the browser has gone down, most of the times it means that the
+			// browser process has crashed.
+			LOGGER.error("Crawl failed because the used browser died during Crawling", e);
+			// removeBrowser will throw a RuntimeException if the current browser is the last
+			// browser in the pool.
+			this.controller.getBrowserPool().removeBrowser(
+			        this.getBrowser(), this.controller.getCrawlQueueManager());
+			return;
+		} catch (CrawljaxException e) {
 			LOGGER.error("Crawl failed!", e);
-		} finally {
-			/**
-			 * At last failure or non shutdown the Crawler.
-			 */
-			this.shutdown();
 		}
+		/**
+		 * At last failure or non shutdown the Crawler.
+		 */
+		this.shutdown();
 	}
 
 	/**

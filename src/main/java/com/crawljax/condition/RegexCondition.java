@@ -1,11 +1,11 @@
 package com.crawljax.condition;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.crawljax.browser.EmbeddedBrowser;
 
 import net.jcip.annotations.Immutable;
 
-import com.crawljax.browser.EmbeddedBrowser;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Condition that returns true iff experssion occurs in the dom.
@@ -28,14 +28,10 @@ public class RegexCondition extends AbstractCondition {
 
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
-		try {
-			String dom = browser.getDom();
-			Pattern p = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-			Matcher m = p.matcher(dom);
-			return m.find();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		String dom = browser.getDom();
+		Pattern p = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(dom);
+		return m.find();
 	}
 
 }

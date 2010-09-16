@@ -1,8 +1,11 @@
 package com.crawljax.examples;
 
 import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+
+import org.apache.commons.configuration.ConfigurationException;
 
 /**
  * @author frank, mesbah
@@ -32,7 +35,9 @@ public final class JarRunner {
 		try {
 			CrawljaxController crawljax = new CrawljaxController(config);
 			crawljax.run();
-		} catch (Exception e) {
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		} catch (CrawljaxException e) {
 			e.printStackTrace();
 		}
 	}

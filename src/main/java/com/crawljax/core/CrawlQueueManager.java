@@ -33,4 +33,14 @@ public interface CrawlQueueManager {
 	 *             when the blocking thread gets interupted.
 	 */
 	void waitForTermination() throws InterruptedException;
+
+	/**
+	 * Terminate this CrawlQueue, depending on the parameter issue a abort or a 'normal' terminate.
+	 * A 'normal' terminate happens when the MaximumRunTime() or the MaxNumberOfStates is reached
+	 * while a abort can be issues when an exception is catched and handled.
+	 *
+	 * @param isAbort
+	 *            true for abort, false for normal shutdown.
+	 */
+	void terminate(boolean isAbort);
 }
