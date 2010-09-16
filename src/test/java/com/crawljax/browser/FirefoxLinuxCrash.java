@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public abstract class FirefoxLinuxCrash {
 
-	private static final int DEFAULT_SLEEP_TIMEOUT = 500;
+	private static final int DEFAULT_SLEEP_TIMEOUT = 1000;
 	private WebDriver driver;
 
 	private boolean onPosix() {
