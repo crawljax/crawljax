@@ -11,7 +11,7 @@ import com.crawljax.core.state.CrawlPath;
  * @version $Id$
  * @author slenselink@google.com (Stefan Lenselink)
  */
-public class CrawlPathToException extends Throwable {
+public class CrawlPathToException extends Exception {
 
 	/**
 	 * Build a new {@link CrawlPathToException} given a path taken.
