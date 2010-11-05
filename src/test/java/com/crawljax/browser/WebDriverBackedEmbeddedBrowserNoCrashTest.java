@@ -7,6 +7,7 @@ import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -75,6 +76,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 *             when the script can not be executed
 	 */
 	@Test
+	@Ignore
 	public final void testExecuteJavaScript() throws CrawljaxException {
 		try {
 			browser.executeJavaScript("alert('testing');");
