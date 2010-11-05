@@ -66,7 +66,7 @@ public final class AttributeInjector {
 			return null;
 		}
 		srcAttrValue += "?" + attrName + "=" + value;
-		System.out.println("Setting value for src to: " + srcAttrValue);
+		// System.out.println("Setting value for src to: " + srcAttrValue);
 		element.setAttribute("src", srcAttrValue);
 		return element;
 	}
