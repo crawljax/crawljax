@@ -30,7 +30,6 @@ public class LargeFirefoxTest extends LargeTestSuper {
 	public static void setUpBeforeClass() {
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
 		ThreadConfiguration tc = new ThreadConfiguration(2, 2, true);
-		tc.setUseFastBooting(true);
 		crawljaxConfiguration.setThreadConfiguration(tc);
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification("file://"
 		        + new File(INDEX).getAbsolutePath(), waitAfterEvent, waitAfterReload));

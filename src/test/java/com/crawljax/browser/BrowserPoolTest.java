@@ -148,7 +148,6 @@ public class BrowserPoolTest {
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
 		ThreadConfiguration tc = new ThreadConfiguration(4);
-		tc.setUseFastBooting(true);
 		cfg.setThreadConfiguration(tc);
 
 		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
@@ -187,7 +186,6 @@ public class BrowserPoolTest {
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
 		ThreadConfiguration tc = new ThreadConfiguration(4);
-		tc.setUseFastBooting(false);
 		cfg.setThreadConfiguration(tc);
 
 		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
@@ -212,8 +210,6 @@ public class BrowserPoolTest {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
-
-		tc.setUseFastBooting(true);
 
 		try {
 			long start = System.currentTimeMillis();

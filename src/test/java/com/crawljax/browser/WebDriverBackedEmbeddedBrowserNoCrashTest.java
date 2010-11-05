@@ -2,13 +2,7 @@
 
 package com.crawljax.browser;
 
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Eventable.EventType;
-import com.crawljax.core.state.Identification;
-import com.crawljax.core.state.Identification.How;
-import com.crawljax.forms.FormInput;
-
+import static org.junit.Assert.fail;
 import junit.framework.Assert;
 
 import org.junit.After;
@@ -17,18 +11,23 @@ import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.File;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Eventable.EventType;
+import com.crawljax.core.state.Identification.How;
+import com.crawljax.forms.FormInput;
 
 /**
  * This Test checks the 'default' behavior of {@link EmbeddedBrowser} implemented by
  * {@link WebDriverBackedEmbeddedBrowser} on invalid input while the used browser is still active.
- *
- * @version $Id$
+ * 
+ * @version $Id: WebDriverBackedEmbeddedBrowserNoCrashTest.java 446 2010-09-16 09:17:24Z
+ *          slenselink@google.com $
  * @author slenselink@google.com (Stefan Lenselink)
  */
 public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 
-    private static final String FILE_LOCATION_WITH_NO_RIGHTS = "/bla";
 	private EmbeddedBrowser browser;
 
 	/**
@@ -71,33 +70,33 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	/**
 	 * Test method for
 	 * {@link com.crawljax.browser.EmbeddedBrowser#executeJavaScript(java.lang.String)}.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             when the script can not be executed
 	 */
 	@Test
 	public final void testExecuteJavaScript() throws CrawljaxException {
 		try {
-			browser.executeJavaScript("This.Will()->trowExcpection();");
+			browser.executeJavaScript("alert('testing');");
+
 		} catch (CrawljaxException e) {
-			Assert.assertTrue("SyntaxError in WebDriverExcption",
-			        e.getCause().getMessage().toLowerCase().contains("syntaxerror"));
-			return;
+			fail("A WebDriverException needed to be thrown");
 		}
-		Assert.fail("A WebDriverException needed to be thrown");
+
 	}
 
 	/**
 	 * Test method for
 	 * {@link com.crawljax.browser.EmbeddedBrowser#fireEvent(com.crawljax.core.state.Eventable)}.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             when the event can not be fired.
 	 */
 	@Test
 	public final void testFireEvent() throws CrawljaxException {
-		browser.fireEvent(
-		        new Eventable(new Identification(How.xpath, "/RUBISH"), EventType.click));
+		browser
+		        .fireEvent(new Eventable(new Identification(How.xpath, "/RUBISH"),
+		                EventType.click));
 	}
 
 	/**
@@ -110,18 +109,19 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 
 	/**
 	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getDom()}.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             when the dom can not be downloaded.
 	 */
 	@Test
 	public final void testGetDom() throws CrawljaxException {
+		browser.goToUrl("http://www.google.nl/");
 		browser.getDom();
 	}
 
 	/**
 	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getDomWithoutIframeContent()}.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             when the the dom can not be downloaded.
 	 */
@@ -140,7 +140,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 
 	/**
 	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#goToUrl(java.lang.String)}.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             when the url can not be opend.
 	 */
@@ -151,38 +151,40 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	}
 
 	/**
-	 * Test method for {@link
-	 * com.crawljax.browser.EmbeddedBrowser#input(com.crawljax.core.state.Identification,
-	 * java.lang.String)}.
-	 *
+	 * Test method for
+	 * {@link com.crawljax.browser.EmbeddedBrowser#input(com.crawljax.core.state.Identification, java.lang.String)}
+	 * .
+	 * 
 	 * @throws CrawljaxException
 	 *             when the input can not be found
 	 */
 	@Test
 	public final void testInput() throws CrawljaxException {
-		Assert.assertFalse("Wrong Xpath so false because of error",
-		        browser.input(new Identification(How.xpath, "/RUBISH"), "some"));
+		Assert.assertFalse("Wrong Xpath so false because of error", browser.input(
+		        new Identification(How.xpath, "/RUBISH"), "some"));
 	}
 
 	/**
-	 * Test method for {@link
-	 * com.crawljax.browser.EmbeddedBrowser#isVisible(com.crawljax.core.state.Identification)}.
+	 * Test method for
+	 * {@link com.crawljax.browser.EmbeddedBrowser#isVisible(com.crawljax.core.state.Identification)}
+	 * .
 	 */
 	@Test
 	public final void testIsVisible() {
-		Assert.assertFalse("Wrong Xpath so not visible",
-		        browser.isVisible(new Identification(How.xpath, "/RUBISH")));
+		Assert.assertFalse("Wrong Xpath so not visible", browser.isVisible(new Identification(
+		        How.xpath, "/RUBISH")));
 	}
 
 	/**
-	 * Test method for {@link
-	 * com.crawljax.browser.EmbeddedBrowser#getInputWithRandomValue(com.crawljax.forms.FormInput)}.
+	 * Test method for
+	 * {@link com.crawljax.browser.EmbeddedBrowser#getInputWithRandomValue(com.crawljax.forms.FormInput)}
+	 * .
 	 */
 	@Test
 	public final void testGetInputWithRandomValue() {
-		Assert.assertNull("Wrong Xpath so null as result of InputWithRandomValue",
-		        browser.getInputWithRandomValue(
-		                new FormInput("text", new Identification(How.xpath, "/RUBISH"), "abc")));
+		Assert.assertNull("Wrong Xpath so null as result of InputWithRandomValue", browser
+		        .getInputWithRandomValue(new FormInput("text", new Identification(How.xpath,
+		                "/RUBISH"), "abc")));
 	}
 
 	/**
@@ -194,18 +196,20 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	}
 
 	/**
-	 * Test method for {@link
-	 * com.crawljax.browser.EmbeddedBrowser#elementExists(com.crawljax.core.state.Identification)}.
+	 * Test method for
+	 * {@link com.crawljax.browser.EmbeddedBrowser#elementExists(com.crawljax.core.state.Identification)}
+	 * .
 	 */
 	@Test
 	public final void testElementExists() {
-		Assert.assertFalse("Wrong Xpath so element does not exsist",
-		        browser.elementExists(new Identification(How.xpath, "/RUBISH")));
+		Assert.assertFalse("Wrong Xpath so element does not exsist", browser
+		        .elementExists(new Identification(How.xpath, "/RUBISH")));
 	}
 
 	/**
-	 * Test method for {@link
-	 * com.crawljax.browser.EmbeddedBrowser#getWebElement(com.crawljax.core.state.Identification)}.
+	 * Test method for
+	 * {@link com.crawljax.browser.EmbeddedBrowser#getWebElement(com.crawljax.core.state.Identification)}
+	 * .
 	 */
 	@Test
 	public final void testGetWebElement() {
@@ -218,23 +222,4 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 		Assert.fail("NoSuchElementException should have been thrown");
 	}
 
-	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#saveScreenShot(java.io.File)}.
-	 *
-	 * @throws CrawljaxException
-	 *             when screenshotting failed
-	 */
-	@Test
-	public final void testSaveScreenShot() throws CrawljaxException {
-		try {
-			// As long as this test is not executed by root, and the system is configures properly
-			// (correct permissions on /) this will throw a CrawljaxException wrapping a
-			// FileNotFoundException
-			browser.saveScreenShot(new File(FILE_LOCATION_WITH_NO_RIGHTS));
-		} catch (CrawljaxException e) {
-			// Intended behavior
-			return;
-		}
-		Assert.fail("CrawljaxException should have been thrown");
-	}
 }
