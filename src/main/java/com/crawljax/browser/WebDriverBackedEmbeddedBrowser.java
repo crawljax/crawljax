@@ -556,7 +556,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			String s = "";
 			try {
 				s = browser.getPageSource();
-				System.out.println(s);
 			} catch (WebDriverException e) {
 				if (e.getMessage().contains(
 				        "Utils.getDocument(respond.context)."
