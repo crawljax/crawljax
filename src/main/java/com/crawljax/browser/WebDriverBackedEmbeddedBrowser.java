@@ -1,17 +1,15 @@
 package com.crawljax.browser;
 
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.AcceptAllFramesChecker;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.IgnoreFrameChecker;
-import com.crawljax.core.exception.BrowserConnectionException;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
-import com.crawljax.forms.FormHandler;
-import com.crawljax.forms.FormInput;
-import com.crawljax.forms.InputValue;
-import com.crawljax.forms.RandomInputValueGenerator;
-import com.crawljax.util.Helper;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.ElementNotVisibleException;
@@ -38,16 +36,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.AcceptAllFramesChecker;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.IgnoreFrameChecker;
+import com.crawljax.core.exception.BrowserConnectionException;
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
+import com.crawljax.forms.FormHandler;
+import com.crawljax.forms.FormInput;
+import com.crawljax.forms.InputValue;
+import com.crawljax.forms.RandomInputValueGenerator;
+import com.crawljax.util.Helper;
 
 /**
  * @author mesbah
@@ -67,7 +67,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Constructor without configuration values, these must be updated using the
 	 * {@link #updateConfiguration(CrawljaxConfigurationReader)}.
-	 *
+	 * 
 	 * @param driver
 	 *            The WebDriver to use.
 	 */
@@ -77,7 +77,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Constructor.
-	 *
+	 * 
 	 * @param driver
 	 *            The WebDriver to use.
 	 * @param filterAttributes
@@ -97,7 +97,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Constructor.
-	 *
+	 * 
 	 * @param driver
 	 *            The WebDriver to use.
 	 * @param filterAttributes
@@ -117,7 +117,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
-	 *
+	 * 
 	 * @param hubUrl
 	 *            Url of the server.
 	 * @param filterAttributes
@@ -130,13 +130,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl,
 	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
-		return WebDriverBackedEmbeddedBrowser.withDriver(
-		        buildRemoteWebDriver(hubUrl), filterAttributes, crawlWaitEvent, crawlWaitReload);
+		return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl),
+		        filterAttributes, crawlWaitEvent, crawlWaitReload);
 	}
 
 	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
-	 *
+	 * 
 	 * @param hubUrl
 	 *            Url of the server.
 	 * @param filterAttributes
@@ -158,7 +158,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
-	 *
+	 * 
 	 * @param driver
 	 *            The WebDriver to use.
 	 * @param filterAttributes
@@ -171,13 +171,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver,
 	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
-		return new WebDriverBackedEmbeddedBrowser(
-		        driver, filterAttributes, crawlWaitEvent, crawlWaitReload);
+		return new WebDriverBackedEmbeddedBrowser(driver, filterAttributes, crawlWaitEvent,
+		        crawlWaitReload);
 	}
 
 	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
-	 *
+	 * 
 	 * @param driver
 	 *            The WebDriver to use.
 	 * @param filterAttributes
@@ -193,13 +193,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver,
 	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
 	        IgnoreFrameChecker ignoreFrameChecker) {
-		return new WebDriverBackedEmbeddedBrowser(
-		        driver, filterAttributes, crawlWaitEvent, crawlWaitReload, ignoreFrameChecker);
+		return new WebDriverBackedEmbeddedBrowser(driver, filterAttributes, crawlWaitEvent,
+		        crawlWaitReload, ignoreFrameChecker);
 	}
 
 	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
-	 *
+	 * 
 	 * @param hubUrl
 	 *            Url of the server.
 	 * @return The EmbeddedBrowser.
@@ -211,7 +211,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Private used static method for creation of a RemoteWebDriver. Taking care of the default
 	 * Capabilities and using the HttpCommandExecutor.
-	 *
+	 * 
 	 * @param hubUrl
 	 *            the url of the hub to use.
 	 * @return the RemoteWebDriver instance.
@@ -223,8 +223,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		try {
 			url = new URL(hubUrl);
 		} catch (MalformedURLException e) {
-			LOGGER.error(
-			        "The given hub url of the remote server is malformed can not continue!", e);
+			LOGGER.error("The given hub url of the remote server is malformed can not continue!",
+			        e);
 			return null;
 		}
 		HttpCommandExecutor executor = null;
@@ -242,7 +242,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
-	 *
+	 * 
 	 * @param driver
 	 *            The WebDriver to use.
 	 * @return The EmbeddedBrowser.
@@ -284,7 +284,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Fires the event and waits for a specified time.
-	 *
+	 * 
 	 * @param webElement
 	 *            the element to fire event on.
 	 * @param eventable
@@ -310,8 +310,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				break;
 
 			default:
-				LOGGER.info(
-				        "EventType " + eventable.getEventType() + " not supported in WebDriver.");
+				LOGGER.info("EventType " + eventable.getEventType()
+				        + " not supported in WebDriver.");
 				return false;
 		}
 
@@ -354,8 +354,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	private String toUniformDOM(String html) {
 
-		Pattern p = Pattern.compile(
-		        "<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+		Pattern p =
+		        Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
+		                | Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(html);
 		String htmlFormatted = m.replaceAll("");
 
@@ -375,7 +376,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Filters attributes from the HTML string.
-	 *
+	 * 
 	 * @param html
 	 *            The HTML to filter.
 	 * @return The filtered HTML string.
@@ -429,7 +430,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Fires an event on an element using its identification.
-	 *
+	 * 
 	 * @param eventable
 	 *            The eventable.
 	 * @return true if it is able to fire the event successfully on the element.
@@ -475,7 +476,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Execute JavaScript in the browser.
-	 *
+	 * 
 	 * @param code
 	 *            The code to execute.
 	 * @return The return value of the JavaScript.
@@ -494,7 +495,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * Determines whether the corresponding element is visible.
-	 *
+	 * 
 	 * @param identification
 	 *            The element to search for.
 	 * @return true if the element is visible
@@ -555,9 +556,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			String s = "";
 			try {
 				s = browser.getPageSource();
+				System.out.println(s);
 			} catch (WebDriverException e) {
-				if (e.getMessage().contains("Utils.getDocument(respond.context)."
-				        + "getElementsByTagName(\\\"html\\\")[0] is undefined")) {
+				if (e.getMessage().contains(
+				        "Utils.getDocument(respond.context)."
+				                + "getElementsByTagName(\\\"html\\\")[0] is undefined")) {
 					// There is no html tag... ignore!
 					// TODO Stefan find out if this error is a Webdriver bug??
 					LOGGER.info("Skiped parsing dom tree because no html content is defined");
@@ -620,7 +623,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 					        (Element) document.importNode(toAppendElement, true);
 					frameElement.appendChild(importedElement);
 
-                    appendFrameContent(importedElement, document, frameIdentification);
+					appendFrameContent(importedElement, document, frameIdentification);
 				} catch (DOMException e) {
 					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
 					        + " continuing...", e);
@@ -630,7 +633,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				} catch (IOException e) {
 					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
 					        + " continuing...", e);
-                }
+				}
 			}
 		}
 	}
@@ -675,8 +678,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		// create some random value
 
 		if (input.getType().toLowerCase().startsWith("text")) {
-			values.add(new InputValue(new RandomInputValueGenerator().getRandomString(
-			        FormHandler.RANDOM_STRING_LENGTH), true));
+			values.add(new InputValue(new RandomInputValueGenerator()
+			        .getRandomString(FormHandler.RANDOM_STRING_LENGTH), true));
 		} else if (input.getType().equalsIgnoreCase("checkbox")
 		        || input.getType().equalsIgnoreCase("radio") && !webElement.isSelected()) {
 			if (new RandomInputValueGenerator().getCheck()) {
@@ -688,8 +691,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		} else if (input.getType().equalsIgnoreCase("select")) {
 			try {
 				Select select = new Select(webElement);
-				WebElement option = (WebElement) new RandomInputValueGenerator().getRandomOption(
-				        select.getOptions());
+				WebElement option =
+				        (WebElement) new RandomInputValueGenerator().getRandomOption(select
+				                .getOptions());
 				values.add(new InputValue(option.getText(), true));
 			} catch (WebDriverException e) {
 				throwIfConnectionException(e);

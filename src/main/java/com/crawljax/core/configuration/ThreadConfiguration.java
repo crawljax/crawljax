@@ -2,8 +2,6 @@ package com.crawljax.core.configuration;
 
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.util.Random;
-
 /**
  * This class denotes all the configuration variable that can be set with regard to the number of
  * Threads active.
@@ -63,11 +61,6 @@ public class ThreadConfiguration {
 	 * This field indicates if the fastBooting algorithm must be used.
 	 */
 	private boolean useFastBooting = false;
-
-	/**
-	 * Use a random port number.
-	 */
-	private boolean useRandomPortNumberCreation = true;
 
 	/**
 	 * The last returned port number.
@@ -201,49 +194,6 @@ public class ThreadConfiguration {
 	 */
 	public final void setSleepTimeOnBrowserCreationFailure(int sleepTimeOnBrowserCreationFailure) {
 		this.sleepTimeOnBrowserCreationFailure = sleepTimeOnBrowserCreationFailure;
-	}
-
-	/**
-	 * Is the fast booting algorithm in use?
-	 * 
-	 * @return true if the fast booting is in use
-	 */
-	public boolean getUseFastBooting() {
-		return this.useFastBooting;
-	}
-
-	/**
-	 * Determine a port number depending on the configuration value.
-	 * 
-	 * @return the port number to use;
-	 */
-	public int getPortNumber() {
-		if (getUseFastBooting()) {
-			if (useRandomPortNumberCreation) {
-				return BASE_FREE_PORT_NUMBER
-				        + new Random().nextInt(LIMIT_FREE_PORT_NUMBER - BASE_FREE_PORT_NUMBER);
-			} else {
-				return this.lastPort++;
-			}
-		} else {
-			return this.lastPort;
-		}
-	}
-
-	/**
-	 * @param useFastBooting
-	 *            the useFastBooting to set
-	 */
-	public final void setUseFastBooting(boolean useFastBooting) {
-		this.useFastBooting = useFastBooting;
-	}
-
-	/**
-	 * @param useRandomPortNumberCreation
-	 *            the useRandomPortNumberCreation to set
-	 */
-	public final void setUseRandomPortNumberCreation(boolean useRandomPortNumberCreation) {
-		this.useRandomPortNumberCreation = useRandomPortNumberCreation;
 	}
 
 }

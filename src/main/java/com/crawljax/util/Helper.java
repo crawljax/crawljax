@@ -1,23 +1,5 @@
 package com.crawljax.util;
 
-import com.google.common.collect.Lists;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.DetailedDiff;
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.Difference;
-import org.custommonkey.xmlunit.DifferenceListener;
-import org.cyberneko.html.parsers.DOMParser;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,6 +32,24 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.custommonkey.xmlunit.DetailedDiff;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
+import org.custommonkey.xmlunit.DifferenceListener;
+import org.cyberneko.html.parsers.DOMParser;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import com.google.common.collect.Lists;
 
 /**
  * Utility class that contains a number of helper functions used by Crawljax and some plugins.
@@ -156,6 +156,7 @@ public final class Helper {
 	public static Document getDocument(String html) throws SAXException, IOException {
 		DOMParser domParser = new DOMParser();
 		domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
+		domParser.setFeature("http://xml.org/sax/features/namespaces", false);
 		domParser.parse(new InputSource(new StringReader(html)));
 		return domParser.getDocument();
 	}

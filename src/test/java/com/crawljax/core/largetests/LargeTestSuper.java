@@ -3,6 +3,15 @@ package com.crawljax.core.largetests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.condition.RegexCondition;
@@ -20,20 +29,11 @@ import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
-import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.Identification.How;
 import com.crawljax.oraclecomparator.comparators.DateComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This is the base abstract class for all different kind of largeTests. Sub classes tests specific
@@ -193,8 +193,9 @@ public abstract class LargeTestSuper {
 	@Test
 	public void testInvariants() {
 		// two invariants were added, but only one should fail!
-		assertTrue(VIOLATED_INVARIANTS + " Invariants violated",
+		assertTrue(violatedInvariants.size() + " Invariants violated",
 		        violatedInvariants.size() == VIOLATED_INVARIANTS);
+
 		// test whether the right invariant failed
 		assertTrue(VIOLATED_INVARIANT_DESCRIPTION + " failed", violatedInvariants.get(0)
 		        .getDescription().equals(VIOLATED_INVARIANT_DESCRIPTION));
@@ -390,10 +391,11 @@ public abstract class LargeTestSuper {
 				LargeTestSuper.violatedInvariants.add(invariant);
 				if (session.getCurrentState().getDom().contains(INVARIANT_TEXT)) {
 					violatedInvariantStateIsCorrect = true;
+					System.out.println("Invariant violated: " + invariant.getDescription());
 				}
 			}
 		});
-		
+
 		crawljaxConfiguration.addPlugin(new OnNewStatePlugin() {
 			@Override
 			public void onNewState(CrawlSession session) {
