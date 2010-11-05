@@ -5,6 +5,7 @@ import java.util.List;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
@@ -74,6 +75,12 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 				        .getRemoteHubUrl(), configuration.getFilterAttributeNames(),
 				        configuration.getCrawlSpecificationReader().getWaitAfterEvent(),
 				        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl());
+
+			case htmlunit:
+				return WebDriverBackedEmbeddedBrowser.withDriver(new HtmlUnitDriver(true),
+				        configuration.getFilterAttributeNames(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			default:
 				return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),

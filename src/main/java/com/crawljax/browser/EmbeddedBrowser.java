@@ -3,19 +3,19 @@
  */
 package com.crawljax.browser;
 
+import java.io.File;
+
+import org.openqa.selenium.WebElement;
+
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 
-import org.openqa.selenium.WebElement;
-
-import java.io.File;
-
 /**
  * Browser interface used by Crawjax.
- *
+ * 
  * @author mesbah
  * @version $Id$
  */
@@ -25,12 +25,12 @@ public interface EmbeddedBrowser {
 	 * Browser types.
 	 */
 	public enum BrowserType {
-		firefox, ie, chrome, remote
+		firefox, ie, chrome, remote, htmlunit
 	}
 
 	/**
 	 * Opens the url in the browser.
-	 *
+	 * 
 	 * @param url
 	 *            the URL.
 	 */
@@ -38,7 +38,7 @@ public interface EmbeddedBrowser {
 
 	/**
 	 * fires the event.
-	 *
+	 * 
 	 * @param event
 	 *            the event.
 	 * @return if fails.
@@ -83,7 +83,7 @@ public interface EmbeddedBrowser {
 
 	/**
 	 * Execute JavaScript in the browser.
-	 *
+	 * 
 	 * @param script
 	 *            The script to execute.
 	 * @return The JavaScript return object.
@@ -94,7 +94,7 @@ public interface EmbeddedBrowser {
 
 	/**
 	 * Checks if an element is visible.
-	 *
+	 * 
 	 * @param identification
 	 *            identification to use.
 	 * @return true if the element is visible.
@@ -145,7 +145,7 @@ public interface EmbeddedBrowser {
 	/**
 	 * Update the configuration of the Browser. When this method is called the implementing
 	 * EmbeddedBrowser must updates its internal configuration to the values given as argument.
-	 *
+	 * 
 	 * @param configuration
 	 *            the new configuration values that needs to be updated.
 	 */
