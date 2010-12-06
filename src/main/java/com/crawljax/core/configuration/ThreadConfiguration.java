@@ -1,7 +1,5 @@
 package com.crawljax.core.configuration;
 
-import org.openqa.selenium.firefox.FirefoxDriver;
-
 /**
  * This class denotes all the configuration variable that can be set with regard to the number of
  * Threads active.
@@ -10,9 +8,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
  * @version $Id$
  */
 public class ThreadConfiguration {
-
-	private static final int BASE_FREE_PORT_NUMBER = 32768;
-	private static final int LIMIT_FREE_PORT_NUMBER = 65535;
 
 	/**
 	 * Default SleepTimeOnBrowserCreationFailure == 10 seconds == 10000 Millisecond.
@@ -56,16 +51,6 @@ public class ThreadConfiguration {
 	 */
 	private int sleepTimeOnBrowserCreationFailure =
 	        DEFAULT_SLEEP_TIME_ON_BROWSER_CREATION_FAILURE;
-
-	/**
-	 * This field indicates if the fastBooting algorithm must be used.
-	 */
-	private boolean useFastBooting = false;
-
-	/**
-	 * The last returned port number.
-	 */
-	private int lastPort = FirefoxDriver.DEFAULT_PORT;
 
 	/**
 	 * Initialise everything directly.
