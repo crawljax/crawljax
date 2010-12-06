@@ -27,15 +27,6 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>dannyroest</id>
-			<name>Danny Roest</name>
-			<email>dannyroest@gmail.com</email>
-			<url>http://twitter.com/dannyroest</url>
-			<organization>SWERL, TU Delft</organization>
-			<organizationUrl>http://swerl.tudelft.nl</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
 			<id>frankgroeneveld</id>
 			<name>Frank Groeneveld</name>
 			<email>frankgroeneveld@gmail.com</email>
@@ -123,7 +114,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium</artifactId>
-			<version>2.0a6</version>
+			<version>2.0a7</version>
 		</dependency>
 
 		<dependency>
