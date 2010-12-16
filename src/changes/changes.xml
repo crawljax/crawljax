@@ -9,7 +9,7 @@
 	<body>
 
 		<release version="2.1" date="2010-12-16"
-			description="New major release.">
+			description="New release.">
 			<action dev="all" type="update">
 				Various improvements and bug fixes.
 			</action>
@@ -19,7 +19,10 @@
 		<release version="2.0" date="2010-12-16"
 			description="New major release. Concurrent multi-browser crawling.">
 			<action dev="stefan" type="add">
-				Support for concurrent multi-browser crawling. The number of browsers can be configure using the ThreadConfiguration API. 
+				Support for concurrent multi-browser crawling. The number of browsers can be configured using the ThreadConfiguration API. 
+			</action>
+			<action dev="mesbah" type="add">
+				Support added for the HTMLUnit driver. Note: this driver is very fast, but it is not a real browser. 
 			</action>
 			<action dev="mesbah" type="update" issue="9">
 				Upgraded the dependencies on Selenium (version 2.0a7). 
