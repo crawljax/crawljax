@@ -15,7 +15,6 @@
 			</action>
 		</release>
 
-
 		<release version="2.0" date="2010-12-16"
 			description="New major release. Concurrent multi-browser crawling.">
 			<action dev="stefan" type="add">
@@ -29,6 +28,71 @@
 			</action>
 			<action dev="all" type="update">
 				Various improvements and bug fixes.
+			</action>
+			<action dev="stefan" type="update" issue="26">
+				 The initial browser was null, this was caused by the fact that the currentBrowser was not correctly set.
+				 The browser pool did not register the currentBrowser for a given thread as the browser got requested directly,
+				 as what happened with the initial browser.
+			</action>
+			<action dev="stefan" type="update" issue="27">
+				 When running a (large) CrawlSpec and set a MaxRuntime constraint for it, the Crawler is not terminated directly
+				 when the MaxRuntime is reached. Basically what happened was that the current Crawler was terminated.
+				  Afterwards all waiting Crawlers got executed and start back-tracking and when in the previous state the check 
+				  constraints terminates the Crawler. It was changed to, when the MaxRuntime is reached the current Crawler was 
+				  terminated and that Crawler made a call the all other Crawlers running to shutdown and it tells the queue to
+				  empty and shutdown.
+			</action>
+			<action dev="stefan" type="update" issue="29">
+				 Ignore iFrames specified by full identifier or using wild-card.
+			</action>
+			<action dev="stefan" type="update" issue="30">
+				 When using one wait condition during crawling and the first waitcondition takes a long time (> timeout) but in the
+				 end it is successful a IndexOutOfBounceException is thrown. The index is increased after an successful execution of
+				 a waitcondition and later the log event uses the increased index number to retrieve the WaitCondition that took to
+				 long to get successful.
+			</action>
+			<action dev="stefan" type="update" issue="31">
+				 When supplying wrong or malformed urllocator causes an exception. Changed the behaviour not to suspect an urllocator
+				 starts with 7 characters.
+			</action>
+			<action dev="stefan" type="update" issue="32">
+				 The exactEventPath got updated when OnNewState plugins where finished executing. This resulted in the wrong data being
+				 exposed to the CrawlSession. The initial fix was made to prevent this behaviour, late the CrawlPath and the ExactEventPath
+				 where merged because both lists are doing exactly the same.
+			</action>
+			<action dev="stefan" type="update" issue="33/34">
+				 Refactored most of the Exception handling within Crawljax, when a browser crashed (for whatever reason) the Exception thrown
+				 by WebDriver was catched and ignored. Resulting in all calls to WebDriver to fail and by that flushing all the work from the
+				 queue by Crawlers using that Browser. The new implementation handles the exception at the right location and makes sure the
+				 crashed browser will be removed from the pool and won’t be used any further. The crawler where the browser crashed will be
+				 removed from the queue, limiting the number of missed states by the number that would have been found by that crawler.
+			</action>
+			<action dev="stefan" type="add">
+				 Added CrawlPathToException class to wrap a crawl path into a stack trace like exception giving developers / testers better insight
+				 into on which page an invariant or plugin reported an error.
+			</action>
+			<action dev="stefan" type="update">
+				 Fixed a lot of the FindBugs warnings, remove some legacy code (clone() support)
+			</action>
+			<action dev="stefan" type="update">
+				 Updated the WebDriver version, this was needed to support screenshots for RemoteWebDrivers. It also enables screenshotting 
+				 of WebDriver instances wrapping an other WebDriver by implementing the WrapsDriver class. This enabled screenshotting in 
+				 EventFiringWebDriver classes.
+			</action>
+			<action dev="stefan" type="add">
+				 Added a Filter option to Helper.getDifferences, so a list of differences can be generated without being bothered with
+				 the changes in style attributes for example.
+			</action>
+			<action dev="stefan" type="update">
+				 Changed Crawljax Core so a CrossBrowser tool could be developed; therefore added an call to block the CrawljaxController (waitForTermination).
+			</action>
+			<action dev="stefan" type="update">
+				 When having allot elements to examine prevent getXPathExpression get called over and over again. This was solved by caching the build
+				 of the XPath’s in the current DOM. Every node in the DOM contains the full xPath leading to it self, so preventing to calculate for 
+				 example the /HMTL/BODY part over and over again. Only calculate the part which has not yet been calculated.
+			</action>
+			<action dev="frank" type="update">
+				 Rename BrowserFactory to BrowserPool which is a more correct name.
 			</action>
 		</release>
 
