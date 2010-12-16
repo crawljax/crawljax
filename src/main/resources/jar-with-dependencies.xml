@@ -5,7 +5,7 @@
 	<fileSets>
 		<fileSet>
 			<includes>
-				<include>docs/license.txt</include>
+				<include>Apache-2.0-LICENSE.txt</include>
 				<include>docs/README.txt</include>
 			</includes>
 		</fileSet>
