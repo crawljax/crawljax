@@ -146,9 +146,9 @@
 					<exclude>*.txt</exclude>
 				</excludes>
 			</resource>
-			<resource>
-				<directory>src/main/java</directory>
-			</resource>
+			<!--
+				<resource> <directory>src/main/java</directory> </resource>
+			-->
 		</resources>
 
 		<plugins>
@@ -259,29 +259,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Create crawljax-x.y-z.zip with all dependencies -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>
-							src/main/resources/jar-with-dependencies.xml
-						</descriptor>
-					</descriptors>
-					<outputDirectory>target</outputDirectory>
-					<workDirectory>target/assembly/work</workDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 
 			<!-- Create crawljax-x.y-z-sources.jar -->
 			<plugin>
@@ -307,19 +285,20 @@
 				</executions>
 			</plugin>
 
-			<!-- Create crawljax-x.y-z-binary.jar -->
+			<!-- Create crawljax-x.y-z.zip with all the dependencies -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptors>
 						<descriptor>
-							src/main/resources/binary-jar-without-dependencies.xml
-            </descriptor>
+							src/main/resources/jar-with-dependencies.xml
+						</descriptor>
 					</descriptors>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
+					<outputDirectory>target</outputDirectory>
 				</configuration>
 				<executions>
 					<execution>
@@ -362,59 +341,6 @@
 
 		</plugins>
 	</build>
-
-	<reporting>
-		<outputDirectory>target/site</outputDirectory>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>changelog-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-changes-plugin</artifactId>
-				<configuration>
-					<issueLinkTemplate>
-						%URL%/detail?id=%ISSUE% </issueLinkTemplate>
-				</configuration>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>changes-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<configuration>
-					<instumentation>
-						<ignores>
-							<ignore>com.crawljax.examples.*</ignore>
-						</ignores>
-					</instumentation>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<configuration>
-					<configLocation>${basedir}/checkstyle.xml</configLocation>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
 
 	<scm>
 		<connection>scm:svn:http://crawljax.googlecode.com/svn/trunk</connection>
@@ -485,4 +411,8 @@
 		</profile>
 	</profiles>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
 </project>
