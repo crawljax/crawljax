@@ -551,31 +551,16 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	private Document getDomTreeWithFrames() throws CrawljaxException {
 
-		Document document;
 		try {
-			String s = "";
-			try {
-				s = browser.getPageSource();
-			} catch (WebDriverException e) {
-				if (e.getMessage().contains(
-				        "Utils.getDocument(respond.context)."
-				                + "getElementsByTagName(\\\"html\\\")[0] is undefined")) {
-					// There is no html tag... ignore!
-					// TODO Stefan find out if this error is a Webdriver bug??
-					LOGGER.info("Skiped parsing dom tree because no html content is defined");
-				} else {
-					throw e;
-				}
-			}
-			document = Helper.getDocument(s);
+			Document document = Helper.getDocument(browser.getPageSource());
 			appendFrameContent(document.getDocumentElement(), document, "");
+			return document;
 		} catch (SAXException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		} catch (IOException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
 
-		return document;
 	}
 
 	private void appendFrameContent(Element orig, Document document, String topFrame) {
