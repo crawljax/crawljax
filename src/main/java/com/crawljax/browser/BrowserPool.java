@@ -3,14 +3,6 @@
  */
 package com.crawljax.browser;
 
-import com.crawljax.core.CrawlQueueManager;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.ThreadConfigurationReader;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
-
-import org.apache.log4j.Logger;
-import org.openqa.selenium.WebDriverException;
-
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -20,9 +12,17 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.log4j.Logger;
+import org.openqa.selenium.WebDriverException;
+
+import com.crawljax.core.CrawlQueueManager;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.ThreadConfigurationReader;
+import com.crawljax.core.plugin.CrawljaxPluginsUtil;
+
 /**
  * The Pool class returns an instance of the desired browser as specified in the properties file.
- *
+ * 
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
@@ -71,7 +71,7 @@ public final class BrowserPool {
 
 	/**
 	 * Is the browser booting in use?
-	 *
+	 * 
 	 * @return true if the browser booting is in use.
 	 */
 	private boolean useBooting() {
@@ -80,7 +80,7 @@ public final class BrowserPool {
 
 	/**
 	 * Get the number of Browsers from the config.
-	 *
+	 * 
 	 * @return the number of browsers.
 	 */
 	private int getNumberOfBrowsers() {
@@ -108,7 +108,7 @@ public final class BrowserPool {
 	/**
 	 * The default constructor for the BrowserPool. It's feeded with a configurationReader to read
 	 * all the configuration settings.
-	 *
+	 * 
 	 * @param configurationReader
 	 *            the configurationReader used to read the configuration options from.
 	 */
@@ -123,7 +123,7 @@ public final class BrowserPool {
 
 	/**
 	 * Internal used to requestBrowser.
-	 *
+	 * 
 	 * @see #requestBrowser()
 	 * @return the new browser TODO Stefan; this is exposing the WebDriver API
 	 * @throws WebDriverException
@@ -170,7 +170,7 @@ public final class BrowserPool {
 
 	/**
 	 * Depended on the {@link EmbeddedBrowser.BrowserType} a new instance is made.
-	 *
+	 * 
 	 * @return the new Object holding the EmbeddedBrowser instance. TODO Stefan; this is exposing
 	 *         the WebDriver API
 	 * @throws WebDriverException
@@ -185,7 +185,7 @@ public final class BrowserPool {
 
 	/**
 	 * Close all browser windows. in a Separate Thread
-	 *
+	 * 
 	 * @return the Thread currently executing the shutdown.
 	 */
 	public synchronized Thread close() {
@@ -226,7 +226,7 @@ public final class BrowserPool {
 	/**
 	 * Return the browser, release the current browser for further operations. This method is
 	 * Synchronised to prevent problems in combination with isFinished.
-	 *
+	 * 
 	 * @param browser
 	 *            the browser which is not needed anymore
 	 */
@@ -239,7 +239,7 @@ public final class BrowserPool {
 
 	/**
 	 * Place a request for a browser.
-	 *
+	 * 
 	 * @return a new Browser instance which is currently free
 	 * @throws InterruptedException
 	 *             the InterruptedException is thrown when the AVAILABE list is interrupted.
@@ -259,7 +259,7 @@ public final class BrowserPool {
 				try {
 					browser = createBrowser();
 				} catch (WebDriverException e) {
-					//TODO Stefan; this is exposing the WebDriver API
+					// TODO Stefan; this is exposing the WebDriver API
 					LOGGER.error("Faild to create a browser!", e);
 					if (getNumberBrowserCreateRetries() > 0
 					        && retries < getNumberBrowserCreateRetries()) {
@@ -293,7 +293,7 @@ public final class BrowserPool {
 
 	/**
 	 * This call blocks until a browser comes available.
-	 *
+	 * 
 	 * @return the browser currently reserved.
 	 * @throws InterruptedException
 	 *             when available.take is Interrupted
@@ -308,7 +308,7 @@ public final class BrowserPool {
 	/**
 	 * Are all takenBrowsers free (again)? this method is Synchronised to prevent problems in
 	 * combination with freeBrowser.
-	 *
+	 * 
 	 * @return true if the taken list of Browsers is empty
 	 */
 	public synchronized boolean isFinished() {
@@ -318,7 +318,7 @@ public final class BrowserPool {
 
 	/**
 	 * This private class is used to boot all the browsers.
-	 *
+	 * 
 	 * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
 	 */
 	private class BrowserBooter extends Thread {
@@ -392,11 +392,10 @@ public final class BrowserPool {
 			if (allBrowsersLoaded() || !started.get()) {
 				return;
 			}
-			LOGGER.warn(
-			        "Waiting for all browsers to be started fully"
-			                + " before starting to close them. Created browsers "
-			                + createdBrowserCount.get() + " configed browsers "
-			                + pool.getNumberOfBrowsers());
+			LOGGER.warn("Waiting for all browsers to be started fully"
+			        + " before starting to close them. Created browsers "
+			        + createdBrowserCount.get() + " configed browsers "
+			        + pool.getNumberOfBrowsers());
 			while (!allBrowsersLoaded()) {
 				try {
 					Thread.sleep(pool.shutdownTimeout);
@@ -421,14 +420,14 @@ public final class BrowserPool {
 		 * @return true is all requested browsers are loaded or at least there was an attempt for!.
 		 */
 		private boolean allBrowsersLoaded() {
-			return (failedCreatedBrowserCount.get() + createdBrowserCount.get())
-			        >= pool.getNumberOfBrowsers();
+			return (failedCreatedBrowserCount.get() + createdBrowserCount.get()) >= pool
+			        .getNumberOfBrowsers();
 		}
 	}
 
 	/**
 	 * Returns the browser associated with this Thread.
-	 *
+	 * 
 	 * @return the browser associated with this Thread null is non is associated.
 	 */
 	public EmbeddedBrowser getCurrentBrowser() {
@@ -443,7 +442,7 @@ public final class BrowserPool {
 		try {
 			close().join();
 		} catch (InterruptedException e) {
-			LOGGER.error("The shutdown thread of the BrowserPool was Interrupted", e);
+			LOGGER.error("The shutdown thread of the BrowserPool was Interrupted");
 		}
 	}
 
@@ -451,20 +450,20 @@ public final class BrowserPool {
 	 * Remove a browser from the pool, do not release it again as it might be faulty. A
 	 * {@link RuntimeException} might be thrown when there are no more browsers left in the pool
 	 * after removing this instance stopping all processing.
-	 *
+	 * 
 	 * @param browser
 	 *            the browser instance to be remove (not null)
 	 * @param terminationHandler
 	 *            the call-back handler to call the terminate function on.
 	 */
-	public synchronized void removeBrowser(
-	        EmbeddedBrowser browser, CrawlQueueManager terminationHandler) {
+	public synchronized void removeBrowser(EmbeddedBrowser browser,
+	        CrawlQueueManager terminationHandler) {
 		assert (browser != null);
-		
+
 		// remove from pool
 		taken.remove(browser);
 		currentBrowser.remove();
-		
+
 		// check if this was the last browser standing if so throw RuntimeException
 		if (taken.size() == 0 && available.size() == 0) {
 			terminationHandler.terminate(true);
