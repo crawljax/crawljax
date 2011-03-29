@@ -1,5 +1,9 @@
 package com.crawljax.core;
 
+import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
@@ -7,14 +11,10 @@ import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
 
-import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-
 /**
  * This is the initial Crawler. An initial crawler crawls only the index page, creates the index
  * state and builds a session object and resumes the normal operations.
- *
+ * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
@@ -31,7 +31,7 @@ public class InitialCrawler extends Crawler {
 
 	/**
 	 * The default constructor.
-	 *
+	 * 
 	 * @param mother
 	 *            the controller to use.
 	 */
@@ -56,7 +56,7 @@ public class InitialCrawler extends Crawler {
 		try {
 			browser = controller.getBrowserPool().requestBrowser();
 		} catch (InterruptedException e) {
-			LOGGER.error("The request for a browser was interuped", e);
+			LOGGER.error("The request for a browser was interuped.");
 		}
 
 		goToInitialURL();
@@ -65,8 +65,8 @@ public class InitialCrawler extends Crawler {
 		 * Build the index state
 		 */
 		StateVertix indexState =
-		        new StateVertix(this.getBrowser().getCurrentUrl(), "index",
-		                this.getBrowser().getDom(), controller.getStrippedDom(this.getBrowser()));
+		        new StateVertix(this.getBrowser().getCurrentUrl(), "index", this.getBrowser()
+		                .getDom(), controller.getStrippedDom(this.getBrowser()));
 
 		/**
 		 * Build the StateFlowGraph
@@ -96,5 +96,6 @@ public class InitialCrawler extends Crawler {
 		 * The initial work is done, continue with the normal procedure!
 		 */
 		super.run();
+
 	}
 }
