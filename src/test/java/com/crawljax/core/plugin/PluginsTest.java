@@ -1,7 +1,18 @@
 package com.crawljax.core.plugin;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.Hashtable;
+import java.util.List;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.html.dom.HTMLAnchorElementImpl;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.NotRegexCondition;
@@ -18,19 +29,9 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.html.dom.HTMLAnchorElementImpl;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.io.File;
-import java.util.Hashtable;
-import java.util.List;
-
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
- *
+ * 
  * @author slenselink@google.com (Stefan Lenselink)
  */
 public class PluginsTest {
@@ -43,12 +44,14 @@ public class PluginsTest {
 
 	/**
 	 * Register the time the given plugin type is run for the first time.
-	 *
+	 * 
 	 * @param p
 	 *            the plugin type
 	 */
 	private static void registerPlugin(Class<? extends Plugin> p) {
+
 		if (pluginTimes.get(p) == null) {
+			System.out.println("Register: " + p);
 			pluginTimes.put(p, System.currentTimeMillis());
 		}
 	}
@@ -67,16 +70,16 @@ public class PluginsTest {
 	@BeforeClass
 	public static void setup() throws ConfigurationException {
 
-		CrawlSpecification spec = new CrawlSpecification(
-		        "file://" + new File("src/test/site/crawler/index.html").getAbsolutePath());
+		CrawlSpecification spec =
+		        new CrawlSpecification("file://"
+		                + new File("src/test/site/crawler/index.html").getAbsolutePath());
 
 		spec.clickDefaultElements();
 
 		/**
 		 * Add a sample Invariant for testing the OnInvariantViolation plugin
 		 */
-		spec.addInvariant(
-		        "Never contain Final state S8", new NotRegexCondition("Final state S8"));
+		spec.addInvariant("Never contain Final state S8", new NotRegexCondition("Final state S2"));
 
 		config = new CrawljaxConfiguration();
 
@@ -114,8 +117,8 @@ public class PluginsTest {
 			        StateMachine stateMachine) {
 				registerPlugin(GuidedCrawlingPlugin.class);
 				checkCrawlSession(session);
-				assertTrue("exactEventPaths is the same as the session path",
-				        session.getCurrentCrawlPath().equals(exactEventPaths));
+				assertTrue("exactEventPaths is the same as the session path", session
+				        .getCurrentCrawlPath().equals(exactEventPaths));
 			}
 		});
 
@@ -132,19 +135,6 @@ public class PluginsTest {
 		});
 
 		/**
-		 * FireEventFailed
-		 */
-		config.addPlugin(new OnFireEventFailedPlugin() {
-
-			@Override
-			public void onFireEventFailed(Eventable eventable, List<Eventable> pathToFailure) {
-				registerPlugin(OnFireEventFailedPlugin.class);
-				assertNotNull(eventable);
-				assertNotNull(pathToFailure);
-			}
-		});
-
-		/**
 		 * InvariantViolation
 		 */
 		config.addPlugin(new OnInvariantViolationPlugin() {
@@ -154,6 +144,7 @@ public class PluginsTest {
 				registerPlugin(OnInvariantViolationPlugin.class);
 				checkCrawlSession(session);
 				assertNotNull(invariant);
+
 			}
 		});
 
@@ -199,13 +190,13 @@ public class PluginsTest {
 		config.addPlugin(new PreStateCrawlingPlugin() {
 
 			@Override
-			public void preStateCrawling(
-			        CrawlSession session, List<CandidateElement> candidateElements) {
+			public void preStateCrawling(CrawlSession session,
+			        List<CandidateElement> candidateElements) {
 				registerPlugin(PreStateCrawlingPlugin.class);
 				assertNotNull(candidateElements);
 				checkCrawlSession(session);
-				assertTrue(
-				        "There are always more than 0 candidates", candidateElements.size() > 0);
+				assertTrue("There are always more than 0 candidates",
+				        candidateElements.size() > 0);
 
 				if (session.getCurrentState().getName().equals("state8")) {
 					/**
@@ -253,35 +244,35 @@ public class PluginsTest {
 
 	@Test
 	public void testPluginsExecution() throws ConfigurationException, CrawljaxException {
-		controller.run();
-		assertTrue("All plugins have run", pluginTimes.size()
-		        == new CrawljaxConfigurationReader(config).getPlugins().size());
-		assertTrue(pluginTimes.get(ProxyServerPlugin.class)
-		        < pluginTimes.get(OnBrowserCreatedPlugin.class));
-		// Can not test the relation OnBrowserCreatedPlugin vs. PreCrawlingPlugin
-		// assertTrue(pluginTimes.get(OnBrowserCreatedPlugin.class)
-		// == pluginTimes.get(PreCrawlingPlugin.class));
-		assertTrue(pluginTimes.get(PreCrawlingPlugin.class)
-		        < pluginTimes.get(OnUrlLoadPlugin.class));
-		assertTrue(
-		        pluginTimes.get(OnUrlLoadPlugin.class) < pluginTimes.get(OnNewStatePlugin.class));
-		assertTrue(pluginTimes.get(OnNewStatePlugin.class)
-		        < pluginTimes.get(PreStateCrawlingPlugin.class));
-		assertTrue(pluginTimes.get(PreStateCrawlingPlugin.class)
-		        < pluginTimes.get(GuidedCrawlingPlugin.class));
-		assertTrue(pluginTimes.get(GuidedCrawlingPlugin.class)
-		        < pluginTimes.get(OnRevisitStatePlugin.class));
-		assertTrue(pluginTimes.get(OnRevisitStatePlugin.class)
-		        < pluginTimes.get(OnInvariantViolationPlugin.class));
-		assertTrue(pluginTimes.get(OnInvariantViolationPlugin.class)
-		        < pluginTimes.get(OnFireEventFailedPlugin.class));
-		assertTrue(pluginTimes.get(OnFireEventFailedPlugin.class)
-		        < pluginTimes.get(PostCrawlingPlugin.class));
-
+		try {
+			controller.run();
+			assertEquals(new CrawljaxConfigurationReader(config).getPlugins().size(),
+			        pluginTimes.size());
+			assertTrue(pluginTimes.get(ProxyServerPlugin.class) < pluginTimes
+			        .get(OnBrowserCreatedPlugin.class));
+			// Can not test the relation OnBrowserCreatedPlugin vs. PreCrawlingPlugin
+			// assertTrue(pluginTimes.get(OnBrowserCreatedPlugin.class)
+			// == pluginTimes.get(PreCrawlingPlugin.class));
+			assertTrue(pluginTimes.get(PreCrawlingPlugin.class) < pluginTimes
+			        .get(OnUrlLoadPlugin.class));
+			assertTrue(pluginTimes.get(OnUrlLoadPlugin.class) < pluginTimes
+			        .get(OnNewStatePlugin.class));
+			assertTrue(pluginTimes.get(OnNewStatePlugin.class) < pluginTimes
+			        .get(PreStateCrawlingPlugin.class));
+			assertTrue(pluginTimes.get(PreStateCrawlingPlugin.class) < pluginTimes
+			        .get(GuidedCrawlingPlugin.class));
+			assertTrue(pluginTimes.get(GuidedCrawlingPlugin.class) < pluginTimes
+			        .get(OnRevisitStatePlugin.class));
+			assertTrue(pluginTimes.get(OnRevisitStatePlugin.class) < pluginTimes
+			        .get(OnInvariantViolationPlugin.class));
+		} finally {
+			controller.terminate(true);
+		}
 	}
 
 	@AfterClass
 	public static void cleanUp() {
 		CrawljaxPluginsUtil.loadPlugins(null);
 	}
+
 }
