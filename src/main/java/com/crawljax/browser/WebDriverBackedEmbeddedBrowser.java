@@ -18,13 +18,12 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -337,12 +336,17 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	@Override
 	public String getDom() {
+
 		try {
-			return toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
+			String dom = toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
+			LOGGER.debug(dom);
+			return dom;
 		} catch (WebDriverException e) {
 			throwIfConnectionException(e);
+			LOGGER.warn(e.getMessage(), e);
 			return "";
 		} catch (CrawljaxException e) {
+			LOGGER.warn(e.getMessage(), e);
 			return "";
 		}
 	}
@@ -444,7 +448,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			if (eventable.getRelatedFrame() != null && !eventable.getRelatedFrame().equals("")) {
 				LOGGER.debug("switching to frame: " + eventable.getRelatedFrame());
 				try {
-					browser.switchTo().frame(eventable.getRelatedFrame());
+
+					switchToFrame(eventable.getRelatedFrame());
 				} catch (NoSuchFrameException e) {
 					LOGGER.debug("Frame not found, possibily while back-tracking..", e);
 					// TODO Stefan, This exception is catched to prevent stopping from working
@@ -504,7 +509,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		try {
 			WebElement el = browser.findElement(identification.getWebDriverBy());
 			if (el != null) {
-				return ((RenderedWebElement) el).isDisplayed();
+				return el.isDisplayed();
 			}
 
 			return false;
@@ -593,8 +598,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 				LOGGER.debug("The current H: " + handle);
 
-				LOGGER.debug("switching to frame: " + frameIdentification);
-				browser.switchTo().frame(frameIdentification);
+				switchToFrame(frameIdentification);
+
 				String toAppend = browser.getPageSource();
 
 				LOGGER.debug("frame dom: " + toAppend);
@@ -620,6 +625,23 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				}
 			}
 		}
+	}
+
+	private void switchToFrame(String frameIdentification) {
+		LOGGER.debug("frame identification: " + frameIdentification);
+
+		if (frameIdentification.contains(".")) {
+			String[] frames = frameIdentification.split("\\.");
+
+			for (String frameId : frames) {
+				LOGGER.debug("switching to frame: " + frameId);
+				browser.switchTo().frame(frameId);
+			}
+
+		} else {
+			browser.switchTo().frame(frameIdentification);
+		}
+
 	}
 
 	/**
@@ -649,7 +671,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		WebElement webElement;
 		try {
 			webElement = browser.findElement(input.getIdentification().getWebDriverBy());
-			if (!((RenderedWebElement) webElement).isDisplayed()) {
+			if (!(webElement.isDisplayed())) {
+
 				return null;
 			}
 		} catch (WebDriverException e) {
@@ -696,8 +719,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	@Override
 	public String getFrameDom(String iframeIdentification) {
 		try {
-			LOGGER.debug("switching to frame: " + iframeIdentification);
-			browser.switchTo().frame(iframeIdentification);
+
+			switchToFrame(iframeIdentification);
 
 			// make a copy of the dom before changing into the top page
 			String frameDom = browser.getPageSource();
