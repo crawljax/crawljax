@@ -1,5 +1,9 @@
 package com.crawljax.core;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.exception.BrowserConnectionException;
@@ -15,10 +19,6 @@ import com.crawljax.core.state.StateVertix;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
-
-import org.apache.log4j.Logger;
-
-import java.util.List;
 
 /**
  * Class that performs crawl actions. It is designed to be run inside a Thread.
@@ -193,8 +193,9 @@ public class Crawler implements Runnable {
 			if (newXPath != null && !xpath.equals(newXPath)) {
 				LOGGER.info("XPath changed from " + xpath + " to " + newXPath + " relatedFrame:"
 				        + eventable.getRelatedFrame());
-				eventable = new Eventable(
-				        new Identification(Identification.How.xpath, newXPath), eventType);
+				eventable =
+				        new Eventable(new Identification(Identification.How.xpath, newXPath),
+				                eventType);
 			}
 		}
 
@@ -216,8 +217,8 @@ public class Crawler implements Runnable {
 			 * Execute the OnFireEventFailedPlugins with the current crawlPath with the crawlPath
 			 * removed 1 state to represent the path TO here.
 			 */
-			CrawljaxPluginsUtil.runOnFireEventFailedPlugins(
-			        eventable, controller.getSession().getCurrentCrawlPath().immutableCopy(true));
+			CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable, controller.getSession()
+			        .getCurrentCrawlPath().immutableCopy(true));
 			return false; // no event fired
 		}
 	}
@@ -243,7 +244,7 @@ public class Crawler implements Runnable {
 
 	/**
 	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             if the {@link Eventable#getTargetStateVertix()} encounters an error.
 	 */
@@ -306,7 +307,6 @@ public class Crawler implements Runnable {
 			        new StateVertix(getBrowser().getCurrentUrl(), controller.getSession()
 			                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
 			                this.controller.getStrippedDom(getBrowser()));
-
 			if (isDomChanged(this.getStateMachine().getCurrentState(), newState)) {
 				// Dom is changed, so data might need be filled in again
 				controller.getSession().addEventableToCrawlPath(eventable);
@@ -369,8 +369,8 @@ public class Crawler implements Runnable {
 				this.crawlQueueManager.addWorkToQueue(c);
 			}
 			c =
-			        new Crawler(this.controller,
-			                controller.getSession().getCurrentCrawlPath().immutableCopy(true));
+			        new Crawler(this.controller, controller.getSession().getCurrentCrawlPath()
+			                .immutableCopy(true));
 		} while (state.registerCrawler(c));
 	}
 
@@ -490,7 +490,7 @@ public class Crawler implements Runnable {
 	 * Initialize the Crawler, retrieve a Browser and go to the initial URL when no browser was
 	 * present. rewind the state machine and goBack to the state if there is exactEventPath is
 	 * specified.
-	 *
+	 * 
 	 * @throws InterruptedException
 	 *             when the request for a browser is interrupted.
 	 */
@@ -589,12 +589,12 @@ public class Crawler implements Runnable {
 			// The connection of the browser has gone down, most of the times it means that the
 			// browser process has crashed.
 			LOGGER.error("Crawler failed because the used browser died during Crawling",
-			        new CrawlPathToException("Crawler failed due to browser crash",
-			                controller.getSession().getCurrentCrawlPath(), e));
+			        new CrawlPathToException("Crawler failed due to browser crash", controller
+			                .getSession().getCurrentCrawlPath(), e));
 			// removeBrowser will throw a RuntimeException if the current browser is the last
 			// browser in the pool.
-			this.controller.getBrowserPool().removeBrowser(
-			        this.getBrowser(), this.controller.getCrawlQueueManager());
+			this.controller.getBrowserPool().removeBrowser(this.getBrowser(),
+			        this.controller.getCrawlQueueManager());
 			return;
 		} catch (CrawljaxException e) {
 			LOGGER.error("Crawl failed!", e);
