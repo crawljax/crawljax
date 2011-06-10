@@ -35,14 +35,20 @@ public class LargeFirefoxTest extends LargeTestSuper {
 		        + new File(INDEX).getAbsolutePath(), waitAfterEvent, waitAfterReload));
 		addPlugins(crawljaxConfiguration);
 		crawljaxConfiguration.setBrowser(browser);
+		CrawljaxController crawljax = null;
 		try {
-			new CrawljaxController(crawljaxConfiguration).run();
+			crawljax = new CrawljaxController(crawljaxConfiguration);
+			crawljax.run();
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		} catch (CrawljaxException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
+		} finally {
+			if (crawljax != null) {
+				crawljax.terminate(true);
+			}
 		}
 	}
 }
