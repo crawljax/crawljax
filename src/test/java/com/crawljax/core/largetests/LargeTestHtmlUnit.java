@@ -16,8 +16,8 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 
 public class LargeTestHtmlUnit extends LargeTestSuper {
 
-	private static final int waitAfterEvent = 100;
-	private static final int waitAfterReload = 100;
+	private static final int waitAfterEvent = 400;
+	private static final int waitAfterReload = 400;
 	private static final String INDEX = "http://spci.st.ewi.tudelft.nl/demo/testsite/";
 
 	/**
