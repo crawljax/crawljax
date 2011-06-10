@@ -38,6 +38,8 @@ public class PopUpTest {
 		} catch (CrawljaxException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
+		} finally {
+			crawljax.terminate(true);
 		}
 	}
 

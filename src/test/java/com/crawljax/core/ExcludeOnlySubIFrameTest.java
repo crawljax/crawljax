@@ -28,16 +28,18 @@ public class ExcludeOnlySubIFrameTest extends IFrameSuper {
 	public void testIFramesNotCrawled() {
 		try {
 			crawljax.run();
-			assertEquals("Clickables", 13,
-			        crawljax.getSession().getStateFlowGraph().getAllEdges().size());
-			assertEquals("States", 12,
-			        crawljax.getSession().getStateFlowGraph().getAllStates().size());
+			assertEquals("Clickables", 12, crawljax.getSession().getStateFlowGraph()
+			        .getAllEdges().size());
+			assertEquals("States", 12, crawljax.getSession().getStateFlowGraph().getAllStates()
+			        .size());
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		} catch (CrawljaxException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
+		} finally {
+			crawljax.terminate(true);
 		}
 	}
 }

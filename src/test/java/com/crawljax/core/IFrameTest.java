@@ -17,16 +17,18 @@ public class IFrameTest extends IFrameSuper {
 	public void testIFrameCrawlable() {
 		try {
 			crawljax.run();
-			assertEquals("Clickables", 14,
-			        crawljax.getSession().getStateFlowGraph().getAllEdges().size());
-			assertEquals("States", 13,
-			        crawljax.getSession().getStateFlowGraph().getAllStates().size());
+			assertEquals("Clickables", 13, crawljax.getSession().getStateFlowGraph()
+			        .getAllEdges().size());
+			assertEquals("States", 13, crawljax.getSession().getStateFlowGraph().getAllStates()
+			        .size());
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		} catch (CrawljaxException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
+		} finally {
+			crawljax.terminate(true);
 		}
 	}
 }
