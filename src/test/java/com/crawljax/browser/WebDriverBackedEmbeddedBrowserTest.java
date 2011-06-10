@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.util.Helper;
+import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -13,8 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.IOException;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.util.Helper;
 
 public class WebDriverBackedEmbeddedBrowserTest {
 
@@ -28,14 +28,14 @@ public class WebDriverBackedEmbeddedBrowserTest {
 		Document doc;
 		try {
 			driver.goToUrl("file://" + index.getAbsolutePath());
-			System.out.println("DOM with frames: " + driver.getDom());
+
 			doc = Helper.getDocument(driver.getDom());
 			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
-			assertEquals(5, frameNodes.getLength());
+			assertEquals(4, frameNodes.getLength());
 
 			doc = Helper.getDocument(driver.getDomWithoutIframeContent());
 			frameNodes = doc.getElementsByTagName("IFRAME");
-			assertEquals(3, frameNodes.getLength());
+			assertEquals(2, frameNodes.getLength());
 
 		} catch (SAXException e) {
 			e.printStackTrace();
@@ -45,7 +45,9 @@ public class WebDriverBackedEmbeddedBrowserTest {
 			fail(e.getMessage());
 		}
 
-		driver.close();
+		finally {
+			driver.close();
+		}
 
 	}
 
