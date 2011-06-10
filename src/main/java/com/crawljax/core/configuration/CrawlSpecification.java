@@ -55,7 +55,7 @@ public class CrawlSpecification {
 
 	private List<EventType> crawlEvents = new ArrayList<EventType>();
 
-	private int depth = 0;
+	private int depth = 2;
 	private int maximumStates = 0;
 	private int maximumRuntime = DEFAULT_MAXIMUMRUNTIME; // in seconds
 	private int waitTimeAfterReloadUrl = DEFAULT_WAITTIMEAFTERRELOADURL; // in milliseconds
@@ -98,7 +98,7 @@ public class CrawlSpecification {
 	/**
 	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
 	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}.
-	 *
+	 * 
 	 * @param tagName
 	 *            the tag name of the elements to be included
 	 * @return this CrawlElement
@@ -112,7 +112,7 @@ public class CrawlSpecification {
 	 * click and dontClick sets, then the element will not be clicked. For example: 1) <a
 	 * href="#">Some text</a> 2) <a class="foo" .../> 3) <div class="foo" .../> click("a")
 	 * dontClick("a").withAttribute("class", "foo"); Will include only include HTML element 2
-	 *
+	 * 
 	 * @param tagName
 	 *            the tag name of the elements to be excluded
 	 * @return this CrawlElement
@@ -125,7 +125,7 @@ public class CrawlSpecification {
 	 * Crawljax will the HTML elements while crawling if and only if all the specified conditions
 	 * are satisfied. IMPORTANT: only works with click()!!! For example:
 	 * when(onContactPageCondition) will only click the HTML element if it is on the contact page
-	 *
+	 * 
 	 * @param conditions
 	 *            the condition to be met.
 	 * @return this CrawlActions
@@ -150,7 +150,7 @@ public class CrawlSpecification {
 
 	/**
 	 * Sets the maximum crawl depth. 1 is one click, 2 is two clicks deep, ...
-	 *
+	 * 
 	 * @param crawlDepth
 	 *            the maximum crawl depth. 0 to ignore
 	 */
@@ -168,7 +168,7 @@ public class CrawlSpecification {
 	/**
 	 * Sets the maximum number of states. Crawljax will stop crawling when this maximum number of
 	 * states are found
-	 *
+	 * 
 	 * @param crawlMaximumStates
 	 *            the maximum number of states. 0 specifies no bound for the number of crawl states.
 	 */
@@ -186,7 +186,7 @@ public class CrawlSpecification {
 	/**
 	 * Sets the maximum time for Crawljax to run. Crawljax will stop crawling when this timelimit is
 	 * reached.
-	 *
+	 * 
 	 * @param seconds
 	 *            the crawlMaximumRuntime to set
 	 */
@@ -277,7 +277,7 @@ public class CrawlSpecification {
 
 	/**
 	 * Adds the Oracle Comparator to the list of comparators.
-	 *
+	 * 
 	 * @param id
 	 *            a name for the Oracle Comparator.
 	 * @param oracleComparator
@@ -289,7 +289,7 @@ public class CrawlSpecification {
 
 	/**
 	 * Adds an Oracle Comparator with preconditions to the list of comparators.
-	 *
+	 * 
 	 * @param id
 	 *            a name for the Oracle Comparator
 	 * @param oracleComparator
@@ -297,8 +297,8 @@ public class CrawlSpecification {
 	 * @param preConditions
 	 *            the preconditions to be met.
 	 */
-	public void addOracleComparator(
-	        String id, Comparator oracleComparator, Condition... preConditions) {
+	public void addOracleComparator(String id, Comparator oracleComparator,
+	        Condition... preConditions) {
 		this.oracleComparators.add(new OracleComparator(id, oracleComparator, preConditions));
 	}
 
@@ -327,8 +327,7 @@ public class CrawlSpecification {
 	 * @param preConditions
 	 *            the precondition.
 	 */
-	public void addInvariant(
-	        String description, Condition condition, Condition... preConditions) {
+	public void addInvariant(String description, Condition condition, Condition... preConditions) {
 		this.invariants.add(new Invariant(description, condition, preConditions));
 	}
 
@@ -403,8 +402,8 @@ public class CrawlSpecification {
 	 * @param preConditions
 	 *            the preConditions
 	 */
-	public void addCrawlCondition(
-	        String description, Condition crawlCondition, Condition... preConditions) {
+	public void addCrawlCondition(String description, Condition crawlCondition,
+	        Condition... preConditions) {
 		this.crawlConditions.add(new CrawlCondition(description, crawlCondition, preConditions));
 	}
 
