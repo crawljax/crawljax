@@ -326,7 +326,7 @@
 					</archive>
 					<outputDirectory>target</outputDirectory>
 				</configuration>
-				<executions>
+				<!-- <executions>
 					<execution>
 						<id>make-assembly</id>
 						<phase>package</phase>
@@ -334,7 +334,7 @@
 							<goal>attached</goal>
 						</goals>
 					</execution>
-				</executions>
+				</executions>  -->
 			</plugin>
 
 			<plugin>
@@ -445,7 +445,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<selenium.version>2.0rc2</selenium.version>
+		<selenium.version>2.2.0</selenium.version>
 	</properties>
 
 </project>
