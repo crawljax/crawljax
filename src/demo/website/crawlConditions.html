@@ -14,7 +14,7 @@ addCrawlCondition(String description, Condition crawlCondition, Condition... pre
 <p>Crawljax should onlyl crawl pages with the text foo in the URL.</p>
 <pre>
 CrawlSpecification crawler = new CrawlSpecification(URL);
-...
+...  
 UrlCondition onlyFooDomain = new UrlCondition("foo"));
 crawler.addCrawlCondition("Only crawl foo site", onlyFooDomain);
 </pre>
@@ -29,4 +29,3 @@ crawler.addCrawlCondition("No spans with foo as class", noFooClass);
 </pre>
 
 <p>This page contains a <span class="foo">foo</span> and should therefore not be crawled by Crawljax. <a href="#" onclick="addError('Should not crawl this page');">Thus think link should not be clicked by Crawljax</a></p>
-
