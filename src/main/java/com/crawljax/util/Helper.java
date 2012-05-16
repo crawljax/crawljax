@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -76,7 +77,15 @@ public final class Helper {
 	 * @return the base path with file stipped
 	 */
 	private static String getBasePath(URL url) {
-		return url.getPath().replaceAll(url.getFile(), "");
+		String file = url.getFile().replaceAll("\\*", "");
+
+		try {
+			return url.getPath().replaceAll(file, "");
+		} catch (PatternSyntaxException pe) {
+			LOGGER.error(pe.getMessage());
+			return "";
+		}
+
 	}
 
 	/**
