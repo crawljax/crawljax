@@ -25,7 +25,9 @@ public class LargeTestChrome extends LargeTestSuper {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() {
-
+		// TODO
+		// System.setProperty("webdriver.chrome.driver",
+		// "//Applications//Google Chrome.app//Contents//MacOS//Google Chrome");
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification(INDEX, waitAfterEvent,
 		        waitAfterReload));
@@ -42,5 +44,4 @@ public class LargeTestChrome extends LargeTestSuper {
 		}
 
 	}
-
 }
