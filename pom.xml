@@ -466,7 +466,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<selenium.version>2.21.0</selenium.version>
+		<selenium.version>2.24.1</selenium.version>
 	</properties>
 
 </project>
