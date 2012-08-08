@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
@@ -70,9 +68,9 @@ public class PluginsTest {
 	@BeforeClass
 	public static void setup() throws ConfigurationException {
 
+		System.out.println("Setup");
 		CrawlSpecification spec =
-		        new CrawlSpecification("file://"
-		                + new File("src/test/site/crawler/index.html").getAbsolutePath());
+		        new CrawlSpecification("http://spci.st.ewi.tudelft.nl/demo/crawler/");
 
 		spec.clickDefaultElements();
 
@@ -86,7 +84,7 @@ public class PluginsTest {
 		/**
 		 * Add a empty proxy from running the ProxyConfigurationPlugin
 		 */
-		config.setProxyConfiguration(new ProxyConfiguration());
+		// config.setProxyConfiguration(new ProxyConfiguration());
 
 		config.setCrawlSpecification(spec);
 
@@ -215,18 +213,6 @@ public class PluginsTest {
 		});
 
 		/**
-		 * ProxyServer
-		 */
-		config.addPlugin(new ProxyServerPlugin() {
-
-			@Override
-			public void proxyServer(ProxyConfiguration config) {
-				registerPlugin(ProxyServerPlugin.class);
-				assertNotNull(config);
-			}
-		});
-
-		/**
 		 * RevisitState
 		 */
 		config.addPlugin(new OnRevisitStatePlugin() {
@@ -245,11 +231,11 @@ public class PluginsTest {
 	@Test
 	public void testPluginsExecution() throws ConfigurationException, CrawljaxException {
 		try {
+
 			controller.run();
 			assertEquals(new CrawljaxConfigurationReader(config).getPlugins().size(),
 			        pluginTimes.size());
-			assertTrue(pluginTimes.get(ProxyServerPlugin.class) < pluginTimes
-			        .get(OnBrowserCreatedPlugin.class));
+
 			// Can not test the relation OnBrowserCreatedPlugin vs. PreCrawlingPlugin
 			// assertTrue(pluginTimes.get(OnBrowserCreatedPlugin.class)
 			// == pluginTimes.get(PreCrawlingPlugin.class));
