@@ -14,7 +14,61 @@
 		application.
 	</description>
 	<url>http://www.crawljax.com</url>
+
+	<prerequisites>
+		<maven>3.0.3</maven>
+	</prerequisites>
+
 	<inceptionYear>2007</inceptionYear>
+
+	<properties>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<selenium.version>2.26.0</selenium.version>
+	</properties>
+
+	<scm>
+		<connection>scm:git:git@github.com:crawljax/crawljax.git</connection>
+		<developerConnection>scm:git:git@github.com:crawljax/crawljax.git</developerConnection>
+		<url>https://github.com/crawljax/crawljax</url>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>docs/license.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/crawljax/crawljax/issues</url>
+	</issueManagement>
+
+	<distributionManagement>
+		<repository>
+			<id>crawljaxRepo</id>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<id>crawljaxSnapshotRepo</id>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<mailingLists>
+		<mailingList>
+			<name>Crawljax Mailing List</name>
+			<subscribe>http://groups.google.com/group/crawljax/subscribe</subscribe>
+			<unsubscribe>crawljax+unsubscribe@googlegroups.com</unsubscribe>
+			<post>crawljax@googlegroups.com</post>
+			<archive>http://groups.google.com/group/crawljax</archive>
+		</mailingList>
+	</mailingLists>
 
 	<developers>
 		<developer>
@@ -60,37 +114,37 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
+			<version>4.11</version>
 		</dependency>
 
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
+			<version>1.2.17</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
+			<version>2.6</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
-			<version>1.5</version>
+			<version>1.7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-math</groupId>
 			<artifactId>commons-math</artifactId>
-			<version>1.1</version>
+			<version>1.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>1.4</version>
+			<version>2.4</version>
 		</dependency>
 
 		<dependency>
@@ -108,7 +162,7 @@
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
-			<version>1.9.14</version>
+			<version>1.9.17</version>
 		</dependency>
 
 		<dependency>
@@ -156,22 +210,22 @@
 			<artifactId>selenium-support</artifactId>
 			<version>${selenium.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-iphone-driver</artifactId>
 			<version>${selenium.version}</version>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-remote-driver</artifactId>
 			<version>${selenium.version}</version>
 		</dependency>
-				
-		
-		
+
+
+
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-android-driver</artifactId>
@@ -181,13 +235,6 @@
 	</dependencies>
 
 	<build>
-		<directory>target</directory>
-		<outputDirectory>target/classes</outputDirectory>
-		<finalName>${artifactId}-${version}</finalName>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -199,34 +246,10 @@
 		</resources>
 
 		<plugins>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-
-					<testExcludes>
-						<exclude>**/tryout/*</exclude>
-						<exclude>**/generated/*</exclude>
-					</testExcludes>
-
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<useProjectReferences>false</useProjectReferences>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.8</version>
 				<executions>
 					<execution>
 						<id>announcement-generate</id>
@@ -241,6 +264,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.2</version>
 				<configuration>
 					<instrumentation>
 						<excludes>
@@ -264,7 +288,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>2.5</version>
+				<version>2.7.1</version>
 				<configuration>
 					<sourceEncoding>utf-8</sourceEncoding>
 					<minimumTokens>100</minimumTokens>
@@ -275,19 +299,12 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.0</version>
-				<configuration>
-					<tagBase>https://crawljax.googlecode.com/svn/tags</tagBase>
-				</configuration>
-			</plugin>
 
 			<!-- Creates the main craljax-x.y-z.jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -312,7 +329,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>2.2</version>
 				<configuration>
 					<excludes>
 						<exclude>announcements/**</exclude>
@@ -347,21 +364,14 @@
 					</archive>
 					<outputDirectory>target</outputDirectory>
 				</configuration>
-				<!-- <executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-					</execution>
-				</executions>  -->
+				<!-- <executions> <execution> <id>make-assembly</id> <phase>package</phase> 
+					<goals> <goal>attached</goal> </goals> </execution> </executions> -->
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
+				<version>2.8.1</version>
 				<configuration>
 					<show>private</show>
 					<nohelp>false</nohelp>
@@ -380,7 +390,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.5</version>
+				<version>2.9.1</version>
 				<configuration>
 					<configLocation>${basedir}/checkstyle.xml</configLocation>
 				</configuration>
@@ -389,51 +399,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12.4</version>
 			</plugin>
 
 
 		</plugins>
 	</build>
 
-	<scm>
-		<connection>scm:svn:http://crawljax.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn:https://crawljax.googlecode.com/svn/trunk</developerConnection>
-		<url>http://crawljax.googlecode.com/svn/trunk</url>
-	</scm>
 
-	<licenses>
-		<license>
-			<name>Apache 2</name>
-			<url>docs/license.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
-	<issueManagement>
-		<system>Google Code</system>
-		<url>https://code.google.com/p/crawljax/issues/list</url>
-	</issueManagement>
-
-	<distributionManagement>
-		<repository>
-			<id>crawljaxRepo</id>
-			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<snapshotRepository>
-			<id>crawljaxSnapshotRepo</id>
-			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
-	<mailingLists>
-		<mailingList>
-			<name>Crawljax Mailing List</name>
-			<subscribe>http://groups.google.com/group/crawljax/subscribe</subscribe>
-			<unsubscribe>crawljax+unsubscribe@googlegroups.com</unsubscribe>
-			<post>crawljax@googlegroups.com</post>
-			<archive>http://groups.google.com/group/crawljax</archive>
-		</mailingList>
-	</mailingLists>
 
 	<profiles>
 		<profile>
@@ -464,9 +437,5 @@
 		</profile>
 	</profiles>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<selenium.version>2.26.0</selenium.version>
-	</properties>
 
 </project>
