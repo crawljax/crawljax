@@ -16,6 +16,11 @@
 	<url>http://www.crawljax.com</url>
 	<inceptionYear>2007</inceptionYear>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<selenium.version>2.27.0</selenium.version>
+	</properties>
+
 	<developers>
 		<developer>
 			<id>amesbah</id>
@@ -130,52 +135,52 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-firefox-driver</artifactId>
-			<version>${selenium.version}</version>
+			<version>[${selenium.version},)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-chrome-driver</artifactId>
-			<version>${selenium.version}</version>
+			<version>[${selenium.version},)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-htmlunit-driver</artifactId>
-			<version>${selenium.version}</version>
+			<version>[${selenium.version},)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-ie-driver</artifactId>
-			<version>${selenium.version}</version>
+			<version>[${selenium.version},)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-support</artifactId>
-			<version>${selenium.version}</version>
+			<version>[${selenium.version},)</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-iphone-driver</artifactId>
-			<version>${selenium.version}</version>
+			<version>[${selenium.version},)</version>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-remote-driver</artifactId>
-			<version>${selenium.version}</version>
+			<version>[${selenium.version},)</version>
 		</dependency>
-				
-		
-		
+
+
+
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-android-driver</artifactId>
-			<version>${selenium.version}</version>
+			<version>[${selenium.version},)</version>
 		</dependency>
 
 	</dependencies>
@@ -347,15 +352,8 @@
 					</archive>
 					<outputDirectory>target</outputDirectory>
 				</configuration>
-				<!-- <executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-					</execution>
-				</executions>  -->
+				<!-- <executions> <execution> <id>make-assembly</id> <phase>package</phase> 
+					<goals> <goal>attached</goal> </goals> </execution> </executions> -->
 			</plugin>
 
 			<plugin>
@@ -464,9 +462,6 @@
 		</profile>
 	</profiles>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<selenium.version>2.26.0</selenium.version>
-	</properties>
+
 
 </project>
