@@ -402,14 +402,14 @@
 	<licenses>
 		<license>
 			<name>Apache 2</name>
-			<url>docs/license.txt</url>
+			<url>LICENSE</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
 
 	<issueManagement>
-		<system>Google Code</system>
-		<url>https://code.google.com/p/crawljax/issues/list</url>
+		<system>GitHub</system>
+		<url>https://github.com/crawljax/crawljax/issues</url>
 	</issueManagement>
 
 	<distributionManagement>
