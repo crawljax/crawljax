@@ -10,6 +10,12 @@ You can contact the Crawljax team by [joining the mailinglist](http://groups.goo
 
 You can find the [getting started guide](https://github.com/crawljax/crawljax/wiki/Getting-started) in our [project wiki](https://github.com/crawljax/crawljax/wiki/).
 
+
+License
+-------
+
+This project is licensed under the ["Apache License, Version 2.0"](https://github.com/crawljax/crawljax/blob/master/LICENSE).
+
 Maven
 -----
 To include Crawljax in you project, you can declare it as a Maven dependency.
