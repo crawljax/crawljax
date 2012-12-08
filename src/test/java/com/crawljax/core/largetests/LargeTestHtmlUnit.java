@@ -1,7 +1,5 @@
 package com.crawljax.core.largetests;
 
-import static org.junit.Assert.fail;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -22,12 +20,14 @@ public class LargeTestHtmlUnit extends LargeTestSuper {
 
 	/**
 	 * Runs crawljax.
+	 * @throws CrawljaxException 
+	 * @throws ConfigurationException 
 	 * 
 	 * @throws java.lang.Exception
 	 *             when error while crawling
 	 */
 	@BeforeClass
-	public static void setUpBeforeClass() {
+	public static void setUpBeforeClass() throws ConfigurationException, CrawljaxException {
 
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification(INDEX, waitAfterEvent,
@@ -41,15 +41,7 @@ public class LargeTestHtmlUnit extends LargeTestSuper {
 			}
 		});
 
-		try {
 			new CrawljaxController(crawljaxConfiguration).run();
-		} catch (ConfigurationException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
 
 	}
 

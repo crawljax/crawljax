@@ -3,7 +3,7 @@
 package com.crawljax.browser;
 
 import static org.junit.Assert.fail;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.After;
 import org.junit.Before;

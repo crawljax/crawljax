@@ -3,7 +3,7 @@ package com.crawljax.core.plugin;
 import java.io.File;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;
@@ -35,7 +35,7 @@ public class OnFireEventFailedPluginTest {
 
 		CrawlSpecification spec =
 		        new CrawlSpecification("file://"
-		                + new File("src/test/site/crawler/index.html").getAbsolutePath());
+		                + new File("src/test/resources/site/crawler/index.html").getAbsolutePath());
 		spec.clickDefaultElements();
 
 		config = new CrawljaxConfiguration();

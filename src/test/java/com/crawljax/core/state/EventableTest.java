@@ -8,23 +8,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.Helper;
 
-/**
- * @author mesbah
- * @version $Id$
- */
 public class EventableTest {
 
 	@Test
@@ -83,33 +80,29 @@ public class EventableTest {
 	}
 
 	@Test
-	public void testClickableElement() {
+	public void testClickableElement() throws SAXException, IOException {
 		String html =
 		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
 		                + "<a id='thea'>test</a></span></div></body>";
 
-		try {
-			Document dom = Helper.getDocument(html);
-			assertNotNull(dom);
+		Document dom = Helper.getDocument(html);
+		assertNotNull(dom);
 
-			Element element = dom.getElementById("firstdiv");
+		Element element = dom.getElementById("firstdiv");
 
-			Eventable clickable = new Eventable(element, EventType.click);
-			assertNotNull(clickable);
+		Eventable clickable = new Eventable(element, EventType.click);
+		assertNotNull(clickable);
 
-			/*
-			 * String infoexpected = "DIV: id=firstdiv, xpath /HTML[1]/BODY[1]/DIV[1] onclick";
-			 */
-			String infoexpected = "DIV: id=\"firstdiv\" click xpath " + "/HTML[1]/BODY[1]/DIV[1]";
-			System.out.println(clickable);
-			assertEquals(infoexpected, clickable.toString());
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
+		/*
+		 * String infoexpected = "DIV: id=firstdiv, xpath /HTML[1]/BODY[1]/DIV[1] onclick";
+		 */
+		String infoexpected = "DIV: id=\"firstdiv\" click xpath " + "/HTML[1]/BODY[1]/DIV[1]";
+		System.out.println(clickable);
+		assertEquals(infoexpected, clickable.toString());
 	}
 
 	@Test
-	public void testEdge() {
+	public void testEdge() throws CrawljaxException {
 
 		StateVertix s1 = new StateVertix("stateSource", "dom1");
 		StateVertix s2 = new StateVertix("stateTarget", "dom2");
@@ -120,13 +113,8 @@ public class EventableTest {
 		Eventable e = new Eventable();
 
 		sfg.addEdge(s1, s2, e);
-		try {
-			assertEquals(s1, e.getSourceStateVertix());
-			assertEquals(s2, e.getTargetStateVertix());
-		} catch (CrawljaxException e1) {
-			e1.printStackTrace();
-			fail(e1.getMessage());
-		}
+		assertEquals(s1, e.getSourceStateVertix());
+		assertEquals(s2, e.getTargetStateVertix());
 
 	}
 

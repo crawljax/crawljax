@@ -3,7 +3,7 @@ package com.crawljax.condition.browserwaiter;
 import com.crawljax.browser.DummyBrowser;
 import com.crawljax.browser.EmbeddedBrowser;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

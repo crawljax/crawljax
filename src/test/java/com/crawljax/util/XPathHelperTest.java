@@ -5,10 +5,12 @@ package com.crawljax.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Test class for the XPathHelper class.
@@ -19,34 +21,33 @@ import org.w3c.dom.Document;
 public class XPathHelperTest {
 	/**
 	 * Check if XPath building works correctly.
+	 * 
+	 * @throws IOException
+	 * @throws SAXException
 	 */
 	@Test
-	public void testGetXpathExpression() {
+	public void testGetXpathExpression() throws SAXException, IOException {
 		final String html =
 		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
 		                + "<a id='thea'>test</a></span></div></body>";
 
-		try {
-			Document dom = Helper.getDocument(html);
-			assertNotNull(dom);
+		Document dom = Helper.getDocument(html);
+		assertNotNull(dom);
 
-			// first div
-			String expectedXpath = "/HTML[1]/BODY[1]/DIV[1]";
-			String xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("firstdiv"));
-			assertEquals(expectedXpath, xpathExpr);
+		// first div
+		String expectedXpath = "/HTML[1]/BODY[1]/DIV[1]";
+		String xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("firstdiv"));
+		assertEquals(expectedXpath, xpathExpr);
 
-			// span
-			expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]";
-			xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("thespan"));
-			assertEquals(expectedXpath, xpathExpr);
+		// span
+		expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]";
+		xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("thespan"));
+		assertEquals(expectedXpath, xpathExpr);
 
-			// a
-			expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]/A[1]";
-			xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("thea"));
-			assertEquals(expectedXpath, xpathExpr);
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
+		// a
+		expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]/A[1]";
+		xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("thea"));
+		assertEquals(expectedXpath, xpathExpr);
 	}
 
 	@Test
