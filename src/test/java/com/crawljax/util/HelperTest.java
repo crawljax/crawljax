@@ -96,46 +96,46 @@ public class HelperTest {
 		        "http://crawljax.com/about"));
 		// This is done intentional to capture miss formed urls as local so crawljax will process
 		// them
-		assertFalse("Missformed link is not external", Helper.isLinkExternal(
-		        "http://crawljax.com", "http"));
+		assertFalse("Missformed link is not external",
+		        Helper.isLinkExternal("http://crawljax.com", "http"));
 
-		assertFalse("link and base are the same (http)", Helper.isLinkExternal(
-		        "http://crawljax.com", "http://crawljax.com"));
+		assertFalse("link and base are the same (http)",
+		        Helper.isLinkExternal("http://crawljax.com", "http://crawljax.com"));
 
-		assertFalse("link and base are the same (https)", Helper.isLinkExternal(
-		        "https://crawljax.com", "https://crawljax.com"));
+		assertFalse("link and base are the same (https)",
+		        Helper.isLinkExternal("https://crawljax.com", "https://crawljax.com"));
 
-		assertFalse("link and base are the same (file)", Helper.isLinkExternal(
-		        "file:///tmp/index.html", "file:///tmp/index.html"));
+		assertFalse("link and base are the same (file)",
+		        Helper.isLinkExternal("file:///tmp/index.html", "file:///tmp/index.html"));
 
-		assertFalse("Sub dir is not external for file", Helper.isLinkExternal(
-		        "file:///tmp/index.html", "file:///tmp/subdir/index.html"));
+		assertFalse("Sub dir is not external for file",
+		        Helper.isLinkExternal("file:///tmp/index.html", "file:///tmp/subdir/index.html"));
 
 		assertFalse("Sub dirs is not external for http", Helper.isLinkExternal(
 		        "http://crawljax.com", "http://crawljax.com/sub/dir/about.html"));
 
-		assertFalse("Https link from http base is not external", Helper.isLinkExternal(
-		        "http://crawljax.com", "https://crawljax.com/about.html"));
-		assertFalse("Https link from https base is not external", Helper.isLinkExternal(
-		        "https://crawljax.com", "https://crawljax.com/about.html"));
-		assertFalse("Http link from https base is not external", Helper.isLinkExternal(
-		        "https://crawljax.com", "http://crawljax.com/about.html"));
+		assertFalse("Https link from http base is not external",
+		        Helper.isLinkExternal("http://crawljax.com", "https://crawljax.com/about.html"));
+		assertFalse("Https link from https base is not external",
+		        Helper.isLinkExternal("https://crawljax.com", "https://crawljax.com/about.html"));
+		assertFalse("Http link from https base is not external",
+		        Helper.isLinkExternal("https://crawljax.com", "http://crawljax.com/about.html"));
 
-		assertFalse("relative link from https base is not external", Helper.isLinkExternal(
-		        "https://crawljax.com", "about.html"));
-		assertFalse("relative link from http base is not external", Helper.isLinkExternal(
-		        "http://crawljax.com", "about.html"));
+		assertFalse("relative link from https base is not external",
+		        Helper.isLinkExternal("https://crawljax.com", "about.html"));
+		assertFalse("relative link from http base is not external",
+		        Helper.isLinkExternal("http://crawljax.com", "about.html"));
 
-		assertFalse("root link from http base is not external", Helper.isLinkExternal(
-		        "http://crawljax.com", "/about.html"));
-		assertFalse("root link from https base is not external", Helper.isLinkExternal(
-		        "https://crawljax.com", "/about.html"));
+		assertFalse("root link from http base is not external",
+		        Helper.isLinkExternal("http://crawljax.com", "/about.html"));
+		assertFalse("root link from https base is not external",
+		        Helper.isLinkExternal("https://crawljax.com", "/about.html"));
 
-		assertFalse("relative link from file base is not external", Helper.isLinkExternal(
-		        "file:///tmp/index.html", "about.html"));
+		assertFalse("relative link from file base is not external",
+		        Helper.isLinkExternal("file:///tmp/index.html", "about.html"));
 
-		assertTrue("root link from file base is external", Helper.isLinkExternal(
-		        "file://tmp/index.html", "/about.html"));
+		assertTrue("root link from file base is external",
+		        Helper.isLinkExternal("file://tmp/index.html", "/about.html"));
 	}
 
 	@Test
@@ -151,8 +151,8 @@ public class HelperTest {
 			dom =
 			        Helper.getDocumentNoBalance("<html><body><div class=\"bla\" "
 			                + "id=\"test\">Bla</div></body></html>");
-			assertEquals("class=bla id=test", Helper.getAllElementAttributes(dom
-			        .getElementById("test")));
+			assertEquals("class=bla id=test",
+			        Helper.getAllElementAttributes(dom.getElementById("test")));
 		} catch (Exception e) {
 			fail("Exception caught");
 		}
@@ -178,27 +178,20 @@ public class HelperTest {
 
 	@Test
 	public void getVarFromQueryString() {
-		assertEquals("home", Helper.getVarFromQueryString("page",
-		        "?sub=1&userid=123&page=home&goto=0"));
+		assertEquals("home",
+		        Helper.getVarFromQueryString("page", "?sub=1&userid=123&page=home&goto=0"));
 	}
 
 	@Test
-	public void writeAndGetContents() {
-		File f = new File("helper-write-and-get-contents-test.txt");
-
-		if (f.exists()) {
-			assertTrue(f.delete());
-		}
-
+	public void writeAndGetContents() throws IOException {
+		File f = File.createTempFile("HelperTest.writeAndGetContents", ".tmp");
 		try {
-			Helper
-			        .writeDocumentToFile(Helper
-			                .getDocument("<html><body><p>Test</p></body></html>"), f.getName(),
-			                "html", 2);
-
+			Helper.writeDocumentToFile(
+			        Helper.getDocument("<html><body><p>Test</p></body></html>"),
+			        f.getAbsolutePath(), "html", 2);
 			assertNotSame("", Helper.getContent(f));
 
-			assertNotSame("", Helper.getTemplateAsString(f.getName()));
+			assertNotSame("", Helper.getTemplateAsString(f.getAbsolutePath()));
 
 		} catch (Exception e) {
 			e.printStackTrace();
