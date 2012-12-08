@@ -10,6 +10,8 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.transform.TransformerException;
+
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.w3c.dom.Document;
@@ -25,7 +27,7 @@ import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
  */
 public class HelperTest {
 
-	private static final String INDEX = "src/test/site/index.html";
+	private static final String INDEX = "src/test/resources/site/index.html";
 
 	/**
 	 * Test get document function.
@@ -49,41 +51,20 @@ public class HelperTest {
 	 * Test get document from browser function.
 	 */
 	@Test
-	public void testGetDocumentFromBrowser() {
+	public void testGetDocumentFromBrowser() throws SAXException, IOException {
 		// TODO Stefan; Refactor out the direct use of FirefoxDriver
 		EmbeddedBrowser browser =
 		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 200, 300);
 		File index = new File(INDEX);
 		String html = "";
-		try {
-			browser.goToUrl("file://" + index.getAbsolutePath());
-		} catch (Exception e1) {
-			fail(e1.getMessage());
-		}
+		browser.goToUrl("file://" + index.getAbsolutePath());
+		html = browser.getDom();
+		assertNotNull(html);
 
-		try {
-			html = browser.getDom();
-			assertNotNull(html);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail(e1.getMessage());
+		Document doc = Helper.getDocument(html);
+		assertNotNull(doc);
 
-		}
-
-		try {
-			Document doc = Helper.getDocument(html);
-			assertNotNull(doc);
-
-		} catch (Exception e1) {
-			fail(e1.getMessage());
-		}
-
-		try {
-			browser.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		browser.close();
 		browser = null;
 
 	}
@@ -96,46 +77,46 @@ public class HelperTest {
 		        "http://crawljax.com/about"));
 		// This is done intentional to capture miss formed urls as local so crawljax will process
 		// them
-		assertFalse("Missformed link is not external", Helper.isLinkExternal(
-		        "http://crawljax.com", "http"));
+		assertFalse("Missformed link is not external",
+		        Helper.isLinkExternal("http://crawljax.com", "http"));
 
-		assertFalse("link and base are the same (http)", Helper.isLinkExternal(
-		        "http://crawljax.com", "http://crawljax.com"));
+		assertFalse("link and base are the same (http)",
+		        Helper.isLinkExternal("http://crawljax.com", "http://crawljax.com"));
 
-		assertFalse("link and base are the same (https)", Helper.isLinkExternal(
-		        "https://crawljax.com", "https://crawljax.com"));
+		assertFalse("link and base are the same (https)",
+		        Helper.isLinkExternal("https://crawljax.com", "https://crawljax.com"));
 
-		assertFalse("link and base are the same (file)", Helper.isLinkExternal(
-		        "file:///tmp/index.html", "file:///tmp/index.html"));
+		assertFalse("link and base are the same (file)",
+		        Helper.isLinkExternal("file:///tmp/index.html", "file:///tmp/index.html"));
 
-		assertFalse("Sub dir is not external for file", Helper.isLinkExternal(
-		        "file:///tmp/index.html", "file:///tmp/subdir/index.html"));
+		assertFalse("Sub dir is not external for file",
+		        Helper.isLinkExternal("file:///tmp/index.html", "file:///tmp/subdir/index.html"));
 
 		assertFalse("Sub dirs is not external for http", Helper.isLinkExternal(
 		        "http://crawljax.com", "http://crawljax.com/sub/dir/about.html"));
 
-		assertFalse("Https link from http base is not external", Helper.isLinkExternal(
-		        "http://crawljax.com", "https://crawljax.com/about.html"));
-		assertFalse("Https link from https base is not external", Helper.isLinkExternal(
-		        "https://crawljax.com", "https://crawljax.com/about.html"));
-		assertFalse("Http link from https base is not external", Helper.isLinkExternal(
-		        "https://crawljax.com", "http://crawljax.com/about.html"));
+		assertFalse("Https link from http base is not external",
+		        Helper.isLinkExternal("http://crawljax.com", "https://crawljax.com/about.html"));
+		assertFalse("Https link from https base is not external",
+		        Helper.isLinkExternal("https://crawljax.com", "https://crawljax.com/about.html"));
+		assertFalse("Http link from https base is not external",
+		        Helper.isLinkExternal("https://crawljax.com", "http://crawljax.com/about.html"));
 
-		assertFalse("relative link from https base is not external", Helper.isLinkExternal(
-		        "https://crawljax.com", "about.html"));
-		assertFalse("relative link from http base is not external", Helper.isLinkExternal(
-		        "http://crawljax.com", "about.html"));
+		assertFalse("relative link from https base is not external",
+		        Helper.isLinkExternal("https://crawljax.com", "about.html"));
+		assertFalse("relative link from http base is not external",
+		        Helper.isLinkExternal("http://crawljax.com", "about.html"));
 
-		assertFalse("root link from http base is not external", Helper.isLinkExternal(
-		        "http://crawljax.com", "/about.html"));
-		assertFalse("root link from https base is not external", Helper.isLinkExternal(
-		        "https://crawljax.com", "/about.html"));
+		assertFalse("root link from http base is not external",
+		        Helper.isLinkExternal("http://crawljax.com", "/about.html"));
+		assertFalse("root link from https base is not external",
+		        Helper.isLinkExternal("https://crawljax.com", "/about.html"));
 
-		assertFalse("relative link from file base is not external", Helper.isLinkExternal(
-		        "file:///tmp/index.html", "about.html"));
+		assertFalse("relative link from file base is not external",
+		        Helper.isLinkExternal("file:///tmp/index.html", "about.html"));
 
-		assertTrue("root link from file base is external", Helper.isLinkExternal(
-		        "file://tmp/index.html", "/about.html"));
+		assertTrue("root link from file base is external",
+		        Helper.isLinkExternal("file://tmp/index.html", "/about.html"));
 	}
 
 	@Test
@@ -145,64 +126,40 @@ public class HelperTest {
 	}
 
 	@Test
-	public void getElementAttributes() {
+	public void getElementAttributes() throws SAXException, IOException {
 		Document dom;
-		try {
-			dom =
-			        Helper.getDocumentNoBalance("<html><body><div class=\"bla\" "
-			                + "id=\"test\">Bla</div></body></html>");
-			assertEquals("class=bla id=test", Helper.getAllElementAttributes(dom
-			        .getElementById("test")));
-		} catch (Exception e) {
-			fail("Exception caught");
-		}
+		dom =
+		        Helper.getDocumentNoBalance("<html><body><div class=\"bla\" "
+		                + "id=\"test\">Bla</div></body></html>");
+		assertEquals("class=bla id=test",
+		        Helper.getAllElementAttributes(dom.getElementById("test")));
 	}
 
 	@Test
-	public void directoryCheck() {
+	public void directoryCheck() throws IOException {
 		String directory = "test-123-123";
 		File dir = new File(directory);
 		if (!dir.exists()) {
-			try {
-				Helper.directoryCheck(directory);
-			} catch (IOException e) {
-				fail("Error creating directory");
-			}
-			if (!dir.exists()) {
-				fail("Directory not created");
-			} else {
-				assertTrue(dir.delete());
-			}
+			Helper.directoryCheck(directory);
+			assertTrue("Directory not created", dir.exists());
+			assertTrue(dir.delete());
 		}
 	}
 
 	@Test
 	public void getVarFromQueryString() {
-		assertEquals("home", Helper.getVarFromQueryString("page",
-		        "?sub=1&userid=123&page=home&goto=0"));
+		assertEquals("home",
+		        Helper.getVarFromQueryString("page", "?sub=1&userid=123&page=home&goto=0"));
 	}
 
 	@Test
-	public void writeAndGetContents() {
-		File f = new File("helper-write-and-get-contents-test.txt");
+	public void writeAndGetContents() throws IOException, TransformerException, SAXException {
+		File f = File.createTempFile("HelperTest.writeAndGetContents", ".tmp");
+		Helper.writeDocumentToFile(Helper.getDocument("<html><body><p>Test</p></body></html>"),
+		        f.getAbsolutePath(), "html", 2);
+		assertNotSame("", Helper.getContent(f));
 
-		if (f.exists()) {
-			assertTrue(f.delete());
-		}
-
-		try {
-			Helper
-			        .writeDocumentToFile(Helper
-			                .getDocument("<html><body><p>Test</p></body></html>"), f.getName(),
-			                "html", 2);
-
-			assertNotSame("", Helper.getContent(f));
-
-			assertNotSame("", Helper.getTemplateAsString(f.getName()));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		assertNotSame("", Helper.getTemplateAsString(f.getAbsolutePath()));
 
 		assertTrue(f.exists());
 

@@ -2,34 +2,39 @@
 
 package com.crawljax.browser;
 
-import junit.framework.Assert;
+import static org.hamcrest.core.IsInstanceOf.any;
 
+import java.net.ConnectException;
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
-import java.net.ConnectException;
-
 /**
  * Test to see if the WebDriver team consistently throws the same exception when the Host process
- * dies. This test runs only on linux, its not the most elegant way of executing UnitTesting, its
- * not executed by the test-suite as its platform and browser specific.
- *
- * @version $Id$
- * @author slenselink@google.com (Stefan Lenselink)
+ * dies. This test runs only on linux, its not executed by the test-suite as its platform and
+ * browser specific.
  */
 public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
+
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+
 	/**
 	 * Test method for {@link WebDriver#close()}.
 	 */
 	@Test
 	public final void testClose() {
-		try {
-			getCrashedDriver().close();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().close();
+		expectWebDriverExceptionWithConnectionExceptionCause();
+	}
+
+	private void expectWebDriverExceptionWithConnectionExceptionCause() {
+		exception.expect(WebDriverException.class);
+		exception.expectCause(any(ConnectException.class));
 	}
 
 	/**
@@ -37,11 +42,7 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testFindElement() {
-		try {
-			getCrashedDriver().findElement(By.name("q"));
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().findElement(By.name("q"));
 	}
 
 	/**
@@ -49,11 +50,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testFindElements() {
-		try {
-			getCrashedDriver().findElements(By.name("q"));
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().findElements(By.name("q"));
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -61,11 +59,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGet() {
-		try {
-			getCrashedDriver().get("http://www.google.com");
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().get("http://www.google.com");
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -73,11 +68,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetCurrentUrl() {
-		try {
-			getCrashedDriver().getCurrentUrl();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().getCurrentUrl();
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -85,11 +77,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetPageSource() {
-		try {
-			getCrashedDriver().getPageSource();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().getPageSource();
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -97,11 +86,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetTitle() {
-		try {
-			getCrashedDriver().getTitle();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().getTitle();
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -109,11 +95,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetWindowHandle() {
-		try {
-			getCrashedDriver().getWindowHandle();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().getWindowHandle();
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -121,11 +104,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetWindowHandles() {
-		try {
-			getCrashedDriver().getWindowHandles();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().getWindowHandles();
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -133,11 +113,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testManage() {
-		try {
-			getCrashedDriver().manage();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().manage();
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -145,11 +122,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testNavigate() {
-		try {
-			getCrashedDriver().navigate();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().navigate();
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -157,11 +131,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testQuit() {
-		try {
-			getCrashedDriver().quit();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().quit();
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 	/**
@@ -169,11 +140,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testSwitchTo() {
-		try {
-			getCrashedDriver().switchTo();
-		} catch (WebDriverException e) {
-			Assert.assertEquals(e.getCause().getClass(), ConnectException.class);
-		}
+		getCrashedDriver().switchTo();
+		expectWebDriverExceptionWithConnectionExceptionCause();
 	}
 
 }

@@ -21,11 +21,10 @@ public class UnderXPathTest {
 
 	private static CrawlSession session = null;
 
-	private static final String FILENAME =
-	        "src/test/java/com/crawljax/core/configuration/underxpath.html";
+	private static final String FILENAME = "src/test/resources/configuration/underxpath.html";
 
 	@Test
-	public void testDontClickUnderXPath() {
+	public void testDontClickUnderXPath() throws Exception {
 
 		CrawlSpecification crawler =
 		        new CrawlSpecification("file://" + new File(FILENAME).getAbsolutePath());
@@ -45,15 +44,9 @@ public class UnderXPathTest {
 
 		});
 
-		try {
-			CrawljaxController crawljax = new CrawljaxController(config);
+		CrawljaxController crawljax = new CrawljaxController(config);
 
-			crawljax.run();
-		} catch (ConfigurationException e) {
-			e.printStackTrace();
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-		}
+		crawljax.run();
 
 		/* test issue 16 */
 		assertEquals("There should be no outgoing links", 0, session.getStateFlowGraph().getSfg()
@@ -61,7 +54,7 @@ public class UnderXPathTest {
 	}
 
 	@Test
-	public void testClickUnderXPath() {
+	public void testClickUnderXPath() throws ConfigurationException, CrawljaxException {
 
 		CrawlSpecification crawler =
 		        new CrawlSpecification("file://" + new File(FILENAME).getAbsolutePath());
@@ -80,15 +73,9 @@ public class UnderXPathTest {
 
 		});
 
-		try {
-			CrawljaxController crawljax = new CrawljaxController(config);
+		CrawljaxController crawljax = new CrawljaxController(config);
 
-			crawljax.run();
-		} catch (ConfigurationException e) {
-			e.printStackTrace();
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-		}
+		crawljax.run();
 
 		assertEquals("There should be 2 outgoing links", 2, session.getStateFlowGraph().getSfg()
 		        .outDegreeOf(session.getInitialState()));

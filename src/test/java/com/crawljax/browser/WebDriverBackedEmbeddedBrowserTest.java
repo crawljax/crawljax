@@ -11,16 +11,16 @@ import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.util.Helper;
 
 public class WebDriverBackedEmbeddedBrowserTest {
 
+	private final File index = new File("src/test/resources/site/iframe/index.html");
+	
 	@Test
-	public void testGetDocument() {
-		File index = new File("src/test/site/iframe/index.html");
+	public void testGetDocument() throws Exception {
 		// TODO Stefan; refactor out the direct use of the FirefoxDriver
 		WebDriverBackedEmbeddedBrowser driver =
 		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 100, 100);
@@ -36,35 +36,22 @@ public class WebDriverBackedEmbeddedBrowserTest {
 			doc = Helper.getDocument(driver.getDomWithoutIframeContent());
 			frameNodes = doc.getElementsByTagName("IFRAME");
 			assertEquals(2, frameNodes.getLength());
-
-		} catch (SAXException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-
-		finally {
+		} finally {
 			driver.close();
 		}
 
 	}
 
 	@Test
-	public void saveScreenShot() {
+	public void saveScreenShot() throws CrawljaxException, IOException {
 		// TODO Stefan; refactor out the direct use of the FirefoxDriver
 		WebDriverBackedEmbeddedBrowser browser =
 		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 500, 500);
 
-		File f = new File("webdriverfirefox-test-screenshot.png");
+		File f = File.createTempFile("webdriverfirefox-test-screenshot", ".png");
 		if (!f.exists()) {
-			browser.goToUrl("http://google.com");
-			try {
-				browser.saveScreenShot(f);
-			} catch (CrawljaxException e) {
-				fail(e.getMessage());
-			}
+			browser.goToUrl("file://" + index.getAbsolutePath());
+			browser.saveScreenShot(f);
 			assertTrue(f.exists());
 			assertTrue(f.delete());
 		}

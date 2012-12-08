@@ -4,7 +4,7 @@ package com.crawljax.util;
 
 import com.google.common.collect.Lists;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.custommonkey.xmlunit.Difference;
 import org.junit.Test;
