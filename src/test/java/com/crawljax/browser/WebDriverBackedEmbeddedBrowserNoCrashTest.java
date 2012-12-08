@@ -3,6 +3,9 @@
 package com.crawljax.browser;
 
 import static org.junit.Assert.fail;
+
+import java.net.URL;
+
 import org.junit.Assert;
 
 import org.junit.After;
@@ -96,9 +99,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testFireEvent() throws CrawljaxException {
-		browser
-		        .fireEvent(new Eventable(new Identification(How.xpath, "/RUBISH"),
-		                EventType.click));
+		browser.fireEvent(new Eventable(new Identification(How.xpath, "/RUBISH"), EventType.click));
 	}
 
 	/**
@@ -117,7 +118,8 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testGetDom() throws CrawljaxException {
-		browser.goToUrl("http://www.google.nl/");
+		URL index = WebDriverBackedEmbeddedBrowserTest.class.getResource("/site/simple.html");
+		browser.goToUrl(index.toExternalForm());
 		browser.getDom();
 	}
 
@@ -162,8 +164,8 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testInput() throws CrawljaxException {
-		Assert.assertFalse("Wrong Xpath so false because of error", browser.input(
-		        new Identification(How.xpath, "/RUBISH"), "some"));
+		Assert.assertFalse("Wrong Xpath so false because of error",
+		        browser.input(new Identification(How.xpath, "/RUBISH"), "some"));
 	}
 
 	/**
@@ -173,8 +175,8 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testIsVisible() {
-		Assert.assertFalse("Wrong Xpath so not visible", browser.isVisible(new Identification(
-		        How.xpath, "/RUBISH")));
+		Assert.assertFalse("Wrong Xpath so not visible",
+		        browser.isVisible(new Identification(How.xpath, "/RUBISH")));
 	}
 
 	/**
@@ -204,8 +206,8 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testElementExists() {
-		Assert.assertFalse("Wrong Xpath so element does not exsist", browser
-		        .elementExists(new Identification(How.xpath, "/RUBISH")));
+		Assert.assertFalse("Wrong Xpath so element does not exsist",
+		        browser.elementExists(new Identification(How.xpath, "/RUBISH")));
 	}
 
 	/**

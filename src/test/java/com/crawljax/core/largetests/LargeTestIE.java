@@ -15,7 +15,8 @@ public class LargeTestIE extends LargeTestSuper {
 	private static final int waitAfterEvent = 800;
 	private static final int waitAfterReload = 400;
 	private static BrowserType browser = BrowserType.ie;
-	private static final String INDEX = "http://spci.st.ewi.tudelft.nl/demo/testsite/";
+	private static final String INDEX = LargeTestIE.class.getResource("/site/index.html")
+	        .toExternalForm();
 
 	/**
 	 * Runs crawljax.

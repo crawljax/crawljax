@@ -10,18 +10,22 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.StateVertix;
+import com.crawljax.demo.RunWithWebServer;
 import com.crawljax.forms.FormHandler;
 
 public class CandidateElementExtractorTest {
 
-	private static String url = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
 	private static final StateVertix DUMMY_STATE = new StateVertix("DUMMY", "");
+
+	@ClassRule
+	public static final RunWithWebServer SERVER = new RunWithWebServer("/demo-site");
 
 	private CrawljaxController controller;
 	private Crawler crawler;
@@ -29,7 +33,7 @@ public class CandidateElementExtractorTest {
 	@Test
 	public void testExtract() throws InterruptedException, CrawljaxException,
 	        ConfigurationException {
-		setupCrawler(new CrawlSpecification(url));
+		setupCrawler(new CrawlSpecification(SERVER.getSiteUrl().toExternalForm()));
 
 		FormHandler formHandler =
 		        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
@@ -53,7 +57,8 @@ public class CandidateElementExtractorTest {
 		controller.getBrowserPool().shutdown();
 	}
 
-	private void setupCrawler(CrawlSpecification spec) throws ConfigurationException, InterruptedException {
+	private void setupCrawler(CrawlSpecification spec) throws ConfigurationException,
+	        InterruptedException {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		config.setCrawlSpecification(spec);
 		controller = new CrawljaxController(config);
@@ -68,7 +73,7 @@ public class CandidateElementExtractorTest {
 
 	@Test
 	public void testExtractExclude() throws Exception {
-		setupCrawler(new CrawlSpecification(url));
+		setupCrawler(new CrawlSpecification(SERVER.getSiteUrl().toExternalForm()));
 
 		FormHandler formHandler =
 		        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
@@ -104,7 +109,7 @@ public class CandidateElementExtractorTest {
 		File index = new File("src/test/resources/site/iframe/index.html");
 		CrawlSpecification spec = new CrawlSpecification("file://" + index.getAbsolutePath());
 		setupCrawler(spec);
-		
+
 		FormHandler formHandler =
 		        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
 		                .getInputSpecification(), true);
