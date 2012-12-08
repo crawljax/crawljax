@@ -3,7 +3,7 @@ package com.crawljax.core.plugin;
 import java.io.File;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;

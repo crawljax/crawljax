@@ -2,7 +2,7 @@ package com.crawljax.core;
 
 import java.io.IOException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

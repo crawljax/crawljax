@@ -4,7 +4,7 @@ import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ThreadConfiguration;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
