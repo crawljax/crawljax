@@ -20,8 +20,8 @@ import com.crawljax.core.configuration.ThreadConfiguration;
  */
 public class BrowserPoolTest {
 	private static final int TIMEOUT = 100000; // 100 Sec.
-	private final BrowserPool pool =
-	        new BrowserPool(new CrawljaxConfigurationReader(new CrawljaxConfiguration()));
+	private final BrowserPool pool = new BrowserPool(new CrawljaxConfigurationReader(
+	        new CrawljaxConfiguration()));
 
 	/**
 	 * Request don't release and close the pool.
@@ -114,20 +114,14 @@ public class BrowserPoolTest {
 
 		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
 
-		try {
+		BrowserPool pool = new BrowserPool(reader);
 
-			BrowserPool pool = new BrowserPool(reader);
+		pool.requestBrowser();
+		pool.requestBrowser();
+		EmbeddedBrowser b1 = pool.requestBrowser();
+		pool.freeBrowser(b1);
 
-			pool.requestBrowser();
-			pool.requestBrowser();
-			EmbeddedBrowser b1 = pool.requestBrowser();
-			pool.freeBrowser(b1);
-
-			pool.shutdown();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		pool.shutdown();
 	}
 
 	/**
@@ -152,20 +146,14 @@ public class BrowserPoolTest {
 
 		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
 
-		try {
+		BrowserPool pool = new BrowserPool(reader);
 
-			BrowserPool pool = new BrowserPool(reader);
+		pool.requestBrowser();
+		pool.requestBrowser();
+		EmbeddedBrowser b1 = pool.requestBrowser();
+		pool.freeBrowser(b1);
 
-			pool.requestBrowser();
-			pool.requestBrowser();
-			EmbeddedBrowser b1 = pool.requestBrowser();
-			pool.freeBrowser(b1);
-
-			pool.shutdown();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		pool.shutdown();
 	}
 
 	/**
@@ -190,46 +178,45 @@ public class BrowserPoolTest {
 
 		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
 
+		long runtimeNonFastBoot = runNonFastBoot(reader);
+
+		long runtimeFastBoot = runFastBoot(reader);
+
+		Assert.assertTrue("Fast boot is faster", runtimeNonFastBoot > runtimeFastBoot);
+	}
+
+	private long runFastBoot(CrawljaxConfigurationReader reader) throws InterruptedException {
+		long start = System.currentTimeMillis();
+		BrowserPool pool = new BrowserPool(reader);
+
+		pool.requestBrowser();
+		pool.requestBrowser();
+		EmbeddedBrowser b1 = pool.requestBrowser();
+		pool.freeBrowser(b1);
+
+		Thread closeThread = pool.close();
+
+		long runtimeFastBoot = System.currentTimeMillis() - start;
+
+		closeThread.join();
+		return runtimeFastBoot;
+	}
+
+	private long runNonFastBoot(CrawljaxConfigurationReader reader) throws InterruptedException {
 		long runtimeNonFastBoot = 0;
-		try {
-			long start = System.currentTimeMillis();
-			BrowserPool pool = new BrowserPool(reader);
+		long start = System.currentTimeMillis();
+		BrowserPool pool = new BrowserPool(reader);
 
-			pool.requestBrowser();
-			pool.requestBrowser();
-			EmbeddedBrowser b1 = pool.requestBrowser();
-			pool.freeBrowser(b1);
+		pool.requestBrowser();
+		pool.requestBrowser();
+		EmbeddedBrowser b1 = pool.requestBrowser();
+		pool.freeBrowser(b1);
 
-			Thread closeThread = pool.close();
+		Thread closeThread = pool.close();
 
-			runtimeNonFastBoot = System.currentTimeMillis() - start;
+		runtimeNonFastBoot = System.currentTimeMillis() - start;
 
-			closeThread.join();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-
-		try {
-			long start = System.currentTimeMillis();
-			BrowserPool pool = new BrowserPool(reader);
-
-			pool.requestBrowser();
-			pool.requestBrowser();
-			EmbeddedBrowser b1 = pool.requestBrowser();
-			pool.freeBrowser(b1);
-
-			Thread closeThread = pool.close();
-
-			long runtimeFastBoot = System.currentTimeMillis() - start;
-
-			closeThread.join();
-
-			Assert.assertTrue("Fast boot is faster", runtimeNonFastBoot > runtimeFastBoot);
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		closeThread.join();
+		return runtimeNonFastBoot;
 	}
 }

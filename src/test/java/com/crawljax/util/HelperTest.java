@@ -10,6 +10,8 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.transform.TransformerException;
+
 import org.junit.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.w3c.dom.Document;
@@ -25,7 +27,7 @@ import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
  */
 public class HelperTest {
 
-	private static final String INDEX = "src/test/site/index.html";
+	private static final String INDEX = "src/test/resources/site/index.html";
 
 	/**
 	 * Test get document function.
@@ -49,41 +51,20 @@ public class HelperTest {
 	 * Test get document from browser function.
 	 */
 	@Test
-	public void testGetDocumentFromBrowser() {
+	public void testGetDocumentFromBrowser() throws SAXException, IOException {
 		// TODO Stefan; Refactor out the direct use of FirefoxDriver
 		EmbeddedBrowser browser =
 		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 200, 300);
 		File index = new File(INDEX);
 		String html = "";
-		try {
-			browser.goToUrl("file://" + index.getAbsolutePath());
-		} catch (Exception e1) {
-			fail(e1.getMessage());
-		}
+		browser.goToUrl("file://" + index.getAbsolutePath());
+		html = browser.getDom();
+		assertNotNull(html);
 
-		try {
-			html = browser.getDom();
-			assertNotNull(html);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail(e1.getMessage());
+		Document doc = Helper.getDocument(html);
+		assertNotNull(doc);
 
-		}
-
-		try {
-			Document doc = Helper.getDocument(html);
-			assertNotNull(doc);
-
-		} catch (Exception e1) {
-			fail(e1.getMessage());
-		}
-
-		try {
-			browser.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		browser.close();
 		browser = null;
 
 	}
@@ -145,34 +126,23 @@ public class HelperTest {
 	}
 
 	@Test
-	public void getElementAttributes() {
+	public void getElementAttributes() throws SAXException, IOException {
 		Document dom;
-		try {
-			dom =
-			        Helper.getDocumentNoBalance("<html><body><div class=\"bla\" "
-			                + "id=\"test\">Bla</div></body></html>");
-			assertEquals("class=bla id=test",
-			        Helper.getAllElementAttributes(dom.getElementById("test")));
-		} catch (Exception e) {
-			fail("Exception caught");
-		}
+		dom =
+		        Helper.getDocumentNoBalance("<html><body><div class=\"bla\" "
+		                + "id=\"test\">Bla</div></body></html>");
+		assertEquals("class=bla id=test",
+		        Helper.getAllElementAttributes(dom.getElementById("test")));
 	}
 
 	@Test
-	public void directoryCheck() {
+	public void directoryCheck() throws IOException {
 		String directory = "test-123-123";
 		File dir = new File(directory);
 		if (!dir.exists()) {
-			try {
-				Helper.directoryCheck(directory);
-			} catch (IOException e) {
-				fail("Error creating directory");
-			}
-			if (!dir.exists()) {
-				fail("Directory not created");
-			} else {
-				assertTrue(dir.delete());
-			}
+			Helper.directoryCheck(directory);
+			assertTrue("Directory not created", dir.exists());
+			assertTrue(dir.delete());
 		}
 	}
 
@@ -183,19 +153,13 @@ public class HelperTest {
 	}
 
 	@Test
-	public void writeAndGetContents() throws IOException {
+	public void writeAndGetContents() throws IOException, TransformerException, SAXException {
 		File f = File.createTempFile("HelperTest.writeAndGetContents", ".tmp");
-		try {
-			Helper.writeDocumentToFile(
-			        Helper.getDocument("<html><body><p>Test</p></body></html>"),
-			        f.getAbsolutePath(), "html", 2);
-			assertNotSame("", Helper.getContent(f));
+		Helper.writeDocumentToFile(Helper.getDocument("<html><body><p>Test</p></body></html>"),
+		        f.getAbsolutePath(), "html", 2);
+		assertNotSame("", Helper.getContent(f));
 
-			assertNotSame("", Helper.getTemplateAsString(f.getAbsolutePath()));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		assertNotSame("", Helper.getTemplateAsString(f.getAbsolutePath()));
 
 		assertTrue(f.exists());
 

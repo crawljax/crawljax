@@ -24,7 +24,7 @@ public class LargeTestChrome extends LargeTestSuper {
 	 *             when error while crawling
 	 */
 	@BeforeClass
-	public static void setUpBeforeClass() {
+	public static void setUpBeforeClass() throws Exception {
 		// TODO
 		// System.setProperty("webdriver.chrome.driver",
 		// "//Applications//Google Chrome.app//Contents//MacOS//Google Chrome");
@@ -33,15 +33,7 @@ public class LargeTestChrome extends LargeTestSuper {
 		        waitAfterReload));
 		addPlugins(crawljaxConfiguration);
 		crawljaxConfiguration.setBrowser(browser);
-		try {
-			new CrawljaxController(crawljaxConfiguration).run();
-		} catch (ConfigurationException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+		new CrawljaxController(crawljaxConfiguration).run();
 
 	}
 }

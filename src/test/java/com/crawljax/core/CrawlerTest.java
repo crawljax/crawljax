@@ -30,7 +30,7 @@ public class CrawlerTest {
 	private CrawljaxConfiguration buildController() throws ConfigurationException {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		CrawlSpecification spec = new CrawlSpecification(
-		        "file://" + new File("src/test/site/crawler/index.html").getAbsolutePath());
+		        "file://" + new File("src/test/resources/site/crawler/index.html").getAbsolutePath());
 		spec.click("a");
 		config.setCrawlSpecification(spec);
 		return config;

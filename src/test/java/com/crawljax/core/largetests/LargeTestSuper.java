@@ -1,6 +1,6 @@
 package com.crawljax.core.largetests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -58,15 +58,14 @@ public abstract class LargeTestSuper {
 	private static final String INVARIANT_TEXT = "TEST_INVARIANTS";
 	private static boolean violatedInvariantStateIsCorrect = false;
 
-	private static final RegexCondition REGEX_CONDITION_TRUE =
-	        new RegexCondition("REGEX_CONDITION_TRUE");
-	private static final NotRegexCondition ALLOW_BUTTON_CLICK =
-	        new NotRegexCondition("DONT_CLICK_BUTTONS_ON_THIS_PAGE");
+	private static final RegexCondition REGEX_CONDITION_TRUE = new RegexCondition(
+	        "REGEX_CONDITION_TRUE");
+	private static final NotRegexCondition ALLOW_BUTTON_CLICK = new NotRegexCondition(
+	        "DONT_CLICK_BUTTONS_ON_THIS_PAGE");
 
 	private static final String TITLE_RESULT_RANDOM_INPUT = "RESULT_RANDOM_INPUT";
-	private static final String REGEX_RESULT_RANDOM_INPUT =
-	        "[a-zA-Z]{8};" + "[a-zA-Z]{8};" + "(true|false);" + "(true|false);" + "OPTION[1234];"
-	                + "[a-zA-Z]{8}";
+	private static final String REGEX_RESULT_RANDOM_INPUT = "[a-zA-Z]{8};" + "[a-zA-Z]{8};"
+	        + "(true|false);" + "(true|false);" + "OPTION[1234];" + "[a-zA-Z]{8}";
 
 	// manual values
 	private static final String TITLE_MANUAL_INPUT_RESULT = "RESULT_MANUAL_INPUT";
@@ -87,9 +86,8 @@ public abstract class LargeTestSuper {
 	private static final String[] MULTIPLE_INPUT_TEXTAREA = { "same" };
 
 	private static final String TITLE_MULTIPLE_INPUT_RESULT = "RESULT_MULTIPLE_INPUT";
-	private static final String[] MULTIPLE_INPUT_RESULTS =
-	        { "first;foo;true;false;OPTION1;same", "second;bar;false;true;OPTION2;same",
-	                ";foo;true;false;OPTION1;same" };
+	private static final String[] MULTIPLE_INPUT_RESULTS = { "first;foo;true;false;OPTION1;same",
+	        "second;bar;false;true;OPTION2;same", ";foo;true;false;OPTION1;same" };
 
 	/**
 	 * Tests random input.
@@ -104,8 +102,7 @@ public abstract class LargeTestSuper {
 				return;
 			}
 		}
-		// should never reach this point
-		assertTrue("Result random input found", false);
+		fail("Result random input found");
 	}
 
 	/**
@@ -115,13 +112,12 @@ public abstract class LargeTestSuper {
 	public void testManualFormInput() {
 		for (StateVertix state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains(TITLE_MANUAL_INPUT_RESULT)) {
-				assertTrue("Result contains the correct data", state.getDom().contains(
-				        MANUAL_INPUT_RESULT));
+				assertTrue("Result contains the correct data",
+				        state.getDom().contains(MANUAL_INPUT_RESULT));
 				return;
 			}
 		}
-		// should never reach this point
-		assertTrue("Result manual input found", false);
+		fail("Result manual input found");
 	}
 
 	/**
@@ -167,8 +163,8 @@ public abstract class LargeTestSuper {
 	@Test
 	public void testForIllegalStates() {
 		for (StateVertix state : getStateFlowGraph().getAllStates()) {
-			assertTrue("Only legal states: " + state.getName(), !state.getDom().contains(
-			        ILLEGAL_STATE));
+			assertTrue("Only legal states: " + state.getName(),
+			        !state.getDom().contains(ILLEGAL_STATE));
 		}
 	}
 
@@ -401,9 +397,10 @@ public abstract class LargeTestSuper {
 			public void onNewState(CrawlSession session) {
 				try {
 					if (!session.getCurrentState().equals(session.getInitialState())) {
-						assertEquals("Target State from ExactEventPath equals current state",
-						        session.getCurrentCrawlPath().get(
-						                session.getCurrentCrawlPath().size() - 1)
+						assertEquals(
+						        "Target State from ExactEventPath equals current state",
+						        session.getCurrentCrawlPath()
+						                .get(session.getCurrentCrawlPath().size() - 1)
 						                .getTargetStateVertix(), session.getCurrentState());
 					}
 				} catch (CrawljaxException e) {

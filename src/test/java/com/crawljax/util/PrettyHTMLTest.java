@@ -10,9 +10,9 @@ import org.junit.Test;
 
 public class PrettyHTMLTest {
 
-	private static final String TESTFILE = "src/test/java/com/crawljax/util/tuduDombefore.html";
+	private static final String TESTFILE = "src/test/resources/util/tuduDombefore.html";
 	private static final String CONTROLFILE =
-	        "src/test/java/com/crawljax/util/tuduDombefore.html.tidy";
+	        "src/test/resources/util/tuduDombefore.html.tidy";
 
 	@Ignore
 	@Test

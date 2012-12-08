@@ -35,7 +35,7 @@ public class OnFireEventFailedPluginTest {
 
 		CrawlSpecification spec =
 		        new CrawlSpecification("file://"
-		                + new File("src/test/site/crawler/index.html").getAbsolutePath());
+		                + new File("src/test/resources/site/crawler/index.html").getAbsolutePath());
 		spec.clickDefaultElements();
 
 		config = new CrawljaxConfiguration();

@@ -20,29 +20,22 @@ public class LargeTestIE extends LargeTestSuper {
 	/**
 	 * Runs crawljax.
 	 * 
+	 * @throws CrawljaxException
+	 * @throws ConfigurationException
 	 * @throws java.lang.Exception
 	 *             when error while crawling
 	 */
 	@BeforeClass
-	public static void setUpBeforeClass() {
+	public static void setUpBeforeClass() throws ConfigurationException, CrawljaxException {
 		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
 			CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
 			crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification(INDEX,
 			        waitAfterEvent, waitAfterReload));
 			addPlugins(crawljaxConfiguration);
 			crawljaxConfiguration.setBrowser(browser);
-			try {
-				new CrawljaxController(crawljaxConfiguration).run();
-			} catch (ConfigurationException e) {
-				e.printStackTrace();
-				fail(e.getMessage());
-			} catch (CrawljaxException e) {
-				e.printStackTrace();
-				fail(e.getMessage());
-			}
+			new CrawljaxController(crawljaxConfiguration).run();
 
 		} else {
-			System.out.println("IE cannot be tested on this platform!");
 			fail("IE cannot be tested on this platform!");
 		}
 	}

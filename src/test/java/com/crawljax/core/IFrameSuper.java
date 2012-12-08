@@ -28,7 +28,7 @@ public abstract class IFrameSuper {
 	}
 
 	protected CrawlSpecification getCrawlSpecification() {
-		File index = new File("src/test/site/iframe/index.html");
+		File index = new File("src/test/resources/site/iframe/index.html");
 		CrawlSpecification crawler = new CrawlSpecification("file://" + index.getAbsolutePath());
 		crawler.setWaitTimeAfterEvent(100);
 		crawler.setWaitTimeAfterReloadUrl(100);

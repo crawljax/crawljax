@@ -33,10 +33,10 @@ public class CandidateElementManagerTest {
 		e.setAttribute("id", "abc");
 		CandidateElement c = new CandidateElement(e, "");
 		Assert.assertFalse(
-		        "CandidateElemnt.GeneralString not jet checked in CandidateElementManager",
+		        "CandidateElemnt.GeneralString not yet checked in CandidateElementManager",
 		        manager.isChecked(c.getGeneralString()));
 		Assert.assertFalse(
-		        "CandidateElemnt.UniqueString not jet checked in CandidateElementManager",
+		        "CandidateElemnt.UniqueString not yet checked in CandidateElementManager",
 		        manager.isChecked(c.getUniqueString()));
 		Assert.assertTrue("CandidateElement correctly added", manager.markChecked(c));
 		Assert.assertTrue("CandidateElemnt.GeneralString checked in CandidateElementManager",
@@ -47,10 +47,10 @@ public class CandidateElementManagerTest {
 		e.setAttribute("id", "def");
 		CandidateElement c2 = new CandidateElement(e, "");
 		Assert.assertFalse(
-		        "CandidateElemnt.GeneralString not jet checked in CandidateElementManager",
+		        "CandidateElemnt.GeneralString not yet checked in CandidateElementManager",
 		        manager.isChecked(c2.getGeneralString()));
 		Assert.assertFalse(
-		        "CandidateElemnt.UniqueString not jet checked in CandidateElementManager",
+		        "CandidateElemnt.UniqueString not yet checked in CandidateElementManager",
 		        manager.isChecked(c2.getUniqueString()));
 		Assert.assertTrue("CandidateElement correctly added", manager.markChecked(c2));
 		Assert.assertTrue("CandidateElemnt.GeneralString checked in CandidateElementManager",
@@ -75,10 +75,10 @@ public class CandidateElementManagerTest {
 
 		CandidateElement c = new CandidateElement(e, "");
 		Assert.assertFalse(
-		        "CandidateElemnt.GeneralString not jet checked in CandidateElementManager",
+		        "CandidateElemnt.GeneralString not yet checked in CandidateElementManager",
 		        manager.isChecked(c.getGeneralString()));
 		Assert.assertFalse(
-		        "CandidateElemnt.UniqueString not jet checked in CandidateElementManager",
+		        "CandidateElemnt.UniqueString not yet checked in CandidateElementManager",
 		        manager.isChecked(c.getUniqueString()));
 		Assert.assertTrue("CandidateElement correctly added", manager.markChecked(c));
 		Assert.assertTrue("CandidateElemnt.GeneralString checked in CandidateElementManager",
@@ -91,7 +91,7 @@ public class CandidateElementManagerTest {
 		Assert.assertTrue("CandidateElemnt.GeneralString checked in CandidateElementManager",
 		        manager.isChecked(c2.getGeneralString()));
 		Assert.assertFalse(
-		        "CandidateElemnt.UniqueString not jet checked in CandidateElementManager",
+		        "CandidateElemnt.UniqueString not yet checked in CandidateElementManager",
 		        manager.isChecked(c2.getUniqueString()));
 		Assert.assertTrue("CandidateElement correctly added", manager.markChecked(c2));
 		Assert.assertTrue("CandidateElemnt.GeneralString checked in CandidateElementManager",
