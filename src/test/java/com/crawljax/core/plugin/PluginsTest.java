@@ -29,8 +29,6 @@ import com.crawljax.core.state.StateVertix;
 
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
- * 
- * @author slenselink@google.com (Stefan Lenselink)
  */
 public class PluginsTest {
 
@@ -67,11 +65,8 @@ public class PluginsTest {
 
 	@BeforeClass
 	public static void setup() throws ConfigurationException {
-
-		System.out.println("Setup");
-		CrawlSpecification spec =
-		        new CrawlSpecification("http://spci.st.ewi.tudelft.nl/demo/crawler/");
-
+		String url = PluginsTest.class.getResource("/site/index.html").toExternalForm();
+		CrawlSpecification spec = new CrawlSpecification(url);
 		spec.clickDefaultElements();
 
 		/**

@@ -248,6 +248,12 @@
 			<artifactId>guava</artifactId>
 			<version>13.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>8.1.8.v20121106</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

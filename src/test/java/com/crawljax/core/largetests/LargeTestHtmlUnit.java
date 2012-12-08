@@ -16,13 +16,14 @@ public class LargeTestHtmlUnit extends LargeTestSuper {
 
 	private static final int waitAfterEvent = 400;
 	private static final int waitAfterReload = 400;
-	private static final String INDEX = "http://spci.st.ewi.tudelft.nl/demo/testsite/";
+	private static final String INDEX = LargeTestIE.class.getResource("/site/index.html")
+	        .toExternalForm();
 
 	/**
 	 * Runs crawljax.
-	 * @throws CrawljaxException 
-	 * @throws ConfigurationException 
 	 * 
+	 * @throws CrawljaxException
+	 * @throws ConfigurationException
 	 * @throws java.lang.Exception
 	 *             when error while crawling
 	 */
@@ -41,7 +42,7 @@ public class LargeTestHtmlUnit extends LargeTestSuper {
 			}
 		});
 
-			new CrawljaxController(crawljaxConfiguration).run();
+		new CrawljaxController(crawljaxConfiguration).run();
 
 	}
 
