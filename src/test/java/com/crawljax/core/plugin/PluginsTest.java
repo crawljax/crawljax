@@ -4,13 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.crawljax.browser.EmbeddedBrowser;
@@ -26,6 +27,8 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
+import com.crawljax.demo.RunWithWebServer;
+import com.google.common.collect.Maps;
 
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
@@ -35,8 +38,7 @@ public class PluginsTest {
 	private static CrawljaxController controller;
 	private static CrawljaxConfiguration config;
 
-	private static Hashtable<Class<? extends Plugin>, Long> pluginTimes =
-	        new Hashtable<Class<? extends Plugin>, Long>();
+	private static Map<Class<? extends Plugin>, Long> pluginTimes = Maps.newHashMap();
 
 	/**
 	 * Register the time the given plugin type is run for the first time.
@@ -63,10 +65,12 @@ public class PluginsTest {
 		assertNotNull(session.getStateFlowGraph());
 	}
 
+	@ClassRule
+	public static final RunWithWebServer SERVER = new RunWithWebServer("/site/crawler");
+
 	@BeforeClass
 	public static void setup() throws ConfigurationException {
-		String url = PluginsTest.class.getResource("/site/index.html").toExternalForm();
-		CrawlSpecification spec = new CrawlSpecification(url);
+		CrawlSpecification spec = new CrawlSpecification(SERVER.getSiteUrl().toExternalForm());
 		spec.clickDefaultElements();
 
 		/**

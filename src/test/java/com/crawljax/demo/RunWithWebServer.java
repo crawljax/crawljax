@@ -8,18 +8,28 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.junit.rules.ExternalResource;
 import com.google.common.base.Preconditions;
 
-public class RunWithDemoServer extends ExternalResource {
+public class RunWithWebServer extends ExternalResource {
 
+	private final Resource resource;
+	
 	private int port;
 	private URL demoSite;
 	private Server server;
 	private boolean started;
 
+	/**
+	 * @param classPathResource
+	 *            The name of the resource. This resource must be on the test or regular classpath.
+	 */
+	public RunWithWebServer(String classPathResource) {
+		resource = Resource.newClassPathResource(classPathResource);
+	}
+
 	@Override
 	protected void before() throws Throwable {
 		server = new Server(0);
 		ResourceHandler handler = new ResourceHandler();
-		handler.setBaseResource(Resource.newClassPathResource("/demo-site"));
+		handler.setBaseResource(resource);
 		server.setHandler(handler);
 		server.start();
 		this.port = server.getConnectors()[0].getLocalPort();
@@ -38,7 +48,7 @@ public class RunWithDemoServer extends ExternalResource {
 		}
 	}
 
-	public URL getDemoSite() {
+	public URL getSiteUrl() {
 		checkServerStarted();
 		return demoSite;
 	}
