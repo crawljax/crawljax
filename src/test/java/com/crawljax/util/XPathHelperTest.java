@@ -68,6 +68,12 @@ public class XPathHelperTest {
 	}
 
 	@Test
+	public void formatXPathAxes() {
+		String xPath = "//ancestor-or-self::div[@CLASS,'foo']";
+		assertEquals("//ancestor-or-self::DIV[@class,'foo']", XPathHelper.formatXPath(xPath));
+	}
+
+	@Test
 	public void getLastElementOfXPath() {
 		String xPath = "/HTML/BODY/DIV/UL/LI[@class=\"Test\"]";
 		assertEquals("LI", XPathHelper.getLastElementXPath(xPath));
