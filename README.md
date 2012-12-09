@@ -8,8 +8,9 @@ For more project info visit the [Crawljax site](http://crawljax.github.com).
 
 You can contact the Crawljax team by [joining the mailinglist](http://groups.google.com/group/crawljax) or [using the issue tracker](https://github.com/crawljax/crawljax/issues)
 
-You can find the [getting started guide](https://github.com/crawljax/crawljax/wiki/Getting-started) in our [project wiki](https://github.com/crawljax/crawljax/wiki/).
+You can find the [getting started guide](https://github.com/crawljax/crawljax/wiki/Getting-started) in our [project wiki](https://github.com/crawljax/crawljax/wiki/). 
 
+[![Build Status](https://travis-ci.org/crawljax/crawljax.png)](https://travis-ci.org/crawljax/crawljax)
 
 License
 -------
@@ -25,3 +26,4 @@ To include Crawljax in you project, you can declare it as a Maven dependency.
 	    <artifactId>crawljax</artifactId>
     	<version>2.0</version>
 	</dependency>
+
