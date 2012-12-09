@@ -19,7 +19,7 @@ This project is licensed under the ["Apache License, Version 2.0"](https://githu
 
 Maven
 -----
-To include Crawljax in you project, you can declare it as a Maven dependency.
+To include Crawljax in your project, you can declare it as a Maven dependency.
 
 	<dependency>
     	<groupId>com.crawljax</groupId>
