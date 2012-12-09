@@ -75,28 +75,10 @@
 			<id>amesbah</id>
 			<name>Ali Mesbah</name>
 			<email>a.mesbah@gmail.com</email>
-			<url>http://www.st.ewi.tudelft.nl/~mesbah/</url>
-			<organization>SWERL, TU Delft</organization>
-			<organizationUrl>http://swerl.tudelft.nl</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>frankgroeneveld</id>
-			<name>Frank Groeneveld</name>
-			<email>frankgroeneveld@gmail.com</email>
-			<url>http://techfield.org/</url>
-			<organization>SWERL, TU Delft</organization>
-			<organizationUrl>http://swerl.tudelft.nl</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>lenselinkstefan</id>
-			<name>Stefan Lenselink</name>
-			<email>S.R.Lenselink@student.tudelft.nl</email>
-			<url>http://bu130.nl</url>
-			<organization>SWERL, TU Delft</organization>
-			<organizationUrl>http://swerl.tudelft.nl</organizationUrl>
-			<timezone>+1</timezone>
+			<url>http://www.ece.ubc.ca/~amesbah/</url>
+			<organization>SALTLab, UBC</organization>
+			<organizationUrl>http://salt.ece.ubc.ca</organizationUrl>
+			<timezone>-8</timezone>
 		</developer>
 		<developer>
 			<id>arie.van.deursen</id>
@@ -185,9 +167,6 @@
 			<version>2.9.1</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>org.seleniumhq.selenium</groupId> <artifactId>selenium</artifactId> 
-			<version>2.0a7</version> <version>${selenium.version}</version> </dependency> -->
-
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -233,7 +212,6 @@
 		</dependency>
 
 
-
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-android-driver</artifactId>
@@ -241,13 +219,12 @@
 		</dependency>
 
 
-
-
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>13.0.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
