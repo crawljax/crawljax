@@ -21,6 +21,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -314,6 +315,28 @@ public class StateVertix implements Serializable {
 		}
 		return list;
 	}
+        /**
+         * Removes Candidate Actions on candidateElements that have been 
+         * removed by the pre-state crawl plugin.
+         * 
+         * @param candidateElements 
+         */
+        public void filterCandidateActions(List <CandidateElement> candidateElements) {
+            if (candidateActions == null) {
+            return;
+        }
+            Iterator iter = candidateActions.iterator();
+            CandidateCrawlAction currentAction;
+            while (iter.hasNext()) {
+                currentAction = (CandidateCrawlAction) iter.next();
+                if ( !candidateElements.contains(
+                    currentAction.getCandidateElement() ) ) {
+                    iter.remove();  
+                    LOGGER.info("filtered candidate action: " + currentAction.getEventType().name() + " on " + currentAction.getCandidateElement().getGeneralString() );
+
+                }
+            }            
+        }
 
 	/**
 	 * @return a Document instance of the dom string.

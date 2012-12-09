@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -15,7 +16,6 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 
 /**
  * Default implementation of the EmbeddedBrowserBuilder based on Selenium WebDriver API.
- * 
  */
 public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 
@@ -67,10 +67,17 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case chrome:
-				return WebDriverBackedEmbeddedBrowser.withDriver(new ChromeDriver(),
-				        configuration.getFilterAttributeNames(), configuration
-				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
-				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
+				// Guifre Ruiz: Added proxy config support for Chrome
+				ChromeOptions optionsChrome = new ChromeOptions();
+				optionsChrome.addArguments("--proxy-server=http://"
+				        + configuration.getProxyConfiguration().getHostname() + ":"
+				        + configuration.getProxyConfiguration().getPort());
+				ChromeDriver driverChrome = new ChromeDriver(optionsChrome);
+
+				return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, configuration
+				        .getFilterAttributeNames(), configuration.getCrawlSpecificationReader()
+				        .getWaitAfterEvent(), configuration.getCrawlSpecificationReader()
+				        .getWaitAfterReloadUrl());
 
 			case remote:
 				return WebDriverBackedEmbeddedBrowser.withRemoteDriver(
@@ -79,10 +86,16 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 				        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case htmlunit:
-				return WebDriverBackedEmbeddedBrowser.withDriver(new HtmlUnitDriver(true),
-				        configuration.getFilterAttributeNames(), configuration
-				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
-				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
+
+				// Guifre Ruiz: Added proxy config support for HtmlUnit
+				HtmlUnitDriver driverHtmlUnit = new HtmlUnitDriver(true);
+				driverHtmlUnit.setProxy(configuration.getProxyConfiguration().getHostname(),
+				        configuration.getProxyConfiguration().getPort());
+
+				return WebDriverBackedEmbeddedBrowser.withDriver(driverHtmlUnit, configuration
+				        .getFilterAttributeNames(), configuration.getCrawlSpecificationReader()
+				        .getWaitAfterEvent(), configuration.getCrawlSpecificationReader()
+				        .getWaitAfterReloadUrl());
 
 			case iphone:
 				try {

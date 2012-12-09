@@ -142,6 +142,9 @@ public class CandidateElementExtractor {
 			getFramesCandidates(dom, crawlTagElements, crawlExcludeTagElements, clickOnce,
 			        results, relatedFrame);
 
+                        getIFramesCandidates(dom, crawlTagElements, crawlExcludeTagElements, clickOnce,
+			        results, relatedFrame);
+
 			for (Element sourceElement : foundElements) {
 				EventableCondition eventableCondition =
 				        checkedElements.getEventableConditionChecker().getEventableCondition(
@@ -185,11 +188,56 @@ public class CandidateElementExtractor {
 		}
 	}
 
-	private void getFramesCandidates(Document dom, List<TagElement> crawlTagElements,
+        // Guifre Ruiz: Renamed getFramesCandidates to getIFramesCandidates.
+	private void getIFramesCandidates(Document dom, List<TagElement> crawlTagElements,
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
 	        List<CandidateElement> results, String relatedFrame) {
 
 		NodeList frameNodes = dom.getElementsByTagName("IFRAME");
+
+		for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
+
+			String frameIdentification = "";
+
+			if (relatedFrame != null && !relatedFrame.equals("")) {
+				frameIdentification += relatedFrame + ".";
+			}
+
+			Element frameElement = (Element) frameNodes.item(i);
+
+			String nameId = Helper.getFrameIdentification(frameElement);
+
+			// TODO Stefan; Here the IgnoreFrameChecker is used, also in
+			// WebDriverBackedEmbeddedBrowser. We must get this in 1 place.
+			if (nameId != null
+			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
+				frameIdentification += nameId;
+
+				LOGGER.debug("iframe Identification: " + frameIdentification);
+
+				try {
+					Document frameDom =
+					        Helper.getDocument(browser.getFrameDom(frameIdentification));
+					extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
+					        clickOnce, results, frameIdentification);
+				} catch (SAXException e) {
+					LOGGER.info("Got exception while inspecting an iframe:" + frameIdentification
+					        + " continuing...", e);
+				} catch (IOException e) {
+					LOGGER.info("Got exception while inspecting an iframe:" + frameIdentification
+					        + " continuing...", e);
+				}
+			}
+		}
+	}
+
+        
+        //Guifre Ruiz: Created getFramesCandidates(), which adds support for FRAME tags        
+        private void getFramesCandidates(Document dom, List<TagElement> crawlTagElements,
+	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
+	        List<CandidateElement> results, String relatedFrame) {
+
+		NodeList frameNodes = dom.getElementsByTagName("FRAME");
 
 		for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
 
