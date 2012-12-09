@@ -48,6 +48,11 @@
 		<system>GitHub</system>
 		<url>https://github.com/crawljax/crawljax/issues</url>
 	</issueManagement>
+	
+	<ciManagement>
+		<system>Travis</system>
+		<url>https://travis-ci.org/crawljax/crawljax</url>
+	</ciManagement>
 
 	<distributionManagement>
 		<repository>
