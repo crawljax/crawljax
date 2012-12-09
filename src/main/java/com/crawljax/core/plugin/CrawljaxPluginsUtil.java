@@ -17,12 +17,7 @@ import com.crawljax.core.state.StateVertix;
 import com.google.common.collect.Lists;
 
 /**
- * Class for invoking the plugin. The methods in this class are invoked from the Crawljax Core.
- * 
- * @author Danny Roest dannyroest@gmail.com
- * @author Stefan Lenselink S.R.Lenselink@student.tudelft.nl
- * @author Ali Mesbah amesbah@gmail.com
- * @version $Id: CrawljaxPluginsUtil.java 444 2010-09-14 08:53:07Z slenselink@google.com $
+ * Class for invoking plugins. The methods in this class are invoked from the Crawljax Core.
  */
 public final class CrawljaxPluginsUtil {
 
