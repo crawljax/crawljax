@@ -1,6 +1,8 @@
 package com.crawljax.core.plugin;
 
-import com.google.common.collect.Lists;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
@@ -12,18 +14,10 @@ import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
-
-import org.apache.log4j.Logger;
-
-import java.util.List;
+import com.google.common.collect.Lists;
 
 /**
- * Class for invoking the plugin. The methods in this class are invoked from the Crawljax Core.
- *
- * @author Danny Roest dannyroest@gmail.com
- * @author Stefan Lenselink S.R.Lenselink@student.tudelft.nl
- * @author Ali Mesbah amesbah@gmail.com
- * @version $Id$
+ * Class for invoking plugins. The methods in this class are invoked from the Crawljax Core.
  */
 public final class CrawljaxPluginsUtil {
 
@@ -37,7 +31,7 @@ public final class CrawljaxPluginsUtil {
 	 * Non instanceable constructor; does nothing never used, this constructor prevents the
 	 * CrawljaxPluginsUtil to be instantiated as a Object. All methods of this class must be used
 	 * statically.
-	 *
+	 * 
 	 * @throws CrawljaxException
 	 *             this exception is always thrown when instanced.
 	 */
@@ -49,7 +43,7 @@ public final class CrawljaxPluginsUtil {
 
 	/**
 	 * Set the Plugins, first removes all the currently loaded plugins and add the plugins supplied.
-	 *
+	 * 
 	 * @param plugins
 	 *            the list of plugins, if plugins is null no plugins are added.
 	 */
@@ -75,7 +69,7 @@ public final class CrawljaxPluginsUtil {
 	 * to a 'clean' state. The argument offered to the Plugin is a the current running instance of
 	 * EmbeddedBrowser. Warning the instance of the browser offered is not a clone but the current
 	 * and after wards used browser instance, changes and operations may cause 'strange' behaviour.
-	 *
+	 * 
 	 * @see EmbeddedBrowser
 	 * @param browser
 	 *            the browser instance to load to the plugin.
@@ -94,7 +88,7 @@ public final class CrawljaxPluginsUtil {
 	 * gone to the initial url. Not only the first time but also every time the Core navigates back.
 	 * Warning the instance of the browser offered is not a clone but the current and after wards
 	 * used browser instance, changes and operations may cause 'strange' behaviour.
-	 *
+	 * 
 	 * @param browser
 	 *            the embedded browser instance to load in the plugin.
 	 */
@@ -111,7 +105,7 @@ public final class CrawljaxPluginsUtil {
 	 * load and run the OnNewStatePlugins. OnNewStatePlugins are plugins that are ran when a new
 	 * state was found. This also happens for the Index State. Warning the session is not a clone,
 	 * chaning the session can cause strange behaviour of Crawljax.
-	 *
+	 * 
 	 * @param session
 	 *            the session to load in the plugin
 	 */
@@ -129,7 +123,7 @@ public final class CrawljaxPluginsUtil {
 	 * when the state machine is updated that is when the dom is changed after a click on a
 	 * clickable. When a invariant fails this kind of plugins are executed. Warning the session is
 	 * not a clone, chaning the session can cause strange behaviour of Crawljax.
-	 *
+	 * 
 	 * @param invariant
 	 *            the failed invariants
 	 * @param session
@@ -148,7 +142,7 @@ public final class CrawljaxPluginsUtil {
 	 * load and run the postCrawlingPlugins. PostCrawlingPlugins are executed after the crawling is
 	 * finished Warning: changing the session can change the behavior of other post crawl plugins.
 	 * It is not a clone!
-	 *
+	 * 
 	 * @param session
 	 *            the session to load in the plugin
 	 */
@@ -165,7 +159,7 @@ public final class CrawljaxPluginsUtil {
 	 * load and run the onRevisitStateValidator. As a difference to other SessionPlugins this plugin
 	 * needs an explicit current state because the session.getCurrentState() does not contain the
 	 * correct current state because we are in back-tracking
-	 *
+	 * 
 	 * @param session
 	 *            the session to load in the plugin
 	 * @param currentState
@@ -175,6 +169,7 @@ public final class CrawljaxPluginsUtil {
 		LOGGER.info("Running OnRevisitStatePlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnRevisitStatePlugin) {
+				LOGGER.info("Calling plugin " + plugin.getClass().getName());
 				((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
 			}
 		}
@@ -185,17 +180,18 @@ public final class CrawljaxPluginsUtil {
 	 * crawled (before firing events on the current DOM state). Example: filter candidate elements.
 	 * Warning the session and candidateElements are not clones, changes will result in changed
 	 * behaviour.
-	 *
+	 * 
 	 * @param session
 	 *            the crawl session.
 	 * @param candidateElements
 	 *            the elements which crawljax is about to crawl
 	 */
-	public static void runPreStateCrawlingPlugins(
-	        CrawlSession session, List<CandidateElement> candidateElements) {
+	public static void runPreStateCrawlingPlugins(CrawlSession session,
+	        List<CandidateElement> candidateElements) {
 		LOGGER.info("Running PreStateCrawlingPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof PreStateCrawlingPlugin) {
+				LOGGER.info("Calling plugin " + plugin.getClass().getName());
 				((PreStateCrawlingPlugin) plugin).preStateCrawling(session, candidateElements);
 			}
 		}
@@ -206,7 +202,7 @@ public final class CrawljaxPluginsUtil {
 	 * and provides Crawljax with the correct settings such as port number. Warning the config
 	 * argument is not a clone, changes will influence the behaviour of the Browser. Changes should
 	 * be returned as new Object.
-	 *
+	 * 
 	 * @param config
 	 *            The ProxyConfiguration to use.
 	 */
@@ -214,6 +210,7 @@ public final class CrawljaxPluginsUtil {
 		LOGGER.info("Running ProxyServerPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof ProxyServerPlugin) {
+				LOGGER.info("Calling plugin " + plugin.getClass().getName());
 				((ProxyServerPlugin) plugin).proxyServer(config);
 			}
 		}
@@ -222,7 +219,7 @@ public final class CrawljaxPluginsUtil {
 	/**
 	 * Load and run the guidedCrawlingPlugins. guidedServerPlugins are used to have control of the
 	 * crawling on certain states.
-	 *
+	 * 
 	 * @param controller
 	 *            the crawljax controller instance.
 	 * @param session
@@ -239,9 +236,10 @@ public final class CrawljaxPluginsUtil {
 		LOGGER.info("Running GuidedCrawlingPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof GuidedCrawlingPlugin) {
+				LOGGER.info("Calling plugin " + plugin.getClass().getName());
 				StateVertix currentState = session.getCurrentState();
-				((GuidedCrawlingPlugin) plugin).guidedCrawling(
-				        currentState, controller, session, exactEventPaths, stateMachine);
+				((GuidedCrawlingPlugin) plugin).guidedCrawling(currentState, controller, session,
+				        exactEventPaths, stateMachine);
 			}
 		}
 	}
@@ -249,7 +247,7 @@ public final class CrawljaxPluginsUtil {
 	/**
 	 * Load and run the OnFireEventFailedPlugins, this call has been made from the fireEvent when
 	 * the event is not fireable. the Path is the Path leading TO this eventable (not included).
-	 *
+	 * 
 	 * @param eventable
 	 *            the eventable not able to fire.
 	 * @param path
@@ -259,6 +257,7 @@ public final class CrawljaxPluginsUtil {
 		LOGGER.info("Running OnFireEventFailedPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnFireEventFailedPlugin) {
+				LOGGER.info("Calling plugin " + plugin.getClass().getName());
 				((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
 			}
 		}
@@ -269,7 +268,7 @@ public final class CrawljaxPluginsUtil {
 	 * new browser has been created and ready to be used by the Crawler. The PreCrawling plugins are
 	 * executed before these plugins are executed except that the precrawling plugins are only
 	 * executed on the first created browser.
-	 *
+	 * 
 	 * @param newBrowser
 	 *            the new created browser object
 	 */
@@ -277,6 +276,7 @@ public final class CrawljaxPluginsUtil {
 		LOGGER.info("Running OnBrowserCreatedPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnBrowserCreatedPlugin) {
+				LOGGER.info("Calling plugin " + plugin.getClass().getName());
 				((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
 			}
 		}

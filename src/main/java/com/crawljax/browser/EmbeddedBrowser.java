@@ -1,6 +1,3 @@
-/**
- * Created Jan 8, 2008
- */
 package com.crawljax.browser;
 
 import java.io.File;
@@ -16,8 +13,6 @@ import com.crawljax.forms.FormInput;
 /**
  * Browser interface used by Crawjax.
  * 
- * @author mesbah
- * @version $Id$
  */
 public interface EmbeddedBrowser {
 
@@ -25,7 +20,7 @@ public interface EmbeddedBrowser {
 	 * Browser types.
 	 */
 	public enum BrowserType {
-		firefox, ie, chrome, remote, htmlunit
+		firefox, ie, chrome, remote, htmlunit, android, iphone
 	}
 
 	/**
@@ -46,12 +41,12 @@ public interface EmbeddedBrowser {
 	boolean fireEvent(Eventable event);
 
 	/**
-	 * @return the DOM string with all the iframe contents.
+	 * @return the DOM string with all the iframe content.
 	 */
 	String getDom();
 
 	/**
-	 * @return the DOM string without the iframe contents
+	 * @return the DOM string WITHOUT the iframe content.
 	 */
 	String getDomWithoutIframeContent();
 
