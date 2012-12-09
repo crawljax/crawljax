@@ -2,22 +2,24 @@ package com.crawljax.browser;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.iphone.IPhoneDriver;
 
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 
 /**
- * This class represents the default Crawljax used implementation of the BrowserBuilder. It's based
- * on the WebDriver implementations offered by Crawljax.
+ * Default implementation of the EmbeddedBrowserBuilder based on Selenium WebDriver API.
  * 
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
+
+	private static final Logger LOGGER = Logger.getLogger(WebDriverBrowserBuilder.class);
 
 	/**
 	 * Build a new WebDriver based EmbeddedBrowser.
@@ -71,13 +73,29 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case remote:
-				return WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
-				        .getRemoteHubUrl(), configuration.getFilterAttributeNames(),
+				return WebDriverBackedEmbeddedBrowser.withRemoteDriver(
+				        configuration.getRemoteHubUrl(), configuration.getFilterAttributeNames(),
 				        configuration.getCrawlSpecificationReader().getWaitAfterEvent(),
 				        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case htmlunit:
 				return WebDriverBackedEmbeddedBrowser.withDriver(new HtmlUnitDriver(true),
+				        configuration.getFilterAttributeNames(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
+
+			case iphone:
+				try {
+					return WebDriverBackedEmbeddedBrowser.withDriver(new IPhoneDriver(),
+					        configuration.getFilterAttributeNames(), configuration
+					                .getCrawlSpecificationReader().getWaitAfterEvent(),
+					        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl());
+				} catch (Exception e) {
+					LOGGER.error(e.getMessage(), e);
+				}
+
+			case android:
+				return WebDriverBackedEmbeddedBrowser.withDriver(new AndroidDriver(),
 				        configuration.getFilterAttributeNames(), configuration
 				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
 				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
