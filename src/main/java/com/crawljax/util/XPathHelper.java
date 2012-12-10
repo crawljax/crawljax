@@ -183,17 +183,19 @@ public final class XPathHelper {
 	 */
 	public static String formatXPath(String xpath) {
 		String formatted = xpath;
-		Pattern p = Pattern.compile("(/[a-z]+)");
-		Matcher m = p.matcher(xpath);
+		Pattern p = Pattern.compile("(/(?:[-a-zA-Z]+::)?+)([a-zA-Z]+)");
+		Matcher m = p.matcher(formatted);
 
-		while (m.find()) {
-			formatted = m.replaceFirst(m.group().toUpperCase());
+		for (int i = 0; m.find(i); i++) {
+			i = m.start();
+			formatted = m.replaceFirst(m.group(1) + m.group(2).toUpperCase());
 			m = p.matcher(formatted);
 		}
-		p = Pattern.compile("(@[A-Z]+)");
+		p = Pattern.compile("(@[a-zA-Z]+)");
 		m = p.matcher(formatted);
 
-		while (m.find()) {
+		for (int i = 0; m.find(i); i++) {
+			i = m.start();
 			formatted = m.replaceFirst(m.group().toLowerCase());
 			m = p.matcher(formatted);
 		}
