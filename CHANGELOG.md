@@ -1,3 +1,8 @@
+## Version 2.1
+### New features:
+* [Fixed Issues](https://github.com/crawljax/crawljax/compare/crawljax-2.0%E2%80%A6crawljax-2.1)
+
+
 ## Version 2.0
 ### New features:
 * Support for concurrent multi-browser crawling. The number of browsers can be configured using the ThreadConfiguration API.
