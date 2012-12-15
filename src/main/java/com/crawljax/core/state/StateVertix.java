@@ -1,14 +1,12 @@
 package com.crawljax.core.state;
 
-import com.crawljax.core.CandidateCrawlAction;
-import com.crawljax.core.CandidateElement;
-import com.crawljax.core.CandidateElementExtractor;
-import com.crawljax.core.CrawlQueueManager;
-import com.crawljax.core.Crawler;
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.TagElement;
-import com.crawljax.core.state.Eventable.EventType;
-import com.crawljax.util.Helper;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -18,13 +16,15 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingDeque;
+import com.crawljax.core.CandidateCrawlAction;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.CandidateElementExtractor;
+import com.crawljax.core.CrawlQueueManager;
+import com.crawljax.core.Crawler;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.TagElement;
+import com.crawljax.core.state.Eventable.EventType;
+import com.crawljax.util.Helper;
 
 /**
  * The state vertix class which represents a state in the browser. This class implements the
@@ -170,8 +170,8 @@ public class StateVertix implements Serializable {
 		}
 		final StateVertix rhs = (StateVertix) obj;
 
-		return new EqualsBuilder().append(this.strippedDom, rhs.getStrippedDom()).append(
-		        this.guidedCrawling, rhs.guidedCrawling).isEquals();
+		return new EqualsBuilder().append(this.strippedDom, rhs.getStrippedDom())
+		        .append(this.guidedCrawling, rhs.guidedCrawling).isEquals();
 	}
 
 	/**
@@ -315,28 +315,29 @@ public class StateVertix implements Serializable {
 		}
 		return list;
 	}
-        /**
-         * Removes Candidate Actions on candidateElements that have been 
-         * removed by the pre-state crawl plugin.
-         * 
-         * @param candidateElements 
-         */
-        public void filterCandidateActions(List <CandidateElement> candidateElements) {
-            if (candidateActions == null) {
-            return;
-        }
-            Iterator iter = candidateActions.iterator();
-            CandidateCrawlAction currentAction;
-            while (iter.hasNext()) {
-                currentAction = (CandidateCrawlAction) iter.next();
-                if ( !candidateElements.contains(
-                    currentAction.getCandidateElement() ) ) {
-                    iter.remove();  
-                    LOGGER.info("filtered candidate action: " + currentAction.getEventType().name() + " on " + currentAction.getCandidateElement().getGeneralString() );
 
-                }
-            }            
-        }
+	/**
+	 * Removes Candidate Actions on candidateElements that have been removed by the pre-state crawl
+	 * plugin.
+	 * 
+	 * @param candidateElements
+	 */
+	public void filterCandidateActions(List<CandidateElement> candidateElements) {
+		if (candidateActions == null) {
+			return;
+		}
+		Iterator<CandidateCrawlAction> iter = candidateActions.iterator();
+		CandidateCrawlAction currentAction;
+		while (iter.hasNext()) {
+			currentAction = (CandidateCrawlAction) iter.next();
+			if (!candidateElements.contains(currentAction.getCandidateElement())) {
+				iter.remove();
+				LOGGER.info("filtered candidate action: " + currentAction.getEventType().name()
+				        + " on " + currentAction.getCandidateElement().getGeneralString());
+
+			}
+		}
+	}
 
 	/**
 	 * @return a Document instance of the dom string.

@@ -579,13 +579,14 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			nodeList.add(frameElement);
 		}
 
-                // Guifre Ruiz: Added support for FRAMES
-                frameNodes = orig.getElementsByTagName("FRAME");
-                for (int i = 0; i < frameNodes.getLength(); i++) {
-                    Element frameElement = (Element) frameNodes.item(i);
-                    nodeList.add(frameElement);
-                }
-                		for (int i = 0; i < nodeList.size(); i++) {
+		// Added support for FRAMES
+		frameNodes = orig.getElementsByTagName("FRAME");
+		for (int i = 0; i < frameNodes.getLength(); i++) {
+			Element frameElement = (Element) frameNodes.item(i);
+			nodeList.add(frameElement);
+		}
+
+		for (int i = 0; i < nodeList.size(); i++) {
 			String frameIdentification = "";
 
 			if (topFrame != null && !topFrame.equals("")) {

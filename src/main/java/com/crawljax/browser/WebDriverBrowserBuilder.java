@@ -86,8 +86,6 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 				        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case htmlunit:
-
-				// Guifre Ruiz: Added proxy config support for HtmlUnit
 				HtmlUnitDriver driverHtmlUnit = new HtmlUnitDriver(true);
 				driverHtmlUnit.setProxy(configuration.getProxyConfiguration().getHostname(),
 				        configuration.getProxyConfiguration().getPort());

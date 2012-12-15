@@ -1,6 +1,8 @@
 package com.crawljax.core;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -9,13 +11,17 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.exception.CrawlPathToException;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
-import com.crawljax.core.state.*;
+import com.crawljax.core.state.Attribute;
+import com.crawljax.core.state.CrawlPath;
+import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Eventable.EventType;
+import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.core.state.StateMachine;
+import com.crawljax.core.state.StateVertix;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Class that performs crawl actions. It is designed to be run inside a Thread.
@@ -297,25 +303,25 @@ public class Crawler implements Runnable {
 		// load input element values
 		this.handleInputElements(eventable);
 
-                // Guifre Ruiz: Included support for meta refresh tags
-                if (eventable.getElement().getTag().toLowerCase().equals("meta")) {
-                    Pattern p = Pattern.compile("(\\d+);\\s+URL=(.*)");
-                    for (Attribute e : eventable.getElement().getAttributes()) {
-                        Matcher m = p.matcher(e.getValue());
-                        if (m.find()) {
-                            if(LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("URL:" + m.group(2));
-                            }
-                            try {
-                                //seconds*1000=ms
-                                Thread.sleep(Integer.parseInt(m.group(1)) * 1000);
-                            } catch (Exception ex) {
-                                LOGGER.error(ex);
-                            }
-                        }
-                    }
-                }
-                
+		// support for meta refresh tags
+		if (eventable.getElement().getTag().toLowerCase().equals("meta")) {
+			Pattern p = Pattern.compile("(\\d+);\\s+URL=(.*)");
+			for (Attribute e : eventable.getElement().getAttributes()) {
+				Matcher m = p.matcher(e.getValue());
+				if (m.find()) {
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug("URL:" + m.group(2));
+					}
+					try {
+						// seconds*1000=ms
+						Thread.sleep(Integer.parseInt(m.group(1)) * 1000);
+					} catch (Exception ex) {
+						LOGGER.error(ex);
+					}
+				}
+			}
+		}
+
 		LOGGER.info("Executing " + eventable.getEventType() + " on element: " + eventable
 		        + "; State: " + this.getStateMachine().getCurrentState().getName());
 		if (this.fireEvent(eventable)) {
@@ -449,11 +455,12 @@ public class Crawler implements Runnable {
 		        configurationReader.getCrawlSpecificationReader().getClickOnce())) {
 			// Only execute the preStateCrawlingPlugins when it's the first time
 			LOGGER.info("Starting preStateCrawlingPlugins...");
-                        List<CandidateElement> candidateElements = orrigionalState.getUnprocessedCandidateElements();
+			List<CandidateElement> candidateElements =
+			        orrigionalState.getUnprocessedCandidateElements();
 			CrawljaxPluginsUtil.runPreStateCrawlingPlugins(controller.getSession(),
 			        candidateElements);
-                        // update crawlActions
-                        orrigionalState.filterCandidateActions(candidateElements);            
+			// update crawlActions
+			orrigionalState.filterCandidateActions(candidateElements);
 		}
 
 		CandidateCrawlAction action =
