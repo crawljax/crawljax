@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
@@ -33,7 +34,7 @@ import com.crawljax.util.ElementResolver;
  */
 public class Crawler implements Runnable {
 
-	private static final Logger LOGGER = Logger.getLogger(Crawler.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(Crawler.class.getName());
 
 	private static final int ONE_SECOND = 1000;
 
@@ -316,7 +317,7 @@ public class Crawler implements Runnable {
 						// seconds*1000=ms
 						Thread.sleep(Integer.parseInt(m.group(1)) * 1000);
 					} catch (Exception ex) {
-						LOGGER.error(ex);
+						LOGGER.error(ex.getLocalizedMessage(), ex);
 					}
 				}
 			}

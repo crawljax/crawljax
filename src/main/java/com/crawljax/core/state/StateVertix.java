@@ -12,7 +12,8 @@ import net.jcip.annotations.GuardedBy;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -39,7 +40,7 @@ import com.crawljax.util.Helper;
 public class StateVertix implements Serializable {
 
 	private static final long serialVersionUID = 123400017983488L;
-	private static final Logger LOGGER = Logger.getLogger(StateVertix.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(StateVertix.class);
 	private long id;
 	private String name;
 	private String dom;

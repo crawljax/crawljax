@@ -2,7 +2,8 @@ package com.crawljax.browser;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -19,7 +20,7 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
  */
 public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 
-	private static final Logger LOGGER = Logger.getLogger(WebDriverBrowserBuilder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverBrowserBuilder.class);
 
 	/**
 	 * Build a new WebDriver based EmbeddedBrowser.

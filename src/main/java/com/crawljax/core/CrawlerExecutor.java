@@ -1,6 +1,7 @@
 package com.crawljax.core;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version $Id$
  */
 public class CrawlerExecutor extends ThreadPoolExecutor {
-	private static final Logger LOGGER = Logger.getLogger(CrawlerExecutor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawlerExecutor.class);
 	/**
 	 * Counter for the number of Crawlers that in total have run. Every time a new Crawler beginning
 	 * executing this counter is incremented.

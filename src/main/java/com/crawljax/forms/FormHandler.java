@@ -11,7 +11,8 @@ import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,7 +34,7 @@ import javax.xml.xpath.XPathExpressionException;
  * @version $Id$
  */
 public class FormHandler {
-	private static final Logger LOGGER = Logger.getLogger(FormHandler.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(FormHandler.class.getName());
 
 	private boolean randomFieldValue = false;
 	private final EmbeddedBrowser browser;
