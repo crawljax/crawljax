@@ -16,10 +16,6 @@ import com.crawljax.oraclecomparator.comparators.XPathExpressionComparator;
 
 import org.junit.Test;
 
-/**
- * @author danny
- * @version $Id$
- */
 public class OracleTest {
 
 	private void compareTwoDomsWithComparatorEqual(

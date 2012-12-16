@@ -27,13 +27,14 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.demo.RunWithWebServer;
+import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
 import com.google.common.collect.Maps;
 
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
  */
-public class PluginsTest {
+public class PluginsTest implements BrowserTest {
 
 	private static CrawljaxController controller;
 	private static CrawljaxConfiguration config;

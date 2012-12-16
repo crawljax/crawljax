@@ -9,9 +9,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-public class NestedFramesTest {
+import com.crawljax.test.BrowserTest;
 
-	WebDriver driver = new FirefoxDriver();
+public class NestedFramesTest implements BrowserTest {
+
+	private WebDriver driver = new FirefoxDriver();
 
 	@Test
 	public void testNestedFramesIndex() {

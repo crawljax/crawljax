@@ -3,8 +3,9 @@ package com.crawljax.core.configuration;
 import org.junit.Test;
 
 import com.crawljax.core.CrawljaxController;
+import com.crawljax.test.BrowserTest;
 
-public class PropertiesFileTest {
+public class PropertiesFileTest implements BrowserTest {
 
 	@Test
 	public void readProperties() throws Exception {

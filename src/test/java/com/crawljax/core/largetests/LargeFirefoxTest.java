@@ -7,8 +7,9 @@ import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.ConfigurationTest;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ThreadConfiguration;
+import com.crawljax.test.BrowserTest;
 
-public class LargeFirefoxTest extends LargeTestSuper {
+public class LargeFirefoxTest extends LargeTestSuper implements BrowserTest {
 
 	private static final int waitAfterEvent = 200;
 	private static final int waitAfterReload = 200;

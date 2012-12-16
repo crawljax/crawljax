@@ -9,14 +9,12 @@ import org.junit.Before;
 
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.test.BrowserTest;
 
 /**
  * This abstract class is used a specification of all the iframe related tests.
- * 
- * @author Stefan Lenselink <slenselink@google.com>
- * @version $Id$
  */
-public abstract class IFrameSuper {
+public abstract class IFrameSuper implements BrowserTest {
 
 	protected CrawljaxController crawljax;
 

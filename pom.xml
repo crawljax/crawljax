@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax</artifactId>
@@ -47,7 +48,7 @@
 		<system>GitHub</system>
 		<url>https://github.com/crawljax/crawljax/issues</url>
 	</issueManagement>
-	
+
 	<ciManagement>
 		<system>Travis</system>
 		<url>https://travis-ci.org/crawljax/crawljax</url>
@@ -73,6 +74,51 @@
 			<archive>http://groups.google.com/group/crawljax</archive>
 		</mailingList>
 	</mailingLists>
+
+	<repositories>
+		<repository>
+			<id>maven.xwiki.org</id>
+			<url>http://maven.xwiki.org/externals</url>
+		</repository>
+	</repositories>
+
+	<profiles>
+		<profile>
+			<id>sign-artifacts</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<tests.include>com/crawljax/test/FastTests.java</tests.include>
+			</properties>
+		</profile>
+		<profile>
+			<id>integrationtests</id>
+			<properties>
+				<tests.include>com/crawljax/test/*</tests.include>
+			</properties>
+		</profile>
+	</profiles>
 
 	<developers>
 		<developer>
@@ -106,12 +152,6 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-		</dependency>
-
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
@@ -142,7 +182,7 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>net.sf.jgrapht</groupId>
+			<groupId>net.sf.jgrapht</groupId>
 			<artifactId>jgrapht</artifactId>
 			<version>0.8.3</version>
 		</dependency>
@@ -228,17 +268,32 @@
 			<artifactId>guava</artifactId>
 			<version>13.0.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>8.1.8.v20121106</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Test dependencies -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>cpsuite</groupId>
+			<artifactId>cpsuite</artifactId>
+			<version>1.2.5</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -409,41 +464,13 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12.4</version>
+				<configuration>
+	<include>${tests.include}</include>
+</configuration>
 			</plugin>
 
 		</plugins>
 	</build>
-
-
-
-	<profiles>
-		<profile>
-			<id>release-sign-artifacts</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 
 </project>

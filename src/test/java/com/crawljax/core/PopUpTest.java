@@ -10,8 +10,9 @@ import org.junit.Test;
 
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.test.BrowserTest;
 
-public class PopUpTest {
+public class PopUpTest implements BrowserTest {
 	static CrawljaxController crawljax;
 
 	@BeforeClass

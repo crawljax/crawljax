@@ -19,13 +19,14 @@ import org.xml.sax.SAXException;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
+import com.crawljax.test.BrowserTest;
 
 /**
  * Test for the Helper class.
  * 
  * @author Ali Mesbah
  */
-public class HelperTest {
+public class HelperTest implements BrowserTest {
 
 	private static final String INDEX = "src/test/resources/site/index.html";
 

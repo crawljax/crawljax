@@ -9,8 +9,9 @@ import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.test.BrowserTest;
 
-public class LargeTestIE extends LargeTestSuper {
+public class LargeTestIE extends LargeTestSuper implements BrowserTest {
 
 	private static final int waitAfterEvent = 800;
 	private static final int waitAfterReload = 400;

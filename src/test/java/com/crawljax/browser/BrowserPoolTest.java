@@ -1,9 +1,7 @@
 package com.crawljax.browser;
 
-import static org.junit.Assert.fail;
-import org.junit.Assert;
-
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -11,14 +9,12 @@ import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.configuration.ThreadConfiguration;
+import com.crawljax.test.BrowserTest;
 
 /**
  * This test, test the (public) operations from the Browserpool.
- * 
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
-public class BrowserPoolTest {
+public class BrowserPoolTest implements BrowserTest {
 	private static final int TIMEOUT = 100000; // 100 Sec.
 	private final BrowserPool pool = new BrowserPool(new CrawljaxConfigurationReader(
 	        new CrawljaxConfiguration()));

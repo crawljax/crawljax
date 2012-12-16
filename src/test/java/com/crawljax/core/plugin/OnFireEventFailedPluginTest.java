@@ -18,14 +18,9 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.test.BrowserTest;
 
-/**
- * Test case for bug #8.
- * 
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
- */
-public class OnFireEventFailedPluginTest {
+public class OnFireEventFailedPluginTest implements BrowserTest {
 	private static CrawljaxController controller;
 	private static CrawljaxConfiguration config;
 	private static int hit;
@@ -34,8 +29,10 @@ public class OnFireEventFailedPluginTest {
 	public static void setup() throws ConfigurationException {
 
 		CrawlSpecification spec =
-		        new CrawlSpecification("file://"
-		                + new File("src/test/resources/site/crawler/index.html").getAbsolutePath());
+		        new CrawlSpecification(
+		                "file://"
+		                        + new File("src/test/resources/site/crawler/index.html")
+		                                .getAbsolutePath());
 		spec.clickDefaultElements();
 
 		config = new CrawljaxConfiguration();

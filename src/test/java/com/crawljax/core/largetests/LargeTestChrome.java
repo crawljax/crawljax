@@ -5,8 +5,9 @@ import org.junit.BeforeClass;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.test.BrowserTest;
 
-public class LargeTestChrome extends LargeTestSuper {
+public class LargeTestChrome extends LargeTestSuper implements BrowserTest {
 
 	private static final int waitAfterEvent = 100;
 	private static final int waitAfterReload = 100;

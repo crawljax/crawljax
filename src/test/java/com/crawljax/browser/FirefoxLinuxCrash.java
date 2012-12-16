@@ -9,17 +9,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import com.crawljax.test.BrowserTest;
+
 import java.io.IOException;
 
 /**
  * This is the base class for WebDriver based Firefox 'Crash' Tests running on Linux only. It's a
  * Linux only implementation because of its 'killall' statement. Caution: This test based on this
  * class will most-likely KILL all your running firefox instances.
- *
- * @version $Id$
- * @author slenselink@google.com (Stefan Lenselink)
  */
-public abstract class FirefoxLinuxCrash {
+public abstract class FirefoxLinuxCrash implements BrowserTest {
 
 	private static final int DEFAULT_SLEEP_TIMEOUT = 1000;
 	private WebDriver driver;
@@ -40,40 +39,41 @@ public abstract class FirefoxLinuxCrash {
 				return false;
 		}
 	}
-	
+
 	/**
-     * Start a browser, than kill it hard!
-     * @throws InterruptedException
-     *             when the Thread.sleep can not be executed.
-     */
-    @Before
+	 * Start a browser, than kill it hard!
+	 * 
+	 * @throws InterruptedException
+	 *             when the Thread.sleep can not be executed.
+	 */
+	@Before
 	public void setUp() throws InterruptedException {
 		Assume.assumeTrue(onPosix());
-		
+
 		try {
 			driver = new FirefoxDriver();
 		} catch (WebDriverException e) {
 			Assume.assumeNoException(e);
 		}
-		
+
 		Assume.assumeNotNull(driver);
-    	
-    	Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
-    	
-    	try {
+
+		Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
+
+		try {
 			Runtime.getRuntime().exec("/usr/bin/killall firefox-bin --verbose");
 		} catch (IOException e) {
 			Assume.assumeNoException(e);
 		}
-		
-    	Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
-    }
 
-    /**
+		Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
+	}
+
+	/**
 	 * @return the 'crashed'-driver
 	 */
 	public WebDriver getCrashedDriver() {
 		return driver;
 	}
-    
+
 }

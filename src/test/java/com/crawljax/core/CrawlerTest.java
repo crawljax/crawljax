@@ -1,36 +1,37 @@
 package com.crawljax.core;
 
-import com.crawljax.core.configuration.CrawlSpecification;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.CrawlPath;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateVertix;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
+import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.state.CrawlPath;
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.core.state.StateVertix;
+import com.crawljax.test.BrowserTest;
 
 /**
  * Test class for the Crawler testing.
- *
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
-public class CrawlerTest {
+public class CrawlerTest implements BrowserTest {
 
 	private Collection<List<Eventable>> paths;
 	private StateVertix index;
 
 	private CrawljaxConfiguration buildController() throws ConfigurationException {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
-		CrawlSpecification spec = new CrawlSpecification(
-		        "file://" + new File("src/test/resources/site/crawler/index.html").getAbsolutePath());
+		CrawlSpecification spec =
+		        new CrawlSpecification(
+		                "file://"
+		                        + new File("src/test/resources/site/crawler/index.html")
+		                                .getAbsolutePath());
 		spec.click("a");
 		config.setCrawlSpecification(spec);
 		return config;
@@ -42,15 +43,6 @@ public class CrawlerTest {
 		controller.run();
 		paths = controller.getSession().getCrawlPaths();
 		index = controller.getSession().getInitialState();
-		// controller.run();
-		// Crawler c = controller.getCrawler();
-		// firstPath = c.getExacteventpath();
-		// for (Eventable eventable : firstPath) {
-		// last = eventable;
-		// }
-		// newPath = new ArrayList<Eventable>();
-		// newPath.addAll(firstPath);
-		// newPath.remove(last);
 	}
 
 	@Test
@@ -70,9 +62,9 @@ public class CrawlerTest {
 						Assert.fail(e.getMessage());
 					}
 					CrawlPath newPath = controller.getSession().getCurrentCrawlPath();
-					Assert
-					        .assertEquals(
-					                "Path found by Controller driven Crawling equals the path found in the Crawler", path, newPath);
+					Assert.assertEquals(
+					        "Path found by Controller driven Crawling equals the path found in the Crawler",
+					        path, newPath);
 					super.shutdown();
 				}
 			};

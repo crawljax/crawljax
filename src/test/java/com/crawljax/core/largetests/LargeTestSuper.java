@@ -1,7 +1,8 @@
 package com.crawljax.core.largetests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 import com.crawljax.condition.NotRegexCondition;
@@ -29,9 +29,9 @@ import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.core.state.Identification.How;
 import com.crawljax.oraclecomparator.comparators.DateComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
 

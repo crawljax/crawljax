@@ -2,7 +2,7 @@
 
 package com.crawljax.browser;
 
-import static org.hamcrest.core.IsInstanceOf.any;
+import static org.hamcrest.core.IsAnything.any;
 
 import java.net.ConnectException;
 
