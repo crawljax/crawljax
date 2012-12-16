@@ -10,8 +10,17 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.w3c.dom.NodeList;
+
 import com.crawljax.browser.BrowserPool;
-import com.crawljax.browser.DummyBrowser;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.invariant.Invariant;
@@ -25,25 +34,16 @@ import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.w3c.dom.NodeList;
-
-import java.util.ArrayList;
-
-/**
- * @author mesbah
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
- */
+@RunWith(MockitoJUnitRunner.class)
 public class StateMachineTest {
 	private StateMachine sm;
 	private final StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
 
-	private final DummyBrowser dummyBrowser = new DummyBrowser();
-	private final BrowserPool dummyPool =
-	        new BrowserPool(new CrawljaxConfigurationReader(new CrawljaxConfiguration()));
+	private final BrowserPool dummyPool = new BrowserPool(new CrawljaxConfigurationReader(
+	        new CrawljaxConfiguration()));
+
+	@Mock
+	private EmbeddedBrowser dummyBrowser;
 
 	private static boolean hit = false;
 

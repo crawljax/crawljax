@@ -1,38 +1,48 @@
 package com.crawljax.condition.browserwaiter;
 
-import com.crawljax.browser.DummyBrowser;
-import com.crawljax.browser.EmbeddedBrowser;
-
-import org.junit.Assert;
-
-import org.junit.Test;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.crawljax.browser.EmbeddedBrowser;
+
 /**
  * This test case tests the WaitCondition class. Issue #30 was covered by this test case.
- * 
- * @author slenselink@google.com (Stefan Lenselink)
- * @version $Id$
  */
+@RunWith(MockitoJUnitRunner.class)
 public class WaitConditionTest {
+
+	@Mock
+	private EmbeddedBrowser browser;
+
+	@Before
+	public void before() {
+		when(browser.getCurrentUrl()).thenReturn("tmp");
+	}
 
 	@Test
 	public void testWaitConditionNoIndexOutOfBounceAfterTwoTries() {
 		WaitCondition wc = new WaitCondition("tmp", 2000, new TimeoutExpectedCondition());
-		Assert.assertEquals("Wait timed out", 0, wc.testAndWait(new DummyBrowser("tmp")));
+		Assert.assertEquals("Wait timed out", 0, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionSuccessZeroSpecified() {
 		WaitCondition wc = new WaitCondition("tmp", 2000, new ArrayList<ExpectedCondition>());
-		Assert.assertEquals("Wait success", 1, wc.testAndWait(new DummyBrowser("tmp")));
+		Assert.assertEquals("Wait success", 1, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionSuccessZeroSpecifiedZeroTimeout() {
 		WaitCondition wc = new WaitCondition("tmp", 0, new ArrayList<ExpectedCondition>());
-		Assert.assertEquals("Wait success", 1, wc.testAndWait(new DummyBrowser("tmp")));
+		Assert.assertEquals("Wait success", 1, wc.testAndWait(browser));
 	}
 
 	@Test
@@ -49,14 +59,14 @@ public class WaitConditionTest {
 				return true;
 			}
 		});
-		Assert.assertEquals("Wait timed out", 0, wc.testAndWait(new DummyBrowser("tmp")));
+		Assert.assertEquals("Wait timed out", 0, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionNotRunBecauseUrl() {
 		WaitCondition wc = new WaitCondition("tmp/foo", 2000, new TimeoutExpectedCondition());
 		Assert.assertEquals("Wait not run because browser url missmatch", -1,
-		        wc.testAndWait(new DummyBrowser("tmp")));
+		        wc.testAndWait(browser));
 	}
 
 	@Test
@@ -67,7 +77,7 @@ public class WaitConditionTest {
 				return true;
 			}
 		});
-		Assert.assertEquals("Wait succeded", 1, wc.testAndWait(new DummyBrowser("tmp")));
+		Assert.assertEquals("Wait succeded", 1, wc.testAndWait(browser));
 	}
 
 	@Test
@@ -78,7 +88,7 @@ public class WaitConditionTest {
 				return true;
 			}
 		});
-		Assert.assertEquals("Wait succeded", 0, wc.testAndWait(new DummyBrowser("tmp")));
+		Assert.assertEquals("Wait succeded", 0, wc.testAndWait(browser));
 	}
 
 	/**
@@ -88,6 +98,7 @@ public class WaitConditionTest {
 	 */
 	private static class TimeoutExpectedCondition implements ExpectedCondition {
 		private int count = 0;
+
 		@Override
 		public boolean isSatisfied(EmbeddedBrowser browser) {
 			count++;
