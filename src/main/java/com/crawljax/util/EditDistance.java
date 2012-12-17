@@ -1,7 +1,8 @@
 package com.crawljax.util;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Edit Distance class.
@@ -10,7 +11,7 @@ import org.apache.log4j.Logger;
  * @version $Id$
  */
 public final class EditDistance {
-	private static final Logger LOGGER = Logger.getLogger(EditDistance.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(EditDistance.class.getName());
 
 	private EditDistance() {
 	}

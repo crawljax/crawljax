@@ -4,7 +4,8 @@ import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -24,7 +25,7 @@ import javax.xml.xpath.XPathExpressionException;
  */
 public class StyleComparator extends AbstractComparator {
 
-	private static final Logger LOGGER = Logger.getLogger(StyleComparator.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(StyleComparator.class.getName());
 
 	private static final String[] IGNORE_ATTRIBUTES =
 	        { "align", "bgcolor", "height", "valign", "width", "type", "dir" };

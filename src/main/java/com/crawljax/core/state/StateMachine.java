@@ -6,7 +6,8 @@ package com.crawljax.core.state;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
@@ -21,7 +22,7 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
  * @version $Id$
  */
 public class StateMachine {
-	private static final Logger LOGGER = Logger.getLogger(StateMachine.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(StateMachine.class.getName());
 	/**
 	 * One-to-one relation with the StateFlowGraph, the stateFlowGraph variable is never changed.
 	 */

@@ -11,7 +11,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -56,7 +57,7 @@ import com.crawljax.util.Helper;
  */
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private long crawlWaitEvent;
-	private static final Logger LOGGER = Logger.getLogger(WebDriverBackedEmbeddedBrowser.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverBackedEmbeddedBrowser.class);
 	private final WebDriver browser;
 
 	private List<String> filterAttributes;

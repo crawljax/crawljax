@@ -4,7 +4,8 @@ import com.crawljax.browser.EmbeddedBrowser;
 
 import net.jcip.annotations.ThreadSafe;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @ThreadSafe
 public class WaitCondition {
-	private static final Logger LOGGER = Logger.getLogger(WaitCondition.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(WaitCondition.class.getName());
 
 	private static final int WAITTIME = 500;
 

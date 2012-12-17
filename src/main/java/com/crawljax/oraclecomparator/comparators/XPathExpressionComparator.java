@@ -7,7 +7,8 @@ import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -30,7 +31,7 @@ import javax.xml.xpath.XPathExpressionException;
 public class XPathExpressionComparator extends AbstractComparator {
 
 	private static final Logger LOGGER =
-	        Logger.getLogger(XPathExpressionComparator.class.getName());
+	        LoggerFactory.getLogger(XPathExpressionComparator.class.getName());
 
 	private final List<String> expressions = new ArrayList<String>();
 

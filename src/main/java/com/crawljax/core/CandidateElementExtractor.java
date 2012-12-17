@@ -9,7 +9,8 @@ import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,7 +36,7 @@ import com.crawljax.util.XPathHelper;
  */
 public class CandidateElementExtractor {
 
-	private static final Logger LOGGER = Logger.getLogger(CandidateElementExtractor.class
+	private static final Logger LOGGER = LoggerFactory.getLogger(CandidateElementExtractor.class
 	        .getName());
 
 	private final ExtractorManager checkedElements;
