@@ -4,7 +4,8 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -21,7 +22,7 @@ import javax.xml.xpath.XPathExpressionException;
  * @version $Id$
  */
 public class ElementResolver {
-	private static final Logger LOGGER = Logger.getLogger(ElementResolver.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(ElementResolver.class.getName());
 
 	// private ElementResolverSettings settings = new
 	// ElementResolverSettings();

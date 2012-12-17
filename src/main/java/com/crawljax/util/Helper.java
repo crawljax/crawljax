@@ -35,7 +35,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
@@ -64,7 +65,7 @@ public final class Helper {
 
 	private static final int TEXT_CUTOFF = 50;
 
-	public static final Logger LOGGER = Logger.getLogger(Helper.class.getName());
+	public static final Logger LOGGER = LoggerFactory.getLogger(Helper.class.getName());
 
 	private Helper() {
 	}

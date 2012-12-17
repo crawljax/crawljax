@@ -2,7 +2,8 @@ package com.crawljax.core.plugin;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
@@ -24,7 +25,7 @@ public final class CrawljaxPluginsUtil {
 	/**
 	 * Make a new Log4j object used to do the logging.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(CrawljaxPluginsUtil.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawljaxPluginsUtil.class.getName());
 	private static final List<Plugin> PLUGINS = Lists.newArrayList();
 
 	/**
@@ -36,7 +37,7 @@ public final class CrawljaxPluginsUtil {
 	 *             this exception is always thrown when instanced.
 	 */
 	private CrawljaxPluginsUtil() throws CrawljaxException {
-		LOGGER.fatal("As this contructor is private and never used interal "
+		LOGGER.error("As this contructor is private and never used interal "
 		        + "in the CrawljaxPluginsUtil, this message may never appear");
 		throw new CrawljaxException("Called private never used contructor CrawljaxPluginsUtil()");
 	}

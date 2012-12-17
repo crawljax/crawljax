@@ -4,16 +4,18 @@
 	</formats>
 	<fileSets>
 		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory>/</outputDirectory>
 			<includes>
-				<include>Apache-2.0-LICENSE.txt</include>
-				<include>docs/README.txt</include>
+				<include>LICENSE</include>
+				<include>README*</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>src/main/resources</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
-				<include>log4j.properties</include>
+				<include>logback.xml</include>
 			</includes>
 		</fileSet>
 		<fileSet>
@@ -33,5 +35,14 @@
 			<unpack>false</unpack>
 			<scope>runtime</scope>
 		</dependencySet>
+		<dependencySet>
+            <outputDirectory>/lib</outputDirectory>
+            <useStrictFiltering>true</useStrictFiltering>
+            <scope>test</scope>
+            <includes>
+                <include>ch.qos.logback:logback-core</include>
+                <include>ch.qos.logback:logback-classic</include>
+            </includes>
+        </dependencySet>
 	</dependencySets>
 </assembly>  

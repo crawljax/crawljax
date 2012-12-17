@@ -1,5 +1,5 @@
 .classpath
 .project
 .settings/
-log4j.log
+*.log
 target/

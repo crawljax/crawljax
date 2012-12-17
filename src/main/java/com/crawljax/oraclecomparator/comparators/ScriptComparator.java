@@ -6,7 +6,8 @@ package com.crawljax.oraclecomparator.comparators;
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.Helper;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -18,7 +19,7 @@ import java.io.IOException;
  */
 public class ScriptComparator extends AbstractComparator {
 
-	private static final Logger LOGGER = Logger.getLogger(AbstractComparator.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComparator.class.getName());
 
 	/**
 	 * Default argument less constructor.

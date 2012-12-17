@@ -17,7 +17,8 @@ import com.crawljax.oraclecomparator.StateComparator;
 import net.jcip.annotations.GuardedBy;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class CrawljaxController implements CrawlQueueManager {
 
-	private static final Logger LOGGER = Logger.getLogger(CrawljaxController.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawljaxController.class.getName());
 
 	private CrawlSession session;
 

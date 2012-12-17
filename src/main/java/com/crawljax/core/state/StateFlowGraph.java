@@ -3,7 +3,8 @@ package com.crawljax.core.state;
 import net.jcip.annotations.GuardedBy;
 
 import org.apache.commons.math.stat.descriptive.moment.Mean;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.DijkstraShortestPath;
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version $Id$
  */
 public class StateFlowGraph {
-	private static final Logger LOGGER = Logger.getLogger(StateFlowGraph.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(StateFlowGraph.class.getName());
 
 	private final DirectedGraph<StateVertix, Eventable> sfg;
 

@@ -8,7 +8,8 @@ import com.crawljax.condition.Condition;
 
 import net.jcip.annotations.ThreadSafe;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 @ThreadSafe
 public class CrawlConditionChecker {
 
-	private static final Logger LOGGER = Logger.getLogger(CrawlConditionChecker.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawlConditionChecker.class.getName());
 
 	private final List<CrawlCondition> crawlConditions;
 

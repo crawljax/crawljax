@@ -9,7 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.util.Helper;
 
@@ -18,7 +19,7 @@ import com.crawljax.util.Helper;
  */
 public final class XMLObject {
 
-	private static final Logger LOGGER = Logger.getLogger(XMLObject.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(XMLObject.class);
 
 	private XMLObject() {
 

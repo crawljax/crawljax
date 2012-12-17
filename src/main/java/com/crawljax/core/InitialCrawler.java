@@ -2,7 +2,8 @@ package com.crawljax.core;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
@@ -21,7 +22,7 @@ import com.crawljax.core.state.StateVertix;
 
 public class InitialCrawler extends Crawler {
 
-	private static final Logger LOGGER = Logger.getLogger(InitialCrawler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(InitialCrawler.class);
 
 	private final CrawljaxController controller;
 
