@@ -17,5 +17,8 @@ License
 
 This project is licensed under the ["Apache License, Version 2.0"](https://github.com/crawljax/crawljax/blob/master/LICENSE).
 
+Changelog
+---------
 
+Detailed change history is avaialbe in our [changelog](https://github.com/crawljax/crawljax/blob/master/CHANGELOG.md).
 
