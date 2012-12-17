@@ -1,5 +1,5 @@
 
-## Version 2.2 (in preparation)
+## [Version 2.2 (in preparation)](https://github.com/crawljax/crawljax/issues?milestone=2)
 
 * Added support for html frame tags.
 * Included support for inspecting code within frame tags.
@@ -9,10 +9,11 @@
 prestatcrawling plugin.
 * Created a new test class that targets the WIVET benchmark.
 
-## Version 2.1
+## [Version 2.1](https://github.com/crawljax/crawljax/issues?milestone=1)
 
 ### Changes and Bug fixes: 
-* [Fixed Issues](https://github.com/crawljax/crawljax/compare/crawljax-2.0%E2%80%A6crawljax-2.1)
+* [View closed issues](https://github.com/crawljax/crawljax/issues?milestone=1&page=1&state=closed)
+* [View the full diff](https://github.com/crawljax/crawljax/compare/crawljax-2.0...crawljax-2.1)
 
 
 ## Version 2.0
