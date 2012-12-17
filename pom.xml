@@ -248,7 +248,7 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
