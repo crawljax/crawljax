@@ -4,7 +4,7 @@
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<!-- encoders are assigned by default the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<pattern>[%thread] %-5level - %msg%n</pattern>
 		</encoder>
 	</appender>
 
@@ -16,10 +16,11 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.crawljax" level="WARN" />
+	<logger name="com.crawljax" level="INFO" />
 
-	<root level="WARN">
+	<root level="INFO">
 		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
 	</root>
 
 </configuration>
