@@ -1,29 +1,31 @@
 package com.crawljax.core.state;
 
-import net.jcip.annotations.GuardedBy;
-
-import org.apache.commons.math.stat.descriptive.moment.Mean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.DijkstraShortestPath;
-import org.jgrapht.alg.KShortestPaths;
-import org.jgrapht.graph.DirectedMultigraph;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.jcip.annotations.GuardedBy;
+
+import org.apache.commons.math.stat.descriptive.moment.Mean;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.DijkstraShortestPath;
+import org.jgrapht.alg.KShortestPaths;
+import org.jgrapht.graph.DirectedMultigraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * The State-Flow Graph is a directed graph with states on the vertices and clickables on the edges.
- * 
- * @author mesbah
- * @version $Id$
+ * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
+ * clickables (Eventable) on the edges.
  */
-public class StateFlowGraph {
+public class StateFlowGraph implements Serializable {
+
+	private static final long serialVersionUID = 923403417983488L;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(StateFlowGraph.class.getName());
 
 	private final DirectedGraph<StateVertex, Eventable> sfg;

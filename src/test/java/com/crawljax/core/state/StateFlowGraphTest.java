@@ -1,27 +1,24 @@
-/**
- * Created Dec 19, 2007
- */
 package com.crawljax.core.state;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.jgrapht.GraphPath;
 import org.junit.Test;
 
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
 
-/**
- * @author mesbah
- * @version $Id$
- */
 public class StateFlowGraphTest {
 
 	@Test
@@ -219,24 +216,6 @@ public class StateFlowGraphTest {
 
 		assertEquals(2, p.size());
 
-		// int x = 0;
-		// int y = 0;
-		//
-		// for (List<GraphPath<StateVertix, Eventable>> paths : results) {
-		// for (GraphPath<StateVertix, Eventable> path : paths) {
-		// // System.out.print(" Edge: " + x + ":" + y);
-		//
-		// for (Eventable edge : path.getEdgeList()) {
-		// // System.out.print(", " + edge.toString());
-		//
-		// }
-		//
-		// // System.out.println(" ");
-		// y++;
-		// }
-		//
-		// x++;
-		// }
 	}
 
 	@Test
@@ -374,5 +353,44 @@ public class StateFlowGraphTest {
 		assertTrue(graph.addEdge(index, state4, e4));
 		assertFalse(graph.addEdge(index, state4, e5));
 		assertFalse(graph.addEdge(index, state4, e6));
+	}
+
+	@Test
+	public void testSerliazibility() throws UnsupportedEncodingException {
+		StateVertex state1 = new StateVertex("STATE_ONE", "<table><div>state1</div></table>");
+		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertex state3 =
+		        new StateVertex("STATE_THREE", "<table><div>state3 is different</div></table>");
+		StateFlowGraph sfg = new StateFlowGraph(state1);
+
+		Eventable c1 =
+		        new Eventable(new Identification(How.xpath, "/body/div[4]"), EventType.click);
+		Eventable c2 =
+		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[2]"),
+		                EventType.click);
+
+		Eventable c3 =
+		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[6]"),
+		                EventType.click);
+
+		sfg.addState(state1);
+		sfg.addState(state2);
+		sfg.addState(state3);
+
+		sfg.addEdge(state1, state2, c1);
+		sfg.addEdge(state1, state2, c2);
+		sfg.addEdge(state2, state3, c3);
+		assertThat(sfg.getAllStates().size(), is(3));
+		assertThat(sfg.getAllEdges().size(), is(3));
+		assertThat(sfg.getOutgoingClickables(state1).size(), is(2));
+
+		byte[] serializedSFG = SerializationUtils.serialize(sfg);
+		StateFlowGraph deserializedSfg =
+		        (StateFlowGraph) SerializationUtils.deserialize(serializedSFG);
+
+		assertThat(deserializedSfg.getAllStates().size(), is(3));
+		assertThat(deserializedSfg.getAllEdges().size(), is(3));
+		assertThat(deserializedSfg.getOutgoingClickables(state1).size(), is(2));
+
 	}
 }
