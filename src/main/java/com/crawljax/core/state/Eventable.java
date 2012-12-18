@@ -245,7 +245,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 * @throws CrawljaxException
 	 *             if the source cannot be found.
 	 */
-	public StateVertix getSourceStateVertix() throws CrawljaxException {
+	public StateVertex getSourceStateVertix() throws CrawljaxException {
 		return getSuperField("source");
 	}
 
@@ -254,13 +254,13 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 * @throws CrawljaxException
 	 *             if the target cannot be found.
 	 */
-	public StateVertix getTargetStateVertix() throws CrawljaxException {
+	public StateVertex getTargetStateVertix() throws CrawljaxException {
 		return getSuperField("target");
 	}
 
-	private StateVertix getSuperField(String name) throws CrawljaxException {
+	private StateVertex getSuperField(String name) throws CrawljaxException {
 		try {
-			return (StateVertix) searchSuperField(name).get(this);
+			return (StateVertex) searchSuperField(name).get(this);
 		} catch (IllegalArgumentException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		} catch (IllegalAccessException e) {

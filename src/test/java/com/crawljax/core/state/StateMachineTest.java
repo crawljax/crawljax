@@ -39,7 +39,7 @@ import java.util.ArrayList;
  */
 public class StateMachineTest {
 	private StateMachine sm;
-	private final StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
+	private final StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
 
 	private final DummyBrowser dummyBrowser = new DummyBrowser();
 	private final BrowserPool dummyPool =
@@ -71,7 +71,7 @@ public class StateMachineTest {
 	 */
 	@Test
 	public void testChangeState() {
-		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
 
 		/**
 		 * Can not change index because not added.
@@ -108,8 +108,8 @@ public class StateMachineTest {
 	@Test
 	public void testCloneState() {
 		// state2.equals(state3)
-		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
 		/**
 		 * Can not change to state2 because not inserted yet.
 		 */
@@ -158,9 +158,9 @@ public class StateMachineTest {
 	@Test
 	public void testRewind() {
 		// state2.equals(state3)
-		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
-		StateVertix state4 = new StateVertix("state4", "<table><div>state4</div></table>");
+		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
+		StateVertex state4 = new StateVertex("state4", "<table><div>state4</div></table>");
 		/**
 		 * Can not change to state2 because not inserted yet.
 		 */
@@ -223,8 +223,8 @@ public class StateMachineTest {
 	@Test
 	public void testInvariants() {
 		// state2.equals(state3)
-		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
 
 		ArrayList<Invariant> iList = new ArrayList<Invariant>();
 		hit = false;
@@ -281,8 +281,8 @@ public class StateMachineTest {
 		CrawljaxPluginsUtil.loadPlugins(new CrawljaxConfigurationReader(cfg).getPlugins());
 
 		// state2.equals(state3)
-		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
@@ -336,8 +336,8 @@ public class StateMachineTest {
 		}));
 		StateMachine smLocal = new StateMachine(new StateFlowGraph(index), index, iList);
 		// state2.equals(state3)
-		StateVertix state2 = new StateVertix("state2", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("state3", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 

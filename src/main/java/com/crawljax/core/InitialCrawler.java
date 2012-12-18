@@ -10,7 +10,7 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 
 /**
  * This is the initial Crawler. An initial crawler crawls only the index page, creates the index
@@ -65,8 +65,8 @@ public class InitialCrawler extends Crawler {
 		/**
 		 * Build the index state
 		 */
-		StateVertix indexState =
-		        new StateVertix(this.getBrowser().getCurrentUrl(), "index", this.getBrowser()
+		StateVertex indexState =
+		        new StateVertex(this.getBrowser().getCurrentUrl(), "index", this.getBrowser()
 		                .getDom(), controller.getStrippedDom(this.getBrowser()));
 
 		/**

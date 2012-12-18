@@ -9,7 +9,7 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +38,7 @@ public class CrawlSession {
 	/**
 	 * The initial State (indexState).
 	 */
-	private final StateVertix initialState;
+	private final StateVertex initialState;
 
 	/**
 	 * Variable for reading the Configuration from.
@@ -55,7 +55,7 @@ public class CrawlSession {
 	/**
 	 * ThreadLocal store the have a Thread<->Current State relation.
 	 */
-	private final ThreadLocal<StateVertix> tlState = new ThreadLocal<StateVertix>();
+	private final ThreadLocal<StateVertex> tlState = new ThreadLocal<StateVertex>();
 
 	/**
 	 * The main BrowserPool where the current Browser is stored.
@@ -81,7 +81,7 @@ public class CrawlSession {
 	 *            the time this session started in milliseconds.
 	 */
 	public CrawlSession(
-	        BrowserPool pool, StateFlowGraph stateFlowGraph, StateVertix state, long startTime) {
+	        BrowserPool pool, StateFlowGraph stateFlowGraph, StateVertex state, long startTime) {
 		this(pool, stateFlowGraph, state, startTime, null);
 	}
 
@@ -97,7 +97,7 @@ public class CrawlSession {
 	 * @param crawljaxConfiguration
 	 *            the configuration.
 	 */
-	public CrawlSession(BrowserPool pool, StateFlowGraph stateFlowGraph, StateVertix state,
+	public CrawlSession(BrowserPool pool, StateFlowGraph stateFlowGraph, StateVertex state,
 	        long startTime, CrawljaxConfigurationReader crawljaxConfiguration) {
 		this.crawljaxConfiguration = crawljaxConfiguration;
 		this.browserPool = pool;
@@ -124,8 +124,8 @@ public class CrawlSession {
 	/**
 	 * @return the currentState
 	 */
-	public StateVertix getCurrentState() {
-		StateVertix sv = tlState.get();
+	public StateVertex getCurrentState() {
+		StateVertex sv = tlState.get();
 		if (sv == null) {
 			tlState.set(getInitialState());
 		} else {
@@ -138,7 +138,7 @@ public class CrawlSession {
 	 * @param currentState
 	 *            the currentState to set
 	 */
-	public void setCurrentState(StateVertix currentState) {
+	public void setCurrentState(StateVertex currentState) {
 		this.tlState.set(currentState);
 	}
 
@@ -167,7 +167,7 @@ public class CrawlSession {
 	/**
 	 * @return the initialState
 	 */
-	public final StateVertix getInitialState() {
+	public final StateVertex getInitialState() {
 		return initialState;
 	}
 
