@@ -1,7 +1,8 @@
 package com.crawljax.core.state;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
@@ -13,7 +14,7 @@ import org.xml.sax.SAXException;
 public class ElementTest {
 
 	@Test
-	public void testSerliazibility() {
+	public void testSerliazibility() throws SAXException, IOException {
 		String HTML =
 		        "<SCRIPT src='js/jquery-1.2.1.js' type='text/javascript'></SCRIPT> "
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
@@ -21,20 +22,14 @@ public class ElementTest {
 		                + "<a id='thea'>test</a></span></div></body>";
 		StateVertex sv = new StateVertex("test", HTML);
 
-		try {
-			Node node = sv.getDocument().getElementById("thea");
-			Element element = new Element(node);
+		Node node = sv.getDocument().getElementById("thea");
+		Element element = new Element(node);
 
-			byte[] serialized = SerializationUtils.serialize(element);
-			Element deserializedElement = (Element) SerializationUtils.deserialize(serialized);
-			assertEquals(element, deserializedElement);
-			assertEquals(element.getElementId(), deserializedElement.getElementId());
+		byte[] serialized = SerializationUtils.serialize(element);
+		Element deserializedElement = (Element) SerializationUtils.deserialize(serialized);
+		assertThat(element, equalTo(deserializedElement));
+		assertThat(element.getElementId(), is(deserializedElement.getElementId()));
 
-		} catch (SAXException e1) {
-			fail(e1.getMessage());
-		} catch (IOException e1) {
-			fail(e1.getMessage());
-		}
 	}
 
 }
