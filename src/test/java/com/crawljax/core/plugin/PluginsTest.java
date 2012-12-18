@@ -26,7 +26,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.demo.RunWithWebServer;
 import com.google.common.collect.Maps;
 
@@ -95,7 +95,7 @@ public class PluginsTest {
 			public void onNewState(CrawlSession session) {
 				registerPlugin(OnNewStatePlugin.class);
 				checkCrawlSession(session);
-				StateVertix cs = session.getCurrentState();
+				StateVertex cs = session.getCurrentState();
 				if (!cs.getName().equals("index")) {
 					assertTrue("currentState and indexState are never the same",
 					        !cs.equals(session.getInitialState()));
@@ -109,7 +109,7 @@ public class PluginsTest {
 		config.addPlugin(new GuidedCrawlingPlugin() {
 
 			@Override
-			public void guidedCrawling(StateVertix currentState, CrawljaxController controller,
+			public void guidedCrawling(StateVertex currentState, CrawljaxController controller,
 			        CrawlSession session, List<Eventable> exactEventPaths,
 			        StateMachine stateMachine) {
 				registerPlugin(GuidedCrawlingPlugin.class);
@@ -217,7 +217,7 @@ public class PluginsTest {
 		config.addPlugin(new OnRevisitStatePlugin() {
 
 			@Override
-			public void onRevisitState(CrawlSession session, StateVertix currentState) {
+			public void onRevisitState(CrawlSession session, StateVertex currentState) {
 				registerPlugin(OnRevisitStatePlugin.class);
 				checkCrawlSession(session);
 				assertNotNull(currentState);

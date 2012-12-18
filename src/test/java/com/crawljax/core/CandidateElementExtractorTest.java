@@ -16,13 +16,13 @@ import org.junit.Test;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.demo.RunWithWebServer;
 import com.crawljax.forms.FormHandler;
 
 public class CandidateElementExtractorTest {
 
-	private static final StateVertix DUMMY_STATE = new StateVertix("DUMMY", "");
+	private static final StateVertex DUMMY_STATE = new StateVertex("DUMMY", "");
 
 	@ClassRule
 	public static final RunWithWebServer SERVER = new RunWithWebServer("/demo-site");

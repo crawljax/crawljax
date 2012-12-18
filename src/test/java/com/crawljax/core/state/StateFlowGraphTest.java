@@ -27,15 +27,15 @@ public class StateFlowGraphTest {
 	@Test
 	public void testSFG() throws Exception {
 
-		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
-		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
-		StateVertix state5 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
+		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
+		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
+		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
+		StateVertex state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
 
 		StateFlowGraph graph = new StateFlowGraph(index);
 
-		StateVertix DOUBLE = new StateVertix("index", "<table><div>index</div></table>");
+		StateVertex DOUBLE = new StateVertex("index", "<table><div>index</div></table>");
 		assertTrue(graph.addState(state2) == null);
 		assertTrue(graph.addState(state3) == null);
 		assertTrue(graph.addState(state4) == null);
@@ -69,7 +69,7 @@ public class StateFlowGraphTest {
 
 		assertEquals(state2.hashCode(), state2.hashCode());
 
-		assertTrue(state2.equals(new StateVertix("STATE_2", "<table><div>state2</div></table>")));
+		assertTrue(state2.equals(new StateVertex("STATE_2", "<table><div>state2</div></table>")));
 
 		assertTrue(graph.canGoTo(state2, state3));
 		assertTrue(graph.canGoTo(state2, state5));
@@ -86,31 +86,31 @@ public class StateFlowGraphTest {
 		c = list.get(1);
 		assertEquals(c.getIdentification().getValue(), "/home/a");
 
-		StateVertix hold = new StateVertix(index.getName(), index.getDom());
+		StateVertex hold = new StateVertex(index.getName(), index.getDom());
 
 		list = graph.getShortestPath(hold, state3);
 		assertEquals(list.size(), 2);
 
-		Set<StateVertix> states = graph.getOutgoingStates(index);
+		Set<StateVertex> states = graph.getOutgoingStates(index);
 		assertTrue(states.size() == 2);
 		assertTrue(states.contains(state2));
 		assertTrue(states.contains(state4));
 		assertFalse(states.contains(state3));
 
-		Set<StateVertix> allStates = graph.getAllStates();
+		Set<StateVertex> allStates = graph.getAllStates();
 
 		assertTrue(allStates.size() == 5);
 	}
 
 	@Test
 	public void testCloneStates() throws Exception {
-		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
-		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state2</div></table>");
+		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
+		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state2</div></table>");
 
 		StateFlowGraph graph = new StateFlowGraph(index);
 
-		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
+		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
 		assertTrue(graph.addState(state2) == null);
 		assertTrue(graph.addState(state4) == null);
 		// assertFalse(graph.addState(state3));
@@ -142,8 +142,8 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
-		StateFlowGraph g = new StateFlowGraph(new StateVertix("", HTML1));
-		g.addState(new StateVertix("", HTML2));
+		StateFlowGraph g = new StateFlowGraph(new StateVertex("", HTML1));
+		g.addState(new StateVertex("", HTML2));
 
 		assertEquals(206, g.getMeanStateStringSize());
 	}
@@ -151,8 +151,8 @@ public class StateFlowGraphTest {
 	@Test
 	public void testDoubleEvents() {
 
-		StateVertix state1 = new StateVertix("STATE_ONE", "<table><div>state1</div></table>");
-		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertex state1 = new StateVertex("STATE_ONE", "<table><div>state1</div></table>");
+		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
 		StateFlowGraph sfg = new StateFlowGraph(state1);
 
 		Eventable c1 =
@@ -170,11 +170,11 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void testAllPossiblePaths() {
-		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
-		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
-		StateVertix state5 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
+		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
+		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
+		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
+		StateVertex state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
 		StateFlowGraph g = new StateFlowGraph(index);
 		g.addState(state2);
 		g.addState(state3);
@@ -203,15 +203,15 @@ public class StateFlowGraphTest {
 		g.addEdge(state3, state4, new Eventable(new Identification(How.xpath, "/3/4"),
 		        EventType.click));
 
-		List<List<GraphPath<StateVertix, Eventable>>> results = g.getAllPossiblePaths(index);
+		List<List<GraphPath<StateVertex, Eventable>>> results = g.getAllPossiblePaths(index);
 
 		assertEquals(2, results.size());
 
-		List<GraphPath<StateVertix, Eventable>> p = results.get(0);
+		List<GraphPath<StateVertex, Eventable>> p = results.get(0);
 
 		assertEquals(5, p.size());
 
-		GraphPath<StateVertix, Eventable> e = p.get(0);
+		GraphPath<StateVertex, Eventable> e = p.get(0);
 
 		assertEquals(1, e.getEdgeList().size());
 
@@ -241,11 +241,11 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void largetTest() {
-		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
-		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
-		StateVertix state5 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
+		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
+		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
+		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
+		StateVertex state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
 		StateFlowGraph g = new StateFlowGraph(index);
 		g.addState(state2);
 		g.addState(state3);
@@ -271,15 +271,15 @@ public class StateFlowGraphTest {
 		g.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
 		        EventType.click));
 
-		List<List<GraphPath<StateVertix, Eventable>>> results = g.getAllPossiblePaths(index);
+		List<List<GraphPath<StateVertex, Eventable>>> results = g.getAllPossiblePaths(index);
 
 		assertEquals(2, results.size());
 
-		List<GraphPath<StateVertix, Eventable>> p = results.get(0);
+		List<GraphPath<StateVertex, Eventable>> p = results.get(0);
 
 		assertEquals(5, p.size());
 
-		GraphPath<StateVertix, Eventable> e = p.get(0);
+		GraphPath<StateVertex, Eventable> e = p.get(0);
 
 		assertEquals(1, e.getEdgeList().size());
 
@@ -291,8 +291,8 @@ public class StateFlowGraphTest {
 		// int max = 0;
 		Set<Eventable> uEvents = new HashSet<Eventable>();
 
-		for (List<GraphPath<StateVertix, Eventable>> paths : results) {
-			for (GraphPath<StateVertix, Eventable> path : paths) {
+		for (List<GraphPath<StateVertex, Eventable>> paths : results) {
+			for (GraphPath<StateVertex, Eventable> path : paths) {
 				// System.out.print(" Edge: " + x + ":" + y);
 				// int z = 0;
 				for (Eventable edge : path.getEdgeList()) {
@@ -314,11 +314,11 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void guidedCrawlingFlag() {
-		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
-		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
-		StateVertix state5 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
+		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
+		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
+		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
+		StateVertex state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
 		StateFlowGraph g = new StateFlowGraph(index);
 		g.addState(state2);
 		g.addState(state3);
@@ -327,7 +327,7 @@ public class StateFlowGraphTest {
 
 		assertEquals(5, g.getAllStates().size());
 
-		StateVertix state6 = new StateVertix("STATE_FIVE", "<table><div>state5</div></table>");
+		StateVertex state6 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
 		state6.setGuidedCrawling(false);
 		g.addState(state6);
 
@@ -343,10 +343,10 @@ public class StateFlowGraphTest {
 	@Test
 	public void testEdges() throws Exception {
 
-		StateVertix index = new StateVertix("index", "<table><div>index</div></table>");
-		StateVertix state2 = new StateVertix("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertix state3 = new StateVertix("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertix state4 = new StateVertix("STATE_FOUR", "<table><div>state4</div></table>");
+		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
+		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
+		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
 		StateFlowGraph graph = new StateFlowGraph(index);
 		assertTrue(graph.addState(state2) == null);
 		assertTrue(graph.addState(state3) == null);

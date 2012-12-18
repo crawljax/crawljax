@@ -14,7 +14,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.google.common.collect.Lists;
 
 /**
@@ -166,7 +166,7 @@ public final class CrawljaxPluginsUtil {
 	 * @param currentState
 	 *            the state the 'back tracking' operation is currently in
 	 */
-	public static void runOnRevisitStatePlugins(CrawlSession session, StateVertix currentState) {
+	public static void runOnRevisitStatePlugins(CrawlSession session, StateVertex currentState) {
 		LOGGER.info("Running OnRevisitStatePlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnRevisitStatePlugin) {
@@ -238,7 +238,7 @@ public final class CrawljaxPluginsUtil {
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof GuidedCrawlingPlugin) {
 				LOGGER.info("Calling plugin " + plugin.getClass().getName());
-				StateVertix currentState = session.getCurrentState();
+				StateVertex currentState = session.getCurrentState();
 				((GuidedCrawlingPlugin) plugin).guidedCrawling(currentState, controller, session,
 				        exactEventPaths, stateMachine);
 			}

@@ -12,7 +12,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.plugin.GeneratesOutput;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 
 /**
  * Plugin that saves the CrawlSession to an XML file which is used by RegressionTester.
@@ -68,9 +68,9 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 		}
 	}
 
-	private Map<String, StateVertix> getStates() {
-		Map<String, StateVertix> mapStates = new HashMap<String, StateVertix>();
-		for (StateVertix state : session.getStateFlowGraph().getAllStates()) {
+	private Map<String, StateVertex> getStates() {
+		Map<String, StateVertex> mapStates = new HashMap<String, StateVertex>();
+		for (StateVertex state : session.getStateFlowGraph().getAllStates()) {
 			mapStates.put(state.getName(), state);
 		}
 		return mapStates;

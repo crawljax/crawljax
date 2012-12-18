@@ -1,14 +1,15 @@
 package com.crawljax.core.state;
 
+import java.io.Serializable;
+
 /**
  * This class represents a attribute of a Element.
  * 
  * @see Element#Element(org.w3c.dom.Node)
- * @author mesbah
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
-public class Attribute {
+public class Attribute implements Serializable {
+
+	private static final long serialVersionUID = -1608999189549539958L;
 
 	private long id;
 	private String name;
