@@ -356,7 +356,7 @@ public class StateFlowGraphTest {
 	}
 
 	@Test
-	public void testSerliazibility() throws UnsupportedEncodingException {
+	public void testSerializability() throws UnsupportedEncodingException {
 		StateVertex state1 = new StateVertex("STATE_ONE", "<table><div>state1</div></table>");
 		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
 		StateVertex state3 =

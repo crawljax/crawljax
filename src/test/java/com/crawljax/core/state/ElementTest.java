@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 public class ElementTest {
 
 	@Test
-	public void testSerliazibility() throws SAXException, IOException {
+	public void testSerializability() throws SAXException, IOException {
 		String HTML =
 		        "<SCRIPT src='js/jquery-1.2.1.js' type='text/javascript'></SCRIPT> "
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"

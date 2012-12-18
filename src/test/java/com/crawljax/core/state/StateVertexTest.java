@@ -110,7 +110,7 @@ public class StateVertexTest {
 	}
 
 	@Test
-	public void testSerliazibility() {
+	public void testSerializability() {
 		StateVertex sv = new StateVertex("testSerliazibility", HTML);
 
 		byte[] serializedSv = SerializationUtils.serialize(sv);
