@@ -1,7 +1,7 @@
 package com.crawljax.core.plugin;
 
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 
 /**
  * Plugin type that is called every time a state is revisited by Crawljax. Example: Benchmarking.
@@ -22,6 +22,6 @@ public interface OnRevisitStatePlugin extends Plugin {
 	 * @param currentState
 	 *            the state revisited
 	 */
-	void onRevisitState(CrawlSession session, StateVertix currentState);
+	void onRevisitState(CrawlSession session, StateVertex currentState);
 
 }

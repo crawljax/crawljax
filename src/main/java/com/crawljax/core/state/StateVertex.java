@@ -28,8 +28,8 @@ import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.Helper;
 
 /**
- * The state vertix class which represents a state in the browser. This class implements the
- * Iterable interface because on a StateVertix it is possible to iterate over the possible
+ * The state vertex class which represents a state in the browser. This class implements the
+ * Iterable interface because on a StateVertex it is possible to iterate over the possible
  * CandidateElements found in this state. When iterating over the possible candidate elements every
  * time a candidate is returned its removed from the list so it is a one time only access to the
  * candidates.
@@ -37,10 +37,11 @@ import com.crawljax.util.Helper;
  * @author mesbah
  * @version $Id$
  */
-public class StateVertix implements Serializable {
+public class StateVertex implements Serializable {
 
 	private static final long serialVersionUID = 123400017983488L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(StateVertix.class);
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(StateVertex.class);
 	private long id;
 	private String name;
 	private String dom;
@@ -59,7 +60,7 @@ public class StateVertix implements Serializable {
 	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> workInProgressCandidateActions =
 	        new ConcurrentHashMap<Crawler, CandidateCrawlAction>();
 
-	private final Object candidateActionsSearchLock = new Object();
+	private final Object candidateActionsSearchLock = new String("");
 
 	private final LinkedBlockingDeque<Crawler> registeredCrawlers =
 	        new LinkedBlockingDeque<Crawler>();
@@ -67,7 +68,7 @@ public class StateVertix implements Serializable {
 	/**
 	 * Default constructor to support saving instances of this class as an XML.
 	 */
-	public StateVertix() {
+	public StateVertex() {
 		this.strippedDom = "";
 		this.url = "";
 	}
@@ -80,7 +81,7 @@ public class StateVertix implements Serializable {
 	 * @param dom
 	 *            the current DOM tree of the browser
 	 */
-	public StateVertix(String name, String dom) {
+	public StateVertex(String name, String dom) {
 		this(null, name, dom, dom);
 	}
 
@@ -96,7 +97,7 @@ public class StateVertix implements Serializable {
 	 * @param strippedDom
 	 *            the stripped dom by the OracleComparators
 	 */
-	public StateVertix(String url, String name, String dom, String strippedDom) {
+	public StateVertex(String url, String name, String dom, String strippedDom) {
 		this.url = url;
 		this.name = name;
 		this.dom = dom;
@@ -104,9 +105,9 @@ public class StateVertix implements Serializable {
 	}
 
 	/**
-	 * Retrieve the name of the StateVertix.
+	 * Retrieve the name of the StateVertex.
 	 * 
-	 * @return the name of the stateVertix
+	 * @return the name of the StateVertex
 	 */
 	public String getName() {
 		return name;
@@ -138,7 +139,7 @@ public class StateVertix implements Serializable {
 	/**
 	 * Returns a hashcode. Uses reflection to determine the fields to test.
 	 * 
-	 * @return the hashCode of this StateVertix
+	 * @return the hashCode of this StateVertex
 	 */
 	@Override
 	public int hashCode() {
@@ -153,23 +154,23 @@ public class StateVertix implements Serializable {
 	}
 
 	/**
-	 * Compare this vertix to a other StateVertix.
+	 * Compare this vertex to a other StateVertex.
 	 * 
 	 * @param obj
-	 *            the Object to compare this vertix
+	 *            the Object to compare this vertex
 	 * @return Return true if equal. Uses reflection.
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof StateVertix)) {
+		if (!(obj instanceof StateVertex)) {
 			return false;
 		}
 
 		if (this == obj) {
 			return true;
 		}
-		final StateVertix rhs = (StateVertix) obj;
+		final StateVertex rhs = (StateVertex) obj;
 
 		return new EqualsBuilder().append(this.strippedDom, rhs.getStrippedDom())
 		        .append(this.guidedCrawling, rhs.guidedCrawling).isEquals();
@@ -178,7 +179,7 @@ public class StateVertix implements Serializable {
 	/**
 	 * Returns the name of this state as string.
 	 * 
-	 * @return a string representation of the current StateVertix
+	 * @return a string representation of the current StateVertex
 	 */
 	@Override
 	public String toString() {
@@ -447,7 +448,7 @@ public class StateVertix implements Serializable {
 	}
 
 	/**
-	 * Notify the current StateVertix that the given crawler has finished working on the given
+	 * Notify the current StateVertex that the given crawler has finished working on the given
 	 * action.
 	 * 
 	 * @param crawler

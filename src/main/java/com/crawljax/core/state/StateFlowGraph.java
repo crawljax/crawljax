@@ -1,32 +1,34 @@
 package com.crawljax.core.state;
 
-import net.jcip.annotations.GuardedBy;
-
-import org.apache.commons.math.stat.descriptive.moment.Mean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.DijkstraShortestPath;
-import org.jgrapht.alg.KShortestPaths;
-import org.jgrapht.graph.DirectedMultigraph;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.jcip.annotations.GuardedBy;
+
+import org.apache.commons.math.stat.descriptive.moment.Mean;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.DijkstraShortestPath;
+import org.jgrapht.alg.KShortestPaths;
+import org.jgrapht.graph.DirectedMultigraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * The State-Flow Graph is a directed graph with states on the vertices and clickables on the edges.
- * 
- * @author mesbah
- * @version $Id$
+ * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
+ * clickables (Eventable) on the edges.
  */
-public class StateFlowGraph {
+public class StateFlowGraph implements Serializable {
+
+	private static final long serialVersionUID = 923403417983488L;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(StateFlowGraph.class.getName());
 
-	private final DirectedGraph<StateVertix, Eventable> sfg;
+	private final DirectedGraph<StateVertex, Eventable> sfg;
 
 	/**
 	 * Intermediate counter for the number of states, not relaying on getAllStates.size() because of
@@ -38,7 +40,7 @@ public class StateFlowGraph {
 	 * Empty constructor.
 	 */
 	public StateFlowGraph() {
-		sfg = new DirectedMultigraph<StateVertix, Eventable>(Eventable.class);
+		sfg = new DirectedMultigraph<StateVertex, Eventable>(Eventable.class);
 	}
 
 	/**
@@ -47,7 +49,7 @@ public class StateFlowGraph {
 	 * @param initialState
 	 *            the state to start from.
 	 */
-	public StateFlowGraph(StateVertix initialState) {
+	public StateFlowGraph(StateVertex initialState) {
 		this();
 		sfg.addVertex(initialState);
 	}
@@ -66,7 +68,7 @@ public class StateFlowGraph {
 	 * @return the clone if one is detected null otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	public StateVertix addState(StateVertix stateVertix) {
+	public StateVertex addState(StateVertex stateVertix) {
 		return addState(stateVertix, true);
 	}
 
@@ -87,7 +89,7 @@ public class StateFlowGraph {
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
 	@GuardedBy("sfg")
-	public StateVertix addState(StateVertix stateVertix, boolean correctName) {
+	public StateVertex addState(StateVertex stateVertix, boolean correctName) {
 		synchronized (sfg) {
 			if (!sfg.addVertex(stateVertix)) {
 				// Graph already contained the vertix
@@ -136,7 +138,7 @@ public class StateFlowGraph {
 	 * @see org.jgrapht.Graph#addEdge(Object, Object, Object)
 	 */
 	@GuardedBy("sfg")
-	public boolean addEdge(StateVertix sourceVert, StateVertix targetVert, Eventable clickable) {
+	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert, Eventable clickable) {
 		synchronized (sfg) {
 			// TODO Ali; Why is this code (if-stmt) here? Its the same as what happens in sfg.addEge
 			// imo (21-01-10 Stefan).
@@ -166,7 +168,7 @@ public class StateFlowGraph {
 	 * @return a set of the outgoing edges (clickables) of the stateVertix.
 	 * @see org.jgrapht.DirectedGraph#outgoingEdgesOf(Object)
 	 */
-	public Set<Eventable> getOutgoingClickables(StateVertix stateVertix) {
+	public Set<Eventable> getOutgoingClickables(StateVertex stateVertix) {
 		return sfg.outgoingEdgesOf(stateVertix);
 	}
 
@@ -178,7 +180,7 @@ public class StateFlowGraph {
 	 * @return a set of the incoming edges (clickables) of the stateVertix.
 	 * @see org.jgrapht.DirectedGraph#incomingEdgesOf(Object)
 	 */
-	public Set<Eventable> getIncomingClickable(StateVertix stateVertix) {
+	public Set<Eventable> getIncomingClickable(StateVertex stateVertix) {
 		return sfg.incomingEdgesOf(stateVertix);
 	}
 
@@ -189,8 +191,8 @@ public class StateFlowGraph {
 	 *            the state.
 	 * @return the set of outgoing states from the stateVertix.
 	 */
-	public Set<StateVertix> getOutgoingStates(StateVertix stateVertix) {
-		final Set<StateVertix> result = new HashSet<StateVertix>();
+	public Set<StateVertex> getOutgoingStates(StateVertex stateVertix) {
+		final Set<StateVertex> result = new HashSet<StateVertex>();
 
 		for (Eventable c : getOutgoingClickables(stateVertix)) {
 			result.add(sfg.getEdgeTarget(c));
@@ -204,7 +206,7 @@ public class StateFlowGraph {
 	 *            the edge.
 	 * @return the target state of this edge.
 	 */
-	public StateVertix getTargetState(Eventable clickable) {
+	public StateVertex getTargetState(Eventable clickable) {
 		return sfg.getEdgeTarget(clickable);
 	}
 
@@ -218,7 +220,7 @@ public class StateFlowGraph {
 	 * @return true if it is possible (edge exists in graph) to go from source to target.
 	 */
 	@GuardedBy("sfg")
-	public boolean canGoTo(StateVertix source, StateVertix target) {
+	public boolean canGoTo(StateVertex source, StateVertex target) {
 		synchronized (sfg) {
 			return sfg.containsEdge(source, target) || sfg.containsEdge(target, source);
 		}
@@ -233,7 +235,7 @@ public class StateFlowGraph {
 	 *            the end state.
 	 * @return a list of shortest path of clickables from the state to the end
 	 */
-	public List<Eventable> getShortestPath(StateVertix start, StateVertix end) {
+	public List<Eventable> getShortestPath(StateVertex start, StateVertex end) {
 		return DijkstraShortestPath.findPathBetween(sfg, start, end);
 	}
 
@@ -242,7 +244,7 @@ public class StateFlowGraph {
 	 * 
 	 * @return all the states on the graph.
 	 */
-	public Set<StateVertix> getAllStates() {
+	public Set<StateVertex> getAllStates() {
 		return sfg.vertexSet();
 	}
 
@@ -263,10 +265,10 @@ public class StateFlowGraph {
 	 *            the StateVertix to search
 	 * @return the copy of the StateVertix in the StateFlowGraph where v.equals(u)
 	 */
-	private StateVertix getStateInGraph(StateVertix state) {
-		Set<StateVertix> states = getAllStates();
+	private StateVertex getStateInGraph(StateVertex state) {
+		Set<StateVertex> states = getAllStates();
 
-		for (StateVertix st : states) {
+		for (StateVertex st : states) {
 			if (state.equals(st)) {
 				return st;
 			}
@@ -281,7 +283,7 @@ public class StateFlowGraph {
 	public int getMeanStateStringSize() {
 		final Mean mean = new Mean();
 
-		for (StateVertix state : getAllStates()) {
+		for (StateVertex state : getAllStates()) {
 			mean.increment(state.getDomSize());
 		}
 
@@ -291,7 +293,7 @@ public class StateFlowGraph {
 	/**
 	 * @return the state-flow graph.
 	 */
-	public DirectedGraph<StateVertix, Eventable> getSfg() {
+	public DirectedGraph<StateVertex, Eventable> getSfg() {
 		return sfg;
 	}
 
@@ -300,20 +302,20 @@ public class StateFlowGraph {
 	 *            The starting state.
 	 * @return A list of the deepest states (states with no outgoing edges).
 	 */
-	public List<StateVertix> getDeepStates(StateVertix state) {
+	public List<StateVertex> getDeepStates(StateVertex state) {
 		final Set<String> visitedStates = new HashSet<String>();
-		final List<StateVertix> deepStates = new ArrayList<StateVertix>();
+		final List<StateVertex> deepStates = new ArrayList<StateVertex>();
 
 		traverse(visitedStates, deepStates, state);
 
 		return deepStates;
 	}
 
-	private void traverse(Set<String> visitedStates, List<StateVertix> deepStates,
-	        StateVertix state) {
+	private void traverse(Set<String> visitedStates, List<StateVertex> deepStates,
+	        StateVertex state) {
 		visitedStates.add(state.getName());
 
-		Set<StateVertix> outgoingSet = getOutgoingStates(state);
+		Set<StateVertex> outgoingSet = getOutgoingStates(state);
 
 		if ((outgoingSet == null) || outgoingSet.isEmpty()) {
 			deepStates.add(state);
@@ -321,7 +323,7 @@ public class StateFlowGraph {
 			if (cyclic(visitedStates, outgoingSet)) {
 				deepStates.add(state);
 			} else {
-				for (StateVertix st : outgoingSet) {
+				for (StateVertex st : outgoingSet) {
 					if (!visitedStates.contains(st.getName())) {
 						traverse(visitedStates, deepStates, st);
 					}
@@ -330,10 +332,10 @@ public class StateFlowGraph {
 		}
 	}
 
-	private boolean cyclic(Set<String> visitedStates, Set<StateVertix> outgoingSet) {
+	private boolean cyclic(Set<String> visitedStates, Set<StateVertex> outgoingSet) {
 		int i = 0;
 
-		for (StateVertix state : outgoingSet) {
+		for (StateVertex state : outgoingSet) {
 			if (visitedStates.contains(state.getName())) {
 				i++;
 			}
@@ -349,19 +351,19 @@ public class StateFlowGraph {
 	 *            the initial state.
 	 * @return a list of GraphPath lists.
 	 */
-	public List<List<GraphPath<StateVertix, Eventable>>> getAllPossiblePaths(StateVertix index) {
-		final List<List<GraphPath<StateVertix, Eventable>>> results =
-		        new ArrayList<List<GraphPath<StateVertix, Eventable>>>();
+	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index) {
+		final List<List<GraphPath<StateVertex, Eventable>>> results =
+		        new ArrayList<List<GraphPath<StateVertex, Eventable>>>();
 
-		final KShortestPaths<StateVertix, Eventable> kPaths =
-		        new KShortestPaths<StateVertix, Eventable>(this.sfg, index, Integer.MAX_VALUE);
+		final KShortestPaths<StateVertex, Eventable> kPaths =
+		        new KShortestPaths<StateVertex, Eventable>(this.sfg, index, Integer.MAX_VALUE);
 		// System.out.println(sfg.toString());
 
-		for (StateVertix state : getDeepStates(index)) {
+		for (StateVertex state : getDeepStates(index)) {
 			// System.out.println("Deep State: " + state.getName());
 
 			try {
-				List<GraphPath<StateVertix, Eventable>> paths = kPaths.getPaths(state);
+				List<GraphPath<StateVertex, Eventable>> paths = kPaths.getPaths(state);
 				results.add(paths);
 			} catch (Exception e) {
 				// TODO Stefan; which Exception is catched here???Can this be removed?

@@ -22,7 +22,7 @@ import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.IgnoreFrameChecker;
 import com.crawljax.core.state.Identification;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
@@ -83,7 +83,7 @@ public class CandidateElementExtractor {
 	 *             if the method fails.
 	 */
 	public List<CandidateElement> extract(List<TagElement> crawlTagElements,
-	        List<TagElement> crawlExcludeTagElements, boolean clickOnce, StateVertix currentState)
+	        List<TagElement> crawlExcludeTagElements, boolean clickOnce, StateVertex currentState)
 	        throws CrawljaxException {
 		List<CandidateElement> results = new ArrayList<CandidateElement>();
 
