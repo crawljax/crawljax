@@ -32,3 +32,5 @@ Using the plugin
 		}
 	  }
     }
+
+The result will be generated in a folder called "crawloverview".
