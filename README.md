@@ -3,7 +3,14 @@ Crawloverview plugin
 
 Generates an HTML report with a snapshot overview of what is crawled by Crawljax.
 
+Maven
+=====
 
+    <dependency>
+      <groupId>com.crawljax.plugins</groupId>
+      <artifactId>crawloverview</artifactId>
+      <version>1.2</version>
+    </dependency>
 
 Using the plugin
 ================
