@@ -21,6 +21,7 @@ Using the plugin
 	public static void main(String[] args) {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		CrawlSpecification crawler = new CrawlSpecification(URL);
+		crawler.setMaximumStates(5);
 		crawler.clickDefaultElements();
 		config.setCrawlSpecification(crawler);
 		config.addPlugin(new CrawlOverview());
