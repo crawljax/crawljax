@@ -7,10 +7,8 @@
   <description>
 		Generates an HTML report with a snapshot overview of what is crawled.
   </description>
-  <organization>
-  	<name>Crawljax</name>
-    <url>http://crawljax.com</url>
-  </organization>
+  <url>http://www.crawljax.com</url>
+  
   
   <properties>
     <crawljax.version>2.1</crawljax.version>
