@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+	<properties>
+		<title>Changes CrawlOverview Plugin</title>
+		<author email="amesbah@gmail.com">Ali Mesbah</author>
+	</properties>
+	<body>
+
+		<release version="1.0" date="2010-07-20" description="Initial release.">
+			<action dev="all" type="add">
+				Initial release. The Overviewplugin is a plugin that generates a HTML report from the crawling session, which can be
+  used to inspect what is crawled by Crawljax.
+			</action>
+		</release>
+
+	</body>
+</document>

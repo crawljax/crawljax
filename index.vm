@@ -1,0 +1,73 @@
+<html>
+	<head>
+	<script type="text/javascript" src="js/prototype-1.4.0.js"></script> 	
+	<script type="text/javascript" src="js/graph.js"></script> 
+	<title>Overview Report</title>
+	<style type="text/css">
+		body {margin: 0px; padding: 0px; font-family: Tahoma, Arial; font-size: 10pt;}
+		img{ border: 1px solid black;}
+	</style>
+	</head>
+<body onload="generateGraph()">
+<div style='height: ${headerheight}px; border-bottom: 1px solid black;'>
+	<nobr>
+	<a href="javascript:void(0)" onclick="loadState('index')">Initial State</a>
+	Current State: <b><span id="currentState">Loading</span></b>
+	<a href='javascript:void(0)' onclick="toggleGraph();">Toggle Graph</a>&nbsp;&nbsp;
+	<a href="javascript:void(0)" onclick="generateGraph()">Regenerate Graph</a>&nbsp;&nbsp;
+	Zoom: <span id="zoom"></span>
+	<a href="javascript:void(0)" onclick="zoom(10)">Zoom In</a>&nbsp;
+	<a href="javascript:void(0)" onclick="zoom(-10)"> Zoom Out</a>&nbsp;
+	<span style="margin-left: 20px;">
+		Legend:&nbsp;
+		<span style="background: ${colorNewState};">&nbsp;New state&nbsp;</span>&nbsp;&nbsp;
+		<span style="background: ${colorPrevState};">&nbsp;Previous state&nbsp;</span>&nbsp;&nbsp;
+		<span style="background: ${colorNoStateChange};">&nbsp;No state change&nbsp;</span>
+	</span>
+	</nobr>
+</div>
+
+<!-- graph -->
+<div id="graphPanel" style="display: none; position: absolute; z-index: 20; left: 0px; top: 21px;">
+#foreach( $state in $states )
+<div id="${state.name}">
+	<a id="link${state.name}" href="javascript:void(0)" onclick="loadState('${state.name}')" title="${state.url}">
+		<img src="${state.screenshot}" id="img${state.name}" width="80px" height="80px" onmouseover="stateZoom(this)" onmouseout="stateUnzoom(this)" /><br />
+		${state.id}
+	</a>
+</div>
+#end
+<canvas id="graph" style="border: 0px;"></canvas> 
+</div>
+
+<script type="text/javascript"> 
+
+var currentZoom = 100;
+zoom(0);
+
+var selectedState = "index";
+
+function generateGraph(){
+	initLayoutValues();
+	makeGraph();
+}
+
+function makeGraph() {
+	var g = new Graph();
+	
+	#foreach( $eventable in $eventables )
+	g.addEdge($('${eventable.from}'), $('${eventable.to}'));
+	#end
+	 
+	var layouter = new Graph.Layout.Spring(g);
+	layouter.layout();
+	 
+	$('graph').width = (getWidth() * (currentZoom / 100)) - 40;
+	$('graph').height = (getHeight() * (currentZoom / 100)) - 40;
+	
+	var renderer = new Graph.Renderer.Basic($('graph'), g);
+	renderer.draw();
+}
+</script>
+<iframe id="stateFrame" width="100%" height="100%" scrolling="no" src="states/index.html" style="border: 0px;"></iframe>
+</body></html>
