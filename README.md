@@ -4,7 +4,7 @@ Crawloverview plugin
 Generates an HTML report with a snapshot overview of what is crawled by Crawljax.
 
 Maven
-=====
+-----
 
     <dependency>
       <groupId>com.crawljax.plugins</groupId>
@@ -13,7 +13,7 @@ Maven
     </dependency>
 
 Using the plugin
-================
+----------------
     public class CrawlOverviewExample {
 
     private static final String URL = "http://google.com";
