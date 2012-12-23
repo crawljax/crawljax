@@ -1,8 +1,8 @@
 package com.crawljax.condition;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.util.Helper;
-import com.crawljax.util.XPathHelper;
+import java.io.IOException;
+
+import javax.xml.xpath.XPathExpressionException;
 
 import net.jcip.annotations.Immutable;
 
@@ -10,9 +10,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-
-import javax.xml.xpath.XPathExpressionException;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
 
 /**
  * A condition which returns true if the XPath expression returns one or more elements. NOTE:
@@ -42,7 +42,7 @@ public class XPathCondition extends AbstractCondition {
 	}
 
 	private boolean checkXPathExpression(EmbeddedBrowser browser) {
-		
+
 		try {
 			Document document = Helper.getDocument(browser.getDom());
 			NodeList nodeList = XPathHelper.evaluateXpathExpression(document, expression);
@@ -60,7 +60,7 @@ public class XPathCondition extends AbstractCondition {
 			// Exception is catched, check failed so return false;
 			return false;
 		}
-		
+
 	}
 
 }

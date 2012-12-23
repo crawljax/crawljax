@@ -142,7 +142,7 @@ public final class AttributeInjector {
 			element.removeAttribute(attrName);
 			// check if the attr was appended to the src value
 			// String srcAttrValue = element.getAttribute("src");
-			//			
+			//
 			// if(srcAttrValue.matches(".*" + attrName + "=.*"))
 			// {
 			// int index = srcAttrValue.indexOf(attrName);

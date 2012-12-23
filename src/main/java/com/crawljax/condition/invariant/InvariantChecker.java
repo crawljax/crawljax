@@ -20,7 +20,8 @@ import com.crawljax.condition.Condition;
  */
 public class InvariantChecker {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(InvariantChecker.class.getName());
+	private static final Logger LOGGER = LoggerFactory
+	        .getLogger(InvariantChecker.class.getName());
 
 	private List<Invariant> invariants;
 

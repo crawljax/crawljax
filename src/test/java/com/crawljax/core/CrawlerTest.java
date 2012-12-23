@@ -1,5 +1,14 @@
 package com.crawljax.core;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.CrawlPath;
@@ -7,18 +16,9 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-
 /**
  * Test class for the Crawler testing.
- *
+ * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
@@ -29,8 +29,11 @@ public class CrawlerTest {
 
 	private CrawljaxConfiguration buildController() throws ConfigurationException {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
-		CrawlSpecification spec = new CrawlSpecification(
-		        "file://" + new File("src/test/resources/site/crawler/index.html").getAbsolutePath());
+		CrawlSpecification spec =
+		        new CrawlSpecification(
+		                "file://"
+		                        + new File("src/test/resources/site/crawler/index.html")
+		                                .getAbsolutePath());
 		spec.click("a");
 		config.setCrawlSpecification(spec);
 		return config;
@@ -70,9 +73,9 @@ public class CrawlerTest {
 						Assert.fail(e.getMessage());
 					}
 					CrawlPath newPath = controller.getSession().getCurrentCrawlPath();
-					Assert
-					        .assertEquals(
-					                "Path found by Controller driven Crawling equals the path found in the Crawler", path, newPath);
+					Assert.assertEquals(
+					        "Path found by Controller driven Crawling equals the path found in the Crawler",
+					        path, newPath);
 					super.shutdown();
 				}
 			};

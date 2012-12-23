@@ -1,19 +1,19 @@
 package com.crawljax.browser;
 
+import java.io.File;
+
+import org.openqa.selenium.WebElement;
+
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 
-import org.openqa.selenium.WebElement;
-
-import java.io.File;
-
 /**
  * Real Empty class for place holding {@link EmbeddedBrowser} in UnitTests. There is absolutely NO
  * contents in this class other than the required methods which performs NOTHING! (Returning false
  * in boolean case, null otherwise)
- *
+ * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */

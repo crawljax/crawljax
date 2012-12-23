@@ -18,6 +18,7 @@ public class HtmlNamespace implements NamespaceContext {
 	 *            The prefix of the URI.
 	 * @return The namespace URI.
 	 */
+	@Override
 	public String getNamespaceURI(String prefix) {
 		if (prefix == null) {
 			throw new NullPointerException("Null prefix");
@@ -37,6 +38,7 @@ public class HtmlNamespace implements NamespaceContext {
 	 *            TODO: DOCUMENT ME!
 	 * @return TODO: DOCUMENT ME!
 	 */
+	@Override
 	public String getPrefix(String uri) {
 		throw new UnsupportedOperationException();
 	}
@@ -47,6 +49,7 @@ public class HtmlNamespace implements NamespaceContext {
 	 *            TODO: DOCUMENT ME!
 	 * @return TODO: DOCUMENT ME!
 	 */
+	@Override
 	public Iterator<?> getPrefixes(String uri) {
 		throw new UnsupportedOperationException();
 	}

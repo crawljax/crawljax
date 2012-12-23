@@ -1,6 +1,5 @@
 package com.crawljax.plugins.savecrawlsession;
 
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,8 +80,8 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 		Map<Long, Eventable> mapEventables = new HashMap<Long, Eventable>();
 		for (Eventable orgEventable : session.getStateFlowGraph().getAllEdges()) {
 			Eventable eventable =
-			        new Eventable(orgEventable.getElement().getNode(), orgEventable
-			                .getEventType());
+			        new Eventable(orgEventable.getElement().getNode(),
+			                orgEventable.getEventType());
 			eventable.setId(orgEventable.getId());
 			eventable.setRelatedFormInputs(orgEventable.getRelatedFormInputs());
 			mapEventables.put(eventable.getId(), eventable);
@@ -111,7 +110,7 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 		}
 		return transitions;
 	}
-	
+
 	private String getUrl() throws CrawljaxException {
 		return session.getCrawljaxConfiguration().getCrawlSpecificationReader().getSiteUrl();
 	}

@@ -3,13 +3,13 @@
  */
 package com.crawljax.condition;
 
-import com.crawljax.browser.EmbeddedBrowser;
-
 import net.jcip.annotations.Immutable;
+
+import com.crawljax.browser.EmbeddedBrowser;
 
 /**
  * Logic operations for conditions.
- *
+ * 
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */

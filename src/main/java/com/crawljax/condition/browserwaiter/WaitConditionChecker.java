@@ -18,7 +18,8 @@ import com.crawljax.browser.EmbeddedBrowser;
 @ThreadSafe
 public class WaitConditionChecker {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(WaitConditionChecker.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(WaitConditionChecker.class
+	        .getName());
 
 	private List<WaitCondition> waitConditions;
 

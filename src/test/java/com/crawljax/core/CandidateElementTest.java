@@ -41,9 +41,7 @@ public class CandidateElementTest {
 		CandidateElement c = new CandidateElement(e, "");
 		Assert.assertEquals("General String and Unique String are the same",
 		        c.getGeneralString(), c.getUniqueString());
-		Assert
-		        .assertEquals("Excpected result", "TEST: id=abc xpath", c.getGeneralString()
-		                .trim());
+		Assert.assertEquals("Excpected result", "TEST: id=abc xpath", c.getGeneralString().trim());
 	}
 
 	@Test
@@ -64,11 +62,9 @@ public class CandidateElementTest {
 		e.setAttribute("id", "abc");
 		e.setAttribute("atusa", "ignore");
 		CandidateElement c = new CandidateElement(e, "");
-		Assert.assertNotSame("General String and Unique String are not the same", c
-		        .getGeneralString(), c.getUniqueString());
-		Assert
-		        .assertEquals("Excpected result", "TEST: id=abc xpath", c.getGeneralString()
-		                .trim());
+		Assert.assertNotSame("General String and Unique String are not the same",
+		        c.getGeneralString(), c.getUniqueString());
+		Assert.assertEquals("Excpected result", "TEST: id=abc xpath", c.getGeneralString().trim());
 		Assert.assertEquals("Excpected result", "TEST: atusa=ignore id=abc xpath", c
 		        .getUniqueString().trim());
 	}
@@ -80,8 +76,8 @@ public class CandidateElementTest {
 		e.setAttribute("atusa", "ignore");
 		e.setAttribute("class", "def");
 		CandidateElement c = new CandidateElement(e, "");
-		Assert.assertNotSame("General String and Unique String are not the same", c
-		        .getGeneralString(), c.getUniqueString());
+		Assert.assertNotSame("General String and Unique String are not the same",
+		        c.getGeneralString(), c.getUniqueString());
 		Assert.assertEquals("Excpected result", "TEST: class=def id=abc xpath", c
 		        .getGeneralString().trim());
 		Assert.assertEquals("Excpected result", "TEST: atusa=ignore class=def id=abc xpath", c
@@ -100,8 +96,8 @@ public class CandidateElementTest {
 		e.setAttribute("x", "a");
 
 		CandidateElement c = new CandidateElement(e, "");
-		Assert.assertNotSame("General String and Unique String are not the same", c
-		        .getGeneralString(), c.getUniqueString());
+		Assert.assertNotSame("General String and Unique String are not the same",
+		        c.getGeneralString(), c.getUniqueString());
 		Assert.assertEquals("Excpected result", "TEST: a=a class=def id=abc x=a z=z xpath", c
 		        .getGeneralString().trim());
 		Assert.assertEquals("Excpected result",

@@ -25,7 +25,8 @@ public final class CrawljaxPluginsUtil {
 	/**
 	 * Make a new Log4j object used to do the logging.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(CrawljaxPluginsUtil.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawljaxPluginsUtil.class
+	        .getName());
 	private static final List<Plugin> PLUGINS = Lists.newArrayList();
 
 	/**

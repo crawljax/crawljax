@@ -95,39 +95,37 @@ public class CrawlSpecification {
 		crawlActions.click("input").withAttribute("type", "button");
 	}
 
-        
 	/**
-         * Guifre Ruiz: This method can be used to crawl more tags and, therefore,
-         * more pages in the target. However, it slow down a bit the process.
-         */ 
-        public void clickMoreElements() {
-            crawlActions.click("a");
-            crawlActions.click("button");
-            crawlActions.click("td");
-            crawlActions.click("span");
-            crawlActions.click("div");
-            crawlActions.click("tr");
-            crawlActions.click("table");
-            crawlActions.click("tbody");
-            crawlActions.click("ol");
-            crawlActions.click("center");
-            crawlActions.click("li");
-            crawlActions.click("radio");
-            crawlActions.click("non");
-            crawlActions.click("meta");
-            crawlActions.click("refresh");
-            crawlActions.click("xhr");
-            crawlActions.click("relative");
-            crawlActions.click("link");
-            crawlActions.click("self");
-            crawlActions.click("form");
-            crawlActions.click("input");
-            crawlActions.click("option");
-            crawlActions.click("img");
-            crawlActions.click("p");    
-        }
+	 * Guifre Ruiz: This method can be used to crawl more tags and, therefore, more pages in the
+	 * target. However, it slow down a bit the process.
+	 */
+	public void clickMoreElements() {
+		crawlActions.click("a");
+		crawlActions.click("button");
+		crawlActions.click("td");
+		crawlActions.click("span");
+		crawlActions.click("div");
+		crawlActions.click("tr");
+		crawlActions.click("table");
+		crawlActions.click("tbody");
+		crawlActions.click("ol");
+		crawlActions.click("center");
+		crawlActions.click("li");
+		crawlActions.click("radio");
+		crawlActions.click("non");
+		crawlActions.click("meta");
+		crawlActions.click("refresh");
+		crawlActions.click("xhr");
+		crawlActions.click("relative");
+		crawlActions.click("link");
+		crawlActions.click("self");
+		crawlActions.click("form");
+		crawlActions.click("input");
+		crawlActions.click("option");
+		crawlActions.click("img");
+		crawlActions.click("p");
+	}
 
-        
 	/**
 	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
 	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}.

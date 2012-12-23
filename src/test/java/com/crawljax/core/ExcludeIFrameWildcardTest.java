@@ -10,7 +10,6 @@ import com.crawljax.core.configuration.CrawlSpecification;
 
 /**
  * This test checks that all iframes are ignored specified with a wild card.
- * 
  */
 public class ExcludeIFrameWildcardTest extends IFrameSuper {
 

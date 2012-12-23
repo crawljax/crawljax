@@ -6,9 +6,8 @@ import static org.junit.Assert.fail;
 
 import java.net.URL;
 
-import org.junit.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,8 +16,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Eventable.EventType;
+import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.forms.FormInput;
 

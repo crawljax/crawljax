@@ -1,8 +1,8 @@
 package com.crawljax.util;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.state.Element;
-import com.crawljax.core.state.Eventable;
+import java.io.IOException;
+
+import javax.xml.xpath.XPathExpressionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +11,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-
-import javax.xml.xpath.XPathExpressionException;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.state.Element;
+import com.crawljax.core.state.Eventable;
 
 /**
  * class for finding and checking elements.
@@ -58,7 +58,7 @@ public class ElementResolver {
 	public String resolve(boolean logging) {
 		Document dom = null;
 		try {
-	        dom = Helper.getDocument(browser.getDom());
+			dom = Helper.getDocument(browser.getDom());
 		} catch (SAXException e) {
 			LOGGER.error(e.getMessage(), e);
 			return "";
@@ -66,7 +66,7 @@ public class ElementResolver {
 			LOGGER.error(e.getMessage(), e);
 			return "";
 		}
-		
+
 		try {
 			String xpathEventable = eventable.getIdentification().getValue();
 			Node nodeSameXpath = Helper.getElementByXpath(dom, xpathEventable);

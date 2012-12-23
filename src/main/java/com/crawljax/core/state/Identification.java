@@ -1,10 +1,10 @@
 package com.crawljax.core.state;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.openqa.selenium.By;
-
-import java.io.Serializable;
 
 /**
  * The Identification class, this class is used to denote a specific element. Specifying a method
@@ -147,8 +147,8 @@ public class Identification implements Serializable {
 		}
 		final Identification rhs = (Identification) obj;
 
-		return new EqualsBuilder().append(this.how, rhs.getHow()).append(this.value,
-		        rhs.getValue()).isEquals();
+		return new EqualsBuilder().append(this.how, rhs.getHow())
+		        .append(this.value, rhs.getValue()).isEquals();
 	}
 
 	@Override

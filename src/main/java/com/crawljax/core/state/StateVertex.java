@@ -331,7 +331,7 @@ public class StateVertex implements Serializable {
 		Iterator<CandidateCrawlAction> iter = candidateActions.iterator();
 		CandidateCrawlAction currentAction;
 		while (iter.hasNext()) {
-			currentAction = (CandidateCrawlAction) iter.next();
+			currentAction = iter.next();
 			if (!candidateElements.contains(currentAction.getCandidateElement())) {
 				iter.remove();
 				LOGGER.info("filtered candidate action: " + currentAction.getEventType().name()

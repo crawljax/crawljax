@@ -1,9 +1,9 @@
 package com.crawljax.condition.browserwaiter;
 
+import net.jcip.annotations.ThreadSafe;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.state.Identification;
-
-import net.jcip.annotations.ThreadSafe;
 
 /**
  * Checks whether an element is visible.

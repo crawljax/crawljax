@@ -1,16 +1,16 @@
 package com.crawljax.oraclecomparator;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.Condition;
-import com.crawljax.oraclecomparator.comparators.SimpleComparator;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.jcip.annotations.ThreadSafe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.Condition;
+import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 
 /**
  * Defines an Oracle Comparator which used multiple Oracles to decide whether two states are

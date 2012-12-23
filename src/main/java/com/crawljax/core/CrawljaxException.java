@@ -16,8 +16,8 @@ public class CrawljaxException extends Exception {
 	static {
 		SYSTEM_PROPERTIES.remove("java.class.path");
 	}
-	private static final String SYSTEMINFO =
-	        "\nAdditional system information:\n" + SYSTEM_PROPERTIES;
+	private static final String SYSTEMINFO = "\nAdditional system information:\n"
+	        + SYSTEM_PROPERTIES;
 
 	/**
 	 * Constructs a <code>ContractorException</code> with null as its detail message.

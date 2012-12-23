@@ -12,7 +12,6 @@ import com.crawljax.forms.FormInput;
 
 /**
  * Browser interface used by Crawjax.
- * 
  */
 public interface EmbeddedBrowser {
 

@@ -3,21 +3,21 @@
  */
 package com.crawljax.core.state;
 
-import com.crawljax.core.CandidateElement;
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.forms.FormInput;
-import com.crawljax.util.XPathHelper;
+import java.io.Serializable;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jgrapht.graph.DefaultEdge;
 import org.w3c.dom.Node;
 
-import java.io.Serializable;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.forms.FormInput;
+import com.crawljax.util.XPathHelper;
 
 /**
  * Eventable class: an element having an event attached to it (onclick, onmouseover, ...) so that it

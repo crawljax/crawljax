@@ -1,11 +1,11 @@
 package com.crawljax.condition;
 
-import com.crawljax.browser.EmbeddedBrowser;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.jcip.annotations.Immutable;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.crawljax.browser.EmbeddedBrowser;
 
 /**
  * Condition that returns true iff experssion occurs in the dom.

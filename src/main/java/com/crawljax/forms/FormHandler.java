@@ -3,13 +3,12 @@
  */
 package com.crawljax.forms;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.eventablecondition.EventableCondition;
-import com.crawljax.core.CandidateElement;
-import com.crawljax.core.configuration.InputSpecification;
-import com.crawljax.core.exception.BrowserConnectionException;
-import com.crawljax.util.Helper;
-import com.crawljax.util.XPathHelper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.xpath.XPathExpressionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +18,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.xpath.XPathExpressionException;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.exception.BrowserConnectionException;
+import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
 
 /**
  * Handles form values and fills in the form input elements with random values of the defined
@@ -148,7 +148,7 @@ public class FormHandler {
 					}
 				}
 			} catch (Exception e) {
-				//TODO Stefan; refactor this catch
+				// TODO Stefan; refactor this catch
 				if (e instanceof BrowserConnectionException) {
 					throw (BrowserConnectionException) e;
 				}

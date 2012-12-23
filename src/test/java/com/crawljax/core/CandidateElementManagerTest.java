@@ -3,7 +3,6 @@ package com.crawljax.core;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -129,7 +128,7 @@ public class CandidateElementManagerTest {
 		// Wait for all Threads are finished
 		Thread.sleep(10 * 100);
 
-		Assert.assertEquals("100 Elements should be checked", 100, manager
-		        .numberOfExaminedElements());
+		Assert.assertEquals("100 Elements should be checked", 100,
+		        manager.numberOfExaminedElements());
 	}
 }

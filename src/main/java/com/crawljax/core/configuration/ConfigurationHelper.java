@@ -14,7 +14,8 @@ public final class ConfigurationHelper {
 	}
 
 	/**
-	 * @param items The items to be added to the string.
+	 * @param items
+	 *            The items to be added to the string.
 	 * @return string representation of list. format: a, b, , c. Empty String allowed
 	 */
 	public static String listToStringEmptyStringAllowed(List<String> items) {
@@ -31,7 +32,8 @@ public final class ConfigurationHelper {
 	}
 
 	/**
-	 * @param items The items to be added to the string.
+	 * @param items
+	 *            The items to be added to the string.
 	 * @return string representation of list. format: a, b, c
 	 */
 	public static String listToString(List<?> items) {
@@ -46,7 +48,8 @@ public final class ConfigurationHelper {
 	}
 
 	/**
-	 * @param value The value to be converted
+	 * @param value
+	 *            The value to be converted
 	 * @return int value of boolean, true=1 false=0
 	 */
 	public static int booleanToInt(boolean value) {

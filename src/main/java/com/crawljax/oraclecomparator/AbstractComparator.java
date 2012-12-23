@@ -56,11 +56,13 @@ public abstract class AbstractComparator implements Comparator {
 	/**
 	 * @return Whether they are equivalent.
 	 */
+	@Override
 	public abstract boolean isEquivalent();
 
 	/**
 	 * @return Differences between the DOMs.
 	 */
+	@Override
 	public List<Difference> getDifferences() {
 		return Helper.getDifferences(getOriginalDom(), getNewDom());
 	}
@@ -68,6 +70,7 @@ public abstract class AbstractComparator implements Comparator {
 	/**
 	 * @return The original DOM.
 	 */
+	@Override
 	public String getOriginalDom() {
 		return originalDom;
 	}
@@ -76,6 +79,7 @@ public abstract class AbstractComparator implements Comparator {
 	 * @param originalDom
 	 *            The new original DOM.
 	 */
+	@Override
 	public void setOriginalDom(String originalDom) {
 		this.originalDom = originalDom;
 	}
@@ -83,6 +87,7 @@ public abstract class AbstractComparator implements Comparator {
 	/**
 	 * @return The new DOM.
 	 */
+	@Override
 	public String getNewDom() {
 		return newDom;
 	}
@@ -91,6 +96,7 @@ public abstract class AbstractComparator implements Comparator {
 	 * @param newDom
 	 *            The new DOM.
 	 */
+	@Override
 	public void setNewDom(String newDom) {
 		this.newDom = newDom;
 	}

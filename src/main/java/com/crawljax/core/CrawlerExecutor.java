@@ -1,14 +1,14 @@
 package com.crawljax.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main Executor inheriting {@link ThreadPoolExecutor} to implement the beforeExecute, afterExecute
@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Threads will be reused, at most numberOfThreads will be created. The number of Crawlers active at
  * the same time will be the maximum of the number of Threads. If there are no more Threads left,
  * Crawlers will be stored in a workQueue until a Thread will become available.
- *
+ * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */
@@ -42,13 +42,13 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	 */
 	private final ConcurrentHashMap<Thread, Integer> threadIdMap =
 	        new ConcurrentHashMap<Thread, Integer>();
-	
+
 	private boolean aborted = false;
 
 	/**
 	 * Default CrawlerExecutor. using the configured number of threads, no timeout a Stack as
 	 * workQueue to support Depth-first crawling and the local ThreadFactory.
-	 *
+	 * 
 	 * @param numberOfThreads
 	 *            number of threads.
 	 */
@@ -114,7 +114,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 
 	/**
 	 * This function blocks until all tasks has been executed.
-	 *
+	 * 
 	 * @throws InterruptedException
 	 *             when this thread is interrupted.
 	 */
@@ -129,7 +129,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	/**
 	 * The most simple implementation of a ThreadFactory, but with a counter and safe for the number
 	 * of threads created. The results are stored in the {@link CrawlerExecutor#threadIdMap}.
-	 *
+	 * 
 	 * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
 	 */
 	private class CrawlerThreadFactory implements ThreadFactory {
@@ -149,7 +149,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 
 	/**
 	 * shutdown the CrawlerExecutor, depending on the argument issue a abort or normal shutdown.
-	 *
+	 * 
 	 * @param isAbort
 	 *            if set to true indicating this is abort instead of normal shutdown.
 	 * @return a list of runnables as where in the system on time of the shutdown.

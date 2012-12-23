@@ -11,8 +11,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -30,6 +28,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -57,7 +57,8 @@ import com.crawljax.util.Helper;
  */
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private long crawlWaitEvent;
-	private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverBackedEmbeddedBrowser.class);
+	private static final Logger LOGGER = LoggerFactory
+	        .getLogger(WebDriverBackedEmbeddedBrowser.class);
 	private final WebDriver browser;
 
 	private List<String> filterAttributes;
@@ -255,6 +256,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param url
 	 *            The URL.
 	 */
+	@Override
 	public void goToUrl(String url) {
 		try {
 			browser.navigate().to(url);
@@ -414,6 +416,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            The input.
 	 * @return true if succeeds.
 	 */
+	@Override
 	public boolean input(Identification identification, String text) {
 		try {
 			WebElement field = browser.findElement(identification.getWebDriverBy());
@@ -440,6 +443,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            The eventable.
 	 * @return true if it is able to fire the event successfully on the element.
 	 */
+	@Override
 	public synchronized boolean fireEvent(Eventable eventable) {
 		try {
 
@@ -489,6 +493,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @throws CrawljaxException
 	 *             when javascript execution failed.
 	 */
+	@Override
 	public Object executeJavaScript(String code) throws CrawljaxException {
 		try {
 			JavascriptExecutor js = (JavascriptExecutor) browser;
@@ -506,6 +511,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            The element to search for.
 	 * @return true if the element is visible
 	 */
+	@Override
 	public boolean isVisible(Identification identification) {
 		try {
 			WebElement el = browser.findElement(identification.getWebDriverBy());
@@ -523,6 +529,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * @return The current browser url.
 	 */
+	@Override
 	public String getCurrentUrl() {
 		try {
 			return browser.getCurrentUrl();
@@ -656,6 +663,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return the dom without the iframe contents.
 	 * @see com.crawljax.browser.EmbeddedBrowser#getDomWithoutIframeContent()
 	 */
+	@Override
 	public String getDomWithoutIframeContent() {
 		try {
 			String dom = browser.getPageSource();
@@ -674,6 +682,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            the input to be filled.
 	 * @return FormInput with random value assigned if possible
 	 */
+	@Override
 	public FormInput getInputWithRandomValue(FormInput input) {
 
 		WebElement webElement;
@@ -747,6 +756,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            the identification of the element.
 	 * @return true if the element can be found in the DOM tree.
 	 */
+	@Override
 	public boolean elementExists(Identification identification) {
 		try {
 			WebElement el = browser.findElement(identification.getWebDriverBy());
@@ -764,6 +774,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            the identification of the element.
 	 * @return the found element.
 	 */
+	@Override
 	public WebElement getWebElement(Identification identification) {
 		try {
 			return browser.findElement(identification.getWebDriverBy());

@@ -3,6 +3,10 @@
  */
 package com.crawljax.core;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.crawljax.browser.BrowserPool;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
@@ -11,13 +15,9 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 /**
  * The data about the crawlsession.
- *
+ * 
  * @author mesbah
  * @version $Id$
  */
@@ -51,7 +51,7 @@ public class CrawlSession {
 	private final long startTime;
 
 	private final ThreadLocal<CrawlPath> crawlPath = new ThreadLocal<CrawlPath>();
-	
+
 	/**
 	 * ThreadLocal store the have a Thread<->Current State relation.
 	 */
@@ -80,8 +80,8 @@ public class CrawlSession {
 	 * @param startTime
 	 *            the time this session started in milliseconds.
 	 */
-	public CrawlSession(
-	        BrowserPool pool, StateFlowGraph stateFlowGraph, StateVertex state, long startTime) {
+	public CrawlSession(BrowserPool pool, StateFlowGraph stateFlowGraph, StateVertex state,
+	        long startTime) {
 		this(pool, stateFlowGraph, state, startTime, null);
 	}
 
@@ -220,7 +220,7 @@ public class CrawlSession {
 
 	/**
 	 * Add an eventable to the current crawl path.
-	 *
+	 * 
 	 * @param clickable
 	 *            the clickable to add to the current path.
 	 */
@@ -231,10 +231,10 @@ public class CrawlSession {
 		}
 		path.add(clickable);
 	}
-	
+
 	/**
 	 * Get the current crawl path.
-	 *
+	 * 
 	 * @return the current current crawl path.
 	 */
 	public CrawlPath getCurrentCrawlPath() {
@@ -248,7 +248,7 @@ public class CrawlSession {
 	/**
 	 * start a new Path, because of the thread local every crawlPath is saved on the thread instead
 	 * of on the Crawler, so without (re)starting a new Path the old path continues.
-	 *
+	 * 
 	 * @return the new empty path.
 	 */
 	protected final CrawlPath startNewPath() {

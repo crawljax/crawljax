@@ -1,6 +1,5 @@
 package com.crawljax.plugins.savecrawlsession;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -118,7 +117,7 @@ public class ExportableSession {
 	public String getUrl() {
 		return url;
 	}
-	
+
 	/**
 	 * @param url
 	 *            the crawled url

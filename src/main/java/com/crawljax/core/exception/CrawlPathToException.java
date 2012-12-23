@@ -23,7 +23,7 @@ public class CrawlPathToException extends Exception {
 	 * 
 	 * @param message
 	 *            the message to supply with this exception
-	 *@param path
+	 * @param path
 	 *            the CrawlPath taken that causes this exception.
 	 * @param cause
 	 *            the root cause of this exception.
@@ -38,7 +38,7 @@ public class CrawlPathToException extends Exception {
 	 * 
 	 * @param message
 	 *            the message to supply with this exception
-	 *@param path
+	 * @param path
 	 *            the CrawlPath taken that causes this exception.
 	 */
 	public CrawlPathToException(String message, CrawlPath path) {

@@ -12,7 +12,6 @@ import com.crawljax.plugins.savecrawlsession.Utils;
 
 /**
  * Crawls a default URL and produces a session.xml file.
- * 
  */
 public class SaveCrawlSessionExample {
 

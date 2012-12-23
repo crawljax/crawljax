@@ -1,6 +1,5 @@
 package com.crawljax.plugins.savecrawlsession;
 
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +70,7 @@ public class SessionReader {
 		}
 		return paths;
 	}
-	
+
 	/**
 	 * @return the CrawlSpecification from the saved CrawlSession
 	 */

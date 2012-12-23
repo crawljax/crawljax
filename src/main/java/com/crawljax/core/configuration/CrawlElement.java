@@ -1,11 +1,11 @@
 package com.crawljax.core.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable.EventType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents the HTML elements which should be crawled. It represents all the HTML elements in the

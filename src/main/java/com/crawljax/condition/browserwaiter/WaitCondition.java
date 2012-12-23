@@ -1,19 +1,19 @@
 package com.crawljax.condition.browserwaiter;
 
-import com.crawljax.browser.EmbeddedBrowser;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.jcip.annotations.ThreadSafe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.browser.EmbeddedBrowser;
 
 /**
  * Defines a wait condition for an url. A waitcondition has a list of expected conditions which
  * should all be satisfied for the specified url.
- *
+ * 
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */
@@ -46,8 +46,8 @@ public class WaitCondition {
 	 * @param expectedConditions
 	 *            Conditions expected.
 	 */
-	public WaitCondition(
-	        String url, int timeoutMilliseconds, ExpectedCondition... expectedConditions) {
+	public WaitCondition(String url, int timeoutMilliseconds,
+	        ExpectedCondition... expectedConditions) {
 		this.url = url;
 		this.timeOut = timeoutMilliseconds;
 		for (ExpectedCondition condition : expectedConditions) {
@@ -64,8 +64,8 @@ public class WaitCondition {
 	 * @param expectedConditions
 	 *            Conditions expected.
 	 */
-	public WaitCondition(
-	        String url, int timeoutMilliseconds, List<ExpectedCondition> expectedConditions) {
+	public WaitCondition(String url, int timeoutMilliseconds,
+	        List<ExpectedCondition> expectedConditions) {
 		this.url = url;
 		this.timeOut = timeoutMilliseconds;
 		this.expectedConditions.addAll(expectedConditions);
@@ -73,7 +73,7 @@ public class WaitCondition {
 
 	/**
 	 * Tests all the conditions and waits for them to be satisfied or times out.
-	 *
+	 * 
 	 * @param browser
 	 *            The browser to use.
 	 * @return -1 if browser does not match url. 0 by timeout. 1 if all conditions are satisfied

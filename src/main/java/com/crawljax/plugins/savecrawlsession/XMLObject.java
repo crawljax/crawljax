@@ -1,6 +1,5 @@
 package com.crawljax.plugins.savecrawlsession;
 
-
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.File;

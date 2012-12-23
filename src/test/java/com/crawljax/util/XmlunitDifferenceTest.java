@@ -2,18 +2,17 @@
 
 package com.crawljax.util;
 
-import com.google.common.collect.Lists;
-
-import org.junit.Assert;
+import java.util.List;
 
 import org.custommonkey.xmlunit.Difference;
+import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
+import com.google.common.collect.Lists;
 
 /**
  * Test the useage of the Helper.getDifferences.
- *
+ * 
  * @author slenselink@google.com (Stefan Lenselink)
  * @version $Id$
  */
