@@ -32,7 +32,7 @@
 #foreach( $state in $states )
 <div id="${state.name}">
 	<a id="link${state.name}" href="javascript:void(0)" onclick="loadState('${state.name}')" title="${state.url}">
-		<img src="${state.screenshot}" id="img${state.name}" width="80px" height="80px" onmouseover="stateZoom(this)" onmouseout="stateUnzoom(this)" /><br />
+		<img src="screenshots/${state.screenshot}" id="img${state.name}" width="80px" height="80px" onmouseover="stateZoom(this)" onmouseout="stateUnzoom(this)" /><br />
 		${state.id}
 	</a>
 </div>

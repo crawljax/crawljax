@@ -11,6 +11,24 @@
 	<url>http://www.crawljax.com</url>
 
 
+	<developers>
+		<developer>
+			<id>dannyroest</id>
+			<name>Danny Roest</name>
+			<email>dannyroest@gmail.com</email>
+			<url>http://twitter.com/dannyroest</url>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>amesbah</id>
+			<name>Ali Mesbah</name>
+			<email>a.mesbah@gmail.com</email>
+			<url>http://www.ece.ubc.ca/~amesbah/</url>
+			<organization>SALTLab, UBC</organization>
+			<organizationUrl>http://salt.ece.ubc.ca</organizationUrl>
+			<timezone>-8</timezone>
+		</developer>
+	</developers>
 	<properties>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
@@ -48,6 +66,34 @@
 		</snapshotRepository>
 	</distributionManagement>
 
+	<profiles>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>com.crawljax</groupId>
@@ -97,52 +143,8 @@
 		</plugins>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>release-sign-artifacts</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+	
 
-	<developers>
-		<developer>
-			<id>dannyroest</id>
-			<name>Danny Roest</name>
-			<email>dannyroest@gmail.com</email>
-			<url>http://twitter.com/dannyroest</url>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>amesbah</id>
-			<name>Ali Mesbah</name>
-			<email>a.mesbah@gmail.com</email>
-			<url>http://www.ece.ubc.ca/~amesbah/</url>
-			<organization>SALTLab, UBC</organization>
-			<organizationUrl>http://salt.ece.ubc.ca</organizationUrl>
-			<timezone>-8</timezone>
-		</developer>
-	</developers>
+	
 
 </project>

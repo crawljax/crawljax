@@ -4,6 +4,7 @@ import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
+import com.google.common.io.Files;
 
 public class CrawlOverviewExample {
 
@@ -18,7 +19,7 @@ public class CrawlOverviewExample {
 		crawler.setMaximumStates(5);
 		crawler.clickDefaultElements();
 		config.setCrawlSpecification(crawler);
-		config.addPlugin(new CrawlOverview());
+		config.addPlugin(new CrawlOverview(Files.createTempDir()));
 		try {
 			CrawljaxController crawljax = new CrawljaxController(config);
 			crawljax.run();
