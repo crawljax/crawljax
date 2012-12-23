@@ -19,13 +19,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
@@ -273,7 +274,7 @@ public class CrawlOverview
 		FileWriter writer = new FileWriter(fileHTML);
 		VelocityEngine ve = new VelocityEngine();
 		/* disable logging */
-		ve.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
+		ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
 		        "org.apache.velocity.runtime.log.NullLogChute");
 		ve.evaluate(context, writer, "index", template);
 		writer.flush();
@@ -297,7 +298,7 @@ public class CrawlOverview
 		FileWriter writer = new FileWriter(fileHTML);
 		VelocityEngine ve = new VelocityEngine();
 		/* disable logging */
-		ve.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
+		ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
 		        "org.apache.velocity.runtime.log.NullLogChute");
 		ve.evaluate(context, writer, state.getName(), template);
 		writer.flush();
