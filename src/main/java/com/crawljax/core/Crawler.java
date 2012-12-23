@@ -250,7 +250,7 @@ public class Crawler implements Runnable {
 	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
 	 * 
 	 * @throws CrawljaxException
-	 *             if the {@link Eventable#getTargetStateVertix()} encounters an error.
+	 *             if the {@link Eventable#getTargetStateVertex()} encounters an error.
 	 */
 	private void goBackExact() throws CrawljaxException {
 		/**
@@ -267,9 +267,9 @@ public class Crawler implements Runnable {
 			LOGGER.info("Backtracking by executing " + clickable.getEventType() + " on element: "
 			        + clickable);
 
-			this.getStateMachine().changeState(clickable.getTargetStateVertix());
+			this.getStateMachine().changeState(clickable.getTargetStateVertex());
 
-			curState = clickable.getTargetStateVertix();
+			curState = clickable.getTargetStateVertex();
 
 			controller.getSession().addEventableToCrawlPath(clickable);
 
@@ -579,7 +579,7 @@ public class Crawler implements Runnable {
 		}
 		if (backTrackPath.last() != null) {
 			try {
-				if (!backTrackPath.last().getTargetStateVertix().startWorking(this)) {
+				if (!backTrackPath.last().getTargetStateVertex().startWorking(this)) {
 					return;
 				}
 			} catch (CrawljaxException e) {

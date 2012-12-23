@@ -401,7 +401,7 @@ public abstract class LargeTestSuper {
 						        "Target State from ExactEventPath equals current state",
 						        session.getCurrentCrawlPath()
 						                .get(session.getCurrentCrawlPath().size() - 1)
-						                .getTargetStateVertix(), session.getCurrentState());
+						                .getTargetStateVertex(), session.getCurrentState());
 					}
 				} catch (CrawljaxException e) {
 					Assert.fail(e.getMessage());

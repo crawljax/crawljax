@@ -113,8 +113,8 @@ public class EventableTest {
 		Eventable e = new Eventable();
 
 		sfg.addEdge(s1, s2, e);
-		assertEquals(s1, e.getSourceStateVertix());
-		assertEquals(s2, e.getTargetStateVertix());
+		assertEquals(s1, e.getSourceStateVertex());
+		assertEquals(s2, e.getTargetStateVertex());
 
 	}
 

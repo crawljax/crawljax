@@ -94,8 +94,8 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 		for (List<Eventable> eventablePath : session.getCrawlPaths()) {
 			List<Transition> path = new ArrayList<Transition>();
 			for (Eventable eventable : eventablePath) {
-				path.add(new Transition(eventable.getSourceStateVertix().getName(), eventable
-				        .getTargetStateVertix().getName(), eventable.getId()));
+				path.add(new Transition(eventable.getSourceStateVertex().getName(), eventable
+				        .getTargetStateVertex().getName(), eventable.getId()));
 			}
 			paths.add(path);
 		}
@@ -105,8 +105,8 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 	private List<Transition> getTransitions() throws CrawljaxException {
 		List<Transition> transitions = new ArrayList<Transition>();
 		for (Eventable eventable : session.getStateFlowGraph().getAllEdges()) {
-			transitions.add(new Transition(eventable.getSourceStateVertix().getName(), eventable
-			        .getTargetStateVertix().getName(), eventable.getId()));
+			transitions.add(new Transition(eventable.getSourceStateVertex().getName(), eventable
+			        .getTargetStateVertex().getName(), eventable.getId()));
 		}
 		return transitions;
 	}
