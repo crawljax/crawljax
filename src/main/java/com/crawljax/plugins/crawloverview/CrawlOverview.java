@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.openqa.selenium.Dimension;
@@ -50,7 +51,7 @@ import com.crawljax.util.Helper;
 public class CrawlOverview
         implements OnNewStatePlugin, PreStateCrawlingPlugin, PostCrawlingPlugin, GeneratesOutput {
 
-	private static final Logger LOGGER = Logger.getLogger(CrawlOverview.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawlOverview.class);
 
 	private String outputFolder = "";
 
