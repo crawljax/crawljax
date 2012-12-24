@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.crawljax.plugins</groupId>
+	<artifactId>plugin</artifactId>
+	<version>2.0</version>
+	<packaging>pom</packaging>
+
+	<name>Crawljax plugins parent POM</name>
+	<description>Parent POM for plugins to be used in combination with Crawljax.</description>
+	<url>http://crawljax.com/</url>
+	<inceptionYear>2009</inceptionYear>
+
+	<properties>
+		<crawljax.version>2.1</crawljax.version>
+		<internal.repo.path>file:///Users/amesbah/repos/git/mvn-repo</internal.repo.path>
+
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		
+		<juni.version>4.11</juni.version>
+		<maven.source.plugin>2.2.1</maven.source.plugin>
+		<maven.javadoc.plugin>2.9</maven.javadoc.plugin>
+		<maven.release.plugin>2.4</maven.release.plugin>
+	</properties>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License v3</name>
+			<url>http://www.gnu.org/licenses/gpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<distributionManagement>
+		<repository>
+			<id>crawljax.maven.repo</id>
+			<name>Internal Repository</name>
+			<url>${internal.repo.path}</url>
+		</repository>
+	</distributionManagement>
+
+
+	<!-- All plugins have the following dependencies -->
+	<dependencies>
+
+		<dependency>
+			<groupId>com.crawljax</groupId>
+			<artifactId>crawljax</artifactId>
+			<version>${crawljax.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${juni.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<!-- Default mailing-list for plugins -->
+	<!-- If a Plugin has a different mailing0list the plugin POM must specify 
+		it. -->
+	<mailingLists>
+		<mailingList>
+			<name>Crawljax Mailing List</name>
+			<subscribe>http://groups.google.com/group/crawljax/subscribe</subscribe>
+			<unsubscribe>crawljax+unsubscribe@googlegroups.com</unsubscribe>
+			<post>crawljax@googlegroups.com</post>
+			<archive>http://groups.google.com/group/crawljax</archive>
+		</mailingList>
+	</mailingLists>
+
+	<build>
+
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+
+		<plugins>
+
+			<!-- Default JDK dependency -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+			</plugin>
+
+			<!-- Create PLUGIN_NAME-x.y.jar (binary only) -->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+
+			<!-- Create PLUGIN_NAME-x.y-sources.jar (source only) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven.source.plugin}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Control the JavaDoc Generation -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.plugin}</version>
+				<configuration>
+					<show>private</show>
+					<nohelp>false</nohelp>
+				</configuration>
+				<executions>
+					<execution>
+						<id>javadoc-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>${maven.release.plugin}</version>
+				<configuration>
+					<goals>deploy</goals>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+</project>
