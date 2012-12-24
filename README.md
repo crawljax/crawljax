@@ -3,10 +3,17 @@ Crawloverview plugin
 
 Generates an HTML report with a snapshot overview of what is crawled by Crawljax.
 
+Maven
+-----
 
+    <dependency>
+      <groupId>com.crawljax.plugins</groupId>
+      <artifactId>crawloverview</artifactId>
+      <version>1.2</version>
+    </dependency>
 
 Using the plugin
-================
+----------------
     public class CrawlOverviewExample {
 
     private static final String URL = "http://google.com";
@@ -14,6 +21,7 @@ Using the plugin
 	public static void main(String[] args) {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 		CrawlSpecification crawler = new CrawlSpecification(URL);
+		crawler.setMaximumStates(5);
 		crawler.clickDefaultElements();
 		config.setCrawlSpecification(crawler);
 		config.addPlugin(new CrawlOverview());
@@ -25,3 +33,5 @@ Using the plugin
 		}
 	  }
     }
+
+The result will be generated in a folder called "crawloverview".
