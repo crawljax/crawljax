@@ -10,7 +10,7 @@
 
 	<name>Crawljax plugins parent POM</name>
 	<description>Parent POM for plugins to be used in combination with Crawljax.</description>
-	<url>http://crawljax.com/</url>
+	<url>http://crawljax.com</url>
 	<inceptionYear>2009</inceptionYear>
 
 	<prerequisites>
@@ -30,6 +30,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
+
+	<scm>
+		<connection>scm:git:git@github.com:crawljax/plugins-parent-pom.git</connection>
+		<developerConnection>scm:git:git@github.com:crawljax/plugins-parent-pom.git</developerConnection>
+		<url>https://github.com/crawljax/plugins-parent-pom</url>
+	</scm>
 
 	<licenses>
 		<license>
@@ -183,4 +189,25 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<developers>
+		<developer>
+			<id>amesbah</id>
+			<name>Ali Mesbah</name>
+			<email>a.mesbah@gmail.com</email>
+			<url>http://www.ece.ubc.ca/~amesbah/</url>
+			<organization>SALTLab, UBC</organization>
+			<organizationUrl>http://salt.ece.ubc.ca</organizationUrl>
+			<timezone>-8</timezone>
+		</developer>
+		<developer>
+			<id>alexnederlof</id>
+			<name>Alex Nederlof</name>
+			<email>alex@nederlof.com</email>
+			<url>http://alex.nederlof.com</url>
+			<organization>TU Delft</organization>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+	
 </project>
