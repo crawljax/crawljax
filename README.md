@@ -19,3 +19,16 @@ For example, to override the default version of crawljax, just set a property:
     </properties>
 
 For more information on how to write a Crawljax plugin see [this page](https://github.com/crawljax/crawljax/wiki/Writing-a-plugin).
+
+The parent pom unfortunately isn't available in a public repository yet. Until it is, you also need to declare the repository in your pom.
+
+    <repositories>
+        <repository>
+            <id>crawljax.mvn.repo</id>
+            <url>https://github.com/crawljax/mvn-repo/raw/master</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
