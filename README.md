@@ -1,7 +1,7 @@
 Crawljax Plugins Parent POM
 ===========================
 
-The parent Maven POM for Crawljax plugins.
+The parent Maven POM for Crawljax plugins. 
 
 Start out by adding the parent configuration to your pom:
 
@@ -18,9 +18,7 @@ For example, to override the default version of crawljax, just set a property:
       <crawljax.version>VERSION</crawljax.version>
     </properties>
 
-For more information on how to write a Crawljax plugin see [this page](https://github.com/crawljax/crawljax/wiki/Writing-a-plugin).
-
-The parent pom unfortunately isn't available in a public repository yet. Until it is, you also need to declare the repository in your pom.
+The parent pom isn't available in a public repository yet. You need to declare the repository in your pom:
 
     <repositories>
         <repository>
@@ -32,3 +30,5 @@ The parent pom unfortunately isn't available in a public repository yet. Until i
             </snapshots>
         </repository>
     </repositories>
+
+For more information on how to write a Crawljax plugin see [this page](https://github.com/crawljax/crawljax/wiki/Writing-a-plugin).
