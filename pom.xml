@@ -39,8 +39,19 @@
 		<url>https://github.com/crawljax/crawloverview-plugin/issues</url>
 	</issueManagement>
 
+	<repositories>
+		<repository>
+			<id>crawljax.mvn.repo</id>
+			<url>https://github.com/crawljax/mvn-repo/raw/master</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencies>
-		
+
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
