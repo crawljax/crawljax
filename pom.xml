@@ -22,7 +22,7 @@
 		<slf4j.version>1.7.2</slf4j.version>
 		<logback.version>1.0.9</logback.version>
 
-		<internal.repo.path>file:///${user.home}/.m2/git-mvn-repo</internal.repo.path>
+		<internal.repo.path>file:///${user.home}/.m2/crawljax-mvn-repo</internal.repo.path>
 
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
