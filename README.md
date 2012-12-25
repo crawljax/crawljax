@@ -8,7 +8,7 @@ Start out by adding the parent configuration to your pom:
     <parent>
       <groupId>com.crawljax.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>2.0</version>
+      <version>2.1</version>
     </parent>
 
 The pom includes properties that allow various build configurations to be customized. 
