@@ -25,7 +25,7 @@ The parent pom unfortunately isn't available in a public repository yet. Until i
     <repositories>
         <repository>
             <id>crawljax.mvn.repo</id>
-            <url>https://github.com/crawljax/mvn-repo/raw/master</url>
+            <url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
