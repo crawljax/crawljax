@@ -19,9 +19,11 @@ public abstract class SampleCrawler {
 
 	private CrawljaxConfiguration config;
 	private CrawlSpecification crawlSpec;
+	private String siteExtension;
 
-	protected SampleCrawler(Resource siteBase) {
-		this.webServer = new WebServer(siteBase);
+	protected SampleCrawler(String siteExtension) {
+		this.siteExtension = siteExtension;
+		this.webServer = new WebServer(Resource.newClassPathResource("/sites"));
 	}
 
 	public WebServer getWebServer() {
@@ -42,11 +44,15 @@ public abstract class SampleCrawler {
 	 */
 	public void setup() throws Exception {
 		webServer.start();
-		crawlSpec = new CrawlSpecification(webServer.getSiteUrl().toExternalForm());
+		crawlSpec = new CrawlSpecification(getUrl());
 		crawlSpec.clickDefaultElements();
 		config = new CrawljaxConfiguration();
 		config.setCrawlSpecification(crawlSpec);
 		hasSetup.set(true);
+	}
+
+	private String getUrl() {
+		return webServer.getSiteUrl().toExternalForm() + siteExtension;
 	}
 
 	/**
@@ -94,7 +100,7 @@ public abstract class SampleCrawler {
 	 */
 	public void showWebSite() throws Exception {
 		webServer.start();
-		System.out.println(webServer.getSiteUrl());
+		System.out.println(getUrl());
 		webServer.join();
 	}
 
