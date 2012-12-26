@@ -7,6 +7,9 @@ import org.eclipse.jetty.util.resource.Resource;
  */
 public class SimpleSiteCrawl extends SampleCrawler {
 
+	public static final int NUMBER_OF_STATES = 4;
+	public static final int NUMBER_OF_EDGES = 3;
+
 	private static final Resource SIMEPLE_SITE = Resource.newClassPathResource("/simple-site");
 
 	protected SimpleSiteCrawl() {
