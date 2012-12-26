@@ -3,7 +3,7 @@
 
 	<groupId>com.crawljax.plugins.archetypes</groupId>
 	<artifactId>crawljax-plugins-archetype</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 	<name>Crawljax plugins archtypes</name>
 	<description>
