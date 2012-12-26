@@ -1,12 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax-plugins-plugin</artifactId>
-	<packaging>maven-plugin</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<version>1.0</version>
 	<name>crawljax-plugin-test-utils</name>
-	<url>http://maven.apache.org</url>
+
+	<url>carwljax.com</url>
+
+	<inceptionYear>2012</inceptionYear>
+
+	<developers>
+		<developer>
+			<name>Alex Nederlof</name>
+			<email>alex@nederlof.com</email>
+		</developer>
+	</developers>
 
 	<properties>
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -14,11 +23,51 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<internal.repo.path>file:///${user.home}/.m2/crawljax-mvn-repo</internal.repo.path>
 	</properties>
 
 	<prerequisites>
 		<maven>3.0.0</maven>
 	</prerequisites>
+
+	<distributionManagement>
+		<repository>
+			<id>crawljax.maven.repo</id>
+			<name>Internal Repository</name>
+			<url>${internal.repo.path}</url>
+		</repository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>crawljax.mvn.repo</id>
+			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<scm>
+		<connection>scm:git:git@github.com:crawljax/crawljax-plugin-test-utils.git</connection>
+		<developerConnection>scm:git:git@github.com:crawljax/crawljax-plugin-test-utils.git</developerConnection>
+		<url>https://github.com/crawljax/crawljax-plugin-test-utils</url>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/crawljax/crawljax/issues</url>
+	</issueManagement>
 
 	<dependencies>
 
@@ -38,20 +87,18 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>1.3</version>
+		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.9</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
-			<version>1.3</version>
 		</dependency>
 	</dependencies>
 </project>
