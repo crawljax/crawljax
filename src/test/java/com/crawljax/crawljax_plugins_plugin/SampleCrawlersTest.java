@@ -26,4 +26,13 @@ public class SampleCrawlersTest {
 		assertThat(stateFlowGraph, hasStates(SimpleJsSiteCrawl.NUMBER_OF_STATES));
 		assertThat(stateFlowGraph, hasEdges(SimpleJsSiteCrawl.NUMBER_OF_EDGES));
 	}
+
+	@Test
+	public void testInputCrawler() throws Exception {
+		// new SimpleInputSiteCrawl().showWebSite();
+		CrawlSession crawl = new SimpleInputSiteCrawl().crawl();
+		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
+		assertThat(stateFlowGraph, hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));
+		assertThat(stateFlowGraph, hasEdges(SimpleInputSiteCrawl.NUMBER_OF_EDGES));
+	}
 }
