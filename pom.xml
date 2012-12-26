@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.crawljax</groupId>
-	<artifactId>crawljax-plugins-plugin</artifactId>
+	<artifactId>crawljax-test-utils</artifactId>
 	<packaging>jar</packaging>
 	<version>1.1-SNAPSHOT</version>
-	<name>crawljax-plugin-test-utils</name>
+	<name>crawljax-test-utils</name>
 
 	<url>carwljax.com</url>
 
@@ -51,9 +52,9 @@
 	</repositories>
 
 	<scm>
-		<connection>scm:git:git@github.com:crawljax/crawljax-plugin-test-utils.git</connection>
-		<developerConnection>scm:git:git@github.com:crawljax/crawljax-plugin-test-utils.git</developerConnection>
-		<url>https://github.com/crawljax/crawljax-plugin-test-utils</url>
+		<connection>scm:git:git@github.com:crawljax/crawljax-test-utils.git</connection>
+		<developerConnection>scm:git:git@github.com:crawljax/crawljax-test-utils.git</developerConnection>
+		<url>https://github.com/crawljax/crawljax-test-utils</url>
 	</scm>
 
 	<licenses>
@@ -66,7 +67,7 @@
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/crawljax/crawljax/issues</url>
+		<url>https://github.com/crawljax/crawljax-test-utils/issues</url>
 	</issueManagement>
 
 	<dependencies>
