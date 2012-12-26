@@ -4,7 +4,6 @@ Crawljax Maven Archtypes
 Crawljax Plugin
 ---------------
 
-(work in process, not released yet)
 To generate a template for Crawljax plugin development using Maven:
 
      mvn archetype:generate 
@@ -14,4 +13,4 @@ To generate a template for Crawljax plugin development using Maven:
        -DarchetypeArtifactId=crawljax-plugins-archetype 
        -DarchetypeVersion=1.0
        
-Change ``sample`` with your plugin's name.       
+You can change ``sample`` with your own plugin's name.
