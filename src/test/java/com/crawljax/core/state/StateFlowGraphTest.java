@@ -1,5 +1,7 @@
 package com.crawljax.core.state;
 
+import static com.crawljax.matchers.StateFlowGraphMatches.hasEdges;
+import static com.crawljax.matchers.StateFlowGraphMatches.hasStates;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,6 +20,7 @@ import org.junit.Test;
 
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
+import com.crawljax.matchers.StateFlowGraphMatches;
 
 public class StateFlowGraphTest {
 
@@ -304,18 +307,18 @@ public class StateFlowGraphTest {
 		g.addState(state4);
 		g.addState(state5);
 
-		assertEquals(5, g.getAllStates().size());
+		assertThat(g, hasStates(5));
 
 		StateVertex state6 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
 		state6.setGuidedCrawling(false);
 		g.addState(state6);
 
-		assertEquals(5, g.getAllStates().size());
+		assertThat(g, hasStates(5));
 
 		state6.setGuidedCrawling(true);
 
 		g.addState(state6);
-		assertEquals(6, g.getAllStates().size());
+		assertThat(g, hasStates(6));
 
 	}
 
@@ -380,16 +383,16 @@ public class StateFlowGraphTest {
 		sfg.addEdge(state1, state2, c1);
 		sfg.addEdge(state1, state2, c2);
 		sfg.addEdge(state2, state3, c3);
-		assertThat(sfg.getAllStates().size(), is(3));
-		assertThat(sfg.getAllEdges().size(), is(3));
+		assertThat(sfg, hasStates(3));
+		assertThat(sfg, hasEdges(3));
 		assertThat(sfg.getOutgoingClickables(state1).size(), is(2));
 
 		byte[] serializedSFG = SerializationUtils.serialize(sfg);
 		StateFlowGraph deserializedSfg =
 		        (StateFlowGraph) SerializationUtils.deserialize(serializedSFG);
 
-		assertThat(deserializedSfg.getAllStates().size(), is(3));
-		assertThat(deserializedSfg.getAllEdges().size(), is(3));
+		assertThat(deserializedSfg, hasStates(3));
+		assertThat(deserializedSfg, hasEdges(3));
 		assertThat(deserializedSfg.getOutgoingClickables(state1).size(), is(2));
 
 	}
