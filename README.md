@@ -4,6 +4,7 @@ Crawljax Maven Archtypes
 Crawljax Plugin
 ---------------
 
+(work in process, not released yet)
 To generate a template for Crawljax plugin development using Maven:
 
      mvn archetype:generate 
