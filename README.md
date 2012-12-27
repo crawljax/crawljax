@@ -11,4 +11,4 @@ The jar contains three sites to test you plugin against.
 This project is open for extention to create other reusable Crawljax tests.
 
 ## Matchers
-The proeject also contains some [matchers](https://github.com/crawljax/crawljax-test-utils/tree/master/src/main/java/com/crawljax/matchers) you can use in your own tests. Add matchers to this project if you think they are reusable.
+The project also contains some [matchers](https://github.com/crawljax/crawljax-test-utils/tree/master/src/main/java/com/crawljax/matchers) you can use in your own tests. Add matchers to this project if you think they are reusable.
