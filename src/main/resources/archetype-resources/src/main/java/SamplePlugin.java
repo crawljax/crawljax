@@ -1,4 +1,4 @@
-package sample;
+package ${package};
 
 import java.io.FileWriter;
 
@@ -11,7 +11,7 @@ public class SamplePlugin implements OnNewStatePlugin {
 	public void onNewState(CrawlSession session) {
 		try {
 			String dom = session.getBrowser().getDom();
-			String fileName = session.getCurrentState().getName();
+			String fileName = session.getCurrentState().getName() + ".html";
 
 			FileWriter fw = new FileWriter(fileName, false);
 			fw.write(dom);
@@ -20,4 +20,5 @@ public class SamplePlugin implements OnNewStatePlugin {
 			e.printStackTrace();
 		}
 	}
+	
 }

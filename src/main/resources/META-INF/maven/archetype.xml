@@ -4,6 +4,7 @@
   <id>crawljax-plugins-archtype</id>
   <sources>
     <source>src/main/java/SamplePlugin.java</source>
+    <source>src/main/java/CrawljaxRunner.java</source>
   </sources>
   <testSources>
     <source>src/test/java/SamplePluginTest.java</source>
