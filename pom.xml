@@ -9,7 +9,7 @@
 
 	<groupId>com.crawljax.plugins</groupId>
 	<artifactId>plugin</artifactId>
-	<version>2.2</version>
+	<version>2.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Crawljax plugins parent POM</name>
 	<description>Parent POM for plugins to be used in combination with Crawljax.</description>
