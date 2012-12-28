@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="Windows-1252"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<groupId>com.crawljax.plugins</groupId>
 	<artifactId>plugin</artifactId>
 	<version>2.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
-
 	<name>Crawljax plugins parent POM</name>
 	<description>Parent POM for plugins to be used in combination with Crawljax.</description>
 	<url>http://crawljax.com</url>
@@ -21,11 +26,8 @@
 		<slf4j.version>1.7.2</slf4j.version>
 		<logback.version>1.0.9</logback.version>
 
-		<internal.repo.path>file:///${user.home}/.m2/crawljax-mvn-repo</internal.repo.path>
-
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
-		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -34,8 +36,8 @@
 		<connection>scm:git:git@github.com:crawljax/plugins-parent-pom.git</connection>
 		<developerConnection>scm:git:git@github.com:crawljax/plugins-parent-pom.git</developerConnection>
 		<url>https://github.com/crawljax/plugins-parent-pom</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<licenses>
 		<license>
@@ -44,14 +46,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
-	<distributionManagement>
-		<repository>
-			<id>crawljax.maven.repo</id>
-			<name>Internal Repository</name>
-			<url>${internal.repo.path}</url>
-		</repository>
-	</distributionManagement>
 
 	<dependencyManagement>
 		<dependencies>
@@ -141,53 +135,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
-		<plugins>
-			<!-- Create PLUGIN_NAME-x.y-sources.jar (source only) -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Control the JavaDoc Generation -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<show>private</show>
-					<nohelp>false</nohelp>
-				</configuration>
-				<executions>
-					<execution>
-						<id>javadoc-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<goals>deploy</goals>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 	<developers>
@@ -209,5 +156,5 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-	
+
 </project>
