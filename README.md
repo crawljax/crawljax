@@ -10,11 +10,8 @@ Start out by adding the parent configuration to your pom:
     <parent>
       <groupId>com.crawljax.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>2.1</version>
+      <version>2.2</version>
     </parent>
-
-
-The parent POM isn't available in a public Maven repository yet. You need to declare the [Crawljax Maven repository](https://github.com/crawljax/crawljax-mvn-repo) in your POM.
 
 
 Properties
