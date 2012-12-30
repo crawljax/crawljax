@@ -46,6 +46,19 @@
 		</license>
 	</licenses>
 
+	<repositories>
+		<repository>
+			<id>crawljax.mvn.repo</id>
+			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
+
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -98,7 +111,7 @@
 
 	<!-- Default mailing-list for plugins -->
 	<!-- If a Plugin has a different mailing0list the plugin POM must specify 
-		it. -->
+	it. -->
 	<mailingLists>
 		<mailingList>
 			<name>Crawljax Mailing List</name>
