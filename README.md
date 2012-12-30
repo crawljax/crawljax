@@ -14,11 +14,13 @@ You can find more documentation in our [project wiki](https://github.com/crawlja
 
 Testing
 -------
-To run the test you can use the regular Maven command
+To run the tests you can use the regular Maven command
 
 	mvn test
 	
-This will run all fast unit tests. To run the slower browser dependend tests and the integration tests, run:
+This will run all fast (browserless) unit tests. 
+
+To run all the tests, including the slower (browser-dependent) tests, run:
 
 	mvn test -P integrationtests
 
