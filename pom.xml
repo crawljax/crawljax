@@ -1,12 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax-test-utils</artifactId>
 	<packaging>jar</packaging>
 	<version>1.2-SNAPSHOT</version>
 	<name>crawljax-test-utils</name>
-
+	<description>This artifact offers Crawljax plugin developers a convenient way to test their plugins by offering several default sites with known/expected output.</description>
 	<url>carwljax.com</url>
 
 	<inceptionYear>2012</inceptionYear>
@@ -19,37 +25,17 @@
 	</developers>
 
 	<properties>
+		<crawljax.version>2.1</crawljax.version>
+	
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
-
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-		<internal.repo.path>file:///${user.home}/.m2/crawljax-mvn-repo</internal.repo.path>
 	</properties>
 
 	<prerequisites>
 		<maven>3.0.0</maven>
 	</prerequisites>
-
-	<distributionManagement>
-		<repository>
-			<id>crawljax.maven.repo</id>
-			<name>Internal Repository</name>
-			<url>${internal.repo.path}</url>
-		</repository>
-	</distributionManagement>
-
-	<repositories>
-		<repository>
-			<id>crawljax.mvn.repo</id>
-			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
 
 	<scm>
 		<connection>scm:git:git@github.com:crawljax/crawljax-test-utils.git</connection>
@@ -75,7 +61,7 @@
 		<dependency>
 			<artifactId>crawljax</artifactId>
 			<groupId>com.crawljax</groupId>
-			<version>2.1</version>
+			<version>${crawljax.version}</version>
 		</dependency>
 
 		<dependency>
@@ -105,7 +91,7 @@
 
 	<build>
 		<plugins>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -115,21 +101,6 @@
 						<goals>
 							<goal>test-jar</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-				<executions>
-					<execution>
-						<id>javadoc-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>						
 					</execution>
 				</executions>
 			</plugin>
