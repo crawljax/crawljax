@@ -11,7 +11,7 @@ public class SimpleInputSiteCrawl extends SampleCrawler {
 	public static final int NUMBER_OF_STATES = 2;
 	public static final int NUMBER_OF_EDGES = 1;
 
-	protected SimpleInputSiteCrawl() {
+	public SimpleInputSiteCrawl() {
 		super("simple-input-site");
 	}
 

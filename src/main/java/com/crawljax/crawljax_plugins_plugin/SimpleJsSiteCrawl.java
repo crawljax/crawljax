@@ -8,7 +8,7 @@ public class SimpleJsSiteCrawl extends SampleCrawler {
 	public static final int NUMBER_OF_STATES = 11;
 	public static final int NUMBER_OF_EDGES = 10;
 
-	protected SimpleJsSiteCrawl() {
+	public SimpleJsSiteCrawl() {
 		super("simple-js-site");
 	}
 
