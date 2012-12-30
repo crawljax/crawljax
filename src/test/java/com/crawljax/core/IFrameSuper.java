@@ -6,16 +6,16 @@ import java.io.File;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Before;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.test.BrowserTest;
 
 /**
  * This abstract class is used a specification of all the iframe related tests.
- * 
- * @author Stefan Lenselink <slenselink@google.com>
- * @version $Id$
  */
+@Category(BrowserTest.class)
 public abstract class IFrameSuper {
 
 	protected CrawljaxController crawljax;

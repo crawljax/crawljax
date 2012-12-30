@@ -6,17 +6,20 @@ import java.io.File;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
+import com.crawljax.test.BrowserTest;
 
 /**
  * Test case for issue number 16: http://code.google.com/p/crawljax/issues/detail?id=16
  * 
  * @author Frank Groeneveld
  */
+@Category(BrowserTest.class)
 public class UnderXPathTest {
 
 	private static CrawlSession session = null;

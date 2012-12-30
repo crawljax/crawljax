@@ -1,9 +1,12 @@
 package com.crawljax.core.configuration;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CrawljaxController;
+import com.crawljax.test.BrowserTest;
 
+@Category(BrowserTest.class)
 public class PropertiesFileTest {
 
 	@Test

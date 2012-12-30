@@ -13,6 +13,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.NotRegexCondition;
@@ -27,12 +28,14 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.demo.RunWithWebServer;
+import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
 import com.google.common.collect.Maps;
 
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
  */
+@Category(BrowserTest.class)
 public class PluginsTest {
 
 	private static CrawljaxController controller;

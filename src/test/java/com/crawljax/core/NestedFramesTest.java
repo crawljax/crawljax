@@ -4,14 +4,18 @@ import java.io.File;
 
 import org.junit.After;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import com.crawljax.test.BrowserTest;
+
+@Category(BrowserTest.class)
 public class NestedFramesTest {
 
-	WebDriver driver = new FirefoxDriver();
+	private WebDriver driver = new FirefoxDriver();
 
 	@Test
 	public void testNestedFramesIndex() {

@@ -1,4 +1,4 @@
-package com.crawljax.demo;
+package com.crawljax.test;
 
 import java.net.URL;
 

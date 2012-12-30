@@ -20,7 +20,6 @@ import org.junit.Test;
 
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
-import com.crawljax.matchers.StateFlowGraphMatches;
 
 public class StateFlowGraphTest {
 

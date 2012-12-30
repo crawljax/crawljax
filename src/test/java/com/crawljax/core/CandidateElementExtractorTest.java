@@ -12,14 +12,17 @@ import java.util.Set;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.demo.RunWithWebServer;
 import com.crawljax.forms.FormHandler;
+import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
 
+@Category(BrowserTest.class)
 public class CandidateElementExtractorTest {
 
 	private static final StateVertex DUMMY_STATE = new StateVertex("DUMMY", "");

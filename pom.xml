@@ -77,6 +77,44 @@
 		</mailingList>
 	</mailingLists>
 
+	<profiles>
+		<profile>
+			<id>sign-artifacts</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<tests.exclude>com.crawljax.test.BrowserTest.class</tests.exclude>
+			</properties>
+		</profile>
+		<profile>
+			<id>integrationtests</id>
+			<properties>
+				<tests.exclude></tests.exclude>
+			</properties>
+		</profile>
+	</profiles>
+
 	<developers>
 		<developer>
 			<id>amesbah</id>
@@ -286,6 +324,13 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -453,46 +498,20 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12.4</version>
 				<configuration>
-					<includes>
-						<include>**/*Test.java</include>
-						<include>**/*TestSuite.java</include>
-					</includes>
+					<excludedGroups>${tests.exclude}</excludedGroups>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<releaseProfiles>integrationtests</releaseProfiles>
 				</configuration>
 			</plugin>
 
 		</plugins>
 	</build>
-
-
-
-	<profiles>
-		<profile>
-			<id>release-sign-artifacts</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 
 </project>
