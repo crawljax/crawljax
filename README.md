@@ -1,4 +1,4 @@
-# Crawljax plugin test utils
+# Crawljax plugin test utils [![Build Status](https://travis-ci.org/crawljax/crawljax-test-utils.png)](https://travis-ci.org/crawljax/crawljax-test-utils)
 
 This project offers Crawljax plugin developers a convenient way to test their plugins by offering a crawl of several default sites with known/expected output.
 
