@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
@@ -26,7 +27,8 @@ import com.crawljax.test.BrowserTest;
  * This Test checks the 'default' behavior of {@link EmbeddedBrowser} implemented by
  * {@link WebDriverBackedEmbeddedBrowser} on invalid input while the used browser is still active.
  */
-public class WebDriverBackedEmbeddedBrowserNoCrashTest implements BrowserTest {
+@Category(BrowserTest.class)
+public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 
 	private EmbeddedBrowser browser;
 

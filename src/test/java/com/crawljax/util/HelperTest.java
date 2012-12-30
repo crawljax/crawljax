@@ -13,6 +13,7 @@ import java.io.IOException;
 import javax.xml.transform.TransformerException;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -26,7 +27,8 @@ import com.crawljax.test.BrowserTest;
  * 
  * @author Ali Mesbah
  */
-public class HelperTest implements BrowserTest {
+@Category(BrowserTest.class)
+public class HelperTest {
 
 	private static final String INDEX = "src/test/resources/site/index.html";
 

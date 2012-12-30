@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -15,7 +16,8 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.util.Helper;
 
-public class WebDriverBackedEmbeddedBrowserTest implements BrowserTest {
+@Category(BrowserTest.class)
+public class WebDriverBackedEmbeddedBrowserTest {
 
 	private final File index = new File("src/test/resources/site/iframe/index.html");
 

@@ -1,6 +1,7 @@
 package com.crawljax.core.largetests;
 
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
@@ -9,8 +10,8 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ThreadConfiguration;
 import com.crawljax.test.BrowserTest;
 
-public class LargeFirefoxTest extends LargeTestSuper implements BrowserTest {
-
+@Category(BrowserTest.class)
+public class LargeFirefoxTest extends LargeTestSuper {
 	private static final int waitAfterEvent = 200;
 	private static final int waitAfterReload = 200;
 	private static BrowserType browser = BrowserType.firefox;

@@ -13,6 +13,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.NotRegexCondition;
@@ -34,7 +35,8 @@ import com.google.common.collect.Maps;
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
  */
-public class PluginsTest implements BrowserTest {
+@Category(BrowserTest.class)
+public class PluginsTest {
 
 	private static CrawljaxController controller;
 	private static CrawljaxConfiguration config;

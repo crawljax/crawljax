@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.junit.After;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,7 +12,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.crawljax.test.BrowserTest;
 
-public class NestedFramesTest implements BrowserTest {
+@Category(BrowserTest.class)
+public class NestedFramesTest {
 
 	private WebDriver driver = new FirefoxDriver();
 

@@ -9,6 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
@@ -19,7 +20,8 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.test.BrowserTest;
 
-public class OnFireEventFailedPluginTest implements BrowserTest {
+@Category(BrowserTest.class)
+public class OnFireEventFailedPluginTest {
 	private static CrawljaxController controller;
 	private static CrawljaxConfiguration config;
 	private static int hit;

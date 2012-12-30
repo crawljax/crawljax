@@ -8,6 +8,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -20,7 +21,8 @@ import com.crawljax.test.BrowserTest;
 /**
  * Test class for the Crawler testing.
  */
-public class CrawlerTest implements BrowserTest {
+@Category(BrowserTest.class)
+public class CrawlerTest {
 
 	private Collection<List<Eventable>> paths;
 	private StateVertex index;

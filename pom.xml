@@ -76,10 +76,6 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
-		<repository>
-			<id>maven.xwiki.org</id>
-			<url>http://maven.xwiki.org/externals</url>
-		</repository>
 	</repositories>
 
 	<mailingLists>
@@ -119,13 +115,13 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<tests.include>com/crawljax/test/FastTests.java</tests.include>
+				<tests.exclude>com.crawljax.test.BrowserTest.class</tests.exclude>
 			</properties>
 		</profile>
 		<profile>
 			<id>integrationtests</id>
 			<properties>
-				<tests.include>com/crawljax/test/*</tests.include>
+				<tests.exclude></tests.exclude>
 			</properties>
 		</profile>
 	</profiles>
@@ -345,12 +341,6 @@
 			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>cpsuite</groupId>
-			<artifactId>cpsuite</artifactId>
-			<version>1.2.5</version>
-			<scope>test</scope>
-		</dependency>
 
 	</dependencies>
 
@@ -519,10 +509,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12.4</version>
 				<configuration>
-					<includes>
-						<include>${tests.include}</include>
-						<include>**/*TestSuite.java</include>
-					</includes>
+					<excludedGroups>${tests.exclude}</excludedGroups>
 				</configuration>
 			</plugin>
 
