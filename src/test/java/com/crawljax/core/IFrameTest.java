@@ -4,13 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import com.crawljax.test.BrowserTest;
 
 /**
  * This class test the correct behavior of iFrames.
- * 
- * @author mesbah
- * @version $Id$
  */
+@Category(BrowserTest.class)
 public class IFrameTest extends IFrameSuper {
 	@Test
 	public void testIFrameCrawlable() throws ConfigurationException, CrawljaxException {

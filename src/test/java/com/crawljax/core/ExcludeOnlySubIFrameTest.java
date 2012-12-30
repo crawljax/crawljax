@@ -5,12 +5,15 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.test.BrowserTest;
 
 /**
  * This test checks that only one sub-iframes is ignored.
  */
+@Category(BrowserTest.class)
 public class ExcludeOnlySubIFrameTest extends IFrameSuper {
 
 	@Override

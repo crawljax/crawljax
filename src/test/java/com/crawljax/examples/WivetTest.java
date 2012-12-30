@@ -9,6 +9,7 @@
 package com.crawljax.examples;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.CrawljaxController;
@@ -16,13 +17,12 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ThreadConfiguration;
+import com.crawljax.test.BrowserTest;
 
 /**
  * Test specification for crawling the wivet benchmark project.
- * 
- * @author Guifre Ruiz <guifre.ruiz@gmail.com>
- * @version 0.1
  */
+@Category(BrowserTest.class)
 public class WivetTest {
 
 	/**

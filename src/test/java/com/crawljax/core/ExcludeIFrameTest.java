@@ -7,12 +7,15 @@ import static org.junit.Assert.assertThat;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.test.BrowserTest;
 
 /**
  * This test checks that all iframes are ignored.
  */
+@Category(BrowserTest.class)
 public class ExcludeIFrameTest extends IFrameSuper {
 
 	@Override

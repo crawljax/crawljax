@@ -9,6 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
@@ -17,13 +18,9 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.test.BrowserTest;
 
-/**
- * Test case for bug #8.
- * 
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
- */
+@Category(BrowserTest.class)
 public class OnFireEventFailedPluginTest {
 	private static CrawljaxController controller;
 	private static CrawljaxConfiguration config;

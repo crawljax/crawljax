@@ -1,11 +1,14 @@
 package com.crawljax.core.largetests;
 
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.test.BrowserTest;
 
+@Category(BrowserTest.class)
 public class LargeTestChrome extends LargeTestSuper {
 
 	private static final int waitAfterEvent = 100;
