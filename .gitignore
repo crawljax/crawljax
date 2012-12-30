@@ -1,11 +1,5 @@
 target
-crawloverview
-log4j.log
 .project
 .classpath
-*.class
 .settings
-# Package Files #
-*.jar
-*.war
-*.ear
+*.log

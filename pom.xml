@@ -10,11 +10,13 @@
 
 	<artifactId>crawloverview</artifactId>
 	<version>1.3-SNAPSHOT</version>
-	<name>Crawl Overview</name>
+
+	<name>Crawl Overview Plugin</name>
 	<description>
 		Generates an HTML report with a snapshot overview of what is crawled.
-    </description>
+  	</description>
 	<url>http://www.crawljax.com</url>
+
 
 	<properties>
 		<crawljax.version>2.1</crawljax.version>
@@ -39,56 +41,32 @@
 		<url>https://github.com/crawljax/crawloverview-plugin/issues</url>
 	</issueManagement>
 
-	<dependencies>
+	<distributionManagement>
+		<repository>
+			<id>crawljaxRepo</id>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<id>crawljaxSnapshotRepo</id>
+			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
+	<dependencies>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>1.7</version>
 		</dependency>
-
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>com.crawljax</groupId>
+			<artifactId>crawljax-test-utils</artifactId>
+			<version>1.3</version>
+		</dependency>
 	</dependencies>
-
-	<build>
-		<resources>
-			<resource>
-				<directory>.</directory>
-				<includes>
-					<include>*.vm</include>
-					<include>*.js</include>
-					<include>LICENSE</include>
-				</includes>
-			</resource>
-		</resources>
-		<plugins>
-
-
-		</plugins>
-	</build>
-
-	<developers>
-		<developer>
-			<id>dannyroest</id>
-			<name>Danny Roest</name>
-			<email>dannyroest@gmail.com</email>
-			<url>http://twitter.com/dannyroest</url>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>amesbah</id>
-			<name>Ali Mesbah</name>
-			<email>a.mesbah@gmail.com</email>
-			<url>http://www.ece.ubc.ca/~amesbah/</url>
-			<organization>SALTLab, UBC</organization>
-			<organizationUrl>http://salt.ece.ubc.ca</organizationUrl>
-			<timezone>-8</timezone>
-		</developer>
-	</developers>
-
 </project>

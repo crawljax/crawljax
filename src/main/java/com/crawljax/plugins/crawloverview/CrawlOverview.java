@@ -16,66 +16,59 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.plugin.GeneratesOutput;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.plugin.PreStateCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertix;
-import com.crawljax.util.Helper;
+import com.google.common.collect.Maps;
 
 /**
  * Overviewplugin is a plugin that generates a HTML report from the crawling session which can be
  * used to inspect what is crawled by Crawljax The report contains screenshots of the visited states
  * and the clicked elements are highlighted. The report also contains the state-flow graph in which
  * the visited states are linked together. WARNING: This plugin is still in alpha development!
- * 
- * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id: CrawlOverview.java 17M 2011-10-03 21:22:37Z (local) $
  **/
 public class CrawlOverview
-        implements OnNewStatePlugin, PreStateCrawlingPlugin, PostCrawlingPlugin, GeneratesOutput {
+        implements OnNewStatePlugin, PreStateCrawlingPlugin, PostCrawlingPlugin {
 
-	private static final Logger LOGGER = Logger.getLogger(CrawlOverview.class);
-
-	private String outputFolder = "";
-
-	private static final String MAIN_OUTPUTFOLDER = "crawloverview/";
-	private static final String SCREENSHOTS_FOLDER = "screenshots/";
-	private static final String STATES_FOLDER = "states/";
-
-	private static final String RESOURCES_FOLDER = "plugins/crawloverview/";
-	private static final String TEMPLATE_STATE = "state.vm";
-	private static final String TEMPLATE_INDEX = "index.vm";
-	private static final String JS_FOLDER = "js/";
-	private static final String JS_GRAPH = "graph.js";
-	private static final String JS_PROTOTYPE = "prototype-1.4.0.js";
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlOverview.class);
 
 	private static final int HEADER_SIZE = 20;
 	private static final String COLOR_NEW_STATE = "green";
 	private static final String COLOR_A_PREVIOUS_STATE = "#00FFFF";
 	private static final String COLOR_NO_STATE_CHANGE = "orange";
 
-	private static final Map<String, List<RenderedCandidateElement>> stateCandidatesMap =
-	        new HashMap<String, List<RenderedCandidateElement>>();
+	private final Map<String, List<RenderedCandidateElement>> stateCandidatesMap;
+	private final CachedResources resources;
+	private final OutputBuilder outputBuilder;
+	private final Set<String> visitedStates = new HashSet<String>();
 
 	private CrawlSession session;
 
-	private final List<String> visitedStates = new ArrayList<String>();
+	public CrawlOverview(File outputFolder) {
+		stateCandidatesMap = Maps.newHashMap();
+		resources = new CachedResources();
+		outputBuilder = new OutputBuilder(outputFolder, resources);
+	}
 
 	/**
 	 * Logs all the canidate elements so that the plugin knows which elements were the candidate
@@ -100,56 +93,31 @@ public class CrawlOverview
 	 * Generated the report.
 	 */
 	public void postCrawling(CrawlSession session) {
-		this.session = session;
+		StateFlowGraph sfg = session.getStateFlowGraph();
 		try {
-			Helper.directoryCheck(getOutputFolder() + MAIN_OUTPUTFOLDER + STATES_FOLDER);
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
+			writeIndexFile();
+			for (StateVertix state : sfg.getAllStates()) {
+				List<RenderedCandidateElement> rendered = stateCandidatesMap.get(state.getName());
+				writeHtmlForState(state, rendered);
+			}
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 		}
-		generateOverviewReport();
+
+		LOG.info("Overview report generated: {}", outputBuilder.getIndexFile().getAbsolutePath());
 	}
 
 	private void saveScreenshot(StateVertix currentState) {
 		if (!visitedStates.contains(currentState.getName())) {
-			String fileName = getScreenShotFileName(currentState);
+			LOG.debug("Saving screenshot for state {}", currentState.getName());
+			File screenShot = outputBuilder.newScreenShotFile(currentState.getName());
 			try {
-				Helper.directoryCheck(getOutputFolder() + MAIN_OUTPUTFOLDER + SCREENSHOTS_FOLDER);
-				Helper.checkFolderForFile(fileName);
-			} catch (IOException e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-
-			try {
-				session.getBrowser().saveScreenShot(new File(fileName));
+				session.getBrowser().saveScreenShot(screenShot);
 			} catch (Exception e) {
-				LOGGER.warn("Screenshots are not supported for " + session.getBrowser());
+				LOG.warn("Screenshots are not supported for {}", session.getBrowser());
 			}
-
 			visitedStates.add(currentState.getName());
 		}
-	}
-
-	private void generateOverviewReport() {
-		StateFlowGraph sfg = session.getStateFlowGraph();
-		try {
-			createNeededJavaScriptFiles();
-			writeIndexFile();
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-
-		for (StateVertix state : sfg.getAllStates()) {
-			List<RenderedCandidateElement> rendered = stateCandidatesMap.get(state.getName());
-			try {
-				writeHtmlForState(state, rendered);
-			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
-			}
-		}
-		File indexFile = new File(getIndexFileName());
-		LOGGER.info("Overview report generated: " + indexFile.getAbsolutePath());
 	}
 
 	private Eventable getEventableByCandidateElementInState(StateVertix state,
@@ -235,29 +203,16 @@ public class CrawlOverview
 			stateVertixMap.put("name", stateVertix.getName());
 			stateVertixMap.put("url", stateVertix.getUrl());
 			stateVertixMap.put("id", stateVertix.getName().replace("state", "S"));
-			stateVertixMap.put("screenshot", SCREENSHOTS_FOLDER + stateVertix.getName() + ".png");
+			stateVertixMap.put("screenshot", stateVertix.getName() + ".png");
 			states.add(stateVertixMap);
 		}
 		return states;
 	}
 
-	private void createNeededJavaScriptFiles() throws IOException {
-		Helper.directoryCheck(this.getOutputFolder() + MAIN_OUTPUTFOLDER + JS_FOLDER);
-		File jsGraph =
-		        new File(this.getOutputFolder() + MAIN_OUTPUTFOLDER + JS_FOLDER + JS_GRAPH);
-		Helper.writeToFile(jsGraph.getAbsolutePath(),
-		        Helper.getTemplateAsString(RESOURCES_FOLDER + JS_GRAPH), false);
-		File jsPrototype =
-		        new File(this.getOutputFolder() + MAIN_OUTPUTFOLDER + JS_FOLDER + JS_PROTOTYPE);
-		Helper.writeToFile(jsPrototype.getAbsolutePath(),
-		        Helper.getTemplateAsString(RESOURCES_FOLDER + JS_PROTOTYPE), false);
-	}
-
 	private void writeIndexFile() throws Exception {
-		String fileName = getIndexFileName();
-		Helper.checkFolderForFile(fileName);
+		LOG.debug("Writing index file");
 		StateFlowGraph sfg = session.getStateFlowGraph();
-		String template = Helper.getTemplateAsString(RESOURCES_FOLDER + TEMPLATE_INDEX);
+		String template = resources.getIndexTemplate();
 		VelocityContext context = new VelocityContext();
 		context.put("headerheight", HEADER_SIZE);
 
@@ -268,37 +223,35 @@ public class CrawlOverview
 		context.put("colorNoStateChange", COLOR_NO_STATE_CHANGE);
 
 		// writing
-		File fileHTML = new File(fileName);
-		FileWriter writer = new FileWriter(fileHTML);
-		VelocityEngine ve = new VelocityEngine();
-		/* disable logging */
-		ve.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
-		        "org.apache.velocity.runtime.log.NullLogChute");
-		ve.evaluate(context, writer, "index", template);
-		writer.flush();
-		writer.close();
+		File fileHTML = outputBuilder.getIndexFile();
+		writeToFile(template, context, fileHTML, "index");
 	}
 
 	private void writeHtmlForState(StateVertix state, List<RenderedCandidateElement> rendered)
 	        throws Exception {
-		String fileName = getStateFileName(state);
-		Helper.checkFolderForFile(fileName);
+		LOG.debug("Writing state file for state {}", state.getName());
 		StateFlowGraph sfg = session.getStateFlowGraph();
 
-		String template = Helper.getTemplateAsString(RESOURCES_FOLDER + TEMPLATE_STATE);
+		String template = resources.getStateTemplate();
 		VelocityContext context = new VelocityContext();
 		context.put("name", state.getName());
-		context.put("screenshot", "../" + SCREENSHOTS_FOLDER + state.getName() + ".png");
+		context.put("screenshot", state.getName() + ".png");
 		context.put("elements", getElements(sfg, state, rendered));
 
 		// writing
-		File fileHTML = new File(fileName);
+		File fileHTML = outputBuilder.newStateFile(state.getName());
+		String name = state.getName();
+		writeToFile(template, context, fileHTML, name);
+	}
+
+	private void writeToFile(String template, VelocityContext context, File fileHTML, String name)
+	        throws IOException {
 		FileWriter writer = new FileWriter(fileHTML);
 		VelocityEngine ve = new VelocityEngine();
 		/* disable logging */
-		ve.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
+		ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
 		        "org.apache.velocity.runtime.log.NullLogChute");
-		ve.evaluate(context, writer, state.getName(), template);
+		ve.evaluate(context, writer, name, template);
 		writer.flush();
 		writer.close();
 	}
@@ -313,7 +266,7 @@ public class CrawlOverview
 			webElement = session.getBrowser().getWebElement(element.getIdentification());
 
 		} catch (Exception e) {
-			LOGGER.info("Could not locate " + element.getElement().toString());
+			LOG.info("Could not locate " + element.getElement().toString());
 			return;
 		}
 		// put in map
@@ -328,27 +281,6 @@ public class CrawlOverview
 		        new RenderedCandidateElement(element.getElement(), element.getIdentification()
 		                .getValue(), location, size);
 		stateCandidatesMap.get(state.getName()).add(renderedCandidateElement);
-	}
-
-	private String getScreenShotFileName(StateVertix state) {
-		return getOutputFolder() + MAIN_OUTPUTFOLDER + SCREENSHOTS_FOLDER + state.getName()
-		        + ".png";
-	}
-
-	private String getStateFileName(StateVertix state) {
-		return getOutputFolder() + MAIN_OUTPUTFOLDER + STATES_FOLDER + state.getName() + ".html";
-	}
-
-	private String getIndexFileName() {
-		return getOutputFolder() + MAIN_OUTPUTFOLDER + "index.html";
-	}
-
-	public String getOutputFolder() {
-		return this.outputFolder;
-	}
-
-	public void setOutputFolder(String outputfolder) {
-		this.outputFolder = outputfolder;
 	}
 
 }
