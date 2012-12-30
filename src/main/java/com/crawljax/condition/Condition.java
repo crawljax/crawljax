@@ -3,15 +3,15 @@
  */
 package com.crawljax.condition;
 
-import com.crawljax.browser.EmbeddedBrowser;
-
 import net.jcip.annotations.ThreadSafe;
 
 import org.w3c.dom.NodeList;
 
+import com.crawljax.browser.EmbeddedBrowser;
+
 /**
  * A condition is a condition which can be tested on the current state in the browser.
- *
+ * 
  * @author dannyroest@gmail.com (Danny Roest)
  * @version $Id$
  */

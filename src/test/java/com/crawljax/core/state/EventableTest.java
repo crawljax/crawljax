@@ -104,8 +104,8 @@ public class EventableTest {
 	@Test
 	public void testEdge() throws CrawljaxException {
 
-		StateVertix s1 = new StateVertix("stateSource", "dom1");
-		StateVertix s2 = new StateVertix("stateTarget", "dom2");
+		StateVertex s1 = new StateVertex("stateSource", "dom1");
+		StateVertex s2 = new StateVertex("stateTarget", "dom2");
 		StateFlowGraph sfg = new StateFlowGraph(s1);
 
 		sfg.addState(s2);
@@ -113,8 +113,8 @@ public class EventableTest {
 		Eventable e = new Eventable();
 
 		sfg.addEdge(s1, s2, e);
-		assertEquals(s1, e.getSourceStateVertix());
-		assertEquals(s2, e.getTargetStateVertix());
+		assertEquals(s1, e.getSourceStateVertex());
+		assertEquals(s2, e.getTargetStateVertex());
 
 	}
 

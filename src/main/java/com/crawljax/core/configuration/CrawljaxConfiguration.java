@@ -3,9 +3,9 @@ package com.crawljax.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.browser.WebDriverBrowserBuilder;
-import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.util.Helper;

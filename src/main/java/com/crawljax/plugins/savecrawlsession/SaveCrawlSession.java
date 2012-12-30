@@ -1,6 +1,5 @@
 package com.crawljax.plugins.savecrawlsession;
 
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.plugin.GeneratesOutput;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 
 /**
  * Plugin that saves the CrawlSession to an XML file which is used by RegressionTester.
@@ -68,9 +67,9 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 		}
 	}
 
-	private Map<String, StateVertix> getStates() {
-		Map<String, StateVertix> mapStates = new HashMap<String, StateVertix>();
-		for (StateVertix state : session.getStateFlowGraph().getAllStates()) {
+	private Map<String, StateVertex> getStates() {
+		Map<String, StateVertex> mapStates = new HashMap<String, StateVertex>();
+		for (StateVertex state : session.getStateFlowGraph().getAllStates()) {
 			mapStates.put(state.getName(), state);
 		}
 		return mapStates;
@@ -81,8 +80,8 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 		Map<Long, Eventable> mapEventables = new HashMap<Long, Eventable>();
 		for (Eventable orgEventable : session.getStateFlowGraph().getAllEdges()) {
 			Eventable eventable =
-			        new Eventable(orgEventable.getElement().getNode(), orgEventable
-			                .getEventType());
+			        new Eventable(orgEventable.getElement().getNode(),
+			                orgEventable.getEventType());
 			eventable.setId(orgEventable.getId());
 			eventable.setRelatedFormInputs(orgEventable.getRelatedFormInputs());
 			mapEventables.put(eventable.getId(), eventable);
@@ -95,8 +94,8 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 		for (List<Eventable> eventablePath : session.getCrawlPaths()) {
 			List<Transition> path = new ArrayList<Transition>();
 			for (Eventable eventable : eventablePath) {
-				path.add(new Transition(eventable.getSourceStateVertix().getName(), eventable
-				        .getTargetStateVertix().getName(), eventable.getId()));
+				path.add(new Transition(eventable.getSourceStateVertex().getName(), eventable
+				        .getTargetStateVertex().getName(), eventable.getId()));
 			}
 			paths.add(path);
 		}
@@ -106,12 +105,12 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 	private List<Transition> getTransitions() throws CrawljaxException {
 		List<Transition> transitions = new ArrayList<Transition>();
 		for (Eventable eventable : session.getStateFlowGraph().getAllEdges()) {
-			transitions.add(new Transition(eventable.getSourceStateVertix().getName(), eventable
-			        .getTargetStateVertix().getName(), eventable.getId()));
+			transitions.add(new Transition(eventable.getSourceStateVertex().getName(), eventable
+			        .getTargetStateVertex().getName(), eventable.getId()));
 		}
 		return transitions;
 	}
-	
+
 	private String getUrl() throws CrawljaxException {
 		return session.getCrawljaxConfiguration().getCrawlSpecificationReader().getSiteUrl();
 	}

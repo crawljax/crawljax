@@ -9,7 +9,8 @@ import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,7 +22,7 @@ import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.IgnoreFrameChecker;
 import com.crawljax.core.state.Identification;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
@@ -35,7 +36,7 @@ import com.crawljax.util.XPathHelper;
  */
 public class CandidateElementExtractor {
 
-	private static final Logger LOGGER = Logger.getLogger(CandidateElementExtractor.class
+	private static final Logger LOGGER = LoggerFactory.getLogger(CandidateElementExtractor.class
 	        .getName());
 
 	private final ExtractorManager checkedElements;
@@ -82,7 +83,7 @@ public class CandidateElementExtractor {
 	 *             if the method fails.
 	 */
 	public List<CandidateElement> extract(List<TagElement> crawlTagElements,
-	        List<TagElement> crawlExcludeTagElements, boolean clickOnce, StateVertix currentState)
+	        List<TagElement> crawlExcludeTagElements, boolean clickOnce, StateVertex currentState)
 	        throws CrawljaxException {
 		List<CandidateElement> results = new ArrayList<CandidateElement>();
 

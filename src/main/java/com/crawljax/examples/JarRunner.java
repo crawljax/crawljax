@@ -1,11 +1,11 @@
 package com.crawljax.examples;
 
+import org.apache.commons.configuration.ConfigurationException;
+
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-
-import org.apache.commons.configuration.ConfigurationException;
 
 /**
  * @author frank, mesbah

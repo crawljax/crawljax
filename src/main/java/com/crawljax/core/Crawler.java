@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
@@ -18,7 +19,7 @@ import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
@@ -33,7 +34,7 @@ import com.crawljax.util.ElementResolver;
  */
 public class Crawler implements Runnable {
 
-	private static final Logger LOGGER = Logger.getLogger(Crawler.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(Crawler.class.getName());
 
 	private static final int ONE_SECOND = 1000;
 
@@ -249,13 +250,13 @@ public class Crawler implements Runnable {
 	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
 	 * 
 	 * @throws CrawljaxException
-	 *             if the {@link Eventable#getTargetStateVertix()} encounters an error.
+	 *             if the {@link Eventable#getTargetStateVertex()} encounters an error.
 	 */
 	private void goBackExact() throws CrawljaxException {
 		/**
 		 * Thread safe
 		 */
-		StateVertix curState = controller.getSession().getInitialState();
+		StateVertex curState = controller.getSession().getInitialState();
 
 		for (Eventable clickable : backTrackPath) {
 
@@ -266,9 +267,9 @@ public class Crawler implements Runnable {
 			LOGGER.info("Backtracking by executing " + clickable.getEventType() + " on element: "
 			        + clickable);
 
-			this.getStateMachine().changeState(clickable.getTargetStateVertix());
+			this.getStateMachine().changeState(clickable.getTargetStateVertex());
 
-			curState = clickable.getTargetStateVertix();
+			curState = clickable.getTargetStateVertex();
 
 			controller.getSession().addEventableToCrawlPath(clickable);
 
@@ -316,7 +317,7 @@ public class Crawler implements Runnable {
 						// seconds*1000=ms
 						Thread.sleep(Integer.parseInt(m.group(1)) * 1000);
 					} catch (Exception ex) {
-						LOGGER.error(ex);
+						LOGGER.error(ex.getLocalizedMessage(), ex);
 					}
 				}
 			}
@@ -325,8 +326,8 @@ public class Crawler implements Runnable {
 		LOGGER.info("Executing " + eventable.getEventType() + " on element: " + eventable
 		        + "; State: " + this.getStateMachine().getCurrentState().getName());
 		if (this.fireEvent(eventable)) {
-			StateVertix newState =
-			        new StateVertix(getBrowser().getCurrentUrl(), controller.getSession()
+			StateVertex newState =
+			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
 			                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
 			                this.controller.getStrippedDom(getBrowser()));
 			if (isDomChanged(this.getStateMachine().getCurrentState(), newState)) {
@@ -384,7 +385,7 @@ public class Crawler implements Runnable {
 		}
 	}
 
-	private void spawnThreads(StateVertix state) {
+	private void spawnThreads(StateVertex state) {
 		Crawler c = null;
 		do {
 			if (c != null) {
@@ -400,7 +401,7 @@ public class Crawler implements Runnable {
 		CandidateElement candidateElement = action.getCandidateElement();
 		EventType eventType = action.getEventType();
 
-		StateVertix orrigionalState = this.getStateMachine().getCurrentState();
+		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
 
 		if (candidateElement.allConditionsSatisfied(getBrowser())) {
 			ClickResult clickResult = clickTag(new Eventable(candidateElement, eventType));
@@ -448,7 +449,7 @@ public class Crawler implements Runnable {
 		}
 
 		// Store the currentState to be able to 'back-track' later.
-		StateVertix orrigionalState = this.getStateMachine().getCurrentState();
+		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
 
 		if (orrigionalState.searchForCandidateElements(candidateExtractor, configurationReader
 		        .getTagElements(), configurationReader.getExcludeTagElements(),
@@ -496,7 +497,7 @@ public class Crawler implements Runnable {
 	 * @return true if crawling must continue false otherwise.
 	 * @throws CrawljaxException
 	 */
-	private boolean newStateDetected(StateVertix orrigionalState) throws CrawljaxException {
+	private boolean newStateDetected(StateVertex orrigionalState) throws CrawljaxException {
 
 		/**
 		 * An event has been fired so we are one level deeper
@@ -578,7 +579,7 @@ public class Crawler implements Runnable {
 		}
 		if (backTrackPath.last() != null) {
 			try {
-				if (!backTrackPath.last().getTargetStateVertix().startWorking(this)) {
+				if (!backTrackPath.last().getTargetStateVertex().startWorking(this)) {
 					return;
 				}
 			} catch (CrawljaxException e) {
@@ -662,7 +663,7 @@ public class Crawler implements Runnable {
 	 *            the state after the event.
 	 * @return true if the state is changed according to the compare method of the oracle.
 	 */
-	private boolean isDomChanged(final StateVertix stateBefore, final StateVertix stateAfter) {
+	private boolean isDomChanged(final StateVertex stateBefore, final StateVertex stateAfter) {
 		boolean isChanged = false;
 
 		// do not need Oracle Comparators now, because hash of stripped dom is

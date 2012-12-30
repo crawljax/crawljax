@@ -2,6 +2,8 @@
 
 package com.crawljax.browser;
 
+import java.io.IOException;
+
 import org.junit.Assume;
 import org.junit.Before;
 import org.openqa.selenium.Platform;
@@ -11,12 +13,13 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.crawljax.test.BrowserTest;
 
-import java.io.IOException;
-
 /**
  * This is the base class for WebDriver based Firefox 'Crash' Tests running on Linux only. It's a
  * Linux only implementation because of its 'killall' statement. Caution: This test based on this
- * class will most-likely KILL all your running firefox instances.
+ * class will most-likely KILL all your running firefox instances. <<<<<<< HEAD =======
+ * 
+ * @version $Id$
+ * @author slenselink@google.com (Stefan Lenselink) >>>>>>> fbfffa200e07a75b62daa1b34966a7e348dd26bc
  */
 public abstract class FirefoxLinuxCrash implements BrowserTest {
 

@@ -3,11 +3,14 @@
  */
 package com.crawljax.oraclecomparator.comparators;
 
-import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.Helper;
-import com.crawljax.util.XPathHelper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.log4j.Logger;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -15,11 +18,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.xpath.XPathExpressionException;
+import com.crawljax.oraclecomparator.AbstractComparator;
+import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
 
 /**
  * Oracle which can ignore element/attributes by xpath expression.
@@ -29,8 +30,8 @@ import javax.xml.xpath.XPathExpressionException;
  */
 public class XPathExpressionComparator extends AbstractComparator {
 
-	private static final Logger LOGGER =
-	        Logger.getLogger(XPathExpressionComparator.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(XPathExpressionComparator.class
+	        .getName());
 
 	private final List<String> expressions = new ArrayList<String>();
 
@@ -92,7 +93,7 @@ public class XPathExpressionComparator extends AbstractComparator {
 				curExpression = expression;
 				NodeList nodeList = XPathHelper.evaluateXpathExpression(doc, expression);
 
-            	for (int i = 0; i < nodeList.getLength(); i++) {
+				for (int i = 0; i < nodeList.getLength(); i++) {
 					Node node = nodeList.item(i);
 					if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
 						((Attr) node).getOwnerElement().removeAttribute(node.getNodeName());
@@ -101,12 +102,11 @@ public class XPathExpressionComparator extends AbstractComparator {
 						parent.removeChild(node);
 					}
 
-            	}
+				}
 			}
 		} catch (XPathExpressionException e) {
-			LOGGER.error(
-			        "XPathExpressionException with stripping XPath expression: " + curExpression,
-			        e);
+			LOGGER.error("XPathExpressionException with stripping XPath expression: "
+			        + curExpression, e);
 		} catch (DOMException e) {
 			LOGGER.error("DOMException with stripping XPath expression: " + curExpression, e);
 		} catch (SAXException e) {

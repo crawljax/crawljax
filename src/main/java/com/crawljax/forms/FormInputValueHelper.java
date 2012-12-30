@@ -1,22 +1,5 @@
 package com.crawljax.forms;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.eventablecondition.EventableCondition;
-import com.crawljax.core.CandidateElement;
-import com.crawljax.core.configuration.InputSpecification;
-import com.crawljax.core.configuration.InputSpecificationReader;
-import com.crawljax.core.state.Identification;
-import com.crawljax.util.Helper;
-import com.crawljax.util.XPathHelper;
-
-import org.apache.commons.configuration.Configuration;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +14,24 @@ import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.configuration.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
+
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.configuration.InputSpecificationReader;
+import com.crawljax.core.state.Identification;
+import com.crawljax.util.Helper;
+import com.crawljax.util.XPathHelper;
+
 /**
  * Helper class for FormHandler.
  * 
@@ -40,7 +41,8 @@ import javax.xml.xpath.XPathExpressionException;
  */
 public final class FormInputValueHelper {
 
-	private static final Logger LOGGER = Logger.getLogger(FormInputValueHelper.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(FormInputValueHelper.class
+	        .getName());
 
 	private Map<String, String> formFields = new HashMap<String, String>();
 	private Map<String, ArrayList<String>> formFieldNames =
@@ -94,7 +96,7 @@ public final class FormInputValueHelper {
 						return (Element) node;
 					}
 				} catch (XPathExpressionException e) {
-					LOGGER.debug(e);
+					LOGGER.debug(e.getLocalizedMessage(), e);
 					// just try next
 				}
 			}
@@ -136,7 +138,7 @@ public final class FormInputValueHelper {
 
 		Document dom;
 		try {
-            dom = Helper.getDocument(browser.getDomWithoutIframeContent());
+			dom = Helper.getDocument(browser.getDomWithoutIframeContent());
 		} catch (SAXException e) {
 			LOGGER.error("Catched SAXException while parsing dom", e);
 			return candidateElements;
@@ -167,8 +169,8 @@ public final class FormInputValueHelper {
 			cloneElement.setTextContent(Helper.getTextValue(sourceElement));
 
 			CandidateElement candidateElement =
-			        new CandidateElement(cloneElement, XPathHelper
-			                .getXPathExpression(sourceElement));
+			        new CandidateElement(cloneElement,
+			                XPathHelper.getXPathExpression(sourceElement));
 			candidateElement.setFormInputs(formInputsForCurrentIndex);
 			candidateElements.add(candidateElement);
 		}

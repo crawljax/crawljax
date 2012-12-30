@@ -6,7 +6,8 @@ package com.crawljax.condition.invariant;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
@@ -19,7 +20,8 @@ import com.crawljax.condition.Condition;
  */
 public class InvariantChecker {
 
-	private static final Logger LOGGER = Logger.getLogger(InvariantChecker.class.getName());
+	private static final Logger LOGGER = LoggerFactory
+	        .getLogger(InvariantChecker.class.getName());
 
 	private List<Invariant> invariants;
 

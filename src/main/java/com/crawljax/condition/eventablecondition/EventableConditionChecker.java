@@ -1,15 +1,15 @@
 package com.crawljax.condition.eventablecondition;
 
-import com.crawljax.util.XPathHelper;
-
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
+
+import com.crawljax.util.XPathHelper;
+
 /**
  * Check whether the conditions of an eventable are satisfied.
- *
+ * 
  * @author mesbah
  * @version $Id$
  */
@@ -19,7 +19,7 @@ public class EventableConditionChecker {
 
 	/**
 	 * Construct the eventableconditionchecker with its eventable conditions.
-	 *
+	 * 
 	 * @param eventableConditions
 	 *            The eventable conditions.
 	 */
@@ -46,7 +46,7 @@ public class EventableConditionChecker {
 
 	/**
 	 * Checks whether an XPath expression starts with an XPath eventable condition.
-	 *
+	 * 
 	 * @param dom
 	 *            The DOM String.
 	 * @param eventableCondition
@@ -58,8 +58,8 @@ public class EventableConditionChecker {
 	 * @throws Exception
 	 *             when not can be determined whether xpath contains needed xpath locaton
 	 */
-	public boolean checkXpathStartsWithXpathEventableCondition(
-	        Document dom, EventableCondition eventableCondition, String xpath) throws Exception {
+	public boolean checkXpathStartsWithXpathEventableCondition(Document dom,
+	        EventableCondition eventableCondition, String xpath) throws Exception {
 		if (eventableCondition == null || eventableCondition.getInXPath() == null
 		        || eventableCondition.getInXPath().equals("")) {
 			throw new Exception("Eventable has no XPath condition");
@@ -73,7 +73,8 @@ public class EventableConditionChecker {
 	/**
 	 * @param xpath
 	 *            the xpath to check if its under a certain set of full-xPaths.
-	 * @param xpathsList the set of full-length-xPaths
+	 * @param xpathsList
+	 *            the set of full-length-xPaths
 	 * @return true if the xpath is under one of the full-length-xpaths.
 	 */
 	public boolean checkXPathUnderXPaths(String xpath, List<String> xpathsList) {

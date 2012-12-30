@@ -12,8 +12,9 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriverException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlQueueManager;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
@@ -28,7 +29,7 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
  * @version $Id$
  */
 public final class BrowserPool {
-	private static final Logger LOGGER = Logger.getLogger(BrowserPool.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BrowserPool.class);
 
 	/**
 	 * BlockingQueue used to block for the moment when a browser comes available.
@@ -274,7 +275,7 @@ public final class BrowserPool {
 					}
 					if (browser == null) {
 						activeBrowserCount.decrementAndGet();
-						LOGGER.fatal("I could (might) not rescue a browser creation!", e);
+						LOGGER.error("I could (might) not rescue a browser creation!", e);
 						throw e;
 					}
 				}

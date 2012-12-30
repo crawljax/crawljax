@@ -1,15 +1,16 @@
 package com.crawljax.oraclecomparator;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.Condition;
-import com.crawljax.oraclecomparator.comparators.SimpleComparator;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.jcip.annotations.ThreadSafe;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.Condition;
+import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 
 /**
  * Defines an Oracle Comparator which used multiple Oracles to decide whether two states are
@@ -21,7 +22,7 @@ import java.util.List;
 @ThreadSafe
 public class StateComparator {
 
-	private static final Logger LOGGER = Logger.getLogger(StateComparator.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(StateComparator.class.getName());
 
 	/**
 	 * This is an shared public static, as it is final and a primary type no harm can be done. Only

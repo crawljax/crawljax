@@ -10,7 +10,7 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
  * CrawljaxConfiguration.setBrowserBuilder(BrowserBuilder).
  * <p/>
  * This can be as simple as:
- *
+ * 
  * <pre>
  * config.setBrowserBuilder(new BrowserBuilder() {
  * 	&#064;Override
@@ -21,10 +21,10 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
  * 	}
  * });
  * </pre>
- *
- *  This interface offers a great flexibility and the possibility to retrieve the WebDriver core
+ * 
+ * This interface offers a great flexibility and the possibility to retrieve the WebDriver core
  * classes to so more browser specific manipulation in plugins.
- *
+ * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  * @version $Id$
  */

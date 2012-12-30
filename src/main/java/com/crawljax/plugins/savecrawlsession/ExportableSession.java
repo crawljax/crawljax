@@ -1,11 +1,10 @@
 package com.crawljax.plugins.savecrawlsession;
 
-
 import java.util.List;
 import java.util.Map;
 
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 
 /**
  * Version of CrawlSession that allows to be saved in an XML file.<br/>
@@ -16,7 +15,7 @@ import com.crawljax.core.state.StateVertix;
  */
 public class ExportableSession {
 
-	private Map<String, StateVertix> mapStates;
+	private Map<String, StateVertex> mapStates;
 	private Map<Long, Eventable> mapEventables;
 	private List<Transition> transitions;
 	private List<List<Transition>> crawlPaths;
@@ -34,7 +33,7 @@ public class ExportableSession {
 	 * @param url
 	 *            the crawled address
 	 */
-	public ExportableSession(Map<String, StateVertix> mapStates,
+	public ExportableSession(Map<String, StateVertex> mapStates,
 	        Map<Long, Eventable> mapEventables, List<Transition> transitions,
 	        List<List<Transition>> crawlPaths, String url) {
 		super();
@@ -55,7 +54,7 @@ public class ExportableSession {
 	/**
 	 * @return the map with states
 	 */
-	public Map<String, StateVertix> getMapStates() {
+	public Map<String, StateVertex> getMapStates() {
 		return mapStates;
 	}
 
@@ -63,7 +62,7 @@ public class ExportableSession {
 	 * @param mapStates
 	 *            a map with the states
 	 */
-	public void setMapStates(Map<String, StateVertix> mapStates) {
+	public void setMapStates(Map<String, StateVertex> mapStates) {
 		this.mapStates = mapStates;
 	}
 
@@ -118,7 +117,7 @@ public class ExportableSession {
 	public String getUrl() {
 		return url;
 	}
-	
+
 	/**
 	 * @param url
 	 *            the crawled url

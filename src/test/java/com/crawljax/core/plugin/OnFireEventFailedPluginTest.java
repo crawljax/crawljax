@@ -3,11 +3,10 @@ package com.crawljax.core.plugin;
 import java.io.File;
 import java.util.List;
 
-import org.junit.Assert;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

@@ -1,14 +1,14 @@
 package com.crawljax.core;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.crawlcondition.CrawlConditionChecker;
-import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-
-import net.jcip.annotations.GuardedBy;
-
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import net.jcip.annotations.GuardedBy;
+
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.crawlcondition.CrawlConditionChecker;
+import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 
 /**
  * The class is a ExtractorManager for the CandidateElements. It basically implements the
@@ -41,7 +41,6 @@ public class CandidateElementManager implements ExtractorManager {
 	 */
 	private final CrawlConditionChecker crawlConditionChecker;
 
-	
 	/**
 	 * Used to lock the elements when adding multiple elements.
 	 */

@@ -31,7 +31,7 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.oraclecomparator.comparators.DateComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
 
@@ -94,7 +94,7 @@ public abstract class LargeTestSuper {
 	 */
 	@Test
 	public void testRandomFormInput() {
-		for (StateVertix state : getStateFlowGraph().getAllStates()) {
+		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains(TITLE_RESULT_RANDOM_INPUT)) {
 				Pattern p = Pattern.compile(REGEX_RESULT_RANDOM_INPUT);
 				Matcher m = p.matcher(state.getDom());
@@ -110,7 +110,7 @@ public abstract class LargeTestSuper {
 	 */
 	@Test
 	public void testManualFormInput() {
-		for (StateVertix state : getStateFlowGraph().getAllStates()) {
+		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains(TITLE_MANUAL_INPUT_RESULT)) {
 				assertTrue("Result contains the correct data",
 				        state.getDom().contains(MANUAL_INPUT_RESULT));
@@ -126,7 +126,7 @@ public abstract class LargeTestSuper {
 	@Test
 	public void testMultipleFormInput() {
 		List<String> resultsFound = new ArrayList<String>();
-		for (StateVertix state : getStateFlowGraph().getAllStates()) {
+		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains(TITLE_MULTIPLE_INPUT_RESULT)) {
 				for (String result : MULTIPLE_INPUT_RESULTS) {
 					if (state.getDom().contains(result) && !resultsFound.contains(result)) {
@@ -162,7 +162,7 @@ public abstract class LargeTestSuper {
 	 */
 	@Test
 	public void testForIllegalStates() {
-		for (StateVertix state : getStateFlowGraph().getAllStates()) {
+		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			assertTrue("Only legal states: " + state.getName(),
 			        !state.getDom().contains(ILLEGAL_STATE));
 		}
@@ -175,7 +175,7 @@ public abstract class LargeTestSuper {
 	@Test
 	public void testOracleComparators() {
 		int countHomeStates = 0;
-		for (StateVertix state : getStateFlowGraph().getAllStates()) {
+		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains("HOMEPAGE")) {
 				countHomeStates++;
 			}
@@ -212,7 +212,7 @@ public abstract class LargeTestSuper {
 	@Test
 	public void testWaitCondition() {
 		boolean foundSlowWidget = false;
-		for (StateVertix state : getStateFlowGraph().getAllStates()) {
+		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains("TEST_WAITCONDITION")
 			        && state.getDom().contains("LOADED_SLOW_WIDGET")) {
 				foundSlowWidget = true;
@@ -401,7 +401,7 @@ public abstract class LargeTestSuper {
 						        "Target State from ExactEventPath equals current state",
 						        session.getCurrentCrawlPath()
 						                .get(session.getCurrentCrawlPath().size() - 1)
-						                .getTargetStateVertix(), session.getCurrentState());
+						                .getTargetStateVertex(), session.getCurrentState());
 					}
 				} catch (CrawljaxException e) {
 					Assert.fail(e.getMessage());

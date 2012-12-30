@@ -1,6 +1,6 @@
 package com.crawljax.condition.browserwaiter;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 

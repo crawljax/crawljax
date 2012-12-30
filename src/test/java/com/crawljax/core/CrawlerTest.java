@@ -14,7 +14,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
 
 /**
@@ -23,7 +23,7 @@ import com.crawljax.test.BrowserTest;
 public class CrawlerTest implements BrowserTest {
 
 	private Collection<List<Eventable>> paths;
-	private StateVertix index;
+	private StateVertex index;
 
 	private CrawljaxConfiguration buildController() throws ConfigurationException {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
@@ -77,9 +77,9 @@ public class CrawlerTest implements BrowserTest {
 	private static class TestController extends CrawljaxController {
 		CrawlSession localSession;
 		StateFlowGraph g;
-		StateVertix i;
+		StateVertex i;
 
-		public TestController(CrawljaxConfiguration config, StateVertix index)
+		public TestController(CrawljaxConfiguration config, StateVertex index)
 		        throws ConfigurationException {
 			super(config);
 			i = index;

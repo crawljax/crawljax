@@ -6,7 +6,8 @@ package com.crawljax.core.state;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
@@ -21,7 +22,7 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
  * @version $Id$
  */
 public class StateMachine {
-	private static final Logger LOGGER = Logger.getLogger(StateMachine.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(StateMachine.class.getName());
 	/**
 	 * One-to-one relation with the StateFlowGraph, the stateFlowGraph variable is never changed.
 	 */
@@ -30,11 +31,11 @@ public class StateMachine {
 	/**
 	 * One-to-one relation with the initalState, the initalState is never changed.
 	 */
-	private final StateVertix initialState;
+	private final StateVertex initialState;
 
-	private StateVertix currentState;
+	private StateVertex currentState;
 
-	private StateVertix previousState;
+	private StateVertex previousState;
 
 	/**
 	 * The invariantChecker to use when updating the state machine.
@@ -49,7 +50,7 @@ public class StateMachine {
 	 * @param indexState
 	 *            the state representing the Index vertix
 	 */
-	public StateMachine(StateFlowGraph sfg, StateVertix indexState) {
+	public StateMachine(StateFlowGraph sfg, StateVertex indexState) {
 		this(sfg, indexState, new ArrayList<Invariant>());
 	}
 
@@ -63,7 +64,7 @@ public class StateMachine {
 	 * @param invariantList
 	 *            the invariants to use in the InvariantChecker.
 	 */
-	public StateMachine(StateFlowGraph sfg, StateVertix indexState, List<Invariant> invariantList) {
+	public StateMachine(StateFlowGraph sfg, StateVertex indexState, List<Invariant> invariantList) {
 		stateFlowGraph = sfg;
 		this.initialState = indexState;
 		currentState = initialState;
@@ -78,7 +79,7 @@ public class StateMachine {
 	 *            the next state.
 	 * @return true if currentState is successfully changed.
 	 */
-	public boolean changeState(StateVertix nextState) {
+	public boolean changeState(StateVertex nextState) {
 		if (nextState == null) {
 			LOGGER.info("nextState given is null");
 			return false;
@@ -113,12 +114,12 @@ public class StateMachine {
 	 *            the clickable causing the new state.
 	 * @return the clone state iff newState is a clone, else returns null
 	 */
-	private StateVertix addStateToCurrentState(StateVertix newState, Eventable eventable) {
+	private StateVertex addStateToCurrentState(StateVertex newState, Eventable eventable) {
 		LOGGER.debug("currentState: " + currentState.getName());
 		LOGGER.debug("newState: " + newState.getName());
 
 		// Add the state to the stateFlowGraph. Store the result
-		StateVertix cloneState = stateFlowGraph.addState(newState);
+		StateVertex cloneState = stateFlowGraph.addState(newState);
 
 		// Is there a clone detected?
 		if (cloneState != null) {
@@ -144,7 +145,7 @@ public class StateMachine {
 	 * 
 	 * @return the current State.
 	 */
-	public StateVertix getCurrentState() {
+	public StateVertex getCurrentState() {
 		return currentState;
 	}
 
@@ -167,9 +168,9 @@ public class StateMachine {
 	 *            the current Session
 	 * @return true if the new state is not found in the state machine.
 	 */
-	public boolean update(final Eventable event, StateVertix newState, EmbeddedBrowser browser,
+	public boolean update(final Eventable event, StateVertex newState, EmbeddedBrowser browser,
 	        CrawlSession session) {
-		StateVertix cloneState = this.addStateToCurrentState(newState, event);
+		StateVertex cloneState = this.addStateToCurrentState(newState, event);
 
 		if (cloneState != null) {
 			newState = cloneState;

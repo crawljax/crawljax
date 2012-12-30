@@ -28,6 +28,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<selenium.version>[2.28.0,)</selenium.version>
+		<slf4j.version>1.7.2</slf4j.version>
+		<logback.version>1.0.9</logback.version>
 	</properties>
 
 	<scm>
@@ -65,6 +67,21 @@
 		</snapshotRepository>
 	</distributionManagement>
 
+	<repositories>
+		<repository>
+			<id>crawljax.mvn.repo</id>
+			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>maven.xwiki.org</id>
+			<url>http://maven.xwiki.org/externals</url>
+		</repository>
+	</repositories>
+
 	<mailingLists>
 		<mailingList>
 			<name>Crawljax Mailing List</name>
@@ -74,13 +91,6 @@
 			<archive>http://groups.google.com/group/crawljax</archive>
 		</mailingList>
 	</mailingLists>
-
-	<repositories>
-		<repository>
-			<id>maven.xwiki.org</id>
-			<url>http://maven.xwiki.org/externals</url>
-		</repository>
-	</repositories>
 
 	<profiles>
 		<profile>
@@ -152,9 +162,10 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -276,10 +287,61 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<artifactId>crawljax-test-utils</artifactId>
+			<groupId>com.crawljax</groupId>
+			<version>1.1</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<!-- Makes sure we this version of Crawljax -->
+					<artifactId>crawljax</artifactId>
+					<groupId>com.crawljax</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<artifactId>crawljax-test-utils</artifactId>
+			<groupId>com.crawljax</groupId>
+			<version>1.1</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<!-- Makes sure we this version of Crawljax -->
+					<artifactId>crawljax</artifactId>
+					<groupId>com.crawljax</groupId>
+				</exclusion>
+			</exclusions>
+			<type>test-jar</type>
+		</dependency>
+
+
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
+			<artifactId>mockito-core</artifactId>
 			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
@@ -290,12 +352,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -396,9 +452,7 @@
 				<version>2.2</version>
 				<configuration>
 					<excludes>
-						<exclude>announcements/**</exclude>
 						<exclude>**/jar-with-dependencies.xml</exclude>
-						<exclude>log4j.properties</exclude>
 						<exclude>**/binary-jar-without-dependencies.xml</exclude>
 					</excludes>
 				</configuration>
@@ -465,8 +519,11 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12.4</version>
 				<configuration>
-	<include>${tests.include}</include>
-</configuration>
+					<includes>
+						<include>${tests.include}</include>
+						<include>**/*TestSuite.java</include>
+					</includes>
+				</configuration>
 			</plugin>
 
 		</plugins>

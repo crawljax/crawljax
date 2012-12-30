@@ -22,6 +22,7 @@ public abstract class AbstractCondition implements Condition {
 	/**
 	 * @return the affectedNodes. can be null
 	 */
+	@Override
 	public NodeList getAffectedNodes() {
 		return affectedNodes.get();
 	}

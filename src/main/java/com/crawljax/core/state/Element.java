@@ -7,7 +7,7 @@ import java.util.List;
 import org.w3c.dom.Node;
 
 import com.crawljax.util.Helper;
- 
+
 /**
  * This class represents an element. It is built from the node name and node text contents.
  * 

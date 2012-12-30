@@ -1,13 +1,12 @@
 package com.crawljax.core;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Assert;
+import org.junit.Test;
+
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ThreadConfiguration;
-
-import org.junit.Assert;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Test;
 
 /**
  * Test the CrawlerExecutor ThreadPoolExecutor. Basically it test only the correct naming.

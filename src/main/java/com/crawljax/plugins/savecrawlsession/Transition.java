@@ -1,6 +1,5 @@
 package com.crawljax.plugins.savecrawlsession;
 
-
 /**
  * Alternative representation for Edge. Used for saving to XML.<br />
  * IMPORTANT: Should only be used by SaveCrawlSessionPlugin

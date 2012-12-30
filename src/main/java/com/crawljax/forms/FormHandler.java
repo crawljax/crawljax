@@ -3,6 +3,21 @@
  */
 package com.crawljax.forms;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.xpath.XPathExpressionException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
@@ -10,20 +25,6 @@ import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.xpath.XPathExpressionException;
 
 /**
  * Handles form values and fills in the form input elements with random values of the defined
@@ -33,7 +34,7 @@ import javax.xml.xpath.XPathExpressionException;
  * @version $Id$
  */
 public class FormHandler {
-	private static final Logger LOGGER = Logger.getLogger(FormHandler.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(FormHandler.class.getName());
 
 	private boolean randomFieldValue = false;
 	private final EmbeddedBrowser browser;
@@ -147,7 +148,7 @@ public class FormHandler {
 					}
 				}
 			} catch (Exception e) {
-				//TODO Stefan; refactor this catch
+				// TODO Stefan; refactor this catch
 				if (e instanceof BrowserConnectionException) {
 					throw (BrowserConnectionException) e;
 				}

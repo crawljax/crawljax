@@ -1,6 +1,5 @@
 package com.crawljax.plugins.savecrawlsession;
 
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 
 /**
  * Reader class for saved crawl sessions.
@@ -37,7 +36,7 @@ public class SessionReader {
 	 */
 	public StateFlowGraph getStateFlowGraph() {
 		StateFlowGraph sfg = null;
-		for (StateVertix state : savedCrawlSession.getMapStates().values()) {
+		for (StateVertex state : savedCrawlSession.getMapStates().values()) {
 			if (sfg == null) {
 				sfg = new StateFlowGraph(state);
 			} else {
@@ -71,7 +70,7 @@ public class SessionReader {
 		}
 		return paths;
 	}
-	
+
 	/**
 	 * @return the CrawlSpecification from the saved CrawlSession
 	 */

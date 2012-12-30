@@ -6,12 +6,13 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.junit.rules.ExternalResource;
+
 import com.google.common.base.Preconditions;
 
 public class RunWithWebServer extends ExternalResource {
 
 	private final Resource resource;
-	
+
 	private int port;
 	private URL demoSite;
 	private Server server;

@@ -3,16 +3,16 @@
  */
 package com.crawljax.forms;
 
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
 
 /**
  * @author mesbah
@@ -95,8 +95,8 @@ public class FormInput {
 		}
 		final FormInput rhs = (FormInput) obj;
 
-		return new EqualsBuilder().append(this.identification, rhs.getIdentification()).append(
-		        this.type, rhs.getType()).isEquals();
+		return new EqualsBuilder().append(this.identification, rhs.getIdentification())
+		        .append(this.type, rhs.getType()).isEquals();
 	}
 
 	@Override

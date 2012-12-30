@@ -2,7 +2,8 @@ package com.crawljax.core.plugin;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
@@ -13,7 +14,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.google.common.collect.Lists;
 
 /**
@@ -24,7 +25,8 @@ public final class CrawljaxPluginsUtil {
 	/**
 	 * Make a new Log4j object used to do the logging.
 	 */
-	private static final Logger LOGGER = Logger.getLogger(CrawljaxPluginsUtil.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawljaxPluginsUtil.class
+	        .getName());
 	private static final List<Plugin> PLUGINS = Lists.newArrayList();
 
 	/**
@@ -36,7 +38,7 @@ public final class CrawljaxPluginsUtil {
 	 *             this exception is always thrown when instanced.
 	 */
 	private CrawljaxPluginsUtil() throws CrawljaxException {
-		LOGGER.fatal("As this contructor is private and never used interal "
+		LOGGER.error("As this contructor is private and never used interal "
 		        + "in the CrawljaxPluginsUtil, this message may never appear");
 		throw new CrawljaxException("Called private never used contructor CrawljaxPluginsUtil()");
 	}
@@ -165,7 +167,7 @@ public final class CrawljaxPluginsUtil {
 	 * @param currentState
 	 *            the state the 'back tracking' operation is currently in
 	 */
-	public static void runOnRevisitStatePlugins(CrawlSession session, StateVertix currentState) {
+	public static void runOnRevisitStatePlugins(CrawlSession session, StateVertex currentState) {
 		LOGGER.info("Running OnRevisitStatePlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnRevisitStatePlugin) {
@@ -237,7 +239,7 @@ public final class CrawljaxPluginsUtil {
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof GuidedCrawlingPlugin) {
 				LOGGER.info("Calling plugin " + plugin.getClass().getName());
-				StateVertix currentState = session.getCurrentState();
+				StateVertex currentState = session.getCurrentState();
 				((GuidedCrawlingPlugin) plugin).guidedCrawling(currentState, controller, session,
 				        exactEventPaths, stateMachine);
 			}

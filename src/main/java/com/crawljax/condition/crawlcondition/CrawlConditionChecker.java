@@ -3,15 +3,16 @@
  */
 package com.crawljax.condition.crawlcondition;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.Condition;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.jcip.annotations.ThreadSafe;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.Condition;
 
 /**
  * Controller class for the crawl conditions.
@@ -22,7 +23,8 @@ import java.util.List;
 @ThreadSafe
 public class CrawlConditionChecker {
 
-	private static final Logger LOGGER = Logger.getLogger(CrawlConditionChecker.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawlConditionChecker.class
+	        .getName());
 
 	private final List<CrawlCondition> crawlConditions;
 

@@ -6,7 +6,7 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateMachine;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 
 /**
  * Plugin type that is called when the crawling control needs to be given to a plugin. After the
@@ -30,7 +30,7 @@ public interface GuidedCrawlingPlugin extends Plugin {
 	 * @param stateMachine
 	 *            the state machine.
 	 */
-	void guidedCrawling(StateVertix currentState, CrawljaxController controller,
+	void guidedCrawling(StateVertex currentState, CrawljaxController controller,
 	        CrawlSession session, List<Eventable> exactEventPaths, StateMachine stateMachine);
 
 }

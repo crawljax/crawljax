@@ -3,21 +3,21 @@
  */
 package com.crawljax.core.state;
 
-import com.crawljax.core.CandidateElement;
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.forms.FormInput;
-import com.crawljax.util.XPathHelper;
+import java.io.Serializable;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jgrapht.graph.DefaultEdge;
 import org.w3c.dom.Node;
 
-import java.io.Serializable;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.forms.FormInput;
+import com.crawljax.util.XPathHelper;
 
 /**
  * Eventable class: an element having an event attached to it (onclick, onmouseover, ...) so that it
@@ -245,7 +245,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 * @throws CrawljaxException
 	 *             if the source cannot be found.
 	 */
-	public StateVertix getSourceStateVertix() throws CrawljaxException {
+	public StateVertex getSourceStateVertex() throws CrawljaxException {
 		return getSuperField("source");
 	}
 
@@ -254,13 +254,13 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 * @throws CrawljaxException
 	 *             if the target cannot be found.
 	 */
-	public StateVertix getTargetStateVertix() throws CrawljaxException {
+	public StateVertex getTargetStateVertex() throws CrawljaxException {
 		return getSuperField("target");
 	}
 
-	private StateVertix getSuperField(String name) throws CrawljaxException {
+	private StateVertex getSuperField(String name) throws CrawljaxException {
 		try {
-			return (StateVertix) searchSuperField(name).get(this);
+			return (StateVertex) searchSuperField(name).get(this);
 		} catch (IllegalArgumentException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		} catch (IllegalAccessException e) {
