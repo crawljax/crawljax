@@ -10,19 +10,7 @@ For more project info visit the [Crawljax website](http://crawljax.com).
 Documentation
 -------------
 
-You can find more documentation in our [project wiki](https://github.com/crawljax/crawljax/wiki/). 
-
-Testing
--------
-To run the tests you can use the regular Maven command
-
-	mvn test
-	
-This will run all fast (browserless) unit tests. 
-
-To run all the tests, including the slower (browser-dependent) tests, run:
-
-	mvn test -P integrationtests
+You can find more technical documentation in our [project wiki](https://github.com/crawljax/crawljax/wiki/). 
 
 
 Community
