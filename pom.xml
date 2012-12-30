@@ -67,17 +67,6 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>crawljax.mvn.repo</id>
-			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
-
 	<mailingLists>
 		<mailingList>
 			<name>Crawljax Mailing List</name>
@@ -271,7 +260,7 @@
 		<dependency>
 			<artifactId>crawljax-test-utils</artifactId>
 			<groupId>com.crawljax</groupId>
-			<version>1.1</version>
+			<version>1.3</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -284,7 +273,7 @@
 		<dependency>
 			<artifactId>crawljax-test-utils</artifactId>
 			<groupId>com.crawljax</groupId>
-			<version>1.1</version>
+			<version>1.3</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
