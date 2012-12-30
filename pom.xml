@@ -41,17 +41,6 @@
 		<url>https://github.com/crawljax/crawloverview-plugin/issues</url>
 	</issueManagement>
 
-	<distributionManagement>
-		<repository>
-			<id>crawljaxRepo</id>
-			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<snapshotRepository>
-			<id>crawljaxSnapshotRepo</id>
-			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
