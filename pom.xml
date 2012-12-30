@@ -41,6 +41,17 @@
 		<url>https://github.com/crawljax/crawloverview-plugin/issues</url>
 	</issueManagement>
 
+	<repositories>
+		<repository>
+			<id>crawljax.mvn.repo</id>
+			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<distributionManagement>
 		<repository>
 			<id>crawljaxRepo</id>
@@ -66,7 +77,7 @@
 		<dependency>
 			<groupId>com.crawljax</groupId>
 			<artifactId>crawljax-test-utils</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.2</version>
 		</dependency>
 	</dependencies>
 </project>
