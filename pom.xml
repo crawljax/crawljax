@@ -1,6 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax</artifactId>
 	<packaging>jar</packaging>
@@ -13,13 +19,12 @@
 		the various navigation paths and states within an Ajax
 		application.
 	</description>
-	<url>http://www.crawljax.com</url>
+	<inceptionYear>2007</inceptionYear>
+	<url>http://crawljax.com</url>
 
 	<prerequisites>
 		<maven>3.0.3</maven>
 	</prerequisites>
-
-	<inceptionYear>2007</inceptionYear>
 
 	<properties>
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -56,17 +61,6 @@
 		<url>https://travis-ci.org/crawljax/crawljax</url>
 	</ciManagement>
 
-	<distributionManagement>
-		<repository>
-			<id>crawljaxRepo</id>
-			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<snapshotRepository>
-			<id>crawljaxSnapshotRepo</id>
-			<url>http://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<mailingLists>
 		<mailingList>
 			<name>Crawljax Mailing List</name>
@@ -78,26 +72,6 @@
 	</mailingLists>
 
 	<profiles>
-		<profile>
-			<id>sign-artifacts</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<profile>
 			<id>default</id>
 			<activation>
@@ -207,7 +181,6 @@
 			<version>2.9.1</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-firefox-driver</artifactId>
@@ -244,20 +217,17 @@
 			<version>${selenium.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-remote-driver</artifactId>
 			<version>${selenium.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-android-driver</artifactId>
 			<version>${selenium.version}</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -302,7 +272,7 @@
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
-					<!-- Makes sure we this version of Crawljax -->
+					<!-- Makes sure we use this version of Crawljax -->
 					<artifactId>crawljax</artifactId>
 					<groupId>com.crawljax</groupId>
 				</exclusion>
@@ -322,7 +292,6 @@
 			</exclusions>
 			<type>test-jar</type>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -424,27 +393,6 @@
 
 
 
-			<!-- Create crawljax-x.y-z-sources.jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2</version>
-				<configuration>
-					<excludes>
-						<exclude>**/jar-with-dependencies.xml</exclude>
-						<exclude>**/binary-jar-without-dependencies.xml</exclude>
-					</excludes>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
 			<!-- Create crawljax-x.y-z.zip with all the dependencies -->
 			<plugin>
@@ -467,25 +415,6 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8.1</version>
-				<configuration>
-					<show>private</show>
-					<nohelp>false</nohelp>
-				</configuration>
-				<executions>
-					<execution>
-						<id>javadoc-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.9.1</version>
 				<configuration>
@@ -504,7 +433,6 @@
 
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4</version>
 				<configuration>
 					<releaseProfiles>integrationtests</releaseProfiles>
 				</configuration>
