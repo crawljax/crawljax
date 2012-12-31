@@ -1,13 +1,8 @@
-
 ## [Version 2.2 (in preparation)](https://github.com/crawljax/crawljax/issues?milestone=2)
 
-* Added support for html frame tags.
-* Included support for inspecting code within frame tags.
-* Added support for crawling meta refresh tags.
-* Added a new optional specification to carry out deeper analyses.
-* Fixed issue #58 - bug causing crawlax not to update candidates after running the
-prestatcrawling plugin.
-* Created a new test class that targets the WIVET benchmark.
+* [View closed issues](https://github.com/crawljax/crawljax/issues?milestone=2&page=1&state=closed)
+* [View the full diff](https://github.com/crawljax/crawljax/compare/crawljax-2.1...crawljax-2.2)
+
 
 ## [Version 2.1](https://github.com/crawljax/crawljax/issues?milestone=1)
 
