@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+		<groupId>com.crawljax</groupId>
+		<artifactId>crawljax-parent-pom</artifactId>
+		<version>2.2</version>
 	</parent>
 
 	<groupId>com.crawljax.plugins</groupId>
@@ -12,23 +13,12 @@
 	<version>2.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Crawljax plugins parent POM</name>
-	<description>Parent POM for plugins to be used in combination with Crawljax.</description>
+	<description>Parent plugin POM.</description>
 	<url>http://crawljax.com</url>
 	<inceptionYear>2009</inceptionYear>
 
-	<prerequisites>
-		<maven>3.0.0</maven>
-	</prerequisites>
-
 	<properties>
-		<crawljax.version>2.1</crawljax.version>
-		<slf4j.version>1.7.2</slf4j.version>
-		<logback.version>1.0.9</logback.version>
-
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<crawljax.version>${parent.version}</crawljax.version>
 	</properties>
 
 	<scm>
@@ -46,108 +36,13 @@
 		</license>
 	</licenses>
 
-	<repositories>
-		<repository>
-			<id>crawljax.mvn.repo</id>
-			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
-
-
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-api</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-	<!-- All plugins have the following dependencies -->
 	<dependencies>
 		<dependency>
 			<groupId>com.crawljax</groupId>
 			<artifactId>crawljax</artifactId>
 			<version>${crawljax.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<artifactId>hamcrest-library</artifactId>
-			<groupId>org.hamcrest</groupId>
-			<version>1.3</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-
 	</dependencies>
-
-	<!-- Default mailing-list for plugins -->
-	<!-- If a Plugin has a different mailing0list the plugin POM must specify 
-	it. -->
-	<mailingLists>
-		<mailingList>
-			<name>Crawljax Mailing List</name>
-			<subscribe>http://groups.google.com/group/crawljax/subscribe</subscribe>
-			<unsubscribe>crawljax+unsubscribe@googlegroups.com</unsubscribe>
-			<post>crawljax@googlegroups.com</post>
-			<archive>http://groups.google.com/group/crawljax</archive>
-		</mailingList>
-	</mailingLists>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-clean-plugin</artifactId>
-					<groupId>org.apache.maven.plugins</groupId>
-					<version>2.5</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-deploy-plugin</artifactId>
-					<groupId>org.apache.maven.plugins</groupId>
-					<version>2.7</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-install-plugin</artifactId>
-					<groupId>org.apache.maven.plugins</groupId>
-					<version>2.4</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-site-plugin</artifactId>
-					<groupId>org.apache.maven.plugins</groupId>
-					<version>3.2</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 
 	<developers>
 		<developer>
