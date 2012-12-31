@@ -1,10 +1,10 @@
-## [Version 2.2 (in preparation)](https://github.com/crawljax/crawljax/issues?milestone=2)
+## [Version 2.2](https://github.com/crawljax/crawljax/issues?milestone=2&state=closed)
 
 * [View closed issues](https://github.com/crawljax/crawljax/issues?milestone=2&page=1&state=closed)
 * [View the full diff](https://github.com/crawljax/crawljax/compare/crawljax-2.1...crawljax-2.2)
 
 
-## [Version 2.1](https://github.com/crawljax/crawljax/issues?milestone=1)
+## [Version 2.1](https://github.com/crawljax/crawljax/issues?milestone=1&state=closed)
 
 ### Changes and Bug fixes: 
 * [View closed issues](https://github.com/crawljax/crawljax/issues?milestone=1&page=1&state=closed)
