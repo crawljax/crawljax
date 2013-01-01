@@ -7,9 +7,6 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 
-/**
- * @author frank, mesbah
- */
 public final class JarRunner {
 
 	private JarRunner() {

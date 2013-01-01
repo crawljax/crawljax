@@ -1,13 +1,31 @@
-<assembly>
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>distribution</id>
 	<formats>
 		<format>zip</format>
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>${project.basedir}</directory>
+			<directory>${project.basedir}/../</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>LICENSE</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/../</directory>
+			<outputDirectory>/crawljax-doc</outputDirectory>
+			<includes>
+				<include>CHANGELOG*</include>
+				<include>README*</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
 				<include>README*</include>
 			</includes>
 		</fileSet>
@@ -25,9 +43,6 @@
 				<include>*.jar</include>
 			</includes>
 		</fileSet>
-		<fileSet>
-			<directory>plugins</directory>
-		</fileSet>
 	</fileSets>
 	<dependencySets>
 		<dependencySet>
@@ -35,14 +50,5 @@
 			<unpack>false</unpack>
 			<scope>runtime</scope>
 		</dependencySet>
-		<dependencySet>
-            <outputDirectory>/lib</outputDirectory>
-            <useStrictFiltering>true</useStrictFiltering>
-            <scope>test</scope>
-            <includes>
-                <include>ch.qos.logback:logback-core</include>
-                <include>ch.qos.logback:logback-classic</include>
-            </includes>
-        </dependencySet>
 	</dependencySets>
 </assembly>  

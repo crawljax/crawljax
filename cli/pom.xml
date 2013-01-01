@@ -15,6 +15,10 @@
 			<artifactId>crawljax-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -23,14 +27,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
 				<configuration>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
 							<mainClass>
-								com.crawljax.examples.JarRunner
+								com.crawljax.cli.JarRunner
 							</mainClass>
 						</manifest>
 					</archive>
@@ -41,6 +44,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<descriptors>
 						<descriptor>
@@ -52,8 +56,6 @@
 					</archive>
 					<outputDirectory>target</outputDirectory>
 				</configuration>
-				<!-- <executions> <execution> <id>make-assembly</id> <phase>package</phase> 
-					<goals> <goal>attached</goal> </goals> </execution> </executions> -->
 			</plugin>
 
 			<plugin>
