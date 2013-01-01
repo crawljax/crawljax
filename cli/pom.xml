@@ -6,9 +6,12 @@
 		<artifactId>crawljax-parent-pom</artifactId>
 		<version>2.3-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>crawljax-cli</artifactId>
 	<name>Crawljax CLI</name>
 	<description>The Crawljax command line interface</description>
+	<packaging>jar</packaging>
+
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -51,17 +54,30 @@
 							src/main/resources/jar-with-dependencies.xml
 						</descriptor>
 					</descriptors>
-					<archive>
-						<addMavenDescriptor>false</addMavenDescriptor>
-					</archive>
-					<outputDirectory>target</outputDirectory>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
+				<executions>
+					<execution>
+						<id>zip-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
 					<goals>assembly:assembly</goals>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<file>${project.build.finalName}.zip</file>
+					<packaging>zip</packaging>
 				</configuration>
 			</plugin>
 		</plugins>
