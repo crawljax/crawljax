@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.crawljax</groupId>
+		<artifactId>crawljax-parent-pom</artifactId>
+		<version>2.3-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>crawljax-test-utils</artifactId>
+	<packaging>jar</packaging>
+
+	<name>crawljax-test-utils</name>
+	<description>This artifact offers Crawljax plugin developers a convenient way to test their plugins by offering several default sites with known/expected output.</description>
+	<url>carwljax.com</url>
+
+	<inceptionYear>2012</inceptionYear>
+
+	<dependencies>
+		<dependency>
+			<artifactId>crawljax-core</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<artifactId>crawljax-core</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>8.1.8.v20121106</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+							<goal>test-jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
