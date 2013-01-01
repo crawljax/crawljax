@@ -1,4 +1,4 @@
-package com.crawljax.examples;
+package com.crawljax.cli;
 
 import org.apache.commons.configuration.ConfigurationException;
 
