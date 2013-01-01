@@ -242,7 +242,7 @@
 			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
+				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 		</repository>
 	</repositories>
