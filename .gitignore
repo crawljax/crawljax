@@ -3,3 +3,4 @@
 .settings/
 *.log
 target/
+release.properties

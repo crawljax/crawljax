@@ -1,4 +1,4 @@
-package com.crawljax.crawljax_plugins_plugin;
+package com.crawljax.crawltests;
 
 import com.crawljax.core.configuration.InputField;
 import com.crawljax.core.configuration.InputSpecification;

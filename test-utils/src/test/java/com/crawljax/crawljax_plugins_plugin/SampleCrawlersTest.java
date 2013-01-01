@@ -8,6 +8,9 @@ import org.junit.Test;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.crawltests.SimpleInputSiteCrawl;
+import com.crawljax.crawltests.SimpleJsSiteCrawl;
+import com.crawljax.crawltests.SimpleSiteCrawl;
 
 public class SampleCrawlersTest {
 

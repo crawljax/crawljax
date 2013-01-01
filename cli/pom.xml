@@ -55,6 +55,13 @@
 				<!-- <executions> <execution> <id>make-assembly</id> <phase>package</phase> 
 					<goals> <goal>attached</goal> </goals> </execution> </executions> -->
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<goals>assembly:assembly</goals>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
