@@ -5,7 +5,7 @@ You can assemble the zip using
 
 	mvn assembly:assembly
 	
-If you unzip the Jar you can run the crawler using
+If you unzip the zip in the target folder you will find the jar which you can run using:
 
 	java -jar crawljax-cli-x.y-SNAPSHOT.jar http://yoursite.com
 	
