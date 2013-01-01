@@ -1,7 +1,7 @@
 package com.crawljax.crawljax_plugins_plugin;
 
-import static com.crawljax.matchers.StateFlowGraphMatches.hasEdges;
-import static com.crawljax.matchers.StateFlowGraphMatches.hasStates;
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -23,7 +23,8 @@ public class SampleCrawlersTest {
 	public void testJSCrawler() throws Exception {
 		CrawlSession crawl = new SimpleJsSiteCrawl().crawl();
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		assertThat(stateFlowGraph, hasStates(SimpleJsSiteCrawl.NUMBER_OF_STATES));
+		assertThat(stateFlowGraph,
+				hasStates(SimpleJsSiteCrawl.NUMBER_OF_STATES));
 		assertThat(stateFlowGraph, hasEdges(SimpleJsSiteCrawl.NUMBER_OF_EDGES));
 	}
 
@@ -32,7 +33,9 @@ public class SampleCrawlersTest {
 		// new SimpleInputSiteCrawl().showWebSite();
 		CrawlSession crawl = new SimpleInputSiteCrawl().crawl();
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		assertThat(stateFlowGraph, hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));
-		assertThat(stateFlowGraph, hasEdges(SimpleInputSiteCrawl.NUMBER_OF_EDGES));
+		assertThat(stateFlowGraph,
+				hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));
+		assertThat(stateFlowGraph,
+				hasEdges(SimpleInputSiteCrawl.NUMBER_OF_EDGES));
 	}
 }

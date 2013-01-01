@@ -1,7 +1,7 @@
 package com.crawljax.core.state;
 
-import static com.crawljax.matchers.StateFlowGraphMatches.hasEdges;
-import static com.crawljax.matchers.StateFlowGraphMatches.hasStates;
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -267,8 +267,6 @@ public class StateFlowGraphTest {
 		p = results.get(1);
 
 		assertEquals(2, p.size());
-		int x = 0;
-		int y = 0;
 		// int max = 0;
 		Set<Eventable> uEvents = new HashSet<Eventable>();
 
@@ -283,13 +281,7 @@ public class StateFlowGraphTest {
 					}
 
 				}
-
-				// System.out.println(" z:" + path.getEdgeList().size());
-
-				y++;
 			}
-
-			x++;
 		}
 	}
 

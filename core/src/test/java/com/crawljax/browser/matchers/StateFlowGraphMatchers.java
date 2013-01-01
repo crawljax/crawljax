@@ -1,4 +1,4 @@
-package com.crawljax.matchers;
+package com.crawljax.browser.matchers;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -8,7 +8,7 @@ import org.hamcrest.Matcher;
 
 import com.crawljax.core.state.StateFlowGraph;
 
-public class StateFlowGraphMatches {
+public class StateFlowGraphMatchers {
 
 	/**
 	 * @param edges
