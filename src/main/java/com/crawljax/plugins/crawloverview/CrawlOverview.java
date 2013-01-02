@@ -38,7 +38,7 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.plugin.PreStateCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateVertix;
+import com.crawljax.core.state.StateVertex;
 import com.google.common.collect.Maps;
 
 /**
@@ -96,7 +96,7 @@ public class CrawlOverview
 		StateFlowGraph sfg = session.getStateFlowGraph();
 		try {
 			writeIndexFile();
-			for (StateVertix state : sfg.getAllStates()) {
+			for (StateVertex state : sfg.getAllStates()) {
 				List<RenderedCandidateElement> rendered = stateCandidatesMap.get(state.getName());
 				writeHtmlForState(state, rendered);
 			}
@@ -107,7 +107,7 @@ public class CrawlOverview
 		LOG.info("Overview report generated: {}", outputBuilder.getIndexFile().getAbsolutePath());
 	}
 
-	private void saveScreenshot(StateVertix currentState) {
+	private void saveScreenshot(StateVertex currentState) {
 		if (!visitedStates.contains(currentState.getName())) {
 			LOG.debug("Saving screenshot for state {}", currentState.getName());
 			File screenShot = outputBuilder.newScreenShotFile(currentState.getName());
@@ -120,7 +120,7 @@ public class CrawlOverview
 		}
 	}
 
-	private Eventable getEventableByCandidateElementInState(StateVertix state,
+	private Eventable getEventableByCandidateElementInState(StateVertex state,
 	        RenderedCandidateElement element) {
 		StateFlowGraph sfg = session.getStateFlowGraph();
 		for (Eventable eventable : sfg.getOutgoingClickables(state)) {
@@ -134,21 +134,21 @@ public class CrawlOverview
 		return null;
 	}
 
-	private int getStateNumber(StateVertix state) {
+	private int getStateNumber(StateVertex state) {
 		if (state.getName().equals("index")) {
 			return 0;
 		}
 		return Integer.parseInt(state.getName().replace("state", ""));
 	}
 
-	private List<Map<String, String>> getElements(StateFlowGraph sfg, StateVertix state,
+	private List<Map<String, String>> getElements(StateFlowGraph sfg, StateVertex state,
 	        List<RenderedCandidateElement> rendered) {
 		List<Map<String, String>> elements = new ArrayList<Map<String, String>>();
 
 		if (rendered != null) {
 			for (RenderedCandidateElement element : rendered) {
 				Eventable eventable = getEventableByCandidateElementInState(state, element);
-				StateVertix toState = null;
+				StateVertex toState = null;
 				Map<String, String> elementMap = new HashMap<String, String>();
 				if (eventable != null) {
 					toState = sfg.getTargetState(eventable);
@@ -189,8 +189,8 @@ public class CrawlOverview
 		List<Map<String, String>> eventables = new ArrayList<Map<String, String>>();
 		for (Eventable eventable : sfg.getAllEdges()) {
 			Map<String, String> eventableMap = new HashMap<String, String>();
-			eventableMap.put("from", eventable.getSourceStateVertix().getName());
-			eventableMap.put("to", eventable.getTargetStateVertix().getName());
+			eventableMap.put("from", eventable.getSourceStateVertex().getName());
+			eventableMap.put("to", eventable.getTargetStateVertex().getName());
 			eventables.add(eventableMap);
 		}
 		return eventables;
@@ -198,13 +198,13 @@ public class CrawlOverview
 
 	private List<Map<String, String>> getStates(StateFlowGraph sfg) {
 		List<Map<String, String>> states = new ArrayList<Map<String, String>>();
-		for (StateVertix stateVertix : sfg.getAllStates()) {
-			Map<String, String> stateVertixMap = new HashMap<String, String>();
-			stateVertixMap.put("name", stateVertix.getName());
-			stateVertixMap.put("url", stateVertix.getUrl());
-			stateVertixMap.put("id", stateVertix.getName().replace("state", "S"));
-			stateVertixMap.put("screenshot", stateVertix.getName() + ".png");
-			states.add(stateVertixMap);
+		for (StateVertex StateVertex : sfg.getAllStates()) {
+			Map<String, String> StateVertexMap = new HashMap<String, String>();
+			StateVertexMap.put("name", StateVertex.getName());
+			StateVertexMap.put("url", StateVertex.getUrl());
+			StateVertexMap.put("id", StateVertex.getName().replace("state", "S"));
+			StateVertexMap.put("screenshot", StateVertex.getName() + ".png");
+			states.add(StateVertexMap);
 		}
 		return states;
 	}
@@ -227,7 +227,7 @@ public class CrawlOverview
 		writeToFile(template, context, fileHTML, "index");
 	}
 
-	private void writeHtmlForState(StateVertix state, List<RenderedCandidateElement> rendered)
+	private void writeHtmlForState(StateVertex state, List<RenderedCandidateElement> rendered)
 	        throws Exception {
 		LOG.debug("Writing state file for state {}", state.getName());
 		StateFlowGraph sfg = session.getStateFlowGraph();
@@ -256,7 +256,7 @@ public class CrawlOverview
 		writer.close();
 	}
 
-	private void findElementAndAddToMap(StateVertix state, CandidateElement element) {
+	private void findElementAndAddToMap(StateVertex state, CandidateElement element) {
 		// find element
 
 		WebElement webElement;

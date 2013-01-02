@@ -19,7 +19,7 @@
 
 
 	<properties>
-		<crawljax.version>2.1</crawljax.version>
+		<crawljax.version>2.2</crawljax.version>
 	</properties>
 
 	<scm>
