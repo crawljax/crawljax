@@ -74,6 +74,7 @@ public class CrawlOverview
 	 * Logs all the canidate elements so that the plugin knows which elements were the candidate
 	 * elements.
 	 */
+	@Override
 	public void preStateCrawling(CrawlSession session, List<CandidateElement> candidateElements) {
 		this.session = session;
 		for (CandidateElement element : candidateElements) {
@@ -84,6 +85,7 @@ public class CrawlOverview
 	/**
 	 * Saves a screenshot of every new state.
 	 */
+	@Override
 	public void onNewState(CrawlSession session) {
 		this.session = session;
 		saveScreenshot(session.getCurrentState());
@@ -92,6 +94,7 @@ public class CrawlOverview
 	/**
 	 * Generated the report.
 	 */
+	@Override
 	public void postCrawling(CrawlSession session) {
 		StateFlowGraph sfg = session.getStateFlowGraph();
 		try {
