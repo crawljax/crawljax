@@ -14,8 +14,7 @@ import com.crawljax.crawljax_plugins_plugin.SimpleSiteCrawl;
 
 public class SimpleSiteCrawlTest {
 
-	@Rule
-	public final TemporaryFolder tempFolder = new TemporaryFolder();
+	@Rule public final TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Test
 	public void testSimpleSiteCrawl() throws Exception {
@@ -27,7 +26,7 @@ public class SimpleSiteCrawlTest {
 
 		File statesFolder = new File(outFolder, "states");
 		assertThat("States folder exists", statesFolder.exists(), is(true));
-		int states = SimpleSiteCrawl.NUMBER_OF_STATES + 1;
+		int states = SimpleSiteCrawl.NUMBER_OF_STATES;
 		assertThat("Number of states matches", statesFolder.list(),
 				arrayWithSize(states));
 
