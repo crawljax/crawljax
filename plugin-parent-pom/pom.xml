@@ -36,8 +36,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>crawljax</artifactId>
+			<groupId>${parent.groupId}</groupId>
+			<artifactId>crawljax-core</artifactId>
 			<version>${crawljax.version}</version>
 		</dependency>
 	</dependencies>
