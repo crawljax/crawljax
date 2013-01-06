@@ -12,9 +12,9 @@
 	<artifactId>crawljax-plugins-archetype</artifactId>
 
 	<packaging>jar</packaging>
-	<name>Crawljax plugins archtypes</name>
+	<name>Crawljax plugins archetype</name>
 	<description>
-		Crawling plugins archtypes.
+		Generates a Crawljax project template.
 	</description>
 
 	<developers>

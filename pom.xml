@@ -78,7 +78,7 @@
 		<module>examples</module>
 		<module>test-utils</module>
 		<module>plugin-parent-pom</module>
-		<module>plugin-archtype</module>
+		<module>plugin-archetype</module>
 	</modules>
 
 	<dependencyManagement>
