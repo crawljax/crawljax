@@ -11,7 +11,7 @@ class CachedResources {
 	private final String stateTemplate;
 
 	public CachedResources() {
-		indexTemplate = read("index.vm");
+		indexTemplate = read("index.html");
 		stateTemplate = read("state.vm");
 	}
 

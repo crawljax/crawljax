@@ -1,0 +1,17 @@
+<html>
+	<head>
+	<title>Overview: index</title>
+	<style type="text/css">
+		body {margin: 0px; padding: 0px; font-family: Tahoma; font-size: 10pt;}
+	</style>
+	</head>
+<body>
+<div style="height: 20px"><a href="javascript:void(0)" onclick="history.back()">Previous State</a></div>
+<img border='0' src='../screenshots/${screenshot}' />
+#foreach( $element in $elements )
+<div style="position: absolute; z-index: ${element.zindex}; left: ${element.left}px; top: ${element.top}px; width: ${element.width}px; height: ${element.height}px; border: 2px solid ${element.color}; #if(${element.targetname} != "") cursor: pointer;" onclick="location.href='${element.targetname}.html'"#else " #end></div>
+#end
+<script type="text/javascript"> 
+parent.updateState("${name}");
+</script>
+</body></html>

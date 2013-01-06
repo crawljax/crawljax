@@ -20,13 +20,6 @@ public class OutputBuilderTest {
 	}
 
 	@Test
-	public void testNewStateFileIsWritable() throws IOException {
-		FileWriter fwriter = new FileWriter(builder.newStateFile("test"));
-		fwriter.write("blabla");
-		fwriter.close();
-	}
-
-	@Test
 	public void testNewScreenShotFileIsWritable() throws IOException {
 		FileWriter fwriter = new FileWriter(builder.newScreenShotFile("test"));
 		fwriter.write("blabla");

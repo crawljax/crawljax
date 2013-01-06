@@ -1,13 +1,16 @@
 package com.crawljax.plugins.crawloverview;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.io.Resources.copy;
-import static com.google.common.io.Resources.getResource;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.net.URISyntaxException;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
 
 class OutputBuilder {
 
@@ -18,6 +21,7 @@ class OutputBuilder {
 	private final File states;
 	private final File screenshots;
 	private final File indexFile;
+	private final VelocityEngine ve;
 
 	/**
 	 * @param outputDir
@@ -26,12 +30,16 @@ class OutputBuilder {
 	public OutputBuilder(File outputDir, CachedResources resources) {
 		this.outputDir = outputDir;
 		checkPermissions();
+		copySkeleton();
 		states = new File(outputDir, STATES_FOLDER_NAME);
 		states.mkdir();
 		screenshots = new File(outputDir, SCREENSHOT_FOLDER_NAME);
 		screenshots.mkdir();
-		copyBasicFiles(outputDir, resources);
 		indexFile = new File(outputDir, "index.html");
+		ve = new VelocityEngine();
+		ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
+		        "org.apache.velocity.runtime.log.NullLogChute");
+
 	}
 
 	private void checkPermissions() {
@@ -44,20 +52,14 @@ class OutputBuilder {
 		}
 	}
 
-	private void copyBasicFiles(File outputDir2, CachedResources resources) {
-		File javascriptFolder = new File(outputDir2, "js");
-		javascriptFolder.mkdir();
-		File graphFile = new File(javascriptFolder, "graph.js");
-		File protoTypeFile = new File(javascriptFolder, "prototype-1.4.0.js");
+	private void copySkeleton() {
 		try {
-			OutputStream out = new FileOutputStream(graphFile);
-			copy(getResource("graph.js"), out);
-			out.close();
-			out = new FileOutputStream(protoTypeFile);
-			copy(getResource("prototype-1.4.0.js"), out);
-			out.close();
+			File srcDir = new File(OutputBuilder.class.getResource("/skeleton").toURI());
+			FileUtils.copyDirectory(srcDir, outputDir);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not setup output skeleton", e);
+			throw new RuntimeException("Could not copy required resources: " + e.getMessage(), e);
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Could not find skeleton resource: " + e.getMessage(), e);
 		}
 	}
 
@@ -72,4 +74,16 @@ class OutputBuilder {
 	public File getIndexFile() {
 		return indexFile;
 	}
+
+	void writeToFile(String template, VelocityContext context, File fileHTML, String name) {
+		try {
+			FileWriter writer = new FileWriter(fileHTML);
+			ve.evaluate(context, writer, name, template);
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			throw new CrawlOverviewException("Could not write output state");
+		}
+	}
+
 }

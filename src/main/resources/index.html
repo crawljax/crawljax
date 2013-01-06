@@ -31,19 +31,31 @@ body {
 				</a> <a class="brand" href="#">Crawl overview</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li><a href="index.html">State graph</a></li>
-						<li class="active"><a href="statistics.html">Statistics</a></li>
+						<li class="active"><a href="index.html">State graph</a></li>
+						<li><a href="statistics.html">Statistics</a></li>
 					</ul>
 				</div>
 				<!--/.nav-collapse -->
 			</div>
 		</div>
 	</div>
-	<div class="container">
-		<h1>Statistics</h1>
-	</div>
+	<div class="container" id="graphContainer">
 	<script src="js/jquery-1.8.3.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
+	<script src="js/vivagraph.min.js"></script>
+	<script src="js/graphbuilder.js"></script>
+	<script>
+		var outputModel = ${outputModel};
+		
+		$.each(outputModel.states, function() {
+			graph.addNode(this.name, {url : 'screenshots/'+ this.name + '.png'});
+		});
+
+		$.each(outputModel.edges, function(){
+			console.log(this);
+			graph.addLink(this.from, this.to);
+		});
+	</script>
 </body>
 </html>
 

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -14,12 +15,18 @@ import com.crawljax.crawljax_plugins_plugin.SimpleSiteCrawl;
 
 public class SimpleSiteCrawlTest {
 
-	@Rule public final TemporaryFolder tempFolder = new TemporaryFolder();
+	@Rule
+	public final TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Test
 	public void testSimpleSiteCrawl() throws Exception {
 		SimpleSiteCrawl simpleCrawl = new SimpleSiteCrawl();
-		File outFolder = tempFolder.getRoot();
+
+		File outFolder = new File("/Users/alex/Downloads/crawlout");
+		if (outFolder.exists()) {
+			FileUtils.deleteDirectory(outFolder);
+		}
+		outFolder.mkdir();
 		simpleCrawl.setup();
 		simpleCrawl.getConfig().addPlugin(new CrawlOverview(outFolder));
 		simpleCrawl.crawl();
@@ -28,12 +35,11 @@ public class SimpleSiteCrawlTest {
 		assertThat("States folder exists", statesFolder.exists(), is(true));
 		int states = SimpleSiteCrawl.NUMBER_OF_STATES;
 		assertThat("Number of states matches", statesFolder.list(),
-				arrayWithSize(states));
+		        arrayWithSize(states));
 
 		File screenShotFolder = new File(outFolder, "screenshots");
 		assertThat("Screenshot folder exists", screenShotFolder.exists(), is(true));
 		assertThat("Number of states matches", screenShotFolder.list(),
-				arrayWithSize(states));
-
+		        arrayWithSize(states));
 	}
 }
