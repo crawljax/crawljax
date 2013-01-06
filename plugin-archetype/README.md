@@ -1,4 +1,4 @@
-Crawljax Maven Archtypes
+Crawljax Maven Archteypes
 ========================
 
 Crawljax Plugin
