@@ -1,6 +1,5 @@
 package com.crawljax.plugins.crawloverview;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,14 +22,12 @@ public class StateWriter {
 	private static final String COLOR_A_PREVIOUS_STATE = "#00FFFF";
 	private static final String COLOR_NO_STATE_CHANGE = "orange";
 
-	private final CachedResources resources;
 	private final OutputBuilder outBuilder;
 	private final StateFlowGraph sfg;
 	private final Map<String, StateVertex> visitedStates;
 
-	public StateWriter(CachedResources resources, OutputBuilder outBuilder, StateFlowGraph sfg,
+	public StateWriter(OutputBuilder outBuilder, StateFlowGraph sfg,
 	        Map<String, StateVertex> visitedStates) {
-		this.resources = resources;
 		this.outBuilder = outBuilder;
 		this.sfg = sfg;
 		this.visitedStates = visitedStates;
@@ -38,16 +35,14 @@ public class StateWriter {
 
 	void writeHtmlForState(State state) {
 		LOG.debug("Writing state file for state {}", state.getName());
-		String template = resources.getStateTemplate();
 		VelocityContext context = new VelocityContext();
 		context.put("name", state.getName());
 		context.put("screenshot", state.getName() + ".png");
 		context.put("elements", getElements(sfg, state));
 
 		// writing
-		File fileHTML = outBuilder.newStateFile(state.getName());
 		String name = state.getName();
-		outBuilder.writeToFile(template, context, fileHTML, name);
+		outBuilder.writeState(context, name);
 	}
 
 	private List<Map<String, String>> getElements(StateFlowGraph sfg, State state) {

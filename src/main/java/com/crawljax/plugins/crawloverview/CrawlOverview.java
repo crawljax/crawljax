@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.plugin.PreStateCrawlingPlugin;
@@ -34,7 +35,7 @@ public class CrawlOverview
 
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlOverview.class);
 
-	private final CachedResources resources;
+	// private final CachedResources resources;
 	private final OutputBuilder outputBuilder;
 	private final Map<String, StateVertex> visitedStates;
 
@@ -43,8 +44,8 @@ public class CrawlOverview
 	private final OutPutModel outModel;
 
 	public CrawlOverview(File outputFolder) {
-		resources = new CachedResources();
-		outputBuilder = new OutputBuilder(outputFolder, resources);
+		// resources = new CachedResources();
+		outputBuilder = new OutputBuilder(outputFolder);
 		outModel = new OutPutModel();
 		visitedStates = Maps.newHashMap();
 	}
@@ -111,7 +112,7 @@ public class CrawlOverview
 			File screenShot = outputBuilder.newScreenShotFile(name);
 			try {
 				session.getBrowser().saveScreenShot(screenShot);
-			} catch (Exception e) {
+			} catch (CrawljaxException e) {
 				LOG.warn("Screenshots are not supported for {}", session.getBrowser());
 			}
 			visitedStates.put(name, vertex);
@@ -128,7 +129,7 @@ public class CrawlOverview
 		outModel.checkForConsistency();
 		try {
 			writeIndexFile();
-			StateWriter writer = new StateWriter(resources, outputBuilder, sfg, visitedStates);
+			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
 			for (State state : outModel.getStates()) {
 				writer.writeHtmlForState(state);
 			}
@@ -136,19 +137,16 @@ public class CrawlOverview
 			LOG.error(e.getMessage(), e);
 		}
 
-		LOG.info("Overview report generated: {}", outputBuilder.getIndexFile().getAbsolutePath());
+		LOG.info("Overview report generated");
 	}
 
 	private void writeIndexFile() throws Exception {
 		LOG.debug("Writing index file");
-		String template = resources.getIndexTemplate();
 		VelocityContext context = new VelocityContext();
 		String outModelJson = outModel.toJson();
 		context.put("outputModel", outModelJson);
 
-		// writing
-		File fileHTML = outputBuilder.getIndexFile();
-		outputBuilder.writeToFile(template, context, fileHTML, "index");
+		outputBuilder.writeIndexFile(context);
 	}
 
 }

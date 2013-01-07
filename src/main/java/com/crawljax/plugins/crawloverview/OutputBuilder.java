@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 class OutputBuilder {
 
@@ -27,7 +29,7 @@ class OutputBuilder {
 	 * @param outputDir
 	 *            target for the output directory. Folder must not exist or be empty.
 	 */
-	public OutputBuilder(File outputDir, CachedResources resources) {
+	public OutputBuilder(File outputDir) {
 		this.outputDir = outputDir;
 		checkPermissions();
 		copySkeleton();
@@ -39,6 +41,8 @@ class OutputBuilder {
 		ve = new VelocityEngine();
 		ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
 		        "org.apache.velocity.runtime.log.NullLogChute");
+		ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+		ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 
 	}
 
@@ -67,18 +71,21 @@ class OutputBuilder {
 		return new File(screenshots, name + ".png");
 	}
 
-	public File newStateFile(String name) {
-		return new File(states, name + ".html");
+	void writeIndexFile(VelocityContext context) {
+		writeFile(context, indexFile, "index.html");
 	}
 
-	public File getIndexFile() {
-		return indexFile;
+	void writeState(VelocityContext context, String stateName) {
+		File file = new File(states, stateName + ".html");
+		writeFile(context, file, "state.html");
 	}
 
-	void writeToFile(String template, VelocityContext context, File fileHTML, String name) {
+	private void writeFile(VelocityContext context, File outFile, String template) {
 		try {
-			FileWriter writer = new FileWriter(fileHTML);
-			ve.evaluate(context, writer, name, template);
+			Template templatee = ve.getTemplate(template);
+			FileWriter writer = new FileWriter(outFile);
+			templatee.merge(context, writer);
+			// ve.evaluate(context, writer, name, template);
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {

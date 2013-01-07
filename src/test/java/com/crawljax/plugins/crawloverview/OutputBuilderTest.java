@@ -16,7 +16,7 @@ public class OutputBuilderTest {
 
 	@Before
 	public void setup() {
-		builder = new OutputBuilder(folder.getRoot(), new CachedResources());
+		builder = new OutputBuilder(folder.getRoot());
 	}
 
 	@Test
