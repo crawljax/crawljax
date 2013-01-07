@@ -11,7 +11,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.InputSpecification;
 
 /**
- * Crawls google.com in IE.
+ * Crawls google.com in Firefox.
  * 
  * @author danny
  * @version @version $Id$
@@ -61,7 +61,7 @@ public final class SimpleFirefoxExample {
 
 	private static CrawljaxConfiguration getConfig() {
 		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
-		crawljaxConfiguration.setBrowser(BrowserType.ie);
+		crawljaxConfiguration.setBrowser(BrowserType.firefox);
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification());
 
 		// Generate a crawl report
