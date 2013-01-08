@@ -80,6 +80,11 @@ class OutputBuilder {
 		writeFile(context, file, "state.html");
 	}
 
+	void writeStatistics() {
+		File file = new File(outputDir, "statistics.html");
+		writeFile(new VelocityContext(), file, "statistics.html");
+	}
+
 	private void writeFile(VelocityContext context, File outFile, String template) {
 		try {
 			Template templatee = ve.getTemplate(template);

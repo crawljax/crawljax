@@ -129,6 +129,7 @@ public class CrawlOverview
 		outModel.checkForConsistency();
 		try {
 			writeIndexFile();
+			outputBuilder.writeStatistics();
 			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
 			for (State state : outModel.getStates()) {
 				writer.writeHtmlForState(state);
