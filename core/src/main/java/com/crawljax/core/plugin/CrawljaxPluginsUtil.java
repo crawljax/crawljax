@@ -290,7 +290,7 @@ public final class CrawljaxPluginsUtil {
 	 *  
 	 *        
 	 */
-	public static boolean runDomChangeNotifierPlugins(final StateVertex stateBefore,final Eventable e, final StateVertex stateAfter) {
+	public static boolean runDomChangeNotifierPlugins(final StateVertex stateBefore,final Eventable e, final StateVertex stateAfter, final EmbeddedBrowser browser) {
 		LOGGER.info("Checking for DomChangeNotifierPlugin...");
 		Plugin latest = null;
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
@@ -302,7 +302,7 @@ public final class CrawljaxPluginsUtil {
 		
 		if (latest != null){
 			LOGGER.info("Calling plugin " + latest.getClass().getName());
-			return ((DomChangeNotifierPlugin) latest).isDomChanged(stateBefore.getDom(), e ,stateAfter.getDom());
+			return ((DomChangeNotifierPlugin) latest).isDomChanged(stateBefore.getDom(), e ,stateAfter.getDom(), browser);
 		}
 		
 		LOGGER.info("No DomChangeNotifierPlugin found. Performing default DOM comparison...");

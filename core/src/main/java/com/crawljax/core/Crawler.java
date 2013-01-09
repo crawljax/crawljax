@@ -336,10 +336,13 @@ public class Crawler implements Runnable {
 	
 			// the two lines above were commented and replaced by the following two lines which gives crawljax users the freedom to 
 			// implement their own DOM comparison plugins
+			//
+			// in addition we pass the argument browser to the new isDomChanged method because we would like to convert our mutation notifier
+			// to an implementation of this changeNotifier plug-in 
 			
 			
 			if (CrawljaxPluginsUtil.runDomChangeNotifierPlugins(this				
-					.getStateMachine().getCurrentState(), eventable, newState)) {	
+					.getStateMachine().getCurrentState(), eventable, newState, getBrowser())) {	
 
 				controller.getSession().addEventableToCrawlPath(eventable);
 				if (this.getStateMachine().update(eventable, newState, this.getBrowser(),

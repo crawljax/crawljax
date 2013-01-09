@@ -9,6 +9,7 @@
  */
 package com.crawljax.core.plugin;
 
+import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.state.Eventable;
 
 public interface DomChangeNotifierPlugin extends Plugin {
@@ -24,7 +25,7 @@ public interface DomChangeNotifierPlugin extends Plugin {
 	 *            the state after the event.
 	 * @return true if the state is changed according to the compare method of the oracle.
 	 */
-	 boolean isDomChanged(final String domBefore,final Eventable e, final String domAfter);
+	 boolean isDomChanged(final String domBefore,final Eventable e, final String domAfter, EmbeddedBrowser browser);
 	 
 	 
 	 
