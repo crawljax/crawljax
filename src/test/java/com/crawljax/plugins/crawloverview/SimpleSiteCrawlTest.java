@@ -22,7 +22,7 @@ public class SimpleSiteCrawlTest {
 	public void testSimpleSiteCrawl() throws Exception {
 		SimpleSiteCrawl simpleCrawl = new SimpleSiteCrawl();
 
-		File outFolder = new File("/Users/alex/Downloads/crawlout");
+		File outFolder = new File("/tmp/crawlout");
 		if (outFolder.exists()) {
 			FileUtils.deleteDirectory(outFolder);
 		}
