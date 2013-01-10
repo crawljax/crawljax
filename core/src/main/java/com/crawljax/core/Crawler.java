@@ -330,17 +330,7 @@ public class Crawler implements Runnable {
 			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
 			                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
 			                this.controller.getStrippedDom(getBrowser()));
-	/*	if (isDomChanged(this.getStateMachine().getCurrentState(), newState)) {
-				// Dom is changed, so data might need be filled in again 
-	*/			 
-	
-			// the two lines above were commented and replaced by the following two lines which gives crawljax users the freedom to 
-			// implement their own DOM comparison plugins
-			//
-			// in addition we pass the argument browser to the new isDomChanged method because we would like to convert our mutation notifier
-			// to an implementation of this changeNotifier plug-in 
-			
-			
+			// checking if DOM is changed			
 			if (CrawljaxPluginsUtil.runDomChangeNotifierPlugins(this				
 					.getStateMachine().getCurrentState(), eventable, newState, getBrowser())) {	
 

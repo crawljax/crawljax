@@ -301,11 +301,11 @@ public final class CrawljaxPluginsUtil {
 		}
 		
 		if (latest != null){
-			LOGGER.info("Calling plugin " + latest.getClass().getName());
+			LOGGER.debug("Calling plugin ", latest.getClass().getName());
 			return ((DomChangeNotifierPlugin) latest).isDomChanged(stateBefore.getDom(), e ,stateAfter.getDom(), browser);
 		}
 		
-		LOGGER.info("No DomChangeNotifierPlugin found. Performing default DOM comparison...");
+		LOGGER.debug("No DomChangeNotifierPlugin found. Performing default DOM comparison...");
 		
 		// default behavior: this default behavior is copied from the method isDomChaged		
 		boolean isChanged = false;
