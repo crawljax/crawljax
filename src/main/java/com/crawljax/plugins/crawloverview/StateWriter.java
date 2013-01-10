@@ -52,19 +52,15 @@ public class StateWriter {
 			Eventable eventable = getEventableByCandidateElementInState(state, element);
 			StateVertex toState = null;
 			Map<String, String> elementMap = new HashMap<String, String>();
+			elementMap.put("left", "" + (element.getLocation().x - 3));
+			elementMap.put("top", "" + (element.getLocation().y - 3));
+			elementMap.put("width", "" + (element.getSize().width + 2));
+			elementMap.put("height", "" + (element.getSize().height + 2));
 			if (eventable != null) {
 				toState = sfg.getTargetState(eventable);
 			}
-			elementMap.put("left", "" + (element.getLocation().x - 1));
-			elementMap.put("top", "" + (element.getLocation().y + 20 - 1));
-			elementMap.put("width", "" + (element.getSize().width + 2));
-			elementMap.put("height", "" + (element.getSize().height + 2));
 			if (toState != null) {
 				elementMap.put("targetname", toState.getName());
-			} else {
-				elementMap.put("targetname", "");
-			}
-			if (toState != null) {
 				if (getStateNumber(toState.getName()) < getStateNumber(state.getName())) {
 					// state already found
 					elementMap.put("color", COLOR_A_PREVIOUS_STATE);
@@ -75,6 +71,7 @@ public class StateWriter {
 				elementMap.put("zindex", "20");
 				elementMap.put("cursor", "pointer");
 			} else {
+				elementMap.put("targetname", "");
 				// no state change ater clicking or is not clicked
 				elementMap.put("color", COLOR_NO_STATE_CHANGE);
 				elementMap.put("cursor", "normal");
