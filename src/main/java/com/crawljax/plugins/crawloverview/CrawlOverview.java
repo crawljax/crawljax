@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxException;
@@ -59,7 +60,8 @@ public class CrawlOverview
 		this.session = session;
 		List<RenderedCandidateElement> newElements = Lists.newLinkedList();
 		StateVertex state = session.getCurrentState();
-		LOG.warn("Prestate found new state {}", state.getName());
+		LOG.info("Prestate found new state {} with {} candidates", state.getName(),
+		        candidateElements.size());
 		for (CandidateElement element : candidateElements) {
 			WebElement webElement = getWebElement(session, element);
 			if (webElement != null) {
@@ -102,8 +104,24 @@ public class CrawlOverview
 	public void onNewState(CrawlSession session) {
 		this.session = session;
 		StateVertex vertex = session.getCurrentState();
+		Point point = getOffSet(session.getBrowser());
 		State state = outModel.addStateIfAbsent(vertex);
+		state.setScreenShotOffset(point);
 		saveScreenshot(state.getName(), vertex);
+	}
+
+	private Point getOffSet(EmbeddedBrowser embeddedBrowser) {
+		try {
+			Number top = (Number) embeddedBrowser.executeJavaScript(
+			        "return document.body.getBoundingClientRect().top;");
+			Number left = (Number) embeddedBrowser.executeJavaScript(
+			        "return document.body.getBoundingClientRect().left;");
+			Point offset = new Point(top.intValue(), left.intValue());
+			LOG.warn("\nFound body with offset {}", offset);
+			return offset;
+		} catch (CrawljaxException e) {
+			throw new CrawlOverviewException("Could not locate relative size of body", e);
+		}
 	}
 
 	private void saveScreenshot(String name, StateVertex vertex) {

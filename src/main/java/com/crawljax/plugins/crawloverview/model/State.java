@@ -2,6 +2,8 @@ package com.crawljax.plugins.crawloverview.model;
 
 import java.util.List;
 
+import org.openqa.selenium.Point;
+
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.RenderedCandidateElement;
 import com.google.common.collect.Lists;
@@ -11,6 +13,7 @@ public class State {
 	private final String name;
 	private final String url;
 	private final List<RenderedCandidateElement> candidateElements;
+	private Point screenShotOffset;
 
 	public State(String name, String url) {
 		this.name = name;
@@ -32,6 +35,14 @@ public class State {
 
 	public List<RenderedCandidateElement> getCandidateElements() {
 		return candidateElements;
+	}
+
+	public void setScreenShotOffset(Point point) {
+		this.screenShotOffset = point;
+	}
+
+	public Point getScreenShotOffset() {
+		return screenShotOffset;
 	}
 
 	@Override

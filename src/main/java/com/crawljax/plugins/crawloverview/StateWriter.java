@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.velocity.VelocityContext;
+import org.openqa.selenium.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +53,9 @@ public class StateWriter {
 			Eventable eventable = getEventableByCandidateElementInState(state, element);
 			StateVertex toState = null;
 			Map<String, String> elementMap = new HashMap<String, String>();
-			elementMap.put("left", "" + (element.getLocation().x - 3));
-			elementMap.put("top", "" + (element.getLocation().y - 3));
+			Point offset = state.getScreenShotOffset();
+			elementMap.put("left", "" + (element.getLocation().x - 3 + offset.getY()));
+			elementMap.put("top", "" + (element.getLocation().y - 3 + offset.getX()));
 			elementMap.put("width", "" + (element.getSize().width + 2));
 			elementMap.put("height", "" + (element.getSize().height + 2));
 			if (eventable != null) {
