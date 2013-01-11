@@ -2,8 +2,8 @@
  * A plug-in interface to provide an extension point for comparing current state
  *  with the state induced by firing events on clickables. 
  *  
- *  please note that if you use more than one instance of this type of plugin to crawljax only the last one will be used for 
- *  performing the dom comparison  and all previous instances will be ignored.
+ *  please note that if you use more than one instance of this type of plugin to crawljax, only the last one will be used for 
+ *  performing the DOM comparison  and all previous instances will be ignored.
  * 
  * @author alireza.aut@gmail.com, Alireza Zarei
  *
