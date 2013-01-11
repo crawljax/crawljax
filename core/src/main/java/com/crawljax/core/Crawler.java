@@ -25,12 +25,9 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
 
 /**
- * Class that performs crawl actions. It is designed to be run inside a Thread.
+ * Class that performs crawl actions. It is designed to run inside a Thread.
  * 
  * @see #run()
- * @author dannyroest@gmail.com (Danny Roest)
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class Crawler implements Runnable {
 
@@ -215,7 +212,7 @@ public class Crawler implements Runnable {
 			 */
 			getBrowser().closeOtherWindows();
 
-			return true; // A event fired
+			return true; // An event fired
 		} else {
 			/**
 			 * Execute the OnFireEventFailedPlugins with the current crawlPath with the crawlPath
@@ -277,7 +274,6 @@ public class Crawler implements Runnable {
 
 			if (this.fireEvent(clickable)) {
 
-				// TODO ali, do not increase depth if eventable is from guidedcrawling
 				depth++;
 
 				/**
@@ -330,18 +326,17 @@ public class Crawler implements Runnable {
 			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
 			                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
 			                this.controller.getStrippedDom(getBrowser()));
-			// checking if DOM is changed			
-			if (CrawljaxPluginsUtil.runDomChangeNotifierPlugins(this				
-					.getStateMachine().getCurrentState(), eventable, newState, getBrowser())) {	
 
+			// checking if DOM is changed
+			if (CrawljaxPluginsUtil.runDomChangeNotifierPlugins(this.getStateMachine()
+			        .getCurrentState(), eventable, newState, getBrowser())) {
+
+				// Dom changed
 				controller.getSession().addEventableToCrawlPath(eventable);
 				if (this.getStateMachine().update(eventable, newState, this.getBrowser(),
 				        this.controller.getSession())) {
-					// Dom changed
-					// No Clone
-					// TODO change the interface of runGuidedCrawlingPlugins to remove the
-					// controller.getSession().getCurrentCrawlPath() call because its from the
-					// session now.
+
+					// Change is no clone
 					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller, controller
 					        .getSession(), controller.getSession().getCurrentCrawlPath(), this
 					        .getStateMachine());
@@ -653,33 +648,6 @@ public class Crawler implements Runnable {
 	 */
 	public StateMachine getStateMachine() {
 		return stateMachine;
-	}
-
-	/**
-	 * Test to see if the (new) DOM is changed with regards to the old DOM. This method is Thread
-	 * safe.
-	 * 
-	 * @param stateBefore
-	 *            the state before the event.
-	 * @param stateAfter
-	 *            the state after the event.
-	 * @return true if the state is changed according to the compare method of the oracle.
-	 */
-	private boolean isDomChanged(final StateVertex stateBefore, final StateVertex stateAfter) {
-		boolean isChanged = false;
-
-		// do not need Oracle Comparators now, because hash of stripped dom is
-		// already calculated
-		// isChanged = !stateComparator.compare(stateBefore.getDom(),
-		// stateAfter.getDom(), browser);
-		isChanged = !stateAfter.equals(stateBefore);
-		if (isChanged) {
-			LOGGER.info("Dom is Changed!");
-		} else {
-			LOGGER.info("Dom Not Changed!");
-		}
-
-		return isChanged;
 	}
 
 	/**
