@@ -330,8 +330,10 @@ public class Crawler implements Runnable {
 			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
 			                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
 			                this.controller.getStrippedDom(getBrowser()));
-			if (isDomChanged(this.getStateMachine().getCurrentState(), newState)) {
-				// Dom is changed, so data might need be filled in again
+			// checking if DOM is changed			
+			if (CrawljaxPluginsUtil.runDomChangeNotifierPlugins(this				
+					.getStateMachine().getCurrentState(), eventable, newState, getBrowser())) {	
+
 				controller.getSession().addEventableToCrawlPath(eventable);
 				if (this.getStateMachine().update(eventable, newState, this.getBrowser(),
 				        this.controller.getSession())) {
