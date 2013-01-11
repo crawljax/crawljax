@@ -1,6 +1,7 @@
 package com.crawljax.plugins.crawloverview.model;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.openqa.selenium.Point;
 
@@ -14,6 +15,8 @@ public class State {
 	private final String url;
 	private final List<RenderedCandidateElement> candidateElements;
 	private Point screenShotOffset;
+	private final AtomicInteger fanIn = new AtomicInteger();
+	private final AtomicInteger fanOut = new AtomicInteger();
 
 	public State(String name, String url) {
 		this.name = name;
@@ -43,6 +46,22 @@ public class State {
 
 	public Point getScreenShotOffset() {
 		return screenShotOffset;
+	}
+
+	public int incrementFanOut() {
+		return fanOut.incrementAndGet();
+	}
+
+	public int incrementFanIn() {
+		return fanIn.incrementAndGet();
+	}
+
+	public int getFanIn() {
+		return fanIn.get();
+	}
+
+	public int getFanOut() {
+		return fanOut.get();
 	}
 
 	@Override

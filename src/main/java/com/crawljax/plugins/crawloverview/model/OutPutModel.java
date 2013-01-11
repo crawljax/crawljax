@@ -1,6 +1,6 @@
 package com.crawljax.plugins.crawloverview.model;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -34,18 +34,25 @@ public class OutPutModel {
 		edges.add(edge);
 	}
 
-	public void checkForConsistency() {
-		checkAllReferencedStatesExist();
+	/**
+	 * Makes the final calculations.
+	 */
+	public void close() {
+		checkEdgesAndCountFans();
 	}
 
 	public Collection<State> getStates() {
 		return states.values();
 	}
 
-	private void checkAllReferencedStatesExist() {
+	private void checkEdgesAndCountFans() {
 		for (Edge e : edges) {
-			checkArgument(states.containsKey(e.getFrom()), "From state %s is unkown", e.getFrom());
-			checkArgument(states.containsKey(e.getTo()), "To state %s is unkown", e.getTo());
+			State from = states.get(e.getFrom());
+			State to = states.get(e.getTo());
+			checkNotNull(from, "From state %s is unkown", e.getFrom());
+			checkNotNull(to, "To state %s is unkown", e.getTo());
+			from.incrementFanOut();
+			to.incrementFanIn();
 		}
 	}
 

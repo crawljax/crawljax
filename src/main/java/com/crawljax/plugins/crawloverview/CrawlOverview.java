@@ -52,6 +52,46 @@ public class CrawlOverview
 	}
 
 	/**
+	 * Saves a screenshot of every new state.
+	 */
+	@Override
+	public void onNewState(CrawlSession session) {
+		this.session = session;
+		StateVertex vertex = session.getCurrentState();
+		Point point = getOffSet(session.getBrowser());
+		State state = outModel.addStateIfAbsent(vertex);
+		state.setScreenShotOffset(point);
+		saveScreenshot(state.getName(), vertex);
+	}
+
+	private Point getOffSet(EmbeddedBrowser embeddedBrowser) {
+		try {
+			Number top = (Number) embeddedBrowser.executeJavaScript(
+			        "return document.body.getBoundingClientRect().top;");
+			Number left = (Number) embeddedBrowser.executeJavaScript(
+			        "return document.body.getBoundingClientRect().left;");
+			Point offset = new Point(top.intValue(), left.intValue());
+			LOG.debug("Body {}", offset);
+			return offset;
+		} catch (CrawljaxException e) {
+			throw new CrawlOverviewException("Could not locate relative size of body", e);
+		}
+	}
+
+	private void saveScreenshot(String name, StateVertex vertex) {
+		if (!visitedStates.containsKey(name)) {
+			LOG.debug("Saving screenshot for state {}", name);
+			File screenShot = outputBuilder.newScreenShotFile(name);
+			try {
+				session.getBrowser().saveScreenShot(screenShot);
+			} catch (CrawljaxException e) {
+				LOG.warn("Screenshots are not supported for {}", session.getBrowser());
+			}
+			visitedStates.put(name, vertex);
+		}
+	}
+
+	/**
 	 * Logs all the canidate elements so that the plugin knows which elements were the candidate
 	 * elements.
 	 */
@@ -98,53 +138,13 @@ public class CrawlOverview
 	}
 
 	/**
-	 * Saves a screenshot of every new state.
-	 */
-	@Override
-	public void onNewState(CrawlSession session) {
-		this.session = session;
-		StateVertex vertex = session.getCurrentState();
-		Point point = getOffSet(session.getBrowser());
-		State state = outModel.addStateIfAbsent(vertex);
-		state.setScreenShotOffset(point);
-		saveScreenshot(state.getName(), vertex);
-	}
-
-	private Point getOffSet(EmbeddedBrowser embeddedBrowser) {
-		try {
-			Number top = (Number) embeddedBrowser.executeJavaScript(
-			        "return document.body.getBoundingClientRect().top;");
-			Number left = (Number) embeddedBrowser.executeJavaScript(
-			        "return document.body.getBoundingClientRect().left;");
-			Point offset = new Point(top.intValue(), left.intValue());
-			LOG.warn("\nFound body with offset {}", offset);
-			return offset;
-		} catch (CrawljaxException e) {
-			throw new CrawlOverviewException("Could not locate relative size of body", e);
-		}
-	}
-
-	private void saveScreenshot(String name, StateVertex vertex) {
-		if (!visitedStates.containsKey(name)) {
-			LOG.debug("Saving screenshot for state {}", name);
-			File screenShot = outputBuilder.newScreenShotFile(name);
-			try {
-				session.getBrowser().saveScreenShot(screenShot);
-			} catch (CrawljaxException e) {
-				LOG.warn("Screenshots are not supported for {}", session.getBrowser());
-			}
-			visitedStates.put(name, vertex);
-		}
-	}
-
-	/**
 	 * Generated the report.
 	 */
 	@Override
 	public void postCrawling(CrawlSession session) {
 		StateFlowGraph sfg = session.getStateFlowGraph();
 		outModel.setEdges(sfg.getAllEdges());
-		outModel.checkForConsistency();
+		outModel.close();
 		try {
 			writeIndexFile();
 			outputBuilder.writeStatistics();

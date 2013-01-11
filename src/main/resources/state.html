@@ -4,7 +4,31 @@
 <body>
 	#parse( "nav.html")
 	<div class='container'>
-		<h1>${name}</h1>
+		<h1>Summary of ${name}</h1>
+		<table class="table table-bordered table-striped">
+			<colgroup>
+				<col class="span1">
+				<col class="span7">
+			</colgroup>
+			<tbody>
+				<tr>
+					<td>URL</td>
+					<td>${url}</td>
+				</tr>
+				<tr>
+					<td>Fan in</td>
+					<td>${fanIn}</td>
+				</tr>
+				<tr>
+					<td>Fan out</td>
+					<td>${fanOut}</td>
+				</tr>
+				<tr>
+					<td>Interaction elements</td>
+					<td>${elements.size()}</td>
+				</tr>
+			</tbody>
+		</table>
 		<div style="position: relative;">			
 			<img style='max-width: none;' border='0' src='../screenshots/${screenshot}' /> 
 			#foreach( $element in $elements )

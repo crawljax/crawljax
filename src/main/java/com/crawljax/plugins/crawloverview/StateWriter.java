@@ -40,6 +40,9 @@ public class StateWriter {
 		context.put("name", state.getName());
 		context.put("screenshot", state.getName() + ".png");
 		context.put("elements", getElements(sfg, state));
+		context.put("fanIn", state.getFanIn());
+		context.put("fanOut", state.getFanOut());
+		context.put("url", state.getUrl());
 
 		// writing
 		String name = state.getName();
