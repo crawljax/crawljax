@@ -1,0 +1,22 @@
+#set ( $page = "urls") #set( $baseUrl = ".") #parse( "header.html"
+)
+<body>
+	#parse ( "nav.html" )
+	<div class="container">
+		<h1>URL's visited</h1>
+		<table class="table table-bordered table-striped">
+			<tbody>
+			#foreach( $url in $urls )
+				<tr>
+					<td><a href="${url}">${url}</a></td>
+				</tr>	
+			#end		
+			</tbody>
+		</table>
+	</div>
+	<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+

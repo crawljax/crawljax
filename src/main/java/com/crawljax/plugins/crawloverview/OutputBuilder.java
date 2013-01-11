@@ -14,6 +14,8 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
+import com.crawljax.plugins.crawloverview.model.Statistics;
+
 class OutputBuilder {
 
 	private final static String SCREENSHOT_FOLDER_NAME = "screenshots";
@@ -80,9 +82,16 @@ class OutputBuilder {
 		writeFile(context, file, "state.html");
 	}
 
-	void writeStatistics() {
+	void writeStatistics(Statistics stats) {
 		File file = new File(outputDir, "statistics.html");
-		writeFile(new VelocityContext(), file, "statistics.html");
+		VelocityContext context = new VelocityContext();
+		context.put("stats", stats);
+		writeFile(context, file, "statistics.html");
+
+		file = new File(outputDir, "urls.html");
+		context = new VelocityContext();
+		context.put("urls", stats.getStateStats().getUrls());
+		writeFile(context, file, "urls.html");
 	}
 
 	private void writeFile(VelocityContext context, File outFile, String template) {

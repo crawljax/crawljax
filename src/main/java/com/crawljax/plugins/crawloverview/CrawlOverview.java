@@ -22,6 +22,7 @@ import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
+import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -56,12 +57,15 @@ public class CrawlOverview
 	 */
 	@Override
 	public void onNewState(CrawlSession session) {
+		LOG.debug("onNewState");
 		this.session = session;
 		StateVertex vertex = session.getCurrentState();
-		Point point = getOffSet(session.getBrowser());
 		State state = outModel.addStateIfAbsent(vertex);
-		state.setScreenShotOffset(point);
 		saveScreenshot(state.getName(), vertex);
+		Point point = getOffSet(session.getBrowser());
+		point = getOffSet(session.getBrowser());
+		LOG.debug("{} has a body offset of {}", vertex.getName(), point);
+		state.setScreenShotOffset(point);
 	}
 
 	private Point getOffSet(EmbeddedBrowser embeddedBrowser) {
@@ -71,7 +75,6 @@ public class CrawlOverview
 			Number left = (Number) embeddedBrowser.executeJavaScript(
 			        "return document.body.getBoundingClientRect().left;");
 			Point offset = new Point(top.intValue(), left.intValue());
-			LOG.debug("Body {}", offset);
 			return offset;
 		} catch (CrawljaxException e) {
 			throw new CrawlOverviewException("Could not locate relative size of body", e);
@@ -97,6 +100,7 @@ public class CrawlOverview
 	 */
 	@Override
 	public void preStateCrawling(CrawlSession session, List<CandidateElement> candidateElements) {
+		LOG.debug("preStateCrawling");
 		this.session = session;
 		List<RenderedCandidateElement> newElements = Lists.newLinkedList();
 		StateVertex state = session.getCurrentState();
@@ -142,12 +146,13 @@ public class CrawlOverview
 	 */
 	@Override
 	public void postCrawling(CrawlSession session) {
+		LOG.debug("postCrawling");
 		StateFlowGraph sfg = session.getStateFlowGraph();
 		outModel.setEdges(sfg.getAllEdges());
-		outModel.close();
+		Statistics statistics = outModel.close(session);
 		try {
 			writeIndexFile();
-			outputBuilder.writeStatistics();
+			outputBuilder.writeStatistics(statistics);
 			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
 			for (State state : outModel.getStates()) {
 				writer.writeHtmlForState(state);

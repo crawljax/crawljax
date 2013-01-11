@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -37,8 +38,10 @@ public class OutPutModel {
 	/**
 	 * Makes the final calculations.
 	 */
-	public void close() {
+	public Statistics close(CrawlSession session) {
 		checkEdgesAndCountFans();
+		StateStatistics stateStats = new StateStatistics(states);
+		return new Statistics(session, stateStats);
 	}
 
 	public Collection<State> getStates() {

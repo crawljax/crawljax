@@ -21,7 +21,6 @@ public class SimpleSiteCrawlTest {
 	@Test
 	public void testSimpleSiteCrawl() throws Exception {
 		SimpleSiteCrawl simpleCrawl = new SimpleSiteCrawl();
-
 		File outFolder = new File("/tmp/crawlout");
 		if (outFolder.exists()) {
 			FileUtils.deleteDirectory(outFolder);

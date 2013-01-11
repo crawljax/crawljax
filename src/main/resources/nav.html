@@ -9,11 +9,14 @@
 				<ul class="nav">
 					<li #if($page == "graph") class="active" #end><a href="$baseUrl/index.html">State graph</a></li>
 					<li #if($page == "statistics") class="active" #end><a href="$baseUrl/statistics.html">Statistics</a></li>
+					<li #if($page == "urls") class="active" #end><a href="$baseUrl/urls.html">URL's</a></li>
 				</ul>
 			</div>
+			#if($page == "graph")
 			<div class="nav pull-right">
 				<p class='navbar-text'>Double click to inspect a state</p>
 			</div>
+			#end
 			<!--/.nav-collapse -->
 		</div>
 	</div>
