@@ -13,13 +13,18 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.Statistics;
 
 class OutputBuilder {
 
-	private final static String SCREENSHOT_FOLDER_NAME = "screenshots";
-	private final static String STATES_FOLDER_NAME = "states";
+	private static final Logger LOG = LoggerFactory.getLogger(OutputBuilder.class);
+
+	private static final String SCREENSHOT_FOLDER_NAME = "screenshots";
+	private static final String STATES_FOLDER_NAME = "states";
 
 	private final File outputDir;
 	private final File states;
@@ -73,16 +78,26 @@ class OutputBuilder {
 		return new File(screenshots, name + ".png");
 	}
 
-	void writeIndexFile(VelocityContext context) {
+	public void write(OutPutModel outModel) {
+		try {
+			writeIndexFile(outModel);
+			writeStatistics(outModel.getStatistics());
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+		}
+
+		LOG.info("Overview report generated");
+	}
+
+	private void writeIndexFile(OutPutModel model) {
+		LOG.debug("Writing index file");
+		VelocityContext context = new VelocityContext();
+		String outModelJson = model.toJson();
+		context.put("outputModel", outModelJson);
 		writeFile(context, indexFile, "index.html");
 	}
 
-	void writeState(VelocityContext context, String stateName) {
-		File file = new File(states, stateName + ".html");
-		writeFile(context, file, "state.html");
-	}
-
-	void writeStatistics(Statistics stats) {
+	private void writeStatistics(Statistics stats) {
 		File file = new File(outputDir, "statistics.html");
 		VelocityContext context = new VelocityContext();
 		context.put("stats", stats);
@@ -105,6 +120,11 @@ class OutputBuilder {
 		} catch (IOException e) {
 			throw new CrawlOverviewException("Could not write output state");
 		}
+	}
+
+	void writeState(VelocityContext context, String stateName) {
+		File file = new File(states, stateName + ".html");
+		writeFile(context, file, "state.html");
 	}
 
 }

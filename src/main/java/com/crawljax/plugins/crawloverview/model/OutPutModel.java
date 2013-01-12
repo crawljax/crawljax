@@ -1,62 +1,32 @@
 package com.crawljax.plugins.crawloverview.model;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import javax.annotation.concurrent.Immutable;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
-import com.crawljax.core.CrawlSession;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateVertex;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
-public class OutPutModel {
+/**
+ * Result of a Crawl session.
+ * <p>
+ * This class is nearly {@link Immutable}. Unfortunately {@link State#getCandidateElements()} isn't
+ * so that might leak state.
+ */
+@Immutable
+public final class OutPutModel {
 
-	private final Map<String, State> states = Maps.newLinkedHashMap();
-	private final Set<Edge> edges = new LinkedHashSet<Edge>();
+	private final ImmutableMap<String, State> states;
+	private final ImmutableSet<Edge> edges;
+	private final Statistics statistics;
 
-	public State addStateIfAbsent(StateVertex state) {
-		if (states.containsKey(state.getName())) {
-			return states.get(state.getName());
-		} else {
-			State newState = new State(state);
-			states.put(state.getName(), newState);
-			return newState;
-		}
-	}
-
-	public void addEdge(Edge edge) {
-		edges.add(edge);
-	}
-
-	/**
-	 * Makes the final calculations.
-	 */
-	public Statistics close(CrawlSession session) {
-		checkEdgesAndCountFans();
-		StateStatistics stateStats = new StateStatistics(states);
-		return new Statistics(session, stateStats);
-	}
-
-	public Collection<State> getStates() {
-		return states.values();
-	}
-
-	private void checkEdgesAndCountFans() {
-		for (Edge e : edges) {
-			State from = states.get(e.getFrom());
-			State to = states.get(e.getTo());
-			checkNotNull(from, "From state %s is unkown", e.getFrom());
-			checkNotNull(to, "To state %s is unkown", e.getTo());
-			from.incrementFanOut();
-			to.incrementFanIn();
-		}
+	public OutPutModel(ImmutableMap<String, State> states, ImmutableSet<Edge> edges,
+	        Statistics statistics) {
+		this.states = states;
+		this.edges = edges;
+		this.statistics = statistics;
 	}
 
 	public String toJson() {
@@ -69,9 +39,15 @@ public class OutPutModel {
 		}
 	}
 
-	public void setEdges(Set<Eventable> allEdges) {
-		for (Eventable eventable : allEdges) {
-			edges.add(new Edge(eventable));
-		}
+	public ImmutableMap<String, State> getStates() {
+		return states;
+	}
+
+	public ImmutableSet<Edge> getEdges() {
+		return edges;
+	}
+
+	public Statistics getStatistics() {
+		return statistics;
 	}
 }

@@ -1,10 +1,13 @@
 package com.crawljax.plugins.crawloverview.model;
 
+import javax.annotation.concurrent.Immutable;
+
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.StateFlowGraph;
 
+@Immutable
 public class Statistics {
 
 	private final String duration;

@@ -1,10 +1,14 @@
 package com.crawljax.plugins.crawloverview.model;
 
-import java.util.Map;
+import java.util.Collection;
+
+import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSet.Builder;
+import com.google.common.collect.ImmutableSortedSet;
 
+@Immutable
 public class StateStatistics {
 
 	private final State leastFanOut;
@@ -14,16 +18,16 @@ public class StateStatistics {
 	private final int totalNumberOfStates;
 	private final ImmutableSet<String> urls;
 
-	public StateStatistics(Map<String, State> states) {
+	public StateStatistics(Collection<State> states) {
 		totalNumberOfStates = states.size();
 
-		State randomState = states.values().iterator().next();
+		State randomState = states.iterator().next();
 		State leastFanOut = randomState;
 		State mostFanOut = randomState;
 		State leastFanIn = randomState;
 		State mostFanIn = randomState;
-		Builder<String> builder = ImmutableSet.builder();
-		for (State state : states.values()) {
+		Builder<String> builder = ImmutableSortedSet.naturalOrder();
+		for (State state : states) {
 			if (state.getFanIn() > mostFanIn.getFanIn()) {
 				mostFanIn = state;
 			} else if (state.getFanIn() < leastFanIn.getFanIn()) {
@@ -64,6 +68,6 @@ public class StateStatistics {
 	}
 
 	public ImmutableSet<String> getUrls() {
-	    return urls;
-    }
+		return urls;
+	}
 }

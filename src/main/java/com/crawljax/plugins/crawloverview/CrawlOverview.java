@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.velocity.VelocityContext;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
@@ -20,14 +19,14 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.plugin.PreStateCrawlingPlugin;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
-import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
- * Overviewplugin is a plugin that generates a HTML report from the crawling session which can be
+ * The overview is a plug-in that generates a HTML report from the crawling session which can be
  * used to inspect what is crawled by Crawljax The report contains screenshots of the visited states
  * and the clicked elements are highlighted. The report also contains the state-flow graph in which
  * the visited states are linked together. WARNING: This plugin is still in alpha development!
@@ -43,12 +42,12 @@ public class CrawlOverview
 
 	private CrawlSession session;
 
-	private final OutPutModel outModel;
+	private final OutPutModelCache outModelCache;
 
 	public CrawlOverview(File outputFolder) {
 		// resources = new CachedResources();
 		outputBuilder = new OutputBuilder(outputFolder);
-		outModel = new OutPutModel();
+		outModelCache = new OutPutModelCache();
 		visitedStates = Maps.newHashMap();
 	}
 
@@ -60,7 +59,7 @@ public class CrawlOverview
 		LOG.debug("onNewState");
 		this.session = session;
 		StateVertex vertex = session.getCurrentState();
-		State state = outModel.addStateIfAbsent(vertex);
+		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
 		saveScreenshot(state.getName(), vertex);
 		Point point = getOffSet(session.getBrowser());
 		point = getOffSet(session.getBrowser());
@@ -82,15 +81,17 @@ public class CrawlOverview
 	}
 
 	private void saveScreenshot(String name, StateVertex vertex) {
-		if (!visitedStates.containsKey(name)) {
-			LOG.debug("Saving screenshot for state {}", name);
-			File screenShot = outputBuilder.newScreenShotFile(name);
-			try {
-				session.getBrowser().saveScreenShot(screenShot);
-			} catch (CrawljaxException e) {
-				LOG.warn("Screenshots are not supported for {}", session.getBrowser());
+		synchronized (visitedStates) {
+			if (!visitedStates.containsKey(name)) {
+				LOG.debug("Saving screenshot for state {}", name);
+				File screenShot = outputBuilder.newScreenShotFile(name);
+				try {
+					session.getBrowser().saveScreenShot(screenShot);
+				} catch (CrawljaxException e) {
+					LOG.warn("Screenshots are not supported for {}", session.getBrowser());
+				}
+				visitedStates.put(name, vertex);
 			}
-			visitedStates.put(name, vertex);
 		}
 	}
 
@@ -102,7 +103,7 @@ public class CrawlOverview
 	public void preStateCrawling(CrawlSession session, List<CandidateElement> candidateElements) {
 		LOG.debug("preStateCrawling");
 		this.session = session;
-		List<RenderedCandidateElement> newElements = Lists.newLinkedList();
+		List<CandidateElementPosition> newElements = Lists.newLinkedList();
 		StateVertex state = session.getCurrentState();
 		LOG.info("Prestate found new state {} with {} candidates", state.getName(),
 		        candidateElements.size());
@@ -113,8 +114,8 @@ public class CrawlOverview
 			}
 		}
 
-		State stateOut = outModel.addStateIfAbsent(session.getCurrentState());
-		stateOut.getCandidateElements().addAll(newElements);
+		StateBuilder stateOut = outModelCache.addStateIfAbsent(session.getCurrentState());
+		stateOut.addCandidates(newElements);
 	}
 
 	private WebElement getWebElement(CrawlSession session, CandidateElement element) {
@@ -130,14 +131,14 @@ public class CrawlOverview
 		return webElement;
 	}
 
-	private RenderedCandidateElement findElement(WebElement webElement, CandidateElement element) {
+	private CandidateElementPosition findElement(WebElement webElement, CandidateElement element) {
 		Point location = webElement.getLocation();
 		Dimension size = webElement.getSize();
-		RenderedCandidateElement renderedCandidateElement =
+		CandidateElementPosition renderedCandidateElement =
 		        // TODO Check if element.getIdentification().getValue() is correct replacement for
 		        // element.getXpath()
-		        new RenderedCandidateElement(element.getElement(), element.getIdentification()
-		                .getValue(), location, size);
+		        new CandidateElementPosition(element.getIdentification().getValue(), location,
+		                size);
 		return renderedCandidateElement;
 	}
 
@@ -148,29 +149,15 @@ public class CrawlOverview
 	public void postCrawling(CrawlSession session) {
 		LOG.debug("postCrawling");
 		StateFlowGraph sfg = session.getStateFlowGraph();
-		outModel.setEdges(sfg.getAllEdges());
-		Statistics statistics = outModel.close(session);
-		try {
-			writeIndexFile();
-			outputBuilder.writeStatistics(statistics);
+		outModelCache.addEdges(sfg.getAllEdges());
+		OutPutModel outModel = outModelCache.close(session);
+		outputBuilder.write(outModel);
+		synchronized (visitedStates) {
 			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
-			for (State state : outModel.getStates()) {
+			for (State state : outModel.getStates().values()) {
 				writer.writeHtmlForState(state);
 			}
-		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
 		}
-
-		LOG.info("Overview report generated");
-	}
-
-	private void writeIndexFile() throws Exception {
-		LOG.debug("Writing index file");
-		VelocityContext context = new VelocityContext();
-		String outModelJson = outModel.toJson();
-		context.put("outputModel", outModelJson);
-
-		outputBuilder.writeIndexFile(context);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.crawljax.plugins.crawloverview;
 /**
  * Gets thrown when something unexpected goes wrong inside the {@link CrawlOverview} plugin.
  */
+@SuppressWarnings("serial")
 public class CrawlOverviewException extends RuntimeException {
 
 	public CrawlOverviewException(String message, Throwable cause) {

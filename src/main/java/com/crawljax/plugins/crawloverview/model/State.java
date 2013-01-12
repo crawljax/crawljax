@@ -1,31 +1,34 @@
 package com.crawljax.plugins.crawloverview.model;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.annotation.concurrent.Immutable;
 
 import org.openqa.selenium.Point;
 
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.plugins.crawloverview.RenderedCandidateElement;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 
+@Immutable
 public class State {
 
 	private final String name;
 	private final String url;
-	private final List<RenderedCandidateElement> candidateElements;
-	private Point screenShotOffset;
-	private final AtomicInteger fanIn = new AtomicInteger();
-	private final AtomicInteger fanOut = new AtomicInteger();
+	private final ImmutableList<CandidateElementPosition> candidateElements;
+	private final int fanIn;
+	private final int fanOut;
+	private final int screenshotOffsetTop;
+	private final int screenshotOffsetLeft;
 
-	public State(String name, String url) {
-		this.name = name;
-		this.url = url;
-		candidateElements = Lists.newLinkedList();
-	}
-
-	public State(StateVertex state) {
-		this(state.getName(), state.getUrl());
+	public State(StateVertex state, int fanIn, int fanOut,
+	        ImmutableList<CandidateElementPosition> candidates, Point offset) {
+		this.fanIn = fanIn;
+		this.fanOut = fanOut;
+		candidateElements = candidates;
+		this.name = state.getName();
+		this.url = state.getUrl();
+		this.screenshotOffsetLeft = offset.x;
+		this.screenshotOffsetTop = offset.y;
 	}
 
 	public String getName() {
@@ -36,70 +39,24 @@ public class State {
 		return url;
 	}
 
-	public List<RenderedCandidateElement> getCandidateElements() {
+	public List<CandidateElementPosition> getCandidateElements() {
 		return candidateElements;
 	}
 
-	public void setScreenShotOffset(Point point) {
-		this.screenShotOffset = point;
-	}
-
-	public Point getScreenShotOffset() {
-		return screenShotOffset;
-	}
-
-	public int incrementFanOut() {
-		return fanOut.incrementAndGet();
-	}
-
-	public int incrementFanIn() {
-		return fanIn.incrementAndGet();
-	}
-
 	public int getFanIn() {
-		return fanIn.get();
+		return fanIn;
 	}
 
 	public int getFanOut() {
-		return fanOut.get();
+		return fanOut;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result =
-		        prime * result + ((candidateElements == null) ? 0 : candidateElements.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
-		return result;
+	public int getScreenshotOffsetTop() {
+		return screenshotOffsetTop;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		State other = (State) obj;
-		if (candidateElements == null) {
-			if (other.candidateElements != null)
-				return false;
-		} else if (!candidateElements.equals(other.candidateElements))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (url == null) {
-			if (other.url != null)
-				return false;
-		} else if (!url.equals(other.url))
-			return false;
-		return true;
+	public int getScreenshotOffsetLeft() {
+		return screenshotOffsetLeft;
 	}
 
 	@Override

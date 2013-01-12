@@ -1,19 +1,19 @@
 package com.crawljax.plugins.crawloverview;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.velocity.VelocityContext;
-import org.openqa.selenium.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.State;
+import com.google.common.collect.Lists;
 
 public class StateWriter {
 
@@ -50,17 +50,20 @@ public class StateWriter {
 	}
 
 	private List<Map<String, String>> getElements(StateFlowGraph sfg, State state) {
-		List<Map<String, String>> elements = new ArrayList<Map<String, String>>();
+		List<CandidateElementPosition> candidateElements = state.getCandidateElements();
 
-		for (RenderedCandidateElement element : state.getCandidateElements()) {
+		List<Map<String, String>> elements =
+		        Lists.newArrayListWithCapacity(candidateElements.size());
+
+		for (CandidateElementPosition element : candidateElements) {
 			Eventable eventable = getEventableByCandidateElementInState(state, element);
 			StateVertex toState = null;
 			Map<String, String> elementMap = new HashMap<String, String>();
-			Point offset = state.getScreenShotOffset();
-			elementMap.put("left", "" + (element.getLocation().x - 3 + offset.getY()));
-			elementMap.put("top", "" + (element.getLocation().y - 3 + offset.getX()));
-			elementMap.put("width", "" + (element.getSize().width + 2));
-			elementMap.put("height", "" + (element.getSize().height + 2));
+			elementMap
+			        .put("left", "" + (element.getLeft() - 3 + state.getScreenshotOffsetLeft()));
+			elementMap.put("top", "" + (element.getTop() - 3 + state.getScreenshotOffsetTop()));
+			elementMap.put("width", "" + (element.getWidth() + 2));
+			elementMap.put("height", "" + (element.getHeight() + 2));
 			if (eventable != null) {
 				toState = sfg.getTargetState(eventable);
 			}
@@ -89,13 +92,13 @@ public class StateWriter {
 	}
 
 	private Eventable getEventableByCandidateElementInState(State state,
-	        RenderedCandidateElement element) {
+	        CandidateElementPosition element) {
 		StateVertex vertex = visitedStates.get(state.getName());
 		for (Eventable eventable : sfg.getOutgoingClickables(vertex)) {
 			// TODO Check if element.getIdentification().getValue() is correct replacement for
 			// element.getXpath()
 			if (eventable.getIdentification().getValue()
-			        .equals(element.getIdentification().getValue())) {
+			        .equals(element.getXpath())) {
 				return eventable;
 			}
 		}
