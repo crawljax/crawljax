@@ -41,6 +41,7 @@ public class CrawlOverview
 	private final Map<String, StateVertex> visitedStates;
 
 	private CrawlSession session;
+	private OutPutModel result;
 
 	private final OutPutModelCache outModelCache;
 
@@ -150,14 +151,21 @@ public class CrawlOverview
 		LOG.debug("postCrawling");
 		StateFlowGraph sfg = session.getStateFlowGraph();
 		outModelCache.addEdges(sfg.getAllEdges());
-		OutPutModel outModel = outModelCache.close(session);
-		outputBuilder.write(outModel);
+		result = outModelCache.close(session);
+		outputBuilder.write(result);
 		synchronized (visitedStates) {
 			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
-			for (State state : outModel.getStates().values()) {
+			for (State state : result.getStates().values()) {
 				writer.writeHtmlForState(state);
 			}
 		}
+	}
+
+	/**
+	 * @return the result of the Crawl or <code>null</code> if it hasn't finished yet.
+	 */
+	public OutPutModel getResult() {
+		return result;
 	}
 
 }
