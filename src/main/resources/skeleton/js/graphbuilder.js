@@ -1,10 +1,10 @@
 var graph = Viva.Graph.graph();
 
 var layout = Viva.Graph.Layout.forceDirected(graph, {
-	springLength : 300,
+	springLength : 600,
 	springCoeff : 0.0005,
-	dragCoeff : 0.02,
-	gravity : -1.2
+	dragCoeff : 0.06,
+	gravity : -200.2
 });
 
 var graphics = Viva.Graph.View.svgGraphics(),
