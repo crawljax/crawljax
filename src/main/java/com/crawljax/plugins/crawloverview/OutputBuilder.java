@@ -2,10 +2,15 @@ package com.crawljax.plugins.crawloverview;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
@@ -79,6 +84,22 @@ class OutputBuilder {
 
 	public File newScreenShotFile(String name) {
 		return new File(screenshots, name + ".png");
+	}
+
+	public void makerThumbNail(File screenShot, String name) {
+		try {
+			// scale image on disk
+			BufferedImage originalImage = ImageIO.read(screenShot);
+			BufferedImage resizedImage =
+			        new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+
+			Graphics2D g = resizedImage.createGraphics();
+			g.drawImage(originalImage, 0, 0, 200, 200, Color.WHITE, null);
+			// g.dispose();
+			ImageIO.write(resizedImage, "jpg", new File(screenshots, name + "_small.jpg"));
+		} catch (IOException e) {
+			throw new CrawlOverviewException("Could not create thumbnail");
+		}
 	}
 
 	public void write(OutPutModel outModel) {
