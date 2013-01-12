@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.Statistics;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 class OutputBuilder {
 
@@ -25,6 +27,7 @@ class OutputBuilder {
 
 	private static final String SCREENSHOT_FOLDER_NAME = "screenshots";
 	private static final String STATES_FOLDER_NAME = "states";
+	private static final String JSON_OUTPUT_NAME = "result.json";
 
 	private final File outputDir;
 	private final File states;
@@ -93,8 +96,17 @@ class OutputBuilder {
 		LOG.debug("Writing index file");
 		VelocityContext context = new VelocityContext();
 		String outModelJson = model.toJson();
+		writeJsonToOutDir(outModelJson);
 		context.put("outputModel", outModelJson);
 		writeFile(context, indexFile, "index.html");
+	}
+
+	private void writeJsonToOutDir(String outModelJson) {
+		try {
+			Files.write(outModelJson, new File(this.outputDir, JSON_OUTPUT_NAME), Charsets.UTF_8);
+		} catch (IOException e) {
+			LOG.warn("Could not write JSON model to output dir. " + e.getMessage());
+		}
 	}
 
 	private void writeStatistics(Statistics stats) {
