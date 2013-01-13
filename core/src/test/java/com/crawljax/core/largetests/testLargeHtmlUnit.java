@@ -9,8 +9,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.ConfigurationTest;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 
-// @Ignore("Doesnt work at the moment. Fix later")
-public class LargeTestHtmlUnit extends LargeTestSuper {
+public class testLargeHtmlUnit extends LargeTestSuper {
 
 	private static final int waitAfterEvent = 400;
 	private static final int waitAfterReload = 400;
