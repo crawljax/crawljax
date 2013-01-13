@@ -59,7 +59,7 @@ public class JarRunner {
 		}
 
 		if (commandLine.hasOption(VERSION)) {
-			System.out.println("crawljax version \"" + CRAWLJAX_VERSION + "\"");
+			System.out.println("crawljax version \"" + getCrawljaxVersion() + "\"");
 			System.exit(0);
 		}
 
@@ -186,7 +186,7 @@ public class JarRunner {
 				printHelp();
 				System.exit(1);
 			}
-			getCrawljaxVersion();
+
 			checkArguments(args);
 
 		} catch (Exception e) {
