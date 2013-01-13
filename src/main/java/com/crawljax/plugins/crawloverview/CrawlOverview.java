@@ -74,7 +74,7 @@ public class CrawlOverview
 			        "return document.body.getBoundingClientRect().top;");
 			Number left = (Number) embeddedBrowser.executeJavaScript(
 			        "return document.body.getBoundingClientRect().left;");
-			Point offset = new Point(top.intValue(), left.intValue());
+			Point offset = new Point(left.intValue(), top.intValue());
 			return offset;
 		} catch (CrawljaxException e) {
 			throw new CrawlOverviewException("Could not locate relative size of body", e);
