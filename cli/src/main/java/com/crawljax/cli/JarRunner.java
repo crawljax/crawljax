@@ -17,6 +17,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
@@ -70,6 +71,12 @@ public class JarRunner {
 				final CrawlSpecification crawlSpec = new CrawlSpecification(url);
 				config.setCrawlSpecification(crawlSpec);
 
+				if (commandLine.hasOption("browser")) {
+					String browser = commandLine.getOptionValue("browser");
+
+					config.setBrowser(getBrowserTypeFromStr(browser));
+				}
+
 				if (commandLine.hasOption("depth")) {
 					String depth = commandLine.getOptionValue("depth");
 					crawlSpec.setDepth(Integer.parseInt(depth));
@@ -98,6 +105,18 @@ public class JarRunner {
 
 	}
 
+	private static BrowserType getBrowserTypeFromStr(String browser) {
+		if (browser != null) {
+			for (BrowserType b : BrowserType.values()) {
+				if (browser.equalsIgnoreCase(b.toString())) {
+					return b;
+				}
+			}
+		}
+
+		return BrowserType.firefox;
+	}
+
 	/**
 	 * Create the CML Options.
 	 * 
@@ -113,6 +132,10 @@ public class JarRunner {
 
 			options.addOption(OptionBuilder.withArgName("URL").hasArg()
 			        .withDescription("url to crawl").create("url"));
+
+			options.addOption(OptionBuilder.withLongOpt("browser")
+			        .withDescription("browser type: firefox, chrome, ie, htmlunit").hasArg()
+			        .withArgName("TYPE").create());
 
 			options.addOption(OptionBuilder.withLongOpt("depth")
 			        .withDescription("crawl depth level").hasArg().withArgName("LEVEL").create());
