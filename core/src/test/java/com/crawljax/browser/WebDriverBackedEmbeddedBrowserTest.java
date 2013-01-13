@@ -33,7 +33,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 			doc = Helper.getDocument(driver.getDom());
 			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
-			assertEquals(4, frameNodes.getLength());
+			assertEquals(2, frameNodes.getLength());
 
 			doc = Helper.getDocument(driver.getDomWithoutIframeContent());
 			frameNodes = doc.getElementsByTagName("IFRAME");
