@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * Default implementation of the EmbeddedBrowserBuilder based on Selenium WebDriver API.
@@ -87,9 +88,10 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 				        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case htmlunit:
-				HtmlUnitDriver driverHtmlUnit = new HtmlUnitDriver(true);
-				driverHtmlUnit.setProxy(configuration.getProxyConfiguration().getHostname(),
-				        configuration.getProxyConfiguration().getPort());
+				HtmlUnitDriver driverHtmlUnit = new HtmlUnitDriver(BrowserVersion.FIREFOX_10);
+				driverHtmlUnit.setJavascriptEnabled(true);
+				// driverHtmlUnit.setProxy(configuration.getProxyConfiguration().getHostname(),
+				// configuration.getProxyConfiguration().getPort());
 
 				return WebDriverBackedEmbeddedBrowser.withDriver(driverHtmlUnit, configuration
 				        .getFilterAttributeNames(), configuration.getCrawlSpecificationReader()
