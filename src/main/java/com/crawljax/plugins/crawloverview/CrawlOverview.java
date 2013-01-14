@@ -62,6 +62,7 @@ public class CrawlOverview
 		StateVertex vertex = session.getCurrentState();
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
 		saveScreenshot(state.getName(), vertex);
+		outputBuilder.persistDom(state.getName(), session.getBrowser().getDom());
 		Point point = getOffSet(session.getBrowser());
 		point = getOffSet(session.getBrowser());
 		LOG.debug("{} has a body offset of {}", vertex.getName(), point);

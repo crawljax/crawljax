@@ -33,11 +33,13 @@ class OutputBuilder {
 	private static final String SCREENSHOT_FOLDER_NAME = "screenshots";
 	private static final String STATES_FOLDER_NAME = "states";
 	private static final String JSON_OUTPUT_NAME = "result.json";
+	private static final String DOMS_OUTPUT_NAME = "doms";
 
 	private final File outputDir;
 	private final File states;
 	private final File screenshots;
 	private final File indexFile;
+	private final File doms;
 	private final VelocityEngine ve;
 
 	/**
@@ -48,10 +50,14 @@ class OutputBuilder {
 		this.outputDir = outputDir;
 		checkPermissions();
 		copySkeleton();
+
 		states = new File(outputDir, STATES_FOLDER_NAME);
 		states.mkdir();
 		screenshots = new File(outputDir, SCREENSHOT_FOLDER_NAME);
 		screenshots.mkdir();
+		doms = new File(outputDir, DOMS_OUTPUT_NAME);
+		doms.mkdir();
+
 		indexFile = new File(outputDir, "index.html");
 		ve = new VelocityEngine();
 		ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
@@ -90,8 +96,7 @@ class OutputBuilder {
 		try {
 			// scale image on disk
 			BufferedImage originalImage = ImageIO.read(screenShot);
-			BufferedImage resizedImage =
-			        new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+			BufferedImage resizedImage = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
 
 			Graphics2D g = resizedImage.createGraphics();
 			g.drawImage(originalImage, 0, 0, 200, 200, Color.WHITE, null);
@@ -158,6 +163,31 @@ class OutputBuilder {
 	void writeState(VelocityContext context, String stateName) {
 		File file = new File(states, stateName + ".html");
 		writeFile(context, file, "state.html");
+	}
+
+	/**
+	 * Save the dom to disk.
+	 * 
+	 * @param name
+	 *            statename
+	 * @param dom
+	 *            the DOM as string
+	 */
+	public void persistDom(String name, String dom) {
+		try {
+			Files.write(dom, new File(doms, name + ".html"), Charsets.UTF_8);
+		} catch (IOException e) {
+			LOG.warn("Could not save dom state for {}", name);
+			LOG.debug("Could not save dom state", e);
+		}
+	}
+
+	public String getDom(String name) {
+		try {
+			return Files.toString(new File(doms, name + ".html"), Charsets.UTF_8);
+		} catch (IOException e) {
+			return "Could not load DOM";
+		}
 	}
 
 }

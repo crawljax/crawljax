@@ -1,6 +1,9 @@
 #set( $page = "state")
 #set( $baseUrl = "..")
 #parse( "header.html" )
+<link href="../css/shCore.css" rel="stylesheet" type="text/css" />
+<link href="../css/shCoreDefault.css" rel="stylesheet" type="text/css" />
+</head>
 <body>
 	#parse( "nav.html")
 	<div class='container'>
@@ -35,9 +38,15 @@
 			<div style="position: absolute; z-index: ${element.zindex}; left: ${element.left}px; top: ${element.top}px; width: ${element.width}px; height: ${element.height}px; border: 2px solid ${element.color}; #if(${element.targetname} != "") cursor: pointer;" onclick="location.href='${element.targetname}.html'"#else " #end></div>
 			#end				
 		</div>
+		<div id='domContainer'>
+			<h2>Captured DOM</h2>
+			<pre class='brush: html'>${dom}</pre>
+		</div>
 	</div>
+	<script type="text/javascript" src="../js/shCore.js"></script>
+	<script type="text/javascript" src="../js/shBrushXml.js"></script>
 	<script type="text/javascript">
-		parent.updateState("${name}");
+    	SyntaxHighlighter.all()
 	</script>
 </body>
 </html>
