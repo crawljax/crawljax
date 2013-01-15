@@ -5,7 +5,7 @@ import com.crawljax.core.configuration.CrawlSpecification;
 /**
  * Wraps a Crawljax instance the crawls the simplesite.
  */
-public class SimpleXpathCrawl extends SampleCrawler {
+public class SimpleXpathCrawl extends BaseCrawler {
 
 	public static final int NUMBER_OF_STATES = 3;
 	public static final int NUMBER_OF_EDGES = 2;

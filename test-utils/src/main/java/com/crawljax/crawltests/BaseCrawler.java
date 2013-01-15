@@ -5,19 +5,23 @@ import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jetty.util.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.Plugin;
 import com.google.common.base.Strings;
 
 /**
  * Base class for Crawler examples.
  */
-public abstract class SampleCrawler {
+public class BaseCrawler {
 
+	private static final Logger LOG = LoggerFactory.getLogger(BaseCrawler.class);
 	private final WebServer webServer;
 	private final AtomicBoolean hasSetup = new AtomicBoolean(false);
 
@@ -29,9 +33,11 @@ public abstract class SampleCrawler {
 	 * @param siteExtension
 	 *            Assumes the sites are in <code>resources/sites</code>.
 	 */
-	protected SampleCrawler(String siteExtension) {
+	protected BaseCrawler(String siteExtension) {
 		this.siteExtension = siteExtension;
-		URL sampleSites = SampleCrawler.class.getResource("/sites");
+		URL sampleSites = BaseCrawler.class.getResource("/sites");
+		LOG.debug("Loading web server with from folder {}", sampleSites.toExternalForm());
+		System.out.println(sampleSites.toExternalForm());
 		try {
 			this.webServer = new WebServer(Resource.newResource(sampleSites));
 		} catch (IOException e) {
@@ -45,8 +51,9 @@ public abstract class SampleCrawler {
 	 * @param siteExtension
 	 *            The extention of the site. Leave blank or <code>null</code> for no extention.
 	 */
-	protected SampleCrawler(Resource webfolder, String siteExtension) {
+	public BaseCrawler(Resource webfolder, String siteExtension) {
 		this.siteExtension = Strings.nullToEmpty(siteExtension);
+		LOG.debug("Loading web server with from folder {}", webfolder.getURL().toExternalForm());
 		this.webServer = new WebServer(webfolder);
 	}
 
@@ -54,7 +61,7 @@ public abstract class SampleCrawler {
 	 * @param webfolder
 	 *            The folder the web site is stored in.
 	 */
-	protected SampleCrawler(Resource webfolder) {
+	public BaseCrawler(Resource webfolder) {
 		this(webfolder, "");
 	}
 
@@ -74,8 +81,12 @@ public abstract class SampleCrawler {
 	 * @throws Exception
 	 *             When the webserver fails to start.
 	 */
-	public void setup() throws Exception {
-		webServer.start();
+	public void setup() {
+		try {
+			webServer.start();
+		} catch (Exception e) {
+			throw new RuntimeException("Could not start the server", e);
+		}
 		crawlSpec = newCrawlSpecification();
 		config = newCrawlConfiguartion();
 		config.setCrawlSpecification(crawlSpec);
@@ -133,7 +144,7 @@ public abstract class SampleCrawler {
 	 * @throws Exception
 	 *             When crawljax isn't configured correctly or the webserver fails to stop.
 	 */
-	public CrawlSession crawl() throws Exception {
+	public CrawlSession crawl() throws CrawljaxException {
 		if (!hasSetup.get()) {
 			setup();
 		}
@@ -142,6 +153,24 @@ public abstract class SampleCrawler {
 		webServer.stop();
 		crawljax.getBrowserPool().close();
 		return crawljax.getSession();
+	}
+
+	/**
+	 * Runs a crawl with the given plugins.
+	 * 
+	 * @see #crawl();
+	 * @param plugins
+	 *            The plugins you want to run with the {@link CrawljaxConfiguration}.
+	 * @return The resulting {@link CrawlSession}.
+	 */
+	public CrawlSession crawlWith(Plugin... plugins) {
+		if (!hasSetup.get()) {
+			setup();
+		}
+		for (Plugin plugin : plugins) {
+			config.addPlugin(plugin);
+		}
+		return crawl();
 	}
 
 	/**
