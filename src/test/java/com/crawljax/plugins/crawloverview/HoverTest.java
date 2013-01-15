@@ -63,7 +63,6 @@ public class HoverTest {
 		Resource hoverSiteBase = Resource.newClassPathResource("hover-test-site");
 		BaseCrawler hoverSiteCrawl = new BaseCrawler(hoverSiteBase, "");
 		File outFile = Files.createTempDir();
-		FileUtils.deleteQuietly(outFile);
 		CrawlOverview plugin = new CrawlOverview(outFile);
 		hoverSiteCrawl.crawlWith(plugin);
 		result = plugin.getResult();

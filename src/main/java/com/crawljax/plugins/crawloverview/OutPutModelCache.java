@@ -28,12 +28,12 @@ import com.google.common.collect.Queues;
  * Cache to build the {@link OutPutModel}. It is {@link ThreadSafe} except for the
  * {@link CandidateElementPosition} class.
  */
-public class OutPutModelCache {
+class OutPutModelCache {
 
 	private final ConcurrentMap<String, StateBuilder> states = Maps.newConcurrentMap();
 	private final BlockingDeque<Edge> edges = Queues.newLinkedBlockingDeque();
 
-	public StateBuilder addStateIfAbsent(StateVertex state) {
+	StateBuilder addStateIfAbsent(StateVertex state) {
 		StateBuilder newState = new StateBuilder(state);
 		StateBuilder found = states.putIfAbsent(state.getName(), newState);
 		if (found == null) {
@@ -46,7 +46,7 @@ public class OutPutModelCache {
 	/**
 	 * @return Makes the final calculations and retuns the {@link OutPutModel}.
 	 */
-	public OutPutModel close(CrawlSession session) {
+	OutPutModel close(CrawlSession session) {
 		HashSet<Edge> buffer = new HashSet<Edge>(edges.size());
 		edges.drainTo(buffer);
 		ImmutableSet<Edge> edgesCopy = ImmutableSet.copyOf(buffer);

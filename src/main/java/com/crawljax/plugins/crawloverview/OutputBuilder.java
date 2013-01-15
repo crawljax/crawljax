@@ -48,7 +48,7 @@ class OutputBuilder {
 	 * @param outputDir
 	 *            target for the output directory. Folder must not exist or be empty.
 	 */
-	public OutputBuilder(File outputDir) {
+	OutputBuilder(File outputDir) {
 		this.outputDir = outputDir;
 		checkPermissions();
 		copySkeleton();
@@ -90,11 +90,11 @@ class OutputBuilder {
 		}
 	}
 
-	public File newScreenShotFile(String name) {
+	File newScreenShotFile(String name) {
 		return new File(screenshots, name + ".png");
 	}
 
-	public void makeThumbNail(File screenShot, String name) {
+	void makeThumbNail(File screenShot, String name) {
 		try {
 			// scale image on disk
 			BufferedImage originalImage = ImageIO.read(screenShot);
@@ -109,7 +109,7 @@ class OutputBuilder {
 		}
 	}
 
-	public void write(OutPutModel outModel) {
+	void write(OutPutModel outModel) {
 		try {
 			writeIndexFile(outModel);
 			writeStatistics(outModel.getStatistics());
@@ -175,7 +175,7 @@ class OutputBuilder {
 	 * @param dom
 	 *            the DOM as string
 	 */
-	public void persistDom(String name, @Nullable String dom) {
+	void persistDom(String name, @Nullable String dom) {
 		try {
 			Files.write(Strings.nullToEmpty(dom), new File(doms, name + ".html"), Charsets.UTF_8);
 		} catch (IOException e) {
@@ -184,7 +184,7 @@ class OutputBuilder {
 		}
 	}
 
-	public String getDom(String name) {
+	String getDom(String name) {
 		try {
 			return Files.toString(new File(doms, name + ".html"), Charsets.UTF_8);
 		} catch (IOException e) {

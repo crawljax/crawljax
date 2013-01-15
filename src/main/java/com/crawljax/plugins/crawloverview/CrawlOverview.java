@@ -25,6 +25,7 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -49,10 +50,11 @@ public class CrawlOverview
 	private final OutPutModelCache outModelCache;
 
 	public CrawlOverview(File outputFolder) {
-		// resources = new CachedResources();
+		Preconditions.checkNotNull(outputFolder, "Output folder cannot be null");
 		outputBuilder = new OutputBuilder(outputFolder);
 		outModelCache = new OutPutModelCache();
 		visitedStates = Maps.newHashMap();
+		LOG.info("Initialized the Crawl overview plugin");
 	}
 
 	/**
@@ -72,20 +74,19 @@ public class CrawlOverview
 	}
 
 	private Point getOffSet(EmbeddedBrowser embeddedBrowser) {
-		try {
-			if (bodyHasOffset(embeddedBrowser)) {
+		if (bodyHasOffset(embeddedBrowser)) {
+			try {
 				Number top = (Number) embeddedBrowser.executeJavaScript(
 				        "return document.body.getBoundingClientRect().top;");
 				Number left = (Number) embeddedBrowser.executeJavaScript(
 				        "return document.body.getBoundingClientRect().left;");
 				Point offset = new Point(left.intValue(), top.intValue());
 				return offset;
-			} else {
-				return new Point(0, 0);
+			} catch (CrawljaxException e) {
+				LOG.warn("Could not locate relative size of body, now using (0,0) instead", e);
 			}
-		} catch (CrawljaxException e) {
-			throw new CrawlOverviewException("Could not locate relative size of body", e);
 		}
+		return new Point(0, 0);
 	}
 
 	private boolean bodyHasOffset(EmbeddedBrowser embeddedBrowser) {
@@ -173,6 +174,7 @@ public class CrawlOverview
 				writer.writeHtmlForState(state);
 			}
 		}
+		LOG.info("Crawl overview plugin has finished");
 	}
 
 	/**
