@@ -51,6 +51,8 @@ public class CrawljaxRunner {
 		crawler.dontClick("a").underXPath("//DIV[@id='guser']");
 		crawler.dontClick("a").withText("Language Tools");
 
+		crawler.setRandomInputInForms(false);
+		
 		InputSpecification inputSpec = new InputSpecification();
 		inputSpec.field("q").setValue("Crawljax");
 		crawler.setInputSpecification(inputSpec);

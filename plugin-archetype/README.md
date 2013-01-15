@@ -1,4 +1,4 @@
-Crawljax Maven Archtypes
+Crawljax Maven Archteypes
 ========================
 
 Crawljax Plugin
@@ -11,7 +11,7 @@ To generate a plugin project template using Maven:
        -DarchetypeArtifactId=crawljax-plugins-archetype \
        -DarchetypeVersion=1.2 \
        -DgroupId=sample \
-       -DartifactId=sample-plugin \
+       -DartifactId=sample-plugin
 
        
 You can change the values of ``-DgroupId`` and ``-DartifactId`` to reflect your project's package and name. 

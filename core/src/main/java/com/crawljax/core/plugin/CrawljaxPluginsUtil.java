@@ -283,4 +283,43 @@ public final class CrawljaxPluginsUtil {
 			}
 		}
 	}
+
+	/**
+	 * Load and run the DomChangeNotifierPlugin.
+	 * 
+	 * 
+	 * 
+	 */
+	public static boolean runDomChangeNotifierPlugins(final StateVertex stateBefore,
+	        final Eventable e, final StateVertex stateAfter, final EmbeddedBrowser browser) {
+		LOGGER.info("Checking for DomChangeNotifierPlugin...");
+		Plugin latest = null;
+		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+			if (plugin instanceof DomChangeNotifierPlugin) {
+				LOGGER.info("Found plugin " + plugin.getClass().getName());
+				latest = plugin;
+			}
+		}
+
+		if (latest != null) {
+			LOGGER.debug("Calling plugin ", latest.getClass().getName());
+			return ((DomChangeNotifierPlugin) latest).isDomChanged(stateBefore.getDom(), e,
+			        stateAfter.getDom(), browser);
+		}
+
+		LOGGER.debug("No DomChangeNotifierPlugin found. Performing default DOM comparison...");
+
+		// default DOM comparison behavior
+		boolean isChanged = !stateAfter.equals(stateBefore);
+
+		if (isChanged) {
+			LOGGER.info("Dom is Changed!");
+		} else {
+			LOGGER.debug("Dom not Changed!");
+		}
+
+		return isChanged;
+
+	}
+
 }

@@ -4,28 +4,20 @@
 
 	<parent>
 		<groupId>com.crawljax.plugins</groupId>
-		<artifactId>plugin</artifactId>
-		<version>${version}</version>
+		<artifactId>crawljax-plugins-parent</artifactId>
+		<version>${project.version}</version>
 	</parent>
 
-	<groupId>${groupId}</groupId>
-	<artifactId>${artifactId}</artifactId>
-	<version>${version}</version>
+	<groupId>\${groupId}</groupId>
+	<artifactId>\${artifactId}</artifactId>
+	<version>\${version}</version>
 	<packaging>jar</packaging>
 	<name>A Crawljax plugin.</name>
 	<description>A plugin for...</description>
 	<url>http://crawljax.com</url>
 
 	<properties>
-		<crawljax.version>${version}</crawljax.version>
+		<crawljax.version>${project.version}</crawljax.version>
 	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.crawljax</groupId>
-			<artifactId>crawljax</artifactId>
-			<version>${crawljax.version}</version>
-		</dependency>
-	</dependencies>
 
 </project>

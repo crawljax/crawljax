@@ -9,14 +9,14 @@
 	</parent>
 
 	<groupId>com.crawljax.plugins</groupId>
-	<artifactId>plugin</artifactId>
+	<artifactId>crawljax-plugins-parent</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Crawljax plugins parent POM</name>
 	<description>Parent plugin POM.</description>
 
 	<properties>
-		<crawljax.version>${parent.version}</crawljax.version>
+		<crawljax.version>${project.parent.version}</crawljax.version>
 	</properties>
 
 	<scm>
@@ -36,7 +36,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>${parent.groupId}</groupId>
+			<groupId>com.crawljax</groupId>
 			<artifactId>crawljax-core</artifactId>
 			<version>${crawljax.version}</version>
 		</dependency>
