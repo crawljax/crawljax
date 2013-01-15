@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
@@ -24,16 +25,17 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import com.google.common.io.Files;
 
 class OutputBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OutputBuilder.class);
 
-	private static final String SCREENSHOT_FOLDER_NAME = "screenshots";
-	private static final String STATES_FOLDER_NAME = "states";
-	private static final String JSON_OUTPUT_NAME = "result.json";
-	private static final String DOMS_OUTPUT_NAME = "doms";
+	static final String SCREENSHOT_FOLDER_NAME = "screenshots";
+	static final String STATES_FOLDER_NAME = "states";
+	static final String JSON_OUTPUT_NAME = "result.json";
+	static final String DOMS_OUTPUT_NAME = "doms";
 
 	private final File outputDir;
 	private final File states;
@@ -92,7 +94,7 @@ class OutputBuilder {
 		return new File(screenshots, name + ".png");
 	}
 
-	public void makerThumbNail(File screenShot, String name) {
+	public void makeThumbNail(File screenShot, String name) {
 		try {
 			// scale image on disk
 			BufferedImage originalImage = ImageIO.read(screenShot);
@@ -100,7 +102,7 @@ class OutputBuilder {
 
 			Graphics2D g = resizedImage.createGraphics();
 			g.drawImage(originalImage, 0, 0, 200, 200, Color.WHITE, null);
-			// g.dispose();
+			g.dispose();
 			ImageIO.write(resizedImage, "jpg", new File(screenshots, name + "_small.jpg"));
 		} catch (IOException e) {
 			throw new CrawlOverviewException("Could not create thumbnail");
@@ -173,9 +175,9 @@ class OutputBuilder {
 	 * @param dom
 	 *            the DOM as string
 	 */
-	public void persistDom(String name, String dom) {
+	public void persistDom(String name, @Nullable String dom) {
 		try {
-			Files.write(dom, new File(doms, name + ".html"), Charsets.UTF_8);
+			Files.write(Strings.nullToEmpty(dom), new File(doms, name + ".html"), Charsets.UTF_8);
 		} catch (IOException e) {
 			LOG.warn("Could not save dom state for {}", name);
 			LOG.debug("Could not save dom state", e);
@@ -186,7 +188,7 @@ class OutputBuilder {
 		try {
 			return Files.toString(new File(doms, name + ".html"), Charsets.UTF_8);
 		} catch (IOException e) {
-			return "Could not load DOM";
+			return "Could not load DOM: " + e.getLocalizedMessage();
 		}
 	}
 

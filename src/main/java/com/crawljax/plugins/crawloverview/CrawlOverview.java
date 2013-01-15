@@ -103,7 +103,7 @@ public class CrawlOverview
 				File screenShot = outputBuilder.newScreenShotFile(name);
 				try {
 					session.getBrowser().saveScreenShot(screenShot);
-					outputBuilder.makerThumbNail(screenShot, name);
+					outputBuilder.makeThumbNail(screenShot, name);
 				} catch (CrawljaxException e) {
 					LOG.warn("Screenshots are not supported for {}", session.getBrowser());
 				}
