@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.event.implement.EscapeHtmlReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ public class StateWriter {
 		context.put("fanOut", state.getFanOut());
 		context.put("url", state.getUrl());
 		String dom = outBuilder.getDom(state.getName());
-//		System.out.println(dom);
+		// System.out.println(dom);
 		dom = StringEscapeUtils.escapeHtml4(dom);
 		context.put("dom", dom);
 
@@ -54,8 +53,6 @@ public class StateWriter {
 		String name = state.getName();
 		outBuilder.writeState(context, name);
 	}
-
-	
 
 	private List<Map<String, String>> getElements(StateFlowGraph sfg, State state) {
 		List<CandidateElementPosition> candidateElements = state.getCandidateElements();

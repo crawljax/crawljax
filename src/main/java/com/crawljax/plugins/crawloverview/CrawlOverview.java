@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,8 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.plugin.PreStateCrawlingPlugin;
+import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
@@ -64,22 +67,33 @@ public class CrawlOverview
 		saveScreenshot(state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), session.getBrowser().getDom());
 		Point point = getOffSet(session.getBrowser());
-		point = getOffSet(session.getBrowser());
 		LOG.debug("{} has a body offset of {}", vertex.getName(), point);
 		state.setScreenShotOffset(point);
 	}
 
 	private Point getOffSet(EmbeddedBrowser embeddedBrowser) {
 		try {
-			Number top = (Number) embeddedBrowser.executeJavaScript(
-			        "return document.body.getBoundingClientRect().top;");
-			Number left = (Number) embeddedBrowser.executeJavaScript(
-			        "return document.body.getBoundingClientRect().left;");
-			Point offset = new Point(left.intValue(), top.intValue());
-			return offset;
+			if (bodyHasOffset(embeddedBrowser)) {
+				Number top = (Number) embeddedBrowser.executeJavaScript(
+				        "return document.body.getBoundingClientRect().top;");
+				Number left = (Number) embeddedBrowser.executeJavaScript(
+				        "return document.body.getBoundingClientRect().left;");
+				Point offset = new Point(left.intValue(), top.intValue());
+				return offset;
+			} else {
+				return new Point(0, 0);
+			}
 		} catch (CrawljaxException e) {
 			throw new CrawlOverviewException("Could not locate relative size of body", e);
 		}
+	}
+
+	private boolean bodyHasOffset(EmbeddedBrowser embeddedBrowser) {
+		WebElement body =
+		        embeddedBrowser.getWebElement(new Identification(How.tag, "body"));
+		String position = body.getCssValue("position");
+		LOG.debug("Body has CSS position: {}", position);
+		return "relative".equals(position);
 	}
 
 	private void saveScreenshot(String name, StateVertex vertex) {
@@ -122,16 +136,14 @@ public class CrawlOverview
 	}
 
 	private WebElement getWebElement(CrawlSession session, CandidateElement element) {
-		WebElement webElement;
 		try {
 			// TODO Check if element.getIdentification().getValue() is correct replacement for
 			// element.getXpath()
-			webElement = session.getBrowser().getWebElement(element.getIdentification());
-		} catch (Exception e) {
+			return session.getBrowser().getWebElement(element.getIdentification());
+		} catch (WebDriverException e) {
 			LOG.info("Could not locate " + element.getElement().toString());
 			return null;
 		}
-		return webElement;
 	}
 
 	private CandidateElementPosition findElement(WebElement webElement, CandidateElement element) {

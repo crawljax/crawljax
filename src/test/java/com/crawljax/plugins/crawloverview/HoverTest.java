@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.jetty.util.resource.Resource;
 import org.hamcrest.CustomMatcher;
 import org.hamcrest.Factory;
 import org.junit.BeforeClass;
@@ -18,10 +19,11 @@ import org.junit.Test;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 
-import com.crawljax.crawljax_plugins_plugin.SampleCrawler;
+import com.crawljax.crawltests.BaseCrawler;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
+import com.google.common.io.Files;
 
 public class HoverTest {
 
@@ -58,15 +60,12 @@ public class HoverTest {
 
 	@BeforeClass
 	public static void runHoverTest() throws Exception {
-		SampleCrawler hoverSiteCrawl = new SampleCrawler("hover-test-site") {
-		};
-		hoverSiteCrawl.setup();
-		hoverSiteCrawl.getCrawlSpec().setDepth(0);
-		File outFile = new File("/tmp/crawlout");
+		Resource hoverSiteBase = Resource.newClassPathResource("hover-test-site");
+		BaseCrawler hoverSiteCrawl = new BaseCrawler(hoverSiteBase, "");
+		File outFile = Files.createTempDir();
 		FileUtils.deleteQuietly(outFile);
 		CrawlOverview plugin = new CrawlOverview(outFile);
-		hoverSiteCrawl.getConfig().addPlugin(plugin);
-		hoverSiteCrawl.crawl();
+		hoverSiteCrawl.crawlWith(plugin);
 		result = plugin.getResult();
 	}
 
