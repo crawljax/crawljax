@@ -10,11 +10,11 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.util.resource.Resource;
 import org.hamcrest.CustomMatcher;
 import org.hamcrest.Factory;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -23,7 +23,7 @@ import com.crawljax.crawltests.BaseCrawler;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
-import com.google.common.io.Files;
+import com.crawljax.rules.TempDirInTargetFolder;
 
 public class HoverTest {
 
@@ -58,11 +58,15 @@ public class HoverTest {
 
 	private static OutPutModel result;
 
+	@ClassRule
+	public static final TempDirInTargetFolder tmpDirRul = new TempDirInTargetFolder(
+	        "hover-crawl", true);
+
 	@BeforeClass
 	public static void runHoverTest() throws Exception {
 		Resource hoverSiteBase = Resource.newClassPathResource("hover-test-site");
 		BaseCrawler hoverSiteCrawl = new BaseCrawler(hoverSiteBase, "");
-		File outFile = Files.createTempDir();
+		File outFile = tmpDirRul.getTempDir();
 		CrawlOverview plugin = new CrawlOverview(outFile);
 		hoverSiteCrawl.crawlWith(plugin);
 		result = plugin.getResult();

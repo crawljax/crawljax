@@ -10,6 +10,7 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,19 +18,24 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.crawltests.SimpleSiteCrawl;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.StateStatistics;
-import com.google.common.io.Files;
+import com.crawljax.rules.TempDirInTargetFolder;
 
 public class SimpleSiteCrawlTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SimpleSiteCrawlTest.class);
 	private static OutPutModel result;
+
+	@ClassRule
+	public static final TempDirInTargetFolder tmpFolder = new TempDirInTargetFolder(
+	        "simepl-crawl", false);
+
 	private static File outFolder;
 
 	@BeforeClass
 	public static void runCrawl() throws Exception {
 		SimpleSiteCrawl simpleCrawl = new SimpleSiteCrawl();
 		simpleCrawl.setup();
-		outFolder = Files.createTempDir();
+		outFolder = tmpFolder.getTempDir();
 		CrawlOverview plugin = new CrawlOverview(outFolder);
 		simpleCrawl.crawlWith(plugin);
 		result = plugin.getResult();

@@ -69,8 +69,8 @@ public class CrawlOverview
 		saveScreenshot(state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), session.getBrowser().getDom());
 		Point point = getOffSet(session.getBrowser());
-		LOG.debug("{} has a body offset of {}", vertex.getName(), point);
 		state.setScreenShotOffset(point);
+		LOG.debug("{} has a body offset of {}", vertex.getName(), point);
 	}
 
 	private Point getOffSet(EmbeddedBrowser embeddedBrowser) {
@@ -98,19 +98,21 @@ public class CrawlOverview
 	}
 
 	private void saveScreenshot(String name, StateVertex vertex) {
+		LOG.trace("Saving screenshot");
 		synchronized (visitedStates) {
 			if (!visitedStates.containsKey(name)) {
-				LOG.debug("Saving screenshot for state {}", name);
-				File screenShot = outputBuilder.newScreenShotFile(name);
-				try {
-					session.getBrowser().saveScreenShot(screenShot);
-					outputBuilder.makeThumbNail(screenShot, name);
-				} catch (CrawljaxException e) {
-					LOG.warn("Screenshots are not supported for {}", session.getBrowser());
-				}
 				visitedStates.put(name, vertex);
 			}
 		}
+		LOG.debug("Saving screenshot for state {}", name);
+		File screenShot = outputBuilder.newScreenShotFile(name);
+		try {
+			session.getBrowser().saveScreenShot(screenShot);
+			outputBuilder.makeThumbNail(screenShot, name);
+		} catch (CrawljaxException e) {
+			LOG.warn("Screenshots are not supported for {}", session.getBrowser());
+		}
+		LOG.trace("Screenshot saved");
 	}
 
 	/**
@@ -134,6 +136,7 @@ public class CrawlOverview
 
 		StateBuilder stateOut = outModelCache.addStateIfAbsent(session.getCurrentState());
 		stateOut.addCandidates(newElements);
+		LOG.trace("preState finished, elements added to state");
 	}
 
 	private WebElement getWebElement(CrawlSession session, CandidateElement element) {
