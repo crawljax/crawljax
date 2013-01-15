@@ -1,10 +1,7 @@
 package com.crawljax.examples;
 
-import org.apache.commons.configuration.ConfigurationException;
-
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.Form;
@@ -12,9 +9,6 @@ import com.crawljax.core.configuration.InputSpecification;
 
 /**
  * Demo class for Crawljax.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
  */
 public final class CrawljaxAdvancedExampleSettings {
 
@@ -71,17 +65,8 @@ public final class CrawljaxAdvancedExampleSettings {
 	 *            the command line arguments
 	 */
 	public static void main(String[] args) {
-		try {
-			CrawljaxController crawljax = new CrawljaxController(getCrawljaxConfiguration());
-			crawljax.run();
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (ConfigurationException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-
+		CrawljaxController crawljax = new CrawljaxController(getCrawljaxConfiguration());
+		crawljax.run();
 	}
 
 }

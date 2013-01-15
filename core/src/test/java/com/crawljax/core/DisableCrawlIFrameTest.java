@@ -1,5 +1,6 @@
 // Copyright 2010 Google Inc. All Rights Reserved.
 package com.crawljax.core;
+
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.junit.Assert.assertThat;
