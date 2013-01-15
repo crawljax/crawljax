@@ -6,7 +6,7 @@ package com.crawljax.crawltests;
 public class SimpleSiteCrawl extends SampleCrawler {
 
 	public static final int NUMBER_OF_STATES = 4;
-	public static final int NUMBER_OF_EDGES = 3;
+	public static final int NUMBER_OF_EDGES = 5;
 
 	public SimpleSiteCrawl() {
 		super("simple-site");

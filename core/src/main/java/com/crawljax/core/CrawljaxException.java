@@ -1,29 +1,17 @@
-/**
- * Created Jun 27, 2008
- */
 package com.crawljax.core;
 
-import java.util.Properties;
-
 /**
- * @author mesbah
- * @version $Id$
+ * General exception for Crawljax.
  */
-public class CrawljaxException extends Exception {
+public class CrawljaxException extends RuntimeException {
 
 	private static final long serialVersionUID = 8597985648361590779L;
-	private static final Properties SYSTEM_PROPERTIES = System.getProperties();
-	static {
-		SYSTEM_PROPERTIES.remove("java.class.path");
-	}
-	private static final String SYSTEMINFO = "\nAdditional system information:\n"
-	        + SYSTEM_PROPERTIES;
 
 	/**
 	 * Constructs a <code>ContractorException</code> with null as its detail message.
 	 */
 	public CrawljaxException() {
-		super(SYSTEMINFO);
+		super();
 	}
 
 	/**
@@ -33,7 +21,7 @@ public class CrawljaxException extends Exception {
 	 *            the detail message.
 	 */
 	public CrawljaxException(final String message) {
-		super(message + SYSTEMINFO);
+		super(message);
 	}
 
 	/**
@@ -46,7 +34,7 @@ public class CrawljaxException extends Exception {
 	 *            or unknown).
 	 */
 	public CrawljaxException(final String message, final Throwable cause) {
-		super(message + SYSTEMINFO, cause);
+		super(message, cause);
 	}
 
 	/**
@@ -59,6 +47,6 @@ public class CrawljaxException extends Exception {
 	 *            or unknown).
 	 */
 	public CrawljaxException(final Throwable cause) {
-		super(SYSTEMINFO, cause);
+		super(cause);
 	}
 }

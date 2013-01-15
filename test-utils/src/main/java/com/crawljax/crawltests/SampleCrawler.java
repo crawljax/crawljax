@@ -1,13 +1,17 @@
 package com.crawljax.crawltests;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jetty.util.resource.Resource;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.google.common.base.Strings;
 
 /**
  * Base class for Crawler examples.
@@ -21,9 +25,37 @@ public abstract class SampleCrawler {
 	private CrawlSpecification crawlSpec;
 	private String siteExtension;
 
+	/**
+	 * @param siteExtension
+	 *            Assumes the sites are in <code>resources/sites</code>.
+	 */
 	protected SampleCrawler(String siteExtension) {
 		this.siteExtension = siteExtension;
-		this.webServer = new WebServer(Resource.newClassPathResource("/sites"));
+		URL sampleSites = SampleCrawler.class.getResource("/sites");
+		try {
+			this.webServer = new WebServer(Resource.newResource(sampleSites));
+		} catch (IOException e) {
+			throw new CrawljaxException("Could not load resource", e);
+		}
+	}
+
+	/**
+	 * @param webfolder
+	 *            The folder the web site is stored in.
+	 * @param siteExtension
+	 *            The extention of the site. Leave blank or <code>null</code> for no extention.
+	 */
+	protected SampleCrawler(Resource webfolder, String siteExtension) {
+		this.siteExtension = Strings.nullToEmpty(siteExtension);
+		this.webServer = new WebServer(webfolder);
+	}
+
+	/**
+	 * @param webfolder
+	 *            The folder the web site is stored in.
+	 */
+	protected SampleCrawler(Resource webfolder) {
+		this(webfolder, "");
 	}
 
 	public WebServer getWebServer() {
@@ -44,14 +76,37 @@ public abstract class SampleCrawler {
 	 */
 	public void setup() throws Exception {
 		webServer.start();
-		crawlSpec = new CrawlSpecification(getUrl());
-		crawlSpec.clickDefaultElements();
-		config = new CrawljaxConfiguration();
+		crawlSpec = newCrawlSpecification();
+		config = newCrawlConfiguartion();
 		config.setCrawlSpecification(crawlSpec);
 		hasSetup.set(true);
 	}
 
-	private String getUrl() {
+	/**
+	 * Override this method to specify a different configuration.
+	 * 
+	 * @return a new {@link CrawljaxConfiguration} to crawl with.
+	 */
+	protected CrawljaxConfiguration newCrawlConfiguartion() {
+		return new CrawljaxConfiguration();
+	}
+
+	/**
+	 * Override this method if you want to customize the {@link CrawlSpecification}. The default is
+	 * setup with infinite crawl depth and {@link CrawlSpecification#clickDefaultElements()}.
+	 * <p>
+	 * You can get the {@link URL} you need for the Crawlspec constructor using {@link #getUrl()}.
+	 * 
+	 * @return The {@link CrawlSpecification} the crawl should run with.
+	 */
+	protected CrawlSpecification newCrawlSpecification() {
+		CrawlSpecification crawlSpecification = new CrawlSpecification(getUrl());
+		crawlSpecification.setDepth(0);
+		crawlSpecification.clickDefaultElements();
+		return crawlSpecification;
+	}
+
+	protected final String getUrl() {
 		return webServer.getSiteUrl().toExternalForm() + siteExtension;
 	}
 
