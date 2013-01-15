@@ -13,6 +13,7 @@ import com.crawljax.crawltests.HiddenElementsSiteCrawl;
 import com.crawljax.crawltests.SimpleInputSiteCrawl;
 import com.crawljax.crawltests.SimpleJsSiteCrawl;
 import com.crawljax.crawltests.SimpleSiteCrawl;
+import com.crawljax.crawltests.SimpleXpathCrawl;
 
 public class SampleCrawlersTest {
 
@@ -35,7 +36,6 @@ public class SampleCrawlersTest {
 
 	@Test
 	public void testInputCrawler() throws Exception {
-		// new SimpleInputSiteCrawl().showWebSite();
 		CrawlSession crawl = new SimpleInputSiteCrawl().crawl();
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
 		assertThat(stateFlowGraph, hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));
@@ -52,5 +52,18 @@ public class SampleCrawlersTest {
 		CrawlSession crawl = new HiddenElementsSiteCrawl().crawl();
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
 		assertThat(stateFlowGraph, hasStates(HiddenElementsSiteCrawl.NUMBER_OF_STATES));
+	}
+
+	/**
+	 * Shows <a href='https://github.com/crawljax/crawljax/issues/96'>Issue 97</a>
+	 */
+	@Test
+	@Ignore("Test that shows Issue #96")
+	public void testSimpleXPathCrawl() throws Exception {
+		// new SimpleXpathCrawl().showWebSite();
+		CrawlSession crawl = new SimpleXpathCrawl().crawl();
+		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
+		assertThat(stateFlowGraph, hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));
+		assertThat(stateFlowGraph, hasEdges(SimpleInputSiteCrawl.NUMBER_OF_EDGES));
 	}
 }
