@@ -97,4 +97,8 @@ public class ProxyConfiguration {
 		return type;
 	}
 
+	@Override
+	public String toString() {
+		return type.toString() + ':' + hostname + ':' + port;
+	}
 }
