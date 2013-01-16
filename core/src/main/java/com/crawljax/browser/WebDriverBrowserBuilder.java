@@ -69,12 +69,16 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			case chrome:
-				// Guifre Ruiz: Added proxy config support for Chrome
-				ChromeOptions optionsChrome = new ChromeOptions();
-				optionsChrome.addArguments("--proxy-server=http://"
-				        + configuration.getProxyConfiguration().getHostname() + ":"
-				        + configuration.getProxyConfiguration().getPort());
-				ChromeDriver driverChrome = new ChromeDriver(optionsChrome);
+				ChromeDriver driverChrome;
+				if (configuration.getProxyConfiguration() != null) {
+					ChromeOptions optionsChrome = new ChromeOptions();
+					optionsChrome.addArguments("--proxy-server=http://"
+					        + configuration.getProxyConfiguration().getHostname() + ":"
+					        + configuration.getProxyConfiguration().getPort());
+					driverChrome = new ChromeDriver(optionsChrome);
+				} else {
+					driverChrome = new ChromeDriver();
+				}
 
 				return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, configuration
 				        .getFilterAttributeNames(), configuration.getCrawlSpecificationReader()
@@ -90,8 +94,10 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 			case htmlunit:
 				HtmlUnitDriver driverHtmlUnit = new HtmlUnitDriver(BrowserVersion.FIREFOX_10);
 				driverHtmlUnit.setJavascriptEnabled(true);
-				// driverHtmlUnit.setProxy(configuration.getProxyConfiguration().getHostname(),
-				// configuration.getProxyConfiguration().getPort());
+				if (configuration.getProxyConfiguration() != null) {
+					driverHtmlUnit.setProxy(configuration.getProxyConfiguration().getHostname(),
+					        configuration.getProxyConfiguration().getPort());
+				}
 
 				return WebDriverBackedEmbeddedBrowser.withDriver(driverHtmlUnit, configuration
 				        .getFilterAttributeNames(), configuration.getCrawlSpecificationReader()
