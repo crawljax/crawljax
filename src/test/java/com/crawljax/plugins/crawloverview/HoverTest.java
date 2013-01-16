@@ -77,9 +77,10 @@ public class HoverTest {
 		State state = result.getStates().get("index");
 		assertThat(state, is(notNullValue()));
 		List<CandidateElementPosition> candidates = state.getCandidateElements();
-		assertThat(candidates, hasSize(2));
-		assertThat(candidates, hasItem(element(new Point(8, 118), new Dimension(52, 16))));
-		assertThat(candidates, hasItem(element(new Point(64, 118), new Dimension(51, 16))));
+		assertThat("Number of hovers", candidates, hasSize(3));
+		assertThat(candidates, hasItem(element(new Point(48, 118), new Dimension(52, 16))));
+		assertThat(candidates, hasItem(element(new Point(48, 137), new Dimension(51, 16))));
+		assertThat(candidates, hasItem(element(new Point(48, 156), new Dimension(200, 16))));
 	}
 
 	@Test
