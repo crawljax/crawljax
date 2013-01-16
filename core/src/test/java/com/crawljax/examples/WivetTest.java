@@ -8,12 +8,10 @@
  */
 package com.crawljax.examples;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ThreadConfiguration;
@@ -75,13 +73,7 @@ public class WivetTest {
 	 *            none.
 	 */
 	public static void main(String[] args) {
-		try {
-			CrawljaxController crawljax = new CrawljaxController(getConfig());
-			crawljax.run();
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-		} catch (ConfigurationException e) {
-			e.printStackTrace();
-		}
+		CrawljaxController crawljax = new CrawljaxController(getConfig());
+		crawljax.run();
 	}
 }

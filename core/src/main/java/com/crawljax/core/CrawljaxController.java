@@ -66,7 +66,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	 * @throws ConfigurationException
 	 *             if the configuration fails.
 	 */
-	public CrawljaxController(final CrawljaxConfiguration config) throws ConfigurationException {
+	public CrawljaxController(final CrawljaxConfiguration config) throws CrawljaxException {
 		configurationReader = new CrawljaxConfigurationReader(config);
 		CrawlSpecificationReader crawlerReader =
 		        configurationReader.getCrawlSpecificationReader();
@@ -91,7 +91,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	 *             if the configuration fails.
 	 * @NotThreadSafe
 	 */
-	private CrawlerExecutor init() throws ConfigurationException {
+	private CrawlerExecutor init() {
 		LOGGER.info("Starting Crawljax...");
 
 		LOGGER.info("Used plugins:");
@@ -124,7 +124,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	 *             if crawljax configuration fails.
 	 * @NotThreadSafe
 	 */
-	public final void run() throws CrawljaxException, ConfigurationException {
+	public final void run() throws CrawljaxException {
 
 		startCrawl = System.currentTimeMillis();
 

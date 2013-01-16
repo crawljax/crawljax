@@ -45,9 +45,13 @@ public class WebServer {
 		return port;
 	}
 
-	public void stop() throws Exception {
+	public void stop() {
 		checkServerStarted();
-		server.stop();
+		try {
+			server.stop();
+		} catch (Exception e) {
+			throw new RuntimeException("Could not stop the server", e);
+		}
 	}
 
 	private void checkServerStarted() {

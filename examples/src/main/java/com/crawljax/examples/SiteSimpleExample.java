@@ -1,20 +1,14 @@
 package com.crawljax.examples;
 
-import org.apache.commons.configuration.ConfigurationException;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.UrlCondition;
 import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.InputSpecification;
 
 /**
  * Crawls google.com in IE.
- * 
- * @author danny
- * @version @version $Id$
  */
 public final class SiteSimpleExample {
 
@@ -74,15 +68,7 @@ public final class SiteSimpleExample {
 	 *            none.
 	 */
 	public static void main(String[] args) {
-		try {
-			CrawljaxController crawljax = new CrawljaxController(getConfig());
-			crawljax.run();
-		} catch (CrawljaxException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (ConfigurationException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+		CrawljaxController crawljax = new CrawljaxController(getConfig());
+		crawljax.run();
 	}
 }

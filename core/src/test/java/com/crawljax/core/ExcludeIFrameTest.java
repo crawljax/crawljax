@@ -29,7 +29,7 @@ public class ExcludeIFrameTest extends IFrameSuper {
 
 	@Test
 	public void testIFramesNotCrawled() throws ConfigurationException,
-			CrawljaxException {
+	        CrawljaxException {
 		crawljax.run();
 		assertThat(crawljax.getSession().getStateFlowGraph(), hasEdges(3));
 		assertThat(crawljax.getSession().getStateFlowGraph(), hasStates(4));

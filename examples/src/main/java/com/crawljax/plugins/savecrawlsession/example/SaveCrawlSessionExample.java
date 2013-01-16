@@ -1,7 +1,5 @@
 package com.crawljax.plugins.savecrawlsession.example;
 
-import org.apache.commons.configuration.ConfigurationException;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
@@ -36,9 +34,6 @@ public class SaveCrawlSessionExample {
 		try {
 			CrawljaxController controller = new CrawljaxController(config);
 			controller.run();
-		} catch (ConfigurationException e) {
-			e.printStackTrace();
-			System.exit(1);
 		} catch (CrawljaxException e) {
 			e.printStackTrace();
 			System.exit(1);
