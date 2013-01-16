@@ -21,7 +21,6 @@ public class SampleCrawlersTest {
 	public void testSimpleCrawler() throws Exception {
 		CrawlSession crawl = new SimpleSiteCrawl().crawl();
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		System.out.println(stateFlowGraph.getAllStates());
 		assertThat(stateFlowGraph, hasStates(SimpleSiteCrawl.NUMBER_OF_STATES));
 		assertThat(stateFlowGraph, hasEdges(SimpleSiteCrawl.NUMBER_OF_EDGES));
 	}

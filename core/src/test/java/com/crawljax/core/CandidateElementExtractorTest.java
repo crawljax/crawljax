@@ -13,6 +13,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawlSpecification;
@@ -25,6 +27,8 @@ import com.crawljax.test.RunWithWebServer;
 @Category(BrowserTest.class)
 public class CandidateElementExtractorTest {
 
+	private static final Logger LOG = LoggerFactory
+	        .getLogger(CandidateElementExtractorTest.class);
 	private static final StateVertex DUMMY_STATE = new StateVertex("DUMMY", "");
 
 	@ClassRule
@@ -130,7 +134,7 @@ public class CandidateElementExtractorTest {
 		        extractor.extract(includes, new ArrayList<TagElement>(), true, DUMMY_STATE);
 
 		for (CandidateElement e : candidates) {
-			System.out.println("candidate: " + e.getUniqueString());
+			LOG.debug("candidate: " + e.getUniqueString());
 		}
 
 		assertNotNull(candidates);

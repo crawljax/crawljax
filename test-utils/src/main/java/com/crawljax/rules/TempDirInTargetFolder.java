@@ -35,7 +35,7 @@ public class TempDirInTargetFolder extends ExternalResource {
 		} else {
 			SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
 			String suffix = format.format(new Date());
-			tmpDir = new File(target, suffix + '-' + suffix);
+			tmpDir = new File(target, prefix + '-' + suffix);
 		}
 		tmpDir.mkdirs();
 	}
