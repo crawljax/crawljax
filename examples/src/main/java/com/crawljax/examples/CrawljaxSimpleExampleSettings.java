@@ -40,10 +40,11 @@ public final class CrawljaxSimpleExampleSettings {
 
 	private static CrawlSpecification getCrawlSpecification() {
 		CrawlSpecification crawler = new CrawlSpecification(URL);
-
+		crawler.setRandomInputInForms(false);
 		// click these elements
+
 		crawler.click("a");
-		crawler.click("input").withAttribute("type", "submit");
+		crawler.click("button");
 
 		// except these
 		crawler.dontClick("a").underXPath("//DIV[@id='guser']");
@@ -60,7 +61,7 @@ public final class CrawljaxSimpleExampleSettings {
 
 	private static InputSpecification getInputSpecification() {
 		InputSpecification input = new InputSpecification();
-		input.field("q").setValue("Crawljax");
+		input.field("gbqfq").setValue("Crawljax");
 		return input;
 	}
 
