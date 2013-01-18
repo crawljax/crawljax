@@ -16,7 +16,7 @@ import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.State;
 import com.google.common.collect.Lists;
 
-public class StateWriter {
+class StateWriter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StateWriter.class);
 
@@ -45,7 +45,6 @@ public class StateWriter {
 		context.put("fanOut", state.getFanOut());
 		context.put("url", state.getUrl());
 		String dom = outBuilder.getDom(state.getName());
-		// System.out.println(dom);
 		dom = StringEscapeUtils.escapeHtml4(dom);
 		context.put("dom", dom);
 

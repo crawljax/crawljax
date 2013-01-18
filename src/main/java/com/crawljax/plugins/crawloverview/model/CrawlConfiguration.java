@@ -2,12 +2,19 @@ package com.crawljax.plugins.crawloverview.model;
 
 import java.util.List;
 
+import javax.annotation.concurrent.Immutable;
+
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
+/**
+ * {@link Immutable} copy of the {@link CrawljaxConfiguration}.
+ */
+@Immutable
 public class CrawlConfiguration {
 
 	private final BrowserType browser;

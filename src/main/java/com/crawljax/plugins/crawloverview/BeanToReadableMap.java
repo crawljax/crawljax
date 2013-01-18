@@ -6,11 +6,8 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.velocity.app.event.implement.EscapeHtmlReference;
 
-import com.crawljax.core.configuration.CrawlElement;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
@@ -18,7 +15,7 @@ import com.google.common.collect.ImmutableMap.Builder;
  * Parses a Java bean to a map containing the getter name as the key and the field value as the
  * value. All instances of {@link Collection} are converted to html lists.
  */
-public class BeanToReadableMap {
+class BeanToReadableMap {
 
 	public static interface Filter {
 
