@@ -9,42 +9,34 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.ImmutableMap.Builder;
 
 /**
  * Parses a Java bean to a map containing the getter name as the key and the field value as the
  * value. All instances of {@link Collection} are converted to html lists.
+ * <p>
+ * The getter name is parsed from Camel case to a readable format. Both keys and values are HTML
+ * escaped for safety.
+ * </p>
  */
 class BeanToReadableMap {
-
-	public static interface Filter {
-
-		Entry<String, String> filter(String key, String value);
-
-	}
 
 	private static final String CAMEL_REGEX = String.format("%s|%s|%s",
 	        "(?<=[A-Z])(?=[A-Z][a-z])",
 	        "(?<=[^A-Z])(?=[A-Z])",
 	        "(?<=[A-Za-z])(?=[^A-Za-z])");
 
-	private static final Filter[] EMPTY_FILTERS = new Filter[] {};
-
 	public static ImmutableMap<String, String> toMap(Object o) {
-		return toMap(o, EMPTY_FILTERS);
-	}
-
-	public static ImmutableSortedMap<String, String> toMap(Object o, Filter... filters) {
-		ImmutableSortedMap.Builder<String, String> builder = ImmutableSortedMap.naturalOrder();
+		Builder<String, String> builder = ImmutableMap.builder();
 		for (Method method : o.getClass().getMethods()) {
 			if (isGetter(method)) {
-				builder.put(addmethodToMap(o, method, filters));
+				builder.put(addMethodToMap(o, method));
 			}
 		}
 		return builder.build();
 	}
 
-	private static Entry<String, String> addmethodToMap(Object o, Method method, Filter[] filters) {
+	private static Entry<String, String> addMethodToMap(Object o, Method method) {
 		try {
 			Object[] noArgs = null;
 			Object result = method.invoke(o, noArgs);
