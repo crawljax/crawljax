@@ -1,11 +1,14 @@
 package com.crawljax.core.configuration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Collections2;
 
 /**
  * Represents the HTML elements which should be crawled. It represents all the HTML elements in the
@@ -139,24 +142,44 @@ public final class CrawlElement {
 
 	@Override
 	public String toString() {
-		StringBuffer ret = new StringBuffer(getTagName() + ":{");
-		int i = 0;
-		for (CrawlAttribute crawlAttribute : getCrawlAttributes()) {
-			if (i > 0) {
-				ret.append("; ");
-			}
-			i++;
-			ret.append(crawlAttribute.getName());
-			ret.append("=");
-			ret.append(crawlAttribute.getValue());
+		StringBuilder builder = new StringBuilder();
+		builder.append("CrawlElement [");
+		if (tagName != null) {
+			builder.append("tagName=");
+			builder.append(tagName);
+			builder.append(", ");
 		}
-		ret.append("}");
-		if (getId() != null && !getId().equals("")) {
-			ret.append("[");
-			ret.append(getId());
-			ret.append("]");
+		if (crawlAttributes != null && !crawlAttributes.isEmpty()) {
+			builder.append("crawlAttributes=");
+			builder.append(crawlAttributes);
+			builder.append(", ");
 		}
-		return ret.toString();
+		if (conditions != null && !conditions.isEmpty()) {
+			builder.append("conditions=");
+			builder.append(conditions);
+			builder.append(", ");
+		}
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		if (underXpath != null) {
+			builder.append("underXpath=");
+			builder.append(underXpath);
+			builder.append(", ");
+		}
+		if (inputFieldIds != null && !inputFieldIds.isEmpty()) {
+			builder.append("inputFieldIds=");
+			builder.append(inputFieldIds);
+			builder.append(", ");
+		}
+		if (eventType != null) {
+			builder.append("eventType=");
+			builder.append(eventType);
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 
 	/**

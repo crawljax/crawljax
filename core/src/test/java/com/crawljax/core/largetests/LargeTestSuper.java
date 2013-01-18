@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.NotXPathCondition;
@@ -41,6 +43,7 @@ import com.crawljax.oraclecomparator.comparators.StyleComparator;
  */
 public abstract class LargeTestSuper {
 
+	private static final Logger LOG = LoggerFactory.getLogger(LargeTestSuper.class);
 	private static CrawlSession session;
 
 	private static final int CLICKED_CLICK_ME_ELEMENTS = 6;
@@ -387,7 +390,7 @@ public abstract class LargeTestSuper {
 				LargeTestSuper.violatedInvariants.add(invariant);
 				if (session.getCurrentState().getDom().contains(INVARIANT_TEXT)) {
 					violatedInvariantStateIsCorrect = true;
-					System.out.println("Invariant violated: " + invariant.getDescription());
+					LOG.warn("Invariant violated: " + invariant.getDescription());
 				}
 			}
 		});
