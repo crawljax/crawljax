@@ -1,71 +1,77 @@
-#set ( $page = "statistics") 
-#set( $baseUrl = ".") 
-#parse( "header.html" )
+#set ( $page = "statistics") #set( $baseUrl = ".") #parse( "header.html"
+)
 </head>
 <body>
 	#parse ( "nav.html" )
 	<div class="container">
-		<h1>Statistics</h1>
+		<section id='crawlResults'>
+			<div class="page-header">
+				<h1>Crawl results</h1>
+			</div>
+			<table class="table table-bordered table-striped">
+				<tbody>
+					<tr>
+						<td>Crawl time</td>
+						<td>${stats.duration}</td>
+					</tr>
+					<tr>
+						<td>Number of states</td>
+						<td>${stats.stateStats.totalNumberOfStates}</td>
+					</tr>
+					<tr>
+						<td><a href="urls.html">URL's visited</a></td>
+						<td>${stats.stateStats.urls.size()}</td>
+					</tr>
+					<tr>
+						<td>Number of edges</td>
+						<td>${stats.edges}</td>
+					</tr>
+					<tr>
+						<td>Number of crawl paths</td>
+						<td>${stats.crawlPaths}</td>
+					</tr>
+					<tr>
+						<td>Average DOM length</td>
+						<td>${stats.averageDomSize}</td>
+					</tr>
 
-		<table class="table table-bordered table-striped">
-			<tbody>
-				<tr>
-					<td>Crawl time</td>
-					<td>${stats.duration}</td>
-				</tr>
-				<tr>
-					<td>Number of states</td>
-					<td>${stats.stateStats.totalNumberOfStates}</td>
-				</tr>
-				<tr>
-					<td><a href="urls.html">URL's visited</a></td>
-					<td>${stats.stateStats.urls.size()}</td>
-				</tr>
-				<tr>
-					<td>Number of edges</td>
-					<td>${stats.edges}</td>
-				</tr>
-				<tr>
-					<td>Number of crawl paths</td>
-					<td>${stats.crawlPaths}</td>
-				</tr>
-				<tr>
-					<td>Average DOM length</td>
-					<td>${stats.averageDomSize}</td>
-				</tr>
+				</tbody>
+			</table>
+		</section>
 
-			</tbody>
-		</table>
-
-		<h2>Highs and lows</h2>
-		<table class="table table-bordered table-striped">
-			<tbody>
-				<tr>
-					<td>Highest fan-out</td>
-					#set ( $state = $stats.stateStats.mostFanOut)
-					<td><a href="states/${state.name}.html">${state.name}</a></td>
-					<td>${state.getFanOut()}</td>
-				</tr>
-				<tr>
-					<td>Lowest fan-out</td>
-					#set ( $state = $stats.stateStats.mostFanIn)
-					<td><a href="states/${state.name}.html">${state.name}</a></td>
-					<td>${state.getFanOut()}</td>
-				</tr>
-				<tr>
-					<td>Highest fan-in</td>
-					#set ( $state = $stats.stateStats.mostFanIn)
-					<td><a href="states/${state.name}.html">${state.name}</a></td>
-					<td>${state.getFanIn()}</td>
-				</tr>
-				<tr>
-					<td>Lowest fan-in</td>
-					#set ( $state = $stats.stateStats.leastFanIn)
-					<td><a href="states/${state.name}.html">${state.name}</a></td>
-					<td>${state.getFanIn()}</td>
-				</tr>
-			</tbody>
-		</table>
+		<section id='crawlResults'>
+			<div class="page-header">
+				<h1>Highs and lows</h1>
+			</div>
+			<table class="table table-bordered table-striped">
+				<tbody>
+					<tr>
+						<td>Highest fan-out</td> #set ( $state =
+						$stats.stateStats.mostFanOut)
+						<td><a href="states/${state.name}.html">${state.name}</a></td>
+						<td>${state.getFanOut()}</td>
+					</tr>
+					<tr>
+						<td>Lowest fan-out</td> #set ( $state =
+						$stats.stateStats.mostFanIn)
+						<td><a href="states/${state.name}.html">${state.name}</a></td>
+						<td>${state.getFanOut()}</td>
+					</tr>
+					<tr>
+						<td>Highest fan-in</td> #set ( $state =
+						$stats.stateStats.mostFanIn)
+						<td><a href="states/${state.name}.html">${state.name}</a></td>
+						<td>${state.getFanIn()}</td>
+					</tr>
+					<tr>
+						<td>Lowest fan-in</td> #set ( $state =
+						$stats.stateStats.leastFanIn)
+						<td><a href="states/${state.name}.html">${state.name}</a></td>
+						<td>${state.getFanIn()}</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
 	</div>
 	<script src="js/bootstrap.min.js"></script>
 </body>

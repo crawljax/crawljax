@@ -1,0 +1,54 @@
+#set ( $page = "config") #set( $baseUrl = ".") #parse( "header.html" )
+</head>
+<body>
+	#parse ( "nav.html" )
+	<div class="container">
+
+		<section id='crawlConfig'>
+			<div class="page-header">
+				<h1>Crawl configuration</h1>
+			</div>
+			<table class="table table-bordered table-striped">
+				<tbody>
+					#foreach ($mapEntry in $config.entrySet())
+					<tr>
+						<td>${mapEntry.key}</td>
+						#if( ! $mapEntry.value )
+						<td><p class="muted">undefined</p></td>
+						#else
+						<td>${mapEntry.value}</td>
+						#end
+					</tr>
+					#end
+				</tbody>
+			</table>
+		</section>
+
+		<section id="crawlSpec">
+			<div class="page-header">
+				<h1>Crawl Specification</h1>
+			</div>
+			<table class="table table-bordered table-striped">
+				<tbody>
+					#foreach ($mapEntry in $spec.entrySet())
+					<tr>
+						<td>${mapEntry.key}</td>
+						#if( "$!mapEntry.value" == "" )
+						<td class="muted">undefined</td>
+						#else
+						<td>${mapEntry.value}</td>
+						#end
+					</tr>
+					#end
+				</tbody>
+			</table>
+		</section>
+
+
+	</div>
+	<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+

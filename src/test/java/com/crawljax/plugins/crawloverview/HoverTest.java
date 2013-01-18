@@ -1,5 +1,6 @@
 package com.crawljax.plugins.crawloverview;
 
+import static com.crawljax.plugins.crawloverview.CandidateElementMatcher.element;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
@@ -15,8 +16,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.eclipse.jetty.util.resource.Resource;
-import org.hamcrest.CustomMatcher;
-import org.hamcrest.Factory;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -33,35 +32,6 @@ import com.crawljax.plugins.crawloverview.model.State;
 import com.crawljax.rules.TempDirInTargetFolder;
 
 public class HoverTest {
-
-	private static class ElementMatcher extends CustomMatcher<CandidateElementPosition> {
-
-		private CandidateElementPosition actual;
-
-		public ElementMatcher(CandidateElementPosition actual) {
-			super("A " + CandidateElementPosition.class.getName() + " with coordinates");
-			this.actual = actual;
-		}
-
-		@Override
-		public boolean matches(Object item) {
-			if (item instanceof CandidateElementPosition) {
-				CandidateElementPosition element = (CandidateElementPosition) item;
-				return element.getLeft() == actual.getLeft()
-				        && element.getTop() == actual.getTop()
-				        && element.getWidth() == actual.getWidth()
-				        && element.getHeight() == actual.getHeight();
-			} else {
-				return false;
-			}
-		}
-
-	}
-
-	@Factory
-	public static ElementMatcher element(Point point, Dimension size) {
-		return new ElementMatcher(new CandidateElementPosition(null, point, size));
-	}
 
 	private static final int MIN_HEIGHT = 500;
 

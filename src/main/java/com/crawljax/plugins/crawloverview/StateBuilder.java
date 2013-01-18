@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 
-public class StateBuilder {
+class StateBuilder {
 
 	private final BlockingQueue<CandidateElementPosition> candidates = Queues
 	        .newLinkedBlockingQueue();
