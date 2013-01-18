@@ -37,7 +37,6 @@ public class BaseCrawler {
 		this.siteExtension = siteExtension;
 		URL sampleSites = BaseCrawler.class.getResource("/sites");
 		LOG.debug("Loading web server with from folder {}", sampleSites.toExternalForm());
-		System.out.println(sampleSites.toExternalForm());
 		try {
 			this.webServer = new WebServer(Resource.newResource(sampleSites));
 		} catch (IOException e) {

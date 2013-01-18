@@ -206,7 +206,7 @@ public class StateMachine {
 	 */
 	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
 		if (invariantChecker.getInvariants() != null
-		        && invariantChecker.getInvariants().size() > 0
+		        && !invariantChecker.getInvariants().isEmpty()
 		        && !invariantChecker.check(browser)) {
 			for (Invariant failedInvariant : invariantChecker.getFailedInvariants()) {
 				CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);

@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -24,6 +26,8 @@ import com.crawljax.util.Helper;
 
 public class EventableTest {
 
+	private static final Logger LOG = LoggerFactory.getLogger(EventableTest.class);
+	
 	@Test
 	public void testHashCode() {
 		String xpath = "/body/div[3]";
@@ -97,7 +101,6 @@ public class EventableTest {
 		 * String infoexpected = "DIV: id=firstdiv, xpath /HTML[1]/BODY[1]/DIV[1] onclick";
 		 */
 		String infoexpected = "DIV: id=\"firstdiv\" click xpath " + "/HTML[1]/BODY[1]/DIV[1]";
-		System.out.println(clickable);
 		assertEquals(infoexpected, clickable.toString());
 	}
 

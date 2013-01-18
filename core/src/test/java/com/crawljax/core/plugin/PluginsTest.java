@@ -14,6 +14,8 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.NotRegexCondition;
@@ -38,6 +40,7 @@ import com.google.common.collect.Maps;
 @Category(BrowserTest.class)
 public class PluginsTest {
 
+	private static final Logger LOG = LoggerFactory.getLogger(PluginsTest.class);
 	private static CrawljaxController controller;
 	private static CrawljaxConfiguration config;
 
@@ -52,7 +55,7 @@ public class PluginsTest {
 	private static void registerPlugin(Class<? extends Plugin> p) {
 
 		if (pluginTimes.get(p) == null) {
-			System.out.println("Register: " + p);
+			LOG.debug("Register: " + p);
 			pluginTimes.put(p, System.currentTimeMillis());
 		}
 	}

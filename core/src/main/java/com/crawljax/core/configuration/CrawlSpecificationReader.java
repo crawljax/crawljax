@@ -1,17 +1,13 @@
 package com.crawljax.core.configuration;
 
-import java.util.List;
-
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.oraclecomparator.OracleComparator;
+import com.google.common.collect.ImmutableList;
 
 /**
- * Reader class for crawlspecification. For internal use only
- * 
- * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
+ * Reader class for crawlspecification.
  */
 public class CrawlSpecificationReader implements IgnoreFrameChecker {
 
@@ -43,29 +39,29 @@ public class CrawlSpecificationReader implements IgnoreFrameChecker {
 	/**
 	 * @return the oracleComparators
 	 */
-	public List<OracleComparator> getOracleComparators() {
-		return crawlSpecification.getOracleComparators();
+	public ImmutableList<OracleComparator> getOracleComparators() {
+		return ImmutableList.copyOf(crawlSpecification.getOracleComparators());
 	}
 
 	/**
 	 * @return the invariants
 	 */
-	public List<Invariant> getInvariants() {
-		return crawlSpecification.getInvariants();
+	public ImmutableList<Invariant> getInvariants() {
+		return ImmutableList.copyOf(crawlSpecification.getInvariants());
 	}
 
 	/**
 	 * @return the waitConditions
 	 */
-	public List<WaitCondition> getWaitConditions() {
-		return crawlSpecification.getWaitConditions();
+	public ImmutableList<WaitCondition> getWaitConditions() {
+		return ImmutableList.copyOf(crawlSpecification.getWaitConditions());
 	}
 
 	/**
 	 * @return the crawlConditions
 	 */
-	public List<CrawlCondition> getCrawlConditions() {
-		return crawlSpecification.getCrawlConditions();
+	public ImmutableList<CrawlCondition> getCrawlConditions() {
+		return ImmutableList.copyOf(crawlSpecification.getCrawlConditions());
 	}
 
 	/**

@@ -3,6 +3,9 @@ package com.crawljax.util;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.html.HTMLElement;
@@ -14,38 +17,8 @@ import org.w3c.dom.html.HTMLElement;
  */
 public final class AttributeInjector {
 
-	private AttributeInjector() {
+	private static final Logger LOG = LoggerFactory.getLogger(AttributeInjector.class);
 
-	}
-
-	/**
-	 * Inject a unique attribute into element.
-	 * 
-	 * @param element
-	 * @param isActive
-	 */
-	/*
-	 * public static HTMLElement injectUniqueAttributeInNode(
-	 * com.jniwrapper.win32.ie.dom.HTMLElement element, String attrName, String value, boolean
-	 * injectParents) { if (element == null) return null; element.setAttribute(attrName, value); if
-	 * (injectParents) return injectUniqueAttributeInNode(element.getOffsetParent(), attrName,
-	 * value, injectParents); return element; }
-	 */
-
-	/*
-	 * public static HTMLElement injectUniqueAttributeInNode(watij.elements.HtmlElement element,
-	 * String attrName, String value, boolean injectParents) { if (element == null) return null; try
-	 * { // use reflection to get the 'real' DOM element HTMLElement realElement =
-	 * getInternalBrowserElement(element); return injectUniqueAttributeInNode(realElement, attrName,
-	 * value, injectParents); } catch (Exception e) { e.printStackTrace(); } return null; }
-	 */
-
-	/*
-	 * public static HTMLElement getInternalBrowserElement(watij.elements.HtmlElement element)
-	 * throws Exception { IEHtmlElement ieHtml = (IEHtmlElement) element; Method ieMethod =
-	 * ieHtml.getClass().getDeclaredMethod("htmlElement"); ieMethod.setAccessible(true); HTMLElement
-	 * HTMLe = (HTMLElement) ieMethod.invoke(ieHtml); return HTMLe; }
-	 */
 	/**
 	 * Find the corresponding 'real' DOM element in the browser for element and inject the unique
 	 * attribute.
@@ -70,13 +43,6 @@ public final class AttributeInjector {
 		element.setAttribute("src", srcAttrValue);
 		return element;
 	}
-
-	/*
-	 * public static HTMLElement append(watij.elements.HtmlElement element, String attrName, String
-	 * value) { try { HTMLElement realElement = getInternalBrowserElement(element); return
-	 * append(realElement, attrName, value); } catch (Exception e) { e.printStackTrace(); } return
-	 * null; }
-	 */
 
 	/**
 	 * Return true iff the node contains the injected attribute.
@@ -140,18 +106,12 @@ public final class AttributeInjector {
 	public static void removeInjectedAttributes(HTMLElement element, String attrName) {
 		try {
 			element.removeAttribute(attrName);
-			// check if the attr was appended to the src value
-			// String srcAttrValue = element.getAttribute("src");
-			//
-			// if(srcAttrValue.matches(".*" + attrName + "=.*"))
-			// {
-			// int index = srcAttrValue.indexOf(attrName);
-			// srcAttrValue = srcAttrValue.substring(0, index-1);
-			// element.setAttribute("src", srcAttrValue);
-			// }
-
-		} catch (Exception exc) {
-			System.out.println("Element was removed from DOM");
+		} catch (DOMException exc) {
+			LOG.warn("Element {} was removed from DOM", element.getId());
 		}
 	}
+
+	private AttributeInjector() {
+	}
+
 }
