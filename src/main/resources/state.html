@@ -43,7 +43,8 @@
 		<div style="position: relative;" id='screenshotContainer'>			
 			<img style='max-width: none;' border='0' src='../screenshots/${screenshot}' /> 
 			#foreach( $element in $elements )
-			<div style="position: absolute; z-index: ${element.zindex}; left: ${element.left}px; top: ${element.top}px; width: ${element.width}px; height: ${element.height}px; border: 2px solid ${element.color}; #if(${element.targetname} != "") cursor: pointer;" onclick="location.href='${element.targetname}.html'"#else " #end></div>
+			<div rel="tooltip" data-original-title="${element.xpath}" class='hovers'
+				style="position: absolute; z-index: ${element.zindex}; left: ${element.left}px; top: ${element.top}px; width: ${element.width}px; height: ${element.height}px; border: 2px solid ${element.color}; #if(${element.targetname} != "") cursor: pointer;" onclick="location.href='${element.targetname}.html'"#else " #end></div>
 			#end				
 		</div>
 		<div id='domContainer' style="display: none;">
@@ -54,6 +55,7 @@
 	<script type="text/javascript" src="../js/shCore.js"></script>
 	<script type="text/javascript" src="../js/shBrushXml.js"></script>
 	<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 	<script type="text/javascript">
     	SyntaxHighlighter.all()
     	$(document).ready(function() {
@@ -78,6 +80,8 @@
 			e.preventDefault();
 			});
 		});
+    	
+    	$('.hovers').tooltip();
 	</script>
 </body>
 </html>

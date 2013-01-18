@@ -27,7 +27,7 @@ public class SimpleSiteCrawlTest {
 
 	@ClassRule
 	public static final TempDirInTargetFolder tmpFolder = new TempDirInTargetFolder(
-	        "simepl-crawl", false);
+	        "simple-crawl", true);
 
 	private static File outFolder;
 

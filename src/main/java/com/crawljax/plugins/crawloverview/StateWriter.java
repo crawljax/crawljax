@@ -64,7 +64,7 @@ public class StateWriter {
 			Eventable eventable = getEventableByCandidateElementInState(state, element);
 			StateVertex toState = null;
 			Map<String, String> elementMap = new HashMap<String, String>();
-
+			elementMap.put("xpath", element.getXpath());
 			elementMap
 			        .put("left", "" + (element.getLeft() - 3 + state.getScreenshotOffsetLeft()));
 			elementMap.put("top", "" + (element.getTop() - 3 + state.getScreenshotOffsetTop()));
