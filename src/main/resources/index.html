@@ -1,0 +1,30 @@
+#set( $page = "graph")
+#set( $baseUrl = ".")
+#parse( "header.html" )
+</head>
+<body>
+	#parse( "nav.html")
+	<div class="container" id="graphContainer" style="width: 100%;"></div>
+	<script src="js/jquery-1.8.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/vivagraph.min.js"></script>
+	<script src="js/graphbuilder.js"></script>
+	<script>
+		var outputModel = ${outputModel};
+		$(document).ready(function(){
+			$.each(outputModel.states, function() {
+				graph.addNode(this.name, {
+					img : 'screenshots/'+ this.name + '_small.jpg', 
+					url : "states/" + this.name + ".html"});
+			});
+	
+			$.each(outputModel.edges, function(){
+				graph.addLink(this.from, this.to);
+			});
+		});
+	</script>
+</body>
+</html>
+
+
+
