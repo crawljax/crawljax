@@ -22,6 +22,7 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.oraclecomparator.StateComparator;
+import com.google.common.collect.ImmutableList;
 
 /**
  * The Crawljax Controller class is the core of Crawljax.
@@ -49,7 +50,7 @@ public class CrawljaxController implements CrawlQueueManager {
 
 	private final CrawljaxConfigurationReader configurationReader;
 
-	private final List<Invariant> invariantList;
+	private final ImmutableList<Invariant> invariantList;
 
 	/**
 	 * Central thread starting engine.
@@ -102,13 +103,13 @@ public class CrawljaxController implements CrawlQueueManager {
 			        .runProxyServerPlugins(configurationReader.getProxyConfiguration());
 		}
 
-		LOGGER.info("Embedded browser implementation: " + configurationReader.getBrowser());
+		LOGGER.info("Embedded browser implementation: {}", configurationReader.getBrowser());
 
-		LOGGER.info("Number of threads: "
-		        + configurationReader.getThreadConfigurationReader().getNumberThreads());
+		LOGGER.info("Number of threads: {}", configurationReader.getThreadConfigurationReader()
+		        .getNumberThreads());
 
-		LOGGER.info("Crawl depth: "
-		        + configurationReader.getCrawlSpecificationReader().getDepth());
+		LOGGER.info("Crawl depth: {}", configurationReader.getCrawlSpecificationReader()
+		        .getDepth());
 		LOGGER.info("Crawljax initialized!");
 
 		return new CrawlerExecutor(configurationReader.getThreadConfigurationReader()
@@ -128,8 +129,8 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		startCrawl = System.currentTimeMillis();
 
-		LOGGER.info("Start crawling with "
-		        + configurationReader.getAllIncludedCrawlElements().size() + " crawl elements");
+		LOGGER.info("Start crawling with {} crawl elements", configurationReader
+		        .getAllIncludedCrawlElements().size());
 
 		// Create the initailCrawler
 		initialCrawler = new InitialCrawler(this);
@@ -354,7 +355,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	/**
 	 * @return the invariantList
 	 */
-	public final List<Invariant> getInvariantList() {
+	public final ImmutableList<Invariant> getInvariantList() {
 		return invariantList;
 	}
 
