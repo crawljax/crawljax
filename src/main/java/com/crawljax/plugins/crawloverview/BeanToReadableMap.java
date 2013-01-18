@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
+import com.google.common.collect.ImmutableSortedMap;
 
 /**
  * Parses a Java bean to a map containing the getter name as the key and the field value as the
@@ -34,8 +34,8 @@ class BeanToReadableMap {
 		return toMap(o, EMPTY_FILTERS);
 	}
 
-	public static ImmutableMap<String, String> toMap(Object o, Filter... filters) {
-		Builder<String, String> builder = ImmutableMap.builder();
+	public static ImmutableSortedMap<String, String> toMap(Object o, Filter... filters) {
+		ImmutableSortedMap.Builder<String, String> builder = ImmutableSortedMap.naturalOrder();
 		for (Method method : o.getClass().getMethods()) {
 			if (isGetter(method)) {
 				builder.put(addmethodToMap(o, method, filters));
