@@ -44,7 +44,8 @@
 			<div class="tab-pane active" style="position: relative;" id='screenshot'>			
 				<img style='max-width: none;' border='0' src='../screenshots/${screenshot}' /> 
 				#foreach( $element in $elements )
-				<div style="position: absolute; z-index: ${element.zindex}; left: ${element.left}px; top: ${element.top}px; width: ${element.width}px; height: ${element.height}px; border: 2px solid ${element.color}; #if(${element.targetname} != "") cursor: pointer;" onclick="location.href='${element.targetname}.html'"#else " #end></div>
+				<div rel="tooltip" data-original-title="${element.xpath}" class='hovers'
+				style="position: absolute; z-index: ${element.zindex}; left: ${element.left}px; top: ${element.top}px; width: ${element.width}px; height: ${element.height}px; border: 2px solid ${element.color}; #if(${element.targetname} != "") cursor: pointer;" onclick="location.href='${element.targetname}.html'"#else " #end></div>
 				#end				
 			</div>
 			<div class="tab-pane" id='dom'>
@@ -66,6 +67,8 @@
 		  		$(this).tab('show');
 			})
 		});
+    	
+    	$('.hovers').tooltip();
 	</script>
 </body>
 </html>
