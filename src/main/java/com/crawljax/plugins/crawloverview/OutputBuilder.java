@@ -22,6 +22,8 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.core.configuration.CrawlSpecificationReader;
+import com.crawljax.plugins.crawloverview.model.CrawlConfiguration;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.google.common.base.Charsets;
@@ -113,11 +115,21 @@ class OutputBuilder {
 		try {
 			writeIndexFile(outModel);
 			writeStatistics(outModel.getStatistics());
+			writeConfig(outModel.getConfiguration(), outModel.getCrawlSpecification());
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
 
 		LOG.info("Overview report generated");
+	}
+
+	private void writeConfig(CrawlConfiguration configuration,
+	        CrawlSpecificationReader crawlSpec) {
+		File file = new File(outputDir, "config.html");
+		VelocityContext context = new VelocityContext();
+		context.put("config", BeanToReadableMap.toMap(configuration));
+		context.put("spec", BeanToReadableMap.toMap(crawlSpec));
+		writeFile(context, file, "config.html");
 	}
 
 	private void writeIndexFile(OutPutModel model) {
@@ -138,11 +150,13 @@ class OutputBuilder {
 	}
 
 	private void writeStatistics(Statistics stats) {
+		LOG.debug("Writing statistics report");
 		File file = new File(outputDir, "statistics.html");
 		VelocityContext context = new VelocityContext();
 		context.put("stats", stats);
 		writeFile(context, file, "statistics.html");
 
+		LOG.debug("Writing urls report");
 		file = new File(outputDir, "urls.html");
 		context = new VelocityContext();
 		context.put("urls", stats.getStateStats().getUrls());

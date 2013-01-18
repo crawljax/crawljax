@@ -2,6 +2,7 @@ package com.crawljax.plugins.crawloverview.model;
 
 import javax.annotation.concurrent.Immutable;
 
+import com.crawljax.core.configuration.CrawlSpecificationReader;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,12 +22,16 @@ public final class OutPutModel {
 	private final ImmutableMap<String, State> states;
 	private final ImmutableSet<Edge> edges;
 	private final Statistics statistics;
+	private final CrawlConfiguration configuration;
+	private final CrawlSpecificationReader crawlSpecification;
 
 	public OutPutModel(ImmutableMap<String, State> states, ImmutableSet<Edge> edges,
-	        Statistics statistics) {
+	        Statistics statistics, CrawlConfiguration config, CrawlSpecificationReader spec) {
 		this.states = states;
 		this.edges = edges;
 		this.statistics = statistics;
+		configuration = config;
+		this.crawlSpecification = spec;
 	}
 
 	public String toJson() {
@@ -49,5 +54,13 @@ public final class OutPutModel {
 
 	public Statistics getStatistics() {
 		return statistics;
+	}
+
+	public CrawlConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public CrawlSpecificationReader getCrawlSpecification() {
+		return crawlSpecification;
 	}
 }

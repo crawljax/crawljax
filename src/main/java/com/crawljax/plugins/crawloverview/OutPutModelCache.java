@@ -13,6 +13,7 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
+import com.crawljax.plugins.crawloverview.model.CrawlConfiguration;
 import com.crawljax.plugins.crawloverview.model.Edge;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
@@ -53,7 +54,10 @@ class OutPutModelCache {
 		checkEdgesAndCountFans(edgesCopy);
 		ImmutableMap<String, State> statesCopy = buildStates();
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
-		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session, stateStats));
+		return new OutPutModel(statesCopy, edgesCopy,
+		        new Statistics(session, stateStats),
+		        new CrawlConfiguration(session),
+		        session.getCrawljaxConfiguration().getCrawlSpecificationReader());
 	}
 
 	private void checkEdgesAndCountFans(ImmutableSet<Edge> edges) {

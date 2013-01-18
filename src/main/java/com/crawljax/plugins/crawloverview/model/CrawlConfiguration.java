@@ -12,15 +12,20 @@ public class CrawlConfiguration {
 
 	private final BrowserType browser;
 	private final ImmutableList<String> crawlElements;
-	private final ImmutableList<List<String>> filteredAttributes;
+	private final ImmutableList<String> filteredAttributes;
 	private final String proxyConfig;
 
 	public CrawlConfiguration(CrawlSession session) {
 		CrawljaxConfigurationReader config = session.getCrawljaxConfiguration();
 		browser = config.getBrowser();
-		proxyConfig = config.getProxyConfiguration().toString();
+		if (config.getProxyConfiguration() == null) {
+			proxyConfig = "Not configured";
+		} else {
+			proxyConfig = config.getProxyConfiguration().toString();
+		}
 		crawlElements = toStringList(config.getAllIncludedCrawlElements());
-		filteredAttributes = ImmutableList.of(config.getFilterAttributeNames());
+		filteredAttributes = ImmutableList.copyOf(config.getFilterAttributeNames());
+
 	}
 
 	private ImmutableList<String> toStringList(List<?> elements) {
@@ -29,6 +34,22 @@ public class CrawlConfiguration {
 			list.add(e.toString());
 		}
 		return list.build();
+	}
+
+	public BrowserType getBrowser() {
+		return browser;
+	}
+
+	public ImmutableList<String> getCrawlElements() {
+		return crawlElements;
+	}
+
+	public ImmutableList<String> getFilteredAttributes() {
+		return filteredAttributes;
+	}
+
+	public String getProxyConfig() {
+		return proxyConfig;
 	}
 
 }
