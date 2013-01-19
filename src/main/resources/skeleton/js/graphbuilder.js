@@ -75,9 +75,16 @@ var geom = Viva.Graph.geom();
 
 graphics.link(function(link){
 	// Notice the Triangle marker-end attribe:
-	return Viva.Graph.svg('path')
+	var path = Viva.Graph.svg('path')
 	.attr('stroke', 'gray')
+	.attr('stroke-width', 2)
 	.attr('marker-end', 'url(#Triangle)');
+	$(path).click(function(){
+		showInfo(link);
+		$('path[stroke="red"]').attr("stroke", "grey");
+		path.attr('stroke', 'red')
+	});
+	return path;
 }).placeLink(function(linkUI, fromPos, toPos) {
 	// Here we should take care about 
 	//  "Links should start/stop at node's bounding box, not at the node center."

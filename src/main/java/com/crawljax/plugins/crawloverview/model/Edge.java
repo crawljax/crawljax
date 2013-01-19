@@ -16,6 +16,7 @@ public class Edge {
 	private final String to;
 	private final int hash;
 	private final String text;
+	private final String id;
 
 	public Edge(Eventable eventable) {
 		try {
@@ -26,6 +27,7 @@ public class Edge {
 		}
 		this.text = eventable.getElement().getText();
 		this.hash = buildHash();
+		this.id = eventable.getIdentification().toString();
 	}
 
 	private final int buildHash() {
@@ -33,6 +35,7 @@ public class Edge {
 		int result = 1;
 		result = prime * result + ((from == null) ? 0 : from.hashCode());
 		result = prime * result + ((to == null) ? 0 : to.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -68,6 +71,10 @@ public class Edge {
 	@Override
 	public String toString() {
 		return "Edge [from=" + from + ", to=" + to + ", text=" + text + "]";
+	}
+
+	public String getId() {
+		return id;
 	}
 
 }
