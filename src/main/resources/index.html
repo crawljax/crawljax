@@ -14,6 +14,9 @@ body {
 	background-color: rgba(255, 255, 255, .9);
 	max-width: 300px;
 }
+.panel-right dd {
+	text-transform: capitalize;
+}
 </style>
 </head>
 <body>
@@ -79,16 +82,26 @@ body {
 			$("#hideButton").click(function() {
 				$(".panel-right").removeClass("in");
 			});
+			
+			$("a[rel='popover']").popover({
+				content : $("#popup-content").html(),
+				html : true,
+				trigger : "hover"
+			});
 		});
 
 		function showInfo(link) {
 			$(".panel-right").addClass("in");
 			$(".panel-right [name='elemName']").text(link.data.text);		
-			$(".panel-right [name='from']").text(link.fromId);		
-			$(".panel-right [name='to']").text(link.toId);		
+			$(".panel-right [name='from']").html(asStateLink(link.fromId));		
+			$(".panel-right [name='to']").html(asStateLink(link.toId));		
 			$(".panel-right [name='id']").text(link.data.id);	
 			$(".panel-right [name='element']").text(link.data.element);	
 			$(".panel-right [name='eventType']").text(link.data.eventType);	
+		}
+		
+		function asStateLink(name) {
+			return "<a href='states/" + name + ".html'>" + name + "</a>";
 		}
 	</script>
 </body>
