@@ -3,6 +3,7 @@ package com.crawljax.plugins.crawloverview.model;
 import javax.annotation.concurrent.Immutable;
 
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.plugins.crawloverview.CrawlOverviewException;
 
@@ -17,6 +18,8 @@ public class Edge {
 	private final int hash;
 	private final String text;
 	private final String id;
+	private final String element;
+	private final String eventType;
 
 	public Edge(Eventable eventable) {
 		try {
@@ -28,6 +31,13 @@ public class Edge {
 		this.text = eventable.getElement().getText();
 		this.hash = buildHash();
 		this.id = eventable.getIdentification().toString();
+		Element el = eventable.getElement();
+		if (el == null) {
+			element = "unkown";
+		} else {
+			element = eventable.getElement().toString();
+		}
+		eventType = eventable.getEventType().toString();
 	}
 
 	private final int buildHash() {
@@ -75,6 +85,14 @@ public class Edge {
 
 	public String getId() {
 		return id;
+	}
+
+	public String getEventType() {
+		return eventType;
+	}
+
+	public String getElement() {
+		return element;
 	}
 
 }

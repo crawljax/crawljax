@@ -12,6 +12,7 @@ body {
 	display: block;
 	background-color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, .9);
+	max-width: 300px;
 }
 </style>
 </head>
@@ -37,6 +38,14 @@ body {
 			  		<dt>Identified by</dt>
 			  		<dd name='id'></dd>
 				</dl>
+				<dl>
+			  		<dt>Element</dt>
+			  		<dd name='element'></dd>
+				</dl>
+				<dl>
+			  		<dt>Event type</dt>
+			  		<dd name='eventType'></dd>
+				</dl>
 				<button class="btn btn-small" id='hideButton'>Hide</button>
 			</div>
 		</div>
@@ -60,7 +69,10 @@ body {
 			$.each(edges, function() {
 				graph.addLink(this.from, this.to, {
 					text : this.text,
-					id : this.id
+					id : this.id,
+					eventType : this.eventType,
+					element : this.element
+					
 				});
 			});
 			
@@ -74,7 +86,9 @@ body {
 			$(".panel-right [name='elemName']").text(link.data.text);		
 			$(".panel-right [name='from']").text(link.fromId);		
 			$(".panel-right [name='to']").text(link.toId);		
-			$(".panel-right [name='id']").text(link.data.id);		
+			$(".panel-right [name='id']").text(link.data.id);	
+			$(".panel-right [name='element']").text(link.data.element);	
+			$(".panel-right [name='eventType']").text(link.data.eventType);	
 		}
 	</script>
 </body>
