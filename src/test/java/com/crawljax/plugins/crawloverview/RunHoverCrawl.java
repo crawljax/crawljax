@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.util.resource.Resource;
@@ -21,6 +22,7 @@ import com.google.common.base.Preconditions;
  */
 public class RunHoverCrawl extends ExternalResource {
 
+	public static final AtomicBoolean HAS_RUN = new AtomicBoolean(false);
 	private static final FutureTask<OutPutModel> CRAWL_TASK = new FutureTask<OutPutModel>(
 	        new Callable<OutPutModel>() {
 
@@ -48,7 +50,10 @@ public class RunHoverCrawl extends ExternalResource {
 
 	@Override
 	protected void before() throws Throwable {
-		CRAWL_TASK.run();
+		if (!HAS_RUN.get()) {
+			HAS_RUN.set(true);
+			CRAWL_TASK.run();
+		}
 	}
 
 	public OutPutModel getResult() throws InterruptedException, ExecutionException {
