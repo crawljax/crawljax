@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.eclipse.jetty.util.resource.Resource;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -25,11 +24,9 @@ import org.openqa.selenium.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.crawltests.BaseCrawler;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
-import com.crawljax.rules.TempDirInTargetFolder;
 
 public class HoverTest {
 
@@ -44,18 +41,13 @@ public class HoverTest {
 	private static boolean resolutionBigEnough;
 
 	@ClassRule
-	public static final TempDirInTargetFolder tmpDirRul = new TempDirInTargetFolder(
-	        "hover-crawl", true);
+	public static final RunHoverCrawl HOVER_CRAWL = new RunHoverCrawl();
 
 	@BeforeClass
 	public static void runHoverTest() throws Exception {
-		Resource hoverSiteBase = Resource.newClassPathResource("hover-test-site");
-		BaseCrawler hoverSiteCrawl = new BaseCrawler(hoverSiteBase, "");
-		File outFile = tmpDirRul.getTempDir();
-		CrawlOverview plugin = new CrawlOverview(outFile);
-		hoverSiteCrawl.crawlWith(plugin);
-		result = plugin.getResult();
-		resolutionBigEnough = calculateResolution(outFile);
+		System.out.println("get result");
+		result = HOVER_CRAWL.getResult();
+		resolutionBigEnough = calculateResolution(RunHoverCrawl.getOutDir());
 	}
 
 	private static boolean calculateResolution(File outFile) throws IOException {
