@@ -65,7 +65,7 @@ var createMarker = function(id) {
 },
 
 marker = createMarker('Triangle');
-marker.append('path').attr('d', 'M 0 0 L 10 5 L 0 10 z');
+marker.append('path').attr('d', 'M 0 0 L 10 5 L 0 10 z').attr('stroke', 'grey');
 
 // Marker should be defined only once in <defs> child element of root <svg> element:
 var defs = graphics.getSvgRoot().append('defs');
