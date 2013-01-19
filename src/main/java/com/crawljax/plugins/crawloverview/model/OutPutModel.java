@@ -3,10 +3,6 @@ package com.crawljax.plugins.crawloverview.model;
 import javax.annotation.concurrent.Immutable;
 
 import com.crawljax.core.configuration.CrawlSpecificationReader;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -32,16 +28,6 @@ public final class OutPutModel {
 		this.statistics = statistics;
 		configuration = config;
 		this.crawlSpecification = spec;
-	}
-
-	public String toJson() {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public ImmutableMap<String, State> getStates() {

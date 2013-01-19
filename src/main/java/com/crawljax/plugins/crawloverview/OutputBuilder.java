@@ -26,6 +26,10 @@ import com.crawljax.core.configuration.CrawlSpecificationReader;
 import com.crawljax.plugins.crawloverview.model.CrawlConfiguration;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.Statistics;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
@@ -135,9 +139,9 @@ class OutputBuilder {
 	private void writeIndexFile(OutPutModel model) {
 		LOG.debug("Writing index file");
 		VelocityContext context = new VelocityContext();
-		String outModelJson = model.toJson();
-		writeJsonToOutDir(outModelJson);
-		context.put("outputModel", outModelJson);
+		writeJsonToOutDir(toJson(model));
+		context.put("states", toJson(model.getStates()));
+		context.put("edges", toJson(model.getEdges()));
 		writeFile(context, indexFile, "index.html");
 	}
 
@@ -203,6 +207,16 @@ class OutputBuilder {
 			return Files.toString(new File(doms, name + ".html"), Charsets.UTF_8);
 		} catch (IOException e) {
 			return "Could not load DOM: " + e.getLocalizedMessage();
+		}
+	}
+
+	private String toJson(Object o) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(o);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
