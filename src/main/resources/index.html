@@ -8,14 +8,15 @@ body {
 	position: absolute;
 	right: 10px;
 	top: 70px;
-	left: initial;
+	left: auto;
 	display: block;
 	background-color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, .9);
-	max-width: 300px;
+	max-width: 300px;	
 }
 .panel-right dd {
 	text-transform: capitalize;
+	word-wrap: break-word;
 }
 </style>
 </head>
@@ -81,6 +82,7 @@ body {
 			
 			$("#hideButton").click(function() {
 				$(".panel-right").removeClass("in");
+				$('path[stroke="red"]').attr("stroke", "grey");
 			});
 			
 			$("a[rel='popover']").popover({
@@ -88,6 +90,8 @@ body {
 				html : true,
 				trigger : "hover"
 			});
+			
+			
 		});
 
 		function showInfo(link) {
@@ -102,6 +106,19 @@ body {
 		
 		function asStateLink(name) {
 			return "<a href='states/" + name + ".html'>" + name + "</a>";
+		}
+		
+		if($.browser.mozilla) {
+			// Firefox hack to display CVS correctly
+			$('#graphContainer svg').css("width", "100%");
+			
+			function resize() {
+				$('#graphContainer').css("height", window.innerHeight -45);
+				$('#graphContainer svg').css("height", window.innerHeight - 45);
+			}
+			
+			$(window).resize(resize);
+			resize();
 		}
 	</script>
 </body>
