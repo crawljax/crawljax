@@ -1,8 +1,13 @@
 package com.crawljax.plugins.crawloverview;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.server.AbstractConnector;
@@ -58,10 +63,33 @@ public class OverviewIntegrationTest {
 	}
 
 	@Test
-	public void test() {
+	public void verifyAllPagesPresentAndNoVelocityMistakes() {
 		selenium.open("/");
 		WebElement brand = driver.findElement(By.cssSelector("a.brand"));
 		assertThat(brand.getText(), is("Crawl overview"));
+		assertThat(driver.findElement(By.cssSelector("svg")), is(notNullValue()));
+		driver.findElement(By.linkText("Statistics")).click();
+		sourceHasNoDollerSigns();
+		List<WebElement> foundndElements = driver.findElements(By.cssSelector("H1"));
+		assertThat(foundndElements, hasSize(2));
+		assertThat(foundndElements.iterator().next().getText(), is("Crawl results"));
+
+		driver.findElement(By.linkText("URL's")).click();
+		sourceHasNoDollerSigns();
+		assertThat(driver.findElement(By.cssSelector("h1")).getText(), is("URL's visited"));
+
+		driver.findElement(By.linkText("Configuration")).click();
+		sourceHasNoDollerSigns();
+		foundndElements = driver.findElements(By.cssSelector("H1"));
+		assertThat(foundndElements, hasSize(2));
+		assertThat(foundndElements.iterator().next().getText(), is("Crawl configuration"));
+	}
+
+	/**
+	 * If velocity couldn't resolve a variable, it leaves behind a `$`.
+	 */
+	private void sourceHasNoDollerSigns() {
+		assertThat(driver.getPageSource(), not(containsString("$")));
 	}
 
 	@AfterClass
