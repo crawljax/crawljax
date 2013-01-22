@@ -5,7 +5,9 @@
 <body>
 	#parse ( "nav.html" )
 	<div class="container">
-		<h1>URL's visited</h1>
+		<div class="page-header">
+			<h1>URL's visited</h1>
+		</div>
 		<table class="table table-bordered table-striped">
 			<tbody>
 			#foreach( $url in $urls )
