@@ -10,7 +10,7 @@
 	<artifactId>crawljax-test-utils</artifactId>
 	<packaging>jar</packaging>
 
-	<name>crawljax-test-utils</name>
+	<name>Crawljax test utilities</name>
 	<description>This artifact offers Crawljax plugin developers a convenient way to test their plugins by offering several default sites with known/expected output.</description>
 	<url>carwljax.com</url>
 
