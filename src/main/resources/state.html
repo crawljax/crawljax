@@ -38,6 +38,9 @@
 			</li>
 			<li>
 				<a href="#dom">Captured DOM</a>
+			</li>	
+			<li>
+				<a href="#interactions">Interactions</a>
 			</li>			
 		</ul>
 		<div class="tab-content">
@@ -51,6 +54,23 @@
 			<div class="tab-pane" id='dom'>
 				<h2>Captured DOM</h2>
 				<pre class='brush: html'>${dom}</pre>
+			</div>
+			<div class="tab-pane" id='interactions'>
+				<h2>Interactions</h2>
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr>
+							<th>Xpath</th>
+							<th>Destination</tg>
+						</tr>
+						#foreach( $element in $elements )
+						<tr>
+							<td>${element.xpath}</td>
+							<td><a href="${element.targetname}.html">${element.targetname}</a></td>
+						</tr>
+						#end						
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
