@@ -15,7 +15,7 @@
 	<inceptionYear>2007</inceptionYear>
 
 	<properties>
-		<selenium.version>[2.29.0,)</selenium.version>
+		<selenium.version>[2.29.1,)</selenium.version>
 	</properties>
 
 	<profiles>
