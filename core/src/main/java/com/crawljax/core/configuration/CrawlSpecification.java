@@ -153,19 +153,6 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * Crawljax will the HTML elements while crawling if and only if all the specified conditions
-	 * are satisfied. IMPORTANT: only works with click()!!! For example:
-	 * when(onContactPageCondition) will only click the HTML element if it is on the contact page
-	 * 
-	 * @param conditions
-	 *            the condition to be met.
-	 * @return this CrawlActions
-	 */
-	public CrawlActions when(Condition... conditions) {
-		return crawlActions.when(conditions);
-	}
-
-	/**
 	 * @return the initial url of the site to crawl
 	 */
 	protected String getUrl() {
