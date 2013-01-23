@@ -26,8 +26,6 @@ import com.google.common.collect.ImmutableList.Builder;
  * EXAMPLE: CrawljaxConfiguration crawljaxConfig = new CrawljaxConfiguration(); CrawlSpecification
  * crawler = new CrawlSpecification("http://www.google.com"); crawler.click("a");
  * crawljaxConfig.setCrawlSpecification(crawler);
- * 
- * @version $Id$
  */
 public final class CrawljaxConfiguration {
 
@@ -138,7 +136,7 @@ public final class CrawljaxConfiguration {
 	/**
 	 * @return The eventableConditions.
 	 */
-	protected List<EventableCondition> getEventableConditions() {
+	protected ImmutableList<EventableCondition> getEventableConditions() {
 		Builder<EventableCondition> eventableConditions = ImmutableList.builder();
 		for (CrawlElement crawlTag : getAllCrawlElements()) {
 			EventableCondition eventableCondition = crawlTag.getEventableCondition();

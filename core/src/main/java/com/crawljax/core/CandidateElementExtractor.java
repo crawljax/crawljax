@@ -2,6 +2,7 @@ package com.crawljax.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -26,18 +27,16 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.Helper;
 import com.crawljax.util.XPathHelper;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 
 /**
  * This class extracts candidate elements from the DOM tree, based on the tags provided by the user.
  * Elements can also be excluded.
- * 
- * @author mesbah
- * @version $Id$
  */
 public class CandidateElementExtractor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CandidateElementExtractor.class
-	        .getName());
+	private static final Logger LOG = LoggerFactory.getLogger(CandidateElementExtractor.class);
 
 	private final ExtractorManager checkedElements;
 	private final EmbeddedBrowser browser;
@@ -82,17 +81,17 @@ public class CandidateElementExtractor {
 	 * @throws CrawljaxException
 	 *             if the method fails.
 	 */
-	public List<CandidateElement> extract(List<TagElement> crawlTagElements,
+	public ImmutableList<CandidateElement> extract(List<TagElement> crawlTagElements,
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce, StateVertex currentState)
 	        throws CrawljaxException {
-		List<CandidateElement> results = new ArrayList<CandidateElement>();
+		Builder<CandidateElement> results = ImmutableList.builder();
 
 		if (!checkedElements.checkCrawlCondition(browser)) {
-			LOGGER.info("State " + currentState.getName()
+			LOG.info("State " + currentState.getName()
 			        + " dit not satisfy the CrawlConditions.");
-			return results;
+			return results.build();
 		}
-		LOGGER.info("Looking in state: " + currentState.getName()
+		LOG.info("Looking in state: " + currentState.getName()
 		        + " for candidate elements with ");
 
 		try {
@@ -100,46 +99,26 @@ public class CandidateElementExtractor {
 			extractElements(dom, crawlTagElements, crawlExcludeTagElements, clickOnce, results,
 			        "");
 		} catch (SAXException e) {
-			LOGGER.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			throw new CrawljaxException(e.getMessage(), e);
 		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			throw new CrawljaxException(e.getMessage(), e);
 		}
-
-		LOGGER.info("Found " + results.size() + " new candidate elements to analyze!");
-		return results;
+		ImmutableList<CandidateElement> found = results.build();
+		LOG.info("Found " + found.size() + " new candidate elements to analyze!");
+		return found;
 	}
 
 	private void extractElements(Document dom, List<TagElement> crawlTagElements,
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
-	        List<CandidateElement> results, String relatedFrame) {
+	        Builder<CandidateElement> results, String relatedFrame) {
 
 		for (TagElement tag : crawlTagElements) {
-			LOGGER.info("TAG: " + tag.toString());
+			LOG.info("TAG: " + tag.toString());
 
-			List<Element> foundElements;
-
-			try {
-				foundElements =
-				        getNodeListForTagElement(dom, tag,
-				                checkedElements.getEventableConditionChecker(),
-				                crawlExcludeTagElements);
-			} catch (XPathExpressionException e) {
-				LOGGER.error("Catched XPathExpression during NodeList For Tag Element retrieval",
-				        e);
-				return;
-			} catch (SAXException e) {
-				LOGGER.error("Catched SAXException during NodeList For Tag Element retrieval", e);
-				return;
-			} catch (IOException e) {
-				LOGGER.error("Catched IOException during NodeList For Tag Element retrieval", e);
-				return;
-			} catch (CrawljaxException e) {
-				LOGGER.error(
-				        "Catched CrawljaxException during NodeList For Tag Element retrieval", e);
-				return;
-			}
+			List<Element> foundElements =
+			        getElementsFromNodelist(dom, crawlExcludeTagElements, tag);
 
 			getFramesCandidates(dom, crawlTagElements, crawlExcludeTagElements, clickOnce,
 			        results, relatedFrame);
@@ -148,51 +127,79 @@ public class CandidateElementExtractor {
 			        results, relatedFrame);
 
 			for (Element sourceElement : foundElements) {
-				EventableCondition eventableCondition =
-				        checkedElements.getEventableConditionChecker().getEventableCondition(
-				                tag.getId());
-				String xpath = XPathHelper.getXPathExpression(sourceElement);
-				// get multiple candidate elements when there are input
-				// fields connected to this element
+				evaluateElement(clickOnce, results, relatedFrame, tag, sourceElement);
+			}
+		}
+	}
 
-				List<CandidateElement> candidateElements = new ArrayList<CandidateElement>();
-				if (eventableCondition != null
-				        && eventableCondition.getLinkedInputFields() != null
-				        && eventableCondition.getLinkedInputFields().size() > 0) {
-					// add multiple candidate elements, for every input
-					// value combination
-					candidateElements =
-					        formHandler.getCandidateElementsForInputs(sourceElement,
-					                eventableCondition);
-				} else {
-					// just add default element
-					candidateElements.add(new CandidateElement(sourceElement, new Identification(
-					        Identification.How.xpath, xpath), relatedFrame));
+	private List<Element> getElementsFromNodelist(Document dom,
+	        List<TagElement> crawlExcludeTagElements, TagElement tag) {
+		try {
+			return getNodeListForTagElement(dom, tag,
+			        checkedElements.getEventableConditionChecker(),
+			        crawlExcludeTagElements);
+		} catch (XPathExpressionException e) {
+			LOG.error("Catched XPathExpression during NodeList For Tag Element retrieval",
+			        e);
+			return Collections.emptyList();
+		} catch (SAXException e) {
+			LOG.error("Catched SAXException during NodeList For Tag Element retrieval", e);
+			return Collections.emptyList();
+		} catch (IOException e) {
+			LOG.error("Catched IOException during NodeList For Tag Element retrieval", e);
+			return Collections.emptyList();
+		} catch (CrawljaxException e) {
+			LOG.error(
+			        "Catched CrawljaxException during NodeList For Tag Element retrieval", e);
+			return Collections.emptyList();
+		}
+	}
+
+	private void evaluateElement(boolean clickOnce, Builder<CandidateElement> results,
+	        String relatedFrame, TagElement tag, Element sourceElement) {
+		EventableCondition eventableCondition =
+		        checkedElements.getEventableConditionChecker().getEventableCondition(
+		                tag.getId());
+		String xpath = XPathHelper.getXPathExpression(sourceElement);
+		// get multiple candidate elements when there are input
+		// fields connected to this element
+
+		List<CandidateElement> candidateElements = new ArrayList<CandidateElement>();
+		if (eventableCondition != null
+		        && eventableCondition.getLinkedInputFields() != null
+		        && eventableCondition.getLinkedInputFields().size() > 0) {
+			// add multiple candidate elements, for every input
+			// value combination
+			candidateElements =
+			        formHandler.getCandidateElementsForInputs(sourceElement,
+			                eventableCondition);
+		} else {
+			// just add default element
+			candidateElements.add(new CandidateElement(sourceElement, new Identification(
+			        Identification.How.xpath, xpath), relatedFrame));
+		}
+
+		for (CandidateElement candidateElement : candidateElements) {
+			if (!clickOnce || checkedElements.markChecked(candidateElement)) {
+				LOG.info("Found new candidate element: "
+				        + candidateElement.getUniqueString());
+
+				if (eventableCondition != null) {
+					candidateElement.setEventableCondition(eventableCondition);
 				}
-
-				for (CandidateElement candidateElement : candidateElements) {
-					if (!clickOnce || checkedElements.markChecked(candidateElement)) {
-						LOGGER.info("Found new candidate element: "
-						        + candidateElement.getUniqueString());
-
-						if (eventableCondition != null) {
-							candidateElement.setEventableCondition(eventableCondition);
-						}
-						results.add(candidateElement);
-						/**
-						 * TODO add element to checkedElements after the event is fired! also add
-						 * string without 'atusa' attribute to make sure an form action element is
-						 * only clicked for its defined values
-						 */
-					}
-				}
+				results.add(candidateElement);
+				/**
+				 * TODO add element to checkedElements after the event is fired! also add string
+				 * without 'atusa' attribute to make sure an form action element is only clicked for
+				 * its defined values
+				 */
 			}
 		}
 	}
 
 	private void getIFramesCandidates(Document dom, List<TagElement> crawlTagElements,
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
-	        List<CandidateElement> results, String relatedFrame) {
+	        Builder<CandidateElement> results, String relatedFrame) {
 
 		NodeList frameNodes = dom.getElementsByTagName("IFRAME");
 
@@ -214,7 +221,7 @@ public class CandidateElementExtractor {
 			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
 				frameIdentification += nameId;
 
-				LOGGER.debug("iframe Identification: " + frameIdentification);
+				LOG.debug("iframe Identification: " + frameIdentification);
 
 				try {
 					Document frameDom =
@@ -222,10 +229,10 @@ public class CandidateElementExtractor {
 					extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
 					        clickOnce, results, frameIdentification);
 				} catch (SAXException e) {
-					LOGGER.info("Got exception while inspecting an iframe:" + frameIdentification
+					LOG.info("Got exception while inspecting an iframe:" + frameIdentification
 					        + " continuing...", e);
 				} catch (IOException e) {
-					LOGGER.info("Got exception while inspecting an iframe:" + frameIdentification
+					LOG.info("Got exception while inspecting an iframe:" + frameIdentification
 					        + " continuing...", e);
 				}
 			}
@@ -235,7 +242,7 @@ public class CandidateElementExtractor {
 	// adds support for FRAME tags
 	private void getFramesCandidates(Document dom, List<TagElement> crawlTagElements,
 	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
-	        List<CandidateElement> results, String relatedFrame) {
+	        Builder<CandidateElement> results, String relatedFrame) {
 
 		NodeList frameNodes = dom.getElementsByTagName("FRAME");
 
@@ -257,7 +264,7 @@ public class CandidateElementExtractor {
 			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
 				frameIdentification += nameId;
 
-				LOGGER.debug("frame Identification: " + frameIdentification);
+				LOG.debug("frame Identification: " + frameIdentification);
 
 				try {
 					Document frameDom =
@@ -265,10 +272,10 @@ public class CandidateElementExtractor {
 					extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
 					        clickOnce, results, frameIdentification);
 				} catch (SAXException e) {
-					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
+					LOG.info("Got exception while inspecting a frame:" + frameIdentification
 					        + " continuing...", e);
 				} catch (IOException e) {
-					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
+					LOG.info("Got exception while inspecting a frame:" + frameIdentification
 					        + " continuing...", e);
 				}
 			}
@@ -336,7 +343,7 @@ public class CandidateElementExtractor {
 					String href = element.getAttribute("href");
 					boolean isExternal = Helper.isLinkExternal(browser.getCurrentUrl(), href);
 					boolean isEmail = isEmail(href);
-					LOGGER.debug("HREF: " + href + "isExternal= " + isExternal);
+					LOG.debug("HREF: " + href + "isExternal= " + isExternal);
 
 					if (!(isExternal || isEmail || isPDForPS(href))) {
 						result.add(element);
@@ -430,12 +437,12 @@ public class CandidateElementExtractor {
 				}
 
 				if (matchesXPath) {
-					LOGGER.info("Excluded element because of xpath: " + element);
+					LOG.info("Excluded element because of xpath: " + element);
 					return true;
 				}
 				if (!filterElement(tag.getAttributes(), element)
 				        && tag.getAttributes().size() > 0) {
-					LOGGER.info("Excluded element because of attributes: " + element);
+					LOG.info("Excluded element because of attributes: " + element);
 					return true;
 				}
 			}
@@ -461,7 +468,7 @@ public class CandidateElementExtractor {
 		NodeList nodes = XPathHelper.evaluateXpathExpression(dom, xpath);
 
 		if (nodes.getLength() > 0) {
-			LOGGER.debug("Element: " + Helper.getAllElementAttributes(element) + " is invisible!");
+			LOG.debug("Element: " + Helper.getAllElementAttributes(element) + " is invisible!");
 
 			return false;
 		}
@@ -478,7 +485,7 @@ public class CandidateElementExtractor {
 			return false;
 		}
 		for (TagAttribute attr : attributes) {
-			LOGGER.debug("Checking element " + Helper.getElementString(element)
+			LOG.debug("Checking element " + Helper.getElementString(element)
 			        + "AttributeName: " + attr.getName() + " value: " + attr.getValue());
 
 			if (attr.matchesValue(element.getAttribute(attr.getName()))) {

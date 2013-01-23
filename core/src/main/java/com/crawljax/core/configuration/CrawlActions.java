@@ -1,25 +1,22 @@
 package com.crawljax.core.configuration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.core.state.Eventable.EventType;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * Specifies the actions for CrawlElements NOTE: In general CrawlActions is not designed to be
  * instantiated directly. CrawlActions should be used via {@link CrawlSpecification} To add
  * conditions to check whether a tag should (not) be clicked one can use {@link #when(Condition...)}
  * . See also {@link Condition}
- * 
- * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class CrawlActions {
 
-	private final List<CrawlElement> crawlElements = new ArrayList<CrawlElement>();
-	private final List<CrawlElement> crawlElementsExcluded = new ArrayList<CrawlElement>();
+	private final List<CrawlElement> crawlElements = Lists.newLinkedList();
+	private final List<CrawlElement> crawlElementsExcluded = Lists.newLinkedList();
 
 	CrawlActions() {
 	}
