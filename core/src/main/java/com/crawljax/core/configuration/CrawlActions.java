@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Specifies the actions for CrawlElements NOTE: In general CrawlActions is not designed to be
@@ -57,15 +58,15 @@ public class CrawlActions {
 	/**
 	 * @return the crawlElements
 	 */
-	protected List<CrawlElement> getCrawlElements() {
-		return crawlElements;
+	protected ImmutableList<CrawlElement> getCrawlElements() {
+		return ImmutableList.copyOf(crawlElements);
 	}
 
 	/**
 	 * @return the crawlElementsExcluded
 	 */
-	protected List<CrawlElement> getCrawlElementsExcluded() {
-		return crawlElementsExcluded;
+	protected ImmutableList<CrawlElement> getCrawlElementsExcluded() {
+		return ImmutableList.copyOf(crawlElementsExcluded);
 	}
 
 }

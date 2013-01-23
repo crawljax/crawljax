@@ -1,12 +1,13 @@
 package com.crawljax.core.configuration;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * Represents the HTML elements which should be crawled. It represents all the HTML elements in the
@@ -35,12 +36,13 @@ import com.crawljax.core.state.Eventable.EventType;
 public final class CrawlElement {
 
 	private final String tagName;
-	private final List<CrawlAttribute> crawlAttributes = new ArrayList<CrawlAttribute>();
-	private final List<Condition> conditions = new ArrayList<Condition>();
+	private final List<CrawlAttribute> crawlAttributes = Lists.newLinkedList();
+	private final List<Condition> conditions = Lists.newLinkedList();
 	private final String id;
-	private String underXpath;
-	private List<String> inputFieldIds = new ArrayList<String>();
 	private final EventType eventType;
+	private final List<String> inputFieldIds = Lists.newLinkedList();
+
+	private String underXpath;
 
 	/**
 	 * To create a CrawlElement representing an HTML element <a>MyLink</a> the tag name would be
@@ -145,8 +147,7 @@ public final class CrawlElement {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("CrawlElement [");
+		StringBuilder builder = new StringBuilder("CrawlElement [");
 		if (tagName != null) {
 			builder.append("tagName=");
 			builder.append(tagName);
@@ -205,8 +206,8 @@ public final class CrawlElement {
 	/**
 	 * @return the crawlAttributes
 	 */
-	protected List<CrawlAttribute> getCrawlAttributes() {
-		return crawlAttributes;
+	protected ImmutableList<CrawlAttribute> getCrawlAttributes() {
+		return ImmutableList.copyOf(crawlAttributes);
 	}
 
 	/**
@@ -253,23 +254,23 @@ public final class CrawlElement {
 	/**
 	 * @return the conditions
 	 */
-	protected List<Condition> getConditions() {
-		return conditions;
+	protected ImmutableList<Condition> getConditions() {
+		return ImmutableList.copyOf(conditions);
 	}
 
 	/**
 	 * @return the inputFieldIds
 	 */
-	protected List<String> getInputFieldIds() {
-		return inputFieldIds;
+	protected ImmutableList<String> getInputFieldIds() {
+		return ImmutableList.copyOf(inputFieldIds);
 	}
 
 	/**
 	 * @param ids
 	 *            Sets the list of input field ids.
 	 */
-	protected void setInputFieldIds(List<String> ids) {
-		inputFieldIds = ids;
+	protected void addInputFieldIds(List<String> ids) {
+		inputFieldIds.addAll(ids);
 	}
 
 	/**
