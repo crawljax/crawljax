@@ -1,24 +1,12 @@
-/**
- * Created Jul 7, 2008
- */
 package com.crawljax.core;
 
-/**
- * TODO: Document this.
- * 
- * @author mesbah
- * @version $Id$
- */
-public class TagAttribute {
-	private String name;
-	private String value;
+import javax.annotation.concurrent.Immutable;
 
-	/**
-   *
-   */
-	public TagAttribute() {
-		super();
-	}
+@Immutable
+public class TagAttribute {
+
+	private final String name;
+	private final String value;
 
 	/**
 	 * @param name
@@ -27,7 +15,6 @@ public class TagAttribute {
 	 *            value of the tag.
 	 */
 	public TagAttribute(String name, String value) {
-		super();
 		this.name = name;
 		this.value = value;
 	}
@@ -40,26 +27,10 @@ public class TagAttribute {
 	}
 
 	/**
-	 * @param name
-	 *            sets the name.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return the value.
 	 */
 	public String getValue() {
 		return value;
-	}
-
-	/**
-	 * @param value
-	 *            sets the value.
-	 */
-	public void setValue(String value) {
-		this.value = value;
 	}
 
 	/**

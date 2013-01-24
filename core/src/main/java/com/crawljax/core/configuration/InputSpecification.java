@@ -1,9 +1,12 @@
 package com.crawljax.core.configuration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.Lists;
 
 /**
  * Specifies values for form input fields The user specifies the ids or names of the input fields.
@@ -30,8 +33,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public final class InputSpecification {
 
-	private final List<InputField> inputFields = new ArrayList<InputField>();
-	private final List<Form> forms = new ArrayList<Form>();
+	private final List<InputField> inputFields = Lists.newLinkedList();
+	private final List<Form> forms = Lists.newLinkedList();
 
 	/**
 	 * Specifies an input field to assign a value to. Crawljax first tries to match the found HTML
@@ -108,15 +111,15 @@ public final class InputSpecification {
 	/**
 	 * @return List of crawlelements.
 	 */
-	protected List<CrawlElement> getCrawlElements() {
-		List<CrawlElement> crawlTags = new ArrayList<CrawlElement>();
+	protected ImmutableList<CrawlElement> getCrawlElements() {
+		Builder<CrawlElement> builder = ImmutableList.builder();
 		for (Form form : this.forms) {
 			CrawlElement crawlTag = form.getCrawlElement();
 			if (crawlTag != null) {
-				crawlTags.add(crawlTag);
+				builder.add(crawlTag);
 			}
 		}
-		return crawlTags;
+		return builder.build();
 	}
 
 }

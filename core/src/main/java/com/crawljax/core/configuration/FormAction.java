@@ -19,8 +19,7 @@ public class FormAction {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement beforeClickElement(String tagName) {
-		this.crawlElement = new CrawlElement(EventType.click);
-		this.crawlElement.setTagName(tagName);
+		this.crawlElement = new CrawlElement(EventType.click, tagName);
 		return crawlElement;
 	}
 
