@@ -15,8 +15,8 @@ public class SimpleXpathCrawl extends BaseCrawler {
 	}
 
 	@Override
-	public CrawlSpecification getCrawlSpec() {
-		CrawlSpecification spec = super.getCrawlSpec();
+	public CrawlSpecification newCrawlSpecification() {
+		CrawlSpecification spec = super.newCrawlSpecification();
 		spec.dontClick("a").underXPath("//A[@class='noclick']");
 		spec.click("a").underXPath("//A[@class='click']");
 		return spec;

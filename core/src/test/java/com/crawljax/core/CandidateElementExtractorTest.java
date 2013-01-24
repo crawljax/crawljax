@@ -23,6 +23,7 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
+import com.google.common.collect.ImmutableSet;
 
 @Category(BrowserTest.class)
 public class CandidateElementExtractorTest {
@@ -33,6 +34,8 @@ public class CandidateElementExtractorTest {
 
 	@ClassRule
 	public static final RunWithWebServer SERVER = new RunWithWebServer("/demo-site");
+	private static final ImmutableSet<TagAttribute> NO_ATTRIBUTES = ImmutableSet
+	        .<TagAttribute> of();
 
 	private CrawljaxController controller;
 	private Crawler crawler;
@@ -51,7 +54,7 @@ public class CandidateElementExtractorTest {
 		                        .getCrawlSpecificationReader());
 		assertNotNull(extractor);
 
-		TagElement tagElementInc = new TagElement(null, "a");
+		TagElement tagElementInc = new TagElement(NO_ATTRIBUTES, "a", "a");
 		List<TagElement> includes = new ArrayList<TagElement>();
 		includes.add(tagElementInc);
 
@@ -91,7 +94,7 @@ public class CandidateElementExtractorTest {
 		                        .getCrawlSpecificationReader());
 		assertNotNull(extractor);
 
-		TagElement tagElementInc = new TagElement(null, "a");
+		TagElement tagElementInc = new TagElement(NO_ATTRIBUTES, "a", "id");
 		List<TagElement> includes = new ArrayList<TagElement>();
 		includes.add(tagElementInc);
 
@@ -99,7 +102,7 @@ public class CandidateElementExtractorTest {
 		TagAttribute attr = new TagAttribute("id", "menubar");
 		Set<TagAttribute> attributes = new HashSet<TagAttribute>();
 		attributes.add(attr);
-		TagElement tagElementExc = new TagElement(attributes, "div");
+		TagElement tagElementExc = new TagElement(NO_ATTRIBUTES, "div", "id");
 		excludes.add(tagElementExc);
 
 		List<CandidateElement> candidates =
@@ -126,7 +129,7 @@ public class CandidateElementExtractorTest {
 		                        .getCrawlSpecificationReader());
 		assertNotNull(extractor);
 
-		TagElement tagElementInc = new TagElement(null, "a");
+		TagElement tagElementInc = new TagElement(NO_ATTRIBUTES, "a", "id");
 		List<TagElement> includes = new ArrayList<TagElement>();
 		includes.add(tagElementInc);
 

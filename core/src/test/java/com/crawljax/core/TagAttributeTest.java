@@ -8,15 +8,16 @@ import org.junit.Test;
 public class TagAttributeTest {
 
 	@Test
-	public void matchesValue() {
+	public void matchesValueWildcard() {
 		TagAttribute attrib = new TagAttribute("id", "some%");
 		assertTrue(attrib.matchesValue("something"));
 		assertFalse(attrib.matchesValue("sompthing"));
+	}
 
-		attrib.setName("class");
-		attrib.setValue("hidden");
+	@Test
+	public void matchesNameValue() {
+		TagAttribute attrib = new TagAttribute("class", "hidden");
 		assertTrue(attrib.matchesValue("hidden header"));
-
 		assertFalse(attrib.matchesValue("hid"));
 	}
 }

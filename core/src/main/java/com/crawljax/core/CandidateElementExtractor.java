@@ -91,8 +91,7 @@ public class CandidateElementExtractor {
 			        + " dit not satisfy the CrawlConditions.");
 			return results.build();
 		}
-		LOG.info("Looking in state: " + currentState.getName()
-		        + " for candidate elements with ");
+		LOG.info("Looking in state: {} for candidate elements with ", currentState.getName());
 
 		try {
 			Document dom = Helper.getDocument(browser.getDomWithoutIframeContent());
@@ -106,7 +105,7 @@ public class CandidateElementExtractor {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
 		ImmutableList<CandidateElement> found = results.build();
-		LOG.info("Found " + found.size() + " new candidate elements to analyze!");
+		LOG.info("Found {} new candidate elements to analyze!", found.size());
 		return found;
 	}
 
@@ -115,7 +114,7 @@ public class CandidateElementExtractor {
 	        Builder<CandidateElement> results, String relatedFrame) {
 
 		for (TagElement tag : crawlTagElements) {
-			LOG.info("TAG: " + tag.toString());
+			LOG.debug("TAG: " + tag.toString());
 
 			List<Element> foundElements =
 			        getElementsFromNodelist(dom, crawlExcludeTagElements, tag);
@@ -147,10 +146,6 @@ public class CandidateElementExtractor {
 			return Collections.emptyList();
 		} catch (IOException e) {
 			LOG.error("Catched IOException during NodeList For Tag Element retrieval", e);
-			return Collections.emptyList();
-		} catch (CrawljaxException e) {
-			LOG.error(
-			        "Catched CrawljaxException during NodeList For Tag Element retrieval", e);
 			return Collections.emptyList();
 		}
 	}

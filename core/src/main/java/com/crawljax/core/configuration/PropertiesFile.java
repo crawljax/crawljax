@@ -1,9 +1,7 @@
 package com.crawljax.core.configuration;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +10,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 
 import com.crawljax.core.TagAttribute;
 import com.crawljax.core.TagElement;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * This class is used to create a CrawljaxConfiguration object configured with settings from a file.
@@ -174,7 +173,7 @@ public class PropertiesFile {
 			return null;
 		}
 		String name = null;
-		Set<TagAttribute> attributes = new HashSet<TagAttribute>();
+
 		String id = null;
 
 		Pattern pattern =
@@ -201,6 +200,7 @@ public class PropertiesFile {
 
 			matcher = patternAttributes.matcher(substring);
 
+			ImmutableSet.Builder<TagAttribute> attributes = ImmutableSet.builder();
 			// attributes
 			if (matcher.find()) {
 				String tmp = matcher.group();
@@ -220,10 +220,7 @@ public class PropertiesFile {
 				id = matcher.group(2);
 			}
 
-			TagElement el = new TagElement(attributes, name);
-			if (id != null) {
-				el.setId(id);
-			}
+			TagElement el = new TagElement(attributes.build(), name, id);
 			return el;
 		}
 
