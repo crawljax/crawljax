@@ -22,14 +22,13 @@ import org.w3c.dom.NodeList;
 /**
  * Utility class that contains methods used by Crawljax and some plugin to deal with XPath
  * resolving, constructing etc.
- * 
- * @author mesbah
- * @version $Id$
  */
 public final class XPathHelper {
-	/**
-     * 
-     */
+
+	private static final Pattern TAG_PATTERN = Pattern
+	        .compile("(/(?:[-a-zA-Z]+::)?+)([a-zA-Z]+)");
+	private static final Pattern ID_PATTERN = Pattern.compile("(@[a-zA-Z]+)");
+
 	private static final String FULL_XPATH_CACHE = "FULL_XPATH_CACHE";
 	private static final int MAX_SEARCH_LOOPS = 10000;
 
@@ -183,21 +182,16 @@ public final class XPathHelper {
 	 */
 	public static String formatXPath(String xpath) {
 		String formatted = xpath;
-		Pattern p = Pattern.compile("(/(?:[-a-zA-Z]+::)?+)([a-zA-Z]+)");
-		Matcher m = p.matcher(formatted);
+		Matcher tagMatcher = TAG_PATTERN.matcher(formatted);
+		tagMatcher.find();
+		formatted =
+		        tagMatcher.replaceFirst(tagMatcher.group(1) + tagMatcher.group(2).toUpperCase());
 
-		for (int i = 0; m.find(i); i++) {
-			i = m.start();
-			formatted = m.replaceFirst(m.group(1) + m.group(2).toUpperCase());
-			m = p.matcher(formatted);
-		}
-		p = Pattern.compile("(@[a-zA-Z]+)");
-		m = p.matcher(formatted);
-
-		for (int i = 0; m.find(i); i++) {
-			i = m.start();
-			formatted = m.replaceFirst(m.group().toLowerCase());
-			m = p.matcher(formatted);
+		Matcher IdMatcher = ID_PATTERN.matcher(formatted);
+		for (int i = 0; IdMatcher.find(i); i++) {
+			i = IdMatcher.start();
+			formatted = IdMatcher.replaceFirst(IdMatcher.group().toLowerCase());
+			IdMatcher = ID_PATTERN.matcher(formatted);
 		}
 		return formatted;
 	}
@@ -223,10 +217,10 @@ public final class XPathHelper {
 	 * @return string without the before [
 	 */
 	private static String stripEndSquareBrackets(String string) {
-		if (string.indexOf("[") == -1) {
-			return string;
+		if (string.contains("[")) {
+			return string.substring(0, string.indexOf('['));
 		} else {
-			return string.substring(0, string.indexOf("["));
+			return string;
 		}
 	}
 

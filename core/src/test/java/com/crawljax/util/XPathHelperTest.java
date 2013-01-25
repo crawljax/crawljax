@@ -3,8 +3,10 @@
  */
 package com.crawljax.util;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
@@ -65,6 +67,12 @@ public class XPathHelperTest {
 	public void formatXPath() {
 		String xPath = "//ul[@CLASS=\"Test\"]";
 		assertEquals("//UL[@class=\"Test\"]", XPathHelper.formatXPath(xPath));
+	}
+
+	@Test
+	public void formatXpathWithDoubleSlashes() {
+		String xpath = "//div[@id='dontClick']//a";
+		assertThat(XPathHelper.formatXPath(xpath), is("//DIV[@id='dontClick']//a"));
 	}
 
 	@Test
