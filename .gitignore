@@ -5,3 +5,4 @@
 target/
 release.properties
 pom.xml.releaseBackup
+git.properties
