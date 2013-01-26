@@ -3,6 +3,7 @@ package com.crawljax.crawltests;
 import java.net.URL;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 
@@ -30,7 +31,7 @@ public class WebServer {
 		handler.setBaseResource(resource);
 		server.setHandler(handler);
 		server.start();
-		this.port = server.getConnectors()[0].getLocalPort();
+		this.port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
 		this.demoSite = new URL("http", "localhost", port, "/");
 		this.started = true;
 	}
