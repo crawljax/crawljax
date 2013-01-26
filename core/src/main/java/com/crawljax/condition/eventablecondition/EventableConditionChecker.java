@@ -56,11 +56,11 @@ public class EventableConditionChecker {
 	 *            The XPath.
 	 * @return boolean whether xpath starts with xpath location of eventable condition xpath
 	 *         condition
-	 * @throws Exception
+	 * @throws CrawljaxException
 	 *             when not can be determined whether xpath contains needed xpath locaton
 	 */
 	public boolean checkXpathStartsWithXpathEventableCondition(Document dom,
-	        EventableCondition eventableCondition, String xpath) throws Exception {
+	        EventableCondition eventableCondition, String xpath) {
 		if (eventableCondition == null || eventableCondition.getInXPath() == null
 		        || eventableCondition.getInXPath().equals("")) {
 			throw new CrawljaxException("Eventable has no XPath condition");

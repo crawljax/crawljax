@@ -104,10 +104,7 @@ public class CandidateElementExtractor {
 		try {
 			Document dom = Helper.getDocument(browser.getDomWithoutIframeContent());
 			extractElements(dom, results, "");
-		} catch (SAXException e) {
-			LOG.error(e.getMessage(), e);
-			throw new CrawljaxException(e.getMessage(), e);
-		} catch (IOException e) {
+		} catch (SAXException | IOException e) {
 			LOG.error(e.getMessage(), e);
 			throw new CrawljaxException(e.getMessage(), e);
 		}
@@ -162,10 +159,7 @@ public class CandidateElementExtractor {
 					Document frameDom =
 					        Helper.getDocument(browser.getFrameDom(frameIdentification));
 					extractElements(frameDom, results, frameIdentification);
-				} catch (SAXException e) {
-					LOG.info("Got exception while inspecting a frame: {} continuing...",
-					        frameIdentification, e);
-				} catch (IOException e) {
+				} catch (SAXException | IOException e) {
 					LOG.info("Got exception while inspecting a frame: {} continuing...",
 					        frameIdentification, e);
 				}
@@ -177,15 +171,8 @@ public class CandidateElementExtractor {
 		try {
 			return getNodeListForTagElement(dom, tag,
 			        checkedElements.getEventableConditionChecker());
-		} catch (XPathExpressionException e) {
-			LOG.error("Catched XPathExpression during NodeList For Tag Element retrieval",
-			        e);
-			return Collections.emptyList();
-		} catch (SAXException e) {
-			LOG.error("Catched SAXException during NodeList For Tag Element retrieval", e);
-			return Collections.emptyList();
-		} catch (IOException e) {
-			LOG.error("Catched IOException during NodeList For Tag Element retrieval", e);
+		} catch (XPathExpressionException | SAXException | IOException e) {
+			LOG.error("Catched exception during NodeList For Tag Element retrieval", e);
 			return Collections.emptyList();
 		}
 	}
@@ -261,10 +248,7 @@ public class CandidateElementExtractor {
 					Document frameDom =
 					        Helper.getDocument(browser.getFrameDom(frameIdentification));
 					extractElements(frameDom, results, frameIdentification);
-				} catch (SAXException e) {
-					LOG.info("Got exception while inspecting an iframe:" + frameIdentification
-					        + " continuing...", e);
-				} catch (IOException e) {
+				} catch (SAXException | IOException e) {
 					LOG.info("Got exception while inspecting an iframe:" + frameIdentification
 					        + " continuing...", e);
 				}
@@ -420,7 +404,7 @@ public class CandidateElementExtractor {
 					                .checkXpathStartsWithXpathEventableCondition(dom,
 					                        eventableCondition,
 					                        XPathHelper.getXPathExpression(element));
-				} catch (Exception e) {
+				} catch (CrawljaxException e) {
 					// xpath could not be found or determined, so dont filter
 					// element because of xpath
 					matchesXPath = false;
