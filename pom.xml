@@ -4,8 +4,8 @@
 
 	<parent>
 		<groupId>com.crawljax.plugins</groupId>
-		<artifactId>plugin</artifactId>
-		<version>2.2</version>
+		<artifactId>crawljax-plugins-parent</artifactId>
+		<version>2.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>crawloverview</artifactId>
@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>8.1.8.v20121106</version>
+			<version>9.0.0.M5</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

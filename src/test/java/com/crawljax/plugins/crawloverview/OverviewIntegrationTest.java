@@ -10,8 +10,8 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.jetty.server.AbstractConnector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,7 +57,7 @@ public class OverviewIntegrationTest {
 		webAppContext.setWar(RunHoverCrawl.getOutDir().getAbsolutePath());
 		server.setHandler(webAppContext);
 		server.start();
-		int port = ((AbstractConnector) server.getConnectors()[0]).getLocalPort();
+		int port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
 		String url = "http://localhost:" + port;
 		return url;
 	}
