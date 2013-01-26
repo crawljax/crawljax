@@ -3,18 +3,19 @@ package com.crawljax.condition.eventablecondition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.util.XPathHelper;
 
 /**
  * Check whether the conditions of an eventable are satisfied.
- * 
- * @author mesbah
- * @version $Id$
  */
 public class EventableConditionChecker {
 
+	private static final Logger LOG = LoggerFactory.getLogger(EventableConditionChecker.class);
 	private List<EventableCondition> eventableConditions = new ArrayList<EventableCondition>();
 
 	/**
@@ -62,7 +63,7 @@ public class EventableConditionChecker {
 	        EventableCondition eventableCondition, String xpath) throws Exception {
 		if (eventableCondition == null || eventableCondition.getInXPath() == null
 		        || eventableCondition.getInXPath().equals("")) {
-			throw new Exception("Eventable has no XPath condition");
+			throw new CrawljaxException("Eventable has no XPath condition");
 		}
 		List<String> expressions =
 		        XPathHelper.getXpathForXPathExpressions(dom, eventableCondition.getInXPath());
@@ -81,8 +82,10 @@ public class EventableConditionChecker {
 		/* check all expressions */
 		for (String fullXpath : xpathsList) {
 			if (xpath.startsWith(fullXpath)) {
+				LOG.trace("{} IS under xpath {}", xpath, fullXpath);
 				return true;
 			}
+			LOG.trace("{} is not under xpath {}", xpath, fullXpath);
 		}
 
 		return false;

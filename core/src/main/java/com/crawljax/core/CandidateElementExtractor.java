@@ -21,6 +21,7 @@ import org.xml.sax.SAXException;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
+import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.configuration.IgnoreFrameChecker;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
@@ -44,6 +45,11 @@ public class CandidateElementExtractor {
 	private final FormHandler formHandler;
 	private final IgnoreFrameChecker ignoreFrameChecker;
 
+	private final ImmutableList<TagElement> excludeTagElements;
+	private final ImmutableList<TagElement> includedTagElements;
+
+	private final boolean clickOnce;
+
 	/**
 	 * Create a new CandidateElementExtractor.
 	 * 
@@ -54,15 +60,19 @@ public class CandidateElementExtractor {
 	 *            the current browser instance used in the Crawler
 	 * @param formHandler
 	 *            the form handler.
-	 * @param ignoreFrameChecker
+	 * @param configurationReader
 	 *            the checker used to determine if a certain frame must be ignored.
 	 */
 	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser,
-	        FormHandler formHandler, IgnoreFrameChecker ignoreFrameChecker) {
+	        FormHandler formHandler, CrawljaxConfigurationReader configurationReader) {
 		checkedElements = checker;
 		this.browser = browser;
 		this.formHandler = formHandler;
-		this.ignoreFrameChecker = ignoreFrameChecker;
+		this.excludeTagElements = configurationReader.getExcludeTagElements();
+		this.includedTagElements = configurationReader.getTagElements();
+		this.ignoreFrameChecker = configurationReader.getCrawlSpecificationReader();
+		clickOnce = configurationReader.getCrawlSpecificationReader().getClickOnce();
+
 	}
 
 	/**
@@ -81,22 +91,19 @@ public class CandidateElementExtractor {
 	 * @throws CrawljaxException
 	 *             if the method fails.
 	 */
-	public ImmutableList<CandidateElement> extract(List<TagElement> crawlTagElements,
-	        List<TagElement> crawlExcludeTagElements, boolean clickOnce, StateVertex currentState)
+	public ImmutableList<CandidateElement> extract(StateVertex currentState)
 	        throws CrawljaxException {
 		Builder<CandidateElement> results = ImmutableList.builder();
 
 		if (!checkedElements.checkCrawlCondition(browser)) {
-			LOG.info("State " + currentState.getName()
-			        + " dit not satisfy the CrawlConditions.");
+			LOG.info("State {} did not satisfy the CrawlConditions.", currentState.getName());
 			return results.build();
 		}
 		LOG.info("Looking in state: {} for candidate elements with ", currentState.getName());
 
 		try {
 			Document dom = Helper.getDocument(browser.getDomWithoutIframeContent());
-			extractElements(dom, crawlTagElements, crawlExcludeTagElements, clickOnce, results,
-			        "");
+			extractElements(dom, results, "");
 		} catch (SAXException e) {
 			LOG.error(e.getMessage(), e);
 			throw new CrawljaxException(e.getMessage(), e);
@@ -109,34 +116,67 @@ public class CandidateElementExtractor {
 		return found;
 	}
 
-	private void extractElements(Document dom, List<TagElement> crawlTagElements,
-	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
-	        Builder<CandidateElement> results, String relatedFrame) {
+	private void extractElements(Document dom, Builder<CandidateElement> results,
+	        String relatedFrame) {
 
-		for (TagElement tag : crawlTagElements) {
-			LOG.debug("TAG: " + tag.toString());
+		for (TagElement tag : includedTagElements) {
+			LOG.debug("Extracting TAG: {}", tag);
 
-			List<Element> foundElements =
-			        getElementsFromNodelist(dom, crawlExcludeTagElements, tag);
+			addFramesCandidates(dom, results, relatedFrame);
 
-			getFramesCandidates(dom, crawlTagElements, crawlExcludeTagElements, clickOnce,
-			        results, relatedFrame);
+			addIFramesCandidates(dom, results, relatedFrame);
 
-			getIFramesCandidates(dom, crawlTagElements, crawlExcludeTagElements, clickOnce,
-			        results, relatedFrame);
-
+			List<Element> foundElements = getElementsFromNodelist(dom, tag);
 			for (Element sourceElement : foundElements) {
 				evaluateElement(clickOnce, results, relatedFrame, tag, sourceElement);
 			}
 		}
 	}
 
-	private List<Element> getElementsFromNodelist(Document dom,
-	        List<TagElement> crawlExcludeTagElements, TagElement tag) {
+	private void addFramesCandidates(Document dom, Builder<CandidateElement> results,
+	        String relatedFrame) {
+
+		NodeList frameNodes = dom.getElementsByTagName("FRAME");
+
+		for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
+
+			String frameIdentification = "";
+
+			if (relatedFrame != null && !relatedFrame.equals("")) {
+				frameIdentification += relatedFrame + ".";
+			}
+
+			Element frameElement = (Element) frameNodes.item(i);
+
+			String nameId = Helper.getFrameIdentification(frameElement);
+
+			// TODO Stefan; Here the IgnoreFrameChecker is used, also in
+			// WebDriverBackedEmbeddedBrowser. We must get this in 1 place.
+			if (nameId != null
+			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
+				frameIdentification += nameId;
+
+				LOG.debug("frame Identification: {}", frameIdentification);
+
+				try {
+					Document frameDom =
+					        Helper.getDocument(browser.getFrameDom(frameIdentification));
+					extractElements(frameDom, results, frameIdentification);
+				} catch (SAXException e) {
+					LOG.info("Got exception while inspecting a frame: {} continuing...",
+					        frameIdentification, e);
+				} catch (IOException e) {
+					LOG.info("Got exception while inspecting a frame: {} continuing...",
+					        frameIdentification, e);
+				}
+			}
+		}
+	}
+
+	private List<Element> getElementsFromNodelist(Document dom, TagElement tag) {
 		try {
 			return getNodeListForTagElement(dom, tag,
-			        checkedElements.getEventableConditionChecker(),
-			        crawlExcludeTagElements);
+			        checkedElements.getEventableConditionChecker());
 		} catch (XPathExpressionException e) {
 			LOG.error("Catched XPathExpression during NodeList For Tag Element retrieval",
 			        e);
@@ -192,9 +232,8 @@ public class CandidateElementExtractor {
 		}
 	}
 
-	private void getIFramesCandidates(Document dom, List<TagElement> crawlTagElements,
-	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
-	        Builder<CandidateElement> results, String relatedFrame) {
+	private void addIFramesCandidates(Document dom, Builder<CandidateElement> results,
+	        String relatedFrame) {
 
 		NodeList frameNodes = dom.getElementsByTagName("IFRAME");
 
@@ -221,56 +260,12 @@ public class CandidateElementExtractor {
 				try {
 					Document frameDom =
 					        Helper.getDocument(browser.getFrameDom(frameIdentification));
-					extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
-					        clickOnce, results, frameIdentification);
+					extractElements(frameDom, results, frameIdentification);
 				} catch (SAXException e) {
 					LOG.info("Got exception while inspecting an iframe:" + frameIdentification
 					        + " continuing...", e);
 				} catch (IOException e) {
 					LOG.info("Got exception while inspecting an iframe:" + frameIdentification
-					        + " continuing...", e);
-				}
-			}
-		}
-	}
-
-	// adds support for FRAME tags
-	private void getFramesCandidates(Document dom, List<TagElement> crawlTagElements,
-	        List<TagElement> crawlExcludeTagElements, boolean clickOnce,
-	        Builder<CandidateElement> results, String relatedFrame) {
-
-		NodeList frameNodes = dom.getElementsByTagName("FRAME");
-
-		for (int i = 0; frameNodes != null && i < frameNodes.getLength(); i++) {
-
-			String frameIdentification = "";
-
-			if (relatedFrame != null && !relatedFrame.equals("")) {
-				frameIdentification += relatedFrame + ".";
-			}
-
-			Element frameElement = (Element) frameNodes.item(i);
-
-			String nameId = Helper.getFrameIdentification(frameElement);
-
-			// TODO Stefan; Here the IgnoreFrameChecker is used, also in
-			// WebDriverBackedEmbeddedBrowser. We must get this in 1 place.
-			if (nameId != null
-			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
-				frameIdentification += nameId;
-
-				LOG.debug("frame Identification: " + frameIdentification);
-
-				try {
-					Document frameDom =
-					        Helper.getDocument(browser.getFrameDom(frameIdentification));
-					extractElements(frameDom, crawlTagElements, crawlExcludeTagElements,
-					        clickOnce, results, frameIdentification);
-				} catch (SAXException e) {
-					LOG.info("Got exception while inspecting a frame:" + frameIdentification
-					        + " continuing...", e);
-				} catch (IOException e) {
-					LOG.info("Got exception while inspecting a frame:" + frameIdentification
 					        + " continuing...", e);
 				}
 			}
@@ -286,8 +281,8 @@ public class CandidateElementExtractor {
 	 * @throws XPathExpressionException
 	 */
 	private List<Element> getNodeListForTagElement(Document dom, TagElement tagElement,
-	        EventableConditionChecker eventableConditionChecker,
-	        List<TagElement> crawlExcludeTagElements) throws SAXException, IOException,
+	        EventableConditionChecker eventableConditionChecker) throws SAXException,
+	        IOException,
 	        CrawljaxException, XPathExpressionException {
 
 		List<Element> result = new ArrayList<Element>();
@@ -351,12 +346,12 @@ public class CandidateElementExtractor {
 			}
 		}
 
-		if ((crawlExcludeTagElements == null) || (crawlExcludeTagElements.size() == 0)) {
+		if (excludeTagElements.isEmpty()) {
 			return result;
 		} else {
 			List<Element> resultExcluded = new ArrayList<Element>();
 			for (Element e : result) {
-				if (!isExcluded(dom, e, eventableConditionChecker, crawlExcludeTagElements)) {
+				if (!isExcluded(dom, e, eventableConditionChecker)) {
 					resultExcluded.add(e);
 				}
 			}
@@ -404,16 +399,16 @@ public class CandidateElementExtractor {
 	 *         candidates.
 	 */
 	private boolean isExcluded(Document dom, Element element,
-	        EventableConditionChecker eventableConditionChecker, List<TagElement> excluded) {
+	        EventableConditionChecker eventableConditionChecker) {
 
 		Node parent = element.getParentNode();
 
 		if (parent instanceof Element
-		        && isExcluded(dom, (Element) parent, eventableConditionChecker, excluded)) {
+		        && isExcluded(dom, (Element) parent, eventableConditionChecker)) {
 			return true;
 		}
 
-		for (TagElement tag : excluded) {
+		for (TagElement tag : excludeTagElements) {
 
 			if (element.getTagName().equalsIgnoreCase(tag.getName())) {
 				boolean matchesXPath = false;

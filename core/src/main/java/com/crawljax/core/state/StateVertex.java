@@ -33,9 +33,6 @@ import com.crawljax.util.Helper;
  * CandidateElements found in this state. When iterating over the possible candidate elements every
  * time a candidate is returned its removed from the list so it is a one time only access to the
  * candidates.
- * 
- * @author mesbah
- * @version $Id$
  */
 public class StateVertex implements Serializable {
 
@@ -272,8 +269,7 @@ public class StateVertex implements Serializable {
 
 		try {
 			List<CandidateElement> candidateList =
-			        candidateExtractor.extract(crawlTagElements, crawlExcludeTagElements,
-			                clickOnce, this);
+			        candidateExtractor.extract(this);
 
 			for (CandidateElement candidateElement : candidateList) {
 				for (String eventType : eventTypes) {

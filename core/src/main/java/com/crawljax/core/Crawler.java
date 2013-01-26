@@ -539,7 +539,7 @@ public class Crawler implements Runnable {
 
 		this.candidateExtractor =
 		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
-		                formHandler, configurationReader.getCrawlSpecificationReader());
+		                formHandler, configurationReader);
 		/**
 		 * go back into the previous state.
 		 */
