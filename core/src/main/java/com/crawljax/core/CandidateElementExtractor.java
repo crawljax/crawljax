@@ -106,7 +106,7 @@ public class CandidateElementExtractor {
 			extractElements(dom, results, "");
 		} catch (SAXException | IOException e) {
 			LOG.error(e.getMessage(), e);
-			throw new CrawljaxException(e.getMessage(), e);
+			throw new CrawljaxException(e);
 		}
 		ImmutableList<CandidateElement> found = results.build();
 		LOG.info("Found {} new candidate elements to analyze!", found.size());
@@ -123,10 +123,7 @@ public class CandidateElementExtractor {
 
 			addIFramesCandidates(dom, results, relatedFrame);
 
-			List<Element> foundElements = getElementsFromNodelist(dom, tag);
-			for (Element sourceElement : foundElements) {
-				evaluateElement(clickOnce, results, relatedFrame, tag, sourceElement);
-			}
+			eveluateElements(dom, tag, results, relatedFrame);
 		}
 	}
 
@@ -167,13 +164,17 @@ public class CandidateElementExtractor {
 		}
 	}
 
-	private List<Element> getElementsFromNodelist(Document dom, TagElement tag) {
+	private void eveluateElements(Document dom, TagElement tag,
+	        Builder<CandidateElement> results, String relatedFrame) {
 		try {
-			return getNodeListForTagElement(dom, tag,
+			List<Element> nodeListForTagElement = getNodeListForTagElement(dom, tag,
 			        checkedElements.getEventableConditionChecker());
+
+			for (Element sourceElement : nodeListForTagElement) {
+				evaluateElement(clickOnce, results, relatedFrame, tag, sourceElement);
+			}
 		} catch (XPathExpressionException | SAXException | IOException e) {
 			LOG.error("Catched exception during NodeList For Tag Element retrieval", e);
-			return Collections.emptyList();
 		}
 	}
 

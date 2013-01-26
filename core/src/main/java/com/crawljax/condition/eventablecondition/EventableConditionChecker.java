@@ -1,6 +1,5 @@
 package com.crawljax.condition.eventablecondition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +8,8 @@ import org.w3c.dom.Document;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.util.XPathHelper;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 /**
  * Check whether the conditions of an eventable are satisfied.
@@ -16,7 +17,7 @@ import com.crawljax.util.XPathHelper;
 public class EventableConditionChecker {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EventableConditionChecker.class);
-	private List<EventableCondition> eventableConditions = new ArrayList<EventableCondition>();
+	private List<EventableCondition> eventableConditions;
 
 	/**
 	 * Construct the eventableconditionchecker with its eventable conditions.
@@ -25,23 +26,23 @@ public class EventableConditionChecker {
 	 *            The eventable conditions.
 	 */
 	public EventableConditionChecker(List<EventableCondition> eventableConditions) {
+		Preconditions.checkNotNull(eventableConditions);
 		this.eventableConditions = eventableConditions;
 	}
 
 	/**
 	 * @param id
-	 *            Identifier of the eventablecondition.
-	 * @return EventableCondition
+	 *            Identifier of the {@link EventableCondition}.
+	 * @return EventableCondition or <code>null</code>
 	 */
 	public EventableCondition getEventableCondition(String id) {
-		if (eventableConditions != null && id != null && !id.equals("")) {
+		if (!Strings.isNullOrEmpty(id)) {
 			for (EventableCondition eventableCondition : eventableConditions) {
 				if (eventableCondition.getId().equalsIgnoreCase(id)) {
 					return eventableCondition;
 				}
 			}
 		}
-
 		return null;
 	}
 
