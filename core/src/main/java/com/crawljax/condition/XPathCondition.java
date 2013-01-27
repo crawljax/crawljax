@@ -11,7 +11,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 
 /**
@@ -44,7 +44,7 @@ public class XPathCondition extends AbstractCondition {
 	private boolean checkXPathExpression(EmbeddedBrowser browser) {
 
 		try {
-			Document document = Helper.getDocument(browser.getDom());
+			Document document = DomUtils.getDocument(browser.getDom());
 			NodeList nodeList = XPathHelper.evaluateXpathExpression(document, expression);
 			// TODO IF this can be removed, the ThreadLocal store can be removed and increasing
 			// speed!

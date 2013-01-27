@@ -1,7 +1,6 @@
 package com.crawljax.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
@@ -24,8 +23,6 @@ import com.crawljax.test.BrowserTest;
 
 /**
  * Test for the Helper class.
- * 
- * @author Ali Mesbah
  */
 @Category(BrowserTest.class)
 public class HelperTest {
@@ -40,7 +37,7 @@ public class HelperTest {
 		String html = "<html><body><p/></body></html>";
 
 		try {
-			Document doc = Helper.getDocument(html);
+			Document doc = DomUtils.getDocument(html);
 			assertNotNull(doc);
 		} catch (SAXException e) {
 			fail(e.getMessage());
@@ -64,7 +61,7 @@ public class HelperTest {
 		html = browser.getDom();
 		assertNotNull(html);
 
-		Document doc = Helper.getDocument(html);
+		Document doc = DomUtils.getDocument(html);
 		assertNotNull(doc);
 
 		browser.close();
@@ -73,96 +70,23 @@ public class HelperTest {
 	}
 
 	@Test
-	public void isLinkExternal() {
-		assertTrue(Helper.isLinkExternal("http://crawljax.com", "http://google.com"));
-		assertTrue(Helper.isLinkExternal("http://crawljax.com", "file:///test/"));
-		assertFalse(Helper.isLinkExternal("http://crawljax.com/download",
-		        "http://crawljax.com/about"));
-		// This is done intentional to capture miss formed urls as local so crawljax will process
-		// them
-		assertFalse("Missformed link is not external",
-		        Helper.isLinkExternal("http://crawljax.com", "http"));
-
-		assertFalse("link and base are the same (http)",
-		        Helper.isLinkExternal("http://crawljax.com", "http://crawljax.com"));
-
-		assertFalse("link and base are the same (https)",
-		        Helper.isLinkExternal("https://crawljax.com", "https://crawljax.com"));
-
-		assertFalse("link and base are the same (file)",
-		        Helper.isLinkExternal("file:///tmp/index.html", "file:///tmp/index.html"));
-
-		assertFalse("Sub dir is not external for file",
-		        Helper.isLinkExternal("file:///tmp/index.html", "file:///tmp/subdir/index.html"));
-
-		assertFalse("Sub dirs is not external for http", Helper.isLinkExternal(
-		        "http://crawljax.com", "http://crawljax.com/sub/dir/about.html"));
-
-		assertFalse("Https link from http base is not external",
-		        Helper.isLinkExternal("http://crawljax.com", "https://crawljax.com/about.html"));
-		assertFalse("Https link from https base is not external",
-		        Helper.isLinkExternal("https://crawljax.com", "https://crawljax.com/about.html"));
-		assertFalse("Http link from https base is not external",
-		        Helper.isLinkExternal("https://crawljax.com", "http://crawljax.com/about.html"));
-
-		assertFalse("relative link from https base is not external",
-		        Helper.isLinkExternal("https://crawljax.com", "about.html"));
-		assertFalse("relative link from http base is not external",
-		        Helper.isLinkExternal("http://crawljax.com", "about.html"));
-
-		assertFalse("root link from http base is not external",
-		        Helper.isLinkExternal("http://crawljax.com", "/about.html"));
-		assertFalse("root link from https base is not external",
-		        Helper.isLinkExternal("https://crawljax.com", "/about.html"));
-
-		assertFalse("relative link from file base is not external",
-		        Helper.isLinkExternal("file:///tmp/index.html", "about.html"));
-
-		assertTrue("root link from file base is external",
-		        Helper.isLinkExternal("file://tmp/index.html", "/about.html"));
-	}
-
-	@Test
-	public void getBaseUrl() {
-		assertEquals("http://crawljax.com", Helper.getBaseUrl("http://crawljax.com/about/"));
-
-	}
-
-	@Test
 	public void getElementAttributes() throws SAXException, IOException {
 		Document dom;
 		dom =
-		        Helper.getDocumentNoBalance("<html><body><div class=\"bla\" "
+		        DomUtils.getDocumentNoBalance("<html><body><div class=\"bla\" "
 		                + "id=\"test\">Bla</div></body></html>");
 		assertEquals("class=bla id=test",
-		        Helper.getAllElementAttributes(dom.getElementById("test")));
-	}
-
-	@Test
-	public void directoryCheck() throws IOException {
-		String directory = "test-123-123";
-		File dir = new File(directory);
-		if (!dir.exists()) {
-			Helper.directoryCheck(directory);
-			assertTrue("Directory not created", dir.exists());
-			assertTrue(dir.delete());
-		}
-	}
-
-	@Test
-	public void getVarFromQueryString() {
-		assertEquals("home",
-		        Helper.getVarFromQueryString("page", "?sub=1&userid=123&page=home&goto=0"));
+		        DomUtils.getAllElementAttributes(dom.getElementById("test")));
 	}
 
 	@Test
 	public void writeAndGetContents() throws IOException, TransformerException, SAXException {
 		File f = File.createTempFile("HelperTest.writeAndGetContents", ".tmp");
-		Helper.writeDocumentToFile(Helper.getDocument("<html><body><p>Test</p></body></html>"),
+		DomUtils.writeDocumentToFile(
+		        DomUtils.getDocument("<html><body><p>Test</p></body></html>"),
 		        f.getAbsolutePath(), "html", 2);
-		assertNotSame("", Helper.getContent(f));
 
-		assertNotSame("", Helper.getTemplateAsString(f.getAbsolutePath()));
+		assertNotSame("", DomUtils.getTemplateAsString(f.getAbsolutePath()));
 
 		assertTrue(f.exists());
 

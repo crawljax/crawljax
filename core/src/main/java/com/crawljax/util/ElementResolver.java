@@ -58,7 +58,7 @@ public class ElementResolver {
 	public String resolve(boolean logging) {
 		Document dom = null;
 		try {
-			dom = Helper.getDocument(browser.getDom());
+			dom = DomUtils.getDocument(browser.getDom());
 		} catch (SAXException e) {
 			LOGGER.error(e.getMessage(), e);
 			return "";
@@ -69,7 +69,7 @@ public class ElementResolver {
 
 		try {
 			String xpathEventable = eventable.getIdentification().getValue();
-			Node nodeSameXpath = Helper.getElementByXpath(dom, xpathEventable);
+			Node nodeSameXpath = DomUtils.getElementByXpath(dom, xpathEventable);
 			if (nodeSameXpath != null) {
 				Element elementSameXpath = new Element(nodeSameXpath);
 				if (logging) {

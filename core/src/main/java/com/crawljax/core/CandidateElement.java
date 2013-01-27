@@ -9,7 +9,8 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Candidate element for crawling. It is possible to link this eventable to form inputs, so that
@@ -60,20 +61,18 @@ public class CandidateElement {
 	 * @return unique string without atusa attribute
 	 */
 	public String getGeneralString() {
-		List<String> exclude = new ArrayList<String>();
-		exclude.add("atusa");
+		ImmutableSet<String> exclude = ImmutableSet.of("atusa");
 
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		if (element != null) {
-			result += this.element.getNodeName() + ": ";
+			result.append(this.element.getNodeName()).append(": ");
 
 		}
+		result.append(DomUtils.getElementAttributes(this.element, exclude))
+		        .append(' ').append(this.identification)
+		        .append(' ').append(relatedFrame);
 
-		result +=
-		        Helper.getElementAttributes(this.element, exclude) + " " + this.identification
-		                + " " + relatedFrame;
-
-		return result;
+		return result.toString();
 	}
 
 	/**
@@ -86,7 +85,7 @@ public class CandidateElement {
 		if (element != null) {
 			result +=
 			        this.element.getNodeName() + ": "
-			                + Helper.getAllElementAttributes(this.element) + " ";
+			                + DomUtils.getAllElementAttributes(this.element) + " ";
 		}
 
 		result += this.identification + " " + relatedFrame;

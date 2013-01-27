@@ -25,7 +25,7 @@ import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.TagElement;
 import com.crawljax.core.state.Eventable.EventType;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 /**
  * The state vertex class which represents a state in the browser. This class implements the
@@ -345,7 +345,7 @@ public class StateVertex implements Serializable {
 	 *             if an exception is thrown.
 	 */
 	public Document getDocument() throws SAXException, IOException {
-		return Helper.getDocument(this.dom);
+		return DomUtils.getDocument(this.dom);
 	}
 
 	/**

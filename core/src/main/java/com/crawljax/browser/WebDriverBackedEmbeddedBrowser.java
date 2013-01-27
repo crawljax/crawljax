@@ -47,7 +47,7 @@ import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.forms.InputValue;
 import com.crawljax.forms.RandomInputValueGenerator;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 /**
  * @author mesbah
@@ -341,15 +341,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	public String getDom() {
 
 		try {
-			String dom = toUniformDOM(Helper.getDocumentToString(getDomTreeWithFrames()));
+			String dom = toUniformDOM(DomUtils.getDocumentToString(getDomTreeWithFrames()));
 			LOGGER.debug(dom);
 			return dom;
-		} catch (WebDriverException e) {
-			throwIfConnectionException(e);
-			LOGGER.warn(e.getMessage(), e);
-			return "";
-		} catch (CrawljaxException e) {
-			LOGGER.warn(e.getMessage(), e);
+		} catch (WebDriverException | CrawljaxException e) {
+			LOGGER.warn("Could not get the dom", e);
 			return "";
 		}
 	}
@@ -565,7 +561,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private Document getDomTreeWithFrames() throws CrawljaxException {
 
 		try {
-			Document document = Helper.getDocument(browser.getPageSource());
+			Document document = DomUtils.getDocument(browser.getPageSource());
 			appendFrameContent(document.getDocumentElement(), document, "");
 			return document;
 		} catch (SAXException e) {
@@ -603,7 +599,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 			Element frameElement = nodeList.get(i);
 
-			String nameId = Helper.getFrameIdentification(frameElement);
+			String nameId = DomUtils.getFrameIdentification(frameElement);
 
 			if (nameId != null
 			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
@@ -622,7 +618,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				browser.switchTo().defaultContent();
 
 				try {
-					Element toAppendElement = Helper.getDocument(toAppend).getDocumentElement();
+					Element toAppendElement = DomUtils.getDocument(toAppend).getDocumentElement();
 					Element importedElement =
 					        (Element) document.importNode(toAppendElement, true);
 					frameElement.appendChild(importedElement);

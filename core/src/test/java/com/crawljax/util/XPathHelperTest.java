@@ -33,7 +33,7 @@ public class XPathHelperTest {
 		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
 		                + "<a id='thea'>test</a></span></div></body>";
 
-		Document dom = Helper.getDocument(html);
+		Document dom = DomUtils.getDocument(html);
 		assertNotNull(dom);
 
 		// first div

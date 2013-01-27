@@ -2,6 +2,8 @@ package com.crawljax.condition.eventablecondition;
 
 import java.util.List;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -57,11 +59,12 @@ public class EventableConditionChecker {
 	 *            The XPath.
 	 * @return boolean whether xpath starts with xpath location of eventable condition xpath
 	 *         condition
+	 * @throws XPathExpressionException
 	 * @throws CrawljaxException
 	 *             when not can be determined whether xpath contains needed xpath locaton
 	 */
 	public boolean checkXpathStartsWithXpathEventableCondition(Document dom,
-	        EventableCondition eventableCondition, String xpath) {
+	        EventableCondition eventableCondition, String xpath) throws XPathExpressionException {
 		if (eventableCondition == null || eventableCondition.getInXPath() == null
 		        || eventableCondition.getInXPath().equals("")) {
 			throw new CrawljaxException("Eventable has no XPath condition");

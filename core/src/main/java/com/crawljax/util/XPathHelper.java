@@ -19,6 +19,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+
 /**
  * Utility class that contains methods used by Crawljax and some plugin to deal with XPath
  * resolving, constructing etc.
@@ -120,7 +123,7 @@ public final class XPathHelper {
 	 */
 	public static NodeList evaluateXpathExpression(String domStr, String xpathExpr)
 	        throws Exception {
-		Document dom = Helper.getDocument(domStr);
+		Document dom = DomUtils.getDocument(domStr);
 
 		return evaluateXpathExpression(dom, xpathExpr);
 	}
@@ -157,22 +160,19 @@ public final class XPathHelper {
 	 * @param xpathExpression
 	 *            The expression to find the element.
 	 * @return list of XPaths retrieved by xpathExpression.
+	 * @throws XPathExpressionException
 	 */
-	public static List<String> getXpathForXPathExpressions(Document dom, String xpathExpression) {
-		NodeList nodeList;
-		try {
-			nodeList = XPathHelper.evaluateXpathExpression(dom, xpathExpression);
-		} catch (XPathExpressionException e) {
-			return null;
-		}
-		List<String> result = new ArrayList<String>();
+	public static ImmutableList<String> getXpathForXPathExpressions(Document dom,
+	        String xpathExpression) throws XPathExpressionException {
+		NodeList nodeList = XPathHelper.evaluateXpathExpression(dom, xpathExpression);
+		Builder<String> result = ImmutableList.builder();
 		if (nodeList.getLength() > 0) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node n = nodeList.item(i);
 				result.add(getXPathExpression(n));
 			}
 		}
-		return result;
+		return result.build();
 	}
 
 	/**

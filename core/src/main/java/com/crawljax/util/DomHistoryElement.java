@@ -55,7 +55,7 @@ public class DomHistoryElement {
 		this.domStr = domStr;
 		this.eventSequence = eventSeq;
 		try {
-			this.dom = Helper.getDocument(domStr);
+			this.dom = DomUtils.getDocument(domStr);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

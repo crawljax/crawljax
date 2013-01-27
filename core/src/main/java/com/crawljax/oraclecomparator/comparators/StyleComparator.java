@@ -14,8 +14,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 
 /**
@@ -53,13 +54,10 @@ public class StyleComparator extends AbstractComparator {
 	@Override
 	public boolean isEquivalent() {
 		try {
-			setOriginalDom(Helper.getDocumentToString(stripDom(Helper
+			setOriginalDom(DomUtils.getDocumentToString(stripDom(DomUtils
 			        .getDocument(getOriginalDom()))));
-			setNewDom(Helper.getDocumentToString(stripDom(Helper.getDocument(getNewDom()))));
-		} catch (SAXException e) {
-			LOGGER.error(e.getMessage(), e);
-			return false;
-		} catch (IOException e) {
+			setNewDom(DomUtils.getDocumentToString(stripDom(DomUtils.getDocument(getNewDom()))));
+		} catch (SAXException | IOException | CrawljaxException e) {
 			LOGGER.error(e.getMessage(), e);
 			return false;
 		}

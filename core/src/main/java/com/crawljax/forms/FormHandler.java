@@ -23,7 +23,7 @@ import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.exception.BrowserConnectionException;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 
 /**
@@ -88,7 +88,7 @@ public class FormHandler {
 					if (text.equals("")) {
 						return;
 					}
-					String js = Helper.getJSGetElement(XPathHelper.getXPathExpression(element));
+					String js = DomUtils.getJSGetElement(XPathHelper.getXPathExpression(element));
 					js += "try{ATUSA_element.value='" + text + "';}catch(e){}";
 					browser.executeJavaScript(js);
 				}
@@ -97,7 +97,7 @@ public class FormHandler {
 				if (input.getType().equals("checkbox")) {
 					for (InputValue inputValue : input.getInputValues()) {
 						String js =
-						        Helper.getJSGetElement(XPathHelper.getXPathExpression(element));
+						        DomUtils.getJSGetElement(XPathHelper.getXPathExpression(element));
 						boolean check;
 						if (!randomFieldValue) {
 							check = inputValue.isChecked();
@@ -122,7 +122,7 @@ public class FormHandler {
 					for (InputValue inputValue : input.getInputValues()) {
 						if (inputValue.isChecked()) {
 							String js =
-							        Helper.getJSGetElement(XPathHelper
+							        DomUtils.getJSGetElement(XPathHelper
 							                .getXPathExpression(element));
 							js += "try{ATUSA_element.checked=true;}catch(e){}";
 							browser.executeJavaScript(js);
@@ -135,7 +135,7 @@ public class FormHandler {
 					for (InputValue inputValue : input.getInputValues()) {
 						// if(browser.getDriver()==null){
 						String js =
-						        Helper.getJSGetElement(XPathHelper.getXPathExpression(element));
+						        DomUtils.getJSGetElement(XPathHelper.getXPathExpression(element));
 						js +=
 						        "try{" + "for(i=0; i<ATUSA_element.options.length; i++){"
 						                + "if(ATUSA_element.options[i].value=='"
@@ -200,7 +200,7 @@ public class FormHandler {
 		List<FormInput> formInputs = new ArrayList<FormInput>();
 		Document dom;
 		try {
-			dom = Helper.getDocument(browser.getDom());
+			dom = DomUtils.getDocument(browser.getDom());
 			List<Node> nodes = getInputElements(dom);
 			for (Node node : nodes) {
 				FormInput formInput =
@@ -239,7 +239,7 @@ public class FormHandler {
 		Document dom;
 
 		try {
-			dom = Helper.getDocument(browser.getDomWithoutIframeContent());
+			dom = DomUtils.getDocument(browser.getDomWithoutIframeContent());
 			for (FormInput input : formInputs) {
 				LOGGER.debug("Filling in: " + input);
 				setInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
