@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -35,6 +36,11 @@ public class CandidateElementExtractorTest {
 	private CrawljaxController controller;
 	private Crawler crawler;
 
+	@After
+	public void shutDown() {
+		controller.getBrowserPool().shutdown();
+	}
+
 	@Test
 	public void testExtract() throws InterruptedException, CrawljaxException,
 	        ConfigurationException {
@@ -56,7 +62,6 @@ public class CandidateElementExtractorTest {
 		assertNotNull(candidates);
 		assertEquals(15, candidates.size());
 
-		controller.getBrowserPool().shutdown();
 	}
 
 	private void setupCrawler(CrawlSpecification spec) throws ConfigurationException,
@@ -93,7 +98,6 @@ public class CandidateElementExtractorTest {
 		assertNotNull(candidates);
 		assertThat(candidates, hasSize(11));
 
-		controller.getBrowserPool().shutdown();
 	}
 
 	@Test
@@ -111,7 +115,6 @@ public class CandidateElementExtractorTest {
 		CandidateElementExtractor extractor =
 		        new CandidateElementExtractor(controller.getElementChecker(),
 		                crawler.getBrowser(), formHandler, controller.getConfigurationReader());
-		assertNotNull(extractor);
 
 		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
@@ -119,11 +122,12 @@ public class CandidateElementExtractorTest {
 			LOG.debug("candidate: " + e.getUniqueString());
 		}
 
+		server.after();
+
+		assertNotNull(extractor);
 		assertNotNull(candidates);
 		assertThat(candidates, hasSize(9));
 
-		controller.getBrowserPool().shutdown();
-		server.after();
 	}
 
 	/**
