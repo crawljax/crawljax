@@ -161,7 +161,7 @@ public class JarRunner {
 
 		if (commandLine.hasOption(PARALLEL)) {
 			int parallel = Integer.parseInt(commandLine.getOptionValue(PARALLEL));
-			ThreadConfiguration threadConfiguration = new ThreadConfiguration(5, 10, true);
+			ThreadConfiguration threadConfiguration = new ThreadConfiguration();
 			threadConfiguration.setNumberThreads(parallel + 2);
 			threadConfiguration.setNumberBrowsers(parallel);
 			threadConfiguration.setBrowserBooting(true);
