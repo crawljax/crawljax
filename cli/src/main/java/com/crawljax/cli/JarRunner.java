@@ -1,5 +1,6 @@
 package com.crawljax.cli;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -18,6 +19,8 @@ import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.ThreadConfiguration;
+import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
@@ -28,7 +31,7 @@ public class JarRunner {
 	public static final String MAXSTATES = "maxstates";
 	public static final String DEPTH = "depth";
 	public static final String BROWSER = "browser";
-	public static final String URL = "url";
+	public static final String PARALLEL = "parallel";
 
 	private static final int SPACES_AFTER_OPTION = 3;
 	private static final int SPACES_BEFORE_OPTION = 5;
@@ -42,7 +45,7 @@ public class JarRunner {
 	 */
 	public static void main(String[] args) {
 		try {
-			if (args.length < 1) {
+			if (args.length < 2) {
 				printHelp(getOptions());
 				System.exit(1);
 			}
@@ -58,26 +61,40 @@ public class JarRunner {
 	 * 
 	 * @return Options expected from command-line.
 	 */
+	@SuppressWarnings("static-access")
 	private static Options getOptions() {
 		Options options = new Options();
-
 		options.addOption(new Option(HELP, "print this message"));
 		options.addOption(new Option(VERSION, "print the version information and exit"));
 
-		options.addOption(OptionBuilder.withArgName("URL").hasArg()
-		        .withDescription("url to crawl").create(URL));
-
-		options.addOption(OptionBuilder.withLongOpt(BROWSER)
-		        .withDescription("browser type: firefox, chrome, ie, htmlunit").hasArg()
-		        .withArgName("TYPE").create());
+		options.addOption(
+		        OptionBuilder
+		                .withLongOpt(BROWSER)
+		                .withDescription(
+		                        "browser type: firefox, chrome, ie, htmlunit. Default is Firefox")
+		                .hasArg()
+		                .withArgName("TYPE").create());
 
 		options.addOption(OptionBuilder.withLongOpt(DEPTH)
-		        .withDescription("crawl depth level").hasArg().withArgName("LEVEL").create());
+		        .withDescription("crawl depth level. Default is 2")
+		        .hasArg()
+		        .withArgName("LEVEL").create());
 
-		options.addOption(OptionBuilder.withLongOpt(MAXSTATES)
-		        .withDescription("max number of states to crawl").hasArg()
-		        .withArgName("STATES").create());
+		options.addOption(
+		        OptionBuilder
+		                .withLongOpt(MAXSTATES)
+		                .withDescription(
+		                        "max number of states to crawl. Default is 0 (unlimited)")
+		                .hasArg()
+		                .withArgName("STATES").create());
 
+		options.addOption(
+		        OptionBuilder
+		                .withLongOpt(PARALLEL)
+		                .withDescription(
+		                        "Number of browsers to use for crawling. Default is 1")
+		                .hasArg()
+		                .withArgName("PARALLEL").create());
 		return options;
 	}
 
@@ -88,7 +105,8 @@ public class JarRunner {
 	 * @throws IOException
 	 */
 	public static void printHelp(Options options) throws IOException {
-		String cmlSyntax = "java -jar crawljax-cli-" + getCrawljaxVersion() + ".jar";
+		String cmlSyntax =
+		        "java -jar crawljax-cli-" + getCrawljaxVersion() + ".jar theUrl theOutputDir";
 		final PrintWriter writer = new PrintWriter(System.out);
 		final HelpFormatter helpFormatter = new HelpFormatter();
 		helpFormatter.printHelp(writer, ROW_WIDTH, cmlSyntax, "", options,
@@ -112,18 +130,18 @@ public class JarRunner {
 		Options options = getOptions();
 		final CommandLine commandLine = new GnuParser().parse(options, args);
 
-		String urlValue = commandLine.getOptionValue(URL);
-
+		String url = commandLine.getArgs()[0];
+		String outputDir = commandLine.getArgs()[1];
 		if (commandLine.hasOption(HELP)) {
 			printHelp(options);
 		} else if (commandLine.hasOption(VERSION)) {
 			System.out.println("crawljax version \"" + getCrawljaxVersion() + "\"");
-		} else if (urlIsInvalid(urlValue)) {
-			System.err.println("provide a valid URL. -url=http://example.com");
+		} else if (urlIsInvalid(url)) {
+			System.err.println("provide a valid URL like http://example.com");
 			printHelp(options);
 			System.exit(1);
 		} else {
-			readConfigAndRun(commandLine, urlValue);
+			readConfigAndRun(commandLine, url, outputDir);
 		}
 	}
 
@@ -137,9 +155,11 @@ public class JarRunner {
 		return urlValue == null || !new UrlValidator(schemes).isValid(urlValue);
 	}
 
-	private static void readConfigAndRun(final CommandLine commandLine, String urlValue) {
+	private static void readConfigAndRun(final CommandLine commandLine, String urlValue,
+	        String outputDir) {
 		CrawlSpecification crawlSpec = new CrawlSpecification(urlValue);
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
+		config.addPlugin(new CrawlOverview(new File(outputDir)));
 		config.setCrawlSpecification(crawlSpec);
 
 		if (commandLine.hasOption(BROWSER)) {
@@ -155,6 +175,15 @@ public class JarRunner {
 		if (commandLine.hasOption(MAXSTATES)) {
 			String maxstates = commandLine.getOptionValue(MAXSTATES);
 			crawlSpec.setMaximumStates(Integer.parseInt(maxstates));
+		}
+
+		if (commandLine.hasOption(PARALLEL)) {
+			int parallel = Integer.parseInt(commandLine.getOptionValue(PARALLEL));
+			ThreadConfiguration threadConfiguration = new ThreadConfiguration(5, 10, true);
+			threadConfiguration.setNumberThreads(parallel + 2);
+			threadConfiguration.setNumberBrowsers(parallel);
+			threadConfiguration.setBrowserBooting(true);
+			config.setThreadConfiguration(threadConfiguration);
 		}
 
 		// run Crawljax
