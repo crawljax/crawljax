@@ -87,12 +87,10 @@ class OutputBuilder {
 
 	private void copySkeleton() {
 		try {
-			File srcDir = new File(OutputBuilder.class.getResource("/skeleton").toURI());
+			File srcDir = new File(OutputBuilder.class.getResource("/skeleton").getPath());
 			FileUtils.copyDirectory(srcDir, outputDir);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not copy required resources: " + e.getMessage(), e);
-		} catch (URISyntaxException e) {
-			throw new RuntimeException("Could not find skeleton resource: " + e.getMessage(), e);
 		}
 	}
 
