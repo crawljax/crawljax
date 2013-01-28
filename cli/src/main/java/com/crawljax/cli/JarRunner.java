@@ -104,7 +104,7 @@ public class JarRunner {
 	 */
 	public static void printHelp(Options options) throws IOException {
 		String cmlSyntax =
-		        "java -jar crawljax-cli-" + getCrawljaxVersion() + ".jar theUrl theOutputDir";
+		        "java -jar crawljax-cli-version.jar theUrl theOutputDir";
 		final PrintWriter writer = new PrintWriter(System.out);
 		final HelpFormatter helpFormatter = new HelpFormatter();
 		helpFormatter.printHelp(writer, ROW_WIDTH, cmlSyntax, "", options,
