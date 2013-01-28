@@ -7,11 +7,10 @@ import java.io.PrintWriter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -32,6 +31,7 @@ public class JarRunner {
 	public static final String DEPTH = "depth";
 	public static final String BROWSER = "browser";
 	public static final String PARALLEL = "parallel";
+	public static final String OVERRIDE = "override";
 
 	private static final int SPACES_AFTER_OPTION = 3;
 	private static final int SPACES_BEFORE_OPTION = 5;
@@ -61,40 +61,22 @@ public class JarRunner {
 	 * 
 	 * @return Options expected from command-line.
 	 */
-	@SuppressWarnings("static-access")
 	private static Options getOptions() {
 		Options options = new Options();
-		options.addOption(new Option(HELP, "print this message"));
-		options.addOption(new Option(VERSION, "print the version information and exit"));
+		options.addOption("h", HELP, false, "print this message");
+		options.addOption("v", VERSION, false, "print the version information and exit");
 
-		options.addOption(
-		        OptionBuilder
-		                .withLongOpt(BROWSER)
-		                .withDescription(
-		                        "browser type: firefox, chrome, ie, htmlunit. Default is Firefox")
-		                .hasArg()
-		                .withArgName("TYPE").create());
+		options.addOption("b", "browser", true,
+		        "browser type: firefox, chrome, ie, htmlunit. Default is Firefox");
 
-		options.addOption(OptionBuilder.withLongOpt(DEPTH)
-		        .withDescription("crawl depth level. Default is 2")
-		        .hasArg()
-		        .withArgName("LEVEL").create());
+		options.addOption("d", DEPTH, true, "crawl depth level. Default is 2");
 
-		options.addOption(
-		        OptionBuilder
-		                .withLongOpt(MAXSTATES)
-		                .withDescription(
-		                        "max number of states to crawl. Default is 0 (unlimited)")
-		                .hasArg()
-		                .withArgName("STATES").create());
+		options.addOption("s", MAXSTATES, true,
+		        "max number of states to crawl. Default is 0 (unlimited)");
 
-		options.addOption(
-		        OptionBuilder
-		                .withLongOpt(PARALLEL)
-		                .withDescription(
-		                        "Number of browsers to use for crawling. Default is 1")
-		                .hasArg()
-		                .withArgName("PARALLEL").create());
+		options.addOption("p", PARALLEL, true,
+		        "Number of browsers to use for crawling. Default is 1");
+		options.addOption("o", OVERRIDE, false, "Override the output directory if non-empty");
 		return options;
 	}
 
@@ -141,6 +123,17 @@ public class JarRunner {
 			printHelp(options);
 			System.exit(1);
 		} else {
+			File out = new File(outputDir);
+			if (out.exists() && out.list().length > 0) {
+				if (commandLine.hasOption(OVERRIDE)) {
+					System.out.println("Overriding output directory...");
+					FileUtils.deleteDirectory(out);
+				} else {
+					System.out
+					        .println("Output directory is not empty. If you want to override, use the -override option");
+					System.exit(1);
+				}
+			}
 			readConfigAndRun(commandLine, url, outputDir);
 		}
 	}
