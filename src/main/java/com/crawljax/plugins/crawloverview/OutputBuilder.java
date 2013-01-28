@@ -6,9 +6,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -32,6 +37,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
+import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 
 class OutputBuilder {
@@ -86,11 +92,42 @@ class OutputBuilder {
 	}
 
 	private void copySkeleton() {
-		try {
-			File srcDir = new File(OutputBuilder.class.getResource("/skeleton").getPath());
-			FileUtils.copyDirectory(srcDir, outputDir);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not copy required resources: " + e.getMessage(), e);
+		URL skeleton = OutputBuilder.class.getResource("/skeleton");
+		if (skeleton.toExternalForm().contains("jar!")) {
+			copySkeletonFromJar(skeleton);
+		} else {
+			LOG.debug("Loading skeleton as file");
+			try {
+				FileUtils.copyDirectory(new File(skeleton.toURI()), outputDir);
+			} catch (IOException | URISyntaxException e) {
+				throw new RuntimeException(
+				        "Could not copy required resources: " + e.getMessage(), e);
+			}
+		}
+
+	}
+
+	private void copySkeletonFromJar(URL skeleton) {
+		LOG.debug("Loading skeleton as JAR entry {}", skeleton);
+		String path = skeleton.getPath();
+		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
+		File jar = new File(jarpath);
+		LOG.debug("Jar file {} from path {}", jar, path);
+		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(jar))) {
+			ZipEntry entry;
+			while ((entry = zis.getNextEntry()) != null) {
+				if (entry.getName().startsWith("skeleton") && !entry.isDirectory()) {
+					String filename = entry.getName().substring("skeleton/".length());
+					File newFile = new File(outputDir, filename);
+					new File(newFile.getParent()).mkdirs();
+					FileOutputStream out = new FileOutputStream(newFile);
+					ByteStreams.copy(zis, out);
+					out.close();
+				}
+			}
+		} catch (IOException e1) {
+			throw new RuntimeException("Could not copy required resources: " + e1.getMessage(),
+			        e1);
 		}
 	}
 
