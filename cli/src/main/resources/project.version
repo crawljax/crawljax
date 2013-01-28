@@ -1,1 +1,4 @@
-${project.version}
+Version = ${project.version}
+Git commit id = ${git.commit.id}
+Git describe = ${git.commit.id.describe}
+Build at ${git.build.time}

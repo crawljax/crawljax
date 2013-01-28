@@ -45,11 +45,27 @@ public class JarRunner {
 	 */
 	public static void main(String[] args) {
 		try {
-			if (args.length < 2) {
-				printHelp(getOptions());
-				System.exit(1);
+			Options options = getOptions();
+			final CommandLine commandLine = new GnuParser().parse(options, args);
+
+			if (commandLine.hasOption(HELP)) {
+				printHelp(options);
+			} else if (commandLine.hasOption(VERSION)) {
+				System.out.println(getCrawljaxVersion());
+			} else if (args.length > 2) {
+				String url = commandLine.getArgs()[0];
+				String outputDir = commandLine.getArgs()[1];
+				if (urlIsInvalid(url)) {
+					System.err.println("provide a valid URL like http://example.com");
+					printHelp(options);
+					System.exit(1);
+				} else {
+					checkOutDir(commandLine, outputDir);
+					readConfigAndRun(commandLine, url, outputDir);
+				}
+			} else {
+				printHelp(options);
 			}
-			checkArgumentsAndRun(args);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			System.exit(1);
@@ -96,45 +112,18 @@ public class JarRunner {
 		writer.flush();
 	}
 
-	/**
-	 * CLI GnuParser to parse command-line arguments.
-	 * 
-	 * @param args
-	 *            Command-line arguments to be processed with Gnu-style parser.
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws ConfigurationException
-	 * @throws CrawljaxException
-	 */
-	public static void checkArgumentsAndRun(String[] args) throws IOException, ParseException,
-	        ConfigurationException, CrawljaxException {
-
-		Options options = getOptions();
-		final CommandLine commandLine = new GnuParser().parse(options, args);
-
-		String url = commandLine.getArgs()[0];
-		String outputDir = commandLine.getArgs()[1];
-		if (commandLine.hasOption(HELP)) {
-			printHelp(options);
-		} else if (commandLine.hasOption(VERSION)) {
-			System.out.println("crawljax version \"" + getCrawljaxVersion() + "\"");
-		} else if (urlIsInvalid(url)) {
-			System.err.println("provide a valid URL like http://example.com");
-			printHelp(options);
-			System.exit(1);
-		} else {
-			File out = new File(outputDir);
-			if (out.exists() && out.list().length > 0) {
-				if (commandLine.hasOption(OVERRIDE)) {
-					System.out.println("Overriding output directory...");
-					FileUtils.deleteDirectory(out);
-				} else {
-					System.out
-					        .println("Output directory is not empty. If you want to override, use the -override option");
-					System.exit(1);
-				}
+	private static void checkOutDir(final CommandLine commandLine, String outputDir)
+	        throws IOException {
+		File out = new File(outputDir);
+		if (out.exists() && out.list().length > 0) {
+			if (commandLine.hasOption(OVERRIDE)) {
+				System.out.println("Overriding output directory...");
+				FileUtils.deleteDirectory(out);
+			} else {
+				System.out
+				        .println("Output directory is not empty. If you want to override, use the -override option");
+				System.exit(1);
 			}
-			readConfigAndRun(commandLine, url, outputDir);
 		}
 	}
 
