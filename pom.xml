@@ -77,7 +77,7 @@
 		<module>cli</module>
 		<module>examples</module>
 		<module>test-utils</module>
-		<module>plugin-parent-pom</module>
+		<module>plugins</module>
 		<module>plugin-archetype</module>
 	</modules>
 
