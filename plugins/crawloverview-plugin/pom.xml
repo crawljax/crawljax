@@ -8,7 +8,7 @@
 		<version>2.3-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>crawloverview</artifactId>
+	<artifactId>crawloverview-plugin</artifactId>
 
 	<name>Crawl Overview Plugin</name>
 	<description>
