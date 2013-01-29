@@ -1,0 +1,104 @@
+{
+  "states" : [ {
+    "name" : "index",
+    "url" : "http://localhost:50490/simple-site/",
+    "candidateElements" : [ {
+      "identification" : {
+        "id" : 0,
+        "how" : "xpath",
+        "value" : "/HTML[1]/BODY[1]/A[1]",
+        "webDriverBy" : {
+          "xpathExpression" : "/HTML[1]/BODY/A[1]"
+        }
+      },
+      "element" : "<?xml version=\"1.0\" encoding=\"UTF-16\"?><A href=\"a.html\">Go to A</A>",
+      "formInputs" : [ ],
+      "eventableCondition" : null,
+      "relatedFrame" : "",
+      "location" : {
+        "x" : 8,
+        "y" : 265
+      },
+      "size" : {
+        "width" : 52,
+        "height" : 16
+      },
+      "generalString" : "A: href=a.html xpath /HTML[1]/BODY[1]/A[1] ",
+      "uniqueString" : "A: href=a.html xpath /HTML[1]/BODY[1]/A[1] "
+    }, {
+      "identification" : {
+        "id" : 0,
+        "how" : "xpath",
+        "value" : "/HTML[1]/BODY[1]/A[2]",
+        "webDriverBy" : {
+          "xpathExpression" : "/HTML[1]/BODY/A[2]"
+        }
+      },
+      "element" : "<?xml version=\"1.0\" encoding=\"UTF-16\"?><A href=\"b.html\">Go to B</A>",
+      "formInputs" : [ ],
+      "eventableCondition" : null,
+      "relatedFrame" : "",
+      "location" : {
+        "x" : 64,
+        "y" : 265
+      },
+      "size" : {
+        "width" : 51,
+        "height" : 16
+      },
+      "generalString" : "A: href=b.html xpath /HTML[1]/BODY[1]/A[2] ",
+      "uniqueString" : "A: href=b.html xpath /HTML[1]/BODY[1]/A[2] "
+    } ]
+  }, {
+    "name" : "state1",
+    "url" : "http://localhost:50490/simple-site/a.html",
+    "candidateElements" : [ ]
+  }, {
+    "name" : "state2",
+    "url" : "http://localhost:50490/simple-site/b.html",
+    "candidateElements" : [ {
+      "identification" : {
+        "id" : 0,
+        "how" : "xpath",
+        "value" : "/HTML[1]/BODY[1]/A[1]",
+        "webDriverBy" : {
+          "xpathExpression" : "/HTML[1]/BODY/A[1]"
+        }
+      },
+      "element" : "<?xml version=\"1.0\" encoding=\"UTF-16\"?><A href=\"c.html\">Go to C</A>",
+      "formInputs" : [ ],
+      "eventableCondition" : null,
+      "relatedFrame" : "",
+      "location" : {
+        "x" : 8,
+        "y" : 69
+      },
+      "size" : {
+        "width" : 51,
+        "height" : 16
+      },
+      "generalString" : "A: href=c.html xpath /HTML[1]/BODY[1]/A[1] ",
+      "uniqueString" : "A: href=c.html xpath /HTML[1]/BODY[1]/A[1] "
+    } ]
+  }, {
+    "name" : "state3",
+    "url" : "http://localhost:50490/simple-site/c.html",
+    "candidateElements" : [ ]
+  } ],
+  "edges" : [ {
+    "from" : "index",
+    "to" : "state1",
+    "hash" : -2076720401,
+    "text" : "Go to A"
+  }, {
+    "from" : "index",
+    "to" : "state2",
+    "hash" : -2076720400,
+    "text" : "Go to B"
+  }, {
+    "from" : "state2",
+    "to" : "state3",
+    "hash" : 1505344482,
+    "text" : "Go to C"
+  } ]
+};

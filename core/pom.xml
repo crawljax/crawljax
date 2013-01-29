@@ -10,13 +10,9 @@
 	<artifactId>crawljax-core</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Crawljax</name>
+	<name>Crawljax core</name>
 
 	<inceptionYear>2007</inceptionYear>
-
-	<properties>
-		<selenium.version>[2.29.1,)</selenium.version>
-	</properties>
 
 	<profiles>
 		<profile>
