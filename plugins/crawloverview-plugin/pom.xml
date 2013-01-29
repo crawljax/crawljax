@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.crawljax.plugins</groupId>
+		<artifactId>crawljax-plugins-parent</artifactId>
+		<version>2.3-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>crawloverview</artifactId>
+	<version>2.0-SNAPSHOT</version>
+
+	<name>Crawl Overview Plugin</name>
+	<description>
+		Generates an HTML report with a snapshot overview of what is crawled.
+  	</description>
+	<url>http://www.crawljax.com</url>
+
+
+	<properties>
+		<crawljax.version>2.2</crawljax.version>
+	</properties>
+
+	<scm>
+		<connection>scm:git:git@github.com:crawljax/crawloverview-plugin.git</connection>
+		<developerConnection>scm:git:git@github.com:crawljax/crawloverview-plugin.git</developerConnection>
+		<url>https://github.com/crawljax/crawloverview-plugin</url>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License v3</name>
+			<url>LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/crawljax/crawloverview-plugin/issues</url>
+	</issueManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.crawljax</groupId>
+			<artifactId>crawljax-core</artifactId>
+			<version>2.3-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.crawljax</groupId>
+			<artifactId>crawljax-test-utils</artifactId>
+			<version>2.3-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>9.0.0.M5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>[2.29.0,)</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
