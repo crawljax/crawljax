@@ -28,7 +28,6 @@ import com.crawljax.forms.FormHandler;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.UrlUtils;
 import com.crawljax.util.XPathHelper;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
@@ -138,20 +137,23 @@ public class CandidateElementExtractor {
 			return;
 		}
 
-		String frameIdentification = "";
-
-		if (!Strings.isNullOrEmpty(relatedFrame)) {
-			frameIdentification = relatedFrame + ".";
-		}
 		for (int i = 0; i < frameNodes.getLength(); i++) {
+
+			String frameIdentification = "";
+
+			if (relatedFrame != null && !relatedFrame.equals("")) {
+				frameIdentification += relatedFrame + ".";
+			}
+
 			Element frameElement = (Element) frameNodes.item(i);
 
 			String nameId = DomUtils.getFrameIdentification(frameElement);
 
 			// TODO Stefan; Here the IgnoreFrameChecker is used, also in
 			// WebDriverBackedEmbeddedBrowser. We must get this in 1 place.
-			if (nameId != null
-			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
+			if (nameId == null || ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
+				continue;
+			} else {
 				frameIdentification += nameId;
 
 				LOG.debug("frame Identification: {}", frameIdentification);
