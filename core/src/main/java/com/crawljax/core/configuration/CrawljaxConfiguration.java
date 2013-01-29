@@ -144,7 +144,6 @@ public final class CrawljaxConfiguration {
 				eventableConditions.add(eventableCondition);
 			}
 		}
-
 		return eventableConditions.build();
 	}
 

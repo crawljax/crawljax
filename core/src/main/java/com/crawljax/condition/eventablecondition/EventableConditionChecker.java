@@ -65,8 +65,7 @@ public class EventableConditionChecker {
 	 */
 	public boolean checkXpathStartsWithXpathEventableCondition(Document dom,
 	        EventableCondition eventableCondition, String xpath) throws XPathExpressionException {
-		if (eventableCondition == null || eventableCondition.getInXPath() == null
-		        || eventableCondition.getInXPath().equals("")) {
+		if (eventableCondition == null || Strings.isNullOrEmpty(eventableCondition.getInXPath())) {
 			throw new CrawljaxException("Eventable has no XPath condition");
 		}
 		List<String> expressions =

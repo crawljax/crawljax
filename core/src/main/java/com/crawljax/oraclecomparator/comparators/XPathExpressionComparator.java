@@ -88,7 +88,7 @@ public class XPathExpressionComparator extends AbstractComparator {
 		String curExpression = "";
 		Document doc = null;
 		try {
-			doc = DomUtils.getDocument(dom);
+			doc = DomUtils.asDocument(dom);
 			for (String expression : expressions) {
 				curExpression = expression;
 				NodeList nodeList = XPathHelper.evaluateXpathExpression(doc, expression);
@@ -104,7 +104,7 @@ public class XPathExpressionComparator extends AbstractComparator {
 
 				}
 			}
-		} catch (XPathExpressionException | DOMException | SAXException | IOException e) {
+		} catch (XPathExpressionException | DOMException | IOException e) {
 			LOGGER.error("Exception with stripping XPath expression: " + curExpression, e);
 		} finally {
 			if (doc != null) {

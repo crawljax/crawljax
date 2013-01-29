@@ -3,6 +3,7 @@
  */
 package com.crawljax.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,19 +113,13 @@ public final class XPathHelper {
 	/**
 	 * Returns the list of nodes which match the expression xpathExpr in the String domStr.
 	 * 
-	 * @param domStr
-	 *            the string of the document to search in
-	 * @param xpathExpr
-	 *            the xpath query
-	 * @author cor-paul
 	 * @return the list of nodes which match the query
-	 * @throws Exception
-	 *             On erorr.
+	 * @throws XPathExpressionException
+	 * @throws IOException
 	 */
 	public static NodeList evaluateXpathExpression(String domStr, String xpathExpr)
-	        throws Exception {
-		Document dom = DomUtils.getDocument(domStr);
-
+	        throws XPathExpressionException, IOException {
+		Document dom = DomUtils.asDocument(domStr);
 		return evaluateXpathExpression(dom, xpathExpr);
 	}
 
@@ -147,7 +142,6 @@ public final class XPathHelper {
 		XPathExpression expr = xpath.compile(xpathExpr);
 		Object result = expr.evaluate(dom, XPathConstants.NODESET);
 		NodeList nodes = (NodeList) result;
-
 		return nodes;
 	}
 
@@ -181,19 +175,26 @@ public final class XPathHelper {
 	 * @return formatted xpath with tag names in uppercase and attributes in lowercase
 	 */
 	public static String formatXPath(String xpath) {
-		String formatted = xpath;
-		Matcher tagMatcher = TAG_PATTERN.matcher(formatted);
-		tagMatcher.find();
-		formatted =
-		        tagMatcher.replaceFirst(tagMatcher.group(1) + tagMatcher.group(2).toUpperCase());
-
-		Matcher IdMatcher = ID_PATTERN.matcher(formatted);
-		for (int i = 0; IdMatcher.find(i); i++) {
-			i = IdMatcher.start();
-			formatted = IdMatcher.replaceFirst(IdMatcher.group().toLowerCase());
-			IdMatcher = ID_PATTERN.matcher(formatted);
+		Matcher m = TAG_PATTERN.matcher(xpath);
+		StringBuffer sb = new StringBuffer();
+		while (m.find()) {
+			String text = m.group();
+			System.out.println("Found group " + text);
+			m.appendReplacement(sb, Matcher.quoteReplacement(text.toUpperCase()));
 		}
-		return formatted;
+		m.appendTail(sb);
+
+		m = ID_PATTERN.matcher(sb.toString());
+		sb = new StringBuffer();
+		while (m.find()) {
+			String text = m.group();
+			m.appendReplacement(sb, Matcher.quoteReplacement(text.toLowerCase()));
+		}
+		m.appendTail(sb);
+
+		System.out.println(xpath + " became " + sb.toString());
+
+		return sb.toString();
 	}
 
 	/**

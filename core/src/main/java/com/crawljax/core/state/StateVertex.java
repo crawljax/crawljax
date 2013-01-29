@@ -339,13 +339,11 @@ public class StateVertex implements Serializable {
 
 	/**
 	 * @return a Document instance of the dom string.
-	 * @throws SAXException
-	 *             if an exception is thrown.
 	 * @throws IOException
 	 *             if an exception is thrown.
 	 */
-	public Document getDocument() throws SAXException, IOException {
-		return DomUtils.getDocument(this.dom);
+	public Document getDocument() throws IOException {
+		return DomUtils.asDocument(this.dom);
 	}
 
 	/**

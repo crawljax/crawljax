@@ -71,11 +71,15 @@ public final class DomUtils {
 	 * @throws SAXException
 	 *             if an exception occurs while parsing the HTML string.
 	 */
-	public static Document getDocument(String html) throws SAXException, IOException {
+	public static Document asDocument(String html) throws IOException {
 		DOMParser domParser = new DOMParser();
-		domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-		domParser.setFeature("http://xml.org/sax/features/namespaces", false);
-		domParser.parse(new InputSource(new StringReader(html)));
+		try {
+			domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
+			domParser.setFeature("http://xml.org/sax/features/namespaces", false);
+			domParser.parse(new InputSource(new StringReader(html)));
+		} catch (SAXException e) {
+			throw new IOException("Error while reading HTML: " + html, e);
+		}
 		return domParser.getDocument();
 	}
 
@@ -329,7 +333,7 @@ public final class DomUtils {
 	public static List<Difference> getDifferences(String controlDom, String testDom,
 	        final List<String> ignoreAttributes) {
 		try {
-			Diff d = new Diff(DomUtils.getDocument(controlDom), DomUtils.getDocument(testDom));
+			Diff d = new Diff(DomUtils.asDocument(controlDom), DomUtils.asDocument(testDom));
 			DetailedDiff dd = new DetailedDiff(d);
 			dd.overrideDifferenceListener(new DifferenceListener() {
 
@@ -356,7 +360,7 @@ public final class DomUtils {
 			});
 
 			return dd.getAllDifferences();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("Error with getDifferences: " + e.getMessage(), e);
 		}
 		return null;

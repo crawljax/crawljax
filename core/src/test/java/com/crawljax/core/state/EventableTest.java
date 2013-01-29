@@ -89,7 +89,7 @@ public class EventableTest {
 		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
 		                + "<a id='thea'>test</a></span></div></body>";
 
-		Document dom = DomUtils.getDocument(html);
+		Document dom = DomUtils.asDocument(html);
 		assertNotNull(dom);
 
 		Element element = dom.getElementById("firstdiv");

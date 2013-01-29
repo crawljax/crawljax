@@ -8,7 +8,6 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.oraclecomparator.AbstractComparator;
@@ -38,14 +37,14 @@ public class ScriptComparator extends AbstractComparator {
 	@Override
 	public boolean isEquivalent() {
 		try {
-			Document orgDoc = DomUtils.getDocument(getOriginalDom());
+			Document orgDoc = DomUtils.asDocument(getOriginalDom());
 			orgDoc = DomUtils.removeScriptTags(orgDoc);
 			setOriginalDom(DomUtils.getDocumentToString(orgDoc));
 
-			Document newDoc = DomUtils.getDocument(getNewDom());
+			Document newDoc = DomUtils.asDocument(getNewDom());
 			newDoc = DomUtils.removeScriptTags(newDoc);
 			setNewDom(DomUtils.getDocumentToString(newDoc));
-		} catch (SAXException | IOException | CrawljaxException e) {
+		} catch (IOException | CrawljaxException e) {
 			LOGGER.error("Exception with creating DOM document", e);
 			return false;
 		}

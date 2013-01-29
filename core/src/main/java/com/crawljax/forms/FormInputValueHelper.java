@@ -21,7 +21,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
@@ -138,10 +137,7 @@ public final class FormInputValueHelper {
 
 		Document dom;
 		try {
-			dom = DomUtils.getDocument(browser.getDomWithoutIframeContent());
-		} catch (SAXException e) {
-			LOGGER.error("Catched SAXException while parsing dom", e);
-			return candidateElements;
+			dom = DomUtils.asDocument(browser.getDomWithoutIframeContent());
 		} catch (IOException e) {
 			LOGGER.error("Catched IOException while parsing dom", e);
 			return candidateElements;

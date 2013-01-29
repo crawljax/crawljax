@@ -31,11 +31,11 @@ public class WebDriverBackedEmbeddedBrowserTest {
 		try {
 			driver.goToUrl("file://" + index.getAbsolutePath());
 
-			doc = DomUtils.getDocument(driver.getDom());
+			doc = DomUtils.asDocument(driver.getDom());
 			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
 			assertEquals(2, frameNodes.getLength());
 
-			doc = DomUtils.getDocument(driver.getDomWithoutIframeContent());
+			doc = DomUtils.asDocument(driver.getDomWithoutIframeContent());
 			frameNodes = doc.getElementsByTagName("IFRAME");
 			assertEquals(2, frameNodes.getLength());
 		} finally {

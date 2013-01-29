@@ -53,15 +53,13 @@ public class ElementResolver {
 	/**
 	 * @param logging
 	 *            Whether to do logging.
-	 * @return equivalent xpath of element equivalent to Eventable
+	 * @return equivalent xpath of element equivalent to Eventable or an empty string if the DOM
+	 *         cannot be read.
 	 */
 	public String resolve(boolean logging) {
 		Document dom = null;
 		try {
-			dom = DomUtils.getDocument(browser.getDom());
-		} catch (SAXException e) {
-			LOGGER.error(e.getMessage(), e);
-			return "";
+			dom = DomUtils.asDocument(browser.getDom());
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return "";

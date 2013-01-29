@@ -30,6 +30,7 @@ import com.crawljax.util.UrlUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -46,7 +47,7 @@ public class CandidateElementExtractor {
 	private final FormHandler formHandler;
 	private final IgnoreFrameChecker ignoreFrameChecker;
 
-	private final ImmutableList<TagElement> excludeTagElements;
+	private final ImmutableMultimap<String, TagElement> excludeTagElements;
 	private final ImmutableList<TagElement> includedTagElements;
 
 	private final boolean clickOnce;
@@ -69,11 +70,20 @@ public class CandidateElementExtractor {
 		checkedElements = checker;
 		this.browser = browser;
 		this.formHandler = formHandler;
-		this.excludeTagElements = configurationReader.getExcludeTagElements();
+		this.excludeTagElements = asMultiMap(configurationReader.getExcludeTagElements());
 		this.includedTagElements = configurationReader.getTagElements();
 		this.ignoreFrameChecker = configurationReader.getCrawlSpecificationReader();
 		clickOnce = configurationReader.getCrawlSpecificationReader().getClickOnce();
 
+	}
+
+	private ImmutableMultimap<String, TagElement> asMultiMap(
+	        ImmutableList<TagElement> elements) {
+		ImmutableMultimap.Builder<String, TagElement> builder = ImmutableMultimap.builder();
+		for (TagElement tagElement : elements) {
+			builder.put(tagElement.getName(), tagElement);
+		}
+		return builder.build();
 	}
 
 	/**
@@ -103,9 +113,9 @@ public class CandidateElementExtractor {
 		LOG.info("Looking in state: {} for candidate elements with ", currentState.getName());
 
 		try {
-			Document dom = DomUtils.getDocument(browser.getDomWithoutIframeContent());
+			Document dom = DomUtils.asDocument(browser.getDomWithoutIframeContent());
 			extractElements(dom, results, "");
-		} catch (SAXException | IOException e) {
+		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 			throw new CrawljaxException(e);
 		}
@@ -160,9 +170,9 @@ public class CandidateElementExtractor {
 
 				try {
 					Document frameDom =
-					        DomUtils.getDocument(browser.getFrameDom(frameIdentification));
+					        DomUtils.asDocument(browser.getFrameDom(frameIdentification));
 					extractElements(frameDom, results, frameIdentification);
-				} catch (SAXException | IOException e) {
+				} catch (IOException e) {
 					LOG.info("Got exception while inspecting a frame: {} continuing...",
 					        frameIdentification, e);
 				}
@@ -208,11 +218,11 @@ public class CandidateElementExtractor {
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
 			Element element = (Element) nodeList.item(k);
-			LOG.debug("Considering element {}", DomUtils.getElementString(element));
 			boolean matchesXpath =
 			        elementMatchesXpath(eventableConditionChecker, eventableCondition,
 			                expressions, element);
-
+			LOG.debug("Element {} matches Xpath={}", DomUtils.getElementString(element),
+			        matchesXpath);
 			// TODO Stefan This is a possible Thread-Interleaving problem, as
 			// isChecked can return
 			// false and when needed to add it can return true.
@@ -225,6 +235,8 @@ public class CandidateElementExtractor {
 				        && !filterElement(attributes, element)
 				        && !isExcluded(dom, element, eventableConditionChecker)) {
 					addElement(element, result, tagElement);
+				} else {
+					LOG.debug("Element {} was not added");
 				}
 			} catch (XPathExpressionException e) {
 				LOG.info("Could not read XPath", e);
@@ -374,31 +386,30 @@ public class CandidateElementExtractor {
 			return true;
 		}
 
-		for (TagElement tag : excludeTagElements) {
+		for (TagElement tag : excludeTagElements.get(element.getTagName().toUpperCase())) {
+			boolean matchesXPath = false;
+			EventableCondition eventableCondition =
+			        eventableConditionChecker.getEventableCondition(tag.getId());
+			try {
+				String asXpath = XPathHelper.getXPathExpression(element);
+				matchesXPath =
+				        eventableConditionChecker
+				                .checkXpathStartsWithXpathEventableCondition(dom,
+				                        eventableCondition, asXpath);
+			} catch (CrawljaxException | XPathExpressionException e) {
+				LOG.debug("Could not check exclusion by Xpath for element because {}",
+				        e.getMessage());
+				matchesXPath = false;
+			}
 
-			if (element.getTagName().equalsIgnoreCase(tag.getName())) {
-				boolean matchesXPath = false;
-				EventableCondition eventableCondition =
-				        eventableConditionChecker.getEventableCondition(tag.getId());
-				try {
-					matchesXPath =
-					        eventableConditionChecker
-					                .checkXpathStartsWithXpathEventableCondition(dom,
-					                        eventableCondition,
-					                        XPathHelper.getXPathExpression(element));
-				} catch (CrawljaxException | XPathExpressionException e) {
-					matchesXPath = false;
-				}
-
-				if (matchesXPath) {
-					LOG.info("Excluded element because of xpath: " + element);
-					return true;
-				}
-				if (!filterElement(tag.getAttributes(), element)
-				        && tag.getAttributes().size() > 0) {
-					LOG.info("Excluded element because of attributes: " + element);
-					return true;
-				}
+			if (matchesXPath) {
+				LOG.info("Excluded element because of xpath: " + element);
+				return true;
+			}
+			if (!filterElement(tag.getAttributes(), element)
+			        && tag.getAttributes().size() > 0) {
+				LOG.info("Excluded element because of attributes: " + element);
+				return true;
 			}
 		}
 

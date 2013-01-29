@@ -1,6 +1,3 @@
-/**
- * Created Dec 21, 2007
- */
 package com.crawljax.util;
 
 import static org.hamcrest.core.Is.is;
@@ -10,15 +7,15 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
  * Test class for the XPathHelper class.
- * 
- * @author mesbah
- * @version $Id$
  */
 public class XPathHelperTest {
 	/**
@@ -33,7 +30,7 @@ public class XPathHelperTest {
 		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
 		                + "<a id='thea'>test</a></span></div></body>";
 
-		Document dom = DomUtils.getDocument(html);
+		Document dom = DomUtils.asDocument(html);
 		assertNotNull(dom);
 
 		// first div
@@ -50,6 +47,21 @@ public class XPathHelperTest {
 		expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]/A[1]";
 		xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("thea"));
 		assertEquals(expectedXpath, xpathExpr);
+	}
+
+	@Test
+	public void whenWildcardsUsedXpathShouldFindTheElements() throws Exception {
+		String html = "<body>" +
+		        "<DIV><P>Bla</P><P>Bla2</P></DIV>" +
+		        "<DIV id='exclude'><P>Ex</P><P>Ex2</P></DIV>" +
+		        "</body>";
+		String xpathAllp = "//DIV//P";
+		String xpathOnlyExcludedP = "//DIV[@id='exclude']//P";
+		NodeList nodes = XPathHelper.evaluateXpathExpression(html, xpathAllp);
+		assertThat(nodes.getLength(), is(4));
+
+		nodes = XPathHelper.evaluateXpathExpression(html, xpathOnlyExcludedP);
+		assertThat(nodes.getLength(), is(2));
 	}
 
 	@Test
@@ -72,11 +84,13 @@ public class XPathHelperTest {
 	@Test
 	public void formatXpathWithDoubleSlashes() {
 		String xpath = "//div[@id='dontClick']//a";
-		assertThat(XPathHelper.formatXPath(xpath), is("//DIV[@id='dontClick']//a"));
+		assertThat(XPathHelper.formatXPath(xpath), is("//DIV[@id='dontClick']//A"));
 	}
 
 	@Test
 	public void formatXPathAxes() {
+		System.out.println("//ancestor-or-self::div[@CLASS,'foo']".replaceAll(
+		        "/(?!.*-)(?=[a-zA-z]+)^(\\w+)$/", "##"));
 		String xPath = "//ancestor-or-self::div[@CLASS,'foo']";
 		assertEquals("//ancestor-or-self::DIV[@class,'foo']", XPathHelper.formatXPath(xPath));
 	}

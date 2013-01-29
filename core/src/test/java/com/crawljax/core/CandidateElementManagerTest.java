@@ -22,7 +22,7 @@ public class CandidateElementManagerTest {
 
 	@BeforeClass
 	public static void setup() throws SAXException, IOException {
-		document = DomUtils.getDocument("");
+		document = DomUtils.asDocument("");
 	}
 
 	@Test

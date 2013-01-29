@@ -342,7 +342,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 		try {
 			String dom = toUniformDOM(DomUtils.getDocumentToString(getDomTreeWithFrames()));
-			LOGGER.debug(dom);
+			LOGGER.trace(dom);
 			return dom;
 		} catch (WebDriverException | CrawljaxException e) {
 			LOGGER.warn("Could not get the dom", e);
@@ -561,11 +561,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private Document getDomTreeWithFrames() throws CrawljaxException {
 
 		try {
-			Document document = DomUtils.getDocument(browser.getPageSource());
+			Document document = DomUtils.asDocument(browser.getPageSource());
 			appendFrameContent(document.getDocumentElement(), document, "");
 			return document;
-		} catch (SAXException e) {
-			throw new CrawljaxException(e.getMessage(), e);
 		} catch (IOException e) {
 			throw new CrawljaxException(e.getMessage(), e);
 		}
@@ -618,19 +616,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				browser.switchTo().defaultContent();
 
 				try {
-					Element toAppendElement = DomUtils.getDocument(toAppend).getDocumentElement();
+					Element toAppendElement = DomUtils.asDocument(toAppend).getDocumentElement();
 					Element importedElement =
 					        (Element) document.importNode(toAppendElement, true);
 					frameElement.appendChild(importedElement);
 
 					appendFrameContent(importedElement, document, frameIdentification);
-				} catch (DOMException e) {
-					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
-					        + " continuing...", e);
-				} catch (SAXException e) {
-					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
-					        + " continuing...", e);
-				} catch (IOException e) {
+				} catch (DOMException | IOException e) {
 					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
 					        + " continuing...", e);
 				}

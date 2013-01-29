@@ -16,7 +16,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
@@ -62,7 +61,7 @@ public class FormHandler {
 	}
 
 	private static final String[] ALLOWED_INPUT_TYPES =
-	        { "text", "radio", "checkbox", "password" };
+	{ "text", "radio", "checkbox", "password" };
 
 	/**
 	 * Fills in the element with the InputValues for input TODO: improve this by using WebDriver
@@ -200,7 +199,7 @@ public class FormHandler {
 		List<FormInput> formInputs = new ArrayList<FormInput>();
 		Document dom;
 		try {
-			dom = DomUtils.getDocument(browser.getDom());
+			dom = DomUtils.asDocument(browser.getDom());
 			List<Node> nodes = getInputElements(dom);
 			for (Node node : nodes) {
 				FormInput formInput =
@@ -209,11 +208,7 @@ public class FormHandler {
 					formInputs.add(formInput);
 				}
 			}
-		} catch (Exception e) {
-			// TODO Stefan; refactor this Exception
-			if (e instanceof BrowserConnectionException) {
-				throw (BrowserConnectionException) e;
-			}
+		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
 		return formInputs;
@@ -236,19 +231,13 @@ public class FormHandler {
 	 *            form input list.
 	 */
 	public void handleFormElements(List<FormInput> formInputs) {
-		Document dom;
-
 		try {
-			dom = DomUtils.getDocument(browser.getDomWithoutIframeContent());
+			Document dom = DomUtils.asDocument(browser.getDomWithoutIframeContent());
 			for (FormInput input : formInputs) {
 				LOGGER.debug("Filling in: " + input);
 				setInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
 			}
-		} catch (SAXException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-		} catch (XPathExpressionException e) {
+		} catch (IOException | XPathExpressionException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
 

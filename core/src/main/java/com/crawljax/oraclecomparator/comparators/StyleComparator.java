@@ -55,9 +55,9 @@ public class StyleComparator extends AbstractComparator {
 	public boolean isEquivalent() {
 		try {
 			setOriginalDom(DomUtils.getDocumentToString(stripDom(DomUtils
-			        .getDocument(getOriginalDom()))));
-			setNewDom(DomUtils.getDocumentToString(stripDom(DomUtils.getDocument(getNewDom()))));
-		} catch (SAXException | IOException | CrawljaxException e) {
+			        .asDocument(getOriginalDom()))));
+			setNewDom(DomUtils.getDocumentToString(stripDom(DomUtils.asDocument(getNewDom()))));
+		} catch (IOException | CrawljaxException e) {
 			LOGGER.error(e.getMessage(), e);
 			return false;
 		}

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,20 +30,14 @@ public class HelperTest {
 
 	/**
 	 * Test get document function.
+	 * 
+	 * @throws IOException
 	 */
 	@Test
-	public void testGetDocument() {
+	public void testGetDocument() throws IOException {
 		String html = "<html><body><p/></body></html>";
-
-		try {
-			Document doc = DomUtils.getDocument(html);
-			assertNotNull(doc);
-		} catch (SAXException e) {
-			fail(e.getMessage());
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-
+		Document doc = DomUtils.asDocument(html);
+		assertNotNull(doc);
 	}
 
 	/**
@@ -61,7 +54,7 @@ public class HelperTest {
 		html = browser.getDom();
 		assertNotNull(html);
 
-		Document doc = DomUtils.getDocument(html);
+		Document doc = DomUtils.asDocument(html);
 		assertNotNull(doc);
 
 		browser.close();
@@ -83,7 +76,7 @@ public class HelperTest {
 	public void writeAndGetContents() throws IOException, TransformerException, SAXException {
 		File f = File.createTempFile("HelperTest.writeAndGetContents", ".tmp");
 		DomUtils.writeDocumentToFile(
-		        DomUtils.getDocument("<html><body><p>Test</p></body></html>"),
+		        DomUtils.asDocument("<html><body><p>Test</p></body></html>"),
 		        f.getAbsolutePath(), "html", 2);
 
 		assertNotSame("", DomUtils.getTemplateAsString(f.getAbsolutePath()));

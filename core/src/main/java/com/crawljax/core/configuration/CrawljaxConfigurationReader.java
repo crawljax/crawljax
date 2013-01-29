@@ -130,7 +130,6 @@ public class CrawljaxConfigurationReader {
 
 		ImmutableList<CrawlElement> excluded = crawljaxConfiguration.getCrawlSpecification()
 		        .crawlActions().getCrawlElementsExcluded();
-		System.out.println("Excluded = " + excluded);
 		return asTagElementList(excluded);
 
 	}
