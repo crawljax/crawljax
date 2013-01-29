@@ -10,9 +10,14 @@
 		</div>
 		<table class="table table-bordered table-striped">
 			<tbody>
-			#foreach( $url in $urls )
+			#foreach( $url in $urls.keySet() )
 				<tr>
 					<td><a href="${url}">${url}</a></td>
+					<td>
+					#foreach( $state in $urls.get($url) )
+					<a href="states/${state}.html">${state}</a>, 
+					#end
+					</td>
 				</tr>	
 			#end		
 			</tbody>
