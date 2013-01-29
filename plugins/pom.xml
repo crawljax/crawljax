@@ -61,5 +61,8 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-
+	
+	<modules>
+		<module>crawloverview-plugin</module>
+	</modules>
 </project>

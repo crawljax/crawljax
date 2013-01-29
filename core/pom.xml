@@ -10,13 +10,9 @@
 	<artifactId>crawljax-core</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Crawljax</name>
+	<name>Crawljax core</name>
 
 	<inceptionYear>2007</inceptionYear>
-
-	<properties>
-		<selenium.version>[2.29.0,)</selenium.version>
-	</properties>
 
 	<profiles>
 		<profile>
@@ -145,7 +141,7 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>8.1.8.v20121106</version>
+			<version>9.0.0.M5</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -115,12 +115,12 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		String str = "";
-		if (this.getElement() != null) {
-			str = this.getElement().toString();
+		StringBuilder sb = new StringBuilder();
+		if (this.element != null) {
+			sb.append(this.getElement());
 		}
-		str += " " + this.eventType + " " + this.identification.toString();
-		return str;
+		sb.append(' ').append(this.eventType).append(' ').append(this.identification);
+		return sb.toString();
 	}
 
 	/**

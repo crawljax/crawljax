@@ -53,13 +53,8 @@ public class SampleCrawlersTest {
 		assertThat(stateFlowGraph, hasStates(HiddenElementsSiteCrawl.NUMBER_OF_STATES));
 	}
 
-	/**
-	 * Shows <a href='https://github.com/crawljax/crawljax/issues/96'>Issue 97</a>
-	 */
 	@Test
-	@Ignore("Test that shows Issue #96")
 	public void testSimpleXPathCrawl() throws Exception {
-		// new SimpleXpathCrawl().showWebSite();
 		CrawlSession crawl = new SimpleXpathCrawl().crawl();
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
 		assertThat(stateFlowGraph, hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));

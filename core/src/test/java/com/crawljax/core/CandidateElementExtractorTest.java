@@ -1,13 +1,13 @@
 package com.crawljax.core;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.ClassRule;
@@ -23,6 +23,8 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 
 @Category(BrowserTest.class)
 public class CandidateElementExtractorTest {
@@ -33,6 +35,8 @@ public class CandidateElementExtractorTest {
 
 	@ClassRule
 	public static final RunWithWebServer SERVER = new RunWithWebServer("/demo-site");
+	private static final ImmutableSet<TagAttribute> NO_ATTRIBUTES = ImmutableSet
+	        .<TagAttribute> of();
 
 	private CrawljaxController controller;
 	private Crawler crawler;
@@ -51,7 +55,7 @@ public class CandidateElementExtractorTest {
 		                        .getCrawlSpecificationReader());
 		assertNotNull(extractor);
 
-		TagElement tagElementInc = new TagElement(null, "a");
+		TagElement tagElementInc = new TagElement(NO_ATTRIBUTES, "a", "a");
 		List<TagElement> includes = new ArrayList<TagElement>();
 		includes.add(tagElementInc);
 
@@ -89,24 +93,19 @@ public class CandidateElementExtractorTest {
 		        new CandidateElementExtractor(controller.getElementChecker(),
 		                crawler.getBrowser(), formHandler, controller.getConfigurationReader()
 		                        .getCrawlSpecificationReader());
-		assertNotNull(extractor);
 
-		TagElement tagElementInc = new TagElement(null, "a");
-		List<TagElement> includes = new ArrayList<TagElement>();
-		includes.add(tagElementInc);
+		List<TagElement> includes = Lists.newArrayList(new TagElement(NO_ATTRIBUTES, "a", null));
 
-		List<TagElement> excludes = new ArrayList<TagElement>();
 		TagAttribute attr = new TagAttribute("id", "menubar");
-		Set<TagAttribute> attributes = new HashSet<TagAttribute>();
-		attributes.add(attr);
-		TagElement tagElementExc = new TagElement(attributes, "div");
-		excludes.add(tagElementExc);
+		ImmutableSet<TagAttribute> attributes = ImmutableSet.of(attr);
+		TagElement tagElementExc = new TagElement(attributes, "div", null);
+		List<TagElement> excludes = Lists.newArrayList(tagElementExc);
 
 		List<CandidateElement> candidates =
 		        extractor.extract(includes, excludes, true, DUMMY_STATE);
 
 		assertNotNull(candidates);
-		assertEquals(11, candidates.size());
+		assertThat(candidates, hasSize(11));
 
 		controller.getBrowserPool().shutdown();
 	}
@@ -126,7 +125,7 @@ public class CandidateElementExtractorTest {
 		                        .getCrawlSpecificationReader());
 		assertNotNull(extractor);
 
-		TagElement tagElementInc = new TagElement(null, "a");
+		TagElement tagElementInc = new TagElement(NO_ATTRIBUTES, "a", "id");
 		List<TagElement> includes = new ArrayList<TagElement>();
 		includes.add(tagElementInc);
 
@@ -138,7 +137,7 @@ public class CandidateElementExtractorTest {
 		}
 
 		assertNotNull(candidates);
-		assertEquals(9, candidates.size());
+		assertThat(candidates, hasSize(9));
 
 		controller.getBrowserPool().shutdown();
 
