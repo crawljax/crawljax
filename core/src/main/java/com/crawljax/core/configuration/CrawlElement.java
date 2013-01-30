@@ -53,7 +53,7 @@ public final class CrawlElement {
 	 *            the event type for this crawl element.
 	 */
 	protected CrawlElement(EventType eventType, String tagName) {
-		this.tagName = tagName;
+		this.tagName = tagName.toUpperCase();
 		this.id = "id" + hashCode();
 		this.eventType = eventType;
 	}

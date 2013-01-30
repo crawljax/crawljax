@@ -7,8 +7,6 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -77,8 +75,12 @@ public class XPathHelperTest {
 
 	@Test
 	public void formatXPath() {
-		String xPath = "//ul[@CLASS=\"Test\"]";
-		assertEquals("//UL[@class=\"Test\"]", XPathHelper.formatXPath(xPath));
+		assertThat(XPathHelper.formatXPath("//ul/a"), is("//UL/A"));
+		assertThat(XPathHelper.formatXPath("/div//span"), is("/DIV//SPAN"));
+		assertThat(XPathHelper.formatXPath("//ul[@CLASS=\"Test\"]"), is("//UL[@class=\"Test\"]"));
+		assertThat(XPathHelper.formatXPath("//ul[@CLASS=\"Test\"]/a"),
+		        is("//UL[@class=\"Test\"]/A"));
+
 	}
 
 	@Test
@@ -89,8 +91,6 @@ public class XPathHelperTest {
 
 	@Test
 	public void formatXPathAxes() {
-		System.out.println("//ancestor-or-self::div[@CLASS,'foo']".replaceAll(
-		        "/(?!.*-)(?=[a-zA-z]+)^(\\w+)$/", "##"));
 		String xPath = "//ancestor-or-self::div[@CLASS,'foo']";
 		assertEquals("//ancestor-or-self::DIV[@class,'foo']", XPathHelper.formatXPath(xPath));
 	}

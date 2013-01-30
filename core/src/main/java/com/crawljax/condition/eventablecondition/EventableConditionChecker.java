@@ -30,6 +30,7 @@ public class EventableConditionChecker {
 	public EventableConditionChecker(List<EventableCondition> eventableConditions) {
 		Preconditions.checkNotNull(eventableConditions);
 		this.eventableConditions = eventableConditions;
+		LOG.debug("Evenetable conditions {}", eventableConditions);
 	}
 
 	/**

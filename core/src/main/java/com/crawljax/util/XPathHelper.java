@@ -1,6 +1,3 @@
-/**
- * Created Dec 13, 2007
- */
 package com.crawljax.util;
 
 import java.io.IOException;
@@ -20,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
@@ -30,14 +28,12 @@ import com.google.common.collect.ImmutableList.Builder;
 public final class XPathHelper {
 
 	private static final Pattern TAG_PATTERN = Pattern
-	        .compile("(/(?:[-a-zA-Z]+::)?+)([a-zA-Z]+)");
+	        .compile("(?<=[/|::])[a-zA-z]+(?=([/|\\[]|$))");
+
 	private static final Pattern ID_PATTERN = Pattern.compile("(@[a-zA-Z]+)");
 
 	private static final String FULL_XPATH_CACHE = "FULL_XPATH_CACHE";
 	private static final int MAX_SEARCH_LOOPS = 10000;
-
-	private XPathHelper() {
-	}
 
 	/**
 	 * Reverse Engineers an XPath Expression of a given Node in the DOM.
@@ -175,25 +171,30 @@ public final class XPathHelper {
 	 * @return formatted xpath with tag names in uppercase and attributes in lowercase
 	 */
 	public static String formatXPath(String xpath) {
-		Matcher m = TAG_PATTERN.matcher(xpath);
-		StringBuffer sb = new StringBuffer();
-		while (m.find()) {
-			String text = m.group();
-			System.out.println("Found group " + text);
-			m.appendReplacement(sb, Matcher.quoteReplacement(text.toUpperCase()));
-		}
-		m.appendTail(sb);
+		String formatted = capitalizeTagNames(xpath);
+		formatted = lowerCaseAttributes(formatted);
+		return formatted;
+	}
 
-		m = ID_PATTERN.matcher(sb.toString());
-		sb = new StringBuffer();
+	private static String lowerCaseAttributes(String formatted) {
+		Matcher m = ID_PATTERN.matcher(formatted);
+		StringBuffer sb = new StringBuffer();
 		while (m.find()) {
 			String text = m.group();
 			m.appendReplacement(sb, Matcher.quoteReplacement(text.toLowerCase()));
 		}
 		m.appendTail(sb);
+		return sb.toString();
+	}
 
-		System.out.println(xpath + " became " + sb.toString());
-
+	private static String capitalizeTagNames(String xpath) {
+		Matcher m = TAG_PATTERN.matcher(xpath);
+		StringBuffer sb = new StringBuffer();
+		while (m.find()) {
+			String text = m.group();
+			m.appendReplacement(sb, Matcher.quoteReplacement(text.toUpperCase()));
+		}
+		m.appendTail(sb);
 		return sb.toString();
 	}
 
@@ -244,19 +245,18 @@ public final class XPathHelper {
 		int number;
 		// System.out.println(xpath);
 		for (String element : elements) {
-			if (!element.equals("") && !element.startsWith("@") && element.indexOf("()") == -1) {
+			if (!element.isEmpty() && !element.startsWith("@") && !element.contains("()")) {
 				if (element.indexOf("[") != -1) {
 					try {
 						number =
 						        Integer.parseInt(element.substring(element.indexOf("[") + 1,
 						                element.indexOf("]")));
-					} catch (Exception e) {
+					} catch (NumberFormatException e) {
 						return -1;
 					}
 				} else {
 					number = 1;
 				}
-				// System.out.println("number: " + number);
 				for (int i = 0; i < number; i++) {
 					// find new open element
 					temp = dom.indexOf("<" + stripEndSquareBrackets(element), pos);
@@ -306,25 +306,20 @@ public final class XPathHelper {
 			if (dom.indexOf(openElement, pos) == -1 && dom.indexOf(closeElement, pos) == -1) {
 				return -1;
 			}
-			// System.out.println("hierzo: " + dom.substring(pos));
 			if (dom.indexOf(openElement, pos) < dom.indexOf(closeElement, pos)
 			        && dom.indexOf(openElement, pos) != -1) {
 				openElements++;
 				pos = dom.indexOf(openElement, pos) + 1;
-				// System.out.println("open: " + dom.substring(pos-1));
 			} else {
 
 				openElements--;
 				pos = dom.indexOf(closeElement, pos) + 1;
-				// System.out.println("close: " + dom.substring(pos-1));
 			}
-			// System.out.println(openElements);
 			if (openElements == 0) {
 				break;
 			}
 			i++;
 		}
-		// System.out.println("Finished: " + dom.substring(pos-1));
 		return pos - 1;
 
 	}
@@ -348,19 +343,22 @@ public final class XPathHelper {
 	 *         text()
 	 */
 	public static String stripXPathToElement(String xpath) {
-		if (xpath != null && !xpath.equals("")) {
-			if (xpath.toLowerCase().indexOf("/text()") != -1) {
+		if (!Strings.isNullOrEmpty(xpath)) {
+			if (xpath.toLowerCase().contains("/text()")) {
 				xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/text()"));
 			}
-			if (xpath.toLowerCase().indexOf("/comment()") != -1) {
+			if (xpath.toLowerCase().contains("/comment()")) {
 				xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/comment()"));
 			}
-			if (xpath.indexOf("@") != -1) {
+			if (xpath.contains("@")) {
 				xpath = xpath.substring(0, xpath.indexOf("@") - 1);
 			}
 		}
 
 		return xpath;
+	}
+
+	private XPathHelper() {
 	}
 
 }
