@@ -42,7 +42,7 @@ public final class CrawljaxConfiguration {
 
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 
-	private CrawlSpecification crawlSpecification = new CrawlSpecification("");
+	private CrawlSpecification crawlSpecification = new CrawlSpecification("http://localhost");
 	private ProxyConfiguration proxyConfiguration = null;
 	private ThreadConfiguration threadConfiguration = new ThreadConfiguration();
 

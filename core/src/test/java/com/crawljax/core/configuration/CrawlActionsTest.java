@@ -46,7 +46,6 @@ public class CrawlActionsTest {
 		actions.dontClickChildrenOf("b").withClass("someClass");
 		List<CrawlElement> crawlElements = actions.getCrawlElementsExcluded();
 		assertThat(crawlElements, hasSize(4));
-		System.out.println(crawlElements);
 		assertThat(crawlElements, containsInAnyOrder(
 		        withXpath("//B[@id='someId']//a"),
 		        withXpath("//B[@id='someId']//button"),

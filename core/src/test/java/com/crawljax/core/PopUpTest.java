@@ -3,6 +3,7 @@ package com.crawljax.core;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
@@ -42,8 +43,8 @@ public class PopUpTest {
 	private static CrawlSpecification getCrawlSpecification() {
 		File index = new File("src/test/resources/site/popup/index.html");
 		CrawlSpecification crawler = new CrawlSpecification("file://" + index.getAbsolutePath());
-		crawler.setWaitTimeAfterEvent(100);
-		crawler.setWaitTimeAfterReloadUrl(100);
+		crawler.setWaitTimeAfterEvent(100, TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterReloadUrl(100, TimeUnit.MILLISECONDS);
 		crawler.setDepth(3);
 		crawler.click("a");
 

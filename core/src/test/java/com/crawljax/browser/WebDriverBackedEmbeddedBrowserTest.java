@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -29,7 +30,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 		Document doc;
 		try {
-			driver.goToUrl("file://" + index.getAbsolutePath());
+			driver.goToUrl(new URL("file://" + index.getAbsolutePath()));
 
 			doc = DomUtils.asDocument(driver.getDom());
 			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
@@ -52,7 +53,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 		File f = File.createTempFile("webdriverfirefox-test-screenshot", ".png");
 		if (!f.exists()) {
-			browser.goToUrl("file://" + index.getAbsolutePath());
+			browser.goToUrl(new URL("file://" + index.getAbsolutePath()));
 			browser.saveScreenShot(f);
 			assertTrue(f.exists());
 			assertTrue(f.delete());

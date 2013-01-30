@@ -3,6 +3,7 @@
 package com.crawljax.core;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Before;
@@ -30,8 +31,8 @@ public abstract class IFrameSuper {
 	protected CrawlSpecification getCrawlSpecification() {
 		File index = new File("src/test/resources/site/iframe/index.html");
 		CrawlSpecification crawler = new CrawlSpecification("file://" + index.getAbsolutePath());
-		crawler.setWaitTimeAfterEvent(100);
-		crawler.setWaitTimeAfterReloadUrl(100);
+		crawler.setWaitTimeAfterEvent(100, TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterReloadUrl(100, TimeUnit.MILLISECONDS);
 		crawler.setDepth(3);
 		crawler.click("a");
 		crawler.click("input");

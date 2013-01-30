@@ -1,5 +1,7 @@
 package com.crawljax.examples;
 
+import java.util.concurrent.TimeUnit;
+
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawlSpecification;
@@ -12,8 +14,8 @@ import com.crawljax.core.configuration.InputSpecification;
  */
 public final class CrawljaxAdvancedExampleSettings {
 
-	private static final int WAIT_TIME_AFTER_EVENT = 200;
-	private static final int WAIT_TIME_AFTER_RELOAD = 20;
+	private static final long WAIT_TIME_AFTER_EVENT = 200;
+	private static final long WAIT_TIME_AFTER_RELOAD = 20;
 	private static final String URL = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
 
 	private CrawljaxAdvancedExampleSettings() {
@@ -37,8 +39,8 @@ public final class CrawljaxAdvancedExampleSettings {
 		crawler.dontClick("a").withAttribute("class", "ignore");
 		crawler.dontClick("a").underXPath("//DIV[@id='footer']");
 
-		crawler.setWaitTimeAfterReloadUrl(WAIT_TIME_AFTER_RELOAD);
-		crawler.setWaitTimeAfterEvent(WAIT_TIME_AFTER_EVENT);
+		crawler.setWaitTimeAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
 		crawler.setInputSpecification(getInputSpecification());
 
 		crawler.addCrawlCondition("No spans with foo as class", new NotXPathCondition(

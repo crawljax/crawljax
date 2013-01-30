@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -284,12 +285,12 @@ public abstract class LargeTestSuper {
 	 *            the amount of time in ms to wait after a reload.
 	 * @return the new CrawlSpecification.
 	 */
-	protected static CrawlSpecification getCrawlSpecification(String url, int waintAfterEvent,
-	        int waitAfterReload) {
+	protected static CrawlSpecification getCrawlSpecification(String url, long waintAfterEvent,
+	        long waitAfterReload) {
 
 		CrawlSpecification crawler = new CrawlSpecification(url);
-		crawler.setWaitTimeAfterEvent(waintAfterEvent);
-		crawler.setWaitTimeAfterReloadUrl(waitAfterReload);
+		crawler.setWaitTimeAfterEvent(waintAfterEvent, TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterReloadUrl(waitAfterReload, TimeUnit.MILLISECONDS);
 		crawler.setDepth(3);
 		crawler.setClickOnce(true);
 

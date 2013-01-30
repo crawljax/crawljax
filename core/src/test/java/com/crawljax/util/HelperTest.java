@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.transform.TransformerException;
 
@@ -50,7 +51,7 @@ public class HelperTest {
 		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 200, 300);
 		File index = new File(INDEX);
 		String html = "";
-		browser.goToUrl("file://" + index.getAbsolutePath());
+		browser.goToUrl(new URL("file://" + index.getAbsolutePath()));
 		html = browser.getDom();
 		assertNotNull(html);
 
