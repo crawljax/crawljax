@@ -17,9 +17,6 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 
 /**
  * The State Machine.
- * 
- * @author mesbah
- * @version $Id$
  */
 public class StateMachine {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StateMachine.class.getName());
@@ -95,7 +92,7 @@ public class StateMachine {
 			this.previousState = this.currentState;
 			currentState = nextState;
 
-			LOGGER.info("StateMachine's Pointer changed to: " + currentState);
+			LOGGER.debug("StateMachine's Pointer changed to: " + currentState);
 
 			return true;
 		} else {
@@ -178,7 +175,7 @@ public class StateMachine {
 
 		this.changeState(newState);
 
-		LOGGER.info("StateMachine's Pointer changed to: " + this.currentState.getName()
+		LOGGER.debug("StateMachine's Pointer changed to: " + this.currentState.getName()
 		        + " FROM " + previousState.getName());
 
 		session.setCurrentState(newState);

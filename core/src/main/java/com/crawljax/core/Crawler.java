@@ -250,9 +250,6 @@ public class Crawler implements Runnable {
 	 *             if the {@link Eventable#getTargetStateVertex()} encounters an error.
 	 */
 	private void goBackExact() throws CrawljaxException {
-		/**
-		 * Thread safe
-		 */
 		StateVertex curState = controller.getSession().getInitialState();
 
 		for (Eventable clickable : backTrackPath) {
@@ -261,8 +258,8 @@ public class Crawler implements Runnable {
 				return;
 			}
 
-			LOGGER.info("Backtracking by executing " + clickable.getEventType() + " on element: "
-			        + clickable);
+			LOGGER.info("Backtracking by executing {} on element: {}", clickable.getEventType()
+			        , clickable);
 
 			this.getStateMachine().changeState(clickable.getTargetStateVertex());
 
@@ -276,7 +273,7 @@ public class Crawler implements Runnable {
 
 				depth++;
 
-				/**
+				/*
 				 * Run the onRevisitStateValidator(s)
 				 */
 				CrawljaxPluginsUtil.runOnRevisitStatePlugins(this.controller.getSession(),
@@ -307,7 +304,7 @@ public class Crawler implements Runnable {
 				Matcher m = p.matcher(e.getValue());
 				if (m.find()) {
 					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("URL:" + m.group(2));
+						LOGGER.debug("URL: {}", m.group(2));
 					}
 					try {
 						// seconds*1000=ms
@@ -319,8 +316,8 @@ public class Crawler implements Runnable {
 			}
 		}
 
-		LOGGER.info("Executing " + eventable.getEventType() + " on element: " + eventable
-		        + "; State: " + this.getStateMachine().getCurrentState().getName());
+		LOGGER.debug("Executing {} on element: {}; State: {}", eventable.getEventType(),
+		        eventable, this.getStateMachine().getCurrentState().getName());
 		if (this.fireEvent(eventable)) {
 			StateVertex newState =
 			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()

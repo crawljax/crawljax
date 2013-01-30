@@ -18,6 +18,8 @@ public class UrlUtilsTest {
 	public void isLinkExternal() {
 		assertTrue(UrlUtils.isLinkExternal("http://crawljax.com", "http://google.com"));
 		assertTrue(UrlUtils.isLinkExternal("http://crawljax.com", "file:///test/"));
+		assertTrue(UrlUtils.isLinkExternal("http://site.crawljax.com",
+		        "https://github.com/crawljax/crawljax"));
 
 		assertFalse(UrlUtils.isLinkExternal("http://crawljax.com/download",
 		        "http://crawljax.com/about"));

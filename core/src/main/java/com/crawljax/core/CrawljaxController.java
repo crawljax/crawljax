@@ -1,6 +1,5 @@
 package com.crawljax.core;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.GuardedBy;

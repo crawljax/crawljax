@@ -11,57 +11,41 @@ public class UrlUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UrlUtils.class);
 
-	private UrlUtils() {
-
-	}
-
 	/**
+	 * Check if a given URL is outside the current domain.
+	 * <p>
+	 * It is insensitive to subdomains and different protocols. If a the browsers is on the file
+	 * system browsing to <code>/</code> returns <code>true</code>.
+	 * </p>
+	 * ?
+	 * 
 	 * @param location
 	 *            Current location.
 	 * @param link
-	 *            Link to check.
+	 *            the destinations. This can be a relative or absolute link.
 	 * @return Whether location and link are on the same domain.
 	 */
 	public static boolean isLinkExternal(String location, String link) {
-
-		if (!location.contains("://")) {
-			// location must always contain :// by rule, it not link is handled as not external
-			return false;
-		}
-
-		// This will jump out of the local file location
-		if (location.startsWith("file") && link.startsWith("/")) {
+		URL source;
+		try {
+			source = new URL(location);
+		} catch (MalformedURLException e) {
+			LOG.warn("Could not parse source URL {}", location);
 			return true;
 		}
-
-		if (link.contains("://")) {
-			if (location.startsWith("file") && link.startsWith("http") || link.startsWith("file")
-			        && location.startsWith("http")) {
-				// Jump from file to http(s) or from http(s) to file, so external
+		try {
+			URL destination;
+			if (link.contains("://")) {
+				destination = new URL(link);
+			} else if (source.getProtocol().equals("file") && link.startsWith("/")) {
 				return true;
+			} else {
+				destination = new URL(source, link);
 			}
-			try {
-				URL locationUrl = new URL(location);
-				try {
-					URL linkUrl = new URL(link);
-					if (linkUrl.getHost().equals(locationUrl.getHost())) {
-						String linkPath = UrlUtils.getBasePath(linkUrl);
-						return !(linkPath.startsWith(UrlUtils.getBasePath(locationUrl)));
-					}
-					return true;
-				} catch (MalformedURLException e) {
-					LOG.info("Can not parse link " + link + " to check its externalOf "
-					        + location);
-					return false;
-				}
-			} catch (MalformedURLException e) {
-				LOG.info("Can not parse location " + location + " to check if " + link
-				        + " isExternal", e);
-				return false;
-			}
-		} else {
-			// No full url specifier so internal link...
-			return false;
+			return !source.getHost().equals(destination.getHost());
+		} catch (MalformedURLException e) {
+			LOG.warn("Could not parse source URL {}", link);
+			return true;
 		}
 	}
 
@@ -121,5 +105,9 @@ public class UrlUtils {
 			}
 		}
 		return null;
+	}
+
+	private UrlUtils() {
+
 	}
 }

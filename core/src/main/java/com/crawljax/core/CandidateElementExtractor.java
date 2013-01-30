@@ -109,7 +109,7 @@ public class CandidateElementExtractor {
 			LOG.info("State {} did not satisfy the CrawlConditions.", currentState.getName());
 			return results.build();
 		}
-		LOG.info("Looking in state: {} for candidate elements with ", currentState.getName());
+		LOG.debug("Looking in state: {} for candidate elements", currentState.getName());
 
 		try {
 			Document dom = DomUtils.asDocument(browser.getDomWithoutIframeContent());
@@ -119,7 +119,7 @@ public class CandidateElementExtractor {
 			throw new CrawljaxException(e);
 		}
 		ImmutableList<CandidateElement> found = results.build();
-		LOG.info("Found {} new candidate elements to analyze!", found.size());
+		LOG.debug("Found {} new candidate elements to analyze!", found.size());
 		return found;
 	}
 
@@ -238,7 +238,7 @@ public class CandidateElementExtractor {
 					LOG.debug("Element {} was not added");
 				}
 			} catch (XPathExpressionException e) {
-				LOG.info("Could not read XPath", e);
+				LOG.info("Could not read XPath for element {}", element, e);
 			}
 		}
 		return result.build();
@@ -321,7 +321,7 @@ public class CandidateElementExtractor {
 
 		for (CandidateElement candidateElement : candidateElements) {
 			if (!clickOnce || checkedElements.markChecked(candidateElement)) {
-				LOG.info("Found new candidate element: "
+				LOG.debug("Found new candidate element: "
 				        + candidateElement.getUniqueString());
 
 				if (eventableCondition != null) {
