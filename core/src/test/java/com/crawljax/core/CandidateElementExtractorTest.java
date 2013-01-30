@@ -5,11 +5,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -23,8 +22,6 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 
 @Category(BrowserTest.class)
 public class CandidateElementExtractorTest {
@@ -34,38 +31,37 @@ public class CandidateElementExtractorTest {
 	private static final StateVertex DUMMY_STATE = new StateVertex("DUMMY", "");
 
 	@ClassRule
-	public static final RunWithWebServer SERVER = new RunWithWebServer("/demo-site");
-	private static final ImmutableSet<TagAttribute> NO_ATTRIBUTES = ImmutableSet
-	        .<TagAttribute> of();
+	public static final RunWithWebServer DEMO_SITE_SERVER = new RunWithWebServer("/demo-site");
 
 	private CrawljaxController controller;
 	private Crawler crawler;
 
+	@After
+	public void shutDown() {
+		controller.getBrowserPool().shutdown();
+	}
+
 	@Test
 	public void testExtract() throws InterruptedException, CrawljaxException,
 	        ConfigurationException {
-		setupCrawler(new CrawlSpecification(SERVER.getSiteUrl().toExternalForm()));
+		CrawlSpecification spec =
+		        new CrawlSpecification(DEMO_SITE_SERVER.getSiteUrl().toExternalForm());
+		setupCrawler(spec);
+		spec.click("a");
 
 		FormHandler formHandler =
 		        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
 		                .getInputSpecification(), true);
+
 		CandidateElementExtractor extractor =
 		        new CandidateElementExtractor(controller.getElementChecker(),
-		                crawler.getBrowser(), formHandler, controller.getConfigurationReader()
-		                        .getCrawlSpecificationReader());
-		assertNotNull(extractor);
+		                crawler.getBrowser(), formHandler, controller.getConfigurationReader());
 
-		TagElement tagElementInc = new TagElement(NO_ATTRIBUTES, "a", "a");
-		List<TagElement> includes = new ArrayList<TagElement>();
-		includes.add(tagElementInc);
-
-		List<CandidateElement> candidates =
-		        extractor.extract(includes, new ArrayList<TagElement>(), true, DUMMY_STATE);
+		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
 		assertNotNull(candidates);
 		assertEquals(15, candidates.size());
 
-		controller.getBrowserPool().shutdown();
 	}
 
 	private void setupCrawler(CrawlSpecification spec) throws ConfigurationException,
@@ -75,45 +71,19 @@ public class CandidateElementExtractorTest {
 		controller = new CrawljaxController(config);
 		crawler = new CEETCrawler(controller);
 
-		assertNotNull(crawler);
-
 		crawler.goToInitialURL();
+		spec.setClickOnce(true);
 
 		Thread.sleep(400);
 	}
 
 	@Test
 	public void testExtractExclude() throws Exception {
-		setupCrawler(new CrawlSpecification(SERVER.getSiteUrl().toExternalForm()));
+		CrawlSpecification spec =
+		        new CrawlSpecification(DEMO_SITE_SERVER.getSiteUrl().toExternalForm());
+		spec.click("a");
+		spec.dontClick("div").withAttribute("id", "menubar");
 
-		FormHandler formHandler =
-		        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
-		                .getInputSpecification(), true);
-		CandidateElementExtractor extractor =
-		        new CandidateElementExtractor(controller.getElementChecker(),
-		                crawler.getBrowser(), formHandler, controller.getConfigurationReader()
-		                        .getCrawlSpecificationReader());
-
-		List<TagElement> includes = Lists.newArrayList(new TagElement(NO_ATTRIBUTES, "a", null));
-
-		TagAttribute attr = new TagAttribute("id", "menubar");
-		ImmutableSet<TagAttribute> attributes = ImmutableSet.of(attr);
-		TagElement tagElementExc = new TagElement(attributes, "div", null);
-		List<TagElement> excludes = Lists.newArrayList(tagElementExc);
-
-		List<CandidateElement> candidates =
-		        extractor.extract(includes, excludes, true, DUMMY_STATE);
-
-		assertNotNull(candidates);
-		assertThat(candidates, hasSize(11));
-
-		controller.getBrowserPool().shutdown();
-	}
-
-	@Test
-	public void testExtractIframeContents() throws Exception {
-		File index = new File("src/test/resources/site/iframe/index.html");
-		CrawlSpecification spec = new CrawlSpecification("file://" + index.getAbsolutePath());
 		setupCrawler(spec);
 
 		FormHandler formHandler =
@@ -121,25 +91,42 @@ public class CandidateElementExtractorTest {
 		                .getInputSpecification(), true);
 		CandidateElementExtractor extractor =
 		        new CandidateElementExtractor(controller.getElementChecker(),
-		                crawler.getBrowser(), formHandler, controller.getConfigurationReader()
-		                        .getCrawlSpecificationReader());
-		assertNotNull(extractor);
+		                crawler.getBrowser(), formHandler, controller.getConfigurationReader());
 
-		TagElement tagElementInc = new TagElement(NO_ATTRIBUTES, "a", "id");
-		List<TagElement> includes = new ArrayList<TagElement>();
-		includes.add(tagElementInc);
+		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
-		List<CandidateElement> candidates =
-		        extractor.extract(includes, new ArrayList<TagElement>(), true, DUMMY_STATE);
+		assertNotNull(candidates);
+		assertThat(candidates, hasSize(11));
+
+	}
+
+	@Test
+	public void testExtractIframeContents() throws Exception {
+		RunWithWebServer server = new RunWithWebServer("/site");
+		server.before();
+		CrawlSpecification spec =
+		        new CrawlSpecification(server.getSiteUrl() + "iframe/");
+		spec.click("a");
+		setupCrawler(spec);
+
+		FormHandler formHandler =
+		        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()
+		                .getInputSpecification(), true);
+		CandidateElementExtractor extractor =
+		        new CandidateElementExtractor(controller.getElementChecker(),
+		                crawler.getBrowser(), formHandler, controller.getConfigurationReader());
+
+		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
 		for (CandidateElement e : candidates) {
 			LOG.debug("candidate: " + e.getUniqueString());
 		}
 
+		server.after();
+
+		assertNotNull(extractor);
 		assertNotNull(candidates);
 		assertThat(candidates, hasSize(9));
-
-		controller.getBrowserPool().shutdown();
 
 	}
 

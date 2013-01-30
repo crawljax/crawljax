@@ -6,6 +6,7 @@ import java.util.List;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -52,7 +53,7 @@ public final class CrawlElement {
 	 *            the event type for this crawl element.
 	 */
 	protected CrawlElement(EventType eventType, String tagName) {
-		this.tagName = tagName;
+		this.tagName = tagName.toUpperCase();
 		this.id = "id" + hashCode();
 		this.eventType = eventType;
 	}
@@ -128,18 +129,19 @@ public final class CrawlElement {
 	 * @return the EventableCondition belonging to this CrawlElement
 	 */
 	protected EventableCondition getEventableCondition() {
-		if ((getWithXpathExpression() == null || getWithXpathExpression().equals(""))
-		        && getConditions().size() == 0 && getInputFieldIds().size() == 0) {
+		if ((Strings.isNullOrEmpty(underXpath))
+		        && conditions.isEmpty()
+		        && inputFieldIds.isEmpty()) {
 			return null;
 		}
 		EventableCondition eventableCondition = new EventableCondition(getId());
-		if (getWithXpathExpression() != null && !getWithXpathExpression().equals("")) {
+		if (!Strings.isNullOrEmpty(underXpath)) {
 			eventableCondition.setInXPath(getWithXpathExpression());
 		}
-		if (getConditions().size() > 0) {
+		if (getConditions().isEmpty()) {
 			eventableCondition.setConditions(getConditions());
 		}
-		if (getInputFieldIds().size() > 0) {
+		if (getInputFieldIds().isEmpty()) {
 			eventableCondition.setLinkedInputFields(getInputFieldIds());
 		}
 		return eventableCondition;

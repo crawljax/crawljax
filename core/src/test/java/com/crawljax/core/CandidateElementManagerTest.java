@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 /**
  * Test for the CandidateElementManager.
@@ -22,7 +22,7 @@ public class CandidateElementManagerTest {
 
 	@BeforeClass
 	public static void setup() throws SAXException, IOException {
-		document = Helper.getDocument("");
+		document = DomUtils.asDocument("");
 	}
 
 	@Test

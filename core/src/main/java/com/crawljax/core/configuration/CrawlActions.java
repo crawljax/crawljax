@@ -2,8 +2,12 @@ package com.crawljax.core.configuration;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.crawljax.condition.Condition;
 import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -15,8 +19,61 @@ import com.google.common.collect.Lists;
  */
 public class CrawlActions {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlActions.class);
+
+	public static class ExcludeByParentBuilder {
+		private final String tagname;
+		private String id = null;
+		private String clasz = null;
+
+		private ExcludeByParentBuilder(String tagname) {
+			this.tagname = tagname;
+		}
+
+		public void withId(String id) {
+			this.id = id;
+		}
+
+		public void withClass(String clasz) {
+			this.clasz = clasz;
+
+		}
+
+		private String asExcludeXpath(String identifier, String value) {
+			return new StringBuilder()
+			        .append("//")
+			        .append(tagname.toUpperCase())
+			        .append("[@")
+			        .append(identifier)
+			        .append("='")
+			        .append(value)
+			        .append("']//*")
+			        .toString();
+		}
+
+		private ImmutableList<CrawlElement> asExcludeList(List<CrawlElement> includes) {
+			String xpath;
+			if (id != null) {
+				xpath = asExcludeXpath("id", id);
+			} else if (clasz != null) {
+				xpath = asExcludeXpath("class", clasz);
+			} else {
+				xpath = "//" + tagname.toUpperCase() + "//*";
+			}
+			ImmutableList.Builder<CrawlElement> builder = ImmutableList.builder();
+			for (CrawlElement include : includes) {
+				builder.add(new CrawlElement(EventType.click, include.getTagName())
+				        .underXPath(xpath));
+			}
+			return builder.build();
+		}
+	}
+
 	private final List<CrawlElement> crawlElements = Lists.newLinkedList();
 	private final List<CrawlElement> crawlElementsExcluded = Lists.newLinkedList();
+	private final List<ExcludeByParentBuilder> crawlParentsExcluded = Lists.newLinkedList();
+
+	private ImmutableList<CrawlElement> resultingElementsExcluded = null;
 
 	CrawlActions() {
 	}
@@ -31,9 +88,16 @@ public class CrawlActions {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement click(String tagName) {
-		CrawlElement crawlTag = new CrawlElement(EventType.click, tagName);
+		checkNotRead();
+		Preconditions.checkNotNull(tagName, "Tagname cannot be null");
+		CrawlElement crawlTag = new CrawlElement(EventType.click, tagName.toUpperCase());
 		crawlElements.add(crawlTag);
 		return crawlTag;
+	}
+
+	private void checkNotRead() {
+		Preconditions.checkState(resultingElementsExcluded == null,
+		        "You cannot modify crawlactions once it's read");
 	}
 
 	/**
@@ -47,9 +111,26 @@ public class CrawlActions {
 	 * @return crawlTag the CrawlElement
 	 */
 	public CrawlElement dontClick(String tagName) {
-		CrawlElement crawlTag = new CrawlElement(EventType.click, tagName);
+		checkNotRead();
+		Preconditions.checkNotNull(tagName, "Tagname cannot be null");
+		CrawlElement crawlTag = new CrawlElement(EventType.click, tagName.toUpperCase());
 		crawlElementsExcluded.add(crawlTag);
 		return crawlTag;
+	}
+
+	/**
+	 * Click no childer of the specified parent element.
+	 * 
+	 * @param tagname
+	 *            The tagname of which no children should be clicked.
+	 * @return The builder to append more options.
+	 */
+	public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {
+		checkNotRead();
+		Preconditions.checkNotNull(tagname);
+		ExcludeByParentBuilder exclude = new ExcludeByParentBuilder(tagname.toUpperCase());
+		crawlParentsExcluded.add(exclude);
+		return exclude;
 	}
 
 	/**
@@ -63,7 +144,18 @@ public class CrawlActions {
 	 * @return the crawlElementsExcluded
 	 */
 	protected ImmutableList<CrawlElement> getCrawlElementsExcluded() {
-		return ImmutableList.copyOf(crawlElementsExcluded);
+		synchronized (this) {
+			if (resultingElementsExcluded == null) {
+				ImmutableList.Builder<CrawlElement> builder = ImmutableList.builder();
+				builder.addAll(crawlElementsExcluded);
+				for (ExcludeByParentBuilder exclude : crawlParentsExcluded) {
+					builder.addAll(exclude.asExcludeList(crawlElements));
+				}
+				resultingElementsExcluded = builder.build();
+				LOG.debug("Excluded elements = {}", resultingElementsExcluded);
+			}
+			return resultingElementsExcluded;
+		}
 	}
 
 }

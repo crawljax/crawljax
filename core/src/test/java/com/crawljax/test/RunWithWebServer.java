@@ -28,7 +28,7 @@ public class RunWithWebServer extends ExternalResource {
 	}
 
 	@Override
-	protected void before() throws Throwable {
+	public void before() throws Exception {
 		server = new Server(0);
 		ResourceHandler handler = new ResourceHandler();
 		handler.setBaseResource(resource);
@@ -40,7 +40,7 @@ public class RunWithWebServer extends ExternalResource {
 	}
 
 	@Override
-	protected void after() {
+	public void after() {
 		try {
 			if (server != null) {
 				server.stop();

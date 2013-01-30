@@ -22,13 +22,13 @@ public class TagElement {
 	 * @param attributes
 	 *            the attribute set.
 	 * @param name
-	 *            the tag name.
+	 *            the tag name. This will be transformed to captial letters.
 	 */
 	public TagElement(ImmutableSet<TagAttribute> attributes, String name, String id) {
 		Preconditions.checkNotNull(attributes);
 		Preconditions.checkNotNull(name);
 		this.attributes = attributes;
-		this.name = name;
+		this.name = name.toUpperCase();
 		this.id = id;
 	}
 

@@ -55,6 +55,7 @@ public class SampleCrawlersTest {
 
 	@Test
 	public void testSimpleXPathCrawl() throws Exception {
+		// new SimpleXpathCrawl().showWebSite();
 		CrawlSession crawl = new SimpleXpathCrawl().crawl();
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
 		assertThat(stateFlowGraph, hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));
