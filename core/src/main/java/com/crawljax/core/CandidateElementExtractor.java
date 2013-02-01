@@ -73,7 +73,6 @@ public class CandidateElementExtractor {
 		this.includedTagElements = configurationReader.getTagElements();
 		this.ignoreFrameChecker = configurationReader.getCrawlSpecificationReader();
 		clickOnce = configurationReader.getCrawlSpecificationReader().getClickOnce();
-
 	}
 
 	private ImmutableMultimap<String, TagElement> asMultiMap(

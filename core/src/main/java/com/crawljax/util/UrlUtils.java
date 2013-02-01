@@ -23,9 +23,14 @@ public class UrlUtils {
 	 *            Current location.
 	 * @param link
 	 *            the destinations. This can be a relative or absolute link.
-	 * @return Whether location and link are on the same domain.
+	 * @return Whether location and link are on the same domain. It returns <code>false</code> if
+	 *         the link is <code>null</code>. It returns true if the destination {@link URL} throws
+	 *         a {@link MalformedURLException}.
 	 */
 	public static boolean isLinkExternal(String location, String link) {
+		if (link == null) {
+			return false;
+		}
 		URL source;
 		try {
 			source = new URL(location);
@@ -35,7 +40,9 @@ public class UrlUtils {
 		}
 		try {
 			URL destination;
-			if (link.contains("://")) {
+			if ("javascript:void(0)".equals(link.trim())) {
+				return false;
+			} else if (link.contains("://")) {
 				destination = new URL(link);
 			} else if (source.getProtocol().equals("file") && link.startsWith("/")) {
 				return true;
