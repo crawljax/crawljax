@@ -258,8 +258,8 @@ public class Crawler implements Runnable {
 				return;
 			}
 
-			LOGGER.info("Backtracking by executing {} on element: {}", clickable.getEventType()
-			        , clickable);
+			LOGGER.info("Backtracking by executing {} on element: {}", clickable.getEventType(),
+			        clickable);
 
 			this.getStateMachine().changeState(clickable.getTargetStateVertex());
 

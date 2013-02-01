@@ -37,18 +37,16 @@ public class UrlUtilsTest {
 		assertFalse("link and base are the same (file)",
 		        UrlUtils.isLinkExternal("file:///tmp/index.html", "file:///tmp/index.html"));
 
-		assertFalse(
-		        "Sub dir is not external for file",
-		        UrlUtils.isLinkExternal("file:///tmp/index.html", "file:///tmp/subdir/index.html"));
+		assertFalse("Sub dir is not external for file", UrlUtils.isLinkExternal(
+		        "file:///tmp/index.html", "file:///tmp/subdir/index.html"));
 
 		assertFalse("Sub dirs is not external for http", UrlUtils.isLinkExternal(
 		        "http://crawljax.com", "http://crawljax.com/sub/dir/about.html"));
 
 		assertFalse("Https link from http base is not external",
 		        UrlUtils.isLinkExternal("http://crawljax.com", "https://crawljax.com/about.html"));
-		assertFalse(
-		        "Https link from https base is not external",
-		        UrlUtils.isLinkExternal("https://crawljax.com", "https://crawljax.com/about.html"));
+		assertFalse("Https link from https base is not external", UrlUtils.isLinkExternal(
+		        "https://crawljax.com", "https://crawljax.com/about.html"));
 		assertFalse("Http link from https base is not external",
 		        UrlUtils.isLinkExternal("https://crawljax.com", "http://crawljax.com/about.html"));
 
@@ -67,6 +65,10 @@ public class UrlUtilsTest {
 
 		assertTrue("root link from file base is external",
 		        UrlUtils.isLinkExternal("file://tmp/index.html", "/about.html"));
+
+		assertTrue("Ignore email links",
+		        UrlUtils.isLinkExternal("https://example.com", "mailto:test@example.com"));
+
 	}
 
 	@Test

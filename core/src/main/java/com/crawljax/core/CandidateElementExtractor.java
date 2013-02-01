@@ -27,6 +27,7 @@ import com.crawljax.forms.FormHandler;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.UrlUtils;
 import com.crawljax.util.XPathHelper;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
@@ -75,8 +76,7 @@ public class CandidateElementExtractor {
 		clickOnce = configurationReader.getCrawlSpecificationReader().getClickOnce();
 	}
 
-	private ImmutableMultimap<String, TagElement> asMultiMap(
-	        ImmutableList<TagElement> elements) {
+	private ImmutableMultimap<String, TagElement> asMultiMap(ImmutableList<TagElement> elements) {
 		ImmutableMultimap.Builder<String, TagElement> builder = ImmutableMultimap.builder();
 		for (TagElement tagElement : elements) {
 			builder.put(tagElement.getName(), tagElement);
@@ -181,8 +181,9 @@ public class CandidateElementExtractor {
 	private void eveluateElements(Document dom, TagElement tag,
 	        Builder<CandidateElement> results, String relatedFrame) {
 		try {
-			List<Element> nodeListForTagElement = getNodeListForTagElement(dom, tag,
-			        checkedElements.getEventableConditionChecker());
+			List<Element> nodeListForTagElement =
+			        getNodeListForTagElement(dom, tag,
+			                checkedElements.getEventableConditionChecker());
 
 			for (Element sourceElement : nodeListForTagElement) {
 				evaluateElement(results, relatedFrame, tag, sourceElement);
@@ -227,10 +228,8 @@ public class CandidateElementExtractor {
 			// check if element is a candidate
 			String id = element.getNodeName() + ": " + DomUtils.getAllElementAttributes(element);
 			try {
-				if (matchesXpath
-				        && !checkedElements.isChecked(id)
-				        && isElementVisible(dom, element)
-				        && !filterElement(attributes, element)
+				if (matchesXpath && !checkedElements.isChecked(id)
+				        && isElementVisible(dom, element) && !filterElement(attributes, element)
 				        && !isExcluded(dom, element, eventableConditionChecker)) {
 					addElement(element, result, tagElement);
 				} else {
@@ -263,8 +262,9 @@ public class CandidateElementExtractor {
 	        EventableCondition eventableCondition) {
 		if (eventableCondition != null && eventableCondition.getInXPath() != null) {
 			try {
-				ImmutableList<String> result = XPathHelper.getXpathForXPathExpressions(dom,
-				        eventableCondition.getInXPath());
+				ImmutableList<String> result =
+				        XPathHelper.getXpathForXPathExpressions(dom,
+				                eventableCondition.getInXPath());
 				LOG.debug("Xpath {} resolved to xpaths in document: {}",
 				        eventableCondition.getInXPath(), result);
 				return result;
@@ -276,42 +276,36 @@ public class CandidateElementExtractor {
 	}
 
 	private void addElement(Element element, Builder<Element> builder, TagElement tagElement) {
-
 		if ("A".equalsIgnoreCase(tagElement.getName())) {
 			String href = element.getAttribute("href");
-			boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
-			LOG.debug("HREF: {} isExternal= {}", href, isExternal);
-
-			if (!(isExternal || isEmail(href) || isPDForPS(href))) {
-				LOG.debug("Adding element {}", element);
-				builder.add(element);
-				checkedElements.increaseElementsCounter();
+			if (!Strings.isNullOrEmpty(href)) {
+				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
+				LOG.debug("HREF: {} isExternal= {}", href, isExternal);
+				if (isExternal || isPDForPS(href)) {
+					return;
+				}
 			}
-		} else {
-			builder.add(element);
-			LOG.debug("Adding element {}", element);
-			checkedElements.increaseElementsCounter();
 		}
+		builder.add(element);
+		LOG.debug("Adding element {}", element);
+		checkedElements.increaseElementsCounter();
 	}
 
-	private void evaluateElement(Builder<CandidateElement> results,
-	        String relatedFrame, TagElement tag, Element sourceElement) {
+	private void evaluateElement(Builder<CandidateElement> results, String relatedFrame,
+	        TagElement tag, Element sourceElement) {
 		EventableCondition eventableCondition =
-		        checkedElements.getEventableConditionChecker().getEventableCondition(
-		                tag.getId());
+		        checkedElements.getEventableConditionChecker().getEventableCondition(tag.getId());
 		String xpath = XPathHelper.getXPathExpression(sourceElement);
 		// get multiple candidate elements when there are input
 		// fields connected to this element
 
 		List<CandidateElement> candidateElements = new ArrayList<CandidateElement>();
-		if (eventableCondition != null
-		        && eventableCondition.getLinkedInputFields() != null
+		if (eventableCondition != null && eventableCondition.getLinkedInputFields() != null
 		        && eventableCondition.getLinkedInputFields().size() > 0) {
 			// add multiple candidate elements, for every input
 			// value combination
 			candidateElements =
-			        formHandler.getCandidateElementsForInputs(sourceElement,
-			                eventableCondition);
+			        formHandler.getCandidateElementsForInputs(sourceElement, eventableCondition);
 		} else {
 			// just add default element
 			candidateElements.add(new CandidateElement(sourceElement, new Identification(
@@ -320,12 +314,9 @@ public class CandidateElementExtractor {
 
 		for (CandidateElement candidateElement : candidateElements) {
 			if (!clickOnce || checkedElements.markChecked(candidateElement)) {
-				LOG.debug("Found new candidate element: "
-				        + candidateElement.getUniqueString());
-
-				if (eventableCondition != null) {
-					candidateElement.setEventableCondition(eventableCondition);
-				}
+				LOG.debug("Found new candidate element: {} with eventableCondition {}",
+				        candidateElement.getUniqueString(), eventableCondition);
+				candidateElement.setEventableCondition(eventableCondition);
 				results.add(candidateElement);
 				/**
 				 * TODO add element to checkedElements after the event is fired! also add string
@@ -334,23 +325,6 @@ public class CandidateElementExtractor {
 				 */
 			}
 		}
-	}
-
-	/**
-	 * @param email
-	 *            the string to check
-	 * @return true if text has the email pattern.
-	 */
-	private boolean isEmail(String email) {
-		// Set the email pattern string
-		final Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
-		Matcher m = p.matcher(email);
-
-		if (m.matches()) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -391,9 +365,8 @@ public class CandidateElementExtractor {
 			try {
 				String asXpath = XPathHelper.getXPathExpression(element);
 				matchesXPath =
-				        eventableConditionChecker
-				                .checkXpathStartsWithXpathEventableCondition(dom,
-				                        eventableCondition, asXpath);
+				        eventableConditionChecker.checkXpathStartsWithXpathEventableCondition(
+				                dom, eventableCondition, asXpath);
 			} catch (CrawljaxException | XPathExpressionException e) {
 				LOG.debug("Could not check exclusion by Xpath for element because {}",
 				        e.getMessage());
@@ -404,8 +377,7 @@ public class CandidateElementExtractor {
 				LOG.info("Excluded element because of xpath: " + element);
 				return true;
 			}
-			if (!filterElement(tag.getAttributes(), element)
-			        && tag.getAttributes().size() > 0) {
+			if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
 				LOG.info("Excluded element because of attributes: " + element);
 				return true;
 			}

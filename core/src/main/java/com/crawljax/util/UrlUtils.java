@@ -46,6 +46,8 @@ public class UrlUtils {
 				destination = new URL(link);
 			} else if (source.getProtocol().equals("file") && link.startsWith("/")) {
 				return true;
+			} else if (link.startsWith("mailto:")) {
+				return true;
 			} else {
 				destination = new URL(source, link);
 			}

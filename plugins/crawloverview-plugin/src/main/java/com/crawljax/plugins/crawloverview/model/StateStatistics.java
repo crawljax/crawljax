@@ -4,9 +4,7 @@ import java.util.Collection;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSet.Builder;
-import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.ImmutableSetMultimap;
 
 @Immutable
 public class StateStatistics {
@@ -16,7 +14,7 @@ public class StateStatistics {
 	private final State mostFanOut;
 	private final State mostFanIn;
 	private final int totalNumberOfStates;
-	private final ImmutableSet<String> urls;
+	private final ImmutableSetMultimap<String, String> urls;
 
 	public StateStatistics(Collection<State> states) {
 		totalNumberOfStates = states.size();
@@ -26,7 +24,7 @@ public class StateStatistics {
 		State mostFanOut = randomState;
 		State leastFanIn = randomState;
 		State mostFanIn = randomState;
-		Builder<String> builder = ImmutableSortedSet.naturalOrder();
+		ImmutableSetMultimap.Builder<String, String> builder = ImmutableSetMultimap.builder();
 		for (State state : states) {
 			if (state.getFanIn() > mostFanIn.getFanIn()) {
 				mostFanIn = state;
@@ -38,7 +36,7 @@ public class StateStatistics {
 			} else if (state.getFanOut() < leastFanOut.getFanOut()) {
 				leastFanOut = state;
 			}
-			builder.add(state.getUrl());
+			builder.put(state.getUrl(), state.getName());
 		}
 		this.urls = builder.build();
 		this.leastFanOut = leastFanOut;
@@ -67,7 +65,7 @@ public class StateStatistics {
 		return totalNumberOfStates;
 	}
 
-	public ImmutableSet<String> getUrls() {
+	public ImmutableSetMultimap<String, String> getUrls() {
 		return urls;
 	}
 }

@@ -10,8 +10,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +31,7 @@ import com.crawljax.core.plugin.OnInvariantViolationPlugin;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
+import com.google.common.collect.ImmutableList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StateMachineTest {
@@ -226,21 +225,21 @@ public class StateMachineTest {
 		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
 		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
 
-		ArrayList<Invariant> iList = new ArrayList<Invariant>();
 		hit = false;
-		iList.add(new Invariant("Test123", new Condition() {
+		ImmutableList<Invariant> iList =
+		        ImmutableList.of(new Invariant("Test123", new Condition() {
 
-			@Override
-			public NodeList getAffectedNodes() {
-				return null;
-			}
+			        @Override
+			        public NodeList getAffectedNodes() {
+				        return null;
+			        }
 
-			@Override
-			public boolean check(EmbeddedBrowser browser) {
-				hit = true;
-				return false;
-			}
-		}));
+			        @Override
+			        public boolean check(EmbeddedBrowser browser) {
+				        hit = true;
+				        return false;
+			        }
+		        }));
 		StateMachine smLocal = new StateMachine(new StateFlowGraph(index), index, iList);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
@@ -321,19 +320,19 @@ public class StateMachineTest {
 		});
 		CrawljaxPluginsUtil.loadPlugins(new CrawljaxConfigurationReader(cfg).getPlugins());
 
-		ArrayList<Invariant> iList = new ArrayList<Invariant>();
-		iList.add(new Invariant("Test123", new Condition() {
+		ImmutableList<Invariant> iList =
+		        ImmutableList.of(new Invariant("Test123", new Condition() {
 
-			@Override
-			public NodeList getAffectedNodes() {
-				return null;
-			}
+			        @Override
+			        public NodeList getAffectedNodes() {
+				        return null;
+			        }
 
-			@Override
-			public boolean check(EmbeddedBrowser browser) {
-				return false;
-			}
-		}));
+			        @Override
+			        public boolean check(EmbeddedBrowser browser) {
+				        return false;
+			        }
+		        }));
 		StateMachine smLocal = new StateMachine(new StateFlowGraph(index), index, iList);
 		// state2.equals(state3)
 		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
