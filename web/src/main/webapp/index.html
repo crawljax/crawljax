@@ -65,12 +65,14 @@
         </div><!--/span-->
         
         <div class="span9">
+        
+        <div data-bind="page: {id: 'start'}">
 			<ul class="nav nav-tabs">
   				<li class="active"><a href="#">All</a></li>
   				<li><a href="#">+</a></li>
 			</ul>
 			<div class="tab-content">
-				<table class="table table-hover">
+				<table class="table table-striped">
 				  <thead>
  				  <tr>
  					<th>Status</th>
@@ -80,29 +82,56 @@
  					<th>Last Duration</th>
  				  </tr>
  				  </thead>
- 				  <tbody>
- 				  <tr>
- 					<td>Idle</td>
- 					<td>Some Config</td>
- 					<td>www.google.com</td>
- 					<td>1/12/2013</td>
- 					<td>13 min 26 sec</td>
- 				  </tr>
- 				  <tr>
- 					<td>Idle</td>
- 					<td>Another Config</td>
- 					<td>www.yahoo.com</td>
- 					<td>1/23/2013</td>
- 					<td>9 min 48 sec</td>
+ 				  <tbody data-bind="foreach: configSummaries">
+ 				  <tr data-bind="click: $parent.selectConfig">
+ 					<td data-bind="text: status"></td>
+ 					<td><a data-bind="page-href: '../'+id, text: name"></a></td>
+ 					<td><a data-bind="attr: {href: 'http://' + site}, text: site" target="_blank"></a></td>
+ 					<td data-bind="text: lastCrawl"></td>
+ 					<td data-bind="text: lastDuration"></td>
  				  </tr>
  				  </tbody>
 				</table>
 			</div>
+		</div>
+		
+		<div data-bind="page: {id: '?'}">
+			Error
+		</div>
+		
         </div><!--/span-->
       </div><!--/row-->
     </div>
 
-	<script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/knockout-2.2.1.js"></script>
+    <script type="text/javascript" src="js/jquery.history.js"></script>
+    <script type="text/javascript" src="js/pager.min.js"></script>
+    <script type="text/javascript">
+    	function configSummary(id, status, name, site, lastCrawl, lastDuration)
+    	{
+    		this.id = id;
+    		this.status = status;
+    		this.name = name;
+    		this.site = site;
+    		this.lastCrawl = lastCrawl;
+    		this.lastDuration = lastDuration;
+    	}
+    	var viewModel = {
+    		configSummaries: ko.observableArray(
+    				[new configSummary("1", "Idle", "Some Config", "www.google.com", "1/12/2013 4:23 PM", "13 min 26 sec"),
+    				 new configSummary("2", "Idle", "Other Config", "www.yahoo.com", "1/23/2013 10:37 AM", "9 min 48 sec"),
+    				 new configSummary("4", "Idle", "Another Config", "www.msn.com", "1/27/2013 7:37 AM", "27 min 3 sec")])
+    	};
+    	
+    	//pager.useHTML5history = true;
+    	//pager.Href5.history = History;
+    	
+    	pager.extendWithPage(viewModel);
+    	ko.applyBindings(viewModel);
+    	
+    	pager.start();//HistoryJs();
+    </script>
 </body>
 </html>
