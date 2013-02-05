@@ -5,12 +5,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/")
+@Path("/hello")
 public class MainResource {
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String helloWorld() {
-		return "Hellow JaxRS!";
+		return "Hello JaxRS!";
 	}
 }

@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>com.crawljax</groupId>
 			<artifactId>crawljax-core</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>jetty-websocket</artifactId>
