@@ -46,7 +46,7 @@
 
 		<dependency>
 			<groupId>com.crawljax.plugins</groupId>
-			<artifactId>crawloverview</artifactId>
+			<artifactId>crawloverview-plugin</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
