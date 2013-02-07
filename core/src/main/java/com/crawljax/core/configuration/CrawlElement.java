@@ -6,7 +6,6 @@ import java.util.List;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable.EventType;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -129,19 +128,18 @@ public final class CrawlElement {
 	 * @return the EventableCondition belonging to this CrawlElement
 	 */
 	protected EventableCondition getEventableCondition() {
-		if ((Strings.isNullOrEmpty(underXpath))
-		        && conditions.isEmpty()
-		        && inputFieldIds.isEmpty()) {
+		if ((getWithXpathExpression() == null || getWithXpathExpression().equals(""))
+		        && getConditions().size() == 0 && getInputFieldIds().size() == 0) {
 			return null;
 		}
 		EventableCondition eventableCondition = new EventableCondition(getId());
-		if (!Strings.isNullOrEmpty(underXpath)) {
+		if (getWithXpathExpression() != null && !getWithXpathExpression().equals("")) {
 			eventableCondition.setInXPath(getWithXpathExpression());
 		}
-		if (getConditions().isEmpty()) {
+		if (getConditions().size() > 0) {
 			eventableCondition.setConditions(getConditions());
 		}
-		if (getInputFieldIds().isEmpty()) {
+		if (getInputFieldIds().size() > 0) {
 			eventableCondition.setLinkedInputFields(getInputFieldIds());
 		}
 		return eventableCondition;

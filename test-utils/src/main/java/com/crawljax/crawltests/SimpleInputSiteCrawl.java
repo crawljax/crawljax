@@ -2,6 +2,7 @@ package com.crawljax.crawltests;
 
 import com.crawljax.core.configuration.InputField;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.test.BaseCrawler;
 
 /**
  * Wraps a Crawljax instance the crawls the simplesite.

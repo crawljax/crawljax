@@ -46,8 +46,8 @@ public class CandidateElementExtractorTest {
 	        ConfigurationException {
 		CrawlSpecification spec =
 		        new CrawlSpecification(DEMO_SITE_SERVER.getSiteUrl().toExternalForm());
-		setupCrawler(spec);
 		spec.click("a");
+		setupCrawler(spec);
 
 		FormHandler formHandler =
 		        new FormHandler(crawler.getBrowser(), controller.getConfigurationReader()

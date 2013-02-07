@@ -1,4 +1,9 @@
 $(document).ready(function(){
+	if(typeof console === "undefined") {
+	    console = {
+	        log: function() { }	        
+	    };
+	}
 	checkUrl();
 });
 
@@ -28,14 +33,18 @@ function loadRandomAllowedPage(){
 	$('#content').html("Random valid page " + (Math.random()*1000000000000000000));
 }
 
-function loadForbiddenPage(){
-	$('#content').html("FORBIDDEN_PAGE");
+function loadForbiddenPage(element){
+	$('#content').html("FORBIDDEN_PAGE derived from " + element);
+	console.log("Forbidden element loaded");
+	console.log(element);
 }
 
 function loadHome(){
-	$('#content').load("home.html", {}, function(){
-		   document.getElementById("randomStyle").style.borderLeft = (Math.random()*800) + "px solid red";
-		   document.getElementById("randomDate").innerHTML = Math.floor(Math.random()*31) + "-" + Math.floor(Math.random()*12) + "-20" + (10 + Math.floor(Math.random()*89));
+	$('#content').load("home.html", function(){
+		   $("#randomStyle").css("borderLeft", (Math.random()*800) + "px solid red");
+		   var day = Math.floor(Math.random()*20)+1;
+		   var month = Math.floor(Math.random()*11)+1;
+		   $("#randomDate").html(day + "-" + month + "-2012");
 	});
 }
 

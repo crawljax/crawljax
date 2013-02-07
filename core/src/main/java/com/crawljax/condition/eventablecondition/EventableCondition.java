@@ -5,12 +5,13 @@ import java.util.List;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
+import com.crawljax.core.state.Eventable;
 import com.crawljax.util.XPathHelper;
 
 /**
- * An EventableCondition specifies properties of an eventable which should be satisfied in order to
- * crawl the element. The user does not need this class when using the API. Only for use with
- * properties files .
+ * An EventableCondition specifies properties of an {@link Eventable} which should be satisfied in
+ * order to crawl the element. The user does not need this class when using the API. Only for use
+ * with properties files .
  */
 public class EventableCondition {
 
