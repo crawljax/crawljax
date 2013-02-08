@@ -27,7 +27,7 @@ import com.crawljax.util.DomUtils;
 public class EventableTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EventableTest.class);
-	
+
 	@Test
 	public void testHashCode() {
 		String xpath = "/body/div[3]";

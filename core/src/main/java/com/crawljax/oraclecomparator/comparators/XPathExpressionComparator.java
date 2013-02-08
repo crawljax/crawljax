@@ -16,7 +16,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.DomUtils;
