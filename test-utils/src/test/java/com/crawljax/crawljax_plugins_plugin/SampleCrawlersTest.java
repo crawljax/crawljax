@@ -45,7 +45,7 @@ public class SampleCrawlersTest {
 	 * Shows <a href='https://github.com/crawljax/crawljax/issues/97'>Issue 97</a>
 	 */
 	@Test
-	@Ignore("Test that shows Issue #97")
+	// @Ignore("Test that shows Issue #97")
 	public void testHiddenElementsSiteCrawl() throws Exception {
 		// new SimpleInputSiteCrawl().showWebSite();
 		CrawlSession crawl = new HiddenElementsSiteCrawl().crawl();
