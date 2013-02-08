@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-    <title>Crawljax</title>
+    <title>CrawljaxUI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link href="css/bootstrap.min.css" rel="stylesheet">
@@ -23,12 +23,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Crawljax</a>
+          <a class="brand" href="http://www.crawljax.com" target="_blank">CrawljaxUI</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Contact</a></li>
             </ul>
             <ul class="nav pull-right">
               <li><a href="#">Sign in with GitHub</a></li>
@@ -38,100 +38,110 @@
       </div>
     </div>
 
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span3">
-          <ul class="well breadcrumb">
-  			<li><a href="#">Home</a> <span class="divider">/</span></li>
-  			<li><a href="#">Library</a> <span class="divider">/</span></li>
-  			<li class="active">Data</li>
-		  </ul>
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Manage</li>
-              <li><a href="#">New Configuration</a></li>
-              <li><a href="#">People</a></li>
-              <li><a href="#">Crawl History</a></li>
-			  <li><a href="#">Manage Crawljax</a></li>
-            </ul>
-          </div>
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-          	  <li class="nav-header">Crawl Execution Queue</li>
-          	  <li class="divider"></li>
-          	  <li class="nav-header">Executor Status</li>
-          	</ul>
-          </div>
-        </div><!--/span-->
+    
+    
+    <script type="text/x-handlebars">
+		<div class="container-fluid">
+      	<div class="row-fluid">
+       		<div class="span3">
+          		<ul class="well breadcrumb">
+  					<li><a href="#">Home</a> <span class="divider">/</span></li>
+  					<li><a href="#">Library</a> <span class="divider">/</span></li>
+  					<li class="active">Data</li>
+		  		</ul>
+          		<div class="well sidebar-nav">
+            		<ul class="nav nav-list">
+              			{{outlet sideNav}}
+            		</ul>
+          		</div>
+          		<div class="well sidebar-nav">
+            		<ul class="nav nav-list">
+          	  			<li class="nav-header">Crawl Execution Queue</li>
+          	  			<li class="divider"></li>
+          	  			<li class="nav-header">Executor Status</li>
+          			</ul>
+          		</div>
+        	</div><!--/span-->
         
         <div class="span9">
-        
-        <div data-bind="page: {id: 'start'}">
-			<ul class="nav nav-tabs">
-  				<li class="active"><a href="#">All</a></li>
-  				<li><a href="#">+</a></li>
-			</ul>
-			<div class="tab-content">
-				<table class="table table-striped">
-				  <thead>
- 				  <tr>
+			{{outlet mainContent}}
+        </div><!--/span-->
+      </div><!--/row-->
+    </div>  		
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="side-nav">
+		{{#each controller}}
+			<li><a href="#">{{text}}</a></li>
+		{{/each}}
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="config-list">
+	<ul class="nav nav-tabs">
+  		<li class="active"><a href="#">All</a></li>
+  		<li><a href="#">+</a></li>
+	</ul>
+	<div class="tab-content">
+		<table class="table table-striped">
+			<thead>
+ 				<tr>
  					<th>Status</th>
  					<th>Name</th>
  					<th>Site</th>
  					<th>Last Crawl</th>
  					<th>Last Duration</th>
- 				  </tr>
- 				  </thead>
- 				  <tbody data-bind="foreach: configSummaries">
- 				  <tr data-bind="click: $parent.selectConfig">
- 					<td data-bind="text: status"></td>
- 					<td><a data-bind="page-href: '../'+id, text: name"></a></td>
- 					<td><a data-bind="attr: {href: 'http://' + site}, text: site" target="_blank"></a></td>
- 					<td data-bind="text: lastCrawl"></td>
- 					<td data-bind="text: lastDuration"></td>
- 				  </tr>
- 				  </tbody>
-				</table>
-			</div>
-		</div>
-		
-		<div data-bind="page: {id: '?'}">
-			Error
-		</div>
-		
-        </div><!--/span-->
-      </div><!--/row-->
-    </div>
+ 				</tr>
+ 			</thead>
+ 			<tbody>
+				{{#each controller}}
+ 				<tr>
+ 					<td>{{status}}</td>
+ 					<td>{{name}}</td>
+ 					<td><a {{bindAttr href="site"}} target="_blank">{{site}}</a></td>
+ 					<td>{{lastCrawl}}</td>
+ 					<td>{{lastDuration}}</td>
+ 				</tr>
+				{{/each}}
+ 			</tbody>
+		</table>
+	</div>
+	</script>
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/knockout-2.2.1.js"></script>
-    <script type="text/javascript" src="js/jquery.history.js"></script>
-    <script type="text/javascript" src="js/pager.min.js"></script>
+    <script type="text/javascript" src="js/handlebars.js"></script>
+	<script type="text/javascript" src="js/ember-1.0.0-pre.4.min.js"></script>
     <script type="text/javascript">
-    	function configSummary(id, status, name, site, lastCrawl, lastDuration)
-    	{
-    		this.id = id;
-    		this.status = status;
-    		this.name = name;
-    		this.site = site;
-    		this.lastCrawl = lastCrawl;
-    		this.lastDuration = lastDuration;
-    	}
-    	var viewModel = {
-    		configSummaries: ko.observableArray(
-    				[new configSummary("1", "Idle", "Some Config", "www.google.com", "1/12/2013 4:23 PM", "13 min 26 sec"),
-    				 new configSummary("2", "Idle", "Other Config", "www.yahoo.com", "1/23/2013 10:37 AM", "9 min 48 sec"),
-    				 new configSummary("4", "Idle", "Another Config", "www.msn.com", "1/27/2013 7:37 AM", "27 min 3 sec")])
-    	};
-    	
-    	//pager.useHTML5history = true;
-    	//pager.Href5.history = History;
-    	
-    	pager.extendWithPage(viewModel);
-    	ko.applyBindings(viewModel);
-    	
-    	pager.start();//HistoryJs();
+    window.App = Ember.Application.create();
+
+    App.Router.map(function() {
+   		this.route("config-list", { path: "/" });
+   		this.route("config", {path: "/:config_id"});
+   	});
+    
+    App.ConfigListController = Ember.ArrayController.extend({});
+    App.SideNavController = Ember.ArrayController.extend({});
+    App.ConfigListRoute = Ember.Route.extend({
+      setupController: function(controller, model) {
+        this.controllerFor("config-list").set('content', [
+          {id: 1, status: "Idle", name: "Some Config", site: "http://www.google.com", lastCrawl: "1/12/2013 4:23 PM", lastDuration: "13 min 26 sec"},
+          {id: 2, status: "Idle", name: "Other Config", site: "http://www.yahoo.com", lastCrawl: "1/23/2013 10:37 AM", lastDuration: "9 min 48 sec"},
+          {id: 3, status: "Idle", name: "Another Config", site: "http://www.msn.com", lastCrawl: "1/27/2013 7:37 AM", lastDuration: "27 min 3 sec"}
+        ]);
+        this.controllerFor("side-nav").set('content', [
+          {text:"New Configuration", route:"new"}, {text:"People", route:"people"},
+          {text:"Crawl History", route:"history"}, {text:"Manage Crawljax", route:"manage"}
+        ]);
+      },
+      renderTemplate: function() { 
+    	this.render({outlet: 'mainContent'}); 
+      	this.render( 'side-nav' ,{
+            into: 'application',
+            outlet: 'sideNav',
+            controller: this.controllerFor('side-nav')
+          }); 
+      	}
+    });
     </script>
 </body>
 </html>
