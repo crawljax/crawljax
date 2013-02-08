@@ -357,10 +357,8 @@ public class StateFlowGraph implements Serializable {
 
 		final KShortestPaths<StateVertex, Eventable> kPaths =
 		        new KShortestPaths<StateVertex, Eventable>(this.sfg, index, Integer.MAX_VALUE);
-		// System.out.println(sfg.toString());
 
 		for (StateVertex state : getDeepStates(index)) {
-			// System.out.println("Deep State: " + state.getName());
 
 			try {
 				List<GraphPath<StateVertex, Eventable>> paths = kPaths.getPaths(state);

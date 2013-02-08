@@ -15,7 +15,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import com.crawljax.core.CandidateCrawlAction;
 import com.crawljax.core.CandidateElement;
@@ -25,7 +24,7 @@ import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.TagElement;
 import com.crawljax.core.state.Eventable.EventType;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 /**
  * The state vertex class which represents a state in the browser. This class implements the
@@ -33,9 +32,6 @@ import com.crawljax.util.Helper;
  * CandidateElements found in this state. When iterating over the possible candidate elements every
  * time a candidate is returned its removed from the list so it is a one time only access to the
  * candidates.
- * 
- * @author mesbah
- * @version $Id$
  */
 public class StateVertex implements Serializable {
 
@@ -272,8 +268,7 @@ public class StateVertex implements Serializable {
 
 		try {
 			List<CandidateElement> candidateList =
-			        candidateExtractor.extract(crawlTagElements, crawlExcludeTagElements,
-			                clickOnce, this);
+			        candidateExtractor.extract(this);
 
 			for (CandidateElement candidateElement : candidateList) {
 				for (String eventType : eventTypes) {
@@ -343,13 +338,11 @@ public class StateVertex implements Serializable {
 
 	/**
 	 * @return a Document instance of the dom string.
-	 * @throws SAXException
-	 *             if an exception is thrown.
 	 * @throws IOException
 	 *             if an exception is thrown.
 	 */
-	public Document getDocument() throws SAXException, IOException {
-		return Helper.getDocument(this.dom);
+	public Document getDocument() throws IOException {
+		return DomUtils.asDocument(this.dom);
 	}
 
 	/**

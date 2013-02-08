@@ -1,22 +1,19 @@
-/**
- * Created Dec 21, 2007
- */
 package com.crawljax.util;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
  * Test class for the XPathHelper class.
- * 
- * @author mesbah
- * @version $Id$
  */
 public class XPathHelperTest {
 	/**
@@ -31,7 +28,7 @@ public class XPathHelperTest {
 		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
 		                + "<a id='thea'>test</a></span></div></body>";
 
-		Document dom = Helper.getDocument(html);
+		Document dom = DomUtils.asDocument(html);
 		assertNotNull(dom);
 
 		// first div
@@ -51,6 +48,21 @@ public class XPathHelperTest {
 	}
 
 	@Test
+	public void whenWildcardsUsedXpathShouldFindTheElements() throws Exception {
+		String html = "<body>" +
+		        "<DIV><P>Bla</P><P>Bla2</P></DIV>" +
+		        "<DIV id='exclude'><P>Ex</P><P>Ex2</P></DIV>" +
+		        "</body>";
+		String xpathAllp = "//DIV//P";
+		String xpathOnlyExcludedP = "//DIV[@id='exclude']//P";
+		NodeList nodes = XPathHelper.evaluateXpathExpression(html, xpathAllp);
+		assertThat(nodes.getLength(), is(4));
+
+		nodes = XPathHelper.evaluateXpathExpression(html, xpathOnlyExcludedP);
+		assertThat(nodes.getLength(), is(2));
+	}
+
+	@Test
 	public void testXPathLocation() {
 		String html = "<HTML><LINK foo=\"bar\">woei</HTML>";
 		String xpath = "/HTML[1]/LINK[1]";
@@ -63,8 +75,18 @@ public class XPathHelperTest {
 
 	@Test
 	public void formatXPath() {
-		String xPath = "//ul[@CLASS=\"Test\"]";
-		assertEquals("//UL[@class=\"Test\"]", XPathHelper.formatXPath(xPath));
+		assertThat(XPathHelper.formatXPath("//ul/a"), is("//UL/A"));
+		assertThat(XPathHelper.formatXPath("/div//span"), is("/DIV//SPAN"));
+		assertThat(XPathHelper.formatXPath("//ul[@CLASS=\"Test\"]"), is("//UL[@class=\"Test\"]"));
+		assertThat(XPathHelper.formatXPath("//ul[@CLASS=\"Test\"]/a"),
+		        is("//UL[@class=\"Test\"]/A"));
+
+	}
+
+	@Test
+	public void formatXpathWithDoubleSlashes() {
+		String xpath = "//div[@id='dontClick']//a";
+		assertThat(XPathHelper.formatXPath(xpath), is("//DIV[@id='dontClick']//A"));
 	}
 
 	@Test

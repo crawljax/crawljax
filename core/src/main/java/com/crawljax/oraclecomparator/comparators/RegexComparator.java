@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 /**
  * Regex oracles that strips content from the DOM to check whether the DOMs are equal without the
@@ -37,8 +37,8 @@ public class RegexComparator extends AbstractComparator {
 	@Override
 	public boolean isEquivalent() {
 		for (String regex : regexs) {
-			setOriginalDom(Helper.replaceString(getOriginalDom(), regex, ""));
-			setNewDom(Helper.replaceString(getNewDom(), regex, ""));
+			setOriginalDom(DomUtils.replaceString(getOriginalDom(), regex, ""));
+			setNewDom(DomUtils.replaceString(getNewDom(), regex, ""));
 		}
 		return super.compare();
 	}

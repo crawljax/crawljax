@@ -19,7 +19,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 
 /**
@@ -88,7 +88,7 @@ public class XPathExpressionComparator extends AbstractComparator {
 		String curExpression = "";
 		Document doc = null;
 		try {
-			doc = Helper.getDocument(dom);
+			doc = DomUtils.asDocument(dom);
 			for (String expression : expressions) {
 				curExpression = expression;
 				NodeList nodeList = XPathHelper.evaluateXpathExpression(doc, expression);
@@ -104,18 +104,11 @@ public class XPathExpressionComparator extends AbstractComparator {
 
 				}
 			}
-		} catch (XPathExpressionException e) {
-			LOGGER.error("XPathExpressionException with stripping XPath expression: "
-			        + curExpression, e);
-		} catch (DOMException e) {
-			LOGGER.error("DOMException with stripping XPath expression: " + curExpression, e);
-		} catch (SAXException e) {
-			LOGGER.error("SAXException with stripping XPath expression: " + curExpression, e);
-		} catch (IOException e) {
-			LOGGER.error("IOException with stripping XPath expression: " + curExpression, e);
+		} catch (XPathExpressionException | DOMException | IOException e) {
+			LOGGER.error("Exception with stripping XPath expression: " + curExpression, e);
 		} finally {
 			if (doc != null) {
-				dom = Helper.getDocumentToString(doc);
+				dom = DomUtils.getDocumentToString(doc);
 			} else {
 				dom = "";
 			}
