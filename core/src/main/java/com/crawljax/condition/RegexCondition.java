@@ -1,22 +1,23 @@
 package com.crawljax.condition;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.jcip.annotations.Immutable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
  * Condition that returns true iff experssion occurs in the dom.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @Immutable
 public class RegexCondition extends AbstractCondition {
 
+	private static final Logger LOG = LoggerFactory.getLogger(RegexCondition.class);
 	private final String expression;
+	private final Pattern pattern;
 
 	/**
 	 * @param expression
@@ -24,14 +25,16 @@ public class RegexCondition extends AbstractCondition {
 	 */
 	public RegexCondition(String expression) {
 		this.expression = expression;
+		pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
 	}
 
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
 		String dom = browser.getDom();
-		Pattern p = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(dom);
-		return m.find();
+		boolean found = pattern.matcher(dom).find();
+		if (found) {
+			LOG.trace("Found expression {} in DOM {}", expression, dom);
+		}
+		return found;
 	}
-
 }

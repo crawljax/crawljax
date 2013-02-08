@@ -1,4 +1,4 @@
-package com.crawljax.crawltests;
+package com.crawljax.test;
 
 import java.io.IOException;
 import java.net.URL;

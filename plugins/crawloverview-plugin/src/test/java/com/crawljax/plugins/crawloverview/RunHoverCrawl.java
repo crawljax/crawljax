@@ -12,8 +12,8 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.junit.rules.ExternalResource;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.crawltests.BaseCrawler;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
+import com.crawljax.test.BaseCrawler;
 import com.google.common.base.Preconditions;
 
 /**
