@@ -64,7 +64,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 		if (t != null) {
 			LOGGER.error("Finished unsuccesfully", t);
 		}
-		LOGGER.info("Finished executing");
+		LOGGER.debug("Finished executing");
 		if (runningTasks.decrementAndGet() == 0 && getQueue().isEmpty()) {
 			// runningTasks--;
 			/**

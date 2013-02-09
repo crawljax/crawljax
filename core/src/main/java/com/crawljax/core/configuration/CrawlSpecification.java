@@ -7,6 +7,7 @@ import com.crawljax.condition.browserwaiter.ExpectedCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
+import com.crawljax.core.configuration.CrawlActions.ExcludeByParentBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.Comparator;
 import com.crawljax.oraclecomparator.OracleComparator;
@@ -45,6 +46,9 @@ import com.google.common.collect.Lists;
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
  * @version $Id$
+ */
+/**
+ * @author alex
  */
 public class CrawlSpecification {
 
@@ -151,6 +155,13 @@ public class CrawlSpecification {
 	 */
 	public CrawlElement dontClick(String tagName) {
 		return crawlActions.dontClick(tagName);
+	}
+
+	/**
+	 * {@link CrawlActions#dontClickChildrenOf(String)}
+	 */
+	public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {
+		return crawlActions.dontClickChildrenOf(tagname);
 	}
 
 	/**

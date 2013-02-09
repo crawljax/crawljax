@@ -7,7 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.jcip.annotations.GuardedBy;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.crawlcondition.CrawlConditionChecker;
+import com.crawljax.condition.ConditionTypeChecker;
+import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 
 /**
@@ -39,7 +40,7 @@ public class CandidateElementManager implements ExtractorManager {
 	 * The CrawlConditionChecker to use in the {@link #checkCrawlCondition(EmbeddedBrowser)}
 	 * operation.
 	 */
-	private final CrawlConditionChecker crawlConditionChecker;
+	private final ConditionTypeChecker<CrawlCondition> crawlConditionChecker;
 
 	/**
 	 * Used to lock the elements when adding multiple elements.
@@ -55,7 +56,7 @@ public class CandidateElementManager implements ExtractorManager {
 	 *            the CrawlConditionChecker to use
 	 */
 	public CandidateElementManager(EventableConditionChecker eventableConditionChecker,
-	        CrawlConditionChecker crawlConditionChecker) {
+	        ConditionTypeChecker<CrawlCondition> crawlConditionChecker) {
 		this.eventableConditionChecker = eventableConditionChecker;
 		this.crawlConditionChecker = crawlConditionChecker;
 	}
@@ -137,7 +138,7 @@ public class CandidateElementManager implements ExtractorManager {
 	 */
 	@Override
 	public boolean checkCrawlCondition(EmbeddedBrowser browser) {
-		return crawlConditionChecker.check(browser);
+		return crawlConditionChecker.getFailedConditions(browser).isEmpty();
 	}
 
 }

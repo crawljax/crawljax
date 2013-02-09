@@ -1,5 +1,7 @@
 package com.crawljax.crawltests;
 
+import com.crawljax.test.BaseCrawler;
+
 /**
  * Wraps a Crawljax instance the crawls the simplesite.
  */
