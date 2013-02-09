@@ -37,17 +37,13 @@
         </div>
       </div>
     </div>
-
-    
     
     <script type="text/x-handlebars">
 		<div class="container-fluid">
       	<div class="row-fluid">
        		<div class="span3">
           		<ul class="well breadcrumb">
-  					<li><a href="#">Home</a> <span class="divider">/</span></li>
-  					<li><a href="#">Library</a> <span class="divider">/</span></li>
-  					<li class="active">Data</li>
+					{{outlet breadcrumb}}
 		  		</ul>
           		<div class="well sidebar-nav">
             		<ul class="nav nav-list">
@@ -70,13 +66,13 @@
     </div>  		
 	</script>
 	
-	<script type="text/x-handlebars" data-template-name="side-nav">
-		{{#each controller}}
-			<li><a href="#">{{text}}</a></li>
-		{{/each}}
+	<script type="text/x-handlebars" data-template-name="breadcrumb">
+	  	<li><a href="#">Home</a> <span class="divider">/</span></li>
+  		<li><a href="#">Library</a> <span class="divider">/</span></li>
+  		<li class="active">Data</li>
 	</script>
 
-	<script type="text/x-handlebars" data-template-name="config-list">
+	<script type="text/x-handlebars" data-template-name="config_list">
 	<ul class="nav nav-tabs">
   		<li class="active"><a href="#">All</a></li>
   		<li><a href="#">+</a></li>
@@ -84,19 +80,13 @@
 	<div class="tab-content">
 		<table class="table table-striped">
 			<thead>
- 				<tr>
- 					<th>Status</th>
- 					<th>Name</th>
- 					<th>Site</th>
- 					<th>Last Crawl</th>
- 					<th>Last Duration</th>
- 				</tr>
+ 				<tr><th>Status</th><th>Name</th><th>Site</th><th>Last Crawl</th><th>Last Duration</th></tr>
  			</thead>
  			<tbody>
 				{{#each controller}}
  				<tr>
  					<td>{{status}}</td>
- 					<td>{{name}}</td>
+ 					<td>{{#linkTo config this}}{{name}}{{/linkTo}}</td>
  					<td><a {{bindAttr href="site"}} target="_blank">{{site}}</a></td>
  					<td>{{lastCrawl}}</td>
  					<td>{{lastDuration}}</td>
@@ -106,42 +96,83 @@
 		</table>
 	</div>
 	</script>
+	
+	<script type="text/x-handlebars" data-template-name="config">
+	<ul class="nav nav-tabs">
+  		<li class="active"><a href="#">General</a></li>
+  		<li><a href="#">Input</a></li>
+		<li><a href="#">Plugins</a></li>
+	</ul>
+	{{name}} {{site}}
+	</script>
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/handlebars.js"></script>
-	<script type="text/javascript" src="js/ember-1.0.0-pre.4.min.js"></script>
+	<script type="text/javascript" src="js/ember-1.0.0-pre.4.js"></script>
     <script type="text/javascript">
     window.App = Ember.Application.create();
-
+    
+    //Templates
+    Ember.TEMPLATES["side_nav"] = Ember.Handlebars.compile("{{#each controller}}<li><a href='#'>{{text}}</a></li>{{/each}}");
+    
+    //Models
+    App.Config = Ember.Object.extend();
+    App.Config.reopenClass({
+    	allConfigs: [],
+    	  find: function(){
+    	    $.ajax({
+    	      url: '/rest/configurations',
+    	      dataType: 'json',
+    	      context: this,
+    	      success: function(response){
+    	    	this.allConfigs.length = 0;
+    	        response.data.forEach(function(config){
+    	          this.allConfigs.addObject(App.Config.create(config))
+    	        }, this)
+    	      }
+    	    })
+    	    return this.allConfigs;
+    	  }
+	});
+    
+    //Controllers/Routes
     App.Router.map(function() {
-   		this.route("config-list", { path: "/" });
-   		this.route("config", {path: "/:config_id"});
+   		this.resource("config_list", { path: "/" });
+   		this.resource("config", {path: "/config/:id"});
    	});
     
     App.ConfigListController = Ember.ArrayController.extend({});
     App.SideNavController = Ember.ArrayController.extend({});
     App.ConfigListRoute = Ember.Route.extend({
       setupController: function(controller, model) {
-        this.controllerFor("config-list").set('content', [
-          {id: 1, status: "Idle", name: "Some Config", site: "http://www.google.com", lastCrawl: "1/12/2013 4:23 PM", lastDuration: "13 min 26 sec"},
-          {id: 2, status: "Idle", name: "Other Config", site: "http://www.yahoo.com", lastCrawl: "1/23/2013 10:37 AM", lastDuration: "9 min 48 sec"},
-          {id: 3, status: "Idle", name: "Another Config", site: "http://www.msn.com", lastCrawl: "1/27/2013 7:37 AM", lastDuration: "27 min 3 sec"}
-        ]);
-        this.controllerFor("side-nav").set('content', [
+        this.controllerFor("config_list").set('content', App.Config.find());
+        this.controllerFor("side_nav").set('content', [
           {text:"New Configuration", route:"new"}, {text:"People", route:"people"},
           {text:"Crawl History", route:"history"}, {text:"Manage Crawljax", route:"manage"}
         ]);
       },
       renderTemplate: function() { 
     	this.render({outlet: 'mainContent'}); 
-      	this.render( 'side-nav' ,{
-            into: 'application',
-            outlet: 'sideNav',
-            controller: this.controllerFor('side-nav')
-          }); 
+      	this.render( 'side_nav' ,{ outlet: 'sideNav' }); 
+      	this.render( 'breadcrumb' ,{ outlet: 'breadcrumb' });
       	}
     });
+    
+    App.ConfigController = Ember.Controller.extend({});
+    App.ConfigRoute = Ember.Route.extend({
+        setupController: function(controller, model) {
+          this.controllerFor("config").set('content', {});
+          this.controllerFor("side_nav").set('content', [
+            {text:"Run Configuration", route:"run"}
+          ]);
+        },
+        renderTemplate: function() { 
+      		this.render({outlet: 'mainContent'}); 
+      		this.render( 'side_nav' ,{ outlet: 'sideNav' }); 
+          	this.render( 'breadcrumb' ,{ outlet: 'breadcrumb' });
+        }
+      });
     </script>
 </body>
 </html>
