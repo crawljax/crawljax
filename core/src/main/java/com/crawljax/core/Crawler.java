@@ -1,6 +1,7 @@
 package com.crawljax.core;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +33,6 @@ import com.crawljax.util.ElementResolver;
 public class Crawler implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Crawler.class.getName());
-
-	private static final int ONE_SECOND = 1000;
 
 	/**
 	 * The main browser window 1 to 1 relation; Every Thread will get on browser assigned in the run
@@ -654,10 +653,11 @@ public class Crawler implements Runnable {
 	 */
 	private boolean checkConstraints() {
 		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
-		int maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime();
-		if ((maxCrawlTime != 0) && (timePassed > maxCrawlTime * ONE_SECOND)) {
+		long maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime();
+		if ((maxCrawlTime != 0) && (timePassed > maxCrawlTime)) {
 
-			LOGGER.info("Max time " + maxCrawlTime + " seconds passed!");
+			LOGGER.info("Max time " + TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime)
+			        + " seconds passed!");
 			/* stop crawling */
 			return false;
 		}

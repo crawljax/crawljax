@@ -35,8 +35,9 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 	public EmbeddedBrowser buildEmbeddedBrowser(CrawljaxConfigurationReader configuration) {
 		// Retrieve the config values used
 		List<String> filterAttributes = configuration.getFilterAttributeNames();
-		int crawlWaitReload = configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
-		int crawlWaitEvent = configuration.getCrawlSpecificationReader().getWaitAfterEvent();
+		long crawlWaitReload =
+		        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
+		long crawlWaitEvent = configuration.getCrawlSpecificationReader().getWaitAfterEvent();
 
 		// Determine the requested browser type
 		switch (configuration.getBrowser()) {

@@ -10,9 +10,6 @@ import com.crawljax.core.configuration.ThreadConfiguration;
 
 /**
  * Test the CrawlerExecutor ThreadPoolExecutor. Basically it test only the correct naming.
- * 
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class CrawlerExecutorTest {
 	private CrawlerExecutor excutor = new CrawlerExecutor(1);
@@ -49,7 +46,7 @@ public class CrawlerExecutorTest {
 	 */
 	@Test
 	public void testCorrectNamesMultiThread() throws InterruptedException, ConfigurationException {
-		CrawlSpecification spec = new CrawlSpecification("about:plugins");
+		CrawlSpecification spec = new CrawlSpecification("http://google.com");
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
 		cfg.setCrawlSpecification(spec);
 		cfg.setThreadConfiguration(new ThreadConfiguration(2));

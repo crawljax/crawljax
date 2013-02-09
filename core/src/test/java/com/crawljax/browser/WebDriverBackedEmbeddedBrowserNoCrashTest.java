@@ -4,6 +4,7 @@ package com.crawljax.browser;
 
 import static org.junit.Assert.fail;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.After;
@@ -117,7 +118,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	@Test
 	public final void testGetDom() throws CrawljaxException {
 		URL index = WebDriverBackedEmbeddedBrowserTest.class.getResource("/site/simple.html");
-		browser.goToUrl(index.toExternalForm());
+		browser.goToUrl(index);
 		browser.getDom();
 	}
 
@@ -145,11 +146,12 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 * 
 	 * @throws CrawljaxException
 	 *             when the url can not be opend.
+	 * @throws MalformedURLException
 	 */
 	@Test
-	public final void testGoToUrl() throws CrawljaxException {
+	public final void testGoToUrl() throws CrawljaxException, MalformedURLException {
 		// TODO Stefan; bug in WebDriver iff you specify bla:// will end up in NullPointer.
-		browser.goToUrl("http://non.exsisting.domain");
+		browser.goToUrl(new URL("http://non.exsisting.domain"));
 	}
 
 	/**

@@ -1,5 +1,8 @@
 package com.crawljax.plugins.savecrawlsession.example;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
@@ -16,10 +19,11 @@ public class SaveCrawlSessionExample {
 	/**
 	 * @param args
 	 *            args are ignored
+	 * @throws MalformedURLException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws MalformedURLException {
 
-		CrawlSpecification spec = new CrawlSpecification(Utils.URL);
+		CrawlSpecification spec = new CrawlSpecification(new URL(Utils.URL));
 		spec.setMaximumStates(5);
 		spec.clickDefaultElements();
 

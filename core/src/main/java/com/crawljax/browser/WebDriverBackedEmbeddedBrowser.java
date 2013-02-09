@@ -257,7 +257,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            The URL.
 	 */
 	@Override
-	public void goToUrl(String url) {
+	public void goToUrl(URL url) {
 		try {
 			browser.navigate().to(url);
 			Thread.sleep(this.crawlWaitReload);
