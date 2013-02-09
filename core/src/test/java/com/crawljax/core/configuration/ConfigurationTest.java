@@ -19,7 +19,7 @@ public class ConfigurationTest {
 	public void testOutputFolder() throws ConfigurationException {
 		URL index = ConfigurationTest.class.getResource("/site/simple.html");
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
-		config.setCrawlSpecification(new CrawlSpecification(index.toExternalForm()));
+		config.setCrawlSpecification(new CrawlSpecification(index));
 		config.setOutputFolder(OUTPUT_FOLDER_WITHOUT_SLASH);
 		assertEquals(OUTPUT_FOLDER_WITH_SLASH, config.getOutputFolder());
 	}

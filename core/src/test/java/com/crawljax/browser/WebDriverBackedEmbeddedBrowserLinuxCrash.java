@@ -3,6 +3,8 @@
 package com.crawljax.browser;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -121,10 +123,11 @@ public class WebDriverBackedEmbeddedBrowserLinuxCrash extends FirefoxLinuxCrash 
 	 * 
 	 * @throws CrawljaxException
 	 *             when the url can not be opend.
+	 * @throws MalformedURLException
 	 */
 	@Test(expected = BrowserConnectionException.class)
-	public void testGoToUrl() throws CrawljaxException {
-		browser.goToUrl("http://www.google.com");
+	public void testGoToUrl() throws CrawljaxException, MalformedURLException {
+		browser.goToUrl(new URL("http://www.google.com"));
 	}
 
 	/**

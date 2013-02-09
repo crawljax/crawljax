@@ -1,6 +1,7 @@
 package com.crawljax.plugins.savecrawlsession;
 
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,7 +112,7 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 		return transitions;
 	}
 
-	private String getUrl() throws CrawljaxException {
+	private URL getUrl() throws CrawljaxException {
 		return session.getCrawljaxConfiguration().getCrawlSpecificationReader().getSiteUrl();
 	}
 

@@ -1,5 +1,6 @@
 package com.crawljax.plugins.savecrawlsession;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class ExportableSession {
 	private Map<Long, Eventable> mapEventables;
 	private List<Transition> transitions;
 	private List<List<Transition>> crawlPaths;
-	private String url;
+	private URL url;
 
 	/**
 	 * @param mapStates
@@ -35,7 +36,7 @@ public class ExportableSession {
 	 */
 	public ExportableSession(Map<String, StateVertex> mapStates,
 	        Map<Long, Eventable> mapEventables, List<Transition> transitions,
-	        List<List<Transition>> crawlPaths, String url) {
+	        List<List<Transition>> crawlPaths, URL url) {
 		super();
 		this.mapStates = mapStates;
 		this.mapEventables = mapEventables;
@@ -114,7 +115,7 @@ public class ExportableSession {
 	/**
 	 * @return the crawled url
 	 */
-	public String getUrl() {
+	public URL getUrl() {
 		return url;
 	}
 
@@ -122,7 +123,7 @@ public class ExportableSession {
 	 * @param url
 	 *            the crawled url
 	 */
-	public void setUrl(String url) {
+	public void setUrl(URL url) {
 		this.url = url;
 	}
 

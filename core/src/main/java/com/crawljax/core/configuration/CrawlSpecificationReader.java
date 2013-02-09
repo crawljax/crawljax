@@ -1,5 +1,8 @@
 package com.crawljax.core.configuration;
 
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
@@ -25,14 +28,14 @@ public class CrawlSpecificationReader implements IgnoreFrameChecker {
 	/**
 	 * @return the number of milliseconds to wait after reloading the url
 	 */
-	public int getWaitAfterReloadUrl() {
+	public long getWaitAfterReloadUrl() {
 		return this.crawlSpecification.getWaitTimeAfterReloadUrl();
 	}
 
 	/**
 	 * @return the number the number of milliseconds to wait after an event is fired
 	 */
-	public int getWaitAfterEvent() {
+	public long getWaitAfterEvent() {
 		return this.crawlSpecification.getWaitTimeAfterEvent();
 	}
 
@@ -74,7 +77,7 @@ public class CrawlSpecificationReader implements IgnoreFrameChecker {
 	/**
 	 * @return the URL of the site.
 	 */
-	public String getSiteUrl() {
+	public URL getSiteUrl() {
 		return crawlSpecification.getUrl();
 	}
 
@@ -86,9 +89,9 @@ public class CrawlSpecificationReader implements IgnoreFrameChecker {
 	}
 
 	/**
-	 * @return the maximum crawling time.
+	 * @return the maximum crawling time in {@link TimeUnit#MILLISECONDS}.
 	 */
-	public int getMaximumRunTime() {
+	public long getMaximumRunTime() {
 		return crawlSpecification.getMaximumRuntime();
 	}
 

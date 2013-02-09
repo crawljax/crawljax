@@ -1,5 +1,7 @@
 package com.crawljax.crawls;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.jetty.util.resource.Resource;
 
 import com.crawljax.condition.NotRegexCondition;
@@ -18,7 +20,7 @@ public class CrawlExclusionTest extends BaseCrawler {
 		CrawlSpecification spec = new CrawlSpecification(getUrl() + "crawlconditions");
 		spec.clickDefaultElements();
 		spec.setDepth(0);
-		spec.setWaitTimeAfterEvent(500);
+		spec.setWaitTimeAfterEvent(500, TimeUnit.MILLISECONDS);
 		spec.addCrawlCondition("Regex description",
 		        new NotRegexCondition("DONT-CRAWL-THIS-STATE"));
 

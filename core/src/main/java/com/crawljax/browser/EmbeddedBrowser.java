@@ -1,6 +1,7 @@
 package com.crawljax.browser;
 
 import java.io.File;
+import java.net.URL;
 
 import org.openqa.selenium.WebElement;
 
@@ -28,7 +29,7 @@ public interface EmbeddedBrowser {
 	 * @param url
 	 *            the URL.
 	 */
-	void goToUrl(String url);
+	void goToUrl(URL url);
 
 	/**
 	 * fires the event.

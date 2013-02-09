@@ -2,6 +2,8 @@
 
 package com.crawljax.core;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -33,8 +35,8 @@ public abstract class IFrameSuper {
 	protected CrawlSpecification getCrawlSpecification() {
 		CrawlSpecification crawler =
 		        new CrawlSpecification(WEB_SERVER.getSiteUrl().toExternalForm() + "iframe");
-		crawler.setWaitTimeAfterEvent(100);
-		crawler.setWaitTimeAfterReloadUrl(100);
+		crawler.setWaitTimeAfterEvent(100, TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterReloadUrl(100, TimeUnit.MILLISECONDS);
 		crawler.setDepth(3);
 		crawler.click("a");
 		crawler.click("input");

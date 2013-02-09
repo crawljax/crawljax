@@ -2,9 +2,6 @@ package com.crawljax.plugins.savecrawlsession;
 
 /**
  * Default values for basic variables.
- * 
- * @author pls
- * @version $id$
  */
 public class Utils {
 

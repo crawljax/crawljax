@@ -10,6 +10,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -108,8 +109,8 @@ public abstract class LargeTestSuper {
 	        int waitAfterReload) {
 
 		CrawlSpecification crawler = new CrawlSpecification(url);
-		crawler.setWaitTimeAfterEvent(waintAfterEvent);
-		crawler.setWaitTimeAfterReloadUrl(waitAfterReload);
+		crawler.setWaitTimeAfterEvent(waintAfterEvent, TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterReloadUrl(waitAfterReload, TimeUnit.MILLISECONDS);
 		crawler.setDepth(3);
 		crawler.setClickOnce(true);
 
@@ -414,4 +415,5 @@ public abstract class LargeTestSuper {
 		assertTrue("Too less nodes found at level 2 number of nodes: " + level2 + " Required: "
 		        + 5, level2 >= 5);
 	}
+
 }
