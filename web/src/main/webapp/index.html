@@ -86,7 +86,7 @@
 				{{#each controller}}
  				<tr>
  					<td>{{status}}</td>
- 					<td>{{#linkTo config this}}{{name}}{{/linkTo}}</td>
+ 					<td>{{#linkTo 'config' this}}{{name}}{{/linkTo}}</td>
  					<td><a {{bindAttr href="site"}} target="_blank">{{site}}</a></td>
  					<td>{{lastCrawl}}</td>
  					<td>{{lastDuration}}</td>
@@ -120,33 +120,48 @@
     App.Config = Ember.Object.extend();
     App.Config.reopenClass({
     	allConfigs: [],
-    	  find: function(){
+    	findAll: function(){
+    		this.allConfigs.length = 0;
     	    $.ajax({
     	      url: '/rest/configurations',
     	      dataType: 'json',
     	      context: this,
     	      success: function(response){
-    	    	this.allConfigs.length = 0;
     	        response.data.forEach(function(config){
     	          this.allConfigs.addObject(App.Config.create(config))
     	        }, this)
     	      }
     	    })
     	    return this.allConfigs;
-    	  }
+    	 },
+    	 find: function(id)
+    	 {
+    		 var config = App.Config.create({id: id});
+    			 $.ajax({
+    			    url: '/rest/configurations/' + id,
+    			    dataType: 'json',
+    			    context: config,
+    			    success: function(response){
+    			      this.setProperties(response.data.findProperty('id', id));
+    			    }
+    			 })
+    		return config;
+    	 }
 	});
     
     //Controllers/Routes
     App.Router.map(function() {
    		this.resource("config_list", { path: "/" });
-   		this.resource("config", {path: "/config/:id"});
+   		this.resource("config", {path: "/:id"});
    	});
+    
+    //App.Router.reopen({ location: 'history' });
     
     App.ConfigListController = Ember.ArrayController.extend({});
     App.SideNavController = Ember.ArrayController.extend({});
     App.ConfigListRoute = Ember.Route.extend({
       setupController: function(controller, model) {
-        this.controllerFor("config_list").set('content', App.Config.find());
+        this.controllerFor("config_list").set('content', App.Config.findAll());
         this.controllerFor("side_nav").set('content', [
           {text:"New Configuration", route:"new"}, {text:"People", route:"people"},
           {text:"Crawl History", route:"history"}, {text:"Manage Crawljax", route:"manage"}
@@ -162,7 +177,7 @@
     App.ConfigController = Ember.Controller.extend({});
     App.ConfigRoute = Ember.Route.extend({
         setupController: function(controller, model) {
-          this.controllerFor("config").set('content', {});
+          this.controllerFor("config").set('content', model);
           this.controllerFor("side_nav").set('content', [
             {text:"Run Configuration", route:"run"}
           ]);
@@ -171,6 +186,12 @@
       		this.render({outlet: 'mainContent'}); 
       		this.render( 'side_nav' ,{ outlet: 'sideNav' }); 
           	this.render( 'breadcrumb' ,{ outlet: 'breadcrumb' });
+        },
+        serialize: function(object) {
+            return { id: object.id };
+        },
+        deserialize: function(params) {
+            return App.Config.find(params.id);
         }
       });
     </script>
