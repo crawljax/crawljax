@@ -81,26 +81,35 @@ public class CandidateElementPosition {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CandidateElementPosition other = (CandidateElementPosition) obj;
-		if (height != other.height)
+		if (height != other.height) {
 			return false;
-		if (left != other.left)
+		}
+		if (left != other.left) {
 			return false;
-		if (top != other.top)
+		}
+		if (top != other.top) {
 			return false;
-		if (width != other.width)
+		}
+		if (width != other.width) {
 			return false;
+		}
 		if (xpath == null) {
-			if (other.xpath != null)
+			if (other.xpath != null) {
 				return false;
-		} else if (!xpath.equals(other.xpath))
+			}
+		} else if (!xpath.equals(other.xpath)) {
 			return false;
+		}
 		return true;
 	}
 }
