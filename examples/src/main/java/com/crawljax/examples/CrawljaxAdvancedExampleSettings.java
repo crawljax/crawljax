@@ -1,5 +1,6 @@
 package com.crawljax.examples;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.condition.NotXPathCondition;
@@ -8,15 +9,17 @@ import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.plugins.crawloverview.CrawlOverview;
 
 /**
- * Demo class for Crawljax.
+ * Example of running Crawljax with the CrawlOverview plugin on a single-page web app.
  */
 public final class CrawljaxAdvancedExampleSettings {
 
 	private static final long WAIT_TIME_AFTER_EVENT = 200;
 	private static final long WAIT_TIME_AFTER_RELOAD = 20;
 	private static final String URL = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
+	private static final String outputDir = "output";
 
 	private CrawljaxAdvancedExampleSettings() {
 
@@ -24,6 +27,7 @@ public final class CrawljaxAdvancedExampleSettings {
 
 	private static CrawljaxConfiguration getCrawljaxConfiguration() {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
+		config.addPlugin(new CrawlOverview(new File(outputDir)));
 		config.setCrawlSpecification(getCrawlSpecification());
 		return config;
 	}
