@@ -8,6 +8,8 @@
  */
 package com.crawljax.examples;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser;
@@ -34,8 +36,8 @@ public class WivetTest {
 		crawler.setRandomInputInForms(true);
 		crawler.clickMoreElements();
 		crawler.setClickOnce(true);
-		crawler.setWaitTimeAfterReloadUrl(20);
-		crawler.setWaitTimeAfterEvent(200);
+		crawler.setWaitTimeAfterReloadUrl(20, TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterEvent(200, TimeUnit.MILLISECONDS);
 		crawler.dontClick("a").withAttribute("href", "../innerpages/2_2.php");
 		crawler.dontClick("a").withText("Logout");
 		return crawler;

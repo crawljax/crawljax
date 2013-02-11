@@ -4,6 +4,8 @@ import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.junit.Assert.assertThat;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -44,8 +46,8 @@ public class PopUpTest {
 	private static CrawlSpecification getCrawlSpecification() {
 		CrawlSpecification crawler =
 		        new CrawlSpecification(WEB_SERVER.getSiteUrl().toExternalForm() + "popup");
-		crawler.setWaitTimeAfterEvent(100);
-		crawler.setWaitTimeAfterReloadUrl(100);
+		crawler.setWaitTimeAfterEvent(100, TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterReloadUrl(100, TimeUnit.MILLISECONDS);
 		crawler.setDepth(3);
 		crawler.click("a");
 

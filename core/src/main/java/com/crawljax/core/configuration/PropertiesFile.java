@@ -2,6 +2,7 @@ package com.crawljax.core.configuration;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -109,10 +110,10 @@ public class PropertiesFile {
 		crawler.setDepth(file.getInt(CRAWLDEPTH));
 
 		crawler.setMaximumStates(file.getInt(CRAWLMAXSTATES));
-		crawler.setMaximumRuntime(file.getInt(CRAWLMAXTIME));
+		crawler.setMaximumRuntime(file.getLong(CRAWLMAXTIME), TimeUnit.SECONDS);
 
-		crawler.setWaitTimeAfterEvent(file.getInt(CRAWLWAITEVENT));
-		crawler.setWaitTimeAfterReloadUrl(file.getInt(CRAWLWAITRELOAD));
+		crawler.setWaitTimeAfterEvent(file.getLong(CRAWLWAITEVENT), TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterReloadUrl(file.getLong(CRAWLWAITRELOAD), TimeUnit.MILLISECONDS);
 
 		crawler.setRandomInputInForms(file.getInt(CRAWLFORMRANDOMINPUT) == 1);
 

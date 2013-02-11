@@ -268,7 +268,7 @@ public class StateMachineTest {
 	public void testOnNewStatePlugin() throws ConfigurationException {
 		hit = false;
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
-		CrawlSpecification spec = new CrawlSpecification("about:plugins");
+		CrawlSpecification spec = new CrawlSpecification("http://google.com");
 		cfg.setCrawlSpecification(spec);
 		cfg.addPlugin(new OnNewStatePlugin() {
 
@@ -310,7 +310,7 @@ public class StateMachineTest {
 	public void testInvariantFailurePlugin() throws ConfigurationException {
 		hit = false;
 		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
-		CrawlSpecification spec = new CrawlSpecification("about:plugins");
+		CrawlSpecification spec = new CrawlSpecification("http://google.com");
 		cfg.setCrawlSpecification(spec);
 		cfg.addPlugin(new OnInvariantViolationPlugin() {
 			@Override

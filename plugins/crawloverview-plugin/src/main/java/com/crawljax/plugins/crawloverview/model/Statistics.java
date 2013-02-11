@@ -1,5 +1,7 @@
 package com.crawljax.plugins.crawloverview.model;
 
+import java.text.DecimalFormat;
+
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -12,7 +14,7 @@ public class Statistics {
 
 	private final String duration;
 	private final int crawlPaths;
-	private final int averageDomSize;
+	private final String averageDomSize;
 	private final int edges;
 	private final StateStatistics stateStats;
 
@@ -23,8 +25,8 @@ public class Statistics {
 		this.edges = stateFlowGraph.getAllEdges().size();
 		this.crawlPaths = session.getCrawlPaths().size();
 
-		// Divide by two to get the number of characters.
-		this.averageDomSize = stateFlowGraph.getMeanStateStringSize() / 2;
+		double bytes = stateFlowGraph.getMeanStateStringSize();
+		this.averageDomSize = new DecimalFormat().format(bytes / 1000) + " kB";
 	}
 
 	private String calculateDuration(CrawlSession session) {
@@ -33,7 +35,7 @@ public class Statistics {
 		return DurationFormatUtils.formatDurationWords(stop - start, true, true);
 	}
 
-	public int getAverageDomSize() {
+	public String getAverageDomSize() {
 		return averageDomSize;
 	}
 
