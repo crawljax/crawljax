@@ -22,9 +22,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 class BeanToReadableMap {
 
 	private static final String CAMEL_REGEX = String.format("%s|%s|%s",
-	        "(?<=[A-Z])(?=[A-Z][a-z])",
-	        "(?<=[^A-Z])(?=[A-Z])",
-	        "(?<=[A-Za-z])(?=[^A-Za-z])");
+	        "(?<=[A-Z])(?=[A-Z][a-z])", "(?<=[^A-Z])(?=[A-Z])", "(?<=[A-Za-z])(?=[^A-Za-z])");
 
 	public static ImmutableMap<String, String> toMap(Object o) {
 		Builder<String, String> builder = ImmutableMap.builder();
@@ -43,8 +41,8 @@ class BeanToReadableMap {
 			return ImmutablePair.of(asName(method), toString(result));
 
 		} catch (Exception e) {
-			throw new CrawlOverviewException("Could not parse bean " + o.toString()
-			        + " because " + e.getMessage(), e);
+			throw new CrawlOverviewException("Could not parse bean " + o.toString() + " because "
+			        + e.getMessage(), e);
 		}
 	}
 
@@ -73,8 +71,7 @@ class BeanToReadableMap {
 	}
 
 	private static boolean isGetter(Method method) {
-		return method.getName().startsWith("get")
-		        && method.getParameterTypes().length == 0
+		return method.getName().startsWith("get") && method.getParameterTypes().length == 0
 		        && !"getClass".equals(method.getName());
 	}
 

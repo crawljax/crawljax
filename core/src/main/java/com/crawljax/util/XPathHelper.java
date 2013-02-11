@@ -243,7 +243,6 @@ public final class XPathHelper {
 		int pos = 0;
 		int temp;
 		int number;
-		// System.out.println(xpath);
 		for (String element : elements) {
 			if (!element.isEmpty() && !element.startsWith("@") && !element.contains("()")) {
 				if (element.indexOf("[") != -1) {
@@ -269,8 +268,6 @@ public final class XPathHelper {
 							pos =
 							        getCloseElementLocation(dom, pos,
 							                stripEndSquareBrackets(element));
-							// pos = dom.indexOf("<" +
-							// stripEndSquareBrackets(element), pos) + 1;
 						}
 
 					}

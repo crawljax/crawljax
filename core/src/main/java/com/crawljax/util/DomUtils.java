@@ -145,7 +145,6 @@ public final class DomUtils {
 		String info = "";
 		if (!text.equals("")) {
 			info += "\"" + text + "\" ";
-			// Helper.removeNewLines(this.text.trim()) + " - ";
 		}
 		if (element != null) {
 			if (element.hasAttribute("id")) {
@@ -194,8 +193,6 @@ public final class DomUtils {
 	 * @return the changed dom.
 	 */
 	public static Document removeTags(Document dom, String tagName) {
-		// NodeList list = dom.getElementsByTagName("SCRIPT");
-
 		NodeList list;
 		try {
 			list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
@@ -208,7 +205,6 @@ public final class DomUtils {
 				}
 
 				list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
-				// list = dom.getElementsByTagName("SCRIPT");
 			}
 		} catch (XPathExpressionException e) {
 			LOGGER.error("Error while removing tag " + tagName, e);
@@ -257,22 +253,16 @@ public final class DomUtils {
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 			transformer.setOutputProperty(OutputKeys.METHOD, "html");
 			// TODO should be fixed to read doctype declaration
-			// transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC,
-			// "-//W3C//DTD XHTML 1.0 Transitional//EN\"
-			// \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC,
 			        "-//W3C//DTD XHTML 1.0 Strict//EN\" "
 			                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd");
 
-			// transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC,
-			// "-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd");
 			DOMSource source = new DOMSource(dom);
 
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			Result result = new StreamResult(out);
 			transformer.transform(source, result);
 
-			// System.out.println("Injected Javascript!");
 			return out.toByteArray();
 		} catch (TransformerException e) {
 			LOGGER.error("Error while converting the document to a byte array", e);

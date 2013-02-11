@@ -16,7 +16,6 @@ import net.jcip.annotations.GuardedBy;
  * separate threads in a Queue like fashion (FILO).
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnable> {
 

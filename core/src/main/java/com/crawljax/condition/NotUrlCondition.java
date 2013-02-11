@@ -9,7 +9,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * insensitive.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @Immutable
 public class NotUrlCondition extends AbstractCondition {

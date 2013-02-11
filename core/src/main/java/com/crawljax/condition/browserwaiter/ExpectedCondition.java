@@ -8,7 +8,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Interface for defining conditions to wait for.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @ThreadSafe
 public interface ExpectedCondition {

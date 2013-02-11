@@ -40,15 +40,8 @@ public class CrawlActions {
 		}
 
 		private String asExcludeXpath(String identifier, String value) {
-			return new StringBuilder()
-			        .append("//")
-			        .append(tagname.toUpperCase())
-			        .append("[@")
-			        .append(identifier)
-			        .append("='")
-			        .append(value)
-			        .append("']//*")
-			        .toString();
+			return new StringBuilder().append("//").append(tagname.toUpperCase()).append("[@")
+			        .append(identifier).append("='").append(value).append("']//*").toString();
 		}
 
 		private ImmutableList<CrawlElement> asExcludeList(List<CrawlElement> includes) {

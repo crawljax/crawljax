@@ -49,10 +49,9 @@ public class XPathHelperTest {
 
 	@Test
 	public void whenWildcardsUsedXpathShouldFindTheElements() throws Exception {
-		String html = "<body>" +
-		        "<DIV><P>Bla</P><P>Bla2</P></DIV>" +
-		        "<DIV id='exclude'><P>Ex</P><P>Ex2</P></DIV>" +
-		        "</body>";
+		String html =
+		        "<body>" + "<DIV><P>Bla</P><P>Bla2</P></DIV>"
+		                + "<DIV id='exclude'><P>Ex</P><P>Ex2</P></DIV>" + "</body>";
 		String xpathAllp = "//DIV//P";
 		String xpathOnlyExcludedP = "//DIV[@id='exclude']//P";
 		NodeList nodes = XPathHelper.evaluateXpathExpression(html, xpathAllp);

@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableSet;
  * This class is used to create a CrawljaxConfiguration object configured with settings from a file.
  * 
  * @author Frank Groeneveld <frankgroeneveld+crawljax@gmail.com>
- * @version $Id$
  */
 public class PropertiesFile {
 

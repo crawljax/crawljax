@@ -7,7 +7,6 @@ import java.util.Random;
  * Class for generating random form data.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class RandomInputValueGenerator {
 

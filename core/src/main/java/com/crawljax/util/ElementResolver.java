@@ -18,7 +18,6 @@ import com.crawljax.core.state.Eventable;
  * class for finding and checking elements.
  * 
  * @author danny
- * @version $Id$
  */
 public class ElementResolver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ElementResolver.class.getName());

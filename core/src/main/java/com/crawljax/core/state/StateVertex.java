@@ -267,8 +267,7 @@ public class StateVertex implements Serializable {
 		eventTypes.add(EventType.click.toString());
 
 		try {
-			List<CandidateElement> candidateList =
-			        candidateExtractor.extract(this);
+			List<CandidateElement> candidateList = candidateExtractor.extract(this);
 
 			for (CandidateElement candidateElement : candidateList) {
 				for (String eventType : eventTypes) {

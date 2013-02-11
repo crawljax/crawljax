@@ -28,9 +28,6 @@ import com.crawljax.util.XPathHelper;
 /**
  * Handles form values and fills in the form input elements with random values of the defined
  * values.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class FormHandler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FormHandler.class.getName());
@@ -61,18 +58,15 @@ public class FormHandler {
 	}
 
 	private static final String[] ALLOWED_INPUT_TYPES =
-	{ "text", "radio", "checkbox", "password" };
+	        { "text", "radio", "checkbox", "password" };
 
 	/**
 	 * Fills in the element with the InputValues for input TODO: improve this by using WebDriver
 	 * options?
-	 * 
-	 * @param element
-	 * @param input
 	 */
 	private void setInputElementValue(Node element, FormInput input) {
 
-		LOGGER.debug("INPUTFIELD: " + input.getIdentification() + " (" + input.getType() + ")");
+		LOGGER.debug("INPUTFIELD: {} ({})", input.getIdentification(), input.getType());
 		if (element == null) {
 			return;
 		}
@@ -84,7 +78,7 @@ public class FormHandler {
 				        || input.getType().equalsIgnoreCase("password")
 				        || input.getType().equalsIgnoreCase("hidden")) {
 					String text = input.getInputValues().iterator().next().getValue();
-					if (text.equals("")) {
+					if ("".equals(text)) {
 						return;
 					}
 					String js = DomUtils.getJSGetElement(XPathHelper.getXPathExpression(element));
@@ -93,7 +87,7 @@ public class FormHandler {
 				}
 
 				// check/uncheck checkboxes
-				if (input.getType().equals("checkbox")) {
+				if ("checkbox".equals(input.getType())) {
 					for (InputValue inputValue : input.getInputValues()) {
 						String js =
 						        DomUtils.getJSGetElement(XPathHelper.getXPathExpression(element));
@@ -158,7 +152,6 @@ public class FormHandler {
 	}
 
 	/**
-	 * @param dom
 	 * @return all input element in dom
 	 */
 	private List<Node> getInputElements(Document dom) {
@@ -171,8 +164,7 @@ public class FormHandler {
 				Node candidate = nodeList.item(i);
 				Node typeAttribute = candidate.getAttributes().getNamedItem("type");
 				if (typeAttribute == null
-				        || (typeAttribute != null && allowedTypes.contains(typeAttribute
-				                .getNodeValue()))) {
+				        || (allowedTypes.contains(typeAttribute.getNodeValue()))) {
 					nodes.add(nodeList.item(i));
 				}
 			}

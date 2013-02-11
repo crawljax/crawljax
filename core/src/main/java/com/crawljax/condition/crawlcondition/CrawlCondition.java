@@ -12,7 +12,6 @@ import com.crawljax.condition.ConditionType;
  * A Crawl condition is a condition which should be satisfied in order to crawl the current state.
  * 
  * @author Danny
- * @version $Id$
  */
 public class CrawlCondition extends ConditionType {
 

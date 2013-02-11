@@ -13,7 +13,6 @@ import com.crawljax.util.DomUtils;
  * 
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class Element implements Serializable {
 

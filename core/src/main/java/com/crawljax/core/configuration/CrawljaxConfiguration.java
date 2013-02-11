@@ -117,8 +117,7 @@ public final class CrawljaxConfiguration {
 		// clicked and not by another random crawlTag
 		return ImmutableList.<CrawlElement> builder()
 		        .addAll(getInputSpecification().getCrawlElements())
-		        .addAll(crawlSpecification.crawlActions().getCrawlElements())
-		        .build();
+		        .addAll(crawlSpecification.crawlActions().getCrawlElements()).build();
 	}
 
 	/**
@@ -128,8 +127,7 @@ public final class CrawljaxConfiguration {
 		return ImmutableList.<CrawlElement> builder()
 		        .addAll(getInputSpecification().getCrawlElements())
 		        .addAll(crawlSpecification.crawlActions().getCrawlElements())
-		        .addAll(getCrawlSpecification().crawlActions()
-		                .getCrawlElementsExcluded())
+		        .addAll(getCrawlSpecification().crawlActions().getCrawlElementsExcluded())
 		        .build();
 	}
 

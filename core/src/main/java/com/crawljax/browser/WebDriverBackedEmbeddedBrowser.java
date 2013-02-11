@@ -366,8 +366,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		m = p.matcher(html);
 		htmlFormatted = m.replaceAll("");
 
-		// html = html.replace("<?xml:namespace prefix = gwt >", "");
-
 		// TODO (Stefan), Following lines are a serious performance bottle neck...
 		// Document doc = Helper.getDocument(htmlFormatted);
 		// htmlFormatted = Helper.getDocumentToString(doc);
@@ -543,7 +541,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 					browser.switchTo().window(handle);
 					LOGGER.info("Closing other window with title \"" + browser.getTitle() + "\"");
 					browser.close();
-					// browser.switchTo().defaultContent();
 					browser.switchTo().window(current);
 				}
 			}
@@ -654,9 +651,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	public String getDomWithoutIframeContent() {
 		try {
 			String dom = browser.getPageSource();
-			// logger.debug("driver.source: " + dom);
 			String result = toUniformDOM(dom);
-			// logger.debug("driver.source toUniformDom: " + result);
 			return result;
 		} catch (WebDriverException e) {
 			throwIfConnectionException(e);

@@ -4,7 +4,6 @@ package com.crawljax.core.configuration;
  * Specifies attribute for CrawlElements. Internal use only.
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class CrawlAttribute {
 

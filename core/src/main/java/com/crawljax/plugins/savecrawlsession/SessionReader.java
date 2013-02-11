@@ -14,7 +14,6 @@ import com.crawljax.core.state.StateVertex;
  * Reader class for saved crawl sessions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
  */
 public class SessionReader {
 

@@ -12,7 +12,6 @@ import com.crawljax.condition.ConditionType;
  * An Invariant is an condition which should always hold when its preconditions are satisfied.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class Invariant extends ConditionType {
 

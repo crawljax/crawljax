@@ -7,7 +7,6 @@ import com.crawljax.core.CrawlSession;
  * test generation
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public interface PostCrawlingPlugin extends Plugin {
 

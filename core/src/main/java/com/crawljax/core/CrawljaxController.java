@@ -28,7 +28,6 @@ import com.google.common.collect.ImmutableList;
  * The Crawljax Controller class is the core of Crawljax.
  * 
  * @author mesbah
- * @version $Id$
  */
 public class CrawljaxController implements CrawlQueueManager {
 

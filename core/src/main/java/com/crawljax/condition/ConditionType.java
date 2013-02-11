@@ -14,7 +14,6 @@ import net.jcip.annotations.ThreadSafe;
  * A combination of a condition and preconditions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @ThreadSafe
 public abstract class ConditionType {

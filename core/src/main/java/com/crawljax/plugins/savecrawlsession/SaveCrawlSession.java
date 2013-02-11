@@ -18,7 +18,6 @@ import com.crawljax.core.state.StateVertex;
  * Plugin that saves the CrawlSession to an XML file which is used by RegressionTester.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
  */
 public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 
