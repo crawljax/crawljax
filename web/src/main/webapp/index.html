@@ -15,41 +15,15 @@
     <![endif]-->
 </head>
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="http://www.crawljax.com" target="_blank">CrawljaxUI</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Contact</a></li>
-            </ul>
-            <ul class="nav pull-right">
-              <li><a href="#">Sign in with GitHub</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-    
     <script type="text/x-handlebars">
-		<div class="container-fluid">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+      	<div class="navbar-inner">{{view App.HeaderView}}</div>
+    </div>
+	<div class="container-fluid">
       	<div class="row-fluid">
        		<div class="span3">
-          		<ul class="well breadcrumb">
-					{{outlet breadcrumb}}
-		  		</ul>
-          		<div class="well sidebar-nav">
-            		<ul class="nav nav-list">
-              			{{outlet sideNav}}
-            		</ul>
-          		</div>
+				{{view App.BreadcrumbView}}
+          		<div class="well sidebar-nav">{{view App.SideNavView}}</div>
           		<div class="well sidebar-nav">
             		<ul class="nav nav-list">
           	  			<li class="nav-header">Crawl Execution Queue</li>
@@ -57,19 +31,41 @@
           	  			<li class="nav-header">Executor Status</li>
           			</ul>
           		</div>
-        	</div><!--/span-->
-        
-        <div class="span9">
-			{{outlet mainContent}}
-        </div><!--/span-->
-      </div><!--/row-->
+        	</div><!--/span-->       
+        	<div class="span9">{{outlet}}</div><!--/span-->
+      	</div><!--/row-->
     </div>  		
 	</script>
 	
+	<script type="text/x-handlebars" data-template-name="header">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="http://www.crawljax.com" target="_blank">CrawljaxUI</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#/about">About</a></li>
+              <li><a href="#/contact">Contact</a></li>
+            </ul>
+            <ul class="nav pull-right">
+              <li><a href="#">Sign in with GitHub</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+	</script>
+	
 	<script type="text/x-handlebars" data-template-name="breadcrumb">
-	  	<li><a href="#">Home</a> <span class="divider">/</span></li>
-  		<li><a href="#">Library</a> <span class="divider">/</span></li>
-  		<li class="active">Data</li>
+		<ul class="well breadcrumb">
+		{{#each view.content}}	
+			{{#if active}}
+				<li class="active">{{text}}</li>
+			{{else}}
+				<li><a href="#">{{text}}</a> <span class="divider">/</span></li>				
+			{{/if}}
+		{{/each}}
+		</ul>
 	</script>
 
 	<script type="text/x-handlebars" data-template-name="config_list">
@@ -103,97 +99,13 @@
   		<li><a href="#">Input</a></li>
 		<li><a href="#">Plugins</a></li>
 	</ul>
-	{{name}} {{site}}
+	{{content.id}} {{content.name}} {{content.site}}
 	</script>
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/handlebars.js"></script>
 	<script type="text/javascript" src="js/ember-1.0.0-pre.4.js"></script>
-    <script type="text/javascript">
-    window.App = Ember.Application.create();
-    
-    //Templates
-    Ember.TEMPLATES["side_nav"] = Ember.Handlebars.compile("{{#each controller}}<li><a href='#'>{{text}}</a></li>{{/each}}");
-    
-    //Models
-    App.Config = Ember.Object.extend();
-    App.Config.reopenClass({
-    	allConfigs: [],
-    	findAll: function(){
-    		this.allConfigs.length = 0;
-    	    $.ajax({
-    	      url: '/rest/configurations',
-    	      dataType: 'json',
-    	      context: this,
-    	      success: function(response){
-    	        response.data.forEach(function(config){
-    	          this.allConfigs.addObject(App.Config.create(config))
-    	        }, this)
-    	      }
-    	    })
-    	    return this.allConfigs;
-    	 },
-    	 find: function(id)
-    	 {
-    		 var config = App.Config.create({id: id});
-    			 $.ajax({
-    			    url: '/rest/configurations/' + id,
-    			    dataType: 'json',
-    			    context: config,
-    			    success: function(response){
-    			      this.setProperties(response.data.findProperty('id', id));
-    			    }
-    			 })
-    		return config;
-    	 }
-	});
-    
-    //Controllers/Routes
-    App.Router.map(function() {
-   		this.resource("config_list", { path: "/" });
-   		this.resource("config", {path: "/:id"});
-   	});
-    
-    //App.Router.reopen({ location: 'history' });
-    
-    App.ConfigListController = Ember.ArrayController.extend({});
-    App.SideNavController = Ember.ArrayController.extend({});
-    App.ConfigListRoute = Ember.Route.extend({
-      setupController: function(controller, model) {
-        this.controllerFor("config_list").set('content', App.Config.findAll());
-        this.controllerFor("side_nav").set('content', [
-          {text:"New Configuration", route:"new"}, {text:"People", route:"people"},
-          {text:"Crawl History", route:"history"}, {text:"Manage Crawljax", route:"manage"}
-        ]);
-      },
-      renderTemplate: function() { 
-    	this.render({outlet: 'mainContent'}); 
-      	this.render( 'side_nav' ,{ outlet: 'sideNav' }); 
-      	this.render( 'breadcrumb' ,{ outlet: 'breadcrumb' });
-      	}
-    });
-    
-    App.ConfigController = Ember.Controller.extend({});
-    App.ConfigRoute = Ember.Route.extend({
-        setupController: function(controller, model) {
-          this.controllerFor("config").set('content', model);
-          this.controllerFor("side_nav").set('content', [
-            {text:"Run Configuration", route:"run"}
-          ]);
-        },
-        renderTemplate: function() { 
-      		this.render({outlet: 'mainContent'}); 
-      		this.render( 'side_nav' ,{ outlet: 'sideNav' }); 
-          	this.render( 'breadcrumb' ,{ outlet: 'breadcrumb' });
-        },
-        serialize: function(object) {
-            return { id: object.id };
-        },
-        deserialize: function(params) {
-            return App.Config.find(params.id);
-        }
-      });
-    </script>
+    <script type="text/javascript" src="js/app.js"></script>
 </body>
 </html>
