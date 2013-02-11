@@ -19,7 +19,6 @@ import com.crawljax.core.state.StateVertex;
  * The data about the crawlsession.
  * 
  * @author mesbah
- * @version $Id$
  */
 public class CrawlSession {
 

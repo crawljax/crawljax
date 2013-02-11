@@ -20,8 +20,7 @@ class CandidateElementMatcher extends CustomMatcher<CandidateElementPosition> {
 	public boolean matches(Object item) {
 		if (item instanceof CandidateElementPosition) {
 			CandidateElementPosition element = (CandidateElementPosition) item;
-			return element.getLeft() == actual.getLeft()
-			        && element.getTop() == actual.getTop()
+			return element.getLeft() == actual.getLeft() && element.getTop() == actual.getTop()
 			        && element.getWidth() == actual.getWidth()
 			        && element.getHeight() == actual.getHeight();
 		} else {

@@ -15,7 +15,6 @@ import com.crawljax.util.DomUtils;
  * Test for the CandidateElementManager.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class CandidateElementManagerTest {
 	private static Document document;

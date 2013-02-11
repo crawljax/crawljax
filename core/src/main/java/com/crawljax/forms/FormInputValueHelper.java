@@ -36,7 +36,6 @@ import com.crawljax.util.XPathHelper;
  * 
  * @author dannyroest@gmail.com (Danny Roest)
  * @author ali mesbah
- * @version $Id$
  */
 public final class FormInputValueHelper {
 

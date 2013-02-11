@@ -5,7 +5,6 @@ package com.crawljax.core.configuration;
  * Threads active.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class ThreadConfiguration {
 

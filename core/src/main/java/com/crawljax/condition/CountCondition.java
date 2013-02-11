@@ -13,7 +13,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * condition is satisfied less than the specified number.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @ThreadSafe
 public class CountCondition implements Condition {

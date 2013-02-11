@@ -16,7 +16,6 @@ import com.crawljax.condition.eventablecondition.EventableConditionChecker;
  * ExtractorManager.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class CandidateElementManager implements ExtractorManager {
 	/**

@@ -46,10 +46,11 @@ public class CrawlActionsTest {
 		actions.dontClickChildrenOf("b").withClass("someClass");
 		List<CrawlElement> crawlElements = actions.getCrawlElementsExcluded();
 		assertThat(crawlElements, hasSize(4));
-		assertThat(crawlElements, containsInAnyOrder(
-		        withXpath("//B[@id='someId']//*"),
-		        withXpath("//B[@id='someId']//*"),
-		        withXpath("//B[@class='someClass']//*"),
-		        withXpath("//B[@class='someClass']//*")));
+		assertThat(
+		        crawlElements,
+		        containsInAnyOrder(withXpath("//B[@id='someId']//*"),
+		                withXpath("//B[@id='someId']//*"),
+		                withXpath("//B[@class='someClass']//*"),
+		                withXpath("//B[@class='someClass']//*")));
 	}
 }

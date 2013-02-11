@@ -17,7 +17,6 @@ import com.crawljax.oraclecomparator.comparators.SimpleComparator;
  * equivalent.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @ThreadSafe
 public class StateComparator {

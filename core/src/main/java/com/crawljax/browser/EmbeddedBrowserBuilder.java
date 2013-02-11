@@ -26,7 +26,6 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
  * classes to so more browser specific manipulation in plugins.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public interface EmbeddedBrowserBuilder {
 

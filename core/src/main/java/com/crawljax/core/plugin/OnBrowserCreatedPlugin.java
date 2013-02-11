@@ -8,7 +8,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * started.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public interface OnBrowserCreatedPlugin extends Plugin {
 

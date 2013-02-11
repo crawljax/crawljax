@@ -11,7 +11,6 @@ import com.crawljax.util.DomUtils;
  * specified regular expressions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class RegexComparator extends AbstractComparator {
 

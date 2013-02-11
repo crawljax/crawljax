@@ -11,7 +11,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Logic operations for conditions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @Immutable
 public final class Logic {

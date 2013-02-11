@@ -8,7 +8,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * initial URL. Not only the first time but also every time the Core navigates back (back-tracking).
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public interface OnUrlLoadPlugin extends Plugin {
 

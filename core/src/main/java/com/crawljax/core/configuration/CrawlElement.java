@@ -31,7 +31,6 @@ import com.google.common.collect.Lists;
  * 
  * @see CrawlSpecification
  * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public final class CrawlElement {
 

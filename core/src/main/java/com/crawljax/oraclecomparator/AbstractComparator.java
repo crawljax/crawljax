@@ -13,7 +13,6 @@ import com.crawljax.util.DomUtils;
  * comparators are shared between Threads and the origionalDom and newDom can not be final.
  * 
  * @author Danny
- * @version $Id$
  */
 @NotThreadSafe
 public abstract class AbstractComparator implements Comparator {
