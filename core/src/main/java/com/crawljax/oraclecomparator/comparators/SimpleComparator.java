@@ -4,8 +4,6 @@ import com.crawljax.oraclecomparator.AbstractComparator;
 
 /**
  * Simple oracle which can ignore whitespaces and linebreaks.
- * 
- * @version $Id$
  */
 public class SimpleComparator extends AbstractComparator {
 

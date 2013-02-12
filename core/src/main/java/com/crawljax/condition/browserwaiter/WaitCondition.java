@@ -15,7 +15,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * should all be satisfied for the specified url.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @ThreadSafe
 public class WaitCondition {

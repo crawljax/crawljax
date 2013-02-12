@@ -12,7 +12,6 @@ import com.crawljax.core.state.StateVertex;
  * IMPORTANT: This class should only be used by SaveCrawlSessionPlugin and SavedCrawlSessionReader.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
  */
 public class ExportableSession {
 

@@ -4,7 +4,6 @@ package com.crawljax.core.configuration;
  * This class is the reader class for the threadConfiguration.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class ThreadConfigurationReader {
 	private final ThreadConfiguration threadConfiguration;

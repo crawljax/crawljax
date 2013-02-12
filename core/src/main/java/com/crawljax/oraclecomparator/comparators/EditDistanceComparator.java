@@ -8,7 +8,6 @@ import com.crawljax.util.EditDistance;
  * equivalent.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class EditDistanceComparator extends AbstractComparator {
 

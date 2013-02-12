@@ -9,7 +9,6 @@ import com.crawljax.core.state.StateVertex;
  * contain the correct current state since we are in back-tracking phase.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public interface OnRevisitStatePlugin extends Plugin {
 

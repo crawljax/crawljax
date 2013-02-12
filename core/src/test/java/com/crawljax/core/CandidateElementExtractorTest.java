@@ -104,8 +104,7 @@ public class CandidateElementExtractorTest {
 	public void testExtractIframeContents() throws Exception {
 		RunWithWebServer server = new RunWithWebServer("/site");
 		server.before();
-		CrawlSpecification spec =
-		        new CrawlSpecification(server.getSiteUrl() + "iframe/");
+		CrawlSpecification spec = new CrawlSpecification(server.getSiteUrl() + "iframe/");
 		spec.click("a");
 		setupCrawler(spec);
 

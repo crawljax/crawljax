@@ -76,10 +76,12 @@ public class CrawlOverview
 	private Point getOffSet(EmbeddedBrowser embeddedBrowser) {
 		if (bodyHasOffset(embeddedBrowser)) {
 			try {
-				Number top = (Number) embeddedBrowser.executeJavaScript(
-				        "return document.body.getBoundingClientRect().top;");
-				Number left = (Number) embeddedBrowser.executeJavaScript(
-				        "return document.body.getBoundingClientRect().left;");
+				Number top =
+				        (Number) embeddedBrowser
+				                .executeJavaScript("return document.body.getBoundingClientRect().top;");
+				Number left =
+				        (Number) embeddedBrowser
+				                .executeJavaScript("return document.body.getBoundingClientRect().left;");
 				Point offset = new Point(left.intValue(), top.intValue());
 				return offset;
 			} catch (CrawljaxException e) {
@@ -90,8 +92,7 @@ public class CrawlOverview
 	}
 
 	private boolean bodyHasOffset(EmbeddedBrowser embeddedBrowser) {
-		WebElement body =
-		        embeddedBrowser.getWebElement(new Identification(How.tag, "body"));
+		WebElement body = embeddedBrowser.getWebElement(new Identification(How.tag, "body"));
 		String position = body.getCssValue("position");
 		LOG.debug("Body has CSS position: {}", position);
 		return "relative".equals(position);
@@ -154,8 +155,8 @@ public class CrawlOverview
 		Point location = webElement.getLocation();
 		Dimension size = webElement.getSize();
 		CandidateElementPosition renderedCandidateElement =
-		        // TODO Check if element.getIdentification().getValue() is correct replacement for
-		        // element.getXpath()
+		// TODO Check if element.getIdentification().getValue() is correct replacement for
+		// element.getXpath()
 		        new CandidateElementPosition(element.getIdentification().getValue(), location,
 		                size);
 		return renderedCandidateElement;

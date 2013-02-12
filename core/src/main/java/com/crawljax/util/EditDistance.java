@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
  * The Edit Distance class.
  * 
  * @author mesbah
- * @version $Id$
  */
 public final class EditDistance {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EditDistance.class.getName());

@@ -12,7 +12,6 @@ import org.w3c.dom.NodeList;
  * and getAffectedNodes are garded by using the ThreadLocal system.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @ThreadSafe
 public abstract class AbstractCondition implements Condition {

@@ -117,9 +117,8 @@ public class CrawlSpecification {
 	public void clickMoreElements() {
 		clickDefaultElements();
 		clickTableElements();
-		click("span", "div", "ol", "center", "li", "radio", "non", "meta",
-		        "refresh", "xhr", "relative", "link", "self", "form", "input", "option", "img",
-		        "p");
+		click("span", "div", "ol", "center", "li", "radio", "non", "meta", "refresh", "xhr",
+		        "relative", "link", "self", "form", "input", "option", "img", "p");
 	}
 
 	/**

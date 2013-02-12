@@ -5,12 +5,6 @@ package com.crawljax.oraclecomparator.comparators;
 
 import com.crawljax.oraclecomparator.AbstractComparator;
 
-/**
- * TODO: Document this.
- * 
- * @author Danny
- * @version $Id$
- */
 public class PlainStructureComparator extends AbstractComparator {
 
 	private boolean removeAttributes = true;
@@ -62,16 +56,6 @@ public class PlainStructureComparator extends AbstractComparator {
 		setNewDom(stripContent(getNewDom()));
 
 	}
-
-	// public static void main(String[] args) {
-	// String dom =
-	// "<html>\n\n   <body color='woei'>   <div style='width: 100%'> "
-	// + "dahksdhjkasd </div> dahjkdashjkdashjkdas</body></html> ";
-	// PlainStructureOracle o = new PlainStructureOracle(dom, dom);
-	// o.isEquivalent();
-	// System.out.println(o.getOriginalDom());
-	// System.out.println(PrettyHTML.prettyHTML(o.getOriginalDom()));
-	// }
 
 	/**
 	 * @param removeAttributes

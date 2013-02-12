@@ -26,7 +26,6 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
  * 
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public final class BrowserPool {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowserPool.class);
@@ -356,8 +355,7 @@ public final class BrowserPool {
 						try {
 							pool.available.add(pool.createBrowser());
 							createdBrowserCount.incrementAndGet();
-						} catch (Throwable e) {
-							/* Catch ALL exceptions... */
+						} catch (RuntimeException e) {
 							LOGGER.error("Creation of Browser faild!", e);
 							if (pool.getNumberBrowserCreateRetries() > 0
 							        && bootRetries < pool.getNumberBrowserCreateRetries()) {
