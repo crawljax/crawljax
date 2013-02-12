@@ -44,8 +44,9 @@ public class OutputBuilderTest {
 		URI file = OutputBuilderTest.class.getResource("/screenshot.png").toURI();
 		File screenShot = new File(file);
 		builder.makeThumbNail(screenShot, "test-state");
-		String thumbName = OutputBuilder.SCREENSHOT_FOLDER_NAME + File.separatorChar
-		        + "test-state_small.jpg";
+		String thumbName =
+		        OutputBuilder.SCREENSHOT_FOLDER_NAME + File.separatorChar
+		                + "test-state_small.jpg";
 		File thumb = new File(outputFolder, thumbName);
 		assertThat("File exists", thumb.exists(), is(true));
 		String hash = Files.hash(thumb, Hashing.md5()).toString();

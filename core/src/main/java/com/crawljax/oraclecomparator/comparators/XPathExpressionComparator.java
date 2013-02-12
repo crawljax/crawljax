@@ -25,7 +25,6 @@ import com.crawljax.util.XPathHelper;
  * Oracle which can ignore element/attributes by xpath expression.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class XPathExpressionComparator extends AbstractComparator {
 

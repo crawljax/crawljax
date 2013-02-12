@@ -11,7 +11,6 @@ import org.openqa.selenium.By;
  * and the value for that method.
  * 
  * @author mesbah
- * @version $Id$
  */
 public class Identification implements Serializable {
 	private static final long serialVersionUID = -1608879189549535808L;

@@ -8,7 +8,6 @@ import com.crawljax.core.state.Eventable;
  * Plugin type that is called every time event that was requested to fire failed firing.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public interface OnFireEventFailedPlugin extends Plugin {
 

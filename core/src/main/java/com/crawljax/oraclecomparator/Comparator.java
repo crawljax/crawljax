@@ -10,7 +10,6 @@ import org.custommonkey.xmlunit.Difference;
  * Interface for oracle comparators.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @NotThreadSafe
 public interface Comparator {

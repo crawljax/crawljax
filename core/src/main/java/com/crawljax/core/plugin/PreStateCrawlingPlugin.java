@@ -10,7 +10,6 @@ import com.crawljax.core.CrawlSession;
  * candidate elements.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public interface PreStateCrawlingPlugin extends Plugin {
 

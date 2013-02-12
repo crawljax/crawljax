@@ -6,7 +6,6 @@ package com.crawljax.core.plugin;
  * absolute path.
  * 
  * @author Frank Groeneveld <frankgroeneveld+crawljax@gmail.com>
- * @version $Id$
  */
 public interface GeneratesOutput extends Plugin {
 

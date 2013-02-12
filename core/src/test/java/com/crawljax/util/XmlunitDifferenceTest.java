@@ -14,7 +14,6 @@ import com.google.common.collect.Lists;
  * Test the useage of the Helper.getDifferences.
  * 
  * @author slenselink@google.com (Stefan Lenselink)
- * @version $Id$
  */
 public class XmlunitDifferenceTest {
 

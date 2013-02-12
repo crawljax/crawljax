@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
  * Test the edit distance algorithm.
  * 
  * @author mesbah
- * @version $Id$
  */
 public class EditDistanceTest extends TestCase {
 

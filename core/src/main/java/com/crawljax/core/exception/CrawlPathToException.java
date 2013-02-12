@@ -8,7 +8,6 @@ import com.crawljax.core.state.CrawlPath;
  * This exception wraps a CrawlPath into a Throwable. Basically providing a StackTrace of the Path
  * taken to reach an Exception point.
  * 
- * @version $Id$
  * @author slenselink@google.com (Stefan Lenselink)
  */
 public class CrawlPathToException extends Exception {

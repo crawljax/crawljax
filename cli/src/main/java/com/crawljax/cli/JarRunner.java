@@ -100,12 +100,11 @@ public class JarRunner {
 	 * @throws IOException
 	 */
 	public static void printHelp(Options options) throws IOException {
-		String cmlSyntax =
-		        "java -jar crawljax-cli-version.jar theUrl theOutputDir";
+		String cmlSyntax = "java -jar crawljax-cli-version.jar theUrl theOutputDir";
 		final PrintWriter writer = new PrintWriter(System.out);
 		final HelpFormatter helpFormatter = new HelpFormatter();
-		helpFormatter.printHelp(writer, ROW_WIDTH, cmlSyntax, "", options,
-		        SPACES_AFTER_OPTION, SPACES_BEFORE_OPTION, "");
+		helpFormatter.printHelp(writer, ROW_WIDTH, cmlSyntax, "", options, SPACES_AFTER_OPTION,
+		        SPACES_BEFORE_OPTION, "");
 		writer.flush();
 	}
 

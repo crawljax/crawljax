@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableSet;
  * crawljax knows which values to set for this elements before it is clicked.
  * 
  * @author Danny Roest (dannyroest@gmail.com)
- * @version $Id$
  */
 public class CandidateElement {
 
@@ -68,9 +67,8 @@ public class CandidateElement {
 			result.append(this.element.getNodeName()).append(": ");
 
 		}
-		result.append(DomUtils.getElementAttributes(this.element, exclude))
-		        .append(' ').append(this.identification)
-		        .append(' ').append(relatedFrame);
+		result.append(DomUtils.getElementAttributes(this.element, exclude)).append(' ')
+		        .append(this.identification).append(' ').append(relatedFrame);
 
 		return result.toString();
 	}

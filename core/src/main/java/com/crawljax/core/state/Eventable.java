@@ -24,7 +24,6 @@ import com.crawljax.util.XPathHelper;
  * can change the DOM state.
  * 
  * @author mesbah
- * @version $Id$
  */
 public class Eventable extends DefaultEdge implements Serializable {
 	private static final long serialVersionUID = 3229708706467350994L;

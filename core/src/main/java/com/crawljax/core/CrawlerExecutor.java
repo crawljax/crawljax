@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
  * Crawlers will be stored in a workQueue until a Thread will become available.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class CrawlerExecutor extends ThreadPoolExecutor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CrawlerExecutor.class);
@@ -55,7 +54,6 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	public CrawlerExecutor(int numberOfThreads) {
 		super(numberOfThreads, numberOfThreads, 0L, TimeUnit.MILLISECONDS, new CrawlQueue());
 		setThreadFactory(new CrawlerThreadFactory());
-		// setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 	}
 
 	@Override
@@ -66,7 +64,6 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 		}
 		LOGGER.debug("Finished executing");
 		if (runningTasks.decrementAndGet() == 0 && getQueue().isEmpty()) {
-			// runningTasks--;
 			/**
 			 * As the number of running tasks equals 0 there are no tasks running anymore. A new
 			 * task can only be added by a Crawler which happens before the run function exits so if
@@ -81,7 +78,6 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	@Override
 	protected void beforeExecute(Thread t, Runnable r) {
 		super.beforeExecute(t, r);
-		// runningTasks++;
 		runningTasks.incrementAndGet();
 
 		/**

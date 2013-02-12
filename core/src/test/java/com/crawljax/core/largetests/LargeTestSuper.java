@@ -170,8 +170,8 @@ public abstract class LargeTestSuper {
 		crawler.click("div").withText(CLICK_TEXT);
 		crawler.click("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
 		crawler.click("button").when(new NotRegexCondition("DONT_CLICK_BUTTONS_ON_THIS_PAGE"));
-		crawler.click("div").withAttribute(ATTRIBUTE, "condition").when(new RegexCondition(
-		        "REGEX_CONDITION_TRUE"));
+		crawler.click("div").withAttribute(ATTRIBUTE, "condition")
+		        .when(new RegexCondition("REGEX_CONDITION_TRUE"));
 
 		crawler.dontClick("a").withText(DONT_CLICK_TEXT);
 		crawler.dontClick("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);

@@ -59,8 +59,7 @@ public class DomHistoryElement {
 		try {
 			this.dom = DomUtils.asDocument(domStr);
 		} catch (IOException e) {
-			LOG.error(
-			        "Could not construct with dom", e);
+			LOG.error("Could not construct with dom", e);
 		}
 
 	}

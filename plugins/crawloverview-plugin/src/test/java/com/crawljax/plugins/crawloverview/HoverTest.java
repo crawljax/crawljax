@@ -55,8 +55,8 @@ public class HoverTest {
 		assertThat(indexScreensShot.exists(), is(true));
 		BufferedImage img = ImageIO.read(indexScreensShot);
 		boolean enough = img.getWidth() > MIN_WIDHT && img.getHeight() > MIN_HEIGHT;
-		LOG.debug("Images size is {} x {}. Good enough = {}",
-		        img.getWidth(), img.getHeight(), enough);
+		LOG.debug("Images size is {} x {}. Good enough = {}", img.getWidth(), img.getHeight(),
+		        enough);
 		return enough;
 	}
 

@@ -6,7 +6,6 @@ import com.crawljax.core.state.Eventable.EventType;
  * This class corresponds the combination of a CandidateElement and a single eventType.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class CandidateCrawlAction {
 	private final CandidateElement candidateElement;

@@ -9,7 +9,6 @@ import com.crawljax.core.state.Identification;
  * Checks whether an element is visible.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @ThreadSafe
 public class ExpectedVisibleCondition implements ExpectedCondition {

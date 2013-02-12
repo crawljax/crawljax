@@ -20,8 +20,6 @@ import com.crawljax.util.XPathHelper;
 
 /**
  * Oracle which can ignore style attributes.
- * 
- * @version $Id$
  */
 public class StyleComparator extends AbstractComparator {
 
