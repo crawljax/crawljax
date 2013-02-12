@@ -17,10 +17,10 @@
 <body>
     <script type="text/x-handlebars">
 	<div class="navbar navbar-inverse navbar-fixed-top">
-      	<div class="navbar-inner">{{view App.HeaderView}}</div>
+      	<div class="navbar-inner">{{render header}}</div>
     </div>
-	<div class="container-fluid">
-      	<div class="row-fluid">
+	<div class="container">
+      	<div class="row">
        		<div class="span3">
 				{{view App.BreadcrumbView}}
           		<div class="well sidebar-nav">{{view App.SideNavView}}</div>
@@ -38,7 +38,7 @@
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="header">
-        <div class="container-fluid">
+        <div class="container">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
           </a>
@@ -54,18 +54,6 @@
             </ul>
           </div><!--/.nav-collapse -->
         </div>
-	</script>
-	
-	<script type="text/x-handlebars" data-template-name="breadcrumb">
-		<ul class="well breadcrumb">
-		{{#each view.content}}	
-			{{#if active}}
-				<li class="active">{{text}}</li>
-			{{else}}
-				<li><a href="#">{{text}}</a> <span class="divider">/</span></li>				
-			{{/if}}
-		{{/each}}
-		</ul>
 	</script>
 
 	<script type="text/x-handlebars" data-template-name="config_list">
@@ -93,13 +81,66 @@
 	</div>
 	</script>
 	
-	<script type="text/x-handlebars" data-template-name="config">
+	<script type="text/x-handlebars" data-template-name="config_tabs">
 	<ul class="nav nav-tabs">
-  		<li class="active"><a href="#">General</a></li>
-  		<li><a href="#">Input</a></li>
-		<li><a href="#">Plugins</a></li>
+		{{#linkTo 'config.index' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Overview</a>{{/linkTo}}
+		{{#linkTo 'config.input' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Input</a>{{/linkTo}}
+		{{#linkTo 'config.plugins' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Plugins</a>{{/linkTo}}
 	</ul>
-	{{content.id}} {{content.name}} {{content.site}}
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="config/index">
+	{{render config_tabs}}
+	<form class="form-horizontal">	
+	<fieldset>
+		<legend>General Information</legend>
+		<div class="control-group"><label class="control-label">Name:</label>
+			<div class="controls">{{view Ember.TextField valueBinding="content.name"}}</div>
+		</div>
+		<div class="control-group"><label class="control-label">Site:</label>
+			<div class="controls">{{view Ember.TextField valueBinding="content.site"}}</div>
+		</div>
+		<div class="control-group"><label class="control-label">Browser:</label>
+			<div class="controls">
+			<label class="radio"><input type="radio" name="rdBrowser" value="firefox" checked /> Firefox</label>
+			<label class="radio"><input type="radio" name="rdBrowser" value="chrome" /> Chrome</label>
+			<label class="radio"><input type="radio" name="rdBrowser" value="ie" /> Internet Explorer</label>
+			</div>
+		</div>
+		<div class="control-group"><label class="control-label"># of Browsers:</label>
+			<div class="controls">{{view Ember.TextField }}</div>
+		</div>
+		<div class="control-group"><label class="control-label"># of Threads:</label>
+			<div class="controls">{{view Ember.TextField }}</div>
+		</div>
+		<div class="control-group"><label class="control-label">Maximum Depth:</label>
+			<div class="controls">{{view Ember.TextField }}</div>
+		</div>
+		<div class="control-group"><label class="control-label">Maximum States:</label>
+			<div class="controls">{{view Ember.TextField }}</div>
+		</div>
+		<div class="control-group"><label class="control-label">Maximum Duration:</label>
+			<div class="controls">{{view Ember.TextField }}</div>
+		</div>
+	</fieldset>
+	</form>
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="config/input">
+	{{render config_tabs}}
+	<form class="form-horizontal">	
+		<fieldset>
+			<legend>Clickable Elements</legend>
+		</fieldset>
+		<fieldset>
+			<legend>Form Field Values</legend>
+		</fieldset>
+	</form>
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="config/plugins">
+	{{render config_tabs}}
+		Plugin Hookin
 	</script>
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
