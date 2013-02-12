@@ -1,10 +1,12 @@
 package com.crawljax.core;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openqa.selenium.ElementNotVisibleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,8 +15,8 @@ import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.exception.CrawlPathToException;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
-import com.crawljax.core.state.Attribute;
 import com.crawljax.core.state.CrawlPath;
+import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
@@ -155,12 +157,9 @@ public class Crawler implements Runnable {
 	 * Brings the browser to the initial state.
 	 */
 	public void goToInitialURL() {
-		LOGGER.info("Loading Page "
-		        + configurationReader.getCrawlSpecificationReader().getSiteUrl());
+		LOGGER.info("Loading Page {}", configurationReader.getCrawlSpecificationReader()
+		        .getSiteUrl());
 		getBrowser().goToUrl(configurationReader.getCrawlSpecificationReader().getSiteUrl());
-		/**
-		 * Thread safe
-		 */
 		controller.doBrowserWait(getBrowser());
 		CrawljaxPluginsUtil.runOnUrlLoadPlugins(getBrowser());
 	}
@@ -198,8 +197,15 @@ public class Crawler implements Runnable {
 				                eventType);
 			}
 		}
+		boolean fired = false;
+		try {
+			fired = getBrowser().fireEvent(eventable);
+		} catch (ElementNotVisibleException e) {
+			ifElementIsLinkWithHrefAddToQueue(eventable);
+			fired = true;
+		}
 
-		if (getBrowser().fireEvent(eventable)) {
+		if (fired) {
 
 			/**
 			 * Let the controller execute its specified wait operation on the browser thread safe.
@@ -220,6 +226,21 @@ public class Crawler implements Runnable {
 			CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable, controller.getSession()
 			        .getCurrentCrawlPath().immutableCopy(true));
 			return false; // no event fired
+		}
+	}
+
+	private void ifElementIsLinkWithHrefAddToQueue(Eventable eventable) {
+		Element element = eventable.getElement();
+		if ("A".equals(element.getTag())) {
+			String href = element.getAttributeOrNull("href");
+			if (href == null) {
+				LOGGER.info("Anchor {} has no href and is invisble so it will be ignored",
+				        element);
+			} else {
+				LOGGER.info("Found an invisible link with href={}", href);
+			}
+		} else {
+			LOGGER.info("Element {} is not visible and will be ignored", element);
 		}
 	}
 
@@ -299,7 +320,7 @@ public class Crawler implements Runnable {
 		// support for meta refresh tags
 		if (eventable.getElement().getTag().toLowerCase().equals("meta")) {
 			Pattern p = Pattern.compile("(\\d+);\\s+URL=(.*)");
-			for (Attribute e : eventable.getElement().getAttributes()) {
+			for (Entry<String, String> e : eventable.getElement().getAttributes().entrySet()) {
 				Matcher m = p.matcher(e.getValue());
 				if (m.find()) {
 					if (LOGGER.isDebugEnabled()) {

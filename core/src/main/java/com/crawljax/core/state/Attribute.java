@@ -2,25 +2,20 @@ package com.crawljax.core.state;
 
 import java.io.Serializable;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * This class represents a attribute of a Element.
  * 
  * @see Element#Element(org.w3c.dom.Node)
  */
+@Immutable
 public class Attribute implements Serializable {
 
 	private static final long serialVersionUID = -1608999189549539958L;
 
-	private long id;
-	private String name;
-	private String value;
-
-	/**
-	 * Default constructor to support saving instances of this class as an XML.
-	 */
-	public Attribute() {
-
-	}
+	private final String name;
+	private final String value;
 
 	/**
 	 * Create a new Attribute given a name and a value.
@@ -31,7 +26,6 @@ public class Attribute implements Serializable {
 	 *            the value of the attribute
 	 */
 	public Attribute(String name, String value) {
-		super();
 		this.name = name;
 		this.value = value;
 	}
@@ -39,21 +33,6 @@ public class Attribute implements Serializable {
 	@Override
 	public String toString() {
 		return getName() + "=\"" + getValue() + "\"";
-	}
-
-	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	/**
@@ -68,14 +47,6 @@ public class Attribute implements Serializable {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return the value
 	 */
 	public String getValue() {
@@ -83,15 +54,7 @@ public class Attribute implements Serializable {
 			return value.trim();
 
 		}
-
 		return value;
 	}
 
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
 }

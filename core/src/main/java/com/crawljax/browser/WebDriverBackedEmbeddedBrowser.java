@@ -292,27 +292,24 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            The HTML event type (onclick, onmouseover, ...).
 	 * @return true if firing event is successful.
 	 */
-	protected boolean fireEventWait(WebElement webElement, Eventable eventable) {
+	protected boolean fireEventWait(WebElement webElement, Eventable eventable)
+	        throws ElementNotVisibleException {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
 					webElement.click();
-				} catch (ElementNotVisibleException e1) {
-					LOGGER.info("Element not visible, so cannot be clicked: "
-					        + webElement.getTagName().toUpperCase() + " " + webElement.getText());
-					return false;
+				} catch (ElementNotVisibleException e) {
+					throw e;
 				} catch (WebDriverException e) {
 					throwIfConnectionException(e);
 					return false;
 				}
 				break;
 			case hover:
-				// todo
+				LOGGER.info("Eventype hover called but this isnt implemented yet");
 				break;
-
 			default:
-				LOGGER.info("EventType " + eventable.getEventType()
-				        + " not supported in WebDriver.");
+				LOGGER.info("EventType {} not supported in WebDriver.", eventable.getEventType());
 				return false;
 		}
 
@@ -437,7 +434,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return true if it is able to fire the event successfully on the element.
 	 */
 	@Override
-	public synchronized boolean fireEvent(Eventable eventable) {
+	public synchronized boolean fireEvent(Eventable eventable) throws ElementNotVisibleException {
 		try {
 
 			boolean handleChanged = false;
@@ -468,6 +465,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				browser.switchTo().defaultContent();
 			}
 			return result;
+		} catch (ElementNotVisibleException e) {
+			throw e;
 		} catch (NoSuchElementException e) {
 			LOGGER.warn("Could not fire eventable: " + eventable.toString());
 			return false;

@@ -1,60 +1,52 @@
 package com.crawljax.core.state;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map.Entry;
+
+import javax.annotation.concurrent.Immutable;
 
 import org.w3c.dom.Node;
 
 import com.crawljax.util.DomUtils;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 
 /**
  * This class represents an element. It is built from the node name and node text contents.
- * 
- * @author mesbah
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  */
+@Immutable
 public class Element implements Serializable {
 
 	private static final long serialVersionUID = -1608999189549530008L;
-	private static final int HASHCONST = 32;
 
-	private Node node;
-	private long id;
-	private String tag;
-	private String text;
-	private List<Attribute> attributes = new ArrayList<Attribute>();
-
-	/**
-	 * Default constructor to support saving instances of this class as an XML.
-	 */
-	public Element() {
-
-	}
+	private final Node node;
+	private final String tag;
+	private final String text;
+	private final ImmutableMap<String, String> attributes;
 
 	/**
 	 * Create a new Element.
 	 * 
 	 * @param node
-	 *            the node used to retrieve the name and the text content from
+	 *            the node used to retrieve the name and the text content from. All {@link Node}
+	 *            keys are saved as lowercase.
 	 */
 	public Element(Node node) {
-		if (node != null) {
-			this.node = node;
-			this.tag = node.getNodeName();
-			if (node.getTextContent() == null) {
-				this.text = "";
-			} else {
-				this.text = DomUtils.removeNewLines(node.getTextContent()).trim();
-			}
-			attributes = new ArrayList<Attribute>();
-			for (int i = 0; i < node.getAttributes().getLength(); i++) {
-				Node attr = node.getAttributes().item(i);
-				Attribute attribute = new Attribute(attr.getNodeName(), attr.getNodeValue());
-				attributes.add(attribute);
-			}
+		Preconditions.checkNotNull(node);
+		this.node = node;
+		this.tag = node.getNodeName();
+		if (node.getTextContent() == null) {
+			this.text = "";
+		} else {
+			this.text = DomUtils.removeNewLines(node.getTextContent()).trim();
 		}
-
+		Builder<String, String> builder = ImmutableMap.builder();
+		for (int i = 0; i < node.getAttributes().getLength(); i++) {
+			Node attr = node.getAttributes().item(i);
+			builder.put(attr.getNodeName().toLowerCase(), attr.getNodeValue());
+		}
+		attributes = builder.build();
 	}
 
 	@Override
@@ -66,13 +58,8 @@ public class Element implements Serializable {
 			str.append("\" ");
 		}
 		str.append(getTag().toUpperCase());
-		str.append(":");
-		if (getAttributes() != null) {
-			for (Attribute attribute : getAttributes()) {
-				str.append(" ");
-				str.append(attribute.toString());
-			}
-		}
+		str.append(": ");
+		str.append(attributes);
 		return str.toString();
 	}
 
@@ -93,7 +80,6 @@ public class Element implements Serializable {
 		if (attributes != null) {
 			result += attributes.hashCode();
 		}
-		result = prime * result + (int) (id ^ (id >>> HASHCONST));
 		result = prime * result;
 		if (node != null) {
 			result += node.hashCode();
@@ -117,8 +103,7 @@ public class Element implements Serializable {
 	 * @return true if the other attributes are equal to this one.
 	 */
 	public boolean equalAttributes(Element otherElement) {
-		return getAttributes().toString().equalsIgnoreCase(
-		        otherElement.getAttributes().toString());
+		return getAttributes().equals(otherElement.getAttributes());
 	}
 
 	/**
@@ -152,27 +137,12 @@ public class Element implements Serializable {
 	 * @return the id of this element or null when not found
 	 */
 	public String getElementId() {
-		for (Attribute attribute : getAttributes()) {
-			if (attribute.getName().equalsIgnoreCase("id")) {
+		for (Entry<String, String> attribute : attributes.entrySet()) {
+			if (attribute.getKey().equalsIgnoreCase("id")) {
 				return attribute.getValue();
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	/**
@@ -183,14 +153,6 @@ public class Element implements Serializable {
 	}
 
 	/**
-	 * @param tag
-	 *            the tag to set
-	 */
-	public void setTag(String tag) {
-		this.tag = tag;
-	}
-
-	/**
 	 * @return the text
 	 */
 	public String getText() {
@@ -198,26 +160,13 @@ public class Element implements Serializable {
 	}
 
 	/**
-	 * @param text
-	 *            the text to set
+	 * @param attribute
+	 *            name
+	 * @return the {@link Attribute} by its name or <code>null</code> if the {@link Attribute}
+	 *         cannot be found.
 	 */
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	/**
-	 * @return the attributes
-	 */
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
-
-	/**
-	 * @param attributes
-	 *            the attributes to set
-	 */
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
+	public String getAttributeOrNull(String attribute) {
+		return attributes.get(attribute.toLowerCase());
 	}
 
 	/**
@@ -225,5 +174,9 @@ public class Element implements Serializable {
 	 */
 	public Node getNode() {
 		return node;
+	}
+
+	public ImmutableMap<String, String> getAttributes() {
+		return attributes;
 	}
 }

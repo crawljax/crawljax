@@ -227,17 +227,18 @@ public class CandidateElementExtractor {
 			// false and when needed to add it can return true.
 			// check if element is a candidate
 			String id = element.getNodeName() + ": " + DomUtils.getAllElementAttributes(element);
-			try {
-				if (matchesXpath && !checkedElements.isChecked(id)
-				        && isElementVisible(dom, element) && !filterElement(attributes, element)
-				        && !isExcluded(dom, element, eventableConditionChecker)) {
-					addElement(element, result, tagElement);
-				} else {
-					LOG.debug("Element {} was not added");
-				}
-			} catch (XPathExpressionException e) {
-				LOG.info("Could not read XPath for element {}", element, e);
+			// try {
+			if (matchesXpath && !checkedElements.isChecked(id)
+			/* && isElementVisible(dom, element) */
+			&& !filterElement(attributes, element)
+			        && !isExcluded(dom, element, eventableConditionChecker)) {
+				addElement(element, result, tagElement);
+			} else {
+				LOG.debug("Element {} was not added");
 			}
+			// } catch (XPathExpressionException e) {
+			// LOG.info("Could not read XPath for element {}", element, e);
+			// }
 		}
 		return result.build();
 	}
