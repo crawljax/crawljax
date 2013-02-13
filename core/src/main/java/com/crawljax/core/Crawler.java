@@ -175,48 +175,38 @@ public class Crawler implements Runnable {
 	 * @return true iff the event is fired
 	 */
 	private boolean fireEvent(Eventable eventable) {
+		Eventable eventToFire = eventable;
 		if (eventable.getIdentification().getHow().toString().equals("xpath")
 		        && eventable.getRelatedFrame().equals("")) {
-
-			// The path in the page to the 'clickable' (link, div, span, etc)
-			String xpath = eventable.getIdentification().getValue();
-
-			// The type of event to execute on the 'clickable' like onClick, mouseOver, hover, etc
-			EventType eventType = eventable.getEventType();
-
-			// Try to find a 'better' / 'quicker' xpath
-			String newXPath = new ElementResolver(eventable, getBrowser()).resolve();
-			if (newXPath != null && !xpath.equals(newXPath)) {
-				LOGGER.info("XPath changed from {} to {} relatedFrame: {}", xpath, newXPath,
-				        eventable.getRelatedFrame());
-				eventable =
-				        new Eventable(new Identification(Identification.How.xpath, newXPath),
-				                eventType);
-			}
+			eventToFire = resolveByXpath(eventable, eventToFire);
 		}
 		boolean fired = false;
 		try {
-			fired = getBrowser().fireEvent(eventable);
+			fired = getBrowser().fireEvent(eventToFire);
 		} catch (ElementNotVisibleException e) {
-			ifElementIsLinkWithHrefAddToQueue(eventable);
-			fired = true;
+			if (configurationReader.getCrawlSpecificationReader().crawlHiddenAnchors()
+			        && "A".equals(eventToFire.getElement().getTag())) {
+				fired = visitAnchorHrefIfPossible(eventToFire);
+			} else {
+				LOGGER.debug("Ignoring invisble element {}", eventToFire.getElement());
+			}
 		}
 
 		if (fired) {
 
-			/**
+			/*
 			 * Let the controller execute its specified wait operation on the browser thread safe.
 			 */
 			controller.doBrowserWait(getBrowser());
 
-			/**
+			/*
 			 * Close opened windows
 			 */
 			getBrowser().closeOtherWindows();
 
 			return true; // An event fired
 		} else {
-			/**
+			/*
 			 * Execute the OnFireEventFailedPlugins with the current crawlPath with the crawlPath
 			 * removed 1 state to represent the path TO here.
 			 */
@@ -226,26 +216,41 @@ public class Crawler implements Runnable {
 		}
 	}
 
-	private void ifElementIsLinkWithHrefAddToQueue(Eventable eventable) {
-		Element element = eventable.getElement();
-		if ("A".equals(element.getTag())) {
-			String href = element.getAttributeOrNull("href");
-			if (href == null) {
-				LOGGER.info("Anchor {} has no href and is invisble so it will be ignored",
-				        element);
-			} else {
-				LOGGER.info("Found an invisible link with href={}", href);
-				URL url;
-				try {
-					url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
-					browser.goToUrl(url);
-				} catch (MalformedURLException e) {
-					LOGGER.info("Could not visit invisible illegal URL {}", e.getMessage());
-				}
-			}
-		} else {
-			LOGGER.info("Element {} is not visible and will be ignored", element);
+	private Eventable resolveByXpath(Eventable eventable, Eventable eventToFire) {
+		// The path in the page to the 'clickable' (link, div, span, etc)
+		String xpath = eventable.getIdentification().getValue();
+
+		// The type of event to execute on the 'clickable' like onClick, mouseOver, hover, etc
+		EventType eventType = eventable.getEventType();
+
+		// Try to find a 'better' / 'quicker' xpath
+		String newXPath = new ElementResolver(eventable, getBrowser()).resolve();
+		if (newXPath != null && !xpath.equals(newXPath)) {
+			LOGGER.info("XPath changed from {} to {} relatedFrame: {}", xpath, newXPath,
+			        eventable.getRelatedFrame());
+			eventToFire =
+			        new Eventable(new Identification(Identification.How.xpath, newXPath),
+			                eventType);
 		}
+		return eventToFire;
+	}
+
+	private boolean visitAnchorHrefIfPossible(Eventable eventable) {
+		Element element = eventable.getElement();
+		String href = element.getAttributeOrNull("href");
+		if (href == null) {
+			LOGGER.info("Anchor {} has no href and is invisble so it will be ignored", element);
+		} else {
+			LOGGER.info("Found an invisible link with href={}", href);
+			try {
+				URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
+				browser.goToUrl(url);
+				return true;
+			} catch (MalformedURLException e) {
+				LOGGER.info("Could not visit invisible illegal URL {}", e.getMessage());
+			}
+		}
+		return false;
 	}
 
 	/**

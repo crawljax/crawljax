@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.crawltests.HiddenElementsSiteCrawl;
 import com.crawljax.crawltests.SimpleInputSiteCrawl;
 import com.crawljax.crawltests.SimpleJsSiteCrawl;
 import com.crawljax.crawltests.SimpleSiteCrawl;
@@ -38,22 +37,6 @@ public class SampleCrawlersTest {
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
 		assertThat(stateFlowGraph, hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));
 		assertThat(stateFlowGraph, hasEdges(SimpleInputSiteCrawl.NUMBER_OF_EDGES));
-	}
-
-	/**
-	 * Shows <a href='https://github.com/crawljax/crawljax/issues/97'>Issue 97</a>
-	 */
-	@Test
-	public void testHiddenElementsSiteCrawl() throws Exception {
-		// new SimpleInputSiteCrawl().showWebSite();
-		CrawlSession crawl = new HiddenElementsSiteCrawl().crawl();
-		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		/*
-		 * TODO Fix issue #97 https://github.com/crawljax/crawljax/issues/97 It is now party hacked
-		 * by following HREF links.
-		 */
-		int withIssue97 = HiddenElementsSiteCrawl.NUMBER_OF_STATES;
-		assertThat(stateFlowGraph, hasStates(withIssue97));
 	}
 
 	@Test

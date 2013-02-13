@@ -3,16 +3,19 @@
  */
 package com.crawljax.core.state;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,8 +103,8 @@ public class EventableTest {
 		/*
 		 * String infoexpected = "DIV: id=firstdiv, xpath /HTML[1]/BODY[1]/DIV[1] onclick";
 		 */
-		String infoexpected = "DIV: id=\"firstdiv\" click xpath " + "/HTML[1]/BODY[1]/DIV[1]";
-		assertEquals(infoexpected, clickable.toString());
+		String infoexpected = "DIV: {id=firstdiv} click xpath /HTML[1]/BODY[1]/DIV[1]";
+		assertThat(infoexpected, is(clickable.toString()));
 	}
 
 	@Test
