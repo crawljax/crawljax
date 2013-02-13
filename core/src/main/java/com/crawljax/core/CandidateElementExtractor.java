@@ -388,31 +388,6 @@ public class CandidateElementExtractor {
 	}
 
 	/**
-	 * @TODO find also whether CSS makes the element invisible!!! --> use WebDriver! Via webdriver
-	 *       checking can be very slow
-	 */
-	private boolean isElementVisible(Document dom, Element element)
-	        throws XPathExpressionException {
-
-		String xpath =
-		        XPathHelper.getXPathExpression(element)
-		                + "/ancestor::*[contains(@style, 'DISPLAY: none') "
-		                + "or contains(@style, 'DISPLAY:none')"
-		                + "or contains(@style, 'display: none')"
-		                + " or contains(@style, 'display:none')]";
-
-		NodeList nodes = XPathHelper.evaluateXpathExpression(dom, xpath);
-
-		if (nodes.getLength() > 0) {
-			LOG.debug("Element: " + DomUtils.getAllElementAttributes(element) + " is invisible!");
-
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
 	 * Return whether the element is filtered out because of its attributes.
 	 */
 	private boolean filterElement(Set<TagAttribute> attributes, Element element) {

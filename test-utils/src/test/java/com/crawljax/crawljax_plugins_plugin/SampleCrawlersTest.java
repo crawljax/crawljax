@@ -44,12 +44,16 @@ public class SampleCrawlersTest {
 	 * Shows <a href='https://github.com/crawljax/crawljax/issues/97'>Issue 97</a>
 	 */
 	@Test
-	// @Ignore("Test that shows Issue #97")
 	public void testHiddenElementsSiteCrawl() throws Exception {
 		// new SimpleInputSiteCrawl().showWebSite();
 		CrawlSession crawl = new HiddenElementsSiteCrawl().crawl();
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		assertThat(stateFlowGraph, hasStates(HiddenElementsSiteCrawl.NUMBER_OF_STATES));
+		/*
+		 * TODO Fix issue #97 https://github.com/crawljax/crawljax/issues/97 It is now party hacked
+		 * by following HREF links.
+		 */
+		int withIssue97 = HiddenElementsSiteCrawl.NUMBER_OF_STATES;
+		assertThat(stateFlowGraph, hasStates(withIssue97));
 	}
 
 	@Test

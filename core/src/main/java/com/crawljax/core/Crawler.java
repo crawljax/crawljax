@@ -1,5 +1,7 @@
 package com.crawljax.core;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +28,7 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
+import com.crawljax.util.UrlUtils;
 
 /**
  * Class that performs crawl actions. It is designed to run inside a Thread.
@@ -175,23 +178,17 @@ public class Crawler implements Runnable {
 		if (eventable.getIdentification().getHow().toString().equals("xpath")
 		        && eventable.getRelatedFrame().equals("")) {
 
-			/**
-			 * The path in the page to the 'clickable' (link, div, span, etc)
-			 */
+			// The path in the page to the 'clickable' (link, div, span, etc)
 			String xpath = eventable.getIdentification().getValue();
 
-			/**
-			 * The type of event to execute on the 'clickable' like onClick, mouseOver, hover, etc
-			 */
+			// The type of event to execute on the 'clickable' like onClick, mouseOver, hover, etc
 			EventType eventType = eventable.getEventType();
 
-			/**
-			 * Try to find a 'better' / 'quicker' xpath
-			 */
+			// Try to find a 'better' / 'quicker' xpath
 			String newXPath = new ElementResolver(eventable, getBrowser()).resolve();
 			if (newXPath != null && !xpath.equals(newXPath)) {
-				LOGGER.info("XPath changed from " + xpath + " to " + newXPath + " relatedFrame:"
-				        + eventable.getRelatedFrame());
+				LOGGER.info("XPath changed from {} to {} relatedFrame: {}", xpath, newXPath,
+				        eventable.getRelatedFrame());
 				eventable =
 				        new Eventable(new Identification(Identification.How.xpath, newXPath),
 				                eventType);
@@ -238,6 +235,13 @@ public class Crawler implements Runnable {
 				        element);
 			} else {
 				LOGGER.info("Found an invisible link with href={}", href);
+				URL url;
+				try {
+					url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
+					browser.goToUrl(url);
+				} catch (MalformedURLException e) {
+					LOGGER.info("Could not visit invisible illegal URL {}", e.getMessage());
+				}
 			}
 		} else {
 			LOGGER.info("Element {} is not visible and will be ignored", element);
