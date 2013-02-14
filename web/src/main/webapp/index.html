@@ -17,7 +17,7 @@
 <body>
     <script type="text/x-handlebars">
 	<div class="navbar navbar-inverse navbar-fixed-top">
-      	<div class="navbar-inner">{{render header}}</div>
+      	<div class="navbar-inner">{{partial header}}</div>
     </div>
 	<div class="container">
       	<div class="row">
@@ -90,15 +90,15 @@
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="config/index">
-	{{render config_tabs}}
+	{{partial config_tabs}}
 	<form class="form-horizontal">	
 	<fieldset>
 		<legend>General Information</legend>
 		<div class="control-group"><label class="control-label">Name:</label>
-			<div class="controls">{{view Ember.TextField valueBinding="content.name"}}</div>
+			<div class="controls">{{view Ember.TextField valueBinding="controllers.config.content.name"}}</div>
 		</div>
 		<div class="control-group"><label class="control-label">Site:</label>
-			<div class="controls">{{view Ember.TextField valueBinding="content.site"}}</div>
+			<div class="controls">{{view Ember.TextField valueBinding="controllers.config.content.site"}}</div>
 		</div>
 		<div class="control-group"><label class="control-label">Browser:</label>
 			<div class="controls">
@@ -127,10 +127,16 @@
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="config/input">
-	{{render config_tabs}}
+	{{partial config_tabs}}
 	<form class="form-horizontal">	
 		<fieldset>
 			<legend>Clickable Elements</legend>
+			<div class="control-group"><label class="control-label">Click Default Elements:</label>
+				<div class="controls">
+				<label class="radio"><input type="radio" name="rdClick" value="yes" checked /> Yes</label>
+				<label class="radio"><input type="radio" name="rdClick" value="no" /> No</label>
+				</div>
+			</div>
 		</fieldset>
 		<fieldset>
 			<legend>Form Field Values</legend>
@@ -139,7 +145,7 @@
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="config/plugins">
-	{{render config_tabs}}
+	{{partial config_tabs}}
 		Plugin Hookin
 	</script>
 

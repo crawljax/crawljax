@@ -14,8 +14,26 @@
 		<url-pattern>/rest/*</url-pattern>
 	</filter-mapping>
 
+	<!-- H2 Database Context -->
+	<context-param>
+    	<param-name>db.url</param-name>
+    	<param-value>jdbc:h2:~/crawljax</param-value>
+	</context-param>
+	<context-param>
+    	<param-name>db.user</param-name>
+    	<param-value>sa</param-value>
+	</context-param>
+	<context-param>
+    	<param-name>db.password</param-name>
+    	<param-value></param-value>
+	</context-param>
+
 	<listener>
 		<listener-class>com.crawljax.web.di.StartupListener</listener-class>
+	</listener>
+	
+	<listener>
+    	<listener-class>org.h2.server.web.DbStarter</listener-class>
 	</listener>
 	
 	<welcome-file-list>

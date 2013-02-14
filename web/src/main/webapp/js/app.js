@@ -5,7 +5,7 @@
   	  tagName: "ul",
   	  classNames: "nav nav-list",
   	  itemViewClass: Ember.View.extend({ template: Ember.Handlebars.compile("<a {{bindAttr href='view.content.route'}}>{{view.content.text}}</a>") }),
-  	  contentBinding: "App.sideNav.content"
+  	  contentBinding: "App.sideNavController.content"
     });
     
     App.BreadcrumbView = Ember.CollectionView.extend({
@@ -23,7 +23,7 @@
     		classNames: "active",
     		template: Ember.Handlebars.compile("{{view.content.text}}")
     	}),
-    	contentBinding: "App.breadcrumb.content"
+    	contentBinding: "App.breadcrumbController.content"
   	});
     
     //Models    
@@ -68,6 +68,7 @@
    			this.route("plugins");
    			this.resource("history");
    		});
+   		this.route("new");
    		this.resource("about");
    		this.resource("contact")
    		this.resource("people");
@@ -76,35 +77,32 @@
    	});
     //App.Router.reopen({ location: 'history' });
     
-    App.SideNavController = Ember.ArrayController.extend({ content: [] });
-    App.sideNav = App.SideNavController.create({});
-    App.BreadcrumbController = Ember.ArrayController.extend({ content: [] });
-    App.breadcrumb = App.BreadcrumbController.create({});
+    App.sideNavController = Ember.ArrayController.create({});
+    App.breadcrumbController = Ember.ArrayController.create({});
     
     App.ConfigListController = Ember.ArrayController.extend({});
     App.ConfigListRoute = Ember.Route.extend({
       setupController: function(controller, model) {
         controller.set('content', App.Config.findAll());
-        App.sideNav.set('content',
+        App.sideNavController.set('content',
         		[{text:"New Configuration", route:"#/new"}, {text:"People", route:"#/people"},
   	            {text:"Crawl History", route:"#/history"}, {text:"Manage Crawljax", route:"#/manage"}]);
-        App.breadcrumb.set('content', [{text: "Home", route: "/"}]);
+        App.breadcrumbController.set('content', [{text: "Home", route: "/"}]);
       }
     });
     
     App.ConfigRoute = Ember.Route.extend({
     	setupController: function(controller, model) {
             controller.set('content', model);
-            App.sideNav.set('content',
+            App.sideNavController.set('content',
             		[{text:"Run Configuration", route:"#/"+model.id+"/run"},
             		 {text:"Save Configuration", route:"#/"+model.id+"/save"},
             		 {text:"Crawl History", route:"#/"+model.id+"/history"}]);
-            App.breadcrumb.set('content', [{text: "Home", route: "/"}, {text: model.name, route: "#/" + model.id}]);
+            App.breadcrumbController.set('content', [{text: "Home", route: "/"}, {text: model.name, route: "#/" + model.id}]);
         },
         serialize: function(object) { return { id: object.id }; },
-        deserialize: function(params) { return App.Config.find(params.id); }
+        deserialize: function(params) { 
+        	return App.Config.find(params.id); }
     });
     
-    App.ConfigIndexRoute = Ember.Route.extend({
-    	model: function(params) { return this.modelFor("config"); }
-    });
+    App.ConfigIndexController = Ember.Controller.extend({needs: ["config"]});
