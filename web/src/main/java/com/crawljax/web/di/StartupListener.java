@@ -15,7 +15,9 @@ public class StartupListener extends GuiceServletContextListener {
 
 	@Override
 	protected Injector getInjector() {
-		this.injector = Guice.createInjector(new CrawljaxWebModule());
+		this.injector =
+		        Guice.createInjector(new PersistenceModule("production-h2"),
+		                new CrawljaxWebModule());
 		return this.injector;
 	}
 
