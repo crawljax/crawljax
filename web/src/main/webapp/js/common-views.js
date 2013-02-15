@@ -31,6 +31,24 @@ App.FormTextField = App.FormField.extend({
 		valueBinding: 'parentView.value',
 		placeholderBinding: 'parentView.placeholder',
 		disabledBinding: 'parentView.disabled',
-		maxlengthBinding: 'parentView.maxlength'
+		maxlengthBinding: 'parentView.maxlength',
+		classNameBindings: 'parentView.inputClassNames'
 	})
-})
+});
+
+//Checkbox
+App.FormCheckbox = App.FormField.extend({
+	template: Ember.Handlebars.compile([
+	    '<div class="controls">',
+	    '<label class="checkbox">',
+	    '  	{{view view.inputField viewName="inputField"}}',
+	    '	{{view.label}}',
+	    '</label>',
+	    '</div>'].join("\n")),
+	labelView: null,
+	inputField: Ember.Checkbox.extend({
+		checkedBinding:   'parentView.checked',
+	    disabledBinding: 'parentView.disabled',
+	    classNameBindings: 'parentView.inputClassNames'
+	})
+});
