@@ -1,0 +1,47 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+   http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+
+	<!-- Use this unit for in-memory non-persisted storage. The database is 
+			dropped after every run. -->
+		<persistence-unit name="test-h2" transaction-type="RESOURCE_LOCAL">
+			<provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+			<properties>
+				<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+				<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+				<property name="hibernate.hbm2ddl.auto" value="validate" />
+				<property name="javax.persistence.jdbc.url" value="jdbc:h2:test;DB_CLOSE_DELAY=-1;MVCC=true;" />
+				<property name="liquibase.liquibase-strategy" value="drop-create" />
+
+				<!-- Auto detect annotated model classes -->
+				<property name="hibernate.archive.autodetection" value="class" />
+
+				<property name="hibernate.format_sql" value="false" />
+				<property name="hibernate.show_sql" value="false" />
+			</properties>
+		</persistence-unit>
+
+		<!-- Use this unit for in-memory persisted storage. The database is not 
+			dropped so you can keep working on it between application restarts. -->
+		<persistence-unit name="production-h2"
+			transaction-type="RESOURCE_LOCAL">
+			<provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+			<properties>
+				<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+				<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+				<property name="hibernate.hbm2ddl.auto" value="validate" />
+				<property name="javax.persistence.jdbc.url" value="jdbc:h2:production;DB_CLOSE_DELAY=-1;MVCC=true;" />
+				<property name="liquibase.liquibase-strategy" value="update" />
+
+				<!-- Auto detect annotated model classes -->
+				<property name="hibernate.archive.autodetection" value="class" />
+
+				<property name="hibernate.format_sql" value="false" />
+				<property name="hibernate.show_sql" value="false" />
+			</properties>
+		</persistence-unit>
+</persistence>
