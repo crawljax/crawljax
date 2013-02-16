@@ -13,7 +13,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Checks the wait conditions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @ThreadSafe
 public class WaitConditionChecker {

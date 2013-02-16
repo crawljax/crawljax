@@ -5,7 +5,6 @@ package com.crawljax.plugins.savecrawlsession;
  * IMPORTANT: Should only be used by SaveCrawlSessionPlugin
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
  */
 public class Transition {
 

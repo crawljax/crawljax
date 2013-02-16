@@ -8,7 +8,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * Conditions that returns true iff the browser's current url contains url. Note: Case insesitive
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @Immutable
 public class UrlCondition extends AbstractCondition {

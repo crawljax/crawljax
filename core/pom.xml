@@ -145,7 +145,7 @@
 			<scope>test</scope>
 		</dependency>
 
-	
+
 
 
 	</dependencies>
@@ -167,6 +167,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12.4</version>
 				<configuration>
+					<systemProperties>
+						<LOG_LEVEL>DEBUG</LOG_LEVEL>
+					</systemProperties>
 					<excludedGroups>${tests.exclude}</excludedGroups>
 				</configuration>
 			</plugin>

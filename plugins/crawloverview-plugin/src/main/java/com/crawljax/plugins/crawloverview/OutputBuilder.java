@@ -162,8 +162,7 @@ class OutputBuilder {
 		LOG.info("Overview report generated");
 	}
 
-	private void writeConfig(CrawlConfiguration configuration,
-	        CrawlSpecificationReader crawlSpec) {
+	private void writeConfig(CrawlConfiguration configuration, CrawlSpecificationReader crawlSpec) {
 		File file = new File(outputDir, "config.html");
 		VelocityContext context = new VelocityContext();
 		context.put("config", BeanToReadableMap.toMap(configuration));

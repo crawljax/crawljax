@@ -17,7 +17,6 @@ import com.crawljax.core.state.StateVertex;
  * state and builds a session object and resumes the normal operations.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 
 public class InitialCrawler extends Crawler {

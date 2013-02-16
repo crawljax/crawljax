@@ -11,7 +11,6 @@ import org.w3c.dom.Document;
  * This class allows to compare two Document objects and save the differences in a list.
  * 
  * @author beze232056
- * @version $Id$
  */
 public class DOMComparer {
 	/**

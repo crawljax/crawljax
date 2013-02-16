@@ -1,10 +1,8 @@
 /**
  * A plugin interface to provide an extension point for comparing the current state with the new
- * state induced after firing the event.
- * 
- * Note that if you add more than one instance of this type of plugin to crawljax, only the last
- * added instance will be used for performing the DOM comparison and all others will be ignored.
- * 
+ * state induced after firing the event. Note that if you add more than one instance of this type of
+ * plugin to crawljax, only the last added instance will be used for performing the DOM comparison
+ * and all others will be ignored.
  */
 package com.crawljax.core.plugin;
 

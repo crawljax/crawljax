@@ -12,16 +12,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 
 /**
  * Oracle which can ignore style attributes.
- * 
- * @version $Id$
  */
 public class StyleComparator extends AbstractComparator {
 
@@ -53,13 +51,10 @@ public class StyleComparator extends AbstractComparator {
 	@Override
 	public boolean isEquivalent() {
 		try {
-			setOriginalDom(Helper.getDocumentToString(stripDom(Helper
-			        .getDocument(getOriginalDom()))));
-			setNewDom(Helper.getDocumentToString(stripDom(Helper.getDocument(getNewDom()))));
-		} catch (SAXException e) {
-			LOGGER.error(e.getMessage(), e);
-			return false;
-		} catch (IOException e) {
+			setOriginalDom(DomUtils.getDocumentToString(stripDom(DomUtils
+			        .asDocument(getOriginalDom()))));
+			setNewDom(DomUtils.getDocumentToString(stripDom(DomUtils.asDocument(getNewDom()))));
+		} catch (IOException | CrawljaxException e) {
 			LOGGER.error(e.getMessage(), e);
 			return false;
 		}

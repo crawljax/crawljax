@@ -47,8 +47,7 @@ public class SimpleSiteCrawlTest {
 		File screenShotFolder = new File(outFolder, "screenshots");
 		assertThat("Screenshot folder exists", screenShotFolder.exists(), is(true));
 		int screenshots = SimpleSiteCrawl.NUMBER_OF_STATES * 2;
-		assertThat("Number of screenshots", screenShotFolder.list(),
-		        arrayWithSize(screenshots));
+		assertThat("Number of screenshots", screenShotFolder.list(), arrayWithSize(screenshots));
 	}
 
 	@Test

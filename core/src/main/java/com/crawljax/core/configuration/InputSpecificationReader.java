@@ -6,7 +6,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  * Reader for InputSpecification. For internal use only!
  * 
  * @author Danny
- * @version $Id$
  */
 public class InputSpecificationReader {
 

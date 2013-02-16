@@ -1,21 +1,25 @@
 package com.crawljax.condition.eventablecondition;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.xpath.XPathExpressionException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.util.XPathHelper;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 /**
  * Check whether the conditions of an eventable are satisfied.
- * 
- * @author mesbah
- * @version $Id$
  */
 public class EventableConditionChecker {
 
-	private List<EventableCondition> eventableConditions = new ArrayList<EventableCondition>();
+	private static final Logger LOG = LoggerFactory.getLogger(EventableConditionChecker.class);
+	private List<EventableCondition> eventableConditions;
 
 	/**
 	 * Construct the eventableconditionchecker with its eventable conditions.
@@ -24,23 +28,24 @@ public class EventableConditionChecker {
 	 *            The eventable conditions.
 	 */
 	public EventableConditionChecker(List<EventableCondition> eventableConditions) {
+		Preconditions.checkNotNull(eventableConditions);
 		this.eventableConditions = eventableConditions;
+		LOG.debug("Evenetable conditions {}", eventableConditions);
 	}
 
 	/**
 	 * @param id
-	 *            Identifier of the eventablecondition.
-	 * @return EventableCondition
+	 *            Identifier of the {@link EventableCondition}.
+	 * @return EventableCondition or <code>null</code>
 	 */
 	public EventableCondition getEventableCondition(String id) {
-		if (eventableConditions != null && id != null && !id.equals("")) {
+		if (!Strings.isNullOrEmpty(id)) {
 			for (EventableCondition eventableCondition : eventableConditions) {
 				if (eventableCondition.getId().equalsIgnoreCase(id)) {
 					return eventableCondition;
 				}
 			}
 		}
-
 		return null;
 	}
 
@@ -55,14 +60,14 @@ public class EventableConditionChecker {
 	 *            The XPath.
 	 * @return boolean whether xpath starts with xpath location of eventable condition xpath
 	 *         condition
-	 * @throws Exception
+	 * @throws XPathExpressionException
+	 * @throws CrawljaxException
 	 *             when not can be determined whether xpath contains needed xpath locaton
 	 */
 	public boolean checkXpathStartsWithXpathEventableCondition(Document dom,
-	        EventableCondition eventableCondition, String xpath) throws Exception {
-		if (eventableCondition == null || eventableCondition.getInXPath() == null
-		        || eventableCondition.getInXPath().equals("")) {
-			throw new Exception("Eventable has no XPath condition");
+	        EventableCondition eventableCondition, String xpath) throws XPathExpressionException {
+		if (eventableCondition == null || Strings.isNullOrEmpty(eventableCondition.getInXPath())) {
+			throw new CrawljaxException("Eventable has no XPath condition");
 		}
 		List<String> expressions =
 		        XPathHelper.getXpathForXPathExpressions(dom, eventableCondition.getInXPath());
@@ -81,8 +86,10 @@ public class EventableConditionChecker {
 		/* check all expressions */
 		for (String fullXpath : xpathsList) {
 			if (xpath.startsWith(fullXpath)) {
+				LOG.trace("{} IS under xpath {}", xpath, fullXpath);
 				return true;
 			}
+			LOG.trace("{} is not under xpath {}", xpath, fullXpath);
 		}
 
 		return false;

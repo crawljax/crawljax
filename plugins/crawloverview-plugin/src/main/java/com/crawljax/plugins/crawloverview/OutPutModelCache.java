@@ -54,10 +54,9 @@ class OutPutModelCache {
 		checkEdgesAndCountFans(edgesCopy);
 		ImmutableMap<String, State> statesCopy = buildStates();
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
-		return new OutPutModel(statesCopy, edgesCopy,
-		        new Statistics(session, stateStats),
-		        new CrawlConfiguration(session),
-		        session.getCrawljaxConfiguration().getCrawlSpecificationReader());
+		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session, stateStats),
+		        new CrawlConfiguration(session), session.getCrawljaxConfiguration()
+		                .getCrawlSpecificationReader());
 	}
 
 	private void checkEdgesAndCountFans(ImmutableSet<Edge> edges) {

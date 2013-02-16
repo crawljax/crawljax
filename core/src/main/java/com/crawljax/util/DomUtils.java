@@ -5,26 +5,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -34,7 +27,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.io.FileUtils;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
@@ -51,104 +43,20 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.crawljax.core.CrawljaxException;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 /**
  * Utility class that contains a number of helper functions used by Crawljax and some plugins.
- * 
- * @author mesbah
- * @version $Id$
  */
-public final class Helper {
+public final class DomUtils {
 
-	private static final int BASE_LENGTH = 3;
+	private static final Logger LOGGER = LoggerFactory.getLogger(DomUtils.class.getName());
+
+	static final int BASE_LENGTH = 3;
 
 	private static final int TEXT_CUTOFF = 50;
-
-	public static final Logger LOGGER = LoggerFactory.getLogger(Helper.class.getName());
-
-	private Helper() {
-	}
-
-	/**
-	 * Internal used function to strip the basePath from a given url.
-	 * 
-	 * @param url
-	 *            the url to examine
-	 * @return the base path with file stipped
-	 */
-	private static String getBasePath(URL url) {
-		String file = url.getFile().replaceAll("\\*", "");
-
-		try {
-			return url.getPath().replaceAll(file, "");
-		} catch (PatternSyntaxException pe) {
-			LOGGER.error(pe.getMessage());
-			return "";
-		}
-
-	}
-
-	/**
-	 * @param location
-	 *            Current location.
-	 * @param link
-	 *            Link to check.
-	 * @return Whether location and link are on the same domain.
-	 */
-	public static boolean isLinkExternal(String location, String link) {
-
-		if (!location.contains("://")) {
-			// location must always contain :// by rule, it not link is handled as not external
-			return false;
-		}
-
-		// This will jump out of the local file location
-		if (location.startsWith("file") && link.startsWith("/")) {
-			return true;
-		}
-
-		if (link.contains("://")) {
-			if (location.startsWith("file") && link.startsWith("http") || link.startsWith("file")
-			        && location.startsWith("http")) {
-				// Jump from file to http(s) or from http(s) to file, so external
-				return true;
-			}
-			try {
-				URL locationUrl = new URL(location);
-				try {
-					URL linkUrl = new URL(link);
-					if (linkUrl.getHost().equals(locationUrl.getHost())) {
-						String linkPath = getBasePath(linkUrl);
-						return !(linkPath.startsWith(getBasePath(locationUrl)));
-					}
-					return true;
-				} catch (MalformedURLException e) {
-					LOGGER.info("Can not parse link " + link + " to check its externalOf "
-					        + location);
-					return false;
-				}
-			} catch (MalformedURLException e) {
-				LOGGER.info("Can not parse location " + location + " to check if " + link
-				        + " isExternal", e);
-				return false;
-			}
-		} else {
-			// No full url specifier so internal link...
-			return false;
-		}
-	}
-
-	/**
-	 * @param url
-	 *            the URL string.
-	 * @return the base part of the URL.
-	 */
-	public static String getBaseUrl(String url) {
-		String head = url.substring(0, url.indexOf(":"));
-		String subLoc = url.substring(head.length() + BASE_LENGTH);
-		return head + "://" + subLoc.substring(0, subLoc.indexOf("/"));
-	}
 
 	/**
 	 * transforms a string into a Document object. TODO This needs more optimizations. As it seems
@@ -163,11 +71,15 @@ public final class Helper {
 	 * @throws SAXException
 	 *             if an exception occurs while parsing the HTML string.
 	 */
-	public static Document getDocument(String html) throws SAXException, IOException {
+	public static Document asDocument(String html) throws IOException {
 		DOMParser domParser = new DOMParser();
-		domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-		domParser.setFeature("http://xml.org/sax/features/namespaces", false);
-		domParser.parse(new InputSource(new StringReader(html)));
+		try {
+			domParser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
+			domParser.setFeature("http://xml.org/sax/features/namespaces", false);
+			domParser.parse(new InputSource(new StringReader(html)));
+		} catch (SAXException e) {
+			throw new IOException("Error while reading HTML: " + html, e);
+		}
 		return domParser.getDocument();
 	}
 
@@ -194,7 +106,7 @@ public final class Helper {
 	 * @return A string representation of all the element's attributes.
 	 */
 	public static String getAllElementAttributes(Element element) {
-		return getElementAttributes(element, new ArrayList<String>());
+		return getElementAttributes(element, ImmutableSet.<String> of());
 	}
 
 	/**
@@ -204,8 +116,8 @@ public final class Helper {
 	 *            the list of exclude strings.
 	 * @return A string representation of the element's attributes excluding exclude.
 	 */
-	public static String getElementAttributes(Element element, List<String> exclude) {
-		StringBuffer buffer = new StringBuffer();
+	public static String getElementAttributes(Element element, ImmutableSet<String> exclude) {
+		StringBuilder buffer = new StringBuilder();
 
 		if (element != null) {
 			NamedNodeMap attributes = element.getAttributes();
@@ -213,8 +125,8 @@ public final class Helper {
 				for (int i = 0; i < attributes.getLength(); i++) {
 					Attr attr = (Attr) attributes.item(i);
 					if (!exclude.contains(attr.getNodeName())) {
-						buffer.append(attr.getNodeName() + "=");
-						buffer.append(attr.getNodeValue() + " ");
+						buffer.append(attr.getNodeName()).append('=');
+						buffer.append(attr.getNodeValue()).append(' ');
 					}
 				}
 			}
@@ -229,20 +141,16 @@ public final class Helper {
 	 * @return a string representation of the element including its attributes.
 	 */
 	public static String getElementString(Element element) {
-		if (element == null) {
-			return "";
-		}
-		String text = Helper.removeNewLines(Helper.getTextValue(element)).trim();
+		String text = DomUtils.removeNewLines(DomUtils.getTextValue(element)).trim();
 		String info = "";
 		if (!text.equals("")) {
 			info += "\"" + text + "\" ";
-			// Helper.removeNewLines(this.text.trim()) + " - ";
 		}
 		if (element != null) {
 			if (element.hasAttribute("id")) {
 				info += "ID: " + element.getAttribute("id") + " ";
 			}
-			info += Helper.getAllElementAttributes(element) + " ";
+			info += DomUtils.getAllElementAttributes(element) + " ";
 		}
 		return info;
 	}
@@ -285,91 +193,25 @@ public final class Helper {
 	 * @return the changed dom.
 	 */
 	public static Document removeTags(Document dom, String tagName) {
-		if (dom != null) {
-			// NodeList list = dom.getElementsByTagName("SCRIPT");
+		NodeList list;
+		try {
+			list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
 
-			NodeList list;
-			try {
-				list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
+			while (list.getLength() > 0) {
+				Node sc = list.item(0);
 
-				while (list.getLength() > 0) {
-					Node sc = list.item(0);
-
-					if (sc != null) {
-						sc.getParentNode().removeChild(sc);
-					}
-
-					list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
-					// list = dom.getElementsByTagName("SCRIPT");
+				if (sc != null) {
+					sc.getParentNode().removeChild(sc);
 				}
-			} catch (XPathExpressionException e) {
-				LOGGER.error(e.getMessage(), e);
+
+				list = XPathHelper.evaluateXpathExpression(dom, "//" + tagName.toUpperCase());
 			}
-
-			return dom;
+		} catch (XPathExpressionException e) {
+			LOGGER.error("Error while removing tag " + tagName, e);
 		}
 
-		return null;
-	}
+		return dom;
 
-	/**
-	 * Checks the existence of the directory. If it does not exist, the method creates it.
-	 * 
-	 * @param dir
-	 *            the directory to check.
-	 * @throws IOException
-	 *             if fails.
-	 */
-	public static void directoryCheck(String dir) throws IOException {
-		final File file = new File(dir);
-
-		if (!file.exists()) {
-			FileUtils.forceMkdir(file);
-		}
-	}
-
-	/**
-	 * Checks whether the folder exists for fname, and creates it if neccessary.
-	 * 
-	 * @param fname
-	 *            folder name.
-	 * @throws IOException
-	 *             an IO exception.
-	 */
-	public static void checkFolderForFile(String fname) throws IOException {
-
-		if (fname.lastIndexOf(File.separator) > 0) {
-			String folder = fname.substring(0, fname.lastIndexOf(File.separator));
-			Helper.directoryCheck(folder);
-		}
-	}
-
-	/**
-	 * Retrieve the var value for varName from a HTTP query string (format is
-	 * "var1=val1&var2=val2").
-	 * 
-	 * @param varName
-	 *            the name.
-	 * @param haystack
-	 *            the haystack.
-	 * @return variable value for varName
-	 */
-	public static String getVarFromQueryString(String varName, String haystack) {
-		if (haystack == null || haystack.length() == 0) {
-			return null;
-		}
-		if (haystack.charAt(0) == '?') {
-			haystack = haystack.substring(1);
-		}
-		String[] vars = haystack.split("&");
-
-		for (String var : vars) {
-			String[] tuple = var.split("=");
-			if (tuple.length == 2 && tuple[0].equals(varName)) {
-				return tuple[1];
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -389,12 +231,9 @@ public final class Helper {
 			transformer.setOutputProperty(OutputKeys.METHOD, "html");
 			transformer.transform(source, result);
 			return stringWriter.getBuffer().toString();
-		} catch (TransformerConfigurationException e) {
-			LOGGER.error(e.getMessage(), e);
 		} catch (TransformerException e) {
-			LOGGER.error(e.getMessage(), e);
+			throw new CrawljaxException("Could not tranform the DOM", e);
 		}
-		return null;
 
 	}
 
@@ -414,67 +253,22 @@ public final class Helper {
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 			transformer.setOutputProperty(OutputKeys.METHOD, "html");
 			// TODO should be fixed to read doctype declaration
-			// transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC,
-			// "-//W3C//DTD XHTML 1.0 Transitional//EN\"
-			// \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC,
 			        "-//W3C//DTD XHTML 1.0 Strict//EN\" "
 			                + "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd");
 
-			// transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC,
-			// "-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd");
 			DOMSource source = new DOMSource(dom);
 
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			Result result = new StreamResult(out);
 			transformer.transform(source, result);
 
-			// System.out.println("Injected Javascript!");
 			return out.toByteArray();
-		} catch (TransformerConfigurationException e) {
-			LOGGER.error(e.getMessage(), e);
 		} catch (TransformerException e) {
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.error("Error while converting the document to a byte array", e);
 		}
 		return null;
 
-	}
-
-	/**
-	 * Save a string to a file and append a newline character to that string.
-	 * 
-	 * @param filename
-	 *            The filename to save to.
-	 * @param text
-	 *            The text to save.
-	 * @param append
-	 *            Whether to append to existing file.
-	 * @throws IOException
-	 *             On error.
-	 */
-	public static void writeToFile(String filename, String text, boolean append)
-	        throws IOException {
-		FileWriter fw = new FileWriter(filename, append);
-		try {
-			fw.write(text + "\n");
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			fw.close();
-		}
-	}
-
-	/**
-	 * @param code
-	 *            hashcode.
-	 * @return String version of hashcode.
-	 */
-	public static String hashCodeToString(long code) {
-		if (code < 0) {
-			return "0" + (code * -1);
-		} else {
-			return "" + code;
-		}
 	}
 
 	/**
@@ -487,10 +281,6 @@ public final class Helper {
 	 */
 	public static String getTextValue(Element element) {
 		String ret = "";
-		if (element == null) {
-			return "";
-		}
-
 		if (element.getTextContent() != null) {
 			ret = element.getTextContent();
 		} else if (element.hasAttribute("title")) {
@@ -533,7 +323,7 @@ public final class Helper {
 	public static List<Difference> getDifferences(String controlDom, String testDom,
 	        final List<String> ignoreAttributes) {
 		try {
-			Diff d = new Diff(Helper.getDocument(controlDom), Helper.getDocument(testDom));
+			Diff d = new Diff(DomUtils.asDocument(controlDom), DomUtils.asDocument(testDom));
 			DetailedDiff dd = new DetailedDiff(d);
 			dd.overrideDifferenceListener(new DifferenceListener() {
 
@@ -560,7 +350,7 @@ public final class Helper {
 			});
 
 			return dd.getAllDifferences();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			LOGGER.error("Error with getDifferences: " + e.getMessage(), e);
 		}
 		return null;
@@ -640,7 +430,7 @@ public final class Helper {
 	public static String getTemplateAsString(String fname) throws IOException {
 		// in .jar file
 		String fnameJar = getFileNameInPath(fname);
-		InputStream inStream = Helper.class.getResourceAsStream("/" + fnameJar);
+		InputStream inStream = DomUtils.class.getResourceAsStream("/" + fnameJar);
 		if (inStream == null) {
 			// try to find file normally
 			File f = new File(fname);
@@ -752,7 +542,6 @@ public final class Helper {
 	public static void writeDocumentToFile(Document document, String filePathname, String method,
 	        int indent) throws TransformerException, IOException {
 
-		checkFolderForFile(filePathname);
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
@@ -767,32 +556,7 @@ public final class Helper {
 		        filePathname)));
 	}
 
-	/**
-	 * Returns the file contents without stripping line-endings.
-	 * 
-	 * @param file
-	 *            File to read out.
-	 * @return Contents including line-endings.
-	 */
-	public static String getContent(File file) {
-		StringBuilder contents = new StringBuilder();
-
-		try {
-			BufferedReader input = new BufferedReader(new FileReader(file));
-			try {
-				String line = null; // not declared within while loop
-				while ((line = input.readLine()) != null) {
-					contents.append(line);
-					contents.append("\n");
-				}
-			} finally {
-				input.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return contents.toString();
+	private DomUtils() {
 	}
 
 }

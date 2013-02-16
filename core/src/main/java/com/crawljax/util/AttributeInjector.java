@@ -12,8 +12,6 @@ import org.w3c.dom.html.HTMLElement;
 
 /**
  * Attribute injector class.
- * 
- * @version $Id$
  */
 public final class AttributeInjector {
 
@@ -39,7 +37,6 @@ public final class AttributeInjector {
 			return null;
 		}
 		srcAttrValue += "?" + attrName + "=" + value;
-		// System.out.println("Setting value for src to: " + srcAttrValue);
 		element.setAttribute("src", srcAttrValue);
 		return element;
 	}
@@ -60,7 +57,6 @@ public final class AttributeInjector {
 	public static boolean isInjected(Node node, String attrName, String value, boolean checkValue) {
 
 		NamedNodeMap attributes = node.getAttributes();
-		// String tmp = "";
 		// if there are no attributes we know the node does not contain the
 		// injected attribute
 		if (attributes == null) {

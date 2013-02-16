@@ -6,14 +6,13 @@ import java.util.List;
 
 import org.w3c.dom.Node;
 
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 /**
  * This class represents an element. It is built from the node name and node text contents.
  * 
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class Element implements Serializable {
 
@@ -46,7 +45,7 @@ public class Element implements Serializable {
 			if (node.getTextContent() == null) {
 				this.text = "";
 			} else {
-				this.text = Helper.removeNewLines(node.getTextContent()).trim();
+				this.text = DomUtils.removeNewLines(node.getTextContent()).trim();
 			}
 			attributes = new ArrayList<Attribute>();
 			for (int i = 0; i < node.getAttributes().getLength(); i++) {

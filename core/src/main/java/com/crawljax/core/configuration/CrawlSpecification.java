@@ -1,12 +1,17 @@
 package com.crawljax.core.configuration;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.browserwaiter.ExpectedCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.CrawlActions.ExcludeByParentBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.Comparator;
 import com.crawljax.oraclecomparator.OracleComparator;
@@ -42,17 +47,14 @@ import com.google.common.collect.Lists;
  * //restrict the scope of the crawling<br />
  * crawler.setCrawlMaximumStates(15);<br />
  * crawler.setCrawlDepth(2);
- * 
- * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class CrawlSpecification {
 
-	private static final int DEFAULT_MAXIMUMRUNTIME = 3600;
-	private static final int DEFAULT_WAITTIMEAFTERRELOADURL = 500;
-	private static final int DEFAULT_WAITTIMEAFTEREVENT = 500;
+	private static final long DEFAULT_MAXIMUMRUNTIME = TimeUnit.HOURS.toMillis(1);
+	private static final long DEFAULT_WAITTIMEAFTERRELOADURL = 500;
+	private static final long DEFAULT_WAITTIMEAFTEREVENT = 500;
 
-	private final String url;
+	private final URL url;
 
 	private final List<EventType> crawlEvents = Lists.newLinkedList();
 	private final List<String> ignoredFrameIdentifiers = Lists.newLinkedList();
@@ -63,9 +65,10 @@ public class CrawlSpecification {
 
 	private int depth = 2;
 	private int maximumStates = 0;
-	private int maximumRuntime = DEFAULT_MAXIMUMRUNTIME; // in seconds
-	private int waitTimeAfterReloadUrl = DEFAULT_WAITTIMEAFTERRELOADURL; // in milliseconds
-	private int waitTimeAfterEvent = DEFAULT_WAITTIMEAFTEREVENT; // in milliseconds
+	private long maximumRuntime = DEFAULT_MAXIMUMRUNTIME;
+	private long waitTimeAfterReloadUrl = DEFAULT_WAITTIMEAFTERRELOADURL;
+	private long waitTimeAfterEvent = DEFAULT_WAITTIMEAFTEREVENT;
+
 	private final CrawlActions crawlActions = new CrawlActions();
 
 	private boolean randomInputInForms = true;
@@ -80,9 +83,18 @@ public class CrawlSpecification {
 	 * @param url
 	 *            the site to crawl
 	 */
-	public CrawlSpecification(String url) {
+	public CrawlSpecification(URL url) {
 		this.crawlEvents.add(EventType.click);
 		this.url = url;
+	}
+
+	public CrawlSpecification(String url) {
+		this.crawlEvents.add(EventType.click);
+		try {
+			this.url = new URL(url);
+		} catch (MalformedURLException e) {
+			throw new CrawljaxException("Invalid URL: " + url);
+		}
 	}
 
 	/**
@@ -97,34 +109,37 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * Guifre Ruiz: This method can be used to crawl more tags and, therefore, more pages in the
-	 * target. However, it slow down a bit the process.
+	 * Click {@link #clickDefaultElements()}, {@link #clickTableElements()} and click
+	 * <code>"span", "div", "ol", "center", "li", "radio", "non", "meta",
+		        "refresh", "xhr", "relative", "link", "self", "form", "input", "option", "img",
+		        "p"</code>
 	 */
 	public void clickMoreElements() {
-		crawlActions.click("a");
-		crawlActions.click("button");
-		crawlActions.click("td");
-		crawlActions.click("span");
-		crawlActions.click("div");
-		crawlActions.click("tr");
-		crawlActions.click("table");
-		crawlActions.click("tbody");
-		crawlActions.click("ol");
-		crawlActions.click("center");
-		crawlActions.click("li");
-		crawlActions.click("radio");
-		crawlActions.click("non");
-		crawlActions.click("meta");
-		crawlActions.click("refresh");
-		crawlActions.click("xhr");
-		crawlActions.click("relative");
-		crawlActions.click("link");
-		crawlActions.click("self");
-		crawlActions.click("form");
-		crawlActions.click("input");
-		crawlActions.click("option");
-		crawlActions.click("img");
-		crawlActions.click("p");
+		clickDefaultElements();
+		clickTableElements();
+		click("span", "div", "ol", "center", "li", "radio", "non", "meta", "refresh", "xhr",
+		        "relative", "link", "self", "form", "input", "option", "img", "p");
+	}
+
+	/**
+	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
+	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}.
+	 * 
+	 * @param tagName
+	 *            the tag name of the elements to be included
+	 * @return this CrawlElement
+	 */
+	public void click(String... tagNames) {
+		for (String tagName : tagNames) {
+			crawlActions.click(tagName);
+		}
+	}
+
+	/**
+	 * Clicks <code>"td", "tr", "table", "tbody"</code>
+	 */
+	public void clickTableElements() {
+		click("td", "tr", "table", "tbody");
 	}
 
 	/**
@@ -154,9 +169,16 @@ public class CrawlSpecification {
 	}
 
 	/**
+	 * {@link CrawlActions#dontClickChildrenOf(String)}
+	 */
+	public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {
+		return crawlActions.dontClickChildrenOf(tagname);
+	}
+
+	/**
 	 * @return the initial url of the site to crawl
 	 */
-	protected String getUrl() {
+	protected URL getUrl() {
 		return url;
 	}
 
@@ -196,9 +218,9 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * @return the crawlMaximumRuntime
+	 * @return the crawlMaximumRuntime in millis
 	 */
-	protected int getMaximumRuntime() {
+	protected long getMaximumRuntime() {
 		return maximumRuntime;
 	}
 
@@ -209,8 +231,8 @@ public class CrawlSpecification {
 	 * @param seconds
 	 *            the crawlMaximumRuntime to set
 	 */
-	public void setMaximumRuntime(int seconds) {
-		this.maximumRuntime = seconds;
+	public void setMaximumRuntime(long time, TimeUnit timeUnit) {
+		this.maximumRuntime = timeUnit.toSeconds(time);
 	}
 
 	/**
@@ -231,7 +253,7 @@ public class CrawlSpecification {
 	/**
 	 * @return the number of milliseconds to wait after reloading the url
 	 */
-	protected int getWaitTimeAfterReloadUrl() {
+	protected long getWaitTimeAfterReloadUrl() {
 		return waitTimeAfterReloadUrl;
 	}
 
@@ -239,14 +261,14 @@ public class CrawlSpecification {
 	 * @param milliseconds
 	 *            the number of milliseconds to wait after reloading the url
 	 */
-	public void setWaitTimeAfterReloadUrl(int milliseconds) {
-		this.waitTimeAfterReloadUrl = milliseconds;
+	public void setWaitTimeAfterReloadUrl(long time, TimeUnit unit) {
+		this.waitTimeAfterReloadUrl = unit.toMillis(time);
 	}
 
 	/**
 	 * @return the number the number of milliseconds to wait after an event is fired
 	 */
-	protected int getWaitTimeAfterEvent() {
+	protected long getWaitTimeAfterEvent() {
 		return waitTimeAfterEvent;
 	}
 
@@ -254,8 +276,8 @@ public class CrawlSpecification {
 	 * @param milliseconds
 	 *            the number of milliseconds to wait after an event is fired
 	 */
-	public void setWaitTimeAfterEvent(int milliseconds) {
-		this.waitTimeAfterEvent = milliseconds;
+	public void setWaitTimeAfterEvent(long time, TimeUnit unit) {
+		this.waitTimeAfterEvent = unit.toMillis(time);
 	}
 
 	/**

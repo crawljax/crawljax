@@ -1,6 +1,7 @@
 package com.crawljax.core;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +33,6 @@ import com.crawljax.util.ElementResolver;
 public class Crawler implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Crawler.class.getName());
-
-	private static final int ONE_SECOND = 1000;
 
 	/**
 	 * The main browser window 1 to 1 relation; Every Thread will get on browser assigned in the run
@@ -250,9 +249,6 @@ public class Crawler implements Runnable {
 	 *             if the {@link Eventable#getTargetStateVertex()} encounters an error.
 	 */
 	private void goBackExact() throws CrawljaxException {
-		/**
-		 * Thread safe
-		 */
 		StateVertex curState = controller.getSession().getInitialState();
 
 		for (Eventable clickable : backTrackPath) {
@@ -261,8 +257,8 @@ public class Crawler implements Runnable {
 				return;
 			}
 
-			LOGGER.info("Backtracking by executing " + clickable.getEventType() + " on element: "
-			        + clickable);
+			LOGGER.info("Backtracking by executing {} on element: {}", clickable.getEventType(),
+			        clickable);
 
 			this.getStateMachine().changeState(clickable.getTargetStateVertex());
 
@@ -276,7 +272,7 @@ public class Crawler implements Runnable {
 
 				depth++;
 
-				/**
+				/*
 				 * Run the onRevisitStateValidator(s)
 				 */
 				CrawljaxPluginsUtil.runOnRevisitStatePlugins(this.controller.getSession(),
@@ -307,7 +303,7 @@ public class Crawler implements Runnable {
 				Matcher m = p.matcher(e.getValue());
 				if (m.find()) {
 					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("URL:" + m.group(2));
+						LOGGER.debug("URL: {}", m.group(2));
 					}
 					try {
 						// seconds*1000=ms
@@ -319,8 +315,8 @@ public class Crawler implements Runnable {
 			}
 		}
 
-		LOGGER.info("Executing " + eventable.getEventType() + " on element: " + eventable
-		        + "; State: " + this.getStateMachine().getCurrentState().getName());
+		LOGGER.debug("Executing {} on element: {}; State: {}", eventable.getEventType(),
+		        eventable, this.getStateMachine().getCurrentState().getName());
 		if (this.fireEvent(eventable)) {
 			StateVertex newState =
 			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
@@ -539,7 +535,7 @@ public class Crawler implements Runnable {
 
 		this.candidateExtractor =
 		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
-		                formHandler, configurationReader.getCrawlSpecificationReader());
+		                formHandler, configurationReader);
 		/**
 		 * go back into the previous state.
 		 */
@@ -657,10 +653,11 @@ public class Crawler implements Runnable {
 	 */
 	private boolean checkConstraints() {
 		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
-		int maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime();
-		if ((maxCrawlTime != 0) && (timePassed > maxCrawlTime * ONE_SECOND)) {
+		long maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime();
+		if ((maxCrawlTime != 0) && (timePassed > maxCrawlTime)) {
 
-			LOGGER.info("Max time " + maxCrawlTime + " seconds passed!");
+			LOGGER.info("Max time " + TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime)
+			        + " seconds passed!");
 			/* stop crawling */
 			return false;
 		}

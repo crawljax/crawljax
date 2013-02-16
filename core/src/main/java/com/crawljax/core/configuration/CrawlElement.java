@@ -31,7 +31,6 @@ import com.google.common.collect.Lists;
  * 
  * @see CrawlSpecification
  * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public final class CrawlElement {
 
@@ -52,7 +51,7 @@ public final class CrawlElement {
 	 *            the event type for this crawl element.
 	 */
 	protected CrawlElement(EventType eventType, String tagName) {
-		this.tagName = tagName;
+		this.tagName = tagName.toUpperCase();
 		this.id = "id" + hashCode();
 		this.eventType = eventType;
 	}

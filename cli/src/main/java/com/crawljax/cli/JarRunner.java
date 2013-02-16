@@ -8,14 +8,11 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ThreadConfiguration;
@@ -103,12 +100,11 @@ public class JarRunner {
 	 * @throws IOException
 	 */
 	public static void printHelp(Options options) throws IOException {
-		String cmlSyntax =
-		        "java -jar crawljax-cli-version.jar theUrl theOutputDir";
+		String cmlSyntax = "java -jar crawljax-cli-version.jar theUrl theOutputDir";
 		final PrintWriter writer = new PrintWriter(System.out);
 		final HelpFormatter helpFormatter = new HelpFormatter();
-		helpFormatter.printHelp(writer, ROW_WIDTH, cmlSyntax, "", options,
-		        SPACES_AFTER_OPTION, SPACES_BEFORE_OPTION, "");
+		helpFormatter.printHelp(writer, ROW_WIDTH, cmlSyntax, "", options, SPACES_AFTER_OPTION,
+		        SPACES_BEFORE_OPTION, "");
 		writer.flush();
 	}
 

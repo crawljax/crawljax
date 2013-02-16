@@ -13,7 +13,6 @@ import java.util.List;
  * @see InputSpecification#field(String)
  * @see InputSpecification#fields(String...)
  * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class InputField {
 

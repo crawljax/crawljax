@@ -9,7 +9,6 @@ import com.crawljax.core.state.Identification;
  * Conditions that returns true iff element found with By is visible.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @Immutable
 public class NotVisibleCondition extends AbstractCondition {

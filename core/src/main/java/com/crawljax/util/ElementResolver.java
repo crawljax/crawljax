@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.state.Element;
@@ -19,7 +18,6 @@ import com.crawljax.core.state.Eventable;
  * class for finding and checking elements.
  * 
  * @author danny
- * @version $Id$
  */
 public class ElementResolver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ElementResolver.class.getName());
@@ -53,15 +51,13 @@ public class ElementResolver {
 	/**
 	 * @param logging
 	 *            Whether to do logging.
-	 * @return equivalent xpath of element equivalent to Eventable
+	 * @return equivalent xpath of element equivalent to Eventable or an empty string if the DOM
+	 *         cannot be read.
 	 */
 	public String resolve(boolean logging) {
 		Document dom = null;
 		try {
-			dom = Helper.getDocument(browser.getDom());
-		} catch (SAXException e) {
-			LOGGER.error(e.getMessage(), e);
-			return "";
+			dom = DomUtils.asDocument(browser.getDom());
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return "";
@@ -69,7 +65,7 @@ public class ElementResolver {
 
 		try {
 			String xpathEventable = eventable.getIdentification().getValue();
-			Node nodeSameXpath = Helper.getElementByXpath(dom, xpathEventable);
+			Node nodeSameXpath = DomUtils.getElementByXpath(dom, xpathEventable);
 			if (nodeSameXpath != null) {
 				Element elementSameXpath = new Element(nodeSameXpath);
 				if (logging) {

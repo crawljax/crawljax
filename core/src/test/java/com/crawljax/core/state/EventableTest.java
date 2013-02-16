@@ -22,12 +22,12 @@ import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable.EventType;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 public class EventableTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EventableTest.class);
-	
+
 	@Test
 	public void testHashCode() {
 		String xpath = "/body/div[3]";
@@ -89,7 +89,7 @@ public class EventableTest {
 		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
 		                + "<a id='thea'>test</a></span></div></body>";
 
-		Document dom = Helper.getDocument(html);
+		Document dom = DomUtils.asDocument(html);
 		assertNotNull(dom);
 
 		Element element = dom.getElementById("firstdiv");

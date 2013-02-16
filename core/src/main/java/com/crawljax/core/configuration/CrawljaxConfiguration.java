@@ -8,7 +8,7 @@ import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.plugin.Plugin;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -42,7 +42,7 @@ public final class CrawljaxConfiguration {
 
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 
-	private CrawlSpecification crawlSpecification = new CrawlSpecification("");
+	private CrawlSpecification crawlSpecification = new CrawlSpecification("http://localhost");
 	private ProxyConfiguration proxyConfiguration = null;
 	private ThreadConfiguration threadConfiguration = new ThreadConfiguration();
 
@@ -117,8 +117,7 @@ public final class CrawljaxConfiguration {
 		// clicked and not by another random crawlTag
 		return ImmutableList.<CrawlElement> builder()
 		        .addAll(getInputSpecification().getCrawlElements())
-		        .addAll(crawlSpecification.crawlActions().getCrawlElements())
-		        .build();
+		        .addAll(crawlSpecification.crawlActions().getCrawlElements()).build();
 	}
 
 	/**
@@ -128,8 +127,7 @@ public final class CrawljaxConfiguration {
 		return ImmutableList.<CrawlElement> builder()
 		        .addAll(getInputSpecification().getCrawlElements())
 		        .addAll(crawlSpecification.crawlActions().getCrawlElements())
-		        .addAll(getCrawlSpecification().crawlActions()
-		                .getCrawlElementsExcluded())
+		        .addAll(getCrawlSpecification().crawlActions().getCrawlElementsExcluded())
 		        .build();
 	}
 
@@ -144,7 +142,6 @@ public final class CrawljaxConfiguration {
 				eventableConditions.add(eventableCondition);
 			}
 		}
-
 		return eventableConditions.build();
 	}
 
@@ -199,7 +196,7 @@ public final class CrawljaxConfiguration {
 	 * @return The path of the outputFolder with a trailing slash.
 	 */
 	protected String getOutputFolder() {
-		return Helper.addFolderSlashIfNeeded(outputFolder);
+		return DomUtils.addFolderSlashIfNeeded(outputFolder);
 	}
 
 	/**
@@ -207,7 +204,7 @@ public final class CrawljaxConfiguration {
 	 *            The (absolute) path of the output folder.
 	 */
 	public void setOutputFolder(String path) {
-		this.outputFolder = Helper.addFolderSlashIfNeeded(path);
+		this.outputFolder = DomUtils.addFolderSlashIfNeeded(path);
 	}
 
 	/**

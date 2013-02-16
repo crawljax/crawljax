@@ -8,7 +8,6 @@ import com.crawljax.browser.EmbeddedBrowser;
  * A condition which returns true iff the expression does NOT occur in the DOM.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 @Immutable
 public class NotRegexCondition extends AbstractCondition {

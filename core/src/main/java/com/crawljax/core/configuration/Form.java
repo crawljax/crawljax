@@ -32,8 +32,6 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * Form configuration.
- * 
- * @version $Id$
  */
 public class Form {
 

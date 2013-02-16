@@ -1,7 +1,5 @@
 package com.crawljax.core.configuration;
 
-import java.util.List;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.condition.eventablecondition.EventableCondition;
@@ -83,8 +81,8 @@ public class CrawljaxConfigurationReader {
 	/**
 	 * @return a list of plugins.
 	 */
-	public List<Plugin> getPlugins() {
-		return crawljaxConfiguration.getPlugins();
+	public ImmutableList<Plugin> getPlugins() {
+		return ImmutableList.copyOf(crawljaxConfiguration.getPlugins());
 	}
 
 	/**
@@ -130,8 +128,9 @@ public class CrawljaxConfigurationReader {
 	 */
 	public ImmutableList<TagElement> getExcludeTagElements() {
 
-		ImmutableList<CrawlElement> excluded = crawljaxConfiguration.getCrawlSpecification()
-		        .crawlActions().getCrawlElementsExcluded();
+		ImmutableList<CrawlElement> excluded =
+		        crawljaxConfiguration.getCrawlSpecification().crawlActions()
+		                .getCrawlElementsExcluded();
 		return asTagElementList(excluded);
 
 	}
@@ -160,8 +159,8 @@ public class CrawljaxConfigurationReader {
 	/**
 	 * @return a list of attributes to be filtered from the DOM string.
 	 */
-	public List<String> getFilterAttributeNames() {
-		return crawljaxConfiguration.getFilterAttributeNames();
+	public ImmutableList<String> getFilterAttributeNames() {
+		return ImmutableList.copyOf(crawljaxConfiguration.getFilterAttributeNames());
 	}
 
 	/**

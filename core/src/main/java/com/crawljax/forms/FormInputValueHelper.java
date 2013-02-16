@@ -21,7 +21,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
@@ -29,7 +28,7 @@ import com.crawljax.core.CandidateElement;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.configuration.InputSpecificationReader;
 import com.crawljax.core.state.Identification;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 
 /**
@@ -37,7 +36,6 @@ import com.crawljax.util.XPathHelper;
  * 
  * @author dannyroest@gmail.com (Danny Roest)
  * @author ali mesbah
- * @version $Id$
  */
 public final class FormInputValueHelper {
 
@@ -59,13 +57,13 @@ public final class FormInputValueHelper {
 	 * @param randomInput
 	 *            if random data should be used on the input fields.
 	 */
-	@SuppressWarnings(value = { "unchecked" })
 	public FormInputValueHelper(InputSpecification inputSpecification, boolean randomInput) {
 
 		this.randomInput = randomInput;
 		if (inputSpecification != null) {
 			config = new InputSpecificationReader(inputSpecification).getConfiguration();
 
+			@SuppressWarnings("rawtypes")
 			Iterator keyIterator = config.getKeys();
 			while (keyIterator.hasNext()) {
 				String fieldInfo = keyIterator.next().toString();
@@ -91,7 +89,7 @@ public final class FormInputValueHelper {
 			for (String name : names) {
 				String xpath = "//*[@name='" + name + "' or @id='" + name + "']";
 				try {
-					Node node = Helper.getElementByXpath(dom, xpath);
+					Node node = DomUtils.getElementByXpath(dom, xpath);
 					if (node != null) {
 						return (Element) node;
 					}
@@ -132,16 +130,13 @@ public final class FormInputValueHelper {
 
 		if (maxValues == 0) {
 			LOGGER.warn("No input values found for element: "
-			        + Helper.getElementString(sourceElement));
+			        + DomUtils.getElementString(sourceElement));
 			return candidateElements;
 		}
 
 		Document dom;
 		try {
-			dom = Helper.getDocument(browser.getDomWithoutIframeContent());
-		} catch (SAXException e) {
-			LOGGER.error("Catched SAXException while parsing dom", e);
-			return candidateElements;
+			dom = DomUtils.asDocument(browser.getDomWithoutIframeContent());
 		} catch (IOException e) {
 			LOGGER.error("Catched IOException while parsing dom", e);
 			return candidateElements;
@@ -166,7 +161,7 @@ public final class FormInputValueHelper {
 
 			// clone node inclusive text content
 			Element cloneElement = (Element) sourceElement.cloneNode(false);
-			cloneElement.setTextContent(Helper.getTextValue(sourceElement));
+			cloneElement.setTextContent(DomUtils.getTextValue(sourceElement));
 
 			CandidateElement candidateElement =
 			        new CandidateElement(cloneElement,
@@ -192,7 +187,7 @@ public final class FormInputValueHelper {
 
 		switch (input.getIdentification().getHow()) {
 			case xpath:
-				result = Helper.getElementByXpath(dom, input.getIdentification().getValue());
+				result = DomUtils.getElementByXpath(dom, input.getIdentification().getValue());
 				break;
 
 			case id:
@@ -209,7 +204,7 @@ public final class FormInputValueHelper {
 				xpath =
 				        "//" + element + "[@name='" + input.getIdentification().getValue()
 				                + "' or @id='" + input.getIdentification().getValue() + "']";
-				result = Helper.getElementByXpath(dom, xpath);
+				result = DomUtils.getElementByXpath(dom, xpath);
 				break;
 
 			default:

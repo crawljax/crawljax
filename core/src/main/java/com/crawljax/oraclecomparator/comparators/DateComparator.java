@@ -6,7 +6,6 @@ import java.util.Arrays;
  * Oracle comparators that supports dates.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class DateComparator extends RegexComparator {
 
