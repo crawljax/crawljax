@@ -37,7 +37,7 @@
     	      dataType: 'json',
     	      context: this,
     	      success: function(response){
-    	        response.data.forEach(function(config){
+    	        response.forEach(function(config){
     	          this.allConfigs.addObject(App.Config.create(config))
     	        }, this);
     	      }
@@ -89,6 +89,12 @@
   	            {text:"Crawl History", route:"#/history"}, {text:"Manage Crawljax", route:"#/manage"}]);
         App.breadcrumbController.set('content', [{text: "Home", route: "/"}]);
       }
+    });
+    
+    App.NewRoute = Ember.Route.extend({
+    	renderTemplate: function(){
+    		this.render("config");
+    	}
     });
     
     App.ConfigRoute = Ember.Route.extend({
