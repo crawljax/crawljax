@@ -51,10 +51,23 @@
     			 dataType: 'json',
     			 context: config,
     			 success: function(response){
-    				this.setProperties(response.data);
+    				this.setProperties(response);
     			 }
-    		});
-    		return config;
+    		 });
+    		 return config;
+    	 },
+    	 newConfig: function()
+    	 {
+    		 var config = App.Config.create({});
+    		 $.ajax({
+    			 url: '/rest/configurations/new',
+    			 dataType: 'json',
+    			 context: config,
+    			 success: function(response){
+    				this.setProperties(response);
+    			 }
+    		 });
+    		 return config;
     	 }
 	});
     
@@ -85,16 +98,18 @@
       setupController: function(controller, model) {
         controller.set('content', App.Config.findAll());
         App.sideNavController.set('content',
-        		[{text:"New Configuration", route:"#/new"}, {text:"People", route:"#/people"},
-  	            {text:"Crawl History", route:"#/history"}, {text:"Manage Crawljax", route:"#/manage"}]);
+        		[{text:"New Configuration", route:"#/new"}, {text:"Crawl History", route:"#/history"}, {text:"Manage Crawljax", route:"#/manage"}]);
         App.breadcrumbController.set('content', [{text: "Home", route: "/"}]);
       }
     });
     
     App.NewRoute = Ember.Route.extend({
-    	renderTemplate: function(){
-    		this.render("config");
-    	}
+    	setupController: function(controller, model) {
+    		controller.set('content', App.Config.newConfig());
+    		App.sideNavController.set('content',
+            	[{text:"Save Configuration", route:"#/save"}]);
+    		App.breadcrumbController.set('content', [{text: "Home", route: "/"}, {text: "New", route: ""}]);
+        }
     });
     
     App.ConfigRoute = Ember.Route.extend({

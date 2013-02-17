@@ -87,13 +87,12 @@
 	</ul>
 	</script>
 	
-	<script type="text/x-handlebars" data-template-name="config/index">
-	{{partial config_tabs}}
+	<script type="text/x-handlebars" data-template-name="_config_general">
 	<form class="form-horizontal">	
 	<fieldset>
 		<legend>General Information</legend>
-		{{view App.FormTextField label="Name:" valueBinding="controllers.config.content.name"}}
-		{{view App.FormTextField label="Site:" valueBinding="controllers.config.content.site"}}
+		{{view App.FormTextField label="Name:" valueBinding="controller.content.name"}}
+		{{view App.FormTextField label="Site:" valueBinding="controller.content.site"}}
 		<div class="control-group"><label class="control-label">Browser:</label>
 			<div class="controls">
 			<label class="radio"><input type="radio" name="rdBrowser" value="firefox" checked /> Firefox</label>
@@ -101,13 +100,20 @@
 			<label class="radio"><input type="radio" name="rdBrowser" value="ie" /> Internet Explorer</label>
 			</div>
 		</div>
-		{{view App.FormTextField label="# of Browsers:" }}
-		{{view App.FormTextField label="Maximum Depth:" }}
-		{{view App.FormTextField label="Maximum States:" }}
-		{{view App.FormTextField label="Maximum Duration:" }}
+		{{view App.FormTextField label="# of Browsers:" valueBinding="controller.content.numBrowsers"}}
+		{{view App.FormCheckbox label="Boot Browsers" checkedBinding="controller.content.bootBrowser"}}
+		{{view App.FormTextField label="Maximum Crawl Depth:" valueBinding="controller.content.maxDepth"}}
+		{{view App.FormTextField label="Maximum Crawl States:" valueBinding="controller.content.maxState"}}
+		{{view App.FormTextField label="Maximum Duration(min):" valueBinding="controller.content.maxDuration"}}
+		{{view App.FormTextField label="Event Wait Time(ms):" valueBinding="controller.content.eventWaitTime"}}
+		{{view App.FormTextField label="Reload Wait Time(ms):" valueBinding="controller.content.reloadWaitTime"}}
+		{{view App.FormCheckbox label="Click Elements Once" checkedBinding="controller.content.clickOnce"}}
 	</fieldset>
 	</form>
 	</script>
+	
+	<script type="text/x-handlebars" data-template-name="new">{{partial config_general}}</script>
+	<script type="text/x-handlebars" data-template-name="config/index">{{partial config_tabs}}{{partial config_general}}</script>
 	
 	<script type="text/x-handlebars" data-template-name="config/input">
 	{{partial config_tabs}}

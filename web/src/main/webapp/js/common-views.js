@@ -50,5 +50,6 @@ App.FormCheckbox = App.FormField.extend({
 		checkedBinding:   'parentView.checked',
 	    disabledBinding: 'parentView.disabled',
 	    classNameBindings: 'parentView.inputClassNames'
-	})
+	}),
+	didInsertElement: function() {}
 });

@@ -29,7 +29,7 @@ public class ConfigurationsResource {
 	
 	@GET
 	public Response getConfigurations() {
-		return Response.ok(configurations.getConfigList()).build();
+		return Response.ok(configurations.getConfigList().values()).build();
 	}
 	
 	@POST
@@ -50,9 +50,11 @@ public class ConfigurationsResource {
 	@GET
 	@Path("{id}")
 	public Response getConfiguration(@PathParam("id") String id) {
+		Response r;
 		Configuration config = configurations.findByID(id);
-		if (config != null) return Response.ok(config).build();
-		else return Response.serverError().build();
+		if (config != null) r = Response.ok(config).build();
+		else r = Response.serverError().build();
+		return r;
 	}
 	
 	@PUT
