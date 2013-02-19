@@ -1,7 +1,5 @@
 package com.crawljax.web.jaxrs;
 
-import java.util.Date;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -9,7 +7,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import com.crawljax.web.model.*;
@@ -29,14 +26,12 @@ public class ConfigurationsResource {
 	
 	@GET
 	public Response getConfigurations() {
-		return Response.ok(configurations.getConfigList().values()).build();
+		return Response.ok(configurations.getConfigList()).build();
 	}
 	
 	@POST
 	public Response addConfiguration(Configuration config){
-		String id = config.getName().toLowerCase().replaceAll("/[^a-z0-9]+/g", "-");
-		config.setId(id);
-		configurations.getConfigList().put(id, config);
+		config = configurations.add(config);
 		return Response.ok(config).build();
 	}
 	
@@ -60,8 +55,7 @@ public class ConfigurationsResource {
 	@PUT
 	@Path("{id}")
 	public Response updateConfiguration(Configuration config) {
-		config.setLastModified(new Date());
-		configurations.getConfigList().put(config.getId(), config);	
+		config = configurations.update(config);	
 		return Response.ok(config).build();
 	}
 }
