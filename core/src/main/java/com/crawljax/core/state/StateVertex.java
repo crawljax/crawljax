@@ -3,8 +3,10 @@ package com.crawljax.core.state;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -268,7 +270,9 @@ public class StateVertex implements Serializable {
 
 		try {
 			List<CandidateElement> candidateList = candidateExtractor.extract(this);
-
+			
+			Collections.shuffle(new ArrayList<CandidateElement>(candidateList));
+			
 			for (CandidateElement candidateElement : candidateList) {
 				for (String eventType : eventTypes) {
 					if (eventType.equals(EventType.click.toString())) {
