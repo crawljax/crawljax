@@ -653,7 +653,7 @@ public class Crawler implements Runnable {
 	 */
 	private boolean checkConstraints() {
 		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
-		long maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime()+System.currentTimeMillis();
+		long maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime() + System.currentTimeMillis();
 		if ((maxCrawlTime != 0) && (timePassed > maxCrawlTime)) {
 
 			LOGGER.info("Max time " + TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime)
