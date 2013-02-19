@@ -34,7 +34,7 @@ public class ConfigurationsResource {
 	
 	@POST
 	public Response addConfiguration(Configuration config){
-		String id = config.getName().replaceAll("/[^a-z0-9]+/g", "-");
+		String id = config.getName().toLowerCase().replaceAll("/[^a-z0-9]+/g", "-");
 		config.setId(id);
 		configurations.getConfigList().put(id, config);
 		return Response.ok(config).build();

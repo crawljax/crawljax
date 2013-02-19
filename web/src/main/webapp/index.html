@@ -20,21 +20,8 @@
       	<div class="navbar-inner">{{partial header}}</div>
     </div>
 	<div class="container">
-      	<div class="row">
-       		<div class="span3">
-				{{view App.BreadcrumbView}}
-          		<div class="well sidebar-nav">{{view App.SideNavView}}</div>
-          		<div class="well sidebar-nav">
-            		<ul class="nav nav-list">
-          	  			<li class="nav-header">Crawl Execution Queue</li>
-          	  			<li class="divider"></li>
-          	  			<li class="nav-header">Executor Status</li>
-          			</ul>
-          		</div>
-        	</div><!--/span-->       
-        	<div class="span9">{{outlet}}</div><!--/span-->
-      	</div><!--/row-->
-    </div>  		
+		<div class="row">{{outlet}}</div>
+	</div>  		
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="_header">
@@ -47,7 +34,6 @@
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
               <li><a href="#/about">About</a></li>
-              <li><a href="#/contact">Contact</a></li>
             </ul>
             <ul class="nav pull-right">
               <li><a href="#">Sign In</a></li>
@@ -55,8 +41,24 @@
           </div><!--/.nav-collapse -->
         </div>
 	</script>
+	
+	<script type="text/x-handlebars" data-template-name="_sidebar">
+	<div class="span3">
+		{{view App.BreadcrumbView}}
+        <div class="well sidebar-nav">{{view App.SideNavView}}</div>
+        <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+          	  	<li class="nav-header">Crawl Execution Queue</li>
+          	  	<li class="divider"></li>
+          	  	<li class="nav-header">Executor Status</li>
+          	</ul>
+        </div>
+    </div> 
+	</script>
 
 	<script type="text/x-handlebars" data-template-name="config_list">
+	{{partial sidebar}}     
+    <div class="span9">
 	<div class="tab-content">
 		<table class="table table-striped">
 			<thead>
@@ -71,12 +73,11 @@
  					<td>{{lastCrawl}}</td>
  					<td>{{lastDuration}}</td>
  				</tr>
-				{{else}}
-				<tr><td colspan="5">No available configurations.</td></tr>
-				{{/each}}
+				{{else}}<tr><td colspan="5">No available configurations.</td></tr>{{/each}}
  			</tbody>
 		</table>
 	</div>
+	</div><!--/span-->	
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="_config_tabs">
@@ -92,16 +93,11 @@
 	<fieldset>
 		<legend>General Information</legend>
 		{{view App.FormTextField label="Name:" valueBinding="controller.content.name"}}
-		{{view App.FormTextField label="Site:" valueBinding="controller.content.site"}}
-		<div class="control-group"><label class="control-label">Browser:</label>
-			<div class="controls">
-			<label class="radio"><input type="radio" name="rdBrowser" value="firefox" checked /> Firefox</label>
-			<label class="radio"><input type="radio" name="rdBrowser" value="chrome" /> Chrome</label>
-			<label class="radio"><input type="radio" name="rdBrowser" value="ie" /> Internet Explorer</label>
-			</div>
-		</div>
-		{{view App.FormTextField label="# of Browsers:" valueBinding="controller.content.numBrowsers"}}
-		{{view App.FormCheckbox label="Boot Browsers" checkedBinding="controller.content.bootBrowser"}}
+		{{view App.FormTextField label="Site:" valueBinding="controller.content.url"}}
+		{{view App.FormSelect label="Browser:" valueBinding="controller.content.browser" contentBinding="App.browsers" optionValuePath="content.value"
+       optionLabelPath="content.name"}}
+		{{view App.FormTextField label="Number of Browsers:" valueBinding="controller.content.numBrowsers"}}
+		{{view App.FormCheckbox label="Boot Browsers at Start" checkedBinding="controller.content.bootBrowser"}}
 		{{view App.FormTextField label="Maximum Crawl Depth:" valueBinding="controller.content.maxDepth"}}
 		{{view App.FormTextField label="Maximum Crawl States:" valueBinding="controller.content.maxState"}}
 		{{view App.FormTextField label="Maximum Duration(min):" valueBinding="controller.content.maxDuration"}}
@@ -112,7 +108,10 @@
 	</form>
 	</script>
 	
-	<script type="text/x-handlebars" data-template-name="new">{{partial config_general}}</script>
+	<script type="text/x-handlebars" data-template-name="new">{{partial sidebar}}<div class="span9">{{partial config_general}}</div></script>
+	
+	<script type="text/x-handlebars" data-template-name="config">{{partial sidebar}}<div class="span9">{{outlet}}</div></script>
+	
 	<script type="text/x-handlebars" data-template-name="config/index">{{partial config_tabs}}{{partial config_general}}</script>
 	
 	<script type="text/x-handlebars" data-template-name="config/input">

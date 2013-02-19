@@ -53,3 +53,18 @@ App.FormCheckbox = App.FormField.extend({
 	}),
 	didInsertElement: function() {}
 });
+
+//Select
+App.FormSelect = App.FormField.extend({
+	optionLabelPath: 'content',
+	optionValuePath: 'content',
+	inputField: Ember.Select.extend({
+		contentBinding: 'parentView.content',
+		optionLabelPathBinding: 'parentView.optionLabelPath',
+	    optionValuePathBinding: 'parentView.optionValuePath',
+		selectionBinding: 'parentView.selection',
+		valueBinding: 'parentView.value',
+		disabledBinding: 'parentView.disabled',
+		classNameBindings: 'parentView.inputClassNames'
+	})
+});
