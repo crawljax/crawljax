@@ -37,7 +37,6 @@
     App.Config = Ember.Object.extend();
     App.Config.reopenClass({
     	allConfigs: [],
-    	currentConfig: null,
     	findAll: function(){
     		this.allConfigs.length = 0;
     	    $.ajax({
@@ -53,31 +52,46 @@
     	    return this.allConfigs;
     	 },
     	 find: function(id){
-    		 this.currentConfig = App.Config.create({id: id});
+    		 var config = App.Config.create({id: id});
     		 $.ajax({
     			 url: '/rest/configurations/' + id,
     			 dataType: 'json',
-    			 context: this.currentConfig,
+    			 context: config,
     			 success: function(response){ this.setProperties(response); }
     		 });
-    		 return this.currentConfig;
+    		 return config;
     	 },
     	 newConfig: function()
     	 {
-    		 this.currentConfig = App.Config.create({});
+    		 var config = App.Config.create({});
     		 $.ajax({
     			 url: '/rest/configurations/new',
     			 dataType: 'json',
-    			 context: this.currentConfig,
+    			 context: config,
     			 success: function(response){ this.setProperties(response); }
     		 });
-    		 return this.currentConfig;
+    		 return config;
     	 },
-    	 add: function(config)
+    	 add: function(config, callback)
     	 {
     		 $.ajax({
     			 url: '/rest/configurations',
     			 type: 'POST',
+    			 contentType: "application/json;",
+    			 data: JSON.stringify(config),
+    			 dataType: 'json',
+    			 context: config,
+    			 success: function(response){ this.setProperties(response); }
+    		 }).done(function(data){
+    			 if (callback !== undefined) callback(data);
+    		 });
+    		 return config;
+    	 },
+    	 update: function(config)
+    	 {
+    		 $.ajax({
+    			 url: '/rest/configurations/' + config.id,
+    			 type: 'PUT',
     			 contentType: "application/json;",
     			 data: JSON.stringify(config),
     			 dataType: 'json',
@@ -100,8 +114,6 @@
     App.Router.map(function() {
    		this.resource("config_list", { path: "/" });
    		this.resource("config", {path: "/:id"}, function(){
-   			this.route("run");
-   			this.route("save");
    			this.route("input");
    			this.route("plugins");
    			this.resource("history");
@@ -118,8 +130,21 @@
 	    	switch(link.target)
 	    	{
 	    	case "add":
-	    		App.Config.add(App.Config.currentConfig);
-	    		this.get('target').transitionTo('config', App.Config.currentConfig);
+	    		var router = this.get('target');
+	    		var controller = this;
+	    		App.Config.add(this.content, 
+	    			function(){ router.transitionTo('config', controller.content); });
+	    		break;
+	    	}
+	    }
+    });
+    
+    App.ConfigController = Ember.Controller.extend({
+    	rest: function(link){
+	    	switch(link.target)
+	    	{
+	    	case "save":
+	    		App.Config.update(this.content);
 	    		break;
 	    	}
 	    }
@@ -152,11 +177,14 @@
             controller.set('sidenav',
             		[App.Link.create({text:"Run Configuration", target:"run", action:true}),
             		 App.Link.create({text:"Save Configuration", target:"save", action:true}),
-            		 App.Link.create({text:"Crawl History", target:"#/"+model.id+"/history"})]);
+            		 App.Link.create({text:"Crawl History", target:"#/"+model.id+"/history"}),
+            		 App.Link.create({text:"Delete Configuration", target:"delete", action:true})]);
             controller.set('breadcrumb', [{text: "Home", route: "/"}, {text: model.name, route: "#/" + model.id}]);
         },
         serialize: function(object) { return { id: object.id }; },
         deserialize: function(params) { return App.Config.find(params.id); }
     });
     
-    App.ConfigIndexController = Ember.Controller.extend({needs: ["config"]});
+    App.ConfigIndexRoute = Ember.Route.extend({
+    	renderTemplate: function(){ this.render({controller: 'config'}) }
+    });

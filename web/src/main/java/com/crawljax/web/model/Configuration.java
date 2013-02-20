@@ -18,6 +18,7 @@ public class Configuration {
 	private boolean clickOnce = true;
 	private boolean randomFormInput = true;
 	private Date lastModified = null;
+	private String status = "Idle";
 	
 	/**
 	 * @return the id
@@ -186,5 +187,17 @@ public class Configuration {
 	 */
 	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
+	}
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return status;
+	}
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = status;
 	} 
 }

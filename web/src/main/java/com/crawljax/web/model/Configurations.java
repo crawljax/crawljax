@@ -3,14 +3,14 @@ package com.crawljax.web.model;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Configurations {
 	private Map<String, Configuration> configList;
 	
 	public Configurations()
 	{
-		configList = new HashMap<String, Configuration>();
+		configList = new ConcurrentHashMap<String, Configuration>();
 	}
 
 	/**

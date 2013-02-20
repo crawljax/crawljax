@@ -11,7 +11,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import com.crawljax.web.model.*;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/rest/configurations")
