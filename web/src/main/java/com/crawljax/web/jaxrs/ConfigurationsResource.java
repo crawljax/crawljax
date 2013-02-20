@@ -1,5 +1,6 @@
 package com.crawljax.web.jaxrs;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -58,6 +59,13 @@ public class ConfigurationsResource {
 	@Path("{id}")
 	public Response updateConfiguration(Configuration config) {
 		config = configurations.update(config);	
+		return Response.ok(config).build();
+	}
+	
+	@DELETE
+	@Path("{id}")
+	public Response removeConfiguration(Configuration config) {
+		config = configurations.remove(config);	
 		return Response.ok(config).build();
 	}
 }

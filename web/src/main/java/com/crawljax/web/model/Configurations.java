@@ -35,6 +35,12 @@ public class Configurations {
 		return config;
 	}
 	
+	public Configuration remove(Configuration config)
+	{
+		configList.remove(config.getId());
+		return config;
+	}
+	
 	public Configuration findByID(final String id){
 		return configList.get(id);
 	}	

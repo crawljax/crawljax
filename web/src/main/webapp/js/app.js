@@ -33,75 +33,7 @@
     	contentBinding: "controller.breadcrumb"
   	});
     
-    //Models    
-    App.Config = Ember.Object.extend();
-    App.Config.reopenClass({
-    	allConfigs: [],
-    	findAll: function(){
-    		this.allConfigs.length = 0;
-    	    $.ajax({
-    	      url: '/rest/configurations',
-    	      dataType: 'json',
-    	      context: this,
-    	      success: function(response){
-    	        response.forEach(function(config){
-    	          this.allConfigs.addObject(App.Config.create(config))
-    	        }, this);
-    	      }
-    	    });
-    	    return this.allConfigs;
-    	 },
-    	 find: function(id){
-    		 var config = App.Config.create({id: id});
-    		 $.ajax({
-    			 url: '/rest/configurations/' + id,
-    			 dataType: 'json',
-    			 context: config,
-    			 success: function(response){ this.setProperties(response); }
-    		 });
-    		 return config;
-    	 },
-    	 newConfig: function()
-    	 {
-    		 var config = App.Config.create({});
-    		 $.ajax({
-    			 url: '/rest/configurations/new',
-    			 dataType: 'json',
-    			 context: config,
-    			 success: function(response){ this.setProperties(response); }
-    		 });
-    		 return config;
-    	 },
-    	 add: function(config, callback)
-    	 {
-    		 $.ajax({
-    			 url: '/rest/configurations',
-    			 type: 'POST',
-    			 contentType: "application/json;",
-    			 data: JSON.stringify(config),
-    			 dataType: 'json',
-    			 context: config,
-    			 success: function(response){ this.setProperties(response); }
-    		 }).done(function(data){
-    			 if (callback !== undefined) callback(data);
-    		 });
-    		 return config;
-    	 },
-    	 update: function(config)
-    	 {
-    		 $.ajax({
-    			 url: '/rest/configurations/' + config.id,
-    			 type: 'PUT',
-    			 contentType: "application/json;",
-    			 data: JSON.stringify(config),
-    			 dataType: 'json',
-    			 context: config,
-    			 success: function(response){ this.setProperties(response); }
-    		 });
-    		 return config;
-    	 }
-	});
-    
+    //Models       
     App.Link = Ember.Object.extend({ text: null, target: null, action: false });
     
     App.browsers = [
@@ -131,9 +63,7 @@
 	    	{
 	    	case "add":
 	    		var router = this.get('target');
-	    		var controller = this;
-	    		App.Config.add(this.content, 
-	    			function(){ router.transitionTo('config', controller.content); });
+	    		App.Config.add(this.content, function(data){ router.transitionTo('config', data); });
 	    		break;
 	    	}
 	    }
@@ -145,6 +75,10 @@
 	    	{
 	    	case "save":
 	    		App.Config.update(this.content);
+	    		break;
+	    	case "delete":
+	    		var router = this.get('target');
+	    		App.Config.remove(this.content, function(data){ router.transitionTo('config_list'); });
 	    		break;
 	    	}
 	    }
