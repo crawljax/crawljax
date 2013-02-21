@@ -23,6 +23,12 @@ public class Configurations {
 	public Configuration add(Configuration config)
 	{
 		String id = config.getName().toLowerCase().replaceAll("/[^a-z0-9]+/g", "-");
+		if (configList.containsKey(id))
+		{
+			int i = 1;
+			while (configList.containsKey(id + Integer.toString(i))) i++;
+			id += Integer.toString(i);
+		}
 		config.setId(id);
 		configList.put(id, config);
 		return config;
