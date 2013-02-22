@@ -36,8 +36,8 @@ public class CrawlHistoryResource {
 	}
 	
 	@POST
-	public Response addCrawlRecord(CrawlRecord record){
-		record = crawlRecords.add(record);
+	public Response addCrawlRecord(String configId){
+		CrawlRecord record = crawlRecords.add(configId);
 		return Response.ok(record).build();
 	}
 	

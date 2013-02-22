@@ -6,8 +6,17 @@ import javax.xml.datatype.Duration;
 public class CrawlRecord {
 	private int id;
 	private String configurationId;
+	private Date createTime;
 	private Date startTime;
 	private Duration duration;
+	
+	public CrawlRecord(int id, String configId)
+	{
+		this.id = id;
+		this.configurationId = configId;
+		this.createTime = new Date();
+	}
+	
 	/**
 	 * @return the id
 	 */
@@ -15,22 +24,10 @@ public class CrawlRecord {
 		return id;
 	}
 	/**
-	 * @param id the id to set
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-	/**
 	 * @return the configurationId
 	 */
 	public String getConfigurationId() {
 		return configurationId;
-	}
-	/**
-	 * @param configurationId the configurationId to set
-	 */
-	public void setConfigurationId(String configurationId) {
-		this.configurationId = configurationId;
 	}
 	/**
 	 * @return the startTime
@@ -56,5 +53,10 @@ public class CrawlRecord {
 	public void setDuration(Duration duration) {
 		this.duration = duration;
 	}
-	
+	/**
+	 * @return the createTime
+	 */
+	public Date getCreateTime() {
+		return createTime;
+	}	
 }

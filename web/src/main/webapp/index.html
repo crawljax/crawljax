@@ -65,7 +65,7 @@
  				<tr><th>Status</th><th>Name</th><th>Site</th><th>Last Crawl</th><th>Last Duration</th></tr>
  			</thead>
  			<tbody>
-				{{#each controller}}
+				{{#each controller.content}}
  				<tr>
  					<td>{{status}}</td>
  					<td>{{#linkTo 'config' this}}{{name}}{{/linkTo}}</td>
@@ -83,7 +83,7 @@
 	<script type="text/x-handlebars" data-template-name="_config_tabs">
 	<ul class="nav nav-tabs">
 		{{#linkTo 'config.index' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Overview</a>{{/linkTo}}
-		{{#linkTo 'config.input' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Input</a>{{/linkTo}}
+		{{#linkTo 'config.advanced' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Advanced</a>{{/linkTo}}
 		{{#linkTo 'config.plugins' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Plugins</a>{{/linkTo}}
 	</ul>
 	</script>
@@ -114,7 +114,7 @@
 	
 	<script type="text/x-handlebars" data-template-name="config/index">{{partial config_tabs}}{{partial config_general}}</script>
 	
-	<script type="text/x-handlebars" data-template-name="config/input">
+	<script type="text/x-handlebars" data-template-name="config/advanced">
 	{{partial config_tabs}}
 	<form class="form-horizontal">	
 		<fieldset>
@@ -136,6 +136,35 @@
 	{{partial config_tabs}}
 		Plugin Hookin
 	</script>
+	
+	<script type="text/x-handlebars" data-template-name="history_list">{{partial sidebar}}{{outlet}}</script>
+	
+	<script type="text/x-handlebars" data-template-name="history_list/index">
+	<div class="span9">
+	<div class="tab-content">
+		<table class="table table-striped">
+			<thead>
+ 				<tr><th>Crawl Number</th><th>Configuration</th><th>Time Stamp</th></tr>
+ 			</thead>
+ 			<tbody>
+				{{#each controller}}
+ 				<tr>
+ 					<td>{{#linkTo 'history' this.id}}{{id}}{{/linkTo}}</td>
+ 					<td><a {{bindAttr href="configURL"}}>{{configurationId}}</a></td>
+ 					<td>{{formatCreateTime}}</td>
+ 				</tr>
+				{{else}}<tr><td colspan="5">No available crawls.</td></tr>{{/each}}
+ 			</tbody>
+		</table>
+	</div>
+	</div><!--/span-->
+	</script>	
+	
+	<script type="text/x-handlebars" data-template-name="history">
+	<div class="span9">
+		Run Time Output
+	</div><!--/span-->
+	</script>
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -143,6 +172,7 @@
 	<script type="text/javascript" src="js/ember-1.0.0-rc.1.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/configuration.js"></script>
+    <script type="text/javascript" src="js/crawlhistory.js"></script>
     <script type="text/javascript" src="js/common-views.js"></script>
 </body>
 </html>

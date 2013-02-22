@@ -4,7 +4,7 @@ App.Config.reopenClass({
     	allConfigs: [],
     	isSaving: false,
     	findAll: function(){
-    		this.allConfigs.length = 0;
+    		this.allConfigs.clear();
     	    $.ajax({
     	      url: '/rest/configurations',
     	      dataType: 'json',
@@ -18,7 +18,7 @@ App.Config.reopenClass({
     	    return this.allConfigs;
     	 },
     	 find: function(id){
-    		 var config = App.Config.create({id: id});
+    		 var config = App.Config.create({id: id });
     		 $.ajax({
     			 url: '/rest/configurations/' + id,
     			 dataType: 'json',

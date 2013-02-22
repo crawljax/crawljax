@@ -23,7 +23,7 @@ public class CrawlRecords {
 	public List<CrawlRecord> getCrawlListByConfigID(String configId) {
 		List<CrawlRecord> configRecordList = new ArrayList<CrawlRecord>();
 		for (CrawlRecord r : crawlList) {
-			if (r.getConfigurationId() == configId) configRecordList.add(r);
+			if (r.getConfigurationId().equals(configId)) configRecordList.add(r);
 		}
 		return configRecordList;
 	}
@@ -39,9 +39,9 @@ public class CrawlRecords {
 		return record;
 	}
 
-	public CrawlRecord add(CrawlRecord r)
+	public CrawlRecord add(String configId)
 	{
-		r.setId(identity++);
+		CrawlRecord r = new CrawlRecord(identity++, configId);
 		crawlList.add(r);
 		return r;
 	}

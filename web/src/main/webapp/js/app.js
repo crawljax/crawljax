@@ -24,7 +24,7 @@
      		} return this._super(view, attrs);
      	},
     	itemViewClass: Ember.View.extend({
-    		template: Ember.Handlebars.compile('<a href="#">{{view.content.text}}</a><span class="divider">/</span>')
+    		template: Ember.Handlebars.compile('<a {{bindAttr href="view.content.target"}}>{{view.content.text}}</a><span class="divider">/</span>')
     	}),
     	lastItemViewClass: Ember.View.extend({
     		classNames: "active",
@@ -42,21 +42,7 @@
          Ember.Object.create({name: "Microsoft Internet Explorer", value:"ie"})
 	];
     
-    //Controllers/Routes
-    App.Router.map(function() {
-   		this.resource("config_list", { path: "/" });
-   		this.resource("config", {path: "/:id"}, function(){
-   			this.route("input");
-   			this.route("plugins");
-   			this.resource("history");
-   		});
-   		this.route("new");
-   		this.resource("about");
-   		this.resource("contact")
-   		this.resource("history");
-   		this.resource("manage");
-   	});
-
+    //Controllers
     App.NewController = Ember.Controller.extend({
     	rest: function(link){
 	    	switch(link.target)
@@ -69,10 +55,13 @@
 	    }
     });
     
+    App.ConfigListController = Ember.ArrayController.extend({ itemController: 'config' });
     App.ConfigController = Ember.Controller.extend({
     	rest: function(link){
 	    	switch(link.target)
 	    	{
+	    	case "run":
+	    		App.CrawlHistory.add(this.content.id);
 	    	case "save":
 	    		App.Config.update(this.content);
 	    		break;
@@ -84,7 +73,31 @@
 	    }
     });
     
-    App.ConfigListController = Ember.ArrayController.extend({});
+    App.HistoryListController = Ember.ArrayController.extend({ itemController: 'history' });
+    App.HistoryController = Ember.ObjectController.extend({
+    	formatCreateTime: function(){ return new Date(this.get('createTime')); }.property('createTime'),
+    	configURL: function() { return '#/' + this.get('configurationId'); }.property('configurationId')
+    });
+    
+    
+    //Routing
+    App.Router.map(function() {
+   		this.resource("config_list", { path: "/" });
+   		this.resource("config", {path: "/:id"}, function(){
+   			this.route("advanced");
+   			this.route("plugins");
+   			this.resource("config_history", {path: "history"});
+   		});
+   		this.route("new");
+   		this.resource("about");
+   		this.resource("contact")
+   		this.resource("history_list", {path: "/history"}, function() {
+   			this.resource("history", {path: "/:id"})
+   		});
+   		this.resource("manage");
+   	});
+
+    
     App.ConfigListRoute = Ember.Route.extend({
       setupController: function(controller, model) {
         controller.set('content', App.Config.findAll());
@@ -92,7 +105,7 @@
         	[App.Link.create({text:"New Configuration", target:"#/new"}), 
         	 App.Link.create({text:"Crawl History", target:"#/history"}), 
         	 App.Link.create({text:"Manage Crawljax", target:"#/manage"})]);
-        controller.set('breadcrumb', [{text: "Home", route: "/"}]);
+        controller.set('breadcrumb', [App.Link.create({text: "Home"})]);
       }
     });
     
@@ -101,7 +114,7 @@
     		controller.set('content', App.Config.newConfig());
     		controller.set('sidenav',
             	[App.Link.create({text:"Save Configuration", target:"add", action:true})]);
-    		controller.set('breadcrumb', [{text: "Home", route: "/"}, {text: "New"}]);
+    		controller.set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), App.Link.create({text: "New"})]);
         }
     });
     
@@ -113,12 +126,40 @@
             		 App.Link.create({text:"Save Configuration", target:"save", action:true}),
             		 App.Link.create({text:"Crawl History", target:"#/"+model.id+"/history"}),
             		 App.Link.create({text:"Delete Configuration", target:"delete", action:true})]);
-            controller.set('breadcrumb', [{text: "Home", route: "/"}, {text: model.name, route: "#/" + model.id}]);
+            controller.set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), 
+                                          App.Link.create({text: 'Configuration', target: "#/" + model.id})]);
         },
         serialize: function(object) { return { id: object.id }; },
         deserialize: function(params) { return App.Config.find(params.id); }
     });
     
     App.ConfigIndexRoute = Ember.Route.extend({
-    	renderTemplate: function(){ this.render({controller: 'config'}) }
+    	renderTemplate: function(){ this.render({controller: 'config'}); }
+    });
+    
+    App.ConfigHistoryRoute = Ember.Route.extend({
+    	setupController: function(controller, model) {
+    		var configController = this.controllerFor('config');
+            this.controllerFor('history_list').set('content', App.CrawlHistory.findAll(configController.get('content').id));
+            configController.set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), 
+                                          App.Link.create({text: 'Configuration', target: "#/" + configController.get('content').id}), 
+                                          App.Link.create({text: "History"})]);
+        },
+    	renderTemplate: function(){ this.render("history_list/index", {controller: 'history_list'}); }
+    });
+    
+    App.HistoryListRoute = Ember.Route.extend({
+        setupController: function(controller, model) {
+            controller.set('sidenav',
+            	[App.Link.create({text:"All Configurations", target:"#"}),
+            	 App.Link.create({text:"New Configuration", target:"#/new"}),  
+            	 App.Link.create({text:"Manage Crawljax", target:"#/manage"})]);
+            controller.set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), App.Link.create({text: "History"})]);
+        }
+   }); 
+    
+    App.HistoryListIndexRoute = Ember.Route.extend({
+    	setupController: function(controller, model) { 
+    		this.controllerFor('history_list').set('content', App.CrawlHistory.findAll()); },
+    	renderTemplate: function(){ this.render({controller: 'history_list'}); }
     });
