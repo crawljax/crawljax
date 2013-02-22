@@ -1,21 +1,20 @@
 App.Config = Ember.Object.extend();
 
 App.Config.reopenClass({
-    	allConfigs: [],
     	isSaving: false,
     	findAll: function(){
-    		this.allConfigs.clear();
+    		var allConfigs = [];
     	    $.ajax({
     	      url: '/rest/configurations',
     	      dataType: 'json',
-    	      context: this,
+    	      context: allConfigs,
     	      success: function(response){
     	        response.forEach(function(config){
-    	          this.allConfigs.addObject(App.Config.create(config))
+    	          this.addObject(App.Config.create(config))
     	        }, this);
     	      }
     	    });
-    	    return this.allConfigs;
+    	    return allConfigs;
     	 },
     	 find: function(id){
     		 var config = App.Config.create({id: id });

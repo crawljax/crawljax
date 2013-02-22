@@ -42,7 +42,7 @@ public class CrawlRecords {
 	public CrawlRecord add(String configId)
 	{
 		CrawlRecord r = new CrawlRecord(identity++, configId);
-		crawlList.add(r);
+		crawlList.add(0, r);
 		return r;
 	}
 	

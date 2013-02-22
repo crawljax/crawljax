@@ -92,8 +92,12 @@
 	<form class="form-horizontal">	
 	<fieldset>
 		<legend>General Information</legend>
-		{{view App.FormTextField label="Name:" valueBinding="controller.content.name"}}
-		{{view App.FormTextField label="Site:" valueBinding="controller.content.url"}}
+		{{#if controller.content.id}}
+			{{view App.FormField label="Name:" valueBinding="controller.content.name"}}
+		{{else}}
+			{{view App.FormTextField label="Name:" valueBinding="controller.content.name" placeholder="Configuration Name" required="true"}}
+		{{/if}}
+		{{view App.FormTextField label="Site:" valueBinding="controller.content.url" placeholder="http://www.example.com" required="true"}}
 		{{view App.FormSelect label="Browser:" valueBinding="controller.content.browser" contentBinding="App.browsers" optionValuePath="content.value"
        optionLabelPath="content.name"}}
 		{{view App.FormTextField label="Number of Browsers:" valueBinding="controller.content.numBrowsers"}}

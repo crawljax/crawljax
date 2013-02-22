@@ -19,7 +19,12 @@ App.FormField = Ember.View.extend({
 		forBinding: 'inputElementId',
 		attributeBindings: ['for']
 	}),
-	inputField: null,
+	inputField: Ember.View.extend({
+		tagName: 'span',
+		classNames: ['uneditable-input'],
+		template: Ember.Handlebars.compile('{{view.value}}'),
+		valueBinding: 'parentView.value'
+	}),
 	didInsertElement: function() {
 	    this.set('labelView.inputElementId', this.get('inputField.elementId'));
 	}
@@ -31,8 +36,10 @@ App.FormTextField = App.FormField.extend({
 		valueBinding: 'parentView.value',
 		placeholderBinding: 'parentView.placeholder',
 		disabledBinding: 'parentView.disabled',
+		requiredBinding: 'parentView.required',
 		maxlengthBinding: 'parentView.maxlength',
-		classNameBindings: 'parentView.inputClassNames'
+		classNameBindings: 'parentView.inputClassNames',
+		attributeBindings: ['required', 'pattern']
 	})
 });
 

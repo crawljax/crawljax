@@ -55,7 +55,7 @@
 	    }
     });
     
-    App.ConfigListController = Ember.ArrayController.extend({ itemController: 'config' });
+    App.ConfigListController = Ember.ArrayController.extend({});
     App.ConfigController = Ember.Controller.extend({
     	rest: function(link){
 	    	switch(link.target)
@@ -73,8 +73,8 @@
 	    }
     });
     
-    App.HistoryListController = Ember.ArrayController.extend({ itemController: 'history' });
-    App.HistoryController = Ember.ObjectController.extend({
+    App.HistoryListController = Ember.ArrayController.extend({ itemController: 'historyItem' });
+    App.HistoryItemController = Ember.ObjectController.extend({
     	formatCreateTime: function(){ return new Date(this.get('createTime')); }.property('createTime'),
     	configURL: function() { return '#/' + this.get('configurationId'); }.property('configurationId')
     });
