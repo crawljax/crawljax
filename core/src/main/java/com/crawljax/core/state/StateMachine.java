@@ -162,7 +162,7 @@ public class StateMachine {
 	 *            the current Session
 	 * @return true if the new state is not found in the state machine.
 	 */
-	public boolean update(final Eventable event, StateVertex newState, EmbeddedBrowser browser,
+	public boolean updateAndCheckIfClone(final Eventable event, StateVertex newState, EmbeddedBrowser browser,
 	        CrawlSession session) {
 		StateVertex cloneState = this.addStateToCurrentState(newState, event);
 
