@@ -172,6 +172,7 @@ public class CrawlOverview
 		outModelCache.addEdges(sfg.getAllEdges());
 		result = outModelCache.close(session);
 		outputBuilder.write(result);
+		outputBuilder.write(session.getCrawljaxConfiguration().getCrawlSpecificationReader());
 		synchronized (visitedStates) {
 			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
 			for (State state : result.getStates().values()) {

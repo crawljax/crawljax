@@ -2,6 +2,8 @@ package com.crawljax.plugins.crawloverview;
 
 import static com.crawljax.crawltests.SimpleSiteCrawl.NUMBER_OF_EDGES;
 import static com.crawljax.crawltests.SimpleSiteCrawl.NUMBER_OF_STATES;
+import static com.crawljax.matchers.IsValidJson.isValidJson;
+import static com.crawljax.test.matchers.FileMatcher.exists;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsArrayWithSize.arrayWithSize;
 import static org.hamcrest.core.Is.is;
@@ -75,5 +77,17 @@ public class SimpleSiteCrawlTest {
 		assertThat("Most fan in", stats.getMostFanIn().getFanIn(), is(2));
 		assertThat("Least fan out", stats.getLeastFanOut().getFanIn(), is(1));
 		assertThat("Most fan out", stats.getMostFanOut().getFanOut(), is(2));
+	}
+
+	@Test
+	public void configFilesExists() {
+		assertThat(new File(outFolder, "config.json"), exists());
+		assertThat(new File(outFolder, "config.json"), isValidJson());
+	}
+
+	@Test
+	public void resultFileIsWritten() {
+		assertThat(new File(outFolder, "result.json"), exists());
+		assertThat(new File(outFolder, "result.json"), isValidJson());
 	}
 }
