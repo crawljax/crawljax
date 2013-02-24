@@ -30,7 +30,7 @@
 	<properties>
 		<slf4j.version>1.7.2</slf4j.version>
 		<logback.version>1.0.9</logback.version>
-		<selenium.version>[2.29.1,)</selenium.version>
+		<selenium.version>[2.30.0,)</selenium.version>
 
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
