@@ -62,12 +62,11 @@
 	<div class="tab-content">
 		<table class="table table-striped">
 			<thead>
- 				<tr><th>Status</th><th>Name</th><th>Site</th><th>Last Crawl</th><th>Last Duration</th></tr>
+ 				<tr><th>Name</th><th>Site</th><th>Last Crawl</th><th>Last Duration</th></tr>
  			</thead>
  			<tbody>
 				{{#each controller.content}}
  				<tr>
- 					<td>{{status}}</td>
  					<td>{{#linkTo 'config' this}}{{name}}{{/linkTo}}</td>
  					<td><a {{bindAttr href="url"}} target="_blank">{{url}}</a></td>
  					<td>{{lastCrawl}}</td>
@@ -123,12 +122,14 @@
 	<form class="form-horizontal">	
 		<fieldset>
 			<legend>Clickable Elements</legend>
-			<div class="control-group"><label class="control-label">Click Default Elements:</label>
-				<div class="controls">
-				<label class="radio"><input type="radio" name="rdClick" value="yes" checked /> Yes</label>
-				<label class="radio"><input type="radio" name="rdClick" value="no" /> No</label>
-				</div>
-			</div>
+			{{view App.FormSelect label="Click Rules:" contentBinding="App.clickRules" optionValuePath="content.value"
+       optionLabelPath="content.name"}}
+		</fieldset>
+		<fieldset>
+			<legend>Field Filters</legend>
+		</fieldset>
+		<fieldset>
+			<legend>Page Conditions</legend>
 		</fieldset>
 		<fieldset>
 			<legend>Form Field Values</legend>

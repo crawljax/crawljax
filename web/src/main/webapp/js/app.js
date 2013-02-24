@@ -42,6 +42,12 @@
          Ember.Object.create({name: "Microsoft Internet Explorer", value:"ie"})
 	];
     
+    App.clickRules = [
+         Ember.Object.create({name: "Click Default Elements", value:"default"}),
+         Ember.Object.create({name: "Click More Elements", value:"more"}),
+         Ember.Object.create({name: "Custom", value:"custom"})
+    ];
+    
     //Controllers
     App.NewController = Ember.Controller.extend({
     	rest: function(link){
