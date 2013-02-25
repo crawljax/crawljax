@@ -51,7 +51,7 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void loadPlugins(List<Plugin> plugins) {
 		PLUGINS.clear();
-		if (plugins == null || plugins.size() == 0) {
+		if (plugins == null || plugins.isEmpty()) {
 			LOGGER.warn("No plugins loaded because CrawljaxConfiguration is empty");
 			return;
 		}

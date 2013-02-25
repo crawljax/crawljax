@@ -133,8 +133,7 @@ public final class BrowserPool {
 	private EmbeddedBrowser createBrowser() {
 		EmbeddedBrowser newBrowser = getBrowserInstance();
 
-		if (taken.size() == 0 && available.size() == 0
-		        && preCrawlingRun.compareAndSet(false, true)) {
+		if (taken.isEmpty() && available.isEmpty() && preCrawlingRun.compareAndSet(false, true)) {
 			// this is the first browser && no preCrawling has run or is running
 			// We are the one that will run the preCrawling plugins
 			// preCrawlingRun.compareAndSet(false, true) equals to !preCrawlingRun ->
@@ -464,7 +463,7 @@ public final class BrowserPool {
 		currentBrowser.remove();
 
 		// check if this was the last browser standing if so throw RuntimeException
-		if (taken.size() == 0 && available.size() == 0) {
+		if (taken.isEmpty() && available.isEmpty()) {
 			terminationHandler.terminate(true);
 			throw new RuntimeException("All browsers have died; "
 			        + "there are no browsers left in the pool to execute Crawlers on!");
