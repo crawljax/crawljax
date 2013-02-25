@@ -79,7 +79,7 @@ public class CrawlSpecification {
 	private boolean clicklOnce = true;
 	private boolean disableCrawlFrames = false;
 
-	private boolean clickHiddenAnchors = true;
+	private boolean clickHiddenAnchors = false;
 
 	/**
 	 * @param url
