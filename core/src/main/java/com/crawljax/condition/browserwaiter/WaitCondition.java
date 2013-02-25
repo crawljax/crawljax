@@ -78,7 +78,7 @@ public class WaitCondition {
 	 * @return -1 if browser does not match url. 0 by timeout. 1 if all conditions are satisfied
 	 */
 	public int testAndWait(EmbeddedBrowser browser) {
-		if (expectedConditions.size() == 0) {
+		if (expectedConditions.isEmpty()) {
 			// No ExpectedConditions return successful wait.
 			return 1;
 		}

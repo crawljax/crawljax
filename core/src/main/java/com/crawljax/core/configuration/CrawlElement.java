@@ -128,7 +128,7 @@ public final class CrawlElement {
 	 */
 	protected EventableCondition getEventableCondition() {
 		if ((getWithXpathExpression() == null || getWithXpathExpression().equals(""))
-		        && getConditions().size() == 0 && getInputFieldIds().size() == 0) {
+		        && getConditions().isEmpty() && getInputFieldIds().isEmpty()) {
 			return null;
 		}
 		EventableCondition eventableCondition = new EventableCondition(getId());
