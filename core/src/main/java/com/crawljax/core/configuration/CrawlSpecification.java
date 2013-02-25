@@ -232,7 +232,7 @@ public class CrawlSpecification {
 	 *            crawlMaximumRuntime to set
 	 */
 	public void setMaximumRuntime(long time, TimeUnit timeUnit) {
-		this.maximumRuntime = timeUnit.toSeconds(time);
+		this.maximumRuntime = timeUnit.toMillis(time);
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class CrawlSpecification {
 	 */
 	@Deprecated
 	public void setMaximumRuntime(long time) {
-		this.maximumRuntime = time;
+		this.maximumRuntime = TimeUnit.SECONDS.toMillis(time);
 	}
 
 	/**
