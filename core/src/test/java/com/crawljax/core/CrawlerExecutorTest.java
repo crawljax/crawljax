@@ -1,7 +1,9 @@
 package com.crawljax.core;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.crawljax.core.configuration.CrawlSpecification;
@@ -32,8 +34,8 @@ public class CrawlerExecutorTest {
 
 		excutor.waitForTermination();
 
-		Assert.assertTrue("Thread 1 ok", t1.success);
-		Assert.assertTrue("Thread 2 ok", t2.success);
+		assertThat("Thread 1 ok", t1.success, is(true));
+		assertThat("Thread 2 ok", t2.success, is(true));
 	}
 
 	/**
@@ -58,8 +60,8 @@ public class CrawlerExecutorTest {
 
 		excutor.waitForTermination();
 
-		Assert.assertTrue("Thread 1 ok", t1.success);
-		Assert.assertTrue("Thread 2 ok", t2.success);
+		assertThat("Thread 1 ok", t1.success, is(true));
+		assertThat("Thread 2 ok", t2.success, is(true));
 	}
 
 	/**
