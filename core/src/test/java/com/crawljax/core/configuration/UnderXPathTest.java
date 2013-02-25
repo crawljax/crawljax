@@ -2,9 +2,8 @@ package com.crawljax.core.configuration;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -13,6 +12,7 @@ import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
 
 /**
  * Test case for issue number 16: http://code.google.com/p/crawljax/issues/detail?id=16
@@ -22,15 +22,16 @@ import com.crawljax.test.BrowserTest;
 @Category(BrowserTest.class)
 public class UnderXPathTest {
 
-	private static CrawlSession session = null;
+	private CrawlSession session = null;
 
-	private static final String FILENAME = "src/test/resources/configuration/underxpath.html";
+	@ClassRule
+	public static final RunWithWebServer SERVER = new RunWithWebServer("site");
 
 	@Test
 	public void testDontClickUnderXPath() throws Exception {
 
 		CrawlSpecification crawler =
-		        new CrawlSpecification("file://" + new File(FILENAME).getAbsolutePath());
+		        new CrawlSpecification(SERVER.getSiteUrl() + "underxpath.html");
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 
 		crawler.click("li");
@@ -42,7 +43,7 @@ public class UnderXPathTest {
 
 			@Override
 			public void postCrawling(CrawlSession session) {
-				UnderXPathTest.session = session;
+				UnderXPathTest.this.session = session;
 			}
 
 		});
@@ -51,7 +52,6 @@ public class UnderXPathTest {
 
 		crawljax.run();
 
-		/* test issue 16 */
 		assertEquals("There should be no outgoing links", 0, session.getStateFlowGraph()
 		        .getOutgoingClickables(session.getInitialState()).size());
 	}
@@ -60,7 +60,7 @@ public class UnderXPathTest {
 	public void testClickUnderXPath() throws ConfigurationException, CrawljaxException {
 
 		CrawlSpecification crawler =
-		        new CrawlSpecification("file://" + new File(FILENAME).getAbsolutePath());
+		        new CrawlSpecification(SERVER.getSiteUrl() + "underxpath.html");
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
 
 		crawler.click("li").underXPath("//UL[@class=\"dontclick\"]");
@@ -71,7 +71,7 @@ public class UnderXPathTest {
 
 			@Override
 			public void postCrawling(CrawlSession session) {
-				UnderXPathTest.session = session;
+				UnderXPathTest.this.session = session;
 			}
 
 		});

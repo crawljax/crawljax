@@ -27,7 +27,7 @@ public class LargeTestChrome extends LargeTestSuper {
 	public static void setUpBeforeClass() throws Exception {
 		// System.setProperty("webdriver.chrome.driver",
 		// "//Users//amesbah//repos//git//crawljax//chromedriver 4");
-		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
+		CrawljaxConfiguration crawljaxConfiguration = newCrawlConfiguration();
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification(INDEX, waitAfterEvent,
 		        waitAfterReload));
 		addPlugins(crawljaxConfiguration);

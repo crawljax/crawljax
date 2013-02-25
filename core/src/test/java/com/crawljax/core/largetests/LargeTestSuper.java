@@ -37,6 +37,7 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
+import com.crawljax.core.state.PostCrawlStateGraphChecker;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.oraclecomparator.comparators.DateComparator;
@@ -233,6 +234,12 @@ public abstract class LargeTestSuper {
 				}
 			}
 		});
+	}
+
+	protected static CrawljaxConfiguration newCrawlConfiguration() {
+	    CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
+		crawljaxConfiguration.addPlugin(new PostCrawlStateGraphChecker());
+	    return crawljaxConfiguration;
 	}
 
 	private StateFlowGraph getStateFlowGraph() {

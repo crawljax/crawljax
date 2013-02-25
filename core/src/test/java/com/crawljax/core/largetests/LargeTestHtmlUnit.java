@@ -9,7 +9,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.ConfigurationTest;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 
-public class testLargeHtmlUnit extends LargeTestSuper {
+public class LargeTestHtmlUnit extends LargeTestSuper {
 
 	private static final int waitAfterEvent = 400;
 	private static final int waitAfterReload = 400;
@@ -26,7 +26,7 @@ public class testLargeHtmlUnit extends LargeTestSuper {
 	@BeforeClass
 	public static void setUpBeforeClass() throws ConfigurationException, CrawljaxException {
 
-		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
+		CrawljaxConfiguration crawljaxConfiguration = newCrawlConfiguration();
 		String url = ConfigurationTest.class.getResource("/site/index.html").toExternalForm();
 		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification(url, waitAfterEvent,
 		        waitAfterReload));

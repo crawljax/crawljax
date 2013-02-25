@@ -28,7 +28,7 @@ public class LargeFirefoxTest extends LargeTestSuper {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
+		CrawljaxConfiguration crawljaxConfiguration = newCrawlConfiguration();
 		ThreadConfiguration tc = new ThreadConfiguration(2, 2, true);
 		crawljaxConfiguration.setThreadConfiguration(tc);
 		// String url = ConfigurationTest.class.getResource("/site/index.html").toExternalForm();

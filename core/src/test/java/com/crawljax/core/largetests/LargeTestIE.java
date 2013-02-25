@@ -32,7 +32,7 @@ public class LargeTestIE extends LargeTestSuper {
 	@BeforeClass
 	public static void setUpBeforeClass() throws ConfigurationException, CrawljaxException {
 		if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-			CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
+			CrawljaxConfiguration crawljaxConfiguration = newCrawlConfiguration();
 			crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification(INDEX,
 			        waitAfterEvent, waitAfterReload));
 			addPlugins(crawljaxConfiguration);

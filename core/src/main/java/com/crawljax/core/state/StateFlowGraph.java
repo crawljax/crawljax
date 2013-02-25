@@ -18,6 +18,8 @@ import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 /**
  * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
  * clickables (Eventable) on the edges.
@@ -35,12 +37,7 @@ public class StateFlowGraph implements Serializable {
 	 */
 	private final AtomicInteger stateCounter = new AtomicInteger();
 
-	/**
-	 * Empty constructor.
-	 */
-	public StateFlowGraph() {
-		sfg = new DirectedMultigraph<>(Eventable.class);
-	}
+	private final StateVertex initialState;
 
 	/**
 	 * The constructor.
@@ -49,8 +46,10 @@ public class StateFlowGraph implements Serializable {
 	 *            the state to start from.
 	 */
 	public StateFlowGraph(StateVertex initialState) {
-		this();
+		Preconditions.checkNotNull(initialState);
+		sfg = new DirectedMultigraph<>(Eventable.class);
 		sfg.addVertex(initialState);
+		this.initialState = initialState;
 	}
 
 	/**
@@ -389,5 +388,9 @@ public class StateFlowGraph implements Serializable {
 		}
 
 		return "state" + id;
+	}
+
+	public boolean isInitialState(StateVertex state) {
+		return initialState.equals(state);
 	}
 }

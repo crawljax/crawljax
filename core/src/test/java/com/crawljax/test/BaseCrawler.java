@@ -15,6 +15,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.state.PostCrawlStateGraphChecker;
 import com.google.common.base.Strings;
 
 /**
@@ -99,7 +100,9 @@ public class BaseCrawler {
 	 * @return a new {@link CrawljaxConfiguration} to crawl with.
 	 */
 	protected CrawljaxConfiguration newCrawlConfiguartion() {
-		return new CrawljaxConfiguration();
+		CrawljaxConfiguration config = new CrawljaxConfiguration();
+		config.addPlugin(new PostCrawlStateGraphChecker());
+		return config;
 	}
 
 	/**
