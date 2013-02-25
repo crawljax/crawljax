@@ -54,8 +54,10 @@
 	    	switch(link.target)
 	    	{
 	    	case "add":
-	    		var router = this.get('target');
-	    		App.Config.add(this.content, function(data){ router.transitionTo('config', data); });
+	    		if (validateForm('config_form')) {
+	    			var router = this.get('target');
+	    			App.Config.add(this.content, function(data){ router.transitionTo('config', data); });
+	    		}
 	    		break;
 	    	}
 	    }
@@ -69,13 +71,15 @@
 	    	case "run":
 	    		App.CrawlHistory.add(this.content.id);
 	    	case "save":
-	    		App.Config.update(this.content);
+	    		if (validateForm('config_form')) {
+	    			App.Config.update(this.content);
+	    		}
 	    		break;
 	    	case "delete":
 	    		var router = this.get('target');
 	    		App.Config.remove(this.content, function(data){ router.transitionTo('config_list'); });
 	    		break;
-	    	}
+	    	}	
 	    }
     });
     
@@ -140,6 +144,14 @@
     });
     
     App.ConfigIndexRoute = Ember.Route.extend({
+    	renderTemplate: function(){ this.render({controller: 'config'}); }
+    });
+    
+    App.ConfigAdvancedRoute = Ember.Route.extend({
+    	renderTemplate: function(){ this.render({controller: 'config'}); }
+    });
+    
+    App.ConfigPluginRoute = Ember.Route.extend({
     	renderTemplate: function(){ this.render({controller: 'config'}); }
     });
     

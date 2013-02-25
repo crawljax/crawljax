@@ -4,12 +4,14 @@ var App = window.App;
 App.FormField = Ember.View.extend({
 	tagName: 'div',
 	classNames: ['control-group'],
+	errorText: null,
+	label: null,
 	template: Ember.Handlebars.compile([
 	    '{{view view.labelView viewName="labelView"}}',
 	    '<div class="controls">',
 	    '  {{view view.inputField viewName="inputField"}}',
+	    '  {{view view.errorView viewName="errorView"}}',
 	    '</div>'].join("\n")),
-	label: null,
 	labelView: Ember.View.extend({
 		tagName: 'label',
 		classNames: ['control-label'],
@@ -25,6 +27,12 @@ App.FormField = Ember.View.extend({
 		template: Ember.Handlebars.compile('{{view.value}}'),
 		valueBinding: 'parentView.value'
 	}),
+	errorView: Ember.View.extend({
+		tagName: 'span',
+		classNameBindings: ['errorText:hint'],
+		template: Ember.Handlebars.compile('{{view.errorText}}'),
+		errorTextBinding: 'parentView.errorText'
+	}),
 	didInsertElement: function() {
 	    this.set('labelView.inputElementId', this.get('inputField.elementId'));
 	}
@@ -32,14 +40,17 @@ App.FormField = Ember.View.extend({
 
 //Text Field
 App.FormTextField = App.FormField.extend({
+	type: 'text',
 	inputField: Ember.TextField.extend({
 		valueBinding: 'parentView.value',
 		placeholderBinding: 'parentView.placeholder',
 		disabledBinding: 'parentView.disabled',
 		requiredBinding: 'parentView.required',
+		patternBinding: 'parentView.pattern',
+		typeBinding: 'parentView.type',
 		maxlengthBinding: 'parentView.maxlength',
 		classNameBindings: 'parentView.inputClassNames',
-		attributeBindings: ['required', 'pattern']
+		attributeBindings: ['required', 'pattern', 'type']
 	})
 });
 

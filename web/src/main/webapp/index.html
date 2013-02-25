@@ -88,17 +88,18 @@
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="_config_general">
-	<form class="form-horizontal">	
+	<form id="config_form" class="form-horizontal">	
 	<fieldset>
 		<legend>General Information</legend>
 		{{#if controller.content.id}}
 			{{view App.FormField label="Name:" valueBinding="controller.content.name"}}
 		{{else}}
-			{{view App.FormTextField label="Name:" valueBinding="controller.content.name" placeholder="Configuration Name" required="true"}}
+			{{view App.FormTextField label="Name:" valueBinding="controller.content.name" placeholder="Configuration Name" required="true" errorText="This field is Required"}}
 		{{/if}}
-		{{view App.FormTextField label="Site:" valueBinding="controller.content.url" placeholder="http://www.example.com" required="true"}}
+		{{view App.FormTextField label="Site:" valueBinding="controller.content.url" placeholder="http://www.example.com" type="url" 
+			required="true" pattern="(http|https)://.+" errorText="Must provide a valid url. http://www.example.com"}}
 		{{view App.FormSelect label="Browser:" valueBinding="controller.content.browser" contentBinding="App.browsers" optionValuePath="content.value"
-       optionLabelPath="content.name"}}
+       		optionLabelPath="content.name"}}
 		{{view App.FormTextField label="Number of Browsers:" valueBinding="controller.content.numBrowsers"}}
 		{{view App.FormCheckbox label="Boot Browsers at Start" checkedBinding="controller.content.bootBrowser"}}
 		{{view App.FormTextField label="Maximum Crawl Depth:" valueBinding="controller.content.maxDepth"}}
@@ -119,7 +120,7 @@
 	
 	<script type="text/x-handlebars" data-template-name="config/advanced">
 	{{partial config_tabs}}
-	<form class="form-horizontal">	
+	<form id="config_form" class="form-horizontal">	
 		<fieldset>
 			<legend>Clickable Elements</legend>
 			{{view App.FormSelect label="Click Rules:" contentBinding="App.clickRules" optionValuePath="content.value"
@@ -139,7 +140,10 @@
 	
 	<script type="text/x-handlebars" data-template-name="config/plugins">
 	{{partial config_tabs}}
-		Plugin Hookin
+	<form id="config_form" class="form-horizontal">	
+		<fieldset>
+			<legend>Plugins</legend>
+	</form>
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="history_list">{{partial sidebar}}{{outlet}}</script>
@@ -179,5 +183,6 @@
     <script type="text/javascript" src="js/configuration.js"></script>
     <script type="text/javascript" src="js/crawlhistory.js"></script>
     <script type="text/javascript" src="js/common-views.js"></script>
+    <script type="text/javascript" src="js/validation.js"></script>
 </body>
 </html>
