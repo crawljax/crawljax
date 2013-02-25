@@ -109,19 +109,6 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * Click {@link #clickDefaultElements()}, {@link #clickTableElements()} and click
-	 * <code>"span", "div", "ol", "center", "li", "radio", "non", "meta",
-		        "refresh", "xhr", "relative", "link", "self", "form", "input", "option", "img",
-		        "p"</code>
-	 */
-	public void clickMoreElements() {
-		clickDefaultElements();
-		clickTableElements();
-		click("span", "div", "ol", "center", "li", "radio", "non", "meta", "refresh", "xhr",
-		        "relative", "link", "self", "form", "input", "option", "img", "p");
-	}
-
-	/**
 	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
 	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}.
 	 * 
@@ -133,13 +120,6 @@ public class CrawlSpecification {
 		for (String tagName : tagNames) {
 			crawlActions.click(tagName);
 		}
-	}
-
-	/**
-	 * Clicks <code>"td", "tr", "table", "tbody"</code>
-	 */
-	public void clickTableElements() {
-		click("td", "tr", "table", "tbody");
 	}
 
 	/**
