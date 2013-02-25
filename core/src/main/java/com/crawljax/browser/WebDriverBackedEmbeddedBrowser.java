@@ -52,13 +52,13 @@ import com.crawljax.util.DomUtils;
 /**
  * @author mesbah
  * @author Frank Groeneveld
- * @version $Id: WebDriverBackedEmbeddedBrowser.java 387 2010-07-13 13:55:49Z
- *          slenselink@google.com $
+ * @version $Id: WebDriverBackedEmbeddedBrowser.java 387 2010-07-13 13:55:49Z slenselink@google.com
+ *          $
  */
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private long crawlWaitEvent;
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(WebDriverBackedEmbeddedBrowser.class);
+	        .getLogger(WebDriverBackedEmbeddedBrowser.class);
 	private final WebDriver browser;
 
 	private List<String> filterAttributes;
@@ -69,7 +69,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * Constructor without configuration values, these must be updated using the
 	 * {@link #updateConfiguration(CrawljaxConfigurationReader)}.
 	 * 
-	 * @param driver The WebDriver to use.
+	 * @param driver
+	 *            The WebDriver to use.
 	 */
 	private WebDriverBackedEmbeddedBrowser(WebDriver driver) {
 		this.browser = driver;
@@ -78,13 +79,17 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Constructor.
 	 * 
-	 * @param driver The WebDriver to use.
-	 * @param filterAttributes the attributes to be filtered from DOM.
-	 * @param crawlWaitReload the period to wait after a reload.
-	 * @param crawlWaitEvent the period to wait after an event is fired.
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
 	 */
 	private WebDriverBackedEmbeddedBrowser(WebDriver driver, List<String> filterAttributes,
-			long crawlWaitReload, long crawlWaitEvent) {
+	        long crawlWaitReload, long crawlWaitEvent) {
 		this(driver);
 		this.filterAttributes = filterAttributes;
 		this.crawlWaitEvent = crawlWaitEvent;
@@ -94,15 +99,19 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Constructor.
 	 * 
-	 * @param driver The WebDriver to use.
-	 * @param filterAttributes the attributes to be filtered from DOM.
-	 * @param crawlWaitReload the period to wait after a reload.
-	 * @param crawlWaitEvent the period to wait after an event is fired.
-	 * @param ignoreFrameChecker the checker used to determine if a certain frame
-	 *           must be ignored.
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 * @param ignoreFrameChecker
+	 *            the checker used to determine if a certain frame must be ignored.
 	 */
 	private WebDriverBackedEmbeddedBrowser(WebDriver driver, List<String> filterAttributes,
-			long crawlWaitReload, long crawlWaitEvent, IgnoreFrameChecker ignoreFrameChecker) {
+	        long crawlWaitReload, long crawlWaitEvent, IgnoreFrameChecker ignoreFrameChecker) {
 		this(driver, filterAttributes, crawlWaitReload, crawlWaitEvent);
 		this.ignoreFrameChecker = ignoreFrameChecker;
 	}
@@ -110,73 +119,90 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
 	 * 
-	 * @param hubUrl Url of the server.
-	 * @param filterAttributes the attributes to be filtered from DOM.
-	 * @param crawlWaitReload the period to wait after a reload.
-	 * @param crawlWaitEvent the period to wait after an event is fired.
+	 * @param hubUrl
+	 *            Url of the server.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl,
-			List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
+	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
 		return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl),
-				filterAttributes, crawlWaitEvent, crawlWaitReload);
+		        filterAttributes, crawlWaitEvent, crawlWaitReload);
 	}
 
 	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
 	 * 
-	 * @param hubUrl Url of the server.
-	 * @param filterAttributes the attributes to be filtered from DOM.
-	 * @param crawlWaitReload the period to wait after a reload.
-	 * @param crawlWaitEvent the period to wait after an event is fired.
-	 * @param ignoreFrameChecker the checker used to determine if a certain frame
-	 *           must be ignored.
+	 * @param hubUrl
+	 *            Url of the server.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 * @param ignoreFrameChecker
+	 *            the checker used to determine if a certain frame must be ignored.
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl,
-			List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
-			IgnoreFrameChecker ignoreFrameChecker) {
+	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
+	        IgnoreFrameChecker ignoreFrameChecker) {
 		return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl),
-				filterAttributes, crawlWaitEvent, crawlWaitReload, ignoreFrameChecker);
+		        filterAttributes, crawlWaitEvent, crawlWaitReload, ignoreFrameChecker);
 	}
 
 	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
 	 * 
-	 * @param driver The WebDriver to use.
-	 * @param filterAttributes the attributes to be filtered from DOM.
-	 * @param crawlWaitReload the period to wait after a reload.
-	 * @param crawlWaitEvent the period to wait after an event is fired.
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver,
-			List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
+	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
 		return new WebDriverBackedEmbeddedBrowser(driver, filterAttributes, crawlWaitEvent,
-				crawlWaitReload);
+		        crawlWaitReload);
 	}
 
 	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
 	 * 
-	 * @param driver The WebDriver to use.
-	 * @param filterAttributes the attributes to be filtered from DOM.
-	 * @param crawlWaitReload the period to wait after a reload.
-	 * @param crawlWaitEvent the period to wait after an event is fired.
-	 * @param ignoreFrameChecker the checker used to determine if a certain frame
-	 *           must be ignored.
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 * @param ignoreFrameChecker
+	 *            the checker used to determine if a certain frame must be ignored.
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver,
-			List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
-			IgnoreFrameChecker ignoreFrameChecker) {
+	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
+	        IgnoreFrameChecker ignoreFrameChecker) {
 		return new WebDriverBackedEmbeddedBrowser(driver, filterAttributes, crawlWaitEvent,
-				crawlWaitReload, ignoreFrameChecker);
+		        crawlWaitReload, ignoreFrameChecker);
 	}
 
 	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
 	 * 
-	 * @param hubUrl Url of the server.
+	 * @param hubUrl
+	 *            Url of the server.
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl) {
@@ -184,10 +210,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	/**
-	 * Private used static method for creation of a RemoteWebDriver. Taking care
-	 * of the default Capabilities and using the HttpCommandExecutor.
+	 * Private used static method for creation of a RemoteWebDriver. Taking care of the default
+	 * Capabilities and using the HttpCommandExecutor.
 	 * 
-	 * @param hubUrl the url of the hub to use.
+	 * @param hubUrl
+	 *            the url of the hub to use.
 	 * @return the RemoteWebDriver instance.
 	 */
 	private static RemoteWebDriver buildRemoteWebDriver(String hubUrl) {
@@ -198,7 +225,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			url = new URL(hubUrl);
 		} catch (MalformedURLException e) {
 			LOGGER.error("The given hub url of the remote server is malformed can not continue!",
-					e);
+			        e);
 			return null;
 		}
 		HttpCommandExecutor executor = null;
@@ -209,7 +236,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			// NullPointers, why
 			// not throw RuntimeExcption direct?
 			LOGGER.error("Received unknown exception while creating the "
-					+ "HttpCommandExecutor, can not continue!", e);
+			        + "HttpCommandExecutor, can not continue!", e);
 			return null;
 		}
 		return new RemoteWebDriver(executor, capabilities);
@@ -218,7 +245,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
 	 * 
-	 * @param driver The WebDriver to use.
+	 * @param driver
+	 *            The WebDriver to use.
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver) {
@@ -226,7 +254,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	/**
-	 * @param url The URL.
+	 * @param url
+	 *            The URL.
 	 */
 	@Override
 	public void goToUrl(URL url) {
@@ -249,8 +278,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private void handlePopups() {
 		try {
 			executeJavaScript("window.alert = function(msg){return true;};"
-					+ "window.confirm = function(msg){return true;};"
-					+ "window.prompt = function(msg){return true;};");
+			        + "window.confirm = function(msg){return true;};"
+			        + "window.prompt = function(msg){return true;};");
 		} catch (CrawljaxException e) {
 			LOGGER.error("Handling of PopUp windows failed", e);
 		}
@@ -259,12 +288,14 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Fires the event and waits for a specified time.
 	 * 
-	 * @param webElement the element to fire event on.
-	 * @param eventable The HTML event type (onclick, onmouseover, ...).
+	 * @param webElement
+	 *            the element to fire event on.
+	 * @param eventable
+	 *            The HTML event type (onclick, onmouseover, ...).
 	 * @return true if firing event is successful.
 	 */
 	protected boolean fireEventWait(WebElement webElement, Eventable eventable)
-			throws ElementNotVisibleException {
+	        throws ElementNotVisibleException {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
@@ -318,14 +349,15 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	/**
-	 * @param html The html string.
+	 * @param html
+	 *            The html string.
 	 * @return uniform version of dom with predefined attributes stripped
 	 */
 	private String toUniformDOM(String html) {
 
 		Pattern p =
-				Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
-						| Pattern.CASE_INSENSITIVE);
+		        Pattern.compile("<SCRIPT(.*?)</SCRIPT>", Pattern.DOTALL
+		                | Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(html);
 		String htmlFormatted = m.replaceAll("");
 
@@ -344,7 +376,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Filters attributes from the HTML string.
 	 * 
-	 * @param html The HTML to filter.
+	 * @param html
+	 *            The HTML to filter.
 	 * @return The filtered HTML string.
 	 */
 	private String filterAttributes(String html) {
@@ -369,8 +402,10 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	/**
-	 * @param identification The identification object.
-	 * @param text The input.
+	 * @param identification
+	 *            The identification object.
+	 * @param text
+	 *            The input.
 	 * @return true if succeeds.
 	 */
 	@Override
@@ -396,11 +431,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Fires an event on an element using its identification.
 	 * 
-	 * @param eventable The eventable.
+	 * @param eventable
+	 *            The eventable.
 	 * @return true if it is able to fire the event successfully on the element.
 	 */
 	@Override
-	public synchronized boolean fireEvent(Eventable eventable) throws ElementNotVisibleException, NoSuchElementException {
+	public synchronized boolean fireEvent(Eventable eventable) throws ElementNotVisibleException,
+	        NoSuchElementException {
 		try {
 
 			boolean handleChanged = false;
@@ -423,7 +460,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			}
 
 			WebElement webElement =
-					browser.findElement(eventable.getIdentification().getWebDriverBy());
+			        browser.findElement(eventable.getIdentification().getWebDriverBy());
 
 			if (webElement != null) {
 				result = fireEventWait(webElement, eventable);
@@ -444,9 +481,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Execute JavaScript in the browser.
 	 * 
-	 * @param code The code to execute.
+	 * @param code
+	 *            The code to execute.
 	 * @return The return value of the JavaScript.
-	 * @throws CrawljaxException when javascript execution failed.
+	 * @throws CrawljaxException
+	 *             when javascript execution failed.
 	 */
 	@Override
 	public Object executeJavaScript(String code) throws CrawljaxException {
@@ -462,7 +501,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * Determines whether the corresponding element is visible.
 	 * 
-	 * @param identification The element to search for.
+	 * @param identification
+	 *            The element to search for.
 	 * @return true if the element is visible
 	 */
 	@Override
@@ -514,7 +554,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * @return a Document object containing the contents of iframes as well.
-	 * @throws CrawljaxException if an exception is thrown.
+	 * @throws CrawljaxException
+	 *             if an exception is thrown.
 	 */
 	private Document getDomTreeWithFrames() throws CrawljaxException {
 
@@ -558,7 +599,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			String nameId = DomUtils.getFrameIdentification(frameElement);
 
 			if (nameId != null
-					&& !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
+			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
 				frameIdentification += nameId;
 
 				String handle = browser.getWindowHandle();
@@ -576,13 +617,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				try {
 					Element toAppendElement = DomUtils.asDocument(toAppend).getDocumentElement();
 					Element importedElement =
-							(Element) document.importNode(toAppendElement, true);
+					        (Element) document.importNode(toAppendElement, true);
 					frameElement.appendChild(importedElement);
 
 					appendFrameContent(importedElement, document, frameIdentification);
 				} catch (DOMException | IOException e) {
 					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
-							+ " continuing...", e);
+					        + " continuing...", e);
 				}
 			}
 		}
@@ -622,8 +663,10 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	/**
-	 * @param input the input to be filled.
-	 * @return FormInput with random value assigned if possible
+	 * @param input
+	 *            the input to be filled.
+	 * @return FormInput with random value assigned if possible. If no values were set it returns
+	 *         <code>null</code>
 	 */
 	@Override
 	public FormInput getInputWithRandomValue(FormInput input) {
@@ -631,8 +674,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		WebElement webElement;
 		try {
 			webElement = browser.findElement(input.getIdentification().getWebDriverBy());
-			if (!(webElement.isDisplayed())) {
-
+			if (!webElement.isDisplayed()) {
 				return null;
 			}
 		} catch (WebDriverException e) {
@@ -640,40 +682,42 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			return null;
 		}
 
-		Set<InputValue> values = new HashSet<InputValue>();
-
-		// create some random value
-
-		if (input.getType().toLowerCase().startsWith("text")) {
-			values.add(new InputValue(new RandomInputValueGenerator()
-					.getRandomString(FormHandler.RANDOM_STRING_LENGTH), true));
-		} else if (input.getType().equalsIgnoreCase("checkbox")
-				|| input.getType().equalsIgnoreCase("radio") && !webElement.isSelected()) {
-			if (new RandomInputValueGenerator().getCheck()) {
-				values.add(new InputValue("1", true));
-			} else {
-				values.add(new InputValue("0", false));
-
-			}
-		} else if (input.getType().equalsIgnoreCase("select")) {
-			try {
-				Select select = new Select(webElement);
-				WebElement option =
-						(WebElement) new RandomInputValueGenerator().getRandomOption(select
-								.getOptions());
-				values.add(new InputValue(option.getText(), true));
-			} catch (WebDriverException e) {
-				throwIfConnectionException(e);
-				return null;
-			}
+		Set<InputValue> values = new HashSet<>();
+		try {
+			setRandomValues(input, webElement, values);
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
+			return null;
 		}
-
-		if (values.size() == 0) {
+		if (values.isEmpty()) {
 			return null;
 		}
 		input.setInputValues(values);
 		return input;
 
+	}
+
+	private void setRandomValues(FormInput input, WebElement webElement, Set<InputValue> values) {
+		String inputString = input.getType().toLowerCase();
+		if (inputString.startsWith("text")) {
+			values.add(new InputValue(new RandomInputValueGenerator()
+			        .getRandomString(FormHandler.RANDOM_STRING_LENGTH), true));
+		} else if (inputString.equals("checkbox") || inputString.equals("radio")
+		        && !webElement.isSelected()) {
+			if (new RandomInputValueGenerator().getCheck()) {
+				values.add(new InputValue("1", true));
+			} else {
+				values.add(new InputValue("0", false));
+			}
+		} else if (inputString.equals("select")) {
+			Select select = new Select(webElement);
+			if (!select.getOptions().isEmpty()) {
+				WebElement option =
+				        new RandomInputValueGenerator().getRandomItem(select.getOptions());
+				values.add(new InputValue(option.getText(), true));
+			}
+
+		}
 	}
 
 	@Override
@@ -695,7 +739,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	/**
-	 * @param identification the identification of the element.
+	 * @param identification
+	 *            the identification of the element.
 	 * @return true if the element can be found in the DOM tree.
 	 */
 	@Override
@@ -713,7 +758,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	/**
-	 * @param identification the identification of the element.
+	 * @param identification
+	 *            the identification of the element.
 	 * @return the found element.
 	 */
 	@Override
@@ -786,7 +832,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			executeJavaScript(js);
 		} catch (CrawljaxException e) {
 			LOGGER.error("Removing of Canvas Generated By FirefoxDriver failed,"
-					+ " most likely leaving it in the browser", e);
+			        + " most likely leaving it in the browser", e);
 		}
 	}
 
@@ -802,18 +848,18 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		// Retrieve the config values used
 		this.filterAttributes = configuration.getFilterAttributeNames();
 		this.crawlWaitReload =
-				configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
+		        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
 		this.crawlWaitEvent = configuration.getCrawlSpecificationReader().getWaitAfterEvent();
 		this.ignoreFrameChecker = configuration.getCrawlSpecificationReader();
 	}
 
 	private boolean exceptionIsConnectionException(WebDriverException exception) {
 		return exception != null && exception.getCause() != null
-				&& exception.getCause() instanceof IOException;
+		        && exception.getCause() instanceof IOException;
 	}
 
 	private RuntimeException wrapWebDriverExceptionIfConnectionException(
-			WebDriverException exception) {
+	        WebDriverException exception) {
 		if (exceptionIsConnectionException(exception)) {
 			return new BrowserConnectionException(exception);
 		}

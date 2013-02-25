@@ -227,14 +227,27 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * Sets the maximum time for Crawljax to run. Crawljax will stop crawling when this timelimit is
-	 * reached.
+	 * Sets the maximum time for Crawljax to run. Crawljax will stop crawling when this time limit
+	 * is reached.
 	 * 
-	 * @param seconds
-	 *            the crawlMaximumRuntime to set
+	 * @param the
+	 *            crawlMaximumRuntime to set
 	 */
 	public void setMaximumRuntime(long time, TimeUnit timeUnit) {
 		this.maximumRuntime = timeUnit.toSeconds(time);
+	}
+
+	/**
+	 * Sets the maximum time for Crawljax to run. Crawljax will stop crawling when this time limit
+	 * is reached.
+	 * 
+	 * @deprecated use {@link #setMaximumRuntime(long, TimeUnit)}.
+	 * @param seconds
+	 *            the crawlMaximumRuntime to set
+	 */
+	@Deprecated
+	public void setMaximumRuntime(long time) {
+		this.maximumRuntime = time;
 	}
 
 	/**
@@ -260,11 +273,21 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * @param milliseconds
-	 *            the number of milliseconds to wait after reloading the url
+	 * @param time
+	 *            to wait after reloading the url
 	 */
 	public void setWaitTimeAfterReloadUrl(long time, TimeUnit unit) {
 		this.waitTimeAfterReloadUrl = unit.toMillis(time);
+	}
+
+	/**
+	 * @deprecated use {@link #setWaitTimeAfterReloadUrl(long, TimeUnit)}
+	 * @param time
+	 *            to wait after reloading the url
+	 */
+	@Deprecated
+	public void setWaitTimeAfterReloadUrl(long timeInMillis) {
+		this.waitTimeAfterReloadUrl = timeInMillis;
 	}
 
 	/**
@@ -275,11 +298,21 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * @param milliseconds
-	 *            the number of milliseconds to wait after an event is fired
+	 * @param the
+	 *            time to wait after an event is fired
 	 */
 	public void setWaitTimeAfterEvent(long time, TimeUnit unit) {
 		this.waitTimeAfterEvent = unit.toMillis(time);
+	}
+
+	/**
+	 * @deprecated use {@link #setWaitTimeAfterEvent(long, TimeUnit)}
+	 * @param milliseconds
+	 *            the number of milliseconds to wait after an event is fired
+	 */
+	@Deprecated
+	public void setWaitTimeAfterEvent(long time) {
+		this.waitTimeAfterEvent = time;
 	}
 
 	/**

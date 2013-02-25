@@ -99,7 +99,7 @@ public class InputField {
 	 * @return The value.
 	 */
 	protected String getValue() {
-		if (fieldValues.size() == 0) {
+		if (fieldValues.isEmpty()) {
 			return null;
 		} else {
 			return fieldValues.get(0);
