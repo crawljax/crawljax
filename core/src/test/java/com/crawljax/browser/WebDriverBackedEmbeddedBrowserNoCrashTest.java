@@ -2,6 +2,8 @@
 
 package com.crawljax.browser;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
@@ -196,7 +198,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testGetFrameDom() {
-		Assert.assertTrue("Wrong FrameID so empty", browser.getFrameDom("123").equals(""));
+		assertTrue("Wrong FrameID so empty", browser.getFrameDom("123").equals(""));
 	}
 
 	/**
@@ -206,7 +208,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testElementExists() {
-		Assert.assertFalse("Wrong Xpath so element does not exsist",
+		assertFalse("Wrong Xpath so element does not exsist",
 		        browser.elementExists(new Identification(How.xpath, "/RUBISH")));
 	}
 

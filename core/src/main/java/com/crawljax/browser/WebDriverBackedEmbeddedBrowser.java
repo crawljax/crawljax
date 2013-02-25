@@ -662,7 +662,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * @param input
 	 *            the input to be filled.
-	 * @return FormInput with random value assigned if possible
+	 * @return FormInput with random value assigned if possible. If no values were set it returns
+	 *         <code>null</code>
 	 */
 	@Override
 	public FormInput getInputWithRandomValue(FormInput input) {
@@ -670,8 +671,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		WebElement webElement;
 		try {
 			webElement = browser.findElement(input.getIdentification().getWebDriverBy());
-			if (!(webElement.isDisplayed())) {
-
+			if (!webElement.isDisplayed()) {
 				return null;
 			}
 		} catch (WebDriverException e) {
@@ -679,40 +679,42 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			return null;
 		}
 
-		Set<InputValue> values = new HashSet<InputValue>();
-
-		// create some random value
-
-		if (input.getType().toLowerCase().startsWith("text")) {
-			values.add(new InputValue(new RandomInputValueGenerator()
-			        .getRandomString(FormHandler.RANDOM_STRING_LENGTH), true));
-		} else if (input.getType().equalsIgnoreCase("checkbox")
-		        || input.getType().equalsIgnoreCase("radio") && !webElement.isSelected()) {
-			if (new RandomInputValueGenerator().getCheck()) {
-				values.add(new InputValue("1", true));
-			} else {
-				values.add(new InputValue("0", false));
-
-			}
-		} else if (input.getType().equalsIgnoreCase("select")) {
-			try {
-				Select select = new Select(webElement);
-				WebElement option =
-				        (WebElement) new RandomInputValueGenerator().getRandomOption(select
-				                .getOptions());
-				values.add(new InputValue(option.getText(), true));
-			} catch (WebDriverException e) {
-				throwIfConnectionException(e);
-				return null;
-			}
+		Set<InputValue> values = new HashSet<>();
+		try {
+			setRandomValues(input, webElement, values);
+		} catch (WebDriverException e) {
+			throwIfConnectionException(e);
+			return null;
 		}
-
-		if (values.size() == 0) {
+		if (values.isEmpty()) {
 			return null;
 		}
 		input.setInputValues(values);
 		return input;
 
+	}
+
+	private void setRandomValues(FormInput input, WebElement webElement, Set<InputValue> values) {
+		String inputString = input.getType().toLowerCase();
+		if (inputString.startsWith("text")) {
+			values.add(new InputValue(new RandomInputValueGenerator()
+			        .getRandomString(FormHandler.RANDOM_STRING_LENGTH), true));
+		} else if (inputString.equals("checkbox") || inputString.equals("radio")
+		        && !webElement.isSelected()) {
+			if (new RandomInputValueGenerator().getCheck()) {
+				values.add(new InputValue("1", true));
+			} else {
+				values.add(new InputValue("0", false));
+			}
+		} else if (input.getType().equalsIgnoreCase("select")) {
+			Select select = new Select(webElement);
+			if (!select.getOptions().isEmpty()) {
+				WebElement option =
+				        new RandomInputValueGenerator().getRandomItem(select.getOptions());
+				values.add(new InputValue(option.getText(), true));
+			}
+
+		}
 	}
 
 	@Override
