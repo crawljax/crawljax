@@ -3,6 +3,7 @@ package com.crawljax.browser;
 import java.io.File;
 import java.net.URL;
 
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.WebElement;
 
 import com.crawljax.core.CrawljaxException;
@@ -38,7 +39,7 @@ public interface EmbeddedBrowser {
 	 *            the event.
 	 * @return if fails.
 	 */
-	boolean fireEvent(Eventable event);
+	boolean fireEvent(Eventable event) throws ElementNotVisibleException;
 
 	/**
 	 * @return the DOM string with all the iframe content.

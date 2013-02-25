@@ -40,7 +40,7 @@ public class UrlUtils {
 		}
 		try {
 			URL destination;
-			if ("javascript:void(0)".equals(link.trim())) {
+			if (isJsVoid(link)) {
 				return false;
 			} else if (link.contains("://")) {
 				destination = new URL(link);
@@ -56,6 +56,27 @@ public class UrlUtils {
 			LOG.warn("Could not parse source URL {}", link);
 			return true;
 		}
+	}
+
+	/**
+	 * @param currentUrl
+	 *            The current url
+	 * @param href
+	 *            The target URL, relative or not
+	 * @return The new URL.
+	 */
+	public static URL extractNewUrl(String currentUrl, String href) throws MalformedURLException {
+		if (href == null || isJsVoid(href) || href.startsWith("mailto:")) {
+			throw new MalformedURLException(href + " is not a valid URL to visit");
+		} else if (href.contains("://")) {
+			return new URL(href);
+		} else {
+			return new URL(new URL(currentUrl), href);
+		}
+	}
+
+	private static boolean isJsVoid(String href) {
+		return "javascript:void(0)".equals(href.trim());
 	}
 
 	/**
@@ -119,4 +140,5 @@ public class UrlUtils {
 	private UrlUtils() {
 
 	}
+
 }
