@@ -437,7 +437,7 @@ public class Crawler implements Runnable {
 			return true;
 		}
 
-		if (!checkConstraints()) {
+		if (!shouldContinueCrawling()) {
 			return false;
 		}
 
@@ -464,7 +464,7 @@ public class Crawler implements Runnable {
 				return true;
 			}
 
-			if (!checkConstraints()) {
+			if (!shouldContinueCrawling()) {
 				return false;
 			}
 			ClickResult result = this.crawlAction(action);
@@ -566,7 +566,7 @@ public class Crawler implements Runnable {
 	 */
 	@Override
 	public void run() {
-		if (!checkConstraints()) {
+		if (!shouldContinueCrawling()) {
 			// Constrains are not met at start of this Crawler, so stop immediately
 			return;
 		}
@@ -646,18 +646,12 @@ public class Crawler implements Runnable {
 		return stateMachine;
 	}
 
-	/**
-	 * Checks the state and time constraints. This function is nearly Thread-safe.
-	 * 
-	 * @return true if all conditions are met.
-	 */
-	private boolean checkConstraints() {
+	private boolean shouldContinueCrawling() {
 		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
 		long maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime();
-		if ((maxCrawlTime != 0) && (timePassed > maxCrawlTime)) {
-
-			LOGGER.info("Max time " + TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime)
-			        + " seconds passed!");
+		if (maxCrawlTime != 0 & timePassed > maxCrawlTime) {
+			LOGGER.info("Max time {} seconds passed!",
+			        TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime));
 			/* stop crawling */
 			return false;
 		}
