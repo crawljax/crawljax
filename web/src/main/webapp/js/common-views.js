@@ -48,9 +48,10 @@ App.FormTextField = App.FormField.extend({
 		requiredBinding: 'parentView.required',
 		patternBinding: 'parentView.pattern',
 		typeBinding: 'parentView.type',
+		minBinding: 'parentView.min',
 		maxlengthBinding: 'parentView.maxlength',
 		classNameBindings: 'parentView.inputClassNames',
-		attributeBindings: ['required', 'pattern', 'type']
+		attributeBindings: ['required', 'pattern', 'type', 'min', 'max']
 	})
 });
 

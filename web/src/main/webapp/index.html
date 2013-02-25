@@ -100,13 +100,13 @@
 			required="true" pattern="(http|https)://.+" errorText="Must provide a valid url. http://www.example.com"}}
 		{{view App.FormSelect label="Browser:" valueBinding="controller.content.browser" contentBinding="App.browsers" optionValuePath="content.value"
        		optionLabelPath="content.name"}}
-		{{view App.FormTextField label="Number of Browsers:" valueBinding="controller.content.numBrowsers"}}
+		{{view App.FormTextField type="number" min="0" label="Number of Browsers:" valueBinding="controller.content.numBrowsers"}}
 		{{view App.FormCheckbox label="Boot Browsers at Start" checkedBinding="controller.content.bootBrowser"}}
-		{{view App.FormTextField label="Maximum Crawl Depth:" valueBinding="controller.content.maxDepth"}}
-		{{view App.FormTextField label="Maximum Crawl States:" valueBinding="controller.content.maxState"}}
-		{{view App.FormTextField label="Maximum Duration(min):" valueBinding="controller.content.maxDuration"}}
-		{{view App.FormTextField label="Event Wait Time(ms):" valueBinding="controller.content.eventWaitTime"}}
-		{{view App.FormTextField label="Reload Wait Time(ms):" valueBinding="controller.content.reloadWaitTime"}}
+		{{view App.FormTextField type="number" min="0" label="Maximum Crawl Depth:" valueBinding="controller.content.maxDepth"}}
+		{{view App.FormTextField type="number" min="0" label="Maximum Crawl States:" valueBinding="controller.content.maxState"}}
+		{{view App.FormTextField type="number" min="0" label="Maximum Duration(min):" valueBinding="controller.content.maxDuration"}}
+		{{view App.FormTextField type="number" min="0" label="Event Wait Time(ms):" valueBinding="controller.content.eventWaitTime"}}
+		{{view App.FormTextField type="number" min="0" label="Reload Wait Time(ms):" valueBinding="controller.content.reloadWaitTime"}}
 		{{view App.FormCheckbox label="Click Elements Once" checkedBinding="controller.content.clickOnce"}}
 	</fieldset>
 	</form>
