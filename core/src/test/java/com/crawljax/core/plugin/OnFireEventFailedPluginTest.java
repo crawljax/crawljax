@@ -1,13 +1,16 @@
 package com.crawljax.core.plugin;
 
-import java.io.File;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -19,24 +22,28 @@ import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
 
 @Category(BrowserTest.class)
 public class OnFireEventFailedPluginTest {
-	private static CrawljaxController controller;
-	private static CrawljaxConfiguration config;
-	private static int hit;
 
-	@BeforeClass
-	public static void setup() throws ConfigurationException {
+	private CrawljaxController controller;
+	private CrawljaxConfiguration config;
+
+	private final AtomicInteger hits = new AtomicInteger();
+
+	@ClassRule
+	public static final RunWithWebServer SERVER = new RunWithWebServer("site");
+
+	@Before
+	public void setup() throws ConfigurationException {
 
 		CrawlSpecification spec =
-		        new CrawlSpecification(
-		                "file://"
-		                        + new File("src/test/resources/site/crawler/index.html")
-		                                .getAbsolutePath());
+		        new CrawlSpecification(SERVER.getSiteUrl() + "crawler/index.html");
 		spec.clickDefaultElements();
-
+		spec.clickHiddenAnchors(false);
 		config = new CrawljaxConfiguration();
+
 		config.setCrawlSpecification(spec);
 		config.addPlugin(new PreStateCrawlingPlugin() {
 
@@ -56,7 +63,7 @@ public class OnFireEventFailedPluginTest {
 		config.addPlugin(new OnFireEventFailedPlugin() {
 			@Override
 			public void onFireEventFailed(Eventable eventable, List<Eventable> pathToFailure) {
-				hit++;
+				hits.incrementAndGet();
 			}
 		});
 
@@ -67,13 +74,12 @@ public class OnFireEventFailedPluginTest {
 	public void testFireEventFaildHasBeenExecuted() throws ConfigurationException,
 	        CrawljaxException {
 		controller.run();
-		Assert.assertEquals(
-		        "The FireEventFaild Plugin has been executed the correct amount of times", hit,
-		        controller.getElementChecker().numberOfExaminedElements());
+		assertThat("The FireEventFaild Plugin has been executed the correct amount of times",
+		        hits.get(), is(controller.getElementChecker().numberOfExaminedElements()));
 	}
 
-	@AfterClass
-	public static void cleanUp() {
+	@After
+	public void cleanUp() {
 		CrawljaxPluginsUtil.loadPlugins(null);
 	}
 

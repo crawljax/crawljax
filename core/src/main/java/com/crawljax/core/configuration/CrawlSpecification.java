@@ -79,6 +79,8 @@ public class CrawlSpecification {
 	private boolean clicklOnce = true;
 	private boolean disableCrawlFrames = false;
 
+	private boolean clickHiddenAnchors = false;
+
 	/**
 	 * @param url
 	 *            the site to crawl
@@ -513,5 +515,26 @@ public class CrawlSpecification {
 	 */
 	protected boolean isCrawlFrames() {
 		return !disableCrawlFrames;
+	}
+
+	boolean isClickHiddenAnchors() {
+		return clickHiddenAnchors;
+	}
+
+	/**
+	 * Set Crawljax to click hidden anchors or not. <code>true</code> by default. @ *
+	 * <dl>
+	 * <dd>Pro:</dd>
+	 * <dt>The benefit of clicking hidden anchors is that Crawljax isn't capable of clicking
+	 * elements that are hidden for example because you have to hover another element first. This
+	 * happens in most fold-out menus for example. Enabling this function allows Crawljax to find
+	 * more states that are hidden this way.</dt>
+	 * <dd>Con:</dd>
+	 * <dt>If a anchor tag is never visible in the browser in any way, Crawljax will crawl it
+	 * anyway. This makes the Crawl inconsistent with what the user experiences.</dt>
+	 * </dl>
+	 */
+	public void clickHiddenAnchors(boolean clickHiddenAnchors) {
+		this.clickHiddenAnchors = clickHiddenAnchors;
 	}
 }
