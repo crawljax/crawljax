@@ -54,6 +54,10 @@ public class RandomInputValueGenerator {
 	 */
 	public <T> T getRandomItem(List<T> options) {
 		checkArgument(!options.isEmpty(), "Options must not be empty");
-		return options.get(random.nextInt(options.size() - 1));
+		if (options.size() == 1) {
+			return options.get(0);
+		} else {
+			return options.get(random.nextInt(options.size() - 1));
+		}
 	}
 }
