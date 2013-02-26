@@ -81,9 +81,9 @@
 	
 	<script type="text/x-handlebars" data-template-name="_config_tabs">
 	<ul class="nav nav-tabs">
-		{{#view App.NavView route='config.index' }}<a href='#' {{action moveTo route }}>Overview</a>{{/view}}
-		{{#view App.NavView route='config.advanced' }}<a href='#' {{action moveTo route }}>Advanced</a>{{/view}}
-		{{#view App.NavView route='config.plugins' }}<a href='#' {{action moveTo route }}>Plugins</a>{{/view}}
+		{{#view App.NavView route='config.index' }}<a href='#' {{action moveTo view.route }}>Overview</a>{{/view}}
+		{{#view App.NavView route='config.advanced' }}<a href='#' {{action moveTo view.route }}>Advanced</a>{{/view}}
+		{{#view App.NavView route='config.plugins' }}<a href='#' {{action moveTo view.route }}>Plugins</a>{{/view}}
 	</ul>
 	</script>
 	
