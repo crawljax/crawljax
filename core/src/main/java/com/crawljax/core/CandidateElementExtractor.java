@@ -222,21 +222,17 @@ public class CandidateElementExtractor {
 			                expressions, element);
 			LOG.debug("Element {} matches Xpath={}", DomUtils.getElementString(element),
 			        matchesXpath);
-			// TODO Stefan This is a possible Thread-Interleaving problem, as
-			// isChecked can return
-			// false and when needed to add it can return true.
-			// check if element is a candidate
+			/*
+			 * TODO Stefan This is a possible Thread-Interleaving problem, as / isChecked can return
+			 * false and when needed to add it can return true. / check if element is a candidate
+			 */
 			String id = element.getNodeName() + ": " + DomUtils.getAllElementAttributes(element);
-			try {
-				if (matchesXpath && !checkedElements.isChecked(id)
-				        && isElementVisible(dom, element) && !filterElement(attributes, element)
-				        && !isExcluded(dom, element, eventableConditionChecker)) {
-					addElement(element, result, tagElement);
-				} else {
-					LOG.debug("Element {} was not added");
-				}
-			} catch (XPathExpressionException e) {
-				LOG.info("Could not read XPath for element {}", element, e);
+			if (matchesXpath && !checkedElements.isChecked(id)
+			        && !filterElement(attributes, element)
+			        && !isExcluded(dom, element, eventableConditionChecker)) {
+				addElement(element, result, tagElement);
+			} else {
+				LOG.debug("Element {} was not added");
 			}
 		}
 		return result.build();
@@ -384,31 +380,6 @@ public class CandidateElementExtractor {
 		}
 
 		return false;
-	}
-
-	/**
-	 * @TODO find also whether CSS makes the element invisible!!! --> use WebDriver! Via webdriver
-	 *       checking can be very slow
-	 */
-	private boolean isElementVisible(Document dom, Element element)
-	        throws XPathExpressionException {
-
-		String xpath =
-		        XPathHelper.getXPathExpression(element)
-		                + "/ancestor::*[contains(@style, 'DISPLAY: none') "
-		                + "or contains(@style, 'DISPLAY:none')"
-		                + "or contains(@style, 'display: none')"
-		                + " or contains(@style, 'display:none')]";
-
-		NodeList nodes = XPathHelper.evaluateXpathExpression(dom, xpath);
-
-		if (nodes.getLength() > 0) {
-			LOG.debug("Element: " + DomUtils.getAllElementAttributes(element) + " is invisible!");
-
-			return false;
-		}
-
-		return true;
 	}
 
 	/**

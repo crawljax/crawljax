@@ -130,4 +130,12 @@ public class CrawlSpecificationReader implements IgnoreFrameChecker {
 		}
 		return false;
 	}
+
+	/**
+	 * @return whether or not to crawl hidden anchors.
+	 */
+	public boolean crawlHiddenAnchors() {
+		return crawlSpecification.isClickHiddenAnchors();
+	}
+
 }

@@ -34,7 +34,9 @@ public class WivetTest {
 		crawler.setMaximumStates(0);
 		crawler.setDepth(0);
 		crawler.setRandomInputInForms(true);
-		crawler.clickMoreElements();
+		crawler.click("span", "div", "ol", "center", "li", "radio", "non", "meta", "refresh",
+		        "xhr", "relative", "link", "self", "form", "input", "option", "img", "p", "td",
+		        "tr", "table", "tbody");
 		crawler.setClickOnce(true);
 		crawler.setWaitTimeAfterReloadUrl(20, TimeUnit.MILLISECONDS);
 		crawler.setWaitTimeAfterEvent(200, TimeUnit.MILLISECONDS);
