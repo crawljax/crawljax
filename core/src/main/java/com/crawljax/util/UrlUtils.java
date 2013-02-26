@@ -25,7 +25,8 @@ public class UrlUtils {
 	 *            the destinations. This can be a relative or absolute link.
 	 * @return Whether location and link are on the same domain. It returns <code>false</code> if
 	 *         the link is <code>null</code>. It returns true if the destination {@link URL} throws
-	 *         a {@link MalformedURLException}.
+	 *         a {@link MalformedURLException}, is a <code>mailto:</code> link, is a absolute file
+	 *         URL or when it's unreadable.
 	 */
 	public static boolean isLinkExternal(String location, String link) {
 		if (link == null) {
