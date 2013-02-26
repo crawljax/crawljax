@@ -87,3 +87,14 @@ App.FormSelect = App.FormField.extend({
 		classNameBindings: 'parentView.inputClassNames'
 	})
 });
+
+//Bootstrap Nav
+App.NavView = Ember.View.extend({
+	tagName: 'li',
+	classNameBindings: ['active'],
+	route: null,
+	active: function() {
+		var path = this.get('controller.controllers.application.currentPath');
+	    return path == this.route;
+	}.property()
+});

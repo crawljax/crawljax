@@ -65,6 +65,7 @@
     
     App.ConfigListController = Ember.ArrayController.extend({});
     App.ConfigController = Ember.Controller.extend({
+    	needs: ['application'],
     	rest: function(link){
 	    	switch(link.target)
 	    	{
@@ -80,7 +81,13 @@
 	    		App.Config.remove(this.content, function(data){ router.transitionTo('config_list'); });
 	    		break;
 	    	}	
-	    }
+	    },
+    	moveTo: function(route) {
+    		if (validateForm('config_form')) {
+    			var router = this.get('target');
+    			router.transitionTo(route);
+    		}
+    	}
     });
     
     App.HistoryListController = Ember.ArrayController.extend({ itemController: 'historyItem' });

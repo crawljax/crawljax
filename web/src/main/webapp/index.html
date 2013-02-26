@@ -81,9 +81,9 @@
 	
 	<script type="text/x-handlebars" data-template-name="_config_tabs">
 	<ul class="nav nav-tabs">
-		{{#linkTo 'config.index' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Overview</a>{{/linkTo}}
-		{{#linkTo 'config.advanced' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Advanced</a>{{/linkTo}}
-		{{#linkTo 'config.plugins' tagName="li" href=false}}<a {{bindAttr href="view.href"}}>Plugins</a>{{/linkTo}}
+		{{#view App.NavView route='config.index' }}<a href='#' {{action moveTo route }}>Overview</a>{{/view}}
+		{{#view App.NavView route='config.advanced' }}<a href='#' {{action moveTo route }}>Advanced</a>{{/view}}
+		{{#view App.NavView route='config.plugins' }}<a href='#' {{action moveTo route }}>Plugins</a>{{/view}}
 	</ul>
 	</script>
 	
