@@ -205,7 +205,7 @@ public final class CrawlElement {
 	/**
 	 * @return the crawlAttributes
 	 */
-	protected ImmutableList<CrawlAttribute> getCrawlAttributes() {
+	public ImmutableList<CrawlAttribute> getCrawlAttributes() {
 		return ImmutableList.copyOf(crawlAttributes);
 	}
 
@@ -220,21 +220,21 @@ public final class CrawlElement {
 	/**
 	 * @return the id
 	 */
-	protected String getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @return The tag name.
 	 */
-	protected String getTagName() {
+	public String getTagName() {
 		return tagName;
 	}
 
 	/**
 	 * @return the withXpathExpression
 	 */
-	protected String getWithXpathExpression() {
+	public String getWithXpathExpression() {
 		return underXpath;
 	}
 

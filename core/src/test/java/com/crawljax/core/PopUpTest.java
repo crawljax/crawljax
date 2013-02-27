@@ -12,8 +12,8 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
 
@@ -27,9 +27,14 @@ public class PopUpTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws ConfigurationException {
-		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
-		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification());
-		crawljax = new CrawljaxController(crawljaxConfiguration);
+		CrawljaxConfigurationBuilder builder =
+		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().toExternalForm()
+		                + "popup");
+		builder.setMaximumDepth(3);
+		builder.crawlRules().click("a");
+		builder.crawlRules().waitAfterEvent(100, TimeUnit.MILLISECONDS);
+		builder.crawlRules().waitAfterReloadUrl(100, TimeUnit.MILLISECONDS);
+		crawljax = new CrawljaxController(builder.build());
 	}
 
 	@Test
@@ -41,17 +46,6 @@ public class PopUpTest {
 		} finally {
 			crawljax.terminate(true);
 		}
-	}
-
-	private static CrawlSpecification getCrawlSpecification() {
-		CrawlSpecification crawler =
-		        new CrawlSpecification(WEB_SERVER.getSiteUrl().toExternalForm() + "popup");
-		crawler.setWaitTimeAfterEvent(100, TimeUnit.MILLISECONDS);
-		crawler.setWaitTimeAfterReloadUrl(100, TimeUnit.MILLISECONDS);
-		crawler.setDepth(3);
-		crawler.click("a");
-
-		return crawler;
 	}
 
 }

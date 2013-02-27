@@ -142,7 +142,7 @@ public class Crawler implements Runnable {
 	protected Crawler(CrawljaxController mother, CrawlPath returnPath) {
 		this.backTrackPath = returnPath;
 		this.controller = mother;
-		this.configurationReader = controller.getConfigurationReader();
+		this.configurationReader = controller.getConfiguration();
 		this.crawlQueueManager = mother.getCrawlQueueManager();
 		if (controller.getSession() != null) {
 			this.stateMachine =

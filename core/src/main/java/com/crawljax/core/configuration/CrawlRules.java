@@ -2,7 +2,11 @@ package com.crawljax.core.configuration;
 
 import java.util.concurrent.TimeUnit;
 
+import com.crawljax.condition.Condition;
+import com.crawljax.condition.browserwaiter.WaitCondition;
+import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
+import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilder;
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
@@ -21,6 +25,8 @@ public class CrawlRules {
 		        .builder();
 		private final CrawlActionsBuilder crawlActionsBuilder;
 		private final PreCrawlConfigurationBuilder preCrawlConfig;
+		private final ImmutableSortedSet.Builder<String> ignoredFrameIdentifiers =
+		        ImmutableSortedSet.naturalOrder();
 
 		private CrawlRulesBuilder() {
 			crawlRules = new CrawlRules();
@@ -33,8 +39,14 @@ public class CrawlRules {
 			return this;
 		}
 
-		public CrawlActionsBuilder defineAction() {
-			return crawlActionsBuilder;
+		/**
+		 * @param frame
+		 *            A frame that should be excluded from the DOM, before doing any other
+		 *            operations.
+		 */
+		public CrawlRulesBuilder dontCrawlFrame(String frame) {
+			ignoredFrameIdentifiers.add(frame);
+			return this;
 		}
 
 		/**
@@ -52,13 +64,54 @@ public class CrawlRules {
 			return this;
 		}
 
+		/**
+		 * @param description
+		 *            The invariants description.
+		 * @param condition
+		 *            The condition for the invariant.
+		 * @see Invariant#Invariant(String, Condition)
+		 */
+		public CrawlRulesBuilder addInvariant(String description, Condition condition) {
+			invariants.add(new Invariant(description, condition));
+			return this;
+		}
+
 		public CrawlRulesBuilder addOracleComparator(OracleComparator... oracle) {
 			oracleComparators.add(oracle);
 			return this;
 		}
 
-		public PreCrawlConfigurationBuilder preCrawlConfig() {
-			return preCrawlConfig;
+		/**
+		 * @param condition
+		 *            add a {@link WaitCondition}.
+		 */
+		public PreCrawlConfigurationBuilder addWaitCondition(WaitCondition... condition) {
+			return preCrawlConfig.addWaitCondition(condition);
+		}
+
+		/**
+		 * @param condition
+		 *            add a {@link CrawlCondition}
+		 */
+		public PreCrawlConfigurationBuilder addCrawlCondition(CrawlCondition... condition) {
+			return preCrawlConfig.addCrawlCondition(condition);
+		}
+
+		/**
+		 * @see CrawlCondition#CrawlCondition(String, Condition)
+		 */
+		public PreCrawlConfigurationBuilder addCrawlCondition(String description,
+		        Condition crawlCondition) {
+			return preCrawlConfig.addCrawlCondition(new CrawlCondition(description,
+			        crawlCondition));
+		}
+
+		/**
+		 * @param names
+		 *            add an attribute name you want to filter before parsing the dom.
+		 */
+		public PreCrawlConfigurationBuilder filterAttributeNames(String names) {
+			return preCrawlConfig.filterAttributeNames(names);
 		}
 
 		public CrawlRulesBuilder setInputSpec(InputSpecification spec) {
@@ -90,7 +143,7 @@ public class CrawlRules {
 		 *            Crawl frames in a page. Default is <code>true</code>.
 		 */
 		public CrawlRulesBuilder crawlFrames(boolean frames) {
-			crawlRules.disableCrawlFrames = !frames;
+			crawlRules.crawlFrames = frames;
 			return this;
 		}
 
@@ -101,7 +154,7 @@ public class CrawlRules {
 		 *            The time unit.
 		 */
 		public CrawlRulesBuilder waitAfterReloadUrl(long time, TimeUnit unit) {
-			crawlRules.waitAfterReloadUrlMillis = time;
+			crawlRules.waitAfterReloadUrl = time;
 			return this;
 		}
 
@@ -112,7 +165,7 @@ public class CrawlRules {
 		 *            The time unit.
 		 */
 		public CrawlRulesBuilder waitAfterEvent(long time, TimeUnit unit) {
-			crawlRules.waitAfterReloadUrlMillis = time;
+			crawlRules.waitAfterReloadUrl = time;
 			return this;
 		}
 
@@ -134,6 +187,47 @@ public class CrawlRules {
 			return this;
 		}
 
+		/**
+		 * @param tagName
+		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#click(java.lang.String)
+		 */
+		public CrawlElement click(String tagName) {
+			return crawlActionsBuilder.click(tagName);
+		}
+
+		/**
+		 * @param tagNames
+		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#click(java.lang.String[])
+		 */
+		public void click(String... tagNames) {
+			crawlActionsBuilder.click(tagNames);
+		}
+
+		/**
+		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#clickDefaultElements()
+		 */
+		public void clickDefaultElements() {
+			crawlActionsBuilder.clickDefaultElements();
+		}
+
+		/**
+		 * @param tagName
+		 * @return
+		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#dontClick(java.lang.String)
+		 */
+		public CrawlElement dontClick(String tagName) {
+			return crawlActionsBuilder.dontClick(tagName);
+		}
+
+		/**
+		 * @param tagname
+		 * @return
+		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#dontClickChildrenOf(java.lang.String)
+		 */
+		public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {
+			return crawlActionsBuilder.dontClickChildrenOf(tagname);
+		}
+
 		CrawlRules build() {
 			crawlRules.crawlEvents = crawlEvents.build();
 			if (crawlRules.crawlEvents.isEmpty()) {
@@ -142,6 +236,7 @@ public class CrawlRules {
 			crawlRules.invariants = invariants.build();
 			crawlRules.oracleComparators = oracleComparators.build();
 			crawlRules.preCrawlConfig = preCrawlConfig.build(crawlActionsBuilder);
+			crawlRules.ignoredFrameIdentifiers = ignoredFrameIdentifiers.build();
 			return crawlRules;
 		}
 	}
@@ -154,6 +249,7 @@ public class CrawlRules {
 
 	private ImmutableList<Invariant> invariants;
 	private ImmutableList<OracleComparator> oracleComparators;
+	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
 	private PreCrawlConfiguration preCrawlConfig;
 
@@ -161,9 +257,9 @@ public class CrawlRules {
 	private InputSpecification inputSpecification;
 	private boolean testInvariantsWhileCrawling = true;
 	private boolean clickOnce = true;
-	private boolean disableCrawlFrames = false;
+	private boolean crawlFrames = true;
 	private boolean crawlHiddenAnchors = false;
-	public long waitAfterReloadUrlMillis = 500;
+	public long waitAfterReloadUrl = 500;
 	public long waitAfterEvent = 500;
 
 	private CrawlRules() {
@@ -201,8 +297,8 @@ public class CrawlRules {
 		return clickOnce;
 	}
 
-	public boolean isDisableCrawlFrames() {
-		return disableCrawlFrames;
+	public boolean shouldCrawlFrames() {
+		return crawlFrames;
 	}
 
 	public boolean isCrawlHiddenAnchors() {
@@ -213,7 +309,7 @@ public class CrawlRules {
 	 * @return in milliseconds
 	 */
 	public long getWaitAfterReloadUrl() {
-		return waitAfterReloadUrlMillis;
+		return waitAfterReloadUrl;
 	}
 
 	/**
@@ -223,14 +319,27 @@ public class CrawlRules {
 		return waitAfterEvent;
 	}
 
+	public ImmutableSortedSet<String> getIgnoredFrameIdentifiers() {
+		return ignoredFrameIdentifiers;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (clickOnce ? 1231 : 1237);
 		result = prime * result + ((crawlEvents == null) ? 0 : crawlEvents.hashCode());
+		result = prime * result + (crawlFrames ? 1231 : 1237);
 		result = prime * result + (crawlHiddenAnchors ? 1231 : 1237);
-		result = prime * result + (disableCrawlFrames ? 1231 : 1237);
+		result =
+		        prime
+		                * result
+		                + ((ignoredFrameIdentifiers == null) ? 0 : ignoredFrameIdentifiers
+		                        .hashCode());
 		result =
 		        prime * result
 		                + ((inputSpecification == null) ? 0 : inputSpecification.hashCode());
@@ -240,9 +349,15 @@ public class CrawlRules {
 		result = prime * result + ((preCrawlConfig == null) ? 0 : preCrawlConfig.hashCode());
 		result = prime * result + (randomInputInForms ? 1231 : 1237);
 		result = prime * result + (testInvariantsWhileCrawling ? 1231 : 1237);
+		result = prime * result + (int) (waitAfterEvent ^ (waitAfterEvent >>> 32));
+		result = prime * result + (int) (waitAfterReloadUrl ^ (waitAfterReloadUrl >>> 32));
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -259,9 +374,14 @@ public class CrawlRules {
 				return false;
 		} else if (!crawlEvents.equals(other.crawlEvents))
 			return false;
+		if (crawlFrames != other.crawlFrames)
+			return false;
 		if (crawlHiddenAnchors != other.crawlHiddenAnchors)
 			return false;
-		if (disableCrawlFrames != other.disableCrawlFrames)
+		if (ignoredFrameIdentifiers == null) {
+			if (other.ignoredFrameIdentifiers != null)
+				return false;
+		} else if (!ignoredFrameIdentifiers.equals(other.ignoredFrameIdentifiers))
 			return false;
 		if (inputSpecification == null) {
 			if (other.inputSpecification != null)
@@ -287,9 +407,17 @@ public class CrawlRules {
 			return false;
 		if (testInvariantsWhileCrawling != other.testInvariantsWhileCrawling)
 			return false;
+		if (waitAfterEvent != other.waitAfterEvent)
+			return false;
+		if (waitAfterReloadUrl != other.waitAfterReloadUrl)
+			return false;
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -299,6 +427,8 @@ public class CrawlRules {
 		builder.append(invariants);
 		builder.append(", oracleComparators=");
 		builder.append(oracleComparators);
+		builder.append(", ignoredFrameIdentifiers=");
+		builder.append(ignoredFrameIdentifiers);
 		builder.append(", preCrawlConfig=");
 		builder.append(preCrawlConfig);
 		builder.append(", randomInputInForms=");
@@ -307,12 +437,16 @@ public class CrawlRules {
 		builder.append(inputSpecification);
 		builder.append(", testInvariantsWhileCrawling=");
 		builder.append(testInvariantsWhileCrawling);
-		builder.append(", clicklOnce=");
+		builder.append(", clickOnce=");
 		builder.append(clickOnce);
-		builder.append(", disableCrawlFrames=");
-		builder.append(disableCrawlFrames);
+		builder.append(", crawlFrames=");
+		builder.append(crawlFrames);
 		builder.append(", crawlHiddenAnchors=");
 		builder.append(crawlHiddenAnchors);
+		builder.append(", waitAfterReloadUrlMillis=");
+		builder.append(waitAfterReloadUrl);
+		builder.append(", waitAfterEvent=");
+		builder.append(waitAfterEvent);
 		builder.append("]");
 		return builder.toString();
 	}

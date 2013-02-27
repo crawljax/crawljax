@@ -852,7 +852,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		        configuration.getCrawlRules().getPreCrawlConfig().getFilterAttributeNames();
 		this.crawlWaitReload = configuration.getCrawlRules().getWaitAfterReloadUrl();
 		this.crawlWaitEvent = configuration.getCrawlRules().getWaitAfterEvent();
-		this.ignoreFrameChecker = configuration.getCrawlSpecificationReader();
 	}
 
 	private boolean exceptionIsConnectionException(WebDriverException exception) {

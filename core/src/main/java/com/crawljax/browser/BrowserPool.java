@@ -23,9 +23,6 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 
 /**
  * The Pool class returns an instance of the desired browser as specified in the properties file.
- * 
- * @author mesbah
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  */
 public final class BrowserPool {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowserPool.class);

@@ -24,7 +24,7 @@ public class CrawlActionsTest {
 		actions.click("a");
 		actions.click("b").underXPath("123");
 		actions.click("b").underXPath("sdfsdf");
-		List<CrawlElement> crawlElements = actions.getCrawlElements();
+		List<CrawlElement> crawlElements = actions.build().getLeft();
 		assertThat(crawlElements, hasSize(3));
 	}
 
@@ -33,7 +33,7 @@ public class CrawlActionsTest {
 		actions.dontClick("a");
 		actions.dontClick("b").underXPath("123");
 		actions.dontClick("b").underXPath("sdfsdf");
-		List<CrawlElement> crawlElements = actions.getCrawlElementsExcluded();
+		List<CrawlElement> crawlElements = actions.build().getRight();
 		assertThat(crawlElements, hasSize(3));
 	}
 
@@ -44,7 +44,7 @@ public class CrawlActionsTest {
 		actions.click("button");
 		actions.dontClickChildrenOf("b").withId("someId");
 		actions.dontClickChildrenOf("b").withClass("someClass");
-		List<CrawlElement> crawlElements = actions.getCrawlElementsExcluded();
+		List<CrawlElement> crawlElements = actions.build().getRight();
 		assertThat(crawlElements, hasSize(4));
 		assertThat(
 		        crawlElements,

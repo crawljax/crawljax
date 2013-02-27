@@ -12,7 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -28,7 +27,6 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.configuration.CrawlSpecificationReader;
 import com.crawljax.plugins.crawloverview.model.CrawlConfiguration;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.Statistics;
@@ -159,7 +157,7 @@ class OutputBuilder {
 		try {
 			writeIndexFile(outModel);
 			writeStatistics(outModel.getStatistics());
-			writeConfig(outModel.getConfiguration(), outModel.getCrawlSpecification());
+			writeConfig(outModel.getConfiguration());
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
@@ -167,11 +165,10 @@ class OutputBuilder {
 		LOG.info("Overview report generated");
 	}
 
-	private void writeConfig(CrawlConfiguration configuration, CrawlSpecificationReader crawlSpec) {
+	private void writeConfig(CrawlConfiguration configuration) {
 		File file = new File(outputDir, "config.html");
 		VelocityContext context = new VelocityContext();
 		context.put("config", BeanToReadableMap.toMap(configuration));
-		context.put("spec", BeanToReadableMap.toMap(crawlSpec));
 		writeFile(context, file, "config.html");
 	}
 
@@ -206,7 +203,7 @@ class OutputBuilder {
 		writeFile(context, file, "urls.html");
 	}
 
-	public void write(CrawlSpecificationReader crawlSpecificationReader) {
+	public void write(CrawlConfiguration crawlSpecificationReader) {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			ObjectWriter prettyPrinter = objectMapper.writer().withDefaultPrettyPrinter();

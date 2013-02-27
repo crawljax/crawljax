@@ -1,8 +1,11 @@
 package com.crawljax.crawls;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.eclipse.jetty.util.resource.Resource;
 
-import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BaseCrawler;
 
 /**
@@ -19,11 +22,20 @@ public class HiddenElementsSiteCrawl extends BaseCrawler {
 	}
 
 	@Override
-	protected CrawlSpecification newCrawlSpecification() {
-		CrawlSpecification spec = new CrawlSpecification(getUrl() + "hidden-elements-site");
-		spec.clickDefaultElements();
-		spec.setDepth(0);
-		spec.clickHiddenAnchors(clickHiddenElements);
-		return spec;
+	protected URL getUrl() {
+		try {
+			return new URL(super.getUrl() + "hidden-elements-site");
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
 	}
+
+	@Override
+	protected CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
+		CrawljaxConfigurationBuilder builder =
+		        super.newCrawlConfiguartionBuilder();
+		builder.crawlRules().crawlHiddenAnchors(clickHiddenElements);
+		return builder;
+	}
+
 }

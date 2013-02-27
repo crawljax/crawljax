@@ -11,10 +11,13 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +27,15 @@ import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.condition.RegexCondition;
 import com.crawljax.condition.XPathCondition;
 import com.crawljax.condition.browserwaiter.ExpectedVisibleCondition;
+import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
@@ -39,16 +46,19 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.oraclecomparator.OracleComparator;
 import com.crawljax.oraclecomparator.comparators.DateComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
+import com.crawljax.test.RunWithWebServer;
 
 /**
  * This is the base abstract class for all different kind of largeTests. Sub classes tests specific
  * browser implementations like FireFox, Chrome, IE, etc.
  */
-public abstract class LargeTestSuper {
+public abstract class LargeTestBase {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LargeTestSuper.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LargeTestBase.class);
+	private static final AtomicBoolean HAS_RUN = new AtomicBoolean(false);
 	private static CrawlSession session;
 
 	private static final int CLICKED_CLICK_ME_ELEMENTS = 6;
@@ -92,7 +102,24 @@ public abstract class LargeTestSuper {
 	private static final String[] MULTIPLE_INPUT_RESULTS = { "first;foo;true;false;OPTION1;same",
 	        "second;bar;false;true;OPTION2;same", ";foo;true;false;OPTION1;same" };
 
-	/* setting up */
+	@ClassRule
+	public static final RunWithWebServer WEB_SERVER = new RunWithWebServer("/site");
+
+	@Before
+	public void setup() throws Exception {
+		if (!HAS_RUN.get()) {
+			HAS_RUN.set(true);
+			CrawljaxController crawljax = null;
+			try {
+				crawljax = new CrawljaxController(getCrawlSpecification());
+				crawljax.run();
+			} finally {
+				if (crawljax != null) {
+					crawljax.terminate(true);
+				}
+			}
+		}
+	}
 
 	/**
 	 * retrieve / build the crawlspecification for the given arguments.
@@ -105,25 +132,29 @@ public abstract class LargeTestSuper {
 	 *            the amount of time in ms to wait after a reload.
 	 * @return the new CrawlSpecification.
 	 */
-	protected static CrawlSpecification getCrawlSpecification(String url, int waintAfterEvent,
-	        int waitAfterReload) {
+	protected CrawljaxConfiguration getCrawlSpecification() {
 
-		CrawlSpecification crawler = new CrawlSpecification(url);
-		crawler.setWaitTimeAfterEvent(waintAfterEvent, TimeUnit.MILLISECONDS);
-		crawler.setWaitTimeAfterReloadUrl(waitAfterReload, TimeUnit.MILLISECONDS);
-		crawler.setDepth(3);
-		crawler.setClickOnce(true);
+		CrawljaxConfigurationBuilder builder =
+		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl());
+		builder.crawlRules().waitAfterEvent(getTimeOutAfterEvent(), TimeUnit.MILLISECONDS);
+		builder.crawlRules()
+		        .waitAfterReloadUrl(getTimeOutAfterReloadUrl(), TimeUnit.MILLISECONDS);
+		builder.setMaximumDepth(3);
+		builder.crawlRules().clickOnce(true);
 
-		addCrawlElements(crawler);
+		builder.setBrowserConfig(getBrowserConfiguration());
 
-		crawler.setInputSpecification(getInputSpecification());
+		addCrawlElements(builder);
 
-		addCrawlConditions(crawler);
-		addOracleComparators(crawler);
-		addInvariants(crawler);
-		addWaitConditions(crawler);
+		builder.crawlRules().setInputSpec(getInputSpecification());
 
-		return crawler;
+		addCrawlConditions(builder);
+		addOracleComparators(builder);
+		addInvariants(builder);
+		addWaitConditions(builder);
+		addPlugins(builder);
+
+		return builder.build();
 	}
 
 	private static InputSpecification getInputSpecification() {
@@ -146,45 +177,53 @@ public abstract class LargeTestSuper {
 		return input;
 	}
 
-	private static void addWaitConditions(CrawlSpecification crawler) {
-		crawler.waitFor("testWaitCondition.html", 2000, new ExpectedVisibleCondition(
-		        new Identification(How.id, "SLOW_WIDGET")));
+	private static void addWaitConditions(CrawljaxConfigurationBuilder crawler) {
+		crawler.crawlRules().addWaitCondition(
+		        new WaitCondition("testWaitCondition.html", 2000, new ExpectedVisibleCondition(
+		                new Identification(How.id, "SLOW_WIDGET"))));
 	}
 
-	private static void addInvariants(CrawlSpecification crawler) {
+	private static void addInvariants(CrawljaxConfigurationBuilder builder) {
 		// should always fail on test invariant page
 		NotXPathCondition neverDivWithInvariantViolationId =
 		        new NotXPathCondition("//DIV[@id='INVARIANT_VIOLATION']");
-		crawler.addInvariant(VIOLATED_INVARIANT_DESCRIPTION, neverDivWithInvariantViolationId);
+		builder.crawlRules().addInvariant(VIOLATED_INVARIANT_DESCRIPTION,
+		        neverDivWithInvariantViolationId);
 
 		// should never fail
 		RegexCondition onInvariantsPagePreCondition = new RegexCondition(INVARIANT_TEXT);
 		XPathCondition expectElement =
 		        new XPathCondition("//DIV[@id='SHOULD_ALWAYS_BE_ON_THIS_PAGE']");
-		crawler.addInvariant("testInvariantWithPrecondiions", expectElement,
-		        onInvariantsPagePreCondition);
+		builder.crawlRules().addInvariant(
+		        new Invariant("testInvariantWithPrecondiions", expectElement,
+		                onInvariantsPagePreCondition));
 	}
 
-	private static void addCrawlElements(CrawlSpecification crawler) {
-		crawler.click("a");
-		crawler.click("div").withText(CLICK_TEXT);
-		crawler.click("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
-		crawler.click("button").when(new NotRegexCondition("DONT_CLICK_BUTTONS_ON_THIS_PAGE"));
-		crawler.click("div").withAttribute(ATTRIBUTE, "condition")
+	private static void addCrawlElements(CrawljaxConfigurationBuilder builder) {
+		CrawlRulesBuilder rules = builder.crawlRules();
+		rules.click("a");
+		rules.click("div").withText(CLICK_TEXT);
+		rules.click("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
+		rules.click("button").when(new NotRegexCondition("DONT_CLICK_BUTTONS_ON_THIS_PAGE"));
+		rules.click("div").withAttribute(ATTRIBUTE, "condition")
 		        .when(new RegexCondition("REGEX_CONDITION_TRUE"));
 
-		crawler.dontClick("a").withText(DONT_CLICK_TEXT);
-		crawler.dontClick("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);
-		crawler.dontClick("a").underXPath("//DIV[@id='" + DONT_CLICK_UNDER_XPATH_ID + "']");
+		rules.dontClick("a").withText(DONT_CLICK_TEXT);
+		rules.dontClick("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);
+		rules.dontClick("a").underXPath("//DIV[@id='" + DONT_CLICK_UNDER_XPATH_ID + "']");
 	}
 
-	private static void addOracleComparators(CrawlSpecification crawler) {
-		crawler.addOracleComparator("style", new StyleComparator());
-		crawler.addOracleComparator("date", new DateComparator());
+	private static void addOracleComparators(CrawljaxConfigurationBuilder builder) {
+		builder.crawlRules().addOracleComparator(
+		        new OracleComparator("style", new StyleComparator()));
+
+		builder.crawlRules().addOracleComparator(
+		        new OracleComparator("date", new DateComparator()));
 	}
 
-	private static void addCrawlConditions(CrawlSpecification crawler) {
-		crawler.addCrawlCondition("DONT_CRAWL_ME", new NotRegexCondition("DONT_CRAWL_ME"));
+	private static void addCrawlConditions(CrawljaxConfigurationBuilder builder) {
+		builder.crawlRules().addCrawlCondition("DONT_CRAWL_ME",
+		        new NotRegexCondition("DONT_CRAWL_ME"));
 	}
 
 	/**
@@ -193,13 +232,13 @@ public abstract class LargeTestSuper {
 	 * @param crawljaxConfiguration
 	 *            the configuration to add the plugins to.
 	 */
-	protected static void addPlugins(CrawljaxConfiguration crawljaxConfiguration) {
+	protected static void addPlugins(CrawljaxConfigurationBuilder crawljaxConfiguration) {
 		// plugin to retrieve session data
 		crawljaxConfiguration.addPlugin(new PostCrawlingPlugin() {
 
 			@Override
 			public void postCrawling(CrawlSession session) {
-				LargeTestSuper.session = session;
+				LargeTestBase.session = session;
 
 			}
 
@@ -209,7 +248,7 @@ public abstract class LargeTestSuper {
 
 			@Override
 			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
-				LargeTestSuper.violatedInvariants.add(invariant);
+				LargeTestBase.violatedInvariants.add(invariant);
 				if (session.getCurrentState().getDom().contains(INVARIANT_TEXT)) {
 					violatedInvariantStateIsCorrect = true;
 					LOG.warn("Invariant violated: " + invariant.getDescription());
@@ -415,5 +454,11 @@ public abstract class LargeTestSuper {
 		assertTrue("Too less nodes found at level 2 number of nodes: " + level2 + " Required: "
 		        + 5, level2 >= 5);
 	}
+
+	abstract BrowserConfiguration getBrowserConfiguration();
+
+	abstract long getTimeOutAfterReloadUrl();
+
+	abstract long getTimeOutAfterEvent();
 
 }

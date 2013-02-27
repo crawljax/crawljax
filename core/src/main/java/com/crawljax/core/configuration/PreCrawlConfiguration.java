@@ -10,8 +10,6 @@ import com.google.common.collect.ImmutableSortedSet;
 public class PreCrawlConfiguration {
 
 	public static class PreCrawlConfigurationBuilder {
-		private final ImmutableSortedSet.Builder<String> ignoredFrameIdentifiers =
-		        ImmutableSortedSet.naturalOrder();
 
 		private final PreCrawlConfiguration preCrawlConfiguration;
 
@@ -55,16 +53,6 @@ public class PreCrawlConfiguration {
 			return this;
 		}
 
-		/**
-		 * @param frame
-		 *            A frame that should be excluded from the DOM, before doing any other
-		 *            operations.
-		 */
-		public PreCrawlConfigurationBuilder ignoreFrame(String frame) {
-			ignoredFrameIdentifiers.add(frame);
-			return this;
-		}
-
 		PreCrawlConfiguration build(CrawlActionsBuilder crawlActionsBuilder) {
 			Pair<ImmutableList<CrawlElement>, ImmutableList<CrawlElement>> elements =
 			        crawlActionsBuilder.build();
@@ -78,7 +66,6 @@ public class PreCrawlConfiguration {
 				preCrawlConfiguration.filterAttributeNames =
 				        ImmutableSortedSet.of("closure_hashcode_(\\w)*", "jquery[0-9]+");
 			}
-			preCrawlConfiguration.ignoredFrameIdentifiers = ignoredFrameIdentifiers.build();
 			return preCrawlConfiguration;
 		}
 	}
@@ -92,7 +79,6 @@ public class PreCrawlConfiguration {
 	private ImmutableList<CrawlElement> includedElements;
 	private ImmutableList<CrawlElement> excludedElements;
 	private ImmutableSortedSet<String> filterAttributeNames;
-	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
 	private PreCrawlConfiguration() {
 
@@ -118,10 +104,6 @@ public class PreCrawlConfiguration {
 		return filterAttributeNames;
 	}
 
-	public ImmutableSortedSet<String> getIgnoredFrameIdentifiers() {
-		return ignoredFrameIdentifiers;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -135,8 +117,6 @@ public class PreCrawlConfiguration {
 		builder.append(excludedElements);
 		builder.append(", filterAttributeNames=");
 		builder.append(filterAttributeNames);
-		builder.append(", ignoredFrameIdentifiers=");
-		builder.append(ignoredFrameIdentifiers);
 		builder.append("]");
 		return builder.toString();
 	}
@@ -150,11 +130,6 @@ public class PreCrawlConfiguration {
 		result =
 		        prime * result
 		                + ((filterAttributeNames == null) ? 0 : filterAttributeNames.hashCode());
-		result =
-		        prime
-		                * result
-		                + ((ignoredFrameIdentifiers == null) ? 0 : ignoredFrameIdentifiers
-		                        .hashCode());
 		result = prime * result + ((includedElements == null) ? 0 : includedElements.hashCode());
 		result = prime * result + ((waitConditions == null) ? 0 : waitConditions.hashCode());
 		return result;
@@ -183,11 +158,6 @@ public class PreCrawlConfiguration {
 			if (other.filterAttributeNames != null)
 				return false;
 		} else if (!filterAttributeNames.equals(other.filterAttributeNames))
-			return false;
-		if (ignoredFrameIdentifiers == null) {
-			if (other.ignoredFrameIdentifiers != null)
-				return false;
-		} else if (!ignoredFrameIdentifiers.equals(other.ignoredFrameIdentifiers))
 			return false;
 		if (includedElements == null) {
 			if (other.includedElements != null)

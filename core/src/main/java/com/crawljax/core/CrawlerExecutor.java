@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.BrowserConfiguration;
 
 /**
  * Main Executor inheriting {@link ThreadPoolExecutor} to implement the beforeExecute, afterExecute
@@ -49,9 +49,9 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	 * workQueue to support Depth-first crawling and the local ThreadFactory. It will have a minimum
 	 * pool size of the #browsers * 2, and a maximum of #browsers * 5.
 	 */
-	public CrawlerExecutor(CrawljaxConfiguration config) {
-		super(config.getBrowserConfig().getNumberOfBrowsers() * 2, config.getBrowserConfig()
-		        .getNumberOfBrowsers() * 5, 0L, TimeUnit.MILLISECONDS, new CrawlQueue());
+	public CrawlerExecutor(BrowserConfiguration config) {
+		super(config.getNumberOfBrowsers() * 2, config.getNumberOfBrowsers() * 5, 0L,
+		        TimeUnit.MILLISECONDS, new CrawlQueue());
 		setThreadFactory(new CrawlerThreadFactory());
 	}
 

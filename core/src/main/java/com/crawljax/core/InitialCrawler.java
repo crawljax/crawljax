@@ -84,7 +84,7 @@ public class InitialCrawler extends Crawler {
 		 */
 		CrawlSession session =
 		        new CrawlSession(controller.getBrowserPool(), stateFlowGraph, indexState,
-		                controller.getStartCrawl(), controller.getConfigurationReader());
+		                controller.getStartCrawl(), controller.getConfiguration());
 		controller.setSession(session);
 
 		/**
