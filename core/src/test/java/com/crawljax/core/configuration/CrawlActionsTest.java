@@ -12,11 +12,11 @@ import org.junit.Test;
 
 public class CrawlActionsTest {
 
-	private CrawlActions actions;
+	private CrawlActionsBuilder actions;
 
 	@Before
 	public void setup() {
-		actions = new CrawlActions();
+		actions = new CrawlActionsBuilder();
 	}
 
 	@Test

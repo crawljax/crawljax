@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlQueueManager;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.ThreadConfigurationReader;
+import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 
 /**
@@ -51,8 +51,6 @@ public final class BrowserPool {
 	 */
 	private final int shutdownTimeout = 100;
 
-	private final ThreadConfigurationReader threadConfig;
-
 	private int retries = 0;
 
 	private final AtomicInteger activeBrowserCount = new AtomicInteger(0);
@@ -65,9 +63,7 @@ public final class BrowserPool {
 
 	private final EmbeddedBrowserBuilder builder;
 
-	private final CrawljaxConfigurationReader configuration;
-
-	/* Config values */
+	private final CrawljaxConfiguration configuration;
 
 	/**
 	 * Is the browser booting in use?
@@ -75,7 +71,7 @@ public final class BrowserPool {
 	 * @return true if the browser booting is in use.
 	 */
 	private boolean useBooting() {
-		return threadConfig.isBrowserBooting();
+		return configuration.getBrowserConfig().isBootstrap();
 	}
 
 	/**
@@ -84,7 +80,7 @@ public final class BrowserPool {
 	 * @return the number of browsers.
 	 */
 	private int getNumberOfBrowsers() {
-		return threadConfig.getNumberBrowsers();
+		return configuration.getBrowserConfig().getNumberOfBrowsers();
 	}
 
 	/**
@@ -93,7 +89,7 @@ public final class BrowserPool {
 	 *      getNumberBrowserCreateRetries()
 	 */
 	private int getNumberBrowserCreateRetries() {
-		return threadConfig.getNumberBrowserCreateRetries();
+		return BrowserConfiguration.BROWSER_START_RETRIES;
 	}
 
 	/**
@@ -101,8 +97,8 @@ public final class BrowserPool {
 	 * @see com.crawljax.core.configuration.ThreadConfigurationReader#
 	 *      getSleepTimeOnBrowserCreationFailure()
 	 */
-	private int getSleepTimeOnBrowserCreationFailure() {
-		return threadConfig.getSleepTimeOnBrowserCreationFailure();
+	private long getSleepTimeOnBrowserCreationFailure() {
+		return BrowserConfiguration.BROWSER_SLEEP_FAILURE;
 	}
 
 	/**
@@ -112,12 +108,12 @@ public final class BrowserPool {
 	 * @param configurationReader
 	 *            the configurationReader used to read the configuration options from.
 	 */
-	public BrowserPool(CrawljaxConfigurationReader configurationReader) {
+	public BrowserPool(CrawljaxConfiguration configurationReader) {
 		this.configuration = configurationReader;
-		this.threadConfig = configurationReader.getThreadConfigurationReader();
-		this.builder = configurationReader.getBrowserBuilder();
+		this.builder = configurationReader.getBrowserConfig().getBrowserBuilder();
 		this.available =
-		        new ArrayBlockingQueue<EmbeddedBrowser>(threadConfig.getNumberBrowsers(), true);
+		        new ArrayBlockingQueue<EmbeddedBrowser>(configurationReader.getBrowserConfig()
+		                .getNumberOfBrowsers(), true);
 		this.booter = new BrowserBooter(this);
 	}
 

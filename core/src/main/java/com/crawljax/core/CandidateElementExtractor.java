@@ -19,8 +19,9 @@ import org.w3c.dom.NodeList;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.IgnoreFrameChecker;
+import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
@@ -66,14 +67,16 @@ public class CandidateElementExtractor {
 	 *            the checker used to determine if a certain frame must be ignored.
 	 */
 	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser,
-	        FormHandler formHandler, CrawljaxConfigurationReader configurationReader) {
+	        FormHandler formHandler, CrawljaxConfiguration configurationReader) {
 		checkedElements = checker;
 		this.browser = browser;
 		this.formHandler = formHandler;
-		this.excludeTagElements = asMultiMap(configurationReader.getExcludeTagElements());
-		this.includedTagElements = configurationReader.getTagElements();
+		PreCrawlConfiguration preCrawlConfig =
+		        configurationReader.getCrawlRules().getPreCrawlConfig();
+		this.excludeTagElements = asMultiMap(preCrawlConfig.getExcludedElements());
+		this.includedTagElements = preCrawlConfig.getIncludedElements();
 		this.ignoreFrameChecker = configurationReader.getCrawlSpecificationReader();
-		clickOnce = configurationReader.getCrawlSpecificationReader().getClickOnce();
+		clickOnce = configurationReader.getCrawlRules().isClickOnce();
 	}
 
 	private ImmutableMultimap<String, TagElement> asMultiMap(ImmutableList<TagElement> elements) {

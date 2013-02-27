@@ -22,17 +22,15 @@ import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawlQueueManager;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.TagElement;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.DomUtils;
 import com.google.common.base.Strings;
 
 /**
- * The state vertex class which represents a state in the browser. This class
- * implements the Iterable interface because on a StateVertex it is possible to
- * iterate over the possible CandidateElements found in this state. When
- * iterating over the possible candidate elements every time a candidate is
- * returned its removed from the list so it is a one time only access to the
+ * The state vertex class which represents a state in the browser. This class implements the
+ * Iterable interface because on a StateVertex it is possible to iterate over the possible
+ * CandidateElements found in this state. When iterating over the possible candidate elements every
+ * time a candidate is returned its removed from the list so it is a one time only access to the
  * candidates.
  */
 public class StateVertex implements Serializable {
@@ -48,16 +46,16 @@ public class StateVertex implements Serializable {
 	private boolean guidedCrawling = false;
 
 	/**
-	 * This list is used to store the possible candidates. If it is null its not
-	 * initialised if it's a empty list its empty.
+	 * This list is used to store the possible candidates. If it is null its not initialised if it's
+	 * a empty list its empty.
 	 */
 	private LinkedBlockingDeque<CandidateCrawlAction> candidateActions =
-			new LinkedBlockingDeque<>();;
+	        new LinkedBlockingDeque<>();;
 
 	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> registerdCandidateActions =
-			new ConcurrentHashMap<>();
+	        new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> workInProgressCandidateActions =
-			new ConcurrentHashMap<>();
+	        new ConcurrentHashMap<>();
 
 	private final LinkedBlockingDeque<Crawler> registeredCrawlers = new LinkedBlockingDeque<>();
 
@@ -70,11 +68,12 @@ public class StateVertex implements Serializable {
 	}
 
 	/**
-	 * Creates a current state without an url and the stripped dom equals the
-	 * dom.
+	 * Creates a current state without an url and the stripped dom equals the dom.
 	 * 
-	 * @param name the name of the state
-	 * @param dom the current DOM tree of the browser
+	 * @param name
+	 *            the name of the state
+	 * @param dom
+	 *            the current DOM tree of the browser
 	 */
 	public StateVertex(String name, String dom) {
 		this(null, name, dom, dom);
@@ -83,10 +82,14 @@ public class StateVertex implements Serializable {
 	/**
 	 * Defines a State.
 	 * 
-	 * @param url the current url of the state
-	 * @param name the name of the state
-	 * @param dom the current DOM tree of the browser
-	 * @param strippedDom the stripped dom by the OracleComparators
+	 * @param url
+	 *            the current url of the state
+	 * @param name
+	 *            the name of the state
+	 * @param dom
+	 *            the current DOM tree of the browser
+	 * @param strippedDom
+	 *            the stripped dom by the OracleComparators
 	 */
 	public StateVertex(String url, String name, String dom, String strippedDom) {
 		this.url = url;
@@ -147,7 +150,8 @@ public class StateVertex implements Serializable {
 	/**
 	 * Compare this vertex to a other StateVertex.
 	 * 
-	 * @param obj the Object to compare this vertex
+	 * @param obj
+	 *            the Object to compare this vertex
 	 * @return Return true if equal. Uses reflection.
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -163,7 +167,7 @@ public class StateVertex implements Serializable {
 		final StateVertex rhs = (StateVertex) obj;
 
 		return new EqualsBuilder().append(this.strippedDom, rhs.getStrippedDom())
-				.append(this.guidedCrawling, rhs.guidedCrawling).isEquals();
+		        .append(this.guidedCrawling, rhs.guidedCrawling).isEquals();
 	}
 
 	/**
@@ -193,21 +197,24 @@ public class StateVertex implements Serializable {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @param dom the dom to set
+	 * @param dom
+	 *            the dom to set
 	 */
 	public void setDom(String dom) {
 		this.dom = dom;
@@ -221,27 +228,29 @@ public class StateVertex implements Serializable {
 	}
 
 	/**
-	 * @param guidedCrawling true if set through guided crawling.
+	 * @param guidedCrawling
+	 *            true if set through guided crawling.
 	 */
 	public void setGuidedCrawling(boolean guidedCrawling) {
 		this.guidedCrawling = guidedCrawling;
 	}
 
 	/**
-	 * search for new Candidates from this state. The search for candidates is
-	 * only done when no list is available yet (candidateActions == null).
+	 * search for new Candidates from this state. The search for candidates is only done when no
+	 * list is available yet (candidateActions == null).
 	 * 
-	 * @param candidateExtractor the CandidateElementExtractor to use.
-	 * @param crawlTagElements the tag elements to examine.
-	 * @param crawlExcludeTagElements the elements to exclude.
-	 * @param clickOnce if true examine each element once.
+	 * @param candidateExtractor
+	 *            the CandidateElementExtractor to use.
+	 * @param crawlTagElements
+	 *            the tag elements to examine.
+	 * @param crawlExcludeTagElements
+	 *            the elements to exclude.
+	 * @param clickOnce
+	 *            if true examine each element once.
 	 * @return true if the searchForCandidateElemens has run false otherwise
 	 */
 	@GuardedBy("candidateActionsSearchLock")
-	public boolean searchForCandidateElements(CandidateElementExtractor candidateExtractor,
-			List<TagElement> crawlTagElements, List<TagElement> crawlExcludeTagElements,
-			boolean clickOnce) {
-
+	public boolean searchForCandidateElements(CandidateElementExtractor candidateExtractor) {
 		try {
 			List<CandidateElement> candidateList = candidateExtractor.extract(this);
 			for (CandidateElement candidateElement : candidateList) {
@@ -250,10 +259,10 @@ public class StateVertex implements Serializable {
 			}
 		} catch (CrawljaxException e) {
 			LOGGER.error(
-					"Catched exception while searching for candidates in state " + getName(), e);
+			        "Catched exception while searching for candidates in state " + getName(), e);
 		}
 		return !candidateActions.isEmpty(); // Only notify of found candidates
-														// when there are...
+		                                    // when there are...
 
 	}
 
@@ -278,8 +287,8 @@ public class StateVertex implements Serializable {
 	}
 
 	/**
-	 * Removes Candidate Actions on candidateElements that have been removed by
-	 * the pre-state crawl plugin.
+	 * Removes Candidate Actions on candidateElements that have been removed by the pre-state crawl
+	 * plugin.
 	 * 
 	 * @param candidateElements
 	 */
@@ -294,7 +303,7 @@ public class StateVertex implements Serializable {
 			if (!candidateElements.contains(currentAction.getCandidateElement())) {
 				iter.remove();
 				LOGGER.info("filtered candidate action: " + currentAction.getEventType().name()
-						+ " on " + currentAction.getCandidateElement().getGeneralString());
+				        + " on " + currentAction.getCandidateElement().getGeneralString());
 
 			}
 		}
@@ -302,28 +311,29 @@ public class StateVertex implements Serializable {
 
 	/**
 	 * @return a Document instance of the dom string.
-	 * @throws IOException if an exception is thrown.
+	 * @throws IOException
+	 *             if an exception is thrown.
 	 */
 	public Document getDocument() throws IOException {
 		return DomUtils.asDocument(this.dom);
 	}
 
 	/**
-	 * This is the main work divider function, calling this function will first
-	 * look at the registeedCandidateActions to see if the current Crawler has
-	 * already registered itself at one of the jobs. Second it tries to see if
-	 * the current crawler is not already processing one of the actions and
-	 * return that action and last it tries to find an unregistered candidate. If
-	 * all else fails it tries to return a action that is registered by an other
-	 * crawler and disables that crawler.
+	 * This is the main work divider function, calling this function will first look at the
+	 * registeedCandidateActions to see if the current Crawler has already registered itself at one
+	 * of the jobs. Second it tries to see if the current crawler is not already processing one of
+	 * the actions and return that action and last it tries to find an unregistered candidate. If
+	 * all else fails it tries to return a action that is registered by an other crawler and
+	 * disables that crawler.
 	 * 
-	 * @param requestingCrawler the Crawler placing the request for the Action
-	 * @param manager the manager that can be used to remove a crawler from the
-	 *           queue.
+	 * @param requestingCrawler
+	 *            the Crawler placing the request for the Action
+	 * @param manager
+	 *            the manager that can be used to remove a crawler from the queue.
 	 * @return the action that needs to be performed by the Crawler.
 	 */
 	public CandidateCrawlAction pollCandidateCrawlAction(Crawler requestingCrawler,
-			CrawlQueueManager manager) {
+	        CrawlQueueManager manager) {
 		CandidateCrawlAction action = registerdCandidateActions.remove(requestingCrawler);
 		if (action != null) {
 			workInProgressCandidateActions.put(requestingCrawler, action);
@@ -348,10 +358,10 @@ public class StateVertex implements Serializable {
 					action = registerdCandidateActions.remove(c);
 					if (action != null) {
 						/*
-						 * We got a action and removed the registeredCandidateActions
-						 * for the crawler, remove the crawler from queue as the first
-						 * thing. As the crawler might just have started the run
-						 * method of the crawler must also be added with a check hook.
+						 * We got a action and removed the registeredCandidateActions for the
+						 * crawler, remove the crawler from queue as the first thing. As the crawler
+						 * might just have started the run method of the crawler must also be added
+						 * with a check hook.
 						 */
 						LOGGER.info("Stolen work from other Crawler");
 						return action;
@@ -370,7 +380,8 @@ public class StateVertex implements Serializable {
 	/**
 	 * Register an assignment to the crawler.
 	 * 
-	 * @param newCrawler the crawler that wants an assignment
+	 * @param newCrawler
+	 *            the crawler that wants an assignment
 	 * @return true if the crawler has an assignment false otherwise.
 	 */
 	public boolean registerCrawler(Crawler newCrawler) {
@@ -386,7 +397,8 @@ public class StateVertex implements Serializable {
 	/**
 	 * Register a Crawler that is going to work, tell if his must go on or abort.
 	 * 
-	 * @param crawler the crawler to register
+	 * @param crawler
+	 *            the crawler to register
 	 * @return true if the crawler is successfully registered
 	 */
 	public boolean startWorking(Crawler crawler) {
@@ -401,11 +413,13 @@ public class StateVertex implements Serializable {
 	}
 
 	/**
-	 * Notify the current StateVertex that the given crawler has finished working
-	 * on the given action.
+	 * Notify the current StateVertex that the given crawler has finished working on the given
+	 * action.
 	 * 
-	 * @param crawler the crawler that is finished
-	 * @param action the action that have been examined
+	 * @param crawler
+	 *            the crawler that is finished
+	 * @param action
+	 *            the action that have been examined
 	 */
 	public void finishedWorking(Crawler crawler, CandidateCrawlAction action) {
 		candidateActions.remove(action);
@@ -413,4 +427,5 @@ public class StateVertex implements Serializable {
 		workInProgressCandidateActions.remove(crawler);
 		registeredCrawlers.remove(crawler);
 	}
+
 }

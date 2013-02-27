@@ -9,9 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.CrawlElement;
+import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.util.XPathHelper;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 
 /**
  * Check whether the conditions of an eventable are satisfied.
@@ -27,9 +30,20 @@ public class EventableConditionChecker {
 	 * @param eventableConditions
 	 *            The eventable conditions.
 	 */
-	public EventableConditionChecker(List<EventableCondition> eventableConditions) {
-		Preconditions.checkNotNull(eventableConditions);
-		this.eventableConditions = eventableConditions;
+	public EventableConditionChecker(PreCrawlConfiguration config) {
+		List<CrawlElement> allElements =
+		        new Builder<CrawlElement>().addAll(config.getIncludedElements())
+		                .addAll(config.getExcludedElements()).build();
+
+		Builder<EventableCondition> builder = ImmutableList.builder();
+		for (CrawlElement crawlTag : allElements) {
+			EventableCondition eventableCondition = crawlTag.getEventableCondition();
+			if (eventableCondition != null) {
+				builder.add(eventableCondition);
+			}
+		}
+
+		this.eventableConditions = builder.build();
 		LOG.debug("Evenetable conditions {}", eventableConditions);
 	}
 

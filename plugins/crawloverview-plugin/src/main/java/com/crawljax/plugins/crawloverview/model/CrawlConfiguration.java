@@ -7,9 +7,9 @@ import javax.annotation.concurrent.Immutable;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableSortedSet;
 
 /**
  * {@link Immutable} copy of the {@link CrawljaxConfiguration}.
@@ -19,19 +19,21 @@ public class CrawlConfiguration {
 
 	private final BrowserType browser;
 	private final ImmutableList<String> crawlElements;
-	private final ImmutableList<String> filteredAttributes;
+	private final ImmutableSortedSet<String> filteredAttributes;
 	private final String proxyConfig;
 
 	public CrawlConfiguration(CrawlSession session) {
-		CrawljaxConfigurationReader config = session.getCrawljaxConfiguration();
-		browser = config.getBrowser();
+		CrawljaxConfiguration config = session.getCrawljaxConfiguration();
+		browser = config.getBrowserConfig().getBrowsertype();
 		if (config.getProxyConfiguration() == null) {
 			proxyConfig = "Not configured";
 		} else {
 			proxyConfig = config.getProxyConfiguration().toString();
 		}
-		crawlElements = toStringList(config.getAllIncludedCrawlElements());
-		filteredAttributes = ImmutableList.copyOf(config.getFilterAttributeNames());
+		crawlElements =
+		        toStringList(config.getCrawlRules().getPreCrawlConfig().getIncludedElements());
+
+		filteredAttributes = config.getCrawlRules().getPreCrawlConfig().getFilterAttributeNames();
 
 	}
 
@@ -51,7 +53,7 @@ public class CrawlConfiguration {
 		return crawlElements;
 	}
 
-	public ImmutableList<String> getFilteredAttributes() {
+	public ImmutableSortedSet<String> getFilteredAttributes() {
 		return filteredAttributes;
 	}
 

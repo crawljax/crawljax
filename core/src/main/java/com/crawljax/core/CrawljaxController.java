@@ -15,9 +15,7 @@ import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.core.configuration.CrawlSpecificationReader;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
@@ -47,7 +45,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	// TODO Stefan, Can not be final because, must be created after the loading of the plugins
 	private Crawler initialCrawler;
 
-	private final CrawljaxConfigurationReader configurationReader;
+	private final CrawljaxConfiguration configurationReader;
 
 	private final ImmutableList<Invariant> invariantList;
 
@@ -67,22 +65,23 @@ public class CrawljaxController implements CrawlQueueManager {
 	 *             if the configuration fails.
 	 */
 	public CrawljaxController(final CrawljaxConfiguration config) throws CrawljaxException {
-		configurationReader = new CrawljaxConfigurationReader(config);
-		CrawlSpecificationReader crawlerReader =
-		        configurationReader.getCrawlSpecificationReader();
+		configurationReader = config;
 
-		stateComparator = new StateComparator(crawlerReader.getOracleComparators());
-		invariantList = crawlerReader.getInvariants();
+		stateComparator = new StateComparator(config.getCrawlRules().getOracleComparators());
+		invariantList = config.getCrawlRules().getInvariants();
 
-		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
+		waitConditionChecker.setWaitConditions(config.getCrawlRules().getPreCrawlConfig()
+		        .getWaitConditions());
 		eventableConditionChecker =
-		        new EventableConditionChecker(configurationReader.getEventableConditions());
+		        new EventableConditionChecker(config.getCrawlRules().getPreCrawlConfig());
 
-		crawlConditionChecker = new ConditionTypeChecker<>(crawlerReader.getCrawlConditions());
+		crawlConditionChecker =
+		        new ConditionTypeChecker<>(config.getCrawlRules().getPreCrawlConfig()
+		                .getCrawlConditions());
 		elementChecker =
 		        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 
-		browserPool = new BrowserPool(configurationReader);
+		browserPool = new BrowserPool(config);
 
 		workQueue = init();
 	}
@@ -103,17 +102,13 @@ public class CrawljaxController implements CrawlQueueManager {
 			        .runProxyServerPlugins(configurationReader.getProxyConfiguration());
 		}
 
-		LOGGER.info("Embedded browser implementation: {}", configurationReader.getBrowser());
+		LOGGER.info("Embedded browser implementation: {}", configurationReader.getBrowserConfig()
+		        .getBrowsertype());
 
-		LOGGER.info("Number of threads: {}", configurationReader.getThreadConfigurationReader()
-		        .getNumberThreads());
-
-		LOGGER.info("Crawl depth: {}", configurationReader.getCrawlSpecificationReader()
-		        .getDepth());
+		LOGGER.info("Crawl depth: {}", configurationReader.getMaximumDepth());
 		LOGGER.info("Crawljax initialized!");
 
-		return new CrawlerExecutor(configurationReader.getThreadConfigurationReader()
-		        .getNumberThreads());
+		return new CrawlerExecutor(configurationReader);
 	}
 
 	/**
@@ -129,8 +124,8 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		startCrawl = System.currentTimeMillis();
 
-		LOGGER.info("Start crawling with {} crawl elements", configurationReader
-		        .getAllIncludedCrawlElements().size());
+		LOGGER.info("Start crawling with {} crawl elements", configurationReader.getCrawlRules()
+		        .getPreCrawlConfig().getIncludedElements());
 
 		// Create the initailCrawler
 		initialCrawler = new InitialCrawler(this);
@@ -330,7 +325,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	/**
 	 * @return the configurationReader
 	 */
-	public CrawljaxConfigurationReader getConfigurationReader() {
+	public CrawljaxConfiguration getConfigurationReader() {
 		return configurationReader;
 	}
 
