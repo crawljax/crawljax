@@ -3,9 +3,24 @@ package com.crawljax.web.model;
 import java.util.List;
 
 public class ClickRule {
+	private RuleType rule = RuleType.click;
 	private String elementTag;
-	private List<NameValuePair> attributes;
 	private List<Condition> conditions;
+	
+	public enum RuleType { click, noclick }
+	
+	/**
+	 * @return the rule
+	 */
+	public RuleType getRule() {
+		return rule;
+	}
+	/**
+	 * @param rule the rule to set
+	 */
+	public void setRule(RuleType rule) {
+		this.rule = rule;
+	}
 	/**
 	 * @return the elementTag
 	 */
@@ -17,18 +32,6 @@ public class ClickRule {
 	 */
 	public void setElementTag(String elementTag) {
 		this.elementTag = elementTag;
-	}
-	/**
-	 * @return the attributes
-	 */
-	public List<NameValuePair> getAttributes() {
-		return attributes;
-	}
-	/**
-	 * @param attributes the attributes to set
-	 */
-	public void setAttributes(List<NameValuePair> attributes) {
-		this.attributes = attributes;
 	}
 	/**
 	 * @return the conditions

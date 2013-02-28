@@ -48,6 +48,18 @@
          Ember.Object.create({name: "Custom", value:"Custom"})
     ];
     
+    App.pageConditions = [
+         Ember.Object.create({name: "When URL contains:", value:"url"}),
+         Ember.Object.create({name: "When URL does not contain:", value:"notUrl"}),
+         Ember.Object.create({name: "When Regex:", value:"regex"}),
+         Ember.Object.create({name: "When not Regex:", value:"notRegex"}),
+         Ember.Object.create({name: "When XPath:", value:"xPath"}),
+         Ember.Object.create({name: "When not XPath:", value:"notXPath"}),
+         Ember.Object.create({name: "When element with id is visible:", value:"visible"}),
+         Ember.Object.create({name: "When element with id is not visible:", value:"notVisible"}),
+         Ember.Object.create({name: "When Javascript is true:", value:"javascript"})
+    ];
+    
     //Controllers
     App.NewController = Ember.Controller.extend({
     	rest: function(link){
@@ -94,6 +106,8 @@
     			router.transitionTo(route);
     		}
     	},
+    	addPageCondition: function() { this.content.pageConditions.pushObject({condition: '', expression: ''}); },
+    	removePageCondition: function(item) { this.content.pageConditions.removeObject(item); },
     	addFormField: function() { this.content.formInputValues.pushObject({name: '', value: ''}); },
     	removeFormField: function(item) { this.content.formInputValues.removeObject(item); }
     });

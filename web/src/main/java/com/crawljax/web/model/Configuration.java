@@ -10,7 +10,7 @@ import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 public class Configuration {
 	private String id;
 	private String name;
-	private String url;
+	private String url = "http://";
 	private BrowserType browser = BrowserType.firefox;
 	private int numBrowsers;
 	private boolean bootBrowser = true;
@@ -22,6 +22,9 @@ public class Configuration {
 	private boolean clickOnce = true;
 	private boolean randomFormInput = true;
 	private ClickRuleType clickRule = ClickRuleType.Default;
+	private List<ClickRule> clickRules = new ArrayList<ClickRule>();
+	private List<Condition> pageConditions = new ArrayList<Condition>();
+	private List<Comparator> comparators = new ArrayList<Comparator>();
 	private List<NameValuePair> formInputValues = new ArrayList<NameValuePair>();
 	private Date lastCrawl = null;
 	private Duration lastDuration; 
@@ -199,6 +202,42 @@ public class Configuration {
 		this.clickRule = clickRule;
 	}
 
+	/**
+	 * @return the clickRules
+	 */
+	public List<ClickRule> getClickRules() {
+		return clickRules;
+	}
+	/**
+	 * @param clickRules the clickRules to set
+	 */
+	public void setClickRules(List<ClickRule> clickRules) {
+		this.clickRules = clickRules;
+	}
+	/**
+	 * @return the pageConditions
+	 */
+	public List<Condition> getPageConditions() {
+		return pageConditions;
+	}
+	/**
+	 * @param pageConditions the pageConditions to set
+	 */
+	public void setPageConditions(List<Condition> pageConditions) {
+		this.pageConditions = pageConditions;
+	}
+	/**
+	 * @return the comparators
+	 */
+	public List<Comparator> getComparators() {
+		return comparators;
+	}
+	/**
+	 * @param comparators the comparators to set
+	 */
+	public void setComparators(List<Comparator> comparators) {
+		this.comparators = comparators;
+	}
 	/**
 	 * @return the formInputValues
 	 */

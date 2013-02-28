@@ -125,10 +125,27 @@
        optionLabelPath="content.name"}}
 		</fieldset>
 		<fieldset>
-			<legend>Field Filters</legend>
+			<legend>Page Conditions</legend>
+			<table class="table table-striped">
+				<thead>
+ 					<tr><th>Condition</th><th>Value</th><th></th></tr>
+ 				</thead>
+ 				<tbody>
+					{{#each controller.content.pageConditions}}
+ 					<tr>
+ 						<td>{{view App.FormSelect valueBinding='condition' contentBinding="App.pageConditions" optionValuePath="content.value"
+       						optionLabelPath="content.name" isForm=''}}</td>
+ 						<td>{{view App.FormTextField valueBinding='expression' isForm='' required='true' 
+							inputClassNames='input-xlarge' errorText='This field is Required'}}</td>
+ 						<td><a href="#" {{action 'removePageCondition' this}}>Remove</a></td>
+ 					</tr>
+					{{/each}}
+ 				</tbody>
+				<tfoot><tr><td colspan="3"><a href="#" {{action 'addPageCondition'}}> Add a New Page Condition</a></td></tr></tfoot>
+			</table>
 		</fieldset>
 		<fieldset>
-			<legend>Page Conditions</legend>
+			<legend>Comparators</legend>
 		</fieldset>
 		<fieldset>
 			<legend>Form Field Input Values</legend>
@@ -142,8 +159,8 @@
  				<tbody>
 					{{#each controller.content.formInputValues}}
  					<tr>
- 						<td>{{view Ember.TextField valueBinding='name' required='true'}}</td>
- 						<td>{{view Ember.TextField valueBinding='value' required='true'}}</td>
+ 						<td>{{view App.FormTextField valueBinding='name' required='true' isForm='' errorText='This field is Required'}}</td>
+ 						<td>{{view App.FormTextField valueBinding='value' isForm='' }}</td>
  						<td><a href="#" {{action 'removeFormField' this}}>Remove</a></td>
  					</tr>
 					{{/each}}

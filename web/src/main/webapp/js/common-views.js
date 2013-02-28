@@ -1,14 +1,13 @@
-var App = window.App;
-
 //Wrapper for Input Form Fields
 App.FormField = Ember.View.extend({
 	tagName: 'div',
-	classNames: ['control-group'],
+	classNameBindings: ['isForm: control-group'],
 	errorText: null,
 	label: null,
+	isForm: true,
 	template: Ember.Handlebars.compile([
-	    '{{view view.labelView viewName="labelView"}}',
-	    '<div class="controls">',
+	    '{{#if view.label}}{{view view.labelView viewName="labelView"}}{{/if}}',
+	    '<div {{bindAttr class="isForm: controls"}}>',
 	    '  {{view view.inputField viewName="inputField"}}',
 	    '  {{view view.errorView viewName="errorView"}}',
 	    '</div>'].join("\n")),

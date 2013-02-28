@@ -6,7 +6,7 @@ public class Condition {
 	
 	public enum ConditionType
 	{
-		url, notUrl, javascript, regex, notRegex, visible, notVisible 
+		url, notUrl, javascript, regex, notRegex, visible, notVisible, xPath, notXPath, attribute, text 
 	}
 
 	/**
