@@ -1,6 +1,10 @@
 package com.crawljax.web.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.xml.datatype.Duration;
+
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 
 public class Configuration {
@@ -17,7 +21,14 @@ public class Configuration {
 	private int maxDuration = 60;
 	private boolean clickOnce = true;
 	private boolean randomFormInput = true;
+	private ClickRuleType clickRule = ClickRuleType.Default;
+	private List<NameValuePair> formInputValues = new ArrayList<NameValuePair>();
+	private Date lastCrawl = null;
+	private Duration lastDuration; 
 	private Date lastModified = null;
+	
+	public enum ClickRuleType { Default, More, Custom }
+	
 	
 	/**
 	 * @return the id
@@ -174,6 +185,57 @@ public class Configuration {
 	 */
 	public void setBootBrowser(boolean bootBrowser) {
 		this.bootBrowser = bootBrowser;
+	}
+	/**
+	 * @return the clickRule
+	 */
+	public ClickRuleType getClickRule() {
+		return clickRule;
+	}
+	/**
+	 * @param clickRule the clickRule to set
+	 */
+	public void setClickRule(ClickRuleType clickRule) {
+		this.clickRule = clickRule;
+	}
+
+	/**
+	 * @return the formInputValues
+	 */
+	public List<NameValuePair> getFormInputValues() {
+		return formInputValues;
+	}
+
+	/**
+	 * @param formInputValues the formInputValues to set
+	 */
+	public void setFormInputValues(List<NameValuePair> formInputValues) {
+		this.formInputValues = formInputValues;
+	}
+
+	/**
+	 * @return the lastRun
+	 */
+	public Date getLastCrawl() {
+		return lastCrawl;
+	}
+	/**
+	 * @param lastRun the lastRun to set
+	 */
+	public void setLastRun(Date lastCrawl) {
+		this.lastCrawl = lastCrawl;
+	}
+	/**
+	 * @return the lastDuration
+	 */
+	public Duration getLastDuration() {
+		return lastDuration;
+	}
+	/**
+	 * @param lastDuration the lastDuration to set
+	 */
+	public void setLastDuration(Duration lastDuration) {
+		this.lastDuration = lastDuration;
 	}
 	/**
 	 * @return the lastModified

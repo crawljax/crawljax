@@ -43,9 +43,9 @@
 	];
     
     App.clickRules = [
-         Ember.Object.create({name: "Click Default Elements", value:"default"}),
-         Ember.Object.create({name: "Click More Elements", value:"more"}),
-         Ember.Object.create({name: "Custom", value:"custom"})
+         Ember.Object.create({name: "Click Default Elements", value:"Default"}),
+         Ember.Object.create({name: "Click More Elements", value:"More"}),
+         Ember.Object.create({name: "Custom", value:"Custom"})
     ];
     
     //Controllers
@@ -63,7 +63,13 @@
 	    }
     });
     
-    App.ConfigListController = Ember.ArrayController.extend({});
+    App.ConfigListController = Ember.ArrayController.extend({ itemController: 'configListItem' });
+    App.ConfigListItemController = Ember.ObjectController.extend({
+    	formatLastCrawl : function() {
+    		lastCrawl = this.get('lastCrawl');
+    		if (lastCrawl == null ) return 'never';
+    		else return new Date(lastCrawl); }.property('lastCrawl')
+    });
     App.ConfigController = Ember.Controller.extend({
     	needs: ['application'],
     	rest: function(link){
@@ -87,11 +93,13 @@
     			var router = this.get('target');
     			router.transitionTo(route);
     		}
-    	}
+    	},
+    	addFormField: function() { this.content.formInputValues.pushObject({name: '', value: ''}); },
+    	removeFormField: function(item) { this.content.formInputValues.removeObject(item); }
     });
-    
-    App.HistoryListController = Ember.ArrayController.extend({ itemController: 'historyItem' });
-    App.HistoryItemController = Ember.ObjectController.extend({
+     
+    App.HistoryListController = Ember.ArrayController.extend({ itemController: 'historyListItem' });
+    App.HistoryListItemController = Ember.ObjectController.extend({
     	formatCreateTime: function(){ return new Date(this.get('createTime')); }.property('createTime'),
     	configURL: function() { return '#/' + this.get('configurationId'); }.property('configurationId')
     });
