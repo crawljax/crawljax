@@ -80,12 +80,6 @@ public class SimpleSiteCrawlTest {
 	}
 
 	@Test
-	public void configFilesExists() {
-		assertThat(new File(outFolder, "config.json"), exists());
-		assertThat(new File(outFolder, "config.json"), isValidJson());
-	}
-
-	@Test
 	public void resultFileIsWritten() {
 		assertThat(new File(outFolder, "result.json"), exists());
 		assertThat(new File(outFolder, "result.json"), isValidJson());

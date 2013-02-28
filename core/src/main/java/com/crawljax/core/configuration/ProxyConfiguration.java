@@ -98,6 +98,11 @@ public class ProxyConfiguration {
 
 	@Override
 	public String toString() {
-		return type.toString() + ':' + hostname + ':' + port;
+		switch (type) {
+			case MANUAL:
+				return "Manual host: " + hostname + ":" + port;
+			default:
+				return type.toString();
+		}
 	}
 }
