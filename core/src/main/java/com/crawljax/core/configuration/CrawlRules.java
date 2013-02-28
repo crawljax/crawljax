@@ -361,57 +361,79 @@ public class CrawlRules {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CrawlRules other = (CrawlRules) obj;
-		if (clickOnce != other.clickOnce)
+		if (clickOnce != other.clickOnce) {
 			return false;
+		}
 		if (crawlEvents == null) {
-			if (other.crawlEvents != null)
+			if (other.crawlEvents != null) {
 				return false;
-		} else if (!crawlEvents.equals(other.crawlEvents))
+			}
+		} else if (!crawlEvents.equals(other.crawlEvents)) {
 			return false;
-		if (crawlFrames != other.crawlFrames)
+		}
+		if (crawlFrames != other.crawlFrames) {
 			return false;
-		if (crawlHiddenAnchors != other.crawlHiddenAnchors)
+		}
+		if (crawlHiddenAnchors != other.crawlHiddenAnchors) {
 			return false;
+		}
 		if (ignoredFrameIdentifiers == null) {
-			if (other.ignoredFrameIdentifiers != null)
+			if (other.ignoredFrameIdentifiers != null) {
 				return false;
-		} else if (!ignoredFrameIdentifiers.equals(other.ignoredFrameIdentifiers))
+			}
+		} else if (!ignoredFrameIdentifiers.equals(other.ignoredFrameIdentifiers)) {
 			return false;
+		}
 		if (inputSpecification == null) {
-			if (other.inputSpecification != null)
+			if (other.inputSpecification != null) {
 				return false;
-		} else if (!inputSpecification.equals(other.inputSpecification))
+			}
+		} else if (!inputSpecification.equals(other.inputSpecification)) {
 			return false;
+		}
 		if (invariants == null) {
-			if (other.invariants != null)
+			if (other.invariants != null) {
 				return false;
-		} else if (!invariants.equals(other.invariants))
+			}
+		} else if (!invariants.equals(other.invariants)) {
 			return false;
+		}
 		if (oracleComparators == null) {
-			if (other.oracleComparators != null)
+			if (other.oracleComparators != null) {
 				return false;
-		} else if (!oracleComparators.equals(other.oracleComparators))
+			}
+		} else if (!oracleComparators.equals(other.oracleComparators)) {
 			return false;
+		}
 		if (preCrawlConfig == null) {
-			if (other.preCrawlConfig != null)
+			if (other.preCrawlConfig != null) {
 				return false;
-		} else if (!preCrawlConfig.equals(other.preCrawlConfig))
+			}
+		} else if (!preCrawlConfig.equals(other.preCrawlConfig)) {
 			return false;
-		if (randomInputInForms != other.randomInputInForms)
+		}
+		if (randomInputInForms != other.randomInputInForms) {
 			return false;
-		if (testInvariantsWhileCrawling != other.testInvariantsWhileCrawling)
+		}
+		if (testInvariantsWhileCrawling != other.testInvariantsWhileCrawling) {
 			return false;
-		if (waitAfterEvent != other.waitAfterEvent)
+		}
+		if (waitAfterEvent != other.waitAfterEvent) {
 			return false;
-		if (waitAfterReloadUrl != other.waitAfterReloadUrl)
+		}
+		if (waitAfterReloadUrl != other.waitAfterReloadUrl) {
 			return false;
+		}
 		return true;
 	}
 

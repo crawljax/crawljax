@@ -568,7 +568,7 @@ public class Crawler implements Runnable {
 		        new FormHandler(getBrowser(), configurationReader.getCrawlRules()
 		                .getInputSpecification(), configurationReader.getCrawlRules()
 		                .isRandomInputInForms());
-		                
+
 		this.candidateExtractor =
 		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
 		                formHandler, configurationReader);

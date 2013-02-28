@@ -137,38 +137,51 @@ public class PreCrawlConfiguration {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		PreCrawlConfiguration other = (PreCrawlConfiguration) obj;
 		if (crawlConditions == null) {
-			if (other.crawlConditions != null)
+			if (other.crawlConditions != null) {
 				return false;
-		} else if (!crawlConditions.equals(other.crawlConditions))
+			}
+		} else if (!crawlConditions.equals(other.crawlConditions)) {
 			return false;
+		}
 		if (excludedElements == null) {
-			if (other.excludedElements != null)
+			if (other.excludedElements != null) {
 				return false;
-		} else if (!excludedElements.equals(other.excludedElements))
+			}
+		} else if (!excludedElements.equals(other.excludedElements)) {
 			return false;
+		}
 		if (filterAttributeNames == null) {
-			if (other.filterAttributeNames != null)
+			if (other.filterAttributeNames != null) {
 				return false;
-		} else if (!filterAttributeNames.equals(other.filterAttributeNames))
+			}
+		} else if (!filterAttributeNames.equals(other.filterAttributeNames)) {
 			return false;
+		}
 		if (includedElements == null) {
-			if (other.includedElements != null)
+			if (other.includedElements != null) {
 				return false;
-		} else if (!includedElements.equals(other.includedElements))
+			}
+		} else if (!includedElements.equals(other.includedElements)) {
 			return false;
+		}
 		if (waitConditions == null) {
-			if (other.waitConditions != null)
+			if (other.waitConditions != null) {
 				return false;
-		} else if (!waitConditions.equals(other.waitConditions))
+			}
+		} else if (!waitConditions.equals(other.waitConditions)) {
 			return false;
+		}
 		return true;
 	}
 

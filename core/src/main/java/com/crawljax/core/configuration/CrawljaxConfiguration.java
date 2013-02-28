@@ -222,44 +222,60 @@ public final class CrawljaxConfiguration {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CrawljaxConfiguration other = (CrawljaxConfiguration) obj;
 		if (browserConfig == null) {
-			if (other.browserConfig != null)
+			if (other.browserConfig != null) {
 				return false;
-		} else if (!browserConfig.equals(other.browserConfig))
+			}
+		} else if (!browserConfig.equals(other.browserConfig)) {
 			return false;
+		}
 		if (crawlRules == null) {
-			if (other.crawlRules != null)
+			if (other.crawlRules != null) {
 				return false;
-		} else if (!crawlRules.equals(other.crawlRules))
+			}
+		} else if (!crawlRules.equals(other.crawlRules)) {
 			return false;
-		if (maximumDepth != other.maximumDepth)
+		}
+		if (maximumDepth != other.maximumDepth) {
 			return false;
-		if (maximumRuntime != other.maximumRuntime)
+		}
+		if (maximumRuntime != other.maximumRuntime) {
 			return false;
-		if (maximumStates != other.maximumStates)
+		}
+		if (maximumStates != other.maximumStates) {
 			return false;
+		}
 		if (plugins == null) {
-			if (other.plugins != null)
+			if (other.plugins != null) {
 				return false;
-		} else if (!plugins.equals(other.plugins))
+			}
+		} else if (!plugins.equals(other.plugins)) {
 			return false;
+		}
 		if (proxyConfiguration == null) {
-			if (other.proxyConfiguration != null)
+			if (other.proxyConfiguration != null) {
 				return false;
-		} else if (!proxyConfiguration.equals(other.proxyConfiguration))
+			}
+		} else if (!proxyConfiguration.equals(other.proxyConfiguration)) {
 			return false;
+		}
 		if (url == null) {
-			if (other.url != null)
+			if (other.url != null) {
 				return false;
-		} else if (!url.equals(other.url))
+			}
+		} else if (!url.equals(other.url)) {
 			return false;
+		}
 		return true;
 	}
 

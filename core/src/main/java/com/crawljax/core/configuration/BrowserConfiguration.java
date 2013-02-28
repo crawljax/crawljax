@@ -4,9 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.Immutable;
 
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.browser.WebDriverBrowserBuilder;
-import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 
 @Immutable
 public class BrowserConfiguration {
@@ -123,19 +123,25 @@ public class BrowserConfiguration {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		BrowserConfiguration other = (BrowserConfiguration) obj;
-		if (bootstrap != other.bootstrap)
+		if (bootstrap != other.bootstrap) {
 			return false;
-		if (browsertype != other.browsertype)
+		}
+		if (browsertype != other.browsertype) {
 			return false;
-		if (numberOfBrowsers != other.numberOfBrowsers)
+		}
+		if (numberOfBrowsers != other.numberOfBrowsers) {
 			return false;
+		}
 		return true;
 	}
 
