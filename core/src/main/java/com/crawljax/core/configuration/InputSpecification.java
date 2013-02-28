@@ -110,7 +110,7 @@ public final class InputSpecification {
 	/**
 	 * @return List of crawlelements.
 	 */
-	protected ImmutableList<CrawlElement> getCrawlElements() {
+	public ImmutableList<CrawlElement> getCrawlElements() {
 		Builder<CrawlElement> builder = ImmutableList.builder();
 		for (Form form : this.forms) {
 			CrawlElement crawlTag = form.getCrawlElement();

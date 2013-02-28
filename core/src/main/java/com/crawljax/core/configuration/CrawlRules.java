@@ -11,6 +11,7 @@ import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurati
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSortedSet;
 
 public class CrawlRules {
@@ -254,7 +255,7 @@ public class CrawlRules {
 	private PreCrawlConfiguration preCrawlConfig;
 
 	private boolean randomInputInForms = true;
-	private InputSpecification inputSpecification;
+	private InputSpecification inputSpecification = new InputSpecification();
 	private boolean testInvariantsWhileCrawling = true;
 	private boolean clickOnce = true;
 	private boolean crawlFrames = true;
@@ -449,6 +450,19 @@ public class CrawlRules {
 		builder.append(waitAfterEvent);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * @return All Crawl elements: {@link PreCrawlConfiguration#getIncludedElements()},
+	 *         {@link PreCrawlConfiguration#getExcludedElements()} and
+	 *         {@link InputSpecification#getCrawlElements()}.
+	 */
+	public ImmutableList<CrawlElement> getAllCrawlElements() {
+		return new Builder<CrawlElement>()
+		        .addAll(getPreCrawlConfig().getIncludedElements())
+		        .addAll(getPreCrawlConfig().getExcludedElements())
+		        .addAll(getInputSpecification().getCrawlElements()).build();
+
 	}
 
 }

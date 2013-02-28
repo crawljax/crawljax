@@ -10,7 +10,7 @@ import org.w3c.dom.Document;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlElement;
-import com.crawljax.core.configuration.PreCrawlConfiguration;
+import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.util.XPathHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -30,13 +30,9 @@ public class EventableConditionChecker {
 	 * @param eventableConditions
 	 *            The eventable conditions.
 	 */
-	public EventableConditionChecker(PreCrawlConfiguration config) {
-		List<CrawlElement> allElements =
-		        new Builder<CrawlElement>().addAll(config.getIncludedElements())
-		                .addAll(config.getExcludedElements()).build();
-
+	public EventableConditionChecker(CrawlRules config) {
 		Builder<EventableCondition> builder = ImmutableList.builder();
-		for (CrawlElement crawlTag : allElements) {
+		for (CrawlElement crawlTag : config.getAllCrawlElements()) {
 			EventableCondition eventableCondition = crawlTag.getEventableCondition();
 			if (eventableCondition != null) {
 				builder.add(eventableCondition);

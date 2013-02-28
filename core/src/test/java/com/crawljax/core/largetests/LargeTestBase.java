@@ -1,6 +1,7 @@
 package com.crawljax.core.largetests;
 
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.stateWithDomSubstring;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
@@ -9,7 +10,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
@@ -40,7 +43,6 @@ import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
 import com.crawljax.core.plugin.OnNewStatePlugin;
-import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
@@ -59,6 +61,7 @@ public abstract class LargeTestBase {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LargeTestBase.class);
 	private static final AtomicBoolean HAS_RUN = new AtomicBoolean(false);
+	private static final AtomicBoolean HAS_FINISHED = new AtomicBoolean(false);
 	private static CrawlSession session;
 
 	private static final int CLICKED_CLICK_ME_ELEMENTS = 6;
@@ -114,9 +117,16 @@ public abstract class LargeTestBase {
 				crawljax = new CrawljaxController(getCrawlSpecification());
 				crawljax.run();
 			} finally {
+				HAS_FINISHED.set(true);
 				if (crawljax != null) {
+					session = crawljax.getSession();
 					crawljax.terminate(true);
 				}
+			}
+		} else {
+			while (!HAS_FINISHED.get()) {
+				LOG.debug("Waiting for crawl to finish...");
+				Thread.sleep(500);
 			}
 		}
 	}
@@ -233,16 +243,6 @@ public abstract class LargeTestBase {
 	 *            the configuration to add the plugins to.
 	 */
 	protected static void addPlugins(CrawljaxConfigurationBuilder crawljaxConfiguration) {
-		// plugin to retrieve session data
-		crawljaxConfiguration.addPlugin(new PostCrawlingPlugin() {
-
-			@Override
-			public void postCrawling(CrawlSession session) {
-				LargeTestBase.session = session;
-
-			}
-
-		});
 
 		crawljaxConfiguration.addPlugin(new OnInvariantViolationPlugin() {
 
@@ -314,17 +314,18 @@ public abstract class LargeTestBase {
 	 */
 	@Test
 	public void testMultipleFormInput() {
-		List<String> resultsFound = new ArrayList<String>();
+		Set<String> resultsFound = new HashSet<>();
 		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains(TITLE_MULTIPLE_INPUT_RESULT)) {
 				for (String result : MULTIPLE_INPUT_RESULTS) {
-					if (state.getDom().contains(result) && !resultsFound.contains(result)) {
+					if (state.getDom().contains(result)) {
 						resultsFound.add(result);
 					}
 				}
 			}
 		}
-		assertEquals("All results are found", MULTIPLE_INPUT_RESULTS.length, resultsFound.size());
+		assertThat(resultsFound, containsInAnyOrder(MULTIPLE_INPUT_RESULTS));
+
 	}
 
 	/**

@@ -21,6 +21,7 @@ import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.CrawlElement;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
@@ -75,7 +76,9 @@ public class CandidateElementExtractor {
 		this.formHandler = formHandler;
 		PreCrawlConfiguration preCrawlConfig = config.getCrawlRules().getPreCrawlConfig();
 		this.excludeTagElements = asMultiMap(preCrawlConfig.getExcludedElements());
-		this.includedTagElements = asTagElements(preCrawlConfig.getIncludedElements());
+		this.includedTagElements =
+		        asTagElements(preCrawlConfig.getIncludedElements(), config.getCrawlRules()
+		                .getInputSpecification());
 		crawlFrames = config.getCrawlRules().shouldCrawlFrames();
 		clickOnce = config.getCrawlRules().isClickOnce();
 		ignoredFrameIdentifiers = config.getCrawlRules().getIgnoredFrameIdentifiers();
@@ -90,9 +93,13 @@ public class CandidateElementExtractor {
 		return builder.build();
 	}
 
-	private ImmutableList<TagElement> asTagElements(List<CrawlElement> crawlElements) {
+	private ImmutableList<TagElement> asTagElements(List<CrawlElement> crawlElements,
+	        InputSpecification inputSpecification) {
 		ImmutableList.Builder<TagElement> builder = ImmutableList.builder();
 		for (CrawlElement crawlElement : crawlElements) {
+			builder.add(new TagElement(crawlElement));
+		}
+		for (CrawlElement crawlElement : inputSpecification.getCrawlElements()) {
 			builder.add(new TagElement(crawlElement));
 		}
 		return builder.build();

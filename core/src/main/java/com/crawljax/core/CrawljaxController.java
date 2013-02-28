@@ -71,7 +71,7 @@ public class CrawljaxController implements CrawlQueueManager {
 		waitConditionChecker.setWaitConditions(config.getCrawlRules().getPreCrawlConfig()
 		        .getWaitConditions());
 		eventableConditionChecker =
-		        new EventableConditionChecker(config.getCrawlRules().getPreCrawlConfig());
+		        new EventableConditionChecker(config.getCrawlRules());
 
 		crawlConditionChecker =
 		        new ConditionTypeChecker<>(config.getCrawlRules().getPreCrawlConfig()
