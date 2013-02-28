@@ -13,17 +13,17 @@
 					<li #if($page == "config") class="active" #end><a href="$baseUrl/config.html">Configuration</a></li>
 				</ul>
 			</div>
-			#if($page == "graph")
 			<div class="nav pull-right">
 				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
+				#if($page == "graph")
 				<a href="#" class="btn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
 				<div style="display: none" id='popup-content'>
 					<p>You can double click a state to inspect it further.</p>
 					<p>Clicking an edge gives more details on the state transition.</p>
 					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
 				</div>
+				#end
 			</div>
-			#end
 			<!--/.nav-collapse -->
 		</div>
 	</div>

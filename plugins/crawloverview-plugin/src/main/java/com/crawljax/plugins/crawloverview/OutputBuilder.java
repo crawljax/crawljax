@@ -12,7 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -36,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
@@ -204,17 +202,6 @@ class OutputBuilder {
 		context = new VelocityContext();
 		context.put("urls", stats.getStateStats().getUrls());
 		writeFile(context, file, "urls.html");
-	}
-
-	public void write(CrawlSpecificationReader crawlSpecificationReader) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			ObjectWriter prettyPrinter = objectMapper.writer().withDefaultPrettyPrinter();
-			prettyPrinter
-			        .writeValue(new File(outputDir, "config.json"), crawlSpecificationReader);
-		} catch (Exception e) {
-			throw new RuntimeException("Cannot save config", e);
-		}
 	}
 
 	private void writeFile(VelocityContext context, File outFile, String template) {
