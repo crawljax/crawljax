@@ -155,8 +155,8 @@ public class CrawlOverview
 		Point location = webElement.getLocation();
 		Dimension size = webElement.getSize();
 		CandidateElementPosition renderedCandidateElement =
-		// TODO Check if element.getIdentification().getValue() is correct replacement for
-		// element.getXpath()
+		        // TODO Check if element.getIdentification().getValue() is correct replacement for
+		        // element.getXpath()
 		        new CandidateElementPosition(element.getIdentification().getValue(), location,
 		                size);
 		return renderedCandidateElement;
