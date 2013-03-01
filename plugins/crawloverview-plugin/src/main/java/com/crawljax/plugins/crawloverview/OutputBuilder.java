@@ -27,10 +27,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.configuration.CrawlSpecificationReader;
-import com.crawljax.plugins.crawloverview.model.CrawlConfiguration;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
-import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -156,21 +153,11 @@ class OutputBuilder {
 	void write(OutPutModel outModel) {
 		try {
 			writeIndexFile(outModel);
-			writeStatistics(outModel.getStatistics());
-			writeConfig(outModel.getConfiguration(), outModel.getCrawlSpecification());
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
 
 		LOG.info("Overview report generated");
-	}
-
-	private void writeConfig(CrawlConfiguration configuration, CrawlSpecificationReader crawlSpec) {
-		File file = new File(outputDir, "config.html");
-		VelocityContext context = new VelocityContext();
-		context.put("config", BeanToReadableMap.toMap(configuration));
-		context.put("spec", BeanToReadableMap.toMap(crawlSpec));
-		writeFile(context, file, "config.html");
 	}
 
 	private void writeIndexFile(OutPutModel model) {
@@ -179,6 +166,14 @@ class OutputBuilder {
 		writeJsonToOutDir(toJson(model));
 		context.put("states", toJson(model.getStates()));
 		context.put("edges", toJson(model.getEdges()));
+		context.put("config", BeanToReadableMap.toMap(model.getConfiguration()));
+		context.put("spec", BeanToReadableMap.toMap(model.getCrawlSpecification()));
+
+		context.put("stats", model.getStatistics());
+
+		LOG.debug("Writing urls report");
+		context.put("urls", model.getStatistics().getStateStats().getUrls());
+
 		writeFile(context, indexFile, "index.html");
 	}
 
@@ -188,20 +183,6 @@ class OutputBuilder {
 		} catch (IOException e) {
 			LOG.warn("Could not write JSON model to output dir. " + e.getMessage());
 		}
-	}
-
-	private void writeStatistics(Statistics stats) {
-		LOG.debug("Writing statistics report");
-		File file = new File(outputDir, "statistics.html");
-		VelocityContext context = new VelocityContext();
-		context.put("stats", stats);
-		writeFile(context, file, "statistics.html");
-
-		LOG.debug("Writing urls report");
-		file = new File(outputDir, "urls.html");
-		context = new VelocityContext();
-		context.put("urls", stats.getStateStats().getUrls());
-		writeFile(context, file, "urls.html");
 	}
 
 	private void writeFile(VelocityContext context, File outFile, String template) {

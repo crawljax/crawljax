@@ -25,6 +25,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.thoughtworks.selenium.DefaultSelenium;
 
 public class OverviewIntegrationTest {
@@ -43,6 +44,7 @@ public class OverviewIntegrationTest {
 	public static void setup() throws Exception {
 		LOG.debug("Starting Jetty");
 		server = new Server(0);
+
 		String url = setupJetty();
 		LOG.info("Jetty started on {}", url);
 		driver = new FirefoxDriver();
@@ -65,31 +67,42 @@ public class OverviewIntegrationTest {
 	@Test
 	public void verifyAllPagesPresentAndNoVelocityMistakes() {
 		selenium.open("/");
+
+		sourceHasNoVelocitySymbols();
+
 		WebElement brand = driver.findElement(By.cssSelector("a.brand"));
 		assertThat(brand.getText(), is("Crawl overview"));
 		assertThat(driver.findElement(By.cssSelector("svg")), is(notNullValue()));
 		driver.findElement(By.linkText("Statistics")).click();
-		sourceHasNoDollerSigns();
-		List<WebElement> foundndElements = driver.findElements(By.cssSelector("H1"));
+		List<WebElement> foundndElements = visibleElementsByCss("H1");
 		assertThat(foundndElements, hasSize(2));
 		assertThat(foundndElements.iterator().next().getText(), is("Crawl results"));
 
 		driver.findElement(By.linkText("URL's")).click();
-		sourceHasNoDollerSigns();
-		assertThat(driver.findElement(By.cssSelector("h1")).getText(), is("URL's visited"));
+		assertThat(visibleElementsByCss("h1").get(0).getText(), is("URL's visited"));
 
 		driver.findElement(By.linkText("Configuration")).click();
-		sourceHasNoDollerSigns();
-		foundndElements = driver.findElements(By.cssSelector("H1"));
+		foundndElements = visibleElementsByCss("H1");
 		assertThat(foundndElements, hasSize(2));
 		assertThat(foundndElements.iterator().next().getText(), is("Crawl configuration"));
+	}
+
+	private List<WebElement> visibleElementsByCss(String selector) {
+		List<WebElement> elements = driver.findElements(By.cssSelector(selector));
+		List<WebElement> visible = Lists.newArrayListWithExpectedSize(elements.size());
+		for (WebElement webElement : elements) {
+			if (webElement.isDisplayed()) {
+				visible.add(webElement);
+			}
+		}
+		return visible;
 	}
 
 	/**
 	 * If velocity couldn't resolve a variable, it leaves behind a `$`.
 	 */
-	private void sourceHasNoDollerSigns() {
-		assertThat(driver.getPageSource(), not(containsString("$")));
+	private void sourceHasNoVelocitySymbols() {
+		assertThat(driver.getPageSource(), not(containsString("${")));
 	}
 
 	@AfterClass
