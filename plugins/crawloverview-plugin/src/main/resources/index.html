@@ -22,39 +22,49 @@ body {
 </head>
 <body>
 	#parse( "nav.html")
-	<div class="popover fade panel-right">
-		<div class="popover-inner">
-			<h3 class="popover-title">Edge info</h3>
-			<div class="popover-content">
-				<dl>
-			  		<dt>Element name</dt>
-			  		<dd name='elemName'></dd>
-				</dl>
-				<dl>
-			  		<dt>From</dt>
-			  		<dd name='from'></dd>
-				</dl>
-				<dl>
-			  		<dt>To</dt>
-			  		<dd name='to'></dd>
-				</dl>
-				<dl>
-			  		<dt>Identified by</dt>
-			  		<dd name='id'></dd>
-				</dl>
-				<dl>
-			  		<dt>Element</dt>
-			  		<dd name='element' style="text-transform: none;"></dd>
-				</dl>
-				<dl>
-			  		<dt>Event type</dt>
-			  		<dd name='eventType'></dd>
-				</dl>
-				<button class="btn btn-small" id='hideButton'>Hide</button>
+		<div class="container page" id="container-graph" style="width: 100%;">
+		<div class="popover fade panel-right">
+			<div class="popover-inner">
+				<h3 class="popover-title">Edge info</h3>
+				<div class="popover-content">
+					<dl>
+						<dt>Element name</dt>
+						<dd name='elemName'></dd>
+					</dl>
+					<dl>
+						<dt>From</dt>
+						<dd name='from'></dd>
+					</dl>
+					<dl>
+						<dt>To</dt>
+						<dd name='to'></dd>
+					</dl>
+					<dl>
+						<dt>Identified by</dt>
+						<dd name='id'></dd>
+					</dl>
+					<dl>
+						<dt>Element</dt>
+						<dd name='element' style="text-transform: none;"></dd>
+					</dl>
+					<dl>
+						<dt>Event type</dt>
+						<dd name='eventType'></dd>
+					</dl>
+					<button class="btn btn-small" id='hideButton'>Hide</button>
+				</div>
 			</div>
 		</div>
+		</div>
+	<div class="container page" id="container-statistics" style="display: none;">
+		#parse( "statistics.html" )
 	</div>
-	<div class="container" id="graphContainer" style="width: 100%;"></div>
+	<div class="container page" id="container-urls" style="display: none;">
+		#parse( "urls.html" )
+	</div>
+	<div class="container page" id="container-config" style="display: none;">
+		#parse( "config.html" )
+	</div>
 	<script src="js/jquery-1.8.3.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/vivagraph.min.js"></script>
@@ -92,6 +102,51 @@ body {
 			});
 			
 			$("a[data-toggle='tooltip']").tooltip();
+			
+			var paused = false;
+			$("#pauseButton").click(function(){
+				if (paused) {
+					renderer.resume();
+					paused = false;
+					$(this).children(":first").attr("class", "icon-pause");
+				} else {
+					renderer.pause();
+					paused = true;
+					$(this).children(":first").attr("class", "icon-play");
+				}
+			});
+			
+			$('.navbar li').click(function(e) {
+				$('.navbar li').removeClass('active');
+				var $this = $(this);
+				if (!$this.hasClass('active')) {
+					$this.addClass('active');
+				}
+
+
+			});
+			
+			function loadPage(page) {
+				$('.page').hide();
+				$('#container-' + page).show();
+				
+				if (page === "graph") {
+					$('.graphBtn').show();
+				} else {
+					$('.graphBtn').hide();
+				}
+			}
+			
+			$(window).on('hashchange', function(e) {	
+				pageRef = window.location.hash.substring(1);
+				if ($("#container-" + pageRef).length == 0 && pageRef !== "graph") {
+					window.location.hash = "graph";
+				} else {
+					loadPage(pageRef);
+				}
+			});
+			
+			$(window).trigger('hashchange');
 		});
 
 		function showInfo(link) {
@@ -110,16 +165,17 @@ body {
 		
 		if($.browser.mozilla) {
 			// Firefox hack to display CVS correctly
-			$('#graphContainer svg').css("width", "100%");
+			$('#container-graph svg').css("width", "100%");
 			
 			function resize() {
-				$('#graphContainer').css("height", window.innerHeight -45);
-				$('#graphContainer svg').css("height", window.innerHeight - 45);
+				$('#container-graph').css("height", window.innerHeight -45);
+				$('#container-graph svg').css("height", window.innerHeight - 45);
 			}
-			
 			$(window).resize(resize);
 			resize();
 		}
+		
+		
 	</script>
 </body>
 </html>
