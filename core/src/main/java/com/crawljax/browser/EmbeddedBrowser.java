@@ -7,7 +7,7 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.WebElement;
 
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
@@ -145,5 +145,5 @@ public interface EmbeddedBrowser {
 	 * @param configuration
 	 *            the new configuration values that needs to be updated.
 	 */
-	void updateConfiguration(CrawljaxConfigurationReader configuration);
+	void updateConfiguration(CrawljaxConfiguration configuration);
 }

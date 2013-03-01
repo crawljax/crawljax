@@ -18,8 +18,7 @@ import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawlSpecification;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
@@ -28,7 +27,6 @@ import com.crawljax.test.RunWithWebServer;
 public class OnFireEventFailedPluginTest {
 
 	private CrawljaxController controller;
-	private CrawljaxConfiguration config;
 
 	private final AtomicInteger hits = new AtomicInteger();
 
@@ -38,14 +36,8 @@ public class OnFireEventFailedPluginTest {
 	@Before
 	public void setup() throws ConfigurationException {
 
-		CrawlSpecification spec =
-		        new CrawlSpecification(SERVER.getSiteUrl() + "crawler/index.html");
-		spec.clickDefaultElements();
-		spec.clickHiddenAnchors(false);
-		config = new CrawljaxConfiguration();
-
-		config.setCrawlSpecification(spec);
-		config.addPlugin(new PreStateCrawlingPlugin() {
+		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("crawler/index.html");
+		builder.addPlugin(new PreStateCrawlingPlugin() {
 
 			@Override
 			public void preStateCrawling(CrawlSession session,
@@ -60,14 +52,14 @@ public class OnFireEventFailedPluginTest {
 				}
 			}
 		});
-		config.addPlugin(new OnFireEventFailedPlugin() {
+		builder.addPlugin(new OnFireEventFailedPlugin() {
 			@Override
 			public void onFireEventFailed(Eventable eventable, List<Eventable> pathToFailure) {
 				hits.incrementAndGet();
 			}
 		});
 
-		controller = new CrawljaxController(config);
+		controller = new CrawljaxController(builder.build());
 	}
 
 	@Test

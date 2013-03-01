@@ -6,7 +6,8 @@ import org.eclipse.jetty.util.resource.Resource;
 
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.NotXPathCondition;
-import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BaseCrawler;
 
 public class CrawlExclusionTest extends BaseCrawler {
@@ -16,16 +17,17 @@ public class CrawlExclusionTest extends BaseCrawler {
 	}
 
 	@Override
-	protected CrawlSpecification newCrawlSpecification() {
-		CrawlSpecification spec = new CrawlSpecification(getUrl() + "crawlconditions");
-		spec.clickDefaultElements();
-		spec.setDepth(0);
-		spec.setWaitTimeAfterEvent(500, TimeUnit.MILLISECONDS);
-		spec.addCrawlCondition("Regex description",
+	protected CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
+		CrawljaxConfigurationBuilder builder =
+		        CrawljaxConfiguration.builderFor(getUrl() + "crawlconditions");
+		builder.setUnlimitedRuntime();
+		builder.setUnlimitedCrawlDepth();
+		builder.crawlRules().waitAfterEvent(500, TimeUnit.MILLISECONDS);
+		builder.crawlRules().addCrawlCondition("Regex description",
 		        new NotRegexCondition("DONT-CRAWL-THIS-STATE"));
-
-		spec.addCrawlCondition("Xpath not present", new NotXPathCondition("//P[@id='noCrawl']"));
-
-		return spec;
+		builder.crawlRules().addCrawlCondition(
+		        "Xpath not present", new NotXPathCondition(
+		                "//P[@id='noCrawl']"));
+		return builder;
 	}
 }

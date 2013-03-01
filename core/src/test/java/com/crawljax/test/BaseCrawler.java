@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.google.common.base.Strings;
 
@@ -26,8 +26,7 @@ public class BaseCrawler {
 	private final WebServer webServer;
 	private final AtomicBoolean hasSetup = new AtomicBoolean(false);
 
-	private CrawljaxConfiguration config;
-	private CrawlSpecification crawlSpec;
+	private CrawljaxConfigurationBuilder configBuilder;
 	private String siteExtension;
 
 	/**
@@ -87,9 +86,7 @@ public class BaseCrawler {
 		} catch (Exception e) {
 			throw new RuntimeException("Could not start the server", e);
 		}
-		crawlSpec = newCrawlSpecification();
-		config = newCrawlConfiguartion();
-		config.setCrawlSpecification(crawlSpec);
+		configBuilder = newCrawlConfiguartionBuilder();
 		hasSetup.set(true);
 	}
 
@@ -98,26 +95,15 @@ public class BaseCrawler {
 	 * 
 	 * @return a new {@link CrawljaxConfiguration} to crawl with.
 	 */
-	protected CrawljaxConfiguration newCrawlConfiguartion() {
-		return new CrawljaxConfiguration();
+	protected CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(getUrl());
+		builder.crawlRules().clickDefaultElements();
+		builder.setUnlimitedRuntime();
+		builder.setUnlimitedCrawlDepth();
+		return builder;
 	}
 
-	/**
-	 * Override this method if you want to customize the {@link CrawlSpecification}. The default is
-	 * setup with infinite crawl depth and {@link CrawlSpecification#clickDefaultElements()}.
-	 * <p>
-	 * You can get the {@link URL} you need for the Crawlspec constructor using {@link #getUrl()}.
-	 * 
-	 * @return The {@link CrawlSpecification} the crawl should run with.
-	 */
-	protected CrawlSpecification newCrawlSpecification() {
-		CrawlSpecification crawlSpecification = new CrawlSpecification(getUrl());
-		crawlSpecification.setDepth(0);
-		crawlSpecification.clickDefaultElements();
-		return crawlSpecification;
-	}
-
-	protected final URL getUrl() {
+	protected URL getUrl() {
 		try {
 			return new URL(webServer.getSiteUrl(), siteExtension);
 		} catch (MalformedURLException e) {
@@ -130,15 +116,7 @@ public class BaseCrawler {
 	 *         {@link #crawl()} haven't been called yet.
 	 */
 	public CrawljaxConfiguration getConfig() {
-		return config;
-	}
-
-	/**
-	 * @return the {@link CrawlSpecification} or <code>null</code> if {@link #setup()} or
-	 *         {@link #crawl()} haven't been called yet.
-	 */
-	public CrawlSpecification getCrawlSpec() {
-		return crawlSpec;
+		return configBuilder.build();
 	}
 
 	/**
@@ -152,7 +130,7 @@ public class BaseCrawler {
 		if (!hasSetup.get()) {
 			setup();
 		}
-		CrawljaxController crawljax = new CrawljaxController(config);
+		CrawljaxController crawljax = new CrawljaxController(configBuilder.build());
 		crawljax.run();
 		webServer.stop();
 		crawljax.getBrowserPool().close();
@@ -172,7 +150,7 @@ public class BaseCrawler {
 			setup();
 		}
 		for (Plugin plugin : plugins) {
-			config.addPlugin(plugin);
+			configBuilder.addPlugin(plugin);
 		}
 		return crawl();
 	}

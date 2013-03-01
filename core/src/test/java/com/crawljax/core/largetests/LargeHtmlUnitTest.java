@@ -1,26 +1,26 @@
 package com.crawljax.core.largetests;
 
-import org.junit.experimental.categories.Category;
+import org.junit.Ignore;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.BrowserConfiguration;
-import com.crawljax.test.BrowserTest;
 
-@Category(BrowserTest.class)
-public class LargeFirefoxTest extends LargeTestBase {
+@Ignore("HTML Unit is not supported at the moment")
+public class LargeHtmlUnitTest extends LargeTestBase {
 
 	@Override
 	BrowserConfiguration getBrowserConfiguration() {
-		return new BrowserConfiguration(BrowserType.firefox, 2);
+		return new BrowserConfiguration(BrowserType.htmlunit);
 	}
 
 	@Override
 	long getTimeOutAfterReloadUrl() {
-		return 200;
+		return 400;
 	}
 
 	@Override
 	long getTimeOutAfterEvent() {
-		return 200;
+		return 400;
 	}
+
 }

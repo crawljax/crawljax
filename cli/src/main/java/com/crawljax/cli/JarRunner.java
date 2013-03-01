@@ -13,9 +13,9 @@ import org.apache.commons.validator.routines.UrlValidator;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.ThreadConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -135,38 +135,34 @@ public class JarRunner {
 
 	private static void readConfigAndRun(final CommandLine commandLine, String urlValue,
 	        String outputDir) {
-		CrawlSpecification crawlSpec = new CrawlSpecification(urlValue);
-		CrawljaxConfiguration config = new CrawljaxConfiguration();
-		config.addPlugin(new CrawlOverview(new File(outputDir)));
-		config.setCrawlSpecification(crawlSpec);
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlValue);
+		builder.addPlugin(new CrawlOverview(new File(outputDir)));
 
+		BrowserType browser = BrowserType.firefox;
 		if (commandLine.hasOption(BROWSER)) {
-			String browser = commandLine.getOptionValue(BROWSER);
-			config.setBrowser(getBrowserTypeFromStr(browser));
+			String browserString = commandLine.getOptionValue(BROWSER);
+			browser = getBrowserTypeFromStr(browserString);
 		}
+
+		int browsers = 1;
+		if (commandLine.hasOption(PARALLEL)) {
+			browsers = Integer.parseInt(commandLine.getOptionValue(PARALLEL));
+		}
+		builder.setBrowserConfig(new BrowserConfiguration(browser, browsers));
 
 		if (commandLine.hasOption(DEPTH)) {
 			String depth = commandLine.getOptionValue(DEPTH);
-			crawlSpec.setDepth(Integer.parseInt(depth));
+			builder.setMaximumDepth(Integer.parseInt(depth));
 		}
 
 		if (commandLine.hasOption(MAXSTATES)) {
 			String maxstates = commandLine.getOptionValue(MAXSTATES);
-			crawlSpec.setMaximumStates(Integer.parseInt(maxstates));
-		}
-
-		if (commandLine.hasOption(PARALLEL)) {
-			int parallel = Integer.parseInt(commandLine.getOptionValue(PARALLEL));
-			ThreadConfiguration threadConfiguration = new ThreadConfiguration();
-			threadConfiguration.setNumberThreads(parallel + 2);
-			threadConfiguration.setNumberBrowsers(parallel);
-			threadConfiguration.setBrowserBooting(true);
-			config.setThreadConfiguration(threadConfiguration);
+			builder.setMaximumStates(Integer.parseInt(maxstates));
 		}
 
 		// run Crawljax
-		crawlSpec.clickDefaultElements();
-		CrawljaxController crawljax = new CrawljaxController(config);
+		builder.crawlRules().clickDefaultElements();
+		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();
 	}
 

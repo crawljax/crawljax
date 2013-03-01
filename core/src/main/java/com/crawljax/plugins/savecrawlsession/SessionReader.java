@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
@@ -71,15 +70,15 @@ public class SessionReader {
 		return paths;
 	}
 
-	/**
-	 * @return the CrawlSpecification from the saved CrawlSession
-	 */
-	public CrawlSpecification getCrawlSpecification() {
-		CrawlSpecification spec = new CrawlSpecification(savedCrawlSession.getUrl());
-		spec.setMaximumStates(savedCrawlSession.getMapStates().size());
-		spec.clickDefaultElements();
-		return spec;
-	}
+	// /**
+	// * @return the CrawlSpecification from the saved CrawlSession
+	// */
+	// public CrawlSpecification getCrawlSpecification() {
+	// CrawlSpecification spec = new CrawlSpecification(savedCrawlSession.getUrl());
+	// spec.setMaximumStates(savedCrawlSession.getMapStates().size());
+	// spec.clickDefaultElements();
+	// return spec;
+	// }
 
 	/**
 	 * @return the crawled url from the saved CrawlSession

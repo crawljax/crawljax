@@ -1,5 +1,6 @@
 package com.crawljax.crawltests;
 
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputField;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.test.BaseCrawler;
@@ -17,9 +18,10 @@ public class SimpleInputSiteCrawl extends BaseCrawler {
 	}
 
 	@Override
-	public void setup() {
-		super.setup();
-		getCrawlSpec().setInputSpecification(getInputSpecification());
+	protected CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
+		CrawljaxConfigurationBuilder builder = super.newCrawlConfiguartionBuilder();
+		builder.crawlRules().setInputSpec(getInputSpecification());
+		return builder;
 	}
 
 	/**
