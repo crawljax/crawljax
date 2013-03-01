@@ -92,6 +92,19 @@ body {
 			});
 			
 			$("a[data-toggle='tooltip']").tooltip();
+			
+			var paused = false;
+			$("#pauseButton").click(function(){
+				if (paused) {
+					renderer.resume();
+					paused = false;
+					$(this).children(":first").attr("class", "icon-pause");
+				} else {
+					renderer.pause();
+					paused = true;
+					$(this).children(":first").attr("class", "icon-play");
+				}
+			});
 		});
 
 		function showInfo(link) {

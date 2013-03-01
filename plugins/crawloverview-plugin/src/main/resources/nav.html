@@ -14,8 +14,8 @@
 				</ul>
 			</div>
 			<div class="nav pull-right">
-				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
 				#if($page == "graph")
+				<a href="#" class="btn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
 				<a href="#" class="btn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
 				<div style="display: none" id='popup-content'>
 					<p>You can double click a state to inspect it further.</p>
@@ -23,6 +23,7 @@
 					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
 				</div>
 				#end
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
 			</div>
 			<!--/.nav-collapse -->
 		</div>
