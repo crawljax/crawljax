@@ -70,14 +70,19 @@ body {
 				});
 			});
 
+			var edgesSeen = {};
 			$.each(edges, function() {
-				graph.addLink(this.from, this.to, {
-					text : this.text,
-					id : this.id,
-					eventType : this.eventType,
-					element : this.element
-					
-				});
+				var edgeKey = this.from + "-to-" + this.to;
+				if (!(edgeKey in edgesSeen)) {
+					edgesSeen[edgeKey] = true;
+					graph.addLink(this.from, this.to, {
+						text : this.text,
+						id : this.id,
+						eventType : this.eventType,
+						element : this.element
+						
+					});
+				}
 			});
 			
 			$("#hideButton").click(function() {

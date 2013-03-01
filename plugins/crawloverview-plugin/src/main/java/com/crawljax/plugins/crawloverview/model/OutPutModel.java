@@ -3,8 +3,8 @@ package com.crawljax.plugins.crawloverview.model;
 import javax.annotation.concurrent.Immutable;
 
 import com.crawljax.core.configuration.CrawlSpecificationReader;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Result of a Crawl session.
@@ -16,12 +16,12 @@ import com.google.common.collect.ImmutableSet;
 public final class OutPutModel {
 
 	private final ImmutableMap<String, State> states;
-	private final ImmutableSet<Edge> edges;
+	private final ImmutableList<Edge> edges;
 	private final Statistics statistics;
 	private final CrawlConfiguration configuration;
 	private final CrawlSpecificationReader crawlSpecification;
 
-	public OutPutModel(ImmutableMap<String, State> states, ImmutableSet<Edge> edges,
+	public OutPutModel(ImmutableMap<String, State> states, ImmutableList<Edge> edges,
 	        Statistics statistics, CrawlConfiguration config, CrawlSpecificationReader spec) {
 		this.states = states;
 		this.edges = edges;
@@ -34,7 +34,7 @@ public final class OutPutModel {
 		return states;
 	}
 
-	public ImmutableSet<Edge> getEdges() {
+	public ImmutableList<Edge> getEdges() {
 		return edges;
 	}
 
