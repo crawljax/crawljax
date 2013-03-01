@@ -15,7 +15,7 @@ var graphics = Viva.Graph.View.svgGraphics();
 var renderer = Viva.Graph.View.renderer(graph, {
 	graphics : graphics,
 	layout : layout,
-	container : document.getElementById('graphContainer')
+	container : document.getElementById('container-graph')
 });
 
 renderer.run();
