@@ -9,7 +9,6 @@ import com.crawljax.oraclecomparator.AbstractComparator;
  * Oracle Comparator that ignores the specified attributes.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class AttributeComparator extends AbstractComparator {
 

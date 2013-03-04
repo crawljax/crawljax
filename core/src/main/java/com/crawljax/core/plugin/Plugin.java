@@ -53,7 +53,6 @@ package com.crawljax.core.plugin;
  * </table>
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public interface Plugin {
 

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -14,7 +15,7 @@ import org.w3c.dom.NodeList;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.test.BrowserTest;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 @Category(BrowserTest.class)
 public class WebDriverBackedEmbeddedBrowserTest {
@@ -29,13 +30,13 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 		Document doc;
 		try {
-			driver.goToUrl("file://" + index.getAbsolutePath());
+			driver.goToUrl(new URL("file://" + index.getAbsolutePath()));
 
-			doc = Helper.getDocument(driver.getDom());
+			doc = DomUtils.asDocument(driver.getDom());
 			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
 			assertEquals(2, frameNodes.getLength());
 
-			doc = Helper.getDocument(driver.getDomWithoutIframeContent());
+			doc = DomUtils.asDocument(driver.getDomWithoutIframeContent());
 			frameNodes = doc.getElementsByTagName("IFRAME");
 			assertEquals(2, frameNodes.getLength());
 		} finally {
@@ -52,7 +53,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 		File f = File.createTempFile("webdriverfirefox-test-screenshot", ".png");
 		if (!f.exists()) {
-			browser.goToUrl("file://" + index.getAbsolutePath());
+			browser.goToUrl(new URL("file://" + index.getAbsolutePath()));
 			browser.saveScreenShot(f);
 			assertTrue(f.exists());
 			assertTrue(f.delete());

@@ -11,7 +11,6 @@ import com.crawljax.condition.Condition;
  * This class contains the oracle and its precondition(s).
  * 
  * @author danny
- * @version $Id$
  */
 @Immutable
 public class OracleComparator {

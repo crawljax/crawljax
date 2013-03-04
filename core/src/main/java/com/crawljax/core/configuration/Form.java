@@ -28,10 +28,10 @@ package com.crawljax.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * Form configuration.
- * 
- * @version $Id$
  */
 public class Form {
 
@@ -56,8 +56,8 @@ public class Form {
 	/**
 	 * @return the inputFields
 	 */
-	protected List<FormInputField> getInputFields() {
-		return inputFields;
+	protected ImmutableList<FormInputField> getInputFields() {
+		return ImmutableList.copyOf(inputFields);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class Form {
 		for (FormInputField inputField : this.inputFields) {
 			inputFieldIds.add(inputField.getId());
 		}
-		crawlTag.setInputFieldIds(inputFieldIds);
+		crawlTag.addInputFieldIds(inputFieldIds);
 		return crawlTag;
 	}
 

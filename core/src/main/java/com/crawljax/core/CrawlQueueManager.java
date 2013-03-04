@@ -5,7 +5,6 @@ package com.crawljax.core;
  * the crawlqueue.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public interface CrawlQueueManager {
 	/**

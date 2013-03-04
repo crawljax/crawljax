@@ -9,20 +9,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
 /**
  * Test class for the CandidateElement class.
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public class CandidateElementTest {
 	private static Document document;
 
 	@BeforeClass
 	public static void setup() throws SAXException, IOException {
-		document = Helper.getDocument("");
+		document = DomUtils.asDocument("");
 	}
 
 	@Test

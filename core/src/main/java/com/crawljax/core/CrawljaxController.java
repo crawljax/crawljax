@@ -1,6 +1,5 @@
 package com.crawljax.core;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.GuardedBy;
@@ -11,8 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.BrowserPool;
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
-import com.crawljax.condition.crawlcondition.CrawlConditionChecker;
+import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.configuration.CrawlSpecificationReader;
@@ -28,7 +28,6 @@ import com.google.common.collect.ImmutableList;
  * The Crawljax Controller class is the core of Crawljax.
  * 
  * @author mesbah
- * @version $Id$
  */
 public class CrawljaxController implements CrawlQueueManager {
 
@@ -40,7 +39,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	private long startCrawl;
 
 	private final StateComparator stateComparator;
-	private final CrawlConditionChecker crawlConditionChecker;
+	private final ConditionTypeChecker<CrawlCondition> crawlConditionChecker;
 	private final EventableConditionChecker eventableConditionChecker;
 
 	private final WaitConditionChecker waitConditionChecker = new WaitConditionChecker();
@@ -74,11 +73,12 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		stateComparator = new StateComparator(crawlerReader.getOracleComparators());
 		invariantList = crawlerReader.getInvariants();
-		crawlConditionChecker = new CrawlConditionChecker(crawlerReader.getCrawlConditions());
+
 		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
 		eventableConditionChecker =
 		        new EventableConditionChecker(configurationReader.getEventableConditions());
 
+		crawlConditionChecker = new ConditionTypeChecker<>(crawlerReader.getCrawlConditions());
 		elementChecker =
 		        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 

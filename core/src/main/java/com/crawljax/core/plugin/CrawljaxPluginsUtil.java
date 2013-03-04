@@ -51,16 +51,13 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void loadPlugins(List<Plugin> plugins) {
 		PLUGINS.clear();
-		if (plugins == null || plugins.size() == 0) {
+		if (plugins == null || plugins.isEmpty()) {
 			LOGGER.warn("No plugins loaded because CrawljaxConfiguration is empty");
 			return;
 		}
 		CrawljaxPluginsUtil.PLUGINS.addAll(plugins);
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
-			/**
-			 * Log the name of the plugin loaded
-			 */
-			LOGGER.info(plugin.getClass().getName());
+			LOGGER.info("Loaded plugin {}", plugin.getClass().getSimpleName());
 		}
 	}
 
@@ -77,7 +74,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the browser instance to load to the plugin.
 	 */
 	public static void runPreCrawlingPlugins(EmbeddedBrowser browser) {
-		LOGGER.info("Running PreCrawlingPlugins...");
+		LOGGER.debug("Running PreCrawlingPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof PreCrawlingPlugin) {
 				((PreCrawlingPlugin) plugin).preCrawling(browser);
@@ -95,7 +92,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the embedded browser instance to load in the plugin.
 	 */
 	public static void runOnUrlLoadPlugins(EmbeddedBrowser browser) {
-		LOGGER.info("Running OnUrlLoadPlugins...");
+		LOGGER.debug("Running OnUrlLoadPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnUrlLoadPlugin) {
 				((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
@@ -112,7 +109,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the session to load in the plugin
 	 */
 	public static void runOnNewStatePlugins(CrawlSession session) {
-		LOGGER.info("Running OnNewStatePlugins...");
+		LOGGER.debug("Running OnNewStatePlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnNewStatePlugin) {
 				((OnNewStatePlugin) plugin).onNewState(session);
@@ -132,7 +129,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the session to load in the plugin
 	 */
 	public static void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session) {
-		LOGGER.info("Running OnInvriantViolationPlugins...");
+		LOGGER.debug("Running OnInvriantViolationPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnInvariantViolationPlugin) {
 				((OnInvariantViolationPlugin) plugin).onInvariantViolation(invariant, session);
@@ -149,7 +146,7 @@ public final class CrawljaxPluginsUtil {
 	 *            the session to load in the plugin
 	 */
 	public static void runPostCrawlingPlugins(CrawlSession session) {
-		LOGGER.info("Running PostCrawlingPlugins...");
+		LOGGER.debug("Running PostCrawlingPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof PostCrawlingPlugin) {
 				((PostCrawlingPlugin) plugin).postCrawling(session);
@@ -168,10 +165,10 @@ public final class CrawljaxPluginsUtil {
 	 *            the state the 'back tracking' operation is currently in
 	 */
 	public static void runOnRevisitStatePlugins(CrawlSession session, StateVertex currentState) {
-		LOGGER.info("Running OnRevisitStatePlugins...");
+		LOGGER.debug("Running OnRevisitStatePlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnRevisitStatePlugin) {
-				LOGGER.info("Calling plugin " + plugin.getClass().getName());
+				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
 			}
 		}
@@ -190,10 +187,10 @@ public final class CrawljaxPluginsUtil {
 	 */
 	public static void runPreStateCrawlingPlugins(CrawlSession session,
 	        List<CandidateElement> candidateElements) {
-		LOGGER.info("Running PreStateCrawlingPlugins...");
+		LOGGER.debug("Running PreStateCrawlingPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof PreStateCrawlingPlugin) {
-				LOGGER.info("Calling plugin " + plugin.getClass().getName());
+				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((PreStateCrawlingPlugin) plugin).preStateCrawling(session, candidateElements);
 			}
 		}
@@ -209,10 +206,10 @@ public final class CrawljaxPluginsUtil {
 	 *            The ProxyConfiguration to use.
 	 */
 	public static void runProxyServerPlugins(ProxyConfiguration config) {
-		LOGGER.info("Running ProxyServerPlugins...");
+		LOGGER.debug("Running ProxyServerPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof ProxyServerPlugin) {
-				LOGGER.info("Calling plugin " + plugin.getClass().getName());
+				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((ProxyServerPlugin) plugin).proxyServer(config);
 			}
 		}
@@ -235,10 +232,10 @@ public final class CrawljaxPluginsUtil {
 	public static void runGuidedCrawlingPlugins(CrawljaxController controller,
 	        CrawlSession session, final List<Eventable> exactEventPaths,
 	        final StateMachine stateMachine) {
-		LOGGER.info("Running GuidedCrawlingPlugins...");
+		LOGGER.debug("Running GuidedCrawlingPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof GuidedCrawlingPlugin) {
-				LOGGER.info("Calling plugin " + plugin.getClass().getName());
+				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				StateVertex currentState = session.getCurrentState();
 				((GuidedCrawlingPlugin) plugin).guidedCrawling(currentState, controller, session,
 				        exactEventPaths, stateMachine);
@@ -256,10 +253,10 @@ public final class CrawljaxPluginsUtil {
 	 *            the path TO this eventable.
 	 */
 	public static void runOnFireEventFailedPlugins(Eventable eventable, List<Eventable> path) {
-		LOGGER.info("Running OnFireEventFailedPlugins...");
+		LOGGER.debug("Running OnFireEventFailedPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnFireEventFailedPlugin) {
-				LOGGER.info("Calling plugin " + plugin.getClass().getName());
+				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
 			}
 		}
@@ -275,10 +272,10 @@ public final class CrawljaxPluginsUtil {
 	 *            the new created browser object
 	 */
 	public static void runOnBrowserCreatedPlugins(EmbeddedBrowser newBrowser) {
-		LOGGER.info("Running OnBrowserCreatedPlugins...");
+		LOGGER.debug("Running OnBrowserCreatedPlugins...");
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof OnBrowserCreatedPlugin) {
-				LOGGER.info("Calling plugin " + plugin.getClass().getName());
+				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
 			}
 		}
@@ -286,17 +283,14 @@ public final class CrawljaxPluginsUtil {
 
 	/**
 	 * Load and run the DomChangeNotifierPlugin.
-	 * 
-	 * 
-	 * 
 	 */
 	public static boolean runDomChangeNotifierPlugins(final StateVertex stateBefore,
 	        final Eventable e, final StateVertex stateAfter, final EmbeddedBrowser browser) {
-		LOGGER.info("Checking for DomChangeNotifierPlugin...");
+		LOGGER.debug("Checking for DomChangeNotifierPlugin...");
 		Plugin latest = null;
 		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
 			if (plugin instanceof DomChangeNotifierPlugin) {
-				LOGGER.info("Found plugin " + plugin.getClass().getName());
+				LOGGER.debug("Found plugin " + plugin.getClass().getName());
 				latest = plugin;
 			}
 		}
@@ -313,7 +307,7 @@ public final class CrawljaxPluginsUtil {
 		boolean isChanged = !stateAfter.equals(stateBefore);
 
 		if (isChanged) {
-			LOGGER.info("Dom is Changed!");
+			LOGGER.debug("Dom is Changed!");
 		} else {
 			LOGGER.debug("Dom not Changed!");
 		}

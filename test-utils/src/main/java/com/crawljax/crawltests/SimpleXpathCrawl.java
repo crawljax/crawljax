@@ -1,6 +1,7 @@
 package com.crawljax.crawltests;
 
 import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.test.BaseCrawler;
 
 /**
  * Wraps a Crawljax instance the crawls the simplesite.
@@ -15,10 +16,10 @@ public class SimpleXpathCrawl extends BaseCrawler {
 	}
 
 	@Override
-	public CrawlSpecification getCrawlSpec() {
-		CrawlSpecification spec = super.getCrawlSpec();
-		spec.dontClick("a").underXPath("//A[@class='noclick']");
+	public CrawlSpecification newCrawlSpecification() {
+		CrawlSpecification spec = super.newCrawlSpecification();
 		spec.click("a").underXPath("//A[@class='click']");
+		spec.dontClickChildrenOf("div").withId("dontClick");
 		return spec;
 	}
 }

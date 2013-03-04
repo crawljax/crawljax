@@ -1,8 +1,6 @@
-/**
- * Created Dec 13, 2007
- */
 package com.crawljax.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,22 +17,23 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+
 /**
  * Utility class that contains methods used by Crawljax and some plugin to deal with XPath
  * resolving, constructing etc.
- * 
- * @author mesbah
- * @version $Id$
  */
 public final class XPathHelper {
-	/**
-     * 
-     */
+
+	private static final Pattern TAG_PATTERN = Pattern
+	        .compile("(?<=[/|::])[a-zA-z]+(?=([/|\\[]|$))");
+
+	private static final Pattern ID_PATTERN = Pattern.compile("(@[a-zA-Z]+)");
+
 	private static final String FULL_XPATH_CACHE = "FULL_XPATH_CACHE";
 	private static final int MAX_SEARCH_LOOPS = 10000;
-
-	private XPathHelper() {
-	}
 
 	/**
 	 * Reverse Engineers an XPath Expression of a given Node in the DOM.
@@ -110,19 +109,13 @@ public final class XPathHelper {
 	/**
 	 * Returns the list of nodes which match the expression xpathExpr in the String domStr.
 	 * 
-	 * @param domStr
-	 *            the string of the document to search in
-	 * @param xpathExpr
-	 *            the xpath query
-	 * @author cor-paul
 	 * @return the list of nodes which match the query
-	 * @throws Exception
-	 *             On erorr.
+	 * @throws XPathExpressionException
+	 * @throws IOException
 	 */
 	public static NodeList evaluateXpathExpression(String domStr, String xpathExpr)
-	        throws Exception {
-		Document dom = Helper.getDocument(domStr);
-
+	        throws XPathExpressionException, IOException {
+		Document dom = DomUtils.asDocument(domStr);
 		return evaluateXpathExpression(dom, xpathExpr);
 	}
 
@@ -145,7 +138,6 @@ public final class XPathHelper {
 		XPathExpression expr = xpath.compile(xpathExpr);
 		Object result = expr.evaluate(dom, XPathConstants.NODESET);
 		NodeList nodes = (NodeList) result;
-
 		return nodes;
 	}
 
@@ -158,22 +150,19 @@ public final class XPathHelper {
 	 * @param xpathExpression
 	 *            The expression to find the element.
 	 * @return list of XPaths retrieved by xpathExpression.
+	 * @throws XPathExpressionException
 	 */
-	public static List<String> getXpathForXPathExpressions(Document dom, String xpathExpression) {
-		NodeList nodeList;
-		try {
-			nodeList = XPathHelper.evaluateXpathExpression(dom, xpathExpression);
-		} catch (XPathExpressionException e) {
-			return null;
-		}
-		List<String> result = new ArrayList<String>();
+	public static ImmutableList<String> getXpathForXPathExpressions(Document dom,
+	        String xpathExpression) throws XPathExpressionException {
+		NodeList nodeList = XPathHelper.evaluateXpathExpression(dom, xpathExpression);
+		Builder<String> result = ImmutableList.builder();
 		if (nodeList.getLength() > 0) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node n = nodeList.item(i);
 				result.add(getXPathExpression(n));
 			}
 		}
-		return result;
+		return result.build();
 	}
 
 	/**
@@ -182,24 +171,31 @@ public final class XPathHelper {
 	 * @return formatted xpath with tag names in uppercase and attributes in lowercase
 	 */
 	public static String formatXPath(String xpath) {
-		String formatted = xpath;
-		Pattern p = Pattern.compile("(/(?:[-a-zA-Z]+::)?+)([a-zA-Z]+)");
-		Matcher m = p.matcher(formatted);
-
-		for (int i = 0; m.find(i); i++) {
-			i = m.start();
-			formatted = m.replaceFirst(m.group(1) + m.group(2).toUpperCase());
-			m = p.matcher(formatted);
-		}
-		p = Pattern.compile("(@[a-zA-Z]+)");
-		m = p.matcher(formatted);
-
-		for (int i = 0; m.find(i); i++) {
-			i = m.start();
-			formatted = m.replaceFirst(m.group().toLowerCase());
-			m = p.matcher(formatted);
-		}
+		String formatted = capitalizeTagNames(xpath);
+		formatted = lowerCaseAttributes(formatted);
 		return formatted;
+	}
+
+	private static String lowerCaseAttributes(String formatted) {
+		Matcher m = ID_PATTERN.matcher(formatted);
+		StringBuffer sb = new StringBuffer();
+		while (m.find()) {
+			String text = m.group();
+			m.appendReplacement(sb, Matcher.quoteReplacement(text.toLowerCase()));
+		}
+		m.appendTail(sb);
+		return sb.toString();
+	}
+
+	private static String capitalizeTagNames(String xpath) {
+		Matcher m = TAG_PATTERN.matcher(xpath);
+		StringBuffer sb = new StringBuffer();
+		while (m.find()) {
+			String text = m.group();
+			m.appendReplacement(sb, Matcher.quoteReplacement(text.toUpperCase()));
+		}
+		m.appendTail(sb);
+		return sb.toString();
 	}
 
 	/**
@@ -223,10 +219,10 @@ public final class XPathHelper {
 	 * @return string without the before [
 	 */
 	private static String stripEndSquareBrackets(String string) {
-		if (string.indexOf("[") == -1) {
-			return string;
+		if (string.contains("[")) {
+			return string.substring(0, string.indexOf('['));
 		} else {
-			return string.substring(0, string.indexOf("["));
+			return string;
 		}
 	}
 
@@ -247,21 +243,19 @@ public final class XPathHelper {
 		int pos = 0;
 		int temp;
 		int number;
-		// System.out.println(xpath);
 		for (String element : elements) {
-			if (!element.equals("") && !element.startsWith("@") && element.indexOf("()") == -1) {
+			if (!element.isEmpty() && !element.startsWith("@") && !element.contains("()")) {
 				if (element.indexOf("[") != -1) {
 					try {
 						number =
 						        Integer.parseInt(element.substring(element.indexOf("[") + 1,
 						                element.indexOf("]")));
-					} catch (Exception e) {
+					} catch (NumberFormatException e) {
 						return -1;
 					}
 				} else {
 					number = 1;
 				}
-				// System.out.println("number: " + number);
 				for (int i = 0; i < number; i++) {
 					// find new open element
 					temp = dom.indexOf("<" + stripEndSquareBrackets(element), pos);
@@ -274,8 +268,6 @@ public final class XPathHelper {
 							pos =
 							        getCloseElementLocation(dom, pos,
 							                stripEndSquareBrackets(element));
-							// pos = dom.indexOf("<" +
-							// stripEndSquareBrackets(element), pos) + 1;
 						}
 
 					}
@@ -311,25 +303,20 @@ public final class XPathHelper {
 			if (dom.indexOf(openElement, pos) == -1 && dom.indexOf(closeElement, pos) == -1) {
 				return -1;
 			}
-			// System.out.println("hierzo: " + dom.substring(pos));
 			if (dom.indexOf(openElement, pos) < dom.indexOf(closeElement, pos)
 			        && dom.indexOf(openElement, pos) != -1) {
 				openElements++;
 				pos = dom.indexOf(openElement, pos) + 1;
-				// System.out.println("open: " + dom.substring(pos-1));
 			} else {
 
 				openElements--;
 				pos = dom.indexOf(closeElement, pos) + 1;
-				// System.out.println("close: " + dom.substring(pos-1));
 			}
-			// System.out.println(openElements);
 			if (openElements == 0) {
 				break;
 			}
 			i++;
 		}
-		// System.out.println("Finished: " + dom.substring(pos-1));
 		return pos - 1;
 
 	}
@@ -353,19 +340,22 @@ public final class XPathHelper {
 	 *         text()
 	 */
 	public static String stripXPathToElement(String xpath) {
-		if (xpath != null && !xpath.equals("")) {
-			if (xpath.toLowerCase().indexOf("/text()") != -1) {
+		if (!Strings.isNullOrEmpty(xpath)) {
+			if (xpath.toLowerCase().contains("/text()")) {
 				xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/text()"));
 			}
-			if (xpath.toLowerCase().indexOf("/comment()") != -1) {
+			if (xpath.toLowerCase().contains("/comment()")) {
 				xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/comment()"));
 			}
-			if (xpath.indexOf("@") != -1) {
+			if (xpath.contains("@")) {
 				xpath = xpath.substring(0, xpath.indexOf("@") - 1);
 			}
 		}
 
 		return xpath;
+	}
+
+	private XPathHelper() {
 	}
 
 }

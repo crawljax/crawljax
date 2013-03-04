@@ -13,7 +13,6 @@ import com.crawljax.core.CrawljaxException;
  * true.
  * 
  * @author Danny
- * @version $Id$
  */
 @Immutable
 public class JavaScriptCondition extends AbstractCondition {

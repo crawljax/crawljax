@@ -24,7 +24,6 @@ import com.crawljax.util.XPathHelper;
  * can change the DOM state.
  * 
  * @author mesbah
- * @version $Id$
  */
 public class Eventable extends DefaultEdge implements Serializable {
 	private static final long serialVersionUID = 3229708706467350994L;
@@ -115,12 +114,12 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		String str = "";
-		if (this.getElement() != null) {
-			str = this.getElement().toString();
+		StringBuilder sb = new StringBuilder();
+		if (this.element != null) {
+			sb.append(this.getElement());
 		}
-		str += " " + this.eventType + " " + this.identification.toString();
-		return str;
+		sb.append(' ').append(this.eventType).append(' ').append(this.identification);
+		return sb.toString();
 	}
 
 	/**

@@ -1,11 +1,16 @@
 package com.crawljax.core.largetests;
 
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.stateWithDomSubstring;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,11 +66,6 @@ public abstract class LargeTestSuper {
 	private static final String INVARIANT_TEXT = "TEST_INVARIANTS";
 	private static boolean violatedInvariantStateIsCorrect = false;
 
-	private static final RegexCondition REGEX_CONDITION_TRUE = new RegexCondition(
-	        "REGEX_CONDITION_TRUE");
-	private static final NotRegexCondition ALLOW_BUTTON_CLICK = new NotRegexCondition(
-	        "DONT_CLICK_BUTTONS_ON_THIS_PAGE");
-
 	private static final String TITLE_RESULT_RANDOM_INPUT = "RESULT_RANDOM_INPUT";
 	private static final String REGEX_RESULT_RANDOM_INPUT = "[a-zA-Z]{8};" + "[a-zA-Z]{8};"
 	        + "(true|false);" + "(true|false);" + "OPTION[1234];" + "[a-zA-Z]{8}";
@@ -91,6 +91,153 @@ public abstract class LargeTestSuper {
 	private static final String TITLE_MULTIPLE_INPUT_RESULT = "RESULT_MULTIPLE_INPUT";
 	private static final String[] MULTIPLE_INPUT_RESULTS = { "first;foo;true;false;OPTION1;same",
 	        "second;bar;false;true;OPTION2;same", ";foo;true;false;OPTION1;same" };
+
+	/* setting up */
+
+	/**
+	 * retrieve / build the crawlspecification for the given arguments.
+	 * 
+	 * @param url
+	 *            the url where the large test run is located.
+	 * @param waintAfterEvent
+	 *            the amount of time in ms to wait after an event is fired.
+	 * @param waitAfterReload
+	 *            the amount of time in ms to wait after a reload.
+	 * @return the new CrawlSpecification.
+	 */
+	protected static CrawlSpecification getCrawlSpecification(String url, int waintAfterEvent,
+	        int waitAfterReload) {
+
+		CrawlSpecification crawler = new CrawlSpecification(url);
+		crawler.setWaitTimeAfterEvent(waintAfterEvent, TimeUnit.MILLISECONDS);
+		crawler.setWaitTimeAfterReloadUrl(waitAfterReload, TimeUnit.MILLISECONDS);
+		crawler.setDepth(3);
+		crawler.setClickOnce(true);
+
+		addCrawlElements(crawler);
+
+		crawler.setInputSpecification(getInputSpecification());
+
+		addCrawlConditions(crawler);
+		addOracleComparators(crawler);
+		addInvariants(crawler);
+		addWaitConditions(crawler);
+
+		return crawler;
+	}
+
+	private static InputSpecification getInputSpecification() {
+		InputSpecification input = new InputSpecification();
+		input.field("textManual").setValue(MANUAL_INPUT_TEXT);
+		input.field("text2Manual").setValue(MANUAL_INPUT_TEXT2);
+		input.field("checkboxManual").setValue(MANUAL_INPUT_CHECKBOX);
+		input.field("radioManual").setValue(MANUAL_INPUT_RADIO);
+		input.field("selectManual").setValue(MANUAL_INPUT_SELECT);
+		input.field("textareaManual").setValue(MANUAL_INPUT_TEXTAREA);
+
+		Form form = new Form();
+		form.field("textMultiple").setValues(MULTIPLE_INPUT_TEXT);
+		form.field("text2Multiple").setValues(MULTIPLE_INPUT_TEXT2);
+		form.field("checkboxMultiple").setValues(MULTIPLE_INPUT_CHECKBOX);
+		form.field("radioMultiple").setValues(MULTIPLE_INPUT_RADIO);
+		form.field("selectMultiple").setValues(MULTIPLE_INPUT_SELECT);
+		form.field("textareaMultiple").setValues(MULTIPLE_INPUT_TEXTAREA);
+		input.setValuesInForm(form).beforeClickElement("a").withText("Submit Multiple");
+		return input;
+	}
+
+	private static void addWaitConditions(CrawlSpecification crawler) {
+		crawler.waitFor("testWaitCondition.html", 2000, new ExpectedVisibleCondition(
+		        new Identification(How.id, "SLOW_WIDGET")));
+	}
+
+	private static void addInvariants(CrawlSpecification crawler) {
+		// should always fail on test invariant page
+		NotXPathCondition neverDivWithInvariantViolationId =
+		        new NotXPathCondition("//DIV[@id='INVARIANT_VIOLATION']");
+		crawler.addInvariant(VIOLATED_INVARIANT_DESCRIPTION, neverDivWithInvariantViolationId);
+
+		// should never fail
+		RegexCondition onInvariantsPagePreCondition = new RegexCondition(INVARIANT_TEXT);
+		XPathCondition expectElement =
+		        new XPathCondition("//DIV[@id='SHOULD_ALWAYS_BE_ON_THIS_PAGE']");
+		crawler.addInvariant("testInvariantWithPrecondiions", expectElement,
+		        onInvariantsPagePreCondition);
+	}
+
+	private static void addCrawlElements(CrawlSpecification crawler) {
+		crawler.click("a");
+		crawler.click("div").withText(CLICK_TEXT);
+		crawler.click("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
+		crawler.click("button").when(new NotRegexCondition("DONT_CLICK_BUTTONS_ON_THIS_PAGE"));
+		crawler.click("div").withAttribute(ATTRIBUTE, "condition")
+		        .when(new RegexCondition("REGEX_CONDITION_TRUE"));
+
+		crawler.dontClick("a").withText(DONT_CLICK_TEXT);
+		crawler.dontClick("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);
+		crawler.dontClick("a").underXPath("//DIV[@id='" + DONT_CLICK_UNDER_XPATH_ID + "']");
+	}
+
+	private static void addOracleComparators(CrawlSpecification crawler) {
+		crawler.addOracleComparator("style", new StyleComparator());
+		crawler.addOracleComparator("date", new DateComparator());
+	}
+
+	private static void addCrawlConditions(CrawlSpecification crawler) {
+		crawler.addCrawlCondition("DONT_CRAWL_ME", new NotRegexCondition("DONT_CRAWL_ME"));
+	}
+
+	/**
+	 * Add the plugins to the given crawljaxConfiguration.
+	 * 
+	 * @param crawljaxConfiguration
+	 *            the configuration to add the plugins to.
+	 */
+	protected static void addPlugins(CrawljaxConfiguration crawljaxConfiguration) {
+		// plugin to retrieve session data
+		crawljaxConfiguration.addPlugin(new PostCrawlingPlugin() {
+
+			@Override
+			public void postCrawling(CrawlSession session) {
+				LargeTestSuper.session = session;
+
+			}
+
+		});
+
+		crawljaxConfiguration.addPlugin(new OnInvariantViolationPlugin() {
+
+			@Override
+			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
+				LargeTestSuper.violatedInvariants.add(invariant);
+				if (session.getCurrentState().getDom().contains(INVARIANT_TEXT)) {
+					violatedInvariantStateIsCorrect = true;
+					LOG.warn("Invariant violated: " + invariant.getDescription());
+				}
+			}
+		});
+
+		crawljaxConfiguration.addPlugin(new OnNewStatePlugin() {
+			@Override
+			public void onNewState(CrawlSession session) {
+				try {
+					if (!session.getCurrentState().equals(session.getInitialState())) {
+						assertEquals(
+						        "Target State from ExactEventPath equals current state",
+						        session.getCurrentCrawlPath()
+						                .get(session.getCurrentCrawlPath().size() - 1)
+						                .getTargetStateVertex(), session.getCurrentState());
+					}
+				} catch (CrawljaxException e) {
+					Assert.fail(e.getMessage());
+				}
+			}
+		});
+	}
+
+	private StateFlowGraph getStateFlowGraph() {
+		return session.getStateFlowGraph();
+	}
 
 	/**
 	 * Tests random input.
@@ -165,10 +312,8 @@ public abstract class LargeTestSuper {
 	 */
 	@Test
 	public void testForIllegalStates() {
-		for (StateVertex state : getStateFlowGraph().getAllStates()) {
-			assertTrue("Only legal states: " + state.getName(),
-			        !state.getDom().contains(ILLEGAL_STATE));
-		}
+		assertThat(getStateFlowGraph().getAllStates(),
+		        everyItem(not(stateWithDomSubstring(ILLEGAL_STATE))));
 	}
 
 	/**
@@ -271,149 +416,4 @@ public abstract class LargeTestSuper {
 		        + 5, level2 >= 5);
 	}
 
-	/* setting up */
-
-	/**
-	 * retrieve / build the crawlspecification for the given arguments.
-	 * 
-	 * @param url
-	 *            the url where the large test run is located.
-	 * @param waintAfterEvent
-	 *            the amount of time in ms to wait after an event is fired.
-	 * @param waitAfterReload
-	 *            the amount of time in ms to wait after a reload.
-	 * @return the new CrawlSpecification.
-	 */
-	protected static CrawlSpecification getCrawlSpecification(String url, int waintAfterEvent,
-	        int waitAfterReload) {
-
-		CrawlSpecification crawler = new CrawlSpecification(url);
-		crawler.setWaitTimeAfterEvent(waintAfterEvent);
-		crawler.setWaitTimeAfterReloadUrl(waitAfterReload);
-		crawler.setDepth(3);
-		crawler.setClickOnce(true);
-
-		addCrawlElements(crawler);
-
-		crawler.setInputSpecification(getInputSpecification());
-
-		addCrawlConditions(crawler);
-		addOracleComparators(crawler);
-		addInvariants(crawler);
-		addWaitConditions(crawler);
-
-		return crawler;
-	}
-
-	private static InputSpecification getInputSpecification() {
-		InputSpecification input = new InputSpecification();
-		input.field("textManual").setValue(MANUAL_INPUT_TEXT);
-		input.field("text2Manual").setValue(MANUAL_INPUT_TEXT2);
-		input.field("checkboxManual").setValue(MANUAL_INPUT_CHECKBOX);
-		input.field("radioManual").setValue(MANUAL_INPUT_RADIO);
-		input.field("selectManual").setValue(MANUAL_INPUT_SELECT);
-		input.field("textareaManual").setValue(MANUAL_INPUT_TEXTAREA);
-
-		Form form = new Form();
-		form.field("textMultiple").setValues(MULTIPLE_INPUT_TEXT);
-		form.field("text2Multiple").setValues(MULTIPLE_INPUT_TEXT2);
-		form.field("checkboxMultiple").setValues(MULTIPLE_INPUT_CHECKBOX);
-		form.field("radioMultiple").setValues(MULTIPLE_INPUT_RADIO);
-		form.field("selectMultiple").setValues(MULTIPLE_INPUT_SELECT);
-		form.field("textareaMultiple").setValues(MULTIPLE_INPUT_TEXTAREA);
-		input.setValuesInForm(form).beforeClickElement("a").withText("Submit Multiple");
-		return input;
-	}
-
-	private static void addWaitConditions(CrawlSpecification crawler) {
-		crawler.waitFor("testWaitCondition.html", 2000, new ExpectedVisibleCondition(
-		        new Identification(How.id, "SLOW_WIDGET")));
-	}
-
-	private static void addInvariants(CrawlSpecification crawler) {
-		// should always fail on test invariant page
-		NotXPathCondition neverDivWithInvariantViolationId =
-		        new NotXPathCondition("//DIV[@id='INVARIANT_VIOLATION']");
-		crawler.addInvariant(VIOLATED_INVARIANT_DESCRIPTION, neverDivWithInvariantViolationId);
-
-		// should never fail
-		RegexCondition onInvariantsPagePreCondition = new RegexCondition(INVARIANT_TEXT);
-		XPathCondition expectElement =
-		        new XPathCondition("//DIV[@id='SHOULD_ALWAYS_BE_ON_THIS_PAGE']");
-		crawler.addInvariant("testInvariantWithPrecondiions", expectElement,
-		        onInvariantsPagePreCondition);
-	}
-
-	private static void addCrawlElements(CrawlSpecification crawler) {
-		crawler.click("a");
-		crawler.click("div").withText(CLICK_TEXT);
-		crawler.click("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
-		crawler.when(ALLOW_BUTTON_CLICK).click("button");
-		crawler.when(REGEX_CONDITION_TRUE).click("div").withAttribute(ATTRIBUTE, "condition");
-
-		crawler.dontClick("a").withText(DONT_CLICK_TEXT);
-		crawler.dontClick("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);
-		crawler.dontClick("a").underXPath("//DIV[@id='" + DONT_CLICK_UNDER_XPATH_ID + "']");
-	}
-
-	private static void addOracleComparators(CrawlSpecification crawler) {
-		crawler.addOracleComparator("style", new StyleComparator());
-		crawler.addOracleComparator("date", new DateComparator());
-	}
-
-	private static void addCrawlConditions(CrawlSpecification crawler) {
-		crawler.addCrawlCondition("DONT_CRAWL_ME", new NotRegexCondition("DONT_CRAWL_ME"));
-	}
-
-	/**
-	 * Add the plugins to the given crawljaxConfiguration.
-	 * 
-	 * @param crawljaxConfiguration
-	 *            the configuration to add the plugins to.
-	 */
-	protected static void addPlugins(CrawljaxConfiguration crawljaxConfiguration) {
-		// plugin to retrieve session data
-		crawljaxConfiguration.addPlugin(new PostCrawlingPlugin() {
-
-			@Override
-			public void postCrawling(CrawlSession session) {
-				LargeTestSuper.session = session;
-
-			}
-
-		});
-
-		crawljaxConfiguration.addPlugin(new OnInvariantViolationPlugin() {
-
-			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
-				LargeTestSuper.violatedInvariants.add(invariant);
-				if (session.getCurrentState().getDom().contains(INVARIANT_TEXT)) {
-					violatedInvariantStateIsCorrect = true;
-					LOG.warn("Invariant violated: " + invariant.getDescription());
-				}
-			}
-		});
-
-		crawljaxConfiguration.addPlugin(new OnNewStatePlugin() {
-			@Override
-			public void onNewState(CrawlSession session) {
-				try {
-					if (!session.getCurrentState().equals(session.getInitialState())) {
-						assertEquals(
-						        "Target State from ExactEventPath equals current state",
-						        session.getCurrentCrawlPath()
-						                .get(session.getCurrentCrawlPath().size() - 1)
-						                .getTargetStateVertex(), session.getCurrentState());
-					}
-				} catch (CrawljaxException e) {
-					Assert.fail(e.getMessage());
-				}
-			}
-		});
-	}
-
-	private StateFlowGraph getStateFlowGraph() {
-		return session.getStateFlowGraph();
-	}
 }

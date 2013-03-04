@@ -6,7 +6,6 @@ import java.util.Stack;
  * Class for making presenting HTML without changing it's structure.
  * 
  * @author Danny
- * @version $Id$
  */
 public final class PrettyHTML {
 

@@ -16,7 +16,6 @@ import com.crawljax.core.state.Identification;
 
 /**
  * @author mesbah
- * @version $Id$
  */
 public class FormInput {
 

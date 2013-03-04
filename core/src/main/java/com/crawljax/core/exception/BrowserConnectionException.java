@@ -8,7 +8,6 @@ import org.openqa.selenium.WebDriverException;
  * This {@link RuntimeException} is thrown when a EmbeddedBrowser lost connection to its underlying
  * implementation and so crashed.
  * 
- * @version $Id$
  * @author slenselink@google.com (Stefan Lenselink)
  */
 public class BrowserConnectionException extends RuntimeException {

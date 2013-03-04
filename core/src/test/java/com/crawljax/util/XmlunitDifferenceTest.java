@@ -14,7 +14,6 @@ import com.google.common.collect.Lists;
  * Test the useage of the Helper.getDifferences.
  * 
  * @author slenselink@google.com (Stefan Lenselink)
- * @version $Id$
  */
 public class XmlunitDifferenceTest {
 
@@ -22,7 +21,7 @@ public class XmlunitDifferenceTest {
 	public void testEmptyDoms() {
 		String left = "";
 		String right = "";
-		List<Difference> l = Helper.getDifferences(left, right);
+		List<Difference> l = DomUtils.getDifferences(left, right);
 		Assert.assertEquals(0, l.size());
 	}
 
@@ -30,7 +29,7 @@ public class XmlunitDifferenceTest {
 	public void testSameIdenticalDoms() {
 		String left = "<abc></abc>";
 		String right = "<abc></abc>";
-		List<Difference> l = Helper.getDifferences(left, right);
+		List<Difference> l = DomUtils.getDifferences(left, right);
 		Assert.assertEquals(0, l.size());
 	}
 
@@ -38,7 +37,7 @@ public class XmlunitDifferenceTest {
 	public void testSameDomsArrtibutesSame() {
 		String left = "<abc><def value='bla'/></abc>";
 		String right = "<abc><def value='bla'/></abc>";
-		List<Difference> l = Helper.getDifferences(left, right);
+		List<Difference> l = DomUtils.getDifferences(left, right);
 		Assert.assertEquals(0, l.size());
 	}
 
@@ -46,7 +45,7 @@ public class XmlunitDifferenceTest {
 	public void testSameDomsArrtibutesFiltered() {
 		String left = "<abc><def value='bla123'/></abc>";
 		String right = "<abc><def value='bla'/></abc>";
-		List<Difference> l = Helper.getDifferences(left, right, Lists.newArrayList("value"));
+		List<Difference> l = DomUtils.getDifferences(left, right, Lists.newArrayList("value"));
 		Assert.assertEquals(0, l.size());
 	}
 

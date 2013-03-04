@@ -35,8 +35,9 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 	public EmbeddedBrowser buildEmbeddedBrowser(CrawljaxConfigurationReader configuration) {
 		// Retrieve the config values used
 		List<String> filterAttributes = configuration.getFilterAttributeNames();
-		int crawlWaitReload = configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
-		int crawlWaitEvent = configuration.getCrawlSpecificationReader().getWaitAfterEvent();
+		long crawlWaitReload =
+		        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
+		long crawlWaitEvent = configuration.getCrawlSpecificationReader().getWaitAfterEvent();
 
 		// Determine the requested browser type
 		switch (configuration.getBrowser()) {
@@ -104,6 +105,12 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 				        .getWaitAfterEvent(), configuration.getCrawlSpecificationReader()
 				        .getWaitAfterReloadUrl());
 
+			case android:
+				return WebDriverBackedEmbeddedBrowser.withDriver(new AndroidDriver(),
+				        configuration.getFilterAttributeNames(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
+				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
+
 			case iphone:
 				try {
 					return WebDriverBackedEmbeddedBrowser.withDriver(new IPhoneDriver(),
@@ -111,14 +118,8 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 					                .getCrawlSpecificationReader().getWaitAfterEvent(),
 					        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl());
 				} catch (Exception e) {
-					LOGGER.error(e.getMessage(), e);
+					LOGGER.error("Could not load driver: " + e.getMessage(), e);
 				}
-
-			case android:
-				return WebDriverBackedEmbeddedBrowser.withDriver(new AndroidDriver(),
-				        configuration.getFilterAttributeNames(), configuration
-				                .getCrawlSpecificationReader().getWaitAfterEvent(), configuration
-				                .getCrawlSpecificationReader().getWaitAfterReloadUrl());
 
 			default:
 				return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),

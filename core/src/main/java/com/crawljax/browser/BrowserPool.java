@@ -26,7 +26,6 @@ import com.crawljax.core.plugin.CrawljaxPluginsUtil;
  * 
  * @author mesbah
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
- * @version $Id$
  */
 public final class BrowserPool {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowserPool.class);
@@ -134,8 +133,7 @@ public final class BrowserPool {
 	private EmbeddedBrowser createBrowser() {
 		EmbeddedBrowser newBrowser = getBrowserInstance();
 
-		if (taken.size() == 0 && available.size() == 0
-		        && preCrawlingRun.compareAndSet(false, true)) {
+		if (taken.isEmpty() && available.isEmpty() && preCrawlingRun.compareAndSet(false, true)) {
 			// this is the first browser && no preCrawling has run or is running
 			// We are the one that will run the preCrawling plugins
 			// preCrawlingRun.compareAndSet(false, true) equals to !preCrawlingRun ->
@@ -356,8 +354,7 @@ public final class BrowserPool {
 						try {
 							pool.available.add(pool.createBrowser());
 							createdBrowserCount.incrementAndGet();
-						} catch (Throwable e) {
-							/* Catch ALL exceptions... */
+						} catch (RuntimeException e) {
 							LOGGER.error("Creation of Browser faild!", e);
 							if (pool.getNumberBrowserCreateRetries() > 0
 							        && bootRetries < pool.getNumberBrowserCreateRetries()) {
@@ -466,7 +463,7 @@ public final class BrowserPool {
 		currentBrowser.remove();
 
 		// check if this was the last browser standing if so throw RuntimeException
-		if (taken.size() == 0 && available.size() == 0) {
+		if (taken.isEmpty() && available.isEmpty()) {
 			terminationHandler.terminate(true);
 			throw new RuntimeException("All browsers have died; "
 			        + "there are no browsers left in the pool to execute Crawlers on!");

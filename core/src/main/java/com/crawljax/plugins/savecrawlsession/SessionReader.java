@@ -1,6 +1,7 @@
 package com.crawljax.plugins.savecrawlsession;
 
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import com.crawljax.core.state.StateVertex;
  * Reader class for saved crawl sessions.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $id$
  */
 public class SessionReader {
 
@@ -84,7 +84,7 @@ public class SessionReader {
 	/**
 	 * @return the crawled url from the saved CrawlSession
 	 */
-	public String getCrawlUrl() {
+	public URL getCrawlUrl() {
 		return savedCrawlSession.getUrl();
 	}
 }

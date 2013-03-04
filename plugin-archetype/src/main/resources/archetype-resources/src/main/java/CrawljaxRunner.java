@@ -6,6 +6,7 @@ import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.configuration.ThreadConfiguration;
 
 /**
  * Use the sample plugin in combination with Crawljax.
@@ -13,11 +14,15 @@ import com.crawljax.core.configuration.InputSpecification;
  */
 public class CrawljaxRunner {
 
+	private static final String URL = "http://www.google.com";
+	private static final int MAX_DEPTH = 2;
+	private static final int MAX_NUMBER_STATES = 8;
+	
 	public static void main(String[] args) {
 
 		try {
 			// configure the crawling engine
-			CrawljaxConfiguration config = getConfig();
+			CrawljaxConfiguration config = getCrawljaxConfiguration();
 
 			// add your plugin
 			config.addPlugin(new SamplePlugin());
@@ -30,42 +35,47 @@ public class CrawljaxRunner {
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * Configure Crawljax to crawl Google.
-	 */
-	private static CrawljaxConfiguration getConfig() {
+	
+	private static CrawljaxConfiguration getCrawljaxConfiguration() {
 		CrawljaxConfiguration config = new CrawljaxConfiguration();
+		config.setCrawlSpecification(getCrawlSpecification());
+		config.setThreadConfiguration(getThreadConfiguration());
 		config.setBrowser(BrowserType.firefox);
+		return config;
+	}
 
-		CrawlSpecification crawler = new CrawlSpecification("http://www.google.com");
-		crawler.setWaitTimeAfterEvent(500);
-		crawler.setWaitTimeAfterReloadUrl(500);
+	private static ThreadConfiguration getThreadConfiguration() {
+		ThreadConfiguration tc = new ThreadConfiguration();
+		tc.setBrowserBooting(true);
+		tc.setNumberBrowsers(1);
+		tc.setNumberThreads(1);
+		return tc;
+	}
 
-		// click on all anchor tags
+	private static CrawlSpecification getCrawlSpecification() {
+		CrawlSpecification crawler = new CrawlSpecification(URL);
+		crawler.setRandomInputInForms(false);
+		// click these elements
+
 		crawler.click("a");
-		// and all input tags with "submit"
-		crawler.click("input").withAttribute("type", "submit");
+		crawler.click("button");
 
-		// exclude these
+		// except these
 		crawler.dontClick("a").underXPath("//DIV[@id='guser']");
 		crawler.dontClick("a").withText("Language Tools");
 
-		crawler.setRandomInputInForms(false);
-		
-		InputSpecification inputSpec = new InputSpecification();
-		inputSpec.field("q").setValue("Crawljax");
-		crawler.setInputSpecification(inputSpec);
-
-		// Constrain the crawl to Google (no other web sites)
-		crawler.addCrawlCondition("Only crawl Google", new UrlCondition("google"));
+		crawler.setInputSpecification(getInputSpecification());
 
 		// limit the crawling scope
-		crawler.setMaximumStates(6);
-		crawler.setDepth(2);
+		crawler.setMaximumStates(MAX_NUMBER_STATES);
+		crawler.setDepth(MAX_DEPTH);
 
-		config.setCrawlSpecification(crawler);
+		return crawler;
+	}
 
-		return config;
+	private static InputSpecification getInputSpecification() {
+		InputSpecification input = new InputSpecification();
+		input.field("gbqfq").setValue("Crawljax");
+		return input;
 	}
 }

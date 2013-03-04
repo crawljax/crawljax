@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 /**
  * The Path a Crawler has taken, or is about to backtrack on.
  * 
- * @version $Id$
  * @author slenselink@google.com (Stefan Lenselink)
  */
 public class CrawlPath extends ForwardingList<Eventable> {
@@ -44,7 +43,7 @@ public class CrawlPath extends ForwardingList<Eventable> {
 	 * @return the last Eventable in the path
 	 */
 	public Eventable last() {
-		if (eventablePath.size() == 0) {
+		if (eventablePath.isEmpty()) {
 			return null;
 		}
 		return eventablePath.get(eventablePath.size() - 1);
@@ -59,7 +58,7 @@ public class CrawlPath extends ForwardingList<Eventable> {
 	 * @return the CrawlPath based on an immutable list.
 	 */
 	public CrawlPath immutableCopy(boolean removeLast) {
-		if (size() == 0) {
+		if (isEmpty()) {
 			return new CrawlPath();
 		}
 

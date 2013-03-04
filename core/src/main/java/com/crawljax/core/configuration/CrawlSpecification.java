@@ -1,16 +1,22 @@
 package com.crawljax.core.configuration;
 
-import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.browserwaiter.ExpectedCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.CrawlActions.ExcludeByParentBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.Comparator;
 import com.crawljax.oraclecomparator.OracleComparator;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * Specifies the crawl options for a single crawl session. The user must specify which HTML elements
@@ -41,47 +47,56 @@ import com.crawljax.oraclecomparator.OracleComparator;
  * //restrict the scope of the crawling<br />
  * crawler.setCrawlMaximumStates(15);<br />
  * crawler.setCrawlDepth(2);
- * 
- * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class CrawlSpecification {
 
-	private static final int DEFAULT_MAXIMUMRUNTIME = 3600;
-	private static final int DEFAULT_WAITTIMEAFTERRELOADURL = 500;
-	private static final int DEFAULT_WAITTIMEAFTEREVENT = 500;
+	private static final long DEFAULT_MAXIMUMRUNTIME = TimeUnit.HOURS.toMillis(1);
+	private static final long DEFAULT_WAITTIMEAFTERRELOADURL = 500;
+	private static final long DEFAULT_WAITTIMEAFTEREVENT = 500;
 
-	private final String url;
+	private final URL url;
 
-	private List<EventType> crawlEvents = new ArrayList<EventType>();
+	private final List<EventType> crawlEvents = Lists.newLinkedList();
+	private final List<String> ignoredFrameIdentifiers = Lists.newLinkedList();
+	private final List<Invariant> invariants = Lists.newLinkedList();
+	private final List<OracleComparator> oracleComparators = Lists.newLinkedList();
+	private final List<WaitCondition> waitConditions = Lists.newLinkedList();
+	private final List<CrawlCondition> crawlConditions = Lists.newLinkedList();
 
 	private int depth = 2;
 	private int maximumStates = 0;
-	private int maximumRuntime = DEFAULT_MAXIMUMRUNTIME; // in seconds
-	private int waitTimeAfterReloadUrl = DEFAULT_WAITTIMEAFTERRELOADURL; // in milliseconds
-	private int waitTimeAfterEvent = DEFAULT_WAITTIMEAFTEREVENT; // in milliseconds
+	private long maximumRuntime = DEFAULT_MAXIMUMRUNTIME;
+	private long waitTimeAfterReloadUrl = DEFAULT_WAITTIMEAFTERRELOADURL;
+	private long waitTimeAfterEvent = DEFAULT_WAITTIMEAFTEREVENT;
+
 	private final CrawlActions crawlActions = new CrawlActions();
 
 	private boolean randomInputInForms = true;
 	private InputSpecification inputSpecification = new InputSpecification();
 
 	private boolean testInvariantsWhileCrawling = true;
-	private final List<Invariant> invariants = new ArrayList<Invariant>();
 
-	private final List<OracleComparator> oracleComparators = new ArrayList<OracleComparator>();
-	private final List<WaitCondition> waitConditions = new ArrayList<WaitCondition>();
-	private final List<CrawlCondition> crawlConditions = new ArrayList<CrawlCondition>();
 	private boolean clicklOnce = true;
-	private final List<String> ignoredFrameIdentifiers = new ArrayList<String>();
 	private boolean disableCrawlFrames = false;
+
+	private boolean clickHiddenAnchors = false;
 
 	/**
 	 * @param url
 	 *            the site to crawl
 	 */
-	public CrawlSpecification(String url) {
+	public CrawlSpecification(URL url) {
 		this.crawlEvents.add(EventType.click);
 		this.url = url;
+	}
+
+	public CrawlSpecification(String url) {
+		this.crawlEvents.add(EventType.click);
+		try {
+			this.url = new URL(url);
+		} catch (MalformedURLException e) {
+			throw new CrawljaxException("Invalid URL: " + url);
+		}
 	}
 
 	/**
@@ -96,34 +111,17 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * Guifre Ruiz: This method can be used to crawl more tags and, therefore, more pages in the
-	 * target. However, it slow down a bit the process.
+	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
+	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}.
+	 * 
+	 * @param tagName
+	 *            the tag name of the elements to be included
+	 * @return this CrawlElement
 	 */
-	public void clickMoreElements() {
-		crawlActions.click("a");
-		crawlActions.click("button");
-		crawlActions.click("td");
-		crawlActions.click("span");
-		crawlActions.click("div");
-		crawlActions.click("tr");
-		crawlActions.click("table");
-		crawlActions.click("tbody");
-		crawlActions.click("ol");
-		crawlActions.click("center");
-		crawlActions.click("li");
-		crawlActions.click("radio");
-		crawlActions.click("non");
-		crawlActions.click("meta");
-		crawlActions.click("refresh");
-		crawlActions.click("xhr");
-		crawlActions.click("relative");
-		crawlActions.click("link");
-		crawlActions.click("self");
-		crawlActions.click("form");
-		crawlActions.click("input");
-		crawlActions.click("option");
-		crawlActions.click("img");
-		crawlActions.click("p");
+	public void click(String... tagNames) {
+		for (String tagName : tagNames) {
+			crawlActions.click(tagName);
+		}
 	}
 
 	/**
@@ -153,22 +151,16 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * Crawljax will the HTML elements while crawling if and only if all the specified conditions
-	 * are satisfied. IMPORTANT: only works with click()!!! For example:
-	 * when(onContactPageCondition) will only click the HTML element if it is on the contact page
-	 * 
-	 * @param conditions
-	 *            the condition to be met.
-	 * @return this CrawlActions
+	 * {@link CrawlActions#dontClickChildrenOf(String)}
 	 */
-	public CrawlActions when(Condition... conditions) {
-		return crawlActions.when(conditions);
+	public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {
+		return crawlActions.dontClickChildrenOf(tagname);
 	}
 
 	/**
 	 * @return the initial url of the site to crawl
 	 */
-	protected String getUrl() {
+	protected URL getUrl() {
 		return url;
 	}
 
@@ -208,21 +200,34 @@ public class CrawlSpecification {
 	}
 
 	/**
-	 * @return the crawlMaximumRuntime
+	 * @return the crawlMaximumRuntime in millis
 	 */
-	protected int getMaximumRuntime() {
+	protected long getMaximumRuntime() {
 		return maximumRuntime;
 	}
 
 	/**
-	 * Sets the maximum time for Crawljax to run. Crawljax will stop crawling when this timelimit is
-	 * reached.
+	 * Sets the maximum time for Crawljax to run. Crawljax will stop crawling when this time limit
+	 * is reached.
 	 * 
+	 * @param the
+	 *            crawlMaximumRuntime to set
+	 */
+	public void setMaximumRuntime(long time, TimeUnit timeUnit) {
+		this.maximumRuntime = timeUnit.toMillis(time);
+	}
+
+	/**
+	 * Sets the maximum time for Crawljax to run. Crawljax will stop crawling when this time limit
+	 * is reached.
+	 * 
+	 * @deprecated use {@link #setMaximumRuntime(long, TimeUnit)}.
 	 * @param seconds
 	 *            the crawlMaximumRuntime to set
 	 */
-	public void setMaximumRuntime(int seconds) {
-		this.maximumRuntime = seconds;
+	@Deprecated
+	public void setMaximumRuntime(long time) {
+		this.maximumRuntime = TimeUnit.SECONDS.toMillis(time);
 	}
 
 	/**
@@ -243,38 +248,58 @@ public class CrawlSpecification {
 	/**
 	 * @return the number of milliseconds to wait after reloading the url
 	 */
-	protected int getWaitTimeAfterReloadUrl() {
+	protected long getWaitTimeAfterReloadUrl() {
 		return waitTimeAfterReloadUrl;
 	}
 
 	/**
-	 * @param milliseconds
-	 *            the number of milliseconds to wait after reloading the url
+	 * @param time
+	 *            to wait after reloading the url
 	 */
-	public void setWaitTimeAfterReloadUrl(int milliseconds) {
-		this.waitTimeAfterReloadUrl = milliseconds;
+	public void setWaitTimeAfterReloadUrl(long time, TimeUnit unit) {
+		this.waitTimeAfterReloadUrl = unit.toMillis(time);
+	}
+
+	/**
+	 * @deprecated use {@link #setWaitTimeAfterReloadUrl(long, TimeUnit)}
+	 * @param time
+	 *            to wait after reloading the url
+	 */
+	@Deprecated
+	public void setWaitTimeAfterReloadUrl(long timeInMillis) {
+		this.waitTimeAfterReloadUrl = timeInMillis;
 	}
 
 	/**
 	 * @return the number the number of milliseconds to wait after an event is fired
 	 */
-	protected int getWaitTimeAfterEvent() {
+	protected long getWaitTimeAfterEvent() {
 		return waitTimeAfterEvent;
 	}
 
 	/**
+	 * @param the
+	 *            time to wait after an event is fired
+	 */
+	public void setWaitTimeAfterEvent(long time, TimeUnit unit) {
+		this.waitTimeAfterEvent = unit.toMillis(time);
+	}
+
+	/**
+	 * @deprecated use {@link #setWaitTimeAfterEvent(long, TimeUnit)}
 	 * @param milliseconds
 	 *            the number of milliseconds to wait after an event is fired
 	 */
-	public void setWaitTimeAfterEvent(int milliseconds) {
-		this.waitTimeAfterEvent = milliseconds;
+	@Deprecated
+	public void setWaitTimeAfterEvent(long time) {
+		this.waitTimeAfterEvent = time;
 	}
 
 	/**
 	 * @return the events that should be fired (e.g. onclick)
 	 */
-	protected List<EventType> getCrawlEvents() {
-		return crawlEvents;
+	protected ImmutableList<EventType> getCrawlEvents() {
+		return ImmutableList.copyOf(crawlEvents);
 	}
 
 	/**
@@ -302,8 +327,8 @@ public class CrawlSpecification {
 	/**
 	 * @return the oracleComparators
 	 */
-	protected List<OracleComparator> getOracleComparators() {
-		return oracleComparators;
+	protected ImmutableList<OracleComparator> getOracleComparators() {
+		return ImmutableList.copyOf(oracleComparators);
 	}
 
 	/**
@@ -336,8 +361,8 @@ public class CrawlSpecification {
 	/**
 	 * @return the invariants
 	 */
-	protected List<Invariant> getInvariants() {
-		return invariants;
+	protected ImmutableList<Invariant> getInvariants() {
+		return ImmutableList.copyOf(invariants);
 	}
 
 	/**
@@ -380,8 +405,8 @@ public class CrawlSpecification {
 	/**
 	 * @return the waitConditions
 	 */
-	protected List<WaitCondition> getWaitConditions() {
-		return waitConditions;
+	protected ImmutableList<WaitCondition> getWaitConditions() {
+		return ImmutableList.copyOf(waitConditions);
 	}
 
 	/**
@@ -411,8 +436,8 @@ public class CrawlSpecification {
 	/**
 	 * @return the crawlConditions
 	 */
-	protected List<CrawlCondition> getCrawlConditions() {
-		return crawlConditions;
+	protected ImmutableList<CrawlCondition> getCrawlConditions() {
+		return ImmutableList.copyOf(crawlConditions);
 	}
 
 	/**
@@ -457,8 +482,8 @@ public class CrawlSpecification {
 	 * @param crawlEvents
 	 *            the crawlEvents to set
 	 */
-	public void setCrawlEvents(List<EventType> crawlEvents) {
-		this.crawlEvents = crawlEvents;
+	public void addCrawlEvents(List<EventType> crawlEvents) {
+		this.crawlEvents.addAll(crawlEvents);
 	}
 
 	/**
@@ -472,8 +497,8 @@ public class CrawlSpecification {
 	/**
 	 * @return the list of ignored frames
 	 */
-	protected List<String> ignoredFrameIdentifiers() {
-		return ignoredFrameIdentifiers;
+	protected ImmutableList<String> ignoredFrameIdentifiers() {
+		return ImmutableList.copyOf(ignoredFrameIdentifiers);
 	}
 
 	/**
@@ -490,5 +515,26 @@ public class CrawlSpecification {
 	 */
 	protected boolean isCrawlFrames() {
 		return !disableCrawlFrames;
+	}
+
+	boolean isClickHiddenAnchors() {
+		return clickHiddenAnchors;
+	}
+
+	/**
+	 * Set Crawljax to click hidden anchors or not. <code>true</code> by default. @ *
+	 * <dl>
+	 * <dd>Pro:</dd>
+	 * <dt>The benefit of clicking hidden anchors is that Crawljax isn't capable of clicking
+	 * elements that are hidden for example because you have to hover another element first. This
+	 * happens in most fold-out menus for example. Enabling this function allows Crawljax to find
+	 * more states that are hidden this way.</dt>
+	 * <dd>Con:</dd>
+	 * <dt>If a anchor tag is never visible in the browser in any way, Crawljax will crawl it
+	 * anyway. This makes the Crawl inconsistent with what the user experiences.</dt>
+	 * </dl>
+	 */
+	public void clickHiddenAnchors(boolean clickHiddenAnchors) {
+		this.clickHiddenAnchors = clickHiddenAnchors;
 	}
 }

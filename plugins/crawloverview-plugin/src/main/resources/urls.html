@@ -1,0 +1,28 @@
+#set ( $page = "urls") 
+#set( $baseUrl = ".") 
+#parse( "header.html" )
+</head>
+<body>
+	#parse ( "nav.html" )
+	<div class="container">
+		<div class="page-header">
+			<h1>URL's visited</h1>
+		</div>
+		<table class="table table-bordered table-striped">
+			<tbody>
+			#foreach( $url in $urls.keySet() )
+				<tr>
+					<td><a href="${url}">${url}</a></td>
+					<td>
+					#foreach( $state in $urls.get($url) )
+					<a href="states/${state}.html">${state}</a>, 
+					#end
+					</td>
+				</tr>	
+			#end		
+			</tbody>
+		</table>
+	</div>
+	<script src="js/bootstrap.min.js"></script>
+</body>
+</html>

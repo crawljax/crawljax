@@ -1,23 +1,17 @@
 package com.crawljax.core.configuration;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.TagAttribute;
 import com.crawljax.core.TagElement;
 import com.crawljax.core.plugin.Plugin;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Reader for CrawljaxConfiguration. For internal use only!
- * 
- * @author Danny
- * @version $Id: CrawljaxConfigurationReader.java 233 2010-02-10 15:22:34Z lenselinkstefan@gmail.com
- *          $
  */
 public class CrawljaxConfigurationReader {
 
@@ -52,7 +46,7 @@ public class CrawljaxConfigurationReader {
 	/**
 	 * @return The eventable conditions.
 	 */
-	public List<EventableCondition> getEventableConditions() {
+	public ImmutableList<EventableCondition> getEventableConditions() {
 		return crawljaxConfiguration.getEventableConditions();
 	}
 
@@ -87,8 +81,8 @@ public class CrawljaxConfigurationReader {
 	/**
 	 * @return a list of plugins.
 	 */
-	public List<Plugin> getPlugins() {
-		return crawljaxConfiguration.getPlugins();
+	public ImmutableList<Plugin> getPlugins() {
+		return ImmutableList.copyOf(crawljaxConfiguration.getPlugins());
 	}
 
 	/**
@@ -111,7 +105,7 @@ public class CrawljaxConfigurationReader {
 	/**
 	 * @return a list of all included CrawlElements.
 	 */
-	public List<CrawlElement> getAllIncludedCrawlElements() {
+	public ImmutableList<CrawlElement> getAllIncludedCrawlElements() {
 
 		return crawljaxConfiguration.getAllIncludedCrawlElements();
 	}
@@ -122,26 +116,8 @@ public class CrawljaxConfigurationReader {
 	 * 
 	 * @return A list of tag elements.
 	 */
-	public List<TagElement> getTagElements() {
-		List<TagElement> tagElements = new ArrayList<TagElement>();
-
-		for (CrawlElement crawlElement : getAllIncludedCrawlElements()) {
-			Set<TagAttribute> attributes = new HashSet<TagAttribute>();
-
-			for (CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
-				TagAttribute tag =
-				        new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue());
-				attributes.add(tag);
-			}
-
-			TagElement tagElement = new TagElement(attributes, crawlElement.getTagName());
-
-			tagElement.setId(crawlElement.getId());
-
-			tagElements.add(tagElement);
-		}
-
-		return tagElements;
+	public ImmutableList<TagElement> getTagElements() {
+		return asTagElementList(getAllIncludedCrawlElements());
 	}
 
 	/**
@@ -150,35 +126,41 @@ public class CrawljaxConfigurationReader {
 	 * 
 	 * @return a list of TagElements.
 	 */
-	public List<TagElement> getExcludeTagElements() {
-		List<TagElement> tagElements = new ArrayList<TagElement>();
+	public ImmutableList<TagElement> getExcludeTagElements() {
 
-		for (CrawlElement crawlElement : crawljaxConfiguration.getCrawlSpecification()
-		        .crawlActions().getCrawlElementsExcluded()) {
-			Set<TagAttribute> attributes = new HashSet<TagAttribute>();
+		ImmutableList<CrawlElement> excluded =
+		        crawljaxConfiguration.getCrawlSpecification().crawlActions()
+		                .getCrawlElementsExcluded();
+		return asTagElementList(excluded);
+
+	}
+
+	private ImmutableList<TagElement> asTagElementList(ImmutableList<CrawlElement> excluded) {
+		Builder<TagElement> resultList = ImmutableList.builder();
+
+		for (CrawlElement crawlElement : excluded) {
+			ImmutableSet.Builder<TagAttribute> attributes = ImmutableSet.builder();
 
 			for (CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
-				TagAttribute tag =
-				        new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue());
-				attributes.add(tag);
+				attributes.add(new TagAttribute(crawlAttribute.getName(), crawlAttribute
+				        .getValue()));
 			}
 
-			TagElement tagElement = new TagElement(attributes, crawlElement.getTagName());
+			TagElement tagElement =
+			        new TagElement(attributes.build(), crawlElement.getTagName(),
+			                crawlElement.getId());
 
-			tagElement.setId(crawlElement.getId());
-
-			tagElements.add(tagElement);
+			resultList.add(tagElement);
 		}
 
-		return tagElements;
-
+		return resultList.build();
 	}
 
 	/**
 	 * @return a list of attributes to be filtered from the DOM string.
 	 */
-	public List<String> getFilterAttributeNames() {
-		return crawljaxConfiguration.getFilterAttributeNames();
+	public ImmutableList<String> getFilterAttributeNames() {
+		return ImmutableList.copyOf(crawljaxConfiguration.getFilterAttributeNames());
 	}
 
 	/**

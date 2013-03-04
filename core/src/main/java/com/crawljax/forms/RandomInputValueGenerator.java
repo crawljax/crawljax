@@ -1,5 +1,7 @@
 package com.crawljax.forms;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.List;
 import java.util.Random;
 
@@ -7,7 +9,6 @@ import java.util.Random;
  * Class for generating random form data.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class RandomInputValueGenerator {
 
@@ -48,12 +49,15 @@ public class RandomInputValueGenerator {
 
 	/**
 	 * @param options
-	 *            the possible options (e.g. option item in select)
+	 *            the possible options (e.g. option item in select). The list must be non-empty
 	 * @return a random item from the list
 	 */
-	public Object getRandomOption(List<?> options) {
-		int size = options.size();
-		return options.get(new Random().nextInt(size - 1));
+	public <T> T getRandomItem(List<T> options) {
+		checkArgument(!options.isEmpty(), "Options must not be empty");
+		if (options.size() == 1) {
+			return options.get(0);
+		} else {
+			return options.get(random.nextInt(options.size() - 1));
+		}
 	}
-
 }

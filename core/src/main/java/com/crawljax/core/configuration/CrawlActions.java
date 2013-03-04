@@ -1,31 +1,74 @@
 package com.crawljax.core.configuration;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * Specifies the actions for CrawlElements NOTE: In general CrawlActions is not designed to be
  * instantiated directly. CrawlActions should be used via {@link CrawlSpecification} To add
  * conditions to check whether a tag should (not) be clicked one can use {@link #when(Condition...)}
  * . See also {@link Condition}
- * 
- * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class CrawlActions {
 
-	private final List<CrawlElement> crawlElements = new ArrayList<CrawlElement>();
-	private final List<CrawlElement> crawlElementsExcluded = new ArrayList<CrawlElement>();
-	private Condition[] tempConditions;
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlActions.class);
 
-	/**
-	 * Protected Constructor of CrawlActions can only be instanced from class from the same package.
-	 */
-	protected CrawlActions() {
+	public static class ExcludeByParentBuilder {
+		private final String tagname;
+		private String id = null;
+		private String clasz = null;
 
+		private ExcludeByParentBuilder(String tagname) {
+			this.tagname = tagname;
+		}
+
+		public void withId(String id) {
+			this.id = id;
+		}
+
+		public void withClass(String clasz) {
+			this.clasz = clasz;
+
+		}
+
+		private String asExcludeXpath(String identifier, String value) {
+			return new StringBuilder().append("//").append(tagname.toUpperCase()).append("[@")
+			        .append(identifier).append("='").append(value).append("']//*").toString();
+		}
+
+		private ImmutableList<CrawlElement> asExcludeList(List<CrawlElement> includes) {
+			String xpath;
+			if (id != null) {
+				xpath = asExcludeXpath("id", id);
+			} else if (clasz != null) {
+				xpath = asExcludeXpath("class", clasz);
+			} else {
+				xpath = "//" + tagname.toUpperCase() + "//*";
+			}
+			ImmutableList.Builder<CrawlElement> builder = ImmutableList.builder();
+			for (CrawlElement include : includes) {
+				builder.add(new CrawlElement(EventType.click, include.getTagName())
+				        .underXPath(xpath));
+			}
+			return builder.build();
+		}
+	}
+
+	private final List<CrawlElement> crawlElements = Lists.newLinkedList();
+	private final List<CrawlElement> crawlElementsExcluded = Lists.newLinkedList();
+	private final List<ExcludeByParentBuilder> crawlParentsExcluded = Lists.newLinkedList();
+
+	private ImmutableList<CrawlElement> resultingElementsExcluded = null;
+
+	CrawlActions() {
 	}
 
 	/**
@@ -38,11 +81,16 @@ public class CrawlActions {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement click(String tagName) {
-		CrawlElement crawlTag = new CrawlElement(EventType.click);
-		crawlTag.setTagName(tagName);
-		setTempConditions(crawlTag);
+		checkNotRead();
+		Preconditions.checkNotNull(tagName, "Tagname cannot be null");
+		CrawlElement crawlTag = new CrawlElement(EventType.click, tagName.toUpperCase());
 		crawlElements.add(crawlTag);
 		return crawlTag;
+	}
+
+	private void checkNotRead() {
+		Preconditions.checkState(resultingElementsExcluded == null,
+		        "You cannot modify crawlactions once it's read");
 	}
 
 	/**
@@ -56,51 +104,51 @@ public class CrawlActions {
 	 * @return crawlTag the CrawlElement
 	 */
 	public CrawlElement dontClick(String tagName) {
-		CrawlElement crawlTag = new CrawlElement(EventType.click);
-		crawlTag.setTagName(tagName);
-		setTempConditions(crawlTag);
+		checkNotRead();
+		Preconditions.checkNotNull(tagName, "Tagname cannot be null");
+		CrawlElement crawlTag = new CrawlElement(EventType.click, tagName.toUpperCase());
 		crawlElementsExcluded.add(crawlTag);
 		return crawlTag;
 	}
 
 	/**
-	 * Crawljax will crawl the HTML elements while crawling if and only if all the specified
-	 * conditions are satisfied. IMPORTANT: only works with click()!!! For example:
-	 * when(onContactPageCondition) will only click the HTML element if it is on the contact page
+	 * Click no childer of the specified parent element.
 	 * 
-	 * @param conditions
-	 *            the condition to be met.
-	 * @return this
+	 * @param tagname
+	 *            The tagname of which no children should be clicked.
+	 * @return The builder to append more options.
 	 */
-	public CrawlActions when(Condition... conditions) {
-		tempConditions = conditions;
-		return this;
-	}
-
-	/* private and protected */
-
-	/**
-	 * @param crawlTag
-	 */
-	private void setTempConditions(CrawlElement crawlTag) {
-		if (tempConditions != null) {
-			crawlTag.setConditions(tempConditions);
-			tempConditions = null;
-		}
+	public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {
+		checkNotRead();
+		Preconditions.checkNotNull(tagname);
+		ExcludeByParentBuilder exclude = new ExcludeByParentBuilder(tagname.toUpperCase());
+		crawlParentsExcluded.add(exclude);
+		return exclude;
 	}
 
 	/**
 	 * @return the crawlElements
 	 */
-	protected List<CrawlElement> getCrawlElements() {
-		return crawlElements;
+	protected ImmutableList<CrawlElement> getCrawlElements() {
+		return ImmutableList.copyOf(crawlElements);
 	}
 
 	/**
 	 * @return the crawlElementsExcluded
 	 */
-	protected List<CrawlElement> getCrawlElementsExcluded() {
-		return crawlElementsExcluded;
+	protected ImmutableList<CrawlElement> getCrawlElementsExcluded() {
+		synchronized (this) {
+			if (resultingElementsExcluded == null) {
+				ImmutableList.Builder<CrawlElement> builder = ImmutableList.builder();
+				builder.addAll(crawlElementsExcluded);
+				for (ExcludeByParentBuilder exclude : crawlParentsExcluded) {
+					builder.addAll(exclude.asExcludeList(crawlElements));
+				}
+				resultingElementsExcluded = builder.build();
+				LOG.debug("Excluded elements = {}", resultingElementsExcluded);
+			}
+			return resultingElementsExcluded;
+		}
 	}
 
 }

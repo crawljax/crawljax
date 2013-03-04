@@ -8,7 +8,6 @@ import com.crawljax.core.CrawlSession;
  * detected state change.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public interface OnInvariantViolationPlugin extends Plugin {
 

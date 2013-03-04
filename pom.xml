@@ -30,9 +30,10 @@
 	<properties>
 		<slf4j.version>1.7.2</slf4j.version>
 		<logback.version>1.0.9</logback.version>
+		<selenium.version>[2.30.0,)</selenium.version>
 
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -76,10 +77,42 @@
 		<module>cli</module>
 		<module>examples</module>
 		<module>test-utils</module>
-		<module>plugin-parent-pom</module>
+		<module>plugins</module>
 		<module>plugin-archetype</module>
     	<module>web</module>
   </modules>
+
+	<profiles>
+		<profile>
+			<id>withGit</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>pl.project13.maven</groupId>
+						<artifactId>git-commit-id-plugin</artifactId>
+						<version>2.1.4</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>revision</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<verbose>true</verbose>
+							<generateGitPropertiesFile>true</generateGitPropertiesFile>
+							<gitDescribe>
+								<always>true</always>
+								<abbrev>7</abbrev>
+								<dirty>-dirty</dirty>
+							</gitDescribe>
+						</configuration>
+
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencyManagement>
 		<dependencies>
@@ -120,6 +153,11 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>2.0.1</version>
 		</dependency>
 
 		<!-- Test dependencies -->
@@ -212,6 +250,8 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+
+
 	</build>
 
 	<developers>

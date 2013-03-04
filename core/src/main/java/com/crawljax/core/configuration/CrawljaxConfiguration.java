@@ -8,7 +8,10 @@ import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.plugin.Plugin;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 
 /**
  * Specifies the settings Crawljax. The methods in this class fall into two categories:Oz
@@ -23,8 +26,6 @@ import com.crawljax.util.Helper;
  * EXAMPLE: CrawljaxConfiguration crawljaxConfig = new CrawljaxConfiguration(); CrawlSpecification
  * crawler = new CrawlSpecification("http://www.google.com"); crawler.click("a");
  * crawljaxConfig.setCrawlSpecification(crawler);
- * 
- * @version $Id$
  */
 public final class CrawljaxConfiguration {
 
@@ -41,7 +42,7 @@ public final class CrawljaxConfiguration {
 
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 
-	private CrawlSpecification crawlSpecification = new CrawlSpecification("");
+	private CrawlSpecification crawlSpecification = new CrawlSpecification("http://localhost");
 	private ProxyConfiguration proxyConfiguration = null;
 	private ThreadConfiguration threadConfiguration = new ThreadConfiguration();
 
@@ -65,6 +66,7 @@ public final class CrawljaxConfiguration {
 	 *            Which contains all the crawl settings.
 	 */
 	public void setCrawlSpecification(CrawlSpecification crawlSpecification) {
+		Preconditions.checkNotNull(crawlSpecification);
 		this.crawlSpecification = crawlSpecification;
 	}
 
@@ -72,11 +74,7 @@ public final class CrawljaxConfiguration {
 	 * @return The inputSpecification which contains information the data for setting input fields.
 	 */
 	protected InputSpecification getInputSpecification() {
-		if (crawlSpecification != null) {
-			return crawlSpecification.getInputSpecification();
-		} else {
-			return null;
-		}
+		return crawlSpecification.getInputSpecification();
 	}
 
 	/**
@@ -114,48 +112,37 @@ public final class CrawljaxConfiguration {
 	/**
 	 * @return All the included crawlTags.
 	 */
-	protected List<CrawlElement> getAllIncludedCrawlElements() {
+	protected ImmutableList<CrawlElement> getAllIncludedCrawlElements() {
 		// first add elements for forms so that form action crawlTags are only
-		// clicked
-		// and not by another random crawlTag
-		List<CrawlElement> crawlTags = getInputSpecification().getCrawlElements();
-		if (getCrawlSpecification() != null) {
-
-			for (CrawlElement crawlTag : getCrawlSpecification().crawlActions()
-			        .getCrawlElements()) {
-				crawlTags.add(crawlTag);
-			}
-		}
-		return crawlTags;
+		// clicked and not by another random crawlTag
+		return ImmutableList.<CrawlElement> builder()
+		        .addAll(getInputSpecification().getCrawlElements())
+		        .addAll(crawlSpecification.crawlActions().getCrawlElements()).build();
 	}
 
 	/**
 	 * @return All the added crawlTags.
 	 */
 	protected List<CrawlElement> getAllCrawlElements() {
-		List<CrawlElement> crawlTags = getAllIncludedCrawlElements();
-		if (getCrawlSpecification() != null) {
-			for (CrawlElement crawlTag : getCrawlSpecification().crawlActions()
-			        .getCrawlElementsExcluded()) {
-				crawlTags.add(crawlTag);
-			}
-		}
-		return crawlTags;
+		return ImmutableList.<CrawlElement> builder()
+		        .addAll(getInputSpecification().getCrawlElements())
+		        .addAll(crawlSpecification.crawlActions().getCrawlElements())
+		        .addAll(getCrawlSpecification().crawlActions().getCrawlElementsExcluded())
+		        .build();
 	}
 
 	/**
 	 * @return The eventableConditions.
 	 */
-	protected List<EventableCondition> getEventableConditions() {
-		List<EventableCondition> eventableConditions = new ArrayList<EventableCondition>();
+	protected ImmutableList<EventableCondition> getEventableConditions() {
+		Builder<EventableCondition> eventableConditions = ImmutableList.builder();
 		for (CrawlElement crawlTag : getAllCrawlElements()) {
 			EventableCondition eventableCondition = crawlTag.getEventableCondition();
 			if (eventableCondition != null) {
 				eventableConditions.add(eventableCondition);
 			}
 		}
-
-		return eventableConditions;
+		return eventableConditions.build();
 	}
 
 	/**
@@ -209,7 +196,7 @@ public final class CrawljaxConfiguration {
 	 * @return The path of the outputFolder with a trailing slash.
 	 */
 	protected String getOutputFolder() {
-		return Helper.addFolderSlashIfNeeded(outputFolder);
+		return DomUtils.addFolderSlashIfNeeded(outputFolder);
 	}
 
 	/**
@@ -217,7 +204,7 @@ public final class CrawljaxConfiguration {
 	 *            The (absolute) path of the output folder.
 	 */
 	public void setOutputFolder(String path) {
-		this.outputFolder = Helper.addFolderSlashIfNeeded(path);
+		this.outputFolder = DomUtils.addFolderSlashIfNeeded(path);
 	}
 
 	/**

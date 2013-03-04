@@ -1,7 +1,10 @@
 package com.crawljax.util;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.crawljax.core.state.Eventable;
@@ -10,11 +13,10 @@ import com.crawljax.core.state.Eventable;
  * DomHistoryElement contain a string representation of the DOM and the Document representation. The
  * active element is not explicitly stored because it can always be found by searching for the
  * element which has the requestForProxyId attribute.
- * 
- * @author corpaul
- * @version $Id$
  */
 public class DomHistoryElement {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DomHistoryElement.class);
 	/**
 	 * String representation of the DOM.
 	 */
@@ -55,9 +57,9 @@ public class DomHistoryElement {
 		this.domStr = domStr;
 		this.eventSequence = eventSeq;
 		try {
-			this.dom = Helper.getDocument(domStr);
-		} catch (Exception e) {
-			e.printStackTrace();
+			this.dom = DomUtils.asDocument(domStr);
+		} catch (IOException e) {
+			LOG.error("Could not construct with dom", e);
 		}
 
 	}

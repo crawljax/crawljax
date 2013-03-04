@@ -3,18 +3,18 @@
  */
 package com.crawljax.core;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.annotation.concurrent.Immutable;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Class used to desribe html elements. Used internally to describe which elements to click for
  * example.
- * 
- * @author mesbah
- * @version $Id$
  */
+@Immutable
 public class TagElement {
-	private Set<TagAttribute> attributes = new HashSet<TagAttribute>();
+	private ImmutableSet<TagAttribute> attributes;
 	private String name;
 	private String id;
 
@@ -22,26 +22,21 @@ public class TagElement {
 	 * @param attributes
 	 *            the attribute set.
 	 * @param name
-	 *            the tag name.
+	 *            the tag name. This will be transformed to captial letters.
 	 */
-	public TagElement(Set<TagAttribute> attributes, String name) {
+	public TagElement(ImmutableSet<TagAttribute> attributes, String name, String id) {
+		Preconditions.checkNotNull(attributes);
+		Preconditions.checkNotNull(name);
 		this.attributes = attributes;
-		this.name = name;
+		this.name = name.toUpperCase();
+		this.id = id;
 	}
 
 	/**
 	 * @return the attribute set.
 	 */
-	public Set<TagAttribute> getAttributes() {
+	public ImmutableSet<TagAttribute> getAttributes() {
 		return attributes;
-	}
-
-	/**
-	 * @param attributes
-	 *            the attribute set.
-	 */
-	public void setAttributes(Set<TagAttribute> attributes) {
-		this.attributes = attributes;
 	}
 
 	/**
@@ -52,26 +47,10 @@ public class TagElement {
 	}
 
 	/**
-	 * @param name
-	 *            the tag name.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return the id.
 	 */
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set.
-	 */
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	@Override

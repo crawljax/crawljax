@@ -7,7 +7,6 @@ import com.crawljax.core.state.Eventable.EventType;
  * FormAction is not designed to be instantiated directly.
  * 
  * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class FormAction {
 
@@ -19,8 +18,7 @@ public class FormAction {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement beforeClickElement(String tagName) {
-		this.crawlElement = new CrawlElement(EventType.click);
-		this.crawlElement.setTagName(tagName);
+		this.crawlElement = new CrawlElement(EventType.click, tagName);
 		return crawlElement;
 	}
 

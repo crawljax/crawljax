@@ -1,0 +1,30 @@
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse"
+				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
+				class="icon-bar"></span> <span class="icon-bar"></span>
+			</a> <a class="brand" href="#">Crawl overview</a>
+			<div class="nav-collapse collapse">
+				<ul class="nav">
+					<li #if($page == "graph") class="active" #end><a href="$baseUrl/index.html">State graph</a></li>
+					<li #if($page == "statistics") class="active" #end><a href="$baseUrl/statistics.html">Statistics</a></li>
+					<li #if($page == "urls") class="active" #end><a href="$baseUrl/urls.html">URL's</a></li>
+					<li #if($page == "config") class="active" #end><a href="$baseUrl/config.html">Configuration</a></li>
+				</ul>
+			</div>
+			#if($page == "graph")
+			<div class="nav pull-right">
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
+				<a href="#" class="btn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
+				<div style="display: none" id='popup-content'>
+					<p>You can double click a state to inspect it further.</p>
+					<p>Clicking an edge gives more details on the state transition.</p>
+					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
+				</div>
+			</div>
+			#end
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</div>

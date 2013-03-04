@@ -6,23 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.crawljax.util.Helper;
 
 /**
  * XMLObject helper.
  */
 public final class XMLObject {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(XMLObject.class);
-
-	private XMLObject() {
-
-	}
 
 	/**
 	 * Converts an object to an XML file.
@@ -35,14 +23,9 @@ public final class XMLObject {
 	 *             On error.
 	 */
 	public static void objectToXML(Object object, String fname) throws FileNotFoundException {
-
-		try {
-			Helper.checkFolderForFile(fname);
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-
-		FileOutputStream fo = new FileOutputStream(new File(fname));
+		File file = new File(fname);
+		file.getParentFile().mkdirs();
+		FileOutputStream fo = new FileOutputStream(file);
 		XMLEncoder encoder = new XMLEncoder(fo);
 		encoder.writeObject(object);
 		encoder.close();
@@ -63,6 +46,10 @@ public final class XMLObject {
 		Object object = decoder.readObject();
 		decoder.close();
 		return object;
+	}
+
+	private XMLObject() {
+
 	}
 
 }

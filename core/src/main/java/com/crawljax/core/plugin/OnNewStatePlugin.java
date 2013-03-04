@@ -7,7 +7,6 @@ import com.crawljax.core.CrawlSession;
  * Index State. Example: DOM validation.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public interface OnNewStatePlugin extends Plugin {
 

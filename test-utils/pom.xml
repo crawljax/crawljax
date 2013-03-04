@@ -10,7 +10,7 @@
 	<artifactId>crawljax-test-utils</artifactId>
 	<packaging>jar</packaging>
 
-	<name>crawljax-test-utils</name>
+	<name>Crawljax test utilities</name>
 	<description>This artifact offers Crawljax plugin developers a convenient way to test their plugins by offering several default sites with known/expected output.</description>
 	<url>carwljax.com</url>
 
@@ -30,15 +30,14 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>8.1.8.v20121106</version>
-		</dependency>
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>9.0.0.RC0</version>
 		</dependency>
 	</dependencies>
 

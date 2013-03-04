@@ -13,7 +13,6 @@ import java.util.List;
  * @see InputSpecification#field(String)
  * @see InputSpecification#fields(String...)
  * @author DannyRoest@gmail.com (Danny Roest)
- * @version $Id$
  */
 public class InputField {
 
@@ -100,7 +99,7 @@ public class InputField {
 	 * @return The value.
 	 */
 	protected String getValue() {
-		if (fieldValues.size() == 0) {
+		if (fieldValues.isEmpty()) {
 			return null;
 		} else {
 			return fieldValues.get(0);

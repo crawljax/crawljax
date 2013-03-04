@@ -3,6 +3,7 @@ package com.crawljax.test;
 import java.net.URL;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.junit.rules.ExternalResource;
@@ -27,19 +28,19 @@ public class RunWithWebServer extends ExternalResource {
 	}
 
 	@Override
-	protected void before() throws Throwable {
+	public void before() throws Exception {
 		server = new Server(0);
 		ResourceHandler handler = new ResourceHandler();
 		handler.setBaseResource(resource);
 		server.setHandler(handler);
 		server.start();
-		this.port = server.getConnectors()[0].getLocalPort();
+		this.port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
 		this.demoSite = new URL("http", "localhost", port, "/");
 		this.started = true;
 	}
 
 	@Override
-	protected void after() {
+	public void after() {
 		try {
 			if (server != null) {
 				server.stop();

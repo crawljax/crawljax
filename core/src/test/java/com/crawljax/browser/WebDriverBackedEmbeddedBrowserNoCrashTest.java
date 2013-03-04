@@ -2,13 +2,18 @@
 
 package com.crawljax.browser;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -22,6 +27,7 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.forms.FormInput;
 import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
 
 /**
  * This Test checks the 'default' behavior of {@link EmbeddedBrowser} implemented by
@@ -29,6 +35,9 @@ import com.crawljax.test.BrowserTest;
  */
 @Category(BrowserTest.class)
 public class WebDriverBackedEmbeddedBrowserNoCrashTest {
+
+	@ClassRule
+	public static final RunWithWebServer SERVER = new RunWithWebServer("site");
 
 	private EmbeddedBrowser browser;
 
@@ -96,8 +105,9 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 *             when the event can not be fired.
 	 */
 	@Test
-	public final void testFireEvent() throws CrawljaxException {
-		browser.fireEvent(new Eventable(new Identification(How.xpath, "/RUBISH"), EventType.click));
+	public final void testFireEvent() throws CrawljaxException, MalformedURLException {
+		browser.goToUrl(new URL(SERVER.getSiteUrl() + "simple.html"));
+		browser.fireEvent(new Eventable(new Identification(How.xpath, "//H1"), EventType.click));
 	}
 
 	/**
@@ -117,7 +127,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	@Test
 	public final void testGetDom() throws CrawljaxException {
 		URL index = WebDriverBackedEmbeddedBrowserTest.class.getResource("/site/simple.html");
-		browser.goToUrl(index.toExternalForm());
+		browser.goToUrl(index);
 		browser.getDom();
 	}
 
@@ -145,11 +155,12 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 * 
 	 * @throws CrawljaxException
 	 *             when the url can not be opend.
+	 * @throws MalformedURLException
 	 */
 	@Test
-	public final void testGoToUrl() throws CrawljaxException {
+	public final void testGoToUrl() throws CrawljaxException, MalformedURLException {
 		// TODO Stefan; bug in WebDriver iff you specify bla:// will end up in NullPointer.
-		browser.goToUrl("http://non.exsisting.domain");
+		browser.goToUrl(new URL("http://non.exsisting.domain"));
 	}
 
 	/**
@@ -162,7 +173,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testInput() throws CrawljaxException {
-		Assert.assertFalse("Wrong Xpath so false because of error",
+		assertFalse("Wrong Xpath so false because of error",
 		        browser.input(new Identification(How.xpath, "/RUBISH"), "some"));
 	}
 
@@ -173,7 +184,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testIsVisible() {
-		Assert.assertFalse("Wrong Xpath so not visible",
+		assertFalse("Wrong Xpath so not visible",
 		        browser.isVisible(new Identification(How.xpath, "/RUBISH")));
 	}
 
@@ -184,9 +195,9 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testGetInputWithRandomValue() {
-		Assert.assertNull("Wrong Xpath so null as result of InputWithRandomValue", browser
-		        .getInputWithRandomValue(new FormInput("text", new Identification(How.xpath,
-		                "/RUBISH"), "abc")));
+		assertNull("Wrong Xpath so null as result of InputWithRandomValue",
+		        browser.getInputWithRandomValue(new FormInput("text", new Identification(
+		                How.xpath, "/RUBISH"), "abc")));
 	}
 
 	/**
@@ -194,7 +205,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testGetFrameDom() {
-		Assert.assertTrue("Wrong FrameID so empty", browser.getFrameDom("123").equals(""));
+		assertTrue("Wrong FrameID so empty", browser.getFrameDom("123").equals(""));
 	}
 
 	/**
@@ -204,7 +215,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testElementExists() {
-		Assert.assertFalse("Wrong Xpath so element does not exsist",
+		assertFalse("Wrong Xpath so element does not exsist",
 		        browser.elementExists(new Identification(How.xpath, "/RUBISH")));
 	}
 

@@ -8,15 +8,11 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.Helper;
+import com.crawljax.util.DomUtils;
 
-/**
- * @author danny
- * @version $Id$
- */
 public class ScriptComparator extends AbstractComparator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComparator.class
@@ -41,18 +37,15 @@ public class ScriptComparator extends AbstractComparator {
 	@Override
 	public boolean isEquivalent() {
 		try {
-			Document orgDoc = Helper.getDocument(getOriginalDom());
-			orgDoc = Helper.removeScriptTags(orgDoc);
-			setOriginalDom(Helper.getDocumentToString(orgDoc));
+			Document orgDoc = DomUtils.asDocument(getOriginalDom());
+			orgDoc = DomUtils.removeScriptTags(orgDoc);
+			setOriginalDom(DomUtils.getDocumentToString(orgDoc));
 
-			Document newDoc = Helper.getDocument(getNewDom());
-			newDoc = Helper.removeScriptTags(newDoc);
-			setNewDom(Helper.getDocumentToString(newDoc));
-		} catch (SAXException e) {
-			LOGGER.error("IOException with creating DOM document", e);
-			return false;
-		} catch (IOException e) {
-			LOGGER.error("IOException with creating DOM document", e);
+			Document newDoc = DomUtils.asDocument(getNewDom());
+			newDoc = DomUtils.removeScriptTags(newDoc);
+			setNewDom(DomUtils.getDocumentToString(newDoc));
+		} catch (IOException | CrawljaxException e) {
+			LOGGER.error("Exception with creating DOM document", e);
 			return false;
 		}
 		return super.compare();
