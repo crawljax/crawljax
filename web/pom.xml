@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>com.crawljax</groupId>
 			<artifactId>crawljax-core</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>jetty-websocket</artifactId>
@@ -51,11 +51,6 @@
 			<version>1.16</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<version>1.7</version>
-		</dependency>
-		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-jaxrs</artifactId>
 			<version>1.9.11</version>
@@ -63,8 +58,7 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.0.0.M4</version>
+			<version>9.0.0.RC0</version>
 		</dependency>
-
 	</dependencies>
 </project>
