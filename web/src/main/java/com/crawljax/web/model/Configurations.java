@@ -3,7 +3,6 @@ package com.crawljax.web.model;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -12,14 +11,13 @@ import com.crawljax.web.fs.WorkDirManager;
 
 @Singleton
 public class Configurations {
-
 	private final Map<String, Configuration> configList;
 	private final WorkDirManager workDirManager;
 
 	@Inject
 	public Configurations(WorkDirManager workDirManager) {
 		this.workDirManager = workDirManager;
-		configList = new ConcurrentHashMap<String, Configuration>();
+		configList = workDirManager.loadAll();
 	}
 
 	/**
@@ -31,8 +29,7 @@ public class Configurations {
 
 	public Configuration add(Configuration config) {
 		String id = config.getName().toLowerCase().replaceAll("[^a-z0-9]+", "-");
-		if (configList.containsKey(id))
-		{
+		if (configList.containsKey(id)) {
 			int i = 1;
 			while (configList.containsKey(id + Integer.toString(i)))
 				i++;
@@ -40,19 +37,23 @@ public class Configurations {
 		}
 		config.setId(id);
 		configList.put(id, config);
+		workDirManager.save(config);
+
 		return config;
 	}
 
-	public Configuration update(Configuration config)
-	{
+	public Configuration update(Configuration config) {
 		config.setLastModified(new Date());
 		configList.put(config.getId(), config);
+		workDirManager.save(config);
+
 		return config;
 	}
 
-	public Configuration remove(Configuration config)
-	{
+	public Configuration remove(Configuration config) {
 		configList.remove(config.getId());
+		workDirManager.delete(config);
+
 		return config;
 	}
 

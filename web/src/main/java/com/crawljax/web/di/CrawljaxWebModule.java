@@ -30,8 +30,7 @@ public class CrawljaxWebModule extends ServletModule {
 
 	@Provides
 	public WorkDirManager workDirManager(ObjectMapper mapper) {
-		File file = new File(System.getProperty("user.home") + File.separatorChar
-		        + "crawljax-results");
+		File file = new File(System.getProperty("user.home") + File.separatorChar + "crawljax");
 		return new WorkDirManager(file, mapper);
 	}
 }
