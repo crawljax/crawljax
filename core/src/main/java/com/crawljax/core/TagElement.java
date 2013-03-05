@@ -1,10 +1,9 @@
-/**
- * Created Jul 7, 2008
- */
 package com.crawljax.core;
 
 import javax.annotation.concurrent.Immutable;
 
+import com.crawljax.core.configuration.CrawlAttribute;
+import com.crawljax.core.configuration.CrawlElement;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
@@ -30,6 +29,16 @@ public class TagElement {
 		this.attributes = attributes;
 		this.name = name.toUpperCase();
 		this.id = id;
+	}
+
+	public TagElement(CrawlElement crawlElement) {
+		ImmutableSet.Builder<TagAttribute> attributes = ImmutableSet.builder();
+		for (CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
+			attributes.add(new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue()));
+		}
+		this.attributes = attributes.build();
+		this.name = crawlElement.getTagName();
+		this.id = crawlElement.getId();
 	}
 
 	/**

@@ -1,10 +1,8 @@
 package com.crawljax.examples;
 
-import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.condition.UrlCondition;
 import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
 
 /**
@@ -22,27 +20,23 @@ public final class SiteSimpleExample {
 	private static final int MAX_CRAWL_DEPTH = 1;
 	private static final int MAX_STATES = 10;
 
-	private SiteSimpleExample() {
-		// Utility class
-	}
-
-	private static CrawlSpecification getCrawlSpecification() {
-		CrawlSpecification crawler = new CrawlSpecification(URL);
-
-		crawler.clickDefaultElements();
-		crawler.dontClick(ALL_ANCHORS).underXPath(HEADER_XPATH);
-		crawler.dontClick(ALL_ANCHORS).withText(LANGUAGE_TOOLS);
+	/**
+	 * Entry point
+	 */
+	public static void main(String[] args) {
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+		builder.crawlRules().clickDefaultElements();
+		builder.crawlRules().dontClick(ALL_ANCHORS).underXPath(HEADER_XPATH);
+		builder.crawlRules().dontClick(ALL_ANCHORS).withText(LANGUAGE_TOOLS);
 
 		// limit the crawling scope
-		crawler.setMaximumStates(MAX_STATES);
-		crawler.setDepth(MAX_CRAWL_DEPTH);
+		builder.setMaximumStates(MAX_STATES);
+		builder.setMaximumDepth(MAX_CRAWL_DEPTH);
 
-		crawler.setInputSpecification(getInputSpecification());
+		builder.crawlRules().setInputSpec(getInputSpecification());
 
-		// Make sure we only crawl Google and no external web site
-		crawler.addCrawlCondition("Only crawl Google", new UrlCondition("google"));
-
-		return crawler;
+		CrawljaxController crawljax = new CrawljaxController(builder.build());
+		crawljax.run();
 	}
 
 	private static InputSpecification getInputSpecification() {
@@ -53,22 +47,7 @@ public final class SiteSimpleExample {
 		return input;
 	}
 
-	private static CrawljaxConfiguration getConfig() {
-		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
-		crawljaxConfiguration.setBrowser(BrowserType.ie);
-		crawljaxConfiguration.setCrawlSpecification(getCrawlSpecification());
-
-		// Generate a crawl report
-		// crawljaxConfiguration.addPlugin(new CrawlOverview());
-		return crawljaxConfiguration;
-	}
-
-	/**
-	 * @param args
-	 *            none.
-	 */
-	public static void main(String[] args) {
-		CrawljaxController crawljax = new CrawljaxController(getConfig());
-		crawljax.run();
+	private SiteSimpleExample() {
+		// Utility class
 	}
 }

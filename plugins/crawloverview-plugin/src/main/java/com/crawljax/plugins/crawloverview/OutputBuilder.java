@@ -12,7 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -28,15 +27,19 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.configuration.CrawlSpecificationReader;
-import com.crawljax.plugins.crawloverview.model.CrawlConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.Plugin;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
@@ -159,7 +162,7 @@ class OutputBuilder {
 		try {
 			writeIndexFile(outModel);
 			writeStatistics(outModel.getStatistics());
-			writeConfig(outModel.getConfiguration(), outModel.getCrawlSpecification());
+			writeConfig(outModel.getConfiguration());
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
@@ -167,11 +170,10 @@ class OutputBuilder {
 		LOG.info("Overview report generated");
 	}
 
-	private void writeConfig(CrawlConfiguration configuration, CrawlSpecificationReader crawlSpec) {
+	private void writeConfig(CrawljaxConfiguration configuration) {
 		File file = new File(outputDir, "config.html");
 		VelocityContext context = new VelocityContext();
 		context.put("config", BeanToReadableMap.toMap(configuration));
-		context.put("spec", BeanToReadableMap.toMap(crawlSpec));
 		writeFile(context, file, "config.html");
 	}
 
@@ -204,17 +206,6 @@ class OutputBuilder {
 		context = new VelocityContext();
 		context.put("urls", stats.getStateStats().getUrls());
 		writeFile(context, file, "urls.html");
-	}
-
-	public void write(CrawlSpecificationReader crawlSpecificationReader) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			ObjectWriter prettyPrinter = objectMapper.writer().withDefaultPrettyPrinter();
-			prettyPrinter
-			        .writeValue(new File(outputDir, "config.json"), crawlSpecificationReader);
-		} catch (Exception e) {
-			throw new RuntimeException("Cannot save config", e);
-		}
 	}
 
 	private void writeFile(VelocityContext context, File outFile, String template) {
@@ -260,13 +251,33 @@ class OutputBuilder {
 		}
 	}
 
-	private String toJson(Object o) {
+	static String toJson(Object o) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+			mapper.setVisibility(PropertyAccessor.GETTER, Visibility.NONE);
+			mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+			SimpleModule testModule = new SimpleModule("Plugin serialiezr");
+			testModule.addSerializer(new JsonSerializer<Plugin>() {
+
+				@Override
+				public void serialize(Plugin plugin, JsonGenerator jgen,
+				        SerializerProvider provider) throws IOException, JsonProcessingException {
+					jgen.writeString(plugin.getClass().getSimpleName());
+				}
+
+				@Override
+				public Class<Plugin> handledType() {
+					return Plugin.class;
+				}
+			});
+			mapper.registerModule(testModule);
 			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(o);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
+			LOG.error(
+			        "Could not serialize the object. This will be ignored and the error will be written instead. Object was {}",
+			        o, e);
+			return "\"" + e.getMessage() + "\"";
 		}
 	}
 
