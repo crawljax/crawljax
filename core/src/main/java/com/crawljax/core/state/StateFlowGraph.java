@@ -94,7 +94,8 @@ public class StateFlowGraph implements Serializable {
 				LOG.debug("Graph already contained vertex {}", stateVertix);
 				return this.getStateInGraph(stateVertix);
 			} else {
-				LOG.debug("Number of states is now {}", stateCounter.incrementAndGet());
+				int count = stateCounter.incrementAndGet();
+				LOG.debug("Number of states is now {}", count);
 				if (correctName) {
 					correctStateName(stateVertix);
 				}
