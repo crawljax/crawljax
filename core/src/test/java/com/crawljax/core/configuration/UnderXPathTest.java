@@ -35,7 +35,7 @@ public class UnderXPathTest {
 
 		/* test issue 16 */
 		assertEquals("There should be no outgoing links", 0, session.getStateFlowGraph()
-		        .getOutgoingStates(session.getInitialState()).size());
+		        .getOutgoingClickables(session.getInitialState()).size());
 	}
 
 	private void runAndSetSession(CrawljaxConfigurationBuilder builder) {
@@ -71,6 +71,6 @@ public class UnderXPathTest {
 		crawljax.run();
 
 		assertEquals("There should be 2 outgoing links", 2, session.getStateFlowGraph()
-		        .getOutgoingStates(session.getInitialState()).size());
+		        .getOutgoingClickables(session.getInitialState()).size());
 	}
 }
