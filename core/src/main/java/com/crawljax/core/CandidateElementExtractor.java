@@ -272,7 +272,7 @@ public class CandidateElementExtractor {
 			        && !isExcluded(dom, element, eventableConditionChecker)) {
 				addElement(element, result, tagElement);
 			} else {
-				LOG.debug("Element {} was not added");
+				LOG.debug("Element {} was not added", element);
 			}
 		}
 		return result.build();
