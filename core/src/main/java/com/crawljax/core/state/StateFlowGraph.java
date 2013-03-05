@@ -18,15 +18,16 @@ import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 /**
  * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
  * clickables (Eventable) on the edges.
  */
+@SuppressWarnings("serial")
 public class StateFlowGraph implements Serializable {
 
-	private static final long serialVersionUID = 923403417983488L;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(StateFlowGraph.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(StateFlowGraph.class.getName());
 
 	private final DirectedGraph<StateVertex, Eventable> sfg;
 
@@ -34,14 +35,9 @@ public class StateFlowGraph implements Serializable {
 	 * Intermediate counter for the number of states, not relaying on getAllStates.size() because of
 	 * Thread-safety.
 	 */
-	private final AtomicInteger stateCounter = new AtomicInteger(1);
+	private final AtomicInteger stateCounter = new AtomicInteger();
 
-	/**
-	 * Empty constructor.
-	 */
-	public StateFlowGraph() {
-		sfg = new DirectedMultigraph<StateVertex, Eventable>(Eventable.class);
-	}
+	private final StateVertex initialState;
 
 	/**
 	 * The constructor.
@@ -50,8 +46,10 @@ public class StateFlowGraph implements Serializable {
 	 *            the state to start from.
 	 */
 	public StateFlowGraph(StateVertex initialState) {
-		this();
+		Preconditions.checkNotNull(initialState);
+		sfg = new DirectedMultigraph<>(Eventable.class);
 		sfg.addVertex(initialState);
+		this.initialState = initialState;
 	}
 
 	/**
@@ -93,29 +91,28 @@ public class StateFlowGraph implements Serializable {
 		synchronized (sfg) {
 			if (!sfg.addVertex(stateVertix)) {
 				// Graph already contained the vertix
+				LOG.debug("Graph already contained vertex {}", stateVertix);
 				return this.getStateInGraph(stateVertix);
 			} else {
-				/**
-				 * A new State has been added so check to see if the name is correct, remember this
-				 * is the only place states can be added and we are now locked so getAllStates.size
-				 * works correctly.
-				 */
+				int count = stateCounter.incrementAndGet();
+				LOG.debug("Number of states is now {}", count);
 				if (correctName) {
-					// the -1 is for the "index" state.
-					int totalNumberOfStates = this.getAllStates().size() - 1;
-					String correctedName =
-					        makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
-					if (!stateVertix.getName().equals("index")
-					        && !stateVertix.getName().equals(correctedName)) {
-						LOGGER.info("Correcting state name from  " + stateVertix.getName()
-						        + " to " + correctedName);
-						stateVertix.setName(correctedName);
-					}
+					correctStateName(stateVertix);
 				}
+				return null;
 			}
-			stateCounter.set(this.getAllStates().size() - 1);
 		}
-		return null;
+	}
+
+	private void correctStateName(StateVertex stateVertix) {
+		// the -1 is for the "index" state.
+		int totalNumberOfStates = this.getAllStates().size() - 1;
+		String correctedName = makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
+		if (!"index".equals(stateVertix.getName())
+		        && !stateVertix.getName().equals(correctedName)) {
+			LOG.info("Correcting state name from {}  to {}", stateVertix.getName(), correctedName);
+			stateVertix.setName(correctedName);
+		}
 	}
 
 	/**
@@ -140,14 +137,12 @@ public class StateFlowGraph implements Serializable {
 	@GuardedBy("sfg")
 	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert, Eventable clickable) {
 		synchronized (sfg) {
-			// TODO Ali; Why is this code (if-stmt) here? Its the same as what happens in sfg.addEge
-			// imo (21-01-10 Stefan).
 			if (sfg.containsEdge(sourceVert, targetVert)
 			        && sfg.getAllEdges(sourceVert, targetVert).contains(clickable)) {
 				return false;
+			} else {
+				return sfg.addEdge(sourceVert, targetVert, clickable);
 			}
-
-			return sfg.addEdge(sourceVert, targetVert, clickable);
 		}
 	}
 
@@ -157,7 +152,9 @@ public class StateFlowGraph implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return sfg.toString();
+		synchronized (sfg) {
+			return sfg.toString();
+		}
 	}
 
 	/**
@@ -291,13 +288,6 @@ public class StateFlowGraph implements Serializable {
 	}
 
 	/**
-	 * @return the state-flow graph.
-	 */
-	public DirectedGraph<StateVertex, Eventable> getSfg() {
-		return sfg;
-	}
-
-	/**
 	 * @param state
 	 *            The starting state.
 	 * @return A list of the deepest states (states with no outgoing edges).
@@ -365,7 +355,7 @@ public class StateFlowGraph implements Serializable {
 				results.add(paths);
 			} catch (Exception e) {
 				// TODO Stefan; which Exception is catched here???Can this be removed?
-				LOGGER.error("Error with " + state.toString(), e);
+				LOG.error("Error with " + state.toString(), e);
 			}
 
 		}
@@ -399,5 +389,9 @@ public class StateFlowGraph implements Serializable {
 		}
 
 		return "state" + id;
+	}
+
+	public boolean isInitialState(StateVertex state) {
+		return initialState.equals(state);
 	}
 }

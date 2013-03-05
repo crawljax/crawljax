@@ -24,7 +24,7 @@ public class UnderXPathTest {
 	private static CrawlSession session = null;
 
 	@ClassRule
-	public static final RunWithWebServer SERVER = new RunWithWebServer("/configuration");
+	public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
 
 	@Test
 	public void testDontClickUnderXPath() throws Exception {
@@ -34,8 +34,8 @@ public class UnderXPathTest {
 		runAndSetSession(builder);
 
 		/* test issue 16 */
-		assertEquals("There should be no outgoing links", 0, session.getStateFlowGraph().getSfg()
-		        .outDegreeOf(session.getInitialState()));
+		assertEquals("There should be no outgoing links", 0, session.getStateFlowGraph()
+		        .getOutgoingClickables(session.getInitialState()).size());
 	}
 
 	private void runAndSetSession(CrawljaxConfigurationBuilder builder) {
@@ -70,7 +70,7 @@ public class UnderXPathTest {
 
 		crawljax.run();
 
-		assertEquals("There should be 2 outgoing links", 2, session.getStateFlowGraph().getSfg()
-		        .outDegreeOf(session.getInitialState()));
+		assertEquals("There should be 2 outgoing links", 2, session.getStateFlowGraph()
+		        .getOutgoingClickables(session.getInitialState()).size());
 	}
 }

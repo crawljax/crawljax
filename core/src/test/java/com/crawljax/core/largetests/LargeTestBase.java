@@ -46,6 +46,7 @@ import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
+import com.crawljax.core.state.PostCrawlStateGraphChecker;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.oraclecomparator.OracleComparator;
@@ -243,6 +244,7 @@ public abstract class LargeTestBase {
 	 *            the configuration to add the plugins to.
 	 */
 	protected static void addPlugins(CrawljaxConfigurationBuilder crawljaxConfiguration) {
+		crawljaxConfiguration.addPlugin(new PostCrawlStateGraphChecker());
 
 		crawljaxConfiguration.addPlugin(new OnInvariantViolationPlugin() {
 

@@ -15,6 +15,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.state.PostCrawlStateGraphChecker;
 import com.google.common.base.Strings;
 
 /**
@@ -100,6 +101,7 @@ public class BaseCrawler {
 		builder.crawlRules().clickDefaultElements();
 		builder.setUnlimitedRuntime();
 		builder.setUnlimitedCrawlDepth();
+		builder.addPlugin(new PostCrawlStateGraphChecker());
 		return builder;
 	}
 

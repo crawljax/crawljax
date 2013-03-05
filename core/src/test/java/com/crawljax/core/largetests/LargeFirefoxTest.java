@@ -23,4 +23,5 @@ public class LargeFirefoxTest extends LargeTestBase {
 	long getTimeOutAfterEvent() {
 		return 200;
 	}
+
 }

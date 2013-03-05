@@ -169,7 +169,6 @@ public class CrawlOverview
 	public void postCrawling(CrawlSession session) {
 		LOG.debug("postCrawling");
 		StateFlowGraph sfg = session.getStateFlowGraph();
-		outModelCache.addEdges(sfg.getAllEdges());
 		result = outModelCache.close(session);
 		outputBuilder.write(result);
 		synchronized (visitedStates) {
