@@ -83,7 +83,7 @@ public class OverviewIntegrationTest {
 
 		driver.findElement(By.linkText("Configuration")).click();
 		foundndElements = visibleElementsByCss("H1");
-		assertThat(foundndElements, hasSize(2));
+		assertThat(foundndElements, hasSize(1));
 		assertThat(foundndElements.iterator().next().getText(), is("Crawl configuration"));
 	}
 

@@ -19,8 +19,10 @@ import org.w3c.dom.NodeList;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.IgnoreFrameChecker;
+import com.crawljax.core.configuration.CrawlElement;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
@@ -32,6 +34,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 
 /**
  * This class extracts candidate elements from the DOM tree, based on the tags provided by the user.
@@ -45,12 +48,13 @@ public class CandidateElementExtractor {
 	private final EmbeddedBrowser browser;
 
 	private final FormHandler formHandler;
-	private final IgnoreFrameChecker ignoreFrameChecker;
-
+	private final boolean crawlFrames;
 	private final ImmutableMultimap<String, TagElement> excludeTagElements;
 	private final ImmutableList<TagElement> includedTagElements;
 
 	private final boolean clickOnce;
+
+	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
 	/**
 	 * Create a new CandidateElementExtractor.
@@ -62,24 +66,41 @@ public class CandidateElementExtractor {
 	 *            the current browser instance used in the Crawler
 	 * @param formHandler
 	 *            the form handler.
-	 * @param configurationReader
+	 * @param config
 	 *            the checker used to determine if a certain frame must be ignored.
 	 */
 	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser,
-	        FormHandler formHandler, CrawljaxConfigurationReader configurationReader) {
+	        FormHandler formHandler, CrawljaxConfiguration config) {
 		checkedElements = checker;
 		this.browser = browser;
 		this.formHandler = formHandler;
-		this.excludeTagElements = asMultiMap(configurationReader.getExcludeTagElements());
-		this.includedTagElements = configurationReader.getTagElements();
-		this.ignoreFrameChecker = configurationReader.getCrawlSpecificationReader();
-		clickOnce = configurationReader.getCrawlSpecificationReader().getClickOnce();
+		PreCrawlConfiguration preCrawlConfig = config.getCrawlRules().getPreCrawlConfig();
+		this.excludeTagElements = asMultiMap(preCrawlConfig.getExcludedElements());
+		this.includedTagElements =
+		        asTagElements(preCrawlConfig.getIncludedElements(), config.getCrawlRules()
+		                .getInputSpecification());
+		crawlFrames = config.getCrawlRules().shouldCrawlFrames();
+		clickOnce = config.getCrawlRules().isClickOnce();
+		ignoredFrameIdentifiers = config.getCrawlRules().getIgnoredFrameIdentifiers();
 	}
 
-	private ImmutableMultimap<String, TagElement> asMultiMap(ImmutableList<TagElement> elements) {
+	private ImmutableMultimap<String, TagElement> asMultiMap(ImmutableList<CrawlElement> elements) {
 		ImmutableMultimap.Builder<String, TagElement> builder = ImmutableMultimap.builder();
-		for (TagElement tagElement : elements) {
+		for (CrawlElement elem : elements) {
+			TagElement tagElement = new TagElement(elem);
 			builder.put(tagElement.getName(), tagElement);
+		}
+		return builder.build();
+	}
+
+	private ImmutableList<TagElement> asTagElements(List<CrawlElement> crawlElements,
+	        InputSpecification inputSpecification) {
+		ImmutableList.Builder<TagElement> builder = ImmutableList.builder();
+		for (CrawlElement crawlElement : crawlElements) {
+			builder.add(new TagElement(crawlElement));
+		}
+		for (CrawlElement crawlElement : inputSpecification.getCrawlElements()) {
+			builder.add(new TagElement(crawlElement));
 		}
 		return builder.build();
 	}
@@ -159,7 +180,7 @@ public class CandidateElementExtractor {
 
 			// TODO Stefan; Here the IgnoreFrameChecker is used, also in
 			// WebDriverBackedEmbeddedBrowser. We must get this in 1 place.
-			if (nameId == null || ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
+			if (nameId == null || isFrameIgnored(frameIdentification + nameId)) {
 				continue;
 			} else {
 				frameIdentification += nameId;
@@ -175,6 +196,25 @@ public class CandidateElementExtractor {
 					        frameIdentification, e);
 				}
 			}
+		}
+	}
+
+	private boolean isFrameIgnored(String string) {
+		if (crawlFrames) {
+			for (String ignorePattern : ignoredFrameIdentifiers) {
+				if (ignorePattern.contains("%")) {
+					// replace with a useful wildcard for regex
+					String pattern = ignorePattern.replace("%", ".*");
+					if (string.matches(pattern)) {
+						return true;
+					}
+				} else if (ignorePattern.equals(string)) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			return true;
 		}
 	}
 

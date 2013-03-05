@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.exception.CrawlPathToException;
 import com.crawljax.core.plugin.CrawljaxPluginsUtil;
@@ -85,7 +85,7 @@ public class Crawler implements Runnable {
 	 */
 	private final StateMachine stateMachine;
 
-	private final CrawljaxConfigurationReader configurationReader;
+	private final CrawljaxConfiguration configurationReader;
 
 	private FormHandler formHandler;
 
@@ -142,7 +142,7 @@ public class Crawler implements Runnable {
 	protected Crawler(CrawljaxController mother, CrawlPath returnPath) {
 		this.backTrackPath = returnPath;
 		this.controller = mother;
-		this.configurationReader = controller.getConfigurationReader();
+		this.configurationReader = controller.getConfiguration();
 		this.crawlQueueManager = mother.getCrawlQueueManager();
 		if (controller.getSession() != null) {
 			this.stateMachine =
@@ -161,9 +161,8 @@ public class Crawler implements Runnable {
 	 * Brings the browser to the initial state.
 	 */
 	public void goToInitialURL() {
-		LOGGER.info("Loading Page {}", configurationReader.getCrawlSpecificationReader()
-		        .getSiteUrl());
-		getBrowser().goToUrl(configurationReader.getCrawlSpecificationReader().getSiteUrl());
+		LOGGER.info("Loading Page {}", configurationReader.getUrl());
+		getBrowser().goToUrl(configurationReader.getUrl());
 		controller.doBrowserWait(getBrowser());
 		CrawljaxPluginsUtil.runOnUrlLoadPlugins(getBrowser());
 	}
@@ -185,7 +184,7 @@ public class Crawler implements Runnable {
 		try {
 			fired = getBrowser().fireEvent(eventToFire);
 		} catch (ElementNotVisibleException | NoSuchElementException e) {
-			if (configurationReader.getCrawlSpecificationReader().crawlHiddenAnchors()
+			if (configurationReader.getCrawlRules().isCrawlHiddenAnchors()
 			        && eventToFire.getElement() != null
 			        && "A".equals(eventToFire.getElement().getTag())) {
 				fired = visitAnchorHrefIfPossible(eventToFire);
@@ -405,10 +404,10 @@ public class Crawler implements Runnable {
 	 */
 	private boolean depthLimitReached(int depth) {
 
-		if (this.depth >= configurationReader.getCrawlSpecificationReader().getDepth()
-		        && configurationReader.getCrawlSpecificationReader().getDepth() != 0) {
-			LOGGER.info("DEPTH " + depth + " reached returning from rec call. Given depth: "
-			        + configurationReader.getCrawlSpecificationReader().getDepth());
+		int maxDepth = configurationReader.getMaximumDepth();
+		if (this.depth >= maxDepth && maxDepth != 0) {
+			LOGGER.info("DEPTH {} reached returning from rec call. Given depth: {}", maxDepth,
+			        depth);
 			return true;
 		} else {
 			return false;
@@ -482,9 +481,7 @@ public class Crawler implements Runnable {
 		// Store the currentState to be able to 'back-track' later.
 		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
 
-		if (orrigionalState.searchForCandidateElements(candidateExtractor, configurationReader
-		        .getTagElements(), configurationReader.getExcludeTagElements(),
-		        configurationReader.getCrawlSpecificationReader().getClickOnce())) {
+		if (orrigionalState.searchForCandidateElements(candidateExtractor)) {
 			// Only execute the preStateCrawlingPlugins when it's the first time
 			LOGGER.info("Starting preStateCrawlingPlugins...");
 			List<CandidateElement> candidateElements =
@@ -568,8 +565,9 @@ public class Crawler implements Runnable {
 		}
 		// TODO Stefan ideally this should be placed in the constructor
 		this.formHandler =
-		        new FormHandler(getBrowser(), configurationReader.getInputSpecification(),
-		                configurationReader.getCrawlSpecificationReader().getRandomInputInForms());
+		        new FormHandler(getBrowser(), configurationReader.getCrawlRules()
+		                .getInputSpecification(), configurationReader.getCrawlRules()
+		                .isRandomInputInForms());
 
 		this.candidateExtractor =
 		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
@@ -688,15 +686,14 @@ public class Crawler implements Runnable {
 
 	private boolean shouldContinueCrawling() {
 		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
-		long maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime();
+		long maxCrawlTime = configurationReader.getMaximumRuntime();
 		if (maxCrawlTime != 0 && timePassed > maxCrawlTime) {
-			LOGGER.info("Max time " + TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime)
-			        + " seconds passed!");
+			LOGGER.info("Max time {} seconds passed!",
+			        TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime));
 			return false;
 		}
 		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
-		int maxNumberOfStates =
-		        configurationReader.getCrawlSpecificationReader().getMaxNumberOfStates();
+		int maxNumberOfStates = configurationReader.getMaximumStates();
 		if ((maxNumberOfStates != 0) && (graph.getAllStates().size() >= maxNumberOfStates)) {
 			LOGGER.info("Max number of states {} reached!", maxNumberOfStates);
 			return false;

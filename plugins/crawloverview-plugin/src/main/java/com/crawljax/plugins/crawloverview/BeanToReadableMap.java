@@ -10,6 +10,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.core.configuration.CrawlRules;
+import com.crawljax.core.plugin.Plugin;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
@@ -60,7 +62,12 @@ class BeanToReadableMap {
 			return "null";
 		} else if (result instanceof Collection<?>) {
 			return asHtmlList((Collection<?>) result);
-		} else {
+		} else if (result instanceof Plugin) {
+			return escapeHtml(result.getClass().getSimpleName());
+		} else if (result instanceof CrawlRules) {
+			return "<pre><code>" + OutputBuilder.toJson(result) + "</code></pre>";
+		}
+		else {
 			return escapeHtml(result.toString());
 		}
 	}
@@ -76,7 +83,7 @@ class BeanToReadableMap {
 		}
 		StringBuilder sb = new StringBuilder("<ul>");
 		for (Object object : result) {
-			sb.append("<li>").append(escapeHtml(object.toString())).append("</li>");
+			sb.append("<li>").append(toString(object)).append("</li>");
 		}
 		return sb.append("</ul>").toString();
 	}

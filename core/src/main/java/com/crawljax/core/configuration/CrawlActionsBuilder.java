@@ -2,6 +2,7 @@ package com.crawljax.core.configuration;
 
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +18,9 @@ import com.google.common.collect.Lists;
  * conditions to check whether a tag should (not) be clicked one can use {@link #when(Condition...)}
  * . See also {@link Condition}
  */
-public class CrawlActions {
+public class CrawlActionsBuilder {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CrawlActions.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlActionsBuilder.class);
 
 	public static class ExcludeByParentBuilder {
 		private final String tagname;
@@ -65,10 +66,9 @@ public class CrawlActions {
 	private final List<CrawlElement> crawlElements = Lists.newLinkedList();
 	private final List<CrawlElement> crawlElementsExcluded = Lists.newLinkedList();
 	private final List<ExcludeByParentBuilder> crawlParentsExcluded = Lists.newLinkedList();
-
 	private ImmutableList<CrawlElement> resultingElementsExcluded = null;
 
-	CrawlActions() {
+	CrawlActionsBuilder() {
 	}
 
 	/**
@@ -86,6 +86,32 @@ public class CrawlActions {
 		CrawlElement crawlTag = new CrawlElement(EventType.click, tagName.toUpperCase());
 		crawlElements.add(crawlTag);
 		return crawlTag;
+	}
+
+	/**
+	 * Set of HTML elements Crawljax will click during crawling For exmple 1) <a.../> 2) <div/>
+	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}. If
+	 * no clicks are specified, {@link #clickDefaultElements()} is enabled.
+	 * 
+	 * @param tagName
+	 *            the tag name of the elements to be included
+	 * @return this CrawlElement
+	 */
+	public void click(String... tagNames) {
+		for (String tagName : tagNames) {
+			click(tagName);
+		}
+	}
+
+	/**
+	 * Specifies that Crawljax should click all the default clickable elements. These include: All
+	 * anchor tags All buttons
+	 */
+	public void clickDefaultElements() {
+		click("a");
+		click("button");
+		click("input").withAttribute("type", "submit");
+		click("input").withAttribute("type", "button");
 	}
 
 	private void checkNotRead() {
@@ -127,16 +153,19 @@ public class CrawlActions {
 	}
 
 	/**
-	 * @return the crawlElements
+	 * @return the crawlElements.
 	 */
-	protected ImmutableList<CrawlElement> getCrawlElements() {
+	private ImmutableList<CrawlElement> getCrawlElements() {
+		if (crawlElements.isEmpty()) {
+			clickDefaultElements();
+		}
 		return ImmutableList.copyOf(crawlElements);
 	}
 
 	/**
 	 * @return the crawlElementsExcluded
 	 */
-	protected ImmutableList<CrawlElement> getCrawlElementsExcluded() {
+	private ImmutableList<CrawlElement> getCrawlElementsExcluded() {
 		synchronized (this) {
 			if (resultingElementsExcluded == null) {
 				ImmutableList.Builder<CrawlElement> builder = ImmutableList.builder();
@@ -149,6 +178,14 @@ public class CrawlActions {
 			}
 			return resultingElementsExcluded;
 		}
+	}
+
+	/**
+	 * @return a {@link Pair} where {@link Pair#getLeft()} are the includes and
+	 *         {@link Pair#getRight()} are the excludes.
+	 */
+	Pair<ImmutableList<CrawlElement>, ImmutableList<CrawlElement>> build() {
+		return Pair.of(getCrawlElements(), getCrawlElementsExcluded());
 	}
 
 }

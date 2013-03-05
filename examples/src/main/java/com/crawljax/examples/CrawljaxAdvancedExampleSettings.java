@@ -5,8 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
@@ -21,35 +21,41 @@ public final class CrawljaxAdvancedExampleSettings {
 	private static final String URL = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
 	private static final String outputDir = "output";
 
-	private CrawljaxAdvancedExampleSettings() {
+	/**
+	 * entry point
+	 */
+	public static void main(String[] args) {
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+		builder.crawlRules().insertRandomDataInInputForms(false);
 
-	}
-
-	private static CrawljaxConfiguration getCrawljaxConfiguration() {
-		CrawljaxConfiguration config = new CrawljaxConfiguration();
-		config.addPlugin(new CrawlOverview(new File(outputDir)));
-		config.setCrawlSpecification(getCrawlSpecification());
-		return config;
-	}
-
-	private static CrawlSpecification getCrawlSpecification() {
-		CrawlSpecification crawler = new CrawlSpecification(URL);
+		builder.crawlRules().click("a");
 
 		// click these elements
-		crawler.clickDefaultElements();
-		crawler.click("div").withAttribute("class", "clickable");
+		builder.crawlRules().clickDefaultElements();
+		builder.crawlRules().click("div").withAttribute("class", "clickable");
 
 		// but don't click these
-		crawler.dontClick("a").withAttribute("class", "ignore");
-		crawler.dontClick("a").underXPath("//DIV[@id='footer']");
+		builder.crawlRules().dontClick("a").withAttribute("class", "ignore");
+		builder.crawlRules().dontClick("a").underXPath("//DIV[@id='footer']");
 
-		crawler.setWaitTimeAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
-		crawler.setWaitTimeAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
-		crawler.setInputSpecification(getInputSpecification());
+		// Set timeouts
+		builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
+		builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
 
-		crawler.addCrawlCondition("No spans with foo as class", new NotXPathCondition(
-		        "//*[@class='foo']"));
-		return crawler;
+		// Add a condition that this XPath doesn't exits
+		builder.crawlRules().addCrawlCondition("No spans with foo as class",
+		        new NotXPathCondition(
+		                "//*[@class='foo']"));
+
+		// Set some input for fields
+		builder.crawlRules().setInputSpec(getInputSpecification());
+
+		// This will generate a nice output in the output directory.
+		builder.addPlugin(new CrawlOverview(new File(outputDir)));
+
+		CrawljaxController crawljax = new CrawljaxController(builder.build());
+		crawljax.run();
+
 	}
 
 	private static InputSpecification getInputSpecification() {
@@ -66,13 +72,7 @@ public final class CrawljaxAdvancedExampleSettings {
 		return input;
 	}
 
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
-	public static void main(String[] args) {
-		CrawljaxController crawljax = new CrawljaxController(getCrawljaxConfiguration());
-		crawljax.run();
-	}
+	private CrawljaxAdvancedExampleSettings() {
 
+	}
 }
