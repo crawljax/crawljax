@@ -64,8 +64,14 @@ App.comparators = [
 App.Config = Ember.Object.extend();
 App.Config.reopenClass({
     	isSaving: false,
+    	isLoading: false,
+    	cleanJSON: function(key, value){ 
+    		if (key == 'isLoading' || key == 'isSaving') return;
+    		return value;
+    	},
     	findAll: function(){
     		var allConfigs = [];
+    		allConfigs.set('isLoading', true);
     	    $.ajax({
     	      url: '/rest/configurations',
     	      dataType: 'json',
@@ -74,46 +80,53 @@ App.Config.reopenClass({
     	        response.forEach(function(config){
     	          this.addObject(App.Config.create(config))
     	        }, this);
+    	        this.set('isLoading', false);
     	      }
     	    });
     	    return allConfigs;
     	 },
     	 find: function(id){
     		 var config = App.Config.create({id: id });
+    		 config.set('isLoading', true);
     		 $.ajax({
     			 url: '/rest/configurations/' + id,
     			 dataType: 'json',
     			 context: config,
-    			 success: function(response){ this.setProperties(response); }
+    			 success: function(response){ 
+    				 this.setProperties(response); 
+    				 this.set('isLoading', false);}
     		 });
     		 return config;
     	 },
     	 newConfig: function()
     	 {
     		 var config = App.Config.create({});
+    		 config.set('isLoading', true);
     		 $.ajax({
     			 url: '/rest/configurations/new',
     			 dataType: 'json',
     			 context: config,
-    			 success: function(response){ this.setProperties(response); }
+    			 success: function(response){ 
+    				 this.setProperties(response);
+    				 this.set('isLoading', false);}
     		 });
     		 return config;
     	 },
     	 add: function(config, callback)
     	 {
-    		 if (!this.isSaving) {
-    			 this.isSaving = true;
+    		 if (!config.get('isSaving')) {
+    			 config.set('isSaving', true);
     			 $.ajax({
     				 url: '/rest/configurations',
     				 type: 'POST',
     				 contentType: "application/json;",
-    				 data: JSON.stringify(config),
+    				 data: JSON.stringify(config, this.cleanJSON),
     				 dataType: 'json',
-    				 context: this,
+    				 context: config,
     				 success: function(response){ 
-    					 config.setProperties(response);
-    					 this.isSaving = false;
-    					 if (callback !== undefined) callback(config);
+    					 this.setProperties(response);
+    					 this.set('isSaving', false);
+    					 if (callback !== undefined) callback(this);
     			 	}
     			 });
     		 }
@@ -121,18 +134,18 @@ App.Config.reopenClass({
     	 },
     	 update: function(config)
     	 {
-    		 if (!this.isSaving) {
-    			 this.isSaving = true;
+    		 if (!config.get('isSaving')) {
+    			 config.set('isSaving', true);
     			 $.ajax({
     				 url: '/rest/configurations/' + config.id,
     				 type: 'PUT',
     				 contentType: "application/json;",
-    				 data: JSON.stringify(config),
+    				 data: JSON.stringify(config, this.cleanJSON),
     				 dataType: 'json',
-    				 context: this,
+    				 context: config,
     				 success: function(response){ 
-    					 config.setProperties(response);
-    					 this.isSaving = false;
+    					 this.setProperties(response);
+    					 this.set('isSaving', false);
     				 }
     			 });
     		 }
@@ -140,17 +153,17 @@ App.Config.reopenClass({
     	 },
     	 remove: function(config, callback)
     	 {
-    		 if (!this.isSaving) {
-    			 this.isSaving = true;
+    		 if (!config.get('isSaving')) {
+    			 config.set('isSaving', true);
     			 $.ajax({
     				 url: '/rest/configurations/' + config.id,
     				 type: 'DELETE',
     				 contentType: "application/json;",
-    				 data: JSON.stringify(config),
+    				 data: JSON.stringify(config, this.cleanJSON),
     				 dataType: 'json',
-    				 context: this,
+    				 context: config,
     				 success: function(response){ 
-    					 this.isSaving = false;
+    					 this.set('isSaving', false);
     					 if (callback !== undefined) callback(config); 
     				 }
     			 });
@@ -162,8 +175,10 @@ App.Config.reopenClass({
 App.CrawlHistory = Ember.Object.extend();
 App.CrawlHistory.reopenClass({
 	isSaving: false,
+	isLoading: false,
 	findAll: function(id){
 		var allHistory = [];
+		allHistory.set('isLoading', true);
 		var data = '';
 		if (id !== undefined) data = { config: id };
 	    $.ajax({
@@ -175,6 +190,7 @@ App.CrawlHistory.reopenClass({
 	        response.forEach(function(history){
 	          this.addObject(App.CrawlHistory.create(history))
 	        }, this);
+	        allHistory.set('isLoading', false);
 	      }
 	    });
 	    return allHistory;

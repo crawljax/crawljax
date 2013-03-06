@@ -1,4 +1,8 @@
-	App.ConfigListController = Ember.ArrayController.extend({ itemController: 'configListItem' });
+	App.ConfigListController = Ember.ArrayController.extend({
+		itemController: 'configListItem', 
+    	sideNavDisabled: function() { 
+    		return this.get('content.isLoading'); }.property('content.isLoading')
+	});
     App.ConfigListItemController = Ember.ObjectController.extend({
     	formatLastCrawl : function() {
     		lastCrawl = this.get('lastCrawl');
@@ -18,9 +22,7 @@
 	    		}
 	    		break;
 	    	case "run":
-	    		if (validateForm('config_form')) {
-	    			App.CrawlHistory.add(this.content.id);
-	    		}
+	    		App.CrawlHistory.add(this.content.id);
 	    		break;
 	    	case "save":
 	    		if (validateForm('config_form')) {
@@ -39,7 +41,10 @@
     			router.transitionTo(route);
     		}
     	},
-    	showRules: function(){ return this.get('content.clickRule') == 'Custom'}.property('content.clickRule')
+    	showRules: function(){ return this.get('content.clickRule') == 'Custom'}.property('content.clickRule'),
+    	sideNavDisabled: function() { 
+    		return this.get('content.isLoading') || this.get('content.isSaving'); 
+    	}.property('content.isLoading', 'content.isSaving')
     });
     
     App.ClickRulesController = Ember.ArrayController.extend({
@@ -77,6 +82,10 @@
      
     App.HistoryListController = Ember.ArrayController.extend({ itemController: 'historyListItem' });
     App.HistoryListItemController = Ember.ObjectController.extend({
-    	formatCreateTime: function(){ return new Date(this.get('createTime')); }.property('createTime'),
+    	formatStartTime: function(){ 
+    		var startTime = this.get('startTime');
+    		if (startTime == null) return 'queued';
+    		else return new Date(startTime); 
+    	}.property('startTime'),
     	configURL: function() { return '#/' + this.get('configurationId'); }.property('configurationId')
     });

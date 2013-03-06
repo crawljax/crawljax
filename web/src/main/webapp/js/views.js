@@ -105,15 +105,21 @@ App.SideNavView = Ember.CollectionView.extend({
 	  	itemViewClass: Ember.View.extend({ 
 	  		template: Ember.Handlebars.compile([
 	  			'{{#if view.content.action}}',
-	  			'	<a href="#" {{action "rest" view.content}}>',
-	  			'   {{#if view.content.icon}}<i {{bindAttr class="view.content.icon" }}></i>{{/if}}',
-	  			'	{{view.content.text}}</a>',
+	  			'	{{#if view.disabled}}',
+	  			'		{{#if view.content.icon}}<i {{bindAttr class="view.content.icon" }}></i>{{/if}}',
+		  		'		{{view.content.text}}',
+	  			'	{{else}}',	
+	  			'		<a href="#" {{action "rest" view.content}}>',
+	  			'   	{{#if view.content.icon}}<i {{bindAttr class="view.content.icon" }}></i>{{/if}}',
+	  			'		{{view.content.text}}</a>',
+	  			'	{{/if}}',
 	  			'{{else}}',
 	  			'	<a {{bindAttr href="view.content.target"}}>',
 	  			'   {{#if view.content.icon}}<i {{bindAttr class="view.content.icon" }}></i>{{/if}}',
 	  			'	{{view.content.text}}</a>',
 	  			'{{/if}}'].join("\n"))
 	  	}),
+	  	disabledBinding: "controller.sideNavDisabled",
 	  	contentBinding: "controller.sidenav"
 });
 

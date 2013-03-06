@@ -3,12 +3,22 @@ package com.crawljax.web.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.crawljax.web.fs.WorkDirManager;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+@Singleton
 public class CrawlRecords {
-	private List<CrawlRecord> crawlList;
+	private final List<CrawlRecord> crawlList;
+	private final WorkDirManager workDirManager;
 	private int identity = 0;
 
-	public CrawlRecords() {
-		crawlList = new ArrayList<CrawlRecord>();
+	@Inject
+	public CrawlRecords(WorkDirManager workDirManager) {
+		this.workDirManager = workDirManager;
+		crawlList = this.workDirManager.loadHistory();
+		if (crawlList.size() > 0)
+			identity = crawlList.get(0).getId();
 	}
 
 	/**
@@ -39,8 +49,12 @@ public class CrawlRecords {
 	}
 
 	public CrawlRecord add(String configId) {
-		CrawlRecord r = new CrawlRecord(identity++, configId);
+		CrawlRecord r = new CrawlRecord();
+		r.setId(++identity);
+		r.setConfigurationId(configId);
 		crawlList.add(0, r);
+		workDirManager.saveRecord(r);
+
 		return r;
 	}
 

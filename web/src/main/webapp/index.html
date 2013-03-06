@@ -62,6 +62,7 @@
  				<tr><th>Name</th><th>Site</th><th>Last Crawl</th><th>Last Duration</th></tr>
  			</thead>
  			<tbody>
+				{{#unless controller.content.isLoading }}
 				{{#each controller}}
  				<tr>
  					<td>{{#linkTo 'config' this.content}}{{name}}{{/linkTo}}</td>
@@ -70,6 +71,7 @@
  					<td>{{lastDuration}}</td>
  				</tr>
 				{{else}}<tr><td colspan="5">No available configurations.</td></tr>{{/each}}
+				{{else}}<tr><td colspan="5">Loading configurations.</td></tr>{{/unless}}
  			</tbody>
 		</table>
 	</div><!--/span-->	
@@ -254,16 +256,18 @@
 	<div class="span9">
 		<table class="table table-striped">
 			<thead>
- 				<tr><th>Crawl Number</th><th>Configuration</th><th>Time Stamp</th></tr>
+ 				<tr><th>Crawl ID</th><th>Configuration</th><th>Execution Time</th></tr>
  			</thead>
  			<tbody>
+				{{#unless controller.content.isLoading }}
 				{{#each controller}}
  				<tr>
  					<td>{{#linkTo 'history' this.id}}{{id}}{{/linkTo}}</td>
  					<td><a {{bindAttr href="configURL"}}>{{configurationId}}</a></td>
- 					<td>{{formatCreateTime}}</td>
+ 					<td>{{formatStartTime}}</td>
  				</tr>
 				{{else}}<tr><td colspan="3">No available crawls.</td></tr>{{/each}}
+				{{else}}<tr><td colspan="3">Loading crawl history.</td></tr>{{/unless}}
  			</tbody>
 		</table>
 	</div><!--/span-->
