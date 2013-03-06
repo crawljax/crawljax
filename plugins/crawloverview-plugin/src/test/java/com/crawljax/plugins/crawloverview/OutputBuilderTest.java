@@ -14,6 +14,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 
@@ -65,4 +66,11 @@ public class OutputBuilderTest {
 		builder.persistDom("test-state", null);
 		assertThat(builder.getDom("test-state"), isEmptyString());
 	}
+
+	@Test
+	public void testConfigIsSerializable() {
+		OutputBuilder.toJson(CrawljaxConfiguration.builderFor("http://localhost")
+		        .build());
+	}
+
 }

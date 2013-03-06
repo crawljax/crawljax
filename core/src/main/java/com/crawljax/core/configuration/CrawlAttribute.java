@@ -31,14 +31,14 @@ public class CrawlAttribute {
 	/**
 	 * @return the name
 	 */
-	protected String getName() {
+	public String getName() {
 		return name;
 	}
 
 	/**
 	 * @return the value
 	 */
-	protected String getValue() {
+	public String getValue() {
 		return value;
 	}
 

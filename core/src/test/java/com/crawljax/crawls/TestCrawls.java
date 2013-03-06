@@ -8,8 +8,9 @@ import org.junit.Test;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.test.BrowserTest;
 
-public class TestCrawls {
+public class TestCrawls implements BrowserTest {
 
 	@Test
 	@Ignore("Not sure if this is supposed to work")

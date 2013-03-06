@@ -155,8 +155,8 @@ public class CrawlOverview
 		Point location = webElement.getLocation();
 		Dimension size = webElement.getSize();
 		CandidateElementPosition renderedCandidateElement =
-		// TODO Check if element.getIdentification().getValue() is correct replacement for
-		// element.getXpath()
+		        // TODO Check if element.getIdentification().getValue() is correct replacement for
+		        // element.getXpath()
 		        new CandidateElementPosition(element.getIdentification().getValue(), location,
 		                size);
 		return renderedCandidateElement;
@@ -169,10 +169,8 @@ public class CrawlOverview
 	public void postCrawling(CrawlSession session) {
 		LOG.debug("postCrawling");
 		StateFlowGraph sfg = session.getStateFlowGraph();
-		outModelCache.addEdges(sfg.getAllEdges());
 		result = outModelCache.close(session);
 		outputBuilder.write(result);
-		outputBuilder.write(session.getCrawljaxConfiguration().getCrawlSpecificationReader());
 		synchronized (visitedStates) {
 			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
 			for (State state : result.getStates().values()) {

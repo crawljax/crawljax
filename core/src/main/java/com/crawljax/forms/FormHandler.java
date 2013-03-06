@@ -58,7 +58,7 @@ public class FormHandler {
 	}
 
 	private static final String[] ALLOWED_INPUT_TYPES =
-	        { "text", "radio", "checkbox", "password" };
+	{ "text", "radio", "checkbox", "password" };
 
 	/**
 	 * Fills in the element with the InputValues for input TODO: improve this by using WebDriver
