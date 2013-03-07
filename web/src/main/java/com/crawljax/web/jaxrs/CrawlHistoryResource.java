@@ -1,16 +1,20 @@
 package com.crawljax.web.jaxrs;
 
 import java.util.List;
+
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import com.crawljax.web.model.*;
+
+import com.crawljax.web.model.CrawlRecord;
+import com.crawljax.web.model.CrawlRecords;
+import com.crawljax.web.runner.CrawlRunner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -21,33 +25,40 @@ import com.google.inject.Singleton;
 public class CrawlHistoryResource {
 
 	private final CrawlRecords crawlRecords;
-	
+	private final CrawlRunner runner;
+
 	@Inject
-	CrawlHistoryResource(CrawlRecords crawlRecords) {
-        this.crawlRecords = crawlRecords;
-    }
-	
+	CrawlHistoryResource(CrawlRecords crawlRecords, CrawlRunner runner) {
+		this.crawlRecords = crawlRecords;
+		this.runner = runner;
+	}
+
 	@GET
-	public Response getHistory(@QueryParam("config") String configId ) {
+	public Response getHistory(@QueryParam("config") String configId) {
 		List<CrawlRecord> list;
-		if (configId == null) list = crawlRecords.getCrawlList();
-		else list = crawlRecords.getCrawlListByConfigID(configId);
+		if (configId == null)
+			list = crawlRecords.getCrawlList();
+		else
+			list = crawlRecords.getCrawlListByConfigID(configId);
 		return Response.ok(list).build();
 	}
-	
+
 	@POST
-	public Response addCrawlRecord(String configId){
+	public Response addCrawlRecord(String configId) {
 		CrawlRecord record = crawlRecords.add(configId);
+		runner.queue(record);
 		return Response.ok(record).build();
 	}
-	
+
 	@GET
 	@Path("{id}")
 	public Response getCrawlRecord(@PathParam("id") int id) {
 		Response r;
 		CrawlRecord record = crawlRecords.findByID(id);
-		if (record != null) r = Response.ok(record).build();
-		else r = Response.serverError().build();
+		if (record != null)
+			r = Response.ok(record).build();
+		else
+			r = Response.serverError().build();
 		return r;
 	}
 }

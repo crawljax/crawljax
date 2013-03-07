@@ -58,4 +58,9 @@ public class CrawlRecords {
 		return r;
 	}
 
+	public CrawlRecord update(CrawlRecord record) {
+		// assuming we are not updating from client side and can use same reference
+		workDirManager.saveRecord(record);
+		return record;
+	}
 }

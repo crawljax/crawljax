@@ -104,7 +104,7 @@
 			required="true" pattern="(http|https)://.+" errorText="Must provide a valid url. http://www.example.com"}}
 		{{view App.FormSelect label="Browser: " valueBinding="controller.content.browser" contentBinding="App.browsers" optionValuePath="content.value"
        		optionLabelPath="content.name"}}
-		{{view App.FormTextField type="number" min="0" label="Number of Browsers: " valueBinding="controller.content.numBrowsers"}}
+		{{view App.FormTextField type="number" min="1" label="Number of Browsers: " valueBinding="controller.content.numBrowsers"}}
 		{{view App.FormCheckbox label="Boot Browsers at Start" checkedBinding="controller.content.bootBrowser"}}
 		{{view App.FormTextField type="number" min="0" label="Maximum Crawl Depth: " valueBinding="controller.content.maxDepth"}}
 		{{view App.FormTextField type="number" min="0" label="Maximum Crawl States: " valueBinding="controller.content.maxState"}}
