@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
@@ -29,15 +29,18 @@ public class InitialCrawler extends Crawler {
 
 	private StateMachine stateMachine;
 
+	private Plugins plugins;
+
 	/**
 	 * The default constructor.
 	 * 
 	 * @param mother
 	 *            the controller to use.
 	 */
-	public InitialCrawler(CrawljaxController mother) {
-		super(mother, new ArrayList<Eventable>(), "initial");
+	public InitialCrawler(CrawljaxController mother, Plugins plugins) {
+		super(mother, new ArrayList<Eventable>(), "initial", plugins);
 		controller = mother;
+		this.plugins = plugins;
 	}
 
 	@Override
@@ -77,7 +80,8 @@ public class InitialCrawler extends Crawler {
 		 * Build the StateMachine
 		 */
 		stateMachine =
-		        new StateMachine(stateFlowGraph, indexState, controller.getInvariantList());
+		        new StateMachine(stateFlowGraph, indexState, controller.getInvariantList(),
+		                plugins);
 
 		/**
 		 * Build the CrawlSession
@@ -90,7 +94,7 @@ public class InitialCrawler extends Crawler {
 		/**
 		 * Run OnNewState Plugins for the index state.
 		 */
-		CrawljaxPluginsUtil.runOnNewStatePlugins(session);
+		plugins.runOnNewStatePlugins(session);
 
 		/**
 		 * The initial work is done, continue with the normal procedure!

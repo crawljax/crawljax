@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.CrawlQueueManager;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
+import com.crawljax.core.plugin.Plugins;
 
 /**
  * The Pool class returns an instance of the desired browser as specified in the properties file.
@@ -61,6 +61,8 @@ public final class BrowserPool {
 	private final EmbeddedBrowserBuilder builder;
 
 	private final CrawljaxConfiguration configuration;
+
+	private final Plugins plugins;
 
 	/**
 	 * Is the browser booting in use?
@@ -112,6 +114,7 @@ public final class BrowserPool {
 		        new ArrayBlockingQueue<EmbeddedBrowser>(configurationReader.getBrowserConfig()
 		                .getNumberOfBrowsers(), true);
 		this.booter = new BrowserBooter(this);
+		this.plugins = configurationReader.getPlugins();
 	}
 
 	/**
@@ -132,10 +135,10 @@ public final class BrowserPool {
 			// preCrawlingRun.compareAndSet(false, true) equals to !preCrawlingRun ->
 			// preCrawlingRun = true
 
-			/**
+			/*
 			 * Start by running the PreCrawlingPlugins
 			 */
-			CrawljaxPluginsUtil.runPreCrawlingPlugins(newBrowser);
+			plugins.runPreCrawlingPlugins(newBrowser);
 
 			// Release the blocker for the total amount of browsers -1 (because this one does not
 			// have to block) anymore
@@ -150,10 +153,10 @@ public final class BrowserPool {
 				        + "continuing with the OnBrowserCreatedPlugins", e);
 			}
 		}
-		/**
+		/*
 		 * Start by running the OnBrowserCreatedPlugins
 		 */
-		CrawljaxPluginsUtil.runOnBrowserCreatedPlugins(newBrowser);
+		plugins.runOnBrowserCreatedPlugins(newBrowser);
 
 		assert (newBrowser != null);
 		return newBrowser;

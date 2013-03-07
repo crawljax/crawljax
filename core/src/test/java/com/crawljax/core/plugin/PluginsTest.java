@@ -1,7 +1,6 @@
 package com.crawljax.core.plugin;
 
 import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -11,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -211,7 +209,6 @@ public class PluginsTest {
 		try {
 
 			controller.run();
-			assertThat(config.getPlugins(), hasSize(pluginTimes.size()));
 
 			// Can not test the relation OnBrowserCreatedPlugin vs. PreCrawlingPlugin
 			// assertTrue(pluginTimes.get(OnBrowserCreatedPlugin.class)
@@ -232,11 +229,6 @@ public class PluginsTest {
 		assertThat(first.getSimpleName() + " should come before " + last.getSimpleName(),
 		        pluginTimes.get(first), lessThan(pluginTimes
 		                .get(last)));
-	}
-
-	@AfterClass
-	public static void cleanUp() {
-		CrawljaxPluginsUtil.loadPlugins(null);
 	}
 
 }

@@ -17,7 +17,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.exception.CrawlPathToException;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
@@ -85,7 +85,7 @@ public class Crawler implements Runnable {
 	 */
 	private final StateMachine stateMachine;
 
-	private final CrawljaxConfiguration configurationReader;
+	private final CrawljaxConfiguration config;
 
 	private FormHandler formHandler;
 
@@ -93,6 +93,8 @@ public class Crawler implements Runnable {
 	 * The object to places calls to add new Crawlers or to remove one.
 	 */
 	private final CrawlQueueManager crawlQueueManager;
+
+	private final Plugins plugins;
 
 	/**
 	 * Enum for describing what has happened after a {@link Crawler#clickTag(Eventable)} has been
@@ -112,24 +114,26 @@ public class Crawler implements Runnable {
 	 * @param name
 	 *            a name for this crawler (default is empty).
 	 */
-	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, String name) {
-		this(mother, new CrawlPath(exactEventPath));
+	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, String name,
+	        Plugins plugins) {
+		this(mother, new CrawlPath(exactEventPath), plugins);
 		this.name = name;
 	}
 
-	/**
-	 * Private Crawler constructor for a 'reload' crawler. Only used internally.
-	 * 
-	 * @param mother
-	 *            the main CrawljaxController
-	 * @param returnPath
-	 *            the path used to return to the last state, this can be a empty list
-	 * @deprecated better to use {@link #Crawler(CrawljaxController, CrawlPath)}
-	 */
-	@Deprecated
-	protected Crawler(CrawljaxController mother, List<Eventable> returnPath) {
-		this(mother, new CrawlPath(returnPath));
-	}
+	//
+	// /**
+	// * Private Crawler constructor for a 'reload' crawler. Only used internally.
+	// *
+	// * @param mother
+	// * the main CrawljaxController
+	// * @param returnPath
+	// * the path used to return to the last state, this can be a empty list
+	// * @deprecated better to use {@link #Crawler(CrawljaxController, CrawlPath)}
+	// */
+	// @Deprecated
+	// protected Crawler(CrawljaxController mother, List<Eventable> returnPath) {
+	// this(mother, new CrawlPath(returnPath));
+	// }
 
 	/**
 	 * Private Crawler constructor for a 'reload' crawler. Only used internally.
@@ -139,15 +143,17 @@ public class Crawler implements Runnable {
 	 * @param returnPath
 	 *            the path used to return to the last state, this can be a empty list
 	 */
-	protected Crawler(CrawljaxController mother, CrawlPath returnPath) {
+	protected Crawler(CrawljaxController mother, CrawlPath returnPath, Plugins plugins) {
 		this.backTrackPath = returnPath;
 		this.controller = mother;
-		this.configurationReader = controller.getConfiguration();
+		this.plugins = plugins;
+		this.config = controller.getConfiguration();
 		this.crawlQueueManager = mother.getCrawlQueueManager();
 		if (controller.getSession() != null) {
 			this.stateMachine =
 			        new StateMachine(controller.getSession().getStateFlowGraph(), controller
-			                .getSession().getInitialState(), controller.getInvariantList());
+			                .getSession().getInitialState(), controller.getInvariantList(),
+			                plugins);
 		} else {
 			/**
 			 * Reset the state machine to null, because there is no session where to load the
@@ -161,10 +167,10 @@ public class Crawler implements Runnable {
 	 * Brings the browser to the initial state.
 	 */
 	public void goToInitialURL() {
-		LOGGER.info("Loading Page {}", configurationReader.getUrl());
-		getBrowser().goToUrl(configurationReader.getUrl());
+		LOGGER.info("Loading Page {}", config.getUrl());
+		getBrowser().goToUrl(config.getUrl());
 		controller.doBrowserWait(getBrowser());
-		CrawljaxPluginsUtil.runOnUrlLoadPlugins(getBrowser());
+		plugins.runOnUrlLoadPlugins(getBrowser());
 	}
 
 	/**
@@ -184,7 +190,7 @@ public class Crawler implements Runnable {
 		try {
 			fired = getBrowser().fireEvent(eventToFire);
 		} catch (ElementNotVisibleException | NoSuchElementException e) {
-			if (configurationReader.getCrawlRules().isCrawlHiddenAnchors()
+			if (config.getCrawlRules().isCrawlHiddenAnchors()
 			        && eventToFire.getElement() != null
 			        && "A".equals(eventToFire.getElement().getTag())) {
 				fired = visitAnchorHrefIfPossible(eventToFire);
@@ -211,7 +217,7 @@ public class Crawler implements Runnable {
 			 * Execute the OnFireEventFailedPlugins with the current crawlPath with the crawlPath
 			 * removed 1 state to represent the path TO here.
 			 */
-			CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable, controller.getSession()
+			plugins.runOnFireEventFailedPlugins(eventable, controller.getSession()
 			        .getCurrentCrawlPath().immutableCopy(true));
 			return false; // no event fired
 		}
@@ -309,7 +315,7 @@ public class Crawler implements Runnable {
 				/*
 				 * Run the onRevisitStateValidator(s)
 				 */
-				CrawljaxPluginsUtil.runOnRevisitStatePlugins(this.controller.getSession(),
+				plugins.runOnRevisitStatePlugins(this.controller.getSession(),
 				        curState);
 			}
 
@@ -364,7 +370,7 @@ public class Crawler implements Runnable {
 				        this.getBrowser(), this.controller.getSession())) {
 
 					// Change is no clone
-					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller, controller
+					plugins.runGuidedCrawlingPlugins(controller, controller
 					        .getSession(), controller.getSession().getCurrentCrawlPath(), this
 					        .getStateMachine());
 
@@ -380,7 +386,7 @@ public class Crawler implements Runnable {
 	}
 
 	private boolean domChanged(final Eventable eventable, StateVertex newState) {
-		return CrawljaxPluginsUtil.runDomChangeNotifierPlugins(this.getStateMachine()
+		return plugins.runDomChangeNotifierPlugins(this.getStateMachine()
 		        .getCurrentState(), eventable, newState, getBrowser());
 	}
 
@@ -404,7 +410,7 @@ public class Crawler implements Runnable {
 	 */
 	private boolean depthLimitReached(int depth) {
 
-		int maxDepth = configurationReader.getMaximumDepth();
+		int maxDepth = config.getMaximumDepth();
 		if (this.depth >= maxDepth && maxDepth != 0) {
 			LOGGER.info("DEPTH {} reached returning from rec call. Given depth: {}", maxDepth,
 			        depth);
@@ -422,7 +428,7 @@ public class Crawler implements Runnable {
 			}
 			c =
 			        new Crawler(this.controller, controller.getSession().getCurrentCrawlPath()
-			                .immutableCopy(true));
+			                .immutableCopy(true), config.getPlugins());
 		} while (state.registerCrawler(c));
 	}
 
@@ -486,7 +492,7 @@ public class Crawler implements Runnable {
 			LOGGER.info("Starting preStateCrawlingPlugins...");
 			List<CandidateElement> candidateElements =
 			        orrigionalState.getUnprocessedCandidateElements();
-			CrawljaxPluginsUtil.runPreStateCrawlingPlugins(controller.getSession(),
+			plugins.runPreStateCrawlingPlugins(controller.getSession(),
 			        candidateElements);
 			// update crawlActions
 			orrigionalState.filterCandidateActions(candidateElements);
@@ -565,13 +571,13 @@ public class Crawler implements Runnable {
 		}
 		// TODO Stefan ideally this should be placed in the constructor
 		this.formHandler =
-		        new FormHandler(getBrowser(), configurationReader.getCrawlRules()
-		                .getInputSpecification(), configurationReader.getCrawlRules()
+		        new FormHandler(getBrowser(), config.getCrawlRules()
+		                .getInputSpecification(), config.getCrawlRules()
 		                .isRandomInputInForms());
 
 		this.candidateExtractor =
 		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
-		                formHandler, configurationReader);
+		                formHandler, config);
 		/**
 		 * go back into the previous state.
 		 */
@@ -686,14 +692,14 @@ public class Crawler implements Runnable {
 
 	private boolean shouldContinueCrawling() {
 		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
-		long maxCrawlTime = configurationReader.getMaximumRuntime();
+		long maxCrawlTime = config.getMaximumRuntime();
 		if (maxCrawlTime != 0 && timePassed > maxCrawlTime) {
 			LOGGER.info("Max time {} seconds passed!",
 			        TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime));
 			return false;
 		}
 		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
-		int maxNumberOfStates = configurationReader.getMaximumStates();
+		int maxNumberOfStates = config.getMaximumStates();
 		if ((maxNumberOfStates != 0) && (graph.getAllStates().size() >= maxNumberOfStates)) {
 			LOGGER.info("Max number of states {} reached!", maxNumberOfStates);
 			return false;
