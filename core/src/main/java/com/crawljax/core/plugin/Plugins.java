@@ -39,14 +39,14 @@ public final class Plugins {
 
 	public Plugins(List<Plugin> plugins) {
 		Preconditions.checkNotNull(plugins);
+		this.plugins = ImmutableList.copyOf(plugins);
 		if (plugins.isEmpty()) {
 			LOGGER.warn("No plugins loaded. There will be no output");
 		} else {
 			for (Plugin plugin : plugins) {
-				LOGGER.info("Loaded plugin {}", plugin.getClass().getSimpleName());
+				LOGGER.info("Loaded plugin {}", plugin);
 			}
 		}
-		this.plugins = ImmutableList.copyOf(plugins);
 	}
 
 	/**

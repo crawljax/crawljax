@@ -62,19 +62,20 @@ public class StateMachine {
 			LOGGER.info("nextState given is null");
 			return false;
 		}
-		LOGGER.debug("Trying to change to state: {} from: {}", nextState.getName(),
+		LOGGER.debug("Trying to change to state: '{}' from: '{}'", nextState.getName(),
 		        currentState.getName());
 
 		synchronized (stateLock) {
 			if (stateFlowGraph.canGoTo(currentState, nextState)) {
-				currentState = nextState;
 
-				LOGGER.debug("Changed To state: {} From: {}", nextState.getName(),
+				LOGGER.debug("Changed to state: '{}' from: '{}'", nextState.getName(),
 				        currentState.getName());
+
+				currentState = nextState;
 
 				return true;
 			} else {
-				LOGGER.info("Cannot go to state: {} from: {}", nextState.getName(),
+				LOGGER.info("Cannot go to state: '{}' from: '{}'", nextState.getName(),
 				        currentState.getName());
 				return false;
 			}

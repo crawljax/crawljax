@@ -199,6 +199,8 @@ public class Crawler implements Runnable {
 			}
 		}
 
+		LOGGER.debug("Event fired={} for eventable {}", fired, eventable);
+
 		if (fired) {
 
 			/*
