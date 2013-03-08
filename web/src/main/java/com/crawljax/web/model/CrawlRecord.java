@@ -10,6 +10,7 @@ public class CrawlRecord {
 	private Date createTime;
 	private Date startTime;
 	private Duration duration;
+	private String outputFolder;
 
 	/**
 	 * @return the id
@@ -84,6 +85,21 @@ public class CrawlRecord {
 	 */
 	public void setDuration(Duration duration) {
 		this.duration = duration;
+	}
+
+	/**
+	 * @return the outputFolder
+	 */
+	public String getOutputFolder() {
+		return outputFolder;
+	}
+
+	/**
+	 * @param outputFolder
+	 *            the outputFolder to set
+	 */
+	public void setOutputFolder(String outputFolder) {
+		this.outputFolder = outputFolder;
 	}
 
 }

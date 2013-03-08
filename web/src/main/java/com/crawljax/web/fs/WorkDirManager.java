@@ -113,6 +113,7 @@ public class WorkDirManager {
 			if (!recordFile.exists()) {
 				recordFile.getParentFile().mkdirs();
 				recordFile.createNewFile();
+				record.setOutputFolder(recordFile.getParent());
 			}
 			mapper.writeValue(recordFile, record);
 		} catch (IOException e) {

@@ -1,6 +1,8 @@
 package com.crawljax.web.runner;
 
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.core.CrawljaxController;
@@ -16,53 +18,73 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class CrawlRunner {
+	private static final int WORKERS = 2;
 	private final Configurations configurations;
 	private final CrawlRecords crawlRecords;
+	private final ExecutorService pool;
 
 	@Inject
 	public CrawlRunner(Configurations configurations, CrawlRecords crawlRecords) {
 		this.configurations = configurations;
 		this.crawlRecords = crawlRecords;
+		this.pool = Executors.newFixedThreadPool(WORKERS);
 	}
 
-	public void queue(CrawlRecord record) {
-		run(record);
+	public void queue(int id) {
+		pool.submit(new CrawlExecution(id));
 	}
 
-	private void run(CrawlRecord record) {
-		Configuration config = configurations.findByID(record.getConfigurationId());
+	private class CrawlExecution implements Runnable {
+		private final int crawlId;
 
-		// Set Timestamps
-		Date timestamp = new Date();
-		record.setStartTime(timestamp);
-		config.setLastRun(timestamp);
-		crawlRecords.update(record);
-		configurations.update(config);
+		public CrawlExecution(int id) {
+			this.crawlId = id;
+		}
 
-		// Build Configuration
-		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(config.getUrl());
-		builder.setBrowserConfig(new BrowserConfiguration(config.getBrowser(), config
-		        .getNumBrowsers()));
+		@Override
+		public void run() {
+			try {
+				CrawlRecord record = crawlRecords.findByID(crawlId);
+				Configuration config = configurations.findByID(record.getConfigurationId());
 
-		if (config.getMaxDepth() > 0)
-			builder.setMaximumDepth(config.getMaxDepth());
-		else
-			builder.setUnlimitedCrawlDepth();
+				// Set Timestamps
+				Date timestamp = new Date();
+				record.setStartTime(timestamp);
+				config.setLastRun(timestamp);
+				crawlRecords.update(record);
+				configurations.update(config);
 
-		if (config.getMaxState() > 0)
-			builder.setMaximumStates(config.getMaxState());
-		else
-			builder.setUnlimitedStates();
+				// Build Configuration
+				CrawljaxConfigurationBuilder builder =
+				        CrawljaxConfiguration.builderFor(config.getUrl());
+				builder.setBrowserConfig(new BrowserConfiguration(config.getBrowser(), config
+				        .getNumBrowsers()));
 
-		builder.crawlRules().clickDefaultElements();
-		builder.crawlRules().clickOnce(config.isClickOnce());
-		builder.crawlRules().insertRandomDataInInputForms(config.isRandomFormInput());
-		builder.crawlRules().waitAfterEvent(config.getEventWaitTime(), TimeUnit.MILLISECONDS);
-		builder.crawlRules()
-		        .waitAfterReloadUrl(config.getReloadWaitTime(), TimeUnit.MILLISECONDS);
+				if (config.getMaxDepth() > 0)
+					builder.setMaximumDepth(config.getMaxDepth());
+				else
+					builder.setUnlimitedCrawlDepth();
 
-		// run Crawljax
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-		crawljax.run();
+				if (config.getMaxState() > 0)
+					builder.setMaximumStates(config.getMaxState());
+				else
+					builder.setUnlimitedStates();
+
+				builder.crawlRules().clickDefaultElements();
+				builder.crawlRules().clickOnce(config.isClickOnce());
+				builder.crawlRules().insertRandomDataInInputForms(config.isRandomFormInput());
+				builder.crawlRules().waitAfterEvent(config.getEventWaitTime(),
+				        TimeUnit.MILLISECONDS);
+				builder.crawlRules().waitAfterReloadUrl(config.getReloadWaitTime(),
+				        TimeUnit.MILLISECONDS);
+
+				// run Crawljax
+				CrawljaxController crawljax = new CrawljaxController(builder.build());
+				crawljax.run();
+			} catch (Exception e) {
+				e.printStackTrace();
+				pool.shutdown();
+			}
+		}
 	}
 }
