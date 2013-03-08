@@ -11,12 +11,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.web.model.Configuration;
 import com.crawljax.web.model.CrawlRecord;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 @Singleton
 public class WorkDirManager {
@@ -87,7 +90,7 @@ public class WorkDirManager {
 		if (recordFiles != null) {
 			for (File f : recordFiles) {
 				if (f.isDirectory()) {
-					CrawlRecord c = loadRecord(new File(f, "record.json"));
+					CrawlRecord c = loadRecord(new File(f, "crawl.json"));
 					records.add(0, c);
 				}
 			}
@@ -108,7 +111,7 @@ public class WorkDirManager {
 	public void saveRecord(CrawlRecord record) {
 		File recordFile =
 		        new File(outputFolder, Integer.toString(record.getId()) + File.separatorChar
-		                + "record.json");
+		                + "crawl.json");
 		try {
 			if (!recordFile.exists()) {
 				recordFile.getParentFile().mkdirs();
@@ -119,5 +122,18 @@ public class WorkDirManager {
 		} catch (IOException e) {
 			LOG.error("Could not save crawl record {}", record);
 		}
+	}
+
+	public String readLog(int crawlId) {
+		File logFile =
+		        new File(outputFolder, Integer.toString(crawlId) + File.separatorChar
+		                + "crawl.log");
+		String content = "";
+		try {
+			content = StringUtils.join(Files.readLines(logFile, Charsets.UTF_8), "<br />");
+		} catch (IOException e) {
+			LOG.error("Could not read log", logFile.getName());
+		}
+		return content;
 	}
 }

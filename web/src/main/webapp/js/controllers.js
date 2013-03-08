@@ -7,7 +7,15 @@
     	formatLastCrawl : function() {
     		lastCrawl = this.get('lastCrawl');
     		if (lastCrawl == null ) return 'never';
-    		else return new Date(lastCrawl); }.property('lastCrawl')
+    		else return new Date(lastCrawl); }.property('lastCrawl'),
+    	formatLastDuration : function() {
+    		lastDuration = this.get('lastDuration')/1000;
+    		if (lastDuration == 0 ) {
+    			if (this.get('lastCrawl') == null) return 'n/a';
+    			else return 'running';
+    		}
+    		else return lastDuration/60 + ' mins ' + lastDuration%60 + ' secs';
+    	}.property('lastCrawl', 'lastDuration')
     });
     
     App.ConfigController = Ember.Controller.extend({
@@ -41,7 +49,6 @@
     			router.transitionTo(route);
     		}
     	},
-    	showRules: function(){ return this.get('content.clickRule') == 'Custom'}.property('content.clickRule'),
     	sideNavDisabled: function() { 
     		return this.get('content.isLoading') || this.get('content.isSaving'); 
     	}.property('content.isLoading', 'content.isSaving')

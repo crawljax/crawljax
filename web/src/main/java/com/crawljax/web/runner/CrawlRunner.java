@@ -50,7 +50,7 @@ public class CrawlRunner {
 				// Set Timestamps
 				Date timestamp = new Date();
 				record.setStartTime(timestamp);
-				config.setLastRun(timestamp);
+				config.setLastCrawl(timestamp);
 				crawlRecords.update(record);
 				configurations.update(config);
 
@@ -58,7 +58,7 @@ public class CrawlRunner {
 				CrawljaxConfigurationBuilder builder =
 				        CrawljaxConfiguration.builderFor(config.getUrl());
 				builder.setBrowserConfig(new BrowserConfiguration(config.getBrowser(), config
-				        .getNumBrowsers()));
+				        .getNumBrowsers(), config.isBootBrowser()));
 
 				if (config.getMaxDepth() > 0)
 					builder.setMaximumDepth(config.getMaxDepth());
@@ -69,6 +69,11 @@ public class CrawlRunner {
 					builder.setMaximumStates(config.getMaxState());
 				else
 					builder.setUnlimitedStates();
+
+				if (config.getMaxDuration() > 0)
+					builder.setMaximumRunTime(config.getMaxDuration(), TimeUnit.MINUTES);
+				else
+					builder.setUnlimitedRuntime();
 
 				builder.crawlRules().clickDefaultElements();
 				builder.crawlRules().clickOnce(config.isClickOnce());
@@ -81,6 +86,13 @@ public class CrawlRunner {
 				// run Crawljax
 				CrawljaxController crawljax = new CrawljaxController(builder.build());
 				crawljax.run();
+
+				// set duration
+				long duration = (new Date()).getTime() - timestamp.getTime();
+				record.setDuration(duration);
+				config.setLastDuration(duration);
+				crawlRecords.update(record);
+				configurations.update(config);
 			} catch (Exception e) {
 				e.printStackTrace();
 				pool.shutdown();

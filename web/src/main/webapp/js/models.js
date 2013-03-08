@@ -6,12 +6,6 @@ App.browsers = [
          Ember.Object.create({name: "Google Chrome", value:"chrome"}),
          Ember.Object.create({name: "Microsoft Internet Explorer", value:"ie"})
 	];
-
-App.clickRules = [
-         Ember.Object.create({name: "Click Default Elements", value:"Default"}),
-         Ember.Object.create({name: "Click More Elements", value:"More"}),
-         Ember.Object.create({name: "Custom Rules", value:"Custom"})
-    ];
     
 App.clickType = [Ember.Object.create({name: "Click", value:"click"}),
                      Ember.Object.create({name: "Don't Click", value:"noClick"})];

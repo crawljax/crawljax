@@ -11,11 +11,13 @@ import com.google.inject.Singleton;
 public class CrawlRecords {
 	private final List<CrawlRecord> crawlList;
 	private final WorkDirManager workDirManager;
+	private final Configurations configurations;
 	private int identity = 0;
 
 	@Inject
-	public CrawlRecords(WorkDirManager workDirManager) {
+	public CrawlRecords(WorkDirManager workDirManager, Configurations configurations) {
 		this.workDirManager = workDirManager;
+		this.configurations = configurations;
 		crawlList = this.workDirManager.loadHistory();
 		if (crawlList.size() > 0)
 			identity = crawlList.get(0).getId();
@@ -52,6 +54,7 @@ public class CrawlRecords {
 		CrawlRecord r = new CrawlRecord();
 		r.setId(++identity);
 		r.setConfigurationId(configId);
+		r.setConfigurationName(configurations.findByID(configId).getName());
 		crawlList.add(0, r);
 		workDirManager.saveRecord(r);
 

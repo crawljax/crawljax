@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.crawljax.web.fs.WorkDirManager;
 import com.crawljax.web.model.CrawlRecord;
 import com.crawljax.web.model.CrawlRecords;
 import com.crawljax.web.runner.CrawlRunner;
@@ -25,11 +26,14 @@ import com.google.inject.Singleton;
 public class CrawlHistoryResource {
 
 	private final CrawlRecords crawlRecords;
+	private final WorkDirManager workDirManager;
 	private final CrawlRunner runner;
 
 	@Inject
-	CrawlHistoryResource(CrawlRecords crawlRecords, CrawlRunner runner) {
+	CrawlHistoryResource(CrawlRecords crawlRecords, WorkDirManager workDirManager,
+	        CrawlRunner runner) {
 		this.crawlRecords = crawlRecords;
+		this.workDirManager = workDirManager;
 		this.runner = runner;
 	}
 
@@ -58,6 +62,19 @@ public class CrawlHistoryResource {
 		if (record != null)
 			r = Response.ok(record).build();
 		else
+			r = Response.serverError().build();
+		return r;
+	}
+
+	@GET
+	@Path("{id}/log")
+	public Response getCrawlRecordLog(@PathParam("id") int id) {
+		Response r;
+		CrawlRecord record = crawlRecords.findByID(id);
+		if (record != null) {
+			String content = workDirManager.readLog(id);
+			r = Response.ok(content).build();
+		} else
 			r = Response.serverError().build();
 		return r;
 	}

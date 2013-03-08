@@ -68,7 +68,7 @@
  					<td>{{#linkTo 'config' this.content}}{{name}}{{/linkTo}}</td>
  					<td><a {{bindAttr href="url"}} target="_blank">{{url}}</a></td>
  					<td>{{formatLastCrawl}}</td>
- 					<td>{{lastDuration}}</td>
+ 					<td>{{formatLastDuration}}</td>
  				</tr>
 				{{else}}<tr><td colspan="5">No available configurations.</td></tr>{{/each}}
 				{{else}}<tr><td colspan="5">Loading configurations.</td></tr>{{/unless}}
@@ -84,7 +84,7 @@
 	<script type="text/x-handlebars" data-template-name="_config_tabs">
 	<ul class="nav nav-tabs">
 		{{#view App.NavView route='config.index' }}<a href='#' {{action moveTo view.route }}>Overview</a>{{/view}}
-		{{#view App.NavView route='config.advanced' }}<a href='#' {{action moveTo view.route }}>Crawl Conditions</a>{{/view}}
+		{{#view App.NavView route='config.conditions' }}<a href='#' {{action moveTo view.route }}>Crawl Conditions</a>{{/view}}
 		{{#view App.NavView route='config.assertions' }}<a href='#' {{action moveTo view.route }}>Assertions</a>{{/view}}
 	</ul>
 	</script>
@@ -116,16 +116,17 @@
 	</form>
 	</script>
 	
-	<script type="text/x-handlebars" data-template-name="config/advanced">
+	<script type="text/x-handlebars" data-template-name="config/conditions">
 	{{partial config_tabs}}
 	<form id="config_form" class="form-horizontal">	
 		<fieldset>
 			<legend>Click Rules</legend>
-			{{view App.FormSelect valueBinding="controller.content.clickRule" contentBinding="App.clickRules" optionValuePath="content.value"
-       		optionLabelPath="content.name" isForm=''}}
-			{{#if showRules}}<br />
+			<label class="checkbox">
+				{{view Ember.Checkbox checkedBinding="controller.content.clickDefault" }}
+				 Click Default Elements</label>
+			{{#unless controller.content.clickDefault}}<br />
 				{{render 'click_rules' controller.content.clickRules }}
-			{{/if}}
+			{{/unless}}
 		</fieldset><br />
 		<fieldset>
 			<legend>Page Conditions</legend>
@@ -162,7 +163,7 @@
        							optionLabelPath="content.name" isForm=''}}</td>
  							<td>{{view App.FormTextField valueBinding='con.expression' isForm='' required='true' 
 								inputClassNames='input-xlarge' errorText='This field is Required'}}</td>
- 							<td><a href="#" {{action 'removeCondition' con}}><i class="icon-remove"></i></a></td>
+							<td><a href="#" {{action 'removeCondition' con}}><i class="icon-remove"></i></a></td>
  						</tr>
 						{{/each}}
 					</table>
@@ -263,7 +264,7 @@
 				{{#each controller}}
  				<tr>
  					<td>{{#linkTo 'history' this.id}}{{id}}{{/linkTo}}</td>
- 					<td><a {{bindAttr href="configURL"}}>{{configurationId}}</a></td>
+ 					<td><a {{bindAttr href="configURL"}}>{{configurationName}}</a></td>
  					<td>{{formatStartTime}}</td>
  				</tr>
 				{{else}}<tr><td colspan="3">No available crawls.</td></tr>{{/each}}

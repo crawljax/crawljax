@@ -2,14 +2,13 @@ package com.crawljax.web.model;
 
 import java.util.Date;
 
-import javax.xml.datatype.Duration;
-
 public class CrawlRecord {
 	private int id;
 	private String configurationId;
+	private String configurationName;
 	private Date createTime;
 	private Date startTime;
-	private Duration duration;
+	private long duration;
 	private String outputFolder;
 
 	/**
@@ -75,7 +74,7 @@ public class CrawlRecord {
 	/**
 	 * @return the duration
 	 */
-	public Duration getDuration() {
+	public long getDuration() {
 		return duration;
 	}
 
@@ -83,7 +82,7 @@ public class CrawlRecord {
 	 * @param duration
 	 *            the duration to set
 	 */
-	public void setDuration(Duration duration) {
+	public void setDuration(long duration) {
 		this.duration = duration;
 	}
 
@@ -100,6 +99,21 @@ public class CrawlRecord {
 	 */
 	public void setOutputFolder(String outputFolder) {
 		this.outputFolder = outputFolder;
+	}
+
+	/**
+	 * @return the configurationName
+	 */
+	public String getConfigurationName() {
+		return configurationName;
+	}
+
+	/**
+	 * @param configurationName
+	 *            the configurationName to set
+	 */
+	public void setConfigurationName(String configurationName) {
+		this.configurationName = configurationName;
 	}
 
 }

@@ -3,7 +3,7 @@
     App.Router.map(function() {
    		this.resource("config_list", { path: "/" });
    		this.resource("config", {path: "/:id"}, function(){
-   			this.route("advanced");
+   			this.route("conditions");
    			this.route("assertions");
    			this.route("plugins");
    			this.resource("config_history", {path: "history"});
@@ -55,7 +55,7 @@
     	renderTemplate: function(){ this.render({controller: 'config'}); }
     });
     
-    App.ConfigAdvancedRoute = Ember.Route.extend({
+    App.ConfigConditionsRoute = Ember.Route.extend({
     	renderTemplate: function(){ this.render({controller: 'config'}); }
     });
     
