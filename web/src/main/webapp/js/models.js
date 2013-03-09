@@ -26,8 +26,12 @@ App.clickConditions = [
         Ember.Object.create({name: "When not Regex:", value:"notRegex"}),
         Ember.Object.create({name: "When XPath:", value:"xPath"}),
         Ember.Object.create({name: "When not XPath:", value:"notXPath"}),
-        Ember.Object.create({name: "When element with id is visible:", value:"visible"}),
-        Ember.Object.create({name: "When element with id is not visible:", value:"notVisible"}),
+        Ember.Object.create({name: "When element with id is visible:", value:"visibleId"}),
+        Ember.Object.create({name: "When element with id is not visible:", value:"notVisibleId"}),
+        Ember.Object.create({name: "When element with text is visible:", value:"visibleText"}),
+        Ember.Object.create({name: "When element with text is not visible:", value:"notVisibleText"}),
+        Ember.Object.create({name: "When element with tag is visible:", value:"visibleTag"}),
+        Ember.Object.create({name: "When element with tag is not visible:", value:"notVisibleTag"}),
         Ember.Object.create({name: "When Javascript is true:", value:"javascript"})
     ];
     
@@ -38,8 +42,12 @@ App.pageConditions = [
          Ember.Object.create({name: "When not Regex:", value:"notRegex"}),
          Ember.Object.create({name: "When XPath:", value:"xPath"}),
          Ember.Object.create({name: "When not XPath:", value:"notXPath"}),
-         Ember.Object.create({name: "When element with id is visible:", value:"visible"}),
-         Ember.Object.create({name: "When element with id is not visible:", value:"notVisible"}),
+         Ember.Object.create({name: "When element with id is visible:", value:"visibleId"}),
+         Ember.Object.create({name: "When element with id is not visible:", value:"notVisibleId"}),
+         Ember.Object.create({name: "When element with text is visible:", value:"visibleText"}),
+         Ember.Object.create({name: "When element with text is not visible:", value:"notVisibleText"}),
+         Ember.Object.create({name: "When element with tag is visible:", value:"visibleTag"}),
+         Ember.Object.create({name: "When element with tag is not visible:", value:"notVisibleTag"}),
          Ember.Object.create({name: "When Javascript is true:", value:"javascript"})
     ];
     

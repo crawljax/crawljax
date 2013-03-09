@@ -84,7 +84,7 @@
 	<script type="text/x-handlebars" data-template-name="_config_tabs">
 	<ul class="nav nav-tabs">
 		{{#view App.NavView route='config.index' }}<a href='#' {{action moveTo view.route }}>Overview</a>{{/view}}
-		{{#view App.NavView route='config.conditions' }}<a href='#' {{action moveTo view.route }}>Crawl Conditions</a>{{/view}}
+		{{#view App.NavView route='config.rules' }}<a href='#' {{action moveTo view.route }}>Crawl Rules</a>{{/view}}
 		{{#view App.NavView route='config.assertions' }}<a href='#' {{action moveTo view.route }}>Assertions</a>{{/view}}
 	</ul>
 	</script>
@@ -116,7 +116,7 @@
 	</form>
 	</script>
 	
-	<script type="text/x-handlebars" data-template-name="config/conditions">
+	<script type="text/x-handlebars" data-template-name="config/rules">
 	{{partial config_tabs}}
 	<form id="config_form" class="form-horizontal">	
 		<fieldset>

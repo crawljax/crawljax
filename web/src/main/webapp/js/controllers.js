@@ -14,7 +14,7 @@
     			if (this.get('lastCrawl') == null) return 'n/a';
     			else return 'running';
     		}
-    		else return lastDuration/60 + ' mins ' + lastDuration%60 + ' secs';
+    		else return Math.floor(lastDuration/60) + ' mins ' + Math.floor(lastDuration%60) + ' secs';
     	}.property('lastCrawl', 'lastDuration')
     });
     
