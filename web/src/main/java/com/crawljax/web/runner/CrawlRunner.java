@@ -1,6 +1,8 @@
 package com.crawljax.web.runner;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +11,7 @@ import com.crawljax.condition.Condition;
 import com.crawljax.condition.JavaScriptCondition;
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.NotUrlCondition;
+import com.crawljax.condition.NotVisibleCondition;
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.condition.RegexCondition;
 import com.crawljax.condition.UrlCondition;
@@ -16,11 +19,22 @@ import com.crawljax.condition.VisibleCondition;
 import com.crawljax.condition.XPathCondition;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
+import com.crawljax.oraclecomparator.OracleComparator;
+import com.crawljax.oraclecomparator.comparators.AttributeComparator;
+import com.crawljax.oraclecomparator.comparators.DateComparator;
+import com.crawljax.oraclecomparator.comparators.EditDistanceComparator;
+import com.crawljax.oraclecomparator.comparators.PlainStructureComparator;
+import com.crawljax.oraclecomparator.comparators.RegexComparator;
+import com.crawljax.oraclecomparator.comparators.ScriptComparator;
+import com.crawljax.oraclecomparator.comparators.SimpleComparator;
+import com.crawljax.oraclecomparator.comparators.StyleComparator;
+import com.crawljax.oraclecomparator.comparators.XPathExpressionComparator;
 import com.crawljax.web.model.Configuration;
 import com.crawljax.web.model.Configurations;
 import com.crawljax.web.model.CrawlRecord;
@@ -115,6 +129,19 @@ public class CrawlRunner {
 					}
 				}
 
+				// Invariants
+				if (config.getInvariants().size() > 0) {
+					for (com.crawljax.web.model.Condition c : config.getInvariants()) {
+						builder.crawlRules().addInvariant(
+						        c.getCondition().toString() + c.getExpression(),
+						        getConditionFromConfig(c));
+					}
+				}
+
+				// Comparators
+				if (config.getComparators().size() > 0)
+					setComparatorsFromConfig(config.getComparators(), builder.crawlRules());
+
 				// run Crawljax
 				CrawljaxController crawljax = new CrawljaxController(builder.build());
 				crawljax.run();
@@ -156,7 +183,7 @@ public class CrawlRunner {
 					break;
 				case notVisibleId:
 					id = new Identification(How.id, c.getExpression());
-					condition = new VisibleCondition(id);
+					condition = new NotVisibleCondition(id);
 					break;
 				case visibleText:
 					id = new Identification(How.text, c.getExpression());
@@ -164,7 +191,7 @@ public class CrawlRunner {
 					break;
 				case notVisibleText:
 					id = new Identification(How.text, c.getExpression());
-					condition = new VisibleCondition(id);
+					condition = new NotVisibleCondition(id);
 					break;
 				case visibleTag:
 					id = new Identification(How.tag, c.getExpression());
@@ -172,7 +199,7 @@ public class CrawlRunner {
 					break;
 				case notVisibleTag:
 					id = new Identification(How.tag, c.getExpression());
-					condition = new VisibleCondition(id);
+					condition = new NotVisibleCondition(id);
 					break;
 				case xPath:
 					condition = new XPathCondition(c.getExpression());
@@ -184,6 +211,63 @@ public class CrawlRunner {
 					break;
 			}
 			return condition;
+		}
+
+		private void setComparatorsFromConfig(List<com.crawljax.web.model.Comparator> list,
+		        CrawlRulesBuilder rules) {
+			List<String> attributes = new ArrayList<String>();
+			List<String> regexs = new ArrayList<String>();
+			List<String> xpaths = new ArrayList<String>();
+
+			for (com.crawljax.web.model.Comparator c : list) {
+				switch (c.getType()) {
+					case attribute:
+						attributes.add(c.getExpression());
+						break;
+					case date:
+						rules.addOracleComparator(new OracleComparator(c.getType().toString()
+						        + c.getExpression(), new DateComparator()));
+						break;
+					case regex:
+						regexs.add(c.getExpression());
+						break;
+					case script:
+						rules.addOracleComparator(new OracleComparator(c.getType().toString()
+						        + c.getExpression(), new ScriptComparator()));
+						break;
+					case distance:
+						rules.addOracleComparator(new OracleComparator(c.getType().toString()
+						        + c.getExpression(), new EditDistanceComparator(Double
+						        .parseDouble(c.getExpression()))));
+						break;
+					case simple:
+						rules.addOracleComparator(new OracleComparator(c.getType().toString()
+						        + c.getExpression(), new SimpleComparator()));
+						break;
+					case plain:
+						rules.addOracleComparator(new OracleComparator(c.getType().toString()
+						        + c.getExpression(), new PlainStructureComparator()));
+						break;
+					case style:
+						rules.addOracleComparator(new OracleComparator(c.getType().toString()
+						        + c.getExpression(), new StyleComparator()));
+						break;
+					case xpath:
+						xpaths.add(c.getExpression());
+						break;
+				}
+			}
+			// create collection comparators
+			if (attributes.size() > 0)
+				rules.addOracleComparator(new OracleComparator(
+				        "attribute",
+				        new AttributeComparator(attributes.toArray(new String[attributes.size()]))));
+			if (regexs.size() > 0)
+				rules.addOracleComparator(new OracleComparator("regex", new RegexComparator(
+				        regexs.toArray(new String[regexs.size()]))));
+			if (xpaths.size() > 0)
+				rules.addOracleComparator(new OracleComparator("xpath",
+				        new XPathExpressionComparator(xpaths.toArray(new String[xpaths.size()]))));
 		}
 	}
 }
