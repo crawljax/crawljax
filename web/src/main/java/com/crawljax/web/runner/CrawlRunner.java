@@ -73,16 +73,14 @@ public class CrawlRunner {
 
 		@Override
 		public void run() {
+			Date timestamp = new Date();
 			try {
 				CrawlRecord record = crawlRecords.findByID(crawlId);
 				Configuration config = configurations.findByID(record.getConfigurationId());
 
 				// Set Timestamps
-				Date timestamp = new Date();
 				record.setStartTime(timestamp);
-				config.setLastCrawl(timestamp);
 				crawlRecords.update(record);
-				configurations.update(config);
 
 				// Build Configuration
 				CrawljaxConfigurationBuilder builder =
@@ -185,6 +183,7 @@ public class CrawlRunner {
 				// set duration
 				long duration = (new Date()).getTime() - timestamp.getTime();
 				record.setDuration(duration);
+				config.setLastCrawl(timestamp);
 				config.setLastDuration(duration);
 				crawlRecords.update(record);
 				configurations.update(config);
