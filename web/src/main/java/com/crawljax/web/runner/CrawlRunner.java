@@ -19,6 +19,7 @@ import com.crawljax.condition.VisibleCondition;
 import com.crawljax.condition.XPathCondition;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawlElement;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
@@ -35,6 +36,8 @@ import com.crawljax.oraclecomparator.comparators.ScriptComparator;
 import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
 import com.crawljax.oraclecomparator.comparators.XPathExpressionComparator;
+import com.crawljax.web.model.ClickRule;
+import com.crawljax.web.model.ClickRule.RuleType;
 import com.crawljax.web.model.Configuration;
 import com.crawljax.web.model.Configurations;
 import com.crawljax.web.model.CrawlRecord;
@@ -110,7 +113,40 @@ public class CrawlRunner {
 				        TimeUnit.MILLISECONDS);
 
 				// Click Rules
-				builder.crawlRules().clickDefaultElements();
+				if (config.isClickDefault())
+					builder.crawlRules().clickDefaultElements();
+				else if (config.getClickRules().size() > 0) {
+					for (ClickRule r : config.getClickRules()) {
+						CrawlElement element;
+						if (r.getRule() == RuleType.click)
+							element = builder.crawlRules().click(r.getElementTag());
+						else
+							element = builder.crawlRules().dontClick(r.getElementTag());
+
+						if (r.getConditions().size() > 0) {
+							for (com.crawljax.web.model.Condition c : r.getConditions()) {
+								if (c.getCondition().toString().startsWith("w")) {
+									switch (c.getCondition()) {
+										case wAttribute:
+											String[] s =
+											        c.getExpression().replace(" ", "").split("=");
+											element.withAttribute(s[0], s[1]);
+											break;
+										case wText:
+											element.withText(c.getExpression());
+											break;
+										case wXPath:
+											element.underXPath(c.getExpression());
+											break;
+										default:
+											break;
+									}
+								} else
+									element.when(getConditionFromConfig(c));
+							}
+						}
+					}
+				}
 
 				// Form Input
 				if (config.getFormInputValues().size() > 0) {
