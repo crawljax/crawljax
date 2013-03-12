@@ -16,6 +16,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.web.di.CrawljaxWebModule.OutputFolder;
 import com.crawljax.web.model.Configuration;
 import com.crawljax.web.model.CrawlRecord;
 import com.google.common.base.Charsets;
@@ -30,11 +31,12 @@ public class WorkDirManager {
 	private final ObjectMapper mapper;
 
 	@Inject
-	public WorkDirManager(File outputFolder, ObjectMapper mapper) {
+	public WorkDirManager(@OutputFolder File outputFolder, ObjectMapper mapper) {
 		this.outputFolder = outputFolder;
 		this.mapper = mapper;
 		if (!this.outputFolder.exists())
 			this.outputFolder.mkdirs();
+		// initLogger();
 	}
 
 	public Map<String, Configuration> loadAll() {

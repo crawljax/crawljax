@@ -1,20 +1,25 @@
 package com.crawljax.web.di;
 
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.codehaus.jackson.map.ObjectMapper;
 
-import com.crawljax.web.fs.WorkDirManager;
 import com.google.common.collect.Maps;
-import com.google.inject.Provides;
+import com.google.inject.BindingAnnotation;
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 public class CrawljaxWebModule extends ServletModule {
+
+	@BindingAnnotation
+	@Retention(RetentionPolicy.RUNTIME)
+	public static @interface OutputFolder {
+	};
 
 	@Override
 	protected void configureServlets() {
@@ -26,11 +31,13 @@ public class CrawljaxWebModule extends ServletModule {
 		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX,
 		        "/.*\\.(html|js|gif|png|css|ico)");
 		filter("/*").through(GuiceContainer.class, params);
+
+		bind(File.class).annotatedWith(OutputFolder.class).toInstance(outputFolder());
+
 	}
 
-	@Provides
-	public WorkDirManager workDirManager(ObjectMapper mapper) {
-		File file = new File(System.getProperty("user.home") + File.separatorChar + "crawljax");
-		return new WorkDirManager(file, mapper);
+	private File outputFolder() {
+		return new File(System.getProperty("user.home") + File.separatorChar + "crawljax");
 	}
+
 }
