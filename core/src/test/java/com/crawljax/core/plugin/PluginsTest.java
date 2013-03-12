@@ -28,6 +28,7 @@ import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.ProxyConfiguration;
+import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
@@ -95,6 +96,19 @@ public class PluginsTest {
 					        !cs.equals(session.getInitialState()));
 				}
 			}
+		});
+
+		builder.addPlugin(new DomChangeNotifierPlugin() {
+
+			@Override
+			public boolean isDomChanged(String domBefore, Eventable e, String domAfter,
+			        EmbeddedBrowser browser) {
+
+				plugins.add(DomChangeNotifierPlugin.class);
+				return !domAfter.equals(domBefore);
+
+			}
+
 		});
 
 		builder.addPlugin(new OnBrowserCreatedPlugin() {
@@ -269,7 +283,8 @@ public class PluginsTest {
 	@Test
 	public void domStatesChangesAreEqualToNumberOfStates() {
 		int numberOfStates = controller.getSession().getStateFlowGraph().getAllStates().size();
-		assertThat(orrurencesOf(DomChangeNotifierPlugin.class), is(numberOfStates));
+		int newStatesAfterIndexPage = numberOfStates - 1;
+		assertThat(orrurencesOf(DomChangeNotifierPlugin.class), is(newStatesAfterIndexPage));
 	}
 
 	private int orrurencesOf(Class<? extends Plugin> clasz) {
