@@ -28,8 +28,6 @@ import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.ProxyConfiguration;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
@@ -96,19 +94,6 @@ public class PluginsTest {
 					assertTrue("currentState and indexState are never the same",
 					        !cs.equals(session.getInitialState()));
 				}
-			}
-		});
-
-		builder.addPlugin(new GuidedCrawlingPlugin() {
-
-			@Override
-			public void guidedCrawling(StateVertex currentState, CrawljaxController controller,
-			        CrawlSession session, List<Eventable> exactEventPaths,
-			        StateMachine stateMachine) {
-				plugins.add(GuidedCrawlingPlugin.class);
-				checkCrawlSession(session);
-				assertTrue("exactEventPaths is the same as the session path", session
-				        .getCurrentCrawlPath().equals(exactEventPaths));
 			}
 		});
 
@@ -232,9 +217,8 @@ public class PluginsTest {
 	        Iterable<Class<? extends Plugin>> followedBy) {
 		for (int index : indexesOf(suspect)) {
 			Class<? extends Plugin> follower = plugins.get(index + 1);
-			assertThat(
-			        suspect + " @index=" + index + " was followed by " + follower + listAsString,
-			        followedBy, IsCollectionContaining.hasItem(follower));
+			assertThat(suspect + " @index=" + index + " was followed by " + follower
+			        + listAsString, followedBy, IsCollectionContaining.hasItem(follower));
 		}
 	}
 
@@ -250,8 +234,8 @@ public class PluginsTest {
 
 	@Test
 	public void verifyOnNewStateFollowers() {
-		pluginsIsFollowedBy(OnNewStatePlugin.class, ImmutableSet.<Class<? extends Plugin>> of(
-		        PreStateCrawlingPlugin.class));
+		pluginsIsFollowedBy(OnNewStatePlugin.class,
+		        ImmutableSet.<Class<? extends Plugin>> of(PreStateCrawlingPlugin.class));
 	}
 
 	@Test

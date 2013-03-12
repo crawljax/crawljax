@@ -9,10 +9,8 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -25,8 +23,7 @@ public final class Plugins {
 	/**
 	 * Make a new Log4j object used to do the logging.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(Plugins.class
-	        .getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(Plugins.class.getName());
 
 	/**
 	 * @return An empty {@link Plugins} configuration.
@@ -204,34 +201,6 @@ public final class Plugins {
 	}
 
 	/**
-	 * Load and run the guidedCrawlingPlugins. guidedServerPlugins are used to have control of the
-	 * crawling on certain states.
-	 * 
-	 * @param controller
-	 *            the crawljax controller instance.
-	 * @param session
-	 *            the current crawl session.
-	 * @param exactEventPaths
-	 *            the exact crawled event paths. Used to bring the browser back to the state the
-	 *            crawler was before guided crawling.
-	 * @param stateMachine
-	 *            the state machine.
-	 */
-	public void runGuidedCrawlingPlugins(CrawljaxController controller,
-	        CrawlSession session, final List<Eventable> exactEventPaths,
-	        final StateMachine stateMachine) {
-		LOGGER.debug("Running GuidedCrawlingPlugins...");
-		for (Plugin plugin : plugins) {
-			if (plugin instanceof GuidedCrawlingPlugin) {
-				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
-				StateVertex currentState = session.getCurrentState();
-				((GuidedCrawlingPlugin) plugin).guidedCrawling(currentState, controller, session,
-				        exactEventPaths, stateMachine);
-			}
-		}
-	}
-
-	/**
 	 * Load and run the OnFireEventFailedPlugins, this call has been made from the fireEvent when
 	 * the event is not fireable. the Path is the Path leading TO this eventable (not included).
 	 * 
@@ -272,8 +241,8 @@ public final class Plugins {
 	/**
 	 * Load and run the DomChangeNotifierPlugin.
 	 */
-	public boolean runDomChangeNotifierPlugins(final StateVertex stateBefore,
-	        final Eventable e, final StateVertex stateAfter, final EmbeddedBrowser browser) {
+	public boolean runDomChangeNotifierPlugins(final StateVertex stateBefore, final Eventable e,
+	        final StateVertex stateAfter, final EmbeddedBrowser browser) {
 		LOGGER.debug("Checking for DomChangeNotifierPlugin...");
 		Plugin latest = null;
 		for (Plugin plugin : plugins) {

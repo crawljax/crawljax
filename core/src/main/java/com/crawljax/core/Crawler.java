@@ -190,8 +190,7 @@ public class Crawler implements Runnable {
 		try {
 			fired = getBrowser().fireEvent(eventToFire);
 		} catch (ElementNotVisibleException | NoSuchElementException e) {
-			if (config.getCrawlRules().isCrawlHiddenAnchors()
-			        && eventToFire.getElement() != null
+			if (config.getCrawlRules().isCrawlHiddenAnchors() && eventToFire.getElement() != null
 			        && "A".equals(eventToFire.getElement().getTag())) {
 				fired = visitAnchorHrefIfPossible(eventToFire);
 			} else {
@@ -317,8 +316,7 @@ public class Crawler implements Runnable {
 				/*
 				 * Run the onRevisitStateValidator(s)
 				 */
-				plugins.runOnRevisitStatePlugins(this.controller.getSession(),
-				        curState);
+				plugins.runOnRevisitStatePlugins(this.controller.getSession(), curState);
 			}
 
 			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
@@ -371,11 +369,6 @@ public class Crawler implements Runnable {
 				if (this.getStateMachine().updateAndCheckIfClone(eventable, newState,
 				        this.getBrowser(), this.controller.getSession())) {
 
-					// Change is no clone
-					plugins.runGuidedCrawlingPlugins(controller, controller
-					        .getSession(), controller.getSession().getCurrentCrawlPath(), this
-					        .getStateMachine());
-
 					return ClickResult.newState;
 				} else {
 					// Dom changed; Clone
@@ -388,8 +381,8 @@ public class Crawler implements Runnable {
 	}
 
 	private boolean domChanged(final Eventable eventable, StateVertex newState) {
-		return plugins.runDomChangeNotifierPlugins(this.getStateMachine()
-		        .getCurrentState(), eventable, newState, getBrowser());
+		return plugins.runDomChangeNotifierPlugins(this.getStateMachine().getCurrentState(),
+		        eventable, newState, getBrowser());
 	}
 
 	/**
@@ -494,8 +487,7 @@ public class Crawler implements Runnable {
 			LOGGER.info("Starting preStateCrawlingPlugins...");
 			List<CandidateElement> candidateElements =
 			        orrigionalState.getUnprocessedCandidateElements();
-			plugins.runPreStateCrawlingPlugins(controller.getSession(),
-			        candidateElements);
+			plugins.runPreStateCrawlingPlugins(controller.getSession(), candidateElements);
 			// update crawlActions
 			orrigionalState.filterCandidateActions(candidateElements);
 		}
@@ -573,9 +565,8 @@ public class Crawler implements Runnable {
 		}
 		// TODO Stefan ideally this should be placed in the constructor
 		this.formHandler =
-		        new FormHandler(getBrowser(), config.getCrawlRules()
-		                .getInputSpecification(), config.getCrawlRules()
-		                .isRandomInputInForms());
+		        new FormHandler(getBrowser(), config.getCrawlRules().getInputSpecification(),
+		                config.getCrawlRules().isRandomInputInForms());
 
 		this.candidateExtractor =
 		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
