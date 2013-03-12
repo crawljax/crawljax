@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
+import com.crawljax.web.LogWebSocketServlet;
 import com.google.common.collect.Maps;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Scopes;
@@ -24,13 +25,14 @@ public class CrawljaxWebModule extends ServletModule {
 	@Override
 	protected void configureServlets() {
 
+		serve("/socket*").with(LogWebSocketServlet.class);
 		bind(JacksonJsonProvider.class).in(Scopes.SINGLETON);
 
 		final Map<String, String> params = Maps.newHashMap();
 		params.put("com.sun.jersey.config.property.packages", "com.crawljax.web.jaxrs");
 		params.put(ServletContainer.PROPERTY_WEB_PAGE_CONTENT_REGEX,
 		        "/.*\\.(html|js|gif|png|css|ico)");
-		filter("/*").through(GuiceContainer.class, params);
+		filter("/rest/*").through(GuiceContainer.class, params);
 
 		bind(File.class).annotatedWith(OutputFolder.class).toInstance(outputFolder());
 
