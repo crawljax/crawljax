@@ -224,7 +224,8 @@ public class PluginsTest {
 	public void verifyOnUrlLoadFollowers() {
 		pluginsIsFollowedBy(OnUrlLoadPlugin.class, ImmutableSet.of(
 		        OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
-		        OnRevisitStatePlugin.class, PostCrawlingPlugin.class));
+		        DomChangeNotifierPlugin.class, OnRevisitStatePlugin.class,
+		        PostCrawlingPlugin.class));
 	}
 
 	public void pluginsIsFollowedBy(Class<? extends Plugin> suspect,
@@ -281,10 +282,16 @@ public class PluginsTest {
 	}
 
 	@Test
-	public void domStatesChangesAreEqualToNumberOfStates() {
+	public void domStatesChangesAreEqualToNumberOfStatesAfterIndex() {
 		int numberOfStates = controller.getSession().getStateFlowGraph().getAllStates().size();
 		int newStatesAfterIndexPage = numberOfStates - 1;
 		assertThat(orrurencesOf(DomChangeNotifierPlugin.class), is(newStatesAfterIndexPage));
+	}
+
+	@Test
+	public void newStatePluginCallsAreEqualToNumberOfStates() {
+		int numberOfStates = controller.getSession().getStateFlowGraph().getAllStates().size();
+		assertThat(orrurencesOf(OnNewStatePlugin.class), is(numberOfStates));
 	}
 
 	private int orrurencesOf(Class<? extends Plugin> clasz) {
