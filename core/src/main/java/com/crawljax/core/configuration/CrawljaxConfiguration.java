@@ -52,7 +52,8 @@ public final class CrawljaxConfiguration {
 		 *            The maximum time the crawler should run. Default is one hour.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumRunTime(long time, TimeUnit unit) {
-			Preconditions.checkArgument(time > 0, "Time should larger than 0");
+			Preconditions
+			        .checkArgument(time >= 0, "Time should larger than 0, or 0 for infinate.");
 			config.maximumRuntime = unit.toMillis(time);
 			return this;
 		}
@@ -70,7 +71,8 @@ public final class CrawljaxConfiguration {
 		 *            The maximum depth the crawler can reach. The default is <code>2</code>.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumDepth(int depth) {
-			Preconditions.checkArgument(depth > 1, "Time should larger than 1");
+			Preconditions.checkArgument(depth >= 0,
+			        "Depth should be 0 for infinite, or larger for a certain depth.");
 			config.maximumDepth = depth;
 			return this;
 		}
