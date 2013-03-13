@@ -34,7 +34,7 @@ public class BaseCrawler {
 	 * @param siteExtension
 	 *            Assumes the sites are in <code>resources/sites</code>.
 	 */
-	protected BaseCrawler(String siteExtension) {
+	public BaseCrawler(String siteExtension) {
 		this.siteExtension = siteExtension;
 		URL sampleSites = BaseCrawler.class.getResource("/sites");
 		LOG.debug("Loading web server with from folder {}", sampleSites.toExternalForm());
