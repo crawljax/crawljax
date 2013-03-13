@@ -15,7 +15,6 @@ public class LogWebSocketServlet extends WebSocketServlet {
 
 	@Override
 	public void configure(WebSocketServletFactory factory) {
-		System.out.println("config");
 		factory.register(LoggingSocket.class);
 	}
 

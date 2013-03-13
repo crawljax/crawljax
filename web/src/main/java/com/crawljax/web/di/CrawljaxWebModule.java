@@ -8,6 +8,7 @@ import java.util.Map;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
 import com.crawljax.web.LogWebSocketServlet;
+import com.crawljax.web.fs.WorkDirManager;
 import com.google.common.collect.Maps;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Scopes;
@@ -35,6 +36,8 @@ public class CrawljaxWebModule extends ServletModule {
 		filter("/rest/*").through(GuiceContainer.class, params);
 
 		bind(File.class).annotatedWith(OutputFolder.class).toInstance(outputFolder());
+
+		bind(WorkDirManager.class).asEagerSingleton();
 
 	}
 
