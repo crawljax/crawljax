@@ -11,7 +11,7 @@ import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.test.BaseCrawler;
 import com.crawljax.test.BrowserTest;
 
-public class TestHiddenElements implements BrowserTest {
+public class CrawlHiddenElementsTest implements BrowserTest {
 
 	/**
 	 * Shows <a href='https://github.com/crawljax/crawljax/issues/97'>Issue 97</a>
