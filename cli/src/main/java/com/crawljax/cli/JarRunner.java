@@ -44,17 +44,15 @@ public class JarRunner {
 		try {
 			Options options = getOptions();
 			final CommandLine commandLine = new GnuParser().parse(options, args);
-
 			if (commandLine.hasOption(HELP)) {
 				printHelp(options);
 			} else if (commandLine.hasOption(VERSION)) {
 				System.out.println(getCrawljaxVersion());
-			} else if (args.length > 2) {
+			} else if (args.length >= 2) {
 				String url = commandLine.getArgs()[0];
 				String outputDir = commandLine.getArgs()[1];
 				if (urlIsInvalid(url)) {
 					System.err.println("provide a valid URL like http://example.com");
-					printHelp(options);
 					System.exit(1);
 				} else {
 					checkOutDir(commandLine, outputDir);
