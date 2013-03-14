@@ -20,8 +20,8 @@ public class LoggingSocket extends WebSocketAdapter {
 	@Override
 	public void onWebSocketConnect(Session session) {
 		LOG.info("Socket connected!");
+		super.onWebSocketConnect(session);
 		sendText("Welcome to this socket @ " + new Date());
-
 		sendLogFile();
 		appender = new SocketLogAppender(this);
 	}
