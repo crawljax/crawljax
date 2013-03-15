@@ -13,6 +13,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
+import ch.qos.logback.classic.Level;
+
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.BrowserConfiguration;
@@ -23,6 +25,8 @@ import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
 public class JarRunner {
@@ -34,6 +38,7 @@ public class JarRunner {
 	        "java -jar crawljax-cli-version.jar theUrl theOutputDir";
 
 	static final String VERSION = "version";
+	static final String VERBOSE = "verbose";
 	static final String HELP = "help";
 	static final String MAXSTATES = "maxstates";
 	static final String DEPTH = "depth";
@@ -44,6 +49,7 @@ public class JarRunner {
 	static final String TIME_OUT = "timeout";
 	static final String WAIT_AFTER_RELOAD = "waitAfterReload";
 	static final String WAIT_AFTER_EVENT = "waitAfterEvent";
+	static final String LOG_FILE = "log";
 
 	static final String CLICK = "click";
 
@@ -91,6 +97,7 @@ public class JarRunner {
 			String outputDir = commandLine.getArgs()[1];
 			checkUrlValidity(url);
 			checkOutDir(outputDir);
+			configureLogging();
 			this.config = readConfig(url, outputDir);
 		} else {
 			if (!commandLine.hasOption(HELP)) {
@@ -108,7 +115,7 @@ public class JarRunner {
 	private Options getOptions() {
 		Options options = new Options();
 		options.addOption("h", HELP, false, "print this message");
-		options.addOption("v", VERSION, false, "print the version information and exit");
+		options.addOption(VERSION, false, "print the version information and exit");
 
 		options.addOption("b", "browser", true,
 		        "browser type: " + availableBrowsers() + ". Default is Firefox");
@@ -139,6 +146,9 @@ public class JarRunner {
 		        "the time to wait after an URL has been loaded in milliseconds. Default is "
 		                + CrawlRules.DEFAULT_WAIT_AFTER_RELOAD);
 
+		options.addOption("v", VERBOSE, false, "Be extra verbose");
+		options.addOption(LOG_FILE, true, "Log to this file instead of the console");
+
 		return options;
 	}
 
@@ -146,19 +156,29 @@ public class JarRunner {
 		return Joiner.on(", ").join(BrowserType.values());
 	}
 
-	/**
-	 * Write "help" to the provided OutputStream.
-	 * 
-	 * @param options
-	 * @throws IOException
-	 */
-	public void printHelp() {
+	private String getCrawljaxVersion() {
+		try {
+			return Resources
+			        .toString(JarRunner.class.getResource("/project.version"), Charsets.UTF_8);
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	private void printHelp() {
 		String cmlSyntax = HELP_MESSAGE;
 		final PrintWriter writer = new PrintWriter(System.out);
 		final HelpFormatter helpFormatter = new HelpFormatter();
 		helpFormatter.printHelp(writer, ROW_WIDTH, cmlSyntax, "", options, SPACES_AFTER_OPTION,
 		        SPACES_BEFORE_OPTION, "");
 		writer.flush();
+	}
+
+	private void checkUrlValidity(String urlValue) {
+		String[] schemes = { "http", "https" };
+		if (urlValue == null || !new UrlValidator(schemes).isValid(urlValue)) {
+			throw new IllegalArgumentException("provide a valid URL like http://example.com");
+		}
 	}
 
 	private void checkOutDir(String outputDir) {
@@ -178,20 +198,24 @@ public class JarRunner {
 		}
 	}
 
-	private String getCrawljaxVersion() {
-		try {
-			return Resources
-			        .toString(JarRunner.class.getResource("/project.version"), Charsets.UTF_8);
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
+	private void configureLogging() {
+		if (commandLine.hasOption(VERBOSE)) {
+			LogUtil.setCrawljaxLogLevel(Level.INFO);
 		}
-	}
+		if (commandLine.hasOption(LOG_FILE)) {
+			File f = new File(commandLine.getOptionValue(LOG_FILE));
+			try {
+				if (!f.exists()) {
+					Files.createParentDirs(f);
+					Files.touch(f);
+				}
+			} catch (IOException e) {
+				throw new RuntimeException("Could not create log file: " + e.getMessage(), e);
+			}
+			Preconditions.checkArgument(f.canWrite());
+			LogUtil.logToFile(f.getPath());
+		}
 
-	private void checkUrlValidity(String urlValue) {
-		String[] schemes = { "http", "https" };
-		if (urlValue == null || !new UrlValidator(schemes).isValid(urlValue)) {
-			throw new IllegalArgumentException("provide a valid URL like http://example.com");
-		}
 	}
 
 	private CrawljaxConfiguration readConfig(String urlValue, String outputDir) {
