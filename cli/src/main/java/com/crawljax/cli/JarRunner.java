@@ -8,6 +8,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -17,22 +18,33 @@ import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.io.Resources;
 
 public class JarRunner {
 
-	public static final String VERSION = "version";
-	public static final String HELP = "help";
-	public static final String MAXSTATES = "maxstates";
-	public static final String DEPTH = "depth";
-	public static final String BROWSER = "browser";
-	public static final String PARALLEL = "parallel";
-	public static final String OVERRIDE = "override";
+	static final String HELP_MESSAGE =
+	        "java -jar crawljax-cli-version.jar theUrl theOutputDir";
+
+	static final String VERSION = "version";
+	static final String HELP = "help";
+	static final String MAXSTATES = "maxstates";
+	static final String DEPTH = "depth";
+	static final String BROWSER = "browser";
+	static final String PARALLEL = "parallel";
+	static final String OVERRIDE = "override";
 
 	private static final int SPACES_AFTER_OPTION = 3;
 	private static final int SPACES_BEFORE_OPTION = 5;
 	private static final int ROW_WIDTH = 80;
+
+	private final CommandLine commandLine;
+
+	private Options options;
+
+	private CrawljaxConfiguration config;
 
 	/**
 	 * Main executable method of Crawljax CLI.
@@ -42,28 +54,38 @@ public class JarRunner {
 	 */
 	public static void main(String[] args) {
 		try {
-			Options options = getOptions();
-			final CommandLine commandLine = new GnuParser().parse(options, args);
-			if (commandLine.hasOption(HELP)) {
-				printHelp(options);
-			} else if (commandLine.hasOption(VERSION)) {
-				System.out.println(getCrawljaxVersion());
-			} else if (args.length >= 2) {
-				String url = commandLine.getArgs()[0];
-				String outputDir = commandLine.getArgs()[1];
-				if (urlIsInvalid(url)) {
-					System.err.println("provide a valid URL like http://example.com");
-					System.exit(1);
-				} else {
-					checkOutDir(commandLine, outputDir);
-					readConfigAndRun(commandLine, url, outputDir);
-				}
-			} else {
-				printHelp(options);
-			}
-		} catch (Exception e) {
+			JarRunner runner = new JarRunner(args);
+			runner.runIfConfigured();
+		} catch (NumberFormatException e) {
+			System.err.println("Could not parse number " + e.getMessage());
+			System.exit(1);
+		} catch (RuntimeException e) {
 			System.err.println(e.getMessage());
 			System.exit(1);
+		}
+	}
+
+	@VisibleForTesting
+	JarRunner(String args[]) {
+		options = getOptions();
+		try {
+			commandLine = new GnuParser().parse(options, args);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e.getMessage(), e);
+		}
+		if (commandLine.hasOption(VERSION)) {
+			System.out.println(getCrawljaxVersion());
+		} else if (args.length >= 2) {
+			String url = commandLine.getArgs()[0];
+			String outputDir = commandLine.getArgs()[1];
+			if (urlIsInvalid(url)) {
+				throw new IllegalArgumentException("provide a valid URL like http://example.com");
+			} else {
+				checkOutDir(outputDir);
+				this.config = readConfig(url, outputDir);
+			}
+		} else {
+			printHelp();
 		}
 	}
 
@@ -72,13 +94,13 @@ public class JarRunner {
 	 * 
 	 * @return Options expected from command-line.
 	 */
-	private static Options getOptions() {
+	private Options getOptions() {
 		Options options = new Options();
 		options.addOption("h", HELP, false, "print this message");
 		options.addOption("v", VERSION, false, "print the version information and exit");
 
 		options.addOption("b", "browser", true,
-		        "browser type: firefox, chrome, ie, htmlunit. Default is Firefox");
+		        "browser type: " + availableBrowsers() + ". Default is Firefox");
 
 		options.addOption("d", DEPTH, true, "crawl depth level. Default is 2");
 
@@ -91,14 +113,18 @@ public class JarRunner {
 		return options;
 	}
 
+	private String availableBrowsers() {
+		return Joiner.on(", ").join(BrowserType.values());
+	}
+
 	/**
 	 * Write "help" to the provided OutputStream.
 	 * 
 	 * @param options
 	 * @throws IOException
 	 */
-	public static void printHelp(Options options) throws IOException {
-		String cmlSyntax = "java -jar crawljax-cli-version.jar theUrl theOutputDir";
+	public void printHelp() {
+		String cmlSyntax = HELP_MESSAGE;
 		final PrintWriter writer = new PrintWriter(System.out);
 		final HelpFormatter helpFormatter = new HelpFormatter();
 		helpFormatter.printHelp(writer, ROW_WIDTH, cmlSyntax, "", options, SPACES_AFTER_OPTION,
@@ -106,35 +132,39 @@ public class JarRunner {
 		writer.flush();
 	}
 
-	private static void checkOutDir(final CommandLine commandLine, String outputDir)
-	        throws IOException {
+	private void checkOutDir(String outputDir) {
 		File out = new File(outputDir);
 		if (out.exists() && out.list().length > 0) {
 			if (commandLine.hasOption(OVERRIDE)) {
 				System.out.println("Overriding output directory...");
-				FileUtils.deleteDirectory(out);
+				try {
+					FileUtils.deleteDirectory(out);
+				} catch (IOException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
 			} else {
-				System.out
-				        .println("Output directory is not empty. If you want to override, use the -override option");
-				System.exit(1);
+				throw new IllegalStateException(
+				        "Output directory is not empty. If you want to override, use the -override option");
 			}
 		}
 	}
 
-	private static String getCrawljaxVersion() throws IOException {
-		return Resources
-		        .toString(JarRunner.class.getResource("/project.version"), Charsets.UTF_8);
+	private String getCrawljaxVersion() {
+		try {
+			return Resources
+			        .toString(JarRunner.class.getResource("/project.version"), Charsets.UTF_8);
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 	}
 
-	private static boolean urlIsInvalid(String urlValue) {
+	private boolean urlIsInvalid(String urlValue) {
 		final String[] schemes = { "http", "https" };
 		return urlValue == null || !new UrlValidator(schemes).isValid(urlValue);
 	}
 
-	private static void readConfigAndRun(final CommandLine commandLine, String urlValue,
-	        String outputDir) {
+	private CrawljaxConfiguration readConfig(String urlValue, String outputDir) {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlValue);
-		builder.addPlugin(new CrawlOverview(new File(outputDir)));
 
 		BrowserType browser = BrowserType.firefox;
 		if (commandLine.hasOption(BROWSER)) {
@@ -158,13 +188,14 @@ public class JarRunner {
 			builder.setMaximumStates(Integer.parseInt(maxstates));
 		}
 
-		// run Crawljax
+		builder.addPlugin(new CrawlOverview(new File(outputDir)));
+
 		builder.crawlRules().clickDefaultElements();
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-		crawljax.run();
+
+		return builder.build();
 	}
 
-	private static BrowserType getBrowserTypeFromStr(String browser) {
+	private BrowserType getBrowserTypeFromStr(String browser) {
 		if (browser != null) {
 			for (BrowserType b : BrowserType.values()) {
 				if (browser.equalsIgnoreCase(b.toString())) {
@@ -172,7 +203,19 @@ public class JarRunner {
 				}
 			}
 		}
-		System.out.println("Unrecognized browser " + browser + ". Using firefox instead");
-		return BrowserType.firefox;
+		throw new IllegalArgumentException("Unrecognized browser: '" + browser
+		        + "'. Available browsers are: " + availableBrowsers());
+	}
+
+	private void runIfConfigured() {
+		if (config != null) {
+			CrawljaxController crawljax = new CrawljaxController(config);
+			crawljax.run();
+		}
+	}
+
+	@VisibleForTesting
+	CrawljaxConfiguration getConfig() {
+		return config;
 	}
 }
