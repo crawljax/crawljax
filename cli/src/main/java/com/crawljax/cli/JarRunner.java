@@ -35,6 +35,7 @@ public class JarRunner {
 	static final String BROWSER = "browser";
 	static final String PARALLEL = "parallel";
 	static final String OVERRIDE = "override";
+	static final String CRAWL_HIDDEN_ANCHORS = "crawl-hidden-anchors";
 
 	private static final int SPACES_AFTER_OPTION = 3;
 	private static final int SPACES_BEFORE_OPTION = 5;
@@ -110,6 +111,9 @@ public class JarRunner {
 		options.addOption("p", PARALLEL, true,
 		        "Number of browsers to use for crawling. Default is 1");
 		options.addOption("o", OVERRIDE, false, "Override the output directory if non-empty");
+
+		options.addOption("a", CRAWL_HIDDEN_ANCHORS, false,
+		        "Crawl anchors even if they are not visible in the browser.");
 		return options;
 	}
 
@@ -186,6 +190,10 @@ public class JarRunner {
 		if (commandLine.hasOption(MAXSTATES)) {
 			String maxstates = commandLine.getOptionValue(MAXSTATES);
 			builder.setMaximumStates(Integer.parseInt(maxstates));
+		}
+
+		if (commandLine.hasOption(CRAWL_HIDDEN_ANCHORS)) {
+			builder.crawlRules().crawlHiddenAnchors(true);
 		}
 
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));

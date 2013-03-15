@@ -97,6 +97,11 @@ public class JarRunnerTest {
 		assertThat(config.getBrowsertype(), is(BrowserType.chrome));
 	}
 
+	@Test
+	public void testCrawlHiddenAnchors() {
+		assertThat(configForArgs("-a").getCrawlRules().isCrawlHiddenAnchors(), is(true));
+	}
+
 	private void assertHelpWasPrinted() {
 		String helpMessage = "usage: " + JarRunner.HELP_MESSAGE;
 		assertThat(streams.getConsoleOutput(), startsWith(helpMessage));
