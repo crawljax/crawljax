@@ -232,6 +232,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<dateFormat>yyyy-MM-dd HH:mm:ss z</dateFormat>
 					<verbose>true</verbose>
 					<generateGitPropertiesFile>true</generateGitPropertiesFile>
 					<gitDescribe>
