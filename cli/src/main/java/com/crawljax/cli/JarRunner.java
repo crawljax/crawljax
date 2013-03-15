@@ -3,6 +3,7 @@ package com.crawljax.cli;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
@@ -15,6 +16,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
@@ -24,6 +26,9 @@ import com.google.common.base.Joiner;
 import com.google.common.io.Resources;
 
 public class JarRunner {
+
+	static final String MISSING_ARGUMENT_MESSAGE =
+	        "Missing required argument URL and/or output folder.";
 
 	static final String HELP_MESSAGE =
 	        "java -jar crawljax-cli-version.jar theUrl theOutputDir";
@@ -35,7 +40,12 @@ public class JarRunner {
 	static final String BROWSER = "browser";
 	static final String PARALLEL = "parallel";
 	static final String OVERRIDE = "override";
-	static final String CRAWL_HIDDEN_ANCHORS = "crawl-hidden-anchors";
+	static final String CRAWL_HIDDEN_ANCHORS = "crawlHiddenAnchors";
+	static final String TIME_OUT = "timeout";
+	static final String WAIT_AFTER_RELOAD = "waitAfterReload";
+	static final String WAIT_AFTER_EVENT = "waitAfterEvent";
+
+	static final String CLICK = "click";
 
 	private static final int SPACES_AFTER_OPTION = 3;
 	private static final int SPACES_BEFORE_OPTION = 5;
@@ -76,16 +86,16 @@ public class JarRunner {
 		}
 		if (commandLine.hasOption(VERSION)) {
 			System.out.println(getCrawljaxVersion());
-		} else if (args.length >= 2) {
+		} else if (commandLine.getArgs().length == 2) {
 			String url = commandLine.getArgs()[0];
 			String outputDir = commandLine.getArgs()[1];
-			if (urlIsInvalid(url)) {
-				throw new IllegalArgumentException("provide a valid URL like http://example.com");
-			} else {
-				checkOutDir(outputDir);
-				this.config = readConfig(url, outputDir);
-			}
+			checkUrlValidity(url);
+			checkOutDir(outputDir);
+			this.config = readConfig(url, outputDir);
 		} else {
+			if (!commandLine.hasOption(HELP)) {
+				System.out.println(MISSING_ARGUMENT_MESSAGE);
+			}
 			printHelp();
 		}
 	}
@@ -114,6 +124,21 @@ public class JarRunner {
 
 		options.addOption("a", CRAWL_HIDDEN_ANCHORS, false,
 		        "Crawl anchors even if they are not visible in the browser.");
+
+		options.addOption("t", TIME_OUT, true,
+		        "Specify the maximum crawl time in minutes");
+
+		options.addOption(CLICK, true,
+		        "a comma separated list of HTML tags that should be clicked. Default is A and BUTTON");
+
+		options.addOption(WAIT_AFTER_EVENT, true,
+		        "the time to wait after an event has been fired in milliseconds. Default is "
+		                + CrawlRules.DEFAULT_WAIT_AFTER_EVENT);
+
+		options.addOption(WAIT_AFTER_RELOAD, true,
+		        "the time to wait after an URL has been loaded in milliseconds. Default is "
+		                + CrawlRules.DEFAULT_WAIT_AFTER_RELOAD);
+
 		return options;
 	}
 
@@ -162,9 +187,11 @@ public class JarRunner {
 		}
 	}
 
-	private boolean urlIsInvalid(String urlValue) {
-		final String[] schemes = { "http", "https" };
-		return urlValue == null || !new UrlValidator(schemes).isValid(urlValue);
+	private void checkUrlValidity(String urlValue) {
+		String[] schemes = { "http", "https" };
+		if (urlValue == null || !new UrlValidator(schemes).isValid(urlValue)) {
+			throw new IllegalArgumentException("provide a valid URL like http://example.com");
+		}
 	}
 
 	private CrawljaxConfiguration readConfig(String urlValue, String outputDir) {
@@ -196,11 +223,32 @@ public class JarRunner {
 			builder.crawlRules().crawlHiddenAnchors(true);
 		}
 
+		configureTimers(builder);
+
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));
 
-		builder.crawlRules().clickDefaultElements();
+		if (commandLine.hasOption(CLICK)) {
+			builder.crawlRules().click(commandLine.getOptionValue(CLICK).split(","));
+		} else {
+			builder.crawlRules().clickDefaultElements();
+		}
 
 		return builder.build();
+	}
+
+	private void configureTimers(CrawljaxConfigurationBuilder builder) {
+		if (commandLine.hasOption(TIME_OUT)) {
+			long time = Long.parseLong(commandLine.getOptionValue(TIME_OUT));
+			builder.setMaximumRunTime(time, TimeUnit.MINUTES);
+		}
+		if (commandLine.hasOption(WAIT_AFTER_EVENT)) {
+			long time = Long.parseLong(commandLine.getOptionValue(WAIT_AFTER_EVENT));
+			builder.crawlRules().waitAfterEvent(time, TimeUnit.MILLISECONDS);
+		}
+		if (commandLine.hasOption(WAIT_AFTER_RELOAD)) {
+			long time = Long.parseLong(commandLine.getOptionValue(WAIT_AFTER_RELOAD));
+			builder.crawlRules().waitAfterReloadUrl(time, TimeUnit.MILLISECONDS);
+		}
 	}
 
 	private BrowserType getBrowserTypeFromStr(String browser) {
