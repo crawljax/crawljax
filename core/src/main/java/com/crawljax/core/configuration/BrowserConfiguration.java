@@ -7,6 +7,7 @@ import javax.annotation.concurrent.Immutable;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.browser.WebDriverBrowserBuilder;
+import com.google.common.base.Preconditions;
 
 @Immutable
 public class BrowserConfiguration {
@@ -93,6 +94,11 @@ public class BrowserConfiguration {
 	 */
 	public BrowserConfiguration(BrowserType browsertype, int numberOfBrowsers, boolean bootstrap,
 	        WebDriverBrowserBuilder builder) {
+		Preconditions.checkArgument(numberOfBrowsers > 0,
+		        "Number of browsers should be 1 or more");
+		Preconditions.checkNotNull(browsertype);
+		Preconditions.checkNotNull(builder);
+
 		this.browsertype = browsertype;
 		this.numberOfBrowsers = numberOfBrowsers;
 		this.bootstrap = bootstrap;
