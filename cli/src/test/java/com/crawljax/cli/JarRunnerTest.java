@@ -78,7 +78,7 @@ public class JarRunnerTest {
 
 	@Test
 	public void whenVersionRequestedItPrintsVersion() {
-		new JarRunner(defaultArgsPlus("-v"));
+		new JarRunner(defaultArgsPlus("-version"));
 		assertThat(streams.getConsoleOutput(), startsWith("Version = "));
 	}
 
