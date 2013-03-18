@@ -4,10 +4,8 @@ package com.crawljax.core.plugin;
  * Interface that adds a setOutputFolder and getOutputFolder method to allow the user to set the
  * directory this plugin should use for its output. Note that the output path should be used as an
  * absolute path.
- * 
- * @author Frank Groeneveld <frankgroeneveld+crawljax@gmail.com>
  */
-public interface GeneratesOutput extends Plugin {
+public interface GeneratesOutput {
 
 	/**
 	 * Sets the absolute output directory that should be used by this plugin.

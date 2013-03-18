@@ -1,5 +1,8 @@
 package com.crawljax.core.plugin;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,6 +17,9 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 
 /**
  * Class for invoking plugins. The methods in this class are invoked from the Crawljax Core.
@@ -25,6 +31,16 @@ public final class Plugins {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(Plugins.class.getName());
 
+	@SuppressWarnings("unchecked")
+	private static final ImmutableSet<Class<? extends Plugin>> KNOWN_PLUGINS = ImmutableSet
+	        .of(DomChangeNotifierPlugin.class,
+	                OnBrowserCreatedPlugin.class,
+	                OnFireEventFailedPlugin.class,
+	                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
+	                OnRevisitStatePlugin.class, OnUrlLoadPlugin.class,
+	                PostCrawlingPlugin.class, PreStateCrawlingPlugin.class,
+	                PreCrawlingPlugin.class, ProxyServerPlugin.class);
+
 	/**
 	 * @return An empty {@link Plugins} configuration.
 	 */
@@ -32,17 +48,43 @@ public final class Plugins {
 		return new Plugins(ImmutableList.<Plugin> of());
 	}
 
-	private final ImmutableList<Plugin> plugins;
+	private final ImmutableListMultimap<Class<? extends Plugin>, Plugin> plugins;
 
-	public Plugins(List<Plugin> plugins) {
+	public Plugins(List<? extends Plugin> plugins) {
 		Preconditions.checkNotNull(plugins);
-		this.plugins = ImmutableList.copyOf(plugins);
+		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
+		        ImmutableListMultimap.builder();
 		if (plugins.isEmpty()) {
 			LOGGER.warn("No plugins loaded. There will be no output");
 		} else {
-			for (Plugin plugin : plugins) {
-				LOGGER.info("Loaded plugin {}", plugin);
+			addPlugins(plugins, builder);
+		}
+		this.plugins = builder.build();
+
+		checkArgument(this.plugins.get(DomChangeNotifierPlugin.class).size() < 2,
+		        "Only one or none " + DomChangeNotifierPlugin.class.getSimpleName()
+		                + " can be specified");
+	}
+
+	private void addPlugins(List<? extends Plugin> plugins,
+	        ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder) {
+		ArrayList<Plugin> unusedPlugins = Lists.newArrayList(plugins);
+		for (Plugin plugin : plugins) {
+			for (Class<?> clasz : plugin.getClass().getInterfaces()) {
+				if (KNOWN_PLUGINS.contains(clasz)) {
+					@SuppressWarnings("unchecked")
+					Class<? extends Plugin> pluginclass = (Class<? extends Plugin>) clasz;
+					builder.put(pluginclass, plugin);
+					LOGGER.info("Loaded {} as a {}", plugin, clasz.getSimpleName());
+					unusedPlugins.remove(plugin);
+				}
+
 			}
+		}
+		if (!unusedPlugins.isEmpty()) {
+			LOGGER.warn(
+			        "These plugins were added but are ignored because they are unkown to Crawljax, {}",
+			        unusedPlugins);
 		}
 	}
 
@@ -60,9 +102,14 @@ public final class Plugins {
 	 */
 	public void runPreCrawlingPlugins(EmbeddedBrowser browser) {
 		LOGGER.debug("Running PreCrawlingPlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(PreCrawlingPlugin.class)) {
 			if (plugin instanceof PreCrawlingPlugin) {
-				((PreCrawlingPlugin) plugin).preCrawling(browser);
+				try {
+					LOGGER.debug("Calling plugin {}", plugin);
+					((PreCrawlingPlugin) plugin).preCrawling(browser);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -78,9 +125,14 @@ public final class Plugins {
 	 */
 	public void runOnUrlLoadPlugins(EmbeddedBrowser browser) {
 		LOGGER.debug("Running OnUrlLoadPlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(OnUrlLoadPlugin.class)) {
 			if (plugin instanceof OnUrlLoadPlugin) {
-				((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
+				try {
+					LOGGER.debug("Calling plugin {}", plugin);
+					((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -95,9 +147,14 @@ public final class Plugins {
 	 */
 	public void runOnNewStatePlugins(CrawlSession session) {
 		LOGGER.debug("Running OnNewStatePlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(OnNewStatePlugin.class)) {
 			if (plugin instanceof OnNewStatePlugin) {
-				((OnNewStatePlugin) plugin).onNewState(session);
+				try {
+					LOGGER.debug("Calling plugin {}", plugin);
+					((OnNewStatePlugin) plugin).onNewState(session);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -115,9 +172,15 @@ public final class Plugins {
 	 */
 	public void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session) {
 		LOGGER.debug("Running OnInvriantViolationPlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(OnInvariantViolationPlugin.class)) {
 			if (plugin instanceof OnInvariantViolationPlugin) {
-				((OnInvariantViolationPlugin) plugin).onInvariantViolation(invariant, session);
+				try {
+					LOGGER.debug("Calling plugin {}", plugin);
+					((OnInvariantViolationPlugin) plugin)
+					        .onInvariantViolation(invariant, session);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -132,9 +195,14 @@ public final class Plugins {
 	 */
 	public void runPostCrawlingPlugins(CrawlSession session) {
 		LOGGER.debug("Running PostCrawlingPlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(PostCrawlingPlugin.class)) {
 			if (plugin instanceof PostCrawlingPlugin) {
-				((PostCrawlingPlugin) plugin).postCrawling(session);
+				try {
+					LOGGER.debug("Calling plugin {}", plugin);
+					((PostCrawlingPlugin) plugin).postCrawling(session);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -151,10 +219,14 @@ public final class Plugins {
 	 */
 	public void runOnRevisitStatePlugins(CrawlSession session, StateVertex currentState) {
 		LOGGER.debug("Running OnRevisitStatePlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(OnRevisitStatePlugin.class)) {
 			if (plugin instanceof OnRevisitStatePlugin) {
-				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
-				((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
+				LOGGER.debug("Calling plugin {}", plugin);
+				try {
+					((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -173,10 +245,15 @@ public final class Plugins {
 	public void runPreStateCrawlingPlugins(CrawlSession session,
 	        List<CandidateElement> candidateElements) {
 		LOGGER.debug("Running PreStateCrawlingPlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(PreStateCrawlingPlugin.class)) {
 			if (plugin instanceof PreStateCrawlingPlugin) {
-				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
-				((PreStateCrawlingPlugin) plugin).preStateCrawling(session, candidateElements);
+				LOGGER.debug("Calling plugin {}", plugin);
+				try {
+					((PreStateCrawlingPlugin) plugin)
+					        .preStateCrawling(session, candidateElements);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -192,10 +269,14 @@ public final class Plugins {
 	 */
 	public void runProxyServerPlugins(ProxyConfiguration config) {
 		LOGGER.debug("Running ProxyServerPlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(ProxyServerPlugin.class)) {
 			if (plugin instanceof ProxyServerPlugin) {
-				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
-				((ProxyServerPlugin) plugin).proxyServer(config);
+				LOGGER.debug("Calling plugin {}", plugin);
+				try {
+					((ProxyServerPlugin) plugin).proxyServer(config);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -211,10 +292,14 @@ public final class Plugins {
 	 */
 	public void runOnFireEventFailedPlugins(Eventable eventable, List<Eventable> path) {
 		LOGGER.debug("Running OnFireEventFailedPlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(OnFireEventFailedPlugin.class)) {
 			if (plugin instanceof OnFireEventFailedPlugin) {
-				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
-				((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
+				LOGGER.debug("Calling plugin {}", plugin);
+				try {
+					((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -230,10 +315,14 @@ public final class Plugins {
 	 */
 	public void runOnBrowserCreatedPlugins(EmbeddedBrowser newBrowser) {
 		LOGGER.debug("Running OnBrowserCreatedPlugins...");
-		for (Plugin plugin : plugins) {
+		for (Plugin plugin : plugins.get(OnBrowserCreatedPlugin.class)) {
 			if (plugin instanceof OnBrowserCreatedPlugin) {
-				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
-				((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
+				LOGGER.debug("Calling plugin {}", plugin);
+				try {
+					((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
+				} catch (RuntimeException e) {
+					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+				}
 			}
 		}
 	}
@@ -241,36 +330,39 @@ public final class Plugins {
 	/**
 	 * Load and run the DomChangeNotifierPlugin.
 	 */
-	public boolean runDomChangeNotifierPlugins(final StateVertex stateBefore, final Eventable e,
+	public boolean runDomChangeNotifierPlugins(final StateVertex stateBefore,
+	        final Eventable event,
 	        final StateVertex stateAfter, final EmbeddedBrowser browser) {
-		LOGGER.debug("Checking for DomChangeNotifierPlugin...");
-		Plugin latest = null;
-		for (Plugin plugin : plugins) {
-			if (plugin instanceof DomChangeNotifierPlugin) {
-				LOGGER.debug("Found plugin " + plugin.getClass().getName());
-				latest = plugin;
+		if (plugins.get(DomChangeNotifierPlugin.class).isEmpty()) {
+			LOGGER.debug("No DomChangeNotifierPlugin found. Performing default DOM comparison...");
+			return defaultDomComparison(stateBefore, stateAfter);
+		} else {
+			DomChangeNotifierPlugin domChange =
+			        (DomChangeNotifierPlugin) plugins.get(DomChangeNotifierPlugin.class).get(0);
+			LOGGER.debug("Calling plugin {}", domChange);
+			try {
+				return domChange.isDomChanged(stateBefore.getDom(), event, stateAfter.getDom(),
+				        browser);
+			} catch (RuntimeException ex) {
+				LOGGER.error(
+				        "Could not run {} because of error {}. Now running default DOM comparison",
+				        domChange, ex.getMessage(), ex);
+				return defaultDomComparison(stateBefore, stateAfter);
 			}
 		}
 
-		if (latest != null) {
-			LOGGER.debug("Calling plugin ", latest.getClass().getName());
-			return ((DomChangeNotifierPlugin) latest).isDomChanged(stateBefore.getDom(), e,
-			        stateAfter.getDom(), browser);
-		}
-
-		LOGGER.debug("No DomChangeNotifierPlugin found. Performing default DOM comparison...");
-
-		// default DOM comparison behavior
-		boolean isChanged = !stateAfter.equals(stateBefore);
-
-		if (isChanged) {
-			LOGGER.debug("Dom is Changed!");
-		} else {
-			LOGGER.debug("Dom not Changed!");
-		}
-
-		return isChanged;
-
 	}
 
+	private boolean defaultDomComparison(final StateVertex stateBefore,
+	        final StateVertex stateAfter) {
+		// default DOM comparison behavior
+		boolean isChanged = !stateAfter.equals(stateBefore);
+		if (isChanged) {
+			LOGGER.debug("Dom is Changed!");
+			return true;
+		} else {
+			LOGGER.debug("Dom not Changed!");
+			return false;
+		}
+	}
 }
