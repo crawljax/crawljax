@@ -690,9 +690,9 @@ public class Crawler implements Runnable {
 		if (maxCrawlTime != 0 && timePassed > maxCrawlTime) {
 			LOG.info("Max time {} seconds passed!",
 			        TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime));
-			return false;
-		} else {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -701,9 +701,9 @@ public class Crawler implements Runnable {
 		int maxNumberOfStates = configurationReader.getMaximumStates();
 		if ((maxNumberOfStates != 0) && (graph.getNumberOfStates() >= maxNumberOfStates)) {
 			LOG.info("Max number of states {} reached!", maxNumberOfStates);
-			return false;
-		} else {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
