@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.test.BrowserTest;
@@ -140,7 +141,7 @@ public class CandidateElementExtractorTest {
 		 * @param mother
 		 */
 		public CEETCrawler(CrawljaxController mother) {
-			super(mother);
+			super(mother, Plugins.noPlugins());
 			try {
 				browser = mother.getBrowserPool().requestBrowser();
 			} catch (InterruptedException e) {

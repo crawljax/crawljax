@@ -24,9 +24,10 @@ import com.crawljax.condition.Condition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
 import com.crawljax.core.plugin.OnNewStatePlugin;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
 import com.google.common.collect.ImmutableList;
@@ -50,7 +51,7 @@ public class StateMachineTest {
 	@Before
 	public void initStateMachine() {
 		StateFlowGraph sfg = new StateFlowGraph(index);
-		sm = new StateMachine(sfg, index);
+		sm = new StateMachine(sfg, index, ImmutableList.<Invariant> of(), Plugins.noPlugins());
 	}
 
 	/**
@@ -241,7 +242,8 @@ public class StateMachineTest {
 				        return false;
 			        }
 		        }));
-		StateMachine smLocal = new StateMachine(new StateFlowGraph(index), index, iList);
+		StateMachine smLocal =
+		        new StateMachine(new StateFlowGraph(index), index, iList, Plugins.noPlugins());
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
@@ -278,7 +280,7 @@ public class StateMachineTest {
 				hit = true;
 			}
 		}).build();
-		CrawljaxPluginsUtil.loadPlugins(config.getPlugins());
+		setStateMachineForConfig(config);
 
 		// state2.equals(state3)
 		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
@@ -302,6 +304,11 @@ public class StateMachineTest {
 		assertFalse("Plugins are NOT exeucted", hit);
 	}
 
+	private void setStateMachineForConfig(CrawljaxConfiguration config) {
+		sm = new StateMachine(new StateFlowGraph(index), index,
+		        config.getCrawlRules().getInvariants(), config.getPlugins());
+	}
+
 	/**
 	 * Make sure InvariantViolationPlugin executed.
 	 * 
@@ -311,36 +318,34 @@ public class StateMachineTest {
 	@Test
 	public void testInvariantFailurePlugin() throws ConfigurationException {
 		hit = false;
-		CrawljaxConfiguration config = CrawljaxConfiguration.builderFor(
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(
 		        "http://localhost").addPlugin(new OnInvariantViolationPlugin() {
 			@Override
 			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
 				hit = true;
 			}
-		}).build();
-		CrawljaxPluginsUtil.loadPlugins(config.getPlugins());
+		});
+		builder.crawlRules().addInvariant(new Invariant("Test123", new Condition() {
 
-		ImmutableList<Invariant> iList =
-		        ImmutableList.of(new Invariant("Test123", new Condition() {
+			@Override
+			public NodeList getAffectedNodes() {
+				return null;
+			}
 
-			        @Override
-			        public NodeList getAffectedNodes() {
-				        return null;
-			        }
+			@Override
+			public boolean check(EmbeddedBrowser browser) {
+				return false;
+			}
+		}));
+		setStateMachineForConfig(builder.build());
 
-			        @Override
-			        public boolean check(EmbeddedBrowser browser) {
-				        return false;
-			        }
-		        }));
-		StateMachine smLocal = new StateMachine(new StateFlowGraph(index), index, iList);
 		// state2.equals(state3)
 		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
 		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertTrue(smLocal.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
+		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
 		        dummyPool)));
 
 		// New State so hit must be true;
@@ -350,7 +355,7 @@ public class StateMachineTest {
 
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertFalse(smLocal.updateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
+		assertFalse(sm.updateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
 		        dummyPool)));
 
 		// New State so plugin execution

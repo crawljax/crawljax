@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -68,11 +67,6 @@ public class OnFireEventFailedPluginTest {
 		controller.run();
 		assertThat("The FireEventFaild Plugin has been executed the correct amount of times",
 		        hits.get(), is(controller.getElementChecker().numberOfExaminedElements()));
-	}
-
-	@After
-	public void cleanUp() {
-		CrawljaxPluginsUtil.loadPlugins(null);
 	}
 
 }

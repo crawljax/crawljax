@@ -9,55 +9,40 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
-import com.google.common.collect.Lists;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Class for invoking plugins. The methods in this class are invoked from the Crawljax Core.
  */
-public final class CrawljaxPluginsUtil {
+public final class Plugins {
 
 	/**
 	 * Make a new Log4j object used to do the logging.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(CrawljaxPluginsUtil.class
-	        .getName());
-	private static final List<Plugin> PLUGINS = Lists.newArrayList();
+	private static final Logger LOGGER = LoggerFactory.getLogger(Plugins.class.getName());
 
 	/**
-	 * Non instanceable constructor; does nothing never used, this constructor prevents the
-	 * CrawljaxPluginsUtil to be instantiated as a Object. All methods of this class must be used
-	 * statically.
-	 * 
-	 * @throws CrawljaxException
-	 *             this exception is always thrown when instanced.
+	 * @return An empty {@link Plugins} configuration.
 	 */
-	private CrawljaxPluginsUtil() throws CrawljaxException {
-		LOGGER.error("As this contructor is private and never used interal "
-		        + "in the CrawljaxPluginsUtil, this message may never appear");
-		throw new CrawljaxException("Called private never used contructor CrawljaxPluginsUtil()");
+	public static Plugins noPlugins() {
+		return new Plugins(ImmutableList.<Plugin> of());
 	}
 
-	/**
-	 * Set the Plugins, first removes all the currently loaded plugins and add the plugins supplied.
-	 * 
-	 * @param plugins
-	 *            the list of plugins, if plugins is null no plugins are added.
-	 */
-	public static void loadPlugins(List<Plugin> plugins) {
-		PLUGINS.clear();
-		if (plugins == null || plugins.isEmpty()) {
-			LOGGER.warn("No plugins loaded because CrawljaxConfiguration is empty");
-			return;
-		}
-		CrawljaxPluginsUtil.PLUGINS.addAll(plugins);
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
-			LOGGER.info("Loaded plugin {}", plugin.getClass().getSimpleName());
+	private final ImmutableList<Plugin> plugins;
+
+	public Plugins(List<Plugin> plugins) {
+		Preconditions.checkNotNull(plugins);
+		this.plugins = ImmutableList.copyOf(plugins);
+		if (plugins.isEmpty()) {
+			LOGGER.warn("No plugins loaded. There will be no output");
+		} else {
+			for (Plugin plugin : plugins) {
+				LOGGER.info("Loaded plugin {}", plugin);
+			}
 		}
 	}
 
@@ -73,9 +58,9 @@ public final class CrawljaxPluginsUtil {
 	 * @param browser
 	 *            the browser instance to load to the plugin.
 	 */
-	public static void runPreCrawlingPlugins(EmbeddedBrowser browser) {
+	public void runPreCrawlingPlugins(EmbeddedBrowser browser) {
 		LOGGER.debug("Running PreCrawlingPlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof PreCrawlingPlugin) {
 				((PreCrawlingPlugin) plugin).preCrawling(browser);
 			}
@@ -91,9 +76,9 @@ public final class CrawljaxPluginsUtil {
 	 * @param browser
 	 *            the embedded browser instance to load in the plugin.
 	 */
-	public static void runOnUrlLoadPlugins(EmbeddedBrowser browser) {
+	public void runOnUrlLoadPlugins(EmbeddedBrowser browser) {
 		LOGGER.debug("Running OnUrlLoadPlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof OnUrlLoadPlugin) {
 				((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
 			}
@@ -108,9 +93,9 @@ public final class CrawljaxPluginsUtil {
 	 * @param session
 	 *            the session to load in the plugin
 	 */
-	public static void runOnNewStatePlugins(CrawlSession session) {
+	public void runOnNewStatePlugins(CrawlSession session) {
 		LOGGER.debug("Running OnNewStatePlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof OnNewStatePlugin) {
 				((OnNewStatePlugin) plugin).onNewState(session);
 			}
@@ -128,9 +113,9 @@ public final class CrawljaxPluginsUtil {
 	 * @param session
 	 *            the session to load in the plugin
 	 */
-	public static void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session) {
+	public void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session) {
 		LOGGER.debug("Running OnInvriantViolationPlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof OnInvariantViolationPlugin) {
 				((OnInvariantViolationPlugin) plugin).onInvariantViolation(invariant, session);
 			}
@@ -145,9 +130,9 @@ public final class CrawljaxPluginsUtil {
 	 * @param session
 	 *            the session to load in the plugin
 	 */
-	public static void runPostCrawlingPlugins(CrawlSession session) {
+	public void runPostCrawlingPlugins(CrawlSession session) {
 		LOGGER.debug("Running PostCrawlingPlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof PostCrawlingPlugin) {
 				((PostCrawlingPlugin) plugin).postCrawling(session);
 			}
@@ -164,9 +149,9 @@ public final class CrawljaxPluginsUtil {
 	 * @param currentState
 	 *            the state the 'back tracking' operation is currently in
 	 */
-	public static void runOnRevisitStatePlugins(CrawlSession session, StateVertex currentState) {
+	public void runOnRevisitStatePlugins(CrawlSession session, StateVertex currentState) {
 		LOGGER.debug("Running OnRevisitStatePlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof OnRevisitStatePlugin) {
 				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
@@ -185,10 +170,10 @@ public final class CrawljaxPluginsUtil {
 	 * @param candidateElements
 	 *            the elements which crawljax is about to crawl
 	 */
-	public static void runPreStateCrawlingPlugins(CrawlSession session,
+	public void runPreStateCrawlingPlugins(CrawlSession session,
 	        List<CandidateElement> candidateElements) {
 		LOGGER.debug("Running PreStateCrawlingPlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof PreStateCrawlingPlugin) {
 				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((PreStateCrawlingPlugin) plugin).preStateCrawling(session, candidateElements);
@@ -205,40 +190,12 @@ public final class CrawljaxPluginsUtil {
 	 * @param config
 	 *            The ProxyConfiguration to use.
 	 */
-	public static void runProxyServerPlugins(ProxyConfiguration config) {
+	public void runProxyServerPlugins(ProxyConfiguration config) {
 		LOGGER.debug("Running ProxyServerPlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof ProxyServerPlugin) {
 				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((ProxyServerPlugin) plugin).proxyServer(config);
-			}
-		}
-	}
-
-	/**
-	 * Load and run the guidedCrawlingPlugins. guidedServerPlugins are used to have control of the
-	 * crawling on certain states.
-	 * 
-	 * @param controller
-	 *            the crawljax controller instance.
-	 * @param session
-	 *            the current crawl session.
-	 * @param exactEventPaths
-	 *            the exact crawled event paths. Used to bring the browser back to the state the
-	 *            crawler was before guided crawling.
-	 * @param stateMachine
-	 *            the state machine.
-	 */
-	public static void runGuidedCrawlingPlugins(CrawljaxController controller,
-	        CrawlSession session, final List<Eventable> exactEventPaths,
-	        final StateMachine stateMachine) {
-		LOGGER.debug("Running GuidedCrawlingPlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
-			if (plugin instanceof GuidedCrawlingPlugin) {
-				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
-				StateVertex currentState = session.getCurrentState();
-				((GuidedCrawlingPlugin) plugin).guidedCrawling(currentState, controller, session,
-				        exactEventPaths, stateMachine);
 			}
 		}
 	}
@@ -252,9 +209,9 @@ public final class CrawljaxPluginsUtil {
 	 * @param path
 	 *            the path TO this eventable.
 	 */
-	public static void runOnFireEventFailedPlugins(Eventable eventable, List<Eventable> path) {
+	public void runOnFireEventFailedPlugins(Eventable eventable, List<Eventable> path) {
 		LOGGER.debug("Running OnFireEventFailedPlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof OnFireEventFailedPlugin) {
 				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
@@ -271,9 +228,9 @@ public final class CrawljaxPluginsUtil {
 	 * @param newBrowser
 	 *            the new created browser object
 	 */
-	public static void runOnBrowserCreatedPlugins(EmbeddedBrowser newBrowser) {
+	public void runOnBrowserCreatedPlugins(EmbeddedBrowser newBrowser) {
 		LOGGER.debug("Running OnBrowserCreatedPlugins...");
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof OnBrowserCreatedPlugin) {
 				LOGGER.debug("Calling plugin " + plugin.getClass().getName());
 				((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
@@ -284,11 +241,11 @@ public final class CrawljaxPluginsUtil {
 	/**
 	 * Load and run the DomChangeNotifierPlugin.
 	 */
-	public static boolean runDomChangeNotifierPlugins(final StateVertex stateBefore,
-	        final Eventable e, final StateVertex stateAfter, final EmbeddedBrowser browser) {
+	public boolean runDomChangeNotifierPlugins(final StateVertex stateBefore, final Eventable e,
+	        final StateVertex stateAfter, final EmbeddedBrowser browser) {
 		LOGGER.debug("Checking for DomChangeNotifierPlugin...");
 		Plugin latest = null;
-		for (Plugin plugin : CrawljaxPluginsUtil.PLUGINS) {
+		for (Plugin plugin : plugins) {
 			if (plugin instanceof DomChangeNotifierPlugin) {
 				LOGGER.debug("Found plugin " + plugin.getClass().getName());
 				latest = plugin;

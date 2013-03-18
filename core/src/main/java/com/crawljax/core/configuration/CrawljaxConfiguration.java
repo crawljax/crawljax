@@ -11,6 +11,7 @@ import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.plugin.Plugins;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -132,7 +133,7 @@ public final class CrawljaxConfiguration {
 		}
 
 		public CrawljaxConfiguration build() {
-			config.plugins = pluginBuilder.build();
+			config.plugins = new Plugins(pluginBuilder.build());
 			config.crawlRules = crawlRules.build();
 			return config;
 		}
@@ -165,7 +166,7 @@ public final class CrawljaxConfiguration {
 	private URL url;
 
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.firefox);
-	private ImmutableList<Plugin> plugins;
+	private Plugins plugins;
 	private ProxyConfiguration proxyConfiguration = ProxyConfiguration.noProxy();
 
 	private CrawlRules crawlRules;
@@ -185,7 +186,7 @@ public final class CrawljaxConfiguration {
 		return browserConfig;
 	}
 
-	public ImmutableList<Plugin> getPlugins() {
+	public Plugins getPlugins() {
 		return plugins;
 	}
 
