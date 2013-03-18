@@ -57,7 +57,7 @@ public class Crawler implements Runnable {
 	/**
 	 * Depth register.
 	 */
-	private final AtomicInteger depth = new AtomicInteger();
+	private AtomicInteger depth = new AtomicInteger();
 
 	/**
 	 * The path followed from the index to the current state.
@@ -102,7 +102,7 @@ public class Crawler implements Runnable {
 	 * @see Crawler#clickTag(Eventable)
 	 */
 	private enum ClickResult {
-		cloneDetected, newState, domUnChanged
+		CLONE_DETECTED, NEW_STATE, DOM_UNCHANGED
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class Crawler implements Runnable {
 			        new StateMachine(controller.getSession().getStateFlowGraph(), controller
 			                .getSession().getInitialState(), controller.getInvariantList());
 		} else {
-			/**
+			/*
 			 * Reset the state machine to null, because there is no session where to load the
 			 * stateFlowGraph from.
 			 */
@@ -201,9 +201,6 @@ public class Crawler implements Runnable {
 			 */
 			controller.doBrowserWait(getBrowser());
 
-			/*
-			 * Close opened windows
-			 */
 			getBrowser().closeOtherWindows();
 
 			return true; // An event fired
@@ -306,7 +303,7 @@ public class Crawler implements Runnable {
 			if (this.fireEvent(clickable)) {
 
 				int d = depth.incrementAndGet();
-				LOG.debug("Depth is now {}", d);
+				LOG.debug("Crawl depth now {}", d);
 
 				/*
 				 * Run the onRevisitStateValidator(s)
@@ -370,15 +367,15 @@ public class Crawler implements Runnable {
 					        .getSession(), controller.getSession().getCurrentCrawlPath(), this
 					        .getStateMachine());
 
-					return ClickResult.newState;
+					return ClickResult.NEW_STATE;
 				} else {
 					// Dom changed; Clone
-					return ClickResult.cloneDetected;
+					return ClickResult.CLONE_DETECTED;
 				}
 			}
 		}
 		// Event not fired or, Dom not changed
-		return ClickResult.domUnChanged;
+		return ClickResult.DOM_UNCHANGED;
 	}
 
 	private boolean domChanged(final Eventable eventable, StateVertex newState) {
@@ -418,7 +415,7 @@ public class Crawler implements Runnable {
 		if (candidateElement.allConditionsSatisfied(getBrowser())) {
 			ClickResult clickResult = clickTag(new Eventable(candidateElement, eventType));
 			switch (clickResult) {
-				case cloneDetected:
+				case CLONE_DETECTED:
 					fired = false;
 					// We are in the clone state so we continue with the cloned
 					// version to search
@@ -426,12 +423,12 @@ public class Crawler implements Runnable {
 					this.controller.getSession().branchCrawlPath();
 					spawnThreads(orrigionalState);
 					break;
-				case newState:
+				case NEW_STATE:
 					fired = true;
 					// Recurse because new state found
 					spawnThreads(orrigionalState);
 					break;
-				case domUnChanged:
+				case DOM_UNCHANGED:
 					// Dom not updated, continue with the next
 					break;
 				default:
@@ -443,7 +440,7 @@ public class Crawler implements Runnable {
 			LOG.info("Conditions not satisfied for element: " + candidateElement + "; State: "
 			        + this.getStateMachine().getCurrentState().getName());
 		}
-		return ClickResult.domUnChanged;
+		return ClickResult.DOM_UNCHANGED;
 	}
 
 	/**
@@ -453,6 +450,10 @@ public class Crawler implements Runnable {
 	 *             if an exception is thrown.
 	 */
 	private boolean crawl() throws CrawljaxException {
+		if (depthLimitReached()) {
+			return true;
+		}
+
 		if (!shouldContinueCrawling()) {
 			return false;
 		}
@@ -474,15 +475,19 @@ public class Crawler implements Runnable {
 		CandidateCrawlAction action =
 		        orrigionalState.pollCandidateCrawlAction(this, crawlQueueManager);
 		while (action != null) {
+			if (depthLimitReached()) {
+				return true;
+			}
+
 			if (!shouldContinueCrawling()) {
 				return false;
 			}
 			ClickResult result = this.crawlAction(action);
 			orrigionalState.finishedWorking(this, action);
 			switch (result) {
-				case newState:
+				case NEW_STATE:
 					return newStateDetected(orrigionalState);
-				case cloneDetected:
+				case CLONE_DETECTED:
 					return true;
 				default:
 					break;
@@ -490,6 +495,24 @@ public class Crawler implements Runnable {
 			action = orrigionalState.pollCandidateCrawlAction(this, crawlQueueManager);
 		}
 		return true;
+	}
+
+	/**
+	 * Have we reached the depth limit?
+	 * 
+	 * @param depth
+	 *            the current depth. Added as argument so this call can be moved out if desired.
+	 * @return true if the limit has been reached
+	 */
+	private boolean depthLimitReached() {
+		int maxDepth = configurationReader.getMaximumDepth();
+		if (this.depth.get() >= maxDepth && maxDepth != 0) {
+			LOG.info("DEPTH {} reached returning from rec call. Given depth: {}", maxDepth,
+			        depth);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -501,6 +524,7 @@ public class Crawler implements Runnable {
 	 * @throws CrawljaxException
 	 */
 	private boolean newStateDetected(StateVertex orrigionalState) throws CrawljaxException {
+
 		// An event has been fired so we are one level deeper
 		int d = depth.incrementAndGet();
 		LOG.info("RECURSIVE Call crawl; Current DEPTH= " + d);
@@ -657,46 +681,29 @@ public class Crawler implements Runnable {
 	}
 
 	private boolean shouldContinueCrawling() {
-		return !maxCrawlTimeHasRunOut() && !maximumStatesReached() && !depthLimitReached();
+		return !maximumCrawlTimePassed() && !maximumStatesReached();
 	}
 
-	private boolean maxCrawlTimeHasRunOut() {
+	private boolean maximumCrawlTimePassed() {
 		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
 		long maxCrawlTime = configurationReader.getMaximumRuntime();
 		if (maxCrawlTime != 0 && timePassed > maxCrawlTime) {
 			LOG.info("Max time {} seconds passed!",
 			        TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime));
-			return true;
-		} else {
 			return false;
+		} else {
+			return true;
 		}
 	}
 
 	private boolean maximumStatesReached() {
 		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
 		int maxNumberOfStates = configurationReader.getMaximumStates();
-		if ((maxNumberOfStates != 0) && (graph.getAllStates().size() >= maxNumberOfStates)) {
+		if ((maxNumberOfStates != 0) && (graph.getNumberOfStates() >= maxNumberOfStates)) {
 			LOG.info("Max number of states {} reached!", maxNumberOfStates);
 			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Have we reached the depth limit?
-	 * 
-	 * @param depth
-	 *            the current depth. Added as argument so this call can be moved out if desired.
-	 * @return true if the limit has been reached
-	 */
-	private boolean depthLimitReached() {
-		int maxDepth = configurationReader.getMaximumDepth();
-		if (this.depth.get() >= maxDepth && maxDepth != 0) {
-			LOG.info("DEPTH {} reached returning from rec call. Given depth: {}", maxDepth,
-			        depth);
-			return true;
 		} else {
-			return false;
+			return true;
 		}
 	}
 
