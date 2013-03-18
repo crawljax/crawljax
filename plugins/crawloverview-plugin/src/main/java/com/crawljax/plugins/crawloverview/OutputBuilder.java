@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
@@ -78,6 +79,8 @@ class OutputBuilder {
 		indexFile = new File(outputDir, "index.html");
 		ve = new VelocityEngine();
 		configureVelocity();
+
+		copyGitProperties();
 	}
 
 	private void configureVelocity() {
@@ -139,6 +142,16 @@ class OutputBuilder {
 
 	File newScreenShotFile(String name) {
 		return new File(screenshots, name + ".png");
+	}
+
+	private void copyGitProperties() {
+		File outFile = new File(outputDir, "git.properties");
+		try (InputStream in = OutputBuilder.class.getResourceAsStream("/git.properties");
+		        FileOutputStream out = new FileOutputStream(outFile)) {
+			ByteStreams.copy(in, out);
+		} catch (IOException e) {
+			LOG.warn("Could not copy git.properties file", e);
+		}
 	}
 
 	void makeThumbNail(File screenShot, String name) {
