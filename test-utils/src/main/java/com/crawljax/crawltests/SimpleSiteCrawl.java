@@ -1,5 +1,7 @@
 package com.crawljax.crawltests;
 
+import org.eclipse.jetty.util.resource.Resource;
+
 import com.crawljax.test.BaseCrawler;
 
 /**
@@ -11,6 +13,6 @@ public class SimpleSiteCrawl extends BaseCrawler {
 	public static final int NUMBER_OF_EDGES = 5;
 
 	public SimpleSiteCrawl() {
-		super("simple-site");
+		super(Resource.newClassPathResource("sites"), "simple-site");
 	}
 }
