@@ -3,10 +3,11 @@ package com.crawljax.browser;
 import java.io.File;
 import java.net.URL;
 
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.WebElement;
 
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
@@ -38,7 +39,7 @@ public interface EmbeddedBrowser {
 	 *            the event.
 	 * @return if fails.
 	 */
-	boolean fireEvent(Eventable event);
+	boolean fireEvent(Eventable event) throws ElementNotVisibleException;
 
 	/**
 	 * @return the DOM string with all the iframe content.
@@ -144,5 +145,5 @@ public interface EmbeddedBrowser {
 	 * @param configuration
 	 *            the new configuration values that needs to be updated.
 	 */
-	void updateConfiguration(CrawljaxConfigurationReader configuration);
+	void updateConfiguration(CrawljaxConfiguration configuration);
 }

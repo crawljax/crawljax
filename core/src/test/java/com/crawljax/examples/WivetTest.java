@@ -12,11 +12,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.experimental.categories.Category;
 
-import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.ThreadConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BrowserTest;
 
 /**
@@ -28,40 +26,29 @@ public class WivetTest {
 	/**
 	 * @return the crawljax specification
 	 */
-	private static CrawlSpecification getCrawlSpec() {
-		CrawlSpecification crawler =
-		        new CrawlSpecification("http://caos.uab.es/~gruiz/test/wivet/");
-		crawler.setMaximumStates(0);
-		crawler.setDepth(0);
-		crawler.setRandomInputInForms(true);
-		crawler.clickMoreElements();
-		crawler.setClickOnce(true);
-		crawler.setWaitTimeAfterReloadUrl(20, TimeUnit.MILLISECONDS);
-		crawler.setWaitTimeAfterEvent(200, TimeUnit.MILLISECONDS);
-		crawler.dontClick("a").withAttribute("href", "../innerpages/2_2.php");
-		crawler.dontClick("a").withText("Logout");
-		return crawler;
-	}
-
-	/**
-	 * @return the crawljax thread configuration
-	 */
-	private static ThreadConfiguration getThreadConfiguration() {
-		ThreadConfiguration tc = new ThreadConfiguration();
-		tc.setBrowserBooting(true);
-		tc.setNumberBrowsers(1);
-		tc.setNumberThreads(1);
-		return tc;
+	private static CrawljaxConfiguration getCrawlConfig() {
+		CrawljaxConfigurationBuilder builder =
+		        CrawljaxConfiguration.builderFor("http://caos.uab.es/~gruiz/test/wivet/");
+		builder.setUnlimitedCrawlDepth();
+		builder.setUnlimitedStates();
+		builder.setUnlimitedRuntime();
+		builder.crawlRules().insertRandomDataInInputForms(true);
+		builder.crawlRules().click("span", "div", "ol", "center", "li", "radio", "non", "meta",
+		        "refresh", "xhr", "relative", "link", "self", "form", "input", "option", "img",
+		        "p", "td", "tr", "table", "tbody");
+		builder.crawlRules().clickOnce(true);
+		builder.crawlRules().waitAfterReloadUrl(20, TimeUnit.MILLISECONDS);
+		builder.crawlRules().waitAfterEvent(200, TimeUnit.MILLISECONDS);
+		builder.crawlRules().dontClick("a").withAttribute("href", "../innerpages/2_2.php");
+		builder.crawlRules().dontClick("a").withText("Logout");
+		return builder.build();
 	}
 
 	/**
 	 * @return the crawljax configuration
 	 */
 	private static CrawljaxConfiguration getConfig() {
-		CrawljaxConfiguration crawljaxConfiguration = new CrawljaxConfiguration();
-		crawljaxConfiguration.setThreadConfiguration(getThreadConfiguration());
-		crawljaxConfiguration.setBrowser(EmbeddedBrowser.BrowserType.firefox);
-		crawljaxConfiguration.setCrawlSpecification(getCrawlSpec());
+		CrawljaxConfiguration crawljaxConfiguration = getCrawlConfig();
 		/* proxy stuff */
 		/*
 		 * ProxyConfiguration p = new ProxyConfiguration(); p.setHostname("localhost");

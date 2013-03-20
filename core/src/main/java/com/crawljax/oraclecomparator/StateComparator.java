@@ -58,7 +58,7 @@ public class StateComparator {
 	 *         oracles and pre-conditions.
 	 */
 	public boolean compare(String originalDom, String newDom, EmbeddedBrowser browser) {
-		if (oracleComparator.size() == 0) {
+		if (oracleComparator.isEmpty()) {
 			// add default simpleOracle
 			this.addDefaultOracleComparator();
 		}
