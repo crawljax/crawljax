@@ -1,7 +1,6 @@
 package com.crawljax.plugins.crawloverview;
 
 import java.io.File;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.apache.commons.io.FileUtils;
@@ -62,7 +61,7 @@ public class RunHoverCrawl extends ExternalResource {
 		CRAWL_TASK.get();
 	}
 
-	public OutPutModel getResult() throws InterruptedException, ExecutionException {
+	public OutPutModel getResult() {
 		return CRAWL_TASK.get();
 	}
 

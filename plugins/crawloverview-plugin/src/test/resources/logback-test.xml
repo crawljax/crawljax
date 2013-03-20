@@ -9,6 +9,7 @@
 	</appender>
 
 	<logger name="com.crawljax.plugins.crawloverview" level="DEBUG" />
+	<logger name="com.crawljax.test" level="DEBUG" />
 
 	<root level="WARN">
 		<appender-ref ref="STDOUT" />
