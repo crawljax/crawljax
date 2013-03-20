@@ -44,7 +44,6 @@ public class CrawlOverview
 	private final OutputBuilder outputBuilder;
 	private final Map<String, StateVertex> visitedStates;
 
-	private CrawlSession session;
 	private OutPutModel result;
 
 	private final OutPutModelCache outModelCache;
@@ -63,10 +62,9 @@ public class CrawlOverview
 	@Override
 	public void onNewState(CrawlSession session) {
 		LOG.debug("onNewState");
-		this.session = session;
 		StateVertex vertex = session.getCurrentState();
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
-		saveScreenshot(state.getName(), vertex);
+		saveScreenshot(session, state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), session.getBrowser().getDom());
 		Point point = getOffSet(session.getBrowser());
 		state.setScreenShotOffset(point);
@@ -98,7 +96,7 @@ public class CrawlOverview
 		return "relative".equals(position);
 	}
 
-	private void saveScreenshot(String name, StateVertex vertex) {
+	private void saveScreenshot(CrawlSession session, String name, StateVertex vertex) {
 		LOG.trace("Saving screenshot");
 		synchronized (visitedStates) {
 			if (!visitedStates.containsKey(name)) {
@@ -123,7 +121,6 @@ public class CrawlOverview
 	@Override
 	public void preStateCrawling(CrawlSession session, List<CandidateElement> candidateElements) {
 		LOG.debug("preStateCrawling");
-		this.session = session;
 		List<CandidateElementPosition> newElements = Lists.newLinkedList();
 		StateVertex state = session.getCurrentState();
 		LOG.info("Prestate found new state {} with {} candidates", state.getName(),

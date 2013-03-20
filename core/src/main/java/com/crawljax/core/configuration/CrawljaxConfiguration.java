@@ -1,5 +1,7 @@
 package com.crawljax.core.configuration;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +26,7 @@ public final class CrawljaxConfiguration {
 		private final CrawlRulesBuilder crawlRules = CrawlRules.builder();
 
 		private CrawljaxConfigurationBuilder(URL url) {
+			Preconditions.checkNotNull(url);
 			config = new CrawljaxConfiguration();
 			config.url = url;
 		}
@@ -34,7 +37,7 @@ public final class CrawljaxConfiguration {
 		 *            unlimited.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumStates(int states) {
-			Preconditions.checkArgument(states > 1, "States should be positive");
+			checkArgument(states > 1, "Number of maximum states should be largen than 1");
 			config.maximumStates = states;
 			return this;
 		}
@@ -52,7 +55,7 @@ public final class CrawljaxConfiguration {
 		 *            The maximum time the crawler should run. Default is one hour.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumRunTime(long time, TimeUnit unit) {
-			Preconditions.checkArgument(time > 0, "Time should larger than 0");
+			checkArgument(time >= 0, "Time should be larger than 0, or 0 for infinate.");
 			config.maximumRuntime = unit.toMillis(time);
 			return this;
 		}
@@ -70,7 +73,8 @@ public final class CrawljaxConfiguration {
 		 *            The maximum depth the crawler can reach. The default is <code>2</code>.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumDepth(int depth) {
-			Preconditions.checkArgument(depth > 1, "Time should larger than 1");
+			Preconditions.checkArgument(depth >= 0,
+			        "Depth should be 0 for infinite, or larger for a certain depth.");
 			config.maximumDepth = depth;
 			return this;
 		}
@@ -103,6 +107,7 @@ public final class CrawljaxConfiguration {
 		 *            The proxy configuration. Default is {@link ProxyConfiguration#noProxy()}
 		 */
 		public CrawljaxConfigurationBuilder setProxyConfig(ProxyConfiguration configuration) {
+			Preconditions.checkNotNull(configuration);
 			config.proxyConfiguration = configuration;
 			return this;
 		}
@@ -121,6 +126,7 @@ public final class CrawljaxConfiguration {
 		 *            {@link BrowserType#firefox} browser.
 		 */
 		public CrawljaxConfigurationBuilder setBrowserConfig(BrowserConfiguration configuration) {
+			Preconditions.checkNotNull(configuration);
 			config.browserConfig = configuration;
 			return this;
 		}

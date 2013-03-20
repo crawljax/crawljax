@@ -2,6 +2,8 @@ package com.crawljax.core.configuration;
 
 import javax.annotation.concurrent.Immutable;
 
+import com.google.common.base.Preconditions;
+
 /**
  * Class for passing proxy settings to Crawljax' browser builder. It is returned by the
  * ProxyServerPlugin interface.
@@ -71,6 +73,9 @@ public class ProxyConfiguration {
 	 * @see ProxyType#MANUAL
 	 */
 	public static ProxyConfiguration manualProxyOn(String host, int port) {
+		Preconditions.checkNotNull(host);
+		Preconditions.checkArgument(port > 0 && port <= 65535,
+		        "port number should be between 0 and 65535 but was " + port);
 		return new ProxyConfiguration(port, host, ProxyType.MANUAL);
 	}
 
