@@ -1,6 +1,5 @@
 package com.crawljax.core;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -10,13 +9,12 @@ import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.DomUtils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /**
  * Candidate element for crawling. It is possible to link this eventable to form inputs, so that
  * crawljax knows which values to set for this elements before it is clicked.
- * 
- * @author Danny Roest (dannyroest@gmail.com)
  */
 public class CandidateElement {
 
@@ -24,9 +22,9 @@ public class CandidateElement {
 
 	private final Element element;
 
-	private List<FormInput> formInputs = new ArrayList<FormInput>();
+	private final ImmutableList<FormInput> formInputs;
 	private EventableCondition eventableCondition;
-	private String relatedFrame = "";
+	private final String relatedFrame;
 
 	/**
 	 * Constructor for a element a identification and a relatedFrame.
@@ -38,10 +36,12 @@ public class CandidateElement {
 	 * @param relatedFrame
 	 *            the frame this element belongs to.
 	 */
-	public CandidateElement(Element element, Identification identification, String relatedFrame) {
+	public CandidateElement(Element element, Identification identification, String relatedFrame,
+	        List<FormInput> formInputs) {
 		this.identification = identification;
 		this.element = element;
 		this.relatedFrame = relatedFrame;
+		this.formInputs = ImmutableList.copyOf(formInputs);
 	}
 
 	/**
@@ -52,8 +52,13 @@ public class CandidateElement {
 	 * @param xpath
 	 *            the xpath expression of the element
 	 */
-	public CandidateElement(Element element, String xpath) {
-		this(element, new Identification(Identification.How.xpath, xpath), "");
+	public CandidateElement(Element element, String xpath, List<FormInput> formInputs) {
+		this(element, new Identification(Identification.How.xpath, xpath), "", formInputs);
+	}
+
+	public CandidateElement(Element sourceElement, Identification identification,
+	        String relatedFrame) {
+		this(sourceElement, identification, relatedFrame, ImmutableList.<FormInput> of());
 	}
 
 	/**
@@ -103,14 +108,6 @@ public class CandidateElement {
 	 */
 	public List<FormInput> getFormInputs() {
 		return formInputs;
-	}
-
-	/**
-	 * @param formInputs
-	 *            set the related formInputs
-	 */
-	public void setFormInputs(List<FormInput> formInputs) {
-		this.formInputs = formInputs;
 	}
 
 	/**

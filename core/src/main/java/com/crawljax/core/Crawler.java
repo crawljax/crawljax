@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -270,14 +271,13 @@ public class Crawler implements Runnable {
 	 *            the eventable element.
 	 */
 	private void handleInputElements(Eventable eventable) {
-		List<FormInput> formInputs = eventable.getRelatedFormInputs();
+		CopyOnWriteArrayList<FormInput> formInputs = eventable.getRelatedFormInputs();
 
 		for (FormInput formInput : formHandler.getFormInputs()) {
 			if (!formInputs.contains(formInput)) {
 				formInputs.add(formInput);
 			}
 		}
-		eventable.setRelatedFormInputs(formInputs);
 		formHandler.handleFormElements(formInputs);
 	}
 
