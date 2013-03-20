@@ -11,8 +11,10 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -118,10 +120,7 @@ class OutputBuilder {
 
 	private void copySkeletonFromJar(URL skeleton) {
 		LOG.debug("Loading skeleton as JAR entry {}", skeleton);
-		String path = skeleton.getPath();
-		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
-		File jar = new File(jarpath);
-		LOG.debug("Jar file {} from path {}", jar, path);
+		File jar = getJar(skeleton);
 		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(jar))) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
@@ -138,6 +137,20 @@ class OutputBuilder {
 			throw new RuntimeException("Could not copy required resources: " + e1.getMessage(),
 			        e1);
 		}
+	}
+
+	private File getJar(URL skeleton) {
+		String path;
+		try {
+			path = URLDecoder.decode(skeleton.getPath(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("Could not process the path of the Overview skeleton "
+			        + skeleton, e);
+		}
+		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
+		File jar = new File(jarpath);
+		LOG.debug("Jar file {} from path {}", jar, path);
+		return jar;
 	}
 
 	File newScreenShotFile(String name) {
