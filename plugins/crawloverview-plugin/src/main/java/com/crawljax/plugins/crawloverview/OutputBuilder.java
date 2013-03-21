@@ -30,17 +30,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.plugin.Plugin;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
@@ -83,6 +73,7 @@ class OutputBuilder {
 		configureVelocity();
 
 		copyGitProperties();
+
 	}
 
 	private void configureVelocity() {
@@ -195,9 +186,9 @@ class OutputBuilder {
 	private void writeIndexFile(OutPutModel model) {
 		LOG.debug("Writing index file");
 		VelocityContext context = new VelocityContext();
-		writeJsonToOutDir(toJson(model));
-		context.put("states", toJson(model.getStates()));
-		context.put("edges", toJson(model.getEdges()));
+		writeJsonToOutDir(Serializer.toPrettyJson(model));
+		context.put("states", Serializer.toPrettyJson(model.getStates()));
+		context.put("edges", Serializer.toPrettyJson(model.getEdges()));
 		context.put("config", BeanToReadableMap.toMap(model.getConfiguration()));
 
 		context.put("stats", model.getStatistics());
@@ -256,36 +247,6 @@ class OutputBuilder {
 			return Files.toString(new File(doms, name + ".html"), Charsets.UTF_8);
 		} catch (IOException e) {
 			return "Could not load DOM: " + e.getLocalizedMessage();
-		}
-	}
-
-	static String toJson(Object o) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-			mapper.setVisibility(PropertyAccessor.GETTER, Visibility.NONE);
-			mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-			SimpleModule testModule = new SimpleModule("Plugin serialiezr");
-			testModule.addSerializer(new JsonSerializer<Plugin>() {
-
-				@Override
-				public void serialize(Plugin plugin, JsonGenerator jgen,
-				        SerializerProvider provider) throws IOException, JsonProcessingException {
-					jgen.writeString(plugin.getClass().getSimpleName());
-				}
-
-				@Override
-				public Class<Plugin> handledType() {
-					return Plugin.class;
-				}
-			});
-			mapper.registerModule(testModule);
-			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(o);
-		} catch (JsonProcessingException e) {
-			LOG.error(
-			        "Could not serialize the object. This will be ignored and the error will be written instead. Object was {}",
-			        o, e);
-			return "\"" + e.getMessage() + "\"";
 		}
 	}
 

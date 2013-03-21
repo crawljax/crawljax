@@ -69,7 +69,7 @@ public class OutputBuilderTest {
 
 	@Test
 	public void testConfigIsSerializable() {
-		OutputBuilder.toJson(CrawljaxConfiguration.builderFor("http://localhost")
+		Serializer.toPrettyJson(CrawljaxConfiguration.builderFor("http://localhost")
 		        .build());
 	}
 
