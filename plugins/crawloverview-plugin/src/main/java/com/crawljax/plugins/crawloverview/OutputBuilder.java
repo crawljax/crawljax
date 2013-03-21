@@ -2,9 +2,6 @@ package com.crawljax.plugins.crawloverview;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,7 +16,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
@@ -145,7 +141,11 @@ class OutputBuilder {
 	}
 
 	File newScreenShotFile(String name) {
-		return new File(screenshots, name + ".png");
+		return new File(screenshots, name + ".jpg");
+	}
+
+	public File newThumbNail(String name) {
+		return new File(screenshots, name + "_small.jpg");
 	}
 
 	private void copyGitProperties() {
@@ -155,21 +155,6 @@ class OutputBuilder {
 			ByteStreams.copy(in, out);
 		} catch (IOException e) {
 			LOG.warn("Could not copy git.properties file", e);
-		}
-	}
-
-	void makeThumbNail(File screenShot, String name) {
-		try {
-			// scale image on disk
-			BufferedImage originalImage = ImageIO.read(screenShot);
-			BufferedImage resizedImage = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
-
-			Graphics2D g = resizedImage.createGraphics();
-			g.drawImage(originalImage, 0, 0, 200, 200, Color.WHITE, null);
-			g.dispose();
-			ImageIO.write(resizedImage, "jpg", new File(screenshots, name + "_small.jpg"));
-		} catch (IOException e) {
-			throw new CrawlOverviewException("Could not create thumbnail");
 		}
 	}
 

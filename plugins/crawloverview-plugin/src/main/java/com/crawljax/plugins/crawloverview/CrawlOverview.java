@@ -104,10 +104,11 @@ public class CrawlOverview
 			}
 		}
 		LOG.debug("Saving screenshot for state {}", name);
-		File screenShot = outputBuilder.newScreenShotFile(name);
+		File jpg = outputBuilder.newScreenShotFile(name);
+		File thumb = outputBuilder.newThumbNail(name);
 		try {
-			session.getBrowser().saveScreenShot(screenShot);
-			outputBuilder.makeThumbNail(screenShot, name);
+			byte[] screenshot = session.getBrowser().getScreenShot();
+			ImageWriter.writeScreenShotAndThumbnail(screenshot, jpg, thumb);
 		} catch (CrawljaxException e) {
 			LOG.warn("Screenshots are not supported for {}", session.getBrowser());
 		}
