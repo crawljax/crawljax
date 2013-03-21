@@ -388,7 +388,7 @@ public class StateFlowGraph implements Serializable {
 			return "guided" + id;
 		}
 
-		return "state" + id;
+		return "state" + id + "test";
 	}
 
 	public boolean isInitialState(StateVertex state) {
