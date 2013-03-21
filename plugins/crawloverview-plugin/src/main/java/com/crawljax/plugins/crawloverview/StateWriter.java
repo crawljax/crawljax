@@ -129,11 +129,15 @@ class StateWriter {
 		temp = temp.replace("&", "");
 		temp = temp.replace(",", "");
 		temp = temp.replace("#", "");
+		if(temp.length()>50){
+			temp = temp.substring(0, 50);
+		}
+
 		String temp2 = name;
-		System.out.println(temp);
-		System.out.println(temp2);
-		temp2 = temp2.replace(temp+ " ", "");
-		System.out.println(temp2 +" test getStateNumber");
+		//System.out.println(temp);
+		//System.out.println(temp2);
+		temp2 = temp2.replace(("-"+temp), "");
+		//System.out.println(temp2 +" test getStateNumber");
 		
 
 		return Integer.parseInt(temp2);

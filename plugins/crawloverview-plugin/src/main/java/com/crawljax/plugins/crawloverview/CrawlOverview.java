@@ -63,13 +63,14 @@ public class CrawlOverview
 	public void onNewState(CrawlSession session) {
 		LOG.debug("onNewState");
 		StateVertex vertex = session.getCurrentState();
-		String temp = vertex.getName();
-/*		temp = temp.replace("xpasswordx", ":");
+/*		String temp = vertex.getName();
+		temp = temp.replace("xpasswordx", ":");
 		temp = temp.replace("ypasswordy", "/");
-		temp = temp.replace("zpasswordz", ".");*/
-		vertex.setName(temp);
+		temp = temp.replace("zpasswordz", ".");
+		vertex.setName(temp);*/
+		
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
-		System.out.println(state.getName() + "test onNewState");
+		//System.out.println(state.getName());
 		saveScreenshot(session, state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), session.getBrowser().getDom());
 		Point point = getOffSet(session.getBrowser());
@@ -114,7 +115,7 @@ public class CrawlOverview
 		//temp = temp.replace(":", "xpasswordx");
 		//temp = temp.replace("/", "ypasswordy");
 		File screenShot = outputBuilder.newScreenShotFile(temp);
-		System.out.println(name + " test");
+		//System.out.println(name + " test");
 		try {
 			session.getBrowser().saveScreenShot(screenShot);
 			outputBuilder.makeThumbNail(screenShot, temp);
@@ -180,9 +181,9 @@ public class CrawlOverview
 		outputBuilder.write(result);
 		synchronized (visitedStates) {
 			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
-			for (State state : result.getStates().values()) {
+			for(State state: result.getStates().values()){
 				writer.writeHtmlForState(state);
-			}
+			}			
 		}
 		LOG.info("Crawl overview plugin has finished");
 	}

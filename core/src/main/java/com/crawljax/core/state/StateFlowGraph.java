@@ -403,8 +403,8 @@ public class StateFlowGraph implements Serializable {
 		if(temp.length()>50){
 			temp = temp.substring(0, 50);
 		}
-		String return_string = temp + " " + id;
-		System.out.println(return_string);
+		String return_string =   id+"-" +temp;
+		//System.out.println(return_string);
 		
 		return return_string;
 	}
