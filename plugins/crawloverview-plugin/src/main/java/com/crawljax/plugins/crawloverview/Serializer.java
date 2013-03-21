@@ -6,15 +6,16 @@ import java.text.SimpleDateFormat;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.plugin.Plugin;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 
 public class Serializer {
 
@@ -22,10 +23,14 @@ public class Serializer {
 
 	static {
 		MAPPER = new ObjectMapper();
-		MAPPER.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-		MAPPER.setVisibility(PropertyAccessor.GETTER, Visibility.NONE);
+		MAPPER.getSerializationConfig().getDefaultVisibilityChecker()
+		        .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+		        .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+		        .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+		        .withCreatorVisibility(JsonAutoDetect.Visibility.NONE);
 		MAPPER.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:00:ss z"));
+		MAPPER.registerModule(new GuavaModule());
 		SimpleModule testModule = new SimpleModule("Plugin serialiezr");
 		testModule.addSerializer(new JsonSerializer<Plugin>() {
 
@@ -56,5 +61,12 @@ public class Serializer {
 			                o, e);
 			return "\"" + e.getMessage() + "\"";
 		}
+	}
+
+	static <T> T deserialize(String value, TypeReference<T> clasz) throws IOException {
+		return MAPPER.readValue(value, clasz);
+	}
+
+	private Serializer() {
 	}
 }
