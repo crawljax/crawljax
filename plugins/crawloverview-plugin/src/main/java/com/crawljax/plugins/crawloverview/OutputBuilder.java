@@ -154,7 +154,11 @@ class OutputBuilder {
 	}
 
 	File newScreenShotFile(String name) {
-		return new File(screenshots, name + ".png");
+/*		String temp = name;
+		temp = temp.replace("xpasswordx", "\\:");
+		temp = temp.replace("ypasswordy", "\\/");
+		temp = temp.replace("zpasswordz", "\\.");*/
+		return new File(screenshots, name.toString() + ".png");
 	}
 
 	private void copyGitProperties() {

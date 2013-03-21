@@ -109,8 +109,8 @@ public class StateFlowGraph implements Serializable {
 
 	private void correctStateName(StateVertex stateVertix) {
 		// the -1 is for the "index" state.
-		int totalNumberOfStates = this.getAllStates().size() - 1;
-		String correctedName = makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
+		int totalNumberOfStates = this.getAllStates().size()-1;
+		String correctedName = makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling(), stateVertix.getUrl());
 		if (!"index".equals(stateVertix.getName())
 		        && !stateVertix.getName().equals(correctedName)) {
 			LOG.info("Correcting state name from {}  to {}", stateVertix.getName(), correctedName);
@@ -368,9 +368,9 @@ public class StateFlowGraph implements Serializable {
 	 * 
 	 * @return State name the name of the state
 	 */
-	public String getNewStateName() {
+	public String getNewStateName(String s) {
 		stateCounter.getAndIncrement();
-		String state = makeStateName(stateCounter.get(), false);
+		String state = makeStateName(stateCounter.get(), false, s);
 		return state;
 	}
 
@@ -382,13 +382,31 @@ public class StateFlowGraph implements Serializable {
 	 *            the id where this name needs to be for.
 	 * @return the String containing the new name.
 	 */
-	private String makeStateName(int id, boolean guided) {
+	private String makeStateName(int id, boolean guided, String url) {
 
 		if (guided) {
 			return "guided" + id;
 		}
-
-		return "state" + id;
+		String temp = url;
+		/*
+		temp = temp.replace(":", "xpasswordx");
+		temp = temp.replace("/", "ypasswordy");
+		temp = temp.replace(".", "zpasswordz");*/
+		temp = temp.replace(":", "");
+		temp = temp.replace("/", "");
+		temp = temp.replace(".", "");
+		temp = temp.replace("=", "");
+		temp = temp.replace("?", "");
+		temp = temp.replace("&", "");
+		temp = temp.replace(",", "");
+		temp = temp.replace("#", "");
+		if(temp.length()>50){
+			temp = temp.substring(0, 50);
+		}
+		String return_string =   id+"-" +temp;
+		//System.out.println(return_string);
+		
+		return return_string;
 	}
 
 	public boolean isInitialState(StateVertex state) {

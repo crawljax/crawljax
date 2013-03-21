@@ -359,7 +359,7 @@ public class Crawler implements Runnable {
 		if (this.fireEvent(eventable)) {
 			StateVertex newState =
 			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
-			                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
+			                .getStateFlowGraph().getNewStateName(getBrowser().getCurrentUrl()), getBrowser().getDom(),
 			                this.controller.getStrippedDom(getBrowser()));
 
 			if (domChanged(eventable, newState)) {

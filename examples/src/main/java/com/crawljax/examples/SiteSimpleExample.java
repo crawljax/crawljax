@@ -1,9 +1,12 @@
 package com.crawljax.examples;
 
+import java.io.File;
+
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.plugins.crawloverview.CrawlOverview;
 
 /**
  * Crawls google.com in IE.
@@ -19,6 +22,8 @@ public final class SiteSimpleExample {
 
 	private static final int MAX_CRAWL_DEPTH = 1;
 	private static final int MAX_STATES = 10;
+	private static final String outputDir = "output3";
+
 
 	/**
 	 * Entry point
@@ -34,6 +39,8 @@ public final class SiteSimpleExample {
 		builder.setMaximumDepth(MAX_CRAWL_DEPTH);
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
+		
+		builder.addPlugin(new CrawlOverview(new File(outputDir)));
 
 		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();

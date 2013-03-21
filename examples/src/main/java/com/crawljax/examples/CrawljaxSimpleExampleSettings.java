@@ -1,11 +1,14 @@
 package com.crawljax.examples;
 
+import java.io.File;
+
 import org.apache.commons.configuration.ConfigurationException;
 
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.plugins.crawloverview.CrawlOverview;
 
 /**
  * Simple Example.
@@ -15,6 +18,8 @@ public final class CrawljaxSimpleExampleSettings {
 	private static final String URL = "http://www.google.com";
 	private static final int MAX_DEPTH = 2;
 	private static final int MAX_NUMBER_STATES = 8;
+	private static final String outputDir = "output2";
+
 
 	/**
 	 * Entry point
@@ -35,6 +40,8 @@ public final class CrawljaxSimpleExampleSettings {
 		builder.setMaximumDepth(MAX_DEPTH);
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
+		builder.addPlugin(new CrawlOverview(new File(outputDir)));
+
 
 		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();

@@ -76,7 +76,7 @@ class StateWriter {
 			}
 			if (toState != null) {
 				elementMap.put("targetname", toState.getName());
-				if (getStateNumber(toState.getName()) < getStateNumber(state.getName())) {
+				if (getStateNumber(toState.getName(), toState.getUrl()) < getStateNumber(state.getName(), state.getUrl())) {
 					// state already found
 					elementMap.put("color", COLOR_A_PREVIOUS_STATE);
 				} else {
@@ -111,10 +111,35 @@ class StateWriter {
 		return null;
 	}
 
-	private int getStateNumber(String name) {
+	private int getStateNumber(String name, String url) {
 		if ("index".equals(name)) {
 			return 0;
 		}
-		return Integer.parseInt(name.replace("state", ""));
+		String temp = url;
+		/*
+		temp = temp.replace(":", "xpasswordx");
+		temp = temp.replace("/", "ypasswordy");
+		temp = temp.replace(".", "zpasswordz");*/
+		
+		temp = temp.replace(":", "");
+		temp = temp.replace("/", "");
+		temp = temp.replace(".", "");
+		temp = temp.replace("=", "");
+		temp = temp.replace("?", "");
+		temp = temp.replace("&", "");
+		temp = temp.replace(",", "");
+		temp = temp.replace("#", "");
+		if(temp.length()>50){
+			temp = temp.substring(0, 50);
+		}
+
+		String temp2 = name;
+		//System.out.println(temp);
+		//System.out.println(temp2);
+		temp2 = temp2.replace(("-"+temp), "");
+		//System.out.println(temp2 +" test getStateNumber");
+		
+
+		return Integer.parseInt(temp2);
 	}
 }
