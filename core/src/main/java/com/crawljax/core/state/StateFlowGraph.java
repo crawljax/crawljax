@@ -109,7 +109,7 @@ public class StateFlowGraph implements Serializable {
 
 	private void correctStateName(StateVertex stateVertix) {
 		// the -1 is for the "index" state.
-		int totalNumberOfStates = this.getAllStates().size() - 1;
+		int totalNumberOfStates = this.getAllStates().size()-1;
 		String correctedName = makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling(), stateVertix.getUrl());
 		if (!"index".equals(stateVertix.getName())
 		        && !stateVertix.getName().equals(correctedName)) {
@@ -387,8 +387,9 @@ public class StateFlowGraph implements Serializable {
 		if (guided) {
 			return "guided" + id;
 		}
-
-		return "state" + id + "test";
+		String return_string = "test" + id;
+		
+		return return_string;
 	}
 
 	public boolean isInitialState(StateVertex state) {

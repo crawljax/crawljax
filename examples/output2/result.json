@@ -1,0 +1,1104 @@
+{
+  "states" : {
+    "http://www.google.ca/webhp?hl=en&tab=ww3" : {
+      "name" : "http://www.google.ca/webhp?hl=en&tab=ww3",
+      "url" : "http://www.google.ca/webhp?hl=en&tab=ww",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "http://www.google.ca/search?hl=en&gs_rn=7&gs_ri=psy-ab&cp=8&gs_id=3&xhr=t&q=crawljax&bav=on.2,or.r_qf.&bvm=bv.44158598,d.cGE&biw=768&bih=741&um=1&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi&ei=0GtKUea7BYWuiQK8uIDQDQ4" : {
+      "name" : "http://www.google.ca/search?hl=en&gs_rn=7&gs_ri=psy-ab&cp=8&gs_id=3&xhr=t&q=crawljax&bav=on.2,or.r_qf.&bvm=bv.44158598,d.cGE&biw=768&bih=741&um=1&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi&ei=0GtKUea7BYWuiQK8uIDQDQ4",
+      "url" : "http://www.google.ca/search?hl=en&gs_rn=7&gs_ri=psy-ab&cp=8&gs_id=3&xhr=t&q=crawljax&bav=on.2,or.r_qf.&bvm=bv.44158598,d.cGE&biw=768&bih=741&um=1&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi&ei=0GtKUea7BYWuiQK8uIDQDQ",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "http://www.google.ca/webhp?hl=en&tab=ww1" : {
+      "name" : "http://www.google.ca/webhp?hl=en&tab=ww1",
+      "url" : "http://www.google.ca/webhp?hl=en&tab=ww",
+      "candidateElements" : [ {
+        "top" : 147,
+        "left" : 606,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[5]/A[1]",
+        "width" : 108,
+        "height" : 27
+      } ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "http://www.google.ca/2" : {
+      "name" : "http://www.google.ca/2",
+      "url" : "http://www.google.ca/",
+      "candidateElements" : [ {
+        "top" : 0,
+        "left" : 57,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]",
+        "width" : 65,
+        "height" : 29
+      }, {
+        "top" : 0,
+        "left" : 122,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+        "width" : 66,
+        "height" : 29
+      }, {
+        "top" : 66,
+        "left" : 606,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]",
+        "width" : 108,
+        "height" : 27
+      }, {
+        "top" : 120,
+        "left" : 606,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[4]/A[1]",
+        "width" : 108,
+        "height" : 27
+      }, {
+        "top" : 147,
+        "left" : 606,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[5]/A[1]",
+        "width" : 108,
+        "height" : 27
+      }, {
+        "top" : 201,
+        "left" : 606,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[7]/A[1]",
+        "width" : 108,
+        "height" : 27
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 104,
+        "left" : 189,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[1]",
+        "width" : 58,
+        "height" : 36
+      }, {
+        "top" : 104,
+        "left" : 327,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[4]/A[1]",
+        "width" : 56,
+        "height" : 36
+      }, {
+        "top" : 104,
+        "left" : 391,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 67,
+        "height" : 36
+      }, {
+        "top" : 108,
+        "left" : 467,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+        "width" : 91,
+        "height" : 29
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[5]/DIV[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[5]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[5]/DIV[3]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[5]/DIV[4]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[5]/DIV[5]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[5]/DIV[6]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[5]/DIV[7]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[5]/DIV[8]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 108,
+        "left" : 880,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/OL[1]/LI[1]/A[1]",
+        "width" : 72,
+        "height" : 29
+      }, {
+        "top" : 168,
+        "left" : 815,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/OL[1]/LI[1]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 135,
+        "height" : 32
+      }, {
+        "top" : 199,
+        "left" : 815,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/OL[1]/LI[1]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 135,
+        "height" : 32
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[2]/LI[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[2]/LI[3]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[2]/LI[4]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[2]/LI[5]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[2]/LI[6]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[3]/LI[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[3]/LI[3]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[3]/LI[4]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[3]/LI[5]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[3]/LI[6]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[2]/DIV[1]/UL[4]/LI[2]/UL[1]/LI[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[1]/DIV[1]/DIV[3]/DIV[1]/SPAN[1]/A[2]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[1]/DIV[1]/DIV[3]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[2]/DIV[1]/DIV[3]/DIV[1]/SPAN[1]/A[2]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[2]/DIV[1]/DIV[3]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[3]/DIV[1]/DIV[3]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[4]/DIV[1]/DIV[3]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[5]/DIV[1]/DIV[3]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 754,
+        "left" : 136,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[7]/A[1]",
+        "width" : 157,
+        "height" : 16
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[8]/DIV[1]/DIV[3]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[9]/DIV[1]/DIV[3]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[10]/DIV[1]/DIV[3]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[3]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 1203,
+        "left" : 136,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/P[1]/A[1]",
+        "width" : 107,
+        "height" : 16
+      }, {
+        "top" : 1224,
+        "left" : 136,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/P[2]/A[1]",
+        "width" : 96,
+        "height" : 16
+      }, {
+        "top" : 1245,
+        "left" : 136,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/P[3]/A[1]",
+        "width" : 79,
+        "height" : 16
+      }, {
+        "top" : 1203,
+        "left" : 259,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/P[1]/A[1]",
+        "width" : 78,
+        "height" : 16
+      }, {
+        "top" : 1224,
+        "left" : 259,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/P[2]/A[1]",
+        "width" : 122,
+        "height" : 16
+      }, {
+        "top" : 1245,
+        "left" : 259,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[3]/P[3]/A[1]",
+        "width" : 87,
+        "height" : 16
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 1264,
+        "left" : 136,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[1]/DIV[3]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/A[1]",
+        "width" : 0,
+        "height" : 18
+      }, {
+        "top" : 1279,
+        "left" : 285,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[3]/A[1]",
+        "width" : 20,
+        "height" : 56
+      }, {
+        "top" : 1279,
+        "left" : 305,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[4]/A[1]",
+        "width" : 20,
+        "height" : 56
+      }, {
+        "top" : 1279,
+        "left" : 325,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[5]/A[1]",
+        "width" : 20,
+        "height" : 56
+      }, {
+        "top" : 1279,
+        "left" : 345,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[6]/A[1]",
+        "width" : 20,
+        "height" : 56
+      }, {
+        "top" : 1279,
+        "left" : 365,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[7]/A[1]",
+        "width" : 20,
+        "height" : 56
+      }, {
+        "top" : 1279,
+        "left" : 385,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[8]/A[1]",
+        "width" : 20,
+        "height" : 56
+      }, {
+        "top" : 1279,
+        "left" : 405,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[9]/A[1]",
+        "width" : 20,
+        "height" : 56
+      }, {
+        "top" : 1279,
+        "left" : 425,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[10]/A[1]",
+        "width" : 20,
+        "height" : 56
+      }, {
+        "top" : 1279,
+        "left" : 445,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[11]/A[1]",
+        "width" : 20,
+        "height" : 56
+      }, {
+        "top" : 1279,
+        "left" : 465,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[12]/A[1]",
+        "width" : 82,
+        "height" : 56
+      }, {
+        "top" : 1322,
+        "left" : 128,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[2]/A[1]",
+        "width" : 0,
+        "height" : 16
+      }, {
+        "top" : 1322,
+        "left" : 128,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[2]/A[2]",
+        "width" : 0,
+        "height" : 16
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[5]/DIV[1]/DIV[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[5]/DIV[1]/DIV[1]/DIV[1]/P[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[5]/DIV[1]/DIV[1]/DIV[1]/P[4]/SPAN[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/SPAN[1]/DIV[5]/DIV[1]/DIV[1]/DIV[1]/P[4]/SPAN[1]/A[2]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 1354,
+        "left" : 185,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/DIV[4]/P[1]/A[1]",
+        "width" : 99,
+        "height" : 16
+      }, {
+        "top" : 1354,
+        "left" : 308,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/DIV[4]/P[1]/SPAN[2]/A[1]",
+        "width" : 71,
+        "height" : 16
+      }, {
+        "top" : 1354,
+        "left" : 403,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/DIV[4]/P[1]/SPAN[4]/A[1]",
+        "width" : 86,
+        "height" : 16
+      }, {
+        "top" : 1354,
+        "left" : 521,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/DIV[4]/P[1]/SPAN[5]/A[1]",
+        "width" : 70,
+        "height" : 16
+      }, {
+        "top" : 1389,
+        "left" : 152,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/DIV[6]/A[1]",
+        "width" : 79,
+        "height" : 16
+      }, {
+        "top" : 1389,
+        "left" : 255,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/DIV[6]/A[2]",
+        "width" : 123,
+        "height" : 16
+      }, {
+        "top" : 1389,
+        "left" : 402,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/DIV[6]/A[3]",
+        "width" : 112,
+        "height" : 16
+      }, {
+        "top" : 1389,
+        "left" : 538,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/DIV[6]/A[4]",
+        "width" : 94,
+        "height" : 16
+      }, {
+        "top" : 1405,
+        "left" : 353,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[2]/DIV[6]/A[5]",
+        "width" : 79,
+        "height" : 16
+      }, {
+        "top" : 82,
+        "left" : 569,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/A[1]",
+        "width" : 117,
+        "height" : 16
+      }, {
+        "top" : 104,
+        "left" : 569,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/TABLE[1]/TBODY[1]/TR[2]/TD[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/A[1]",
+        "width" : 117,
+        "height" : 16
+      }, {
+        "top" : 127,
+        "left" : 569,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/TABLE[1]/TBODY[1]/TR[3]/TD[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/A[1]",
+        "width" : 117,
+        "height" : 16
+      }, {
+        "top" : 149,
+        "left" : 569,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/TABLE[1]/TBODY[1]/TR[4]/TD[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/A[1]",
+        "width" : 117,
+        "height" : 16
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[2]/DIV[1]/DIV[7]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/BUTTON[1]",
+        "width" : 0,
+        "height" : 0
+      } ],
+      "fanIn" : 1,
+      "fanOut" : 1,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "index" : {
+      "name" : "index",
+      "url" : "http://www.google.ca/",
+      "candidateElements" : [ {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 57,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]",
+        "width" : 65,
+        "height" : 29
+      }, {
+        "top" : 0,
+        "left" : 122,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+        "width" : 66,
+        "height" : 29
+      }, {
+        "top" : 0,
+        "left" : 606,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/A[1]",
+        "width" : 58,
+        "height" : 29
+      }, {
+        "top" : 120,
+        "left" : 606,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[4]/A[1]",
+        "width" : 108,
+        "height" : 27
+      }, {
+        "top" : 147,
+        "left" : 606,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[5]/A[1]",
+        "width" : 108,
+        "height" : 27
+      }, {
+        "top" : 249,
+        "left" : 606,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[9]/A[1]",
+        "width" : 108,
+        "height" : 27
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[6]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 142,
+        "left" : 771,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/SPAN[1]/DIV[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[3]/TD[1]/DIV[1]/A[1]",
+        "width" : 182,
+        "height" : 26
+      }, {
+        "top" : 427,
+        "left" : 526,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/DIV[3]/DIV[1]/FONT[1]/A[1]",
+        "width" : 51,
+        "height" : 16
+      }, {
+        "top" : 697,
+        "left" : 343,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 123,
+        "height" : 16
+      }, {
+        "top" : 697,
+        "left" : 486,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+        "width" : 112,
+        "height" : 16
+      }, {
+        "top" : 697,
+        "left" : 618,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]",
+        "width" : 94,
+        "height" : 16
+      }, {
+        "top" : 697,
+        "left" : 801,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[2]",
+        "width" : 79,
+        "height" : 16
+      }, {
+        "top" : 697,
+        "left" : 900,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[3]",
+        "width" : 70,
+        "height" : 16
+      }, {
+        "top" : 0,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[1]/BUTTON[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 356,
+        "left" : 372,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]",
+        "width" : 102,
+        "height" : 29
+      }, {
+        "top" : 356,
+        "left" : 490,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[2]",
+        "width" : 118,
+        "height" : 29
+      } ],
+      "fanIn" : 0,
+      "fanOut" : 3,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    }
+  },
+  "edges" : [ {
+    "from" : "index",
+    "to" : "http://www.google.ca/webhp?hl=en&tab=ww1",
+    "hash" : -1863330988,
+    "text" : "Search",
+    "id" : "xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]",
+    "element" : "\"Search\" A: {class=gbzt gbz0l gbp1, href=http://www.google.ca/webhp?hl=en&tab=ww, id=gb_1, onclick=gbar.logger.il(1,{t:1});}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "http://www.google.ca/2",
+    "hash" : -777370844,
+    "text" : "More",
+    "id" : "xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/A[1]",
+    "element" : "\"More\" A: {aria-haspopup=true, aria-owns=gbd, class=gbgt, href=http://www.google.ca/intl/en/options/, id=gbztm, onclick=gbar.tg(event,this)}",
+    "eventType" : "click"
+  }, {
+    "from" : "http://www.google.ca/2",
+    "to" : "http://www.google.ca/webhp?hl=en&tab=ww3",
+    "hash" : 2046317357,
+    "text" : "Search",
+    "id" : "xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]",
+    "element" : "\"Search\" A: {class=gbzt gbp1 gbz0l, href=http://www.google.ca/webhp?hl=en&tab=ww, id=gb_1, onclick=gbar.logger.il(1,{t:1});}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "http://www.google.ca/search?hl=en&gs_rn=7&gs_ri=psy-ab&cp=8&gs_id=3&xhr=t&q=crawljax&bav=on.2,or.r_qf.&bvm=bv.44158598,d.cGE&biw=768&bih=741&um=1&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi&ei=0GtKUea7BYWuiQK8uIDQDQ4",
+    "hash" : 641513533,
+    "text" : "Images",
+    "id" : "xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+    "element" : "\"Images\" A: {class=gbzt, href=http://www.google.ca/imghp?hl=en&tab=wi, id=gb_2, onclick=gbar.qs(this);gbar.logger.il(1,{t:2});}",
+    "eventType" : "click"
+  } ],
+  "statistics" : {
+    "duration" : "30 seconds",
+    "crawlPaths" : 4,
+    "averageDomSize" : "260.396 kB",
+    "edges" : 4,
+    "stateStats" : {
+      "leastFanOut" : {
+        "name" : "http://www.google.ca/webhp?hl=en&tab=ww3",
+        "url" : "http://www.google.ca/webhp?hl=en&tab=ww",
+        "candidateElements" : [ ],
+        "fanIn" : 1,
+        "fanOut" : 0,
+        "screenshotOffsetTop" : 0,
+        "screenshotOffsetLeft" : 0
+      },
+      "leastFanIn" : {
+        "name" : "index",
+        "url" : "http://www.google.ca/",
+        "candidateElements" : [ {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 0,
+          "left" : 57,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]",
+          "width" : 65,
+          "height" : 29
+        }, {
+          "top" : 0,
+          "left" : 122,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+          "width" : 66,
+          "height" : 29
+        }, {
+          "top" : 0,
+          "left" : 606,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/A[1]",
+          "width" : 58,
+          "height" : 29
+        }, {
+          "top" : 120,
+          "left" : 606,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[4]/A[1]",
+          "width" : 108,
+          "height" : 27
+        }, {
+          "top" : 147,
+          "left" : 606,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[5]/A[1]",
+          "width" : 108,
+          "height" : 27
+        }, {
+          "top" : 249,
+          "left" : 606,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[9]/A[1]",
+          "width" : 108,
+          "height" : 27
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[1]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[6]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 142,
+          "left" : 771,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/SPAN[1]/DIV[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[3]/TD[1]/DIV[1]/A[1]",
+          "width" : 182,
+          "height" : 26
+        }, {
+          "top" : 427,
+          "left" : 526,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/DIV[3]/DIV[1]/FONT[1]/A[1]",
+          "width" : 51,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 343,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+          "width" : 123,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 486,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+          "width" : 112,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 618,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]",
+          "width" : 94,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 801,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[2]",
+          "width" : 79,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 900,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[3]",
+          "width" : 70,
+          "height" : 16
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[1]/BUTTON[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 356,
+          "left" : 372,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]",
+          "width" : 102,
+          "height" : 29
+        }, {
+          "top" : 356,
+          "left" : 490,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[2]",
+          "width" : 118,
+          "height" : 29
+        } ],
+        "fanIn" : 0,
+        "fanOut" : 3,
+        "screenshotOffsetTop" : 0,
+        "screenshotOffsetLeft" : 0
+      },
+      "mostFanOut" : {
+        "name" : "index",
+        "url" : "http://www.google.ca/",
+        "candidateElements" : [ {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 0,
+          "left" : 57,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]",
+          "width" : 65,
+          "height" : 29
+        }, {
+          "top" : 0,
+          "left" : 122,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+          "width" : 66,
+          "height" : 29
+        }, {
+          "top" : 0,
+          "left" : 606,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/A[1]",
+          "width" : 58,
+          "height" : 29
+        }, {
+          "top" : 120,
+          "left" : 606,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[4]/A[1]",
+          "width" : 108,
+          "height" : 27
+        }, {
+          "top" : 147,
+          "left" : 606,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[5]/A[1]",
+          "width" : 108,
+          "height" : 27
+        }, {
+          "top" : 249,
+          "left" : 606,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[9]/A[1]",
+          "width" : 108,
+          "height" : 27
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[1]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[6]/A[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 142,
+          "left" : 771,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/SPAN[1]/DIV[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[3]/TD[1]/DIV[1]/A[1]",
+          "width" : 182,
+          "height" : 26
+        }, {
+          "top" : 427,
+          "left" : 526,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/DIV[3]/DIV[1]/FONT[1]/A[1]",
+          "width" : 51,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 343,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+          "width" : 123,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 486,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+          "width" : 112,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 618,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]",
+          "width" : 94,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 801,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[2]",
+          "width" : 79,
+          "height" : 16
+        }, {
+          "top" : 697,
+          "left" : 900,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[3]",
+          "width" : 70,
+          "height" : 16
+        }, {
+          "top" : 0,
+          "left" : 0,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[1]/BUTTON[1]",
+          "width" : 0,
+          "height" : 0
+        }, {
+          "top" : 356,
+          "left" : 372,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]",
+          "width" : 102,
+          "height" : 29
+        }, {
+          "top" : 356,
+          "left" : 490,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[2]",
+          "width" : 118,
+          "height" : 29
+        } ],
+        "fanIn" : 0,
+        "fanOut" : 3,
+        "screenshotOffsetTop" : 0,
+        "screenshotOffsetLeft" : 0
+      },
+      "mostFanIn" : {
+        "name" : "http://www.google.ca/webhp?hl=en&tab=ww3",
+        "url" : "http://www.google.ca/webhp?hl=en&tab=ww",
+        "candidateElements" : [ ],
+        "fanIn" : 1,
+        "fanOut" : 0,
+        "screenshotOffsetTop" : 0,
+        "screenshotOffsetLeft" : 0
+      },
+      "totalNumberOfStates" : 5,
+      "urls" : {
+        "empty" : false
+      }
+    }
+  },
+  "configuration" : {
+    "url" : "http://www.google.com",
+    "browserConfig" : {
+      "browsertype" : "firefox",
+      "numberOfBrowsers" : 1,
+      "bootstrap" : true,
+      "browserBuilder" : { },
+      "remoteHubUrl" : null
+    },
+    "plugins" : {
+      "plugins" : {
+        "empty" : false
+      }
+    },
+    "proxyConfiguration" : {
+      "port" : -1,
+      "hostname" : "none",
+      "type" : "NOTHING"
+    },
+    "crawlRules" : {
+      "crawlEvents" : [ "click" ],
+      "invariants" : [ ],
+      "oracleComparators" : [ ],
+      "ignoredFrameIdentifiers" : [ ],
+      "preCrawlConfig" : {
+        "waitConditions" : [ ],
+        "crawlConditions" : [ ],
+        "includedElements" : [ {
+          "tagName" : "A",
+          "crawlAttributes" : [ ],
+          "conditions" : [ ],
+          "id" : "id2095196606",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        }, {
+          "tagName" : "BUTTON",
+          "crawlAttributes" : [ ],
+          "conditions" : [ ],
+          "id" : "id597663925",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        } ],
+        "excludedElements" : [ {
+          "tagName" : "A",
+          "crawlAttributes" : [ ],
+          "conditions" : [ ],
+          "id" : "id1156570456",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : "//DIV[@id='guser']"
+        }, {
+          "tagName" : "A",
+          "crawlAttributes" : [ {
+            "name" : "innertext",
+            "value" : "Language Tools"
+          } ],
+          "conditions" : [ ],
+          "id" : "id1605164995",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        } ],
+        "filterAttributeNames" : [ "closure_hashcode_(\\w)*", "jquery[0-9]+" ]
+      },
+      "randomInputInForms" : false,
+      "inputSpecification" : {
+        "inputFields" : [ {
+          "id" : "id101224864",
+          "fieldNames" : [ "gbqfq" ],
+          "fieldValues" : [ "Crawljax" ]
+        } ],
+        "forms" : [ ]
+      },
+      "testInvariantsWhileCrawling" : true,
+      "clickOnce" : true,
+      "crawlFrames" : true,
+      "crawlHiddenAnchors" : false,
+      "waitAfterReloadUrl" : 500,
+      "waitAfterEvent" : 500
+    },
+    "maximumStates" : 8,
+    "maximumRuntime" : 3600000,
+    "maximumDepth" : 2
+  }
+}
