@@ -1,0 +1,960 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crawl overview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="CrawlJax">
+<link href="./css/bootstrap.min.css" rel="stylesheet">
+<style>
+body {
+	padding-top: 60px;
+}
+</style>
+<link href="./css/bootstrap-responsive.min.css" rel="stylesheet">
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+<style>
+body {
+	padding-top: 40px;
+}
+
+.panel-right {
+	position: absolute;
+	right: 10px;
+	top: 70px;
+	left: auto;
+	display: block;
+	background-color: rgb(255, 255, 255);
+	background-color: rgba(255, 255, 255, .9);
+	max-width: 300px;	
+}
+.panel-right dd {
+	text-transform: capitalize;
+	word-wrap: break-word;
+}
+</style>
+</head>
+<body>
+	<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse"
+				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
+				class="icon-bar"></span> <span class="icon-bar"></span>
+			</a>
+							<a class="brand" href="#">Crawl overview</a>
+						<div class="nav-collapse collapse">
+				<ul class="nav">
+											<li class="active"><a href="#graph">State graph</a></li>
+						<li><a href="#statistics">Statistics</a></li>
+						<li><a href="#urls">URL's</a></li>
+						<li><a href="#config">Configuration</a></li>
+									</ul>
+			</div>
+			<div class="nav pull-right">
+				<a href="#" class="btn graphBtn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
+				<a href="#" class="btn graphBtn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
+				<div style="display: none" id='popup-content'>
+					<p>You can double click a state to inspect it further.</p>
+					<p>Clicking an edge gives more details on the state transition.</p>
+					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
+				</div>
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</div>		<div class="container page" id="container-graph" style="width: 100%;">
+		<div class="popover fade panel-right">
+			<div class="popover-inner">
+				<h3 class="popover-title">Edge info</h3>
+				<div class="popover-content">
+					<dl>
+						<dt>Element name</dt>
+						<dd name='elemName'></dd>
+					</dl>
+					<dl>
+						<dt>From</dt>
+						<dd name='from'></dd>
+					</dl>
+					<dl>
+						<dt>To</dt>
+						<dd name='to'></dd>
+					</dl>
+					<dl>
+						<dt>Identified by</dt>
+						<dd name='id'></dd>
+					</dl>
+					<dl>
+						<dt>Element</dt>
+						<dd name='element' style="text-transform: none;"></dd>
+					</dl>
+					<dl>
+						<dt>Event type</dt>
+						<dd name='eventType'></dd>
+					</dl>
+					<button class="btn btn-small" id='hideButton'>Hide</button>
+				</div>
+			</div>
+		</div>
+		</div>
+	<div class="container page" id="container-statistics" style="display: none;">
+		
+<section id='crawlResults'>
+	<div class="page-header">
+		<h1>Crawl results</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+			<tr>
+				<th>Crawl time</th>
+				<td>43 seconds</td>
+			</tr>
+			<tr>
+				<th>Number of states</th>
+				<td>17</td>
+			</tr>
+			<tr>
+				<th><a href="urls.html">URL's visited</a></th>
+				<td>1</td>
+			</tr>
+			<tr>
+				<th>Number of edges</th>
+				<td>18</td>
+			</tr>
+			<tr>
+				<th>Number of crawl paths</th>
+				<td>16</td>
+			</tr>
+			<tr>
+				<th>Average DOM length</th>
+				<td>3.86 kB</td>
+			</tr>
+
+		</tbody>
+	</table>
+</section>
+
+<section id='highs-and-low'>
+	<div class="page-header">
+		<h1>Highs and lows</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+			<tr>
+				<th>Highest fan-out</th> 				<td><a href="states/index.html">index</a></td>
+				<td>12</td>
+			</tr>
+			<tr>
+				<th>Lowest fan-out</th> 				<td><a href="states/test3.html">test3</a></td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<th>Highest fan-in</th> 				<td><a href="states/test3.html">test3</a></td>
+				<td>2</td>
+			</tr>
+			<tr>
+				<th>Lowest fan-in</th> 				<td><a href="states/test5.html">test5</a></td>
+				<td>1</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+	</div>
+	<div class="container page" id="container-urls" style="display: none;">
+		<div class="page-header">
+	<h1>URL's visited</h1>
+</div>
+<table class="table table-bordered table-striped">
+	<tbody>
+				<tr>
+			<td><a href="http://spci.st.ewi.tudelft.nl/demo/crawljax/">http://spci.st.ewi.tudelft.nl/demo/crawljax/</a></td>
+			<td> <a
+				href="states/test5.html">test5</a>,  <a
+				href="states/test13.html">test13</a>,  <a
+				href="states/test12.html">test12</a>,  <a
+				href="states/test15.html">test15</a>,  <a
+				href="states/test4.html">test4</a>,  <a
+				href="states/test7.html">test7</a>,  <a
+				href="states/test2.html">test2</a>,  <a
+				href="states/index.html">index</a>,  <a
+				href="states/test14.html">test14</a>,  <a
+				href="states/test1.html">test1</a>,  <a
+				href="states/test16.html">test16</a>,  <a
+				href="states/test3.html">test3</a>,  <a
+				href="states/test9.html">test9</a>,  <a
+				href="states/test11.html">test11</a>,  <a
+				href="states/test6.html">test6</a>,  <a
+				href="states/test10.html">test10</a>,  <a
+				href="states/test8.html">test8</a>, 			</td>
+		</tr>
+			</tbody>
+</table>
+	</div>
+	<div class="container page" id="container-config" style="display: none;">
+		<section id='crawlConfig'>
+	<div class="page-header">
+		<h1>Crawl configuration</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+						<tr>
+				<td>Browser Config</td> 
+								<td>BrowserConfiguration [browsertype=firefox, numberOfBrowsers=1, bootstrap=true]</td> 
+							</tr>
+						<tr>
+				<td>Proxy Configuration</td> 
+								<td>NOTHING</td> 
+							</tr>
+						<tr>
+				<td>Crawl Rules</td> 
+								<td><pre><code>{
+  "crawlEvents" : [ "click" ],
+  "invariants" : [ ],
+  "oracleComparators" : [ ],
+  "ignoredFrameIdentifiers" : [ ],
+  "preCrawlConfig" : {
+    "waitConditions" : [ ],
+    "crawlConditions" : [ {
+      "preConditions" : [ ],
+      "description" : "No spans with foo as class",
+      "condition" : {
+        "affectedNodes" : {
+          "threadLocalHashCode" : -1401181199
+        },
+        "xpathCondition" : {
+          "affectedNodes" : {
+            "threadLocalHashCode" : 239350328
+          },
+          "expression" : "//*[@class='foo']"
+        }
+      }
+    } ],
+    "includedElements" : [ {
+      "tagName" : "A",
+      "crawlAttributes" : [ ],
+      "conditions" : [ ],
+      "id" : "id1273032596",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    }, {
+      "tagName" : "A",
+      "crawlAttributes" : [ ],
+      "conditions" : [ ],
+      "id" : "id1958489927",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    }, {
+      "tagName" : "BUTTON",
+      "crawlAttributes" : [ ],
+      "conditions" : [ ],
+      "id" : "id1858345520",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    }, {
+      "tagName" : "INPUT",
+      "crawlAttributes" : [ {
+        "name" : "type",
+        "value" : "submit"
+      } ],
+      "conditions" : [ ],
+      "id" : "id210992672",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    }, {
+      "tagName" : "INPUT",
+      "crawlAttributes" : [ {
+        "name" : "type",
+        "value" : "button"
+      } ],
+      "conditions" : [ ],
+      "id" : "id836008005",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    }, {
+      "tagName" : "DIV",
+      "crawlAttributes" : [ {
+        "name" : "class",
+        "value" : "clickable"
+      } ],
+      "conditions" : [ ],
+      "id" : "id1948521361",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    } ],
+    "excludedElements" : [ {
+      "tagName" : "A",
+      "crawlAttributes" : [ {
+        "name" : "class",
+        "value" : "ignore"
+      } ],
+      "conditions" : [ ],
+      "id" : "id1820381224",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    }, {
+      "tagName" : "A",
+      "crawlAttributes" : [ ],
+      "conditions" : [ ],
+      "id" : "id2095196606",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : "//DIV[@id='footer']"
+    } ],
+    "filterAttributeNames" : [ "closure_hashcode_(\\w)*", "jquery[0-9]+" ]
+  },
+  "randomInputInForms" : false,
+  "inputSpecification" : {
+    "inputFields" : [ ],
+    "forms" : [ {
+      "inputFields" : [ {
+        "id" : "id1904059746",
+        "fieldNames" : [ "male" ],
+        "fieldValues" : [ "1", "0" ]
+      }, {
+        "id" : "id1878327075",
+        "fieldNames" : [ "female" ],
+        "fieldValues" : [ "0", "1" ]
+      }, {
+        "id" : "id1033538625",
+        "fieldNames" : [ "name" ],
+        "fieldValues" : [ "Bob", "Alice", "John" ]
+      }, {
+        "id" : "id1835933439",
+        "fieldNames" : [ "phone" ],
+        "fieldValues" : [ "1234567890", "1234888888", "" ]
+      }, {
+        "id" : "id1488269177",
+        "fieldNames" : [ "mobile" ],
+        "fieldValues" : [ "123", "3214321421" ]
+      }, {
+        "id" : "id1598021230",
+        "fieldNames" : [ "type" ],
+        "fieldValues" : [ "Student", "Teacher" ]
+      }, {
+        "id" : "id1512323228",
+        "fieldNames" : [ "active" ],
+        "fieldValues" : [ "1" ]
+      } ],
+      "formAction" : {
+        "crawlElement" : {
+          "tagName" : "BUTTON",
+          "crawlAttributes" : [ {
+            "name" : "innertext",
+            "value" : "Save"
+          } ],
+          "conditions" : [ ],
+          "id" : "id2052935731",
+          "eventType" : "click",
+          "inputFieldIds" : [ "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228", "id1904059746", "id1878327075", "id1033538625", "id1835933439", "id1488269177", "id1598021230", "id1512323228" ],
+          "underXpath" : null
+        }
+      }
+    } ]
+  },
+  "testInvariantsWhileCrawling" : true,
+  "clickOnce" : true,
+  "crawlFrames" : true,
+  "crawlHiddenAnchors" : false,
+  "waitAfterReloadUrl" : 20,
+  "waitAfterEvent" : 200
+}</code></pre></td> 
+							</tr>
+						<tr>
+				<td>Maximum States</td> 
+								<td>0</td> 
+							</tr>
+						<tr>
+				<td>Maximum Runtime</td> 
+								<td>3600000</td> 
+							</tr>
+						<tr>
+				<td>Maximum Depth</td> 
+								<td>2</td> 
+							</tr>
+						<tr>
+				<td>Url</td> 
+								<td>http://spci.st.ewi.tudelft.nl/demo/crawljax/</td> 
+							</tr>
+						<tr>
+				<td>Plugins</td> 
+								<td>com.crawljax.core.plugin.Plugins@4f6d8d30</td> 
+							</tr>
+					</tbody>
+	</table>
+</section>
+<section id='versionInfo'>
+	<div class="page-header">
+		<h1>Version info</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+			<tr>
+				<td>Crawljax version</td>
+				<td>3.0-SNAPSHOT</td>
+			</tr>
+			<tr>
+				<td>Git revision</td>
+				<td>e3d11fba93f6eb0856649f11256e66fc1bbef280</td>
+			</tr>
+			<tr>
+				<td><a href="https://www.kernel.org/pub/software/scm/git/docs/git-describe.html">Git describe</a></td>
+				<td>crawljax-2.2-414-ge3d11fb-dirty</td>
+			</tr>
+			<tr>
+				<td>Build time</td>
+				<td><time>2013-03-20 20:44:27 PDT</time></td>
+			</tr>
+		</tbody>
+	</table>
+</section>	</div>
+	<script src="js/jquery-1.8.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/vivagraph.min.js"></script>
+	<script src="js/graphbuilder.js"></script>
+	<script>
+		var edges = [ {
+  "from" : "index",
+  "to" : "test1",
+  "hash" : 1066147506,
+  "text" : "Papers",
+  "id" : "xpath /HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[2]/A[1]",
+  "element" : "\"Papers\" A: {href=javascript:void(0), id=papers}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test2",
+  "hash" : 1066147537,
+  "text" : "Custom Forms",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[3]/A[1]",
+  "element" : "\"Custom Forms\" A: {href=javascript:void(0), onclick=openPage('forms.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "test2",
+  "to" : "test3",
+  "hash" : 1995323518,
+  "text" : "Save",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+  "element" : "\"Save\" BUTTON: {atusa=id2052935731_2, onclick=saveContact('Contact Saved')}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test4",
+  "hash" : 1066147599,
+  "text" : "Information",
+  "id" : "xpath /HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[3]/A[1]",
+  "element" : "\"Information\" A: {href=javascript:void(0), id=info}",
+  "eventType" : "click"
+}, {
+  "from" : "test2",
+  "to" : "index",
+  "hash" : 1688255405,
+  "text" : "Cancel",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[2]",
+  "element" : "\"Cancel\" BUTTON: {onclick=openPage('home.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "test2",
+  "to" : "test3",
+  "hash" : 1995323518,
+  "text" : "Save",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+  "element" : "\"Save\" BUTTON: {atusa=id2052935731_0, onclick=saveContact('Contact Saved')}",
+  "eventType" : "click"
+}, {
+  "from" : "test2",
+  "to" : "test5",
+  "hash" : 1995323580,
+  "text" : "Save",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+  "element" : "\"Save\" BUTTON: {atusa=id2052935731_1, onclick=saveContact('Contact Saved')}",
+  "eventType" : "click"
+}, {
+  "from" : "test2",
+  "to" : "test6",
+  "hash" : 1995323611,
+  "text" : "Save",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+  "element" : "\"Save\" BUTTON: {atusa=id2052935731_2, onclick=saveContact('Contact Saved')}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test7",
+  "hash" : 1066147692,
+  "text" : "Select Elements To Crawl",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+  "element" : "\"Select Elements To Crawl\" A: {href=javascript:void(0), onclick=openPage('select.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test8",
+  "hash" : 1066147723,
+  "text" : "CrawlConditions",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[2]/A[1]",
+  "element" : "\"CrawlConditions\" A: {href=javascript:void(0), onclick=openPage('crawlConditions.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test9",
+  "hash" : 1066147754,
+  "text" : "WaitConditions",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[3]/A[1]",
+  "element" : "\"WaitConditions\" A: {href=javascript:void(0), onclick=openPage('waitConditions.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test10",
+  "hash" : 520816800,
+  "text" : "Plugins",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[1]/A[1]",
+  "element" : "\"Plugins\" A: {href=javascript:void(0), onclick=openPage('plugins.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test11",
+  "hash" : 520816831,
+  "text" : "Oracle Comparators",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[2]/A[1]",
+  "element" : "\"Oracle Comparators\" A: {href=javascript:void(0), onclick=openPage('oracleComparators.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test12",
+  "hash" : 520816862,
+  "text" : "Invariants",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[3]/A[1]",
+  "element" : "\"Invariants\" A: {href=javascript:void(0), onclick=openPage('invariants.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test13",
+  "hash" : 520816893,
+  "text" : "Conditions",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[4]/A[1]",
+  "element" : "\"Conditions\" A: {href=javascript:void(0), onclick=openPage('conditions.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test14",
+  "hash" : 520816924,
+  "text" : "Random Form Input",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[1]/A[1]",
+  "element" : "\"Random Form Input\" A: {href=javascript:void(0), onclick=openPage('randomInput.html')}",
+  "eventType" : "click"
+}, {
+  "from" : "test14",
+  "to" : "test15",
+  "hash" : 1724613086,
+  "text" : "Next",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/DIV[1]",
+  "element" : "\"Next\" DIV: {class=clickable, onclick=afterRandomInput()}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "test16",
+  "hash" : 520816986,
+  "text" : "Custom Input",
+  "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[2]/A[1]",
+  "element" : "\"Custom Input\" A: {href=javascript:void(0), onclick=openPage('customInput.html')}",
+  "eventType" : "click"
+} ];
+		var states = {
+  "test5" : {
+    "name" : "test5",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test13" : {
+    "name" : "test13",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test12" : {
+    "name" : "test12",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test15" : {
+    "name" : "test15",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test4" : {
+    "name" : "test4",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ {
+      "top" : 220,
+      "left" : 269,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/A[1]",
+      "width" : 86,
+      "height" : 16
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test7" : {
+    "name" : "test7",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test2" : {
+    "name" : "test2",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ {
+      "top" : 355,
+      "left" : 272,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+      "width" : 56,
+      "height" : 24
+    }, {
+      "top" : 355,
+      "left" : 332,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[2]",
+      "width" : 66,
+      "height" : 24
+    }, {
+      "top" : 355,
+      "left" : 272,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+      "width" : 56,
+      "height" : 24
+    }, {
+      "top" : 355,
+      "left" : 272,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+      "width" : 56,
+      "height" : 24
+    }, {
+      "top" : 355,
+      "left" : 272,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+      "width" : 56,
+      "height" : 24
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 5,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "index" : {
+    "name" : "index",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ {
+      "top" : 67,
+      "left" : 20,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[1]/A[1]",
+      "width" : 42,
+      "height" : 18
+    }, {
+      "top" : 67,
+      "left" : 76,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[2]/A[1]",
+      "width" : 52,
+      "height" : 18
+    }, {
+      "top" : 67,
+      "left" : 142,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[3]/A[1]",
+      "width" : 89,
+      "height" : 18
+    }, {
+      "top" : 138,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+      "width" : 147,
+      "height" : 16
+    }, {
+      "top" : 154,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[2]/A[1]",
+      "width" : 92,
+      "height" : 16
+    }, {
+      "top" : 170,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[3]/A[1]",
+      "width" : 85,
+      "height" : 16
+    }, {
+      "top" : 230,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[1]/A[1]",
+      "width" : 40,
+      "height" : 16
+    }, {
+      "top" : 246,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[2]/A[1]",
+      "width" : 115,
+      "height" : 16
+    }, {
+      "top" : 262,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[3]/A[1]",
+      "width" : 56,
+      "height" : 16
+    }, {
+      "top" : 278,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[4]/A[1]",
+      "width" : 59,
+      "height" : 16
+    }, {
+      "top" : 339,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[1]/A[1]",
+      "width" : 114,
+      "height" : 16
+    }, {
+      "top" : 355,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[2]/A[1]",
+      "width" : 76,
+      "height" : 16
+    }, {
+      "top" : 371,
+      "left" : 63,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[3]/A[1]",
+      "width" : 83,
+      "height" : 16
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 12,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test14" : {
+    "name" : "test14",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ {
+      "top" : 474,
+      "left" : 269,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/DIV[1]",
+      "width" : 474,
+      "height" : 16
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test1" : {
+    "name" : "test1",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test16" : {
+    "name" : "test16",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test3" : {
+    "name" : "test3",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 2,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test9" : {
+    "name" : "test9",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test11" : {
+    "name" : "test11",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test6" : {
+    "name" : "test6",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test10" : {
+    "name" : "test10",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "test8" : {
+    "name" : "test8",
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  }
+};
+		$(document).ready(function() {
+			$.each(states, function() {
+				graph.addNode(this.name, {
+					img : 'screenshots/' + this.name + '_small.jpg',
+					url : "states/" + this.name + ".html"
+				});
+			});
+
+			var edgesSeen = {};
+			$.each(edges, function() {
+				var edgeKey = this.from + "-to-" + this.to;
+				if (!(edgeKey in edgesSeen)) {
+					edgesSeen[edgeKey] = true;
+					graph.addLink(this.from, this.to, {
+						text : this.text,
+						id : this.id,
+						eventType : this.eventType,
+						element : this.element
+						
+					});
+				}
+			});
+			
+			$("#hideButton").click(function() {
+				$(".panel-right").removeClass("in");
+				$('path[stroke="red"]').attr("stroke", "grey");
+			});
+			
+			$("a[rel='popover']").popover({
+				content : $("#popup-content").html(),
+				html : true,
+				trigger : "hover"
+			});
+			
+			$("a[data-toggle='tooltip']").tooltip();
+			
+			var paused = false;
+			$("#pauseButton").click(function(){
+				if (paused) {
+					renderer.resume();
+					paused = false;
+					$(this).children(":first").attr("class", "icon-pause");
+				} else {
+					renderer.pause();
+					paused = true;
+					$(this).children(":first").attr("class", "icon-play");
+				}
+			});
+			
+			$('.navbar li').click(function(e) {
+				$('.navbar li').removeClass('active');
+				var $this = $(this);
+				if (!$this.hasClass('active')) {
+					$this.addClass('active');
+				}
+
+
+			});
+			
+			function loadPage(page) {
+				$('.page').hide();
+				$('#container-' + page).show();
+				
+				if (page === "graph") {
+					$('.graphBtn').show();
+				} else {
+					$('.graphBtn').hide();
+				}
+			}
+			
+			$(window).on('hashchange', function(e) {	
+				pageRef = window.location.hash.substring(1);
+				if ($("#container-" + pageRef).length == 0 && pageRef !== "graph") {
+					window.location.hash = "graph";
+				} else {
+					loadPage(pageRef);
+				}
+			});
+			
+			$(window).trigger('hashchange');
+		});
+
+		function showInfo(link) {
+			$(".panel-right").addClass("in");
+			$(".panel-right [name='elemName']").text(link.data.text);		
+			$(".panel-right [name='from']").html(asStateLink(link.fromId));		
+			$(".panel-right [name='to']").html(asStateLink(link.toId));		
+			$(".panel-right [name='id']").text(link.data.id);	
+			$(".panel-right [name='element']").text(link.data.element);	
+			$(".panel-right [name='eventType']").text(link.data.eventType);	
+		}
+		
+		function asStateLink(name) {
+			return "<a href='states/" + name + ".html' target='_new'>" + name + "</a>";
+		}
+		
+		if($.browser.mozilla) {
+			// Firefox hack to display CVS correctly
+			$('#container-graph svg').css("width", "100%");
+			
+			function resize() {
+				$('#container-graph').css("height", window.innerHeight -45);
+				$('#container-graph svg').css("height", window.innerHeight - 45);
+			}
+			$(window).resize(resize);
+			resize();
+		}
+		
+		
+	</script>
+</body>
+</html>
+
+
+
