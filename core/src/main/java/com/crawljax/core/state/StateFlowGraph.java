@@ -387,7 +387,24 @@ public class StateFlowGraph implements Serializable {
 		if (guided) {
 			return "guided" + id;
 		}
-		String return_string = "test" + id;
+		String temp = url;
+		/*
+		temp = temp.replace(":", "xpasswordx");
+		temp = temp.replace("/", "ypasswordy");
+		temp = temp.replace(".", "zpasswordz");*/
+		temp = temp.replace(":", "");
+		temp = temp.replace("/", "");
+		temp = temp.replace(".", "");
+		temp = temp.replace("=", "");
+		temp = temp.replace("?", "");
+		temp = temp.replace("&", "");
+		temp = temp.replace(",", "");
+		temp = temp.replace("#", "");
+		if(temp.length()>50){
+			temp = temp.substring(0, 50);
+		}
+		String return_string = temp + " " + id;
+		System.out.println(return_string);
 		
 		return return_string;
 	}

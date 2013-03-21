@@ -63,7 +63,13 @@ public class CrawlOverview
 	public void onNewState(CrawlSession session) {
 		LOG.debug("onNewState");
 		StateVertex vertex = session.getCurrentState();
+		String temp = vertex.getName();
+/*		temp = temp.replace("xpasswordx", ":");
+		temp = temp.replace("ypasswordy", "/");
+		temp = temp.replace("zpasswordz", ".");*/
+		vertex.setName(temp);
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
+		System.out.println(state.getName() + "test onNewState");
 		saveScreenshot(session, state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), session.getBrowser().getDom());
 		Point point = getOffSet(session.getBrowser());
@@ -104,10 +110,14 @@ public class CrawlOverview
 			}
 		}
 		LOG.debug("Saving screenshot for state {}", name);
-		File screenShot = outputBuilder.newScreenShotFile(name);
+		String temp = name;
+		//temp = temp.replace(":", "xpasswordx");
+		//temp = temp.replace("/", "ypasswordy");
+		File screenShot = outputBuilder.newScreenShotFile(temp);
+		System.out.println(name + " test");
 		try {
 			session.getBrowser().saveScreenShot(screenShot);
-			outputBuilder.makeThumbNail(screenShot, name);
+			outputBuilder.makeThumbNail(screenShot, temp);
 		} catch (CrawljaxException e) {
 			LOG.warn("Screenshots are not supported for {}", session.getBrowser());
 		}
