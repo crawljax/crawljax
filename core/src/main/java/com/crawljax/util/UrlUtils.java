@@ -41,7 +41,7 @@ public class UrlUtils {
 		}
 		try {
 			URL destination;
-			if (isJsVoid(link)) {
+			if (isJavascript(link)) {
 				return false;
 			} else if (link.contains("://")) {
 				destination = new URL(link);
@@ -54,7 +54,7 @@ public class UrlUtils {
 			}
 			return !source.getHost().equals(destination.getHost());
 		} catch (MalformedURLException e) {
-			LOG.warn("Could not parse source URL {}", link);
+			LOG.warn("Could not parse target URL {}", link);
 			return true;
 		}
 	}
@@ -67,8 +67,8 @@ public class UrlUtils {
 	 * @return The new URL.
 	 */
 	public static URL extractNewUrl(String currentUrl, String href) throws MalformedURLException {
-		if (href == null || isJsVoid(href) || href.startsWith("mailto:")) {
-			throw new MalformedURLException(href + " is not a valid URL to visit");
+		if (href == null || isJavascript(href) || href.startsWith("mailto:")) {
+			throw new MalformedURLException(href + " is not a HTTP url");
 		} else if (href.contains("://")) {
 			return new URL(href);
 		} else {
@@ -76,8 +76,8 @@ public class UrlUtils {
 		}
 	}
 
-	private static boolean isJsVoid(String href) {
-		return "javascript:void(0)".equals(href.trim());
+	private static boolean isJavascript(String href) {
+		return href.startsWith("javascript:");
 	}
 
 	/**
