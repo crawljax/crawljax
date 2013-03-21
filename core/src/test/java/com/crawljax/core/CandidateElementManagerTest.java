@@ -1,6 +1,7 @@
 package com.crawljax.core;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -9,7 +10,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.crawljax.forms.FormInput;
 import com.crawljax.util.DomUtils;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Test for the CandidateElementManager.
@@ -18,6 +21,8 @@ import com.crawljax.util.DomUtils;
  */
 public class CandidateElementManagerTest {
 	private static Document document;
+
+	private final List<FormInput> noFormInput = ImmutableList.of();
 
 	@BeforeClass
 	public static void setup() throws SAXException, IOException {
@@ -28,8 +33,9 @@ public class CandidateElementManagerTest {
 	public void testContainsElement() {
 		CandidateElementManager manager = new CandidateElementManager(null, null);
 		Element e = document.createElement("test");
+
 		e.setAttribute("id", "abc");
-		CandidateElement c = new CandidateElement(e, "");
+		CandidateElement c = new CandidateElement(e, "", noFormInput);
 		Assert.assertFalse(
 		        "CandidateElemnt.GeneralString not yet checked in CandidateElementManager",
 		        manager.isChecked(c.getGeneralString()));
@@ -43,7 +49,7 @@ public class CandidateElementManagerTest {
 		        manager.isChecked(c.getUniqueString()));
 
 		e.setAttribute("id", "def");
-		CandidateElement c2 = new CandidateElement(e, "");
+		CandidateElement c2 = new CandidateElement(e, "", noFormInput);
 		Assert.assertFalse(
 		        "CandidateElemnt.GeneralString not yet checked in CandidateElementManager",
 		        manager.isChecked(c2.getGeneralString()));
@@ -71,7 +77,7 @@ public class CandidateElementManagerTest {
 		e.setAttribute("id", "abc");
 		e.setAttribute("atusa", "def");
 
-		CandidateElement c = new CandidateElement(e, "");
+		CandidateElement c = new CandidateElement(e, "", noFormInput);
 		Assert.assertFalse(
 		        "CandidateElemnt.GeneralString not yet checked in CandidateElementManager",
 		        manager.isChecked(c.getGeneralString()));
@@ -85,7 +91,7 @@ public class CandidateElementManagerTest {
 		        manager.isChecked(c.getUniqueString()));
 
 		e.setAttribute("atusa", "ghi");
-		CandidateElement c2 = new CandidateElement(e, "");
+		CandidateElement c2 = new CandidateElement(e, "", noFormInput);
 		Assert.assertTrue("CandidateElemnt.GeneralString checked in CandidateElementManager",
 		        manager.isChecked(c2.getGeneralString()));
 		Assert.assertFalse(

@@ -1,15 +1,17 @@
 package com.crawljax.browser;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.Timeout;
 
-import com.crawljax.core.configuration.CrawlSpecification;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.ThreadConfiguration;
 import com.crawljax.test.BrowserTest;
 
 /**
@@ -17,9 +19,17 @@ import com.crawljax.test.BrowserTest;
  */
 @Category(BrowserTest.class)
 public class BrowserPoolTest {
-	private static final int TIMEOUT = 100000; // 100 Sec.
-	private final BrowserPool pool = new BrowserPool(new CrawljaxConfigurationReader(
-	        new CrawljaxConfiguration()));
+	private BrowserPool pool;
+
+	@ClassRule
+	public static final Timeout TIME_OUT = new Timeout((int) TimeUnit.SECONDS.toMillis(100));
+
+	@Before
+	public void setup() {
+		CrawljaxConfiguration config =
+		        CrawljaxConfiguration.builderFor("http://localhost").build();
+		pool = new BrowserPool(config);
+	}
 
 	/**
 	 * Request don't release and close the pool.
@@ -55,8 +65,6 @@ public class BrowserPoolTest {
 	 * @throws InterruptedException
 	 *             thrown from requestBrowser
 	 */
-	@Test(timeout = TIMEOUT)
-	@Ignore
 	public void testDoubleClose() throws InterruptedException {
 		pool.requestBrowser();
 		Thread closeThread = pool.close();
@@ -71,7 +79,7 @@ public class BrowserPoolTest {
 	 * 
 	 * @throws InterruptedException
 	 */
-	@Test(timeout = TIMEOUT)
+	@Test
 	public void testCloseOnly() throws InterruptedException {
 		Thread closeThread = pool.close();
 		closeThread.join();
@@ -83,8 +91,7 @@ public class BrowserPoolTest {
 	 * @throws InterruptedException
 	 *             TODO Stefan turn on again if it is stable
 	 */
-	@Test(timeout = TIMEOUT)
-	@Ignore
+	@Test
 	public void testCloseOnlyTwoTimes() throws InterruptedException {
 		// TODO Stefan, what about two times without join?
 		Thread closeThread = pool.close();
@@ -102,17 +109,9 @@ public class BrowserPoolTest {
 	 *             when the request for a browser is interupped TODO Stefan turn on again if it is
 	 *             stable
 	 */
-	@Test(timeout = TIMEOUT)
-	@Ignore
+	@Test
 	public void testMultipleBrowsers() throws ConfigurationException, InterruptedException {
-		CrawlSpecification spec = new CrawlSpecification("about:blank");
-		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
-		cfg.setCrawlSpecification(spec);
-		cfg.setThreadConfiguration(new ThreadConfiguration(4));
-
-		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
-
-		BrowserPool pool = new BrowserPool(reader);
+		BrowserPool pool = new BrowserPool(configForNumberOfBrowsers(3, false));
 
 		pool.requestBrowser();
 		pool.requestBrowser();
@@ -120,6 +119,12 @@ public class BrowserPoolTest {
 		pool.freeBrowser(b1);
 
 		pool.shutdown();
+	}
+
+	private CrawljaxConfiguration configForNumberOfBrowsers(int number, boolean boot) {
+		return CrawljaxConfiguration.builderFor("http://localhost")
+		        .setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, number, boot))
+		        .build();
 	}
 
 	/**
@@ -132,19 +137,10 @@ public class BrowserPoolTest {
 	 *             when the request for a browser is interupped TODO Stefan turn on again if it is
 	 *             stable
 	 */
-	@Test(timeout = TIMEOUT)
-	@Ignore
+	@Test
 	public void testMultipleBrowsersFastBoot() throws ConfigurationException,
 	        InterruptedException {
-		CrawlSpecification spec = new CrawlSpecification("about:blank");
-		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
-		cfg.setCrawlSpecification(spec);
-		ThreadConfiguration tc = new ThreadConfiguration(4);
-		cfg.setThreadConfiguration(tc);
-
-		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
-
-		BrowserPool pool = new BrowserPool(reader);
+		BrowserPool pool = new BrowserPool(configForNumberOfBrowsers(4, true));
 
 		pool.requestBrowser();
 		pool.requestBrowser();
@@ -154,67 +150,4 @@ public class BrowserPoolTest {
 		pool.shutdown();
 	}
 
-	/**
-	 * Test opening 4 browsers, 3 requested, 1 returned. close should be done within TIMEOUT.
-	 * Checking that the fast boot option is faster than the non fast boot option.
-	 * 
-	 * @throws ConfigurationException
-	 *             when config is not correct
-	 * @throws InterruptedException
-	 *             when the request for a browser is interupped
-	 */
-	// TODO Stefan turn on again
-	@Test(timeout = TIMEOUT)
-	@Ignore
-	public void testMultipleBrowsersFastBootIsIndeadFaster() throws ConfigurationException,
-	        InterruptedException {
-		CrawlSpecification spec = new CrawlSpecification("about:blank");
-		CrawljaxConfiguration cfg = new CrawljaxConfiguration();
-		cfg.setCrawlSpecification(spec);
-		ThreadConfiguration tc = new ThreadConfiguration(4);
-		cfg.setThreadConfiguration(tc);
-
-		CrawljaxConfigurationReader reader = new CrawljaxConfigurationReader(cfg);
-
-		long runtimeNonFastBoot = runNonFastBoot(reader);
-
-		long runtimeFastBoot = runFastBoot(reader);
-
-		Assert.assertTrue("Fast boot is faster", runtimeNonFastBoot > runtimeFastBoot);
-	}
-
-	private long runFastBoot(CrawljaxConfigurationReader reader) throws InterruptedException {
-		long start = System.currentTimeMillis();
-		BrowserPool pool = new BrowserPool(reader);
-
-		pool.requestBrowser();
-		pool.requestBrowser();
-		EmbeddedBrowser b1 = pool.requestBrowser();
-		pool.freeBrowser(b1);
-
-		Thread closeThread = pool.close();
-
-		long runtimeFastBoot = System.currentTimeMillis() - start;
-
-		closeThread.join();
-		return runtimeFastBoot;
-	}
-
-	private long runNonFastBoot(CrawljaxConfigurationReader reader) throws InterruptedException {
-		long runtimeNonFastBoot = 0;
-		long start = System.currentTimeMillis();
-		BrowserPool pool = new BrowserPool(reader);
-
-		pool.requestBrowser();
-		pool.requestBrowser();
-		EmbeddedBrowser b1 = pool.requestBrowser();
-		pool.freeBrowser(b1);
-
-		Thread closeThread = pool.close();
-
-		runtimeNonFastBoot = System.currentTimeMillis() - start;
-
-		closeThread.join();
-		return runtimeNonFastBoot;
-	}
 }

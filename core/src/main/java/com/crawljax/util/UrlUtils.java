@@ -25,7 +25,8 @@ public class UrlUtils {
 	 *            the destinations. This can be a relative or absolute link.
 	 * @return Whether location and link are on the same domain. It returns <code>false</code> if
 	 *         the link is <code>null</code>. It returns true if the destination {@link URL} throws
-	 *         a {@link MalformedURLException}.
+	 *         a {@link MalformedURLException}, is a <code>mailto:</code> link, is a absolute file
+	 *         URL or when it's unreadable.
 	 */
 	public static boolean isLinkExternal(String location, String link) {
 		if (link == null) {
@@ -40,7 +41,7 @@ public class UrlUtils {
 		}
 		try {
 			URL destination;
-			if ("javascript:void(0)".equals(link.trim())) {
+			if (isJsVoid(link)) {
 				return false;
 			} else if (link.contains("://")) {
 				destination = new URL(link);
@@ -56,6 +57,27 @@ public class UrlUtils {
 			LOG.warn("Could not parse source URL {}", link);
 			return true;
 		}
+	}
+
+	/**
+	 * @param currentUrl
+	 *            The current url
+	 * @param href
+	 *            The target URL, relative or not
+	 * @return The new URL.
+	 */
+	public static URL extractNewUrl(String currentUrl, String href) throws MalformedURLException {
+		if (href == null || isJsVoid(href) || href.startsWith("mailto:")) {
+			throw new MalformedURLException(href + " is not a valid URL to visit");
+		} else if (href.contains("://")) {
+			return new URL(href);
+		} else {
+			return new URL(new URL(currentUrl), href);
+		}
+	}
+
+	private static boolean isJsVoid(String href) {
+		return "javascript:void(0)".equals(href.trim());
 	}
 
 	/**
@@ -119,4 +141,5 @@ public class UrlUtils {
 	private UrlUtils() {
 
 	}
+
 }

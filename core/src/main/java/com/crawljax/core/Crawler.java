@@ -1,20 +1,27 @@
 package com.crawljax.core;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.exception.CrawlPathToException;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
-import com.crawljax.core.state.Attribute;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.CrawlPath;
+import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
@@ -24,6 +31,7 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.ElementResolver;
+import com.crawljax.util.UrlUtils;
 
 /**
  * Class that performs crawl actions. It is designed to run inside a Thread.
@@ -32,7 +40,7 @@ import com.crawljax.util.ElementResolver;
  */
 public class Crawler implements Runnable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Crawler.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(Crawler.class.getName());
 
 	/**
 	 * The main browser window 1 to 1 relation; Every Thread will get on browser assigned in the run
@@ -50,7 +58,7 @@ public class Crawler implements Runnable {
 	/**
 	 * Depth register.
 	 */
-	private int depth = 0;
+	private AtomicInteger depth = new AtomicInteger();
 
 	/**
 	 * The path followed from the index to the current state.
@@ -79,7 +87,7 @@ public class Crawler implements Runnable {
 	 */
 	private final StateMachine stateMachine;
 
-	private final CrawljaxConfigurationReader configurationReader;
+	private final CrawljaxConfiguration config;
 
 	private FormHandler formHandler;
 
@@ -88,6 +96,8 @@ public class Crawler implements Runnable {
 	 */
 	private final CrawlQueueManager crawlQueueManager;
 
+	private final Plugins plugins;
+
 	/**
 	 * Enum for describing what has happened after a {@link Crawler#clickTag(Eventable)} has been
 	 * performed.
@@ -95,7 +105,7 @@ public class Crawler implements Runnable {
 	 * @see Crawler#clickTag(Eventable)
 	 */
 	private enum ClickResult {
-		cloneDetected, newState, domUnChanged
+		CLONE_DETECTED, NEW_STATE, DOM_UNCHANGED
 	}
 
 	/**
@@ -106,24 +116,26 @@ public class Crawler implements Runnable {
 	 * @param name
 	 *            a name for this crawler (default is empty).
 	 */
-	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, String name) {
-		this(mother, new CrawlPath(exactEventPath));
+	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, String name,
+	        Plugins plugins) {
+		this(mother, new CrawlPath(exactEventPath), plugins);
 		this.name = name;
 	}
 
-	/**
-	 * Private Crawler constructor for a 'reload' crawler. Only used internally.
-	 * 
-	 * @param mother
-	 *            the main CrawljaxController
-	 * @param returnPath
-	 *            the path used to return to the last state, this can be a empty list
-	 * @deprecated better to use {@link #Crawler(CrawljaxController, CrawlPath)}
-	 */
-	@Deprecated
-	protected Crawler(CrawljaxController mother, List<Eventable> returnPath) {
-		this(mother, new CrawlPath(returnPath));
-	}
+	//
+	// /**
+	// * Private Crawler constructor for a 'reload' crawler. Only used internally.
+	// *
+	// * @param mother
+	// * the main CrawljaxController
+	// * @param returnPath
+	// * the path used to return to the last state, this can be a empty list
+	// * @deprecated better to use {@link #Crawler(CrawljaxController, CrawlPath)}
+	// */
+	// @Deprecated
+	// protected Crawler(CrawljaxController mother, List<Eventable> returnPath) {
+	// this(mother, new CrawlPath(returnPath));
+	// }
 
 	/**
 	 * Private Crawler constructor for a 'reload' crawler. Only used internally.
@@ -133,17 +145,19 @@ public class Crawler implements Runnable {
 	 * @param returnPath
 	 *            the path used to return to the last state, this can be a empty list
 	 */
-	protected Crawler(CrawljaxController mother, CrawlPath returnPath) {
+	protected Crawler(CrawljaxController mother, CrawlPath returnPath, Plugins plugins) {
 		this.backTrackPath = returnPath;
 		this.controller = mother;
-		this.configurationReader = controller.getConfigurationReader();
+		this.plugins = plugins;
+		this.config = controller.getConfiguration();
 		this.crawlQueueManager = mother.getCrawlQueueManager();
 		if (controller.getSession() != null) {
 			this.stateMachine =
 			        new StateMachine(controller.getSession().getStateFlowGraph(), controller
-			                .getSession().getInitialState(), controller.getInvariantList());
+			                .getSession().getInitialState(), controller.getInvariantList(),
+			                plugins);
 		} else {
-			/**
+			/*
 			 * Reset the state machine to null, because there is no session where to load the
 			 * stateFlowGraph from.
 			 */
@@ -155,14 +169,10 @@ public class Crawler implements Runnable {
 	 * Brings the browser to the initial state.
 	 */
 	public void goToInitialURL() {
-		LOGGER.info("Loading Page "
-		        + configurationReader.getCrawlSpecificationReader().getSiteUrl());
-		getBrowser().goToUrl(configurationReader.getCrawlSpecificationReader().getSiteUrl());
-		/**
-		 * Thread safe
-		 */
+		LOG.info("Loading Page {}", config.getUrl());
+		getBrowser().goToUrl(config.getUrl());
 		controller.doBrowserWait(getBrowser());
-		CrawljaxPluginsUtil.runOnUrlLoadPlugins(getBrowser());
+		plugins.runOnUrlLoadPlugins(getBrowser());
 	}
 
 	/**
@@ -173,54 +183,84 @@ public class Crawler implements Runnable {
 	 * @return true iff the event is fired
 	 */
 	private boolean fireEvent(Eventable eventable) {
+		Eventable eventToFire = eventable;
 		if (eventable.getIdentification().getHow().toString().equals("xpath")
 		        && eventable.getRelatedFrame().equals("")) {
-
-			/**
-			 * The path in the page to the 'clickable' (link, div, span, etc)
-			 */
-			String xpath = eventable.getIdentification().getValue();
-
-			/**
-			 * The type of event to execute on the 'clickable' like onClick, mouseOver, hover, etc
-			 */
-			EventType eventType = eventable.getEventType();
-
-			/**
-			 * Try to find a 'better' / 'quicker' xpath
-			 */
-			String newXPath = new ElementResolver(eventable, getBrowser()).resolve();
-			if (newXPath != null && !xpath.equals(newXPath)) {
-				LOGGER.info("XPath changed from " + xpath + " to " + newXPath + " relatedFrame:"
-				        + eventable.getRelatedFrame());
-				eventable =
-				        new Eventable(new Identification(Identification.How.xpath, newXPath),
-				                eventType);
+			eventToFire = resolveByXpath(eventable, eventToFire);
+		}
+		boolean fired = false;
+		try {
+			fired = getBrowser().fireEvent(eventToFire);
+		} catch (ElementNotVisibleException | NoSuchElementException e) {
+			if (config.getCrawlRules().isCrawlHiddenAnchors() && eventToFire.getElement() != null
+			        && "A".equals(eventToFire.getElement().getTag())) {
+				fired = visitAnchorHrefIfPossible(eventToFire);
+			} else {
+				LOG.debug("Ignoring invisble element {}", eventToFire.getElement());
 			}
 		}
 
-		if (getBrowser().fireEvent(eventable)) {
+		LOG.debug("Event fired={} for eventable {}", fired, eventable);
 
-			/**
+		if (fired) {
+
+			/*
 			 * Let the controller execute its specified wait operation on the browser thread safe.
 			 */
 			controller.doBrowserWait(getBrowser());
 
-			/**
-			 * Close opened windows
-			 */
 			getBrowser().closeOtherWindows();
 
 			return true; // An event fired
 		} else {
-			/**
+			/*
 			 * Execute the OnFireEventFailedPlugins with the current crawlPath with the crawlPath
 			 * removed 1 state to represent the path TO here.
 			 */
-			CrawljaxPluginsUtil.runOnFireEventFailedPlugins(eventable, controller.getSession()
+			plugins.runOnFireEventFailedPlugins(eventable, controller.getSession()
 			        .getCurrentCrawlPath().immutableCopy(true));
 			return false; // no event fired
 		}
+	}
+
+	private Eventable resolveByXpath(Eventable eventable, Eventable eventToFire) {
+		// The path in the page to the 'clickable' (link, div, span, etc)
+		String xpath = eventable.getIdentification().getValue();
+
+		// The type of event to execute on the 'clickable' like onClick,
+		// mouseOver, hover, etc
+		EventType eventType = eventable.getEventType();
+
+		// Try to find a 'better' / 'quicker' xpath
+		String newXPath = new ElementResolver(eventable, getBrowser()).resolve();
+		if (newXPath != null && !xpath.equals(newXPath)) {
+			LOG.info("XPath changed from {} to {} relatedFrame: {}", xpath, newXPath,
+			        eventable.getRelatedFrame());
+			eventToFire =
+			        new Eventable(new Identification(Identification.How.xpath, newXPath),
+			                eventType);
+		}
+		return eventToFire;
+	}
+
+	private boolean visitAnchorHrefIfPossible(Eventable eventable) {
+		Element element = eventable.getElement();
+		String href = element.getAttributeOrNull("href");
+		if (href == null) {
+			LOG.info("Anchor {} has no href and is invisble so it will be ignored", element);
+		} else {
+			LOG.info("Found an invisible link with href={}", href);
+			try {
+				if (!UrlUtils.isLinkExternal(browser.getCurrentUrl(), href)) {
+					URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
+					browser.goToUrl(url);
+					return true;
+				}
+			} catch (MalformedURLException e) {
+				LOG.info("Could not visit invisible illegal URL {}", e.getMessage());
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -231,14 +271,13 @@ public class Crawler implements Runnable {
 	 *            the eventable element.
 	 */
 	private void handleInputElements(Eventable eventable) {
-		List<FormInput> formInputs = eventable.getRelatedFormInputs();
+		CopyOnWriteArrayList<FormInput> formInputs = eventable.getRelatedFormInputs();
 
 		for (FormInput formInput : formHandler.getFormInputs()) {
 			if (!formInputs.contains(formInput)) {
 				formInputs.add(formInput);
 			}
 		}
-		eventable.setRelatedFormInputs(formInputs);
 		formHandler.handleFormElements(formInputs);
 	}
 
@@ -257,7 +296,7 @@ public class Crawler implements Runnable {
 				return;
 			}
 
-			LOGGER.info("Backtracking by executing {} on element: {}", clickable.getEventType(),
+			LOG.info("Backtracking by executing {} on element: {}", clickable.getEventType(),
 			        clickable);
 
 			this.getStateMachine().changeState(clickable.getTargetStateVertex());
@@ -270,13 +309,13 @@ public class Crawler implements Runnable {
 
 			if (this.fireEvent(clickable)) {
 
-				depth++;
+				int d = depth.incrementAndGet();
+				LOG.debug("Crawl depth now {}", d);
 
 				/*
 				 * Run the onRevisitStateValidator(s)
 				 */
-				CrawljaxPluginsUtil.runOnRevisitStatePlugins(this.controller.getSession(),
-				        curState);
+				plugins.runOnRevisitStatePlugins(this.controller.getSession(), curState);
 			}
 
 			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
@@ -299,23 +338,23 @@ public class Crawler implements Runnable {
 		// support for meta refresh tags
 		if (eventable.getElement().getTag().toLowerCase().equals("meta")) {
 			Pattern p = Pattern.compile("(\\d+);\\s+URL=(.*)");
-			for (Attribute e : eventable.getElement().getAttributes()) {
+			for (Entry<String, String> e : eventable.getElement().getAttributes().entrySet()) {
 				Matcher m = p.matcher(e.getValue());
 				if (m.find()) {
-					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("URL: {}", m.group(2));
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("URL: {}", m.group(2));
 					}
 					try {
 						// seconds*1000=ms
 						Thread.sleep(Integer.parseInt(m.group(1)) * 1000);
 					} catch (Exception ex) {
-						LOGGER.error(ex.getLocalizedMessage(), ex);
+						LOG.error(ex.getLocalizedMessage(), ex);
 					}
 				}
 			}
 		}
 
-		LOGGER.debug("Executing {} on element: {}; State: {}", eventable.getEventType(),
+		LOG.debug("Executing {} on element: {}; State: {}", eventable.getEventType(),
 		        eventable, this.getStateMachine().getCurrentState().getName());
 		if (this.fireEvent(eventable)) {
 			StateVertex newState =
@@ -323,29 +362,26 @@ public class Crawler implements Runnable {
 			                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
 			                this.controller.getStrippedDom(getBrowser()));
 
-			// checking if DOM is changed
-			if (CrawljaxPluginsUtil.runDomChangeNotifierPlugins(this.getStateMachine()
-			        .getCurrentState(), eventable, newState, getBrowser())) {
+			if (domChanged(eventable, newState)) {
 
-				// Dom changed
 				controller.getSession().addEventableToCrawlPath(eventable);
-				if (this.getStateMachine().update(eventable, newState, this.getBrowser(),
-				        this.controller.getSession())) {
+				if (this.getStateMachine().updateAndCheckIfClone(eventable, newState,
+				        this.getBrowser(), this.controller.getSession())) {
 
-					// Change is no clone
-					CrawljaxPluginsUtil.runGuidedCrawlingPlugins(controller, controller
-					        .getSession(), controller.getSession().getCurrentCrawlPath(), this
-					        .getStateMachine());
-
-					return ClickResult.newState;
+					return ClickResult.NEW_STATE;
 				} else {
 					// Dom changed; Clone
-					return ClickResult.cloneDetected;
+					return ClickResult.CLONE_DETECTED;
 				}
 			}
 		}
 		// Event not fired or, Dom not changed
-		return ClickResult.domUnChanged;
+		return ClickResult.DOM_UNCHANGED;
+	}
+
+	private boolean domChanged(final Eventable eventable, StateVertex newState) {
+		return plugins.runDomChangeNotifierPlugins(this.getStateMachine().getCurrentState(),
+		        eventable, newState, getBrowser());
 	}
 
 	/**
@@ -359,25 +395,6 @@ public class Crawler implements Runnable {
 		return controller.getSession().getCurrentCrawlPath();
 	}
 
-	/**
-	 * Have we reached the depth limit?
-	 * 
-	 * @param depth
-	 *            the current depth. Added as argument so this call can be moved out if desired.
-	 * @return true if the limit has been reached
-	 */
-	private boolean depthLimitReached(int depth) {
-
-		if (this.depth >= configurationReader.getCrawlSpecificationReader().getDepth()
-		        && configurationReader.getCrawlSpecificationReader().getDepth() != 0) {
-			LOGGER.info("DEPTH " + depth + " reached returning from rec call. Given depth: "
-			        + configurationReader.getCrawlSpecificationReader().getDepth());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	private void spawnThreads(StateVertex state) {
 		Crawler c = null;
 		do {
@@ -386,7 +403,7 @@ public class Crawler implements Runnable {
 			}
 			c =
 			        new Crawler(this.controller, controller.getSession().getCurrentCrawlPath()
-			                .immutableCopy(true));
+			                .immutableCopy(true), config.getPlugins());
 		} while (state.registerCrawler(c));
 	}
 
@@ -399,31 +416,30 @@ public class Crawler implements Runnable {
 		if (candidateElement.allConditionsSatisfied(getBrowser())) {
 			ClickResult clickResult = clickTag(new Eventable(candidateElement, eventType));
 			switch (clickResult) {
-				case cloneDetected:
+				case CLONE_DETECTED:
 					fired = false;
-					// We are in the clone state so we continue with the cloned version to search
+					// We are in the clone state so we continue with the cloned
+					// version to search
 					// for work.
 					this.controller.getSession().branchCrawlPath();
 					spawnThreads(orrigionalState);
 					break;
-				case newState:
+				case NEW_STATE:
 					fired = true;
 					// Recurse because new state found
 					spawnThreads(orrigionalState);
 					break;
-				case domUnChanged:
-					// Dom not updated, continue with the next
+				case DOM_UNCHANGED:
 					break;
 				default:
-					break;
+					throw new IllegalStateException("Unrecognized click result " + clickResult);
 			}
 			return clickResult;
 		} else {
-
-			LOGGER.info("Conditions not satisfied for element: " + candidateElement + "; State: "
-			        + this.getStateMachine().getCurrentState().getName());
+			LOG.info("Conditions not satisfied for element: {}; State: {}", candidateElement,
+			        this.getStateMachine().getCurrentState().getName());
 		}
-		return ClickResult.domUnChanged;
+		return ClickResult.DOM_UNCHANGED;
 	}
 
 	/**
@@ -433,26 +449,23 @@ public class Crawler implements Runnable {
 	 *             if an exception is thrown.
 	 */
 	private boolean crawl() throws CrawljaxException {
-		if (depthLimitReached(depth)) {
+		if (depthLimitReached()) {
 			return true;
 		}
 
-		if (!checkConstraints()) {
+		if (!shouldContinueCrawling()) {
 			return false;
 		}
 
 		// Store the currentState to be able to 'back-track' later.
 		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
 
-		if (orrigionalState.searchForCandidateElements(candidateExtractor, configurationReader
-		        .getTagElements(), configurationReader.getExcludeTagElements(),
-		        configurationReader.getCrawlSpecificationReader().getClickOnce())) {
+		if (orrigionalState.searchForCandidateElements(candidateExtractor)) {
 			// Only execute the preStateCrawlingPlugins when it's the first time
-			LOGGER.info("Starting preStateCrawlingPlugins...");
+			LOG.info("Starting preStateCrawlingPlugins...");
 			List<CandidateElement> candidateElements =
 			        orrigionalState.getUnprocessedCandidateElements();
-			CrawljaxPluginsUtil.runPreStateCrawlingPlugins(controller.getSession(),
-			        candidateElements);
+			plugins.runPreStateCrawlingPlugins(controller.getSession(), candidateElements);
 			// update crawlActions
 			orrigionalState.filterCandidateActions(candidateElements);
 		}
@@ -460,19 +473,19 @@ public class Crawler implements Runnable {
 		CandidateCrawlAction action =
 		        orrigionalState.pollCandidateCrawlAction(this, crawlQueueManager);
 		while (action != null) {
-			if (depthLimitReached(depth)) {
+			if (depthLimitReached()) {
 				return true;
 			}
 
-			if (!checkConstraints()) {
+			if (!shouldContinueCrawling()) {
 				return false;
 			}
 			ClickResult result = this.crawlAction(action);
 			orrigionalState.finishedWorking(this, action);
 			switch (result) {
-				case newState:
+				case NEW_STATE:
 					return newStateDetected(orrigionalState);
-				case cloneDetected:
+				case CLONE_DETECTED:
 					return true;
 				default:
 					break;
@@ -480,6 +493,24 @@ public class Crawler implements Runnable {
 			action = orrigionalState.pollCandidateCrawlAction(this, crawlQueueManager);
 		}
 		return true;
+	}
+
+	/**
+	 * Have we reached the depth limit?
+	 * 
+	 * @param depth
+	 *            the current depth. Added as argument so this call can be moved out if desired.
+	 * @return true if the limit has been reached
+	 */
+	private boolean depthLimitReached() {
+		int maxDepth = config.getMaximumDepth();
+		if (this.depth.get() >= maxDepth && maxDepth != 0) {
+			LOG.info("DEPTH {} reached returning from rec call. Given depth: {}", maxDepth,
+			        depth);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -492,11 +523,9 @@ public class Crawler implements Runnable {
 	 */
 	private boolean newStateDetected(StateVertex orrigionalState) throws CrawljaxException {
 
-		/**
-		 * An event has been fired so we are one level deeper
-		 */
-		depth++;
-		LOGGER.info("RECURSIVE Call crawl; Current DEPTH= " + depth);
+		// An event has been fired so we are one level deeper
+		int d = depth.incrementAndGet();
+		LOG.info("RECURSIVE Call crawl; Current DEPTH= {}", d);
 		if (!this.crawl()) {
 			// Crawling has stopped
 			controller.terminate(false);
@@ -525,24 +554,24 @@ public class Crawler implements Runnable {
 			 * Already set the browser will be in the initial URL.
 			 */
 			this.browser = controller.getBrowserPool().requestBrowser();
-			LOGGER.info("Reloading page for navigating back");
+			LOG.info("Reloading page for navigating back");
 			this.goToInitialURL();
 		}
 		// TODO Stefan ideally this should be placed in the constructor
 		this.formHandler =
-		        new FormHandler(getBrowser(), configurationReader.getInputSpecification(),
-		                configurationReader.getCrawlSpecificationReader().getRandomInputInForms());
+		        new FormHandler(getBrowser(), config.getCrawlRules().getInputSpecification(),
+		                config.getCrawlRules().isRandomInputInForms());
 
 		this.candidateExtractor =
 		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
-		                formHandler, configurationReader);
+		                formHandler, config);
 		/**
 		 * go back into the previous state.
 		 */
 		try {
 			this.goBackExact();
 		} catch (CrawljaxException e) {
-			LOGGER.error("Failed to backtrack", e);
+			LOG.error("Failed to backtrack", e);
 		}
 	}
 
@@ -566,7 +595,7 @@ public class Crawler implements Runnable {
 	 */
 	@Override
 	public void run() {
-		if (!checkConstraints()) {
+		if (!shouldContinueCrawling()) {
 			// Constrains are not met at start of this Crawler, so stop immediately
 			return;
 		}
@@ -576,7 +605,7 @@ public class Crawler implements Runnable {
 					return;
 				}
 			} catch (CrawljaxException e) {
-				LOGGER.error("Received Crawljax exception", e);
+				LOG.error("Received Crawljax exception", e);
 			}
 		}
 
@@ -606,18 +635,20 @@ public class Crawler implements Runnable {
 				controller.getSession().removeCrawlPath();
 			}
 		} catch (BrowserConnectionException e) {
-			// The connection of the browser has gone down, most of the times it means that the
+			// The connection of the browser has gone down, most of the times it
+			// means that the
 			// browser process has crashed.
-			LOGGER.error("Crawler failed because the used browser died during Crawling",
+			LOG.error("Crawler failed because the used browser died during Crawling",
 			        new CrawlPathToException("Crawler failed due to browser crash", controller
 			                .getSession().getCurrentCrawlPath(), e));
-			// removeBrowser will throw a RuntimeException if the current browser is the last
+			// removeBrowser will throw a RuntimeException if the current browser
+			// is the last
 			// browser in the pool.
 			this.controller.getBrowserPool().removeBrowser(this.getBrowser(),
 			        this.controller.getCrawlQueueManager());
 			return;
 		} catch (CrawljaxException e) {
-			LOGGER.error("Crawl failed!", e);
+			LOG.error("Crawl failed!", e);
 		}
 		/**
 		 * At last failure or non shutdown the Crawler.
@@ -646,31 +677,31 @@ public class Crawler implements Runnable {
 		return stateMachine;
 	}
 
-	/**
-	 * Checks the state and time constraints. This function is nearly Thread-safe.
-	 * 
-	 * @return true if all conditions are met.
-	 */
-	private boolean checkConstraints() {
-		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
-		long maxCrawlTime = configurationReader.getCrawlSpecificationReader().getMaximumRunTime();
-		if ((maxCrawlTime != 0) && (timePassed > maxCrawlTime)) {
+	private boolean shouldContinueCrawling() {
+		return !maximumCrawlTimePassed() && !maximumStatesReached();
+	}
 
-			LOGGER.info("Max time " + TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime)
-			        + " seconds passed!");
-			/* stop crawling */
+	private boolean maximumCrawlTimePassed() {
+		long timePassed = System.currentTimeMillis() - controller.getSession().getStartTime();
+		long maxCrawlTime = config.getMaximumRuntime();
+		if (maxCrawlTime != 0 && timePassed > maxCrawlTime) {
+			LOG.info("Max time {} seconds passed!",
+			        TimeUnit.MILLISECONDS.toSeconds(maxCrawlTime));
+			return true;
+		} else {
 			return false;
 		}
+	}
+
+	private boolean maximumStatesReached() {
 		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
-		int maxNumberOfStates =
-		        configurationReader.getCrawlSpecificationReader().getMaxNumberOfStates();
-		if ((maxNumberOfStates != 0) && (graph.getAllStates().size() >= maxNumberOfStates)) {
-			LOGGER.info("Max number of states " + maxNumberOfStates + " reached!");
-			/* stop crawling */
+		int maxNumberOfStates = config.getMaximumStates();
+		if ((maxNumberOfStates != 0) && (graph.getNumberOfStates() >= maxNumberOfStates)) {
+			LOG.info("Max number of states {} reached!", maxNumberOfStates);
+			return true;
+		} else {
 			return false;
 		}
-		/* continue crawling */
-		return true;
 	}
 
 }

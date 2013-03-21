@@ -22,9 +22,9 @@ import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawlQueueManager;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.TagElement;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.DomUtils;
+import com.google.common.base.Strings;
 
 /**
  * The state vertex class which represents a state in the browser. This class implements the
@@ -49,17 +49,15 @@ public class StateVertex implements Serializable {
 	 * This list is used to store the possible candidates. If it is null its not initialised if it's
 	 * a empty list its empty.
 	 */
-	private LinkedBlockingDeque<CandidateCrawlAction> candidateActions;
+	private LinkedBlockingDeque<CandidateCrawlAction> candidateActions =
+	        new LinkedBlockingDeque<>();;
 
 	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> registerdCandidateActions =
-	        new ConcurrentHashMap<Crawler, CandidateCrawlAction>();
+	        new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> workInProgressCandidateActions =
-	        new ConcurrentHashMap<Crawler, CandidateCrawlAction>();
+	        new ConcurrentHashMap<>();
 
-	private final Object candidateActionsSearchLock = new String("");
-
-	private final LinkedBlockingDeque<Crawler> registeredCrawlers =
-	        new LinkedBlockingDeque<Crawler>();
+	private final LinkedBlockingDeque<Crawler> registeredCrawlers = new LinkedBlockingDeque<>();
 
 	/**
 	 * Default constructor to support saving instances of this class as an XML.
@@ -140,7 +138,7 @@ public class StateVertex implements Serializable {
 	@Override
 	public int hashCode() {
 		HashCodeBuilder builder = new HashCodeBuilder();
-		if (strippedDom == null || "".equals(strippedDom)) {
+		if (Strings.isNullOrEmpty(strippedDom)) {
 			builder.append(dom);
 		} else {
 			builder.append(strippedDom);
@@ -252,43 +250,19 @@ public class StateVertex implements Serializable {
 	 * @return true if the searchForCandidateElemens has run false otherwise
 	 */
 	@GuardedBy("candidateActionsSearchLock")
-	public boolean searchForCandidateElements(CandidateElementExtractor candidateExtractor,
-	        List<TagElement> crawlTagElements, List<TagElement> crawlExcludeTagElements,
-	        boolean clickOnce) {
-		synchronized (candidateActionsSearchLock) {
-			if (candidateActions == null) {
-				candidateActions = new LinkedBlockingDeque<CandidateCrawlAction>();
-			} else {
-				return false;
-			}
-		}
-		// TODO read the eventtypes from the crawl elements instead
-		List<String> eventTypes = new ArrayList<String>();
-		eventTypes.add(EventType.click.toString());
-
+	public boolean searchForCandidateElements(CandidateElementExtractor candidateExtractor) {
 		try {
 			List<CandidateElement> candidateList = candidateExtractor.extract(this);
-
 			for (CandidateElement candidateElement : candidateList) {
-				for (String eventType : eventTypes) {
-					if (eventType.equals(EventType.click.toString())) {
-						candidateActions.add(new CandidateCrawlAction(candidateElement,
-						        EventType.click));
-					} else {
-						if (eventType.equals(EventType.hover.toString())) {
-							candidateActions.add(new CandidateCrawlAction(candidateElement,
-							        EventType.hover));
-						} else {
-							LOGGER.warn("The Event Type: " + eventType + " is not supported.");
-						}
-					}
-				}
+				// TODO add support for Hovers.
+				candidateActions.add(new CandidateCrawlAction(candidateElement, EventType.click));
 			}
 		} catch (CrawljaxException e) {
 			LOGGER.error(
 			        "Catched exception while searching for candidates in state " + getName(), e);
 		}
-		return candidateActions.size() > 0; // Only notify of found candidates when there are...
+		return !candidateActions.isEmpty(); // Only notify of found candidates
+		                                    // when there are...
 
 	}
 
@@ -380,23 +354,22 @@ public class StateVertex implements Serializable {
 			}
 			do {
 				if (manager.removeWorkFromQueue(c)) {
-					LOGGER.info("Crawler " + c + " REMOVED from Queue!");
+					LOGGER.info("Crawler {} REMOVED from Queue!", c);
 					action = registerdCandidateActions.remove(c);
 					if (action != null) {
 						/*
 						 * We got a action and removed the registeredCandidateActions for the
-						 * crawler, remove the crawler from queue as the first thinng. As the
-						 * crawler might just have started the run method of the crawler must also
-						 * be added with a check hook.
+						 * crawler, remove the crawler from queue as the first thing. As the crawler
+						 * might just have started the run method of the crawler must also be added
+						 * with a check hook.
 						 */
 						LOGGER.info("Stolen work from other Crawler");
 						return action;
 					} else {
-						LOGGER.warn("Oh my! I just removed " + c
-						        + " from the queue with no action!");
+						LOGGER.warn("Oh my! I just removed {} from the queue with no action!", c);
 					}
 				} else {
-					LOGGER.warn("FAILED TO REMOVE " + c + " from Queue!");
+					LOGGER.warn("FAILED TO REMOVE {} from Queue!", c);
 				}
 				c = registeredCrawlers.pollFirst();
 			} while (c != null);
@@ -454,4 +427,5 @@ public class StateVertex implements Serializable {
 		workInProgressCandidateActions.remove(crawler);
 		registeredCrawlers.remove(crawler);
 	}
+
 }

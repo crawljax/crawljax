@@ -165,8 +165,8 @@ public final class FormInputValueHelper {
 
 			CandidateElement candidateElement =
 			        new CandidateElement(cloneElement,
-			                XPathHelper.getXPathExpression(sourceElement));
-			candidateElement.setFormInputs(formInputsForCurrentIndex);
+			                XPathHelper.getXPathExpression(sourceElement),
+			                formInputsForCurrentIndex);
 			candidateElements.add(candidateElement);
 		}
 		return candidateElements;

@@ -1,6 +1,8 @@
 package com.crawljax.crawltests;
 
-import com.crawljax.core.configuration.CrawlSpecification;
+import org.eclipse.jetty.util.resource.Resource;
+
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BaseCrawler;
 
 /**
@@ -12,14 +14,15 @@ public class SimpleXpathCrawl extends BaseCrawler {
 	public static final int NUMBER_OF_EDGES = 2;
 
 	public SimpleXpathCrawl() {
-		super("simple-xpath-site");
+		super(Resource.newClassPathResource("sites"), "simple-xpath-site");
 	}
 
 	@Override
-	public CrawlSpecification newCrawlSpecification() {
-		CrawlSpecification spec = super.newCrawlSpecification();
-		spec.click("a").underXPath("//A[@class='click']");
-		spec.dontClickChildrenOf("div").withId("dontClick");
-		return spec;
+	protected CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
+		CrawljaxConfigurationBuilder builder = super.newCrawlConfiguartionBuilder();
+		builder.crawlRules().click("a").underXPath("//A[@class='click']");
+		builder.crawlRules().dontClickChildrenOf("div").withId("dontClick");
+		return builder;
 	}
+
 }

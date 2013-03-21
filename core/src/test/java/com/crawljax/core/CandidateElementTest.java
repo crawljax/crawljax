@@ -1,15 +1,19 @@
 package com.crawljax.core;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.crawljax.forms.FormInput;
 import com.crawljax.util.DomUtils;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Test class for the CandidateElement class.
@@ -19,15 +23,25 @@ import com.crawljax.util.DomUtils;
 public class CandidateElementTest {
 	private static Document document;
 
+	private final List<FormInput> noFormInput = ImmutableList.of();
+
+	private CandidateElement c;
+
+	private Element e;
+
 	@BeforeClass
-	public static void setup() throws SAXException, IOException {
+	public static void setupOnce() throws SAXException, IOException {
 		document = DomUtils.asDocument("");
+	}
+
+	@Before
+	public void setup() {
+		e = document.createElement("test");
+		c = new CandidateElement(e, "", noFormInput);
 	}
 
 	@Test
 	public void testEmptyElement() throws SAXException, IOException {
-		Element e = document.createElement("test");
-		CandidateElement c = new CandidateElement(e, "");
 		Assert.assertEquals("General String and Unique String are the same",
 		        c.getGeneralString(), c.getUniqueString());
 		Assert.assertEquals("Excpected result", "TEST:  xpath", c.getGeneralString().trim());
@@ -35,9 +49,7 @@ public class CandidateElementTest {
 
 	@Test
 	public void testOneAttribureElement() throws SAXException, IOException {
-		Element e = document.createElement("test");
 		e.setAttribute("id", "abc");
-		CandidateElement c = new CandidateElement(e, "");
 		Assert.assertEquals("General String and Unique String are the same",
 		        c.getGeneralString(), c.getUniqueString());
 		Assert.assertEquals("Excpected result", "TEST: id=abc xpath", c.getGeneralString().trim());
@@ -45,10 +57,8 @@ public class CandidateElementTest {
 
 	@Test
 	public void testTwoAttribureElement() throws SAXException, IOException {
-		Element e = document.createElement("test");
 		e.setAttribute("id", "abc");
 		e.setAttribute("class", "def");
-		CandidateElement c = new CandidateElement(e, "");
 		Assert.assertEquals("General String and Unique String are the same",
 		        c.getGeneralString(), c.getUniqueString());
 		Assert.assertEquals("Excpected result", "TEST: class=def id=abc xpath", c
@@ -57,10 +67,8 @@ public class CandidateElementTest {
 
 	@Test
 	public void testOneAttribureElementWithAtusa() throws SAXException, IOException {
-		Element e = document.createElement("test");
 		e.setAttribute("id", "abc");
 		e.setAttribute("atusa", "ignore");
-		CandidateElement c = new CandidateElement(e, "");
 		Assert.assertNotSame("General String and Unique String are not the same",
 		        c.getGeneralString(), c.getUniqueString());
 		Assert.assertEquals("Excpected result", "TEST: id=abc xpath", c.getGeneralString().trim());
@@ -70,11 +78,9 @@ public class CandidateElementTest {
 
 	@Test
 	public void testTwoAttribureElementWithAtusa() throws SAXException, IOException {
-		Element e = document.createElement("test");
 		e.setAttribute("id", "abc");
 		e.setAttribute("atusa", "ignore");
 		e.setAttribute("class", "def");
-		CandidateElement c = new CandidateElement(e, "");
 		Assert.assertNotSame("General String and Unique String are not the same",
 		        c.getGeneralString(), c.getUniqueString());
 		Assert.assertEquals("Excpected result", "TEST: class=def id=abc xpath", c
@@ -86,7 +92,6 @@ public class CandidateElementTest {
 	@Test
 	public void testMultipleAttribureElementWithAtusaOrderedAlphabetical() throws SAXException,
 	        IOException {
-		Element e = document.createElement("test");
 		e.setAttribute("id", "abc");
 		e.setAttribute("atusa", "ignore");
 		e.setAttribute("class", "def");
@@ -94,7 +99,6 @@ public class CandidateElementTest {
 		e.setAttribute("a", "a");
 		e.setAttribute("x", "a");
 
-		CandidateElement c = new CandidateElement(e, "");
 		Assert.assertNotSame("General String and Unique String are not the same",
 		        c.getGeneralString(), c.getUniqueString());
 		Assert.assertEquals("Excpected result", "TEST: a=a class=def id=abc x=a z=z xpath", c

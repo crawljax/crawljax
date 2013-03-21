@@ -2,28 +2,27 @@ package com.crawljax.plugins.crawloverview;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.concurrent.ThreadSafe;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
-import com.crawljax.plugins.crawloverview.model.CrawlConfiguration;
 import com.crawljax.plugins.crawloverview.model.Edge;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
 import com.crawljax.plugins.crawloverview.model.StateStatistics;
 import com.crawljax.plugins.crawloverview.model.Statistics;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
 
 /**
  * Cache to build the {@link OutPutModel}. It is {@link ThreadSafe} except for the
@@ -31,8 +30,8 @@ import com.google.common.collect.Queues;
  */
 class OutPutModelCache {
 
+	private static final Logger LOG = LoggerFactory.getLogger(OutPutModelCache.class);
 	private final ConcurrentMap<String, StateBuilder> states = Maps.newConcurrentMap();
-	private final BlockingDeque<Edge> edges = Queues.newLinkedBlockingDeque();
 
 	StateBuilder addStateIfAbsent(StateVertex state) {
 		StateBuilder newState = new StateBuilder(state);
@@ -48,18 +47,30 @@ class OutPutModelCache {
 	 * @return Makes the final calculations and retuns the {@link OutPutModel}.
 	 */
 	OutPutModel close(CrawlSession session) {
-		HashSet<Edge> buffer = new HashSet<Edge>(edges.size());
-		edges.drainTo(buffer);
-		ImmutableSet<Edge> edgesCopy = ImmutableSet.copyOf(buffer);
+		ImmutableList<Edge> edgesCopy = asEdges(session.getStateFlowGraph().getAllEdges());
 		checkEdgesAndCountFans(edgesCopy);
 		ImmutableMap<String, State> statesCopy = buildStates();
+
+		if (statesCopy.size() != session.getStateFlowGraph().getAllStates().size()) {
+			LOG.error("Not all states from the session are in the result. This means there's a bug somewhere");
+			LOG.info("Printing state difference. \nSession states: {} \nResult states: {}",
+			        statesCopy, session.getStateFlowGraph().getAllStates());
+		}
+
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
 		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session, stateStats),
-		        new CrawlConfiguration(session), session.getCrawljaxConfiguration()
-		                .getCrawlSpecificationReader());
+		        session.getCrawljaxConfiguration());
 	}
 
-	private void checkEdgesAndCountFans(ImmutableSet<Edge> edges) {
+	private ImmutableList<Edge> asEdges(Set<Eventable> allEdges) {
+		ImmutableList.Builder<Edge> builder = ImmutableList.builder();
+		for (Eventable eventable : allEdges) {
+			builder.add(new Edge(eventable));
+		}
+		return builder.build();
+	}
+
+	private void checkEdgesAndCountFans(ImmutableList<Edge> edges) {
 		for (Edge e : edges) {
 			StateBuilder from = states.get(e.getFrom());
 			StateBuilder to = states.get(e.getTo());
@@ -78,9 +89,4 @@ class OutPutModelCache {
 		return builder.build();
 	}
 
-	public void addEdges(Set<Eventable> allEdges) {
-		for (Eventable eventable : allEdges) {
-			edges.add(new Edge(eventable));
-		}
-	}
 }

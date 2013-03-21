@@ -10,8 +10,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -27,14 +30,17 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.configuration.CrawlSpecificationReader;
-import com.crawljax.plugins.crawloverview.model.CrawlConfiguration;
+import com.crawljax.core.plugin.Plugin;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
-import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
@@ -74,11 +80,16 @@ class OutputBuilder {
 
 		indexFile = new File(outputDir, "index.html");
 		ve = new VelocityEngine();
+		configureVelocity();
+
+		copyGitProperties();
+	}
+
+	private void configureVelocity() {
 		ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
 		        "org.apache.velocity.runtime.log.NullLogChute");
 		ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
 		ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-
 	}
 
 	private void checkPermissions() {
@@ -109,10 +120,7 @@ class OutputBuilder {
 
 	private void copySkeletonFromJar(URL skeleton) {
 		LOG.debug("Loading skeleton as JAR entry {}", skeleton);
-		String path = skeleton.getPath();
-		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
-		File jar = new File(jarpath);
-		LOG.debug("Jar file {} from path {}", jar, path);
+		File jar = getJar(skeleton);
 		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(jar))) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
@@ -131,8 +139,32 @@ class OutputBuilder {
 		}
 	}
 
+	private File getJar(URL skeleton) {
+		String path;
+		try {
+			path = URLDecoder.decode(skeleton.getPath(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("Could not process the path of the Overview skeleton "
+			        + skeleton, e);
+		}
+		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
+		File jar = new File(jarpath);
+		LOG.debug("Jar file {} from path {}", jar, path);
+		return jar;
+	}
+
 	File newScreenShotFile(String name) {
 		return new File(screenshots, name + ".png");
+	}
+
+	private void copyGitProperties() {
+		File outFile = new File(outputDir, "git.properties");
+		try (InputStream in = OutputBuilder.class.getResourceAsStream("/git.properties");
+		        FileOutputStream out = new FileOutputStream(outFile)) {
+			ByteStreams.copy(in, out);
+		} catch (IOException e) {
+			LOG.warn("Could not copy git.properties file", e);
+		}
 	}
 
 	void makeThumbNail(File screenShot, String name) {
@@ -153,21 +185,11 @@ class OutputBuilder {
 	void write(OutPutModel outModel) {
 		try {
 			writeIndexFile(outModel);
-			writeStatistics(outModel.getStatistics());
-			writeConfig(outModel.getConfiguration(), outModel.getCrawlSpecification());
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
 
 		LOG.info("Overview report generated");
-	}
-
-	private void writeConfig(CrawlConfiguration configuration, CrawlSpecificationReader crawlSpec) {
-		File file = new File(outputDir, "config.html");
-		VelocityContext context = new VelocityContext();
-		context.put("config", BeanToReadableMap.toMap(configuration));
-		context.put("spec", BeanToReadableMap.toMap(crawlSpec));
-		writeFile(context, file, "config.html");
 	}
 
 	private void writeIndexFile(OutPutModel model) {
@@ -176,6 +198,13 @@ class OutputBuilder {
 		writeJsonToOutDir(toJson(model));
 		context.put("states", toJson(model.getStates()));
 		context.put("edges", toJson(model.getEdges()));
+		context.put("config", BeanToReadableMap.toMap(model.getConfiguration()));
+
+		context.put("stats", model.getStatistics());
+
+		LOG.debug("Writing urls report");
+		context.put("urls", model.getStatistics().getStateStats().getUrls());
+
 		writeFile(context, indexFile, "index.html");
 	}
 
@@ -185,20 +214,6 @@ class OutputBuilder {
 		} catch (IOException e) {
 			LOG.warn("Could not write JSON model to output dir. " + e.getMessage());
 		}
-	}
-
-	private void writeStatistics(Statistics stats) {
-		LOG.debug("Writing statistics report");
-		File file = new File(outputDir, "statistics.html");
-		VelocityContext context = new VelocityContext();
-		context.put("stats", stats);
-		writeFile(context, file, "statistics.html");
-
-		LOG.debug("Writing urls report");
-		file = new File(outputDir, "urls.html");
-		context = new VelocityContext();
-		context.put("urls", stats.getStateStats().getUrls());
-		writeFile(context, file, "urls.html");
 	}
 
 	private void writeFile(VelocityContext context, File outFile, String template) {
@@ -244,13 +259,33 @@ class OutputBuilder {
 		}
 	}
 
-	private String toJson(Object o) {
+	static String toJson(Object o) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+			mapper.setVisibility(PropertyAccessor.GETTER, Visibility.NONE);
+			mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+			SimpleModule testModule = new SimpleModule("Plugin serialiezr");
+			testModule.addSerializer(new JsonSerializer<Plugin>() {
+
+				@Override
+				public void serialize(Plugin plugin, JsonGenerator jgen,
+				        SerializerProvider provider) throws IOException, JsonProcessingException {
+					jgen.writeString(plugin.getClass().getSimpleName());
+				}
+
+				@Override
+				public Class<Plugin> handledType() {
+					return Plugin.class;
+				}
+			});
+			mapper.registerModule(testModule);
 			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(o);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
+			LOG.error(
+			        "Could not serialize the object. This will be ignored and the error will be written instead. Object was {}",
+			        o, e);
+			return "\"" + e.getMessage() + "\"";
 		}
 	}
 

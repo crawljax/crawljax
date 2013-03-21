@@ -1,20 +1,19 @@
 package com.crawljax.plugins.crawloverview;
 
 import java.io.File;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.util.resource.Resource;
 import org.junit.rules.ExternalResource;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.test.BaseCrawler;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 /**
  * Rule that runs the crawl of the hover site. The result works via a {@link Future} so the crawl
@@ -22,15 +21,24 @@ import com.google.common.base.Preconditions;
  */
 public class RunHoverCrawl extends ExternalResource {
 
-	public static final AtomicBoolean HAS_RUN = new AtomicBoolean(false);
-	private static final FutureTask<OutPutModel> CRAWL_TASK = new FutureTask<OutPutModel>(
-	        new Callable<OutPutModel>() {
+	private static final Supplier<OutPutModel> CRAWL_TASK = Suppliers
+	        .memoize(new Supplier<OutPutModel>() {
 
 		        @Override
-		        public OutPutModel call() throws Exception {
-			        LoggerFactory.getLogger(RunHoverCrawl.class).info("Running the hover crawl");
-			        Resource hoverSiteBase = Resource.newClassPathResource("hover-test-site");
-			        BaseCrawler hoverSiteCrawl = new BaseCrawler(hoverSiteBase, "");
+		        public OutPutModel get() {
+			        LoggerFactory.getLogger(RunHoverCrawl.class).info(
+			                "Running the hover crawl");
+			        Resource hoverSiteBase =
+			                Resource.newClassPathResource("hover-test-site");
+			        BaseCrawler hoverSiteCrawl = new BaseCrawler(hoverSiteBase, "") {
+				        @Override
+				        protected CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
+					        CrawljaxConfigurationBuilder builder =
+					                super.newCrawlConfiguartionBuilder();
+
+					        return builder;
+				        };
+			        };
 			        CrawlOverview plugin = new CrawlOverview(getTempDir());
 			        hoverSiteCrawl.crawlWith(plugin);
 			        return plugin.getResult();
@@ -50,13 +58,10 @@ public class RunHoverCrawl extends ExternalResource {
 
 	@Override
 	protected void before() throws Throwable {
-		if (!HAS_RUN.get()) {
-			HAS_RUN.set(true);
-			CRAWL_TASK.run();
-		}
+		CRAWL_TASK.get();
 	}
 
-	public OutPutModel getResult() throws InterruptedException, ExecutionException {
+	public OutPutModel getResult() {
 		return CRAWL_TASK.get();
 	}
 

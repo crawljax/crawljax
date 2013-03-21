@@ -1,3 +1,13 @@
+## [Version 3.0](https://github.com/crawljax/crawljax/issues?milestone=3&state=closed)
+
+* New Overview plugin
+* Crawljax is now configured using a builder
+* Crawljax can now crawl hidden `href` elements as well.
+* Children of a certain elements can be excluded using a nice syntax.
+* [View closed issues](https://github.com/crawljax/crawljax/issues?milestone=3&page=1&state=closed)
+* [View the full diff](https://github.com/crawljax/crawljax/compare/crawljax-2.2...crawljax-3.0)
+
+
 ## [Version 2.2](https://github.com/crawljax/crawljax/issues?milestone=2&state=closed)
 
 * [View closed issues](https://github.com/crawljax/crawljax/issues?milestone=2&page=1&state=closed)

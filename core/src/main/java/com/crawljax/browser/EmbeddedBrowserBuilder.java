@@ -1,6 +1,6 @@
 package com.crawljax.browser;
 
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 
 /**
  * This is the main interface for building a concrete EmbeddedBrowser implementation. By default
@@ -38,5 +38,5 @@ public interface EmbeddedBrowserBuilder {
 	 *            The configuration reader object to read the specific configuration options form.
 	 * @return the new created instance of a EmbeddedBrowser to be used.
 	 */
-	EmbeddedBrowser buildEmbeddedBrowser(CrawljaxConfigurationReader configuration);
+	EmbeddedBrowser buildEmbeddedBrowser(CrawljaxConfiguration configuration);
 }
