@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.google.common.collect.ImmutableSortedSet;
 
@@ -66,7 +67,15 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 
 			case chrome:
 				ChromeDriver driverChrome;
-				if (configuration.getProxyConfiguration() != null) {
+				
+				boolean validProxyConfig = false;
+				if(configuration.getProxyConfiguration() != null) {
+					if (configuration.getProxyConfiguration().getType() != ProxyType.NOTHING){
+						validProxyConfig = true;
+					}
+				}
+				
+				if (validProxyConfig) {
 					ChromeOptions optionsChrome = new ChromeOptions();
 					optionsChrome.addArguments("--proxy-server=http://"
 					        + configuration.getProxyConfiguration().getHostname() + ":"
