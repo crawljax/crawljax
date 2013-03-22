@@ -39,7 +39,7 @@ class StateWriter {
 		LOG.debug("Writing state file for state {}", state.getName());
 		VelocityContext context = new VelocityContext();
 		context.put("name", state.getName());
-		context.put("screenshot", state.getName() + ".png");
+		context.put("screenshot", state.getName() + ".jpg");
 		context.put("elements", getElements(sfg, state));
 		context.put("fanIn", state.getFanIn());
 		context.put("fanOut", state.getFanOut());

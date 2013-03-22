@@ -794,31 +794,40 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		return crawlWaitReload;
 	}
 
-	private void takeScreenShotOnBrowser(WebDriver driver, File file) throws CrawljaxException {
-		if (driver instanceof TakesScreenshot) {
-			File tmpfile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-
+	@Override
+	public void saveScreenShot(File file) throws CrawljaxException {
+		try {
+			File tmpfile = takeScreenShotOnBrowser(browser, OutputType.FILE);
 			try {
 				FileHandler.copy(tmpfile, file);
 			} catch (IOException e) {
 				throw new CrawljaxException(e);
 			}
+		} catch (WebDriverException e) {
+			throw wrapWebDriverExceptionIfConnectionException(e);
+		}
+	}
 
+	private <T> T takeScreenShotOnBrowser(WebDriver driver, OutputType<T> outType)
+	        throws CrawljaxException {
+		if (driver instanceof TakesScreenshot) {
+			T screenshot = ((TakesScreenshot) driver).getScreenshotAs(outType);
 			removeCanvasGeneratedByFirefoxDriverForScreenshots();
+			return screenshot;
 		} else if (driver instanceof RemoteWebDriver) {
 			WebDriver augmentedWebdriver = new Augmenter().augment(driver);
-			takeScreenShotOnBrowser(augmentedWebdriver, file);
+			return takeScreenShotOnBrowser(augmentedWebdriver, outType);
 		} else if (driver instanceof WrapsDriver) {
-			takeScreenShotOnBrowser(((WrapsDriver) driver).getWrappedDriver(), file);
+			return takeScreenShotOnBrowser(((WrapsDriver) driver).getWrappedDriver(), outType);
 		} else {
 			throw new CrawljaxException("Your current WebDriver doesn't support screenshots.");
 		}
 	}
 
 	@Override
-	public void saveScreenShot(File file) throws CrawljaxException {
+	public byte[] getScreenShot() throws CrawljaxException {
 		try {
-			takeScreenShotOnBrowser(browser, file);
+			return takeScreenShotOnBrowser(browser, OutputType.BYTES);
 		} catch (WebDriverException e) {
 			throw wrapWebDriverExceptionIfConnectionException(e);
 		}
