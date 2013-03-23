@@ -115,6 +115,34 @@ public class DomUtilsTest {
 				"</DIV><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
 
 		Document dom = DomUtils.asDocument(html); 
+		assertNotNull(dom);
 		assertEquals(expectedDocString, DomUtils.getDocumentToString(dom).replace("\n", "").replace("\r", "")); 
+	}
+	
+	/*
+	 * Tests getting the text value from an element.
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testGetTextValue() throws IOException {
+		final String expectedText1 = "Testing title text";
+		final String expectedText2 = "Testing content test"; 
+		final String expectedText3 = "Testing alternative text"; 
+		final String html = "<body><br id='test1' title=\"" + expectedText1 + "\">" 
+				+ "<p id='test2'>" + expectedText2 + "</p>" 
+				+ "<br id='test3' alt=\"" + expectedText3 + "\"></body>";
+		
+		Document dom = DomUtils.asDocument(html); 
+		assertNotNull(dom); 
+		
+		assertEquals(expectedText1, 
+				DomUtils.getTextValue(dom.getElementById("test1"))); 
+		
+		assertEquals(expectedText2, 
+				DomUtils.getTextValue(dom.getElementById("test2"))); 
+	
+		assertEquals(expectedText3, 
+				DomUtils.getTextValue(dom.getElementById("test3"))); 
 	}
 }
