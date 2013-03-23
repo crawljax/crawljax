@@ -21,12 +21,14 @@ public class SampleCrawlersTest {
 	private CrawlSession crawl;
 	private int numStates;
 	private int numEdges;
+	private boolean isSetup = false;
 	
 	private void setupSimpleCrawler() throws Exception {
 		crawler = new SimpleSiteCrawl();
 		crawl = crawler.crawl();
 		numStates = SimpleSiteCrawl.NUMBER_OF_STATES;
 		numEdges = SimpleSiteCrawl.NUMBER_OF_EDGES;
+		isSetup = true;
 	}
 	
 	private void setupJsCrawler() throws Exception {
@@ -34,6 +36,7 @@ public class SampleCrawlersTest {
 		crawl = crawler.crawl();
 		numStates = SimpleJsSiteCrawl.NUMBER_OF_STATES;
 		numEdges = SimpleJsSiteCrawl.NUMBER_OF_EDGES;
+		isSetup = true;
 	}
 	
 	private void setupInputCrawler() throws Exception {
@@ -41,6 +44,7 @@ public class SampleCrawlersTest {
 		crawl = crawler.crawl();
 		numStates = SimpleInputSiteCrawl.NUMBER_OF_STATES;
 		numEdges = SimpleInputSiteCrawl.NUMBER_OF_EDGES;
+		isSetup = true;
 	}
 	
 	private void setupXpathCrawl() throws Exception {
@@ -48,6 +52,7 @@ public class SampleCrawlersTest {
 		crawl = crawler.crawl();
 		numStates = SimpleInputSiteCrawl.NUMBER_OF_STATES;
 		numEdges = SimpleInputSiteCrawl.NUMBER_OF_EDGES;
+		isSetup = true;
 	}
 
 	@Test
@@ -99,6 +104,7 @@ public class SampleCrawlersTest {
 	}
 	
 	private void runFlowGraphTest() throws Exception {
+		assertTrue(isSetup);
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
 		assertThat(stateFlowGraph, hasStates(numStates));
 		assertThat(stateFlowGraph, hasEdges(numEdges));
@@ -106,6 +112,7 @@ public class SampleCrawlersTest {
 	
 	
 	private void runUrlTest() throws Exception {
+		assertTrue(isSetup);
 		WebServer server = crawler.getWebServer();
 		URL site = new URL("http", "localhost", server.getPort(), "/");
 		assertTrue(site.getPath().equals(server.getSiteUrl().getPath()));

@@ -1,6 +1,8 @@
 package com.crawljax.test;
 
 import static org.junit.Assert.*;
+import org.junit.Before;
+
 import java.net.URL;
 import org.eclipse.jetty.util.resource.Resource;
 import java.io.IOException;
@@ -17,7 +19,8 @@ public class WebServerTest {
 	static final int MAX_PORT = 65535;
 	static final int MIN_PORT = 0;
 	
-	private void setup() throws Exception {
+	@Before
+	public void setup() throws Exception {
 		site = BaseCrawler.class.getResource("/site");
 		try {
 			server = new WebServer(Resource.newResource(site));
@@ -29,7 +32,6 @@ public class WebServerTest {
 
 	@Test
 	public void testSiteUrl() throws Exception {
-		setup();
 		site = new URL("http", "localhost", server.getPort(), "/");
 		assertEquals(site.getPort(), server.getSiteUrl().getPort());
 		assertTrue(site.getPath().equals(server.getSiteUrl().getPath()));
