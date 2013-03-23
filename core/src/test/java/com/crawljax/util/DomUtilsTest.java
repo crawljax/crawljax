@@ -99,4 +99,22 @@ public class DomUtilsTest {
 		DomUtils.removeScriptTags(dom); 
 		assertTrue(dom.getElementsByTagName("script").getLength() == 0); 
 	}
+	
+	/*
+	 * Tests the string representation of a document. 
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testGetDocumentToString() throws IOException {
+		final String html = "<body><div id='testdiv'</div><div style=\"colour:#FF0000\">" 
+				+ "<h>Header</h></div></body>"; 
+		
+		final String expectedDocString = "<HTML><HEAD><META http-equiv=\"Content-Type\"" + 
+				" content=\"text/html; charset=UTF-8\"></HEAD><BODY><DIV id=\"testdiv\">" +
+				"</DIV><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
+
+		Document dom = DomUtils.asDocument(html); 
+		assertEquals(expectedDocString, DomUtils.getDocumentToString(dom).replace("\n", "").replace("\r", "")); 
+	}
 }
