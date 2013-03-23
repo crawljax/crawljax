@@ -49,17 +49,37 @@ public class DomUtilsTest {
 		
 		Element elem = DomUtils.getElementByXpath(dom, xpath);
 		assertNotNull(elem); 
-		assertEquals("ID: firstdiv id=firstdiv", DomUtils.getElementString(elem).trim()); 
+		assertEquals("ID: firstdiv id=firstdiv", 
+				DomUtils.getElementString(elem).trim()); 
 		
 		xpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]";
 		elem = DomUtils.getElementByXpath(dom, xpath);
 		assertNotNull(elem); 
-		assertEquals("\"test\" ID: thespan id=thespan", DomUtils.getElementString(elem).trim());
+		assertEquals("\"test\" ID: thespan id=thespan", 
+				DomUtils.getElementString(elem).trim());
 		
 		xpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]/A[1]";
 		elem = DomUtils.getElementByXpath(dom, xpath);
 		assertNotNull(elem);
-		assertEquals("\"test\" ID: thea id=thea", DomUtils.getElementString(elem).trim()); 
+		assertEquals("\"test\" ID: thea id=thea", 
+				DomUtils.getElementString(elem).trim()); 
+	}
+	
+	/*
+	 * Tests tag removal from a dom.
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testRemoveTags() throws IOException {
+		final String html = "<body><div id='testdiv'</div><div style=\"colour:#FF0000\">" 
+					+ "<h>Header</h></div></body>"; 
+		Document dom = DomUtils.asDocument(html); 
+		assertNotNull(dom); 
+		assertTrue(dom.getElementsByTagName("div").getLength() != 0); 
+		
+		DomUtils.removeTags(dom, "div");
+		assertTrue(dom.getElementsByTagName("div").getLength() == 0); 
 	}
 	
 	/*
