@@ -37,25 +37,6 @@ public class DOMComparerTest   {
 		List<Difference> differences = dc.compare();
 		assertEquals("Found no differences in Documents",differences.size(),EMPTY);
 	}
-
-	/*
-	@Test
-	public void compareTotalDifference() throws IOException{
-		String html = "<html><body><p>No difference</p></body></html>";
-		String html = ""
-		Document control = DomUtils.asDocument(html);
-		assertNotNull(control);
-		
-		Document test = DomUtils.asDocument(html);
-		assertNotNull(test);
-		
-		DOMComparer dc = new DOMComparer(control, test);
-		
-		List<Difference> differences = dc.compare();
-		assertNull(differences);
-		
-	}
-	*/
 	
 	
 	@Test
@@ -72,8 +53,8 @@ public class DOMComparerTest   {
 		DOMComparer dc = new DOMComparer(control, test);
 		
 		List<Difference> differences = dc.compare();
-		assertNotNull(differences);
-		
+		assertFalse(differences.isEmpty());
+	
 	}
 	
 }
