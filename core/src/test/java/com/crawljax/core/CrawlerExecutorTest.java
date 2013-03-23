@@ -29,6 +29,7 @@ public class CrawlerExecutorTest {
 		TestThread t1 = new TestThread("Thread 1 Crawler 1", "");
 		TestThread t2 = new TestThread("Thread 2 Crawler 2 (Automatic)", "Automatic");
 		executor.execute(t1);
+		Thread.sleep(1);
 		executor.execute(t2);
 
 		executor.waitForTermination();
