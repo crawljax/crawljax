@@ -162,4 +162,27 @@ public class DomUtilsTest {
 
 		assertEquals(expectedString, DomUtils.removeNewLines(html));
 	}
+	
+	/*
+	 * Tests replacing strings using regular expressions.
+	 */
+	@Test
+	public void testReplaceString() {
+		final String regex = "hello|world";
+		final String toReplace = "hello world helloworld worldhello";
+		final String expectedString = "testing testing testingtesting testingtesting"; 
+		
+		assertEquals(expectedString, DomUtils.replaceString(toReplace, regex, "testing"));
+	}
+	
+	/*
+	 * Test adding a / at the end of a folder path.
+	 */
+	@Test
+	public void testAddFolderSlashIfNeeded() {
+		final String incompleteFolderName = "path/testpath";
+		final String expectedPath = incompleteFolderName + "/"; 
+		
+		assertEquals(expectedPath, DomUtils.addFolderSlashIfNeeded(incompleteFolderName)); 
+	}
 }
