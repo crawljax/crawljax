@@ -13,9 +13,6 @@ public final class PrettyHTML {
 
 	}
 
-	// private static final Logger LOGGER =
-	// LoggerFactory.getLogger(PrettyHTML.class.getName());
-
 	/**
 	 * Pretty print HTML string.
 	 * 
