@@ -6,12 +6,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -108,37 +105,5 @@ public class XPathHelperTest {
 		String xPath = "/HTML/BODY/DIV/UL/LI[@class=\"Test\"]";
 		assertEquals("/HTML/BODY/DIV/UL/LI", XPathHelper.stripXPathToElement(xPath));
 	}
-	
-	@Test
-	public void getSiblingsTest() {
-		final String html =
-		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
-		                + "<a id='thea'>test</a></span></div></body>";
-		String xpath = "/HTML[1]/BODY[1]/DIV[1]";
-		Document dom = DomUtils.asDocument(html);
-		assertNotNull(dom);
-		
-		Element elem = DomUtils.getElementByXpath(dom, xpath);
-		assertNotNull(elem); 
-		
-		List<Node> testSiblings = null;
-		
-		//Element parent = 
-		Node parent =  new Element();
-		Node sibling = new Node();
-		sibling.setPrefix("familyOne");
-		Node notSibling = new Node();
-		notSibling.setPrefix("otherFamily");
-		
-		
-		parent.appendChild(sibling);
-		parent.appendChild(sibling);
-		parent.appendChild(sibling);
-		parent.appendChild(notSibling);
-		parent.appendChild(notSibling);
-		
-		testSiblings = getSiblings(parent, parent);
-		
-		assertEquals(3, testSiblings.size());
-	}
+
 }
