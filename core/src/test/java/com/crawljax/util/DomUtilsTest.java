@@ -145,4 +145,21 @@ public class DomUtilsTest {
 		assertEquals(expectedText3, 
 				DomUtils.getTextValue(dom.getElementById("test3"))); 
 	}
+	
+	/*
+	 * Tests removal of newlines from html strings.
+	 * 
+	 */
+	@Test
+	public void testRemoveNewLines() {
+		final String html = "<HTML>\n<HEAD>\n<META http-equiv=\"Content-Type\"" + 
+				" content=\"text/html; charset=UTF-8\"></HEAD>\n<BODY>\n<DIV id=\"testdiv\">" +
+				"</DIV><DIV style=\"colour:#FF0000\">\n<H>Header</H>\n</DIV>\n</BODY>\n</HTML>";
+		
+		final String expectedString = "<HTML><HEAD><META http-equiv=\"Content-Type\"" + 
+				" content=\"text/html; charset=UTF-8\"></HEAD><BODY><DIV id=\"testdiv\">" +
+				"</DIV><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
+
+		assertEquals(expectedString, DomUtils.removeNewLines(html));
+	}
 }
