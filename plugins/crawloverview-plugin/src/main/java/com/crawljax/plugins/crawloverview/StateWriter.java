@@ -115,31 +115,14 @@ class StateWriter {
 		if ("index".equals(name)) {
 			return 0;
 		}
-		String temp = url;
-		/*
-		temp = temp.replace(":", "xpasswordx");
-		temp = temp.replace("/", "ypasswordy");
-		temp = temp.replace(".", "zpasswordz");*/
-		
-		temp = temp.replace(":", "");
-		temp = temp.replace("/", "");
-		temp = temp.replace(".", "");
-		temp = temp.replace("=", "");
-		temp = temp.replace("?", "");
-		temp = temp.replace("&", "");
-		temp = temp.replace(",", "");
-		temp = temp.replace("#", "");
-		if(temp.length()>50){
-			temp = temp.substring(0, 50);
+		url= url.replaceAll("\\p{Punct}|\\d.", "");
+		if(url.length()>50){
+			url = url.substring(0, 50);
 		}
 
-		String temp2 = name;
-		//System.out.println(temp);
-		//System.out.println(temp2);
-		temp2 = temp2.replace(("-"+temp), "");
-		//System.out.println(temp2 +" test getStateNumber");
+		name = name.replace(("-"+url), "");
 		
 
-		return Integer.parseInt(temp2);
+		return Integer.parseInt(name);
 	}
 }

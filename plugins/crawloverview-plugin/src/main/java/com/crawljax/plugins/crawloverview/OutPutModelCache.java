@@ -85,7 +85,6 @@ class OutPutModelCache {
 		Builder<String, State> builder = ImmutableMap.builder();
 		for (StateBuilder state : states.values()) {
 			builder.put(state.getName(), state.build());
-			System.out.println(state.getName());
 		}
 		return builder.build();
 	}
