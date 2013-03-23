@@ -32,7 +32,7 @@ public class DOMComparerTest   {
 		DOMComparer dc = new DOMComparer(control, test);
 		
 		List<Difference> differences = dc.compare();
-		assertEquals("Found no differences in Documents",differences.size(),EMPTY);
+		assertEquals("Error: found differences in Documents",differences.size(),EMPTY);
 	}
 	
 	@Test
@@ -50,7 +50,7 @@ public class DOMComparerTest   {
 		DOMComparer dc = new DOMComparer(control, test);
 		
 		List<Difference> differences = dc.compare();
-		assertEquals("Found 5 differences", differences.size(), EXPECTED_DIFF);
+		assertEquals("Error: Did not find 5 differences", differences.size(), EXPECTED_DIFF);
 
 	}
 	
