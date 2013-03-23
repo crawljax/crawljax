@@ -4,6 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+/**
+* Tests for class that has values of a Form Input.
+* @author Hetherington
+*
+*/
+
 public class FormInputTest {
 
 	@Test
