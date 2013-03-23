@@ -8,8 +8,8 @@ import com.crawljax.core.configuration.InputSpecification;
 public class myCrawl
 {
 	//private static final String URL = "http://gkh501.com/download.html";
-	private static final String URL = "http://www.w3schools.com/js/tryit.asp?filename=tryjs_alert";
-	//private static final String URL = "http://courses.ece.ubc.ca/315/luisindex.html";
+	//private static final String URL = "http://www.w3schools.com/js/tryit.asp?filename=tryjs_alert";
+	private static final String URL = "http://courses.ece.ubc.ca/315/luisindex.html";
 	
 	private static final String ALL_ANCHORS = "a";
 	private static final String LANGUAGE_TOOLS = "Language Tools";
