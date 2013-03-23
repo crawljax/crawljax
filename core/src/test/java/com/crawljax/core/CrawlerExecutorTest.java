@@ -28,7 +28,19 @@ public class CrawlerExecutorTest {
 		        new CrawlerExecutor(new BrowserConfiguration(BrowserType.firefox, 2));
 		TestThread t1 = new TestThread("Thread 1 Crawler 1", "");
 		TestThread t2 = new TestThread("Thread 2 Crawler 2 (Automatic)", "Automatic");
+		
 		executor.execute(t1);
+		/**
+		 * Slight delay between ThreadPoolExecutor.execute() is needed for this test to function correctly.
+		 * Depending on how the OS assigns JAVA threads to cores (or OS threads), 
+		 * the speed of execution of the methods could differ from the actual order of calling them. 
+		 * As a result, sometimes this test fails when executor.execute(t2) is actually executed
+		 * before executor.execute(t1).
+		 * There are only two ways to fix this. First is to put a small delay (as Thread.sleep(1)) between
+		 * method calling. Or assign only one core to JAVA SE process on Windows Task Manager (or equivalent
+		 * features of other OS).
+		 */
+		Thread.sleep(1);
 		executor.execute(t2);
 
 		executor.waitForTermination();
