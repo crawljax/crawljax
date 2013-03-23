@@ -302,6 +302,12 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			case click:
 				try {
 					webElement.click();
+					
+					try{
+						browser.switchTo().alert().dismiss();
+					}
+					catch(Exception noAlertFound){ /*do nothing*/ }  
+	
 				} catch (ElementNotVisibleException e) {
 					throw e;
 				} catch (WebDriverException e) {
