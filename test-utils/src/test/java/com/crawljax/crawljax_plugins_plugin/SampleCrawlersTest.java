@@ -53,76 +53,62 @@ public class SampleCrawlersTest {
 	@Test
 	public void testSimpleCrawlerFlowGraph() throws Exception {
 		setupSimpleCrawler();
-		stateFlowGraphTestHelper();
+		runFlowGraphTest();
 	}
 	
 	@Test
 	public void testSimpleCrawlerUrl() throws Exception {
 		setupSimpleCrawler();
-		urlTestHelper();
-	}
-	
-	@Test(expected=AssertionError.class)
-	public void testSimpleCrawlerShowWebSite() throws Exception {
-		setupSimpleCrawler();
-		//showWebSiteTestHelper();
-		crawler.showWebSite();
+		runUrlTest();
 	}
 
 	@Test
 	public void testJsCrawlerFlowGraph() throws Exception {
 		setupJsCrawler();
-		stateFlowGraphTestHelper();
+		runFlowGraphTest();
 	}
 	
 	@Test
 	public void testJsCrawlerUrl() throws Exception{
 		setupJsCrawler();
-		urlTestHelper();
-	}
-	
-	@Test(expected=AssertionError.class)
-	public void testJsCrawlerShowWebSite() throws Exception {
-		setupJsCrawler();
-		//showWebSiteTestHelper();
+		runUrlTest();
 	}
 
 	@Test
-	public void testInputCrawler() throws Exception {
+	public void testInputCrawlerFlowGraph() throws Exception {
 		setupInputCrawler();
-		stateFlowGraphTestHelper();
-		urlTestHelper();
-		//showWebSiteTestHelper();
+		runFlowGraphTest();
+	}
+	
+	@Test
+	public void testInputCrawlerUrl() throws Exception {
+		setupInputCrawler();
+		runUrlTest();
 	}
 
 	@Test
-	public void testSimpleXPathCrawl() throws Exception {
+	public void testSimpleXPathCrawlFlowGrah() throws Exception {
 		setupXpathCrawl();
-		stateFlowGraphTestHelper();
-		urlTestHelper();
-		//showWebSiteTestHelper();
+		runFlowGraphTest();
 	}
 	
-	private void stateFlowGraphTestHelper() throws Exception {
+	@Test
+	public void testSimpleXPathCrawlUrl() throws Exception {
+		setupXpathCrawl();
+		runUrlTest();
+	}
+	
+	private void runFlowGraphTest() throws Exception {
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
 		assertThat(stateFlowGraph, hasStates(numStates));
 		assertThat(stateFlowGraph, hasEdges(numEdges));
 	}
 	
 	
-	private void urlTestHelper() throws Exception {
+	private void runUrlTest() throws Exception {
 		WebServer server = crawler.getWebServer();
 		URL site = new URL("http", "localhost", server.getPort(), "/");
 		assertTrue(site.getPath().equals(server.getSiteUrl().getPath()));
-	}
-	
-	public void showWebSiteTestHelper() throws AssertionError, Exception {
-		try {
-			crawler.showWebSite();
-		}
-		catch (Exception e) {
-			
-		}
 	}
 
 }
