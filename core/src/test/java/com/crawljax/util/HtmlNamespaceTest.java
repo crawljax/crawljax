@@ -21,7 +21,7 @@ public class HtmlNamespaceTest {
 		}
 		assertTrue(testPass);
 		
-		testPrefix = "jiberish";
+		testPrefix = "gibberish";
 		assertEquals(XMLConstants.DEFAULT_NS_PREFIX, testNamespace.getNamespaceURI(testPrefix));
 		
 		testPrefix = "html";
