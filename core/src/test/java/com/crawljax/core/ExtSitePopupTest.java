@@ -35,7 +35,7 @@ public class ExtSitePopupTest {
 	}
 
 	@Test
-	public void testPopups() throws ConfigurationException, CrawljaxException {
+	public void testExtSitePopups() throws ConfigurationException, CrawljaxException {
 		try {
 			crawljax.run();
 			assertThat(crawljax.getSession().getStateFlowGraph(), hasEdges(1));
