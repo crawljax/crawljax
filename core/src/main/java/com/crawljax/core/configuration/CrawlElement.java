@@ -35,7 +35,6 @@ import com.google.common.collect.Lists;
 public final class CrawlElement {
 
 	private final String tagName;
-	//private final List<CrawlAttribute> crawlAttributes = Lists.newLinkedList();
 	private final List<Condition> conditions = Lists.newLinkedList();
 	private final String id;
 	private final EventType eventType;
@@ -85,7 +84,6 @@ public final class CrawlElement {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement withAttribute(String attributeName, String value) {
-		//this.crawlAttributes.add(new CrawlAttribute(attributeName, value));
 		this.underXpath = "//" + this.tagName + "[@" + attributeName + "='" + value + "']";
 		return this;
 	}
@@ -120,7 +118,6 @@ public final class CrawlElement {
 	 * @return Crawltag with text
 	 */
 	public CrawlElement withText(String text) {
-		//this.crawlAttributes.add(new CrawlAttribute("innertext", text));
 		this.underXpath = "//" + this.tagName + "[text()='" + text + "']";
 		return this;
 	}
@@ -154,11 +151,6 @@ public final class CrawlElement {
 			builder.append(tagName);
 			builder.append(", ");
 		}
-		/*if (crawlAttributes != null && !crawlAttributes.isEmpty()) {
-			builder.append("crawlAttributes=");
-			builder.append(crawlAttributes);
-			builder.append(", ");
-		}*/
 		if (conditions != null && !conditions.isEmpty()) {
 			builder.append("conditions=");
 			builder.append(conditions);
@@ -203,21 +195,6 @@ public final class CrawlElement {
 		ret.append(getInputFieldIds());
 		return ret.toString();
 	}
-
-	/**
-	 * @return the crawlAttributes
-	 */
-	/*public ImmutableList<CrawlAttribute> getCrawlAttributes() {
-		return ImmutableList.copyOf(crawlAttributes);
-	}*/
-
-	/**
-	 * @param crawlAttribute
-	 *            Adds a crawlattribute.
-	 */
-	/*protected void addCrawlAttribute(CrawlAttribute crawlAttribute) {
-		crawlAttributes.add(crawlAttribute);
-	}*/
 
 	/**
 	 * @return the id

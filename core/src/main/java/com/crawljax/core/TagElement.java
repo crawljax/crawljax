@@ -32,11 +32,6 @@ public class TagElement {
 	}
 
 	public TagElement(CrawlElement crawlElement) {
-		/*ImmutableSet.Builder<TagAttribute> attributes = ImmutableSet.builder();
-		for (CrawlAttribute crawlAttribute : crawlElement.getCrawlAttributes()) {
-			attributes.add(new TagAttribute(crawlAttribute.getName(), crawlAttribute.getValue()));
-		}
-		this.attributes = attributes.build();*/
 		this.name = crawlElement.getTagName();
 		this.id = crawlElement.getId();
 	}
