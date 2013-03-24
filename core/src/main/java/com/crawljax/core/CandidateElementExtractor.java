@@ -324,9 +324,9 @@ public class CandidateElementExtractor {
 				//opens external popup
 			String onclick = element.getAttribute("onclick");
 			if (!Strings.isNullOrEmpty(onclick)){
-				Pattern windowOpen = Pattern.compile("window.open\\(([\"'])([^\"]*)\1.*");
+				Pattern windowOpen = Pattern.compile("window\\.open\\w?\\(\\w?([\\\"\\\'])([^\\\"\\\']*)\\1.*");
 				Matcher m = windowOpen.matcher(onclick);
-				if (m.matches()) {
+				if (m.matches() && UrlUtils.isLinkExternal(browser.getCurrentUrl(), m.group(2))) {
 					return;
 				}
 			}
