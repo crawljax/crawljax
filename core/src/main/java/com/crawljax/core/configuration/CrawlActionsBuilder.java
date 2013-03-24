@@ -114,6 +114,18 @@ public class CrawlActionsBuilder {
 		click("input").withAttribute("type", "button");
 	}
 
+	/**
+	 * Specifies elements that Crawljax should not click by default
+	 * These include: 
+	 *  pop-up windows to external web pages.
+	 */
+	public void dontClickDefaultElements() {
+		dontClick("a").withAttribute("onclick", "window.open%");
+//		click("button").withAttribute("target", "0");
+//		click("input").withAttribute("type", "submit").withAttribute("target", "0");
+//		click("input").withAttribute("type", "button").withAttribute("target", "0");
+	}
+
 	private void checkNotRead() {
 		Preconditions.checkState(resultingElementsExcluded == null,
 		        "You cannot modify crawlactions once it's read");
@@ -169,6 +181,9 @@ public class CrawlActionsBuilder {
 		synchronized (this) {
 			if (resultingElementsExcluded == null) {
 				ImmutableList.Builder<CrawlElement> builder = ImmutableList.builder();
+				if (crawlElementsExcluded.isEmpty()) {
+					dontClickDefaultElements();
+				}
 				builder.addAll(crawlElementsExcluded);
 				for (ExcludeByParentBuilder exclude : crawlParentsExcluded) {
 					builder.addAll(exclude.asExcludeList(crawlElements));
