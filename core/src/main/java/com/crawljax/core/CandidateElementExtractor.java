@@ -34,7 +34,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 
 /**
@@ -101,7 +100,7 @@ public class CandidateElementExtractor {
 			builder.add(new CrawlElement(crawlElement));
 		}
 		for (CrawlElement crawlElement : inputSpecification.getCrawlElements()) {
-			builder.add(new TagElement(crawlElement));
+			builder.add(new CrawlElement(crawlElement));
 		}
 		return builder.build();
 	}
@@ -252,8 +251,8 @@ public class CandidateElementExtractor {
 		// performance problems.
 		ImmutableList<String> expressions = getFullXpathForGivenXpath(dom, eventableCondition);
 
-		NodeList nodeList = dom.getElementsByTagName(tag.getName());
-		ImmutableSet<TagAttribute> attributes = tag.getAttributes();
+		NodeList nodeList = dom.getElementsByTagName(tag.getTagName());
+		ImmutableList<CrawlAttribute> attributes = tag.getCrawlAttributes();
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
@@ -312,8 +311,8 @@ public class CandidateElementExtractor {
 		return ImmutableList.<String> of();
 	}
 
-	private void addElement(Element element, Builder<Element> builder, TagElement tagElement) {
-		if ("A".equalsIgnoreCase(tagElement.getName())) {
+	private void addElement(Element element, Builder<Element> builder, CrawlElement crawlElement) {
+		if ("A".equalsIgnoreCase(crawlElement.getTagName())) {
 			String href = element.getAttribute("href");
 			if (!Strings.isNullOrEmpty(href)) {
 				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
