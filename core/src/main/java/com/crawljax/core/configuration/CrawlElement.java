@@ -5,8 +5,10 @@ import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
+import com.crawljax.core.TagAttribute;
 import com.crawljax.core.state.Eventable.EventType;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 /**
@@ -55,7 +57,21 @@ public final class CrawlElement {
 		this.id = "id" + hashCode();
 		this.eventType = eventType;
 	}
+	
+	protected CrawlElement(EventType eventType, String tagName, List<CrawlAttribute> crawlAttributes) {
+		this.tagName = tagName.toUpperCase();
+		this.id = "id" + hashCode();
+		this.eventType = eventType;
+		this.crawlAttributes.addAll(crawlAttributes);
+	}
 
+	public CrawlElement(CrawlElement crawlElement) {
+		List<CrawlElement> attributes;
+		this.crawlAttributes.addAll(crawlElement.getCrawlAttributes());
+		this.tagName = crawlElement.getTagName();
+		this.id = crawlElement.getId();
+		this.eventType = crawlElement.getEventType();
+	}
 	/**
 	 * Crawljax will crawl the HTML elements while crawling if and only if all the specified
 	 * conditions are satisfied. IMPORTANT: only works with click()!!! For example:
@@ -180,7 +196,7 @@ public final class CrawlElement {
 		if (eventType != null) {
 			builder.append("eventType=");
 			builder.append(eventType);
-		}
+		} 
 		builder.append("]");
 		return builder.toString();
 	}
