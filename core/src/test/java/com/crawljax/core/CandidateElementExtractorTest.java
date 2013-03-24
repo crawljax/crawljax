@@ -32,6 +32,8 @@ public class CandidateElementExtractorTest {
 
 	@ClassRule
 	public static final RunWithWebServer DEMO_SITE_SERVER = new RunWithWebServer("/demo-site");
+	@ClassRule
+	public static final RunWithWebServer WEB_SERVER = new RunWithWebServer("/site");
 
 	private CrawljaxController controller;
 	private Crawler crawler;
@@ -60,6 +62,26 @@ public class CandidateElementExtractorTest {
 
 	}
 
+	@Test
+	public void testExtSite() throws InterruptedException, CrawljaxException,
+	        ConfigurationException {
+		CrawljaxConfigurationBuilder builder = 
+				CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().toExternalForm()
+                + "/ext-site-popup");
+		builder.crawlRules().click("a");
+		builder.crawlRules().clickOnce(true);
+		CrawljaxConfiguration config = builder.build();
+		setupCrawler(config);
+
+		CandidateElementExtractor extractor = newElementExtractor(config);
+
+		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
+
+		assertNotNull(candidates);
+		assertEquals(2, candidates.size());
+
+	}
+	
 	private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config) {
 		FormHandler formHandler =
 		        new FormHandler(crawler.getBrowser(), config.getCrawlRules()
