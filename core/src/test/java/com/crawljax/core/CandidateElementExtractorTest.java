@@ -63,7 +63,7 @@ public class CandidateElementExtractorTest {
 	}
 
 	@Test
-	public void testExtSite() throws InterruptedException, CrawljaxException,
+	public void testExtractExtSitePopup() throws InterruptedException, CrawljaxException,
 	        ConfigurationException {
 		CrawljaxConfigurationBuilder builder = 
 				CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().toExternalForm()
