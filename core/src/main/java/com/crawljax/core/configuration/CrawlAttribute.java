@@ -18,7 +18,7 @@ public class CrawlAttribute {
 	 * @param value
 	 *            Value.
 	 */
-	protected CrawlAttribute(String name, String value) {
+	public CrawlAttribute(String name, String value) {
 		this.name = name;
 		this.value = value;
 	}
