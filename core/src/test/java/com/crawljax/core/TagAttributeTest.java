@@ -10,9 +10,9 @@ public class TagAttributeTest {
 	
 	@Test
 	public void testConstructorAndAccess() {
-		TagAttribute attrib = new TagAttribute("blabla", "alsoBla");
-		assertEquals(attrib.getName(), "blabla");
-		assertEquals(attrib.getValue(), "alsoBla");
+		TagAttribute attrib = new TagAttribute("name", "value");
+		assertEquals(attrib.getName(), "name");
+		assertEquals(attrib.getValue(), "value");
 	}
 
 	@Test
