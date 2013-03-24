@@ -75,7 +75,7 @@ public class StyleComparator extends AbstractComparator {
 				Node attribute = nl.item(i);
 				if (attribute != null) {
 					attribute.setNodeValue(stripStyleProperties(attribute.getNodeValue()));
-					if (attribute.getNodeValue() == "") {
+					if (attribute.getNodeValue().equals("")) {
 						((Attr) attribute).getOwnerElement().removeAttribute(
 						        attribute.getNodeName());
 					}
