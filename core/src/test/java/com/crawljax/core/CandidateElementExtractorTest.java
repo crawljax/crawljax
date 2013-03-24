@@ -79,6 +79,10 @@ public class CandidateElementExtractorTest {
 
 		assertNotNull(candidates);
 		assertEquals(2, candidates.size());
+		for(final CandidateElement CE: candidates)
+		{
+			assertEquals(false, CE.getUniqueString().contains("http://www."));//WEB_SERVER.getSiteUrl().toExternalForm()));
+		}
 	}
 	
 	private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config) {
