@@ -2,7 +2,10 @@ package com.crawljax.examples;
 
 import static java.lang.System.out;
 
+import java.io.File;
 import java.util.Iterator;
+
+import ca.ubc.eece310.groupL2C1.Specification_Metrics_Plugin;
 
 import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawljaxController;
@@ -10,6 +13,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.state.SpecificationMetricState;
+import com.crawljax.plugins.crawloverview.CrawlOverview;
 
 /**
  * Crawls google.com in IE.
@@ -41,20 +45,11 @@ public final class SiteSimpleExample {
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
+		builder.addPlugin(new CrawlOverview(new File("outPut")));
+		builder.addPlugin(new Specification_Metrics_Plugin(new File("specs_outPut")));
+		
 		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();
-		SpecificationMetricState state;
-		Iterator<SpecificationMetricState> includedIt=CandidateElementExtractor.includedSpecsChecked.iterator();
-		Iterator<SpecificationMetricState> excludedIt=CandidateElementExtractor.excludedSpecsChecked.iterator();
-		while(includedIt.hasNext() || excludedIt.hasNext()){
-			state=includedIt.next();
-			state.printState();
-			out.println("\nIncluded Tags and the Elements they matched:");
-			state.printReport();
-			state=excludedIt.next();
-			out.println("\nExcluded Tags and the Elements they matched:");
-			state.printReport();
-		}
 	}
 
 	private static InputSpecification getInputSpecification() {
