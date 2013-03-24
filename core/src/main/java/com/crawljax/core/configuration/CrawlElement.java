@@ -118,7 +118,7 @@ public final class CrawlElement {
 	 * @return Crawltag with text
 	 */
 	public CrawlElement withText(String text) {
-		this.underXpath = "//" + this.tagName + "[text()='" + text + "']";
+		this.underXpath = "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
 		return this;
 	}
 
@@ -194,6 +194,27 @@ public final class CrawlElement {
 		ret.append("InputFieldIds: ");
 		ret.append(getInputFieldIds());
 		return ret.toString();
+	}
+	
+	/**
+	 * Returns a string to resolve apostrophe issue in xpath
+	 * @param text
+	 * @return the apostrophe resolved xpath value string
+	 */
+	protected String escapeApostrophes(String text)
+	{
+		String resultString;
+		if (text.contains("'")) {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("concat('");
+			stringBuilder.append(text.replace("'", "',\"'\",'"));
+			stringBuilder.append("')");
+			resultString = stringBuilder.toString();
+		}
+		else {
+			resultString = "'" + text + "'";
+		}
+		return resultString;
 	}
 
 	/**
