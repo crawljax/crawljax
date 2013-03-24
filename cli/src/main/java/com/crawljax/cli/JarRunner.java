@@ -22,6 +22,9 @@ import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
+import com.crawljax.core.plugin.PluginImporter;
+import com.crawljax.core.plugin.ClassLoaderHelper;
+import com.crawljax.core.plugin.Plugin;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -249,7 +252,12 @@ public class JarRunner {
 
 		configureTimers(builder);
 
+		//TODO: this class path folder has to exist or we have to setup a try catch inside to make sure it does
+		PluginImporter lImporter = new PluginImporter(ClassLoaderHelper.buildClassLoader(true, new File("C:/Users/User/Desktop/testplugins")));
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));
+		Iterable<Plugin> classPathPlugins = lImporter.getPluggedServices(Plugin.class);
+		while (classPathPlugins.iterator().hasNext())
+			builder.addPlugin(classPathPlugins.iterator().next());
 
 		if (commandLine.hasOption(CLICK)) {
 			builder.crawlRules().click(commandLine.getOptionValue(CLICK).split(","));
