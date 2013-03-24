@@ -62,10 +62,10 @@ public class StyleComparator extends AbstractComparator {
 	}
 
 	private Document stripDom(Document dom) {
-		dom = stripElements(dom);
-		dom = stripAttributes(dom);
-		dom = stripStyleAttributes(dom);
-		return dom;
+		Document strippedDom = stripElements(dom);
+		strippedDom = stripAttributes(strippedDom);
+		strippedDom = stripStyleAttributes(strippedDom);
+		return strippedDom;
 	}
 
 	private Document stripStyleAttributes(Document dom) {
