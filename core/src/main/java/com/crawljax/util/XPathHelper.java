@@ -237,9 +237,9 @@ public final class XPathHelper {
 	 * @return position of xpath element, if fails returns -1
 	 **/
 	public static int getXPathLocation(String dom, String xpath) {
-		dom = dom.toLowerCase();
-		xpath = xpath.toLowerCase();
-		String[] elements = xpath.split("/");
+		String dom_lower = dom.toLowerCase();
+		String xpath_lower = xpath.toLowerCase();
+		String[] elements = xpath_lower.split("/");
 		int pos = 0;
 		int temp;
 		int number;
@@ -258,7 +258,7 @@ public final class XPathHelper {
 				}
 				for (int i = 0; i < number; i++) {
 					// find new open element
-					temp = dom.indexOf("<" + stripEndSquareBrackets(element), pos);
+					temp = dom_lower.indexOf("<" + stripEndSquareBrackets(element), pos);
 
 					if (temp > -1) {
 						pos = temp + 1;
@@ -266,7 +266,7 @@ public final class XPathHelper {
 						// if depth>1 then goto end of current element
 						if (number > 1 && i < number - 1) {
 							pos =
-							        getCloseElementLocation(dom, pos,
+							        getCloseElementLocation(dom_lower, pos,
 							                stripEndSquareBrackets(element));
 						}
 
@@ -295,29 +295,30 @@ public final class XPathHelper {
 		// make sure not before the node
 		int openElements = 1;
 		int i = 0;
-		dom = dom.toLowerCase();
-		element = element.toLowerCase();
-		String openElement = "<" + element;
-		String closeElement = "</" + element;
+		int position = pos; 
+		String dom_lower = dom.toLowerCase();
+		String element_lower = element.toLowerCase();
+		String openElement = "<" + element_lower;
+		String closeElement = "</" + element_lower;
 		while (i < MAX_SEARCH_LOOPS) {
-			if (dom.indexOf(openElement, pos) == -1 && dom.indexOf(closeElement, pos) == -1) {
+			if (dom_lower.indexOf(openElement, position) == -1 && dom_lower.indexOf(closeElement, position) == -1) {
 				return -1;
 			}
-			if (dom.indexOf(openElement, pos) < dom.indexOf(closeElement, pos)
-			        && dom.indexOf(openElement, pos) != -1) {
+			if (dom_lower.indexOf(openElement, position) < dom_lower.indexOf(closeElement, position)
+			        && dom_lower.indexOf(openElement, position) != -1) {
 				openElements++;
-				pos = dom.indexOf(openElement, pos) + 1;
+				position = dom_lower.indexOf(openElement, position) + 1;
 			} else {
 
 				openElements--;
-				pos = dom.indexOf(closeElement, pos) + 1;
+				position = dom_lower.indexOf(closeElement, position) + 1;
 			}
 			if (openElements == 0) {
 				break;
 			}
 			i++;
 		}
-		return pos - 1;
+		return position - 1;
 
 	}
 
@@ -340,19 +341,21 @@ public final class XPathHelper {
 	 *         text()
 	 */
 	public static String stripXPathToElement(String xpath) {
-		if (!Strings.isNullOrEmpty(xpath)) {
-			if (xpath.toLowerCase().contains("/text()")) {
-				xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/text()"));
+		String xpathStripped = xpath; 
+		
+		if (!Strings.isNullOrEmpty(xpathStripped)) {
+			if (xpathStripped.toLowerCase().contains("/text()")) {
+				xpathStripped = xpathStripped.substring(0, xpathStripped.toLowerCase().indexOf("/text()"));
 			}
-			if (xpath.toLowerCase().contains("/comment()")) {
-				xpath = xpath.substring(0, xpath.toLowerCase().indexOf("/comment()"));
+			if (xpathStripped.toLowerCase().contains("/comment()")) {
+				xpathStripped = xpathStripped.substring(0, xpathStripped.toLowerCase().indexOf("/comment()"));
 			}
-			if (xpath.contains("@")) {
-				xpath = xpath.substring(0, xpath.indexOf("@") - 1);
+			if (xpathStripped.contains("@")) {
+				xpathStripped = xpathStripped.substring(0, xpathStripped.indexOf("@") - 1);
 			}
 		}
 
-		return xpath;
+		return xpathStripped;
 	}
 
 	private XPathHelper() {
