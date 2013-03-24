@@ -33,6 +33,7 @@ public final class CrawljaxAdvancedExampleSettings {
 		// click these elements
 		builder.crawlRules().clickDefaultElements();
 		builder.crawlRules().click("div").withAttribute("class", "clickable");
+		
 
 		// but don't click these
 		builder.crawlRules().dontClick("a").withAttribute("class", "ignore");
