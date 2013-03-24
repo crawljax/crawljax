@@ -84,7 +84,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 		 */
 		String crawlerName = r.toString();
 
-		if ("" != crawlerName) {
+		if (!crawlerName.equals("")) {
 			// This is a custom Crawler us the toString method to determine the name.
 			crawlerName = " (" + crawlerName + ")";
 		}
