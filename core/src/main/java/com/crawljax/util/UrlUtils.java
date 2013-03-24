@@ -124,10 +124,13 @@ public class UrlUtils {
 		if (haystack == null || haystack.length() == 0) {
 			return null;
 		}
-		if (haystack.charAt(0) == '?') {
-			haystack = haystack.substring(1);
+		
+		String modifiedHaystack = haystack;
+		
+		if (modifiedHaystack.charAt(0) == '?') {
+			modifiedHaystack = modifiedHaystack.substring(1);
 		}
-		String[] vars = haystack.split("&");
+		String[] vars = modifiedHaystack.split("&");
 
 		for (String var : vars) {
 			String[] tuple = var.split("=");
