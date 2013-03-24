@@ -23,8 +23,10 @@ public final class CrawljaxSimpleExampleSettings {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
-		builder.crawlRules().click("span").withText("I'm Feeling Lucky");
-		builder.crawlRules().click("button").withAttribute("id", "gbqfba");
+		builder.crawlRules().click("span").withText("I'm Feeling Lucky").withText("Google Search").withAttribute("class", "gbit");
+		
+		//builder.crawlRules().click("button").withAttribute("id", "gbqfba");
+		//builder.crawlRules().click("span").underXPath("//button[@id='gbqfbb']");
 
 		// except these
 		//builder.crawlRules().dontClick("a").underXPath("//DIV[@id='guser']");

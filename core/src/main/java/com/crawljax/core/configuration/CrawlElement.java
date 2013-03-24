@@ -84,7 +84,11 @@ public final class CrawlElement {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement withAttribute(String attributeName, String value) {
-		this.underXpath = "//" + this.tagName + "[@" + attributeName + "='" + value + "']";
+		if (this.underXpath == null || this.underXpath.isEmpty()) {
+			this.underXpath = "//" + this.tagName + "[@" + attributeName + "='" + value + "']";
+		} else {
+			this.underXpath = this.underXpath + " | " + "//" + this.tagName + "[@" + attributeName + "='" + value + "']";;
+		}
 		return this;
 	}
 
@@ -118,7 +122,11 @@ public final class CrawlElement {
 	 * @return Crawltag with text
 	 */
 	public CrawlElement withText(String text) {
-		this.underXpath = "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
+		if(this.underXpath == null || this.underXpath.isEmpty()) {
+			this.underXpath = "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
+		} else {
+			this.underXpath = this.underXpath + " | " + "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
+		}
 		return this;
 	}
 
