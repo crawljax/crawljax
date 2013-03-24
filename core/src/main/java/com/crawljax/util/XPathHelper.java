@@ -290,7 +290,7 @@ public final class XPathHelper {
 		String[] elements = { "LINK", "META", "INPUT", "BR" };
 		List<String> singleElements = Arrays.asList(elements);
 		if (singleElements.contains(element.toUpperCase())) {
-			return dom.indexOf(">", pos) + 1;
+			return dom.indexOf('>', pos) + 1;
 		}
 		// make sure not before the node
 		int openElements = 1;

@@ -13,9 +13,6 @@ public final class PrettyHTML {
 
 	}
 
-	// private static final Logger LOGGER =
-	// LoggerFactory.getLogger(PrettyHTML.class.getName());
-
 	/**
 	 * Pretty print HTML string.
 	 * 
@@ -145,14 +142,14 @@ public final class PrettyHTML {
 						// stack
 						int index = stackIndexElements.peek();
 						if (!isSingleElement(elements[index])
-						        && elements[index].lastIndexOf(">") != -1) {
+						        && elements[index].lastIndexOf('>') != -1) {
 							// close this element
 							elements[index] =
 							        elements[index]
-							                .substring(0, elements[index].lastIndexOf(">"))
+							                .substring(0, elements[index].lastIndexOf('>'))
 							                + "/"
 							                + elements[index].substring(elements[index]
-							                        .lastIndexOf(">"));
+							                        .lastIndexOf('>'));
 						}
 						stackElements.pop();
 						stackIndexElements.pop();
