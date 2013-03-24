@@ -1,5 +1,9 @@
 package com.crawljax.examples;
 
+import static java.lang.System.out;
+
+import java.util.Iterator;
+
 import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -39,12 +43,16 @@ public final class SiteSimpleExample {
 
 		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();
-		for(SpecificationMetricState state : CandidateElementExtractor.includedSpecsChecked){
+		SpecificationMetricState state;
+		Iterator<SpecificationMetricState> includedIt=CandidateElementExtractor.includedSpecsChecked.iterator();
+		Iterator<SpecificationMetricState> excludedIt=CandidateElementExtractor.excludedSpecsChecked.iterator();
+		while(includedIt.hasNext() || excludedIt.hasNext()){
+			state=includedIt.next();
 			state.printState();
+			out.println("\nIncluded Tags and the Elements they matched:");
 			state.printReport();
-		}
-		for(SpecificationMetricState state : CandidateElementExtractor.excludedSpecsChecked){
-			state.printState();
+			state=excludedIt.next();
+			out.println("\nExcluded Tags and the Elements they matched:");
 			state.printReport();
 		}
 	}

@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 
 import com.crawljax.core.TagElement;
 
-public class SpecificationMetricState implements Comparable<SpecificationMetricState> {
+public class SpecificationMetricState{
 
 	private long id;
 	private String name;
@@ -47,18 +47,14 @@ public class SpecificationMetricState implements Comparable<SpecificationMetricS
 	}
 
 	public void printState(){
-
-		out.println("State Name:\t"+name);
+		out.println("\n\n-------------\nState Name:\t"+name);
 		out.println("State ID:\t"+ id);
 		out.println("State URL:\t"+url);
 		//out.println(dom);
 		//out.println(strippedDom);
-	
 		
 	}
 	public void printReport(){
-		out.println("Elements:\n");
-		
 		Iterator<Entry<TagElement, ConcurrentLinkedQueue<Element>>> tagIterator= checkedElements.entrySet().iterator();
 		while(tagIterator.hasNext()){
 			Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
@@ -74,15 +70,4 @@ public class SpecificationMetricState implements Comparable<SpecificationMetricS
 			}
 		}
 	}
-
-	@Override
-    public int compareTo(SpecificationMetricState o) {
-	    if(this.id==o.id){
-	    	return 0;
-	    }else if(this.id>o.id){
-	    	return 1;
-	    }else{
-	    	return -1;
-	    }
-    }
 }

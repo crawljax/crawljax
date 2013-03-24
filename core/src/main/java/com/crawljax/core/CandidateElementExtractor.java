@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,8 +58,8 @@ public class CandidateElementExtractor {
 
 	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
 	
-	public static final ConcurrentSkipListSet<SpecificationMetricState> includedSpecsChecked = new ConcurrentSkipListSet<SpecificationMetricState>();
-	public static final ConcurrentSkipListSet<SpecificationMetricState> excludedSpecsChecked = new ConcurrentSkipListSet<SpecificationMetricState>();
+	public static final ConcurrentLinkedQueue<SpecificationMetricState> includedSpecsChecked = new ConcurrentLinkedQueue<SpecificationMetricState>();
+	public static final ConcurrentLinkedQueue<SpecificationMetricState> excludedSpecsChecked = new ConcurrentLinkedQueue<SpecificationMetricState>();
 	private SpecificationMetricState currentIncludeSpecChecked;
 	private SpecificationMetricState currentExcludeSpecChecked;
 	
