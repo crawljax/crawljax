@@ -1,9 +1,11 @@
 package com.crawljax.examples;
 
+import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.state.SpecificationMetricState;
 
 /**
  * Crawls google.com in IE.
@@ -37,6 +39,9 @@ public final class SiteSimpleExample {
 
 		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();
+		for(SpecificationMetricState state : CandidateElementExtractor.specsChecked){
+			state.printElements();
+		}
 	}
 
 	private static InputSpecification getInputSpecification() {

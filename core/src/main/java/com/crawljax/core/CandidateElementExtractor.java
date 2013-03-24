@@ -2,6 +2,7 @@ package com.crawljax.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -23,7 +24,9 @@ import com.crawljax.core.configuration.CrawlElement;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.configuration.PreCrawlConfiguration;
+import com.crawljax.core.state.CheckedSpecElement;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.SpecificationMetricState;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.DomUtils;
@@ -55,7 +58,9 @@ public class CandidateElementExtractor {
 	private final boolean clickOnce;
 
 	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
-
+	
+	public static final HashSet<SpecificationMetricState> specsChecked = new HashSet<SpecificationMetricState>();
+	private SpecificationMetricState currentSpecificationMetricState;
 	/**
 	 * Create a new CandidateElementExtractor.
 	 * 
@@ -130,7 +135,9 @@ public class CandidateElementExtractor {
 			return results.build();
 		}
 		LOG.debug("Looking in state: {} for candidate elements", currentState.getName());
-
+		currentSpecificationMetricState=new SpecificationMetricState(currentState);
+		specsChecked.add(currentSpecificationMetricState);
+		
 		try {
 			Document dom = DomUtils.asDocument(browser.getDomWithoutIframeContent());
 			extractElements(dom, results, "");
@@ -154,7 +161,7 @@ public class CandidateElementExtractor {
 
 			NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
 			addFramesCandidates(dom, results, relatedFrame, iFrameNodes);
-
+			//Track here?
 			eveluateElements(dom, tag, results, relatedFrame);
 		}
 	}
@@ -353,6 +360,7 @@ public class CandidateElementExtractor {
 				LOG.debug("Found new candidate element: {} with eventableCondition {}",
 				        candidateElement.getUniqueString(), eventableCondition);
 				candidateElement.setEventableCondition(eventableCondition);
+				currentSpecificationMetricState.addIncludedElement(new CheckedSpecElement(tag, sourceElement));
 				results.add(candidateElement);
 				/**
 				 * TODO add element to checkedElements after the event is fired! also add string
@@ -386,11 +394,13 @@ public class CandidateElementExtractor {
 	 */
 	private boolean isExcluded(Document dom, Element element,
 	        EventableConditionChecker eventableConditionChecker) {
-
+		
 		Node parent = element.getParentNode();
 
 		if (parent instanceof Element
 		        && isExcluded(dom, (Element) parent, eventableConditionChecker)) {
+			//Will work for single thread
+			currentSpecificationMetricState.duplicateLastExludedParent(element);
 			return true;
 		}
 
@@ -411,10 +421,12 @@ public class CandidateElementExtractor {
 
 			if (matchesXPath) {
 				LOG.info("Excluded element because of xpath: " + element);
+				currentSpecificationMetricState.addExcludedElement(new CheckedSpecElement(tag, element));
 				return true;
 			}
 			if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
 				LOG.info("Excluded element because of attributes: " + element);
+				currentSpecificationMetricState.addExcludedElement(new CheckedSpecElement(tag, element));
 				return true;
 			}
 		}
