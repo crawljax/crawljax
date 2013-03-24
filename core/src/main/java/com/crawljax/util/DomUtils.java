@@ -410,8 +410,8 @@ public final class DomUtils {
 	 */
 	private static String getFileNameInPath(String path) {
 		String fname;
-		if (path.indexOf("/") != -1) {
-			fname = path.substring(path.lastIndexOf("/") + 1);
+		if (path.indexOf('/') != -1) {
+			fname = path.substring(path.lastIndexOf('/') + 1);
 		} else {
 			fname = path;
 		}
