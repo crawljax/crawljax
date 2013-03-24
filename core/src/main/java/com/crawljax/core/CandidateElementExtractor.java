@@ -75,9 +75,7 @@ public class CandidateElementExtractor {
 		this.formHandler = formHandler;
 		PreCrawlConfiguration preCrawlConfig = config.getCrawlRules().getPreCrawlConfig();
 		this.excludeCrawlElements = asMultiMap(preCrawlConfig.getExcludedElements());
-		this.includedCrawlElements =
-		        asCrawlElements(preCrawlConfig.getIncludedElements(), config.getCrawlRules()
-		                .getInputSpecification());
+		this.includedCrawlElements = preCrawlConfig.getIncludedElements();
 		crawlFrames = config.getCrawlRules().shouldCrawlFrames();
 		clickOnce = config.getCrawlRules().isClickOnce();
 		ignoredFrameIdentifiers = config.getCrawlRules().getIgnoredFrameIdentifiers();
@@ -92,17 +90,7 @@ public class CandidateElementExtractor {
 		return builder.build();
 	}
 
-	private ImmutableList<CrawlElement> asCrawlElements(List<CrawlElement> crawlElements,
-	        InputSpecification inputSpecification) {
-		ImmutableList.Builder<CrawlElement> builder = ImmutableList.builder();
-		for (CrawlElement crawlElement : crawlElements) {
-			builder.add(new CrawlElement(crawlElement));
-		}
-		for (CrawlElement crawlElement : inputSpecification.getCrawlElements()) {
-			builder.add(new CrawlElement(crawlElement));
-		}
-		return builder.build();
-	}
+	
 
 	/**
 	 * This method extracts candidate elements from the current DOM tree in the browser, based on
