@@ -7,26 +7,20 @@
 <script language="javascript" src="js/general.js" type="text/javascript"></script>
 </head>
 <body bgcolor="white">
-	<h1>
-		Four types of popups tested:<br>
-	</h1>
-	<h2>
-		1) external ad popup (no click)<br>
-	</h2>
-	<h2>
-		2) click external site popup using JS<br>
-	</h2>
-	<h2>3) click external site popup using HTML<br></h2>
-	<h2>4) click internal popup</h2>
+	<h1>Testing Popups:</h1>
+	<p>1) external site popup using JS</p>
+	<p>2) external site popup using HTML</p>
+	<p>3) internal site popup using JS</p>
+	<p>one non-popup internal site (dummy)</p>
 	<ul id="tests">
 		<li><a href="javascript:void(0)"
-			onclick="window.open('http://www.google.ca');">JS External Site
+			onclick="window.open('http://www.google.ca');">Popup: JS External Site
 				Google</a></li>
-		<li><a href="http://www.crawljax.com" target="_blank">HTML
+		<li><a href="http://www.crawljax.com" target="_blank">Popup: HTML
 				External Site</a></li>
-		<li><a href="javascript:void(0)" onclick="window.open('b.html');">Internal
-				Site B Popup</a></li>
-		<li><a href="a.html">Internal Site A</a></li>
+		<li><a href="javascript:void(0)" onclick="window.open('b.html');">Popup: Internal
+				Site B</a></li>
+		<li><a href="a.html">non-Popup: Internal Site A</a></li>
 	</ul>
 	<script language="JavaScript">
 		window.open('http://www.google.com','popupad','width=200,height=150')

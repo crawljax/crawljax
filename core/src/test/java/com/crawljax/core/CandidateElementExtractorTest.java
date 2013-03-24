@@ -79,7 +79,6 @@ public class CandidateElementExtractorTest {
 
 		assertNotNull(candidates);
 		assertEquals(2, candidates.size());
-
 	}
 	
 	private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config) {
