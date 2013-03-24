@@ -43,7 +43,7 @@ public class CrawlAttribute {
 	}
 	
 	/**
-	 * Compare the value of this TagAttribute with a string. This string may contain wildcards by
+	 * Compare the value of this CrawlAttribute with a string. This string may contain wildcards by
 	 * using a '%'. If the string contains this character, any occurrence of this character will be
 	 * temporarily replaced with '.*' to compare using a regex, otherwise the strings will just be
 	 * compared using equal().
