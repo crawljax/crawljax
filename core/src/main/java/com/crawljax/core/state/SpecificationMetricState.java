@@ -1,31 +1,30 @@
 package com.crawljax.core.state;
 import static java.lang.System.out;
-import java.util.Vector;
+
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.w3c.dom.Element;
 
-public class SpecificationMetricState {
+import com.crawljax.core.TagElement;
+
+public class SpecificationMetricState implements Comparable<SpecificationMetricState> {
 
 	private long id;
 	private String name;
 	private String dom;
 	private final String strippedDom;
 	private final String url;
-	//Synchronized
-	private final Vector<CheckedSpecElement> includedElements=new Vector<CheckedSpecElement>();
-	private final Vector<CheckedSpecElement> excludedElements=new Vector<CheckedSpecElement>();
-	
 	/*
-	public SpecificationMetricState(long id, String name, String dom, String strippedDom,
-            String url) {
-	    super();
-	    
-	    this.id = id;
-	    this.name = name;
-	    this.dom = dom;
-	    this.strippedDom = strippedDom;
-	    this.url = url;
-    }*/
+	 * ConcurrentLinkedQueue chosen for highest concurrent insertion speed (vs say CopyOnWriteArrayList)
+	 * 
+	 * addElement() Setup for quickest Write Speed
+	 * http://stackoverflow.com/questions/3752194/best-practice-to-use-concurrentmaps-putifabsent
+	 * 
+	 */
+	ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>> checkedElements=new ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>>();
 	
 	public SpecificationMetricState(StateVertex stateVertex) {
 	    super();
@@ -36,43 +35,54 @@ public class SpecificationMetricState {
 	    this.url = stateVertex.getUrl();
     }
 	
-	public boolean addIncludedElement(CheckedSpecElement element){
-		return includedElements.add(element);
+	public void addElement(TagElement tag, Element element){
+		ConcurrentLinkedQueue<Element> elements=checkedElements.get(tag);
+		if(elements==null){
+			final ConcurrentLinkedQueue<Element> listElements=new ConcurrentLinkedQueue<Element>();
+			elements=checkedElements.putIfAbsent(tag, listElements);//utilize return to avoid extra lookup
+			if(elements==null)
+				elements=listElements;
+		}
+		elements.add(element);
 	}
-	public boolean addExcludedElement(CheckedSpecElement element){
-		return excludedElements.add(element);
-	}
-	public boolean duplicateLastExludedParent(Element element){
-		return excludedElements.add(new CheckedSpecElement(excludedElements.lastElement().getSourceSpecification(),element));
-	}
-	public void printElements(){
-		out.println(name);
-		out.println(id);
+
+	public void printState(){
+
+		out.println("State Name:\t"+name);
+		out.println("State ID:\t"+ id);
+		out.println("State URL:\t"+url);
 		//out.println(dom);
-		out.println(strippedDom);
-		out.println(url);
-		out.println("Included Elements: ");
-		for(CheckedSpecElement element : includedElements){
-			element.printElement();
-		}
-		out.println("Excluded Elements: ");
-		for(CheckedSpecElement element : excludedElements){
-			element.printElement();
-		}
+		//out.println(strippedDom);
+	
+		
 	}
 	public void printReport(){
-		out.println("State: " + name);
-		out.println(id);
-		//out.println(dom);
-		out.println(strippedDom);
-		out.println(url);
-		out.println("Included Elements: ");
-		for(CheckedSpecElement element : includedElements){
-			element.printElement();
-		}
-		out.println("Excluded Elements: ");
-		for(CheckedSpecElement element : excludedElements){
-			element.printElement();
+		out.println("Elements:\n");
+		
+		Iterator<Entry<TagElement, ConcurrentLinkedQueue<Element>>> tagIterator= checkedElements.entrySet().iterator();
+		while(tagIterator.hasNext()){
+			Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
+			
+			out.println("Source Name:\t"+mapEntry.getKey().getName());
+			out.println("Source ID:\t "+mapEntry.getKey().getId());
+			
+			Iterator<Element> elementIterator=mapEntry.getValue().iterator();
+			while(elementIterator.hasNext()){
+				Element element=elementIterator.next();	
+				out.println("Element Name:\t "+element.getTagName());
+				out.println("Element Text:\t "+element.getTextContent());
+			}
 		}
 	}
+
+	@Override
+    public int compareTo(SpecificationMetricState o) {
+	    if(this.id==o.id){
+	    	return 0;
+	    }else if(this.id>o.id){
+	    	return 1;
+	    }else{
+	    	return -1;
+	    }
+    }
 }

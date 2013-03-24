@@ -2,9 +2,9 @@ package com.crawljax.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +24,6 @@ import com.crawljax.core.configuration.CrawlElement;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.configuration.PreCrawlConfiguration;
-import com.crawljax.core.state.CheckedSpecElement;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.SpecificationMetricState;
 import com.crawljax.core.state.StateVertex;
@@ -59,8 +58,11 @@ public class CandidateElementExtractor {
 
 	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
 	
-	public static final HashSet<SpecificationMetricState> specsChecked = new HashSet<SpecificationMetricState>();
-	private SpecificationMetricState currentSpecificationMetricState;
+	public static final ConcurrentSkipListSet<SpecificationMetricState> includedSpecsChecked = new ConcurrentSkipListSet<SpecificationMetricState>();
+	public static final ConcurrentSkipListSet<SpecificationMetricState> excludedSpecsChecked = new ConcurrentSkipListSet<SpecificationMetricState>();
+	private SpecificationMetricState currentIncludeSpecChecked;
+	private SpecificationMetricState currentExcludeSpecChecked;
+	
 	/**
 	 * Create a new CandidateElementExtractor.
 	 * 
@@ -129,14 +131,17 @@ public class CandidateElementExtractor {
 	public ImmutableList<CandidateElement> extract(StateVertex currentState)
 	        throws CrawljaxException {
 		Builder<CandidateElement> results = ImmutableList.builder();
-
+		
 		if (!checkedElements.checkCrawlCondition(browser)) {
 			LOG.info("State {} did not satisfy the CrawlConditions.", currentState.getName());
 			return results.build();
 		}
 		LOG.debug("Looking in state: {} for candidate elements", currentState.getName());
-		currentSpecificationMetricState=new SpecificationMetricState(currentState);
-		specsChecked.add(currentSpecificationMetricState);
+		
+		currentIncludeSpecChecked=new SpecificationMetricState(currentState);
+		currentExcludeSpecChecked=new SpecificationMetricState(currentState);
+		includedSpecsChecked.add(currentIncludeSpecChecked);
+		excludedSpecsChecked.add(currentExcludeSpecChecked);
 		
 		try {
 			Document dom = DomUtils.asDocument(browser.getDomWithoutIframeContent());
@@ -360,7 +365,7 @@ public class CandidateElementExtractor {
 				LOG.debug("Found new candidate element: {} with eventableCondition {}",
 				        candidateElement.getUniqueString(), eventableCondition);
 				candidateElement.setEventableCondition(eventableCondition);
-				currentSpecificationMetricState.addIncludedElement(new CheckedSpecElement(tag, sourceElement));
+				currentIncludeSpecChecked.addElement(tag, candidateElement.getElement());
 				results.add(candidateElement);
 				/**
 				 * TODO add element to checkedElements after the event is fired! also add string
@@ -400,7 +405,7 @@ public class CandidateElementExtractor {
 		if (parent instanceof Element
 		        && isExcluded(dom, (Element) parent, eventableConditionChecker)) {
 			//Will work for single thread
-			currentSpecificationMetricState.duplicateLastExludedParent(element);
+			//TODO Figure this out
 			return true;
 		}
 
@@ -421,12 +426,12 @@ public class CandidateElementExtractor {
 
 			if (matchesXPath) {
 				LOG.info("Excluded element because of xpath: " + element);
-				currentSpecificationMetricState.addExcludedElement(new CheckedSpecElement(tag, element));
+				currentExcludeSpecChecked.addElement(tag, element);
 				return true;
 			}
 			if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
 				LOG.info("Excluded element because of attributes: " + element);
-				currentSpecificationMetricState.addExcludedElement(new CheckedSpecElement(tag, element));
+				currentExcludeSpecChecked.addElement(tag, element);
 				return true;
 			}
 		}

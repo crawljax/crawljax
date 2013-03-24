@@ -39,8 +39,13 @@ public final class SiteSimpleExample {
 
 		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();
-		for(SpecificationMetricState state : CandidateElementExtractor.specsChecked){
-			state.printElements();
+		for(SpecificationMetricState state : CandidateElementExtractor.includedSpecsChecked){
+			state.printState();
+			state.printReport();
+		}
+		for(SpecificationMetricState state : CandidateElementExtractor.excludedSpecsChecked){
+			state.printState();
+			state.printReport();
 		}
 	}
 
