@@ -31,9 +31,6 @@ public class ExtSitePopupTest {
 		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().toExternalForm()
 		                + "ext-site-popup");
 		builder.setMaximumDepth(3);
-		builder.crawlRules().click("a");
-		builder.crawlRules().waitAfterEvent(100, TimeUnit.MILLISECONDS);
-		builder.crawlRules().waitAfterReloadUrl(100, TimeUnit.MILLISECONDS);
 		crawljax = new CrawljaxController(builder.build());
 	}
 

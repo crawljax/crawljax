@@ -321,6 +321,15 @@ public class CandidateElementExtractor {
 					return;
 				}
 			}
+				//opens external popup
+			String onclick = element.getAttribute("onclick");
+			if (!Strings.isNullOrEmpty(onclick)){
+				Pattern windowOpen = Pattern.compile("window.open\\(([\"'])([^\"]*)\1.*");
+				Matcher m = windowOpen.matcher(onclick);
+				if (m.matches()) {
+					return;
+				}
+			}
 		}
 		builder.add(element);
 		LOG.debug("Adding element {}", element);

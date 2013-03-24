@@ -120,7 +120,7 @@ public class CrawlActionsBuilder {
 	 *  pop-up windows to external web pages.
 	 */
 	public void dontClickDefaultElements() {
-		dontClick("a").withAttribute("onclick", "window.open%");
+//		dontClick("a").withAttribute("onclick", "window.open%");
 //		click("button").withAttribute("target", "0");
 //		click("input").withAttribute("type", "submit").withAttribute("target", "0");
 //		click("input").withAttribute("type", "button").withAttribute("target", "0");
