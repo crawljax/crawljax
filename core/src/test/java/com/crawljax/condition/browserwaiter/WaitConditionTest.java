@@ -92,7 +92,7 @@ public class WaitConditionTest {
 				return true;
 			}
 		});
-		Assert.assertEquals("Wait succeded", TIMEOUT, wc.testAndWait(browser));
+		Assert.assertEquals("Wait succeded", WAIT_TIMEOUT, wc.testAndWait(browser));
 	}
 
 	/**
