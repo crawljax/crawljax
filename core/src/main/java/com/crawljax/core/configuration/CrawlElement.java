@@ -5,10 +5,8 @@ import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
-import com.crawljax.core.TagAttribute;
 import com.crawljax.core.state.Eventable.EventType;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 /**
@@ -66,7 +64,6 @@ public final class CrawlElement {
 	}
 
 	public CrawlElement(CrawlElement crawlElement) {
-		List<CrawlElement> attributes;
 		this.crawlAttributes.addAll(crawlElement.getCrawlAttributes());
 		this.tagName = crawlElement.getTagName();
 		this.id = crawlElement.getId();
