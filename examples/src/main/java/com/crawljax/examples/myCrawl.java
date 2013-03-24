@@ -7,14 +7,10 @@ import com.crawljax.core.configuration.InputSpecification;
 
 public class myCrawl
 {
-	//private static final String URL = "http://gkh501.com/download.html";
+	private static final String URL = "http://gkh501.com/Download.html";
 	//private static final String URL = "http://www.w3schools.com/js/tryit.asp?filename=tryjs_alert";
-	private static final String URL = "http://courses.ece.ubc.ca/315/luisindex.html";
-<<<<<<< HEAD
-	
-=======
+	//private static final String URL = "http://courses.ece.ubc.ca/315/luisindex.html";
 
->>>>>>> 5f94390f816a5b02da3994fe0a847336c4b13dba
 	private static final String ALL_ANCHORS = "a";
 	private static final String LANGUAGE_TOOLS = "Language Tools";
 
