@@ -85,9 +85,8 @@ public final class CrawlElement {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement withAttribute(String attributeName, String value) {
-		String xpath = "//" + tagName + "[@" + attributeName + "='" + value + "']";
-		underXPath(xpath);
-		return this;
+		String xpath = "//" + tagName + "[@" + attributeName + "='" + value + "']";		
+		return this.underXPath(xpath);
 	}
 
 	/**
@@ -120,9 +119,8 @@ public final class CrawlElement {
 	 * @return Crawltag with text
 	 */
 	public CrawlElement withText(String text) {
-		String xPath = "//"+ tagName + "[text()='" + text + "']";
-		underXPath(xPath);
-		return this;
+		String xPath = "//"+ tagName + "[text()='" + text + "']";		
+		return this.underXPath(xPath);
 	}
 
 	/**
