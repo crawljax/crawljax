@@ -449,16 +449,17 @@ public class Crawler implements Runnable {
 	 *             if an exception is thrown.
 	 */
 	private boolean crawl() throws CrawljaxException {
+		
+		// Store the currentState to be able to 'back-track' later.
+		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
+				
 		if (depthLimitReached()) {
 			return true;
 		}
 
-		if (!shouldContinueCrawling()) {
+		if (!shouldContinueCrawling(orrigionalState)) {
 			return false;
 		}
-
-		// Store the currentState to be able to 'back-track' later.
-		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
 
 		if (orrigionalState.searchForCandidateElements(candidateExtractor)) {
 			// Only execute the preStateCrawlingPlugins when it's the first time
@@ -477,7 +478,7 @@ public class Crawler implements Runnable {
 				return true;
 			}
 
-			if (!shouldContinueCrawling()) {
+			if (!shouldContinueCrawling(orrigionalState)) {
 				return false;
 			}
 			ClickResult result = this.crawlAction(action);
@@ -595,7 +596,7 @@ public class Crawler implements Runnable {
 	 */
 	@Override
 	public void run() {
-		if (!shouldContinueCrawling()) {
+		if (!shouldContinueCrawling(null)) {
 			// Constrains are not met at start of this Crawler, so stop immediately
 			return;
 		}
@@ -677,8 +678,8 @@ public class Crawler implements Runnable {
 		return stateMachine;
 	}
 
-	private boolean shouldContinueCrawling() {
-		return !maximumCrawlTimePassed() && !maximumStatesReached();
+	private boolean shouldContinueCrawling(StateVertex vertex) {
+		return !maximumCrawlTimePassed() && !maximumStatesReached() && maximumStatesReachedPerUrl(vertex);
 	}
 
 	private boolean maximumCrawlTimePassed() {
@@ -702,6 +703,22 @@ public class Crawler implements Runnable {
 		} else {
 			return false;
 		}
+	}
+	
+	private boolean maximumStatesReachedPerUrl(StateVertex vertex){
+		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
+		int currentStateNumber;
+		
+		
+		
+		if (vertex != null)
+		{// 4 is the limit
+			currentStateNumber = graph.getOutgoingStates(vertex).size();
+			if (currentStateNumber >= 4)
+				return false;
+		}
+		
+		return true;
 	}
 
 }
