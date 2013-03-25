@@ -1,455 +1,14 @@
-23:06:58.482 [main] INFO  com.crawljax.core.plugin.Plugins - Loaded ca.ubc.eece310.groupL2C1.Specification_Metrics_Plugin@43bdfe38 as a PostCrawlingPlugin
-23:06:58.521 [main] DEBUG c.c.c.c.CrawlActionsBuilder - Excluded elements = [CrawlElement [tagName=A, id=id1470195146, underXpath=//DIV[@id='guser'], eventType=click], CrawlElement [tagName=A, crawlAttributes=[innertext=Language Tools], id=id622976440, eventType=click]]
-23:06:58.571 [main] DEBUG c.c.c.e.EventableConditionChecker - Evenetable conditions [EventableCondition [id=id1470195146, conditions=[], inXPath=//DIV[@id='guser'], linkedInputFields=[]]]
-23:06:58.579 [main] INFO  com.crawljax.core.CrawljaxController - Starting Crawljax...
-23:06:58.579 [main] INFO  com.crawljax.core.CrawljaxController - Used plugins:
-23:06:58.579 [main] DEBUG com.crawljax.core.plugin.Plugins - Running ProxyServerPlugins...
-23:06:58.579 [main] INFO  com.crawljax.core.CrawljaxController - Embedded browser implementation: firefox
-23:06:58.579 [main] INFO  com.crawljax.core.CrawljaxController - Crawl depth: 1
-23:06:58.579 [main] INFO  com.crawljax.core.CrawljaxController - Crawljax initialized!
-23:06:58.582 [main] INFO  com.crawljax.core.CrawljaxController - Start crawling with [CrawlElement [tagName=A, id=id1132101395, eventType=click], CrawlElement [tagName=BUTTON, id=id523033345, eventType=click], CrawlElement [tagName=INPUT, crawlAttributes=[type=submit], id=id970862244, eventType=click], CrawlElement [tagName=INPUT, crawlAttributes=[type=button], id=id359641172, eventType=click]] crawl elements
-23:06:58.588 [main] DEBUG com.crawljax.core.CrawlerExecutor - Created new Thread
-23:06:58.588 [Thread 1 Crawler 1 (initial)] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 1 Crawler 1 (initial)
-23:07:08.259 [Thread-2] DEBUG com.crawljax.core.plugin.Plugins - Running PreCrawlingPlugins...
-23:07:08.260 [Thread-2] DEBUG com.crawljax.core.plugin.Plugins - Running OnBrowserCreatedPlugins...
-23:07:08.260 [Thread 1 Crawler 1 (initial)] INFO  com.crawljax.core.Crawler - Loading Page http://www.google.com
-23:07:09.797 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.plugin.Plugins - Running OnUrlLoadPlugins...
-23:07:10.179 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - The current H: {2aa0845c-e5f3-d14f-ba7c-b70f414e7450}
-23:07:10.180 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:10.191 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame dom: <html xmlns="http://www.w3.org/1999/xhtml"><head></head><body></body></html>
-23:07:10.491 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - The current H: {2aa0845c-e5f3-d14f-ba7c-b70f414e7450}
-23:07:10.491 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:10.503 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame dom: <html xmlns="http://www.w3.org/1999/xhtml"><head></head><body></body></html>
-23:07:10.534 [Thread 1 Crawler 1 (initial)] DEBUG c.c.oraclecomparator.StateComparator - Using SimpleComparator: SimpleComparator
-23:07:10.642 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.plugin.Plugins - Running OnNewStatePlugins...
-23:07:10.796 [Thread 1 Crawler 1 (initial)] INFO  c.c.condition.ConditionTypeChecker - Checking 0 ConditionTypes
-23:07:10.796 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Looking in state: index for candidate elements
-23:07:10.846 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting elements for related frame ''
-23:07:10.846 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: A
-23:07:10.847 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - frame Identification: wgjf
-23:07:10.847 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:10.870 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting elements for related frame 'wgjf'
-23:07:10.870 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: A
-23:07:10.870 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: BUTTON
-23:07:10.870 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="submit" 
-23:07:10.870 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="button" 
-23:07:10.871 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Learn more" href=/support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA  matches Xpath=true
-23:07:10.884 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:10.884 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Learn more" href=/support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA AttributeName: innertext value: Language Tools
-23:07:10.893 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA isExternal= false
-23:07:10.893 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:10.893 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Screen-reader users, click here to turn off Google" href=/setprefs?prev=http://www.google.ca/&sig=0_T0ryhi35SFdsYG2oEpwwSMM9ztA%3D&suggon=2 style=left:-1000em;position:absolute  matches Xpath=true
-23:07:10.901 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:10.901 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Screen-reader users, click here to turn off Google" href=/setprefs?prev=http://www.google.ca/&sig=0_T0ryhi35SFdsYG2oEpwwSMM9ztA%3D&suggon=2 style=left:-1000em;position:absolute AttributeName: innertext value: Language Tools
-23:07:10.908 [Thread 1 Crawler 1 (initial)] WARN  com.crawljax.util.UrlUtils - Could not parse target URL /setprefs?prev=http://www.google.ca/&sig=0_T0ryhi35SFdsYG2oEpwwSMM9ztA%3D&suggon=2
-23:07:10.908 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /setprefs?prev=http://www.google.ca/&sig=0_T0ryhi35SFdsYG2oEpwwSMM9ztA%3D&suggon=2 isExternal= true
-23:07:10.908 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "+You" ID: gb_119 class=gbzt href=https://plus.google.com/?gpsrc=ogpy0&tab=wX id=gb_119 onclick=gbar.logger.il(1,{t:119});  matches Xpath=true
-23:07:10.916 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:10.916 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "+You" ID: gb_119 class=gbzt href=https://plus.google.com/?gpsrc=ogpy0&tab=wX id=gb_119 onclick=gbar.logger.il(1,{t:119}); AttributeName: innertext value: Language Tools
-23:07:10.941 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: https://plus.google.com/?gpsrc=ogpy0&tab=wX isExternal= true
-23:07:10.941 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Search" ID: gb_1 class=gbzt gbz0l gbp1 href=http://www.google.ca/webhp?hl=en&tab=ww id=gb_1 onclick=gbar.logger.il(1,{t:1});  matches Xpath=true
-23:07:10.948 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:10.948 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Search" ID: gb_1 class=gbzt gbz0l gbp1 href=http://www.google.ca/webhp?hl=en&tab=ww id=gb_1 onclick=gbar.logger.il(1,{t:1}); AttributeName: innertext value: Language Tools
-23:07:10.954 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.google.ca/webhp?hl=en&tab=ww isExternal= false
-23:07:10.954 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:10.954 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Images" ID: gb_2 class=gbzt href=http://www.google.ca/imghp?hl=en&tab=wi id=gb_2 onclick=gbar.qs(this);gbar.logger.il(1,{t:2});  matches Xpath=true
-23:07:10.961 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:10.962 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Images" ID: gb_2 class=gbzt href=http://www.google.ca/imghp?hl=en&tab=wi id=gb_2 onclick=gbar.qs(this);gbar.logger.il(1,{t:2}); AttributeName: innertext value: Language Tools
-23:07:10.966 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.google.ca/imghp?hl=en&tab=wi isExternal= false
-23:07:10.966 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:10.966 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Maps" ID: gb_8 class=gbzt href=http://maps.google.ca/maps?hl=en&tab=wl id=gb_8 onclick=gbar.qs(this);gbar.logger.il(1,{t:8});  matches Xpath=true
-23:07:10.974 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:10.974 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Maps" ID: gb_8 class=gbzt href=http://maps.google.ca/maps?hl=en&tab=wl id=gb_8 onclick=gbar.qs(this);gbar.logger.il(1,{t:8}); AttributeName: innertext value: Language Tools
-23:07:10.979 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://maps.google.ca/maps?hl=en&tab=wl isExternal= true
-23:07:10.979 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Play" ID: gb_78 class=gbzt href=https://play.google.com/?hl=en&tab=w8 id=gb_78 onclick=gbar.logger.il(1,{t:78});  matches Xpath=true
-23:07:10.985 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:10.985 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Play" ID: gb_78 class=gbzt href=https://play.google.com/?hl=en&tab=w8 id=gb_78 onclick=gbar.logger.il(1,{t:78}); AttributeName: innertext value: Language Tools
-23:07:10.991 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: https://play.google.com/?hl=en&tab=w8 isExternal= true
-23:07:10.992 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "YouTube" ID: gb_36 class=gbzt href=http://www.youtube.com/?gl=CA&tab=w1 id=gb_36 onclick=gbar.qs(this);gbar.logger.il(1,{t:36});  matches Xpath=true
-23:07:11.004 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.004 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "YouTube" ID: gb_36 class=gbzt href=http://www.youtube.com/?gl=CA&tab=w1 id=gb_36 onclick=gbar.qs(this);gbar.logger.il(1,{t:36}); AttributeName: innertext value: Language Tools
-23:07:11.010 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.youtube.com/?gl=CA&tab=w1 isExternal= true
-23:07:11.010 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "News" ID: gb_5 class=gbzt href=http://news.google.ca/nwshp?hl=en&tab=wn id=gb_5 onclick=gbar.logger.il(1,{t:5});  matches Xpath=true
-23:07:11.019 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.019 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "News" ID: gb_5 class=gbzt href=http://news.google.ca/nwshp?hl=en&tab=wn id=gb_5 onclick=gbar.logger.il(1,{t:5}); AttributeName: innertext value: Language Tools
-23:07:11.025 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://news.google.ca/nwshp?hl=en&tab=wn isExternal= true
-23:07:11.025 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Gmail" ID: gb_23 class=gbzt href=https://mail.google.com/mail/?tab=wm id=gb_23 onclick=gbar.logger.il(1,{t:23});  matches Xpath=true
-23:07:11.031 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.032 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Gmail" ID: gb_23 class=gbzt href=https://mail.google.com/mail/?tab=wm id=gb_23 onclick=gbar.logger.il(1,{t:23}); AttributeName: innertext value: Language Tools
-23:07:11.039 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: https://mail.google.com/mail/?tab=wm isExternal= true
-23:07:11.039 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Drive" ID: gb_25 class=gbzt href=https://drive.google.com/?tab=wo id=gb_25 onclick=gbar.logger.il(1,{t:25});  matches Xpath=true
-23:07:11.048 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.048 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Drive" ID: gb_25 class=gbzt href=https://drive.google.com/?tab=wo id=gb_25 onclick=gbar.logger.il(1,{t:25}); AttributeName: innertext value: Language Tools
-23:07:11.053 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: https://drive.google.com/?tab=wo isExternal= true
-23:07:11.054 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Calendar" ID: gb_24 class=gbzt href=https://www.google.com/calendar?tab=wc id=gb_24 onclick=gbar.logger.il(1,{t:24});  matches Xpath=true
-23:07:11.061 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.061 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Calendar" ID: gb_24 class=gbzt href=https://www.google.com/calendar?tab=wc id=gb_24 onclick=gbar.logger.il(1,{t:24}); AttributeName: innertext value: Language Tools
-23:07:11.066 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: https://www.google.com/calendar?tab=wc isExternal= true
-23:07:11.066 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "More" ID: gbztm aria-haspopup=true aria-owns=gbd class=gbgt href=http://www.google.ca/intl/en/options/ id=gbztm onclick=gbar.tg(event,this)  matches Xpath=true
-23:07:11.070 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.071 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "More" ID: gbztm aria-haspopup=true aria-owns=gbd class=gbgt href=http://www.google.ca/intl/en/options/ id=gbztm onclick=gbar.tg(event,this) AttributeName: innertext value: Language Tools
-23:07:11.077 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.google.ca/intl/en/options/ isExternal= false
-23:07:11.077 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.077 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Translate" ID: gb_51 class=gbmt href=http://translate.google.ca/?hl=en&tab=wT id=gb_51 onclick=gbar.qs(this);gbar.logger.il(1,{t:51});  matches Xpath=true
-23:07:11.082 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.082 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Translate" ID: gb_51 class=gbmt href=http://translate.google.ca/?hl=en&tab=wT id=gb_51 onclick=gbar.qs(this);gbar.logger.il(1,{t:51}); AttributeName: innertext value: Language Tools
-23:07:11.087 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://translate.google.ca/?hl=en&tab=wT isExternal= true
-23:07:11.087 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Books" ID: gb_10 class=gbmt href=http://books.google.ca/bkshp?hl=en&tab=wp id=gb_10 onclick=gbar.qs(this);gbar.logger.il(1,{t:10});  matches Xpath=true
-23:07:11.093 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.093 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Books" ID: gb_10 class=gbmt href=http://books.google.ca/bkshp?hl=en&tab=wp id=gb_10 onclick=gbar.qs(this);gbar.logger.il(1,{t:10}); AttributeName: innertext value: Language Tools
-23:07:11.097 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://books.google.ca/bkshp?hl=en&tab=wp isExternal= true
-23:07:11.098 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Blogger" ID: gb_30 class=gbmt href=http://www.blogger.com/?tab=wj id=gb_30 onclick=gbar.logger.il(1,{t:30});  matches Xpath=true
-23:07:11.102 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.103 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Blogger" ID: gb_30 class=gbmt href=http://www.blogger.com/?tab=wj id=gb_30 onclick=gbar.logger.il(1,{t:30}); AttributeName: innertext value: Language Tools
-23:07:11.108 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.blogger.com/?tab=wj isExternal= true
-23:07:11.108 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Reader" ID: gb_32 class=gbmt href=http://www.google.ca/reader/?hl=en&tab=wy id=gb_32 onclick=gbar.logger.il(1,{t:32});  matches Xpath=true
-23:07:11.113 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.113 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Reader" ID: gb_32 class=gbmt href=http://www.google.ca/reader/?hl=en&tab=wy id=gb_32 onclick=gbar.logger.il(1,{t:32}); AttributeName: innertext value: Language Tools
-23:07:11.117 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.google.ca/reader/?hl=en&tab=wy isExternal= false
-23:07:11.118 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.118 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Finance" ID: gb_27 class=gbmt href=http://www.google.ca/finance?tab=we id=gb_27 onclick=gbar.qs(this);gbar.logger.il(1,{t:27});  matches Xpath=true
-23:07:11.121 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.121 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Finance" ID: gb_27 class=gbmt href=http://www.google.ca/finance?tab=we id=gb_27 onclick=gbar.qs(this);gbar.logger.il(1,{t:27}); AttributeName: innertext value: Language Tools
-23:07:11.126 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.google.ca/finance?tab=we isExternal= false
-23:07:11.126 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.126 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Photos" ID: gb_31 class=gbmt href=http://picasaweb.google.ca/home?hl=en&tab=wq id=gb_31 onclick=gbar.qs(this);gbar.logger.il(1,{t:31});  matches Xpath=true
-23:07:11.130 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.130 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Photos" ID: gb_31 class=gbmt href=http://picasaweb.google.ca/home?hl=en&tab=wq id=gb_31 onclick=gbar.qs(this);gbar.logger.il(1,{t:31}); AttributeName: innertext value: Language Tools
-23:07:11.135 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://picasaweb.google.ca/home?hl=en&tab=wq isExternal= true
-23:07:11.135 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Videos" ID: gb_12 class=gbmt href=http://video.google.ca/?hl=en&tab=wv id=gb_12 onclick=gbar.qs(this);gbar.logger.il(1,{t:12});  matches Xpath=true
-23:07:11.138 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.138 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Videos" ID: gb_12 class=gbmt href=http://video.google.ca/?hl=en&tab=wv id=gb_12 onclick=gbar.qs(this);gbar.logger.il(1,{t:12}); AttributeName: innertext value: Language Tools
-23:07:11.143 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://video.google.ca/?hl=en&tab=wv isExternal= true
-23:07:11.143 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Even more" class=gbmt href=http://www.google.ca/intl/en/options/ onclick=gbar.logger.il(1,{t:66});  matches Xpath=true
-23:07:11.148 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.148 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Even more" class=gbmt href=http://www.google.ca/intl/en/options/ onclick=gbar.logger.il(1,{t:66}); AttributeName: innertext value: Language Tools
-23:07:11.152 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.google.ca/intl/en/options/ isExternal= false
-23:07:11.152 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.153 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element class=gbqla href=/webhp?hl=en&tab=ww onclick=gbar.logger.il(39) title=Go to Google Home  matches Xpath=true
-23:07:11.156 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.156 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element class=gbqla href=/webhp?hl=en&tab=ww onclick=gbar.logger.il(39) title=Go to Google Home AttributeName: innertext value: Language Tools
-23:07:11.161 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /webhp?hl=en&tab=ww isExternal= false
-23:07:11.161 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.161 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Sign in" ID: gb_70 class=gbgt href=https://accounts.google.com/ServiceLogin?hl=en&continue=http://www.google.ca/ id=gb_70 onclick=gbar.logger.il(9,{l:'i'}) target=_top  matches Xpath=true
-23:07:11.164 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.164 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Sign in" ID: gb_70 class=gbgt href=https://accounts.google.com/ServiceLogin?hl=en&continue=http://www.google.ca/ id=gb_70 onclick=gbar.logger.il(9,{l:'i'}) target=_top AttributeName: innertext value: Language Tools
-23:07:11.169 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: https://accounts.google.com/ServiceLogin?hl=en&continue=http://www.google.ca/ isExternal= true
-23:07:11.169 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Search settings" class=gbmt href=/preferences?hl=en  matches Xpath=true
-23:07:11.172 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.172 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Search settings" class=gbmt href=/preferences?hl=en AttributeName: innertext value: Language Tools
-23:07:11.176 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /preferences?hl=en isExternal= false
-23:07:11.176 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.176 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Advanced search" ID: gmlas class=gbmt href=/advanced_search?hl=en id=gmlas  matches Xpath=true
-23:07:11.179 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.180 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Advanced search" ID: gmlas class=gbmt href=/advanced_search?hl=en id=gmlas AttributeName: innertext value: Language Tools
-23:07:11.252 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /advanced_search?hl=en isExternal= false
-23:07:11.252 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.252 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Language tools" class=gbmt href=/language_tools?hl=en  matches Xpath=true
-23:07:11.255 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.256 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Language tools" class=gbmt href=/language_tools?hl=en AttributeName: innertext value: Language Tools
-23:07:11.256 [Thread 1 Crawler 1 (initial)] INFO  c.c.core.CandidateElementExtractor - Excluded element because of attributes: [A: null]
-23:07:11.256 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [A: null] was not added
-23:07:11.256 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Web History" class=gbmt href=http://www.google.ca/history/optout?hl=en  matches Xpath=true
-23:07:11.259 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.259 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Web History" class=gbmt href=http://www.google.ca/history/optout?hl=en AttributeName: innertext value: Language Tools
-23:07:11.265 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.google.ca/history/optout?hl=en isExternal= false
-23:07:11.265 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.265 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Install Google Chrome" href=/chrome/index.html?hl=en&brand=CHNG&utm_source=en-hpp&utm_medium=hpp&utm_campaign=en onclick=google.promos&&google.promos.toast&& google.promos.toast.cl()  matches Xpath=true
-23:07:11.269 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.269 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Install Google Chrome" href=/chrome/index.html?hl=en&brand=CHNG&utm_source=en-hpp&utm_medium=hpp&utm_campaign=en onclick=google.promos&&google.promos.toast&& google.promos.toast.cl() AttributeName: innertext value: Language Tools
-23:07:11.275 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /chrome/index.html?hl=en&brand=CHNG&utm_source=en-hpp&utm_medium=hpp&utm_campaign=en isExternal= false
-23:07:11.275 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.275 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "français" href=http://www.google.ca/setprefs?sig=0_T0ryhi35SFdsYG2oEpwwSMM9ztA%3D&hl=fr&source=homepage  matches Xpath=true
-23:07:11.278 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.278 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "français" href=http://www.google.ca/setprefs?sig=0_T0ryhi35SFdsYG2oEpwwSMM9ztA%3D&hl=fr&source=homepage AttributeName: innertext value: Language Tools
-23:07:11.285 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.google.ca/setprefs?sig=0_T0ryhi35SFdsYG2oEpwwSMM9ztA%3D&hl=fr&source=homepage isExternal= false
-23:07:11.285 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.285 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Advertising Programs" href=/intl/en/ads/  matches Xpath=true
-23:07:11.288 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.289 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Advertising Programs" href=/intl/en/ads/ AttributeName: innertext value: Language Tools
-23:07:11.297 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /intl/en/ads/ isExternal= false
-23:07:11.297 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.297 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Business Solutions" href=/services/  matches Xpath=true
-23:07:11.301 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.301 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Business Solutions" href=/services/ AttributeName: innertext value: Language Tools
-23:07:11.310 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /services/ isExternal= false
-23:07:11.310 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.310 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Privacy & Terms" href=/intl/en/policies/  matches Xpath=true
-23:07:11.313 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.313 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Privacy & Terms" href=/intl/en/policies/ AttributeName: innertext value: Language Tools
-23:07:11.322 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /intl/en/policies/ isExternal= false
-23:07:11.322 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.322 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "+Google" href=https://plus.google.com/108349337900676782287 rel=publisher  matches Xpath=true
-23:07:11.327 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.327 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "+Google" href=https://plus.google.com/108349337900676782287 rel=publisher AttributeName: innertext value: Language Tools
-23:07:11.333 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: https://plus.google.com/108349337900676782287 isExternal= true
-23:07:11.333 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "About Google" href=/intl/en/about.html  matches Xpath=true
-23:07:11.336 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.336 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "About Google" href=/intl/en/about.html AttributeName: innertext value: Language Tools
-23:07:11.342 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: /intl/en/about.html isExternal= false
-23:07:11.342 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.342 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Google.com" ID: fehl href=http://www.google.ca/setprefdomain?prefdom=US&sig=0_EnnafNm08WWGUrRV4OhMNhwa8_U%3D id=fehl  matches Xpath=true
-23:07:11.345 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Could not check exclusion by Xpath for element because Eventable has no XPath condition
-23:07:11.345 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element "Google.com" ID: fehl href=http://www.google.ca/setprefdomain?prefdom=US&sig=0_EnnafNm08WWGUrRV4OhMNhwa8_U%3D id=fehl AttributeName: innertext value: Language Tools
-23:07:11.351 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - HREF: http://www.google.ca/setprefdomain?prefdom=US&sig=0_EnnafNm08WWGUrRV4OhMNhwa8_U%3D isExternal= false
-23:07:11.351 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [A: null]
-23:07:11.353 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: href=/support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA xpath /HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]  with eventableCondition null
-23:07:11.353 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: class=gbzt gbz0l gbp1 href=http://www.google.ca/webhp?hl=en&tab=ww id=gb_1 onclick=gbar.logger.il(1,{t:1}); xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]  with eventableCondition null
-23:07:11.353 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: class=gbzt href=http://www.google.ca/imghp?hl=en&tab=wi id=gb_2 onclick=gbar.qs(this);gbar.logger.il(1,{t:2}); xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: aria-haspopup=true aria-owns=gbd class=gbgt href=http://www.google.ca/intl/en/options/ id=gbztm onclick=gbar.tg(event,this) xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: class=gbmt href=http://www.google.ca/reader/?hl=en&tab=wy id=gb_32 onclick=gbar.logger.il(1,{t:32}); xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[4]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: class=gbmt href=http://www.google.ca/finance?tab=we id=gb_27 onclick=gbar.qs(this);gbar.logger.il(1,{t:27}); xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[5]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: class=gbmt href=http://www.google.ca/intl/en/options/ onclick=gbar.logger.il(1,{t:66}); xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[9]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: class=gbqla href=/webhp?hl=en&tab=ww onclick=gbar.logger.il(39) title=Go to Google Home xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: class=gbmt href=/preferences?hl=en xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[1]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: class=gbmt href=/advanced_search?hl=en id=gmlas xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: class=gbmt href=http://www.google.ca/history/optout?hl=en xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[6]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: href=/chrome/index.html?hl=en&brand=CHNG&utm_source=en-hpp&utm_medium=hpp&utm_campaign=en onclick=google.promos&&google.promos.toast&& google.promos.toast.cl() xpath /HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/SPAN[1]/DIV[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[3]/TD[1]/DIV[1]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: href=http://www.google.ca/setprefs?sig=0_T0ryhi35SFdsYG2oEpwwSMM9ztA%3D&hl=fr&source=homepage xpath /HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/DIV[3]/DIV[1]/FONT[1]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: href=/intl/en/ads/ xpath /HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: href=/services/ xpath /HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]  with eventableCondition null
-23:07:11.354 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: href=/intl/en/policies/ xpath /HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]  with eventableCondition null
-23:07:11.355 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: href=/intl/en/about.html xpath /HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[2]  with eventableCondition null
-23:07:11.355 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: A: href=http://www.google.ca/setprefdomain?prefdom=US&sig=0_EnnafNm08WWGUrRV4OhMNhwa8_U%3D id=fehl xpath /HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[3]  with eventableCondition null
-23:07:11.355 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: BUTTON
-23:07:11.355 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - frame Identification: wgjf
-23:07:11.355 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:11.386 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting elements for related frame 'wgjf'
-23:07:11.386 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: A
-23:07:11.386 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: BUTTON
-23:07:11.387 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="submit" 
-23:07:11.387 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="button" 
-23:07:11.387 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element ID: gbqfb aria-label=Google Search class=gbqfb id=gbqfb name=btnG  matches Xpath=true
-23:07:11.387 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [BUTTON: null]
-23:07:11.387 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "Google Search" ID: gbqfba aria-label=Google Search class=gbqfba id=gbqfba name=btnK  matches Xpath=true
-23:07:11.387 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [BUTTON: null]
-23:07:11.387 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element "I'm Feeling Lucky" ID: gbqfbb aria-label=I'm Feeling Lucky class=gbqfba id=gbqfbb name=btnI onclick=if(this.form.q.value)this.checked=1;else window.top.location='/doodles/'  matches Xpath=true
-23:07:11.388 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Adding element [BUTTON: null]
-23:07:11.388 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: BUTTON: aria-label=Google Search class=gbqfb id=gbqfb name=btnG xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[1]/BUTTON[1]  with eventableCondition null
-23:07:11.389 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: BUTTON: aria-label=Google Search class=gbqfba id=gbqfba name=btnK xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]  with eventableCondition null
-23:07:11.389 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found new candidate element: BUTTON: aria-label=I'm Feeling Lucky class=gbqfba id=gbqfbb name=btnI onclick=if(this.form.q.value)this.checked=1;else window.top.location='/doodles/' xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[2]  with eventableCondition null
-23:07:11.389 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="submit" 
-23:07:11.389 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - frame Identification: wgjf
-23:07:11.389 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:11.414 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting elements for related frame 'wgjf'
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: A
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: BUTTON
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="submit" 
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="button" 
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=hl type=hidden value=en  matches Xpath=true
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=hl type=hidden value=en AttributeName: type value: submit
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=output type=hidden value=search  matches Xpath=true
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=output type=hidden value=search AttributeName: type value: submit
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.415 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=sclient type=hidden value=psy-ab  matches Xpath=true
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=sclient type=hidden value=psy-ab AttributeName: type value: submit
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element ID: gbqfq autocomplete=off class=gbqfif dir=ltr id=gbqfq name=q spellcheck=false style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; background: url("data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw%3D%3D") repeat scroll 0% 0% transparent; position: absolute; z-index: 6; left: 0px; outline: medium none; type=text value=  matches Xpath=true
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element ID: gbqfq autocomplete=off class=gbqfif dir=ltr id=gbqfq name=q spellcheck=false style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; background: url("data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw%3D%3D") repeat scroll 0% 0% transparent; position: absolute; z-index: 6; left: 0px; outline: medium none; type=text value= AttributeName: type value: submit
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element ID: gs_taif0 autocomplete=off class=gbqfif dir=ltr disabled=disabled id=gs_taif0 style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; position: absolute; z-index: 1; background-color: transparent; color: silver; left: 0px;  matches Xpath=true
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element ID: gs_taif0 autocomplete=off class=gbqfif dir=ltr disabled=disabled id=gs_taif0 style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; position: absolute; z-index: 1; background-color: transparent; color: silver; left: 0px; AttributeName: type value: submit
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element ID: gs_htif0 autocomplete=off class=gbqfif dir=ltr disabled=disabled id=gs_htif0 style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; position: absolute; z-index: 1; background-color: transparent; color: silver; left: 0px; visibility: hidden;  matches Xpath=true
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element ID: gs_htif0 autocomplete=off class=gbqfif dir=ltr disabled=disabled id=gs_htif0 style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; position: absolute; z-index: 1; background-color: transparent; color: silver; left: 0px; visibility: hidden; AttributeName: type value: submit
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.416 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=oq type=hidden  matches Xpath=true
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=oq type=hidden AttributeName: type value: submit
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=gs_l type=hidden  matches Xpath=true
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=gs_l type=hidden AttributeName: type value: submit
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=pbx type=hidden value=1  matches Xpath=true
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=pbx type=hidden value=1 AttributeName: type value: submit
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="button" 
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - frame Identification: wgjf
-23:07:11.417 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting elements for related frame 'wgjf'
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: A
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: BUTTON
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="submit" 
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Extracting TAG: INPUT: type="button" 
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=hl type=hidden value=en  matches Xpath=true
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=hl type=hidden value=en AttributeName: type value: button
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=output type=hidden value=search  matches Xpath=true
-23:07:11.438 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=output type=hidden value=search AttributeName: type value: button
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=sclient type=hidden value=psy-ab  matches Xpath=true
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=sclient type=hidden value=psy-ab AttributeName: type value: button
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element ID: gbqfq autocomplete=off class=gbqfif dir=ltr id=gbqfq name=q spellcheck=false style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; background: url("data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw%3D%3D") repeat scroll 0% 0% transparent; position: absolute; z-index: 6; left: 0px; outline: medium none; type=text value=  matches Xpath=true
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element ID: gbqfq autocomplete=off class=gbqfif dir=ltr id=gbqfq name=q spellcheck=false style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; background: url("data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw%3D%3D") repeat scroll 0% 0% transparent; position: absolute; z-index: 6; left: 0px; outline: medium none; type=text value= AttributeName: type value: button
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element ID: gs_taif0 autocomplete=off class=gbqfif dir=ltr disabled=disabled id=gs_taif0 style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; position: absolute; z-index: 1; background-color: transparent; color: silver; left: 0px;  matches Xpath=true
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element ID: gs_taif0 autocomplete=off class=gbqfif dir=ltr disabled=disabled id=gs_taif0 style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; position: absolute; z-index: 1; background-color: transparent; color: silver; left: 0px; AttributeName: type value: button
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element ID: gs_htif0 autocomplete=off class=gbqfif dir=ltr disabled=disabled id=gs_htif0 style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; position: absolute; z-index: 1; background-color: transparent; color: silver; left: 0px; visibility: hidden;  matches Xpath=true
-23:07:11.439 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element ID: gs_htif0 autocomplete=off class=gbqfif dir=ltr disabled=disabled id=gs_htif0 style=border: medium none; padding: 0px; margin: 0px; height: auto; width: 100%; position: absolute; z-index: 1; background-color: transparent; color: silver; left: 0px; visibility: hidden; AttributeName: type value: button
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=oq type=hidden  matches Xpath=true
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=oq type=hidden AttributeName: type value: button
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=gs_l type=hidden  matches Xpath=true
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=gs_l type=hidden AttributeName: type value: button
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element name=pbx type=hidden value=1  matches Xpath=true
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Checking element name=pbx type=hidden value=1 AttributeName: type value: button
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Element [INPUT: null] was not added
-23:07:11.440 [Thread 1 Crawler 1 (initial)] DEBUG c.c.core.CandidateElementExtractor - Found 21 new candidate elements to analyze!
-23:07:11.441 [Thread 1 Crawler 1 (initial)] INFO  com.crawljax.core.Crawler - Starting preStateCrawlingPlugins...
-23:07:11.442 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.plugin.Plugins - Running PreStateCrawlingPlugins...
-23:07:11.493 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - The current H: {2aa0845c-e5f3-d14f-ba7c-b70f414e7450}
-23:07:11.493 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:11.507 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame dom: <html xmlns="http://www.w3.org/1999/xhtml"><head></head><body></body></html>
-23:07:11.803 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.forms.FormHandler - Filling in: com.crawljax.forms.FormInput@6fb0b6e3[
-  id=0
-  type=text
-  identification=id gbqfq
-  inputValues=[lvbpOdna]
-  eventable=<null>
-  multiple=false
-]
-23:07:11.811 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.forms.FormHandler - INPUTFIELD: id gbqfq (text)
-23:07:11.821 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.forms.FormHandler - Filling in: com.crawljax.forms.FormInput@744e390a[
-  id=0
-  type=text
-  identification=id gs_taif0
-  inputValues=[pjlZyHlU]
-  eventable=<null>
-  multiple=false
-]
-23:07:11.826 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.forms.FormHandler - INPUTFIELD: id gs_taif0 (text)
-23:07:11.969 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.Crawler - Executing click on element: "Learn more" A: {href=/support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA} click xpath /HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]; State: index
-23:07:12.014 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - The current H: {2aa0845c-e5f3-d14f-ba7c-b70f414e7450}
-23:07:12.014 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:12.028 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame dom: <html xmlns="http://www.w3.org/1999/xhtml"><head></head><body></body></html>
-23:07:12.089 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.Crawler - Ignoring invisble element "Learn more" A: {href=/support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA}
-23:07:12.089 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.Crawler - Event fired=false for eventable "Learn more" A: {href=/support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA} click xpath /HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]
-23:07:12.089 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.plugin.Plugins - Running OnFireEventFailedPlugins...
-23:07:12.135 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - The current H: {2aa0845c-e5f3-d14f-ba7c-b70f414e7450}
-23:07:12.135 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:12.151 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame dom: <html xmlns="http://www.w3.org/1999/xhtml"><head></head><body></body></html>
-23:07:12.354 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.forms.FormHandler - Filling in: com.crawljax.forms.FormInput@31d5d0fc[
-  id=0
-  type=text
-  identification=id gbqfq
-  inputValues=[qSwhpFIt]
-  eventable=<null>
-  multiple=false
-]
-23:07:12.358 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.forms.FormHandler - INPUTFIELD: id gbqfq (text)
-23:07:12.370 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.forms.FormHandler - Filling in: com.crawljax.forms.FormInput@5c404c85[
-  id=0
-  type=text
-  identification=id gs_taif0
-  inputValues=[KUCJLSVn]
-  eventable=<null>
-  multiple=false
-]
-23:07:12.373 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.forms.FormHandler - INPUTFIELD: id gs_taif0 (text)
-23:07:12.434 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.Crawler - Executing click on element: "Search" A: {class=gbzt gbz0l gbp1, href=http://www.google.ca/webhp?hl=en&tab=ww, id=gb_1, onclick=gbar.logger.il(1,{t:1});} click xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]; State: index
-23:07:12.484 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - The current H: {2aa0845c-e5f3-d14f-ba7c-b70f414e7450}
-23:07:12.484 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:12.568 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame dom: <html xmlns="http://www.w3.org/1999/xhtml"><head></head><body></body></html>
-23:07:13.573 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.Crawler - Event fired=true for eventable "Search" A: {class=gbzt gbz0l gbp1, href=http://www.google.ca/webhp?hl=en&tab=ww, id=gb_1, onclick=gbar.logger.il(1,{t:1});} click xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]
-23:07:13.645 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - The current H: {2aa0845c-e5f3-d14f-ba7c-b70f414e7450}
-23:07:13.645 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:13.661 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame dom: <html xmlns="http://www.w3.org/1999/xhtml"><head></head><body></body></html>
-23:07:13.743 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - The current H: {2aa0845c-e5f3-d14f-ba7c-b70f414e7450}
-23:07:13.743 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame identification: wgjf
-23:07:13.763 [Thread 1 Crawler 1 (initial)] DEBUG c.c.b.WebDriverBackedEmbeddedBrowser - frame dom: <html xmlns="http://www.w3.org/1999/xhtml"><head></head><body></body></html>
-23:07:13.781 [Thread 1 Crawler 1 (initial)] DEBUG c.c.oraclecomparator.StateComparator - Using SimpleComparator: SimpleComparator
-23:07:13.805 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.plugin.Plugins - No DomChangeNotifierPlugin found. Performing default DOM comparison...
-23:07:13.806 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.plugin.Plugins - Dom is Changed!
-23:07:13.806 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.state.StateMachine - addStateToCurrentState currentState: index newstate state2
-23:07:13.806 [Thread 1 Crawler 1 (initial)] DEBUG c.crawljax.core.state.StateFlowGraph - Number of states is now 3
-23:07:13.806 [Thread 1 Crawler 1 (initial)] INFO  c.crawljax.core.state.StateFlowGraph - Correcting state name from state2  to state1
-23:07:13.806 [Thread 1 Crawler 1 (initial)] INFO  com.crawljax.core.state.StateMachine - State state1 added to the StateMachine.
-23:07:13.811 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.state.StateMachine - Trying to change to state: 'state1' from: 'index'
-23:07:13.811 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.state.StateMachine - Changed to state: 'state1' from: 'index'
-23:07:13.811 [Thread 1 Crawler 1 (initial)] INFO  c.c.condition.ConditionTypeChecker - Checking 0 ConditionTypes
-23:07:13.811 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.plugin.Plugins - Running OnNewStatePlugins...
-23:07:13.811 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.CrawlerExecutor - Created new Thread
-23:07:13.811 [Thread 2 Crawler 2] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 2
-23:07:13.811 [Thread 2 Crawler 2] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.811 [Thread 2 Crawler 2] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.812 [Thread 2 Crawler 3] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 3
-23:07:13.812 [Thread 1 Crawler 1 (initial)] INFO  com.crawljax.core.Crawler - RECURSIVE Call crawl; Current DEPTH= 1
-23:07:13.812 [Thread 2 Crawler 3] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.812 [Thread 2 Crawler 3] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.812 [Thread 1 Crawler 1 (initial)] INFO  com.crawljax.core.Crawler - DEPTH 1 reached returning from rec call. Given depth: 1
-23:07:13.812 [Thread 2 Crawler 4] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 4
-23:07:13.812 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.state.StateMachine - Trying to change to state: 'index' from: 'state1'
-23:07:13.812 [Thread 2 Crawler 4] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.812 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.state.StateMachine - Changed to state: 'index' from: 'state1'
-23:07:13.812 [Thread 2 Crawler 4] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 1 Crawler 1 (initial)] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 2 Crawler 5] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 5
-23:07:13.814 [Thread 1 Crawler 6] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 1 Crawler 6
-23:07:13.814 [Thread 2 Crawler 5] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 1 Crawler 6] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 2 Crawler 5] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 1 Crawler 6] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 2 Crawler 7] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 7
-23:07:13.814 [Thread 1 Crawler 8] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 1 Crawler 8
-23:07:13.814 [Thread 2 Crawler 7] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 1 Crawler 8] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 2 Crawler 7] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 1 Crawler 8] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 2 Crawler 9] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 9
-23:07:13.814 [Thread 1 Crawler 10] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 1 Crawler 10
-23:07:13.814 [Thread 2 Crawler 9] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 1 Crawler 10] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 2 Crawler 9] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 1 Crawler 10] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 2 Crawler 11] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 11
-23:07:13.814 [Thread 1 Crawler 12] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 1 Crawler 12
-23:07:13.814 [Thread 2 Crawler 11] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 1 Crawler 12] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 2 Crawler 11] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 1 Crawler 12] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 2 Crawler 13] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 13
-23:07:13.814 [Thread 1 Crawler 14] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 1 Crawler 14
-23:07:13.814 [Thread 2 Crawler 13] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 1 Crawler 14] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 2 Crawler 13] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 1 Crawler 14] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 2 Crawler 15] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 15
-23:07:13.814 [Thread 1 Crawler 16] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 1 Crawler 16
-23:07:13.814 [Thread 2 Crawler 15] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 1 Crawler 16] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 2 Crawler 15] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 1 Crawler 16] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 2 Crawler 17] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 17
-23:07:13.814 [Thread 1 Crawler 18] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 1 Crawler 18
-23:07:13.814 [Thread 2 Crawler 17] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 1 Crawler 18] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.814 [Thread 2 Crawler 17] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 1 Crawler 18] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.814 [Thread 2 Crawler 19] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 2 Crawler 19
-23:07:13.815 [Thread 1 Crawler 20] INFO  com.crawljax.core.CrawlerExecutor - Starting new Crawler: Thread 1 Crawler 20
-23:07:13.815 [Thread 2 Crawler 19] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.815 [Thread 1 Crawler 20] INFO  com.crawljax.core.Crawler - Max number of states 2 reached!
-23:07:13.815 [Thread 2 Crawler 19] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.815 [Thread 1 Crawler 20] DEBUG com.crawljax.core.CrawlerExecutor - Finished executing
-23:07:13.815 [Thread 1 Crawler 20] INFO  com.crawljax.core.CrawlerExecutor - All Crawlers finished executing, now shutting down
-23:07:13.815 [main] INFO  com.crawljax.core.CrawlerExecutor - CrawlerExecutor terminated
-23:07:13.843 [main] DEBUG com.crawljax.core.plugin.Plugins - Running PostCrawlingPlugins...
-23:07:13.843 [main] DEBUG com.crawljax.core.plugin.Plugins - Calling plugin ca.ubc.eece310.groupL2C1.Specification_Metrics_Plugin@43bdfe38
 
 
 -------------
 State Name:	index
 State ID:	0
-23:07:13.844 [Browser closing Thread] INFO  c.c.b.WebDriverBackedEmbeddedBrowser - Closing the browser...
 State URL:	http://www.google.ca/
-
 Included Tags and the Elements they matched:
+
 Source Name:	BUTTON
-Source ID:	 id523033345
+Source ID:	 id1886740906
+
 Element Tag Name:	 BUTTON
 Element Text:	 
 	Node 0
@@ -468,6 +27,7 @@ Element Text:
 		Name:	 name
 		Type:	 Attribute Node
 		Value:	 btnG
+
 Element Tag Name:	 BUTTON
 Element Text:	 Google Search
 	Node 0
@@ -486,6 +46,7 @@ Element Text:	 Google Search
 		Name:	 name
 		Type:	 Attribute Node
 		Value:	 btnK
+
 Element Tag Name:	 BUTTON
 Element Text:	 I'm Feeling Lucky
 	Node 0
@@ -509,13 +70,15 @@ Element Text:	 I'm Feeling Lucky
 		Type:	 Attribute Node
 		Value:	 if(this.form.q.value)this.checked=1;else window.top.location='/doodles/'
 Source Name:	A
-Source ID:	 id1132101395
+Source ID:	 id1855889762
+
 Element Tag Name:	 A
 Element Text:	 Learn more
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
 		Value:	 /support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA
+
 Element Tag Name:	 A
 Element Text:	 Search
 	Node 0
@@ -534,6 +97,7 @@ Element Text:	 Search
 		Name:	 onclick
 		Type:	 Attribute Node
 		Value:	 gbar.logger.il(1,{t:1});
+
 Element Tag Name:	 A
 Element Text:	 Images
 	Node 0
@@ -552,6 +116,7 @@ Element Text:	 Images
 		Name:	 onclick
 		Type:	 Attribute Node
 		Value:	 gbar.qs(this);gbar.logger.il(1,{t:2});
+
 Element Tag Name:	 A
 Element Text:	 More
 	Node 0
@@ -578,6 +143,7 @@ Element Text:	 More
 		Name:	 onclick
 		Type:	 Attribute Node
 		Value:	 gbar.tg(event,this)
+
 Element Tag Name:	 A
 Element Text:	 Reader
 	Node 0
@@ -596,6 +162,7 @@ Element Text:	 Reader
 		Name:	 onclick
 		Type:	 Attribute Node
 		Value:	 gbar.logger.il(1,{t:32});
+
 Element Tag Name:	 A
 Element Text:	 Finance
 	Node 0
@@ -614,6 +181,7 @@ Element Text:	 Finance
 		Name:	 onclick
 		Type:	 Attribute Node
 		Value:	 gbar.qs(this);gbar.logger.il(1,{t:27});
+
 Element Tag Name:	 A
 Element Text:	 Even more
 	Node 0
@@ -628,6 +196,7 @@ Element Text:	 Even more
 		Name:	 onclick
 		Type:	 Attribute Node
 		Value:	 gbar.logger.il(1,{t:66});
+
 Element Tag Name:	 A
 Element Text:	 
 	Node 0
@@ -646,6 +215,7 @@ Element Text:
 		Name:	 title
 		Type:	 Attribute Node
 		Value:	 Go to Google Home
+
 Element Tag Name:	 A
 Element Text:	 Search settings
 	Node 0
@@ -656,6 +226,7 @@ Element Text:	 Search settings
 		Name:	 href
 		Type:	 Attribute Node
 		Value:	 /preferences?hl=en
+
 Element Tag Name:	 A
 Element Text:	 Advanced search
 	Node 0
@@ -670,6 +241,7 @@ Element Text:	 Advanced search
 		Name:	 id
 		Type:	 Attribute Node
 		Value:	 gmlas
+
 Element Tag Name:	 A
 Element Text:	 Web History
 	Node 0
@@ -680,6 +252,7 @@ Element Text:	 Web History
 		Name:	 href
 		Type:	 Attribute Node
 		Value:	 http://www.google.ca/history/optout?hl=en
+
 Element Tag Name:	 A
 Element Text:	 Install Google Chrome
 	Node 0
@@ -690,50 +263,56 @@ Element Text:	 Install Google Chrome
 		Name:	 onclick
 		Type:	 Attribute Node
 		Value:	 google.promos&&google.promos.toast&& google.promos.toast.cl()
+
 Element Tag Name:	 A
 Element Text:	 français
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
-		Value:	 http://www.google.ca/setprefs?sig=0_T0ryhi35SFdsYG2oEpwwSMM9ztA%3D&hl=fr&source=homepage
+		Value:	 http://www.google.ca/setprefs?sig=0_geASdr2L1kPPCf64bLnnkBJs428%3D&hl=fr&source=homepage
+
 Element Tag Name:	 A
 Element Text:	 Advertising Programs
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
 		Value:	 /intl/en/ads/
+
 Element Tag Name:	 A
 Element Text:	 Business Solutions
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
 		Value:	 /services/
+
 Element Tag Name:	 A
 Element Text:	 Privacy & Terms
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
 		Value:	 /intl/en/policies/
+
 Element Tag Name:	 A
 Element Text:	 About Google
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
 		Value:	 /intl/en/about.html
+
 Element Tag Name:	 A
 Element Text:	 Google.com
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
-		Value:	 http://www.google.ca/setprefdomain?prefdom=US&sig=0_EnnafNm08WWGUrRV4OhMNhwa8_U%3D
+		Value:	 http://www.google.ca/setprefdomain?prefdom=US&sig=0_yuhSvhGG80ebeTyU6axYZOKtoF4%3D
 	Node 1
 		Name:	 id
 		Type:	 Attribute Node
 		Value:	 fehl
-
 Excluded Tags and the Elements they matched:
 Source Name:	A
-Source ID:	 id622976440
+Source ID:	 id434120800
+
 Element Tag Name:	 A
 Element Text:	 Language tools
 	Node 0
@@ -744,10 +323,3 @@ Element Text:	 Language tools
 		Name:	 href
 		Type:	 Attribute Node
 		Value:	 /language_tools?hl=en
-23:07:13.863 [main] INFO  com.crawljax.core.CrawljaxController - Interaction Element= "Search" A: {class=gbzt gbz0l gbp1, href=http://www.google.ca/webhp?hl=en&tab=ww, id=gb_1, onclick=gbar.logger.il(1,{t:1});} click xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]
-23:07:13.864 [main] INFO  com.crawljax.core.CrawljaxController - Total Crawling time(15233ms) ~= 0 min, 15 sec
-23:07:13.864 [main] INFO  com.crawljax.core.CrawljaxController - EXAMINED ELEMENTS: 21
-23:07:13.864 [main] INFO  com.crawljax.core.CrawljaxController - CLICKABLES: 1
-23:07:13.864 [main] INFO  com.crawljax.core.CrawljaxController - STATES: 2
-23:07:13.869 [main] INFO  com.crawljax.core.CrawljaxController - Dom average size (byte): 108011
-23:07:13.869 [main] INFO  com.crawljax.core.CrawljaxController - DONE!!!

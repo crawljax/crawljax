@@ -1,10 +1,11 @@
 package ca.ubc.eece310.groupL2C1;
 import static java.lang.System.out;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,18 +31,20 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 	private String absoluteOutputPath;
 	private ConcurrentLinkedQueue<SpecificationMetricState> includedSpecsChecked;
 	private ConcurrentLinkedQueue<SpecificationMetricState> excludedSpecsChecked;
+	private BufferedWriter outputWriter; 
 
 	public Specification_Metrics_Plugin(File outputFolder) {
 		Preconditions.checkNotNull(outputFolder, "Output folder cannot be null");
 		LOG.info("Initialized Specification_Metrics_Plugin");
-		PrintStream out;
 		try {
-			out = new PrintStream(new FileOutputStream("output.txt"));
-			System.setOut(out);
-		} catch (FileNotFoundException e) {
+			FileWriter fileWrite = new FileWriter("output.txt");
+			outputWriter = new BufferedWriter(fileWrite);
+			//outputWriter.write("Hello Java");
+			//outputWriter.close();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 	
 	@Override
@@ -93,46 +96,94 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		while(includedSpecIterator.hasNext() || excludedSpecIterator.hasNext()){
 			state=includedSpecIterator.next();
 			printStateHeader(state);
-			out.println("\nIncluded Tags and the Elements they matched:");
-			printStateElements(state);
-			state=excludedSpecIterator.next();
-			out.println("\nExcluded Tags and the Elements they matched:");
-			printStateElements(state);
+		//	out.println("\nIncluded Tags and the Elements they matched:");
+			try {
+				outputWriter.write("\nIncluded Tags and the Elements they matched:\n");
+				printStateElements(state); 
+				state=excludedSpecIterator.next();
+				outputWriter.write("\nExcluded Tags and the Elements they matched:");
+				printStateElements(state);
+				outputWriter.close();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		//	printStateElements(state);
+		//	state=excludedSpecIterator.next();
+		//	out.println("\nExcluded Tags and the Elements they matched:");
+		//	printStateElements(state);
 		}
 	}
 	private void printStateHeader(SpecificationMetricState state){
-		out.println("\n\n-------------\nState Name:\t"+state.getName());
-		out.println("State ID:\t"+ state.getId());
-		out.println("State URL:\t"+state.getUrl());
+		try {
+			outputWriter.write("\n\n-------------\nState Name:\t"+state.getName());
+			outputWriter.write("\nState ID:\t"+ state.getId());
+			outputWriter.write("\nState URL:\t"+state.getUrl());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//		out.println("\n\n-------------\nState Name:\t"+state.getName());
+//		out.println("State ID:\t"+ state.getId());
+//		out.println("State URL:\t"+state.getUrl());
 		//out.println(state.getDom());
 		//out.println(state.getStrippedDom());
 	}
 	
 	private void printStateElements(SpecificationMetricState state){
+	
 		Iterator<Entry<TagElement, ConcurrentLinkedQueue<Element>>> tagIterator= state.getCheckedElements().entrySet().iterator();
 		while(tagIterator.hasNext()){
 			Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
-			
-			out.println("Source Name:\t"+mapEntry.getKey().getName());
-			out.println("Source ID:\t "+mapEntry.getKey().getId());
-			
-			Iterator<Element> elementIterator=mapEntry.getValue().iterator();
-			while(elementIterator.hasNext()){
-				Element element=elementIterator.next();	
-				out.println("Element Tag Name:\t "+element.getTagName());
-				out.println("Element Text:\t "+element.getTextContent());
-				Node node;
-				for(int i=0;i<element.getAttributes().getLength();i++){
-					node=element.getAttributes().item(i);
-					out.println("\tNode "+i);
-					out.println("\t\tName:\t "+node.getNodeName());
-					out.println("\t\tType:\t "+nodeTypeLookUp(node.getNodeType()));
-					out.println("\t\tValue:\t "+node.getNodeValue());
-					//out.println("\tNode Base URI:\t "+node.getBaseURI()); //Null on Google
-					//out.println("\tNode Namespace URI:\t "+node.getNamespaceURI()); //Null on Google
-					//out.println("\tNode Text:\t "+node.getTextContent());//Same as Value for Google
+			try {
+				outputWriter.write("\nSource Name:\t"+mapEntry.getKey().getName());
+				outputWriter.write("\nSource ID:\t "+mapEntry.getKey().getId());
+				
+				Iterator<Element> elementIterator=mapEntry.getValue().iterator();
+				while(elementIterator.hasNext()){
+					Element element=elementIterator.next();	
+					outputWriter.write("\n\nElement Tag Name:\t "+element.getTagName());
+					outputWriter.write("\nElement Text:\t "+element.getTextContent());
+					Node node;
+					for(int i=0;i<element.getAttributes().getLength();i++){
+						node=element.getAttributes().item(i);
+						outputWriter.write("\n\tNode "+i);
+						outputWriter.write("\n\t\tName:\t "+node.getNodeName());
+						outputWriter.write("\n\t\tType:\t "+nodeTypeLookUp(node.getNodeType()));
+						outputWriter.write("\n\t\tValue:\t "+node.getNodeValue());
+						//out.println("\tNode Base URI:\t "+node.getBaseURI()); //Null on Google
+						//out.println("\tNode Namespace URI:\t "+node.getNamespaceURI()); //Null on Google
+						//out.println("\tNode Text:\t "+node.getTextContent());//Same as Value for Google
+					}
 				}
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			
+//			out.println("Source Name:\t"+mapEntry.getKey().getName());
+//			out.println("Source ID:\t "+mapEntry.getKey().getId());
+			
+//			Iterator<Element> elementIterator=mapEntry.getValue().iterator();
+//			while(elementIterator.hasNext()){
+//				Element element=elementIterator.next();	
+//				out.println("Element Tag Name:\t "+element.getTagName());
+//				out.println("Element Text:\t "+element.getTextContent());
+//				Node node;
+//				for(int i=0;i<element.getAttributes().getLength();i++){
+//					node=element.getAttributes().item(i);
+//					out.println("\tNode "+i);
+//					out.println("\t\tName:\t "+node.getNodeName());
+//					out.println("\t\tType:\t "+nodeTypeLookUp(node.getNodeType()));
+//					out.println("\t\tValue:\t "+node.getNodeValue());
+//					//out.println("\tNode Base URI:\t "+node.getBaseURI()); //Null on Google
+//					//out.println("\tNode Namespace URI:\t "+node.getNamespaceURI()); //Null on Google
+//					//out.println("\tNode Text:\t "+node.getTextContent());//Same as Value for Google
+//				}
+			//}
 		}
 	}
 	private String nodeTypeLookUp(int type){
