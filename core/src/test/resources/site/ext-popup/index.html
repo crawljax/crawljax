@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>External Popups</title>
+<script language="javascript" src="../js/jquery.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+
+function openJSExternal() {
+	window.open("http://www.google.ca", "External", "height=200", "width=150");
+}
+
+function openJSInternal() {
+	window.open("a.html", "Internal", "height=200", "width=150");
+}
+
+</script>
+
+
+</head>
+<body bgcolor="white">
+<ul id="tests">
+	<li><a href="javascript:void(0)" onclick="openJSExternal()">Javascript External Popup</a></li>
+	<li><a href="javascript:void(0)" onclick="openJSInternal()">Javascript Internal Popup</a></li>
+	<li><a href="http://www.google.ca" target = "_blank">HTML External Popup</a></li>
+	<li><a href="a.html" target = "_blank">HTML Internal Popup</a></li>
+	<li><a href="http://www.google.ca">HTML External Link</a></li>
+</ul>
+<div id="content"></div>
+</body>
+</html>
