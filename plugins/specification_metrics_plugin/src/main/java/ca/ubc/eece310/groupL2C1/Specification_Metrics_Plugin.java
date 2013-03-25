@@ -54,7 +54,9 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		excludedSpecsChecked = CandidateElementExtractor.excludedSpecsChecked;
 		
 		//OUTPUT THE DATA!
+		printOverallStatistics();
 		printComprehensiveReport();
+		
     }
 	@Override
     public void setOutputFolder(String absolutePath) {
@@ -74,6 +76,15 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		
 		SpecificationMetricState tempState;
 		
+		try {
+			outputWriter.write("--Checked Elements--");
+			outputWriter.newLine();
+			outputWriter.newLine();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		while(includedSpecIterator.hasNext()){
 			tempState=includedSpecIterator.next();
 			HashMap<TagElement, Integer> singleStateIncludedTagCount=new HashMap<TagElement, Integer>();
@@ -82,6 +93,17 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 			while(tagIterator.hasNext()){
 				Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
 				singleStateIncludedTagCount.put(mapEntry.getKey(), mapEntry.getValue().size());
+				try {
+					outputWriter.write(mapEntry.getKey() + ":");
+					for (int i = mapEntry.getKey().toString().length() ; i < 20 ; i++){
+						outputWriter.write(" ");
+					}
+					outputWriter.write("" + mapEntry.getValue().size());
+					outputWriter.newLine();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			includedSpecTagCount.add(singleStateIncludedTagCount);
 		}
