@@ -1,0 +1,1033 @@
+--Checked Elements--
+
+DIV:                 66
+BUTTON:              3
+A:                   18
+
+
+-------------
+State Name:	index
+State ID:	0State URL:	http://www.google.ca/
+Included Tags and the Elements they matched:
+
+Source Name:	DIV
+Source ID:	 id407771553
+
+Element Tag Name:	 DIV
+Element Text:	 Google Instant is unavailable. Press Enter to search.Learn moreGoogle Instant is off due to connection speed. Press Enter to search.Press Enter to search.
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 pocs
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 display:none;position:absolute
+
+Element Tag Name:	 DIV
+Element Text:	 Google Instant is unavailable. Press Enter to search.Learn more
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 pocs0
+
+Element Tag Name:	 DIV
+Element Text:	 Google Instant is off due to connection speed. Press Enter to search.
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 pocs1
+
+Element Tag Name:	 DIV
+Element Text:	 Press Enter to search.
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 pocs2
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 cst
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 display:none
+
+Element Tag Name:	 DIV
+Element Text:	 .pdtext{padding:8px 12px 6px 0;zoom:1}.pdxbtn{cursor:pointer;float:right;font-size:18px;margin-right:13px;padding:5px 0}.pdbtn{cursor:pointer;display:inline-block;margin-left:10px;padding:8px 12px 6px;zoom:1}#pushdown{font-weight:bold;font-size:13px;zoom:1}   ×   Get to Google faster. Add Google to your start screen. Sure No thanks   (function(){var d={a:{}};d.a.localStorage={};d.a.localStorage.d=function(){try{return"object"==typeof window.localStorage}catch(a){return!1}};d.a.localStorage.g=function(a){a=window.localStorage.getItem(a);return!a?"":a.toString()};d.a.localStorage.i=function(a,b){window.localStorage.setItem(a,b)};d.a.localStorage.h=function(a){window.localStorage.removeItem(a)};google.promos||(google.promos={});google.promos.ActionType={ACCEPT:"a",CANCEL:"c",DISMISS:"d",CLICK:"h",IMPRESSION:"i",NO_THANKS:"n",X_BUTTON:"x",MGMHP_ACCEPT:"ma",MGMHP_CANCEL:"mc",MGMHP_IMPRESSION:"mi",MGMHPPD_ACCEPT:"pa",MGMHPPD_CANCEL:"pc",MGMHPPD_IMPRESSION:"pi",MGMHPPD_NO_THANKS:"pn",MGMHPPD_NO_BUTTON:"px",MGMHPPD_DISMISS:"pd",PUSHDOWN_ACCEPT:"gpa",PUSHDOWN_IMPRESSION:"gpi",PUSHDOWN_NO_THANKS:"gpn",PUSHDOWN_NO_BUTTON:"gpx",PUSHDOWN_DISMISS:"gpd"};google.promos.sl=function(a,b,c,e){a=[c,"id="+a,"loc="+google.sn];a.push("oi=promoslinger");e&amp;&amp;a.push(e);google.log(b,a.join("&amp;"))};google.promos.si=function(a,b,c,e){0.01&gt;Math.random()&amp;&amp;google.promos.sl(a,b,e?e:google.promos.ActionType.IMPRESSION,c)};google.promos.spd=function(a,b,c){if(d.a.localStorage.d())d.a.localStorage.i(b,c);else if(a)try{a.setAttribute(b,c),a.save(a.id)}catch(e){google.ml(e,!1,{cause:"PERSIST_DATA_FAIL"})}};google.promos.gpd=function(a,b){if(d.a.localStorage.d())return d.a.localStorage.g(b);if(a)try{return a.load(a.id),a.getAttribute(b)}catch(c){google.ml(c,!1,{cause:"PERSIST_DATA_FAIL"})}return""};google.promos.rpd=function(a,b){if(d.a.localStorage.d())d.a.localStorage.h(b);else if(a)try{a.load(a.id),a.removeAttribute(b),a.save(a.id)}catch(c){google.ml(c,!1,{cause:"PERSIST_DATA_FAIL"})}};google.promos.aeh=function(a,b,c){a.addEventListener?a.addEventListener(b,c,!1):a.attachEvent&amp;&amp;a.attachEvent("on"+b,c)};})(); (function(){var c=!1;var e,g,k={g:"pushdown",i:"pushdownyes",h:"pushdownno",s:"mngb",k:"gog",v:"searchform",o:".sfbg",w:"appbar_b"},l,m,n;google.promos.pushdown||(google.promos.pushdown={});function p(a){google.promos.sl(e,g,a,"ic="+google.promos.gpd(l,k.a))}function s(a,b,d){b=d?b:-b;return a.offsetTop+b+"px"}
+function t(a){var b=document.getElementById(k.v),d=document.getElementById(k.o),f=l.offsetHeight;b&amp;&amp;"relative"!=google.style.getComputedStyle(b,"position",!0)&amp;&amp;(b.style.top=s(b,f,a));d&amp;&amp;!b&amp;&amp;(d.style.top=s(d,f,a));google.msg&amp;&amp;google.msg.send(64)}function u(a,b){a&amp;&amp;("function"==typeof a?a.call():"string"==typeof a&amp;&amp;(b?window.open(a):window.location=a))}google.promos.pushdown.sendGen204Log=p;google.promos.pushdown.pd_tp=function(a){try{if(l){var b=document.getElementById(k.s)||document.getElementById(k.k);if(a){if(!("web"==google.sn&amp;&amp;""==l.style.display)){var d;a=-1;if("Microsoft Internet Explorer"==navigator.appName){var f=navigator.userAgent.match("MSIE ([0-9]+)[.0-9]*");f&amp;&amp;f[1]&amp;&amp;(a=parseInt(f[1],10))}d=a;if(6==d||7==d&amp;&amp;-1==navigator.userAgent.indexOf("Trident/"))m&amp;&amp;(m.style.display="inline"),n&amp;&amp;(n.style.display="inline");l.style.display="";t(!0);b&amp;&amp;(b.style.position="relative");document.body.style.marginTop=
+0}}else t(c),l.style.display="none",b&amp;&amp;(b.style.position=""),document.body.style.marginTop=""}}catch(q){google.ml(q,c,{cause:"PUSHDOWN_TP"})}};google.promos.pushdown.pd_cp=function(a,b,d){try{d||google.promos.spd(l,k.d,"1"),p(google.promos.ActionType.PUSHDOWN_ACCEPT),u(a,b)}catch(f){google.ml(f,c,{cause:"PUSHDOWN_CP"})}};google.promos.pushdown.pd_dp=function(a,b){try{google.promos.spd(l,k.d,"1"),google.promos.pushdown.pd_tp(c),p(a?a:google.promos.ActionType.PUSHDOWN_DISMISS),u(b)}catch(d){google.ml(d,c,{cause:"PUSHDOWN_CP"})}};google.promos.pushdown.init=function(a,b,d,f,q,w,x,y,r){try{g=d;e=a;k.g=f||k.g;k.i=q||k.i;k.h=w||k.h;k.a="pd_count_"+(x||b);k.d="pd_dp_"+(y||b);l=document.getElementById(k.g);m=document.getElementById(k.i);n=document.getElementById(k.h);var z;a=l;var h=!google.promos.gpd(a,k.d),v=parseInt(google.promos.gpd(a,k.a)||0,10);b=25&gt;v;(h=h&amp;&amp;b)&amp;&amp;(r&amp;&amp;"function"==typeof r)&amp;&amp;(h=h&amp;&amp;r.call());h&amp;&amp;google.promos.spd(a,k.a,v+1);if(z=h)google.promos.pushdown.pd_tp(!0),google.promos.si(e,g,null,google.promos.ActionType.PUSHDOWN_IMPRESSION)}catch(A){google.ml(A,c,{cause:g+"_INIT"})}};})(); (function(){var sourceWebappPromoID=1149009;var sourceWebappGroupID=1225001;var payloadType=6;var acceptAction='/homepage/windows8/#utm_source\x3dwin8pd\x26utm_medium\x3dpromo';var inNewWindow=false;var noDismissalOnSure=false;google.promos.pushdown.accept = function(){google.promos.pushdown.pd_cp(acceptAction,inNewWindow,noDismissalOnSure);}
+google.x({id:'pushdown'},function(){google.promos.pushdown.init(sourceWebappPromoID,sourceWebappGroupID,payloadType);});})(); 
+
+Element Tag Name:	 DIV
+Element Text:	   ×   Get to Google faster. Add Google to your start screen. Sure No thanks  
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 pushdown
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 background-color: rgb(66, 114, 219);
+
+Element Tag Name:	 DIV
+Element Text:	  × 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 pdxbtn
+	Node 1
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 google.promos&&google.promos.pushdown&& google.promos.pushdown.pd_dp('gpx')
+	Node 2
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 float:right;color:#bcc9e8
+
+Element Tag Name:	 DIV
+Element Text:	  Get to Google faster. Add Google to your start screen. Sure No thanks 
+	Node 0
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 margin-left:12px
+
+Element Tag Name:	 DIV
+Element Text:	 Sure
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 pdbtn
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 pushdownyes
+	Node 2
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 google.promos&&google.promos.pushdown&& google.promos.pushdown.accept()
+	Node 3
+		Name:	 onmousedown
+		Type:	 Attribute Node
+		Value:	 this.style.color=''
+	Node 4
+		Name:	 onmouseout
+		Type:	 Attribute Node
+		Value:	 this.style.color='#bcc9e8'
+	Node 5
+		Name:	 onmouseover
+		Type:	 Attribute Node
+		Value:	 this.style.color='#fff'
+	Node 6
+		Name:	 onmouseup
+		Type:	 Attribute Node
+		Value:	 this.style.color='#fff'
+	Node 7
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 color:#bcc9e8;background-color:#2255cb
+
+Element Tag Name:	 DIV
+Element Text:	 No thanks
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 pdbtn
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 pushdownno
+	Node 2
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 google.promos&&google.promos.pushdown&& google.promos.pushdown.pd_dp('gpn')
+	Node 3
+		Name:	 onmousedown
+		Type:	 Attribute Node
+		Value:	 this.style.color=''
+	Node 4
+		Name:	 onmouseout
+		Type:	 Attribute Node
+		Value:	 this.style.color='#bcc9e8'
+	Node 5
+		Name:	 onmouseover
+		Type:	 Attribute Node
+		Value:	 this.style.color='#fff'
+	Node 6
+		Name:	 onmouseup
+		Type:	 Attribute Node
+		Value:	 this.style.color='#fff'
+	Node 7
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 color:#bcc9e8;background-color:#2255cb
+
+Element Tag Name:	 DIV
+Element Text:	 window.gbar&amp;&amp;gbar.eli&amp;&amp;gbar.eli()+YouSearchImagesMapsPlayYouTubeNewsGmailDriveCalendarMoreTranslateBooksBloggerReaderFinancePhotosVideosEven moreHidden fieldsGoogle SearchI'm Feeling LuckyAccount OptionsSign inSearch settingsAdvanced searchLanguage toolsWeb Historywindow.gbar&amp;&amp;gbar.elp&amp;&amp;gbar.elp()
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 mngb
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 position: relative;
+
+Element Tag Name:	 DIV
+Element Text:	 window.gbar&amp;&amp;gbar.eli&amp;&amp;gbar.eli()+YouSearchImagesMapsPlayYouTubeNewsGmailDriveCalendarMoreTranslateBooksBloggerReaderFinancePhotosVideosEven moreHidden fieldsGoogle SearchI'm Feeling LuckyAccount OptionsSign inSearch settingsAdvanced searchLanguage toolsWeb Historywindow.gbar&amp;&amp;gbar.elp&amp;&amp;gbar.elp()
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbesi
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb
+
+Element Tag Name:	 DIV
+Element Text:	 +YouSearchImagesMapsPlayYouTubeNewsGmailDriveCalendarMoreTranslateBooksBloggerReaderFinancePhotosVideosEven moreHidden fieldsGoogle SearchI'm Feeling LuckyAccount OptionsSign inSearch settingsAdvanced searchLanguage toolsWeb History
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbw
+
+Element Tag Name:	 DIV
+Element Text:	 +YouSearchImagesMapsPlayYouTubeNewsGmailDriveCalendarMoreTranslateBooksBloggerReaderFinancePhotosVideosEven more
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbzw
+
+Element Tag Name:	 DIV
+Element Text:	 +YouSearchImagesMapsPlayYouTubeNewsGmailDriveCalendarMoreTranslateBooksBloggerReaderFinancePhotosVideosEven more
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbz
+
+Element Tag Name:	 DIV
+Element Text:	 TranslateBooksBloggerReaderFinancePhotosVideosEven more
+	Node 0
+		Name:	 aria-owner
+		Type:	 Attribute Node
+		Value:	 gbztm
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbm
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbd
+
+Element Tag Name:	 DIV
+Element Text:	 TranslateBooksBloggerReaderFinancePhotosVideosEven more
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmc gbsb gbsbis
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbmmb
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt gbmh
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbsbt
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 opacity: 0;
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbsbb
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 opacity: 0;
+
+Element Tag Name:	 DIV
+Element Text:	 Hidden fieldsGoogle SearchI'm Feeling Lucky
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbq
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbt gbqfh
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbq1
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqlca
+
+Element Tag Name:	 DIV
+Element Text:	 Hidden fieldsGoogle SearchI'm Feeling Lucky
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbt gbqfh
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbq2
+
+Element Tag Name:	 DIV
+Element Text:	 Hidden fieldsGoogle SearchI'm Feeling Lucky
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfw
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqffd
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfwa 
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbfwa
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfqw
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfqw
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfqwc
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfqwb
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gs_lc0
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 position: relative;
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfif
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gs_sc0
+	Node 2
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 background: none repeat scroll 0% 0% transparent; color: transparent; padding: 0px; position: absolute; z-index: 2; white-space: pre; visibility: hidden;
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gsst_b
+	Node 1
+		Name:	 dir
+		Type:	 Attribute Node
+		Value:	 ltr
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gs_st0
+	Node 3
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 line-height: 27px; display: none;
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfbw
+
+Element Tag Name:	 DIV
+Element Text:	 Google SearchI'm Feeling Lucky
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 jsb
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfbwa
+
+Element Tag Name:	 DIV
+Element Text:	 Account OptionsSign inSearch settingsAdvanced searchLanguage toolsWeb History
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbu
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 left: 881px; right: auto;
+
+Element Tag Name:	 DIV
+Element Text:	 Account OptionsSign inSearch settingsAdvanced searchLanguage toolsWeb History
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbvg
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbvg
+
+Element Tag Name:	 DIV
+Element Text:	 Search settingsAdvanced searchLanguage toolsWeb History
+	Node 0
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 display:none
+
+Element Tag Name:	 DIV
+Element Text:	 Search settingsAdvanced searchLanguage toolsWeb History
+	Node 0
+		Name:	 aria-owner
+		Type:	 Attribute Node
+		Value:	 gbg5
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbm
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbd5
+
+Element Tag Name:	 DIV
+Element Text:	 Search settingsAdvanced searchLanguage toolsWeb History
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmc
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt gbmh
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt gbmh
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbdw
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfh
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbx1
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbx3
+
+Element Tag Name:	 DIV
+Element Text:	 .pmoabs{background-color:#fff;border:1px solid #E5E5E5;color:#666;font-size:13px;padding-bottom:20px;position:absolute;right:2px;top:3px;z-index:986}.kd-button-submit{border:1px solid #3079ed;background-color:#4d90fe;background-image:-webkit-gradient(linear,left top,left bottom,from(#4d90fe),to(#4787ed));background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);background-image: -moz-linear-gradient(top,#4d90fe,#4787ed);background-image: -ms-linear-gradient(top,#4d90fe,#4787ed);background-image: -o-linear-gradient(top,#4d90fe,#4787ed);background-image: linear-gradient(top,#4d90fe,#4787ed);filter:progid:DXImageTransform.Microsoft.gradient(startColorStr='#4d90fe',EndColorStr='#4787ed')}.kd-button-submit:hover{border:1px solid #2f5bb7;background-color:#357ae8;background-image:-webkit-gradient(linear,left top,left bottom,from(#4d90fe),to(#357ae8));background-image: -webkit-linear-gradient(top,#4d90fe,#357ae8);background-image: -moz-linear-gradient(top,#4d90fe,#357ae8);background-image: -ms-linear-gradient(top,#4d90fe,#357ae8);background-image: -o-linear-gradient(top,#4d90fe,#357ae8);background-image: linear-gradient(top,#4d90fe,#357ae8);filter:progid:DXImageTransform.Microsoft.gradient(startColorStr='#4d90fe',EndColorStr='#357ae8')}.kd-button-submit:active{-webkit-box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);-moz-box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);box-shadow:inset 0 1px 2px rgba(0,0,0,0.3)}.xbtn{color:#999;cursor:pointer;font-size:23px;line-height:5px;padding-top:5px}.padi{padding:0 8px 0 10px}.padt{padding:5px 20px 0 0;color:#444}.pads{text-align:left}#pmolnk{border-radius:2px;-moz-border-radius:2px;-webkit-border-radius:2px}#pmolnk a{color:#fff;display:inline-block;font-weight:bold;padding:5px 20px;text-decoration:none;white-space:nowrap}     ×       A faster way to browse the web     Install Google Chrome      (function(){var a=!0,c=!1,d={o:"a",s:"c",h:"d",i:"h",g:"i",I:"n",O:"x",F:"ma",G:"mc",H:"mi",v:"pa",w:"pc",B:"pi",D:"pn",C:"px",A:"pd",J:"gpa",L:"gpi",M:"gpn",N:"gpx",K:"gpd"};var e={k:"pmocntr2"},g,k,l=document.getElementById(e.k);google.promos=google.promos||{};google.promos.toast=google.promos.toast||{};function m(b){l&amp;&amp;(l.style.display=b?"":"none",l.parentNode&amp;&amp;(l.parentNode.style.position=b?"relative":""))}function n(b){try{if(l&amp;&amp;b&amp;&amp;b.es&amp;&amp;b.es.m){var f=window.gbar.rtl(document.body)?"left":"right";l.style[f]=b.es.m-16+2+"px";l.style.top="20px"}}catch(h){google.ml(h,c,{cause:g+"_PT"})}}
+google.promos.toast.cl=function(){try{window.gbar.up.sl(k,g,d.i,void 0,1)}catch(b){google.ml(b,c,{cause:g+"_CL"})}};google.promos.toast.cpc=function(){try{l&amp;&amp;(m(c),window.gbar.up.spd(l,e.a,1,a),window.gbar.up.sl(k,g,d.h,void 0,1))}catch(b){google.ml(b,c,{cause:g+"_CPC"})}};google.promos.toast.hideOnSmallWindow_=function(){try{l&amp;&amp;(l.style.visibility=2*l.offsetWidth+276&gt;document.body.clientWidth?"hidden":"")}catch(b){google.ml(b,c,{cause:g+"_HOSW"})}};function s(){var b=["gpd","spd","aeh","sl"];if(!window.gbar||!window.gbar.up)return c;for(var f=0,h;h=b[f];f++)if(!(h in window.gbar.up))return c;return a}
+google.promos.toast.init=function(b,f,h,p,q){try{if(s()){if(l){window.gbar.up.aeh(window,"resize",google.promos.toast.hideOnSmallWindow_);window.lol=google.promos.toast.hideOnSmallWindow_;e.d="toast_count_"+f+(p?"_"+p:"");e.a="toast_dp_"+f+(q?"_"+q:"");g=h;k=b;var r=window.gbar.up.gpd(l,e.d,a)||0;window.gbar.up.gpd(l,e.a,a)||25&lt;r||l.currentStyle&amp;&amp;"absolute"!=l.currentStyle.position?m(c):(window.gbar.up.spd(l,e.d,++r,a),window.gbar.elr&amp;&amp;n(window.gbar.elr()),window.gbar.elc&amp;&amp;window.gbar.elc(n),m(a),window.gbar.up.sl(k,g,d.g))}}else google.ml(Error("apa"),c,{cause:g+"_INIT"})}catch(t){google.ml(t,c,{cause:g+"_INIT"})}};})(); (function(){var sourceWebappPromoID=144002;var sourceWebappGroupID=5;var payloadType=5;window.gbar&amp;&amp;gbar.up&amp;&amp;gbar.up.r&amp;&amp;gbar.up.r(payloadType,function(show){if (show){google.promos.toast.init(sourceWebappPromoID,sourceWebappGroupID,payloadType,'0612');}
+});})(); Canadawindow.gbar&amp;&amp;gbar.up&amp;&amp;gbar.up.tp&amp;&amp;gbar.up.tp();Google.ca offered in: françaisAdvertising Programs‎Business Solutions‎Privacy & Terms‎+Google‎About Google‎Google.com‎
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 main
+
+Element Tag Name:	 DIV
+Element Text:	 .pmoabs{background-color:#fff;border:1px solid #E5E5E5;color:#666;font-size:13px;padding-bottom:20px;position:absolute;right:2px;top:3px;z-index:986}.kd-button-submit{border:1px solid #3079ed;background-color:#4d90fe;background-image:-webkit-gradient(linear,left top,left bottom,from(#4d90fe),to(#4787ed));background-image: -webkit-linear-gradient(top,#4d90fe,#4787ed);background-image: -moz-linear-gradient(top,#4d90fe,#4787ed);background-image: -ms-linear-gradient(top,#4d90fe,#4787ed);background-image: -o-linear-gradient(top,#4d90fe,#4787ed);background-image: linear-gradient(top,#4d90fe,#4787ed);filter:progid:DXImageTransform.Microsoft.gradient(startColorStr='#4d90fe',EndColorStr='#4787ed')}.kd-button-submit:hover{border:1px solid #2f5bb7;background-color:#357ae8;background-image:-webkit-gradient(linear,left top,left bottom,from(#4d90fe),to(#357ae8));background-image: -webkit-linear-gradient(top,#4d90fe,#357ae8);background-image: -moz-linear-gradient(top,#4d90fe,#357ae8);background-image: -ms-linear-gradient(top,#4d90fe,#357ae8);background-image: -o-linear-gradient(top,#4d90fe,#357ae8);background-image: linear-gradient(top,#4d90fe,#357ae8);filter:progid:DXImageTransform.Microsoft.gradient(startColorStr='#4d90fe',EndColorStr='#357ae8')}.kd-button-submit:active{-webkit-box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);-moz-box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);box-shadow:inset 0 1px 2px rgba(0,0,0,0.3)}.xbtn{color:#999;cursor:pointer;font-size:23px;line-height:5px;padding-top:5px}.padi{padding:0 8px 0 10px}.padt{padding:5px 20px 0 0;color:#444}.pads{text-align:left}#pmolnk{border-radius:2px;-moz-border-radius:2px;-webkit-border-radius:2px}#pmolnk a{color:#fff;display:inline-block;font-weight:bold;padding:5px 20px;text-decoration:none;white-space:nowrap}     ×       A faster way to browse the web     Install Google Chrome      (function(){var a=!0,c=!1,d={o:"a",s:"c",h:"d",i:"h",g:"i",I:"n",O:"x",F:"ma",G:"mc",H:"mi",v:"pa",w:"pc",B:"pi",D:"pn",C:"px",A:"pd",J:"gpa",L:"gpi",M:"gpn",N:"gpx",K:"gpd"};var e={k:"pmocntr2"},g,k,l=document.getElementById(e.k);google.promos=google.promos||{};google.promos.toast=google.promos.toast||{};function m(b){l&amp;&amp;(l.style.display=b?"":"none",l.parentNode&amp;&amp;(l.parentNode.style.position=b?"relative":""))}function n(b){try{if(l&amp;&amp;b&amp;&amp;b.es&amp;&amp;b.es.m){var f=window.gbar.rtl(document.body)?"left":"right";l.style[f]=b.es.m-16+2+"px";l.style.top="20px"}}catch(h){google.ml(h,c,{cause:g+"_PT"})}}
+google.promos.toast.cl=function(){try{window.gbar.up.sl(k,g,d.i,void 0,1)}catch(b){google.ml(b,c,{cause:g+"_CL"})}};google.promos.toast.cpc=function(){try{l&amp;&amp;(m(c),window.gbar.up.spd(l,e.a,1,a),window.gbar.up.sl(k,g,d.h,void 0,1))}catch(b){google.ml(b,c,{cause:g+"_CPC"})}};google.promos.toast.hideOnSmallWindow_=function(){try{l&amp;&amp;(l.style.visibility=2*l.offsetWidth+276&gt;document.body.clientWidth?"hidden":"")}catch(b){google.ml(b,c,{cause:g+"_HOSW"})}};function s(){var b=["gpd","spd","aeh","sl"];if(!window.gbar||!window.gbar.up)return c;for(var f=0,h;h=b[f];f++)if(!(h in window.gbar.up))return c;return a}
+google.promos.toast.init=function(b,f,h,p,q){try{if(s()){if(l){window.gbar.up.aeh(window,"resize",google.promos.toast.hideOnSmallWindow_);window.lol=google.promos.toast.hideOnSmallWindow_;e.d="toast_count_"+f+(p?"_"+p:"");e.a="toast_dp_"+f+(q?"_"+q:"");g=h;k=b;var r=window.gbar.up.gpd(l,e.d,a)||0;window.gbar.up.gpd(l,e.a,a)||25&lt;r||l.currentStyle&amp;&amp;"absolute"!=l.currentStyle.position?m(c):(window.gbar.up.spd(l,e.d,++r,a),window.gbar.elr&amp;&amp;n(window.gbar.elr()),window.gbar.elc&amp;&amp;window.gbar.elc(n),m(a),window.gbar.up.sl(k,g,d.g))}}else google.ml(Error("apa"),c,{cause:g+"_INIT"})}catch(t){google.ml(t,c,{cause:g+"_INIT"})}};})(); (function(){var sourceWebappPromoID=144002;var sourceWebappGroupID=5;var payloadType=5;window.gbar&amp;&amp;gbar.up&amp;&amp;gbar.up.r&amp;&amp;gbar.up.r(payloadType,function(show){if (show){google.promos.toast.init(sourceWebappPromoID,sourceWebappGroupID,payloadType,'0612');}
+});})(); 
+	Node 0
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 position: relative;
+
+Element Tag Name:	 DIV
+Element Text:	     ×       A faster way to browse the web     Install Google Chrome     
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 pmoabs
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 pmocntr2
+	Node 2
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 right: 2px; top: 20px;
+
+Element Tag Name:	 DIV
+Element Text:	 ×
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 xbtn
+	Node 1
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 google.promos&&google.promos.toast&& google.promos.toast.cpc()
+	Node 2
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 float:right
+
+Element Tag Name:	 DIV
+Element Text:	  Install Google Chrome 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 kd-button-submit
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 pmolnk
+
+Element Tag Name:	 DIV
+Element Text:	 Canada
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 lga
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 height:231px;margin-top:-22px
+
+Element Tag Name:	 DIV
+Element Text:	 Canada
+	Node 0
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 padding-top:112px
+
+Element Tag Name:	 DIV
+Element Text:	 Canada
+	Node 0
+		Name:	 align
+		Type:	 Attribute Node
+		Value:	 left
+	Node 1
+		Name:	 dir
+		Type:	 Attribute Node
+		Value:	 ltr
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 hplogo
+	Node 3
+		Name:	 onload
+		Type:	 Attribute Node
+		Value:	 window.lol&&lol()
+	Node 4
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 background:url(images/srpr/logo4w.png) no-repeat;background-size:275px 95px;height:95px;width:275px
+	Node 5
+		Name:	 title
+		Type:	 Attribute Node
+		Value:	 Google
+
+Element Tag Name:	 DIV
+Element Text:	 Canada
+	Node 0
+		Name:	 nowrap
+		Type:	 Attribute Node
+		Value:	 nowrap
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 color:#777;font-size:16px;font-weight:bold;position:relative;left:215px;top:70px
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 height:102px
+
+Element Tag Name:	 DIV
+Element Text:	 window.gbar&amp;&amp;gbar.up&amp;&amp;gbar.up.tp&amp;&amp;gbar.up.tp();Google.ca offered in: français
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 prm-pt
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 font-size:83%;min-height:3.5em
+
+Element Tag Name:	 DIV
+Element Text:	 Google.ca offered in: français
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 als
+
+Element Tag Name:	 DIV
+Element Text:	 Advertising Programs‎Business Solutions‎Privacy & Terms‎+Google‎About Google‎Google.com‎
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 ctr-p
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 footer
+	Node 2
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 display: block; height: 454px;
+
+Element Tag Name:	 DIV
+Element Text:	 Advertising Programs‎Business Solutions‎Privacy & Terms‎+Google‎About Google‎Google.com‎
+
+Element Tag Name:	 DIV
+Element Text:	 Advertising Programs‎Business Solutions‎Privacy & Terms‎+Google‎About Google‎Google.com‎
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 ftby
+
+Element Tag Name:	 DIV
+Element Text:	 Advertising Programs‎Business Solutions‎Privacy & Terms‎+Google‎About Google‎Google.com‎
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 fll
+
+Element Tag Name:	 DIV
+Element Text:	 Advertising Programs‎Business Solutions‎Privacy & Terms‎
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 flls
+
+Element Tag Name:	 DIV
+Element Text:	 +Google‎About Google‎Google.com‎
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 flrs
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 flci
+
+Element Tag Name:	 DIV
+Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 xjsd
+
+Element Tag Name:	 DIV
+Element Text:	 if(google.y)google.y.first=[];(function(){var b;function c(a){window.setTimeout(function(){var d=document.createElement("script");d.src=a;document.getElementById("xjsd").appendChild(d)},0)}google.dljp=function(a){b=a;google.xjsi||(google.xjsu=a,c(b))};google.dlj=c;})();
+if(!google.xjs){google.dstr=[];google.rein=[];window._=window._||{};window._._DumpException=function(e){throw e};if(google.timers&amp;&amp;google.timers.load.t){google.timers.load.t.xjsls=new Date().getTime();}google.dljp('/xjs/_/js/s/c,sb,cr,cdos,vm,tbui,mb,wobnm,cfm,abd,klc,kat,bihu,kp,lu,m,tnv,amcl,erh,hv,lc,ob,r,rsn,sf,sfa,shb,tbpr,hsm,j,p,pcc,csi/rt\x3dj/ver\x3dV7Ny-OUsbvw.en_US./am\x3dCA/d\x3d1/sv\x3d1/rs\x3dAItRSTNTQEkMjnw5NEaDowS7vIR7ajYYrw');google.xjs=1;}(function(){var a=!1,c=a,d;
+function n(b,f,m){m=b.offsetHeight?m-b.offsetHeight:m;f-=m;f=Math.max(f,0);b.style.height=f+"px";return f}
+function p(){if("web"==google.sn)q();else if(d){n(d,document.documentElement.clientHeight,
+document.body.offsetHeight)}}function r(){if(!("web"==google.sn||c))if(d=document.getElementById("footer")){window.addEventListener?window.addEventListener("resize",p,a):window.attachEvent("onresize",p);d.style.display="block";p();c=!0}}
+function q(){c&amp;&amp;(window.removeEventListener?window.removeEventListener("resize",p,a):window.detachEvent("onresize",p),c=a,(d=document.getElementById("footer"))&amp;&amp;(d.style.display="none"))}function s(){window.google.frf||(window.google.frf=p,google.rein&amp;&amp;google.dstr&amp;&amp;(google.rein.push(r),google.dstr.push(q)),r())}s();})();
+;google.pmc={c:{},sb:{"agen":false,"cgen":true,"client":"hp","dh":true,"ds":"","eqch":true,"fl":true,"host":"google.ca","jsonp":true,"lyrs":29,"msgs":{"lcky":"I\u0026#39;m Feeling Lucky","lml":"Learn more","oskt":"Input tools","psrc":"This search was removed from your \u003Ca href=\"/history\"\u003EWeb History\u003C/a\u003E","psrl":"Remove","sbit":"Search by image","srch":"Google Search"},"ovr":{"ent":1,"ms":1},"pq":"","psy":"p","qcpw":false,"scd":10,"sce":4,"stok":"9YGMydOi5RQgaQlTO9HFczrotb0"},cr:{"eup":false,"qir":true,"rctj":true,"ref":false,"uff":false},cdos:{"dima":"b"},gf:{"pid":196},vm:{"bv":44158598,"d":"cGE","tc":true,"te":true,"tk":true,"ts":true},rvu:{"rvu_report_msg":"Report","rvu_reported_msg":"Reported"},tbui:{"dfi":{"am":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"df":["EEEE, MMMM d, y","MMMM d, y","MMM d, y","M/d/yyyy"],"fdow":6,"nw":["S","M","T","W","T","F","S"],"wm":["January","February","March","April","May","June","July","August","September","October","November","December"]},"g":28,"k":true,"m":{"app":true,"bks":true,"blg":true,"dsc":true,"flm":true,"frm":true,"isch":true,"klg":true,"map":true,"mobile":true,"nws":true,"plcs":true,"ppl":true,"prc":true,"pts":true,"rcp":true,"shop":true,"vid":true},"t":null},mb:{"db":false,"m_errors":{"default":"\u003Cfont color=red\u003EError:\u003C/font\u003E The server could not complete your request.  Try again in 30 seconds."},"m_tip":"Click for more information","nlpm":"-153px -84px","nlpp":"-153px -70px","utp":true},wobnm:{},cfm:{"data_url":"/m/financedata?hl=en\u0026output=search\u0026source=mus"},abd:{"abd":false,"deb":false,"der":false,"det":false,"psa":false,"sup":false},klc:{"cns":false,"fling_time":300,"m":false,"p":false,"st":true,"t":false,"urs":false},kat:{"s":true},rkab:{"bl":"Feedback / More info","db":"Reported","di":"Thank you.","dl":"Report another problem","rb":"Wrong?","ri":"Please report the problem.","rl":"Cancel"},bihu:{"MESSAGES":{"msg_img_from":"Image from %1$s","msg_ms":"More sizes","msg_si":"Similar"}},riu:{"cnfrm":"Reported","prmpt":"Report"},rmcl:{"bl":"Feedback / More info","db":"Reported","di":"Thank you.","dl":"Report another problem","rb":"Wrong?","ri":"Please report the problem.","rl":"Cancel"},kp:{"use_top_media_styles":true},rk:{"bl":"Feedback / More info","db":"Reported","di":"Thank you.","dl":"Report another problem","efe":false,"rb":"Wrong?","ri":"Please report the problem.","rl":"Cancel"},lu:{"cm_hov":true,"tt_kft":true,"uab":true},m:{"ab":{"on":true},"ajax":{"gl":"ca","hl":"en","q":""},"css":{"adpbc":"#fec","adpc":"#fffbf2","def":false,"showTopNav":true},"elastic":{"js":true,"rhs4Col":1072,"rhs5Col":1160,"rhsOn":true,"tiny":false},"exp":{"lru":true,"tnav":true},"kfe":{"adsClientId":33,"clientId":29,"kfeHost":"clients1.google.ca","kfeUrlPrefix":"/webpagethumbnail?r=4\u0026f=3\u0026s=400:585\u0026query=\u0026hl=en\u0026gl=ca","vsH":585,"vsW":400},"msgs":{"details":"Result details","hPers":"Hide personal results","hPersD":"Currently hiding personal results","loading":"Still loading...","mute":"Mute","noPreview":"Preview not available","sPers":"Show personal results","sPersD":"Currently showing personal results","unmute":"Unmute"},"nokjs":{"on":true},"time":{"hUnit":1500}},tnv:{"t":false},adsm:{},amcl:{},bds:{},ca:{},erh:{},hp:{},hv:{},lc:{},lor:{},ob:{},r:{},rsn:{},rv:{},sf:{},sfa:{},shb:{},shlb:{},tbpr:{},hsm:{},j:{"cspd":0,"ecbv":true,"hme":true,"icmt":false,"jck":true,"mcr":5,"tct":" \\u3000?"},p:{"ae":true,"avgTtfc":2000,"brba":false,"dlen":24,"dper":3,"eae":true,"fbdc":500,"fbdu":-1,"fbh":true,"fd":1000000,"focus":true,"gpsj":true,"hiue":true,"hpt":310,"iavgTtfc":2000,"kn":true,"knrt":true,"maxCbt":1500,"mds":"clir,clue,dfn,klg,prc,sp,sts,mbl_he,mbl_hs,mbl_re,mbl_rs,mbl_sv","msg":{"dym":"Did you mean:","gs":"Google Search","kntt":"Use the up and down arrow keys to select each result. Press Enter to go to the selection.","sif":"Search instead for","srf":"Showing results for"},"odef":true,"ophe":true,"pmt":250,"pq":true,"rpt":50,"sc":"psy-ab","sfcs":false,"sgcif":true,"tdur":50,"ufl":true},pcc:{},csi:{"acsi":true}};(function(){var r=(function(){google.y.first.push(function(){google.loadAll(['gf']);if(google.med){google.med('init');google.initHistory();google.med('history');}google.History&amp;&amp;google.History.initialize('/');google.hs&amp;&amp;google.hs.init&amp;&amp;google.hs.init()});});r();var l=window.location.hash?window.location.href.substr(window.location.href.indexOf('#')):'#';if(l=='#'&amp;&amp;google.defre){google.defre=1;google.y.first.push(function(){if(google.j&amp;&amp;google.j.init){google.rein&amp;&amp;google.rein.push(r);}});}})();if(google.j&amp;&amp;google.j.en&amp;&amp;google.j.xi){window.setTimeout(google.j.xi,0);}
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 xjsi
+Source Name:	BUTTON
+Source ID:	 id1302052122
+
+Element Tag Name:	 BUTTON
+Element Text:	 
+	Node 0
+		Name:	 aria-label
+		Type:	 Attribute Node
+		Value:	 Google Search
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfb
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfb
+	Node 3
+		Name:	 name
+		Type:	 Attribute Node
+		Value:	 btnG
+
+Element Tag Name:	 BUTTON
+Element Text:	 Google Search
+	Node 0
+		Name:	 aria-label
+		Type:	 Attribute Node
+		Value:	 Google Search
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfba
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfba
+	Node 3
+		Name:	 name
+		Type:	 Attribute Node
+		Value:	 btnK
+
+Element Tag Name:	 BUTTON
+Element Text:	 I'm Feeling Lucky
+	Node 0
+		Name:	 aria-label
+		Type:	 Attribute Node
+		Value:	 I'm Feeling Lucky
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfba
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfbb
+	Node 3
+		Name:	 name
+		Type:	 Attribute Node
+		Value:	 btnI
+	Node 4
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 if(this.form.q.value)this.checked=1;else window.top.location='/doodles/'
+Source Name:	A
+Source ID:	 id1901597768
+
+Element Tag Name:	 A
+Element Text:	 Learn more
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA
+
+Element Tag Name:	 A
+Element Text:	 Search
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbzt gbz0l gbp1
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/webhp?hl=en&tab=ww
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_1
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.logger.il(1,{t:1});
+
+Element Tag Name:	 A
+Element Text:	 Images
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbzt
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/imghp?hl=en&tab=wi
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_2
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.qs(this);gbar.logger.il(1,{t:2});
+
+Element Tag Name:	 A
+Element Text:	 More
+	Node 0
+		Name:	 aria-haspopup
+		Type:	 Attribute Node
+		Value:	 true
+	Node 1
+		Name:	 aria-owns
+		Type:	 Attribute Node
+		Value:	 gbd
+	Node 2
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbgt
+	Node 3
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/intl/en/options/
+	Node 4
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbztm
+	Node 5
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.tg(event,this)
+
+Element Tag Name:	 A
+Element Text:	 Reader
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/reader/?hl=en&tab=wy
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_32
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.logger.il(1,{t:32});
+
+Element Tag Name:	 A
+Element Text:	 Finance
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/finance?tab=we
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_27
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.qs(this);gbar.logger.il(1,{t:27});
+
+Element Tag Name:	 A
+Element Text:	 Even more
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/intl/en/options/
+	Node 2
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.logger.il(1,{t:66});
+
+Element Tag Name:	 A
+Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqla
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /webhp?hl=en&tab=ww
+	Node 2
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.logger.il(39)
+	Node 3
+		Name:	 title
+		Type:	 Attribute Node
+		Value:	 Go to Google Home
+
+Element Tag Name:	 A
+Element Text:	 Search settings
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /preferences?hl=en
+
+Element Tag Name:	 A
+Element Text:	 Advanced search
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /advanced_search?hl=en
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gmlas
+
+Element Tag Name:	 A
+Element Text:	 Web History
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/history/optout?hl=en
+
+Element Tag Name:	 A
+Element Text:	 Install Google Chrome
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /chrome/index.html?hl=en&brand=CHNG&utm_source=en-hpp&utm_medium=hpp&utm_campaign=en
+	Node 1
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 google.promos&&google.promos.toast&& google.promos.toast.cl()
+
+Element Tag Name:	 A
+Element Text:	 français
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/setprefs?sig=0_73rvSEt4nvQg7MHhUAK9tpCDnkQ%3D&hl=fr&source=homepage
+
+Element Tag Name:	 A
+Element Text:	 Advertising Programs
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /intl/en/ads/
+
+Element Tag Name:	 A
+Element Text:	 Business Solutions
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /services/
+
+Element Tag Name:	 A
+Element Text:	 Privacy & Terms
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /intl/en/policies/
+
+Element Tag Name:	 A
+Element Text:	 About Google
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /intl/en/about.html
+
+Element Tag Name:	 A
+Element Text:	 Google.com
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/setprefdomain?prefdom=US&sig=0_MXYaVSBfrRty71ona78p-2_RM28%3D
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 fehl
+Excluded Tags and the Elements they matched:
+
+Source Name:	A
+Source ID:	 id9862796
+
+Element Tag Name:	 A
+Element Text:	 Language tools
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /language_tools?hl=en
