@@ -679,7 +679,8 @@ public class Crawler implements Runnable {
 	}
 
 	private boolean shouldContinueCrawling(StateVertex vertex) {
-		return !maximumCrawlTimePassed() && !maximumStatesReached() && maximumStatesReachedPerUrl(vertex);
+		return !maximumCrawlTimePassed() && !maximumStatesReached()
+				&& !maximumStatesPerUrlReached(vertex);
 	}
 
 	private boolean maximumCrawlTimePassed() {
@@ -705,20 +706,18 @@ public class Crawler implements Runnable {
 		}
 	}
 	
-	private boolean maximumStatesReachedPerUrl(StateVertex vertex){
+	private boolean maximumStatesPerUrlReached(StateVertex vertex){
 		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
-		int currentStateNumber;
-		
-		
-		
-		if (vertex != null)
-		{// 4 is the limit
-			currentStateNumber = graph.getOutgoingStates(vertex).size();
-			if (currentStateNumber >= 4)
+		if (vertex != null) {
+			int maxNumberOfStatesPerUrl = config.getMaximumStatesPerUrl();
+			int currStateOutDegree = graph.getOutgoingStates(vertex).size();
+			if ((maxNumberOfStatesPerUrl != 0) && (currStateOutDegree >= maxNumberOfStatesPerUrl)) {
+				LOG.info("Max number of states per Url {} reached!", maxNumberOfStatesPerUrl);
+				return true;
+			} else {
 				return false;
+			}
 		}
-		
-		return true;
+		return false;
 	}
-
 }
