@@ -218,6 +218,14 @@ public final class CrawlElement {
 	}
 
 	/**
+	 * @return the crawl attributes
+	 * 
+	 */
+	public List<CrawlAttribute> getAttributes(){
+		return crawlAttributes;
+	}
+	
+	/**
 	 * @return the id
 	 */
 	public String getId() {
