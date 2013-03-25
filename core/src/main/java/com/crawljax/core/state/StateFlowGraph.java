@@ -1,5 +1,6 @@
 package com.crawljax.core.state;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,9 +19,11 @@ import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.w3c.dom.Document;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.crawljax.util.*;
 
 /**
  * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
@@ -91,6 +94,8 @@ public class StateFlowGraph implements Serializable {
 	 */
 	@GuardedBy("sfg")
 	public StateVertex addState(StateVertex stateVertix, boolean correctName) {
+
+		
 		synchronized (sfg) {
 			if (!sfg.addVertex(stateVertix)) {
 				// Graph already contained the vertix
@@ -405,5 +410,18 @@ public class StateFlowGraph implements Serializable {
 	 */
 	public int getNumberOfStates() {
 		return stateCounter.get();
+	}
+	
+	private String getTitle(StateVertex stateVertix)
+	{
+		try {
+			Document temp=DomUtils.asDocument(stateVertix.getDom());
+			String titleText = temp.getElementsByTagName("title").item(0).getTextContent(); 
+			return titleText;
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
