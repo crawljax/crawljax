@@ -2,6 +2,9 @@ package ca.ubc.eece310.groupL2C1;
 import static java.lang.System.out;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +34,14 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 	public Specification_Metrics_Plugin(File outputFolder) {
 		Preconditions.checkNotNull(outputFolder, "Output folder cannot be null");
 		LOG.info("Initialized Specification_Metrics_Plugin");
+		PrintStream out;
+		try {
+			out = new PrintStream(new FileOutputStream("output.txt"));
+			System.setOut(out);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
