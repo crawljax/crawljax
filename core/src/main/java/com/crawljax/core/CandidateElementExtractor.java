@@ -53,6 +53,7 @@ public class CandidateElementExtractor {
 	private final ImmutableList<TagElement> includedTagElements;
 
 	private final boolean clickOnce;
+	private final boolean openExternalPopups;
 
 	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
@@ -82,6 +83,7 @@ public class CandidateElementExtractor {
 		crawlFrames = config.getCrawlRules().shouldCrawlFrames();
 		clickOnce = config.getCrawlRules().isClickOnce();
 		ignoredFrameIdentifiers = config.getCrawlRules().getIgnoredFrameIdentifiers();
+		openExternalPopups = config.getCrawlRules().isOpenExternalPopups();
 	}
 
 	private ImmutableMultimap<String, TagElement> asMultiMap(ImmutableList<CrawlElement> elements) {
@@ -155,7 +157,7 @@ public class CandidateElementExtractor {
 			NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
 			addFramesCandidates(dom, results, relatedFrame, iFrameNodes);
 
-			eveluateElements(dom, tag, results, relatedFrame);
+			evaluateElements(dom, tag, results, relatedFrame);
 		}
 	}
 
@@ -217,8 +219,25 @@ public class CandidateElementExtractor {
 			return true;
 		}
 	}
+	
+	private boolean isExternalPopup(Element element){
+		String clickable = element.getAttribute("onclick");
+		if(!openExternalPopups && !Strings.isNullOrEmpty(clickable)) {
+			Pattern openWindow = Pattern.compile("(.*)(window\\.open)(\\s*\\(\\s*[\\\'\\\"])([\\w\\./:]+?)([\\\'\\\"].*)");
+			Matcher matcher = openWindow.matcher(clickable);
+			if(matcher.matches() && UrlUtils.isLinkExternal(browser.getCurrentUrl(), matcher.replaceAll("$4"))){
+				return true;					
+			}
+			
+			if(clickable.matches("(\\b+)(\\s*)\\(")){
+				clickable.split("\\s*(");
+			}
+			
+		}
+		return false;
+	}
 
-	private void eveluateElements(Document dom, TagElement tag,
+	private void evaluateElements(Document dom, TagElement tag,
 	        Builder<CandidateElement> results, String relatedFrame) {
 		try {
 			List<Element> nodeListForTagElement =
@@ -314,6 +333,9 @@ public class CandidateElementExtractor {
 	private void addElement(Element element, Builder<Element> builder, TagElement tagElement) {
 		if ("A".equalsIgnoreCase(tagElement.getName())) {
 			String href = element.getAttribute("href");
+			if (isExternalPopup(element)){
+				return;
+			}
 			if (!Strings.isNullOrEmpty(href)) {
 				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
 				LOG.debug("HREF: {} isExternal= {}", href, isExternal);

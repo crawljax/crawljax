@@ -147,11 +147,11 @@ public class CrawlRules {
 		}
 		
 		/**
-		 * @param visitExternal
+		 * @param openExternalPopups
 		 * 			Visit external sites while crawling. Default is <code>false</code> 			
 		 */
-		public CrawlRulesBuilder visitExternal(boolean visitExternal) {
-			crawlRules.visitExternal = visitExternal;
+		public CrawlRulesBuilder openExternalPopups(boolean openExternalPopups) {
+			crawlRules.openExternalPopups = openExternalPopups;
 			return this;
 		}
 
@@ -290,7 +290,7 @@ public class CrawlRules {
 	private boolean crawlHiddenAnchors = false;
 	private long waitAfterReloadUrl = DEFAULT_WAIT_AFTER_RELOAD;
 	private long waitAfterEvent = DEFAULT_WAIT_AFTER_EVENT;
-	private boolean visitExternal = false;
+	private boolean openExternalPopups = false;
 
 	private CrawlRules() {
 	}
@@ -315,8 +315,8 @@ public class CrawlRules {
 		return randomInputInForms;
 	}
 	
-	public boolean isExternal() {
-		return visitExternal;
+	public boolean isOpenExternalPopups() {
+		return openExternalPopups;
 	}
 
 	public InputSpecification getInputSpecification() {
@@ -383,7 +383,7 @@ public class CrawlRules {
 		result = prime * result + ((preCrawlConfig == null) ? 0 : preCrawlConfig.hashCode());
 		result = prime * result + (randomInputInForms ? 1231 : 1237);
 		result = prime * result + (testInvariantsWhileCrawling ? 1231 : 1237);
-		result = prime * result + (visitExternal ? 1231 :1237);
+		result = prime * result + (openExternalPopups ? 1231 :1237);
 		result = prime * result + (int) (waitAfterEvent ^ (waitAfterEvent >>> 32));
 		result = prime * result + (int) (waitAfterReloadUrl ^ (waitAfterReloadUrl >>> 32));
 		return result;
@@ -468,7 +468,7 @@ public class CrawlRules {
 		if (waitAfterReloadUrl != other.waitAfterReloadUrl) {
 			return false;
 		}
-		if(visitExternal != other.visitExternal) {
+		if(openExternalPopups != other.openExternalPopups) {
 			return false;
 		}
 		return true;
@@ -505,8 +505,8 @@ public class CrawlRules {
 		builder.append(crawlHiddenAnchors);
 		builder.append(", waitAfterReloadUrlMillis=");
 		builder.append(waitAfterReloadUrl);
-		builder.append(", visitExternal=");
-		builder.append(visitExternal);
+		builder.append(", openExternalPopups=");
+		builder.append(openExternalPopups);
 		builder.append(", waitAfterEvent=");
 		builder.append(waitAfterEvent);
 		builder.append("]");
