@@ -252,7 +252,7 @@ public class CandidateElementExtractor {
 		ImmutableList<String> expressions = getFullXpathForGivenXpath(dom, eventableCondition);
 
 		NodeList nodeList = dom.getElementsByTagName(tagElement.getName());
-		ImmutableSet<TagAttribute> attributes = tagElement.getAttributes();
+		//ImmutableSet<TagAttribute> attributes = tagElement.getAttributes();
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
@@ -268,7 +268,7 @@ public class CandidateElementExtractor {
 			 */
 			String id = element.getNodeName() + ": " + DomUtils.getAllElementAttributes(element);
 			if (matchesXpath && !checkedElements.isChecked(id)
-			        && !filterElement(attributes, element)
+			        /*&& !filterElement(attributes, element)*/
 			        && !isExcluded(dom, element, eventableConditionChecker)) {
 				addElement(element, result, tagElement);
 			} else {
@@ -413,10 +413,10 @@ public class CandidateElementExtractor {
 				LOG.info("Excluded element because of xpath: " + element);
 				return true;
 			}
-			if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
+			/*if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
 				LOG.info("Excluded element because of attributes: " + element);
 				return true;
-			}
+			}*/
 		}
 
 		return false;
@@ -425,7 +425,7 @@ public class CandidateElementExtractor {
 	/**
 	 * Return whether the element is filtered out because of its attributes.
 	 */
-	private boolean filterElement(Set<TagAttribute> attributes, Element element) {
+	/*private boolean filterElement(Set<TagAttribute> attributes, Element element) {
 		int matchCounter = 0;
 		if (element == null || attributes == null) {
 			return false;
@@ -461,5 +461,5 @@ public class CandidateElementExtractor {
 		}
 
 		return (attributes.size() != matchCounter);
-	}
+	}*/
 }

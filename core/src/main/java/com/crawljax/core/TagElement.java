@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableSet;
  */
 @Immutable
 public class TagElement {
-	private ImmutableSet<TagAttribute> attributes;
+	//private ImmutableSet<TagAttribute> attributes;
 	private String name;
 	private String id;
 
@@ -21,12 +21,12 @@ public class TagElement {
 	 * @param attributes
 	 *            the attribute set.
 	 * @param name
-	 *            the tag name. This will be transformed to captial letters.
+	 *            the tag name. This will be transformed to capitial letters.
 	 */
 	public TagElement(ImmutableSet<TagAttribute> attributes, String name, String id) {
 		Preconditions.checkNotNull(attributes);
 		Preconditions.checkNotNull(name);
-		this.attributes = attributes;
+		//this.attributes = attributes;
 		this.name = name.toUpperCase();
 		this.id = id;
 	}
@@ -39,9 +39,9 @@ public class TagElement {
 	/**
 	 * @return the attribute set.
 	 */
-	public ImmutableSet<TagAttribute> getAttributes() {
+	/*public ImmutableSet<TagAttribute> getAttributes() {
 		return attributes;
-	}
+	}*/
 
 	/**
 	 * @return the tag name.
@@ -63,7 +63,7 @@ public class TagElement {
 		if (name != null) {
 			ret.append(name.toUpperCase());
 		}
-		int i = 0;
+		/*int i = 0;
 		if (attributes != null) {
 			for (TagAttribute att : attributes) {
 				if (i == 0) {
@@ -75,7 +75,7 @@ public class TagElement {
 				ret.append("\" ");
 				i++;
 			}
-		}
+		}*/
 		return ret.toString();
 	}
 }
