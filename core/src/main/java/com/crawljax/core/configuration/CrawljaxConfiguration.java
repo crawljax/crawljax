@@ -12,6 +12,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.util.PopUpCancel;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 

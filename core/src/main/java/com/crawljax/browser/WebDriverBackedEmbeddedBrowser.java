@@ -48,6 +48,7 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.forms.InputValue;
 import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.DomUtils;
+import com.crawljax.util.PopUpCancel;
 import com.google.common.collect.ImmutableSortedSet;
 
 /**
@@ -303,8 +304,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				try {
 					
 					webElement.click();
-					handleDownloadWindow(webElement);
-					handleAuthenticationWindow();
 
 				} catch (ElementNotVisibleException e) {
 					throw e;
@@ -330,38 +329,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		return true;
 	}
 	
-	private void handleDownloadWindow(WebElement webElement)
-	{	
-		//parsed the link and see if it was a download link
-		//Firefox download window's title is always "Opening" + File Name
-		//Make sure main window is not the same name and call auto hotkey script
-		try{ 
-			String currentWindow = browser.getTitle();
-			String anchorLink = webElement.getAttribute("href");
-			String parsedLink[] = anchorLink.split("/");
-			String downloadWindowName = "Opening " + parsedLink[parsedLink.length - 1];
-			String commands[] = new String[]{"closeDownloads.exe", downloadWindowName};
-			
-			try {
-				
-				if(!currentWindow.equals(downloadWindowName))
-					Runtime.getRuntime().exec(commands);
-				
-			} catch (IOException e) {
-				System.err.println("Error closeDownloads.exe not found");
-			}
-		} catch (NullPointerException ex) { /* Means anchor was empty, doesn't matter */}
-	}
-	
-	private void handleAuthenticationWindow()
-	{
-		try{
-			browser.switchTo().alert().dismiss();
-		}
-		catch(Exception noAlertFound){}			
-	
-	}
-	
+
 	@Override
 	public void close() {
 		LOGGER.info("Closing the browser...");
@@ -574,6 +542,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	public void closeOtherWindows() {
 		try {
 			String current = browser.getWindowHandle();
+			PopUpCancel.ClosePopUps(browser, current);			
 			for (String handle : browser.getWindowHandles()) {
 				if (!handle.equals(browser.getWindowHandle())) {
 

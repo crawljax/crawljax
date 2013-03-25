@@ -1,9 +1,12 @@
 package com.crawljax.examples;
 
+import java.io.InputStream;
+
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.util.PopUpCancel;
 
 public class myCrawl
 {
@@ -23,12 +26,14 @@ public class myCrawl
 	 * Entry point
 	 */
 	public static void main(String[] args) {
+		
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+
 		builder.crawlRules().clickDefaultElements();
 		builder.crawlRules().dontClick(ALL_ANCHORS).underXPath(HEADER_XPATH);
 		builder.crawlRules().dontClick(ALL_ANCHORS).withText(LANGUAGE_TOOLS);
-
 		// limit the crawling scope
+		builder.crawlRules().setCancelPopUps("ALL");
 		builder.setMaximumStates(MAX_STATES);
 		builder.setMaximumDepth(MAX_CRAWL_DEPTH);
 
