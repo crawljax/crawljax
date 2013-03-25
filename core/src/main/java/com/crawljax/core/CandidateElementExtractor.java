@@ -3,7 +3,6 @@ package com.crawljax.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-//import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +32,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
-//import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 
 /**
@@ -87,7 +85,6 @@ public class CandidateElementExtractor {
 	private ImmutableMultimap<String, CrawlElement> asMultiMap(ImmutableList<CrawlElement> elements) {
 		ImmutableMultimap.Builder<String, CrawlElement> builder = ImmutableMultimap.builder();
 		for (CrawlElement elem : elements) {
-			//TagElement tagElement = new TagElement(elem);
 			builder.put(elem.getTagName(), elem);
 		}
 		return builder.build();
@@ -252,7 +249,6 @@ public class CandidateElementExtractor {
 		ImmutableList<String> expressions = getFullXpathForGivenXpath(dom, eventableCondition);
 
 		NodeList nodeList = dom.getElementsByTagName(tagElement.getTagName());
-		//ImmutableSet<TagAttribute> attributes = tagElement.getAttributes();
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
@@ -268,7 +264,6 @@ public class CandidateElementExtractor {
 			 */
 			String id = element.getNodeName() + ": " + DomUtils.getAllElementAttributes(element);
 			if (matchesXpath && !checkedElements.isChecked(id)
-			        /*&& !filterElement(attributes, element)*/
 			        && !isExcluded(dom, element, eventableConditionChecker)) {
 				addElement(element, result, tagElement);
 			} else {
@@ -414,54 +409,9 @@ public class CandidateElementExtractor {
 				return true;
 			}
 
-			/*if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
-				LOG.info("Excluded element because of attributes: " + element);
-				return true;
-			}*/
-
 		}
 
 		return false;
 	}
 
-	/**
-	 * Return whether the element is filtered out because of its attributes.
-	 */
-	/*private boolean filterElement(Set<TagAttribute> attributes, Element element) {
-		int matchCounter = 0;
-		if (element == null || attributes == null) {
-			return false;
-		}
-		for (TagAttribute attr : attributes) {
-			LOG.debug("Checking element " + DomUtils.getElementString(element)
-			        + "AttributeName: " + attr.getName() + " value: " + attr.getValue());
-
-			if (attr.matchesValue(element.getAttribute(attr.getName()))) {
-				// make sure that if attribute value is % the element should
-				// have this attribute
-				if (attr.getValue().equals("%")
-				        && element.getAttributeNode(attr.getName()) == null) {
-					return true;
-				} else {
-					matchCounter++;
-				}
-			} else if (attr.getName().equalsIgnoreCase("innertext")
-			        && element.getTextContent() != null) {
-				String value = attr.getValue();
-				String text = element.getTextContent().trim();
-				if (value.contains("%")) {
-					String pattern = value.replace("%", "(.*?)");
-					if (text.matches(pattern)) {
-						matchCounter++;
-					}
-
-				} else if (text.equalsIgnoreCase(value)) {
-					matchCounter++;
-				}
-			}
-
-		}
-
-		return (attributes.size() != matchCounter);
-	}*/
 }
