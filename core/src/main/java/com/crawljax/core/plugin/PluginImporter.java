@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.Manifest;
+import com.crawljax.*;
 
 public class PluginImporter
 {
@@ -18,7 +19,7 @@ public class PluginImporter
         _loader = loader;
     }
 
-    public <T> Iterable<T> getPluggedServices(Class<T> clazz)
+    public <T> List<T> getPluggedServices(Class<T> clazz)
     {
         List<T> services = new ArrayList<T>();
         // we need a better way to figure out how to get files

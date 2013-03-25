@@ -3,6 +3,7 @@ package com.crawljax.cli;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
@@ -255,9 +256,9 @@ public class JarRunner {
 		//TODO: this class path folder has to exist or we have to setup a try catch inside to make sure it does
 		PluginImporter lImporter = new PluginImporter(ClassLoaderHelper.buildClassLoader(true, new File("C:/Users/User/Desktop/testplugins")));
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));
-		Iterable<Plugin> classPathPlugins = lImporter.getPluggedServices(Plugin.class);
-		while (classPathPlugins.iterator().hasNext())
-			builder.addPlugin(classPathPlugins.iterator().next());
+		List<Plugin> classPathPlugins = lImporter.getPluggedServices(Plugin.class);
+		for(int iter = 0; iter < classPathPlugins.size(); iter++)
+			builder.addPlugin(classPathPlugins.get(iter));
 
 		if (commandLine.hasOption(CLICK)) {
 			builder.crawlRules().click(commandLine.getOptionValue(CLICK).split(","));
