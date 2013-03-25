@@ -388,6 +388,10 @@ public class StateFlowGraph implements Serializable {
 	 * @return the String containing the new name.
 	 */
 	private String makeStateName(int id, boolean guided, String url) {
+		
+		String test= trimUrl(url);
+		System.out.print(test+"\n");
+		
 
 		if (guided) {
 			return "guided" + id;
@@ -424,4 +428,19 @@ public class StateFlowGraph implements Serializable {
 		}
 		return null;
 	}
+	
+	private String trimUrl(String url)
+	{
+		String temp=url;
+		int i=0;
+		while(temp.charAt(i)!='/')
+		{
+			i++;
+		}
+		
+		String trimmedUrl=temp.substring(i+1);
+		return trimmedUrl;
+		
+	}
+	
 }
