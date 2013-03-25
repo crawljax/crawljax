@@ -264,7 +264,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			browser.navigate().to(url);
 			handlePopups();
 			Thread.sleep(this.crawlWaitReload);
-
 		} catch (WebDriverException e) {
 			throwIfConnectionException(e);
 			return;
@@ -293,7 +292,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			        + "window.prompt = function(msg){return true;};"
 			        + "window.open = function (open) {"
 			        	+ "return function (url, name, features) {"
-			        	+ "if ( url.indexOf('" + host + "') != -1 || url.indexOf('http') == -1){"
+			        	+ "if ( url.indexOf('http://" + host + "') == 0 || " 
+			        		+ "url.indexOf('https://" + host + "') == 0 || " 
+			        		+ "url.indexOf('http') == -1){"
 			        		+ "return open.call(window, url, name, features); }" 
 			        	+ "else { return null; } };"
 					+ "}(window.open);");
