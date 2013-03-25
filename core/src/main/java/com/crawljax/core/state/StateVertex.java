@@ -52,7 +52,7 @@ public class StateVertex implements Serializable {
 	private LinkedBlockingDeque<CandidateCrawlAction> candidateActions =
 	        new LinkedBlockingDeque<>();;
 
-	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> registerdCandidateActions =
+	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> registeredCandidateActions =
 	        new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<Crawler, CandidateCrawlAction> workInProgressCandidateActions =
 	        new ConcurrentHashMap<>();
@@ -334,7 +334,7 @@ public class StateVertex implements Serializable {
 	 */
 	public CandidateCrawlAction pollCandidateCrawlAction(Crawler requestingCrawler,
 	        CrawlQueueManager manager) {
-		CandidateCrawlAction action = registerdCandidateActions.remove(requestingCrawler);
+		CandidateCrawlAction action = registeredCandidateActions.remove(requestingCrawler);
 		if (action != null) {
 			workInProgressCandidateActions.put(requestingCrawler, action);
 			return action;
@@ -355,7 +355,7 @@ public class StateVertex implements Serializable {
 			do {
 				if (manager.removeWorkFromQueue(c)) {
 					LOGGER.info("Crawler {} REMOVED from Queue!", c);
-					action = registerdCandidateActions.remove(c);
+					action = registeredCandidateActions.remove(c);
 					if (action != null) {
 						/*
 						 * We got a action and removed the registeredCandidateActions for the
@@ -390,7 +390,7 @@ public class StateVertex implements Serializable {
 			return false;
 		}
 		registeredCrawlers.offerFirst(newCrawler);
-		registerdCandidateActions.put(newCrawler, action);
+		registeredCandidateActions.put(newCrawler, action);
 		return true;
 	}
 
@@ -402,7 +402,7 @@ public class StateVertex implements Serializable {
 	 * @return true if the crawler is successfully registered
 	 */
 	public boolean startWorking(Crawler crawler) {
-		CandidateCrawlAction action = registerdCandidateActions.remove(crawler);
+		CandidateCrawlAction action = registeredCandidateActions.remove(crawler);
 		registeredCrawlers.remove(crawler);
 		if (action == null) {
 			return false;
@@ -423,7 +423,7 @@ public class StateVertex implements Serializable {
 	 */
 	public void finishedWorking(Crawler crawler, CandidateCrawlAction action) {
 		candidateActions.remove(action);
-		registerdCandidateActions.remove(crawler);
+		registeredCandidateActions.remove(crawler);
 		workInProgressCandidateActions.remove(crawler);
 		registeredCrawlers.remove(crawler);
 	}
