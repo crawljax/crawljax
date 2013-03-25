@@ -77,7 +77,7 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		SpecificationMetricState tempState;
 		
 		try {
-			outputWriter.write("--Checked Elements--");
+			outputWriter.write("--Included Checked Elements--");
 			outputWriter.newLine();
 			outputWriter.newLine();
 		} catch (IOException e1) {
@@ -105,9 +105,38 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 			}
 			includedSpecTagCount.add(singleStateIncludedTagCount);
 		}
-		//Duplicate for excluded
-		//Output Totals for each tag for eachState
-		//Output Overall total for each tag
+		
+		try {
+			outputWriter.newLine();
+			outputWriter.newLine();
+			outputWriter.write("--Excluded Checked Elements--");
+			outputWriter.newLine();
+			outputWriter.newLine();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		while(excludedSpecIterator.hasNext()){
+			tempState=excludedSpecIterator.next();
+			HashMap<TagElement, Integer> singleStateExcludedTagCount=new HashMap<TagElement, Integer>();
+			
+			Iterator<Entry<TagElement, ConcurrentLinkedQueue<Element>>> tagIterator= tempState.getCheckedElements().entrySet().iterator();
+			while(tagIterator.hasNext()){
+				Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
+				singleStateExcludedTagCount.put(mapEntry.getKey(), mapEntry.getValue().size());
+				try {
+					outputWriter.write(mapEntry.getKey() + ":");
+					for (int i = mapEntry.getKey().toString().length() ; i < 20 ; i++){
+						outputWriter.write(" ");
+					}
+					outputWriter.write("" + mapEntry.getValue().size());
+					outputWriter.newLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			excludedSpecTagCount.add(singleStateExcludedTagCount);
+		}
 	}
 	private void printComprehensiveReport(){
 		SpecificationMetricState state;
