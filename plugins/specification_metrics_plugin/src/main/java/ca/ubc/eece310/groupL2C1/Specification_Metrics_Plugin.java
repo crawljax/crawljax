@@ -81,7 +81,6 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 			outputWriter.newLine();
 			outputWriter.newLine();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -101,7 +100,6 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 					outputWriter.write("" + mapEntry.getValue().size());
 					outputWriter.newLine();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -118,7 +116,6 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		while(includedSpecIterator.hasNext() || excludedSpecIterator.hasNext()){
 			state=includedSpecIterator.next();
 			printStateHeader(state);
-		//	out.println("\nIncluded Tags and the Elements they matched:");
 			try {
 				outputWriter.newLine();
 				outputWriter.write("Included Tags and the Elements they matched:");
@@ -132,13 +129,8 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 				outputWriter.close();
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		//	printStateElements(state);
-		//	state=excludedSpecIterator.next();
-		//	out.println("\nExcluded Tags and the Elements they matched:");
-		//	printStateElements(state);
 		}
 	}
 	private void printStateHeader(SpecificationMetricState state){
@@ -150,15 +142,8 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 			outputWriter.write("State ID:\t"+ state.getId());
 			outputWriter.write("State URL:\t"+state.getUrl());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-//		out.println("\n\n-------------\nState Name:\t"+state.getName());
-//		out.println("State ID:\t"+ state.getId());
-//		out.println("State URL:\t"+state.getUrl());
-		//out.println(state.getDom());
-		//out.println(state.getStrippedDom());
 	}
 	
 	private void printStateElements(SpecificationMetricState state){
@@ -191,37 +176,12 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 						outputWriter.write("\t\tType:\t "+nodeTypeLookUp(node.getNodeType()));
 						outputWriter.newLine();
 						outputWriter.write("\t\tValue:\t "+node.getNodeValue());
-						//out.println("\tNode Base URI:\t "+node.getBaseURI()); //Null on Google
-						//out.println("\tNode Namespace URI:\t "+node.getNamespaceURI()); //Null on Google
-						//out.println("\tNode Text:\t "+node.getTextContent());//Same as Value for Google
 					}
 				}
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-//			out.println("Source Name:\t"+mapEntry.getKey().getName());
-//			out.println("Source ID:\t "+mapEntry.getKey().getId());
-			
-//			Iterator<Element> elementIterator=mapEntry.getValue().iterator();
-//			while(elementIterator.hasNext()){
-//				Element element=elementIterator.next();	
-//				out.println("Element Tag Name:\t "+element.getTagName());
-//				out.println("Element Text:\t "+element.getTextContent());
-//				Node node;
-//				for(int i=0;i<element.getAttributes().getLength();i++){
-//					node=element.getAttributes().item(i);
-//					out.println("\tNode "+i);
-//					out.println("\t\tName:\t "+node.getNodeName());
-//					out.println("\t\tType:\t "+nodeTypeLookUp(node.getNodeType()));
-//					out.println("\t\tValue:\t "+node.getNodeValue());
-//					//out.println("\tNode Base URI:\t "+node.getBaseURI()); //Null on Google
-//					//out.println("\tNode Namespace URI:\t "+node.getNamespaceURI()); //Null on Google
-//					//out.println("\tNode Text:\t "+node.getTextContent());//Same as Value for Google
-//				}
-			//}
 		}
 	}
 	private String nodeTypeLookUp(int type){
