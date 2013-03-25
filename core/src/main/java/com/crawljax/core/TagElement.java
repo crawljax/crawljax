@@ -5,7 +5,7 @@ import javax.annotation.concurrent.Immutable;
 //import com.crawljax.core.configuration.CrawlAttribute;
 import com.crawljax.core.configuration.CrawlElement;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
+//import com.google.common.collect.ImmutableSet;
 
 /**
  * Class used to desribe html elements. Used internally to describe which elements to click for
@@ -23,8 +23,8 @@ public class TagElement {
 	 * @param name
 	 *            the tag name. This will be transformed to capitial letters.
 	 */
-	public TagElement(ImmutableSet<TagAttribute> attributes, String name, String id) {
-		Preconditions.checkNotNull(attributes);
+	public TagElement(/*ImmutableSet<TagAttribute> attributes,*/ String name, String id) {
+		//Preconditions.checkNotNull(attributes);
 		Preconditions.checkNotNull(name);
 		//this.attributes = attributes;
 		this.name = name.toUpperCase();
