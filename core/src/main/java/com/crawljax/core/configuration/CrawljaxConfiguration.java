@@ -44,10 +44,29 @@ public final class CrawljaxConfiguration {
 		}
 
 		/**
+		 * @param statesPerUrl
+		 *            The maximum number of states the Crawler should crawl within 1 URL. The default is
+		 *            unlimited.
+		 */
+		public CrawljaxConfigurationBuilder setMaximumStatesPerUrl(int statesPerUrl) {
+			checkArgument(statesPerUrl >= 1, "Number of maximum states per url should be larger than or equal 1");
+			config.maximumStatesPerUrl = statesPerUrl;
+			return this;
+		}
+
+		/**
 		 * Crawl without a maximum state limit.
 		 */
 		public CrawljaxConfigurationBuilder setUnlimitedStates() {
 			config.maximumStates = 0;
+			return this;
+		}
+		
+		/**
+		 * Crawl without a maximum state limit per URL.
+		 */
+		public CrawljaxConfigurationBuilder setUnlimitedStatesPerUrl() {
+			config.maximumStatesPerUrl = 0;
 			return this;
 		}
 
@@ -172,6 +191,7 @@ public final class CrawljaxConfiguration {
 	private CrawlRules crawlRules;
 
 	private int maximumStates = 0;
+	private int maximumStatesPerUrl = 0;
 	private long maximumRuntime = TimeUnit.HOURS.toMillis(1);;
 	private int maximumDepth = 2;
 
@@ -202,6 +222,9 @@ public final class CrawljaxConfiguration {
 		return maximumStates;
 	}
 
+	public int getMaximumStatesPerUrl(){
+		return maximumStatesPerUrl;
+	}
 	public long getMaximumRuntime() {
 		return maximumRuntime;
 	}
