@@ -413,10 +413,10 @@ public class CandidateElementExtractor {
 				LOG.info("Excluded element because of xpath: " + element);
 				return true;
 			}
-			if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
-				LOG.info("Excluded element because of attributes: " + element);
-				return true;
-			}
+//			if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
+//				LOG.info("Excluded element because of attributes: " + element);
+//				return true;
+//			}
 		}
 
 		return false;
