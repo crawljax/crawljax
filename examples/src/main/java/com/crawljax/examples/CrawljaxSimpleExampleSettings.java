@@ -27,7 +27,7 @@ public final class CrawljaxSimpleExampleSettings {
 		builder.crawlRules().click("button");
 
 		// except these
-		builder.crawlRules().dontClick("a").underXPath("//DIV[@id='guser']");
+		builder.crawlRules().dontClick("a").underXPath("//DIV[@id='gbz']");
 		builder.crawlRules().dontClick("a").withText("Language Tools");
 
 		// limit the crawling scope
