@@ -383,6 +383,7 @@ public class CrawlRules {
 		result = prime * result + ((preCrawlConfig == null) ? 0 : preCrawlConfig.hashCode());
 		result = prime * result + (randomInputInForms ? 1231 : 1237);
 		result = prime * result + (testInvariantsWhileCrawling ? 1231 : 1237);
+		result = prime * result + (visitExternal ? 1231 :1237);
 		result = prime * result + (int) (waitAfterEvent ^ (waitAfterEvent >>> 32));
 		result = prime * result + (int) (waitAfterReloadUrl ^ (waitAfterReloadUrl >>> 32));
 		return result;
