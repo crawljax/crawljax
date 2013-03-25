@@ -1,8 +1,4 @@
 package com.crawljax.core.state;
-import static java.lang.System.out;
-
-import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -12,9 +8,9 @@ import com.crawljax.core.TagElement;
 
 public class SpecificationMetricState{
 
-	private long id;
-	private String name;
-	private String dom;
+	private final long id;
+	private final String name;
+	private final String dom;
 	private final String strippedDom;
 	private final String url;
 	/*
@@ -24,7 +20,7 @@ public class SpecificationMetricState{
 	 * http://stackoverflow.com/questions/3752194/best-practice-to-use-concurrentmaps-putifabsent
 	 * 
 	 */
-	ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>> checkedElements=new ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>>();
+	private final ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>> checkedElements=new ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>>();
 	
 	public SpecificationMetricState(StateVertex stateVertex) {
 	    super();
@@ -45,29 +41,27 @@ public class SpecificationMetricState{
 		}
 		elements.add(element);
 	}
-
-	public void printState(){
-		out.println("\n\n-------------\nState Name:\t"+name);
-		out.println("State ID:\t"+ id);
-		out.println("State URL:\t"+url);
-		//out.println(dom);
-		//out.println(strippedDom);
-		
+	public long getId() {
+		return id;
 	}
-	public void printReport(){
-		Iterator<Entry<TagElement, ConcurrentLinkedQueue<Element>>> tagIterator= checkedElements.entrySet().iterator();
-		while(tagIterator.hasNext()){
-			Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
-			
-			out.println("Source Name:\t"+mapEntry.getKey().getName());
-			out.println("Source ID:\t "+mapEntry.getKey().getId());
-			
-			Iterator<Element> elementIterator=mapEntry.getValue().iterator();
-			while(elementIterator.hasNext()){
-				Element element=elementIterator.next();	
-				out.println("Element Name:\t "+element.getTagName());
-				out.println("Element Text:\t "+element.getTextContent());
-			}
-		}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDom() {
+		return dom;
+	}
+
+	public String getStrippedDom() {
+		return strippedDom;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>> getCheckedElements() {
+		return checkedElements;
 	}
 }
