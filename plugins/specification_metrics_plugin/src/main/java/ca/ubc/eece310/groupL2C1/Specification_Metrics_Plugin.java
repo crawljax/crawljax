@@ -98,10 +98,14 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 			printStateHeader(state);
 		//	out.println("\nIncluded Tags and the Elements they matched:");
 			try {
-				outputWriter.write("\nIncluded Tags and the Elements they matched:\n");
+				outputWriter.newLine();
+				outputWriter.write("Included Tags and the Elements they matched:");
+				outputWriter.newLine();
 				printStateElements(state); 
 				state=excludedSpecIterator.next();
-				outputWriter.write("\nExcluded Tags and the Elements they matched:");
+				outputWriter.newLine();
+				outputWriter.write("Excluded Tags and the Elements they matched:");
+				outputWriter.newLine();
 				printStateElements(state);
 				outputWriter.close();
 				
@@ -117,9 +121,12 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 	}
 	private void printStateHeader(SpecificationMetricState state){
 		try {
-			outputWriter.write("\n\n-------------\nState Name:\t"+state.getName());
-			outputWriter.write("\nState ID:\t"+ state.getId());
-			outputWriter.write("\nState URL:\t"+state.getUrl());
+			outputWriter.newLine();
+			outputWriter.newLine();
+			outputWriter.write("-------------\nState Name:\t"+state.getName());
+			outputWriter.newLine();
+			outputWriter.write("State ID:\t"+ state.getId());
+			outputWriter.write("State URL:\t"+state.getUrl());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -138,21 +145,30 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		while(tagIterator.hasNext()){
 			Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
 			try {
-				outputWriter.write("\nSource Name:\t"+mapEntry.getKey().getName());
-				outputWriter.write("\nSource ID:\t "+mapEntry.getKey().getId());
+				outputWriter.newLine();
+				outputWriter.write("Source Name:\t"+mapEntry.getKey().getName());
+				outputWriter.newLine();
+				outputWriter.write("Source ID:\t "+mapEntry.getKey().getId());
 				
 				Iterator<Element> elementIterator=mapEntry.getValue().iterator();
 				while(elementIterator.hasNext()){
 					Element element=elementIterator.next();	
-					outputWriter.write("\n\nElement Tag Name:\t "+element.getTagName());
-					outputWriter.write("\nElement Text:\t "+element.getTextContent());
+					outputWriter.newLine();
+					outputWriter.newLine();
+					outputWriter.write("Element Tag Name:\t "+element.getTagName());
+					outputWriter.newLine();
+					outputWriter.write("Element Text:\t "+element.getTextContent());
 					Node node;
 					for(int i=0;i<element.getAttributes().getLength();i++){
 						node=element.getAttributes().item(i);
-						outputWriter.write("\n\tNode "+i);
-						outputWriter.write("\n\t\tName:\t "+node.getNodeName());
-						outputWriter.write("\n\t\tType:\t "+nodeTypeLookUp(node.getNodeType()));
-						outputWriter.write("\n\t\tValue:\t "+node.getNodeValue());
+						outputWriter.newLine();
+						outputWriter.write("\tNode "+i);
+						outputWriter.newLine();
+						outputWriter.write("\t\tName:\t "+node.getNodeName());
+						outputWriter.newLine();
+						outputWriter.write("\t\tType:\t "+nodeTypeLookUp(node.getNodeType()));
+						outputWriter.newLine();
+						outputWriter.write("\t\tValue:\t "+node.getNodeValue());
 						//out.println("\tNode Base URI:\t "+node.getBaseURI()); //Null on Google
 						//out.println("\tNode Namespace URI:\t "+node.getNamespaceURI()); //Null on Google
 						//out.println("\tNode Text:\t "+node.getTextContent());//Same as Value for Google

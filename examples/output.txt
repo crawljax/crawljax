@@ -2,75 +2,11 @@
 
 -------------
 State Name:	index
-State ID:	0
-State URL:	http://www.google.ca/
+State ID:	0State URL:	http://www.google.ca/
 Included Tags and the Elements they matched:
 
-Source Name:	BUTTON
-Source ID:	 id1886740906
-
-Element Tag Name:	 BUTTON
-Element Text:	 
-	Node 0
-		Name:	 aria-label
-		Type:	 Attribute Node
-		Value:	 Google Search
-	Node 1
-		Name:	 class
-		Type:	 Attribute Node
-		Value:	 gbqfb
-	Node 2
-		Name:	 id
-		Type:	 Attribute Node
-		Value:	 gbqfb
-	Node 3
-		Name:	 name
-		Type:	 Attribute Node
-		Value:	 btnG
-
-Element Tag Name:	 BUTTON
-Element Text:	 Google Search
-	Node 0
-		Name:	 aria-label
-		Type:	 Attribute Node
-		Value:	 Google Search
-	Node 1
-		Name:	 class
-		Type:	 Attribute Node
-		Value:	 gbqfba
-	Node 2
-		Name:	 id
-		Type:	 Attribute Node
-		Value:	 gbqfba
-	Node 3
-		Name:	 name
-		Type:	 Attribute Node
-		Value:	 btnK
-
-Element Tag Name:	 BUTTON
-Element Text:	 I'm Feeling Lucky
-	Node 0
-		Name:	 aria-label
-		Type:	 Attribute Node
-		Value:	 I'm Feeling Lucky
-	Node 1
-		Name:	 class
-		Type:	 Attribute Node
-		Value:	 gbqfba
-	Node 2
-		Name:	 id
-		Type:	 Attribute Node
-		Value:	 gbqfbb
-	Node 3
-		Name:	 name
-		Type:	 Attribute Node
-		Value:	 btnI
-	Node 4
-		Name:	 onclick
-		Type:	 Attribute Node
-		Value:	 if(this.form.q.value)this.checked=1;else window.top.location='/doodles/'
 Source Name:	A
-Source ID:	 id1855889762
+Source ID:	 id1302052122
 
 Element Tag Name:	 A
 Element Text:	 Learn more
@@ -269,7 +205,7 @@ Element Text:	 français
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
-		Value:	 http://www.google.ca/setprefs?sig=0_geASdr2L1kPPCf64bLnnkBJs428%3D&hl=fr&source=homepage
+		Value:	 http://www.google.ca/setprefs?sig=0_gbZOIFyT33PZN2qVUrZqkphhTho%3D&hl=fr&source=homepage
 
 Element Tag Name:	 A
 Element Text:	 Advertising Programs
@@ -304,14 +240,78 @@ Element Text:	 Google.com
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
-		Value:	 http://www.google.ca/setprefdomain?prefdom=US&sig=0_yuhSvhGG80ebeTyU6axYZOKtoF4%3D
+		Value:	 http://www.google.ca/setprefdomain?prefdom=US&sig=0_iHu_4ZwwZ8DfjNFhjA6wuXOhrPE%3D
 	Node 1
 		Name:	 id
 		Type:	 Attribute Node
 		Value:	 fehl
+Source Name:	BUTTON
+Source ID:	 id731651524
+
+Element Tag Name:	 BUTTON
+Element Text:	 
+	Node 0
+		Name:	 aria-label
+		Type:	 Attribute Node
+		Value:	 Google Search
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfb
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfb
+	Node 3
+		Name:	 name
+		Type:	 Attribute Node
+		Value:	 btnG
+
+Element Tag Name:	 BUTTON
+Element Text:	 Google Search
+	Node 0
+		Name:	 aria-label
+		Type:	 Attribute Node
+		Value:	 Google Search
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfba
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfba
+	Node 3
+		Name:	 name
+		Type:	 Attribute Node
+		Value:	 btnK
+
+Element Tag Name:	 BUTTON
+Element Text:	 I'm Feeling Lucky
+	Node 0
+		Name:	 aria-label
+		Type:	 Attribute Node
+		Value:	 I'm Feeling Lucky
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfba
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfbb
+	Node 3
+		Name:	 name
+		Type:	 Attribute Node
+		Value:	 btnI
+	Node 4
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 if(this.form.q.value)this.checked=1;else window.top.location='/doodles/'
 Excluded Tags and the Elements they matched:
+
 Source Name:	A
-Source ID:	 id434120800
+Source ID:	 id407771553
 
 Element Tag Name:	 A
 Element Text:	 Language tools
