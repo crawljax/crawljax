@@ -1,5 +1,9 @@
 package com.crawljax.examples;
 
+import java.io.File;
+
+import ca.ubc.eece310.groupL2C1.Specification_Metrics_Plugin;
+
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
@@ -18,7 +22,7 @@ public final class SiteSimpleExample {
 	private static final String HEADER_XPATH = "//DIV[@id='guser']";
 
 	private static final int MAX_CRAWL_DEPTH = 1;
-	private static final int MAX_STATES = 10;
+	private static final int MAX_STATES = 2;
 
 	/**
 	 * Entry point
@@ -35,6 +39,9 @@ public final class SiteSimpleExample {
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
+		//builder.addPlugin(new CrawlOverview(new File("outPut")));
+		builder.addPlugin(new Specification_Metrics_Plugin(new File("specs_outPut")));
+		
 		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();
 	}
