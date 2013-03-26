@@ -76,7 +76,7 @@ class StateWriter {
 			}
 			if (toState != null) {
 				elementMap.put("targetname", toState.getName());
-				if (getStateNumber(toState.getName(), toState.getUrl()) < getStateNumber(state.getName(), state.getUrl())) {
+				if (getStateNumber(toState.getName()) < getStateNumber(state.getName())) {
 					// state already found
 					elementMap.put("color", COLOR_A_PREVIOUS_STATE);
 				} else {
@@ -111,21 +111,10 @@ class StateWriter {
 		return null;
 	}
 
-	private int getStateNumber(String name, String url) {
+	private int getStateNumber(String name) {
 		
 		String[] temp = name.split("-");
 		String StateNumber = temp[0];
-		
-		
-		if ("index".equals(name)) {
-			return 0;
-		}
-		url= url.replaceAll("\\p{Punct}|\\d.", "");
-		if(url.length()>50){
-			url = url.substring(0, 50);
-		}
-
-		name = name.replace(("-"+url), "");
 		
 		return Integer.parseInt(StateNumber);
 	}
