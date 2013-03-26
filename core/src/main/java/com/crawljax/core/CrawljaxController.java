@@ -16,6 +16,7 @@ import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.PopUpCancel;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.oraclecomparator.StateComparator;
@@ -122,6 +123,9 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		LOGGER.info("Start crawling with {} crawl elements", configuration.getCrawlRules()
 		        .getPreCrawlConfig().getIncludedElements());
+		
+		//load pop up cancel exe
+		PopUpCancel.ClosePopUps();
 
 		// Create the initailCrawler
 		initialCrawler = new InitialCrawler(this, configuration.getPlugins());
@@ -164,6 +168,8 @@ public class CrawljaxController implements CrawlQueueManager {
 		this.shutdown(timeCrawlCalc);
 
 		try {
+			//Delete autohotkey pop canceler exe
+			PopUpCancel.killExe();			
 			shutdownThread.join();
 		} catch (InterruptedException e) {
 			LOGGER.error("could not wait for browsers to close.", e);

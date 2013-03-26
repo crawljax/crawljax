@@ -1,6 +1,7 @@
 .classpath
 .project
 .settings/
+.metadata/
 *.log
 target/
 release.properties
