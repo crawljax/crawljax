@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.JavaScriptCondition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.CrawlElement;
@@ -220,24 +221,41 @@ public class CandidateElementExtractor {
 		}
 	}
 	
-	private boolean isExternalPopup(Element element){
+	private boolean isExternalPopup(Element element) {
+		if(openExternalPopups)
+			return false;
 		String clickable = element.getAttribute("onclick");
-		if(!openExternalPopups && !Strings.isNullOrEmpty(clickable)) {
-			Pattern openWindow = Pattern.compile("(.*window\\.open\\s*\\(\\s*[\\\'\\\"])([\\w\\./:]+?)([\\\'\\\"].*)");
-			Matcher matcher = openWindow.matcher(clickable);
-			if(matcher.matches() && UrlUtils.isLinkExternal(browser.getCurrentUrl(), matcher.replaceAll("$2"))){
-				return true;					
+		return willOpenExternalPopup(clickable);
+	}
+	
+	private boolean willOpenExternalPopup(String string) {
+		if (!Strings.isNullOrEmpty(string)) {
+			if(checkForOpenExternalWindow(string)) {
+				return true;
 			}
 			Pattern functionCall = Pattern.compile("(\\W*)(\\w+?)(\\s*\\(.*)");
-			matcher = functionCall.matcher(clickable);
-			if(matcher.matches()){
-				//The name of the function is stored in functionName
+			Matcher matcher = functionCall.matcher(string);
+			if (matcher.matches()) {
 				String functionName = matcher.replaceAll("$2");
+				String functionToCall = "return " + functionName + ".toString()";				
+				return willOpenExternalPopup((String) browser.executeJavaScript(functionToCall));
 			}
 		}
 		return false;
 	}
-
+	
+	private boolean checkForOpenExternalWindow(String string) {
+		Pattern openWindow = Pattern
+				.compile("(.*window\\.open\\s*\\(\\s*[\\\'\\\"])([\\w\\./:]+?)([\\\'\\\"].*)");
+		Matcher matcher = openWindow.matcher(string);
+		if (matcher.matches()
+				&& UrlUtils.isLinkExternal(browser.getCurrentUrl(),
+						matcher.replaceAll("$2"))) {
+			return true;
+		}
+		return false;
+	}
+	
 	private void evaluateElements(Document dom, TagElement tag,
 	        Builder<CandidateElement> results, String relatedFrame) {
 		try {
