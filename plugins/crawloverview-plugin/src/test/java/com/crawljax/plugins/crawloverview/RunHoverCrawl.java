@@ -32,9 +32,9 @@ public class RunHoverCrawl extends ExternalResource {
 			                Resource.newClassPathResource("hover-test-site");
 			        BaseCrawler hoverSiteCrawl = new BaseCrawler(hoverSiteBase, "") {
 				        @Override
-				        protected CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
+				        protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
 					        CrawljaxConfigurationBuilder builder =
-					                super.newCrawlConfiguartionBuilder();
+					                super.newCrawlConfigurationBuilder();
 
 					        return builder;
 				        };
