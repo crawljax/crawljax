@@ -237,7 +237,25 @@ public class CrawlRules {
 		public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {
 			return crawlActionsBuilder.dontClickChildrenOf(tagname);
 		}
-
+		
+		/**  Decides what pop ups to kill
+		 *  @see com.crawljax.core.configuration.PopUpCancel for modes
+		 *  
+		 */
+		public void setCancelPopUps(String mode)
+		{
+			PopUpCancel.setMode(mode);
+		}
+		
+		/**
+		 * Polling delay to close pop ups
+		 * @param timerVal
+		 */
+		public void setPopUpTimer(int timerVal)
+		{
+			PopUpCancel.setTimer(timerVal);
+		}
+		
 		CrawlRules build() {
 			crawlRules.crawlEvents = crawlEvents.build();
 			if (crawlRules.crawlEvents.isEmpty()) {
