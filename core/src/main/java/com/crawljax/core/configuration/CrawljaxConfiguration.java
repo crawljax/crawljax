@@ -140,6 +140,17 @@ public final class CrawljaxConfiguration {
 			config.crawlRules = crawlRules.build();
 			return config;
 		}
+		
+		public void alsoCrawl(String url){
+			try {
+				config.addUrlToList(new URL(url));
+				System.out.println("URL gets added to the list");
+				System.out.println("Number of url in the list now is " + config.getUrlListSize());
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			
+		}
 
 	}
 
@@ -187,8 +198,32 @@ public final class CrawljaxConfiguration {
 		return url;
 	}
 	
+	public int getUrlListSize(){
+		return this.urls.size();
+	}
+	
+	/*public void alsoCrawl(String url){
+		try {
+			addUrlToList(new URL(url));
+			System.out.println("URL gets added to the list");
+			System.out.println("Number of url in the list now is " + getUrlListSize());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+	}*/
+	
+	public URL getUrlNew(){
+		return urls.get(this.lastIndexURL);
+	}
+	
+	public void addUrlToList(URL url_new){
+		this.urls.add(url_new);
+	}
+	
 	public void updateLastIndexURL(){
 		this.lastIndexURL++;
+		System.out.println("last index is " + this.lastIndexURL);
 	}
 
 	public BrowserConfiguration getBrowserConfig() {

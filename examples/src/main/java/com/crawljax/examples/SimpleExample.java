@@ -15,7 +15,7 @@ public final class SimpleExample{
 	
 	private static final String URL = "http://www.google.com";
 	private static final int MAX_DEPTH = 2;
-	private static final int MAX_NUMBER_STATES = 5;
+	private static final int MAX_NUMBER_STATES = 8;
 	
 	/**
 	 * Entry point
@@ -23,6 +23,7 @@ public final class SimpleExample{
 	public static void main(String[] args) throws ConfigurationException {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 		builder.crawlRules().insertRandomDataInInputForms(false);
+		builder.alsoCrawl("http://www.bing.com");
 		
 		builder.crawlRules().click("a");
 		builder.crawlRules().click("button");
