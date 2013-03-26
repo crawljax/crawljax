@@ -1,0 +1,237 @@
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+<META content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+	
+<META content="crawljax, crawljax, ajax, test, testing, plugins, invariants, conditions, form" name="keywords">
+	
+<META content="index, follow" name="robots">
+	
+<META content="Demo and instruction site for Crawljax" name="description">
+	
+<TITLE>Crawljax</TITLE>
+	
+<LINK href="style.css" rel="stylesheet" type="text/css">
+
+	
+<SCRIPT language="javascript" src="js/jquery.js" type="text/javascript"></SCRIPT>
+	<SCRIPT language="javascript" src="js/general.js" type="text/javascript"></SCRIPT>
+
+</HEAD>
+<BODY>
+	
+<DIV id="header">
+	
+<H1>Crawljax Demo And Instruction Site</H1>
+	
+</DIV>
+	
+<DIV id="menubar">
+		
+<UL>
+			
+<LI>
+<A href="javascript:void(0)" id="home">Home</A>
+</LI>
+			
+<LI>
+<A href="javascript:void(0)" id="papers">Papers</A>
+</LI>
+			
+<LI>
+<A href="javascript:void(0)" id="info">Information</A>
+</LI>
+			
+<LI>
+<A class="ignore" href="javascript:void(0)" id="ignore">Ignore</A>
+</LI>
+		
+</UL>
+	
+</DIV>
+	
+<TABLE border="0">
+	
+<TBODY>
+<TR>
+<TD valign="top">
+		
+<DIV id="left">
+			
+<H2>Crawling</H2>
+			
+<UL class="test">
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('select.html')">Select Elements To Crawl</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('crawlConditions.html')">CrawlConditions</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('waitConditions.html')">WaitConditions</A>
+</LI>
+			
+</UL>
+			
+<H2>Testing</H2>
+			
+<UL class="test">
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('plugins.html')">Plugins</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('oracleComparators.html')">Oracle Comparators</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('invariants.html')">Invariants</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('conditions.html')">Conditions</A>
+</LI>
+			
+</UL>
+			
+<H2>Input</H2>
+			
+<UL class="test">
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('randomInput.html')">Random Form Input</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('customInput.html')">Custom Input</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('forms.html')">Custom Forms</A>
+</LI>
+			
+</UL>
+		
+</DIV>
+	
+</TD><TD valign="top">
+		
+<DIV id="content">
+<H1>Welcome to the Crawljax Testing page</H1>
+
+
+<STRONG style="font-size: 12pt">NOTE: This site is currently under construction and will be updated regularly.</STRONG>
+
+
+<H2>What is Crawljax?</H2>
+
+<P>Crawljax is a Java tool for automatically crawling and testing AJAX based applications.</P>
+
+
+<P>Crawljax can crawl any AJAX based web application by clicking links and filling in form data. It
+creates a state-flow graph of the states of the web application. This state-flow graph which is a very powerful base for many types of automated
+tests.</P>
+
+
+<P>This site explains how to configure Crawljax and also acts as a test site for Crawljax.</P>
+
+
+<H2>Applications for Crawljax</H2>
+
+<UL>
+	
+<LI>Invariant-based testing</LI>
+	
+<LI>Regression testing</LI>
+	
+<LI>Non functional testing (Accessibility, I18n, security, ...)</LI>
+	
+<LI>Detecting broken links/images/tooltips</LI>
+	
+<LI>
+<STRONG>And via its plugin support even more.... </STRONG>
+</LI>
+
+</UL>
+
+
+<H2>Setup</H2>
+
+<P>Setting up Crawljax only takes a couple of minutes:</P>
+
+<UL>
+	
+<LI>Create a new Java project.</LI>
+	
+<LI>Include the Crawljax.jar (and its needed libraries) to your project.</LI>
+	
+<LI>Copy/paste the code fragment below.</LI>
+
+</UL>
+
+<PRE>CrawljaxConfiguration config = new CrawljaxConfiguration();
+CrawlSpecification crawler = new CrawlSpecification("http://www.google.com");
+
+// click these elements
+crawler.click("a");
+crawler.click("input").withAttribute("type", "submit");
+
+// except these
+crawler.dontClick("a").underXPath("//DIV[@id='guser']");
+crawler.dontClick("a").withText("Language Tools");
+
+InputSpecification input = new InputSpecification();
+input.field("q").setValue("Crawljax");
+crawler.setInputSpecification(input);
+
+// limit the crawling scope
+crawler.setMaximumStates(5);
+crawler.setDepth(2);
+
+config.setCrawlSpecification(crawler);
+CrawljaxController crawljax = new CrawljaxController(config);
+try {
+  crawljax.start();
+} catch (Exception e) {
+  e.printStackTrace();
+  System.exit(1);
+}
+</PRE>
+
+
+<H2>Requirements</H2>
+
+<UL>
+	
+<LI>Java 1.6</LI>
+	
+<LI>Browser: Internet Explorer or Firefox (or any other browser supported by WebDriver)</LI>
+
+</UL>
+
+</DIV>
+	
+</TD>
+</TR>
+	
+</TBODY>
+</TABLE>
+	
+<DIV id="footer">
+		
+<A href="#" onclick="addError('Dont click on elements in the footer')">Do not click elements in the footer</A>
+	
+</DIV>
+	
+<DIV id="errors" style="display: none;"></DIV>	
+	
+
+
+
+</BODY>
+</HTML>

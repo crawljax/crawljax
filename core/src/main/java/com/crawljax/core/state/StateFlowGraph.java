@@ -434,14 +434,17 @@ public class StateFlowGraph implements Serializable {
 		return titleText;
 	}
 	
+	/**
+	 * @param url
+	 * 				the entire URL of the state
+	 * @return a string containing only the path of the state URL
+	 */
+	
 	private String trimUrl(String url)
 	{
-	String temp=url;
-	{
-	String[] temp2=temp.split("/",4);
-	return temp2[3];
-	}
-
+		String temp=url;
+		String[] temp2=temp.split("/",4);
+		return temp2[3];
 	}
 	
 }

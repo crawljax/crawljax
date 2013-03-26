@@ -1,0 +1,729 @@
+{
+  "states" : {
+    "1-democrawljax" : {
+      "name" : "1-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "5-democrawljax" : {
+      "name" : "5-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "14-democrawljax" : {
+      "name" : "14-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ {
+        "top" : 424,
+        "left" : 269,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/DIV[1]",
+        "width" : 546,
+        "height" : 17
+      } ],
+      "fanIn" : 1,
+      "fanOut" : 1,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "10-democrawljax" : {
+      "name" : "10-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "7-democrawljax" : {
+      "name" : "7-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "2-democrawljax" : {
+      "name" : "2-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ {
+        "top" : 357,
+        "left" : 272,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+        "width" : 44,
+        "height" : 20
+      }, {
+        "top" : 357,
+        "left" : 320,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[2]",
+        "width" : 55,
+        "height" : 20
+      }, {
+        "top" : 357,
+        "left" : 272,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+        "width" : 44,
+        "height" : 20
+      }, {
+        "top" : 357,
+        "left" : 272,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+        "width" : 44,
+        "height" : 20
+      }, {
+        "top" : 357,
+        "left" : 272,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+        "width" : 44,
+        "height" : 20
+      } ],
+      "fanIn" : 1,
+      "fanOut" : 5,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "6-democrawljax" : {
+      "name" : "6-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "index" : {
+      "name" : "index",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ {
+        "top" : 68,
+        "left" : 20,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[1]/A[1]",
+        "width" : 43,
+        "height" : 19
+      }, {
+        "top" : 68,
+        "left" : 77,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[2]/A[1]",
+        "width" : 50,
+        "height" : 19
+      }, {
+        "top" : 68,
+        "left" : 142,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[3]/A[1]",
+        "width" : 89,
+        "height" : 19
+      }, {
+        "top" : 141,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 147,
+        "height" : 17
+      }, {
+        "top" : 158,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 94,
+        "height" : 17
+      }, {
+        "top" : 175,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 87,
+        "height" : 17
+      }, {
+        "top" : 237,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[1]/A[1]",
+        "width" : 42,
+        "height" : 17
+      }, {
+        "top" : 254,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[2]/A[1]",
+        "width" : 116,
+        "height" : 17
+      }, {
+        "top" : 271,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[3]/A[1]",
+        "width" : 58,
+        "height" : 17
+      }, {
+        "top" : 288,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[4]/A[1]",
+        "width" : 61,
+        "height" : 17
+      }, {
+        "top" : 351,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[1]/A[1]",
+        "width" : 118,
+        "height" : 17
+      }, {
+        "top" : 368,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[2]/A[1]",
+        "width" : 80,
+        "height" : 17
+      }, {
+        "top" : 385,
+        "left" : 63,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[3]/A[1]",
+        "width" : 84,
+        "height" : 17
+      } ],
+      "fanIn" : 1,
+      "fanOut" : 12,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "15-democrawljax" : {
+      "name" : "15-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "16-democrawljax" : {
+      "name" : "16-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "9-democrawljax" : {
+      "name" : "9-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "4-democrawljax" : {
+      "name" : "4-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ {
+        "top" : 209,
+        "left" : 269,
+        "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/A[1]",
+        "width" : 86,
+        "height" : 17
+      } ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "13-democrawljax" : {
+      "name" : "13-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "12-democrawljax" : {
+      "name" : "12-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "11-democrawljax" : {
+      "name" : "11-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "3-democrawljax" : {
+      "name" : "3-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 2,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    },
+    "8-democrawljax" : {
+      "name" : "8-democrawljax",
+      "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "screenshotOffsetTop" : 0,
+      "screenshotOffsetLeft" : 0
+    }
+  },
+  "edges" : [ {
+    "from" : "index",
+    "to" : "1-democrawljax",
+    "hash" : 1434127416,
+    "text" : "Papers",
+    "id" : "xpath /HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[2]/A[1]",
+    "element" : "\"Papers\" A: {href=javascript:void(0), id=papers}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "2-democrawljax",
+    "hash" : -1353288071,
+    "text" : "Custom Forms",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[3]/A[1]",
+    "element" : "\"Custom Forms\" A: {href=javascript:void(0), onclick=openPage('forms.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "2-democrawljax",
+    "to" : "3-democrawljax",
+    "hash" : -904620128,
+    "text" : "Save",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+    "element" : "\"Save\" BUTTON: {atusa=id1382638512_2, onclick=saveContact('Contact Saved')}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "4-democrawljax",
+    "hash" : 1661815547,
+    "text" : "Information",
+    "id" : "xpath /HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[3]/A[1]",
+    "element" : "\"Information\" A: {href=javascript:void(0), id=info}",
+    "eventType" : "click"
+  }, {
+    "from" : "2-democrawljax",
+    "to" : "index",
+    "hash" : -299804411,
+    "text" : "Cancel",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[2]",
+    "element" : "\"Cancel\" BUTTON: {onclick=openPage('home.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "2-democrawljax",
+    "to" : "3-democrawljax",
+    "hash" : -904620128,
+    "text" : "Save",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+    "element" : "\"Save\" BUTTON: {atusa=id1382638512_0, onclick=saveContact('Contact Saved')}",
+    "eventType" : "click"
+  }, {
+    "from" : "2-democrawljax",
+    "to" : "5-democrawljax",
+    "hash" : 2110483490,
+    "text" : "Save",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+    "element" : "\"Save\" BUTTON: {atusa=id1382638512_1, onclick=saveContact('Contact Saved')}",
+    "eventType" : "click"
+  }, {
+    "from" : "2-democrawljax",
+    "to" : "6-democrawljax",
+    "hash" : -676931997,
+    "text" : "Save",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/P[1]/BUTTON[1]",
+    "element" : "\"Save\" BUTTON: {atusa=id1382638512_2, onclick=saveContact('Contact Saved')}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "7-democrawljax",
+    "hash" : 1889503678,
+    "text" : "Select Elements To Crawl",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+    "element" : "\"Select Elements To Crawl\" A: {href=javascript:void(0), onclick=openPage('select.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "8-democrawljax",
+    "hash" : -897911809,
+    "text" : "CrawlConditions",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[2]/A[1]",
+    "element" : "\"CrawlConditions\" A: {href=javascript:void(0), onclick=openPage('crawlConditions.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "9-democrawljax",
+    "hash" : 609640000,
+    "text" : "WaitConditions",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[3]/A[1]",
+    "element" : "\"WaitConditions\" A: {href=javascript:void(0), onclick=openPage('waitConditions.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "10-democrawljax",
+    "hash" : 680204710,
+    "text" : "Plugins",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[1]/A[1]",
+    "element" : "\"Plugins\" A: {href=javascript:void(0), onclick=openPage('plugins.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "11-democrawljax",
+    "hash" : -2107210777,
+    "text" : "Oracle Comparators",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[2]/A[1]",
+    "element" : "\"Oracle Comparators\" A: {href=javascript:void(0), onclick=openPage('oracleComparators.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "12-democrawljax",
+    "hash" : -599658968,
+    "text" : "Invariants",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[3]/A[1]",
+    "element" : "\"Invariants\" A: {href=javascript:void(0), onclick=openPage('invariants.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "13-democrawljax",
+    "hash" : 907892841,
+    "text" : "Conditions",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[4]/A[1]",
+    "element" : "\"Conditions\" A: {href=javascript:void(0), onclick=openPage('conditions.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "14-democrawljax",
+    "hash" : -1879522646,
+    "text" : "Random Form Input",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[1]/A[1]",
+    "element" : "\"Random Form Input\" A: {href=javascript:void(0), onclick=openPage('randomInput.html')}",
+    "eventType" : "click"
+  }, {
+    "from" : "14-democrawljax",
+    "to" : "15-democrawljax",
+    "hash" : -564257344,
+    "text" : "Next",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/DIV[1]/DIV[1]",
+    "element" : "\"Next\" DIV: {class=clickable, onclick=afterRandomInput()}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "16-democrawljax",
+    "hash" : 1135580972,
+    "text" : "Custom Input",
+    "id" : "xpath /HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[2]/A[1]",
+    "element" : "\"Custom Input\" A: {href=javascript:void(0), onclick=openPage('customInput.html')}",
+    "eventType" : "click"
+  } ],
+  "statistics" : {
+    "duration" : "39 seconds",
+    "crawlPaths" : 16,
+    "averageDomSize" : "3.672 kB",
+    "edges" : 18,
+    "stateStats" : {
+      "leastFanOut" : {
+        "name" : "1-democrawljax",
+        "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+        "candidateElements" : [ ],
+        "fanIn" : 1,
+        "fanOut" : 0,
+        "screenshotOffsetTop" : 0,
+        "screenshotOffsetLeft" : 0
+      },
+      "leastFanIn" : {
+        "name" : "1-democrawljax",
+        "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+        "candidateElements" : [ ],
+        "fanIn" : 1,
+        "fanOut" : 0,
+        "screenshotOffsetTop" : 0,
+        "screenshotOffsetLeft" : 0
+      },
+      "mostFanOut" : {
+        "name" : "index",
+        "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+        "candidateElements" : [ {
+          "top" : 68,
+          "left" : 20,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[1]/A[1]",
+          "width" : 43,
+          "height" : 19
+        }, {
+          "top" : 68,
+          "left" : 77,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[2]/A[1]",
+          "width" : 50,
+          "height" : 19
+        }, {
+          "top" : 68,
+          "left" : 142,
+          "xpath" : "/HTML[1]/BODY[1]/DIV[2]/UL[1]/LI[3]/A[1]",
+          "width" : 89,
+          "height" : 19
+        }, {
+          "top" : 141,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+          "width" : 147,
+          "height" : 17
+        }, {
+          "top" : 158,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[2]/A[1]",
+          "width" : 94,
+          "height" : 17
+        }, {
+          "top" : 175,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[1]/LI[3]/A[1]",
+          "width" : 87,
+          "height" : 17
+        }, {
+          "top" : 237,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[1]/A[1]",
+          "width" : 42,
+          "height" : 17
+        }, {
+          "top" : 254,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[2]/A[1]",
+          "width" : 116,
+          "height" : 17
+        }, {
+          "top" : 271,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[3]/A[1]",
+          "width" : 58,
+          "height" : 17
+        }, {
+          "top" : 288,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[2]/LI[4]/A[1]",
+          "width" : 61,
+          "height" : 17
+        }, {
+          "top" : 351,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[1]/A[1]",
+          "width" : 118,
+          "height" : 17
+        }, {
+          "top" : 368,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[2]/A[1]",
+          "width" : 80,
+          "height" : 17
+        }, {
+          "top" : 385,
+          "left" : 63,
+          "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/UL[3]/LI[3]/A[1]",
+          "width" : 84,
+          "height" : 17
+        } ],
+        "fanIn" : 1,
+        "fanOut" : 12,
+        "screenshotOffsetTop" : 0,
+        "screenshotOffsetLeft" : 0
+      },
+      "mostFanIn" : {
+        "name" : "3-democrawljax",
+        "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+        "candidateElements" : [ ],
+        "fanIn" : 2,
+        "fanOut" : 0,
+        "screenshotOffsetTop" : 0,
+        "screenshotOffsetLeft" : 0
+      },
+      "totalNumberOfStates" : 17,
+      "urls" : {
+        "empty" : false
+      }
+    }
+  },
+  "configuration" : {
+    "url" : "http://spci.st.ewi.tudelft.nl/demo/crawljax/",
+    "browserConfig" : {
+      "browsertype" : "firefox",
+      "numberOfBrowsers" : 1,
+      "bootstrap" : true,
+      "browserBuilder" : { },
+      "remoteHubUrl" : null
+    },
+    "plugins" : {
+      "plugins" : {
+        "empty" : false
+      }
+    },
+    "proxyConfiguration" : {
+      "port" : -1,
+      "hostname" : "none",
+      "type" : "NOTHING"
+    },
+    "crawlRules" : {
+      "crawlEvents" : [ "click" ],
+      "invariants" : [ ],
+      "oracleComparators" : [ ],
+      "ignoredFrameIdentifiers" : [ ],
+      "preCrawlConfig" : {
+        "waitConditions" : [ ],
+        "crawlConditions" : [ {
+          "preConditions" : [ ],
+          "description" : "No spans with foo as class",
+          "condition" : {
+            "affectedNodes" : {
+              "threadLocalHashCode" : -387276957
+            },
+            "xpathCondition" : {
+              "affectedNodes" : {
+                "threadLocalHashCode" : 1253254570
+              },
+              "expression" : "//*[@class='foo']"
+            }
+          }
+        } ],
+        "includedElements" : [ {
+          "tagName" : "A",
+          "crawlAttributes" : [ ],
+          "conditions" : [ ],
+          "id" : "id1255298360",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        }, {
+          "tagName" : "A",
+          "crawlAttributes" : [ ],
+          "conditions" : [ ],
+          "id" : "id920188392",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        }, {
+          "tagName" : "BUTTON",
+          "crawlAttributes" : [ ],
+          "conditions" : [ ],
+          "id" : "id1576562297",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        }, {
+          "tagName" : "INPUT",
+          "crawlAttributes" : [ {
+            "name" : "type",
+            "value" : "submit"
+          } ],
+          "conditions" : [ ],
+          "id" : "id1629288993",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        }, {
+          "tagName" : "INPUT",
+          "crawlAttributes" : [ {
+            "name" : "type",
+            "value" : "button"
+          } ],
+          "conditions" : [ ],
+          "id" : "id827267967",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        }, {
+          "tagName" : "DIV",
+          "crawlAttributes" : [ {
+            "name" : "class",
+            "value" : "clickable"
+          } ],
+          "conditions" : [ ],
+          "id" : "id1083590691",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        } ],
+        "excludedElements" : [ {
+          "tagName" : "A",
+          "crawlAttributes" : [ {
+            "name" : "class",
+            "value" : "ignore"
+          } ],
+          "conditions" : [ ],
+          "id" : "id1247417077",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : null
+        }, {
+          "tagName" : "A",
+          "crawlAttributes" : [ ],
+          "conditions" : [ ],
+          "id" : "id1603451125",
+          "eventType" : "click",
+          "inputFieldIds" : [ ],
+          "underXpath" : "//DIV[@id='footer']"
+        } ],
+        "filterAttributeNames" : [ "closure_hashcode_(\\w)*", "jquery[0-9]+" ]
+      },
+      "randomInputInForms" : false,
+      "inputSpecification" : {
+        "inputFields" : [ ],
+        "forms" : [ {
+          "inputFields" : [ {
+            "id" : "id349161049",
+            "fieldNames" : [ "male" ],
+            "fieldValues" : [ "1", "0" ]
+          }, {
+            "id" : "id1424426939",
+            "fieldNames" : [ "female" ],
+            "fieldValues" : [ "0", "1" ]
+          }, {
+            "id" : "id195867017",
+            "fieldNames" : [ "name" ],
+            "fieldValues" : [ "Bob", "Alice", "John" ]
+          }, {
+            "id" : "id1992007515",
+            "fieldNames" : [ "phone" ],
+            "fieldValues" : [ "1234567890", "1234888888", "" ]
+          }, {
+            "id" : "id400247875",
+            "fieldNames" : [ "mobile" ],
+            "fieldValues" : [ "123", "3214321421" ]
+          }, {
+            "id" : "id1047252721",
+            "fieldNames" : [ "type" ],
+            "fieldValues" : [ "Student", "Teacher" ]
+          }, {
+            "id" : "id400511035",
+            "fieldNames" : [ "active" ],
+            "fieldValues" : [ "1" ]
+          } ],
+          "formAction" : {
+            "crawlElement" : {
+              "tagName" : "BUTTON",
+              "crawlAttributes" : [ {
+                "name" : "innertext",
+                "value" : "Save"
+              } ],
+              "conditions" : [ ],
+              "id" : "id1382638512",
+              "eventType" : "click",
+              "inputFieldIds" : [ "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035", "id349161049", "id1424426939", "id195867017", "id1992007515", "id400247875", "id1047252721", "id400511035" ],
+              "underXpath" : null
+            }
+          }
+        } ]
+      },
+      "testInvariantsWhileCrawling" : true,
+      "clickOnce" : true,
+      "crawlFrames" : true,
+      "crawlHiddenAnchors" : false,
+      "waitAfterReloadUrl" : 20,
+      "waitAfterEvent" : 200
+    },
+    "maximumStates" : 0,
+    "maximumRuntime" : 3600000,
+    "maximumDepth" : 2
+  }
+}

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crawl overview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="CrawlJax">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<style>
+body {
+	padding-top: 60px;
+}
+</style>
+<link href="../css/bootstrap-responsive.min.css" rel="stylesheet">
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+<link href="../css/shCore.css" rel="stylesheet" type="text/css" />
+<link href="../css/shCoreDefault.css" rel="stylesheet" type="text/css" />
+<style>
+.tooltip-inner {
+	max-width: 300px;
+	word-wrap: break-word;
+}
+</style>
+</head>
+<body>
+	<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse"
+				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
+				class="icon-bar"></span> <span class="icon-bar"></span>
+			</a>
+							<a class="brand" href="../index.html#graph">Crawl overview</a>
+						<div class="nav-collapse collapse">
+				<ul class="nav">
+											<li class="active" ><a href="#">State inspector</a></li>
+									</ul>
+			</div>
+			<div class="nav pull-right">
+				<a href="#" class="btn graphBtn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
+				<a href="#" class="btn graphBtn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
+				<div style="display: none" id='popup-content'>
+					<p>You can double click a state to inspect it further.</p>
+					<p>Clicking an edge gives more details on the state transition.</p>
+					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
+				</div>
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</div>	<div class='container' >
+		<h1>Summary of 10-democrawljax</h1>
+		<table class="table table-bordered table-striped">
+			<colgroup>
+				<col class="span1">
+				<col class="span7">
+			</colgroup>
+			<tbody>
+				<tr>
+					<td>URL</td>
+					<td><a href='http://spci.st.ewi.tudelft.nl/demo/crawljax/'>http://spci.st.ewi.tudelft.nl/demo/crawljax/</a></td>
+				</tr>
+				<tr>
+					<td>Fan in</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>Fan out</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Interaction elements</td>
+					<td>0</td>
+				</tr>
+			</tbody>
+		</table>
+		<ul id='tabs' class="nav nav-tabs">
+			<li class="active">
+				<a href="#screenshot">Screenshot</a>
+			</li>
+			<li>
+				<a href="#dom">Captured DOM</a>
+			</li>	
+			<li>
+				<a href="#interactions">Interactions</a>
+			</li>			
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" style="position: relative;" id='screenshot'>			
+				<img style='max-width: none;' border='0' src='../screenshots/10-democrawljax.png' /> 
+							</div>
+			<div class="tab-pane" id='dom'>
+				<h2>Captured DOM</h2>
+				<pre class='brush: html'>&lt;HTML xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;HEAD&gt;
+&lt;META http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+	
+&lt;META content=&quot;text/html; charset=iso-8859-1&quot; http-equiv=&quot;Content-Type&quot;&gt;
+	
+&lt;META content=&quot;crawljax, crawljax, ajax, test, testing, plugins, invariants, conditions, form&quot; name=&quot;keywords&quot;&gt;
+	
+&lt;META content=&quot;index, follow&quot; name=&quot;robots&quot;&gt;
+	
+&lt;META content=&quot;Demo and instruction site for Crawljax&quot; name=&quot;description&quot;&gt;
+	
+&lt;TITLE&gt;Crawljax&lt;/TITLE&gt;
+	
+&lt;LINK href=&quot;style.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;
+
+	
+&lt;SCRIPT language=&quot;javascript&quot; src=&quot;js/jquery.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/SCRIPT&gt;
+	&lt;SCRIPT language=&quot;javascript&quot; src=&quot;js/general.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/SCRIPT&gt;
+
+&lt;/HEAD&gt;
+&lt;BODY&gt;
+	
+&lt;DIV id=&quot;header&quot;&gt;
+	
+&lt;H1&gt;Crawljax Demo And Instruction Site&lt;/H1&gt;
+	
+&lt;/DIV&gt;
+	
+&lt;DIV id=&quot;menubar&quot;&gt;
+		
+&lt;UL&gt;
+			
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; id=&quot;home&quot;&gt;Home&lt;/A&gt;
+&lt;/LI&gt;
+			
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; id=&quot;papers&quot;&gt;Papers&lt;/A&gt;
+&lt;/LI&gt;
+			
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; id=&quot;info&quot;&gt;Information&lt;/A&gt;
+&lt;/LI&gt;
+			
+&lt;LI&gt;
+&lt;A class=&quot;ignore&quot; href=&quot;javascript:void(0)&quot; id=&quot;ignore&quot;&gt;Ignore&lt;/A&gt;
+&lt;/LI&gt;
+		
+&lt;/UL&gt;
+	
+&lt;/DIV&gt;
+	
+&lt;TABLE border=&quot;0&quot;&gt;
+	
+&lt;TBODY&gt;
+&lt;TR&gt;
+&lt;TD valign=&quot;top&quot;&gt;
+		
+&lt;DIV id=&quot;left&quot;&gt;
+			
+&lt;H2&gt;Crawling&lt;/H2&gt;
+			
+&lt;UL class=&quot;test&quot;&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('select.html')&quot;&gt;Select Elements To Crawl&lt;/A&gt;
+&lt;/LI&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('crawlConditions.html')&quot;&gt;CrawlConditions&lt;/A&gt;
+&lt;/LI&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('waitConditions.html')&quot;&gt;WaitConditions&lt;/A&gt;
+&lt;/LI&gt;
+			
+&lt;/UL&gt;
+			
+&lt;H2&gt;Testing&lt;/H2&gt;
+			
+&lt;UL class=&quot;test&quot;&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('plugins.html')&quot;&gt;Plugins&lt;/A&gt;
+&lt;/LI&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('oracleComparators.html')&quot;&gt;Oracle Comparators&lt;/A&gt;
+&lt;/LI&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('invariants.html')&quot;&gt;Invariants&lt;/A&gt;
+&lt;/LI&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('conditions.html')&quot;&gt;Conditions&lt;/A&gt;
+&lt;/LI&gt;
+			
+&lt;/UL&gt;
+			
+&lt;H2&gt;Input&lt;/H2&gt;
+			
+&lt;UL class=&quot;test&quot;&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('randomInput.html')&quot;&gt;Random Form Input&lt;/A&gt;
+&lt;/LI&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('customInput.html')&quot;&gt;Custom Input&lt;/A&gt;
+&lt;/LI&gt;
+				
+&lt;LI&gt;
+&lt;A href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('forms.html')&quot;&gt;Custom Forms&lt;/A&gt;
+&lt;/LI&gt;
+			
+&lt;/UL&gt;
+		
+&lt;/DIV&gt;
+	
+&lt;/TD&gt;&lt;TD valign=&quot;top&quot;&gt;
+		
+&lt;DIV id=&quot;content&quot;&gt;
+&lt;H1&gt;Plugins&lt;/H1&gt;
+
+&lt;P&gt;Crawljax supports the use of plugins which can be used to extend Crawljax and use your own
+tests and tools.&lt;/P&gt;
+
+&lt;P&gt;Plugins can be added via the &lt;SPAN class=&quot;java&quot;&gt;addPlugin()&lt;/SPAN&gt; method in &lt;SPAN class=&quot;java&quot;&gt;CrawljaxConfiguration&lt;/SPAN&gt;.&lt;/P&gt;
+
+
+&lt;H2&gt;Types of Plugins&lt;/H2&gt;
+
+&lt;P&gt;The main interface is &lt;SPAN class=&quot;java&quot;&gt;Plugin&lt;/SPAN&gt; which is implemented by the
+different types of plugins. To write a plugin you should implement one of the
+following plugins types.&lt;/P&gt;
+
+&lt;TABLE class=&quot;default&quot;&gt;
+
+&lt;TBODY&gt;
+&lt;TR&gt;
+
+&lt;TH&gt;Type&lt;/TH&gt;&lt;TH&gt;Called&lt;/TH&gt;&lt;TH&gt;Example&lt;/TH&gt;
+
+&lt;/TR&gt;
+
+&lt;TR&gt;
+	
+&lt;TD&gt;&lt;SPAN class=&quot;java&quot;&gt;PreCrawlingPlugin&lt;/SPAN&gt;&lt;/TD&gt;
+	&lt;TD&gt;Before the crawling&lt;/TD&gt;
+	&lt;TD&gt;Login&lt;/TD&gt;
+
+&lt;/TR&gt;
+
+&lt;TR&gt;
+	
+&lt;TD&gt;&lt;SPAN class=&quot;java&quot;&gt;OnNewStatePlugin&lt;/SPAN&gt;&lt;/TD&gt;
+	&lt;TD&gt;When a new state is found while crawling&lt;/TD&gt;
+	&lt;TD&gt;Create Screenshots&lt;/TD&gt;
+
+&lt;/TR&gt;
+
+&lt;TR&gt;
+	
+&lt;TD&gt;&lt;SPAN class=&quot;java&quot;&gt;OnUrlLoadPlugin&lt;/SPAN&gt;&lt;/TD&gt;
+	&lt;TD&gt;After the initial URL is (re)loaded&lt;/TD&gt;
+	&lt;TD&gt;Reset backend state&lt;/TD&gt;
+
+&lt;/TR&gt;
+
+&lt;TR&gt;
+	
+&lt;TD&gt;&lt;SPAN class=&quot;java&quot;&gt;PreStateCrawlingPlugin&lt;/SPAN&gt;&lt;/TD&gt;
+	&lt;TD&gt;Before a new state is crawled&lt;/TD&gt;
+	&lt;TD&gt;Logging the candidate elements&lt;/TD&gt;
+
+&lt;/TR&gt;
+
+&lt;TR&gt;
+	
+&lt;TD&gt;&lt;SPAN class=&quot;java&quot;&gt;PostCrawlingPlugin&lt;/SPAN&gt;&lt;/TD&gt;
+	&lt;TD&gt;After the crawling&lt;/TD&gt;
+	&lt;TD&gt;Generating tests&lt;/TD&gt;
+
+&lt;/TR&gt;
+
+&lt;/TBODY&gt;
+&lt;/TABLE&gt;
+
+
+&lt;H2&gt;Example&lt;/H2&gt;
+
+&lt;P&gt;Create a new class.&lt;/P&gt;
+
+&lt;PRE&gt;public class MyTestPlugin implements OnNewStatePlugin {
+
+  @Override
+  public void onNewState(CrawlSession session) {
+    String name = session.getCurrentState().getName();
+    String url = session.getBrowser().getCurrentUrl();
+    System.out.println(&quot;New State: &quot; + name + &quot;; url: &quot; + url);
+  }
+}
+&lt;/PRE&gt;
+
+
+&lt;P&gt;Add this plugin to your Crawljax configuration.&lt;/P&gt;
+
+&lt;PRE&gt;CrawljaxConfiguration crawljax = new CrawljaxConfiguration();
+crawljax.addPlugin(new MyTestPlugin());
+&lt;/PRE&gt;
+
+&lt;/DIV&gt;
+	
+&lt;/TD&gt;
+&lt;/TR&gt;
+	
+&lt;/TBODY&gt;
+&lt;/TABLE&gt;
+	
+&lt;DIV id=&quot;footer&quot;&gt;
+		
+&lt;A href=&quot;#&quot; onclick=&quot;addError('Dont click on elements in the footer')&quot;&gt;Do not click elements in the footer&lt;/A&gt;
+	
+&lt;/DIV&gt;
+	
+&lt;DIV id=&quot;errors&quot; style=&quot;display: none;&quot;&gt;&lt;/DIV&gt;	
+	
+
+
+
+&lt;/BODY&gt;
+&lt;/HTML&gt;
+</pre>
+			</div>
+			<div class="tab-pane" id='interactions'>
+				<h2>Interactions</h2>
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr>
+							<th>Xpath</th>
+							<th>Destination</tg>
+						</tr>
+											</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../js/shCore.js"></script>
+	<script type="text/javascript" src="../js/shBrushXml.js"></script>
+	<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+    	$(document).ready(function() {
+			SyntaxHighlighter.all()
+
+			$('#tabs a').click(function (e) {
+		  		e.preventDefault();
+		  		$(this).tab('show');
+			})
+		});
+    	
+    	$('.hovers').tooltip({
+    	    placement: function(a, element) {
+    	        var position = $(element).position();
+    	        if (position.left > 515) {
+    	            return "left";
+    	        }
+    	        if (position.left < 515) {
+    	            return "right";
+    	        }
+    	        if (position.top < 110){
+    	            return "bottom";
+    	        }
+    	        return "top";
+    	    }
+    	});
+	</script>
+</body>
+</html>
