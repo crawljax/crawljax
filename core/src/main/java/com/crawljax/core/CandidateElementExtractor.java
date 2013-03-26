@@ -223,16 +223,18 @@ public class CandidateElementExtractor {
 	private boolean isExternalPopup(Element element){
 		String clickable = element.getAttribute("onclick");
 		if(!openExternalPopups && !Strings.isNullOrEmpty(clickable)) {
-			Pattern openWindow = Pattern.compile("(.*)(window\\.open)(\\s*\\(\\s*[\\\'\\\"])([\\w\\./:]+?)([\\\'\\\"].*)");
+			Pattern openWindow = Pattern.compile("(.*window\\.open\\s*\\(\\s*[\\\'\\\"])([\\w\\./:]+?)([\\\'\\\"].*)");
 			Matcher matcher = openWindow.matcher(clickable);
-			if(matcher.matches() && UrlUtils.isLinkExternal(browser.getCurrentUrl(), matcher.replaceAll("$4"))){
+			if(matcher.matches() && UrlUtils.isLinkExternal(browser.getCurrentUrl(), matcher.replaceAll("$2"))){
 				return true;					
 			}
-			
-			if(clickable.matches("(\\b+)(\\s*)\\(")){
-				clickable.split("\\s*(");
+			Pattern functionCall = Pattern.compile("(\\W*)(\\w+?)(\\s*\\(.*)");
+			matcher = functionCall.matcher(clickable);
+			if(matcher.matches()){
+				//**Modify Marker
+				System.out.println("\n\nA function was detected!\n\n");
+				System.out.println("The matching functions was " + matcher.replaceAll("$2 , $3"));
 			}
-			
 		}
 		return false;
 	}
