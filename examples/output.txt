@@ -1,7 +1,7 @@
 --Included Checked Elements--
 
 BUTTON:              3
-A:                   18
+A:                   17
 
 
 --Excluded Checked Elements--
@@ -15,7 +15,7 @@ State ID:	0State URL:	http://www.google.ca/
 Included Tags and the Elements they matched:
 
 Source Name:	BUTTON
-Source ID:	 id152163214
+Source ID:	 id1130665357
 
 Element Tag Name:	 BUTTON
 Element Text:	 
@@ -78,7 +78,7 @@ Element Text:	 I'm Feeling Lucky
 		Type:	 Attribute Node
 		Value:	 if(this.form.q.value)this.checked=1;else window.top.location='/doodles/'
 Source Name:	A
-Source ID:	 id1917628770
+Source ID:	 id340454995
 
 Element Tag Name:	 A
 Element Text:	 Learn more
@@ -151,25 +151,6 @@ Element Text:	 More
 		Name:	 onclick
 		Type:	 Attribute Node
 		Value:	 gbar.tg(event,this)
-
-Element Tag Name:	 A
-Element Text:	 Reader
-	Node 0
-		Name:	 class
-		Type:	 Attribute Node
-		Value:	 gbmt
-	Node 1
-		Name:	 href
-		Type:	 Attribute Node
-		Value:	 http://www.google.ca/reader/?hl=en&tab=wy
-	Node 2
-		Name:	 id
-		Type:	 Attribute Node
-		Value:	 gb_32
-	Node 3
-		Name:	 onclick
-		Type:	 Attribute Node
-		Value:	 gbar.logger.il(1,{t:32});
 
 Element Tag Name:	 A
 Element Text:	 Finance
@@ -277,7 +258,7 @@ Element Text:	 français
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
-		Value:	 http://www.google.ca/setprefs?sig=0_GgWvA8wpqTa3kZ1ajhJn5CxUluY%3D&hl=fr&source=homepage
+		Value:	 http://www.google.ca/setprefs?sig=0_twON3D3zMEw4L8mYT69oqb33TiQ%3D&hl=fr&source=homepage
 
 Element Tag Name:	 A
 Element Text:	 Advertising Programs
@@ -312,7 +293,7 @@ Element Text:	 Google.com
 	Node 0
 		Name:	 href
 		Type:	 Attribute Node
-		Value:	 http://www.google.ca/setprefdomain?prefdom=US&sig=0_YkGhnYYswJpmZ-gNE0GWgmH81b8%3D
+		Value:	 http://www.google.ca/setprefdomain?prefdom=US&sig=0_Htq0cfT5hCnvPRhnqRtOs3Qq52A%3D
 	Node 1
 		Name:	 id
 		Type:	 Attribute Node
@@ -320,7 +301,7 @@ Element Text:	 Google.com
 Excluded Tags and the Elements they matched:
 
 Source Name:	A
-Source ID:	 id340454995
+Source ID:	 id1474320684
 
 Element Tag Name:	 A
 Element Text:	 Language tools
