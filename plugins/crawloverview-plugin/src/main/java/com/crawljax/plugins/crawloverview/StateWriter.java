@@ -112,6 +112,11 @@ class StateWriter {
 	}
 
 	private int getStateNumber(String name, String url) {
+		
+		String[] temp=name.split("-");
+		String StateNumber=temp[0];
+		
+		
 		if ("index".equals(name)) {
 			return 0;
 		}
@@ -122,7 +127,7 @@ class StateWriter {
 
 		name = name.replace(("-"+url), "");
 		
-
-		return Integer.parseInt(name);
+		 
+		return Integer.parseInt(StateNumber);
 	}
 }

@@ -1,0 +1,234 @@
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+<META content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+	
+<META content="crawljax, crawljax, ajax, test, testing, plugins, invariants, conditions, form" name="keywords">
+	
+<META content="index, follow" name="robots">
+	
+<META content="Demo and instruction site for Crawljax" name="description">
+	
+<TITLE>Crawljax</TITLE>
+	
+<LINK href="style.css" rel="stylesheet" type="text/css">
+
+	
+<SCRIPT language="javascript" src="js/jquery.js" type="text/javascript"></SCRIPT>
+	<SCRIPT language="javascript" src="js/general.js" type="text/javascript"></SCRIPT>
+
+</HEAD>
+<BODY>
+	
+<DIV id="header">
+	
+<H1>Crawljax Demo And Instruction Site</H1>
+	
+</DIV>
+	
+<DIV id="menubar">
+		
+<UL>
+			
+<LI>
+<A href="javascript:void(0)" id="home">Home</A>
+</LI>
+			
+<LI>
+<A href="javascript:void(0)" id="papers">Papers</A>
+</LI>
+			
+<LI>
+<A href="javascript:void(0)" id="info">Information</A>
+</LI>
+			
+<LI>
+<A class="ignore" href="javascript:void(0)" id="ignore">Ignore</A>
+</LI>
+		
+</UL>
+	
+</DIV>
+	
+<TABLE border="0">
+	
+<TBODY>
+<TR>
+<TD valign="top">
+		
+<DIV id="left">
+			
+<H2>Crawling</H2>
+			
+<UL class="test">
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('select.html')">Select Elements To Crawl</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('crawlConditions.html')">CrawlConditions</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('waitConditions.html')">WaitConditions</A>
+</LI>
+			
+</UL>
+			
+<H2>Testing</H2>
+			
+<UL class="test">
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('plugins.html')">Plugins</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('oracleComparators.html')">Oracle Comparators</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('invariants.html')">Invariants</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('conditions.html')">Conditions</A>
+</LI>
+			
+</UL>
+			
+<H2>Input</H2>
+			
+<UL class="test">
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('randomInput.html')">Random Form Input</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('customInput.html')">Custom Input</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('forms.html')">Custom Forms</A>
+</LI>
+			
+</UL>
+		
+</DIV>
+	
+</TD><TD valign="top">
+		
+<DIV id="content">
+<H1>Plugins</H1>
+
+<P>Crawljax supports the use of plugins which can be used to extend Crawljax and use your own
+tests and tools.</P>
+
+<P>Plugins can be added via the <SPAN class="java">addPlugin()</SPAN> method in <SPAN class="java">CrawljaxConfiguration</SPAN>.</P>
+
+
+<H2>Types of Plugins</H2>
+
+<P>The main interface is <SPAN class="java">Plugin</SPAN> which is implemented by the
+different types of plugins. To write a plugin you should implement one of the
+following plugins types.</P>
+
+<TABLE class="default">
+
+<TBODY>
+<TR>
+
+<TH>Type</TH><TH>Called</TH><TH>Example</TH>
+
+</TR>
+
+<TR>
+	
+<TD><SPAN class="java">PreCrawlingPlugin</SPAN></TD>
+	<TD>Before the crawling</TD>
+	<TD>Login</TD>
+
+</TR>
+
+<TR>
+	
+<TD><SPAN class="java">OnNewStatePlugin</SPAN></TD>
+	<TD>When a new state is found while crawling</TD>
+	<TD>Create Screenshots</TD>
+
+</TR>
+
+<TR>
+	
+<TD><SPAN class="java">OnUrlLoadPlugin</SPAN></TD>
+	<TD>After the initial URL is (re)loaded</TD>
+	<TD>Reset backend state</TD>
+
+</TR>
+
+<TR>
+	
+<TD><SPAN class="java">PreStateCrawlingPlugin</SPAN></TD>
+	<TD>Before a new state is crawled</TD>
+	<TD>Logging the candidate elements</TD>
+
+</TR>
+
+<TR>
+	
+<TD><SPAN class="java">PostCrawlingPlugin</SPAN></TD>
+	<TD>After the crawling</TD>
+	<TD>Generating tests</TD>
+
+</TR>
+
+</TBODY>
+</TABLE>
+
+
+<H2>Example</H2>
+
+<P>Create a new class.</P>
+
+<PRE>public class MyTestPlugin implements OnNewStatePlugin {
+
+  @Override
+  public void onNewState(CrawlSession session) {
+    String name = session.getCurrentState().getName();
+    String url = session.getBrowser().getCurrentUrl();
+    System.out.println("New State: " + name + "; url: " + url);
+  }
+}
+</PRE>
+
+
+<P>Add this plugin to your Crawljax configuration.</P>
+
+<PRE>CrawljaxConfiguration crawljax = new CrawljaxConfiguration();
+crawljax.addPlugin(new MyTestPlugin());
+</PRE>
+
+</DIV>
+	
+</TD>
+</TR>
+	
+</TBODY>
+</TABLE>
+	
+<DIV id="footer">
+		
+<A href="#" onclick="addError('Dont click on elements in the footer')">Do not click elements in the footer</A>
+	
+</DIV>
+	
+<DIV id="errors" style="display: none;"></DIV>	
+	
+
+
+
+</BODY>
+</HTML>

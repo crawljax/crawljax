@@ -1,0 +1,291 @@
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+<META content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+	
+<META content="crawljax, crawljax, ajax, test, testing, plugins, invariants, conditions, form" name="keywords">
+	
+<META content="index, follow" name="robots">
+	
+<META content="Demo and instruction site for Crawljax" name="description">
+	
+<TITLE>Crawljax</TITLE>
+	
+<LINK href="style.css" rel="stylesheet" type="text/css">
+
+	
+<SCRIPT language="javascript" src="js/jquery.js" type="text/javascript"></SCRIPT>
+	<SCRIPT language="javascript" src="js/general.js" type="text/javascript"></SCRIPT>
+
+</HEAD>
+<BODY>
+	
+<DIV id="header">
+	
+<H1>Crawljax Demo And Instruction Site</H1>
+	
+</DIV>
+	
+<DIV id="menubar">
+		
+<UL>
+			
+<LI>
+<A href="javascript:void(0)" id="home">Home</A>
+</LI>
+			
+<LI>
+<A href="javascript:void(0)" id="papers">Papers</A>
+</LI>
+			
+<LI>
+<A href="javascript:void(0)" id="info">Information</A>
+</LI>
+			
+<LI>
+<A class="ignore" href="javascript:void(0)" id="ignore">Ignore</A>
+</LI>
+		
+</UL>
+	
+</DIV>
+	
+<TABLE border="0">
+	
+<TBODY>
+<TR>
+<TD valign="top">
+		
+<DIV id="left">
+			
+<H2>Crawling</H2>
+			
+<UL class="test">
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('select.html')">Select Elements To Crawl</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('crawlConditions.html')">CrawlConditions</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('waitConditions.html')">WaitConditions</A>
+</LI>
+			
+</UL>
+			
+<H2>Testing</H2>
+			
+<UL class="test">
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('plugins.html')">Plugins</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('oracleComparators.html')">Oracle Comparators</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('invariants.html')">Invariants</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('conditions.html')">Conditions</A>
+</LI>
+			
+</UL>
+			
+<H2>Input</H2>
+			
+<UL class="test">
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('randomInput.html')">Random Form Input</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('customInput.html')">Custom Input</A>
+</LI>
+				
+<LI>
+<A href="javascript:void(0)" onclick="openPage('forms.html')">Custom Forms</A>
+</LI>
+			
+</UL>
+		
+</DIV>
+	
+</TD><TD valign="top">
+		
+<DIV id="content">
+<H1>Include Elements to Crawl</H1>
+
+<H2>Basic Specification</H2>
+
+<P>To crawl the application, Crawljax needs to know which elements it should click.</P>
+
+<TABLE>
+
+<TBODY>
+<TR>
+<TD class="separator">
+The properties for crawling the can be set with <SPAN class="java">CrawlSpecification</SPAN>
+</TD><TD class="separator">
+<PRE>CrawlSpecification crawler = 
+	new CrawlSpecification("http://www.google.com");
+</PRE>
+</TD>
+</TR>
+
+
+<TR>
+<TD class="separator">
+The set HTML elements that Crawljax should click can be set with <SPAN class="java">click()</SPAN>
+in which the user specifies which tags should be clicked.
+</TD><TD class="separator">
+<PRE>crawler.click("a");
+</PRE>
+</TD>
+</TR>
+
+
+<TR>
+<TD class="separator">
+The HTML elements that Crawljax should not click can be set with <SPAN class="java">dontClick()</SPAN>.<BR>
+
+<STRONG>This set of HTML elements is excluded from the set inferred with</STRONG> <SPAN class="java">click()</SPAN>.
+</TD><TD class="separator">
+<PRE>crawler.click("a").withAttribute("class", "noclick");;
+</PRE>
+</TD>
+</TR>
+
+
+<TR>
+<TD class="separator" colspan="2">
+
+<BR>
+
+<H2>Options</H2>
+
+<P>The set of HTML elements that should be included/excluded while crawling can be specified in detail with options.
+The options specify which criteria the HTML element should satisfy.
+</P>
+
+</TD>
+</TR>
+
+
+<TR>
+<TD class="separator">
+
+<H3>The textual content of the elements</H3>
+
+<SPAN class="java">withText(String text)</SPAN>
+<BR>
+Only one text can be specified.
+</TD><TD class="separator">
+<PRE>crawler.click("span").withText("Foo");
+</PRE>
+</TD>
+</TR>
+
+
+<TR>
+<TD class="separator">
+
+<H3>Attributes of the elements</H3>
+
+<SPAN class="java">withAttribute(String attributeName, String value)</SPAN>
+<BR>
+Multiple attributes can be specified
+</TD><TD class="separator">
+<PRE>crawler.click("a").withAttribute("class", "foo");
+crawler.click("div").withAttribute("id", "bar")
+	.withAttribute("class", "navigation");;
+</PRE>
+</TD>
+</TR>
+
+
+<TR>
+<TD class="separator">
+
+<H3>Location of elements.</H3>
+
+<SPAN class="java">underXpath(String xpathExpression)</SPAN>
+<BR>
+
+With this method one can specify that an element should always be under an
+other element. This is done via specifying the parent element with an xpath expression.
+If the xpath expression does not return a node, the HTML element is not included.<BR>
+Only one location can be specified.<BR>
+NOTE: specify the tagnames in uppercase and attributes in lowercase
+</TD><TD class="separator">
+<PRE>crawler.click("div").underXPath("//DIV[id='footer']");
+</PRE>
+</TD>
+</TR>
+
+
+<TR>
+<TD class="separator">
+
+<H3>Conditions</H3>
+
+<SPAN class="java">when(Condition...conditions)</SPAN>
+<BR>
+
+Conditions can be specified which should be satisfied at the moment Crawljax wants to click
+on the element.
+</TD><TD class="separator">
+<PRE>UrlCondition onLoginPage = new UrlConditions("#login");
+crawler.when(onLoginPage).click("a").withText("Login");
+</PRE>
+</TD>
+</TR>
+
+
+<TR>
+<TD class="separator">
+
+<H3>Combinations</H3>
+Different combinations can be used.
+</TD><TD class="separator">
+<PRE>crawler.click("div").underXPath("//DIV[id='footer']")
+	.withText("Info");
+crawler.click("button").withText("save")
+	.withAttribute("class", "contactform");
+</PRE>
+</TD>
+</TR>
+
+
+</TBODY>
+</TABLE>
+
+</DIV>
+	
+</TD>
+</TR>
+	
+</TBODY>
+</TABLE>
+	
+<DIV id="footer">
+		
+<A href="#" onclick="addError('Dont click on elements in the footer')">Do not click elements in the footer</A>
+	
+</DIV>
+	
+<DIV id="errors" style="display: none;"></DIV>	
+	
+
+
+
+</BODY>
+</HTML>

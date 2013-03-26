@@ -1,5 +1,6 @@
 package com.crawljax.core;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -30,6 +32,7 @@ import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
+import com.crawljax.util.DomUtils;
 import com.crawljax.util.ElementResolver;
 import com.crawljax.util.UrlUtils;
 
@@ -356,10 +359,18 @@ public class Crawler implements Runnable {
 
 		LOG.debug("Executing {} on element: {}; State: {}", eventable.getEventType(),
 		        eventable, this.getStateMachine().getCurrentState().getName());
+		Document Dom=null;
+		try {
+			Dom = DomUtils.asDocument(getBrowser().getDom());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		if (this.fireEvent(eventable)) {
 			StateVertex newState =
 			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
-			                .getStateFlowGraph().getNewStateName(getBrowser().getCurrentUrl()), getBrowser().getDom(),
+			                .getStateFlowGraph().getNewStateName(getBrowser().getCurrentUrl(),Dom), getBrowser().getDom(),
 			                this.controller.getStrippedDom(getBrowser()));
 
 			if (domChanged(eventable, newState)) {

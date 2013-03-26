@@ -115,7 +115,15 @@ public class StateFlowGraph implements Serializable {
 	private void correctStateName(StateVertex stateVertix) {
 		// the -1 is for the "index" state.
 		int totalNumberOfStates = this.getAllStates().size()-1;
-		String correctedName = makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling(), stateVertix.getUrl());
+		Document stateDom=null;
+		try {
+			stateDom = DomUtils.asDocument(stateVertix.getDom());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String correctedName = makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling(), stateVertix.getUrl(), stateDom);
 		if (!"index".equals(stateVertix.getName())
 		        && !stateVertix.getName().equals(correctedName)) {
 			LOG.info("Correcting state name from {}  to {}", stateVertix.getName(), correctedName);
@@ -373,9 +381,9 @@ public class StateFlowGraph implements Serializable {
 	 * 
 	 * @return State name the name of the state
 	 */
-	public String getNewStateName(String url) {
+	public String getNewStateName(String url,Document DOM) {
 		stateCounter.getAndIncrement();
-		String state = makeStateName(stateCounter.get(), false, url);
+		String state = makeStateName(stateCounter.get(), false, url,DOM );
 		return state;
 	}
 
@@ -387,22 +395,25 @@ public class StateFlowGraph implements Serializable {
 	 *            the id where this name needs to be for.
 	 * @return the String containing the new name.
 	 */
-	private String makeStateName(int id, boolean guided, String url) {
+	private String makeStateName(int id, boolean guided, String url, Document Dom) {
 		
-		String test= trimUrl(url);
-		System.out.print(test+"\n");
+		String title=getTitle(Dom);
+		String trimmedUrl= trimUrl(url);
+		System.out.print(trimmedUrl+"\n");
 		
 
 		if (guided) {
 			return "guided" + id;
 		}
 		
-		url= url.replaceAll("\\p{Punct}|\\d.", "");
-		if(url.length()>50){
-			url = url.substring(0, 50);
+		String finalUrl= trimmedUrl.replaceAll("\\p{Punct}|\\d.", "");
+		if(finalUrl.length()>50)
+		{
+			String finalUrl2 = finalUrl.substring(0, 50);
+			return id+"-"+finalUrl2;
 		}
 		
-		return id+"-"+url;
+		return id+"-"+finalUrl;
 	}
 
 	public boolean isInitialState(StateVertex state) {
@@ -416,29 +427,26 @@ public class StateFlowGraph implements Serializable {
 		return stateCounter.get();
 	}
 	
-	private String getTitle(StateVertex stateVertix)
+	private String getTitle(Document Dom)
 	{
-		try {
-			Document temp=DomUtils.asDocument(stateVertix.getDom());
-			String titleText = temp.getElementsByTagName("title").item(0).getTextContent(); 
-			return titleText;
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+		Document temp=Dom;
+		String titleText = temp.getElementsByTagName("title").item(0).getTextContent(); 
+		return titleText;
 	}
 	
 	private String trimUrl(String url)
 	{
 		String temp=url;
 		int i=0;
-		while(temp.charAt(i)!='/')
+		int LengthUrl=temp.length();
+		int lastDot=temp.lastIndexOf('.');
+		i=lastDot;
+		while(temp.charAt(i)!='/' && LengthUrl !=lastDot)
 		{
 			i++;
 		}
 		
-		String trimmedUrl=temp.substring(i+1);
+		String trimmedUrl=temp.substring(i);
 		return trimmedUrl;
 		
 	}

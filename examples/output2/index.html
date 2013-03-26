@@ -1,0 +1,677 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crawl overview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="CrawlJax">
+<link href="./css/bootstrap.min.css" rel="stylesheet">
+<style>
+body {
+	padding-top: 60px;
+}
+</style>
+<link href="./css/bootstrap-responsive.min.css" rel="stylesheet">
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+<style>
+body {
+	padding-top: 40px;
+}
+
+.panel-right {
+	position: absolute;
+	right: 10px;
+	top: 70px;
+	left: auto;
+	display: block;
+	background-color: rgb(255, 255, 255);
+	background-color: rgba(255, 255, 255, .9);
+	max-width: 300px;	
+}
+.panel-right dd {
+	text-transform: capitalize;
+	word-wrap: break-word;
+}
+</style>
+</head>
+<body>
+	<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse"
+				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
+				class="icon-bar"></span> <span class="icon-bar"></span>
+			</a>
+							<a class="brand" href="#">Crawl overview</a>
+						<div class="nav-collapse collapse">
+				<ul class="nav">
+											<li class="active"><a href="#graph">State graph</a></li>
+						<li><a href="#statistics">Statistics</a></li>
+						<li><a href="#urls">URL's</a></li>
+						<li><a href="#config">Configuration</a></li>
+									</ul>
+			</div>
+			<div class="nav pull-right">
+				<a href="#" class="btn graphBtn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
+				<a href="#" class="btn graphBtn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
+				<div style="display: none" id='popup-content'>
+					<p>You can double click a state to inspect it further.</p>
+					<p>Clicking an edge gives more details on the state transition.</p>
+					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
+				</div>
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</div>		<div class="container page" id="container-graph" style="width: 100%;">
+		<div class="popover fade panel-right">
+			<div class="popover-inner">
+				<h3 class="popover-title">Edge info</h3>
+				<div class="popover-content">
+					<dl>
+						<dt>Element name</dt>
+						<dd name='elemName'></dd>
+					</dl>
+					<dl>
+						<dt>From</dt>
+						<dd name='from'></dd>
+					</dl>
+					<dl>
+						<dt>To</dt>
+						<dd name='to'></dd>
+					</dl>
+					<dl>
+						<dt>Identified by</dt>
+						<dd name='id'></dd>
+					</dl>
+					<dl>
+						<dt>Element</dt>
+						<dd name='element' style="text-transform: none;"></dd>
+					</dl>
+					<dl>
+						<dt>Event type</dt>
+						<dd name='eventType'></dd>
+					</dl>
+					<button class="btn btn-small" id='hideButton'>Hide</button>
+				</div>
+			</div>
+		</div>
+		</div>
+	<div class="container page" id="container-statistics" style="display: none;">
+		
+<section id='crawlResults'>
+	<div class="page-header">
+		<h1>Crawl results</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+			<tr>
+				<th>Crawl time</th>
+				<td>34 seconds</td>
+			</tr>
+			<tr>
+				<th>Number of states</th>
+				<td>5</td>
+			</tr>
+			<tr>
+				<th><a href="urls.html">URL's visited</a></th>
+				<td>3</td>
+			</tr>
+			<tr>
+				<th>Number of edges</th>
+				<td>4</td>
+			</tr>
+			<tr>
+				<th>Number of crawl paths</th>
+				<td>4</td>
+			</tr>
+			<tr>
+				<th>Average DOM length</th>
+				<td>138.909 kB</td>
+			</tr>
+
+		</tbody>
+	</table>
+</section>
+
+<section id='highs-and-low'>
+	<div class="page-header">
+		<h1>Highs and lows</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+			<tr>
+				<th>Highest fan-out</th> 				<td><a href="states/index.html">index</a></td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<th>Lowest fan-out</th> 				<td><a href="states/2-httpwwwgoogleca.html">2-httpwwwgoogleca</a></td>
+				<td>1</td>
+			</tr>
+			<tr>
+				<th>Highest fan-in</th> 				<td><a href="states/2-httpwwwgoogleca.html">2-httpwwwgoogleca</a></td>
+				<td>1</td>
+			</tr>
+			<tr>
+				<th>Lowest fan-in</th> 				<td><a href="states/index.html">index</a></td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+	</div>
+	<div class="container page" id="container-urls" style="display: none;">
+		<div class="page-header">
+	<h1>URL's visited</h1>
+</div>
+<table class="table table-bordered table-striped">
+	<tbody>
+				<tr>
+			<td><a href="http://www.google.ca/">http://www.google.ca/</a></td>
+			<td> <a
+				href="states/2-httpwwwgoogleca.html">2-httpwwwgoogleca</a>,  <a
+				href="states/index.html">index</a>,  <a
+				href="states/3-httpwwwgoogleca.html">3-httpwwwgoogleca</a>, 			</td>
+		</tr>
+				<tr>
+			<td><a href="http://www.google.ca/imghp?hl=en&tab=wi">http://www.google.ca/imghp?hl=en&tab=wi</a></td>
+			<td> <a
+				href="states/4-httpwwwgooglecaimghphlentabwi.html">4-httpwwwgooglecaimghphlentabwi</a>, 			</td>
+		</tr>
+				<tr>
+			<td><a href="http://www.google.ca/webhp?hl=en&tab=ww">http://www.google.ca/webhp?hl=en&tab=ww</a></td>
+			<td> <a
+				href="states/1-httpwwwgooglecawebhphlentabww.html">1-httpwwwgooglecawebhphlentabww</a>, 			</td>
+		</tr>
+			</tbody>
+</table>
+	</div>
+	<div class="container page" id="container-config" style="display: none;">
+		<section id='crawlConfig'>
+	<div class="page-header">
+		<h1>Crawl configuration</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+						<tr>
+				<td>Url</td> 
+								<td>http://www.google.com</td> 
+							</tr>
+						<tr>
+				<td>Browser Config</td> 
+								<td>BrowserConfiguration [browsertype=firefox, numberOfBrowsers=1, bootstrap=true]</td> 
+							</tr>
+						<tr>
+				<td>Plugins</td> 
+								<td>com.crawljax.core.plugin.Plugins@7725aa0c</td> 
+							</tr>
+						<tr>
+				<td>Proxy Configuration</td> 
+								<td>NOTHING</td> 
+							</tr>
+						<tr>
+				<td>Crawl Rules</td> 
+								<td><pre><code>{
+  "crawlEvents" : [ "click" ],
+  "invariants" : [ ],
+  "oracleComparators" : [ ],
+  "ignoredFrameIdentifiers" : [ ],
+  "preCrawlConfig" : {
+    "waitConditions" : [ ],
+    "crawlConditions" : [ ],
+    "includedElements" : [ {
+      "tagName" : "A",
+      "crawlAttributes" : [ ],
+      "conditions" : [ ],
+      "id" : "id1967060485",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    }, {
+      "tagName" : "BUTTON",
+      "crawlAttributes" : [ ],
+      "conditions" : [ ],
+      "id" : "id2022309477",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    } ],
+    "excludedElements" : [ {
+      "tagName" : "A",
+      "crawlAttributes" : [ ],
+      "conditions" : [ ],
+      "id" : "id731698870",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : "//DIV[@id='guser']"
+    }, {
+      "tagName" : "A",
+      "crawlAttributes" : [ {
+        "name" : "innertext",
+        "value" : "Language Tools"
+      } ],
+      "conditions" : [ ],
+      "id" : "id1171545368",
+      "eventType" : "click",
+      "inputFieldIds" : [ ],
+      "underXpath" : null
+    } ],
+    "filterAttributeNames" : [ "closure_hashcode_(\\w)*", "jquery[0-9]+" ]
+  },
+  "randomInputInForms" : false,
+  "inputSpecification" : {
+    "inputFields" : [ {
+      "id" : "id893550190",
+      "fieldNames" : [ "gbqfq" ],
+      "fieldValues" : [ "Crawljax" ]
+    } ],
+    "forms" : [ ]
+  },
+  "testInvariantsWhileCrawling" : true,
+  "clickOnce" : true,
+  "crawlFrames" : true,
+  "crawlHiddenAnchors" : false,
+  "waitAfterReloadUrl" : 500,
+  "waitAfterEvent" : 500
+}</code></pre></td> 
+							</tr>
+						<tr>
+				<td>Maximum States</td> 
+								<td>8</td> 
+							</tr>
+						<tr>
+				<td>Maximum Runtime</td> 
+								<td>3600000</td> 
+							</tr>
+						<tr>
+				<td>Maximum Depth</td> 
+								<td>2</td> 
+							</tr>
+					</tbody>
+	</table>
+</section>
+<section id='versionInfo'>
+	<div class="page-header">
+		<h1>Version info</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+			<tr>
+				<td>Crawljax version</td>
+				<td>3.0-SNAPSHOT</td>
+			</tr>
+			<tr>
+				<td>Git revision</td>
+				<td>139ab93510db46dc678e4a3da3e0e87ca912b82e</td>
+			</tr>
+			<tr>
+				<td><a href="https://www.kernel.org/pub/software/scm/git/docs/git-describe.html">Git describe</a></td>
+				<td>crawljax-2.2-424-g139ab93</td>
+			</tr>
+			<tr>
+				<td>Build time</td>
+				<td><time>2013-03-25 19:28:42 PDT</time></td>
+			</tr>
+		</tbody>
+	</table>
+</section>	</div>
+	<script src="js/jquery-1.8.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/vivagraph.min.js"></script>
+	<script src="js/graphbuilder.js"></script>
+	<script>
+		var edges = [ {
+  "from" : "index",
+  "to" : "1-httpwwwgooglecawebhphlentabww",
+  "hash" : 1749923931,
+  "text" : "Search",
+  "id" : "xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]",
+  "element" : "\"Search\" A: {class=gbzt gbz0l gbp1, href=http://www.google.ca/webhp?hl=en&tab=ww, id=gb_1, onclick=gbar.logger.il(1,{t:1});}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "2-httpwwwgoogleca",
+  "hash" : -1030147002,
+  "text" : "More",
+  "id" : "xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/A[1]",
+  "element" : "\"More\" A: {aria-haspopup=true, aria-owns=gbd, class=gbgt, href=http://www.google.ca/intl/en/options/, id=gbztm, onclick=gbar.tg(event,this)}",
+  "eventType" : "click"
+}, {
+  "from" : "2-httpwwwgoogleca",
+  "to" : "3-httpwwwgoogleca",
+  "hash" : -1658664674,
+  "text" : "More",
+  "id" : "xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/A[1]",
+  "element" : "\"More\" A: {aria-haspopup=true, aria-owns=gbd, class=gbgt gbgt-hvr, href=http://www.google.ca/intl/en/options/, id=gbztm, onclick=gbar.tg(event,this)}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "4-httpwwwgooglecaimghphlentabwi",
+  "hash" : -832826315,
+  "text" : "Images",
+  "id" : "xpath /HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+  "element" : "\"Images\" A: {class=gbzt, href=http://www.google.ca/imghp?hl=en&tab=wi, id=gb_2, onclick=gbar.qs(this);gbar.logger.il(1,{t:2});}",
+  "eventType" : "click"
+} ];
+		var states = {
+  "2-httpwwwgoogleca" : {
+    "name" : "2-httpwwwgoogleca",
+    "url" : "http://www.google.ca/",
+    "candidateElements" : [ {
+      "top" : 0,
+      "left" : 597,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/A[1]",
+      "width" : 57,
+      "height" : 32
+    }, {
+      "top" : 83,
+      "left" : 569,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/TABLE[1]/TBODY[1]/TR[1]/TD[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/A[1]",
+      "width" : 117,
+      "height" : 15
+    }, {
+      "top" : 105,
+      "left" : 569,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/TABLE[1]/TBODY[1]/TR[2]/TD[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/A[1]",
+      "width" : 117,
+      "height" : 15
+    }, {
+      "top" : 127,
+      "left" : 569,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/TABLE[1]/TBODY[1]/TR[3]/TD[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/A[1]",
+      "width" : 117,
+      "height" : 15
+    }, {
+      "top" : 149,
+      "left" : 569,
+      "xpath" : "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/TABLE[1]/TBODY[1]/TR[4]/TD[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[1]/TD[2]/A[1]",
+      "width" : 117,
+      "height" : 15
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 1,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "4-httpwwwgooglecaimghphlentabwi" : {
+    "name" : "4-httpwwwgooglecaimghphlentabwi",
+    "url" : "http://www.google.ca/imghp?hl=en&tab=wi",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "index" : {
+    "name" : "index",
+    "url" : "http://www.google.ca/",
+    "candidateElements" : [ {
+      "top" : 0,
+      "left" : 0,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 0,
+      "left" : 57,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[2]/A[1]",
+      "width" : 63,
+      "height" : 29
+    }, {
+      "top" : 0,
+      "left" : 121,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+      "width" : 65,
+      "height" : 29
+    }, {
+      "top" : 0,
+      "left" : 597,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/A[1]",
+      "width" : 57,
+      "height" : 29
+    }, {
+      "top" : 120,
+      "left" : 597,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[4]/A[1]",
+      "width" : 106,
+      "height" : 27
+    }, {
+      "top" : 222,
+      "left" : 597,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[8]/A[1]",
+      "width" : 106,
+      "height" : 27
+    }, {
+      "top" : 0,
+      "left" : 0,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/A[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 0,
+      "left" : 0,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[1]/A[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 0,
+      "left" : 0,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[3]/A[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 0,
+      "left" : 0,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/OL[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[6]/A[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 141,
+      "left" : 774,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/SPAN[1]/DIV[1]/DIV[1]/TABLE[1]/TBODY[1]/TR[3]/TD[1]/DIV[1]/A[1]",
+      "width" : 179,
+      "height" : 25
+    }, {
+      "top" : 427,
+      "left" : 526,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[4]/SPAN[1]/CENTER[1]/DIV[3]/DIV[1]/FONT[1]/A[1]",
+      "width" : 52,
+      "height" : 15
+    }, {
+      "top" : 616,
+      "left" : 329,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 127,
+      "height" : 16
+    }, {
+      "top" : 616,
+      "left" : 477,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+      "width" : 113,
+      "height" : 16
+    }, {
+      "top" : 616,
+      "left" : 609,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]",
+      "width" : 96,
+      "height" : 16
+    }, {
+      "top" : 616,
+      "left" : 797,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[2]",
+      "width" : 82,
+      "height" : 16
+    }, {
+      "top" : 616,
+      "left" : 898,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/A[3]",
+      "width" : 72,
+      "height" : 16
+    }, {
+      "top" : 0,
+      "left" : 0,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[1]/BUTTON[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 356,
+      "left" : 375,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[1]",
+      "width" : 100,
+      "height" : 29
+    }, {
+      "top" : 356,
+      "left" : 491,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/FORM[1]/DIV[2]/BUTTON[2]",
+      "width" : 114,
+      "height" : 29
+    } ],
+    "fanIn" : 0,
+    "fanOut" : 3,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "1-httpwwwgooglecawebhphlentabww" : {
+    "name" : "1-httpwwwgooglecawebhphlentabww",
+    "url" : "http://www.google.ca/webhp?hl=en&tab=ww",
+    "candidateElements" : [ {
+      "top" : 120,
+      "left" : 597,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/OL[1]/LI[11]/DIV[1]/DIV[1]/OL[1]/LI[4]/A[1]",
+      "width" : 106,
+      "height" : 27
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  },
+  "3-httpwwwgoogleca" : {
+    "name" : "3-httpwwwgoogleca",
+    "url" : "http://www.google.ca/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "screenshotOffsetTop" : 0,
+    "screenshotOffsetLeft" : 0
+  }
+};
+		$(document).ready(function() {
+			$.each(states, function() {
+				graph.addNode(this.name, {
+					img : 'screenshots/' + this.name + '_small.jpg',
+					url : "states/" + this.name + ".html"
+				});
+			});
+
+			var edgesSeen = {};
+			$.each(edges, function() {
+				var edgeKey = this.from + "-to-" + this.to;
+				if (!(edgeKey in edgesSeen)) {
+					edgesSeen[edgeKey] = true;
+					graph.addLink(this.from, this.to, {
+						text : this.text,
+						id : this.id,
+						eventType : this.eventType,
+						element : this.element
+						
+					});
+				}
+			});
+			
+			$("#hideButton").click(function() {
+				$(".panel-right").removeClass("in");
+				$('path[stroke="red"]').attr("stroke", "grey");
+			});
+			
+			$("a[rel='popover']").popover({
+				content : $("#popup-content").html(),
+				html : true,
+				trigger : "hover"
+			});
+			
+			$("a[data-toggle='tooltip']").tooltip();
+			
+			var paused = false;
+			$("#pauseButton").click(function(){
+				if (paused) {
+					renderer.resume();
+					paused = false;
+					$(this).children(":first").attr("class", "icon-pause");
+				} else {
+					renderer.pause();
+					paused = true;
+					$(this).children(":first").attr("class", "icon-play");
+				}
+			});
+			
+			$('.navbar li').click(function(e) {
+				$('.navbar li').removeClass('active');
+				var $this = $(this);
+				if (!$this.hasClass('active')) {
+					$this.addClass('active');
+				}
+
+
+			});
+			
+			function loadPage(page) {
+				$('.page').hide();
+				$('#container-' + page).show();
+				
+				if (page === "graph") {
+					$('.graphBtn').show();
+				} else {
+					$('.graphBtn').hide();
+				}
+			}
+			
+			$(window).on('hashchange', function(e) {	
+				pageRef = window.location.hash.substring(1);
+				if ($("#container-" + pageRef).length == 0 && pageRef !== "graph") {
+					window.location.hash = "graph";
+				} else {
+					loadPage(pageRef);
+				}
+			});
+			
+			$(window).trigger('hashchange');
+		});
+
+		function showInfo(link) {
+			$(".panel-right").addClass("in");
+			$(".panel-right [name='elemName']").text(link.data.text);		
+			$(".panel-right [name='from']").html(asStateLink(link.fromId));		
+			$(".panel-right [name='to']").html(asStateLink(link.toId));		
+			$(".panel-right [name='id']").text(link.data.id);	
+			$(".panel-right [name='element']").text(link.data.element);	
+			$(".panel-right [name='eventType']").text(link.data.eventType);	
+		}
+		
+		function asStateLink(name) {
+			return "<a href='states/" + name + ".html' target='_new'>" + name + "</a>";
+		}
+		
+		if($.browser.mozilla) {
+			// Firefox hack to display CVS correctly
+			$('#container-graph svg').css("width", "100%");
+			
+			function resize() {
+				$('#container-graph').css("height", window.innerHeight -45);
+				$('#container-graph svg').css("height", window.innerHeight - 45);
+			}
+			$(window).resize(resize);
+			resize();
+		}
+		
+		
+	</script>
+</body>
+</html>
+
+
+

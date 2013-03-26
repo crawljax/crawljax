@@ -18,7 +18,7 @@ public final class CrawljaxSimpleExampleSettings {
 	private static final String URL = "http://www.google.com";
 	private static final int MAX_DEPTH = 2;
 	private static final int MAX_NUMBER_STATES = 8;
-	private static final String outputDir = "output2";
+	private static final String outputDir = "output8";
 
 
 	/**
