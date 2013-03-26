@@ -363,7 +363,6 @@ public class Crawler implements Runnable {
 		try {
 			Dom = DomUtils.asDocument(getBrowser().getDom());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
