@@ -393,13 +393,18 @@ public class StateFlowGraph implements Serializable {
 	 * 
 	 * @param id
 	 *            the id where this name needs to be for.
+	 * @param guided
+	 * 	      indicates guided crawling.
+	 * @param url
+	 *    	      url for given state.
+	 * @param Dom
+	 * 	      used for title extraction.
 	 * @return the String containing the new name.
 	 */
 	private String makeStateName(int id, boolean guided, String url, Document Dom) {
 		
 		String title=getTitle(Dom);
 		String trimmedUrl= trimUrl(url);
-		System.out.print(trimmedUrl+"\n");
 		
 
 		if (guided) {
