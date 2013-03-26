@@ -1,8 +1,6 @@
 package com.crawljax.core;
 
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
@@ -37,8 +35,7 @@ public class ExternalPopUpTest {
 	public void testExcludeExternalPopUps() throws ConfigurationException, CrawljaxException {
 		try {
 			crawljax.run();
-			assertThat(crawljax.getSession().getStateFlowGraph(), hasEdges(4));
-			assertThat(crawljax.getSession().getStateFlowGraph(), hasStates(5));
+			assertEquals(crawljax.getElementChecker().numberOfExaminedElements(), 3);
 		} finally {
 			crawljax.terminate(true);
 		}
