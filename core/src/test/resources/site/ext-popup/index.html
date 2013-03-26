@@ -12,14 +12,7 @@ function openJSExternal() {
 	window.open("http://www.google.ca", "External", "height=200", "width=150");
 }
 
-function openJSInternal() {
-	window.open("a.html", "Internal", "height=200", "width=150");
-}
 
-//two layers of nestling
-function openJSExternalDeeper() {
-	openJSExternal();
-}
 
 </script>
 
@@ -28,13 +21,7 @@ function openJSExternalDeeper() {
 <body bgcolor="white">
 <ul id="tests">
 	<li><a href="javascript:void(0)" onclick="openJSExternal()">Javascript External Popup From Function</a></li>
-	<li><a href="javascript:void(0)" onclick="openJSInternal()">Javascript Internal Popup From Function</a></li>
-	<li><a href="javascript:void(0)" onclick="openJSExternalDeeper()">Javascript Function Calling openJSExternal</a></li>
 	<li><a href="javascript:void(0)" onclick="window.open('http://www.google.ca');">Javascript External Popup</a></li>
-	<li><a href="javascript:void(0)" onclick="window.open('a.html');">Javascript Internal Popup</a></li>
-	<li><a href="http://www.google.ca" target = "_blank">HTML External Popup</a></li>
-	<li><a href="a.html" target = "_blank">HTML Internal Popup</a></li>
-	<li><a href="http://www.google.ca">HTML External Link</a></li>
 </ul>
 <div id="content"></div>
 </body>

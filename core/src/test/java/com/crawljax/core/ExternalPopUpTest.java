@@ -35,7 +35,7 @@ public class ExternalPopUpTest {
 	public void testExcludeExternalPopUps() throws ConfigurationException, CrawljaxException {
 		try {
 			crawljax.run();
-			assertEquals(crawljax.getElementChecker().numberOfExaminedElements(), 3);
+			assertEquals(crawljax.getElementChecker().numberOfExaminedElements(), 0);
 		} finally {
 			crawljax.terminate(true);
 		}
