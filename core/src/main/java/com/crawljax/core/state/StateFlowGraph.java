@@ -447,9 +447,8 @@ public class StateFlowGraph implements Serializable {
 	
 	private String trimUrl(String url)
 	{
-		String temp=url;
-		String[] temp2=temp.split("/",4);
-		return temp2[3];
+		String[] path=url.split("/",4);
+		return path[3];
 	}
 	
 }
