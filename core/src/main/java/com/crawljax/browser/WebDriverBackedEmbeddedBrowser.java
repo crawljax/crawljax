@@ -48,7 +48,6 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.forms.InputValue;
 import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.DomUtils;
-import com.crawljax.util.PopUpCancel;
 import com.google.common.collect.ImmutableSortedSet;
 
 /**
@@ -302,9 +301,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
-					
 					webElement.click();
-
 				} catch (ElementNotVisibleException e) {
 					throw e;
 				} catch (WebDriverException e) {
@@ -328,7 +325,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		}
 		return true;
 	}
-	
 
 	@Override
 	public void close() {
@@ -542,7 +538,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	public void closeOtherWindows() {
 		try {
 			String current = browser.getWindowHandle();
-			PopUpCancel.ClosePopUps(browser, current);			
 			for (String handle : browser.getWindowHandles()) {
 				if (!handle.equals(browser.getWindowHandle())) {
 

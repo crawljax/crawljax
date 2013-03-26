@@ -12,7 +12,6 @@ import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilde
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
-import com.crawljax.util.PopUpCancel;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -250,15 +249,8 @@ public class CrawlRules {
 			crawlRules.ignoredFrameIdentifiers = ignoredFrameIdentifiers.build();
 			return crawlRules;
 		}
-
-		public void setCancelPopUps(String mode)
-		{
-			PopUpCancel.setMode(mode);
-		}
 	}
 
-
-	
 	/**
 	 * Default wait after URL reload in {@link TimeUnit#MILLISECONDS}
 	 */
