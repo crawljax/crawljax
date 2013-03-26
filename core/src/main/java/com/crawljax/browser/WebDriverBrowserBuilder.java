@@ -68,14 +68,8 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 			case chrome:
 				ChromeDriver driverChrome;
 
-				boolean validProxyConfig = false;
-				if (configuration.getProxyConfiguration() != null) {
-					if (configuration.getProxyConfiguration().getType() != ProxyType.NOTHING) {
-						validProxyConfig = true;
-					}
-				}
-
-				if (validProxyConfig) {
+				if (configuration.getProxyConfiguration() != null
+				        && configuration.getProxyConfiguration().getType() != ProxyType.NOTHING) {
 					ChromeOptions optionsChrome = new ChromeOptions();
 					optionsChrome.addArguments("--proxy-server=http://"
 					        + configuration.getProxyConfiguration().getHostname() + ":"
