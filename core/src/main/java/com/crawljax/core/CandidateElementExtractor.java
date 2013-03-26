@@ -231,9 +231,8 @@ public class CandidateElementExtractor {
 			Pattern functionCall = Pattern.compile("(\\W*)(\\w+?)(\\s*\\(.*)");
 			matcher = functionCall.matcher(clickable);
 			if(matcher.matches()){
-				//**Modify Marker
-				System.out.println("\n\nA function was detected!\n\n");
-				System.out.println("The matching functions was " + matcher.replaceAll("$2 , $3"));
+				//The name of the function is stored in functionName
+				String functionName = matcher.replaceAll("$2");
 			}
 		}
 		return false;
