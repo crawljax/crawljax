@@ -404,21 +404,21 @@ public class StateFlowGraph implements Serializable {
 	private String makeStateName(int id, boolean guided, String url, Document Dom) {
 		
 		String title=getTitle(Dom);
-		String trimmedUrl= trimUrl(url);
+		String path= trimUrl(url);
 		
 
 		if (guided) {
 			return "guided" + id;
 		}
 		
-		String finalUrl= trimmedUrl.replaceAll("\\p{Punct}|\\d.", "");
-		if(finalUrl.length()>50)
+		String urlWithoutPunctuation = path.replaceAll("\\p{Punct}|\\d.", "");
+		if(urlWithoutPunctuation.length()>50)
 		{
-			String finalUrl2 = finalUrl.substring(0, 50);
-			return id+"-"+"["+title+"]"+"_"+"["+finalUrl2+"]";
+			urlWithoutPunctuation = urlWithoutPunctuation.substring(0, 50);
+			return id+"-"+"["+title+"]"+"_"+"["+urlWithoutPunctuation+"]";
 		}
 		
-		return id+"-"+"["+title+"]"+"_"+"["+finalUrl+"]";
+		return id+"-"+"["+title+"]"+"_"+"["+urlWithoutPunctuation+"]";
 	}
 
 	public boolean isInitialState(StateVertex state) {
@@ -434,7 +434,8 @@ public class StateFlowGraph implements Serializable {
 	
 	private String getTitle(Document Dom)
 	{
-		String titleText = Dom.getElementsByTagName("title").item(0).getTextContent(); 
+		Document temp=Dom;
+		String titleText = temp.getElementsByTagName("title").item(0).getTextContent(); 
 		return titleText;
 	}
 	
@@ -446,9 +447,8 @@ public class StateFlowGraph implements Serializable {
 	
 	private String trimUrl(String url)
 	{
-		String temp=url;
-		String[] temp2=temp.split("/",4);
-		return temp2[3];
+		String[] path=url.split("/",4);
+		return path[3];
 	}
 	
 }
