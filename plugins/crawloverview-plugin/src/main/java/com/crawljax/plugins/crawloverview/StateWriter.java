@@ -113,6 +113,9 @@ class StateWriter {
 
 
 	private int getStateNumber(String name) {
+		if("index".equals(name)){
+			return 0;
+		}
 		
 		if("index".equals(name))
 		{
@@ -121,8 +124,6 @@ class StateWriter {
 		
 		
 		String[] temp = name.split("-");
-		String StateNumber = temp[0];
-
-		return Integer.parseInt(StateNumber);
+		return Integer.parseInt(temp[0]);
 	}
 }
