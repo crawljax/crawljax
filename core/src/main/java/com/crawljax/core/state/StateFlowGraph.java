@@ -434,8 +434,7 @@ public class StateFlowGraph implements Serializable {
 	
 	private String getTitle(Document Dom)
 	{
-		Document temp=Dom;
-		String titleText = temp.getElementsByTagName("title").item(0).getTextContent(); 
+		String titleText = Dom.getElementsByTagName("title").item(0).getTextContent(); 
 		return titleText;
 	}
 	
@@ -447,8 +446,9 @@ public class StateFlowGraph implements Serializable {
 	
 	private String trimUrl(String url)
 	{
-		String[] path=url.split("/",4);
-		return path[3];
+		String temp=url;
+		String[] temp2=temp.split("/",4);
+		return temp2[3];
 	}
 	
 }
