@@ -20,9 +20,9 @@ public class CrawlHiddenElementsTest implements BrowserTest {
 	public void testHiddenElementsSiteCrawl() throws Exception {
 		CrawlSession crawl = new BaseCrawler("hidden-elements-site") {
 			@Override
-			public CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
+			public CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
 				CrawljaxConfigurationBuilder builder =
-				        super.newCrawlConfiguartionBuilder();
+				        super.newCrawlConfigurationBuilder();
 				builder.crawlRules().crawlHiddenAnchors(true);
 				return builder;
 			}
