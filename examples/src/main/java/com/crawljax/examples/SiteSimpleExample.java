@@ -22,7 +22,7 @@ public final class SiteSimpleExample {
 
 	private static final int MAX_CRAWL_DEPTH = 1;
 	private static final int MAX_STATES = 10;
-	private static final String outputDir = "output3";
+	private static final String outputDir = "output2";
 
 
 	/**

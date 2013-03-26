@@ -18,7 +18,8 @@ import com.google.common.collect.Lists;
 
 class StateWriter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StateWriter.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(StateWriter.class);
 
 	private static final String COLOR_NEW_STATE = "green";
 	private static final String COLOR_A_PREVIOUS_STATE = "#00FFFF";
@@ -29,7 +30,7 @@ class StateWriter {
 	private final Map<String, StateVertex> visitedStates;
 
 	public StateWriter(OutputBuilder outBuilder, StateFlowGraph sfg,
-	        Map<String, StateVertex> visitedStates) {
+			Map<String, StateVertex> visitedStates) {
 		this.outBuilder = outBuilder;
 		this.sfg = sfg;
 		this.visitedStates = visitedStates;
@@ -53,30 +54,44 @@ class StateWriter {
 		outBuilder.writeState(context, name);
 	}
 
-	private List<Map<String, String>> getElements(StateFlowGraph sfg, State state) {
-		List<CandidateElementPosition> candidateElements = state.getCandidateElements();
+	private List<Map<String, String>> getElements(StateFlowGraph sfg,
+			State state) {
+		List<CandidateElementPosition> candidateElements = state
+				.getCandidateElements();
 
-		List<Map<String, String>> elements =
-		        Lists.newArrayListWithCapacity(candidateElements.size());
+		List<Map<String, String>> elements = Lists
+				.newArrayListWithCapacity(candidateElements.size());
 
 		for (CandidateElementPosition element : candidateElements) {
-			Eventable eventable = getEventableByCandidateElementInState(state, element);
+			Eventable eventable = getEventableByCandidateElementInState(state,
+					element);
 			StateVertex toState = null;
 			Map<String, String> elementMap = new HashMap<String, String>();
 			elementMap.put("xpath", element.getXpath());
-			elementMap
-			        .put("left", "" + (element.getLeft() - 3 + state.getScreenshotOffsetLeft()));
-			elementMap.put("top", "" + (element.getTop() - 3 + state.getScreenshotOffsetTop()));
+			elementMap.put(
+					"left",
+					""
+							+ (element.getLeft() - 3 + state
+									.getScreenshotOffsetLeft()));
+			elementMap.put(
+					"top",
+					""
+							+ (element.getTop() - 3 + state
+									.getScreenshotOffsetTop()));
 			elementMap.put("width", "" + (element.getWidth() + 2));
 			elementMap.put("height", "" + (element.getHeight() + 2));
-			LOG.debug("State {} has offset {} {} for element {}", new Object[] { state.getName(),
-			        state.getScreenshotOffsetLeft(), state.getScreenshotOffsetTop(), element });
+			LOG.debug(
+					"State {} has offset {} {} for element {}",
+					new Object[] { state.getName(),
+							state.getScreenshotOffsetLeft(),
+							state.getScreenshotOffsetTop(), element });
 			if (eventable != null) {
 				toState = sfg.getTargetState(eventable);
 			}
 			if (toState != null) {
 				elementMap.put("targetname", toState.getName());
-				if (getStateNumber(toState.getName()) < getStateNumber(state.getName())) {
+				if (getStateNumber(toState.getName()) < getStateNumber(state
+						.getName())) {
 					// state already found
 					elementMap.put("color", COLOR_A_PREVIOUS_STATE);
 				} else {
@@ -99,24 +114,25 @@ class StateWriter {
 	}
 
 	private Eventable getEventableByCandidateElementInState(State state,
-	        CandidateElementPosition element) {
+			CandidateElementPosition element) {
 		StateVertex vertex = visitedStates.get(state.getName());
 		for (Eventable eventable : sfg.getOutgoingClickables(vertex)) {
-			// TODO Check if element.getIdentification().getValue() is correct replacement for
+			// TODO Check if element.getIdentification().getValue() is correct
+			// replacement for
 			// element.getXpath()
-			if (eventable.getIdentification().getValue().equals(element.getXpath())) {
+			if (eventable.getIdentification().getValue()
+					.equals(element.getXpath())) {
 				return eventable;
 			}
 		}
 		return null;
 	}
 
-
 	private int getStateNumber(String name) {
-		if("index".equals(name)){
+		if ("index".equals(name)) {
 			return 0;
 		}
-		
+
 		String[] temp = name.split("-");
 		return Integer.parseInt(temp[0]);
 	}
