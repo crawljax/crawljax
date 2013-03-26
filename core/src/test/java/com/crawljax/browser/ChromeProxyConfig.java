@@ -17,7 +17,9 @@ public class ChromeProxyConfig implements BrowserTest {
 	@Test
 	public void chromeProxyConfig() {
 		BrowserConfigCrawler crawler =
-		        new BrowserConfigCrawler(Resource.newClassPathResource("/site"), "simplelink/simplelink.html").withBrowserConfig(new BrowserConfiguration(BrowserType.chrome));
+		        new BrowserConfigCrawler(Resource.newClassPathResource("/site"),
+		                "simplelink/simplelink.html").withBrowserConfig(new BrowserConfiguration(
+		                BrowserType.chrome));
 		CrawlSession crawl = crawler.crawl();
 		assertThat(crawl.getStateFlowGraph(), hasStates(2));
 	}
