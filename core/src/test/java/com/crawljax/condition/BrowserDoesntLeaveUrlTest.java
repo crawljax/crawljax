@@ -4,12 +4,14 @@ import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.test.BaseCrawler;
 import com.crawljax.test.BrowserTest;
 
-public class BrowserDoesntLeaveUrlTest implements BrowserTest {
+@Category(BrowserTest.class)
+public class BrowserDoesntLeaveUrlTest {
 
 	@Test
 	public void whenJavaScriptNavigatesAwayFromPageItIsBlocked() throws Exception {
