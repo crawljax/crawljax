@@ -32,26 +32,21 @@ public final class ClassLoaderHelper
 	
 	static private void fillJarsList(List<URL> jars, File dir, boolean includeSubDirs)
     {
-		try
+		if(dir.exists())
 		{
-			for (File jar: dir.listFiles(_jarsFilter))
+			try
 			{
-				jars.add(jar.toURI().toURL());
-			}
+				for (File jar: dir.listFiles(_jarsFilter))
+					jars.add(jar.toURI().toURL());
 			
-			if (includeSubDirs)
-			{
-				for (File subdir: dir.listFiles(_dirsFilter))
-				{
-					fillJarsList(jars, subdir, true);
-				}
+				if (includeSubDirs)
+					for (File subdir: dir.listFiles(_dirsFilter))
+						fillJarsList(jars, subdir, true);
 			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			//_logger.log(
-			//	Level.SEVERE, "fillJarsList() in directory " + dir.getName(), e);
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
     }
 

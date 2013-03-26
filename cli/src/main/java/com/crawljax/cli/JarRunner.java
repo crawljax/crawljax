@@ -56,8 +56,6 @@ public class JarRunner {
 	static final String LOG_FILE = "log";
 	
 	static final String CLICK = "click";
-	
-	static final String class_path = "C:/Users/User/Desktop/testplugins";
 
 	private static final int SPACES_AFTER_OPTION = 3;
 	private static final int SPACES_BEFORE_OPTION = 5;
@@ -255,13 +253,7 @@ public class JarRunner {
 
 		configureTimers(builder);
 		//TODO: this class path folder has to exist or we have to setup a try catch inside to make sure it does. Done? erase when confirmed
-		try {
-			directoryExistCheck(new File(class_path)); 
-		} catch (ClassPathFolderDoesNotExistException e) {
-			throw new RuntimeException("Target class path folder does not exist", e);
-		}
-		
-		PluginImporter lImporter = new PluginImporter(ClassLoaderHelper.buildClassLoader(true, new File(class_path)));
+		PluginImporter lImporter = new PluginImporter(ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR)));
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));
 		List<Plugin> classPathPlugins = lImporter.getPluggedServices(Plugin.class);
 		for(int iter = 0; iter < classPathPlugins.size(); iter++)
@@ -276,12 +268,6 @@ public class JarRunner {
 		return builder.build();
 	}
 	
-	private void directoryExistCheck(File directory) throws ClassPathFolderDoesNotExistException {
-		if(!directory.exists()){
-		throw new ClassPathFolderDoesNotExistException();
-		}
-	}
-
 	private void configureTimers(CrawljaxConfigurationBuilder builder) {
 		if (commandLine.hasOption(TIME_OUT)) {
 			long time = Long.parseLong(commandLine.getOptionValue(TIME_OUT));
@@ -319,11 +305,5 @@ public class JarRunner {
 	@VisibleForTesting
 	CrawljaxConfiguration getConfig() {
 		return config;
-	}
-	
-	class ClassPathFolderDoesNotExistException extends Exception{
-		public ClassPathFolderDoesNotExistException(){
-			super();
-		}
 	}
 }

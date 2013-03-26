@@ -40,7 +40,7 @@ public class DynamicImportTest {
 	}
 		
 	//as a developer, I want the system to abort if it doesn't find a folder, so that the system doesn't crash
-	@Test (expected=NullPointerException.class)
+	@Test
 	public void ImportFromNonExistentFolder()
 	{
 		File tempDir = new File(TEST_FOLDER_ADDRESS);

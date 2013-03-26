@@ -3,6 +3,7 @@ package com.crawljax.core.plugin;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
@@ -13,7 +14,7 @@ public class CreateJarFile {
     try {
       byte buffer[] = new byte[1024];
 
-      FileOutputStream stream = new FileOutputStream(archiveFile);
+      FileOutputStream stream = new FileOutputStream(outputFile);
       JarOutputStream out = new JarOutputStream(stream, new Manifest());
 
         if (inputFile == null || !inputFile.exists() || inputFile.isDirectory())
