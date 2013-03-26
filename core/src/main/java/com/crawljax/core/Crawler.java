@@ -251,11 +251,9 @@ public class Crawler implements Runnable {
 		} else {
 			LOG.info("Found an invisible link with href={}", href);
 			try {
-				if (!UrlUtils.isLinkExternal(browser.getCurrentUrl(), href)) {
-					URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
-					browser.goToUrl(url);
-					return true;
-				}
+				URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
+				browser.goToUrl(url);
+				return true;
 			} catch (MalformedURLException e) {
 				LOG.info("Could not visit invisible illegal URL {}", e.getMessage());
 			}

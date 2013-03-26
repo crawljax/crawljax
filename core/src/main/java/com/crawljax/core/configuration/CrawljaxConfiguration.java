@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.condition.UrlCondition;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
@@ -24,12 +25,19 @@ public final class CrawljaxConfiguration {
 
 		private final ImmutableList.Builder<Plugin> pluginBuilder = ImmutableList.builder();
 		private final CrawljaxConfiguration config;
-		private final CrawlRulesBuilder crawlRules = CrawlRules.builder();
+		private final CrawlRulesBuilder crawlRules;
 
 		private CrawljaxConfigurationBuilder(URL url) {
 			Preconditions.checkNotNull(url);
 			config = new CrawljaxConfiguration();
 			config.url = url;
+			crawlRules = CrawlRules.builder();
+			addBasicRules(url);
+		}
+
+		private void addBasicRules(URL url) {
+			crawlRules.addCrawlCondition("Don't leave the current URL",
+			        new UrlCondition(url.getHost()));
 		}
 
 		/**

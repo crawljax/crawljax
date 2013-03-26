@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple page</title>
+</head>
+<body>
+	<h1>Simple page</h1>
+	<ul>
+		<li>
+			<button id='locationChange'>This button changes location via
+				javascript window.location</button>
+		</li>
+		<li>
+			<button id='popUpExternal'>This opens a pop-up to a
+				different URL</button>
+		</li>
+	</ul>
+	<script src='/js/jquery.js'></script>
+	<script>
+		$('#locationChange').click(function() {
+			window.location = "http://example.com";			
+		});
+		
+		$('#popUpExternal').click(function() {
+			window.open("http://example.com", "name", "height=512, width=512");
+		});
+	</script>
+</body>
+</html>
