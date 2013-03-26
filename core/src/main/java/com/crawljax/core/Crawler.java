@@ -190,7 +190,7 @@ public class Crawler implements Runnable {
 		}
 		boolean fired = false;
 		String href = eventToFire.getElement().getAttributeOrNull("href");
-		if(!config.getCrawlRules().isExternal() && UrlUtils.isLinkExternal(browser.getCurrentUrl(), href)){
+		if(!config.getCrawlRules().isOpenExternalPopups() && UrlUtils.isLinkExternal(browser.getCurrentUrl(), href)){
 			LOG.debug("Ignoring external link {}", href);
 		}
 		else{
