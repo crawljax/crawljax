@@ -410,10 +410,10 @@ public class StateFlowGraph implements Serializable {
 		if(finalUrl.length()>50)
 		{
 			String finalUrl2 = finalUrl.substring(0, 50);
-			return id+"-"+finalUrl2;
+			return id+"-"+"["+finalUrl2+"]"+"_"+"["+title+"]";
 		}
 		
-		return id+"-"+finalUrl;
+		return id+"-"+"["+finalUrl+"]"+"_"+"["+title+"]";
 	}
 
 	public boolean isInitialState(StateVertex state) {
@@ -436,20 +436,12 @@ public class StateFlowGraph implements Serializable {
 	
 	private String trimUrl(String url)
 	{
-		System.
-		String temp=url;
-		int i=0;
-		int LengthUrl=temp.length();
-		int lastDot=temp.lastIndexOf('.');
-		i=lastDot;
-		while(temp.charAt(i)!='/' && LengthUrl !=lastDot)
-		{
-			i++;
-		}
-		
-		String trimmedUrl=temp.substring(i);
-		return trimmedUrl;
-		
+	String temp=url;
+	{
+	String[] temp2=temp.split("/",4);
+	return temp2[3];
+	}
+
 	}
 	
 }
