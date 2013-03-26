@@ -55,7 +55,7 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	 */
 	public CrawlerExecutor(BrowserConfiguration config) {
 		super(config.getNumberOfBrowsers() * 5, config.getNumberOfBrowsers() * 5, 0L,
-		        TimeUnit.MILLISECONDS, new CrawlQueue(100), new ThreadPoolExecutor.CallerRunsPolicy());
+		        TimeUnit.MILLISECONDS, new CrawlQueue(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 		setThreadFactory(new CrawlerThreadFactory());
 	}
 
