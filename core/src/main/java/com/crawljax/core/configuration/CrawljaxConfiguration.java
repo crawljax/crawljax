@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -29,6 +30,8 @@ public final class CrawljaxConfiguration {
 		private CrawljaxConfigurationBuilder(URL url) {
 			Preconditions.checkNotNull(url);
 			config = new CrawljaxConfiguration();
+			config.urls = new ArrayList<URL>();
+			config.urls.add(url);
 			config.url = url;
 		}
 
@@ -164,6 +167,8 @@ public final class CrawljaxConfiguration {
 	}
 
 	private URL url;
+	private ArrayList<URL> urls;
+	private int lastIndexURL = 0;
 
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.firefox);
 	private Plugins plugins;
@@ -180,6 +185,10 @@ public final class CrawljaxConfiguration {
 
 	public URL getUrl() {
 		return url;
+	}
+	
+	public void updateLastIndexURL(){
+		this.lastIndexURL++;
 	}
 
 	public BrowserConfiguration getBrowserConfig() {
