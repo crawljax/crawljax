@@ -117,12 +117,6 @@ class StateWriter {
 			return 0;
 		}
 		
-		if("index".equals(name))
-		{
-			return 0;
-		}
-		
-		
 		String[] temp = name.split("-");
 		return Integer.parseInt(temp[0]);
 	}
