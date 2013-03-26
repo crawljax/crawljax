@@ -149,7 +149,14 @@ public final class CrawljaxConfiguration {
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
-			
+		}
+		
+		public boolean moreUrlToCrawl(){
+			if (config.lastIndexURL < config.getUrlListSize()){
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 	}
@@ -202,16 +209,17 @@ public final class CrawljaxConfiguration {
 		return this.urls.size();
 	}
 	
-	/*public void alsoCrawl(String url){
-		try {
-			addUrlToList(new URL(url));
-			System.out.println("URL gets added to the list");
-			System.out.println("Number of url in the list now is " + getUrlListSize());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
+	public int getLastURLIndex(){
+		return this.lastIndexURL;
+	}
+	
+	public boolean moreUrlToCrawl(){
+		if (lastIndexURL < getUrlListSize()){
+			return true;
+		} else {
+			return false;
 		}
-		
-	}*/
+	}
 	
 	public URL getUrlNew(){
 		return urls.get(this.lastIndexURL);

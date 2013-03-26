@@ -112,7 +112,8 @@ public class SaveCrawlSession implements PostCrawlingPlugin, GeneratesOutput {
 	}
 
 	private URL getUrl() throws CrawljaxException {
-		return session.getCrawljaxConfiguration().getUrl();
+		//return session.getCrawljaxConfiguration().getUrl();
+		return session.getCrawljaxConfiguration().getUrlNew();
 	}
 
 	@Override
