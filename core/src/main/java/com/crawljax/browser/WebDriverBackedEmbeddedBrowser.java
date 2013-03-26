@@ -265,6 +265,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	public void goToUrl(URL url) {
 		try {
 			browser.navigate().to(url);
+			executeJavaScript( "window.numberOfInternalPopUps = 0;" );
 			handlePopups();
 			Thread.sleep(this.crawlWaitReload);
 		} catch (WebDriverException e) {
@@ -284,11 +285,19 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		try {
 			URI uri = new URI(browser.getCurrentUrl());
 			host = uri.getHost();
-			System.out.println(host);
+			System.out.println( "Host is: " + host );
 		} catch (URISyntaxException e1) {
 			e1.printStackTrace();
 		}
 		
+		/* I tried several methods including "trying" to count the number of browsers that are/were open.
+		 * Also wanted to increment a java variable whenever window.open is called but google says
+		 * it's not possible since javascript is client side and java is server side.
+		 * So I wanted to declare a global javascript variable and increment it everytime window.open is called.
+		 * By several trial and error, I figured out where and how to declare the global javascript variable and 
+		 * retrieve it successfully. However, incrementing the variable is not working as I expected.
+		 * and I am stuck for so long..
+		 */
 		try {
 			executeJavaScript("window.alert = function(msg){return true;};"
 			        + "window.confirm = function(msg){return true;};"
@@ -298,9 +307,28 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			        	+ "if ( url.indexOf('http://" + host + "') == 0 || " 
 			        		+ "url.indexOf('https://" + host + "') == 0 || " 
 			        		+ "url.indexOf('http') == -1){"
+			        		+ "window.numberOfInternalPopUps++;" // <------- putting it here is the logical place that never increments
 			        		+ "return open.call(window, url, name, features); }" 
 			        	+ "else { return null; } };"
 					+ "}(window.open);");
+			
+			
+			/* I am really confused how this javascript code work.
+			 * I don't get why the line of code does not get executed the way I expect
+			 * 
+			 * + "window.open = function (open) {"
+			        + "window.numberOfInternalPopUps++;" <---putting it here is a non-logical place that does increment by 1
+			        	+ "return function (url, name, features) {"
+			        	+ "if ( url.indexOf('http://" + host + "') == 0 || " 
+			        		+ "url.indexOf('https://" + host + "') == 0 || " 
+			        		+ "url.indexOf('http') == -1){"
+			        		+ "return open.call(window, url, name, features); }" 
+			        	+ "else { return null; } };"
+					+ "}(window.open);");
+			 */
+			
+			
+			
 		} catch (CrawljaxException e) {
 			LOGGER.error("Handling of PopUp windows failed", e);
 		}
