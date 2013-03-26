@@ -169,8 +169,7 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		try {
 			//Delete autohotkey pop canceler exe
-			PopUpCancel.deleteTemp(); 
-			
+			PopUpCancel.killExe();			
 			shutdownThread.join();
 		} catch (InterruptedException e) {
 			LOGGER.error("could not wait for browsers to close.", e);

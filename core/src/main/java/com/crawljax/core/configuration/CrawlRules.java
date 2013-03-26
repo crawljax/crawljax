@@ -256,15 +256,6 @@ public class CrawlRules {
 			PopUpCancel.setTimer(timerVal);
 		}
 		
-		/**
-		 * Delay before we should try killing the popUpCanceller process
-		 * @param timerVal
-		 */
-		public void setKillPopUpCancellerTimeOut(int timerVal)
-		{
-			PopUpCancel.setKillProcessTimeOut(timerVal);
-		}
-
 		CrawlRules build() {
 			crawlRules.crawlEvents = crawlEvents.build();
 			if (crawlRules.crawlEvents.isEmpty()) {

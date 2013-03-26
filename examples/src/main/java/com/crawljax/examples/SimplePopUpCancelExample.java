@@ -43,7 +43,6 @@ public class SimplePopUpCancelExample
 		// limit the crawling scope
 		//builder.crawlRules().setCancelPopUps("NONE");
 		//builder.crawlRules().setPopUpTimer(5000);
-		//builder.crawlRules().setKillPopUpCancellerTimeOut(500);
 		builder.setMaximumStates(MAX_STATES);
 		builder.setMaximumDepth(MAX_CRAWL_DEPTH);
 		builder.crawlRules().setInputSpec(getInputSpecification());
