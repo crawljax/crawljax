@@ -9,6 +9,8 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.plugin.Plugins;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * The State Machine.
@@ -94,9 +96,33 @@ public class StateMachine {
 	private StateVertex addStateToCurrentState(StateVertex newState, Eventable eventable) {
 		LOGGER.debug("addStateToCurrentState currentState: {} newstate {}",
 		        currentState.getName(), newState.getName());
+		
+		ImmutableSet<StateVertex> allStates = stateFlowGraph.getAllStates();
+		UnmodifiableIterator<StateVertex> it = allStates.iterator();
+		//com.google.common.collect.UnmodifiableIterator<StateVertex> it = allStates.iterator();
+		
+		
+		int counter = 0;
+		int maxPerUrl = 1;
+		
+		int size = allStates.size();
+		StateVertex temp;
+		
+		for (int i = 0; i < size; i++){
+			temp = it.next();
+			if (temp.getUrl().compareToIgnoreCase(newState.getUrl()) == 0){
+				counter++;
+				if (counter >= maxPerUrl)
+					return newState;
+			}
+		}
+	
+		
 
 		// Add the state to the stateFlowGraph. Store the result
 		StateVertex cloneState = stateFlowGraph.addState(newState);
+		
+		
 
 		// Is there a clone detected?
 		if (cloneState != null) {
