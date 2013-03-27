@@ -32,12 +32,7 @@ public final class CrawljaxConfiguration {
 			config = new CrawljaxConfiguration();
 			config.url = url;
 			crawlRules = CrawlRules.builder();
-			addBasicRules(url);
-		}
 
-		private void addBasicRules(URL url) {
-			crawlRules.addCrawlCondition("Don't leave the current URL",
-			        new UrlCondition(url.getHost()));
 		}
 
 		/**
@@ -142,10 +137,15 @@ public final class CrawljaxConfiguration {
 
 		public CrawljaxConfiguration build() {
 			config.plugins = new Plugins(pluginBuilder.build());
+			addBasicRules(config.url);
 			config.crawlRules = crawlRules.build();
 			return config;
 		}
 
+		private void addBasicRules(URL url) {
+			crawlRules.addCrawlCondition("Don't leave the current URL",
+			        new UrlCondition(url.getHost()));
+		}
 	}
 
 	/**
