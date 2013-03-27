@@ -154,23 +154,8 @@ public class StateMachine {
 	        EmbeddedBrowser browser,
 	        CrawlSession session, int maxStatesPerUrl) {
 	
-		if(maxStatesPerUrl != 0){
-			ImmutableSet<StateVertex> allStates = stateFlowGraph.getAllStates();
-			UnmodifiableIterator<StateVertex> it = allStates.iterator();
-
-			int counter = 0;
-
-			int size = allStates.size();
-			StateVertex temp;
-
-			for (int i = 0; i < size; i++){
-				temp = it.next();
-				if (temp.getUrl().compareToIgnoreCase(newState.getUrl()) == 0){
-					counter++;
-					if (counter >= maxStatesPerUrl)
-						return false;
-				}
-			}
+		if (exceededMaxStatesPerUrl(maxStatesPerUrl,newState)){
+			return false;
 		}
 
 		StateVertex cloneState = this.addStateToCurrentState(newState, event);
@@ -200,4 +185,36 @@ public class StateMachine {
 			plugins.runOnInvriantViolationPlugins(failedInvariant, session);
 		}
 	}
+	
+	private boolean exceededMaxStatesPerUrl(int maxStatesPerUrl, StateVertex newState){
+		if(maxStatesPerUrl != 0){
+			ImmutableSet<StateVertex> allStates = stateFlowGraph.getAllStates();
+			UnmodifiableIterator<StateVertex> it = allStates.iterator();
+
+			int counter = 0;
+
+			//int size = allStates.size();
+			StateVertex temp;
+
+			/*for (int i = 0; i < size; i++){
+				temp = it.next();
+				if (temp.getUrl().compareToIgnoreCase(newState.getUrl()) == 0){
+					counter++;
+					if (counter >= maxStatesPerUrl)
+						return true;
+				}
+			}*/
+			while(it.hasNext()){
+				temp = it.next();
+				if (temp.getUrl().compareToIgnoreCase(newState.getUrl()) == 0){
+					counter++;
+					if (counter >= maxStatesPerUrl)
+						return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+		
 }
