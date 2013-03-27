@@ -1,5 +1,6 @@
 package com.crawljax.core.state;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,25 +18,28 @@ import org.jgrapht.alg.KShortestPaths;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
+import com.crawljax.util.DomUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 /**
- * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
- * clickables (Eventable) on the edges.
+ * The State-Flow Graph is a multi-edge directed graph with states (StateVetex)
+ * on the vertices and clickables (Eventable) on the edges.
  */
 @SuppressWarnings("serial")
 public class StateFlowGraph implements Serializable {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StateFlowGraph.class.getName());
+	private static final Logger LOG = LoggerFactory
+			.getLogger(StateFlowGraph.class.getName());
 
 	private final DirectedGraph<StateVertex, Eventable> sfg;
 
 	/**
-	 * Intermediate counter for the number of states, not relaying on getAllStates.size() because of
-	 * Thread-safety.
+	 * Intermediate counter for the number of states, not relaying on
+	 * getAllStates.size() because of Thread-safety.
 	 */
 	private final AtomicInteger stateCounter = new AtomicInteger();
 
@@ -56,13 +60,15 @@ public class StateFlowGraph implements Serializable {
 	}
 
 	/**
-	 * Adds a state (as a vertix) to the State-Flow Graph if not already present. More formally,
-	 * adds the specified vertex, v, to this graph if this graph contains no vertex u such that
-	 * u.equals(v). If this graph already contains such vertex, the call leaves this graph unchanged
-	 * and returns false. In combination with the restriction on constructors, this ensures that
-	 * graphs never contain duplicate vertices. Throws java.lang.NullPointerException - if the
-	 * specified vertex is null. This method automatically updates the state name to reflect the
-	 * internal state counter.
+	 * Adds a state (as a vertix) to the State-Flow Graph if not already
+	 * present. More formally, adds the specified vertex, v, to this graph if
+	 * this graph contains no vertex u such that u.equals(v). If this graph
+	 * already contains such vertex, the call leaves this graph unchanged and
+	 * returns false. In combination with the restriction on constructors, this
+	 * ensures that graphs never contain duplicate vertices. Throws
+	 * java.lang.NullPointerException - if the specified vertex is null. This
+	 * method automatically updates the state name to reflect the internal state
+	 * counter.
 	 * 
 	 * @param stateVertix
 	 *            the state to be added.
@@ -74,23 +80,25 @@ public class StateFlowGraph implements Serializable {
 	}
 
 	/**
-	 * Adds a state (as a vertix) to the State-Flow Graph if not already present. More formally,
-	 * adds the specified vertex, v, to this graph if this graph contains no vertex u such that
-	 * u.equals(v). If this graph already contains such vertex, the call leaves this graph unchanged
-	 * and returns false. In combination with the restriction on constructors, this ensures that
-	 * graphs never contain duplicate vertices. Throws java.lang.NullPointerException - if the
-	 * specified vertex is null.
+	 * Adds a state (as a vertix) to the State-Flow Graph if not already
+	 * present. More formally, adds the specified vertex, v, to this graph if
+	 * this graph contains no vertex u such that u.equals(v). If this graph
+	 * already contains such vertex, the call leaves this graph unchanged and
+	 * returns false. In combination with the restriction on constructors, this
+	 * ensures that graphs never contain duplicate vertices. Throws
+	 * java.lang.NullPointerException - if the specified vertex is null.
 	 * 
 	 * @param stateVertix
 	 *            the state to be added.
 	 * @param correctName
-	 *            if true the name of the state will be corrected according to the internal state
-	 *            counter.
+	 *            if true the name of the state will be corrected according to
+	 *            the internal state counter.
 	 * @return the clone if one is detected null otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
 	@GuardedBy("sfg")
 	public StateVertex addState(StateVertex stateVertix, boolean correctName) {
+
 		synchronized (sfg) {
 			if (!sfg.addVertex(stateVertix)) {
 				// Graph already contained the vertix
@@ -110,23 +118,35 @@ public class StateFlowGraph implements Serializable {
 	private void correctStateName(StateVertex stateVertix) {
 		// the -1 is for the "index" state.
 		int totalNumberOfStates = this.getAllStates().size() - 1;
-		String correctedName = makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
+		Document stateDom = null;
+		try {
+			stateDom = DomUtils.asDocument(stateVertix.getDom());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String correctedName = makeStateName(totalNumberOfStates,
+				stateVertix.isGuidedCrawling(), stateVertix.getUrl(), stateDom);
 		if (!"index".equals(stateVertix.getName())
-		        && !stateVertix.getName().equals(correctedName)) {
-			LOG.info("Correcting state name from {}  to {}", stateVertix.getName(), correctedName);
+				&& !stateVertix.getName().equals(correctedName)) {
+			LOG.info("Correcting state name from {}  to {}",
+					stateVertix.getName(), correctedName);
 			stateVertix.setName(correctedName);
 		}
 	}
 
 	/**
-	 * Adds the specified edge to this graph, going from the source vertex to the target vertex.
-	 * More formally, adds the specified edge, e, to this graph if this graph contains no edge e2
-	 * such that e2.equals(e). If this graph already contains such an edge, the call leaves this
-	 * graph unchanged and returns false. Some graphs do not allow edge-multiplicity. In such cases,
-	 * if the graph already contains an edge from the specified source to the specified target, than
-	 * this method does not change the graph and returns false. If the edge was added to the graph,
-	 * returns true. The source and target vertices must already be contained in this graph. If they
-	 * are not found in graph IllegalArgumentException is thrown.
+	 * Adds the specified edge to this graph, going from the source vertex to
+	 * the target vertex. More formally, adds the specified edge, e, to this
+	 * graph if this graph contains no edge e2 such that e2.equals(e). If this
+	 * graph already contains such an edge, the call leaves this graph unchanged
+	 * and returns false. Some graphs do not allow edge-multiplicity. In such
+	 * cases, if the graph already contains an edge from the specified source to
+	 * the specified target, than this method does not change the graph and
+	 * returns false. If the edge was added to the graph, returns true. The
+	 * source and target vertices must already be contained in this graph. If
+	 * they are not found in graph IllegalArgumentException is thrown.
 	 * 
 	 * @param sourceVert
 	 *            source vertex of the edge.
@@ -138,10 +158,12 @@ public class StateFlowGraph implements Serializable {
 	 * @see org.jgrapht.Graph#addEdge(Object, Object, Object)
 	 */
 	@GuardedBy("sfg")
-	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert, Eventable clickable) {
+	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert,
+			Eventable clickable) {
 		synchronized (sfg) {
 			if (sfg.containsEdge(sourceVert, targetVert)
-			        && sfg.getAllEdges(sourceVert, targetVert).contains(clickable)) {
+					&& sfg.getAllEdges(sourceVert, targetVert).contains(
+							clickable)) {
 				return false;
 			} else {
 				return sfg.addEdge(sourceVert, targetVert, clickable);
@@ -217,17 +239,20 @@ public class StateFlowGraph implements Serializable {
 	 *            the source state.
 	 * @param target
 	 *            the target state.
-	 * @return true if it is possible (edge exists in graph) to go from source to target.
+	 * @return true if it is possible (edge exists in graph) to go from source
+	 *         to target.
 	 */
 	@GuardedBy("sfg")
 	public boolean canGoTo(StateVertex source, StateVertex target) {
 		synchronized (sfg) {
-			return sfg.containsEdge(source, target) || sfg.containsEdge(target, source);
+			return sfg.containsEdge(source, target)
+					|| sfg.containsEdge(target, source);
 		}
 	}
 
 	/**
-	 * Convenience method to find the Dijkstra shortest path between two states on the graph.
+	 * Convenience method to find the Dijkstra shortest path between two states
+	 * on the graph.
 	 * 
 	 * @param start
 	 *            the start state.
@@ -258,13 +283,13 @@ public class StateFlowGraph implements Serializable {
 	}
 
 	/**
-	 * Retrieve the copy of a state from the StateFlowGraph for a given StateVertix. Basically it
-	 * performs v.equals(u).
+	 * Retrieve the copy of a state from the StateFlowGraph for a given
+	 * StateVertix. Basically it performs v.equals(u).
 	 * 
 	 * @param state
 	 *            the StateVertix to search
-	 * @return the copy of the StateVertix in the StateFlowGraph where v.equals(u) or
-	 *         <code>null</code> if not found.
+	 * @return the copy of the StateVertix in the StateFlowGraph where
+	 *         v.equals(u) or <code>null</code> if not found.
 	 */
 	private StateVertex getStateInGraph(StateVertex state) {
 		for (StateVertex st : sfg.vertexSet()) {
@@ -302,8 +327,8 @@ public class StateFlowGraph implements Serializable {
 		return deepStates;
 	}
 
-	private void traverse(Set<String> visitedStates, List<StateVertex> deepStates,
-	        StateVertex state) {
+	private void traverse(Set<String> visitedStates,
+			List<StateVertex> deepStates, StateVertex state) {
 		visitedStates.add(state.getName());
 
 		Set<StateVertex> outgoingSet = getOutgoingStates(state);
@@ -323,7 +348,8 @@ public class StateFlowGraph implements Serializable {
 		}
 	}
 
-	private boolean cyclic(Set<String> visitedStates, Set<StateVertex> outgoingSet) {
+	private boolean cyclic(Set<String> visitedStates,
+			Set<StateVertex> outgoingSet) {
 		int i = 0;
 
 		for (StateVertex state : outgoingSet) {
@@ -336,25 +362,30 @@ public class StateFlowGraph implements Serializable {
 	}
 
 	/**
-	 * This method returns all possible paths from the index state using the Kshortest paths.
+	 * This method returns all possible paths from the index state using the
+	 * Kshortest paths.
 	 * 
 	 * @param index
 	 *            the initial state.
 	 * @return a list of GraphPath lists.
 	 */
-	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index) {
-		final List<List<GraphPath<StateVertex, Eventable>>> results = Lists.newArrayList();
+	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(
+			StateVertex index) {
+		final List<List<GraphPath<StateVertex, Eventable>>> results = Lists
+				.newArrayList();
 
-		final KShortestPaths<StateVertex, Eventable> kPaths =
-		        new KShortestPaths<>(this.sfg, index, Integer.MAX_VALUE);
+		final KShortestPaths<StateVertex, Eventable> kPaths = new KShortestPaths<>(
+				this.sfg, index, Integer.MAX_VALUE);
 
 		for (StateVertex state : getDeepStates(index)) {
 
 			try {
-				List<GraphPath<StateVertex, Eventable>> paths = kPaths.getPaths(state);
+				List<GraphPath<StateVertex, Eventable>> paths = kPaths
+						.getPaths(state);
 				results.add(paths);
 			} catch (Exception e) {
-				// TODO Stefan; which Exception is catched here???Can this be removed?
+				// TODO Stefan; which Exception is catched here???Can this be
+				// removed?
 				LOG.error("Error with " + state.toString(), e);
 			}
 
@@ -364,31 +395,51 @@ public class StateFlowGraph implements Serializable {
 	}
 
 	/**
-	 * Return the name of the (new)State. By using the AtomicInteger the stateCounter is thread-safe
+	 * Return the name of the (new)State. By using the AtomicInteger the
+	 * stateCounter is thread-safe
 	 * 
 	 * @return State name the name of the state
 	 */
-	public String getNewStateName() {
+	public String getNewStateName(String url, Document DOM) {
 		stateCounter.getAndIncrement();
-		String state = makeStateName(stateCounter.get(), false);
+		String state = makeStateName(stateCounter.get(), false, url, DOM);
 		return state;
 	}
 
 	/**
-	 * Make a new state name given its id. Separated to get a central point when changing the names
-	 * of states. The automatic state names start with "state" and guided ones with "guide".
+	 * Make a new state name given its id. Separated to get a central point when
+	 * changing the names of states. The automatic state names start with
+	 * "state" and guided ones with "guide".
 	 * 
 	 * @param id
 	 *            the id where this name needs to be for.
+	 * @param guided
+	 *            indicates guided crawling.
+	 * @param url
+	 *            url for given state.
+	 * @param Dom
+	 *            used for title extraction.
 	 * @return the String containing the new name.
 	 */
-	private String makeStateName(int id, boolean guided) {
+	private String makeStateName(int id, boolean guided, String url,
+			Document Dom) {
+
+		String title = getTitle(Dom);
+		String path = trimUrl(url);
 
 		if (guided) {
 			return "guided" + id;
 		}
 
-		return "state" + id;
+		String urlWithoutPunctuation = path.replaceAll("\\p{Punct}|\\d.", "");
+		if (urlWithoutPunctuation.length() > 50) {
+			urlWithoutPunctuation = urlWithoutPunctuation.substring(0, 50);
+			return id + "-" + "[" + title + "]" + "_" + "["
+					+ urlWithoutPunctuation + "]";
+		}
+
+		return id + "-" + "[" + title + "]" + "_" + "[" + urlWithoutPunctuation
+				+ "]";
 	}
 
 	public boolean isInitialState(StateVertex state) {
@@ -401,4 +452,23 @@ public class StateFlowGraph implements Serializable {
 	public int getNumberOfStates() {
 		return stateCounter.get();
 	}
+
+	private String getTitle(Document Dom) {
+		Document temp = Dom;
+		String titleText = temp.getElementsByTagName("title").item(0)
+				.getTextContent();
+		return titleText;
+	}
+
+	/**
+	 * @param url
+	 *            the entire URL of the state
+	 * @return a string containing only the path of the state URL
+	 */
+
+	private String trimUrl(String url) {
+		String[] path = url.split("/", 4);
+		return path[3];
+	}
+
 }

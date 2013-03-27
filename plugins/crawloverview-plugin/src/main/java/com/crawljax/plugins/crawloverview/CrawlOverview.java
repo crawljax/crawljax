@@ -63,6 +63,7 @@ public class CrawlOverview
 	public void onNewState(CrawlSession session) {
 		LOG.debug("onNewState");
 		StateVertex vertex = session.getCurrentState();
+
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
 		saveScreenshot(session, state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), session.getBrowser().getDom());
@@ -104,11 +105,13 @@ public class CrawlOverview
 			}
 		}
 		LOG.debug("Saving screenshot for state {}", name);
+
 		File jpg = outputBuilder.newScreenShotFile(name);
 		File thumb = outputBuilder.newThumbNail(name);
 		try {
 			byte[] screenshot = session.getBrowser().getScreenShot();
 			ImageWriter.writeScreenShotAndThumbnail(screenshot, jpg, thumb);
+
 		} catch (CrawljaxException e) {
 			LOG.warn("Screenshots are not supported for {}", session.getBrowser());
 		}
@@ -171,9 +174,9 @@ public class CrawlOverview
 		outputBuilder.write(result);
 		synchronized (visitedStates) {
 			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
-			for (State state : result.getStates().values()) {
+			for(State state: result.getStates().values()){
 				writer.writeHtmlForState(state);
-			}
+			}			
 		}
 		LOG.info("Crawl overview plugin has finished");
 	}
