@@ -22,7 +22,7 @@ public class PluginImporter
     {
         _loader = loader;
     }
-   /* 
+   
     public static <T> List<T> getPluggedServices2(Class<T> clazz, ClassLoader loader)
     {
     	List<T> services = new ArrayList<T>();
@@ -41,7 +41,7 @@ public class PluginImporter
 		}
         return services;
     }
-*/
+
     
     public <T> List<T> getPluggedService (File jarfile)
     {
