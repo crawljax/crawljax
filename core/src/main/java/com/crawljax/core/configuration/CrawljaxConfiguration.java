@@ -214,12 +214,20 @@ public final class CrawljaxConfiguration {
 	}
 	
 	public boolean moreUrlToCrawl(){
-		if (lastIndexURL < getUrlListSize()){
+		if (this.lastIndexURL == getUrlListSize()){
 			return true;
 		} else {
 			return false;
 		}
 	}
+	
+	 public boolean endOfURLArray(){
+	   if (this.lastIndexURL == getUrlListSize()){
+	      return true;
+	   } else {
+	      return false;
+	    }
+	  }
 	
 	public URL getUrlNew(){
 		return urls.get(this.lastIndexURL);

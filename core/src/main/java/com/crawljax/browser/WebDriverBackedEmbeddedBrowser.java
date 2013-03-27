@@ -60,7 +60,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private long crawlWaitEvent;
 	private static final Logger LOGGER = LoggerFactory
 	        .getLogger(WebDriverBackedEmbeddedBrowser.class);
-	private final WebDriver browser;
+	private WebDriver browser;
 
 	private ImmutableSortedSet<String> filterAttributes;
 	private long crawlWaitReload;
@@ -329,6 +329,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	@Override
 	public void close() {
 		LOGGER.info("Closing the browser...");
+		System.out.println("Closing the browser.. Quit is called here!!");
 		try {
 			// close browser and close every associated window.
 			browser.quit();

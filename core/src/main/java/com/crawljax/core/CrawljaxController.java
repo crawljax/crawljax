@@ -81,6 +81,7 @@ public class CrawljaxController implements CrawlQueueManager {
 		browserPool = new BrowserPool(config);
 
 		workQueue = init();
+		
 	}
 
 	/**
@@ -100,6 +101,7 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		LOGGER.info("Embedded browser implementation: {}", configuration.getBrowserConfig()
 		        .getBrowsertype());
+		
 
 		LOGGER.info("Crawl depth: {}", configuration.getMaximumDepth());
 		LOGGER.info("Crawljax initialized!");
@@ -121,69 +123,52 @@ public class CrawljaxController implements CrawlQueueManager {
 		startCrawl = System.currentTimeMillis();
 
 		LOGGER.info("Start crawling with {} crawl elements", configuration.getCrawlRules()
-		        .getPreCrawlConfig().getIncludedElements());
-		
-		/*// Create the initailCrawler
-		initialCrawler = new InitialCrawler(this, configuration.getPlugins());
-
-		// Start the Crawling by adding the initialCrawler to the the workQueue.
-		addWorkToQueue(initialCrawler);
-
-		try {
-			// Block until the all the jobs are done
-			workQueue.waitForTermination();
-		} catch (InterruptedException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-
-		if (workQueue.isAborted()) {
-			LOGGER.warn("It apears to be that the workQueue was Aborted, "
-			        + "not running postcrawling plugins and not closing the browsers");
-			return;
-		}
-		
-		configuration.updateLastIndexURL();*/
-		
-		while (configuration.moreUrlToCrawl()){
-			System.out.println("There are more URL to crawl.. index is now " + configuration.getLastURLIndex());
-			System.out.println("Size is " + configuration.getUrlListSize());
+				.getPreCrawlConfig().getIncludedElements());
+		while (!configuration.endOfURLArray()){
 			
-			// create initial crawler
+			// Create the initailCrawler
 			initialCrawler = new InitialCrawler(this, configuration.getPlugins());
-			// Start the Crawling by adding the initialCrawler to the workQueue
+
+			// Start the Crawling by adding the initialCrawler to the the workQueue.
 			addWorkToQueue(initialCrawler);
-			
+		
+
 			try {
-				// Block until the all the jobs are done 
-			    workQueue.waitForTermination();
-			    removeWorkFromQueue(initialCrawler);
+				// Block until the all the jobs are done
+				workQueue.waitForTermination();
+				removeWorkFromQueue(initialCrawler);
 			} catch (InterruptedException e) {
-			    LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage(), e);
 			}
-			      
+			if (workQueue.isTerminated()) {System.out.println("WorkQueue is terminated!");}
+		
 			if (workQueue.isAborted()) {
-			   LOGGER.warn("It apears to be that the workQueue was Aborted, "
-			        + "not running postcrawling plugins and not closing the browsers");
-			   return;
+				LOGGER.warn("It apears to be that the workQueue was Aborted, "
+					+ "not running postcrawling plugins and not closing the browsers");
+				System.out.println("isAborted is called!");
+				return;
 			}
-			
-			// crawl next URL if list still has more. Otherwise, break the loop and shutdown browser.
+		
 			configuration.updateLastIndexURL();
-			if (configuration.moreUrlToCrawl()){
+			if (!configuration.endOfURLArray()){
 				workQueue = init();
-				System.out.println("Re-initializing workQueue");
-			} else {
+				System.out.println("Re-init the workQueue");
+			} else {	
+				System.out.println("The value of last index is (should be the same) " + configuration.getLastURLIndex() + " and list is " + configuration.getUrlListSize());
 				break;
 			}
-		}
 		
-
+		}
+			
+		
 		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
 
 		/**
 		 * Close all the opened browsers, this is run in separate thread to have the post crawl
 		 * plugins to execute in the meanwhile.
 		 */
+		
+		System.out.println("Close browser via browserPool.close()");
 		Thread shutdownThread = browserPool.close();
 		System.out.println("Browser is closed.");
 
@@ -194,6 +179,7 @@ public class CrawljaxController implements CrawlQueueManager {
 			b = this.getBrowserPool().requestBrowser();
 		} catch (InterruptedException e1) {
 			LOGGER.warn("Re-Request for a browser was interrupted", e1);
+			System.out.println("Re-request problem");
 		}
 		configuration.getPlugins().runPostCrawlingPlugins(session);
 		this.getBrowserPool().freeBrowser(b);
@@ -202,9 +188,11 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		try {
 			shutdownThread.join();
+			System.out.println("Thread is joined");
 		} catch (InterruptedException e) {
 			LOGGER.error("could not wait for browsers to close.", e);
 		}
+	
 
 	}
 

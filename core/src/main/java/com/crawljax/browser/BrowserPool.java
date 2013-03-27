@@ -193,18 +193,31 @@ public final class BrowserPool {
 				}
 				for (EmbeddedBrowser b : available) {
 					try {
-						b.close();
+						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
+							System.out.println("We are in the end of url array, index is " + configuration.getLastURLIndex());
+							b.close();
+						}
 					} finally {
-						deleteList.add(b);
+						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
+							System.out.println("We are in the end of url array, index is " + configuration.getLastURLIndex());
+							deleteList.add(b);
+						}
 					}
 				}
 				available.removeAll(deleteList);
 				deleteList = new LinkedList<EmbeddedBrowser>();
 				for (EmbeddedBrowser b : taken) {
 					try {
-						b.close();
+						// Don't close browser whenever we still have more URL to crawl
+						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
+							System.out.println("We are in the end of url array, index is " + configuration.getLastURLIndex());
+							b.close();
+						}
 					} finally {
-						deleteList.add(b);
+						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
+							System.out.println("We are in the end of url array, index is " + configuration.getLastURLIndex());
+							deleteList.add(b);
+						}
 					}
 				}
 				taken.removeAll(deleteList);
