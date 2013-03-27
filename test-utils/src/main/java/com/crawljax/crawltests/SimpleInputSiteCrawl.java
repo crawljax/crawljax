@@ -20,8 +20,8 @@ public class SimpleInputSiteCrawl extends BaseCrawler {
 	}
 
 	@Override
-	protected CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
-		CrawljaxConfigurationBuilder builder = super.newCrawlConfiguartionBuilder();
+	protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
+		CrawljaxConfigurationBuilder builder = super.newCrawlConfigurationBuilder();
 		builder.crawlRules().setInputSpec(getInputSpecification());
 		return builder;
 	}

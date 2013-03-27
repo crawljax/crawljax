@@ -39,6 +39,7 @@ public class StateStatistics {
 			builder.put(state.getUrl(), state.getName());
 		}
 		this.urls = builder.build();
+		System.out.println("URLS " + urls);
 		this.leastFanOut = leastFanOut;
 		this.leastFanIn = leastFanIn;
 		this.mostFanOut = mostFanOut;
