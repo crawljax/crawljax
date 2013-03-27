@@ -2,10 +2,18 @@ package com.crawljax.core;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 public class TagAttributeTest {
+	
+	@Test
+	public void testConstructorAndAccess() {
+		TagAttribute attrib = new TagAttribute("name", "value");
+		assertEquals(attrib.getName(), "name");
+		assertEquals(attrib.getValue(), "value");
+	}
 
 	@Test
 	public void matchesValueWildcard() {
