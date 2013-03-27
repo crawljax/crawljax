@@ -392,10 +392,10 @@ public class CandidateElementExtractor {
 			return true;
 		}
 
-		for (CrawlElement Crawl : excludeCrawlElements.get(element.getTagName().toUpperCase())) {
+		for (CrawlElement crawlElem : excludeCrawlElements.get(element.getTagName().toUpperCase())) {
 			boolean matchesXPath = false;
 			EventableCondition eventableCondition =
-			        eventableConditionChecker.getEventableCondition(Crawl.getId());
+			        eventableConditionChecker.getEventableCondition(crawlElem.getId());
 			try {
 				String asXpath = XPathHelper.getXPathExpression(element);
 				matchesXPath =
@@ -411,7 +411,7 @@ public class CandidateElementExtractor {
 				LOG.info("Excluded element because of xpath: " + element);
 				return true;
 			}
-			if (!filterElement(Crawl.getAttributes(), element) && Crawl.getAttributes().size() > 0) {
+			if (!filterElement(crawlElem.getAttributes(), element) && crawlElem.getAttributes().size() > 0) {
 				LOG.info("Excluded element because of attributes: " + element);
 				return true;
 			}

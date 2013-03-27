@@ -56,6 +56,14 @@ public final class CrawlElement {
 		this.eventType = eventType;
 	}
 
+	protected CrawlElement(EventType eventType, String tagName,
+	        List<CrawlAttribute> crawlAttributes) {
+		this.tagName = tagName.toUpperCase();
+		this.id = "id" + hashCode();
+		this.eventType = eventType;
+		this.crawlAttributes.addAll(crawlAttributes);
+	}
+
 	/**
 	 * Crawljax will crawl the HTML elements while crawling if and only if all the specified
 	 * conditions are satisfied. IMPORTANT: only works with click()!!! For example:
@@ -219,12 +227,11 @@ public final class CrawlElement {
 
 	/**
 	 * @return the crawl attributes
-	 * 
 	 */
-	public List<CrawlAttribute> getAttributes(){
+	public List<CrawlAttribute> getAttributes() {
 		return crawlAttributes;
 	}
-	
+
 	/**
 	 * @return the id
 	 */
