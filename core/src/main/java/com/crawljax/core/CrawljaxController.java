@@ -81,7 +81,6 @@ public class CrawljaxController implements CrawlQueueManager {
 		browserPool = new BrowserPool(config);
 
 		workQueue = init();
-		
 	}
 
 	/**
@@ -101,7 +100,6 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		LOGGER.info("Embedded browser implementation: {}", configuration.getBrowserConfig()
 		        .getBrowsertype());
-		
 
 		LOGGER.info("Crawl depth: {}", configuration.getMaximumDepth());
 		LOGGER.info("Crawljax initialized!");
