@@ -62,7 +62,6 @@ public class InitialCrawler extends Crawler {
 			LOGGER.error("The request for a browser was interuped.");
 		}
 
-		// TODO
 		goToInitialURL();
 
 		/**

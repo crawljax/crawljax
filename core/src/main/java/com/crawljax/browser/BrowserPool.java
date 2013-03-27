@@ -193,13 +193,12 @@ public final class BrowserPool {
 				}
 				for (EmbeddedBrowser b : available) {
 					try {
+						// only close browser when we are in the end of URL list
 						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
-							System.out.println("We are in the end of url array, index is " + configuration.getLastURLIndex());
 							b.close();
 						}
 					} finally {
 						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
-							System.out.println("We are in the end of url array, index is " + configuration.getLastURLIndex());
 							deleteList.add(b);
 						}
 					}
@@ -208,14 +207,12 @@ public final class BrowserPool {
 				deleteList = new LinkedList<EmbeddedBrowser>();
 				for (EmbeddedBrowser b : taken) {
 					try {
-						// Don't close browser whenever we still have more URL to crawl
+						// only close browser when we are in the end of URL list
 						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
-							System.out.println("We are in the end of url array, index is " + configuration.getLastURLIndex());
 							b.close();
 						}
 					} finally {
 						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
-							System.out.println("We are in the end of url array, index is " + configuration.getLastURLIndex());
 							deleteList.add(b);
 						}
 					}

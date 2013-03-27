@@ -329,7 +329,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	@Override
 	public void close() {
 		LOGGER.info("Closing the browser...");
-		System.out.println("Closing the browser.. Quit is called here!!");
 		try {
 			// close browser and close every associated window.
 			browser.quit();
