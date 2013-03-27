@@ -93,7 +93,7 @@ public class CandidateElementExtractor {
 		ImmutableMultimap.Builder<String, CrawlElement> builder = ImmutableMultimap
 				.builder();
 		for (CrawlElement elem : elements) {
-			builder.put(elem.getCrawlTagName(), elem);
+			builder.put(elem.getTagName(), elem);
 		}
 		return builder.build();
 	}
@@ -252,7 +252,7 @@ public class CandidateElementExtractor {
 
 		Builder<Element> result = ImmutableList.builder();
 
-		if (CrawlElement.getCrawlTagName() == null) {
+		if (CrawlElement.getTagName() == null) {
 			return result.build();
 		}
 
@@ -265,7 +265,7 @@ public class CandidateElementExtractor {
 				eventableCondition);
 
 		NodeList nodeList = dom.getElementsByTagName(CrawlElement
-				.getCrawlTagName());
+				.getTagName());
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
@@ -330,7 +330,7 @@ public class CandidateElementExtractor {
 
 	private void addElement(Element element, Builder<Element> builder,
 			CrawlElement CrawlElement) {
-		if ("A".equalsIgnoreCase(CrawlElement.getCrawlTagName())) {
+		if ("A".equalsIgnoreCase(CrawlElement.getTagName())) {
 			String href = element.getAttribute("href");
 			if (!Strings.isNullOrEmpty(href)) {
 				boolean isExternal = UrlUtils.isLinkExternal(

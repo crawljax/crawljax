@@ -235,7 +235,7 @@ public final class CrawlElement {
 	/**
 	 * @return The crawl tag name.
 	 */
-	public String getCrawlTagName() {
+	public String getTagName() {
 		return crawlTagName;
 	}
 
