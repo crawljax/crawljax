@@ -34,7 +34,8 @@ import com.google.common.io.Files;
 
 class OutputBuilder {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OutputBuilder.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(OutputBuilder.class);
 
 	static final String SCREENSHOT_FOLDER_NAME = "screenshots";
 	static final String STATES_FOLDER_NAME = "states";
@@ -50,7 +51,8 @@ class OutputBuilder {
 
 	/**
 	 * @param outputDir
-	 *            target for the output directory. Folder must not exist or be empty.
+	 *            target for the output directory. Folder must not exist or be
+	 *            empty.
 	 */
 	OutputBuilder(File outputDir) {
 		this.outputDir = outputDir;
@@ -74,15 +76,18 @@ class OutputBuilder {
 
 	private void configureVelocity() {
 		ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-		        "org.apache.velocity.runtime.log.NullLogChute");
+				"org.apache.velocity.runtime.log.NullLogChute");
 		ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-		ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+		ve.setProperty("classpath.resource.loader.class",
+				ClasspathResourceLoader.class.getName());
 	}
 
 	private void checkPermissions() {
 		if (outputDir.exists()) {
-			checkArgument(outputDir.isDirectory(), outputDir + " is not a directory");
-			checkArgument(outputDir.list().length == 0, "Directory must be empty");
+			checkArgument(outputDir.isDirectory(), outputDir
+					+ " is not a directory");
+			checkArgument(outputDir.list().length == 0,
+					"Directory must be empty");
 			checkArgument(outputDir.canWrite(), "Output dir not writable");
 		} else {
 			outputDir.mkdir();
@@ -99,7 +104,8 @@ class OutputBuilder {
 				FileUtils.copyDirectory(new File(skeleton.toURI()), outputDir);
 			} catch (IOException | URISyntaxException e) {
 				throw new RuntimeException(
-				        "Could not copy required resources: " + e.getMessage(), e);
+						"Could not copy required resources: " + e.getMessage(),
+						e);
 			}
 		}
 
@@ -111,8 +117,10 @@ class OutputBuilder {
 		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(jar))) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
-				if (entry.getName().startsWith("skeleton") && !entry.isDirectory()) {
-					String filename = entry.getName().substring("skeleton/".length());
+				if (entry.getName().startsWith("skeleton")
+						&& !entry.isDirectory()) {
+					String filename = entry.getName().substring(
+							"skeleton/".length());
 					File newFile = new File(outputDir, filename);
 					new File(newFile.getParent()).mkdirs();
 					FileOutputStream out = new FileOutputStream(newFile);
@@ -121,8 +129,8 @@ class OutputBuilder {
 				}
 			}
 		} catch (IOException e1) {
-			throw new RuntimeException("Could not copy required resources: " + e1.getMessage(),
-			        e1);
+			throw new RuntimeException("Could not copy required resources: "
+					+ e1.getMessage(), e1);
 		}
 	}
 
@@ -131,35 +139,32 @@ class OutputBuilder {
 		try {
 			path = URLDecoder.decode(skeleton.getPath(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Could not process the path of the Overview skeleton "
-			        + skeleton, e);
+			throw new RuntimeException(
+					"Could not process the path of the Overview skeleton "
+							+ skeleton, e);
 		}
-		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
+		String jarpath = path.substring("file:".length(), path.indexOf("jar!")
+				+ "jar".length());
 		File jar = new File(jarpath);
 		LOG.debug("Jar file {} from path {}", jar, path);
 		return jar;
 	}
 
 	File newScreenShotFile(String name) {
-<<<<<<< HEAD
-/*		String temp = name;
-		temp = temp.replace("xpasswordx", "\\:");
-		temp = temp.replace("ypasswordy", "\\/");
-		temp = temp.replace("zpasswordz", "\\.");*/
-		return new File(screenshots, name.toString() + ".png");
-=======
+
 		return new File(screenshots, name + ".jpg");
 	}
 
 	public File newThumbNail(String name) {
 		return new File(screenshots, name + "_small.jpg");
->>>>>>> dcf0d11df9b54fa539be779526b44b634b1079db
+
 	}
 
 	private void copyGitProperties() {
 		File outFile = new File(outputDir, "git.properties");
-		try (InputStream in = OutputBuilder.class.getResourceAsStream("/git.properties");
-		        FileOutputStream out = new FileOutputStream(outFile)) {
+		try (InputStream in = OutputBuilder.class
+				.getResourceAsStream("/git.properties");
+				FileOutputStream out = new FileOutputStream(outFile)) {
 			ByteStreams.copy(in, out);
 		} catch (IOException e) {
 			LOG.warn("Could not copy git.properties file", e);
@@ -194,13 +199,16 @@ class OutputBuilder {
 
 	private void writeJsonToOutDir(String outModelJson) {
 		try {
-			Files.write(outModelJson, new File(this.outputDir, JSON_OUTPUT_NAME), Charsets.UTF_8);
+			Files.write(outModelJson,
+					new File(this.outputDir, JSON_OUTPUT_NAME), Charsets.UTF_8);
 		} catch (IOException e) {
-			LOG.warn("Could not write JSON model to output dir. " + e.getMessage());
+			LOG.warn("Could not write JSON model to output dir. "
+					+ e.getMessage());
 		}
 	}
 
-	private void writeFile(VelocityContext context, File outFile, String template) {
+	private void writeFile(VelocityContext context, File outFile,
+			String template) {
 		try {
 			Template templatee = ve.getTemplate(template);
 			FileWriter writer = new FileWriter(outFile);
@@ -228,7 +236,8 @@ class OutputBuilder {
 	 */
 	void persistDom(String name, @Nullable String dom) {
 		try {
-			Files.write(Strings.nullToEmpty(dom), new File(doms, name + ".html"), Charsets.UTF_8);
+			Files.write(Strings.nullToEmpty(dom),
+					new File(doms, name + ".html"), Charsets.UTF_8);
 		} catch (IOException e) {
 			LOG.warn("Could not save dom state for {}", name);
 			LOG.debug("Could not save dom state", e);
@@ -237,7 +246,8 @@ class OutputBuilder {
 
 	String getDom(String name) {
 		try {
-			return Files.toString(new File(doms, name + ".html"), Charsets.UTF_8);
+			return Files.toString(new File(doms, name + ".html"),
+					Charsets.UTF_8);
 		} catch (IOException e) {
 			return "Could not load DOM: " + e.getLocalizedMessage();
 		}
