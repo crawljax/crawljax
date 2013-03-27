@@ -265,11 +265,6 @@ public final class Plugins {
 	public void runPreStateCrawlingPlugins(CrawlSession session,
 	        List<CandidateElement> candidateElements) {
 		LOGGER.debug("Running PreStateCrawlingPlugins...");
-		//ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
-		 //       ImmutableListMultimap.builder();
-		//List<Plugin> plugins1 = PluginImporter.getPluggedServices(Plugin.class, new File(PluginImporter.PLUGIN_DIR));
-		//for(int iter = 0; iter < plugins1.size(); iter++)
-		//addPlugins(PluginImporter.getPluggedServices(Plugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(PreStateCrawlingPlugin.class)) {
 			if (plugin instanceof PreStateCrawlingPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
