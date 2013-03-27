@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript">
+
+              function localPopup() {
+                  window.open("index.html", '', 'width=800,height=500');
+              }
+
+              function extPopup() {
+                  window.open("http://google.com", '', 'width=800,height=500,left=800');
+              }
+        </script>
+
+
+	</head>
+	<body>
+		<div id="contents">
+        Popup test
+		<script type="text/javascript">
+			setTimeout('localPopup()', 500);
+			setTimeout('localPopup()', 500);
+            setTimeout('extPopup()', 500);
+
+        </script> 
+		</div>
+	</body>
+</html>
+<!-- Hosting24 Analytics Code -->
+<script type="text/javascript" src="http://stats.hosting24.com/count.php"></script>
+<!-- End Of Analytics Code -->
+
