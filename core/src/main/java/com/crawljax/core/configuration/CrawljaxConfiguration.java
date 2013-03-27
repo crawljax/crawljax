@@ -32,7 +32,6 @@ public final class CrawljaxConfiguration {
 			config = new CrawljaxConfiguration();
 			config.urls = new ArrayList<URL>();
 			config.urls.add(url);
-			config.url = url;
 		}
 
 		/**
@@ -179,7 +178,6 @@ public final class CrawljaxConfiguration {
 		}
 	}
 
-	private URL url;
 	private ArrayList<URL> urls;
 	private int lastIndexURL = 0;
 
@@ -265,12 +263,14 @@ public final class CrawljaxConfiguration {
 		result =
 		        prime * result
 		                + ((proxyConfiguration == null) ? 0 : proxyConfiguration.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((this.urls.get(this.lastIndexURL) == null) ? 0 : this.urls.get(this.lastIndexURL).hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
+		URL url = this.urls.get(this.lastIndexURL);
+		
 		if (this == obj) {
 			return true;
 		}
@@ -319,10 +319,10 @@ public final class CrawljaxConfiguration {
 			return false;
 		}
 		if (url == null) {
-			if (other.url != null) {
+			if (other.urls.get(other.lastIndexURL) != null) {
 				return false;
 			}
-		} else if (!url.equals(other.url)) {
+		} else if (!url.equals(other.urls.get(other.lastIndexURL))) {
 			return false;
 		}
 		return true;
@@ -332,7 +332,7 @@ public final class CrawljaxConfiguration {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("CrawljaxConfiguration [url=");
-		builder.append(url);
+		builder.append(this.urls.get(this.lastIndexURL));
 		builder.append(", browserConfig=");
 		builder.append(browserConfig);
 		builder.append(", plugins=");
