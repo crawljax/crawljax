@@ -24,7 +24,6 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.crawljax.core.plugin.PluginImporter;
-import com.crawljax.core.plugin.ClassLoaderHelper;
 import com.crawljax.core.plugin.Plugin;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
@@ -252,7 +251,6 @@ public class JarRunner {
 		}
 
 		configureTimers(builder);
-		//TODO: this class path folder has to exist or we have to setup a try catch inside to make sure it does. Done? erase when confirmed
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));
 		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, new File(PluginImporter.PLUGIN_DIR));
 		for(int iter = 0; iter < classPathPlugins.size(); iter++)
