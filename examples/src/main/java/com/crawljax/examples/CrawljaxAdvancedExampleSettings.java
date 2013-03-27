@@ -31,8 +31,8 @@ public final class CrawljaxAdvancedExampleSettings {
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
 		builder.crawlRules().click("a");
-		builder.setMaximumDepth(2);
-		//builder.setMaximumStatesPerUrl(2);
+		builder.setMaximumDepth(3);
+		builder.setMaximumStatesPerUrl(2);
 		builder.setMaximumOutgoingEdgesPerState(4);
 
 		// click these elements
