@@ -284,7 +284,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		try {
 			URI uri = new URI(browser.getCurrentUrl());
 			host = uri.getHost();
-			System.out.println(host);
 		} catch (URISyntaxException e1) {
 			e1.printStackTrace();
 		}
