@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Represents the HTML elements which should be crawled. It represents all the HTML elements in the
- * DOM that match the specified tag name. 1) <a class="foo" .. 2) <div... 3) <a href="http://
+ * DOM that match the specified crawl tag name. 1) <a class="foo" .. 2) <div... 3) <a href="http://
  * CrawlElement exampleCrawlElement = new CrawlElement("a") represents the elements 1 and 3 You can
  * refine the set of elements a CrawlElement represents by specifying attributes and XPath
  * conditions For example, you can refine exampleCrawlElement to represent only element 1 using
@@ -34,7 +34,7 @@ import com.google.common.collect.Lists;
  */
 public final class CrawlElement {
 
-	private final String tagName;
+	private final String crawlTagName;
 	private final List<Condition> conditions = Lists.newLinkedList();
 	private final String id;
 	private final EventType eventType;
@@ -43,14 +43,14 @@ public final class CrawlElement {
 	private String underXpath;
 
 	/**
-	 * To create a CrawlElement representing an HTML element <a>MyLink</a> the tag name would be
+	 * To create a CrawlElement representing an HTML element <a>MyLink</a> the crawl tag name would be
 	 * "a".
 	 * 
 	 * @param eventType
 	 *            the event type for this crawl element.
 	 */
-	protected CrawlElement(EventType eventType, String tagName) {
-		this.tagName = tagName.toUpperCase();
+	protected CrawlElement(EventType eventType, String crawlTagName) {
+		this.crawlTagName = crawlTagName.toUpperCase();
 		this.id = "id" + hashCode();
 		this.eventType = eventType;
 	}
@@ -85,9 +85,9 @@ public final class CrawlElement {
 	 */
 	public CrawlElement withAttribute(String attributeName, String value) {
 		if (this.underXpath == null || this.underXpath.isEmpty()) {
-			this.underXpath = "//" + this.tagName + "[@" + attributeName + "='" + value + "']";
+			this.underXpath = "//" + this.crawlTagName + "[@" + attributeName + "='" + value + "']";
 		} else {
-			this.underXpath = this.underXpath + " | " + "//" + this.tagName + "[@" + attributeName + "='" + value + "']";;
+			this.underXpath = this.underXpath + " | " + "//" + this.crawlTagName + "[@" + attributeName + "='" + value + "']";;
 		}
 		return this;
 	}
@@ -123,9 +123,9 @@ public final class CrawlElement {
 	 */
 	public CrawlElement withText(String text) {
 		if(this.underXpath == null || this.underXpath.isEmpty()) {
-			this.underXpath = "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
+			this.underXpath = "//" + this.crawlTagName + "[text()=" + escapeApostrophes(text) + "]";
 		} else {
-			this.underXpath = this.underXpath + " | " + "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
+			this.underXpath = this.underXpath + " | " + "//" + this.crawlTagName + "[text()=" + escapeApostrophes(text) + "]";
 		}
 		return this;
 	}
@@ -154,9 +154,9 @@ public final class CrawlElement {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder("CrawlElement [");
-		if (tagName != null) {
+		if (crawlTagName != null) {
 			builder.append("tagName=");
-			builder.append(tagName);
+			builder.append(crawlTagName);
 			builder.append(", ");
 		}
 		if (conditions != null && !conditions.isEmpty()) {
@@ -233,10 +233,10 @@ public final class CrawlElement {
 	}
 
 	/**
-	 * @return The tag name.
+	 * @return The crawl tag name.
 	 */
 	public String getTagName() {
-		return tagName;
+		return crawlTagName;
 	}
 
 	/**
