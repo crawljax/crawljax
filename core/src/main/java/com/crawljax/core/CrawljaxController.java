@@ -26,21 +26,13 @@ import com.google.common.collect.ImmutableList;
  */
 public class CrawljaxController implements CrawlQueueManager {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CrawljaxController.class
-	        .getName());
-
-	private CrawlSession session;
-
-	private long startCrawl;
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawljaxController.class);
 
 	private final StateComparator stateComparator;
 	private final ConditionTypeChecker<CrawlCondition> crawlConditionChecker;
 	private final EventableConditionChecker eventableConditionChecker;
 
 	private final WaitConditionChecker waitConditionChecker = new WaitConditionChecker();
-
-	// TODO Stefan, Can not be final because, must be created after the loading of the plugins
-	private Crawler initialCrawler;
 
 	private final CrawljaxConfiguration configuration;
 
@@ -54,6 +46,12 @@ public class CrawljaxController implements CrawlQueueManager {
 	private final CandidateElementManager elementChecker;
 
 	private final BrowserPool browserPool;
+
+	// TODO Stefan, Can not be final because, must be created after the loading of the plugins
+	private Crawler initialCrawler;
+	private CrawlSession session;
+
+	private long startCrawl;
 
 	/**
 	 * @param config
