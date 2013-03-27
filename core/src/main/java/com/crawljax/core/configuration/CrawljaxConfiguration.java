@@ -150,7 +150,8 @@ public final class CrawljaxConfiguration {
 		}
 		
 		public void alsoCrawl(URL url){
-				config.addUrlToList(url);
+			Preconditions.checkNotNull(url, "URL was null");
+			config.addUrlToList(url);
 		}
 
 	}
