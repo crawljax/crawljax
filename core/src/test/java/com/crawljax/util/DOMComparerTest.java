@@ -3,7 +3,8 @@ package com.crawljax.util;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-
+import org.hamcreast.collection.IsEmptyCollection;
+import static org.hamcrest.core.Is.is;
 import java.util.List;
 import org.junit.Test;
 import org.custommonkey.xmlunit.Difference;
@@ -16,8 +17,6 @@ import org.w3c.dom.Document;
  */
 
 public class DOMComparerTest   {
-	
-	private static int EMPTY = 0;
 	
 	@Test
 	public void compareNoDifference() throws IOException{
@@ -32,7 +31,7 @@ public class DOMComparerTest   {
 		DOMComparer dc = new DOMComparer(control, test);
 		
 		List<Difference> differences = dc.compare();
-		assertEquals("Error: found differences in Documents",differences.size(),EMPTY);
+		assertThat(differences, is(IsEmptyCollection.empty()));
 	}
 	
 	@Test

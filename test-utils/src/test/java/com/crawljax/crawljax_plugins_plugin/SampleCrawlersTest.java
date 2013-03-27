@@ -19,103 +19,38 @@ import com.crawljax.test.WebServer;
 public class SampleCrawlersTest {
 	private BaseCrawler crawler;
 	private CrawlSession crawl;
-	private int numStates;
-	private int numEdges;
-	private boolean isSetup = false;
 	
-	private void setupSimpleCrawler() throws Exception {
-		crawler = new SimpleSiteCrawl();
-		crawl = crawler.crawl();
-		numStates = SimpleSiteCrawl.NUMBER_OF_STATES;
-		numEdges = SimpleSiteCrawl.NUMBER_OF_EDGES;
-		isSetup = true;
-	}
-	
-	private void setupJsCrawler() throws Exception {
-		crawler = new SimpleJsSiteCrawl();
-		crawl = crawler.crawl();
-		numStates = SimpleJsSiteCrawl.NUMBER_OF_STATES;
-		numEdges = SimpleJsSiteCrawl.NUMBER_OF_EDGES;
-		isSetup = true;
-	}
-	
-	private void setupInputCrawler() throws Exception {
-		crawler = new SimpleInputSiteCrawl();
-		crawl = crawler.crawl();
-		numStates = SimpleInputSiteCrawl.NUMBER_OF_STATES;
-		numEdges = SimpleInputSiteCrawl.NUMBER_OF_EDGES;
-		isSetup = true;
-	}
-	
-	private void setupXpathCrawl() throws Exception {
-		crawler = new SimpleXpathCrawl();
-		crawl = crawler.crawl();
-		numStates = SimpleInputSiteCrawl.NUMBER_OF_STATES;
-		numEdges = SimpleInputSiteCrawl.NUMBER_OF_EDGES;
-		isSetup = true;
-	}
-
 	@Test
 	public void testSimpleCrawlerFlowGraph() throws Exception {
-		setupSimpleCrawler();
-		runFlowGraphTest();
-	}
-	
-	@Test
-	public void testSimpleCrawlerUrl() throws Exception {
-		setupSimpleCrawler();
-		runUrlTest();
+		crawler = new SimpleSiteCrawl();
+		crawl = crawler.crawl();
+		verifyGraphSize(SimpleSiteCrawl.NUMBER_OF_STATES, SimpleSiteCrawl.NUMBER_OF_EDGES);
 	}
 
 	@Test
 	public void testJsCrawlerFlowGraph() throws Exception {
-		setupJsCrawler();
-		runFlowGraphTest();
-	}
-	
-	@Test
-	public void testJsCrawlerUrl() throws Exception{
-		setupJsCrawler();
-		runUrlTest();
+		crawler = new SimpleJsSiteCrawl();
+		crawl = crawler.crawl();
+		verifyGraphSize(SimpleJsSiteCrawl.NUMBER_OF_STATES, SimpleJsSiteCrawl.NUMBER_OF_EDGES);
 	}
 
 	@Test
 	public void testInputCrawlerFlowGraph() throws Exception {
-		setupInputCrawler();
-		runFlowGraphTest();
-	}
-	
-	@Test
-	public void testInputCrawlerUrl() throws Exception {
-		setupInputCrawler();
-		runUrlTest();
+		crawler = new SimpleInputSiteCrawl();
+		crawl = crawler.crawl();
+		verifyGraphSize(SimpleInputSiteCrawl.NUMBER_OF_STATES, SimpleInputSiteCrawl.NUMBER_OF_EDGES);
 	}
 
 	@Test
 	public void testSimpleXPathCrawlFlowGrah() throws Exception {
-		setupXpathCrawl();
-		runFlowGraphTest();
+		crawler = new SimpleXpathCrawl();
+		crawl = crawler.crawl();
+		verifyGraphSize(SimpleInputSiteCrawl.NUMBER_OF_STATES, SimpleInputSiteCrawl.NUMBER_OF_EDGES);
 	}
 	
-	@Test
-	public void testSimpleXPathCrawlUrl() throws Exception {
-		setupXpathCrawl();
-		runUrlTest();
-	}
-	
-	private void runFlowGraphTest() throws Exception {
-		assertTrue(isSetup);
+	private void verifyGraphSize(int numberOfStates, int numberOfEdges) throws Exception {
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		assertThat(stateFlowGraph, hasStates(numStates));
-		assertThat(stateFlowGraph, hasEdges(numEdges));
+		assertThat(stateFlowGraph, hasStates(numberOfStates));
+		assertThat(stateFlowGraph, hasEdges(numberOfEdges));
 	}
-	
-	
-	private void runUrlTest() throws Exception {
-		assertTrue(isSetup);
-		WebServer server = crawler.getWebServer();
-		URL site = new URL("http", "localhost", server.getPort(), "/");
-		assertTrue(site.getPath().equals(server.getSiteUrl().getPath()));
-	}
-
 }

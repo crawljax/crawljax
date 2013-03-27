@@ -2,6 +2,7 @@ package com.crawljax.test;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.After;
 
 import java.net.URL;
 import org.eclipse.jetty.util.resource.Resource;
@@ -28,6 +29,11 @@ public class WebServerTest {
 			throw new CrawljaxException("Could not load resource", e);
 		}
 		server.start();
+	}
+	
+	@After
+	public void stopServer() {
+		server.stop();
 	}
 
 	@Test
