@@ -40,7 +40,7 @@ public class DomUtilsTest {
 	 */
 	@Test
 	public void testGetElementByXpath() throws XPathExpressionException, IOException {
-		final String html =
+		String html =
 		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
 		                + "<a id='thea'>test</a></span></div></body>";
 		String xpath = "/HTML[1]/BODY[1]/DIV[1]";
@@ -72,7 +72,7 @@ public class DomUtilsTest {
 	 */
 	@Test
 	public void testRemoveTags() throws IOException {
-		final String html = "<body><div id='testdiv'</div><div style=\"colour:#FF0000\">" 
+		String html = "<body><div id='testdiv'</div><div style=\"colour:#FF0000\">" 
 					+ "<h>Header</h></div></body>"; 
 		Document dom = DomUtils.asDocument(html); 
 		assertNotNull(dom); 
@@ -89,7 +89,7 @@ public class DomUtilsTest {
 	 */
 	@Test
 	public void testRemoveScriptTags() throws IOException {
-		final String html = "<body><script type=\"test/javascript\">" + 
+		String html = "<body><script type=\"test/javascript\">" + 
 				"document.write(\"Testing!\")</script></body>";
 		
 		Document dom = DomUtils.asDocument(html); 
@@ -107,10 +107,10 @@ public class DomUtilsTest {
 	 */
 	@Test
 	public void testGetDocumentToString() throws IOException {
-		final String html = "<body><div id='testdiv'</div><div style=\"colour:#FF0000\">" 
+		String html = "<body><div id='testdiv'</div><div style=\"colour:#FF0000\">" 
 				+ "<h>Header</h></div></body>"; 
 		
-		final String expectedDocString = "<HTML><HEAD><META http-equiv=\"Content-Type\"" + 
+		String expectedDocString = "<HTML><HEAD><META http-equiv=\"Content-Type\"" + 
 				" content=\"text/html; charset=UTF-8\"></HEAD><BODY><DIV id=\"testdiv\">" +
 				"</DIV><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
 
@@ -126,10 +126,10 @@ public class DomUtilsTest {
 	 */
 	@Test
 	public void testGetTextValue() throws IOException {
-		final String expectedText1 = "Testing title text";
-		final String expectedText2 = "Testing content test"; 
-		final String expectedText3 = "Testing alternative text"; 
-		final String html = "<body><br id='test1' title=\"" + expectedText1 + "\">" 
+		String expectedText1 = "Testing title text";
+		String expectedText2 = "Testing content test"; 
+		String expectedText3 = "Testing alternative text"; 
+		String html = "<body><br id='test1' title=\"" + expectedText1 + "\">" 
 				+ "<p id='test2'>" + expectedText2 + "</p>" 
 				+ "<br id='test3' alt=\"" + expectedText3 + "\"></body>";
 		
@@ -152,11 +152,11 @@ public class DomUtilsTest {
 	 */
 	@Test
 	public void testRemoveNewLines() {
-		final String html = "<HTML>\n<HEAD>\n<META http-equiv=\"Content-Type\"" + 
+		String html = "<HTML>\n<HEAD>\n<META http-equiv=\"Content-Type\"" + 
 				" content=\"text/html; charset=UTF-8\"></HEAD>\n<BODY>\n<DIV id=\"testdiv\">" +
 				"</DIV><DIV style=\"colour:#FF0000\">\n<H>Header</H>\n</DIV>\n</BODY>\n</HTML>";
 		
-		final String expectedString = "<HTML><HEAD><META http-equiv=\"Content-Type\"" + 
+		String expectedString = "<HTML><HEAD><META http-equiv=\"Content-Type\"" + 
 				" content=\"text/html; charset=UTF-8\"></HEAD><BODY><DIV id=\"testdiv\">" +
 				"</DIV><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
 
@@ -168,9 +168,9 @@ public class DomUtilsTest {
 	 */
 	@Test
 	public void testReplaceString() {
-		final String regex = "hello|world";
-		final String toReplace = "hello world helloworld worldhello";
-		final String expectedString = "testing testing testingtesting testingtesting"; 
+		String regex = "hello|world";
+		String toReplace = "hello world helloworld worldhello";
+		String expectedString = "testing testing testingtesting testingtesting"; 
 		
 		assertEquals(expectedString, DomUtils.replaceString(toReplace, regex, "testing"));
 	}
@@ -180,8 +180,8 @@ public class DomUtilsTest {
 	 */
 	@Test
 	public void testAddFolderSlashIfNeeded() {
-		final String incompleteFolderName = "path/testpath";
-		final String expectedPath = incompleteFolderName + "/"; 
+		String incompleteFolderName = "path/testpath";
+		String expectedPath = incompleteFolderName + "/"; 
 		
 		assertEquals(expectedPath, DomUtils.addFolderSlashIfNeeded(incompleteFolderName)); 
 	}

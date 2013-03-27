@@ -21,14 +21,11 @@ public class HtmlNamespaceTest {
 		}
 		assertTrue(testPass);
 		
-		testPrefix = "gibberish";
-		assertEquals(XMLConstants.DEFAULT_NS_PREFIX, testNamespace.getNamespaceURI(testPrefix));
+		assertEquals(XMLConstants.DEFAULT_NS_PREFIX, testNamespace.getNamespaceURI("gibberish"));
 		
-		testPrefix = "html";
-		assertEquals("http://www.w3.org/1999/xhtml", testNamespace.getNamespaceURI(testPrefix));
+		assertEquals("http://www.w3.org/1999/xhtml", testNamespace.getNamespaceURI("html"));
 		
-		testPrefix = "xml";
-		assertEquals(XMLConstants.XML_NS_URI, testNamespace.getNamespaceURI(testPrefix));
+		assertEquals(XMLConstants.XML_NS_URI, testNamespace.getNamespaceURI("xml"));
 	}
 	
 }
