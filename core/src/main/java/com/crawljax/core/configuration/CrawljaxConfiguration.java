@@ -55,6 +55,17 @@ public final class CrawljaxConfiguration {
 		}
 
 		/**
+		 * @param edgesPerState
+		 *            The maximum number of states the Crawler should crawl within 1 URL. The default is
+		 *            unlimited.
+		 */
+		public CrawljaxConfigurationBuilder setMaximumOutgoingEdgesPerState(int edgesPerState) {
+			checkArgument(edgesPerState >= 1, "Number of maximum outgoing edges per state should be larger than or equal to 1");
+			config.maximumOutgoingEdgesPerState = edgesPerState;
+			return this;
+		}
+		
+		/**
 		 * Crawl without a maximum state limit.
 		 */
 		public CrawljaxConfigurationBuilder setUnlimitedStates() {
@@ -70,6 +81,14 @@ public final class CrawljaxConfiguration {
 			return this;
 		}
 
+		/**
+		 * Crawl without a maximum outgoing edge limit per state.
+		 */
+		public CrawljaxConfigurationBuilder setUnlimitedOutgoinEdgesPerState() {
+			config.maximumOutgoingEdgesPerState = 0;
+			return this;
+		}
+		
 		/**
 		 * @param time
 		 *            The maximum time the crawler should run. Default is one hour.
@@ -194,6 +213,7 @@ public final class CrawljaxConfiguration {
 	private int maximumStatesPerUrl = 0;
 	private long maximumRuntime = TimeUnit.HOURS.toMillis(1);;
 	private int maximumDepth = 2;
+	private int maximumOutgoingEdgesPerState = 0;
 
 	private CrawljaxConfiguration() {
 	}
@@ -232,6 +252,10 @@ public final class CrawljaxConfiguration {
 
 	public int getMaximumDepth() {
 		return maximumDepth;
+	}
+	
+	public int getMaximumOutgoingEdgesPerState(){
+		return maximumOutgoingEdgesPerState;
 	}
 
 	@Override

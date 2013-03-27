@@ -93,31 +93,27 @@ public class StateMachine {
 	 *            the clickable causing the new state.
 	 * @return the clone state iff newState is a clone, else returns null
 	 */
-	private StateVertex addStateToCurrentState(StateVertex newState, Eventable eventable) {
+	private StateVertex addStateToCurrentState(StateVertex newState, Eventable eventable, int maxStatePerUrl) {
 		LOGGER.debug("addStateToCurrentState currentState: {} newstate {}",
 		        currentState.getName(), newState.getName());
-		
-		ImmutableSet<StateVertex> allStates = stateFlowGraph.getAllStates();
-		UnmodifiableIterator<StateVertex> it = allStates.iterator();
-		//com.google.common.collect.UnmodifiableIterator<StateVertex> it = allStates.iterator();
-		
-		
-		int counter = 0;
-		int maxPerUrl = 1;
-		
-		int size = allStates.size();
-		StateVertex temp;
-		
-		for (int i = 0; i < size; i++){
-			temp = it.next();
-			if (temp.getUrl().compareToIgnoreCase(newState.getUrl()) == 0){
-				counter++;
-				if (counter >= maxPerUrl)
-					return newState;
+		if(maxStatePerUrl == 0){
+			ImmutableSet<StateVertex> allStates = stateFlowGraph.getAllStates();
+			UnmodifiableIterator<StateVertex> it = allStates.iterator();
+
+			int counter = 0;
+
+			int size = allStates.size();
+			StateVertex temp;
+
+			for (int i = 0; i < size; i++){
+				temp = it.next();
+				if (temp.getUrl().compareToIgnoreCase(newState.getUrl()) == 0){
+					counter++;
+					if (counter >= maxStatePerUrl)
+						return newState;
+				}
 			}
 		}
-	
-		
 
 		// Add the state to the stateFlowGraph. Store the result
 		StateVertex cloneState = stateFlowGraph.addState(newState);
@@ -176,8 +172,8 @@ public class StateMachine {
 	 */
 	public boolean updateAndCheckIfClone(final Eventable event, StateVertex newState,
 	        EmbeddedBrowser browser,
-	        CrawlSession session) {
-		StateVertex cloneState = this.addStateToCurrentState(newState, event);
+	        CrawlSession session, int maxStatesPerUrl) {
+		StateVertex cloneState = this.addStateToCurrentState(newState, event, maxStatesPerUrl);
 
 		if (cloneState != null) {
 			newState = cloneState;

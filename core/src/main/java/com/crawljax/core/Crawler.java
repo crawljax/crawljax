@@ -366,7 +366,7 @@ public class Crawler implements Runnable {
 
 				controller.getSession().addEventableToCrawlPath(eventable);
 				if (this.getStateMachine().updateAndCheckIfClone(eventable, newState,
-				        this.getBrowser(), this.controller.getSession())) {
+				        this.getBrowser(), this.controller.getSession(), this.config.getMaximumStatesPerUrl())) {
 
 					return ClickResult.NEW_STATE;
 				} else {
@@ -680,7 +680,7 @@ public class Crawler implements Runnable {
 
 	private boolean shouldContinueCrawling(StateVertex vertex) {
 		return !maximumCrawlTimePassed() && !maximumStatesReached()
-				&& !maximumStatesPerUrlReached(vertex);
+				&& !maximumOutgoingEdgesPerStateReached(vertex);
 	}
 
 	private boolean maximumCrawlTimePassed() {
@@ -706,12 +706,12 @@ public class Crawler implements Runnable {
 		}
 	}
 	
-	private boolean maximumStatesPerUrlReached(StateVertex vertex) {
+	private boolean maximumOutgoingEdgesPerStateReached(StateVertex vertex) {
 		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
 		if (vertex != null) {
-			int maxNumberOfStatesPerUrl = config.getMaximumStatesPerUrl();
-			if ((maxNumberOfStatesPerUrl != 0) && (graph.getOutgoingStates(vertex).size() >= maxNumberOfStatesPerUrl)) {
-				LOG.info("Max number of states per Url {} reached!", maxNumberOfStatesPerUrl);
+			int maxOutgoingEdgesPerState = config.getMaximumOutgoingEdgesPerState();
+			if ((maxOutgoingEdgesPerState != 0) && (graph.getOutgoingStates(vertex).size() >= maxOutgoingEdgesPerState)) {
+				LOG.info("Max number of states per Url {} reached!", maxOutgoingEdgesPerState);
 				return true;
 			}
 		}

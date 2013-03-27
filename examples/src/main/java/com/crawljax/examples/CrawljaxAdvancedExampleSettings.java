@@ -18,7 +18,9 @@ public final class CrawljaxAdvancedExampleSettings {
 
 	private static final long WAIT_TIME_AFTER_EVENT = 200;
 	private static final long WAIT_TIME_AFTER_RELOAD = 20;
-	private static final String URL = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
+	//private static final String URL = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
+	private static final String URL = "http://www.facebook.com/meeeeeeeeeeeeeeeeee";
+
 	private static final String outputDir = "output";
 
 	/**
@@ -29,6 +31,9 @@ public final class CrawljaxAdvancedExampleSettings {
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
 		builder.crawlRules().click("a");
+		builder.setMaximumDepth(2);
+		//builder.setMaximumStatesPerUrl(2);
+		builder.setMaximumOutgoingEdgesPerState(4);
 
 		// click these elements
 		builder.crawlRules().clickDefaultElements();
