@@ -60,7 +60,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private long crawlWaitEvent;
 	private static final Logger LOGGER = LoggerFactory
 	        .getLogger(WebDriverBackedEmbeddedBrowser.class);
-	private WebDriver browser;
+	private final WebDriver browser;
 
 	private ImmutableSortedSet<String> filterAttributes;
 	private long crawlWaitReload;
