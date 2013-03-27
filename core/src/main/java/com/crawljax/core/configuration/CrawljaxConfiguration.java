@@ -151,6 +151,10 @@ public final class CrawljaxConfiguration {
 			}
 		}
 		
+		public void alsoCrawl(URL url){
+				config.addUrlToList(url);
+		}
+		
 		public boolean moreUrlToCrawl(){
 			if (config.lastIndexURL < config.getUrlListSize()){
 				return true;
