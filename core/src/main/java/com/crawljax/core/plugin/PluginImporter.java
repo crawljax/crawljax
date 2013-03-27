@@ -63,7 +63,12 @@ public class PluginImporter
     		Class<?> service = Class.forName(implementation, false, loader);
     		if (clazz.isAssignableFrom(service))
     		{
-    			services.add(clazz.cast(service.newInstance()));
+    			T tempClass =clazz.cast(service.newInstance());
+    			for(int i = 0; i < services.size(); i++)
+    				if (services.get(i).getClass().getName() == tempClass.getClass().getName())
+    					return;
+    			
+    			services.add(tempClass);
     		}
         }
     	catch(ClassNotFoundException | IllegalAccessException | InstantiationException e )

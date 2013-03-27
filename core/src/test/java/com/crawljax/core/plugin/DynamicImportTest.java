@@ -48,11 +48,9 @@ public class DynamicImportTest {
 		File tempDir = SetupTestFolderStructure(new File(TEST_FOLDER_ADDRESS));
 		boolean FolderExists = tempDir.exists();
 		assertEquals(true, FolderExists);
-		//create 1 blank jar in that folder
 		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar.jar"), SampleNonPluginClass.class, false);
 		assertEquals(1, tempDir.listFiles().length);
 		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
-		//assert that zero plugins were returned
 		assertEquals(0,classPathPlugins.size());
 		
 	}
@@ -64,14 +62,9 @@ public class DynamicImportTest {
 		File tempDir = new File(TEST_FOLDER_ADDRESS);
 		removeDirectory(tempDir);
 		boolean FolderExists = tempDir.exists();
-		//assert that the folder is not real
+
 		assertEquals(false, FolderExists);
-		
 		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
-		
-		//assert that the warning came up that no plugins were found in that folder ?? how do you do this
-		
-		//assert that zero plugins were returned
 		assertEquals(0, classPathPlugins.size());
 	}
 	
@@ -86,21 +79,25 @@ public class DynamicImportTest {
 		boolean FolderExists = tempDir.exists() | tempSubDir.exists();
 		assertEquals(true, FolderExists);
 		
-		//make 2 jars here, one in testfolder, the other in testsubfolder
-		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar.jar"), SamplePreCrawlingPlugin.class, true);        
 		CreateJarFile.createJar(new File(tempSubDir.getPath() + "/testjar2.jar"), SamplePreCrawlingPlugin.class, true); 
 		
 		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		
-		assertEquals(2, classPathPlugins.size());
+		assertEquals(1, classPathPlugins.size());
 	}
+	
 	//as a user, if a plugin is present in both folder and jar form, only one should be included
 	@Test
 	public void ExcludeDuplicatePlugins()
 	{
-		//make it fail for now, not sure how to do this (or if we need to do it, will ask the Prof
-		//to see if this is a relevant user story)
-		assertEquals(1,0);
+		File tempDir = SetupTestFolderStructure(new File(TEST_FOLDER_ADDRESS));
+		boolean FolderExists = tempDir.exists();
+		assertEquals(true, FolderExists);
+		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar.jar"), SamplePreCrawlingPlugin.class, false);
+		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar2.jar"), SamplePreCrawlingPlugin.class, false);
+		assertEquals(2, tempDir.listFiles().length);
+		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
+		assertEquals(1,classPathPlugins.size());
 	}
 	
 	static File SetupTestFolderStructure(File pDir)
