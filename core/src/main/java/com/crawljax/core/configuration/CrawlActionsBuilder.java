@@ -56,7 +56,7 @@ public class CrawlActionsBuilder {
 			}
 			ImmutableList.Builder<CrawlElement> builder = ImmutableList.builder();
 			for (CrawlElement include : includes) {
-				builder.add(new CrawlElement(EventType.click, include.getCrawlTagName())
+				builder.add(new CrawlElement(EventType.click, include.getTagName())
 				        .underXPath(xpath));
 			}
 			return builder.build();
