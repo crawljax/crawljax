@@ -366,7 +366,7 @@ public class Crawler implements Runnable {
 
 				controller.getSession().addEventableToCrawlPath(eventable);
 				if (this.getStateMachine().updateAndCheckIfClone(eventable, newState,
-				        this.getBrowser(), this.controller.getSession())) {
+				        this.getBrowser(), this.controller.getSession(), this.config.getMaximumStatesPerUrl())) {
 
 					return ClickResult.NEW_STATE;
 				} else {
@@ -449,16 +449,17 @@ public class Crawler implements Runnable {
 	 *             if an exception is thrown.
 	 */
 	private boolean crawl() throws CrawljaxException {
+		
+		// Store the currentState to be able to 'back-track' later.
+		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
+				
 		if (depthLimitReached()) {
 			return true;
 		}
 
-		if (!shouldContinueCrawling()) {
+		if (!shouldContinueCrawling(orrigionalState)) {
 			return false;
 		}
-
-		// Store the currentState to be able to 'back-track' later.
-		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
 
 		if (orrigionalState.searchForCandidateElements(candidateExtractor)) {
 			// Only execute the preStateCrawlingPlugins when it's the first time
@@ -477,7 +478,7 @@ public class Crawler implements Runnable {
 				return true;
 			}
 
-			if (!shouldContinueCrawling()) {
+			if (!shouldContinueCrawling(orrigionalState)) {
 				return false;
 			}
 			ClickResult result = this.crawlAction(action);
@@ -595,7 +596,7 @@ public class Crawler implements Runnable {
 	 */
 	@Override
 	public void run() {
-		if (!shouldContinueCrawling()) {
+		if (!shouldContinueCrawling(null)) {
 			// Constrains are not met at start of this Crawler, so stop immediately
 			return;
 		}
@@ -677,8 +678,9 @@ public class Crawler implements Runnable {
 		return stateMachine;
 	}
 
-	private boolean shouldContinueCrawling() {
-		return !maximumCrawlTimePassed() && !maximumStatesReached();
+	private boolean shouldContinueCrawling(StateVertex vertex) {
+		return !maximumCrawlTimePassed() && !maximumStatesReached()
+				&& !maximumOutgoingEdgesPerStateReached(vertex);
 	}
 
 	private boolean maximumCrawlTimePassed() {
@@ -703,5 +705,16 @@ public class Crawler implements Runnable {
 			return false;
 		}
 	}
-
+	
+	private boolean maximumOutgoingEdgesPerStateReached(StateVertex vertex) {
+		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
+		if (vertex != null) {
+			int maxOutgoingEdgesPerState = config.getMaximumOutgoingEdgesPerState();
+			if ((maxOutgoingEdgesPerState != 0) && (graph.getOutgoingStates(vertex).size() >= maxOutgoingEdgesPerState)) {
+				LOG.info("Max number of states per Url {} reached!", maxOutgoingEdgesPerState);
+				return true;
+			}
+		}
+		return false;
+	}
 }

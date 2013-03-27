@@ -9,6 +9,8 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.plugin.Plugins;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * The State Machine.
@@ -94,7 +96,7 @@ public class StateMachine {
 	private StateVertex addStateToCurrentState(StateVertex newState, Eventable eventable) {
 		LOGGER.debug("addStateToCurrentState currentState: {} newstate {}",
 		        currentState.getName(), newState.getName());
-
+	
 		// Add the state to the stateFlowGraph. Store the result
 		StateVertex cloneState = stateFlowGraph.addState(newState);
 
@@ -150,7 +152,12 @@ public class StateMachine {
 	 */
 	public boolean updateAndCheckIfClone(final Eventable event, StateVertex newState,
 	        EmbeddedBrowser browser,
-	        CrawlSession session) {
+	        CrawlSession session, int maxStatesPerUrl) {
+	
+		if (exceededMaxStatesPerUrl(maxStatesPerUrl,newState)){
+			return false;
+		}
+
 		StateVertex cloneState = this.addStateToCurrentState(newState, event);
 
 		if (cloneState != null) {
@@ -178,4 +185,23 @@ public class StateMachine {
 			plugins.runOnInvriantViolationPlugins(failedInvariant, session);
 		}
 	}
+	
+	private boolean exceededMaxStatesPerUrl(int maxStatesPerUrl, StateVertex newState) {
+		if(maxStatesPerUrl != 0) {
+			ImmutableSet<StateVertex> allStates = stateFlowGraph.getAllStates();
+			UnmodifiableIterator<StateVertex> it = allStates.iterator();
+			int counter = 0;
+			StateVertex currState;
+			while(it.hasNext()) {
+				currState = it.next();
+				if (currState.getUrl().compareToIgnoreCase(newState.getUrl()) == 0) {
+					counter++;
+					if (counter >= maxStatesPerUrl)
+						return true;
+				}
+			}
+		}	
+		return false;
+	}
+		
 }

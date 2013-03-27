@@ -36,6 +36,7 @@ import com.google.common.collect.ImmutableList;
 public class StateMachineTest {
 	private StateMachine sm;
 	private final StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
+	private final int MAXSTATESPERURL = 0;	// unlimited states per url
 
 	@Mock
 	private EmbeddedBrowser dummyBrowser;
@@ -81,7 +82,7 @@ public class StateMachineTest {
 		 * Add index.
 		 */
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
-		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool), MAXSTATESPERURL));
 
 		/**
 		 * Name is correctly changed
@@ -115,7 +116,7 @@ public class StateMachineTest {
 		assertNotSame(sm.getCurrentState(), state2);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
-		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool), MAXSTATESPERURL));
 
 		/**
 		 * Name is correctly changed
@@ -136,7 +137,7 @@ public class StateMachineTest {
 
 		// False because its CLONE!
 		assertFalse(sm.updateAndCheckIfClone(c2, state3, dummyBrowser,
-		        new CrawlSession(dummyPool)));
+		        new CrawlSession(dummyPool), MAXSTATESPERURL));
 
 		// state2.equals(state3)
 		assertEquals("state2 equals state3", state2, state3);
@@ -167,7 +168,7 @@ public class StateMachineTest {
 		assertNotSame(sm.getCurrentState(), state2);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
-		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool), MAXSTATESPERURL));
 
 		/**
 		 * Name is correctly changed
@@ -188,13 +189,13 @@ public class StateMachineTest {
 
 		// False because its CLONE!
 		assertFalse(sm.updateAndCheckIfClone(c2, state3, dummyBrowser,
-		        new CrawlSession(dummyPool)));
+		        new CrawlSession(dummyPool), MAXSTATESPERURL));
 
 		Eventable c3 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// True because its not yet known
 		assertTrue(sm
-		        .updateAndCheckIfClone(c3, state4, dummyBrowser, new CrawlSession(dummyPool)));
+		        .updateAndCheckIfClone(c3, state4, dummyBrowser, new CrawlSession(dummyPool), MAXSTATESPERURL));
 
 		sm.rewind();
 
@@ -248,7 +249,7 @@ public class StateMachineTest {
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertTrue(smLocal.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
-		        dummyPool)));
+		        dummyPool), MAXSTATESPERURL));
 
 		// New State so hit must be true;
 		assertTrue("Invariants are exeucted", hit);
@@ -258,7 +259,7 @@ public class StateMachineTest {
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertFalse(smLocal.updateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
-		        dummyPool)));
+		        dummyPool), MAXSTATESPERURL));
 		// CLONE State so hit must be true;
 		assertTrue("Invariants are exeucted", hit);
 	}
@@ -288,7 +289,7 @@ public class StateMachineTest {
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool), MAXSTATESPERURL));
 
 		// New State so hit must be true;
 		assertTrue("Plugins are exeucted", hit);
@@ -298,7 +299,7 @@ public class StateMachineTest {
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertFalse(sm.updateAndCheckIfClone(c2, state3, dummyBrowser,
-		        new CrawlSession(dummyPool)));
+		        new CrawlSession(dummyPool), MAXSTATESPERURL));
 
 		// CLONE State so no plugin execution
 		assertFalse("Plugins are NOT exeucted", hit);
@@ -346,7 +347,7 @@ public class StateMachineTest {
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
-		        dummyPool)));
+		        dummyPool), MAXSTATESPERURL));
 
 		// New State so hit must be true;
 		assertTrue("InvariantViolationPlugin are exeucted", hit);
@@ -356,7 +357,7 @@ public class StateMachineTest {
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
 		assertFalse(sm.updateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
-		        dummyPool)));
+		        dummyPool), MAXSTATESPERURL));
 
 		// New State so plugin execution
 		assertTrue("InvariantViolationPlugin are exeucted", hit);

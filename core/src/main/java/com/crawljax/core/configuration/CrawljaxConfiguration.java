@@ -38,11 +38,33 @@ public final class CrawljaxConfiguration {
 		 *            unlimited.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumStates(int states) {
-			checkArgument(states > 1, "Number of maximum states should be largen than 1");
+			checkArgument(states > 1, "Number of maximum states should be larger than 1");
 			config.maximumStates = states;
 			return this;
 		}
 
+		/**
+		 * @param statesPerUrl
+		 *            The maximum number of states the Crawler should crawl within 1 URL. The default is
+		 *            unlimited.
+		 */
+		public CrawljaxConfigurationBuilder setMaximumStatesPerUrl(int statesPerUrl) {
+			checkArgument(statesPerUrl >= 1, "Number of maximum states per url should be larger than or equal to 1");
+			config.maximumStatesPerUrl = statesPerUrl;
+			return this;
+		}
+
+		/**
+		 * @param edgesPerState
+		 *            The maximum number of states the Crawler should crawl within 1 URL. The default is
+		 *            unlimited.
+		 */
+		public CrawljaxConfigurationBuilder setMaximumOutgoingEdgesPerState(int edgesPerState) {
+			checkArgument(edgesPerState >= 1, "Number of maximum outgoing edges per state should be larger than or equal to 1");
+			config.maximumOutgoingEdgesPerState = edgesPerState;
+			return this;
+		}
+		
 		/**
 		 * Crawl without a maximum state limit.
 		 */
@@ -50,7 +72,23 @@ public final class CrawljaxConfiguration {
 			config.maximumStates = 0;
 			return this;
 		}
+		
+		/**
+		 * Crawl without a maximum state limit per URL.
+		 */
+		public CrawljaxConfigurationBuilder setUnlimitedStatesPerUrl() {
+			config.maximumStatesPerUrl = 0;
+			return this;
+		}
 
+		/**
+		 * Crawl without a maximum outgoing edge limit per state.
+		 */
+		public CrawljaxConfigurationBuilder setUnlimitedOutgoinEdgesPerState() {
+			config.maximumOutgoingEdgesPerState = 0;
+			return this;
+		}
+		
 		/**
 		 * @param time
 		 *            The maximum time the crawler should run. Default is one hour.
@@ -172,8 +210,10 @@ public final class CrawljaxConfiguration {
 	private CrawlRules crawlRules;
 
 	private int maximumStates = 0;
+	private int maximumStatesPerUrl = 0;
 	private long maximumRuntime = TimeUnit.HOURS.toMillis(1);;
 	private int maximumDepth = 2;
+	private int maximumOutgoingEdgesPerState = 0;
 
 	private CrawljaxConfiguration() {
 	}
@@ -202,12 +242,20 @@ public final class CrawljaxConfiguration {
 		return maximumStates;
 	}
 
+	public int getMaximumStatesPerUrl() {
+		return maximumStatesPerUrl;
+	}
+	
 	public long getMaximumRuntime() {
 		return maximumRuntime;
 	}
 
 	public int getMaximumDepth() {
 		return maximumDepth;
+	}
+	
+	public int getMaximumOutgoingEdgesPerState(){
+		return maximumOutgoingEdgesPerState;
 	}
 
 	@Override
