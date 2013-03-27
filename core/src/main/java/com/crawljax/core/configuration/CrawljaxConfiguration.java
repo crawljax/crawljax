@@ -144,8 +144,6 @@ public final class CrawljaxConfiguration {
 		public void alsoCrawl(String url){
 			try {
 				config.addUrlToList(new URL(url));
-				System.out.println("URL gets added to the list");
-				System.out.println("Number of url in the list now is " + config.getUrlListSize());
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
@@ -153,14 +151,6 @@ public final class CrawljaxConfiguration {
 		
 		public void alsoCrawl(URL url){
 				config.addUrlToList(url);
-		}
-		
-		public boolean moreUrlToCrawl(){
-			if (config.lastIndexURL < config.getUrlListSize()){
-				return true;
-			} else {
-				return false;
-			}
 		}
 
 	}
@@ -204,10 +194,6 @@ public final class CrawljaxConfiguration {
 
 	private CrawljaxConfiguration() {
 	}
-
-	public URL getUrl() {
-		return url;
-	}
 	
 	public int getUrlListSize(){
 		return this.urls.size();
@@ -217,15 +203,7 @@ public final class CrawljaxConfiguration {
 		return this.lastIndexURL;
 	}
 	
-	public boolean moreUrlToCrawl(){
-		if (this.lastIndexURL == getUrlListSize()){
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	 public boolean endOfURLArray(){
+	public boolean endOfURLArray(){
 	   if (this.lastIndexURL == getUrlListSize()){
 	      return true;
 	   } else {
@@ -233,17 +211,16 @@ public final class CrawljaxConfiguration {
 	    }
 	  }
 	
-	public URL getUrlNew(){
+	public URL getUrl(){
 		return urls.get(this.lastIndexURL);
 	}
 	
-	public void addUrlToList(URL url_new){
+	private void addUrlToList(URL url_new){
 		this.urls.add(url_new);
 	}
 	
 	public void updateLastIndexURL(){
 		this.lastIndexURL++;
-		System.out.println("last index is " + this.lastIndexURL);
 	}
 
 	public BrowserConfiguration getBrowserConfig() {
