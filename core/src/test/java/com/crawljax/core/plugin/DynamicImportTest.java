@@ -21,10 +21,28 @@ public class DynamicImportTest {
 		File tempDir = SetupTestFolderStructure(new File(TEST_FOLDER_ADDRESS));
 		boolean FolderCreated = tempDir.exists();
 		assertEquals(true, FolderCreated);
-		PluginImporter lImporter = new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
-		List<Plugin> classPathPlugins = lImporter.getPluggedServices(Plugin.class);
+		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
+		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		assertEquals(0,classPathPlugins.size());
 	}
+	
+	//as a crawljax user, I want my plugin to be picked up from a folder
+	@Test
+	public void ImportFromNonEmptyFolderTest()
+	{
+		File tempDir = SetupTestFolderStructure(new File(TEST_FOLDER_ADDRESS));
+		//File tempDir = new File(TEST_FOLDER_ADDRESS);
+		boolean FolderCreated = tempDir.exists();
+		assertEquals(true, FolderCreated);
+		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar.jar"), SamplePreCrawlingPlugin.class, true);
+		assertEquals(1, tempDir.list().length);
+		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
+		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
+		assertEquals(1,classPathPlugins.size());
+		
+		
+	}
+	
 	//as a crawljax user, I want to not have non plugin code included, so crawljax doesn't have to sort through irrelevant code
 	@Test
 	public void ImportUselessJarsFromFolderTest()
@@ -33,9 +51,12 @@ public class DynamicImportTest {
 		boolean FolderExists = tempDir.exists();
 		assertEquals(true, FolderExists);
 		//create 1 blank jar in that folder
+		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar.jar"), SampleNonPluginClass.class, false);
 		assertEquals(1, tempDir.listFiles().length);
-		//attempt to withdraw plugins from that folder
+		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
+		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		//assert that zero plugins were returned
+		assertEquals(0,classPathPlugins.size());
 		
 	}
 		
@@ -49,8 +70,8 @@ public class DynamicImportTest {
 		//assert that the folder is not real
 		assertEquals(false, FolderExists);
 		
-		PluginImporter lImporter = new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
-		List<Plugin> classPathPlugins = lImporter.getPluggedServices(Plugin.class);
+		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
+		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		
 		//assert that the warning came up that no plugins were found in that folder ?? how do you do this
 		
@@ -70,11 +91,11 @@ public class DynamicImportTest {
 		assertEquals(true, FolderExists);
 		
 		//make 2 jars here, one in testfolder, the other in testsubfolder
-		//each jar should have a manifest with the right info, but we don't need a class?
-		//how could I create these test plugins dynamically?
+		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar.jar"), SamplePreCrawlingPlugin.class, true);        
+		CreateJarFile.createJar(new File(tempSubDir.getPath() + "/testjar2.jar"), SamplePreCrawlingPlugin.class, true); 
 		
-		PluginImporter lImporter = new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
-		List<Plugin> classPathPlugins = lImporter.getPluggedServices(Plugin.class);
+		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
+		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		
 		assertEquals(2, classPathPlugins.size());
 	}
@@ -91,7 +112,7 @@ public class DynamicImportTest {
 	{
 		//clean the test folder structure completely so tests are independent
 		removeDirectory(pDir);
-		File tempDir = new File(TEST_FOLDER_ADDRESS);
+		File tempDir = new File(pDir.getPath());
 		tempDir.mkdir();
 		
 		return tempDir;

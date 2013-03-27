@@ -30,7 +30,7 @@ public final class ClassLoaderHelper
 		return new URLClassLoader(allJars.toArray(new URL[allJars.size()]), parent);
 	}
 	
-	static private void fillJarsList(List<URL> jars, File dir, boolean includeSubDirs)
+	static public void fillJarsList(List<URL> jars, File dir, boolean includeSubDirs)
     {
 		if(dir.exists())
 		{

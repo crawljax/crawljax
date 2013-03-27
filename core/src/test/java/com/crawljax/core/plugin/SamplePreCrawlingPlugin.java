@@ -1,6 +1,5 @@
 package com.crawljax.core.plugin;
 
-
 import com.crawljax.browser.EmbeddedBrowser;
 
 public class SamplePreCrawlingPlugin implements PreCrawlingPlugin {
