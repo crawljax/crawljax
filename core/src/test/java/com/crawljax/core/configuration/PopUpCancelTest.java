@@ -25,18 +25,28 @@ public class PopUpCancelTest {
 		System.out.println(PopUpCancel.getMode());
 		PopUpCancel.ClosePopUps();
 		System.out.println(PopUpCancel.getMode());
-		//assertTrue(PopUpCancel.getMode().equals("NONE"));
+		assertTrue(PopUpCancel.getMode().equals("NONE"));
 	}
 	
 	@Test
 	public void testKillExe() {
 		// TODO
 		// Run a dummy process
-		// PopUpCancel.deleteTemp();
+		//Process myProcess=Runtime.getRuntime().
+		assertTrue(PopUpCancel.getFilePath()!=null);
+		PopUpCancel.setMode("DOWNLOAD");
+		PopUpCancel.ClosePopUps();
+		PopUpCancel.killExe();
+		
+		PopUpCancel.getProcess().destroy();
+		System.out.println("Print process value:");
+		System.out.println(PopUpCancel.getProcess().exitValue());
+		
 		// String myExePath=PopUpCancel.getFilePath();
-		// assertEquals(myExePath,"Null");
-
+		//assertTrue(PopUpCancel.getProcess()==null);
+		assertTrue(PopUpCancel.getFilePath()==null);
+		
+		//assertNull(PopUpCancel.getProcess());
 	}
-
 
 }
