@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -29,7 +30,8 @@ public final class CrawljaxConfiguration {
 		private CrawljaxConfigurationBuilder(URL url) {
 			Preconditions.checkNotNull(url);
 			config = new CrawljaxConfiguration();
-			config.url = url;
+			config.urls = new ArrayList<URL>();
+			config.urls.add(url);
 		}
 
 		/**
@@ -137,6 +139,19 @@ public final class CrawljaxConfiguration {
 			config.crawlRules = crawlRules.build();
 			return config;
 		}
+		
+		public void alsoCrawl(String url){
+			try {
+				config.addUrlToList(new URL(url));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		public void alsoCrawl(URL url){
+			Preconditions.checkNotNull(url, "URL was null");
+			config.addUrlToList(url);
+		}
 
 	}
 
@@ -163,7 +178,8 @@ public final class CrawljaxConfiguration {
 		}
 	}
 
-	private URL url;
+	private ArrayList<URL> urls;
+	private int lastIndexURL = 0;
 
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.firefox);
 	private Plugins plugins;
@@ -177,9 +193,33 @@ public final class CrawljaxConfiguration {
 
 	private CrawljaxConfiguration() {
 	}
-
-	public URL getUrl() {
-		return url;
+	
+	public int getUrlListSize(){
+		return this.urls.size();
+	}
+	
+	public int getLastURLIndex(){
+		return this.lastIndexURL;
+	}
+	
+	public boolean endOfURLArray(){
+	   if (this.lastIndexURL == getUrlListSize()){
+	      return true;
+	   } else {
+	      return false;
+	    }
+	  }
+	
+	public URL getUrl(){
+		return urls.get(this.lastIndexURL);
+	}
+	
+	private void addUrlToList(URL url_new){
+		this.urls.add(url_new);
+	}
+	
+	public void updateLastIndexURL(){
+		this.lastIndexURL++;
 	}
 
 	public BrowserConfiguration getBrowserConfig() {
@@ -223,12 +263,14 @@ public final class CrawljaxConfiguration {
 		result =
 		        prime * result
 		                + ((proxyConfiguration == null) ? 0 : proxyConfiguration.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((this.urls.get(this.lastIndexURL) == null) ? 0 : this.urls.get(this.lastIndexURL).hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
+		URL url = this.urls.get(this.lastIndexURL);
+		
 		if (this == obj) {
 			return true;
 		}
@@ -277,10 +319,10 @@ public final class CrawljaxConfiguration {
 			return false;
 		}
 		if (url == null) {
-			if (other.url != null) {
+			if (other.urls.get(other.lastIndexURL) != null) {
 				return false;
 			}
-		} else if (!url.equals(other.url)) {
+		} else if (!url.equals(other.urls.get(other.lastIndexURL))) {
 			return false;
 		}
 		return true;
@@ -290,7 +332,7 @@ public final class CrawljaxConfiguration {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("CrawljaxConfiguration [url=");
-		builder.append(url);
+		builder.append(this.urls.get(this.lastIndexURL));
 		builder.append(", browserConfig=");
 		builder.append(browserConfig);
 		builder.append(", plugins=");

@@ -49,7 +49,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	/**
 	 * Central thread starting engine.
 	 */
-	private final CrawlerExecutor workQueue;
+	private CrawlerExecutor workQueue;
 
 	private final CandidateElementManager elementChecker;
 
@@ -121,27 +121,38 @@ public class CrawljaxController implements CrawlQueueManager {
 		startCrawl = System.currentTimeMillis();
 
 		LOGGER.info("Start crawling with {} crawl elements", configuration.getCrawlRules()
-		        .getPreCrawlConfig().getIncludedElements());
+				.getPreCrawlConfig().getIncludedElements());
+		while (!configuration.endOfURLArray()){
+			
+			// Create the initialCrawler
+			initialCrawler = new InitialCrawler(this, configuration.getPlugins());
 
-		// Create the initailCrawler
-		initialCrawler = new InitialCrawler(this, configuration.getPlugins());
+			// Start the Crawling by adding the initialCrawler to the the workQueue.
+			addWorkToQueue(initialCrawler);
 
-		// Start the Crawling by adding the initialCrawler to the the workQueue.
-		addWorkToQueue(initialCrawler);
-
-		try {
-			// Block until the all the jobs are done
-			workQueue.waitForTermination();
-		} catch (InterruptedException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-
-		if (workQueue.isAborted()) {
-			LOGGER.warn("It apears to be that the workQueue was Aborted, "
-			        + "not running postcrawling plugins and not closing the browsers");
-			return;
-		}
-
+			try {
+				// Block until the all the jobs are done
+				workQueue.waitForTermination();
+				removeWorkFromQueue(initialCrawler);
+			} catch (InterruptedException e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+			
+			if (workQueue.isAborted()) {
+				LOGGER.warn("It apears to be that the workQueue was Aborted, "
+					+ "not running postcrawling plugins and not closing the browsers");
+				System.out.println("isAborted is called!");
+				return;
+			}
+		
+			configuration.updateLastIndexURL();
+			if (!configuration.endOfURLArray()){
+				workQueue = init();
+			} else {	
+				break;
+			}
+		}	
+		
 		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
 
 		/**
@@ -168,7 +179,6 @@ public class CrawljaxController implements CrawlQueueManager {
 		} catch (InterruptedException e) {
 			LOGGER.error("could not wait for browsers to close.", e);
 		}
-
 	}
 
 	/**

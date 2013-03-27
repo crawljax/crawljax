@@ -193,18 +193,28 @@ public final class BrowserPool {
 				}
 				for (EmbeddedBrowser b : available) {
 					try {
-						b.close();
+						// only close browser when we are in the end of URL list
+						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
+							b.close();
+						}
 					} finally {
-						deleteList.add(b);
+						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
+							deleteList.add(b);
+						}
 					}
 				}
 				available.removeAll(deleteList);
 				deleteList = new LinkedList<EmbeddedBrowser>();
 				for (EmbeddedBrowser b : taken) {
 					try {
-						b.close();
+						// only close browser when we are in the end of URL list
+						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
+							b.close();
+						}
 					} finally {
-						deleteList.add(b);
+						if (configuration.getLastURLIndex() == configuration.getUrlListSize()-1){
+							deleteList.add(b);
+						}
 					}
 				}
 				taken.removeAll(deleteList);

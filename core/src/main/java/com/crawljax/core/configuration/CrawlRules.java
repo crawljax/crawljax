@@ -37,12 +37,12 @@ public class CrawlRules {
 			crawlActionsBuilder = new CrawlActionsBuilder();
 			preCrawlConfig = PreCrawlConfiguration.builder();
 		}
-
+		
 		public CrawlRulesBuilder insertRandomDataInInputForms(boolean insertRandomData) {
 			crawlRules.randomInputInForms = insertRandomData;
 			return this;
 		}
-
+		
 		/**
 		 * @param frame
 		 *            A frame that should be excluded from the DOM, before doing any other
