@@ -253,9 +253,8 @@ public class JarRunner {
 
 		configureTimers(builder);
 		//TODO: this class path folder has to exist or we have to setup a try catch inside to make sure it does. Done? erase when confirmed
-		PluginImporter lImporter = new PluginImporter(ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR)));
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));
-		List<Plugin> classPathPlugins = lImporter.getPluggedServices(Plugin.class, new File(PluginImporter.PLUGIN_DIR));
+		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, new File(PluginImporter.PLUGIN_DIR));
 		for(int iter = 0; iter < classPathPlugins.size(); iter++)
 			builder.addPlugin(classPathPlugins.get(iter));
 
