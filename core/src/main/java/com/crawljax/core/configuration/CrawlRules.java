@@ -43,7 +43,6 @@ public class CrawlRules {
 			return this;
 		}
 		
-
 		/**
 		 * @param frame
 		 *            A frame that should be excluded from the DOM, before doing any other

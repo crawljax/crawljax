@@ -129,7 +129,6 @@ public class CrawljaxController implements CrawlQueueManager {
 
 			// Start the Crawling by adding the initialCrawler to the the workQueue.
 			addWorkToQueue(initialCrawler);
-		
 
 			try {
 				// Block until the all the jobs are done
@@ -152,9 +151,7 @@ public class CrawljaxController implements CrawlQueueManager {
 			} else {	
 				break;
 			}
-		
-		}
-			
+		}	
 		
 		long timeCrawlCalc = System.currentTimeMillis() - startCrawl;
 
@@ -162,7 +159,6 @@ public class CrawljaxController implements CrawlQueueManager {
 		 * Close all the opened browsers, this is run in separate thread to have the post crawl
 		 * plugins to execute in the meanwhile.
 		 */
-		
 		Thread shutdownThread = browserPool.close();
 
 		// TODO Stefan; Now we "re-request" a browser instance for the PostCrawlingPlugins Thread,
@@ -183,8 +179,6 @@ public class CrawljaxController implements CrawlQueueManager {
 		} catch (InterruptedException e) {
 			LOGGER.error("could not wait for browsers to close.", e);
 		}
-	
-
 	}
 
 	/**
