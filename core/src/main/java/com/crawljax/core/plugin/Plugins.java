@@ -105,7 +105,7 @@ public final class Plugins {
 		LOGGER.debug("Running PreCrawlingPlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(PreCrawlingPlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(PreCrawlingPlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		
 		for (Plugin plugin : plugins.get(PreCrawlingPlugin.class)) {
 			if (plugin instanceof PreCrawlingPlugin) {
@@ -132,7 +132,7 @@ public final class Plugins {
 		LOGGER.debug("Running OnUrlLoadPlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(OnUrlLoadPlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(OnUrlLoadPlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(OnUrlLoadPlugin.class)) {
 			if (plugin instanceof OnUrlLoadPlugin) {
 				try {
@@ -157,7 +157,7 @@ public final class Plugins {
 		LOGGER.debug("Running OnNewStatePlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(OnNewStatePlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(OnNewStatePlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(OnNewStatePlugin.class)) {
 			if (plugin instanceof OnNewStatePlugin) {
 				try {
@@ -185,7 +185,7 @@ public final class Plugins {
 		LOGGER.debug("Running OnInvriantViolationPlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(OnInvariantViolationPlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(OnInvariantViolationPlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(OnInvariantViolationPlugin.class)) {
 			if (plugin instanceof OnInvariantViolationPlugin) {
 				try {
@@ -211,7 +211,7 @@ public final class Plugins {
 		LOGGER.debug("Running PostCrawlingPlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(PostCrawlingPlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(PostCrawlingPlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(PostCrawlingPlugin.class)) {
 			if (plugin instanceof PostCrawlingPlugin) {
 				try {
@@ -238,7 +238,7 @@ public final class Plugins {
 		LOGGER.debug("Running OnRevisitStatePlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(OnRevisitStatePlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(OnRevisitStatePlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(OnRevisitStatePlugin.class)) {
 			if (plugin instanceof OnRevisitStatePlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
@@ -267,7 +267,7 @@ public final class Plugins {
 		LOGGER.debug("Running PreStateCrawlingPlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(PreStateCrawlingPlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(PreStateCrawlingPlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(PreStateCrawlingPlugin.class)) {
 			if (plugin instanceof PreStateCrawlingPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
@@ -294,7 +294,7 @@ public final class Plugins {
 		LOGGER.debug("Running ProxyServerPlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(ProxyServerPlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(ProxyServerPlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(ProxyServerPlugin.class)) {
 			if (plugin instanceof ProxyServerPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
@@ -320,7 +320,7 @@ public final class Plugins {
 		LOGGER.debug("Running OnFireEventFailedPlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(OnFireEventFailedPlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(OnFireEventFailedPlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(OnFireEventFailedPlugin.class)) {
 			if (plugin instanceof OnFireEventFailedPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
@@ -346,7 +346,7 @@ public final class Plugins {
 		LOGGER.debug("Running OnBrowserCreatedPlugins...");
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(OnBrowserCreatedPlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(OnBrowserCreatedPlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		for (Plugin plugin : plugins.get(OnBrowserCreatedPlugin.class)) {
 			if (plugin instanceof OnBrowserCreatedPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
@@ -367,7 +367,7 @@ public final class Plugins {
 	        final StateVertex stateAfter, final EmbeddedBrowser browser) {
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap.builder();
-		addPlugins(PluginImporter.getPluggedServices2(DomChangeNotifierPlugin.class, ClassLoaderHelper.buildClassLoader(true, new File(PluginImporter.PLUGIN_DIR))),builder);
+		addPlugins(PluginImporter.getPluggedServices(DomChangeNotifierPlugin.class, new File(PluginImporter.PLUGIN_DIR)),builder);
 		if (plugins.get(DomChangeNotifierPlugin.class).isEmpty()) {
 			LOGGER.debug("No DomChangeNotifierPlugin found. Performing default DOM comparison...");
 			return defaultDomComparison(stateBefore, stateAfter);

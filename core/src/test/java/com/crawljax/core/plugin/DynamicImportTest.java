@@ -21,7 +21,6 @@ public class DynamicImportTest {
 		File tempDir = SetupTestFolderStructure(new File(TEST_FOLDER_ADDRESS));
 		boolean FolderCreated = tempDir.exists();
 		assertEquals(true, FolderCreated);
-		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
 		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		assertEquals(0,classPathPlugins.size());
 	}
@@ -36,7 +35,6 @@ public class DynamicImportTest {
 		assertEquals(true, FolderCreated);
 		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar.jar"), SamplePreCrawlingPlugin.class, true);
 		assertEquals(1, tempDir.list().length);
-		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
 		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		assertEquals(1,classPathPlugins.size());
 		
@@ -53,7 +51,6 @@ public class DynamicImportTest {
 		//create 1 blank jar in that folder
 		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar.jar"), SampleNonPluginClass.class, false);
 		assertEquals(1, tempDir.listFiles().length);
-		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
 		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		//assert that zero plugins were returned
 		assertEquals(0,classPathPlugins.size());
@@ -70,7 +67,6 @@ public class DynamicImportTest {
 		//assert that the folder is not real
 		assertEquals(false, FolderExists);
 		
-		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
 		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		
 		//assert that the warning came up that no plugins were found in that folder ?? how do you do this
@@ -94,7 +90,6 @@ public class DynamicImportTest {
 		CreateJarFile.createJar(new File(tempDir.getPath() + "/testjar.jar"), SamplePreCrawlingPlugin.class, true);        
 		CreateJarFile.createJar(new File(tempSubDir.getPath() + "/testjar2.jar"), SamplePreCrawlingPlugin.class, true); 
 		
-		new PluginImporter(ClassLoaderHelper.buildClassLoader(true, tempDir));
 		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, tempDir);
 		
 		assertEquals(2, classPathPlugins.size());
