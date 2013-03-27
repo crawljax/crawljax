@@ -57,7 +57,7 @@ public class PopUpCancel{
 			try{
 				String commands[] = new String[]{exePath, getPopUpTitle(), String.valueOf(timerPeriod) };
 				process = Runtime.getRuntime().exec(commands);
-
+			    //mode = CLOSE_NONE; //test
 			} catch (Exception ex) {
 				System.err.println("Error closePopUps.exe not found. PopUpCancel disabled");
 				mode = CLOSE_NONE;
@@ -104,6 +104,10 @@ public class PopUpCancel{
 	public static String getFilePath()
 	{
 		return exePath;
+	}
+	
+	public static String getMode(){
+		return mode;
 	}
 
 }
