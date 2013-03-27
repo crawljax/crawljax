@@ -38,7 +38,7 @@ public final class CrawljaxConfiguration {
 		 *            unlimited.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumStates(int states) {
-			checkArgument(states > 1, "Number of maximum states should be largen than 1");
+			checkArgument(states > 1, "Number of maximum states should be larger than 1");
 			config.maximumStates = states;
 			return this;
 		}
@@ -49,7 +49,7 @@ public final class CrawljaxConfiguration {
 		 *            unlimited.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumStatesPerUrl(int statesPerUrl) {
-			checkArgument(statesPerUrl >= 1, "Number of maximum states per url should be larger than or equal 1");
+			checkArgument(statesPerUrl >= 1, "Number of maximum states per url should be larger than or equal to 1");
 			config.maximumStatesPerUrl = statesPerUrl;
 			return this;
 		}
@@ -222,9 +222,10 @@ public final class CrawljaxConfiguration {
 		return maximumStates;
 	}
 
-	public int getMaximumStatesPerUrl(){
+	public int getMaximumStatesPerUrl() {
 		return maximumStatesPerUrl;
 	}
+	
 	public long getMaximumRuntime() {
 		return maximumRuntime;
 	}

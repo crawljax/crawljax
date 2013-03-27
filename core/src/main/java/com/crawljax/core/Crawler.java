@@ -706,16 +706,13 @@ public class Crawler implements Runnable {
 		}
 	}
 	
-	private boolean maximumStatesPerUrlReached(StateVertex vertex){
+	private boolean maximumStatesPerUrlReached(StateVertex vertex) {
 		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
 		if (vertex != null) {
 			int maxNumberOfStatesPerUrl = config.getMaximumStatesPerUrl();
-			int currStateOutDegree = graph.getOutgoingStates(vertex).size();
-			if ((maxNumberOfStatesPerUrl != 0) && (currStateOutDegree >= maxNumberOfStatesPerUrl)) {
+			if ((maxNumberOfStatesPerUrl != 0) && (graph.getOutgoingStates(vertex).size() >= maxNumberOfStatesPerUrl)) {
 				LOG.info("Max number of states per Url {} reached!", maxNumberOfStatesPerUrl);
 				return true;
-			} else {
-				return false;
 			}
 		}
 		return false;
