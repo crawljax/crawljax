@@ -168,7 +168,7 @@ public class Crawler implements Runnable {
 	/**
 	 * Brings the browser to the initial state.
 	 */
-	public void goToInitialURL() {
+	public void goToInitialURL() {	
 		LOG.info("Loading Page {}", config.getUrl());
 		getBrowser().goToUrl(config.getUrl());
 		controller.doBrowserWait(getBrowser());
