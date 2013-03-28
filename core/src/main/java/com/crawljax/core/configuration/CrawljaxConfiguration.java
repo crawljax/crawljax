@@ -3,12 +3,12 @@ package com.crawljax.core.configuration;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawlController;
-import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
@@ -233,7 +233,11 @@ public final class CrawljaxConfiguration {
 		result =
 		        prime * result
 		                + ((proxyConfiguration == null) ? 0 : proxyConfiguration.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		try {
+			result = prime * result + ((url == null) ? 0 : url.toURI().hashCode());
+		} catch (URISyntaxException e) {
+			result = prime * result;
+		}
 		return result;
 	}
 
@@ -242,13 +246,17 @@ public final class CrawljaxConfiguration {
 		if (this == obj) {
 			return true;
 		}
+		
 		if (obj == null) {
 			return false;
 		}
+		
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
+		
 		CrawljaxConfiguration other = (CrawljaxConfiguration) obj;
+		
 		if (browserConfig == null) {
 			if (other.browserConfig != null) {
 				return false;
@@ -256,6 +264,7 @@ public final class CrawljaxConfiguration {
 		} else if (!browserConfig.equals(other.browserConfig)) {
 			return false;
 		}
+		
 		if (crawlRules == null) {
 			if (other.crawlRules != null) {
 				return false;
@@ -263,15 +272,19 @@ public final class CrawljaxConfiguration {
 		} else if (!crawlRules.equals(other.crawlRules)) {
 			return false;
 		}
+		
 		if (maximumDepth != other.maximumDepth) {
 			return false;
 		}
+		
 		if (maximumRuntime != other.maximumRuntime) {
 			return false;
 		}
+		
 		if (maximumStates != other.maximumStates) {
 			return false;
 		}
+		
 		if (plugins == null) {
 			if (other.plugins != null) {
 				return false;
@@ -279,6 +292,7 @@ public final class CrawljaxConfiguration {
 		} else if (!plugins.equals(other.plugins)) {
 			return false;
 		}
+		
 		if (proxyConfiguration == null) {
 			if (other.proxyConfiguration != null) {
 				return false;
@@ -286,13 +300,19 @@ public final class CrawljaxConfiguration {
 		} else if (!proxyConfiguration.equals(other.proxyConfiguration)) {
 			return false;
 		}
-		if (url == null) {
-			if (other.url != null) {
+		
+		try {
+			if (url == null) {
+				if (other.url != null) {
+					return false;
+				}
+			} else if (!url.toURI().equals(other.url.toURI())) {
 				return false;
 			}
-		} else if (!url.equals(other.url)) {
-			return false;
+		} catch( URISyntaxException e) {
+			return false; 
 		}
+		
 		return true;
 	}
 

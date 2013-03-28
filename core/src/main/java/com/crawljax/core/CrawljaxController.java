@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.GuardedBy;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

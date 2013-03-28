@@ -50,6 +50,8 @@ public final class FormInputValueHelper {
 	private Configuration config;
 
 	private boolean randomInput;
+	
+	private static final int EMPTY = 0;
 
 	/**
 	 * @param inputSpecification
@@ -128,7 +130,7 @@ public final class FormInputValueHelper {
 		List<CandidateElement> candidateElements = new ArrayList<CandidateElement>();
 		int maxValues = getMaxNumberOfValues(eventableCondition.getLinkedInputFields());
 
-		if (maxValues == 0) {
+		if (maxValues == EMPTY) {
 			LOGGER.warn("No input values found for element: "
 			        + DomUtils.getElementString(sourceElement));
 			return candidateElements;
