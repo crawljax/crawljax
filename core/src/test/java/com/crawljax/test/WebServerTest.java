@@ -29,6 +29,11 @@ public class WebServerTest {
 		}
 		server.start();
 	}
+	
+	@After
+	public void stopServer() {
+		server.stop();
+	}
 
 	@Test
 	public void testSiteUrl() throws Exception {
