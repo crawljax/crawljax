@@ -105,9 +105,9 @@ public class UrlUtils {
 	 * @return the base part of the URL.
 	 */
 	public static String getBaseUrl(String url) {
-		String head = url.substring(0, url.indexOf(":"));
+		String head = url.substring(0, url.indexOf(':'));
 		String subLoc = url.substring(head.length() + DomUtils.BASE_LENGTH);
-		return head + "://" + subLoc.substring(0, subLoc.indexOf("/"));
+		return head + "://" + subLoc.substring(0, subLoc.indexOf('/'));
 	}
 
 	/**
@@ -124,10 +124,13 @@ public class UrlUtils {
 		if (haystack == null || haystack.length() == 0) {
 			return null;
 		}
-		if (haystack.charAt(0) == '?') {
-			haystack = haystack.substring(1);
+		
+		String modifiedHaystack = haystack;
+		
+		if (modifiedHaystack.charAt(0) == '?') {
+			modifiedHaystack = modifiedHaystack.substring(1);
 		}
-		String[] vars = haystack.split("&");
+		String[] vars = modifiedHaystack.split("&");
 
 		for (String var : vars) {
 			String[] tuple = var.split("=");
