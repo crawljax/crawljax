@@ -17,7 +17,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.JavaScriptCondition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.CrawlElement;
