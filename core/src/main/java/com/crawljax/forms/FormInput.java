@@ -26,7 +26,6 @@ public class FormInput {
 
 	private Set<InputValue> inputValues = new HashSet<InputValue>();
 	private Eventable eventable;
-	// public int index;
 
 	private boolean multiple;
 

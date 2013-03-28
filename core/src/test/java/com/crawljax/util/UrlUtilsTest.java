@@ -1,6 +1,7 @@
 package com.crawljax.util;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -13,18 +14,17 @@ public class UrlUtilsTest {
 
 	@Test
 	public void getVarFromQueryString() {
-		assertEquals("home",
-		        UrlUtils.getVarFromQueryString("page", "?sub=1&userid=123&page=home&goto=0"));
+
+		assertThat(UrlUtils.getVarFromQueryString("page", "?sub=1&userid=123&page=home&goto=0"), is("home"));
+		assertThat(UrlUtils.getVarFromQueryString(null, "?sub=1&userid=123&page=home&goto=0"), is(nullValue()));
+		assertThat(UrlUtils.getVarFromQueryString("page", ""), is(nullValue()));
+		assertThat(UrlUtils.getVarFromQueryString("page", "?sub=1&userid=123&NotPage=home&goto=0"), is(nullValue()));
+		assertThat(UrlUtils.getVarFromQueryString("page", "?sub=1&userid=123&page=home=moreStringInfo&goto=0"), is(nullValue()));
 	}
 
 	@Test
 	public void getBaseUrl() {
 		assertEquals("http://crawljax.com", UrlUtils.getBaseUrl("http://crawljax.com/about/"));
-
-	}
-
-	@Test
-	public void testExtractUrl() {
 
 	}
 

@@ -13,9 +13,6 @@ public final class PrettyHTML {
 
 	}
 
-	// private static final Logger LOGGER =
-	// LoggerFactory.getLogger(PrettyHTML.class.getName());
-
 	/**
 	 * Pretty print HTML string.
 	 * 
@@ -97,10 +94,10 @@ public final class PrettyHTML {
 	 * @return wheter element has a seperate closing element
 	 */
 	private static boolean elementsRelated(String openElement, String closeElement) {
-		openElement = openElement.split(">")[0];
-		openElement = openElement.split(" ")[0];
-		closeElement = closeElement.split(">")[0];
-		return closeElement.startsWith("/" + openElement);
+		String testOpen = openElement.split(">")[0];
+		testOpen = testOpen.split(" ")[0];
+		String testClose = closeElement.split(">")[0];
+		return testClose.startsWith("/" + testOpen);
 	}
 
 	/**
@@ -145,14 +142,14 @@ public final class PrettyHTML {
 						// stack
 						int index = stackIndexElements.peek();
 						if (!isSingleElement(elements[index])
-						        && elements[index].lastIndexOf(">") != -1) {
+						        && elements[index].lastIndexOf('>') != -1) {
 							// close this element
 							elements[index] =
 							        elements[index]
-							                .substring(0, elements[index].lastIndexOf(">"))
+							                .substring(0, elements[index].lastIndexOf('>'))
 							                + "/"
 							                + elements[index].substring(elements[index]
-							                        .lastIndexOf(">"));
+							                        .lastIndexOf('>'));
 						}
 						stackElements.pop();
 						stackIndexElements.pop();
