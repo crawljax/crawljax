@@ -35,7 +35,6 @@ import com.google.common.collect.Lists;
 public final class CrawlElement {
 
 	private final String tagName;
-	private final List<CrawlAttribute> crawlAttributes = Lists.newLinkedList();
 	private final List<Condition> conditions = Lists.newLinkedList();
 	private final String id;
 	private final EventType eventType;
@@ -54,14 +53,6 @@ public final class CrawlElement {
 		this.tagName = tagName.toUpperCase();
 		this.id = "id" + hashCode();
 		this.eventType = eventType;
-	}
-
-	protected CrawlElement(EventType eventType, String tagName,
-	        List<CrawlAttribute> crawlAttributes) {
-		this.tagName = tagName.toUpperCase();
-		this.id = "id" + hashCode();
-		this.eventType = eventType;
-		this.crawlAttributes.addAll(crawlAttributes);
 	}
 
 	/**
@@ -168,11 +159,6 @@ public final class CrawlElement {
 			builder.append(tagName);
 			builder.append(", ");
 		}
-		if (crawlAttributes != null && !crawlAttributes.isEmpty()) {
-			builder.append("crawlAttributes=");
-			builder.append(crawlAttributes);
-			builder.append(", ");
-		}
 		if (conditions != null && !conditions.isEmpty()) {
 			builder.append("conditions=");
 			builder.append(conditions);
@@ -216,28 +202,6 @@ public final class CrawlElement {
 		ret.append("InputFieldIds: ");
 		ret.append(getInputFieldIds());
 		return ret.toString();
-	}
-
-	/**
-	 * @return the crawlAttributes
-	 */
-	public ImmutableList<CrawlAttribute> getCrawlAttributes() {
-		return ImmutableList.copyOf(crawlAttributes);
-	}
-
-	/**
-	 * @param crawlAttribute
-	 *            Adds a crawlattribute.
-	 */
-	protected void addCrawlAttribute(CrawlAttribute crawlAttribute) {
-		crawlAttributes.add(crawlAttribute);
-	}
-
-	/**
-	 * @return the crawl attributes
-	 */
-	public List<CrawlAttribute> getAttributes() {
-		return crawlAttributes;
 	}
 
 	/**

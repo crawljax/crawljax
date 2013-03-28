@@ -18,7 +18,6 @@ import org.w3c.dom.NodeList;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import com.crawljax.core.configuration.CrawlAttribute;
 import com.crawljax.core.configuration.CrawlElement;
 import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -253,7 +252,6 @@ public class CandidateElementExtractor {
 				eventableCondition);
 
 		NodeList nodeList = dom.getElementsByTagName(crawlElement.getTagName());
-		List<CrawlAttribute> attributes = crawlElement.getAttributes();
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
@@ -271,7 +269,6 @@ public class CandidateElementExtractor {
 			String id = element.getNodeName() + ": "
 					+ DomUtils.getAllElementAttributes(element);
 			if (matchesXpath && !checkedElements.isChecked(id)
-			        && !filterElement(attributes, element)
 			        && !isExcluded(dom, element, eventableConditionChecker)) {
 				addElement(element, result, crawlElement);
 			} else {
@@ -427,54 +424,9 @@ public class CandidateElementExtractor {
 				return true;
 			}
 
-			if (!filterElement(crawlElem.getAttributes(), element)
-			        && crawlElem.getAttributes().size() > 0) {
-				LOG.info("Excluded element because of attributes: " + element);
-				return true;
-			}
 		}
 
 		return false;
 	}
 
-	/**
-	 * Return whether the element is filtered out because of its attributes.
-	 */
-	private boolean filterElement(List<CrawlAttribute> attributes, Element element) {
-		int matchCounter = 0;
-		if (element == null || attributes == null) {
-			return false;
-		}
-		for (CrawlAttribute attr : attributes) {
-			LOG.debug("Checking element " + DomUtils.getElementString(element)
-			        + "AttributeName: " + attr.getName() + " value: " + attr.getValue());
-
-			if (attr.matchesValue(element.getAttribute(attr.getName()))) {
-				// make sure that if attribute value is % the element should
-				// have this attribute
-				if (attr.getValue().equals("%")
-				        && element.getAttributeNode(attr.getName()) == null) {
-					return true;
-				} else {
-					matchCounter++;
-				}
-			} else if (attr.getName().equalsIgnoreCase("innertext")
-			        && element.getTextContent() != null) {
-				String value = attr.getValue();
-				String text = element.getTextContent().trim();
-				if (value.contains("%")) {
-					String pattern = value.replace("%", "(.*?)");
-					if (text.matches(pattern)) {
-						matchCounter++;
-					}
-
-				} else if (text.equalsIgnoreCase(value)) {
-					matchCounter++;
-				}
-			}
-
-		}
-
-		return (attributes.size() != matchCounter);
-	}
 }
