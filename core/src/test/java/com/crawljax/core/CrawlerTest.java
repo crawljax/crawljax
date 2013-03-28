@@ -14,6 +14,7 @@ import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
@@ -52,7 +53,7 @@ public class CrawlerTest {
 		final TestController controller = new TestController(buildController(), index);
 
 		for (final List<Eventable> path : paths) {
-			new Crawler(controller, path, "Follow Path") {
+			new Crawler(controller, path, "Follow Path", Plugins.noPlugins()) {
 				@Override
 				public void run() {
 					try {

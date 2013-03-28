@@ -7,7 +7,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
+import com.crawljax.core.plugin.Plugins;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -21,7 +21,6 @@ public class StateMachine {
 	private final StateVertex initialState;
 
 	private StateVertex currentState;
-	private StateVertex previousState;
 	private Object stateLock = new Object();
 
 	/**
@@ -29,17 +28,7 @@ public class StateMachine {
 	 */
 	private final ConditionTypeChecker<Invariant> invariantChecker;
 
-	/**
-	 * Create a new StateMachine with a empty Invariant list in the {@link ConditionTypeChecker}.
-	 * 
-	 * @param sfg
-	 *            the state flow graph that is shared.
-	 * @param indexState
-	 *            the state representing the Index vertix
-	 */
-	public StateMachine(StateFlowGraph sfg, StateVertex indexState) {
-		this(sfg, indexState, ImmutableList.<Invariant> of());
-	}
+	private final Plugins plugins;
 
 	/**
 	 * Create a new StateMachine.
@@ -52,9 +41,10 @@ public class StateMachine {
 	 *            the invariants to use in the InvariantChecker.
 	 */
 	public StateMachine(StateFlowGraph sfg, StateVertex indexState,
-	        ImmutableList<Invariant> invariantList) {
+	        ImmutableList<Invariant> invariantList, Plugins plugins) {
 		stateFlowGraph = sfg;
 		this.initialState = indexState;
+		this.plugins = plugins;
 		currentState = initialState;
 		invariantChecker = new ConditionTypeChecker<>(invariantList);
 	}
@@ -72,23 +62,20 @@ public class StateMachine {
 			LOGGER.info("nextState given is null");
 			return false;
 		}
-		LOGGER.debug("AFTER: sm.current: {} hold.current: {}", currentState.getName(),
-		        nextState.getName());
+		LOGGER.debug("Trying to change to state: '{}' from: '{}'", nextState.getName(),
+		        currentState.getName());
 
 		synchronized (stateLock) {
 			if (stateFlowGraph.canGoTo(currentState, nextState)) {
 
-				LOGGER.debug("Changed To state: {} From: {}", nextState.getName(),
+				LOGGER.debug("Changed to state: '{}' from: '{}'", nextState.getName(),
 				        currentState.getName());
 
-				this.previousState = this.currentState;
 				currentState = nextState;
-
-				LOGGER.debug("StateMachine's Pointer changed to: {}", currentState);
 
 				return true;
 			} else {
-				LOGGER.info("Cannot change to state: {} from: {}", nextState.getName(),
+				LOGGER.info("Cannot go to state: '{}' from: '{}'", nextState.getName(),
 				        currentState.getName());
 				return false;
 			}
@@ -147,7 +134,6 @@ public class StateMachine {
 	public void rewind() {
 		synchronized (stateLock) {
 			this.currentState = this.initialState;
-			this.previousState = null;
 		}
 	}
 
@@ -173,15 +159,12 @@ public class StateMachine {
 
 		this.changeState(newState);
 
-		LOGGER.debug("StateMachine's Pointer changed to: {} FROM {}",
-		        this.currentState.getName(), previousState.getName());
-
 		session.setCurrentState(newState);
 
 		checkInvariants(browser, session);
 
 		if (cloneState == null) {
-			CrawljaxPluginsUtil.runOnNewStatePlugins(session);
+			plugins.runOnNewStatePlugins(session);
 			// recurse
 			return true;
 		} else {
@@ -192,7 +175,7 @@ public class StateMachine {
 
 	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
 		for (Invariant failedInvariant : invariantChecker.getFailedConditions(browser)) {
-			CrawljaxPluginsUtil.runOnInvriantViolationPlugins(failedInvariant, session);
+			plugins.runOnInvriantViolationPlugins(failedInvariant, session);
 		}
 	}
 }

@@ -1,244 +1,190 @@
 package com.crawljax.core.plugin;
 
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.html.dom.HTMLAnchorElementImpl;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
-import com.crawljax.test.RunWithWebServer;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
  */
 @Category(BrowserTest.class)
 @Ignore("Temporary ignored. Will be fixed in a different branch.")
+@RunWith(MockitoJUnitRunner.class)
 public class PluginsTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PluginsTest.class);
-	private static CrawljaxController controller;
-	private static CrawljaxConfiguration config;
+	private Plugins plugins;
 
-	private static Map<Class<? extends Plugin>, Long> pluginTimes = Maps.newHashMap();
+	@Mock
+	private DomChangeNotifierPlugin domChange;
 
-	/**
-	 * Register the time the given plugin type is run for the first time.
-	 * 
-	 * @param p
-	 *            the plugin type
-	 */
-	private static void registerPlugin(Class<? extends Plugin> p) {
+	@Mock
+	private OnBrowserCreatedPlugin browserCreatedPlugin;
 
-		if (pluginTimes.get(p) == null) {
-			LOG.debug("Register: " + p);
-			pluginTimes.put(p, System.currentTimeMillis());
-		}
-	}
+	@Mock
+	private OnFireEventFailedPlugin fireEventFailedPlugin;
 
-	private static void checkCrawlSession(CrawlSession session) {
-		assertNotNull(session);
-		assertNotNull(session.getBrowser());
-		assertNotNull(session.getCrawljaxConfiguration());
-		assertNotNull(session.getCrawlPaths());
-		assertNotNull(session.getCurrentState());
-		assertNotNull(session.getCurrentCrawlPath());
-		assertNotNull(session.getInitialState());
-		assertNotNull(session.getStateFlowGraph());
-	}
+	@Mock
+	private OnInvariantViolationPlugin invariantViolationPlugin;
 
-	@ClassRule
-	public static final RunWithWebServer SERVER = new RunWithWebServer("/site/crawler");
+	@Mock
+	private OnNewStatePlugin newStatePlugin;
 
-	@BeforeClass
-	public static void setup() throws ConfigurationException {
-		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder();
+	@Mock
+	private OnRevisitStatePlugin onRevisitStatePlugin;
 
-		builder.crawlRules().clickDefaultElements();
+	@Mock
+	private OnUrlLoadPlugin urlLoadPlugin;
 
-		/**
-		 * Add a sample Invariant for testing the OnInvariantViolation plugin
-		 */
-		builder.crawlRules().addInvariant("Never contain Final state S8",
-		        new NotRegexCondition("Final state S2"));
+	@Mock
+	private PostCrawlingPlugin postCrawlingPlugin;
 
-		/**
-		 * Add a empty proxy from running the ProxyConfigurationPlugin
-		 */
-		// config.setProxyConfiguration(new ProxyConfiguration());
+	@Mock
+	private PreCrawlingPlugin preCrawlingPlugin;
 
-		builder.addPlugin(new OnNewStatePlugin() {
-			@Override
-			public void onNewState(CrawlSession session) {
-				registerPlugin(OnNewStatePlugin.class);
-				checkCrawlSession(session);
-				StateVertex cs = session.getCurrentState();
-				if (!cs.getName().equals("index")) {
-					assertTrue("currentState and indexState are never the same",
-					        !cs.equals(session.getInitialState()));
-				}
-			}
-		});
+	@Mock
+	private PreStateCrawlingPlugin prestatePlugin;
 
-		builder.addPlugin(new GuidedCrawlingPlugin() {
+	@Mock
+	private ProxyServerPlugin proxyServerPlugin;
 
-			@Override
-			public void guidedCrawling(StateVertex currentState, CrawljaxController controller,
-			        CrawlSession session, List<Eventable> exactEventPaths,
-			        StateMachine stateMachine) {
-				registerPlugin(GuidedCrawlingPlugin.class);
-				checkCrawlSession(session);
-				assertTrue("exactEventPaths is the same as the session path", session
-				        .getCurrentCrawlPath().equals(exactEventPaths));
-			}
-		});
+	@Mock
+	private CrawlSession session;
 
-		builder.addPlugin(new OnBrowserCreatedPlugin() {
-
-			@Override
-			public void onBrowserCreated(EmbeddedBrowser newBrowser) {
-				registerPlugin(OnBrowserCreatedPlugin.class);
-				assertNotNull(newBrowser);
-			}
-		});
-
-		builder.addPlugin(new OnInvariantViolationPlugin() {
-
-			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
-				registerPlugin(OnInvariantViolationPlugin.class);
-				checkCrawlSession(session);
-				assertNotNull(invariant);
-
-			}
-		});
-
-		builder.addPlugin(new OnUrlLoadPlugin() {
-
-			@Override
-			public void onUrlLoad(EmbeddedBrowser browser) {
-				registerPlugin(OnUrlLoadPlugin.class);
-				assertNotNull(browser);
-			}
-		});
-
-		builder.addPlugin(new PostCrawlingPlugin() {
-
-			@Override
-			public void postCrawling(CrawlSession session) {
-				registerPlugin(PostCrawlingPlugin.class);
-				checkCrawlSession(session);
-			}
-		});
-
-		builder.addPlugin(new PreCrawlingPlugin() {
-
-			@Override
-			public void preCrawling(EmbeddedBrowser browser) {
-				registerPlugin(PreCrawlingPlugin.class);
-				assertNotNull(browser);
-			}
-		});
-
-		builder.addPlugin(new PreStateCrawlingPlugin() {
-
-			@Override
-			public void preStateCrawling(CrawlSession session,
-			        List<CandidateElement> candidateElements) {
-				registerPlugin(PreStateCrawlingPlugin.class);
-				assertNotNull(candidateElements);
-				checkCrawlSession(session);
-				assertTrue("There are always more than 0 candidates",
-				        candidateElements.size() > 0);
-
-				if (session.getCurrentState().getName().equals("state8")) {
-					/**
-					 * Add to miss invocation for the OnFireEventFaild plugin.
-					 */
-					// This is a bit ugly; but hey it works, and is checked above..
-					CandidateElement candidate = candidateElements.get(0);
-					HTMLAnchorElementImpl impl = (HTMLAnchorElementImpl) candidate.getElement();
-					impl.setName("fail");
-					impl.setId("eventually");
-					impl.setHref("will");
-					impl.setTextContent("This");
-					candidate.getIdentification().setValue("/HTML[1]/BODY[1]/FAILED[1]/A[1]");
-				}
-			}
-		});
-
-		builder.addPlugin(new OnRevisitStatePlugin() {
-
-			@Override
-			public void onRevisitState(CrawlSession session, StateVertex currentState) {
-				registerPlugin(OnRevisitStatePlugin.class);
-				checkCrawlSession(session);
-				assertNotNull(currentState);
-			}
-		});
-
-		config = builder.build();
-		controller = new CrawljaxController(config);
+	@Before
+	public void setup() {
+		plugins =
+		        new Plugins(ImmutableList.of(domChange, browserCreatedPlugin,
+		                fireEventFailedPlugin, invariantViolationPlugin, newStatePlugin,
+		                onRevisitStatePlugin,
+		                urlLoadPlugin, postCrawlingPlugin, preCrawlingPlugin, prestatePlugin,
+		                proxyServerPlugin));
 	}
 
 	@Test
-	public void testPluginsExecution() throws ConfigurationException, CrawljaxException {
-		try {
-
-			controller.run();
-			assertThat(config.getPlugins(), hasSize(pluginTimes.size()));
-
-			// Can not test the relation OnBrowserCreatedPlugin vs. PreCrawlingPlugin
-			// assertTrue(pluginTimes.get(OnBrowserCreatedPlugin.class)
-			// == pluginTimes.get(PreCrawlingPlugin.class));
-			assertOrder(PreCrawlingPlugin.class, OnUrlLoadPlugin.class);
-			assertOrder(OnUrlLoadPlugin.class, OnNewStatePlugin.class);
-			assertOrder(OnNewStatePlugin.class, PreStateCrawlingPlugin.class);
-			assertOrder(PreStateCrawlingPlugin.class, GuidedCrawlingPlugin.class);
-			assertOrder(GuidedCrawlingPlugin.class, OnRevisitStatePlugin.class);
-			assertOrder(OnRevisitStatePlugin.class, OnInvariantViolationPlugin.class);
-
-		} finally {
-			controller.terminate(true);
-		}
+	public void proxyCallisCalled() throws Exception {
+		ProxyConfiguration config = ProxyConfiguration.noProxy();
+		plugins.runProxyServerPlugins(config);
+		verify(proxyServerPlugin).proxyServer(config);
 	}
 
-	public void assertOrder(Class<? extends Plugin> first, Class<? extends Plugin> last) {
-		assertThat(first.getSimpleName() + " should come before " + last.getSimpleName(),
-		        pluginTimes.get(first), lessThan(pluginTimes
-		                .get(last)));
+	@Test
+	public void preStateCrawlisCalled() throws Exception {
+		List<CandidateElement> candidateElements = ImmutableList.of();
+		plugins.runPreStateCrawlingPlugins(session, candidateElements);
+		verify(prestatePlugin).preStateCrawling(session, candidateElements);
 	}
 
-	@AfterClass
-	public static void cleanUp() {
-		CrawljaxPluginsUtil.loadPlugins(null);
+	@Test
+	public void postCrawlPluginIsCalled() {
+		plugins.runPostCrawlingPlugins(session);
+		verify(postCrawlingPlugin).postCrawling(session);
 	}
 
+	@Test
+	public void urlLoadisCalled() throws Exception {
+		EmbeddedBrowser browser = mock(EmbeddedBrowser.class);
+		plugins.runOnUrlLoadPlugins(browser);
+	}
+
+	@Test
+	public void revisitStatePluginIsCalled() throws Exception {
+		StateVertex currentState = mock(StateVertex.class);
+		plugins.runOnRevisitStatePlugins(session, currentState);
+		verify(onRevisitStatePlugin).onRevisitState(session, currentState);
+	}
+
+	@Test
+	public void newStatePluginIsCalled() throws Exception {
+		plugins.runOnNewStatePlugins(session);
+		verify(newStatePlugin).onNewState(session);
+	}
+
+	@Test
+	public void invariantViolatedIsCalled() throws Exception {
+		Invariant invariant = mock(Invariant.class);
+		plugins.runOnInvriantViolationPlugins(invariant, session);
+		verify(invariantViolationPlugin).onInvariantViolation(invariant, session);
+	}
+
+	@Test
+	public void domChangeNotifierIsCalled() {
+		StateVertex stateBefore = mock(StateVertex.class);
+		Eventable eventable = mock(Eventable.class);
+		StateVertex stateAfter = mock(StateVertex.class);
+		EmbeddedBrowser browser = mock(EmbeddedBrowser.class);
+		String oldDom = "old";
+		String newDom = "new";
+		when(stateBefore.getDom()).thenReturn(oldDom);
+		when(stateAfter.getDom()).thenReturn(newDom);
+
+		plugins.runDomChangeNotifierPlugins(stateBefore, eventable, stateAfter, browser);
+		verify(domChange).isDomChanged(oldDom, eventable, newDom, browser);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void onlyOneDomChangePluginCanBeAdded() {
+		new Plugins(ImmutableList.of(domChange, domChange));
+	}
+
+	@Test
+	public void browserCreatedIsCalled() {
+		EmbeddedBrowser newBrowser = mock(EmbeddedBrowser.class);
+		plugins.runOnBrowserCreatedPlugins(newBrowser);
+		verify(browserCreatedPlugin).onBrowserCreated(newBrowser);
+	}
+
+	@Test
+	public void verifyPreCrawlPluginIsCalled() {
+		List<CandidateElement> candidateElements = ImmutableList.of();
+		plugins.runPreStateCrawlingPlugins(session, candidateElements);
+		verify(prestatePlugin).preStateCrawling(session, candidateElements);
+	}
+
+	@Test
+	public void fireEventFailedIsCalled() {
+		List<Eventable> path = ImmutableList.of();
+		Eventable eventable = mock(Eventable.class);
+		plugins.runOnFireEventFailedPlugins(eventable, path);
+		verify(fireEventFailedPlugin).onFireEventFailed(eventable, path);
+	}
+
+	@Test
+	public void whenDomChangeErrorsTheDefaultIsUsed() {
+		StateVertex stateBefore = mock(StateVertex.class);
+		Eventable eventable = mock(Eventable.class);
+		StateVertex stateAfter = mock(StateVertex.class);
+		EmbeddedBrowser browser = mock(EmbeddedBrowser.class);
+		String oldDom = "old";
+		String newDom = "new";
+		when(stateBefore.getDom()).thenReturn(oldDom);
+		when(stateAfter.getDom()).thenReturn(newDom);
+
+		when(domChange.isDomChanged(oldDom, eventable, newDom, browser)).thenThrow(
+		        new RuntimeException("This is an expected excpetion. ignore"));
+		assertThat(
+		        plugins.runDomChangeNotifierPlugins(stateBefore, eventable, stateAfter, browser),
+		        is(true));
+	}
 }

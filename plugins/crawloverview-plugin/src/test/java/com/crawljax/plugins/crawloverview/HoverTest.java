@@ -51,7 +51,7 @@ public class HoverTest {
 	}
 
 	private static boolean calculateResolution(File outFile) throws IOException {
-		File indexScreensShot = new File(outFile, "screenshots/index.png");
+		File indexScreensShot = new File(outFile, "screenshots/index.jpg");
 		assertThat(indexScreensShot.exists(), is(true));
 		BufferedImage img = ImageIO.read(indexScreensShot);
 		boolean enough = img.getWidth() > MIN_WIDHT && img.getHeight() > MIN_HEIGHT;

@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Represents the HTML elements which should be crawled. It represents all the HTML elements in the
- * DOM that match the specified crawl tag name. 1) <a class="foo" .. 2) <div... 3) <a href="http://
+ * DOM that match the specified tag name. 1) <a class="foo" .. 2) <div... 3) <a href="http://
  * CrawlElement exampleCrawlElement = new CrawlElement("a") represents the elements 1 and 3 You can
  * refine the set of elements a CrawlElement represents by specifying attributes and XPath
  * conditions For example, you can refine exampleCrawlElement to represent only element 1 using
@@ -34,7 +34,8 @@ import com.google.common.collect.Lists;
  */
 public final class CrawlElement {
 
-	private final String crawlTagName;
+	private final String tagName;
+	private final List<CrawlAttribute> crawlAttributes = Lists.newLinkedList();
 	private final List<Condition> conditions = Lists.newLinkedList();
 	private final String id;
 	private final EventType eventType;
@@ -43,16 +44,24 @@ public final class CrawlElement {
 	private String underXpath;
 
 	/**
-	 * To create a CrawlElement representing an HTML element <a>MyLink</a> the crawl tag name would be
+	 * To create a CrawlElement representing an HTML element <a>MyLink</a> the tag name would be
 	 * "a".
 	 * 
 	 * @param eventType
 	 *            the event type for this crawl element.
 	 */
-	protected CrawlElement(EventType eventType, String crawlTagName) {
-		this.crawlTagName = crawlTagName.toUpperCase();
+	protected CrawlElement(EventType eventType, String tagName) {
+		this.tagName = tagName.toUpperCase();
 		this.id = "id" + hashCode();
 		this.eventType = eventType;
+	}
+
+	protected CrawlElement(EventType eventType, String tagName,
+	        List<CrawlAttribute> crawlAttributes) {
+		this.tagName = tagName.toUpperCase();
+		this.id = "id" + hashCode();
+		this.eventType = eventType;
+		this.crawlAttributes.addAll(crawlAttributes);
 	}
 
 	/**
@@ -84,11 +93,7 @@ public final class CrawlElement {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement withAttribute(String attributeName, String value) {
-		if (this.underXpath == null || this.underXpath.isEmpty()) {
-			this.underXpath = "//" + this.crawlTagName + "[@" + attributeName + "='" + value + "']";
-		} else {
-			this.underXpath = this.underXpath + " | " + "//" + this.crawlTagName + "[@" + attributeName + "='" + value + "']";;
-		}
+		this.crawlAttributes.add(new CrawlAttribute(attributeName, value));
 		return this;
 	}
 
@@ -122,11 +127,7 @@ public final class CrawlElement {
 	 * @return Crawltag with text
 	 */
 	public CrawlElement withText(String text) {
-		if(this.underXpath == null || this.underXpath.isEmpty()) {
-			this.underXpath = "//" + this.crawlTagName + "[text()=" + escapeApostrophes(text) + "]";
-		} else {
-			this.underXpath = this.underXpath + " | " + "//" + this.crawlTagName + "[text()=" + escapeApostrophes(text) + "]";
-		}
+		this.crawlAttributes.add(new CrawlAttribute("innertext", text));
 		return this;
 	}
 
@@ -154,9 +155,14 @@ public final class CrawlElement {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder("CrawlElement [");
-		if (crawlTagName != null) {
+		if (tagName != null) {
 			builder.append("tagName=");
-			builder.append(crawlTagName);
+			builder.append(tagName);
+			builder.append(", ");
+		}
+		if (crawlAttributes != null && !crawlAttributes.isEmpty()) {
+			builder.append("crawlAttributes=");
+			builder.append(crawlAttributes);
 			builder.append(", ");
 		}
 		if (conditions != null && !conditions.isEmpty()) {
@@ -203,26 +209,27 @@ public final class CrawlElement {
 		ret.append(getInputFieldIds());
 		return ret.toString();
 	}
-	
+
 	/**
-	 * Returns a string to resolve apostrophe issue in xpath
-	 * @param text
-	 * @return the apostrophe resolved xpath value string
+	 * @return the crawlAttributes
 	 */
-	protected String escapeApostrophes(String text)
-	{
-		String resultString;
-		if (text.contains("'")) {
-			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append("concat('");
-			stringBuilder.append(text.replace("'", "',\"'\",'"));
-			stringBuilder.append("')");
-			resultString = stringBuilder.toString();
-		}
-		else {
-			resultString = "'" + text + "'";
-		}
-		return resultString;
+	public ImmutableList<CrawlAttribute> getCrawlAttributes() {
+		return ImmutableList.copyOf(crawlAttributes);
+	}
+
+	/**
+	 * @param crawlAttribute
+	 *            Adds a crawlattribute.
+	 */
+	protected void addCrawlAttribute(CrawlAttribute crawlAttribute) {
+		crawlAttributes.add(crawlAttribute);
+	}
+
+	/**
+	 * @return the crawl attributes
+	 */
+	public List<CrawlAttribute> getAttributes() {
+		return crawlAttributes;
 	}
 
 	/**
@@ -233,10 +240,10 @@ public final class CrawlElement {
 	}
 
 	/**
-	 * @return The crawl tag name.
+	 * @return The tag name.
 	 */
 	public String getTagName() {
-		return crawlTagName;
+		return tagName;
 	}
 
 	/**

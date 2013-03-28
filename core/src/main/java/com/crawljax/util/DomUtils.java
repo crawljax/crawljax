@@ -281,8 +281,9 @@ public final class DomUtils {
 	 */
 	public static String getTextValue(Element element) {
 		String ret = "";
-		if (element.getTextContent() != null) {
-			ret = element.getTextContent();
+		String textContent = element.getTextContent(); 
+		if (textContent != null && !textContent.equals("") ) {
+			ret = textContent;
 		} else if (element.hasAttribute("title")) {
 			ret = element.getAttribute("title");
 		} else if (element.hasAttribute("alt")) {
@@ -409,8 +410,8 @@ public final class DomUtils {
 	 */
 	private static String getFileNameInPath(String path) {
 		String fname;
-		if (path.indexOf("/") != -1) {
-			fname = path.substring(path.lastIndexOf("/") + 1);
+		if (path.indexOf('/') != -1) {
+			fname = path.substring(path.lastIndexOf('/') + 1);
 		} else {
 			fname = path;
 		}

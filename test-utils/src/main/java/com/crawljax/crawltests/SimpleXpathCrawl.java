@@ -18,8 +18,8 @@ public class SimpleXpathCrawl extends BaseCrawler {
 	}
 
 	@Override
-	protected CrawljaxConfigurationBuilder newCrawlConfiguartionBuilder() {
-		CrawljaxConfigurationBuilder builder = super.newCrawlConfiguartionBuilder();
+	protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
+		CrawljaxConfigurationBuilder builder = super.newCrawlConfigurationBuilder();
 		builder.crawlRules().click("a").underXPath("//A[@class='click']");
 		builder.crawlRules().dontClickChildrenOf("div").withId("dontClick");
 		return builder;

@@ -1,14 +1,17 @@
 package com.crawljax.core.configuration;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.plugin.Plugins;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -24,6 +27,7 @@ public final class CrawljaxConfiguration {
 		private final CrawlRulesBuilder crawlRules = CrawlRules.builder();
 
 		private CrawljaxConfigurationBuilder(URL url) {
+			Preconditions.checkNotNull(url);
 			config = new CrawljaxConfiguration();
 			config.url = url;
 		}
@@ -34,7 +38,7 @@ public final class CrawljaxConfiguration {
 		 *            unlimited.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumStates(int states) {
-			Preconditions.checkArgument(states > 1, "States should be positive");
+			checkArgument(states > 1, "Number of maximum states should be largen than 1");
 			config.maximumStates = states;
 			return this;
 		}
@@ -52,7 +56,7 @@ public final class CrawljaxConfiguration {
 		 *            The maximum time the crawler should run. Default is one hour.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumRunTime(long time, TimeUnit unit) {
-			Preconditions.checkArgument(time > 0, "Time should larger than 0");
+			checkArgument(time >= 0, "Time should be larger than 0, or 0 for infinate.");
 			config.maximumRuntime = unit.toMillis(time);
 			return this;
 		}
@@ -70,7 +74,8 @@ public final class CrawljaxConfiguration {
 		 *            The maximum depth the crawler can reach. The default is <code>2</code>.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumDepth(int depth) {
-			Preconditions.checkArgument(depth > 1, "Time should larger than 1");
+			Preconditions.checkArgument(depth >= 0,
+			        "Depth should be 0 for infinite, or larger for a certain depth.");
 			config.maximumDepth = depth;
 			return this;
 		}
@@ -103,6 +108,7 @@ public final class CrawljaxConfiguration {
 		 *            The proxy configuration. Default is {@link ProxyConfiguration#noProxy()}
 		 */
 		public CrawljaxConfigurationBuilder setProxyConfig(ProxyConfiguration configuration) {
+			Preconditions.checkNotNull(configuration);
 			config.proxyConfiguration = configuration;
 			return this;
 		}
@@ -121,12 +127,13 @@ public final class CrawljaxConfiguration {
 		 *            {@link BrowserType#firefox} browser.
 		 */
 		public CrawljaxConfigurationBuilder setBrowserConfig(BrowserConfiguration configuration) {
+			Preconditions.checkNotNull(configuration);
 			config.browserConfig = configuration;
 			return this;
 		}
 
 		public CrawljaxConfiguration build() {
-			config.plugins = pluginBuilder.build();
+			config.plugins = new Plugins(pluginBuilder.build());
 			config.crawlRules = crawlRules.build();
 			return config;
 		}
@@ -159,7 +166,7 @@ public final class CrawljaxConfiguration {
 	private URL url;
 
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.firefox);
-	private ImmutableList<Plugin> plugins;
+	private Plugins plugins;
 	private ProxyConfiguration proxyConfiguration = ProxyConfiguration.noProxy();
 
 	private CrawlRules crawlRules;
@@ -179,7 +186,7 @@ public final class CrawljaxConfiguration {
 		return browserConfig;
 	}
 
-	public ImmutableList<Plugin> getPlugins() {
+	public Plugins getPlugins() {
 		return plugins;
 	}
 
@@ -216,7 +223,11 @@ public final class CrawljaxConfiguration {
 		result =
 		        prime * result
 		                + ((proxyConfiguration == null) ? 0 : proxyConfiguration.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		try {
+			result = prime * result + ((url == null) ? 0 : url.toURI().hashCode());
+		} catch (URISyntaxException e) {
+			result = prime * result;
+		}
 		return result;
 	}
 
@@ -225,13 +236,17 @@ public final class CrawljaxConfiguration {
 		if (this == obj) {
 			return true;
 		}
+		
 		if (obj == null) {
 			return false;
 		}
+		
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
+		
 		CrawljaxConfiguration other = (CrawljaxConfiguration) obj;
+		
 		if (browserConfig == null) {
 			if (other.browserConfig != null) {
 				return false;
@@ -239,6 +254,7 @@ public final class CrawljaxConfiguration {
 		} else if (!browserConfig.equals(other.browserConfig)) {
 			return false;
 		}
+		
 		if (crawlRules == null) {
 			if (other.crawlRules != null) {
 				return false;
@@ -246,15 +262,19 @@ public final class CrawljaxConfiguration {
 		} else if (!crawlRules.equals(other.crawlRules)) {
 			return false;
 		}
+		
 		if (maximumDepth != other.maximumDepth) {
 			return false;
 		}
+		
 		if (maximumRuntime != other.maximumRuntime) {
 			return false;
 		}
+		
 		if (maximumStates != other.maximumStates) {
 			return false;
 		}
+		
 		if (plugins == null) {
 			if (other.plugins != null) {
 				return false;
@@ -262,6 +282,7 @@ public final class CrawljaxConfiguration {
 		} else if (!plugins.equals(other.plugins)) {
 			return false;
 		}
+		
 		if (proxyConfiguration == null) {
 			if (other.proxyConfiguration != null) {
 				return false;
@@ -269,13 +290,19 @@ public final class CrawljaxConfiguration {
 		} else if (!proxyConfiguration.equals(other.proxyConfiguration)) {
 			return false;
 		}
-		if (url == null) {
-			if (other.url != null) {
+		
+		try {
+			if (url == null) {
+				if (other.url != null) {
+					return false;
+				}
+			} else if (!url.toURI().equals(other.url.toURI())) {
 				return false;
 			}
-		} else if (!url.equals(other.url)) {
-			return false;
+		} catch( URISyntaxException e) {
+			return false; 
 		}
+		
 		return true;
 	}
 

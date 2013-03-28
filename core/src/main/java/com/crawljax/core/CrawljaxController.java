@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.GuardedBy;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,6 @@ import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.oraclecomparator.StateComparator;
@@ -93,10 +91,10 @@ public class CrawljaxController implements CrawlQueueManager {
 		LOGGER.info("Starting Crawljax...");
 
 		LOGGER.info("Used plugins:");
-		CrawljaxPluginsUtil.loadPlugins(configuration.getPlugins());
 
 		if (configuration.getProxyConfiguration() != null) {
-			CrawljaxPluginsUtil.runProxyServerPlugins(configuration.getProxyConfiguration());
+			configuration.getPlugins().runProxyServerPlugins(
+			        configuration.getProxyConfiguration());
 		}
 
 		LOGGER.info("Embedded browser implementation: {}", configuration.getBrowserConfig()
@@ -125,7 +123,7 @@ public class CrawljaxController implements CrawlQueueManager {
 		        .getPreCrawlConfig().getIncludedElements());
 
 		// Create the initailCrawler
-		initialCrawler = new InitialCrawler(this);
+		initialCrawler = new InitialCrawler(this, configuration.getPlugins());
 
 		// Start the Crawling by adding the initialCrawler to the the workQueue.
 		addWorkToQueue(initialCrawler);
@@ -159,7 +157,7 @@ public class CrawljaxController implements CrawlQueueManager {
 		} catch (InterruptedException e1) {
 			LOGGER.warn("Re-Request for a browser was interrupted", e1);
 		}
-		CrawljaxPluginsUtil.runPostCrawlingPlugins(session);
+		configuration.getPlugins().runPostCrawlingPlugins(session);
 		this.getBrowserPool().freeBrowser(b);
 
 		this.shutdown(timeCrawlCalc);

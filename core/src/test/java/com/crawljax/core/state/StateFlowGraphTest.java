@@ -3,6 +3,7 @@ package com.crawljax.core.state;
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -16,6 +17,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.SerializationUtils;
 import org.jgrapht.GraphPath;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.crawljax.core.state.Eventable.EventType;
@@ -23,17 +25,25 @@ import com.crawljax.core.state.Identification.How;
 
 public class StateFlowGraphTest {
 
+	private StateVertex index;
+	private StateVertex state2;
+	private StateVertex state3;
+	private StateVertex state4;
+	private StateVertex state5;
+	private StateFlowGraph graph;
+
+	@Before
+	public void setup() {
+		index = new StateVertex("index", "<table><div>index</div></table>");
+		state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
+		state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
+		state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
+		state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
+		graph = new StateFlowGraph(index);
+	}
+
 	@Test
 	public void testSFG() throws Exception {
-
-		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
-		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
-		StateVertex state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
-
-		StateFlowGraph graph = new StateFlowGraph(index);
-
 		StateVertex DOUBLE = new StateVertex("index", "<table><div>index</div></table>");
 		assertTrue(graph.addState(state2) == null);
 		assertTrue(graph.addState(state3) == null);
@@ -103,13 +113,9 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void testCloneStates() throws Exception {
-		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
-		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state2</div></table>");
+		StateVertex state3clone2 =
+		        new StateVertex("STATE_THREE", "<table><div>state2</div></table>");
 
-		StateFlowGraph graph = new StateFlowGraph(index);
-
-		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
 		assertTrue(graph.addState(state2) == null);
 		assertTrue(graph.addState(state4) == null);
 		// assertFalse(graph.addState(state3));
@@ -121,7 +127,8 @@ public class StateFlowGraphTest {
 		// assertEquals(state3, state_clone);
 		// }
 
-		assertTrue(graph.addEdge(state4, state3, new Eventable(new Identification(How.xpath,
+		assertTrue(graph.addEdge(state4, state3clone2, new Eventable(new Identification(
+		        How.xpath,
 		        "/home/a"), EventType.click)));
 		// System.out.println(graph.toString());
 		// assertNull(graph.getStateInGraph(new StateVertix("STATE_TEST",
@@ -149,60 +156,49 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void testDoubleEvents() {
-
-		StateVertex state1 = new StateVertex("STATE_ONE", "<table><div>state1</div></table>");
-		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		StateFlowGraph sfg = new StateFlowGraph(state1);
-
 		Eventable c1 =
 		        new Eventable(new Identification(How.xpath, "/body/div[4]"), EventType.click);
 		Eventable c2 =
 		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[2]"),
 		                EventType.click);
-		sfg.addState(state1);
-		sfg.addState(state2);
+		graph.addState(index);
+		graph.addState(state2);
 
-		sfg.addEdge(state1, state2, c1);
-		sfg.addEdge(state1, state2, c2);
-		assertEquals(2, sfg.getAllEdges().size());
+		graph.addEdge(index, state2, c1);
+		graph.addEdge(index, state2, c2);
+		assertEquals(2, graph.getAllEdges().size());
 	}
 
 	@Test
 	public void testAllPossiblePaths() {
-		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
-		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
-		StateVertex state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
-		StateFlowGraph g = new StateFlowGraph(index);
-		g.addState(state2);
-		g.addState(state3);
-		g.addState(state4);
-		g.addState(state5);
+		graph.addState(state2);
+		graph.addState(state3);
+		graph.addState(state4);
+		graph.addState(state5);
 
-		g.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
+		graph.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
 		        EventType.click));
-		g.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
+		graph.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
 		        EventType.click));
-		g.addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
+		graph.addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
 		        EventType.click));
-		g.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
+		graph.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
 		        EventType.click));
-		g.addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
+		graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
 		        EventType.click));
-		g.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
+		graph.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
 		        EventType.click));
-		g.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
+		graph.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
 		        EventType.click));
-		g.addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
+		graph.addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
 		        EventType.click));
-		g.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
+		graph.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
 		        EventType.click));
 
-		g.addEdge(state3, state4, new Eventable(new Identification(How.xpath, "/3/4"),
+		graph.addEdge(state3, state4, new Eventable(new Identification(How.xpath, "/3/4"),
 		        EventType.click));
 
-		List<List<GraphPath<StateVertex, Eventable>>> results = g.getAllPossiblePaths(index);
+		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
 
 		assertEquals(2, results.size());
 
@@ -222,59 +218,47 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void largetTest() {
-		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
-		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
-		StateVertex state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
-		StateFlowGraph g = new StateFlowGraph(index);
-		g.addState(state2);
-		g.addState(state3);
-		g.addState(state4);
-		g.addState(state5);
+		graph.addState(state2);
+		graph.addState(state3);
+		graph.addState(state4);
+		graph.addState(state5);
 
-		g.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
+		graph.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
 		        EventType.click));
-		g.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
+		graph.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
 		        EventType.click));
-		g.addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
+		graph.addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
 		        EventType.click));
-		g.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
+		graph.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
 		        EventType.click));
-		g.addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
+		graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
 		        EventType.click));
-		g.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
+		graph.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
 		        EventType.click));
-		g.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
+		graph.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
 		        EventType.click));
-		g.addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
+		graph.addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
 		        EventType.click));
-		g.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
+		graph.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
 		        EventType.click));
 
-		List<List<GraphPath<StateVertex, Eventable>>> results = g.getAllPossiblePaths(index);
+		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
 
-		assertEquals(2, results.size());
+		assertThat(results, hasSize(2));
 
-		List<GraphPath<StateVertex, Eventable>> p = results.get(0);
+		assertThat(results.get(0), hasSize(5));
 
-		assertEquals(5, p.size());
+		assertThat(results.get(0).get(0).getEdgeList(), hasSize(1));
 
-		GraphPath<StateVertex, Eventable> e = p.get(0);
-
-		assertEquals(1, e.getEdgeList().size());
-
-		p = results.get(1);
-
-		assertEquals(2, p.size());
+		assertThat(results.get(1), hasSize(2));
 		// int max = 0;
 		Set<Eventable> uEvents = new HashSet<Eventable>();
 
 		for (List<GraphPath<StateVertex, Eventable>> paths : results) {
-			for (GraphPath<StateVertex, Eventable> path : paths) {
+			for (GraphPath<StateVertex, Eventable> p : paths) {
 				// System.out.print(" Edge: " + x + ":" + y);
 				// int z = 0;
-				for (Eventable edge : path.getEdgeList()) {
+				for (Eventable edge : p.getEdgeList()) {
 					// System.out.print(", " + edge.toString());
 					if (!uEvents.contains(edge)) {
 						uEvents.add(edge);
@@ -287,40 +271,28 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void guidedCrawlingFlag() {
-		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
-		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
-		StateVertex state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
-		StateFlowGraph g = new StateFlowGraph(index);
-		g.addState(state2);
-		g.addState(state3);
-		g.addState(state4);
-		g.addState(state5);
+		graph.addState(state2);
+		graph.addState(state3);
+		graph.addState(state4);
+		graph.addState(state5);
 
-		assertThat(g, hasStates(5));
+		assertThat(graph, hasStates(5));
 
 		StateVertex state6 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
 		state6.setGuidedCrawling(false);
-		g.addState(state6);
+		graph.addState(state6);
 
-		assertThat(g, hasStates(5));
+		assertThat(graph, hasStates(5));
 
 		state6.setGuidedCrawling(true);
 
-		g.addState(state6);
-		assertThat(g, hasStates(6));
+		graph.addState(state6);
+		assertThat(graph, hasStates(6));
 
 	}
 
 	@Test
 	public void testEdges() throws Exception {
-
-		StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
-		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
-		StateVertex state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
-		StateFlowGraph graph = new StateFlowGraph(index);
 		assertTrue(graph.addState(state2) == null);
 		assertTrue(graph.addState(state3) == null);
 		assertTrue(graph.addState(state4) == null);
@@ -351,12 +323,6 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void testSerializability() throws UnsupportedEncodingException {
-		StateVertex state1 = new StateVertex("STATE_ONE", "<table><div>state1</div></table>");
-		StateVertex state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		StateVertex state3 =
-		        new StateVertex("STATE_THREE", "<table><div>state3 is different</div></table>");
-		StateFlowGraph sfg = new StateFlowGraph(state1);
-
 		Eventable c1 =
 		        new Eventable(new Identification(How.xpath, "/body/div[4]"), EventType.click);
 		Eventable c2 =
@@ -367,24 +333,31 @@ public class StateFlowGraphTest {
 		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[6]"),
 		                EventType.click);
 
-		sfg.addState(state1);
-		sfg.addState(state2);
-		sfg.addState(state3);
+		graph.addState(index);
+		graph.addState(state2);
+		graph.addState(state3);
 
-		sfg.addEdge(state1, state2, c1);
-		sfg.addEdge(state1, state2, c2);
-		sfg.addEdge(state2, state3, c3);
-		assertThat(sfg, hasStates(3));
-		assertThat(sfg, hasEdges(3));
-		assertThat(sfg.getOutgoingClickables(state1).size(), is(2));
+		graph.addEdge(index, state2, c1);
+		graph.addEdge(index, state2, c2);
+		graph.addEdge(state2, state3, c3);
+		assertThat(graph, hasStates(3));
+		assertThat(graph, hasEdges(3));
+		assertThat(graph.getOutgoingClickables(index).size(), is(2));
 
-		byte[] serializedSFG = SerializationUtils.serialize(sfg);
+		byte[] serializedSFG = SerializationUtils.serialize(graph);
 		StateFlowGraph deserializedSfg =
 		        (StateFlowGraph) SerializationUtils.deserialize(serializedSFG);
 
 		assertThat(deserializedSfg, hasStates(3));
 		assertThat(deserializedSfg, hasEdges(3));
-		assertThat(deserializedSfg.getOutgoingClickables(state1).size(), is(2));
-
+		assertThat(deserializedSfg.getOutgoingClickables(index).size(), is(2));
 	}
+
+	@Test
+	public void whenStateAddedTheGraphCouterIsIncremented() {
+		assertThat(graph.getNumberOfStates(), is(1));
+		graph.addState(state2);
+		assertThat(graph.getNumberOfStates(), is(2));
+	}
+
 }
