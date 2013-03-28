@@ -14,6 +14,9 @@ import com.crawljax.core.CrawljaxException;
 
 public class ImageWriter {
 
+	private static final int THUMBNAIL_WIDTH = 200;
+	private static final int THUMBNAIL_HEIGHT = 200;
+
 	static void writeScreenShotAndThumbnail(byte[] png, File fullFile, File thumnail) {
 		try {
 			Image image = ImageIO.read(new ByteArrayInputStream(png));
@@ -36,11 +39,14 @@ public class ImageWriter {
 	}
 
 	private static void writeThumbNail(File target, Image screenshot) throws IOException {
-		BufferedImage resizedImage = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+		BufferedImage resizedImage =
+		        new BufferedImage(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = resizedImage.createGraphics();
-		g.drawImage(screenshot, 0, 0, 200, 200, Color.WHITE, null);
+		g.drawImage(screenshot, 0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Color.WHITE, null);
 		g.dispose();
 		ImageIO.write(resizedImage, "jpg", target);
 	}
 
+	private ImageWriter() {
+	}
 }

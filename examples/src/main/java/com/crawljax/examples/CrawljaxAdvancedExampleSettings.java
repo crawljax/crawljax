@@ -19,7 +19,6 @@ public final class CrawljaxAdvancedExampleSettings {
 	private static final long WAIT_TIME_AFTER_EVENT = 200;
 	private static final long WAIT_TIME_AFTER_RELOAD = 20;
 	private static final String URL = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
-	private static final String outputDir = "output";
 
 	/**
 	 * entry point
@@ -51,7 +50,7 @@ public final class CrawljaxAdvancedExampleSettings {
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
 		// This will generate a nice output in the output directory.
-		builder.addPlugin(new CrawlOverview(new File(outputDir)));
+		builder.addPlugin(new CrawlOverview(new File("output")));
 
 		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();

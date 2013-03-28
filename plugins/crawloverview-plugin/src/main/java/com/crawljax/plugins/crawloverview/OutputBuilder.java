@@ -26,6 +26,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
@@ -58,11 +59,13 @@ class OutputBuilder {
 		copySkeleton();
 
 		states = new File(outputDir, STATES_FOLDER_NAME);
-		states.mkdir();
+		boolean created = states.mkdir();
+		checkArgument(created, "Could not create states dir");
 		screenshots = new File(outputDir, SCREENSHOT_FOLDER_NAME);
 		screenshots.mkdir();
 		doms = new File(outputDir, DOMS_OUTPUT_NAME);
-		doms.mkdir();
+		created = doms.mkdir();
+		checkArgument(created, "Could not create doms dir");
 
 		indexFile = new File(outputDir, "index.html");
 		ve = new VelocityEngine();
@@ -85,7 +88,8 @@ class OutputBuilder {
 			checkArgument(outputDir.list().length == 0, "Directory must be empty");
 			checkArgument(outputDir.canWrite(), "Output dir not writable");
 		} else {
-			outputDir.mkdir();
+			boolean created = outputDir.mkdir();
+			checkArgument(created, "Could not create directory " + outputDir);
 		}
 	}
 
@@ -98,7 +102,7 @@ class OutputBuilder {
 			try {
 				FileUtils.copyDirectory(new File(skeleton.toURI()), outputDir);
 			} catch (IOException | URISyntaxException e) {
-				throw new RuntimeException(
+				throw new CrawljaxException(
 				        "Could not copy required resources: " + e.getMessage(), e);
 			}
 		}
@@ -114,14 +118,15 @@ class OutputBuilder {
 				if (entry.getName().startsWith("skeleton") && !entry.isDirectory()) {
 					String filename = entry.getName().substring("skeleton/".length());
 					File newFile = new File(outputDir, filename);
-					new File(newFile.getParent()).mkdirs();
+					boolean created = new File(newFile.getParent()).mkdirs();
+					checkArgument(created, "Could not create folder " + newFile.getParent());
 					FileOutputStream out = new FileOutputStream(newFile);
 					ByteStreams.copy(zis, out);
 					out.close();
 				}
 			}
 		} catch (IOException e1) {
-			throw new RuntimeException("Could not copy required resources: " + e1.getMessage(),
+			throw new CrawljaxException("Could not copy required resources: " + e1.getMessage(),
 			        e1);
 		}
 	}
@@ -131,7 +136,7 @@ class OutputBuilder {
 		try {
 			path = URLDecoder.decode(skeleton.getPath(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Could not process the path of the Overview skeleton "
+			throw new CrawljaxException("Could not process the path of the Overview skeleton "
 			        + skeleton, e);
 		}
 		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
@@ -197,11 +202,10 @@ class OutputBuilder {
 			Template templatee = ve.getTemplate(template);
 			FileWriter writer = new FileWriter(outFile);
 			templatee.merge(context, writer);
-			// ve.evaluate(context, writer, name, template);
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			throw new CrawlOverviewException("Could not write output state");
+			throw new CrawlOverviewException("Could not write output state", e);
 		}
 	}
 
