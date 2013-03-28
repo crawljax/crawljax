@@ -280,6 +280,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * alert, prompt, and confirm behave as if the OK button is always clicked.
 	 */
 	private void handlePopups() {
+		/**
+		 * identify websource with URI, throw URISyntaxException if string not parsed as URI reference
+		 */
 		String host = null;
 		try {
 			URI uri = new URI(browser.getCurrentUrl());
@@ -296,7 +299,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			        	+ "return function (url, name, features) {"
 			        	+ "if ( url.indexOf('http://" + host + "') == 0 || " 
 			        		+ "url.indexOf('https://" + host + "') == 0 || " 
-			        		+ "url.indexOf('http') == -1){"
+			        		+ "url.indexOf('http') == -1){" //string not found
 			        		+ "return open.call(window, url, name, features); }" 
 			        	+ "else { return null; } };"
 					+ "}(window.open);");
