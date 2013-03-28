@@ -2,6 +2,7 @@ package com.crawljax.test;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.After;
 
 import java.net.URL;
 import org.eclipse.jetty.util.resource.Resource;
