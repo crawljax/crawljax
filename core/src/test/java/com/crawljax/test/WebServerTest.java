@@ -1,9 +1,12 @@
 package com.crawljax.test;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import org.hamcrest.number.OrderingComparison; 
 import org.junit.After;
-
+import org.junit.Before;
 import java.net.URL;
 import org.eclipse.jetty.util.resource.Resource;
 import java.io.IOException;
@@ -17,8 +20,8 @@ public class WebServerTest {
 	private WebServer server;
 	private String siteString;
 	
-	static final int MAX_PORT = 65535;
-	static final int MIN_PORT = 0;
+	private static final int MAX_PORT = 65535;
+	private static final int MIN_PORT = 0;
 	
 	@Before
 	public void setup() throws Exception {
@@ -45,9 +48,8 @@ public class WebServerTest {
 	
 	@Test
 	public void testPort() throws Exception {
-		setup();
-		assertTrue(server.getPort() >= MIN_PORT);
-		assertTrue(server.getPort() <= MAX_PORT);
+		assertThat(server.getPort(), is(lessThanOrEqualTo(MAX_PORT)));
+		assertThat(server.getPort(), is(greaterThanOrEqualTo(MIN_PORT)));
 	}
 
 }
