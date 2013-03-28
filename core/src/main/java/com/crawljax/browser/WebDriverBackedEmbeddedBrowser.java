@@ -282,6 +282,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private void handlePopups() {
 		/**
 		 * identify websource with URI, throw URISyntaxException if string not parsed as URI reference
+		 * Popup blocking avoids popups with hostname
 		 */
 		String host = null;
 		try {
