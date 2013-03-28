@@ -1,5 +1,7 @@
 package com.crawljax.core.configuration;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.condition.Condition;
@@ -10,6 +12,7 @@ import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilde
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSortedSet;
@@ -46,6 +49,7 @@ public class CrawlRules {
 		 *            operations.
 		 */
 		public CrawlRulesBuilder dontCrawlFrame(String frame) {
+			Preconditions.checkNotNull(frame);
 			ignoredFrameIdentifiers.add(frame);
 			return this;
 		}
@@ -73,6 +77,8 @@ public class CrawlRules {
 		 * @see Invariant#Invariant(String, Condition)
 		 */
 		public CrawlRulesBuilder addInvariant(String description, Condition condition) {
+			Preconditions.checkNotNull(description);
+			Preconditions.checkNotNull(condition);
 			invariants.add(new Invariant(description, condition));
 			return this;
 		}
@@ -116,6 +122,7 @@ public class CrawlRules {
 		}
 
 		public CrawlRulesBuilder setInputSpec(InputSpecification spec) {
+			Preconditions.checkNotNull(spec);
 			crawlRules.inputSpecification = spec;
 			return this;
 		}
@@ -155,7 +162,8 @@ public class CrawlRules {
 		 *            The time unit.
 		 */
 		public CrawlRulesBuilder waitAfterReloadUrl(long time, TimeUnit unit) {
-			crawlRules.waitAfterReloadUrl = time;
+			checkArgument(time > 0, "Wait after reload time should be larget than 0");
+			crawlRules.waitAfterReloadUrl = unit.toMillis(time);
 			return this;
 		}
 
@@ -166,7 +174,8 @@ public class CrawlRules {
 		 *            The time unit.
 		 */
 		public CrawlRulesBuilder waitAfterEvent(long time, TimeUnit unit) {
-			crawlRules.waitAfterReloadUrl = time;
+			checkArgument(time > 0, "Wait after event time should be larget than 0");
+			crawlRules.waitAfterEvent = unit.toMillis(time);
 			return this;
 		}
 
@@ -242,6 +251,16 @@ public class CrawlRules {
 		}
 	}
 
+	/**
+	 * Default wait after URL reload in {@link TimeUnit#MILLISECONDS}
+	 */
+	public static final long DEFAULT_WAIT_AFTER_RELOAD = 500;
+
+	/**
+	 * Default wait after event in {@link TimeUnit#MILLISECONDS}
+	 */
+	public static final long DEFAULT_WAIT_AFTER_EVENT = 500;
+
 	public static CrawlRulesBuilder builder() {
 		return new CrawlRulesBuilder();
 	}
@@ -260,8 +279,8 @@ public class CrawlRules {
 	private boolean clickOnce = true;
 	private boolean crawlFrames = true;
 	private boolean crawlHiddenAnchors = false;
-	public long waitAfterReloadUrl = 500;
-	public long waitAfterEvent = 500;
+	private long waitAfterReloadUrl = DEFAULT_WAIT_AFTER_RELOAD;
+	private long waitAfterEvent = DEFAULT_WAIT_AFTER_EVENT;
 
 	private CrawlRules() {
 	}

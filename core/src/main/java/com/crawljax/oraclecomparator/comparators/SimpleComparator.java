@@ -33,15 +33,16 @@ public class SimpleComparator extends AbstractComparator {
 	}
 
 	private String removeLinebreaksAndWhitespaces(String string) {
-
+		String strippedStr; 
+		
 		// remove linebreaks
-		string = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
+		strippedStr = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
 
 		// remove just before and after elements spaces
-		string = string.replaceAll(">[ ]*", ">");
-		string = string.replaceAll("[ ]*<", "<");
+		strippedStr = strippedStr.replaceAll(">[ ]*", ">");
+		strippedStr = strippedStr.replaceAll("[ ]*<", "<");
 
-		return string;
+		return strippedStr;
 	}
 
 }

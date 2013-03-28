@@ -6,7 +6,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.condition.Condition;
 import com.crawljax.core.state.Eventable.EventType;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
