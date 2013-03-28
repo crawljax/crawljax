@@ -93,7 +93,7 @@ public final class InputSpecification {
 	/**
 	 * @return The properties configuration object.
 	 */
-	protected PropertiesConfiguration getConfiguration() {
+	public PropertiesConfiguration getConfiguration() {
 		PropertiesConfiguration config = new PropertiesConfiguration();
 		for (Form form : this.forms) {
 			for (FormInputField inputField : form.getInputFields()) {

@@ -26,7 +26,6 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.configuration.InputSpecification;
-import com.crawljax.core.configuration.InputSpecificationReader;
 import com.crawljax.core.state.Identification;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
@@ -50,7 +49,7 @@ public final class FormInputValueHelper {
 	private Configuration config;
 
 	private boolean randomInput;
-	
+
 	private static final int EMPTY = 0;
 
 	/**
@@ -63,7 +62,7 @@ public final class FormInputValueHelper {
 
 		this.randomInput = randomInput;
 		if (inputSpecification != null) {
-			config = new InputSpecificationReader(inputSpecification).getConfiguration();
+			config = inputSpecification.getConfiguration();
 
 			@SuppressWarnings("rawtypes")
 			Iterator keyIterator = config.getKeys();

@@ -6,6 +6,7 @@ import java.util.List;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -152,47 +153,6 @@ public final class CrawlElement {
 		return eventableCondition;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder("CrawlElement [");
-		if (tagName != null) {
-			builder.append("tagName=");
-			builder.append(tagName);
-			builder.append(", ");
-		}
-		if (crawlAttributes != null && !crawlAttributes.isEmpty()) {
-			builder.append("crawlAttributes=");
-			builder.append(crawlAttributes);
-			builder.append(", ");
-		}
-		if (conditions != null && !conditions.isEmpty()) {
-			builder.append("conditions=");
-			builder.append(conditions);
-			builder.append(", ");
-		}
-		if (id != null) {
-			builder.append("id=");
-			builder.append(id);
-			builder.append(", ");
-		}
-		if (underXpath != null) {
-			builder.append("underXpath=");
-			builder.append(underXpath);
-			builder.append(", ");
-		}
-		if (inputFieldIds != null && !inputFieldIds.isEmpty()) {
-			builder.append("inputFieldIds=");
-			builder.append(inputFieldIds);
-			builder.append(", ");
-		}
-		if (eventType != null) {
-			builder.append("eventType=");
-			builder.append(eventType);
-		}
-		builder.append("]");
-		return builder.toString();
-	}
-
 	/**
 	 * @return a Test string.
 	 */
@@ -292,6 +252,40 @@ public final class CrawlElement {
 	 */
 	public EventType getEventType() {
 		return eventType;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(tagName, crawlAttributes, conditions, id, eventType,
+		        inputFieldIds, underXpath);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof CrawlElement) {
+			CrawlElement that = (CrawlElement) object;
+			return Objects.equal(this.tagName, that.tagName)
+			        && Objects.equal(this.crawlAttributes, that.crawlAttributes)
+			        && Objects.equal(this.conditions, that.conditions)
+			        && Objects.equal(this.id, that.id)
+			        && Objects.equal(this.eventType, that.eventType)
+			        && Objects.equal(this.inputFieldIds, that.inputFieldIds)
+			        && Objects.equal(this.underXpath, that.underXpath);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("tagName", tagName)
+		        .add("crawlAttributes", crawlAttributes)
+		        .add("conditions", conditions)
+		        .add("id", id)
+		        .add("eventType", eventType)
+		        .add("inputFieldIds", inputFieldIds)
+		        .add("underXpath", underXpath)
+		        .toString();
 	}
 
 }
