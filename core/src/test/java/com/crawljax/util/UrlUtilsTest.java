@@ -17,6 +17,14 @@ public class UrlUtilsTest {
 	public void getVarFromQueryString() {
 		assertEquals("home",
 		        UrlUtils.getVarFromQueryString("page", "?sub=1&userid=123&page=home&goto=0"));
+		assertEquals(null,
+		        UrlUtils.getVarFromQueryString(null, "?sub=1&userid=123&page=home&goto=0"));
+		assertEquals(null,
+		        UrlUtils.getVarFromQueryString("page", ""));
+		assertEquals(null,
+		        UrlUtils.getVarFromQueryString("page", "?sub=1&userid=123&NotPage=home&goto=0"));
+		assertEquals(null,
+		        UrlUtils.getVarFromQueryString("page", "?sub=1&userid=123&page=home=moreStringInfo&goto=0"));
 	}
 
 	@Test
@@ -79,11 +87,6 @@ public class UrlUtilsTest {
 	@Test
 	public void getBaseUrl() {
 		assertEquals("http://crawljax.com", UrlUtils.getBaseUrl("http://crawljax.com/about/"));
-
-	}
-
-	@Test
-	public void testExtractUrl() {
 
 	}
 
