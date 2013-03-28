@@ -5,9 +5,10 @@ import net.jcip.annotations.Immutable;
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
- * Conditions that returns true iff the browser's current url contains url. Note: Case insesitive
- * 
- * @author dannyroest@gmail.com (Danny Roest)
+ * Conditions that returns true iff the browser's current url contains url.
+ * <p>
+ * Note: Case insesitive
+ * </p>
  */
 @Immutable
 public class UrlCondition extends AbstractCondition {
@@ -19,7 +20,7 @@ public class UrlCondition extends AbstractCondition {
 	 *            the URL.
 	 */
 	public UrlCondition(String url) {
-		this.url = url;
+		this.url = url.toLowerCase();
 	}
 
 	@Override

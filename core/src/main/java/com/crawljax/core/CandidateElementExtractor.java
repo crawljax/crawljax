@@ -3,8 +3,6 @@ package com.crawljax.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -27,9 +25,7 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.DomUtils;
-import com.crawljax.util.UrlUtils;
 import com.crawljax.util.XPathHelper;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
@@ -304,15 +300,12 @@ public class CandidateElementExtractor {
 		return ImmutableList.<String> of();
 	}
 
-	private void addElement(Element element, Builder<Element> builder, CrawlElement crawlElement) {
-		if ("A".equalsIgnoreCase(crawlElement.getTagName())) {
+	private void addElement(Element element, Builder<Element> builder, CrawlElement tagElement) {
+		if ("A".equalsIgnoreCase(tagElement.getTagName())) {
 			String href = element.getAttribute("href");
-			if (!Strings.isNullOrEmpty(href)) {
-				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
-				LOG.debug("HREF: {} isExternal= {}", href, isExternal);
-				if (isExternal || isPDForPS(href)) {
-					return;
-				}
+			if (href != null && href.startsWith("mailto:")) {
+				LOG.debug("Not clicking on mailto: link");
+				return;
 			}
 		}
 		builder.add(element);
@@ -355,22 +348,6 @@ public class CandidateElementExtractor {
 				 */
 			}
 		}
-	}
-
-	/**
-	 * @param href
-	 *            the string to check
-	 * @return true if href has the pdf or ps pattern.
-	 */
-	private boolean isPDForPS(String href) {
-		final Pattern p = Pattern.compile(".+.pdf|.+.ps");
-		Matcher m = p.matcher(href);
-
-		if (m.matches()) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**

@@ -285,8 +285,8 @@ public class CrawljaxController implements CrawlQueueManager {
 	public final synchronized void terminate(boolean isAbort) {
 		LOGGER.warn("After " + this.formatRunningTime()
 		        + " the crawling process was requested to terminate @ " + Thread.currentThread());
-		browserPool.shutdown();
 		workQueue.shutdownNow(isAbort);
+		browserPool.shutdown();
 		this.shutdown(System.currentTimeMillis() - startCrawl);
 	}
 

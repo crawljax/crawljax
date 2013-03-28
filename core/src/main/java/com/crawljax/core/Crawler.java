@@ -122,21 +122,6 @@ public class Crawler implements Runnable {
 		this.name = name;
 	}
 
-	//
-	// /**
-	// * Private Crawler constructor for a 'reload' crawler. Only used internally.
-	// *
-	// * @param mother
-	// * the main CrawljaxController
-	// * @param returnPath
-	// * the path used to return to the last state, this can be a empty list
-	// * @deprecated better to use {@link #Crawler(CrawljaxController, CrawlPath)}
-	// */
-	// @Deprecated
-	// protected Crawler(CrawljaxController mother, List<Eventable> returnPath) {
-	// this(mother, new CrawlPath(returnPath));
-	// }
-
 	/**
 	 * Private Crawler constructor for a 'reload' crawler. Only used internally.
 	 * 
@@ -251,11 +236,9 @@ public class Crawler implements Runnable {
 		} else {
 			LOG.info("Found an invisible link with href={}", href);
 			try {
-				if (!UrlUtils.isLinkExternal(browser.getCurrentUrl(), href)) {
-					URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
-					browser.goToUrl(url);
-					return true;
-				}
+				URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
+				browser.goToUrl(url);
+				return true;
 			} catch (MalformedURLException e) {
 				LOG.info("Could not visit invisible illegal URL {}", e.getMessage());
 			}
@@ -610,9 +593,6 @@ public class Crawler implements Runnable {
 		}
 
 		try {
-			/**
-			 * Init the Crawler
-			 */
 			try {
 				this.init();
 			} catch (InterruptedException e) {
@@ -621,16 +601,12 @@ public class Crawler implements Runnable {
 				}
 			}
 
-			/**
-			 * Hand over the main crawling
-			 */
+			// Hand over the main crawling
 			if (!this.crawl()) {
 				controller.terminate(false);
 			}
 
-			/**
-			 * Crawling is done; so the crawlPath of the current branch is known
-			 */
+			// Crawling is done; so the crawlPath of the current branch is known
 			if (!fired) {
 				controller.getSession().removeCrawlPath();
 			}
@@ -650,9 +626,7 @@ public class Crawler implements Runnable {
 		} catch (CrawljaxException e) {
 			LOG.error("Crawl failed!", e);
 		}
-		/**
-		 * At last failure or non shutdown the Crawler.
-		 */
+		// At last failure or non shutdown the Crawler.
 		this.shutdown();
 	}
 

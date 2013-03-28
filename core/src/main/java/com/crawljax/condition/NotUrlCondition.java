@@ -1,16 +1,11 @@
 package com.crawljax.condition;
 
-import net.jcip.annotations.Immutable;
-
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
  * Conditions that returns true iff the browser's current url NOT contains url. Note: Case
  * insensitive.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
-@Immutable
 public class NotUrlCondition extends AbstractCondition {
 
 	private final UrlCondition urlCondition;

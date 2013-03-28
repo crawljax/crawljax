@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.crawljax.condition;
 
 import net.jcip.annotations.ThreadSafe;
@@ -9,9 +6,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Abstract class for Condition. This class and derivatives are Thread safe. The setAfftectedNodes
- * and getAffectedNodes are garded by using the ThreadLocal system.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
+ * and getAffectedNodes are guarded by using the ThreadLocal system.
  */
 @ThreadSafe
 public abstract class AbstractCondition implements Condition {
