@@ -93,7 +93,11 @@ public final class CrawlElement {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement withAttribute(String attributeName, String value) {
-		this.crawlAttributes.add(new CrawlAttribute(attributeName, value));
+		if (this.underXpath == null || this.underXpath.isEmpty()) {
+			this.underXpath = "//" + this.tagName + "[@" + attributeName + "='" + value + "']";
+		} else {
+			this.underXpath = this.underXpath + " | " + "//" + this.tagName + "[@" + attributeName + "='" + value + "']";;
+		}
 		return this;
 	}
 
@@ -127,7 +131,11 @@ public final class CrawlElement {
 	 * @return Crawltag with text
 	 */
 	public CrawlElement withText(String text) {
-		this.crawlAttributes.add(new CrawlAttribute("innertext", text));
+		if(this.underXpath == null || this.underXpath.isEmpty()) {
+			this.underXpath = "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
+		} else {
+			this.underXpath = this.underXpath + " | " + "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
+		}
 		return this;
 	}
 
@@ -292,6 +300,27 @@ public final class CrawlElement {
 	 */
 	public EventType getEventType() {
 		return eventType;
+	}
+	
+	/**
+	 * Returns a string to resolve apostrophe issue in xpath
+	 * @param text
+	 * @return the apostrophe resolved xpath value string
+	 */
+	protected String escapeApostrophes(String text)
+	{
+		String resultString;
+		if (text.contains("'")) {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("concat('");
+			stringBuilder.append(text.replace("'", "',\"'\",'"));
+			stringBuilder.append("')");
+			resultString = stringBuilder.toString();
+		}
+		else {
+			resultString = "'" + text + "'";
+		}
+		return resultString;
 	}
 
 }
