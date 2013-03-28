@@ -3,7 +3,7 @@ package com.crawljax.util;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import org.hamcreast.collection.IsEmptyCollection;
+import org.hamcrest.collection.IsEmptyCollection;
 import static org.hamcrest.core.Is.is;
 import java.util.List;
 import org.junit.Test;
