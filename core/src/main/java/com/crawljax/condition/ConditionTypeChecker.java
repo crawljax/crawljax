@@ -20,7 +20,7 @@ public class ConditionTypeChecker<T extends ConditionType> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConditionTypeChecker.class);
 
-	private ImmutableList<T> invariants;
+	private final ImmutableList<T> invariants;
 
 	/**
 	 * Constructor with invariant list.

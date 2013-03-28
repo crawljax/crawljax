@@ -7,6 +7,7 @@ import javax.annotation.concurrent.Immutable;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.browser.WebDriverBrowserBuilder;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 @Immutable
@@ -117,59 +118,42 @@ public class BrowserConfiguration {
 		return bootstrap;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (bootstrap ? 1231 : 1237);
-		result = prime * result + ((browsertype == null) ? 0 : browsertype.hashCode());
-		result = prime * result + numberOfBrowsers;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		BrowserConfiguration other = (BrowserConfiguration) obj;
-		if (bootstrap != other.bootstrap) {
-			return false;
-		}
-		if (browsertype != other.browsertype) {
-			return false;
-		}
-		if (numberOfBrowsers != other.numberOfBrowsers) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("BrowserConfiguration [browsertype=");
-		builder.append(browsertype);
-		builder.append(", numberOfBrowsers=");
-		builder.append(numberOfBrowsers);
-		builder.append(", bootstrap=");
-		builder.append(bootstrap);
-		builder.append("]");
-		return builder.toString();
-	}
-
 	public EmbeddedBrowserBuilder getBrowserBuilder() {
 		return browserBuilder;
 	}
 
 	public String getRemoteHubUrl() {
 		return remoteHubUrl;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("browsertype", browsertype)
+		        .add("numberOfBrowsers", numberOfBrowsers)
+		        .add("bootstrap", bootstrap)
+		        .add("browserBuilder", browserBuilder)
+		        .add("remoteHubUrl", remoteHubUrl)
+		        .toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(browsertype, numberOfBrowsers, bootstrap, browserBuilder,
+		        remoteHubUrl);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof BrowserConfiguration) {
+			BrowserConfiguration that = (BrowserConfiguration) object;
+			return Objects.equal(this.browsertype, that.browsertype)
+			        && Objects.equal(this.numberOfBrowsers, that.numberOfBrowsers)
+			        && Objects.equal(this.bootstrap, that.bootstrap)
+			        && Objects.equal(this.browserBuilder, that.browserBuilder)
+			        && Objects.equal(this.remoteHubUrl, that.remoteHubUrl);
+		}
+		return false;
 	}
 
 }

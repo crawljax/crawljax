@@ -6,6 +6,7 @@ import java.util.List;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -150,47 +151,6 @@ public final class CrawlElement {
 			eventableCondition.setLinkedInputFields(getInputFieldIds());
 		}
 		return eventableCondition;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder("CrawlElement [");
-		if (tagName != null) {
-			builder.append("tagName=");
-			builder.append(tagName);
-			builder.append(", ");
-		}
-		if (crawlAttributes != null && !crawlAttributes.isEmpty()) {
-			builder.append("crawlAttributes=");
-			builder.append(crawlAttributes);
-			builder.append(", ");
-		}
-		if (conditions != null && !conditions.isEmpty()) {
-			builder.append("conditions=");
-			builder.append(conditions);
-			builder.append(", ");
-		}
-		if (id != null) {
-			builder.append("id=");
-			builder.append(id);
-			builder.append(", ");
-		}
-		if (underXpath != null) {
-			builder.append("underXpath=");
-			builder.append(underXpath);
-			builder.append(", ");
-		}
-		if (inputFieldIds != null && !inputFieldIds.isEmpty()) {
-			builder.append("inputFieldIds=");
-			builder.append(inputFieldIds);
-			builder.append(", ");
-		}
-		if (eventType != null) {
-			builder.append("eventType=");
-			builder.append(eventType);
-		}
-		builder.append("]");
-		return builder.toString();
 	}
 
 	/**

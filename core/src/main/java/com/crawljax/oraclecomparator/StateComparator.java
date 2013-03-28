@@ -116,8 +116,6 @@ public class StateComparator {
 	 * @return the stripped fom by the oracle comparators
 	 */
 	public String getStrippedDom(EmbeddedBrowser browser) {
-
-		// StateComparator oc = new StateComparator(oracleComparator);
 		compare("", browser.getDom(), browser);
 		return getStrippedNewDom();
 	}

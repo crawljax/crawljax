@@ -1,5 +1,7 @@
 package com.crawljax.core.configuration;
 
+import com.google.common.base.Objects;
+
 /**
  * Specifies attribute for CrawlElements. Internal use only.
  * 
@@ -23,11 +25,6 @@ public class CrawlAttribute {
 		this.value = value;
 	}
 
-	@Override
-	public String toString() {
-		return getName() + "=" + getValue();
-	}
-
 	/**
 	 * @return the name
 	 */
@@ -41,7 +38,7 @@ public class CrawlAttribute {
 	public String getValue() {
 		return value;
 	}
-	
+
 	/**
 	 * Compare the value of this CrawlAttribute with a string. This string may contain wildcards by
 	 * using a '%'. If the string contains this character, any occurrence of this character will be
@@ -73,4 +70,28 @@ public class CrawlAttribute {
 
 		return this.value.equals(str);
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(name, value);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof CrawlAttribute) {
+			CrawlAttribute that = (CrawlAttribute) object;
+			return Objects.equal(this.name, that.name)
+			        && Objects.equal(this.value, that.value);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("name", name)
+		        .add("value", value)
+		        .toString();
+	}
+
 }

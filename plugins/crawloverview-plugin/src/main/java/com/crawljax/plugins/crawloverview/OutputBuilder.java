@@ -88,7 +88,7 @@ class OutputBuilder {
 			checkArgument(outputDir.list().length == 0, "Directory must be empty");
 			checkArgument(outputDir.canWrite(), "Output dir not writable");
 		} else {
-			boolean created = outputDir.mkdir();
+			boolean created = outputDir.mkdirs();
 			checkArgument(created, "Could not create directory " + outputDir);
 		}
 	}
@@ -118,8 +118,11 @@ class OutputBuilder {
 				if (entry.getName().startsWith("skeleton") && !entry.isDirectory()) {
 					String filename = entry.getName().substring("skeleton/".length());
 					File newFile = new File(outputDir, filename);
-					boolean created = new File(newFile.getParent()).mkdirs();
-					checkArgument(created, "Could not create folder " + newFile.getParent());
+					File parent = new File(newFile.getParent());
+					if (!parent.exists()) {
+						boolean created = parent.mkdirs();
+						checkArgument(created, "Could not create folder " + newFile.getParent());
+					}
 					FileOutputStream out = new FileOutputStream(newFile);
 					ByteStreams.copy(zis, out);
 					out.close();

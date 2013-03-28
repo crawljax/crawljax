@@ -105,14 +105,13 @@ public class StateMachine {
 			LOGGER.debug("CLONE CURRENTSTATE: {}", currentState.getName());
 			LOGGER.debug("CLONE STATE: {}", cloneState.getName());
 			LOGGER.debug("CLONE CLICKABLE: {}", eventable);
-			newState = cloneState;
-
+			stateFlowGraph.addEdge(currentState, cloneState, eventable);
 		} else {
+			stateFlowGraph.addEdge(currentState, newState, eventable);
 			LOGGER.info("State {} added to the StateMachine.", newState.getName());
 		}
 
 		// Add the Edge
-		stateFlowGraph.addEdge(currentState, newState, eventable);
 
 		return cloneState;
 	}
