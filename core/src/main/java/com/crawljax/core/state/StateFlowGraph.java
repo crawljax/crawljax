@@ -1,5 +1,6 @@
 package com.crawljax.core.state;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,7 +18,10 @@ import org.jgrapht.alg.KShortestPaths;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
+import com.crawljax.util.DomUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -110,7 +114,16 @@ public class StateFlowGraph implements Serializable {
 	private void correctStateName(StateVertex stateVertix) {
 		// the -1 is for the "index" state.
 		int totalNumberOfStates = this.getAllStates().size() - 1;
-		String correctedName = makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
+		Document stateDom = null;
+		try {
+			stateDom = DomUtils.asDocument(stateVertix.getDom());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String correctedName =
+		        makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling(),
+		                stateVertix.getUrl(), stateDom);
 		if (!"index".equals(stateVertix.getName())
 		        && !stateVertix.getName().equals(correctedName)) {
 			LOG.info("Correcting state name from {}  to {}", stateVertix.getName(), correctedName);
@@ -368,9 +381,9 @@ public class StateFlowGraph implements Serializable {
 	 * 
 	 * @return State name the name of the state
 	 */
-	public String getNewStateName() {
+	public String getNewStateName(String url, Document Dom) {
 		stateCounter.getAndIncrement();
-		String state = makeStateName(stateCounter.get(), false);
+		String state = makeStateName(stateCounter.get(), false, url, Dom);
 		return state;
 	}
 
@@ -382,13 +395,33 @@ public class StateFlowGraph implements Serializable {
 	 *            the id where this name needs to be for.
 	 * @return the String containing the new name.
 	 */
-	private String makeStateName(int id, boolean guided) {
+	private String makeStateName(int id, boolean guided, String url, Document dom) {
+
+		String title = getTitle(dom);
+		String path = null;
+		if (url == null) {
+			url = "";
+			path = url;
+		}
+
+		else {
+			path = trimUrl(url);
+		}
 
 		if (guided) {
 			return "guided" + id;
 		}
 
-		return "state" + id;
+		String urlWithoutPunctuation = path.replaceAll("\\p{Punct}|\\d.", "");
+
+		if (urlWithoutPunctuation.length() > 50) {
+			urlWithoutPunctuation = urlWithoutPunctuation.substring(0, 50);
+			return id + "-" + "[" + title + "]" + "_" + "["
+			        + urlWithoutPunctuation + "]";
+		}
+
+		return id + "-" + "[" + title + "]" + "_" + "[" + urlWithoutPunctuation
+		        + "]";
 	}
 
 	public boolean isInitialState(StateVertex state) {
@@ -400,5 +433,32 @@ public class StateFlowGraph implements Serializable {
 	 */
 	public int getNumberOfStates() {
 		return stateCounter.get();
+	}
+
+	private String getTitle(Document dom) {
+
+		if (dom == null) {
+			return "";
+		}
+		Node title = dom.getElementsByTagName("title").item(0);
+
+		if (title == null) {
+			return "";
+		}
+
+		return title.getTextContent();
+
+	}
+
+	/**
+	 * @param url
+	 *            the entire URL of the state
+	 * @return a string containing only the path of the state URL
+	 */
+
+	private String trimUrl(String url) {
+
+		String[] path = url.split("/", 4);
+		return path[3];
 	}
 }
