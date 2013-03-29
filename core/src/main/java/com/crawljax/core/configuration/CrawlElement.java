@@ -254,38 +254,4 @@ public final class CrawlElement {
 		return eventType;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(tagName, crawlAttributes, conditions, id, eventType,
-		        inputFieldIds, underXpath);
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof CrawlElement) {
-			CrawlElement that = (CrawlElement) object;
-			return Objects.equal(this.tagName, that.tagName)
-			        && Objects.equal(this.crawlAttributes, that.crawlAttributes)
-			        && Objects.equal(this.conditions, that.conditions)
-			        && Objects.equal(this.id, that.id)
-			        && Objects.equal(this.eventType, that.eventType)
-			        && Objects.equal(this.inputFieldIds, that.inputFieldIds)
-			        && Objects.equal(this.underXpath, that.underXpath);
-		}
-		return false;
-	}
-
-	@Override
-	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("tagName", tagName)
-		        .add("crawlAttributes", crawlAttributes)
-		        .add("conditions", conditions)
-		        .add("id", id)
-		        .add("eventType", eventType)
-		        .add("inputFieldIds", inputFieldIds)
-		        .add("underXpath", underXpath)
-		        .toString();
-	}
-
 }
