@@ -679,8 +679,7 @@ public class Crawler implements Runnable {
 	}
 
 	private boolean shouldContinueCrawling(StateVertex vertex) {
-		return !maximumCrawlTimePassed() && !maximumStatesReached()
-				&& !maximumOutgoingEdgesPerStateReached(vertex);
+		return !maximumCrawlTimePassed() && !maximumStatesReached();
 	}
 
 	private boolean maximumCrawlTimePassed() {
@@ -704,17 +703,5 @@ public class Crawler implements Runnable {
 		} else {
 			return false;
 		}
-	}
-	
-	private boolean maximumOutgoingEdgesPerStateReached(StateVertex vertex) {
-		StateFlowGraph graph = controller.getSession().getStateFlowGraph();
-		if (vertex != null) {
-			int maxOutgoingEdgesPerState = config.getMaximumOutgoingEdgesPerState();
-			if ((maxOutgoingEdgesPerState != 0) && (graph.getOutgoingStates(vertex).size() >= maxOutgoingEdgesPerState)) {
-				LOG.info("Max number of states per Url {} reached!", maxOutgoingEdgesPerState);
-				return true;
-			}
-		}
-		return false;
 	}
 }
