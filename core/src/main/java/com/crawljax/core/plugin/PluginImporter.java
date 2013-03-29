@@ -12,7 +12,7 @@ import java.util.jar.JarFile;
 public class PluginImporter
 {
 	public static final String PLUGIN_DIR = "C:/Users/User/Desktop/testplugins2";
-
+	private static ClassLoader cl = null;
     private static void getClassNamesInJar (List<String> classNames, File jarfile)
     {
     	try{
@@ -46,13 +46,19 @@ public class PluginImporter
         List<URL> jars = new ArrayList<URL>();
 		ClassLoaderHelper.fillJarsList(jars,dir,true);
 		
-		ClassLoader cl = ClassLoaderHelper.buildClassLoader(true, dir);
+		if (cl == null)
+		{
+			cl = ClassLoaderHelper.buildClassLoader(true, dir);
+		}
+		
+		else
+		{
 		for(int iter = 0; iter < jars.size(); iter++)
 			getClassNamesInJar(classNames, new File(jars.get(iter).getPath()));
 
 		for(int iter = 0; iter < classNames.size(); iter++)
 			addOneService(classNames.get(iter), clazz, services, cl);
-		
+		}
         return services;
     }
 
