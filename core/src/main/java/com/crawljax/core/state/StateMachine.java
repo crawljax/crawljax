@@ -1,5 +1,7 @@
 package com.crawljax.core.state;
 
+import java.util.Hashtable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,8 +11,6 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.plugin.Plugins;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.UnmodifiableIterator;
 
 /**
  * The State Machine.
@@ -21,9 +21,16 @@ public class StateMachine {
 	private final StateFlowGraph stateFlowGraph;
 
 	private final StateVertex initialState;
+	
 
 	private StateVertex currentState;
+	
 	private Object stateLock = new Object();
+	
+	/**
+	 * Hash table used for caching when trying to limit maximum states per URL
+	 */
+	private static Hashtable<String, Integer> table = new Hashtable<String,Integer>();
 
 	/**
 	 * The invariantChecker to use when updating the state machine.
@@ -49,6 +56,7 @@ public class StateMachine {
 		this.plugins = plugins;
 		currentState = initialState;
 		invariantChecker = new ConditionTypeChecker<>(invariantList);
+		initializeHashtable();
 	}
 
 	/**
@@ -148,13 +156,15 @@ public class StateMachine {
 	 *            used to feet to checkInvariants
 	 * @param session
 	 *            the current Session
+	 * @param maxStatesPerUrl
+	 *            the maximum number of states per URL
 	 * @return true if the new state is not found in the state machine.
 	 */
 	public boolean updateAndCheckIfClone(final Eventable event, StateVertex newState,
 	        EmbeddedBrowser browser,
 	        CrawlSession session, int maxStatesPerUrl) {
 	
-		if (exceededMaxStatesPerUrl(maxStatesPerUrl,newState)){
+		if (exceededMaxStatesPerUrl(maxStatesPerUrl, newState)){
 			return false;
 		}
 
@@ -187,21 +197,28 @@ public class StateMachine {
 	}
 	
 	private boolean exceededMaxStatesPerUrl(int maxStatesPerUrl, StateVertex newState) {
-		if(maxStatesPerUrl != 0) {
-			ImmutableSet<StateVertex> allStates = stateFlowGraph.getAllStates();
-			UnmodifiableIterator<StateVertex> it = allStates.iterator();
-			int counter = 0;
-			StateVertex currState;
-			while(it.hasNext()) {
-				currState = it.next();
-				if (currState.getUrl().compareToIgnoreCase(newState.getUrl()) == 0) {
-					counter++;
-					if (counter >= maxStatesPerUrl)
-						return true;
-				}
+		
+		String newStateURL = newState.getUrl();
+
+		if (table.containsKey(newStateURL)) {
+			if ( table.get(newStateURL) < maxStatesPerUrl) {
+				table.put(newStateURL, table.get(newStateURL)+1);
+				return false;
 			}
-		}	
+			else
+				return true;
+		}
+		else {
+			table.put(newStateURL, 1);
+		}
+		
 		return false;
 	}
-		
+	
+	private void initializeHashtable(){
+		if (table.size()==0){
+			table.put(currentState.getUrl(), 1);
+		}
+	}
+	
 }
