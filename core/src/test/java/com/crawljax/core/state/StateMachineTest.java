@@ -35,7 +35,7 @@ import com.google.common.collect.ImmutableList;
 @RunWith(MockitoJUnitRunner.class)
 public class StateMachineTest {
 	private StateMachine sm;
-	private final StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
+	private final StateVertex index = new StateVertex("dummy url", "index", "<table><div>index</div></table>", "dummy stripped dom");
 	private final int MAXSTATESPERURL = 0;	// unlimited states per url
 
 	@Mock

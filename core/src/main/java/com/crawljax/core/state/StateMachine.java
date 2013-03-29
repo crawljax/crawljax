@@ -197,12 +197,12 @@ public class StateMachine {
 	}
 	
 	private boolean exceededMaxStatesPerUrl(int maxStatesPerUrl, StateVertex newState) {
-		
 		String newStateURL = newState.getUrl();
-
+		if(newStateURL == null)
+			return false;
 		if (table.containsKey(newStateURL)) {
 			if ( table.get(newStateURL) < maxStatesPerUrl) {
-				table.put(newStateURL, table.get(newStateURL)+1);
+				table.put(newStateURL, table.get(newStateURL) + 1);
 				return false;
 			}
 			else
@@ -211,14 +211,11 @@ public class StateMachine {
 		else {
 			table.put(newStateURL, 1);
 		}
-		
 		return false;
 	}
 	
-	private void initializeHashtable(){
-		if (table.size()==0){
+	private void initializeHashtable() {	
+		if (table.size() == 0)		
 			table.put(currentState.getUrl(), 1);
-		}
 	}
-	
 }
