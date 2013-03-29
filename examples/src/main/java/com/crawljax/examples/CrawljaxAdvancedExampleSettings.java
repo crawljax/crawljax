@@ -29,6 +29,7 @@ public final class CrawljaxAdvancedExampleSettings {
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
 		builder.crawlRules().click("a");
+		builder.setUnlimitedEdgesPerState();
 
 		// click these elements
 		builder.crawlRules().clickDefaultElements();
