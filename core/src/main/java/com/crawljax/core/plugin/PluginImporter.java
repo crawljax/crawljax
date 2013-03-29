@@ -51,14 +51,13 @@ public class PluginImporter
 			cl = ClassLoaderHelper.buildClassLoader(true, dir);
 		}
 		
-		else
-		{
+	
 		for(int iter = 0; iter < jars.size(); iter++)
 			getClassNamesInJar(classNames, new File(jars.get(iter).getPath()));
 
 		for(int iter = 0; iter < classNames.size(); iter++)
 			addOneService(classNames.get(iter), clazz, services, cl);
-		}
+		
         return services;
     }
 
