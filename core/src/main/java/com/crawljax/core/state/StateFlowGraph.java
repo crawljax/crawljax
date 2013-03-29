@@ -395,9 +395,9 @@ public class StateFlowGraph implements Serializable {
 	 *            the id where this name needs to be for.
 	 * @return the String containing the new name.
 	 */
-	private String makeStateName(int id, boolean guided, String url, Document Dom) {
+	private String makeStateName(int id, boolean guided, String url, Document dom) {
 
-		String title = getTitle(Dom);
+		String title = getTitle(dom);
 		String path = null;
 		if (url == null) {
 			url = "";
@@ -435,12 +435,12 @@ public class StateFlowGraph implements Serializable {
 		return stateCounter.get();
 	}
 
-	private String getTitle(Document Dom) {
+	private String getTitle(Document dom) {
 
-		if (Dom == null) {
+		if (dom == null) {
 			return "";
 		}
-		Node title = Dom.getElementsByTagName("title").item(0);
+		Node title = dom.getElementsByTagName("title").item(0);
 
 		if (title == null) {
 			return "";

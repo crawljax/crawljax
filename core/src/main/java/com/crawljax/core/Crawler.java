@@ -359,9 +359,9 @@ public class Crawler implements Runnable {
 
 		LOG.debug("Executing {} on element: {}; State: {}", eventable.getEventType(),
 		        eventable, this.getStateMachine().getCurrentState().getName());
-		Document Dom = null;
+		Document dom = null;
 		try {
-			Dom = DomUtils.asDocument(getBrowser().getDom());
+			dom = DomUtils.asDocument(getBrowser().getDom());
 		}
 
 		catch (IOException e) {
@@ -371,7 +371,7 @@ public class Crawler implements Runnable {
 			StateVertex newState =
 			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
 			                .getStateFlowGraph()
-			                .getNewStateName(getBrowser().getCurrentUrl(), Dom), getBrowser()
+			                .getNewStateName(getBrowser().getCurrentUrl(), dom), getBrowser()
 			                .getDom(),
 			                this.controller.getStrippedDom(getBrowser()));
 
