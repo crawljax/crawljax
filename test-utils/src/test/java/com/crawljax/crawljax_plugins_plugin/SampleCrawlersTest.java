@@ -2,7 +2,8 @@ package com.crawljax.crawljax_plugins_plugin;
 
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+import java.net.URL;
 
 import org.junit.Test;
 
@@ -12,39 +13,44 @@ import com.crawljax.crawltests.SimpleInputSiteCrawl;
 import com.crawljax.crawltests.SimpleJsSiteCrawl;
 import com.crawljax.crawltests.SimpleSiteCrawl;
 import com.crawljax.crawltests.SimpleXpathCrawl;
+import com.crawljax.test.BaseCrawler;
+import com.crawljax.test.WebServer;
 
 public class SampleCrawlersTest {
-
+	private BaseCrawler crawler;
+	private CrawlSession crawl;
+	
 	@Test
-	public void testSimpleCrawler() throws Exception {
-		CrawlSession crawl = new SimpleSiteCrawl().crawl();
-		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		assertThat(stateFlowGraph, hasStates(SimpleSiteCrawl.NUMBER_OF_STATES));
-		assertThat(stateFlowGraph, hasEdges(SimpleSiteCrawl.NUMBER_OF_EDGES));
+	public void testSimpleCrawlerFlowGraph() throws Exception {
+		crawler = new SimpleSiteCrawl();
+		crawl = crawler.crawl();
+		verifyGraphSize(SimpleSiteCrawl.NUMBER_OF_STATES, SimpleSiteCrawl.NUMBER_OF_EDGES);
 	}
 
 	@Test
-	public void testJSCrawler() throws Exception {
-		CrawlSession crawl = new SimpleJsSiteCrawl().crawl();
-		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		assertThat(stateFlowGraph, hasStates(SimpleJsSiteCrawl.NUMBER_OF_STATES));
-		assertThat(stateFlowGraph, hasEdges(SimpleJsSiteCrawl.NUMBER_OF_EDGES));
+	public void testJsCrawlerFlowGraph() throws Exception {
+		crawler = new SimpleJsSiteCrawl();
+		crawl = crawler.crawl();
+		verifyGraphSize(SimpleJsSiteCrawl.NUMBER_OF_STATES, SimpleJsSiteCrawl.NUMBER_OF_EDGES);
 	}
 
 	@Test
-	public void testInputCrawler() throws Exception {
-		CrawlSession crawl = new SimpleInputSiteCrawl().crawl();
-		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		assertThat(stateFlowGraph, hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));
-		assertThat(stateFlowGraph, hasEdges(SimpleInputSiteCrawl.NUMBER_OF_EDGES));
+	public void testInputCrawlerFlowGraph() throws Exception {
+		crawler = new SimpleInputSiteCrawl();
+		crawl = crawler.crawl();
+		verifyGraphSize(SimpleInputSiteCrawl.NUMBER_OF_STATES, SimpleInputSiteCrawl.NUMBER_OF_EDGES);
 	}
 
 	@Test
-	public void testSimpleXPathCrawl() throws Exception {
-		// new SimpleXpathCrawl().showWebSite();
-		CrawlSession crawl = new SimpleXpathCrawl().crawl();
+	public void testSimpleXPathCrawlFlowGrah() throws Exception {
+		crawler = new SimpleXpathCrawl();
+		crawl = crawler.crawl();
+		verifyGraphSize(SimpleInputSiteCrawl.NUMBER_OF_STATES, SimpleInputSiteCrawl.NUMBER_OF_EDGES);
+	}
+	
+	private void verifyGraphSize(int numberOfStates, int numberOfEdges) throws Exception {
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-		assertThat(stateFlowGraph, hasStates(SimpleInputSiteCrawl.NUMBER_OF_STATES));
-		assertThat(stateFlowGraph, hasEdges(SimpleInputSiteCrawl.NUMBER_OF_EDGES));
+		assertThat(stateFlowGraph, hasStates(numberOfStates));
+		assertThat(stateFlowGraph, hasEdges(numberOfEdges));
 	}
 }
