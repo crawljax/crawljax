@@ -27,8 +27,6 @@ import com.google.common.collect.Lists;
  * input.field("agreelicence").setValue(true);
  * </code> Crawljax will set Name, Phone, Mobile, and Agree values. It will enter a random string in
  * the Other field if enabled in {@link CrawlSpecification}
- * 
- * @author DannyRoest@gmail.com (Danny Roest)
  */
 public final class InputSpecification {
 
@@ -82,29 +80,28 @@ public final class InputSpecification {
 
 	// hidden
 
+	// /**
+	// * @return The properties configuration object.
+	// */
+	// public PropertiesConfiguration getConfiguration() {
+	// PropertiesConfiguration config = new PropertiesConfiguration();
+	// for (Form form : this.forms) {
+	// for (FormInputField inputField : form.getInputFields()) {
+	// addProperty(config, inputField);
+	// }
+	// }
+	// for (InputField inputField : inputFields) {
+	// addProperty(config, inputField);
+	// }
+	// return config;
+	// }
+
 	private void addProperty(PropertiesConfiguration config, InputField inputField) {
 		String fields = ConfigurationHelper.listToString(inputField.getFieldNames());
 		String values =
 		        ConfigurationHelper.listToStringEmptyStringAllowed(inputField.getFieldValues());
 		config.addProperty(inputField.getId() + ".fields", fields);
 		config.addProperty(inputField.getId() + ".values", values);
-	}
-
-	/**
-	 * @return The properties configuration object.
-	 */
-	public PropertiesConfiguration getConfiguration() {
-		PropertiesConfiguration config = new PropertiesConfiguration();
-		for (Form form : this.forms) {
-			for (FormInputField inputField : form.getInputFields()) {
-				addProperty(config, inputField);
-			}
-		}
-		for (InputField inputField : inputFields) {
-			addProperty(config, inputField);
-		}
-
-		return config;
 	}
 
 	/**

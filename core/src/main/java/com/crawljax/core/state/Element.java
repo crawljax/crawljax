@@ -138,7 +138,6 @@ public class Element implements Serializable {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
 		        .add("node", node)
 		        .add("tag", tag)
 		        .add("text", text)
@@ -148,16 +147,14 @@ public class Element implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), node, tag, text, attributes);
+		return Objects.hashCode(node.toString(), tag, text, attributes);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof Element) {
-			if (!super.equals(object))
-				return false;
 			Element that = (Element) object;
-			return Objects.equal(this.node, that.node)
+			return Objects.equal(this.node.toString(), that.node.toString())
 			        && Objects.equal(this.tag, that.tag)
 			        && Objects.equal(this.text, that.text)
 			        && Objects.equal(this.attributes, that.attributes);
