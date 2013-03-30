@@ -1,9 +1,6 @@
 package com.crawljax.core.configuration;
 
-import static com.crawljax.core.configuration.CrawlElementMatcher.withXpath;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 
 import org.junit.Before;
@@ -13,7 +10,6 @@ import com.crawljax.core.state.Eventable.EventType;
 
 public class XPathEscapeApostropheTest {
 
-	private CrawlActionsBuilder actions;
 	private CrawlElement element;
 
 	@Before
