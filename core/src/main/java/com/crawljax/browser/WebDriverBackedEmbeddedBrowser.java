@@ -293,11 +293,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			        + "window.confirm = function(msg){return true;};"
 			        + "window.prompt = function(msg){return true;};"
 			        + "window.open = function (open) {"
-			        + "return function (url, name, features) {" + "if ( url.indexOf('http://"
-			        + host + "') == 0 || " + "url.indexOf('https://" + host + "') == 0 || "
+			        + "return function (url, name, features) {"
+			        + "if ( url.indexOf('http://" + host + "') == 0 || "
+			        + "url.indexOf('https://" + host + "') == 0 || "
 			        + "url.indexOf('http') == -1){"
 			        + "return open.call(window, url, name, features); }"
-			        + "else { return null; } };" + "}(window.open);");
+			        + "else { return null; } };" 
+			        + "}(window.open);");
 		} catch (CrawljaxException e) {
 			LOGGER.error("Handling of PopUp windows failed", e);
 		}
