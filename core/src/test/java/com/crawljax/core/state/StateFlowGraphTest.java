@@ -381,5 +381,8 @@ public class StateFlowGraphTest {
 
 		String test3 = graph.getNewStateName("http://www.facebook.com/", stateDom);
 		assertEquals(test3, "4-[]_[]");
+
+		String test4 = graph.getNewStateName(null, stateDom);
+		assertEquals(test4, "5-[]_[]");
 	}
 }
