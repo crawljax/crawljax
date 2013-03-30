@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
@@ -19,9 +20,11 @@ import org.apache.commons.lang.SerializationUtils;
 import org.jgrapht.GraphPath;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
 
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
+import com.crawljax.util.DomUtils;
 
 public class StateFlowGraphTest {
 
@@ -360,4 +363,23 @@ public class StateFlowGraphTest {
 		assertThat(graph.getNumberOfStates(), is(2));
 	}
 
+	@Test
+	public void testTrimUrl() {
+		Document stateDom = null;
+		try {
+			stateDom = DomUtils.asDocument(index.getDom());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String test1 = graph.getNewStateName("http://www.facebook.com", stateDom);
+		assertEquals(test1, "2-[]_[]");
+
+		String test2 =
+		        graph.getNewStateName(
+		                "http://www.vogella.com/articles/JUnit/article.html", stateDom);
+		assertEquals(test2, "3-[]_[articlesJUnitarticlehtml]");
+
+		String test3 = graph.getNewStateName("http://www.facebook.com/", stateDom);
+		assertEquals(test3, "4-[]_[]");
+	}
 }

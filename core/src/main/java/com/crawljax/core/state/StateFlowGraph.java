@@ -437,9 +437,6 @@ public class StateFlowGraph implements Serializable {
 
 	private String getTitle(Document dom) {
 
-		if (dom == null) {
-			return "";
-		}
 		Node title = dom.getElementsByTagName("title").item(0);
 
 		if (title == null) {
@@ -459,6 +456,9 @@ public class StateFlowGraph implements Serializable {
 	private String trimUrl(String url) {
 
 		String[] path = url.split("/", 4);
+		if (path.length < 4) {
+			return "";
+		}
 		return path[3];
 	}
 }
