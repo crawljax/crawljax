@@ -2,10 +2,10 @@ package com.crawljax.core.configuration;
 
 import java.util.List;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Lists;
 
 /**
@@ -80,28 +80,32 @@ public final class InputSpecification {
 
 	// hidden
 
-	// /**
-	// * @return The properties configuration object.
-	// */
-	// public PropertiesConfiguration getConfiguration() {
-	// PropertiesConfiguration config = new PropertiesConfiguration();
-	// for (Form form : this.forms) {
-	// for (FormInputField inputField : form.getInputFields()) {
-	// addProperty(config, inputField);
-	// }
-	// }
-	// for (InputField inputField : inputFields) {
-	// addProperty(config, inputField);
-	// }
-	// return config;
-	// }
+	public ImmutableListMultimap<String, String> getFormFieldNames() {
+		ImmutableListMultimap.Builder<String, String> formFieldNames =
+		        ImmutableListMultimap.builder();
+		for (Form form : this.forms) {
+			for (FormInputField inputField : form.getInputFields()) {
+				formFieldNames.putAll(inputField.getId(), inputField.getFieldNames());
+			}
+		}
+		for (InputField inputField : inputFields) {
+			formFieldNames.putAll(inputField.getId(), inputField.getFieldNames());
+		}
+		return formFieldNames.build();
+	}
 
-	private void addProperty(PropertiesConfiguration config, InputField inputField) {
-		String fields = ConfigurationHelper.listToString(inputField.getFieldNames());
-		String values =
-		        ConfigurationHelper.listToStringEmptyStringAllowed(inputField.getFieldValues());
-		config.addProperty(inputField.getId() + ".fields", fields);
-		config.addProperty(inputField.getId() + ".values", values);
+	public ImmutableListMultimap<String, String> getFormFieldValues() {
+		ImmutableListMultimap.Builder<String, String> formFieldNames =
+		        ImmutableListMultimap.builder();
+		for (Form form : this.forms) {
+			for (FormInputField inputField : form.getInputFields()) {
+				formFieldNames.putAll(inputField.getId(), inputField.getFieldValues());
+			}
+		}
+		for (InputField inputField : inputFields) {
+			formFieldNames.putAll(inputField.getId(), inputField.getFieldValues());
+		}
+		return formFieldNames.build();
 	}
 
 	/**
