@@ -295,16 +295,18 @@ public final class XPathHelper {
 		// make sure not before the node
 		int openElements = 1;
 		int i = 0;
-		int position = pos; 
+		int position = pos;
 		String dom_lower = dom.toLowerCase();
 		String element_lower = element.toLowerCase();
 		String openElement = "<" + element_lower;
 		String closeElement = "</" + element_lower;
 		while (i < MAX_SEARCH_LOOPS) {
-			if (dom_lower.indexOf(openElement, position) == -1 && dom_lower.indexOf(closeElement, position) == -1) {
+			if (dom_lower.indexOf(openElement, position) == -1
+			        && dom_lower.indexOf(closeElement, position) == -1) {
 				return -1;
 			}
-			if (dom_lower.indexOf(openElement, position) < dom_lower.indexOf(closeElement, position)
+			if (dom_lower.indexOf(openElement, position) < dom_lower.indexOf(closeElement,
+			        position)
 			        && dom_lower.indexOf(openElement, position) != -1) {
 				openElements++;
 				position = dom_lower.indexOf(openElement, position) + 1;
@@ -341,14 +343,18 @@ public final class XPathHelper {
 	 *         text()
 	 */
 	public static String stripXPathToElement(String xpath) {
-		String xpathStripped = xpath; 
-		
+		String xpathStripped = xpath;
+
 		if (!Strings.isNullOrEmpty(xpathStripped)) {
 			if (xpathStripped.toLowerCase().contains("/text()")) {
-				xpathStripped = xpathStripped.substring(0, xpathStripped.toLowerCase().indexOf("/text()"));
+				xpathStripped =
+				        xpathStripped
+				                .substring(0, xpathStripped.toLowerCase().indexOf("/text()"));
 			}
 			if (xpathStripped.toLowerCase().contains("/comment()")) {
-				xpathStripped = xpathStripped.substring(0, xpathStripped.toLowerCase().indexOf("/comment()"));
+				xpathStripped =
+				        xpathStripped.substring(0,
+				                xpathStripped.toLowerCase().indexOf("/comment()"));
 			}
 			if (xpathStripped.contains("@")) {
 				xpathStripped = xpathStripped.substring(0, xpathStripped.indexOf("@") - 1);

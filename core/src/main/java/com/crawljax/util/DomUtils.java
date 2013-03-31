@@ -281,8 +281,8 @@ public final class DomUtils {
 	 */
 	public static String getTextValue(Element element) {
 		String ret = "";
-		String textContent = element.getTextContent(); 
-		if (textContent != null && !textContent.equals("") ) {
+		String textContent = element.getTextContent();
+		if (textContent != null && !textContent.equals("")) {
 			ret = textContent;
 		} else if (element.hasAttribute("title")) {
 			ret = element.getAttribute("title");

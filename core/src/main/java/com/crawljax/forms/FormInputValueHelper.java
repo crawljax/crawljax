@@ -50,7 +50,7 @@ public final class FormInputValueHelper {
 	private Configuration config;
 
 	private boolean randomInput;
-	
+
 	private static final int EMPTY = 0;
 
 	/**

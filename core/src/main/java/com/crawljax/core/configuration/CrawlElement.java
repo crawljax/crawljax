@@ -87,7 +87,10 @@ public final class CrawlElement {
 		if (this.underXpath == null || this.underXpath.isEmpty()) {
 			this.underXpath = "//" + this.tagName + "[@" + attributeName + "='" + value + "']";
 		} else {
-			this.underXpath = this.underXpath + " | " + "//" + this.tagName + "[@" + attributeName + "='" + value + "']";;
+			this.underXpath =
+			        this.underXpath + " | " + "//" + this.tagName + "[@" + attributeName + "='"
+			                + value + "']";
+			;
 		}
 		return this;
 	}
@@ -122,10 +125,12 @@ public final class CrawlElement {
 	 * @return Crawltag with text
 	 */
 	public CrawlElement withText(String text) {
-		if(this.underXpath == null || this.underXpath.isEmpty()) {
+		if (this.underXpath == null || this.underXpath.isEmpty()) {
 			this.underXpath = "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
 		} else {
-			this.underXpath = this.underXpath + " | " + "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
+			this.underXpath =
+			        this.underXpath + " | " + "//" + this.tagName + "[text()="
+			                + escapeApostrophes(text) + "]";
 		}
 		return this;
 	}
@@ -266,25 +271,26 @@ public final class CrawlElement {
 		return eventType;
 	}
 
-	 /**
+	/**
 	 * Returns a string to resolve apostrophe issue in xpath
+	 * 
 	 * @param text
 	 * @return the apostrophe resolved xpath value string
 	 */
 	protected String escapeApostrophes(String text)
 	{
 		String resultString;
-	    if (text.contains("'")) {
-	    	StringBuilder stringBuilder = new StringBuilder();
-	    	stringBuilder.append("concat('");
-	    	stringBuilder.append(text.replace("'", "',\"'\",'"));
-	    	stringBuilder.append("')");
-	    	resultString = stringBuilder.toString();
-	    }
-	    else {
-	    	resultString = "'" + text + "'";
-	    }
-	    return resultString;
+		if (text.contains("'")) {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("concat('");
+			stringBuilder.append(text.replace("'", "',\"'\",'"));
+			stringBuilder.append("')");
+			resultString = stringBuilder.toString();
+		}
+		else {
+			resultString = "'" + text + "'";
+		}
+		return resultString;
 	}
-	
+
 }

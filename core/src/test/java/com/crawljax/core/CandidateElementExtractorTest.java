@@ -77,7 +77,7 @@ public class CandidateElementExtractorTest {
 		controller = new CrawljaxController(config);
 		crawler = new CEETCrawler(controller);
 
-		crawler.goToInitialURL();
+		crawler.goToInitialURL(true);
 
 		Thread.sleep(400);
 	}
@@ -141,7 +141,7 @@ public class CandidateElementExtractorTest {
 		 * @param mother
 		 */
 		public CEETCrawler(CrawljaxController mother) {
-			super(mother, Plugins.noPlugins());
+			super(mother);
 			try {
 				browser = mother.getBrowserPool().requestBrowser();
 			} catch (InterruptedException e) {

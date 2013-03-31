@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
@@ -236,17 +237,17 @@ public final class CrawljaxConfiguration {
 		if (this == obj) {
 			return true;
 		}
-		
+
 		if (obj == null) {
 			return false;
 		}
-		
+
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		
+
 		CrawljaxConfiguration other = (CrawljaxConfiguration) obj;
-		
+
 		if (browserConfig == null) {
 			if (other.browserConfig != null) {
 				return false;
@@ -254,7 +255,7 @@ public final class CrawljaxConfiguration {
 		} else if (!browserConfig.equals(other.browserConfig)) {
 			return false;
 		}
-		
+
 		if (crawlRules == null) {
 			if (other.crawlRules != null) {
 				return false;
@@ -262,19 +263,19 @@ public final class CrawljaxConfiguration {
 		} else if (!crawlRules.equals(other.crawlRules)) {
 			return false;
 		}
-		
+
 		if (maximumDepth != other.maximumDepth) {
 			return false;
 		}
-		
+
 		if (maximumRuntime != other.maximumRuntime) {
 			return false;
 		}
-		
+
 		if (maximumStates != other.maximumStates) {
 			return false;
 		}
-		
+
 		if (plugins == null) {
 			if (other.plugins != null) {
 				return false;
@@ -282,7 +283,7 @@ public final class CrawljaxConfiguration {
 		} else if (!plugins.equals(other.plugins)) {
 			return false;
 		}
-		
+
 		if (proxyConfiguration == null) {
 			if (other.proxyConfiguration != null) {
 				return false;
@@ -290,7 +291,7 @@ public final class CrawljaxConfiguration {
 		} else if (!proxyConfiguration.equals(other.proxyConfiguration)) {
 			return false;
 		}
-		
+
 		try {
 			if (url == null) {
 				if (other.url != null) {
@@ -299,10 +300,10 @@ public final class CrawljaxConfiguration {
 			} else if (!url.toURI().equals(other.url.toURI())) {
 				return false;
 			}
-		} catch( URISyntaxException e) {
-			return false; 
+		} catch (URISyntaxException e) {
+			return false;
 		}
-		
+
 		return true;
 	}
 
