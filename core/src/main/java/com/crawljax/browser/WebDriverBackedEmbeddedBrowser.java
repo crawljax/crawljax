@@ -265,8 +265,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	public void goToUrl(URL url) {
 		try {
 			browser.navigate().to(url);
-			handlePopups();
 			Thread.sleep(this.crawlWaitReload);
+			handlePopups();
 		} catch (WebDriverException e) {
 			throwIfConnectionException(e);
 			return;
@@ -285,21 +285,21 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			URI uri = new URI(browser.getCurrentUrl());
 			host = uri.getHost();
 		} catch (URISyntaxException e1) {
-			e1.printStackTrace();
+			LOGGER.error("Current URI cannot be parsed as a URI reference", e1);
 		}
-		
+
 		try {
 			executeJavaScript("window.alert = function(msg){return true;};"
 			        + "window.confirm = function(msg){return true;};"
 			        + "window.prompt = function(msg){return true;};"
 			        + "window.open = function (open) {"
-			        	+ "return function (url, name, features) {"
-			        	+ "if ( url.indexOf('http://" + host + "') == 0 || " 
-			        		+ "url.indexOf('https://" + host + "') == 0 || " 
-			        		+ "url.indexOf('http') == -1){"
-			        		+ "return open.call(window, url, name, features); }" 
-			        	+ "else { return null; } };"
-					+ "}(window.open);");
+			        + "return function (url, name, features) {"
+			        + "if ( url.indexOf('http://" + host + "') == 0 || "
+			        + "url.indexOf('https://" + host + "') == 0 || "
+			        + "url.indexOf('http') == -1){"
+			        + "return open.call(window, url, name, features); }"
+			        + "else { return null; } };" 
+			        + "}(window.open);");
 		} catch (CrawljaxException e) {
 			LOGGER.error("Handling of PopUp windows failed", e);
 		}
