@@ -38,7 +38,14 @@ public class Specification_Metrics_Plugin_Tests{
 		
 		testRun();
 		File f = new File("output.txt");
-		assertTrue(f.exists());
+		assertTrue(f.exists());		
+	}
+	
+	@Test
+	public void testOutputFileNotEmpty(){
+		testRun();
+		File f = new File("output.txt");
+		assertTrue(f.length()>0);
 	}
 	
 	private void testRun(){
