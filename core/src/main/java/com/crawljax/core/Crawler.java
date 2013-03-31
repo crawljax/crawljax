@@ -58,7 +58,7 @@ public class Crawler implements Runnable {
 	/**
 	 * Depth register.
 	 */
-	private AtomicInteger depth = new AtomicInteger();
+	private final AtomicInteger depth = new AtomicInteger();
 
 	/**
 	 * The path followed from the index to the current state.
@@ -105,7 +105,7 @@ public class Crawler implements Runnable {
 	 * @see Crawler#clickTag(Eventable)
 	 */
 	private enum ClickResult {
-		CLONE_DETECTED, NEW_STATE, DOM_UNCHANGED
+		CLONE_DETECTED, NEW_STATE, DOM_UNCHANGED, LEFT_DOMAIN
 	}
 
 	/**
@@ -161,6 +161,49 @@ public class Crawler implements Runnable {
 	}
 
 	/**
+	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
+	 * 
+	 * @throws CrawljaxException
+	 *             if the {@link Eventable#getTargetStateVertex()} encounters an error.
+	 */
+	private void goBackExact() throws CrawljaxException {
+		StateVertex curState = controller.getSession().getInitialState();
+
+		for (Eventable clickable : backTrackPath) {
+
+			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
+				return;
+			}
+
+			LOG.info("Backtracking by executing {} on element: {}", clickable.getEventType(),
+			        clickable);
+
+			this.getStateMachine().changeState(clickable.getTargetStateVertex());
+
+			curState = clickable.getTargetStateVertex();
+
+			controller.getSession().addEventableToCrawlPath(clickable);
+
+			this.handleInputElements(clickable);
+
+			if (this.fireEvent(clickable)) {
+
+				int d = depth.incrementAndGet();
+				LOG.debug("Crawl depth now {}", d);
+
+				/*
+				 * Run the onRevisitStateValidator(s)
+				 */
+				plugins.runOnRevisitStatePlugins(this.controller.getSession(), curState);
+			}
+
+			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
+				return;
+			}
+		}
+	}
+
+	/**
 	 * Try to fire a given event on the Browser.
 	 * 
 	 * @param eventable
@@ -173,21 +216,21 @@ public class Crawler implements Runnable {
 		        && eventable.getRelatedFrame().equals("")) {
 			eventToFire = resolveByXpath(eventable, eventToFire);
 		}
-		boolean fired = false;
+		boolean isFired = false;
 		try {
-			fired = getBrowser().fireEvent(eventToFire);
+			isFired = getBrowser().fireEvent(eventToFire);
 		} catch (ElementNotVisibleException | NoSuchElementException e) {
 			if (config.getCrawlRules().isCrawlHiddenAnchors() && eventToFire.getElement() != null
 			        && "A".equals(eventToFire.getElement().getTag())) {
-				fired = visitAnchorHrefIfPossible(eventToFire);
+				isFired = visitAnchorHrefIfPossible(eventToFire);
 			} else {
 				LOG.debug("Ignoring invisble element {}", eventToFire.getElement());
 			}
 		}
 
-		LOG.debug("Event fired={} for eventable {}", fired, eventable);
+		LOG.debug("Event fired={} for eventable {}", isFired, eventable);
 
-		if (fired) {
+		if (isFired) {
 
 			/*
 			 * Let the controller execute its specified wait operation on the browser thread safe.
@@ -236,11 +279,9 @@ public class Crawler implements Runnable {
 		} else {
 			LOG.info("Found an invisible link with href={}", href);
 			try {
-				if (!UrlUtils.isLinkExternal(browser.getCurrentUrl(), href)) {
-					URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
-					browser.goToUrl(url);
-					return true;
-				}
+				URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
+				browser.goToUrl(url);
+				return true;
 			} catch (MalformedURLException e) {
 				LOG.info("Could not visit invisible illegal URL {}", e.getMessage());
 			}
@@ -266,46 +307,24 @@ public class Crawler implements Runnable {
 		formHandler.handleFormElements(formInputs);
 	}
 
-	/**
-	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
-	 * 
-	 * @throws CrawljaxException
-	 *             if the {@link Eventable#getTargetStateVertex()} encounters an error.
-	 */
-	private void goBackExact() throws CrawljaxException {
-		StateVertex curState = controller.getSession().getInitialState();
+	private boolean domChanged(final Eventable eventable, StateVertex newState) {
+		return plugins.runDomChangeNotifierPlugins(this.getStateMachine().getCurrentState(),
+		        eventable, newState, getBrowser());
+	}
 
-		for (Eventable clickable : backTrackPath) {
+	private ClickResult crawlAction(CandidateCrawlAction action) throws CrawljaxException {
+		CandidateElement candidateElement = action.getCandidateElement();
+		EventType eventType = action.getEventType();
 
-			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
-				return;
-			}
+		if (candidateElement.allConditionsSatisfied(getBrowser())) {
 
-			LOG.info("Backtracking by executing {} on element: {}", clickable.getEventType(),
-			        clickable);
+			ClickResult clickResult = clickTag(new Eventable(candidateElement, eventType));
 
-			this.getStateMachine().changeState(clickable.getTargetStateVertex());
-
-			curState = clickable.getTargetStateVertex();
-
-			controller.getSession().addEventableToCrawlPath(clickable);
-
-			this.handleInputElements(clickable);
-
-			if (this.fireEvent(clickable)) {
-
-				int d = depth.incrementAndGet();
-				LOG.debug("Crawl depth now {}", d);
-
-				/*
-				 * Run the onRevisitStateValidator(s)
-				 */
-				plugins.runOnRevisitStatePlugins(this.controller.getSession(), curState);
-			}
-
-			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
-				return;
-			}
+			return clickResult;
+		} else {
+			LOG.info("Conditions not satisfied for element: {}; State: {}", candidateElement,
+			        this.getStateMachine().getCurrentState().getName());
+			return ClickResult.DOM_UNCHANGED;
 		}
 	}
 
@@ -317,67 +336,84 @@ public class Crawler implements Runnable {
 	 *             an exception.
 	 */
 	private ClickResult clickTag(final Eventable eventable) throws CrawljaxException {
+		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
 		// load input element values
-		this.handleInputElements(eventable);
+		handleInputElements(eventable);
 
 		// support for meta refresh tags
+		waitForRefreshTagIfAny(eventable);
+
+		LOG.debug("Executing {} on element: {}; State: {}", eventable.getEventType(),
+		        eventable, this.getStateMachine().getCurrentState().getName());
+		if (fireEvent(eventable)) {
+			return inspectPotentialNewStatus(eventable, orrigionalState);
+		} else {
+			return ClickResult.DOM_UNCHANGED;
+		}
+	}
+
+	private void waitForRefreshTagIfAny(final Eventable eventable) {
 		if (eventable.getElement().getTag().toLowerCase().equals("meta")) {
 			Pattern p = Pattern.compile("(\\d+);\\s+URL=(.*)");
 			for (Entry<String, String> e : eventable.getElement().getAttributes().entrySet()) {
 				Matcher m = p.matcher(e.getValue());
-				if (m.find()) {
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("URL: {}", m.group(2));
-					}
-					try {
-						// seconds*1000=ms
-						Thread.sleep(Integer.parseInt(m.group(1)) * 1000);
-					} catch (Exception ex) {
-						LOG.error(ex.getLocalizedMessage(), ex);
-					}
+				long waitTime = parseWaitTimeOrReturnDefault(m);
+				try {
+					Thread.sleep(waitTime);
+				} catch (InterruptedException ex) {
+					LOG.info("Crawler timed out while waiting for page to reload");
 				}
 			}
 		}
+	}
 
-		LOG.debug("Executing {} on element: {}; State: {}", eventable.getEventType(),
-		        eventable, this.getStateMachine().getCurrentState().getName());
-		if (this.fireEvent(eventable)) {
-			StateVertex newState =
-			        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
-			                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
-			                this.controller.getStrippedDom(getBrowser()));
-
-			if (domChanged(eventable, newState)) {
-
-				controller.getSession().addEventableToCrawlPath(eventable);
-				if (this.getStateMachine().updateAndCheckIfClone(eventable, newState,
-				        this.getBrowser(), this.controller.getSession())) {
-
-					return ClickResult.NEW_STATE;
-				} else {
-					// Dom changed; Clone
-					return ClickResult.CLONE_DETECTED;
-				}
+	private long parseWaitTimeOrReturnDefault(Matcher m) {
+		long waitTime = TimeUnit.SECONDS.toMillis(10);
+		if (m.find()) {
+			LOG.debug("URL: {}", m.group(2));
+			try {
+				waitTime = Integer.parseInt(m.group(1)) * 1000;
+			} catch (NumberFormatException ex) {
+				LOG.info("Could parse the amount of time to wait for a META tag refresh. Waiting 10 seconds...");
 			}
 		}
-		// Event not fired or, Dom not changed
-		return ClickResult.DOM_UNCHANGED;
+		return waitTime;
 	}
 
-	private boolean domChanged(final Eventable eventable, StateVertex newState) {
-		return plugins.runDomChangeNotifierPlugins(this.getStateMachine().getCurrentState(),
-		        eventable, newState, getBrowser());
+	private ClickResult inspectPotentialNewStatus(final Eventable eventable,
+	        StateVertex orrigionalState) {
+		if (crawlerLeftDomain()) {
+			LOG.debug("The browser left the domain");
+			return ClickResult.LEFT_DOMAIN;
+		}
+		StateVertex newState =
+		        new StateVertex(getBrowser().getCurrentUrl(), controller.getSession()
+		                .getStateFlowGraph().getNewStateName(), getBrowser().getDom(),
+		                this.controller.getStrippedDom(getBrowser()));
+		if (domChanged(eventable, newState)) {
+			controller.getSession().addEventableToCrawlPath(eventable);
+			if (this.getStateMachine().updateAndCheckIfClone(eventable, newState,
+			        this.getBrowser(), this.controller.getSession())) {
+				fired = true;
+				// Recurse because new state found
+				spawnThreads(orrigionalState);
+				return ClickResult.NEW_STATE;
+			} else {
+				fired = false;
+				// We are in the clone state so we continue with the cloned
+				// version to search for work.
+				this.controller.getSession().branchCrawlPath();
+				spawnThreads(orrigionalState);
+				return ClickResult.CLONE_DETECTED;
+			}
+		} else {
+			return ClickResult.DOM_UNCHANGED;
+		}
 	}
 
-	/**
-	 * Return the Exacteventpath.
-	 * 
-	 * @return the exacteventpath
-	 * @deprecated use {@link CrawlSession#getCurrentCrawlPath()}
-	 */
-	@Deprecated
-	public final List<Eventable> getExacteventpath() {
-		return controller.getSession().getCurrentCrawlPath();
+	private boolean crawlerLeftDomain() {
+		return !browser.getCurrentUrl().toLowerCase()
+		        .contains(config.getUrl().getHost().toLowerCase());
 	}
 
 	private void spawnThreads(StateVertex state) {
@@ -386,45 +422,9 @@ public class Crawler implements Runnable {
 			if (c != null) {
 				this.crawlQueueManager.addWorkToQueue(c);
 			}
-			c =
-			        new Crawler(this.controller, controller.getSession().getCurrentCrawlPath()
-			                .immutableCopy(true), config.getPlugins());
+			c = new Crawler(this.controller, controller.getSession().getCurrentCrawlPath()
+			        .immutableCopy(true), config.getPlugins());
 		} while (state.registerCrawler(c));
-	}
-
-	private ClickResult crawlAction(CandidateCrawlAction action) throws CrawljaxException {
-		CandidateElement candidateElement = action.getCandidateElement();
-		EventType eventType = action.getEventType();
-
-		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
-
-		if (candidateElement.allConditionsSatisfied(getBrowser())) {
-			ClickResult clickResult = clickTag(new Eventable(candidateElement, eventType));
-			switch (clickResult) {
-				case CLONE_DETECTED:
-					fired = false;
-					// We are in the clone state so we continue with the cloned
-					// version to search
-					// for work.
-					this.controller.getSession().branchCrawlPath();
-					spawnThreads(orrigionalState);
-					break;
-				case NEW_STATE:
-					fired = true;
-					// Recurse because new state found
-					spawnThreads(orrigionalState);
-					break;
-				case DOM_UNCHANGED:
-					break;
-				default:
-					throw new IllegalStateException("Unrecognized click result " + clickResult);
-			}
-			return clickResult;
-		} else {
-			LOG.info("Conditions not satisfied for element: {}; State: {}", candidateElement,
-			        this.getStateMachine().getCurrentState().getName());
-		}
-		return ClickResult.DOM_UNCHANGED;
 	}
 
 	/**
@@ -466,12 +466,14 @@ public class Crawler implements Runnable {
 				return false;
 			}
 			ClickResult result = this.crawlAction(action);
-			orrigionalState.finishedWorking(this, action);
+			orrigionalState.markAsFinished(this, action);
 			switch (result) {
 				case NEW_STATE:
 					return newStateDetected(orrigionalState);
 				case CLONE_DETECTED:
 					return true;
+				case LEFT_DOMAIN:
+					getBrowser().goBack();
 				default:
 					break;
 			}

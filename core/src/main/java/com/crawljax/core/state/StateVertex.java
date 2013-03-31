@@ -421,7 +421,7 @@ public class StateVertex implements Serializable {
 	 * @param action
 	 *            the action that have been examined
 	 */
-	public void finishedWorking(Crawler crawler, CandidateCrawlAction action) {
+	public void markAsFinished(Crawler crawler, CandidateCrawlAction action) {
 		candidateActions.remove(action);
 		registerdCandidateActions.remove(crawler);
 		workInProgressCandidateActions.remove(crawler);

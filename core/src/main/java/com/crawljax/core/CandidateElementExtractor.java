@@ -26,7 +26,6 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.DomUtils;
-import com.crawljax.util.UrlUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -304,12 +303,8 @@ public class CandidateElementExtractor {
 	private void addElement(Element element, Builder<Element> builder, CrawlElement crawlElement) {
 		if ("A".equalsIgnoreCase(crawlElement.getTagName())) {
 			String href = element.getAttribute("href");
-			if (!Strings.isNullOrEmpty(href)) {
-				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
-				LOG.debug("HREF: {} isExternal= {}", href, isExternal);
-				if (isExternal || isPDForPS(href)) {
-					return;
-				}
+			if (!Strings.isNullOrEmpty(href) && isFileForDownloading(href)) {
+				return;
 			}
 		}
 		builder.add(element);
@@ -359,8 +354,8 @@ public class CandidateElementExtractor {
 	 *            the string to check
 	 * @return true if href has the pdf or ps pattern.
 	 */
-	private boolean isPDForPS(String href) {
-		final Pattern p = Pattern.compile(".+.pdf|.+.ps");
+	private boolean isFileForDownloading(String href) {
+		final Pattern p = Pattern.compile(".+.pdf|.+.ps|.+.zip");
 		Matcher m = p.matcher(href);
 
 		if (m.matches()) {
