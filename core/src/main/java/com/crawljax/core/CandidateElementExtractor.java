@@ -143,16 +143,16 @@ public class CandidateElementExtractor {
 			LOG.debug("Extracting TAG: {}", tag);
 
 			NodeList frameNodes = dom.getElementsByTagName("FRAME");
-			addFramesCandidates(dom, results, relatedFrame, frameNodes);
+			addFramesCandidates(results, relatedFrame, frameNodes);
 
 			NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
-			addFramesCandidates(dom, results, relatedFrame, iFrameNodes);
+			addFramesCandidates(results, relatedFrame, iFrameNodes);
 
 			evaluateElements(dom, tag, results, relatedFrame);
 		}
 	}
 
-	private void addFramesCandidates(Document dom, Builder<CandidateElement> results,
+	private void addFramesCandidates(Builder<CandidateElement> results,
 	        String relatedFrame, NodeList frameNodes) {
 
 		if (frameNodes == null) {
