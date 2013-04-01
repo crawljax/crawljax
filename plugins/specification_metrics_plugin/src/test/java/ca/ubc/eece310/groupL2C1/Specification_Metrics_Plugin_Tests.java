@@ -7,7 +7,10 @@ import static org.hamcrest.text.IsEmptyString.isEmptyString;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -23,7 +26,7 @@ import com.crawljax.core.configuration.InputSpecification;
 
 public class Specification_Metrics_Plugin_Tests{
 	
-	private static final String URL = "http://www.google.com";
+	private static final String URL = "http://www.google.ca/";
 
 	private static final String ALL_ANCHORS = "a";
 	private static final String LANGUAGE_TOOLS = "Language Tools";
@@ -47,6 +50,29 @@ public class Specification_Metrics_Plugin_Tests{
 		File f = new File("output.txt");
 		assertTrue(f.length()>0);
 	}
+	
+	@Test
+	public void testLine(){
+		testRun();
+		int i;
+		String line = null;
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(new FileReader("output.txt"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(i=0;i<3;i++) //3 is the Line Number
+			try {
+				line = in.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		assertEquals(line, "BUTTON:              3"); // Line Content
+	}
+	
 	
 	private void testRun(){
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
