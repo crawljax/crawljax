@@ -108,7 +108,7 @@ public final class Plugins {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((PreCrawlingPlugin) plugin).preCrawling(browser);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}
@@ -131,7 +131,7 @@ public final class Plugins {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}
@@ -153,7 +153,7 @@ public final class Plugins {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((OnNewStatePlugin) plugin).onNewState(session);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}
@@ -179,7 +179,7 @@ public final class Plugins {
 					((OnInvariantViolationPlugin) plugin)
 					        .onInvariantViolation(invariant, session);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}
@@ -201,7 +201,7 @@ public final class Plugins {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((PostCrawlingPlugin) plugin).postCrawling(session);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}
@@ -225,7 +225,7 @@ public final class Plugins {
 				try {
 					((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}
@@ -252,7 +252,7 @@ public final class Plugins {
 					((PreStateCrawlingPlugin) plugin)
 					        .preStateCrawling(session, candidateElements);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}
@@ -275,7 +275,7 @@ public final class Plugins {
 				try {
 					((ProxyServerPlugin) plugin).proxyServer(config);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}
@@ -298,7 +298,7 @@ public final class Plugins {
 				try {
 					((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}
@@ -321,7 +321,7 @@ public final class Plugins {
 				try {
 					((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", e.getMessage(), e);
+					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 				}
 			}
 		}

@@ -2,6 +2,7 @@ package com.crawljax.plugins.crawloverview;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
@@ -33,6 +34,8 @@ class OutPutModelCache {
 	private static final Logger LOG = LoggerFactory.getLogger(OutPutModelCache.class);
 	private final ConcurrentMap<String, StateBuilder> states = Maps.newConcurrentMap();
 
+	private final Date startDate = new Date();
+
 	StateBuilder addStateIfAbsent(StateVertex state) {
 		StateBuilder newState = new StateBuilder(state);
 		StateBuilder found = states.putIfAbsent(state.getName(), newState);
@@ -58,7 +61,8 @@ class OutPutModelCache {
 		}
 
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
-		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session, stateStats),
+		return new OutPutModel(statesCopy, edgesCopy,
+		        new Statistics(session, stateStats, startDate),
 		        session.getCrawljaxConfiguration());
 	}
 

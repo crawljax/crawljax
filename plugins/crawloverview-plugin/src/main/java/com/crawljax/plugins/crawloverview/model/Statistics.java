@@ -1,6 +1,7 @@
 package com.crawljax.plugins.crawloverview.model;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -16,10 +17,12 @@ public class Statistics {
 	private final int crawlPaths;
 	private final String averageDomSize;
 	private final int edges;
+	private final Date startDate;
 	private final StateStatistics stateStats;
 
-	public Statistics(CrawlSession session, StateStatistics stateStats) {
+	public Statistics(CrawlSession session, StateStatistics stateStats, Date startDate) {
 		this.stateStats = stateStats;
+		this.startDate = startDate;
 		StateFlowGraph stateFlowGraph = session.getStateFlowGraph();
 		this.duration = calculateDuration(session);
 		this.edges = stateFlowGraph.getAllEdges().size();
@@ -56,6 +59,10 @@ public class Statistics {
 
 	public StateStatistics getStateStats() {
 		return stateStats;
+	}
+
+	public Date getStartDate() {
+		return startDate;
 	}
 
 }
