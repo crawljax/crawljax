@@ -212,8 +212,9 @@ public class CandidateElementExtractor {
 	}
 
 	private boolean isExternalPopup(Element element) {
-		if(openExternalPopups)
+		if (openExternalPopups) {
 			return false;
+		}
 		String clickable = element.getAttribute("onclick");
 		return willOpenExternalPopup(clickable);
 	}
