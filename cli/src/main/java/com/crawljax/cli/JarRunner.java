@@ -54,7 +54,7 @@ public class JarRunner {
 	static final String WAIT_AFTER_RELOAD = "waitAfterReload";
 	static final String WAIT_AFTER_EVENT = "waitAfterEvent";
 	static final String LOG_FILE = "log";
-	
+
 	static final String CLICK = "click";
 
 	private static final int SPACES_AFTER_OPTION = 3;
@@ -253,8 +253,10 @@ public class JarRunner {
 
 		configureTimers(builder);
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));
-		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, PluginImporterHelper.getDirsFromClassPath());
-		for(int iter = 0; iter < classPathPlugins.size(); iter++)
+		List<Plugin> classPathPlugins =
+		        PluginImporter.getPluggedServices(Plugin.class,
+		                PluginImporterHelper.getDirsFromClassPath());
+		for (int iter = 0; iter < classPathPlugins.size(); iter++)
 			builder.addPlugin(classPathPlugins.get(iter));
 
 		if (commandLine.hasOption(CLICK)) {
@@ -265,7 +267,7 @@ public class JarRunner {
 
 		return builder.build();
 	}
-	
+
 	private void configureTimers(CrawljaxConfigurationBuilder builder) {
 		if (commandLine.hasOption(TIME_OUT)) {
 			long time = Long.parseLong(commandLine.getOptionValue(TIME_OUT));
