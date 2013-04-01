@@ -9,7 +9,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CreateJarFile {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CreateJarFile.class);
 	public static <T> void createJar(File outputFile, Class<T> inputClass, boolean isValidPlugin) {
 		try {
 			URL classUrl = inputClass.getResource(inputClass.getSimpleName() + ".class");
@@ -27,7 +31,6 @@ public class CreateJarFile {
 				throw new IOException("Input file not valid.");
 			}
 			else {
-				System.out.println("Creating JAR from " + inputClass.getName());
 				int folderStructureLength =
 				        inputClass.getName().length() - inputClass.getSimpleName().length();
 				String stuff = inputClass.getName().substring(0, folderStructureLength);
@@ -48,10 +51,8 @@ public class CreateJarFile {
 			}
 			out.close();
 			stream.close();
-			System.out.println("Adding completed OK");
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println("Error: " + ex.getMessage());
+			LOGGER.info(ex.getMessage(), ex);
 		}
 	}
 }

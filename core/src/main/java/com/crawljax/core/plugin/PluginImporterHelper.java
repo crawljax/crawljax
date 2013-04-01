@@ -21,10 +21,14 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 // Provides helper functions for the PluginImporterClass that don't
 // directly load files.
 public final class PluginImporterHelper
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PluginImporterHelper.class);
 	public static ClassLoader buildClassLoader(
 	        boolean includeSubDirs, File... directories)
 	{
@@ -68,7 +72,7 @@ public final class PluginImporterHelper
 						fillJarsList(jars, subdir, true);
 			} catch (Exception e)
 			{
-				e.printStackTrace();
+				LOGGER.warn(e.getMessage(), e);
 			}
 		}
 	}
