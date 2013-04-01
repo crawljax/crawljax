@@ -25,7 +25,12 @@ public class DynamicImportTest {
 		assertEquals(0,classPathPlugins.size());
 	}
 	
-	//as a crawljax user, I want my plugin to be picked up from a folder
+	//as a developer, I want to import packages from the classpath, so that I can put plugins anywhere in the classpath of my application
+	@Test
+	public void ImportFromClassPathTest()
+	{
+	}
+	//as a crawljax user, I want my plugin to be picked up from a folder, so that I can pickup plugins from somewhere other than the drive root
 	@Test
 	public void ImportFromNonEmptyFolderTest()
 	{

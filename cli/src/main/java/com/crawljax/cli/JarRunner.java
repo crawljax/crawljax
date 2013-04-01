@@ -252,7 +252,7 @@ public class JarRunner {
 
 		configureTimers(builder);
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));
-		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, new File(PluginImporter.PLUGIN_DIR));
+		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, PluginImporter.getDirsFromClassPath());
 		for(int iter = 0; iter < classPathPlugins.size(); iter++)
 			builder.addPlugin(classPathPlugins.get(iter));
 

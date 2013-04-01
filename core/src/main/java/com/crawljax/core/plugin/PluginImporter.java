@@ -11,7 +11,6 @@ import java.util.jar.JarFile;
 
 public class PluginImporter
 {
-	public static final String PLUGIN_DIR = "C:/Users/User/Desktop/testplugins2";
 	private static ClassLoader cl = null;
     private static void getClassNamesInJar (List<String> classNames, File jarfile)
     {
@@ -34,22 +33,31 @@ public class PluginImporter
     	} catch (IOException e)
         {
         	e.printStackTrace();
-        	
         }	    	 	  	
     }
     
-    public static <T> List<T> getPluggedServices(Class<T> clazz, File dir)
+    public static File[] getDirsFromClassPath()
+    {
+    	String classPath = System.getProperty("java.class.path");
+    	String[] paths = classPath.split(";");
+    	List<File> files = new ArrayList<File>();
+    	for(int iter = 0; iter < paths.length; iter++)
+    		files.add(new File(paths[iter]));
+    	return files.toArray(new File[files.size()]);
+    }
+    
+    public static <T> List<T> getPluggedServices(Class<T> clazz, File... directories)
     {
     	List<T> services = new ArrayList<T>();	
         List<String> classNames = new ArrayList<String>();
         
         List<URL> jars = new ArrayList<URL>();
-		ClassLoaderHelper.fillJarsList(jars,dir,true);
+        
+        for(File file : directories)
+        	ClassLoaderHelper.fillJarsList(jars,file,true);
 		
 		if (cl == null)
-		{
-			cl = ClassLoaderHelper.buildClassLoader(true, dir);
-		}
+			cl = ClassLoaderHelper.buildClassLoader(true, directories);
 		
 	
 		for(int iter = 0; iter < jars.size(); iter++)
