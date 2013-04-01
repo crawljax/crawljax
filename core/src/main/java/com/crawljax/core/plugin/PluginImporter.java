@@ -36,15 +36,6 @@ public class PluginImporter
         }	    	 	  	
     }
     
-    public static File[] getDirsFromClassPath()
-    {
-    	String classPath = System.getProperty("java.class.path");
-    	String[] paths = classPath.split(";");
-    	List<File> files = new ArrayList<File>();
-    	for(int iter = 0; iter < paths.length; iter++)
-    		files.add(new File(paths[iter]));
-    	return files.toArray(new File[files.size()]);
-    }
     
     public static <T> List<T> getPluggedServices(Class<T> clazz, File... directories)
     {
@@ -54,10 +45,10 @@ public class PluginImporter
         List<URL> jars = new ArrayList<URL>();
         
         for(File file : directories)
-        	ClassLoaderHelper.fillJarsList(jars,file,true);
+        	PluginImporterHelper.fillJarsList(jars,file,true);
 		
 		if (cl == null)
-			cl = ClassLoaderHelper.buildClassLoader(true, directories);
+			cl = PluginImporterHelper.buildClassLoader(true, directories);
 		
 	
 		for(int iter = 0; iter < jars.size(); iter++)

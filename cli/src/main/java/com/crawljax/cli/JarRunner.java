@@ -25,6 +25,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurati
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.crawljax.core.plugin.PluginImporter;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.plugin.PluginImporterHelper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
@@ -252,7 +253,7 @@ public class JarRunner {
 
 		configureTimers(builder);
 		builder.addPlugin(new CrawlOverview(new File(outputDir)));
-		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, PluginImporter.getDirsFromClassPath());
+		List<Plugin> classPathPlugins = PluginImporter.getPluggedServices(Plugin.class, PluginImporterHelper.getDirsFromClassPath());
 		for(int iter = 0; iter < classPathPlugins.size(); iter++)
 			builder.addPlugin(classPathPlugins.get(iter));
 

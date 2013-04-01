@@ -21,9 +21,9 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-// Internal helper class that creates a ClassLoader that is able to load classes
-// from all jars in a directory (that is not originally in application's classpath
-public final class ClassLoaderHelper
+// Provides helper functions for the PluginImporterClass that don't
+// directly load files.
+public final class PluginImporterHelper
 {
 	public static ClassLoader buildClassLoader(
 		boolean includeSubDirs, File... directories)
@@ -44,6 +44,16 @@ public final class ClassLoaderHelper
 		return new URLClassLoader(allJars.toArray(new URL[allJars.size()]), parent);
 	}
 	
+    public static File[] getDirsFromClassPath()
+    {
+    	String classPath = System.getProperty("java.class.path");
+    	String[] paths = classPath.split(";");
+    	List<File> files = new ArrayList<File>();
+    	for(int iter = 0; iter < paths.length; iter++)
+    		files.add(new File(paths[iter]));
+    	return files.toArray(new File[files.size()]);
+    }
+    
 	static public void fillJarsList(List<URL> jars, File dir, boolean includeSubDirs)
     {
 		if(dir.exists())
@@ -64,7 +74,7 @@ public final class ClassLoaderHelper
 		}
     }
 
-	private ClassLoaderHelper()
+	private PluginImporterHelper()
 	{
 	}
 	
