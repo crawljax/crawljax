@@ -19,7 +19,8 @@ public final class CrawljaxAdvancedExampleSettings {
 	private static final long WAIT_TIME_AFTER_EVENT = 200;
 	private static final long WAIT_TIME_AFTER_RELOAD = 20;
 	private static final String URL = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
-	
+	private static final String outputDir = "output";
+
 	/**
 	 * entry point
 	 */
