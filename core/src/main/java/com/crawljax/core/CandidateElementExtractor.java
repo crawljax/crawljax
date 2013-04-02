@@ -174,7 +174,6 @@ public class CandidateElementExtractor {
 
 			NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
 			addFramesCandidates(dom, results, relatedFrame, iFrameNodes);
-			//Track here?
 			eveluateElements(dom, tag, results, relatedFrame);
 		}
 	}
@@ -412,8 +411,6 @@ public class CandidateElementExtractor {
 
 		if (parent instanceof Element
 		        && isExcluded(dom, (Element) parent, eventableConditionChecker)) {
-			//Will work for single thread
-			//TODO Figure this out
 			return true;
 		}
 
