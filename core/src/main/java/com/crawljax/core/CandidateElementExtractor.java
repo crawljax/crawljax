@@ -363,7 +363,7 @@ public class CandidateElementExtractor {
 				LOG.debug("Found new candidate element: {} with eventableCondition {}",
 				        candidateElement.getUniqueString(), eventableCondition);
 				candidateElement.setEventableCondition(eventableCondition);
-				currentIncludeSpecChecked.addElement(tag, candidateElement.getElement());
+				currentIncludeSpecChecked.addElement(crawl, candidateElement.getElement());
 				results.add(candidateElement);
 				/**
 				 * TODO add element to checkedElements after the event is fired! also add string
@@ -423,7 +423,7 @@ public class CandidateElementExtractor {
 
 			if (matchesXPath) {
 				LOG.info("Excluded element because of xpath: " + element);
-				currentExcludeSpecChecked.addElement(tag, element);
+				currentExcludeSpecChecked.addElement(crawlElem, element);
 				return true;
 			}
 		}

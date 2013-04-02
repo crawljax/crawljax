@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.w3c.dom.Element;
 
-import com.crawljax.core.TagElement;
+import com.crawljax.core.configuration.CrawlElement;
 
 public class SpecificationMetricState{
 
@@ -20,7 +20,7 @@ public class SpecificationMetricState{
 	 * http://stackoverflow.com/questions/3752194/best-practice-to-use-concurrentmaps-putifabsent
 	 * 
 	 */
-	private final ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>> checkedElements=new ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>>();
+	private final ConcurrentHashMap<CrawlElement, ConcurrentLinkedQueue<Element>> checkedElements=new ConcurrentHashMap<CrawlElement, ConcurrentLinkedQueue<Element>>();
 	
 	public SpecificationMetricState(StateVertex stateVertex) {
 	    super();
@@ -31,11 +31,11 @@ public class SpecificationMetricState{
 	    this.url = stateVertex.getUrl();
     }
 	
-	public void addElement(TagElement tag, Element element){
-		ConcurrentLinkedQueue<Element> elements=checkedElements.get(tag);
+	public void addElement(CrawlElement crawlElement, Element element){
+		ConcurrentLinkedQueue<Element> elements=checkedElements.get(crawlElement);
 		if(elements==null){
 			final ConcurrentLinkedQueue<Element> listElements=new ConcurrentLinkedQueue<Element>();
-			elements=checkedElements.putIfAbsent(tag, listElements);//utilize return to avoid extra lookup
+			elements=checkedElements.putIfAbsent(crawlElement, listElements);//utilize return to avoid extra lookup
 			if(elements==null)
 				elements=listElements;
 		}
@@ -61,7 +61,7 @@ public class SpecificationMetricState{
 		return url;
 	}
 
-	public ConcurrentHashMap<TagElement, ConcurrentLinkedQueue<Element>> getCheckedElements() {
+	public ConcurrentHashMap<CrawlElement, ConcurrentLinkedQueue<Element>> getCheckedElements() {
 		return checkedElements;
 	}
 }
