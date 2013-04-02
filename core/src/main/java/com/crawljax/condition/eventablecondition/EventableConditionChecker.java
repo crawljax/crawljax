@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList.Builder;
 public class EventableConditionChecker {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EventableConditionChecker.class);
-	private List<EventableCondition> eventableConditions;
+	private final ImmutableList<EventableCondition> eventableConditions;
 
 	/**
 	 * Construct the eventableconditionchecker with its eventable conditions.

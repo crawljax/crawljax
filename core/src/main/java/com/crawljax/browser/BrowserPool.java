@@ -25,7 +25,13 @@ import com.crawljax.core.plugin.Plugins;
  * The Pool class returns an instance of the desired browser as specified in the properties file.
  */
 public final class BrowserPool {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowserPool.class);
+
+	/**
+	 * The amount of time used to wait between every check for the close operation.
+	 */
+	private static final int SHUTDOWN_TIMEOUT = 100;
 
 	/**
 	 * BlockingQueue used to block for the moment when a browser comes available.
@@ -42,11 +48,6 @@ public final class BrowserPool {
 	 * Boot class used to handle and monitor the boot process.
 	 */
 	private final BrowserBooter booter;
-
-	/**
-	 * The amount of time used to wait between every check for the close operation.
-	 */
-	private final int shutdownTimeout = 100;
 
 	private int retries = 0;
 
@@ -392,7 +393,7 @@ public final class BrowserPool {
 			        + pool.getNumberOfBrowsers());
 			while (!allBrowsersLoaded()) {
 				try {
-					Thread.sleep(pool.shutdownTimeout);
+					Thread.sleep(pool.SHUTDOWN_TIMEOUT);
 				} catch (InterruptedException e) {
 					LOGGER.error("Closing of the browsers faild due to an Interrupt", e);
 				}

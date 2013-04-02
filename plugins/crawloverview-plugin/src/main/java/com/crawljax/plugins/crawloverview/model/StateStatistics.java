@@ -20,30 +20,29 @@ public class StateStatistics {
 		totalNumberOfStates = states.size();
 
 		State randomState = states.iterator().next();
-		State leastFanOut = randomState;
-		State mostFanOut = randomState;
-		State leastFanIn = randomState;
-		State mostFanIn = randomState;
+		State tmpLeastFanOut = randomState;
+		State tmpMostFanOut = randomState;
+		State tmpLeastFanIn = randomState;
+		State tmpMostFanIn = randomState;
 		ImmutableSetMultimap.Builder<String, String> builder = ImmutableSetMultimap.builder();
 		for (State state : states) {
-			if (state.getFanIn() > mostFanIn.getFanIn()) {
-				mostFanIn = state;
-			} else if (state.getFanIn() < leastFanIn.getFanIn()) {
-				leastFanIn = state;
+			if (state.getFanIn() > tmpMostFanIn.getFanIn()) {
+				tmpMostFanIn = state;
+			} else if (state.getFanIn() < tmpLeastFanIn.getFanIn()) {
+				tmpLeastFanIn = state;
 			}
-			if (state.getFanOut() > mostFanOut.getFanOut()) {
-				mostFanOut = state;
-			} else if (state.getFanOut() < leastFanOut.getFanOut()) {
-				leastFanOut = state;
+			if (state.getFanOut() > tmpMostFanOut.getFanOut()) {
+				tmpMostFanOut = state;
+			} else if (state.getFanOut() < tmpLeastFanOut.getFanOut()) {
+				tmpLeastFanOut = state;
 			}
 			builder.put(state.getUrl(), state.getName());
 		}
 		this.urls = builder.build();
-		System.out.println("URLS " + urls);
-		this.leastFanOut = leastFanOut;
-		this.leastFanIn = leastFanIn;
-		this.mostFanOut = mostFanOut;
-		this.mostFanIn = mostFanIn;
+		this.leastFanOut = tmpLeastFanOut;
+		this.leastFanIn = tmpLeastFanIn;
+		this.mostFanOut = tmpMostFanOut;
+		this.mostFanIn = tmpMostFanIn;
 	}
 
 	public State getLeastFanOut() {
