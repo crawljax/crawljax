@@ -3,6 +3,8 @@ package com.crawljax.browser;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -278,10 +280,26 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * alert, prompt, and confirm behave as if the OK button is always clicked.
 	 */
 	private void handlePopups() {
+		String host = null;
+		try {
+			URI uri = new URI(browser.getCurrentUrl());
+			host = uri.getHost();
+		} catch (URISyntaxException e1) {
+			LOGGER.error("Current URI cannot be parsed as a URI reference", e1);
+		}
+
 		try {
 			executeJavaScript("window.alert = function(msg){return true;};"
 			        + "window.confirm = function(msg){return true;};"
-			        + "window.prompt = function(msg){return true;};");
+			        + "window.prompt = function(msg){return true;};"
+			        + "window.open = function (open) {"
+			        + "return function (url, name, features) {"
+			        + "if ( url.indexOf('http://" + host + "') == 0 || "
+			        + "url.indexOf('https://" + host + "') == 0 || "
+			        + "url.indexOf('http') == -1){"
+			        + "return open.call(window, url, name, features); }"
+			        + "else { return null; } };" 
+			        + "}(window.open);");
 		} catch (CrawljaxException e) {
 			LOGGER.error("Handling of PopUp windows failed", e);
 		}
