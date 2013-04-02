@@ -3,7 +3,11 @@ package com.crawljax.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+=======
+>>>>>>> upstream/master
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -426,6 +430,14 @@ public class CandidateElementExtractor {
 				currentExcludeSpecChecked.addElement(tag, element);
 				return true;
 			}
+<<<<<<< HEAD
+			if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
+				LOG.info("Excluded element because of attributes: " + element);
+				currentExcludeSpecChecked.addElement(tag, element);
+				return true;
+			}
+=======
+>>>>>>> upstream/master
 		}
 
 		return false;

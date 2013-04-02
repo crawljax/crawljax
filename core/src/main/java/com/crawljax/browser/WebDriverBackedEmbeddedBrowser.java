@@ -367,10 +367,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		m = p.matcher(html);
 		htmlFormatted = m.replaceAll("");
 
-		// TODO (Stefan), Following lines are a serious performance bottle neck...
-		// Document doc = Helper.getDocument(htmlFormatted);
-		// htmlFormatted = Helper.getDocumentToString(doc);
-
 		htmlFormatted = filterAttributes(htmlFormatted);
 		return htmlFormatted;
 	}
@@ -383,15 +379,16 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return The filtered HTML string.
 	 */
 	private String filterAttributes(String html) {
+		String filteredHtml = html;
 		if (this.filterAttributes != null) {
 			for (String attribute : this.filterAttributes) {
 				String regex = "\\s" + attribute + "=\"[^\"]*\"";
 				Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 				Matcher m = p.matcher(html);
-				html = m.replaceAll("");
+				filteredHtml = m.replaceAll("");
 			}
 		}
-		return html;
+		return filteredHtml;
 	}
 
 	@Override
@@ -415,12 +412,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		try {
 			WebElement field = browser.findElement(identification.getWebDriverBy());
 			if (field != null) {
-				// first clear the field
 				field.clear();
-				// then fill in
 				field.sendKeys(text);
 
-				// this.activeElement = field;
 				return true;
 			}
 			return false;

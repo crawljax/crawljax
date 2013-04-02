@@ -1,5 +1,7 @@
 package com.crawljax.plugins.crawloverview.model;
 
+import java.util.Objects;
+
 import javax.annotation.concurrent.Immutable;
 
 import org.openqa.selenium.Dimension;
@@ -69,14 +71,7 @@ public class CandidateElementPosition {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + height;
-		result = prime * result + left;
-		result = prime * result + top;
-		result = prime * result + width;
-		result = prime * result + ((xpath == null) ? 0 : xpath.hashCode());
-		return result;
+		return Objects.hash(height, left, top, width, xpath);
 	}
 
 	@Override
@@ -84,32 +79,14 @@ public class CandidateElementPosition {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 		CandidateElementPosition other = (CandidateElementPosition) obj;
-		if (height != other.height) {
-			return false;
-		}
-		if (left != other.left) {
-			return false;
-		}
-		if (top != other.top) {
-			return false;
-		}
-		if (width != other.width) {
-			return false;
-		}
-		if (xpath == null) {
-			if (other.xpath != null) {
-				return false;
-			}
-		} else if (!xpath.equals(other.xpath)) {
-			return false;
-		}
-		return true;
+		return Objects.equals(height, other.height)
+		        && Objects.equals(left, other.left)
+		        && Objects.equals(top, other.top)
+		        && Objects.equals(width, other.width)
+		        && Objects.equals(xpath, other.xpath);
 	}
 }

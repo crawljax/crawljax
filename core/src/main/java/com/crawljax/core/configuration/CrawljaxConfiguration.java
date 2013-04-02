@@ -12,6 +12,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.plugin.Plugins;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -212,101 +213,38 @@ public final class CrawljaxConfiguration {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((browserConfig == null) ? 0 : browserConfig.hashCode());
-		result = prime * result + ((crawlRules == null) ? 0 : crawlRules.hashCode());
-		result = prime * result + maximumDepth;
-		result = prime * result + (int) (maximumRuntime ^ (maximumRuntime >>> 32));
-		result = prime * result + maximumStates;
-		result = prime * result + ((plugins == null) ? 0 : plugins.hashCode());
-		result =
-		        prime * result
-		                + ((proxyConfiguration == null) ? 0 : proxyConfiguration.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
-		return result;
+		return Objects.hashCode(url, browserConfig, plugins, proxyConfiguration, crawlRules,
+		        maximumStates, maximumRuntime, maximumDepth);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	public boolean equals(Object object) {
+		if (object instanceof CrawljaxConfiguration) {
+			CrawljaxConfiguration that = (CrawljaxConfiguration) object;
+			return Objects.equal(this.url, that.url)
+			        && Objects.equal(this.browserConfig, that.browserConfig)
+			        && Objects.equal(this.plugins, that.plugins)
+			        && Objects.equal(this.proxyConfiguration, that.proxyConfiguration)
+			        && Objects.equal(this.crawlRules, that.crawlRules)
+			        && Objects.equal(this.maximumStates, that.maximumStates)
+			        && Objects.equal(this.maximumRuntime, that.maximumRuntime)
+			        && Objects.equal(this.maximumDepth, that.maximumDepth);
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		CrawljaxConfiguration other = (CrawljaxConfiguration) obj;
-		if (browserConfig == null) {
-			if (other.browserConfig != null) {
-				return false;
-			}
-		} else if (!browserConfig.equals(other.browserConfig)) {
-			return false;
-		}
-		if (crawlRules == null) {
-			if (other.crawlRules != null) {
-				return false;
-			}
-		} else if (!crawlRules.equals(other.crawlRules)) {
-			return false;
-		}
-		if (maximumDepth != other.maximumDepth) {
-			return false;
-		}
-		if (maximumRuntime != other.maximumRuntime) {
-			return false;
-		}
-		if (maximumStates != other.maximumStates) {
-			return false;
-		}
-		if (plugins == null) {
-			if (other.plugins != null) {
-				return false;
-			}
-		} else if (!plugins.equals(other.plugins)) {
-			return false;
-		}
-		if (proxyConfiguration == null) {
-			if (other.proxyConfiguration != null) {
-				return false;
-			}
-		} else if (!proxyConfiguration.equals(other.proxyConfiguration)) {
-			return false;
-		}
-		if (url == null) {
-			if (other.url != null) {
-				return false;
-			}
-		} else if (!url.equals(other.url)) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("CrawljaxConfiguration [url=");
-		builder.append(url);
-		builder.append(", browserConfig=");
-		builder.append(browserConfig);
-		builder.append(", plugins=");
-		builder.append(plugins);
-		builder.append(", proxyConfiguration=");
-		builder.append(proxyConfiguration);
-		builder.append(", crawlRules=");
-		builder.append(crawlRules);
-		builder.append(", maximumStates=");
-		builder.append(maximumStates);
-		builder.append(", maximumRuntime=");
-		builder.append(maximumRuntime);
-		builder.append(", maximumDepth=");
-		builder.append(maximumDepth);
-		builder.append("]");
-		return builder.toString();
+		return Objects.toStringHelper(this)
+		        .add("url", url)
+		        .add("browserConfig", browserConfig)
+		        .add("plugins", plugins)
+		        .add("proxyConfiguration", proxyConfiguration)
+		        .add("crawlRules", crawlRules)
+		        .add("maximumStates", maximumStates)
+		        .add("maximumRuntime", maximumRuntime)
+		        .add("maximumDepth", maximumDepth)
+		        .toString();
 	}
 
 }
