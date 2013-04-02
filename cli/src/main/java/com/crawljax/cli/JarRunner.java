@@ -17,6 +17,7 @@ import ch.qos.logback.classic.Level;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -59,9 +60,9 @@ public class JarRunner {
 
 	private final CommandLine commandLine;
 
-	private Options options;
+	private final Options options;
 
-	private CrawljaxConfiguration config;
+	private final CrawljaxConfiguration config;
 
 	/**
 	 * Main executable method of Crawljax CLI.
@@ -84,7 +85,7 @@ public class JarRunner {
 
 	@VisibleForTesting
 	JarRunner(String args[]) {
-		options = getOptions();
+		this.options = getOptions();
 		try {
 			commandLine = new GnuParser().parse(options, args);
 		} catch (ParseException e) {
@@ -92,6 +93,7 @@ public class JarRunner {
 		}
 		if (commandLine.hasOption(VERSION)) {
 			System.out.println(getCrawljaxVersion());
+			this.config = null;
 		} else if (commandLine.getArgs().length == 2) {
 			String url = commandLine.getArgs()[0];
 			String outputDir = commandLine.getArgs()[1];
@@ -104,6 +106,7 @@ public class JarRunner {
 				System.out.println(MISSING_ARGUMENT_MESSAGE);
 			}
 			printHelp();
+			this.config = null;
 		}
 	}
 
@@ -161,7 +164,7 @@ public class JarRunner {
 			return Resources
 			        .toString(JarRunner.class.getResource("/project.version"), Charsets.UTF_8);
 		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
+			throw new CrawljaxException(e.getMessage(), e);
 		}
 	}
 
@@ -189,7 +192,7 @@ public class JarRunner {
 				try {
 					FileUtils.deleteDirectory(out);
 				} catch (IOException e) {
-					throw new RuntimeException(e.getMessage(), e);
+					throw new CrawljaxException(e.getMessage(), e);
 				}
 			} else {
 				throw new IllegalStateException(
@@ -210,7 +213,7 @@ public class JarRunner {
 					Files.touch(f);
 				}
 			} catch (IOException e) {
-				throw new RuntimeException("Could not create log file: " + e.getMessage(), e);
+				throw new CrawljaxException("Could not create log file: " + e.getMessage(), e);
 			}
 			Preconditions.checkArgument(f.canWrite());
 			LogUtil.logToFile(f.getPath());
