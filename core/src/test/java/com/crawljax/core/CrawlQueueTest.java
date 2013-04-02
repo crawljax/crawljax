@@ -23,10 +23,20 @@ import org.junit.Test;
 public class CrawlQueueTest {
 	
 	CrawlQueue crawlQueue;
+	
+	/**
+	 * Concurrency support class to run multiple threads at the same time.
+	 * Default value is 4. When the 4th threads calls CyclicBarrier.await(), it starts all awaiting threads.
+	 */
 	CyclicBarrier cb;
+	
 	MyRunnable runnable1;
 	MyRunnable runnable2;
 	MyRunnable runnable3;
+	
+	/**
+	 * Use to store values from other threads
+	 */
 	Boolean isExceptionThrown;
 	Boolean isUnexpectedExceptionThrown;
 	int counter;
@@ -43,47 +53,19 @@ public class CrawlQueueTest {
 		counter = 0;
 	}
 
-	@Test (expected = IllegalStateException.class)
+	/**
+	 * Starts four threads at the same time to run CrawlQueue.add().
+	 * Tests CrawlQueue.peek() & element() additionally.
+	 * Only three elements are expected to added.
+	 * IllegalStateException is expected to be thrown.
+	 */
+	@Test 
 	public void testAddAndElementAndPeek() throws InterruptedException, BrokenBarrierException {
 		
-		Thread t1 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					crawlQueue.add(runnable1);
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
-		
-		Thread t2 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					crawlQueue.add(runnable2);
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
-		
-		Thread t3 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					crawlQueue.add(runnable3);
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
+		Thread t1 = new Thread(new AddRunnable(runnable1));
+		Thread t2 = new Thread(new AddRunnable(runnable2));		
+		Thread t3 = new Thread(new AddRunnable(runnable3));
+		Thread t4 = new Thread(new AddRunnable(new MyRunnable("Runnable4")));
 		
 		Runnable r = crawlQueue.peek();
 		assertTrue(r==null);
@@ -93,23 +75,27 @@ public class CrawlQueueTest {
 		} catch (NoSuchElementException e) {
 			assertTrue(isUnexpectedExceptionThrown == false);
 			assertTrue(r == null);
-		}
-		
+		}		
 		
 		t1.start();
 		t2.start();
 		t3.start();		
-		cb.await();
+		t4.start();
 		
 		t1.join();
 		t2.join();
 		t3.join();
+		t4.join();
 		
-		assertTrue(crawlQueue.size()==3);
-		crawlQueue.add(new MyRunnable("Runnable4"));
-		
+		assertTrue(crawlQueue.size()==3 && isExceptionThrown==true &&
+				isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Starts four threads at the same time to run CrawlQueue.poll().
+	 * The size should never be negative.
+	 * No exception is expected to be thrown.
+	 */
 	@Test
 	public void testPoll() {
 		
@@ -131,6 +117,7 @@ public class CrawlQueueTest {
 			t4.join();
 			assertTrue(crawlQueue.size()==0);
 			assertTrue(isUnexpectedExceptionThrown==false);
+			assertTrue(isExceptionThrown==false);
 		} catch (Exception ex) {
 			fail("Exception not expected");
 		}
@@ -138,7 +125,10 @@ public class CrawlQueueTest {
 	}
 	
 	/**
-	 * isEmpty()
+	 * Starts four threads at the same time to run CrawlQueue.remove().
+	 * CrawlQueue.isEmpty() is tested additionally.
+	 * The size should never be negative.
+	 * No exception is expected to be thrown.
 	 */
 	@Test
 	public void testRemove() {
@@ -194,6 +184,7 @@ public class CrawlQueueTest {
 		}
 		
 		assertTrue(queue.containsAll(crawlQueue));
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
 	/**
@@ -202,45 +193,9 @@ public class CrawlQueueTest {
 	@Test
 	public void testClear() {
 		
-		Thread t1 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					crawlQueue.add(runnable1);
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
-		
-		Thread t2 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					crawlQueue.add(runnable2);
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
-		
-		Thread t3 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					crawlQueue.add(runnable3);
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
-		
+		Thread t1 = new Thread(new AddRunnable(runnable1));
+		Thread t2 = new Thread(new AddRunnable(runnable2));		
+		Thread t3 = new Thread(new AddRunnable(runnable3));		
 		Thread t4 = new Thread(new Runnable(){
 			@Override
 			public void run() {
@@ -271,8 +226,12 @@ public class CrawlQueueTest {
 		
 		assertTrue((crawlQueue.size()==0 && crawlQueue.peek()==null)
 				|| (crawlQueue.size()!=0 && crawlQueue.peek()!=null));
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Simple test for CrawlQueue.removeAll()
+	 */
 	@Test
 	public void testRemoveAll() {
 		addRunnablesToQueue();
@@ -281,8 +240,12 @@ public class CrawlQueueTest {
 		queue.add(runnable1);
 		crawlQueue.removeAll(queue);
 		assertTrue(crawlQueue.size()==1 && crawlQueue.peek()==runnable2);
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Simple test for CrawlQueue.retainAll()
+	 */
 	@Test
 	public void testRetainAll() {
 		addRunnablesToQueue();
@@ -292,8 +255,12 @@ public class CrawlQueueTest {
 		crawlQueue.retainAll(queue);
 		assertTrue(crawlQueue.size()==2 && 
 				!crawlQueue.contains(runnable2));
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Simple test for CrawlQueue.toArray() and toArray(T[])
+	 */
 	@Test
 	public void testToArray() {
 		addRunnablesToQueue();
@@ -319,8 +286,14 @@ public class CrawlQueueTest {
 			}
 			assertTrue(exists==true);
 		}
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Starts four threads at the same time to run CrawlQueue.drainTo() on 4 different lists.
+	 * Only one of the lists should contain 3 elements and the rest should be empty.
+	 * No exception is expected to be thrown.
+	 */
 	@Test
 	public void testDrainTo() {
 		addRunnablesToQueue();
@@ -335,9 +308,8 @@ public class CrawlQueueTest {
 				try {
 					cb.await();
 					crawlQueue.drainTo(list1);
-				} catch (BrokenBarrierException | InterruptedException e) {
+				} catch (Exception e) {
 					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
 				}
 			}			
 		});
@@ -348,9 +320,8 @@ public class CrawlQueueTest {
 				try {
 					cb.await();
 					crawlQueue.drainTo(list2);
-				} catch (BrokenBarrierException | InterruptedException e) {
+				} catch (Exception e) {
 					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
 				}
 			}			
 		});
@@ -361,9 +332,8 @@ public class CrawlQueueTest {
 				try {
 					cb.await();
 					crawlQueue.drainTo(list3);
-				} catch (BrokenBarrierException | InterruptedException e) {
+				} catch (Exception e) {
 					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
 				}
 			}			
 		});
@@ -374,9 +344,8 @@ public class CrawlQueueTest {
 				try {
 					cb.await();
 					crawlQueue.drainTo(list4);
-				} catch (BrokenBarrierException | InterruptedException e) {
+				} catch (Exception e) {
 					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
 				}
 			}			
 		});
@@ -401,66 +370,21 @@ public class CrawlQueueTest {
 						(list2.size()==3 && list1.size()==0 && list3.size()==0 && list4.size()==0) ||
 						(list3.size()==3 && list1.size()==0 && list2.size()==0 && list4.size()==0) ||
 						(list4.size()==3 && list1.size()==0 && list2.size()==0 && list3.size()==0)));
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Starts four threads at the same time to run CrawlQueue.offer().
+	 * Only three of the threads should successfully execute offer().
+	 * No exception is expected to be thrown.
+	 */
 	@Test
 	public void testOffer() {
 		 
-		Thread t1 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					if (crawlQueue.offer(runnable1))
-						counter++;
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
-		
-		Thread t2 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					if (crawlQueue.offer(runnable2))
-						counter++;
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
-		
-		Thread t3 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					if (crawlQueue.offer(runnable3))
-						counter++;
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
-		
-		Thread t4 = new Thread(new Runnable(){
-			@Override
-			public void run() {
-				try {
-					cb.await();
-					if (crawlQueue.offer(new MyRunnable("Runnable4")))
-						counter++;
-				} catch (BrokenBarrierException | InterruptedException e) {
-					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
-				}
-			}			
-		});
+		Thread t1 = new Thread(new OfferRunnable(runnable1));		
+		Thread t2 = new Thread(new OfferRunnable(runnable1));		
+		Thread t3 = new Thread(new OfferRunnable(runnable1));		
+		Thread t4 = new Thread(new OfferRunnable(new MyRunnable("Runnable4")));
 			
 		t1.start();
 		t2.start();
@@ -474,12 +398,17 @@ public class CrawlQueueTest {
 			t4.join();
 		} catch (InterruptedException e) {
 			fail("Exception not expected");
-			e.printStackTrace();
 		}
 		
 		assertTrue(crawlQueue.size()==3 && counter==3);
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Starts four threads at the same time to run CrawlQueue.offer() with timeout.
+	 * Only one thread should time out.
+	 * No exception is expected to be thrown.
+	 */
 	@Test
 	public void testOfferWithTimeoutFail() {
 		
@@ -551,12 +480,17 @@ public class CrawlQueueTest {
 			t4.join();
 		} catch (InterruptedException e) {
 			fail("Exception not expected");
-			e.printStackTrace();
 		}
 		
 		assertTrue(crawlQueue.size()==3 && counter==3);
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Starts four threads at the same time to run CrawlQueue.offer() with timeout.
+	 * All threads should successfully execute before timeout.
+	 * No exception is expected to be thrown.
+	 */
 	@Test
 	public void testOfferWithTimeoutSuccess() {
 		
@@ -647,8 +581,16 @@ public class CrawlQueueTest {
 		}
 		
 		assertTrue(crawlQueue.size()==3 && counter==4);
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Starts four threads at the same time to run CrawlQueue.drainTo() with
+	 * maximum number of elements parameter on 3 different lists.
+	 * For the default setting, only one list should contain 2 elements,
+	 * and one contain 1 element, and the rest should be empty.
+	 * No exception is expected to be thrown.
+	 */
 	@Test
 	public void testDrainMaxElementsTo() {
 		addRunnablesToQueue();
@@ -664,7 +606,6 @@ public class CrawlQueueTest {
 					crawlQueue.drainTo(list1, 2);
 				} catch (BrokenBarrierException | InterruptedException e) {
 					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
 				}
 			}			
 		});
@@ -677,7 +618,6 @@ public class CrawlQueueTest {
 					crawlQueue.drainTo(list2, 2);
 				} catch (BrokenBarrierException | InterruptedException e) {
 					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
 				}
 			}			
 		});
@@ -690,7 +630,6 @@ public class CrawlQueueTest {
 					crawlQueue.drainTo(list3, 2);
 				} catch (BrokenBarrierException | InterruptedException e) {
 					isUnexpectedExceptionThrown = true;
-					e.printStackTrace();
 				}
 			}			
 		});
@@ -716,8 +655,13 @@ public class CrawlQueueTest {
 						(list2.size()==2 && list1.size()==0 && list3.size()==1) ||
 						(list3.size()==2 && list1.size()==1 && list2.size()==0) ||
 						(list3.size()==2 && list1.size()==0 && list2.size()==1)));
+		assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 	}
 	
+	/**
+	 * Test for CrawlQueue.poll()
+	 * 4 threads are run and only one of them should time out.
+	 */
 	@Test
 	public void testPollTimeoutFail() {
 		
@@ -740,13 +684,17 @@ public class CrawlQueueTest {
 			t4.join();
 			
 			assertTrue(crawlQueue.size()==0 && counter==1);
-			assertTrue(isUnexpectedExceptionThrown==false);
+			assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 		} catch (Exception ex) {
 			fail("Exception not expected");
 		}
 		
 	}
 	
+	/**
+	 * Test for CrawlQueue.poll()
+	 * 4 threads are run for poll() and all of them should pass before timeout eventually.
+	 */
 	@Test
 	public void testPollTimeoutSuccess() {
 		
@@ -784,7 +732,7 @@ public class CrawlQueueTest {
 			t5.join();
 			
 			assertTrue(crawlQueue.size()==0 && counter==0);
-			assertTrue(isUnexpectedExceptionThrown==false);
+			assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			fail("Exception not expected");
@@ -793,6 +741,12 @@ public class CrawlQueueTest {
 		
 	}
 	
+	/**
+	 * Test for CrawlQueue.put() and take()
+	 * 3 threads for put() and 3 threads for take() are run.
+	 * Eventually, all threads should eventually succeed and 
+	 * there should be no remaining element in the queue.
+	 */
 	@Test
 	public void testPutTake() {
 
@@ -823,7 +777,7 @@ public class CrawlQueueTest {
 			t6.join();
 			
 			assertTrue(crawlQueue.remainingCapacity()==0);
-			assertTrue(isUnexpectedExceptionThrown==false);
+			assertTrue(isExceptionThrown==false && isUnexpectedExceptionThrown==false);
 		} catch (Exception ex) {
 			fail("Exception not expected");
 		}
@@ -837,7 +791,7 @@ public class CrawlQueueTest {
 	}
 	
 	/**
-	 * Custom Runnable to execute CrawlQueue.removew()
+	 * Custom Runnable to execute CrawlQueue.remove()
 	 */
 	private class RemoveRunnable implements Runnable {
 
@@ -848,16 +802,15 @@ public class CrawlQueueTest {
 				crawlQueue.remove();
 			} catch (NoSuchElementException e) {
 				isExceptionThrown = true;
-			} catch (BrokenBarrierException | InterruptedException e) {
+			} catch (Exception e) {
 				isUnexpectedExceptionThrown = true;
-				e.printStackTrace();
 			} 
 		}
 		
 	}
 	
 	/**
-	 * Custom Runnable to execute CrawlQueue.put()
+	 * Custom Runnable to execute CrawlQueue.take()
 	 */
 	private class TakeRunnable implements Runnable {
 		
@@ -865,9 +818,8 @@ public class CrawlQueueTest {
 		public void run() {
 			try {
 				crawlQueue.take();
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				isUnexpectedExceptionThrown = true;
-				e.printStackTrace();
 			}
 		}
 		
@@ -883,9 +835,8 @@ public class CrawlQueueTest {
 			try {
 				cb.await();
 				crawlQueue.put(new MyRunnable("dummy"));
-			} catch (BrokenBarrierException | InterruptedException e) {
+			} catch (Exception e) {
 				isUnexpectedExceptionThrown = true;
-				e.printStackTrace();
 			}
 		}
 		
@@ -908,11 +859,59 @@ public class CrawlQueueTest {
 				cb.await();
 				if (crawlQueue.poll(timeout, TimeUnit.MILLISECONDS)==null)
 					counter++;
-			} catch (BrokenBarrierException | InterruptedException e) {
+			} catch (Exception e) {
 				isUnexpectedExceptionThrown = true;
-				e.printStackTrace();
 			}
 		}
+		
+	}
+	
+	/**
+	 * Custom Runnable to execute CrawlQueue.add()
+	 */
+	private class AddRunnable implements Runnable {
+
+		Runnable runnable;
+		
+		public AddRunnable(Runnable r) {
+			runnable = r;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				cb.await();
+				crawlQueue.add(runnable);
+			} catch (IllegalStateException e) {
+				isExceptionThrown = true;
+			} catch (Exception e) {
+				isUnexpectedExceptionThrown = true;
+			}
+		}
+		
+	}
+	
+	/**
+	 * Custom Runnable to execute CrawlQueue.offer()
+	 */
+	private class OfferRunnable implements Runnable {
+
+		Runnable runnable;
+		
+		public OfferRunnable(Runnable r) {
+			runnable = r;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				cb.await();
+				if (crawlQueue.offer(runnable))
+					counter++;
+			} catch (Exception e) {
+				isUnexpectedExceptionThrown = true;
+			}
+		}	
 		
 	}
 	
