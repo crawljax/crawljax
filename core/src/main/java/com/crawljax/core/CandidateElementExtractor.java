@@ -58,8 +58,8 @@ public class CandidateElementExtractor {
 
 	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
 	
-	public static final ConcurrentLinkedQueue<SpecificationMetricState> includedSpecsChecked = new ConcurrentLinkedQueue<SpecificationMetricState>();
-	public static final ConcurrentLinkedQueue<SpecificationMetricState> excludedSpecsChecked = new ConcurrentLinkedQueue<SpecificationMetricState>();
+	private static final ConcurrentLinkedQueue<SpecificationMetricState> includedSpecsChecked = new ConcurrentLinkedQueue<SpecificationMetricState>();
+	private static final ConcurrentLinkedQueue<SpecificationMetricState> excludedSpecsChecked = new ConcurrentLinkedQueue<SpecificationMetricState>();
 	private SpecificationMetricState currentIncludeSpecChecked;
 	private SpecificationMetricState currentExcludeSpecChecked;
 	
@@ -153,6 +153,14 @@ public class CandidateElementExtractor {
 		ImmutableList<CandidateElement> found = results.build();
 		LOG.debug("Found {} new candidate elements to analyze!", found.size());
 		return found;
+	}
+	
+	public static ConcurrentLinkedQueue<SpecificationMetricState> getIncludedSpecsChecked(){
+		return includedSpecsChecked;
+	}
+	
+	public static ConcurrentLinkedQueue<SpecificationMetricState> getExcludedSpecsChecked(){
+		return excludedSpecsChecked;
 	}
 
 	private void extractElements(Document dom, Builder<CandidateElement> results,

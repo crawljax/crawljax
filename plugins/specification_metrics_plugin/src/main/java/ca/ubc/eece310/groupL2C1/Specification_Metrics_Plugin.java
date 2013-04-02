@@ -50,8 +50,8 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 	@Override
     public void postCrawling(CrawlSession session) {
 		//TODO Pull Data from session?
-		includedSpecsChecked = CandidateElementExtractor.includedSpecsChecked;
-		excludedSpecsChecked = CandidateElementExtractor.excludedSpecsChecked;
+		includedSpecsChecked = CandidateElementExtractor.getIncludedSpecsChecked();
+		excludedSpecsChecked = CandidateElementExtractor.getExcludedSpecsChecked();
 		
 		//OUTPUT THE DATA!
 		printOverallStatistics();
