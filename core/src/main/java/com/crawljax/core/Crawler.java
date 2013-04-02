@@ -362,10 +362,11 @@ public class Crawler implements Runnable {
 		Document dom = null;
 		try {
 			dom = DomUtils.asDocument(getBrowser().getDom());
+
 		}
 
 		catch (IOException e) {
-			e.printStackTrace();
+			LOG.info("dom is null, {}", e.getMessage());
 		}
 		if (this.fireEvent(eventable)) {
 			StateVertex newState =

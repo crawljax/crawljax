@@ -118,8 +118,7 @@ public class StateFlowGraph implements Serializable {
 		try {
 			stateDom = DomUtils.asDocument(stateVertix.getDom());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.info("dom is null, {}", e.getMessage());
 		}
 		String correctedName =
 		        makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling(),

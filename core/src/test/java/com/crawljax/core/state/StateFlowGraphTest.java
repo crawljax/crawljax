@@ -20,6 +20,8 @@ import org.apache.commons.lang.SerializationUtils;
 import org.jgrapht.GraphPath;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.crawljax.core.state.Eventable.EventType;
@@ -28,6 +30,7 @@ import com.crawljax.util.DomUtils;
 
 public class StateFlowGraphTest {
 
+	private static final Logger LOG = LoggerFactory.getLogger(StateFlowGraphTest.class.getName());
 	private StateVertex index;
 	private StateVertex state2;
 	private StateVertex state3;
@@ -369,20 +372,20 @@ public class StateFlowGraphTest {
 		try {
 			stateDom = DomUtils.asDocument(index.getDom());
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.info("dom is null, {}", e.getMessage());
 		}
-		String test1 = graph.getNewStateName("http://www.facebook.com", stateDom);
-		assertEquals(test1, "2-[]_[]");
+		String testTwoSlashes = graph.getNewStateName("http://www.facebook.com", stateDom);
+		assertEquals(testTwoSlashes, "2-[]_[]");
 
-		String test2 =
+		String testFourSlashes =
 		        graph.getNewStateName(
 		                "http://www.vogella.com/articles/JUnit/article.html", stateDom);
-		assertEquals(test2, "3-[]_[articlesJUnitarticlehtml]");
+		assertEquals(testFourSlashes, "3-[]_[articlesJUnitarticlehtml]");
 
-		String test3 = graph.getNewStateName("http://www.facebook.com/", stateDom);
-		assertEquals(test3, "4-[]_[]");
+		String testThreeSlashes = graph.getNewStateName("http://www.facebook.com/", stateDom);
+		assertEquals(testThreeSlashes, "4-[]_[]");
 
-		String test4 = graph.getNewStateName(null, stateDom);
-		assertEquals(test4, "5-[]_[]");
+		String testNull = graph.getNewStateName(null, stateDom);
+		assertEquals(testNull, "5-[]_[]");
 	}
 }
