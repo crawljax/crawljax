@@ -593,7 +593,9 @@ public class Crawler implements Runnable {
 	private void goBackOneState() {
 		LOG.debug("Going back one state");
 		goToInitialURL(false);
-		stateMachine.rewind();
+		if (stateMachine != null) {
+			stateMachine.rewind();
+		}
 		controller.getSession().startNewPath();
 		goBackExact(controller.getSession().getCurrentCrawlPath().immutableCopy(false));
 	}
