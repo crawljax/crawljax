@@ -1,9 +1,6 @@
 package ca.ubc.eece310.groupL2C1;
-import static java.lang.System.out;
-
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,16 +16,14 @@ import org.w3c.dom.Node;
 
 import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.TagElement;
-import com.crawljax.core.plugin.GeneratesOutput;
+import com.crawljax.core.configuration.CrawlElement;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.SpecificationMetricState;
 import com.google.common.base.Preconditions;
 
 
-public class Specification_Metrics_Plugin implements PostCrawlingPlugin, GeneratesOutput {
+public class Specification_Metrics_Plugin implements PostCrawlingPlugin {
 	private static final Logger LOG = LoggerFactory.getLogger(Specification_Metrics_Plugin.class);
-	private String absoluteOutputPath;
 	private ConcurrentLinkedQueue<SpecificationMetricState> includedSpecsChecked;
 	private ConcurrentLinkedQueue<SpecificationMetricState> excludedSpecsChecked;
 	private BufferedWriter outputWriter; 
@@ -37,7 +32,7 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		Preconditions.checkNotNull(outputFolder, "Output folder cannot be null");
 		LOG.info("Initialized Specification_Metrics_Plugin");
 		try {
-			FileWriter fileWrite = new FileWriter("output.txt");
+			FileWriter fileWrite = new FileWriter("specification_metric_plugin.txt");
 			outputWriter = new BufferedWriter(fileWrite);
 			//outputWriter.write("Hello Java");
 			//outputWriter.close();
@@ -49,7 +44,6 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 	
 	@Override
     public void postCrawling(CrawlSession session) {
-		//TODO Pull Data from session?
 		includedSpecsChecked = CandidateElementExtractor.getIncludedSpecsChecked();
 		excludedSpecsChecked = CandidateElementExtractor.getExcludedSpecsChecked();
 		
@@ -58,20 +52,11 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		printComprehensiveReport();
 		
     }
-	@Override
-    public void setOutputFolder(String absolutePath) {
-	    absoluteOutputPath=absolutePath;
-    }
-	@Override
-    public String getOutputFolder() {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
 	private void printOverallStatistics(){
 		Iterator<SpecificationMetricState> includedSpecIterator=includedSpecsChecked.iterator();
 		Iterator<SpecificationMetricState> excludedSpecIterator=excludedSpecsChecked.iterator();
-		ArrayList<HashMap<TagElement, Integer>> includedSpecTagCount= new ArrayList<HashMap<TagElement, Integer>>();
-		ArrayList<HashMap<TagElement, Integer>> excludedSpecTagCount= new ArrayList<HashMap<TagElement, Integer>>();
+		ArrayList<HashMap<CrawlElement, Integer>> includedSpecTagCount= new ArrayList<HashMap<CrawlElement, Integer>>();
+		ArrayList<HashMap<CrawlElement, Integer>> excludedSpecTagCount= new ArrayList<HashMap<CrawlElement, Integer>>();
 		
 		
 		SpecificationMetricState tempState;
@@ -86,11 +71,11 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		
 		while(includedSpecIterator.hasNext()){
 			tempState=includedSpecIterator.next();
-			HashMap<TagElement, Integer> singleStateIncludedTagCount=new HashMap<TagElement, Integer>();
+			HashMap<CrawlElement, Integer> singleStateIncludedTagCount=new HashMap<CrawlElement, Integer>();
 			
-			Iterator<Entry<TagElement, ConcurrentLinkedQueue<Element>>> tagIterator= tempState.getCheckedElements().entrySet().iterator();
+			Iterator<Entry<CrawlElement, ConcurrentLinkedQueue<Element>>> tagIterator= tempState.getCheckedElements().entrySet().iterator();
 			while(tagIterator.hasNext()){
-				Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
+				Entry<CrawlElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
 				singleStateIncludedTagCount.put(mapEntry.getKey(), mapEntry.getValue().size());
 				try {
 					outputWriter.write(mapEntry.getKey() + ":");
@@ -118,11 +103,11 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		
 		while(excludedSpecIterator.hasNext()){
 			tempState=excludedSpecIterator.next();
-			HashMap<TagElement, Integer> singleStateExcludedTagCount=new HashMap<TagElement, Integer>();
+			HashMap<CrawlElement, Integer> singleStateExcludedTagCount=new HashMap<CrawlElement, Integer>();
 			
-			Iterator<Entry<TagElement, ConcurrentLinkedQueue<Element>>> tagIterator= tempState.getCheckedElements().entrySet().iterator();
+			Iterator<Entry<CrawlElement, ConcurrentLinkedQueue<Element>>> tagIterator= tempState.getCheckedElements().entrySet().iterator();
 			while(tagIterator.hasNext()){
-				Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
+				Entry<CrawlElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
 				singleStateExcludedTagCount.put(mapEntry.getKey(), mapEntry.getValue().size());
 				try {
 					outputWriter.write(mapEntry.getKey() + ":");
@@ -177,12 +162,12 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 	
 	private void printStateElements(SpecificationMetricState state){
 	
-		Iterator<Entry<TagElement, ConcurrentLinkedQueue<Element>>> tagIterator= state.getCheckedElements().entrySet().iterator();
+		Iterator<Entry<CrawlElement, ConcurrentLinkedQueue<Element>>> tagIterator= state.getCheckedElements().entrySet().iterator();
 		while(tagIterator.hasNext()){
-			Entry<TagElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
+			Entry<CrawlElement, ConcurrentLinkedQueue<Element>> mapEntry=tagIterator.next();
 			try {
 				outputWriter.newLine();
-				outputWriter.write("Source Name:\t"+mapEntry.getKey().getName());
+				outputWriter.write("Source Name:\t"+mapEntry.getKey().getTagName());
 				outputWriter.newLine();
 				outputWriter.write("Source ID:\t "+mapEntry.getKey().getId());
 				
