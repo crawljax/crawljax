@@ -1,11 +1,14 @@
 package com.crawljax.examples;
 
+import java.io.File;
+
 import ca.ubc.eece310.groupL2C1.Specification_Metrics_Plugin;
 
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.plugins.crawloverview.CrawlOverview;
 
 /**
  * Crawls google.com in IE.
@@ -19,8 +22,8 @@ public final class SiteSimpleExample {
 
 	private static final String HEADER_XPATH = "//DIV[@id='guser']";
 
-	private static final int MAX_CRAWL_DEPTH = 2;
-	private static final int MAX_STATES = 2;
+	private static final int MAX_CRAWL_DEPTH = 7;
+	private static final int MAX_STATES = 7;
 
 	/**
 	 * Entry point
@@ -36,9 +39,9 @@ public final class SiteSimpleExample {
 		builder.setMaximumDepth(MAX_CRAWL_DEPTH);
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
+		
+		Specification_Metrics_Plugin SMP=new Specification_Metrics_Plugin();
 
-		//builder.addPlugin(new CrawlOverview(new File("outPut")));
-		Specification_Metrics_Plugin SMP= new Specification_Metrics_Plugin();
 		SMP.setOutputFolder("specification_metrics_output");
 		builder.addPlugin(SMP);
 		

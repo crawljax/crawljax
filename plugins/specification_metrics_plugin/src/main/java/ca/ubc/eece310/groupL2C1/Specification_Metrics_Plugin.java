@@ -3,7 +3,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -51,8 +50,8 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 			outputWriter = new BufferedWriter(fileWrite);
 			
 			//OUTPUT THE DATA!
-			printOverallStatistics();
 			printComprehensiveReport();
+			
 			try {
 		        outputWriter.close();
 	        } catch (IOException e) {
@@ -64,114 +63,112 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 		}
 		
     }
-	private void printOverallStatistics(){
-		Iterator<SpecificationMetricState> includedSpecIterator=includedSpecsChecked.iterator();
-		Iterator<SpecificationMetricState> excludedSpecIterator=excludedSpecsChecked.iterator();
-		ArrayList<HashMap<CrawlElement, Integer>> includedSpecTagCount= new ArrayList<HashMap<CrawlElement, Integer>>();
-		ArrayList<HashMap<CrawlElement, Integer>> excludedSpecTagCount= new ArrayList<HashMap<CrawlElement, Integer>>();
+	
+	private void printComprehensiveReport(){
+		HashMap<CrawlElement, Integer> includedCrawlElementCount= new HashMap<CrawlElement, Integer>();
+		HashMap<CrawlElement, Integer> excludedCrawlElementCount= new HashMap<CrawlElement, Integer>();	
+		printIndividualStateCrawlStatistics(includedCrawlElementCount, excludedCrawlElementCount);
+		printOverallCrawlStatistics(includedCrawlElementCount, excludedCrawlElementCount);
+	}
+	
+	/*
+	 * Depends on printIndividualStateCrawlStatistics(...) to generate CrawlElementCounts
+	 */
+	private void printOverallCrawlStatistics(HashMap<CrawlElement, Integer> includedCrawlElementCount, HashMap<CrawlElement, Integer> excludedCrawlElementCount){
+		printReportHeader("Entire Crawl: CrawlElement Match Count");
 		
-		
-		SpecificationMetricState tempState;
-		
-		try {
-			outputWriter.write("--Included Crawl Elements Checked--");
-			outputWriter.newLine();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		while(includedSpecIterator.hasNext()){
-			tempState=includedSpecIterator.next();
-			HashMap<CrawlElement, Integer> singleStateIncludedTagCount=new HashMap<CrawlElement, Integer>();
-			
-			Iterator<Entry<CrawlElement, ConcurrentLinkedQueue<Element>>> crawlElementsIterator= tempState.getCheckedElements().entrySet().iterator();
-			while(crawlElementsIterator.hasNext()){
-				Entry<CrawlElement, ConcurrentLinkedQueue<Element>> mapEntry=crawlElementsIterator.next();
-				singleStateIncludedTagCount.put(mapEntry.getKey(), mapEntry.getValue().size());
-				try {
-					outputWriter.newLine();
-					outputWriter.write(mapEntry.getKey().toString());
-					outputWriter.newLine();
-					outputWriter.write("Matches: " + mapEntry.getValue().size());
-					outputWriter.newLine();
-				} catch (IOException e) {
-					e.printStackTrace();
+		Iterator<Entry<CrawlElement, Integer>> crawlElementCountIterator;
+		for(int i=0; i<2; i++){
+			try {
+				outputWriter.newLine();
+				if(i==0){
+					outputWriter.write("--Total Matches: Included CrawlElements--");
+					crawlElementCountIterator=includedCrawlElementCount.entrySet().iterator();
+				}else{
+					outputWriter.write("--Total Matches: Excluded CrawlElements--");
+					crawlElementCountIterator=excludedCrawlElementCount.entrySet().iterator();
 				}
-			}
-			includedSpecTagCount.add(singleStateIncludedTagCount);
-		}
-		
-		try {
-			outputWriter.newLine();
-			outputWriter.newLine();
-			outputWriter.write("--Excluded Crawl Elements Checked--");
-			outputWriter.newLine();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		while(excludedSpecIterator.hasNext()){
-			tempState=excludedSpecIterator.next();
-			HashMap<CrawlElement, Integer> singleStateExcludedTagCount=new HashMap<CrawlElement, Integer>();
-			
-			Iterator<Entry<CrawlElement, ConcurrentLinkedQueue<Element>>> crawlElementsIterator= tempState.getCheckedElements().entrySet().iterator();
-			while(crawlElementsIterator.hasNext()){
-				Entry<CrawlElement, ConcurrentLinkedQueue<Element>> mapEntry=crawlElementsIterator.next();
-				singleStateExcludedTagCount.put(mapEntry.getKey(), mapEntry.getValue().size());
-				try {
+				while(crawlElementCountIterator.hasNext()){
+					Entry<CrawlElement, Integer> crawlElementMapEntry=crawlElementCountIterator.next();	
 					outputWriter.newLine();
-					outputWriter.write(mapEntry.getKey().toString());
+					outputWriter.write(crawlElementMapEntry.getKey().toString());
 					outputWriter.newLine();
-					outputWriter.write("Matches: " + mapEntry.getValue().size());
+					outputWriter.write("Matches: " + crawlElementMapEntry.getValue());
 					outputWriter.newLine();
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
+			}catch (IOException e) {
+				LOG.error("Couldn't write specification metrics output");
 			}
-			excludedSpecTagCount.add(singleStateExcludedTagCount);
 		}
 	}
-	private void printComprehensiveReport(){
+	private void printIndividualStateCrawlStatistics(HashMap<CrawlElement, Integer> includedCrawlElementCount, HashMap<CrawlElement, Integer> excludedCrawlElementCount){
 		SpecificationMetricState includedState;
 		SpecificationMetricState excludedState;
 		Iterator<SpecificationMetricState> includedSpecIterator=includedSpecsChecked.iterator();
 		Iterator<SpecificationMetricState> excludedSpecIterator=excludedSpecsChecked.iterator();
+		
+		printReportHeader("Individual State: CrawlElement Matches");
 		while(includedSpecIterator.hasNext() || excludedSpecIterator.hasNext()){
 			includedState=includedSpecIterator.next();
 			excludedState=excludedSpecIterator.next();
 			
 			if(includedState!=null){
 				printStateHeader(includedState);
-				try {
-						outputWriter.newLine();
-						outputWriter.write("Included Crawl Elements and the DOM Elements they matched:");
-						outputWriter.newLine();
-						printStateElements(includedState); 
-				} catch (IOException e) {
-					e.printStackTrace();
-					LOG.error("Couldn't write specification metrics output");
-				}
+				printStateElements(includedState, "--Included CrawlElements and the DOM Elements they matched--"); 
+				printStateElementsSummary(includedState, includedCrawlElementCount, "--Included CrawlElements Summary--");
 			}
-			
+
 			if(excludedState!=null){
 				if(includedState==null)	{		
 					printStateHeader(excludedState);
 				}
-				try {
-						outputWriter.newLine();
-						outputWriter.write("Excluded Crawl Elements and the DOM Elements they matched:");
-						outputWriter.newLine();
-						printStateElements(excludedState); 
-				} catch (IOException e) {
-					e.printStackTrace();
-					LOG.error("Couldn't write specification metrics output");
-				}
+				printStateElements(excludedState,"--Excluded CrawlElements and the DOM Elements they matched--"); 
+				printStateElementsSummary(excludedState, excludedCrawlElementCount, "--Excluded CrawlElements Summary--");
 			}
 		}
 	}
-	private void printStateHeader(SpecificationMetricState state){
+	
+	private void printTitle(String title){
 		try {
 			outputWriter.newLine();
+			outputWriter.write(title);
+			outputWriter.newLine();
+		} catch (IOException e) {
+			LOG.error("Couldn't write specification metrics output");
+		}
+	}
+	
+	private void printStateElementsSummary(SpecificationMetricState specificationMetricState, HashMap<CrawlElement, Integer> crawlElementCount, String title){
+		printTitle(title);
+		
+		Iterator<Entry<CrawlElement, ConcurrentLinkedQueue<Element>>> crawlElementsIterator= specificationMetricState.getCheckedElements().entrySet().iterator();			
+		while(crawlElementsIterator.hasNext()){
+			Entry<CrawlElement, ConcurrentLinkedQueue<Element>> crawlElementMapEntry=crawlElementsIterator.next();	
+			addToCrawlElementCount(crawlElementCount, crawlElementMapEntry);
+			printCrawlElementSummary(crawlElementMapEntry);
+		}
+	}
+	
+	private void printReportHeader(String title){
+		try {
+	        outputWriter.newLine();
+	        outputWriter.newLine();
+	        outputWriter.newLine();
+	        outputWriter.newLine();
+	        outputWriter.newLine();
+			outputWriter.write("-------------------------------");
+	        outputWriter.newLine();
+			outputWriter.write(title);
+	        outputWriter.newLine();
+			outputWriter.write("-------------------------------");
+	        outputWriter.newLine();
+        } catch (IOException e) {
+			LOG.error("Couldn't write specification metrics output");
+        }
+	}
+	
+	private void printStateHeader(SpecificationMetricState state){
+		try {
 			outputWriter.newLine();
 			outputWriter.write("-------------");
 			outputWriter.newLine();
@@ -180,13 +177,17 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 			outputWriter.write("State ID:\t"+ state.getId());
 			outputWriter.newLine();
 			outputWriter.write("State URL:\t"+state.getUrl());
+			outputWriter.newLine();
+			outputWriter.write("-------------");
+			outputWriter.newLine();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void printStateElements(SpecificationMetricState state){
-	
+	private void printStateElements(SpecificationMetricState state, String title){
+		printTitle(title);
+		
 		Iterator<Entry<CrawlElement, ConcurrentLinkedQueue<Element>>> crawlElementsIterator= state.getCheckedElements().entrySet().iterator();
 		while(crawlElementsIterator.hasNext()){
 			Entry<CrawlElement, ConcurrentLinkedQueue<Element>> mapEntry=crawlElementsIterator.next();
@@ -194,12 +195,12 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 				outputWriter.newLine();
 				outputWriter.write("Crawl Element Name:\t"+mapEntry.getKey().getTagName());
 				outputWriter.newLine();
-				outputWriter.write("Crawl Element ID:\t "+mapEntry.getKey().getId());
+				outputWriter.write("Crawl Element ID:\t "+mapEntry.getKey().getId());	
+				outputWriter.newLine();
 				
 				Iterator<Element> domElementIterator=mapEntry.getValue().iterator();
 				while(domElementIterator.hasNext()){
-					Element element=domElementIterator.next();	
-					outputWriter.newLine();
+					Element element=domElementIterator.next();
 					outputWriter.newLine();
 					outputWriter.write("DOM Element Tag Name:\t "+element.getTagName());
 					outputWriter.newLine();
@@ -215,12 +216,34 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin, Generat
 						outputWriter.write("\t\tType:\t "+nodeTypeLookUp(node.getNodeType()));
 						outputWriter.newLine();
 						outputWriter.write("\t\tValue:\t "+node.getNodeValue());
+						outputWriter.newLine();
 					}
 				}
 				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	private void addToCrawlElementCount(HashMap<CrawlElement, Integer> crawlElementCount, Entry<CrawlElement, ConcurrentLinkedQueue<Element>> crawlElementMapEntry){
+		Integer count=crawlElementCount.get(crawlElementMapEntry.getKey());
+		if(count==null){
+			crawlElementCount.put(crawlElementMapEntry.getKey(), crawlElementMapEntry.getValue().size());
+		}else{
+			crawlElementCount.put(crawlElementMapEntry.getKey(), count+crawlElementMapEntry.getValue().size());
+		}
+	}
+	
+	private void printCrawlElementSummary(Entry<CrawlElement, ConcurrentLinkedQueue<Element>> crawlElementMapEntry){
+		try {
+			outputWriter.newLine();
+			outputWriter.write(crawlElementMapEntry.getKey().toString());
+			outputWriter.newLine();
+			outputWriter.write("Matches: " + crawlElementMapEntry.getValue().size());
+			outputWriter.newLine();
+		} catch (IOException e) {
+			LOG.error("Couldn't write specification metrics output");
 		}
 	}
 	private String nodeTypeLookUp(int type){
