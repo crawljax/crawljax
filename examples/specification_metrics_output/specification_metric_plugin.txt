@@ -1,0 +1,1354 @@
+
+
+
+
+
+-------------------------------
+Individual State: CrawlElement Matches
+-------------------------------
+
+-------------
+State Name:	index
+State ID:	0
+State URL:	http://www.google.ca/
+-------------
+
+--Included CrawlElements and the DOM Elements they matched--
+
+Crawl Element Name:	BUTTON
+Crawl Element ID:	 id9879367
+
+DOM Element Tag Name:	 BUTTON
+DOM Element Text:	 
+	Node 0
+		Name:	 aria-label
+		Type:	 Attribute Node
+		Value:	 Google Search
+
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfb
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfb
+
+	Node 3
+		Name:	 name
+		Type:	 Attribute Node
+		Value:	 btnG
+
+DOM Element Tag Name:	 BUTTON
+DOM Element Text:	 Google Search
+	Node 0
+		Name:	 aria-label
+		Type:	 Attribute Node
+		Value:	 Google Search
+
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfba
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfba
+
+	Node 3
+		Name:	 name
+		Type:	 Attribute Node
+		Value:	 btnK
+
+DOM Element Tag Name:	 BUTTON
+DOM Element Text:	 I'm Feeling Lucky
+	Node 0
+		Name:	 aria-label
+		Type:	 Attribute Node
+		Value:	 I'm Feeling Lucky
+
+	Node 1
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqfba
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbqfbb
+
+	Node 3
+		Name:	 name
+		Type:	 Attribute Node
+		Value:	 btnI
+
+	Node 4
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 if(this.form.q.value)this.checked=1;else window.top.location='/doodles/'
+
+Crawl Element Name:	A
+Crawl Element ID:	 id18292115
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Learn more
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /support/websearch/bin/answer.py?answer=186645&form=bb&hl=en-CA
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Search
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbzt gbz0l gbp1
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/webhp?hl=en&tab=ww
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_1
+
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.logger.il(1,{t:1});
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Images
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbzt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/imghp?hl=en&tab=wi
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_2
+
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.qs(this);gbar.logger.il(1,{t:2});
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 More
+	Node 0
+		Name:	 aria-haspopup
+		Type:	 Attribute Node
+		Value:	 true
+
+	Node 1
+		Name:	 aria-owns
+		Type:	 Attribute Node
+		Value:	 gbd
+
+	Node 2
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbgt
+
+	Node 3
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/intl/en/options/
+
+	Node 4
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbztm
+
+	Node 5
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.tg(event,this)
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Finance
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/finance?tab=we
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_27
+
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.qs(this);gbar.logger.il(1,{t:27});
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Even more
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/intl/en/options/
+
+	Node 2
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.logger.il(1,{t:66});
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqla
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/webhp?hl=en&tab=ww
+
+	Node 2
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.logger.il(41)
+
+	Node 3
+		Name:	 title
+		Type:	 Attribute Node
+		Value:	 Maria Sibylla Merian's 366th birthday
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbqla2
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/webhp?hl=en&tab=ww
+
+	Node 2
+		Name:	 title
+		Type:	 Attribute Node
+		Value:	 Maria Sibylla Merian's 366th birthday
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Search settings
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /preferences?hl=en
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Advanced search
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /advanced_search?hl=en
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gmlas
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Language tools
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /language_tools?hl=en
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Web History
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/history/optout?hl=en
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Install Google Chrome
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /chrome/index.html?hl=en&brand=CHNG&utm_source=en-hpp&utm_medium=hpp&utm_campaign=en
+
+	Node 1
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 google.promos&&google.promos.toast&& google.promos.toast.cl()
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=Maria+Sibylla+Merian&oi=ddle&ct=maria_sibylla_merians_366th_birthday_-1256008-hp
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 français
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/setprefs?sig=0_SMJhe30OdMdiersingZMKtIz8Dc%3D&hl=fr&source=homepage
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Advertising Programs
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /intl/en/ads/
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Business Solutions
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /services/
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Privacy & Terms
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /intl/en/policies/
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 About Google
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /intl/en/about.html
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Google.com
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/setprefdomain?prefdom=US&sig=0_T4MAyaZ3TDHXCazyblZl7M1OydA%3D
+
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 fehl
+
+--Included CrawlElements Summary--
+
+CrawlElement{tagName=BUTTON, conditions=[], id=id9879367, eventType=click, inputFieldIds=[], underXpath=null}
+Matches: 3
+
+CrawlElement{tagName=A, conditions=[], id=id18292115, eventType=click, inputFieldIds=[], underXpath=null}
+Matches: 20
+
+--Excluded CrawlElements and the DOM Elements they matched--
+
+--Excluded CrawlElements Summary--
+
+-------------
+State Name:	state1
+State ID:	0
+State URL:	http://www.google.ca/webhp?hl=en&tab=ww
+-------------
+
+--Included CrawlElements and the DOM Elements they matched--
+
+Crawl Element Name:	A
+Crawl Element ID:	 id18292115
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Finance
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/finance?hl=en&tab=we
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_27
+
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.qs(this);gbar.logger.il(1,{t:27});
+
+--Included CrawlElements Summary--
+
+CrawlElement{tagName=A, conditions=[], id=id18292115, eventType=click, inputFieldIds=[], underXpath=null}
+Matches: 1
+
+--Excluded CrawlElements and the DOM Elements they matched--
+
+--Excluded CrawlElements Summary--
+
+-------------
+State Name:	index
+State ID:	0
+State URL:	http://www.google.ca/
+-------------
+
+--Included CrawlElements and the DOM Elements they matched--
+
+--Included CrawlElements Summary--
+
+--Excluded CrawlElements and the DOM Elements they matched--
+
+--Excluded CrawlElements Summary--
+
+-------------
+State Name:	state2
+State ID:	0
+State URL:	http://www.google.ca/
+-------------
+
+--Included CrawlElements and the DOM Elements they matched--
+
+Crawl Element Name:	BUTTON
+Crawl Element ID:	 id9879367
+
+DOM Element Tag Name:	 BUTTON
+DOM Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 nycx
+
+	Node 1
+		Name:	 title
+		Type:	 Attribute Node
+		Value:	 Hide result details
+
+Crawl Element Name:	A
+Crawl Element ID:	 id18292115
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Search
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbzt gbp1 gbz0l
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/webhp?hl=en&tab=ww
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_1
+
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.logger.il(1,{t:1});
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Images
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbzt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/search?hl=en&gs_rn=8&gs_ri=psy-ab&cp=8&gs_id=2u&xhr=t&q=hdhqtkuF&bav=on.2,or.r_qf.&bvm=bv.44697112,d.cGE&biw=924&bih=944&um=1&ie=UTF-8&tbm=isch&source=og&sa=N&tab=wi
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_2
+
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.qs(this);gbar.logger.il(1,{t:2});
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 More
+	Node 0
+		Name:	 aria-haspopup
+		Type:	 Attribute Node
+		Value:	 true
+
+	Node 1
+		Name:	 aria-owns
+		Type:	 Attribute Node
+		Value:	 gbd
+
+	Node 2
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbgt gbgt-hvr
+
+	Node 3
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/intl/en/options/
+
+	Node 4
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gbztm
+
+	Node 5
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.tg(event,this)
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Books
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/search?hl=en&gs_rn=8&gs_ri=psy-ab&cp=8&gs_id=2u&xhr=t&q=hdhqtkuF&bav=on.2,or.r_qf.&bvm=bv.44697112,d.cGE&biw=924&bih=944&um=1&ie=UTF-8&tbo=u&tbm=bks&source=og&sa=N&tab=wp
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_10
+
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.qs(this);gbar.logger.il(1,{t:10});
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Finance
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/finance?hl=en&gs_rn=8&gs_ri=psy-ab&cp=8&gs_id=2u&xhr=t&q=hdhqtkuF&bav=on.2,or.r_qf.&bvm=bv.44697112,d.cGE&biw=924&bih=944&um=1&ie=UTF-8&sa=N&tab=we
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_27
+
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.qs(this);gbar.logger.il(1,{t:27});
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Videos
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/search?hl=en&gs_rn=8&gs_ri=psy-ab&cp=8&gs_id=2u&xhr=t&q=hdhqtkuF&bav=on.2,or.r_qf.&bvm=bv.44697112,d.cGE&biw=924&bih=944&um=1&ie=UTF-8&tbo=u&tbm=vid&source=og&sa=N&tab=wv
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gb_12
+
+	Node 3
+		Name:	 onclick
+		Type:	 Attribute Node
+		Value:	 gbar.qs(this);gbar.logger.il(1,{t:12});
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Advanced search
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gbmt
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /advanced_search?q=hdhqtkuF&hl=en&biw=924&bih=944
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 gmlas
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Images
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=isch&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CAcQ_AUoAQ
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 More
+	Node 0
+		Name:	 data-ved
+		Type:	 Attribute Node
+		Value:	 0CAQQ2h8
+
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 hdtb_more
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Search tools
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 hdtb-tl
+
+	Node 1
+		Name:	 data-ved
+		Type:	 Attribute Node
+		Value:	 0CAUQ2x8
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 hdtb_tls
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Videos
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=vid&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CAkQ_AUoAA
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 News
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=nws&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CAoQ_AUoAQ
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Books
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=bks&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CAsQ_AUoAg
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Places
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=plcs&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CAwQ_AUoAw
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Blogs
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=blg&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CA0Q_AUoBA
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Flights
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/flights/gwsredirect?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=flm&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CA4Q_AUoBQ
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Discussions
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=dsc&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CA8Q_AUoBg
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Applications
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=app&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CBAQ_AUoBw
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Patents
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnms&tbm=pts&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CBEQ_AUoCA
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 aria-expanded
+		Type:	 Attribute Node
+		Value:	 false
+
+	Node 1
+		Name:	 aria-haspopup
+		Type:	 Attribute Node
+		Value:	 true
+
+	Node 2
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 ab_button
+
+	Node 3
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /preferences?hl=en
+
+	Node 4
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 abar_button_opt
+
+	Node 5
+		Name:	 jsaction
+		Type:	 Attribute Node
+		Value:	 ab.tdd
+
+	Node 6
+		Name:	 role
+		Type:	 Attribute Node
+		Value:	 button
+
+	Node 7
+		Name:	 tabindex
+		Type:	 Attribute Node
+		Value:	 0
+
+	Node 8
+		Name:	 unselectable
+		Type:	 Attribute Node
+		Value:	 on
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Advanced search
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 ab_dropdownlnk
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /advanced_search?q=hdhqtkuF&hl=en&biw=924&bih=944
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 ab_as
+
+	Node 3
+		Name:	 tabindex
+		Type:	 Attribute Node
+		Value:	 -1
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Web History
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 ab_dropdownlnk
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /history/optout?hl=en
+
+	Node 2
+		Name:	 tabindex
+		Type:	 Attribute Node
+		Value:	 -1
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Pages from Canada
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=ctr:countryCA&cr=countryCA&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CBYQpwUoAQ
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Past hour
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=qdr:h&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CBkQpwUoAQ
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Past 24 hours
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=qdr:d&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CBoQpwUoAg
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Past week
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=qdr:w&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CBsQpwUoAw
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Past month
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=qdr:m&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CBwQpwUoBA
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Past year
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=qdr:y&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CB0QpwUoBQ
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Sites with images
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=img:1&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CCEQpwUoAQ
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Dictionary
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=dfn:1&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CCIQpwUoAg
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Reading level
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=rl:1&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CCMQpwUoAw
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Translated foreign pages
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=clir:1&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CCQQpwUoBA
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Verbatim
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 q qs
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?q=hdhqtkuF&hl=en&biw=924&bih=944&source=lnt&tbs=li:1&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CCUQpwUoBQ
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Auto-detected
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 fl
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /support/websearch/bin/answer.py?answer=179386&hl=en
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 hdhF
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 spell
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?hl=en&biw=924&bih=944&q=hdhF&spell=1&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CCsQBSgA
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 hdhgF
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 spell
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?hl=en&biw=924&bih=944&q=hdhgF&spell=1&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CCwQBSgB
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 hdhdhF
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 spell
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?hl=en&biw=924&bih=944&q=hdhdhF&spell=1&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CC0QBSgC
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 hdtv
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 spell
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /search?hl=en&biw=924&bih=944&q=hdtv&spell=1&sa=X&ei=bZZbUdqLLaeOiAL8uIHQAw&sqi=2&ved=0CC4QBSgD
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 #
+
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 uh_hpl
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 uh_hl
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 #
+
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 rg_hpl
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 #
+
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 rg_ahpl
+
+	Node 2
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 bottom:0
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 rg_hl uh_hl
+
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 rg_hl
+
+	Node 2
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 display:block;position:relative
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 rg_hta
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 rg_hal uh_hal
+
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 rg_hals
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 rg_hal uh_hal
+
+	Node 1
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 rg_haln
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Advanced search
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 gl nobr
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /advanced_search?q=hdhqtkuF&hl=en&biw=924&bih=944
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 sflas
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Search Help
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 fl
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /support/websearch/bin/answer.py?answer=134479&hl=en-CA&p=
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Send feedback
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 fl
+
+	Node 1
+		Name:	 data-bucket
+		Type:	 Attribute Node
+		Value:	 websearch
+
+	Node 2
+		Name:	 data-ved
+		Type:	 Attribute Node
+		Value:	 0CDYQLg
+
+	Node 3
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /quality_form?q=hdhqtkuF&hl=en&biw=924&bih=944
+
+	Node 4
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 fblqf
+
+	Node 5
+		Name:	 jsaction
+		Type:	 Attribute Node
+		Value:	 gf.sf
+
+	Node 6
+		Name:	 target
+		Type:	 Attribute Node
+		Value:	 _blank
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Google.com
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 fl
+
+	Node 1
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 http://www.google.ca/setprefdomain?prefdom=US&prev=http://www.google.com/search%3Fgs_rn%3D8%26gs_ri%3Dpsy-ab%26cp%3D8%26gs_id%3D2u%26xhr%3Dt%26q%3DhdhqtkuF%26pf%3Dp%26sclient%3Dpsy-ab%26oq%3DhdhqtkuF%26gs_l%3D%26pbx%3D1%26bav%3Don.2,or.r_qf.%26bvm%3Dbv.44697112,d.cGE%26biw%3D924%26bih%3D944&sig=0_T4MAyaZ3TDHXCazyblZl7M1OydA%3D
+
+	Node 2
+		Name:	 id
+		Type:	 Attribute Node
+		Value:	 fblehl
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Google Home
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Advertising Programs
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /intl/en/ads/
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Business Solutions
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /services/
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 Privacy & Terms
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /intl/en/policies/
+
+DOM Element Tag Name:	 A
+DOM Element Text:	 About Google
+	Node 0
+		Name:	 href
+		Type:	 Attribute Node
+		Value:	 /intl/en/about.html
+
+Crawl Element Name:	INPUT
+Crawl Element ID:	 id15202739
+
+DOM Element Tag Name:	 INPUT
+DOM Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 ksb mini cdr_go
+
+	Node 1
+		Name:	 jsaction
+		Type:	 Attribute Node
+		Value:	 tbt.scf
+
+	Node 2
+		Name:	 tabindex
+		Type:	 Attribute Node
+		Value:	 1
+
+	Node 3
+		Name:	 type
+		Type:	 Attribute Node
+		Value:	 submit
+
+	Node 4
+		Name:	 value
+		Type:	 Attribute Node
+		Value:	 Go
+
+DOM Element Tag Name:	 INPUT
+DOM Element Text:	 
+	Node 0
+		Name:	 class
+		Type:	 Attribute Node
+		Value:	 ksb mini
+
+	Node 1
+		Name:	 style
+		Type:	 Attribute Node
+		Value:	 margin-left:5px
+
+	Node 2
+		Name:	 type
+		Type:	 Attribute Node
+		Value:	 submit
+
+	Node 3
+		Name:	 value
+		Type:	 Attribute Node
+		Value:	 Set
+
+--Included CrawlElements Summary--
+
+CrawlElement{tagName=BUTTON, conditions=[], id=id9879367, eventType=click, inputFieldIds=[], underXpath=null}
+Matches: 1
+
+CrawlElement{tagName=A, conditions=[], id=id18292115, eventType=click, inputFieldIds=[], underXpath=null}
+Matches: 55
+
+CrawlElement{tagName=INPUT, conditions=[], id=id15202739, eventType=click, inputFieldIds=[], underXpath=//INPUT[@type='submit']}
+Matches: 2
+
+--Excluded CrawlElements and the DOM Elements they matched--
+
+--Excluded CrawlElements Summary--
+
+
+
+
+
+-------------------------------
+Entire Crawl: CrawlElement Match Count
+-------------------------------
+
+--Total Matches: Included CrawlElements--
+CrawlElement{tagName=INPUT, conditions=[], id=id15202739, eventType=click, inputFieldIds=[], underXpath=//INPUT[@type='submit']}
+Matches: 2
+
+CrawlElement{tagName=A, conditions=[], id=id18292115, eventType=click, inputFieldIds=[], underXpath=null}
+Matches: 76
+
+CrawlElement{tagName=BUTTON, conditions=[], id=id9879367, eventType=click, inputFieldIds=[], underXpath=null}
+Matches: 4
+
+--Total Matches: Excluded CrawlElements--

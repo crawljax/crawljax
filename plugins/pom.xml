@@ -64,5 +64,6 @@
 	
 	<modules>
 		<module>crawloverview-plugin</module>
+		<module>specification_metrics_plugin</module>
 	</modules>
 </project>

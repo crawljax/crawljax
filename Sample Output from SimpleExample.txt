@@ -1,0 +1,119 @@
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+
+
+-------------
+State Name:	index
+State ID:	0
+State URL:	http://www.google.ca/
+
+Included Tags and the Elements they matched:
+Source Name:	A
+Source ID:	 id20214052
+Element Name:	 A
+Element Text:	 Learn more
+Element Name:	 A
+Element Text:	 Search
+Element Name:	 A
+Element Text:	 Images
+Element Name:	 A
+Element Text:	 More
+Element Name:	 A
+Element Text:	 Reader
+Element Name:	 A
+Element Text:	 Finance
+Element Name:	 A
+Element Text:	 Even more
+Element Name:	 A
+Element Text:	 
+Element Name:	 A
+Element Text:	 Search settings
+Element Name:	 A
+Element Text:	 Advanced search
+Element Name:	 A
+Element Text:	 Web History
+Element Name:	 A
+Element Text:	 Install Google Chrome
+Element Name:	 A
+Element Text:	 français
+Element Name:	 A
+Element Text:	 Advertising Programs
+Element Name:	 A
+Element Text:	 Business Solutions
+Element Name:	 A
+Element Text:	 Privacy & Terms
+Element Name:	 A
+Element Text:	 About Google
+Element Name:	 A
+Element Text:	 Google.com
+Source Name:	BUTTON
+Source ID:	 id12146666
+Element Name:	 BUTTON
+Element Text:	 
+Element Name:	 BUTTON
+Element Text:	 Google Search
+Element Name:	 BUTTON
+Element Text:	 I'm Feeling Lucky
+
+Excluded Tags and the Elements they matched:
+Source Name:	A
+Source ID:	 id32552915
+Element Name:	 A
+Element Text:	 Language tools
+
+
+-------------
+State Name:	index
+State ID:	0
+State URL:	http://www.google.ca/
+
+Included Tags and the Elements they matched:
+
+Excluded Tags and the Elements they matched:
+Source Name:	A
+Source ID:	 id32552915
+Element Name:	 A
+Element Text:	 Language tools
+
+
+-------------
+State Name:	index
+State ID:	0
+State URL:	http://www.google.ca/
+
+Included Tags and the Elements they matched:
+
+Excluded Tags and the Elements they matched:
+Source Name:	A
+Source ID:	 id32552915
+Element Name:	 A
+Element Text:	 Language tools
+
+
+-------------
+State Name:	index
+State ID:	0
+State URL:	http://www.google.ca/
+
+Included Tags and the Elements they matched:
+
+Excluded Tags and the Elements they matched:
+Source Name:	A
+Source ID:	 id32552915
+Element Name:	 A
+Element Text:	 Language tools
+
+
+-------------
+State Name:	index
+State ID:	0
+State URL:	http://www.google.ca/
+
+Included Tags and the Elements they matched:
+
+Excluded Tags and the Elements they matched:
+Source Name:	A
+Source ID:	 id32552915
+Element Name:	 A
+Element Text:	 Language tools
