@@ -42,29 +42,6 @@ public class Specification_Metrics_Plugin_Tests{
 		assertTrue(f.length()>0);
 	}
 	
-	/*
-	@Test
-	public void testLine(){
-		testRun();
-		int i;
-		String line = null;
-		BufferedReader in = null;
-		try {
-			in = new BufferedReader(new FileReader("output.txt"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for(i=0;i<3;i++) //3 is the Line Number
-			try {
-				line = in.readLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		assertEquals(line, "BUTTON:              3"); // Line Content
-	}
-	*/
 	
 	
 	private void testRun(){
