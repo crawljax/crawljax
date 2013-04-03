@@ -458,20 +458,20 @@ public class Crawler implements Runnable {
 		}
 
 		// Store the currentState to be able to 'back-track' later.
-		StateVertex orrigionalState = this.getStateMachine().getCurrentState();
+		StateVertex originalState = this.getStateMachine().getCurrentState();
 
-		if (orrigionalState.searchForCandidateElements(candidateExtractor)) {
+		if (originalState.searchForCandidateElements(candidateExtractor)) {
 			// Only execute the preStateCrawlingPlugins when it's the first time
 			LOG.info("Starting preStateCrawlingPlugins...");
 			List<CandidateElement> candidateElements =
-			        orrigionalState.getUnprocessedCandidateElements();
+			        originalState.getUnprocessedCandidateElements();
 			plugins.runPreStateCrawlingPlugins(controller.getSession(), candidateElements);
 			// update crawlActions
-			orrigionalState.filterCandidateActions(candidateElements);
+			originalState.filterCandidateActions(candidateElements);
 		}
 
 		CandidateCrawlAction action =
-		        orrigionalState.pollCandidateCrawlAction(this, crawlQueueManager);
+		        originalState.pollCandidateCrawlAction(this, crawlQueueManager);
 		while (action != null) {
 			if (depthLimitReached()) {
 				return true;
@@ -481,16 +481,16 @@ public class Crawler implements Runnable {
 				return false;
 			}
 			ClickResult result = this.crawlAction(action);
-			orrigionalState.finishedWorking(this, action);
+			originalState.finishedWorking(this, action);
 			switch (result) {
 				case NEW_STATE:
-					return newStateDetected(orrigionalState);
+					return newStateDetected(originalState);
 				case CLONE_DETECTED:
 					return true;
 				default:
 					break;
 			}
-			action = orrigionalState.pollCandidateCrawlAction(this, crawlQueueManager);
+			action = originalState.pollCandidateCrawlAction(this, crawlQueueManager);
 		}
 		return true;
 	}

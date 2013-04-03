@@ -23,7 +23,7 @@ import com.crawljax.test.util.CaptureSystemStreams;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ObjectArrays;
 
-public class e {
+public class JarRunnerTest {
 
 	@Rule
 	public final CaptureSystemStreams streams = new CaptureSystemStreams();
