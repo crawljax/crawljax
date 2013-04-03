@@ -38,7 +38,7 @@ public final class SiteSimpleExample {
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
 		//builder.addPlugin(new CrawlOverview(new File("outPut")));
-		Specification_Metrics_Plugin SMP=new Specification_Metrics_Plugin();
+		Specification_Metrics_Plugin SMP= new Specification_Metrics_Plugin();
 		SMP.setOutputFolder("specification_metrics_output");
 		builder.addPlugin(SMP);
 		
