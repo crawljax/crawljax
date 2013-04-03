@@ -17,29 +17,21 @@ import org.w3c.dom.Node;
 import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawlElement;
+import com.crawljax.core.plugin.GeneratesOutput;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.SpecificationMetricState;
 import com.google.common.base.Preconditions;
 
 
-public class Specification_Metrics_Plugin implements PostCrawlingPlugin {
+public class Specification_Metrics_Plugin implements PostCrawlingPlugin, GeneratesOutput {
 	private static final Logger LOG = LoggerFactory.getLogger(Specification_Metrics_Plugin.class);
+	private String outputFolderAbsolutePath;
 	private ConcurrentLinkedQueue<SpecificationMetricState> includedSpecsChecked;
 	private ConcurrentLinkedQueue<SpecificationMetricState> excludedSpecsChecked;
 	private BufferedWriter outputWriter; 
 
-	public Specification_Metrics_Plugin(File outputFolder) {
-		Preconditions.checkNotNull(outputFolder, "Output folder cannot be null");
+	public Specification_Metrics_Plugin() {
 		LOG.info("Initialized Specification_Metrics_Plugin");
-		try {
-			FileWriter fileWrite = new FileWriter("specification_metric_plugin.txt");
-			outputWriter = new BufferedWriter(fileWrite);
-			//outputWriter.write("Hello Java");
-			//outputWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
 	}
 	
 	@Override
@@ -47,14 +39,30 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin {
 		includedSpecsChecked = CandidateElementExtractor.getIncludedSpecsChecked();
 		excludedSpecsChecked = CandidateElementExtractor.getExcludedSpecsChecked();
 		
-		//OUTPUT THE DATA!
-		printOverallStatistics();
-		printComprehensiveReport();
+		Preconditions.checkNotNull(outputFolderAbsolutePath, "Output folder cannot be null");
 		try {
-	        outputWriter.close();
-        } catch (IOException e) {
-        	LOG.error("Couldn't close ouputWriter");
-        }
+			File outputDir=new File(outputFolderAbsolutePath);
+			if(!outputDir.exists() || !outputDir.isDirectory()){
+				if(!outputDir.mkdir()){
+				    throw new IllegalStateException("Couldn't create dir: " + outputDir);
+				}
+			}
+			FileWriter fileWrite = new FileWriter(outputDir.getAbsolutePath()+File.separator+"specification_metric_plugin.txt");
+			outputWriter = new BufferedWriter(fileWrite);
+			
+			//OUTPUT THE DATA!
+			printOverallStatistics();
+			printComprehensiveReport();
+			try {
+		        outputWriter.close();
+	        } catch (IOException e) {
+	        	LOG.error("Couldn't close ouputWriter");
+	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+			LOG.error("Unable to Write Specification Metrics Output");
+		}
+		
     }
 	private void printOverallStatistics(){
 		Iterator<SpecificationMetricState> includedSpecIterator=includedSpecsChecked.iterator();
@@ -247,5 +255,13 @@ public class Specification_Metrics_Plugin implements PostCrawlingPlugin {
 				return "Unknown Node Type";
 		}
 	}
+	@Override
+    public void setOutputFolder(String absolutePath) {
+	    outputFolderAbsolutePath=absolutePath;	    
+    }
+	@Override
+    public String getOutputFolder() {
+	   return outputFolderAbsolutePath;
+    }
 
 }
