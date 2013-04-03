@@ -46,13 +46,17 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 	private boolean aborted = false;
 
 	/**
-	 * Default CrawlerExecutor. using the configured number of threads, no timeout a Stack as
-	 * workQueue to support Depth-first crawling and the local ThreadFactory. It will have a minimum
-	 * pool size of the #browsers * 2, and a maximum of #browsers * 5.
+	 * Default CrawlerExecutor using the configured number of threads, no timeout for idle threads.
+	 * Custom FILO workQueue to support Depth-first crawling and the local ThreadFactory. It will have a minimum
+	 * pool size of the #browsers * 5, and a maximum of #browsers * 5, thereby making it a fixed-size pool.
+	 * The default bounded CrawlQueue of size 100. Also, by setting ThreadPoolExecutor.CallerRunsPolicy() the 
+	 * thread that invokes execute itself runs the task if the queue is full and the max number of threads are 
+	 * running already, thereby slowing down the rate the new tasks are submitted. Also, since this is a fixed-
+	 * size pool, idle threads will not be removed but they are suspended and won't affect the system much.
 	 */
 	public CrawlerExecutor(BrowserConfiguration config) {
-		super(config.getNumberOfBrowsers() * 2, config.getNumberOfBrowsers() * 5, 0L,
-		        TimeUnit.MILLISECONDS, new CrawlQueue());
+		super(config.getNumberOfBrowsers() * 5, config.getNumberOfBrowsers() * 5, 0L,
+		        TimeUnit.MILLISECONDS, new CrawlQueue(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 		setThreadFactory(new CrawlerThreadFactory());
 	}
 
