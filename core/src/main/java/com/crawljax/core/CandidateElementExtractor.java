@@ -314,13 +314,19 @@ public class CandidateElementExtractor {
 					href_url = new URL(UrlUtils.getBaseUrl(href));
 				} catch (MalformedURLException e) {
 					// The link on the page was not a proper URL
+					// This means it is not crawlable.  Return...
 					return;
 				} catch (StringIndexOutOfBoundsException e) {
-					// This was a relative path, continue
+					// This was a relative path.  These are by
+					// definition not external.  Continue...
 				}
 				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
+				boolean isWhitelisted = whitelist.contains(href_url);
 				LOG.debug("HREF: {} isExternal= {}", href, isExternal);
-				if ((isExternal && !whitelist.contains(href_url)) || isPDForPS(href)) {
+				LOG.debug("HREF: {} isWhitelisted = {}", href, isWhitelisted);
+				
+				// Check if it is external and not in the whitelist or a PDF link
+				if ((isExternal && !isWhitelisted) || isPDForPS(href)) {
 					return;
 				}
 			}

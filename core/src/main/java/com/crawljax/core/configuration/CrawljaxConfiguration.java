@@ -125,10 +125,18 @@ public final class CrawljaxConfiguration {
 			return crawlRules;
 		}
 		
+		/**
+		 * @param URL Used to specify external domains that should also be crawled
+		 * 				if they are linked-to by the seed url.  These whitelisted
+		 * 				urls are added to the configuration object.
+		 */
 		public void alsoCrawl(String url){
 			config.alsoCrawl(url);
 		}
 
+		public void alsoCrawl(URL url){
+			config.alsoCrawl(url);
+		}
 		/**
 		 * @param configuration
 		 *            a custom {@link BrowserConfiguration}. The default is a single
