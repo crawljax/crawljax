@@ -2,22 +2,10 @@ package ca.ubc.eece310.groupL2C1;
 
 import ca.ubc.eece310.groupL2C1.Specification_Metrics_Plugin;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.text.IsEmptyString.isEmptyString;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertThat;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+
 
 import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -36,18 +24,21 @@ public class Specification_Metrics_Plugin_Tests{
 	private static final int MAX_CRAWL_DEPTH = 1;
 	private static final int MAX_STATES = 2;
 	
+	private String fileOutputDirectory = "specification_metrics_output";
+	
 	@Test
-	public void testOutputFileCreated(){
-		
+	public void testOutputFileCreated()
+	{
 		testRun();
-		File f = new File("output.txt");
+		File f = new File(fileOutputDirectory + "/specification_metric_plugin.txt");	
 		assertTrue(f.exists());		
 	}
 	
 	@Test
 	public void testOutputFileNotEmpty(){
 		testRun();
-		File f = new File("output.txt");
+		File f = new File(fileOutputDirectory + "/specification_metric_plugin.txt");
+		
 		assertTrue(f.length()>0);
 	}
 	
@@ -88,7 +79,10 @@ public class Specification_Metrics_Plugin_Tests{
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
-		builder.addPlugin(new Specification_Metrics_Plugin());
+		//builder.addPlugin(new CrawlOverview(new File("outPut")));
+		Specification_Metrics_Plugin SMP= new Specification_Metrics_Plugin();
+		SMP.setOutputFolder(fileOutputDirectory);
+		builder.addPlugin(SMP);
 		
 		CrawljaxController crawljax = new CrawljaxController(builder.build());
 		crawljax.run();
