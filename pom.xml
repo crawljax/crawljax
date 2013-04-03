@@ -52,8 +52,8 @@
 	</issueManagement>
 
 	<ciManagement>
-		<system>Travis</system>
-		<url>https://travis-ci.org/crawljax/crawljax</url>
+		<system>Jenkins</system>
+		<url>http://jenkins.crawljax.com</url>
 	</ciManagement>
 
 	<mailingLists>

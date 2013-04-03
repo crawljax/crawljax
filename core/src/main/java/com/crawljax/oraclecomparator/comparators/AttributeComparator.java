@@ -25,11 +25,12 @@ public class AttributeComparator extends AbstractComparator {
 	}
 
 	private String stripAttributes(String dom) {
+		String strippedDom = dom;
 		for (String attribute : ignoreAttributes) {
 			String regExp = "\\s" + attribute + "=\"[^\"]*\"";
-			dom = dom.replaceAll(regExp, "");
+			strippedDom = dom.replaceAll(regExp, "");
 		}
-		return dom;
+		return strippedDom;
 	}
 
 	@Override

@@ -3,6 +3,7 @@
  */
 package com.crawljax.core.state;
 
+import static com.crawljax.core.state.Identification.How.xpath;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,8 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -27,8 +26,6 @@ import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.DomUtils;
 
 public class EventableTest {
-
-	private static final Logger LOG = LoggerFactory.getLogger(EventableTest.class);
 
 	@Test
 	public void testHashCode() {
@@ -99,11 +96,9 @@ public class EventableTest {
 		Eventable clickable = new Eventable(element, EventType.click);
 		assertNotNull(clickable);
 
-		/*
-		 * String infoexpected = "DIV: id=firstdiv, xpath /HTML[1]/BODY[1]/DIV[1] onclick";
-		 */
-		String infoexpected = "DIV: {id=firstdiv} click xpath /HTML[1]/BODY[1]/DIV[1]";
-		assertThat(infoexpected, is(clickable.toString()));
+		assertThat(clickable.getIdentification().getHow(), is(xpath));
+		assertThat(clickable.getIdentification().getValue(), is("/HTML[1]/BODY[1]/DIV[1]"));
+		assertThat(clickable.getElement().getAttributeOrNull("id"), is("firstdiv"));
 	}
 
 	@Test

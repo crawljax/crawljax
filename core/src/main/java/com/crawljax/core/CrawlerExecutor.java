@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.google.common.base.Strings;
 
 /**
  * Main Executor inheriting {@link ThreadPoolExecutor} to implement the beforeExecute, afterExecute
@@ -86,20 +87,21 @@ public class CrawlerExecutor extends ThreadPoolExecutor {
 		/**
 		 * For logging purposes, set the correct the name of the Thread-Crawler combination.
 		 */
-		String crawlerName = r.toString();
+		StringBuilder threadName =
+		        new StringBuilder()
+		                .append("Thread ")
+		                .append(threadIdMap.get(t)).append(" Crawler ")
+		                .append(crawlerCount.incrementAndGet());
 
-		if (!crawlerName.equals("")) {
+		if (!Strings.isNullOrEmpty(r.toString())) {
 			// This is a custom Crawler us the toString method to determine the name.
-			crawlerName = " (" + crawlerName + ")";
+			threadName.append(" (").append(r.toString()).append(")");
+		} else {
+			threadName.append(r.toString());
 		}
 
-		// Example name: "Thread 5 Crawler 2 (Guided)"
-		String threadName =
-		        "Thread " + threadIdMap.get(t) + " Crawler " + crawlerCount.incrementAndGet()
-		                + crawlerName;
-
-		t.setName(threadName);
-		LOGGER.info("Starting new Crawler: " + threadName);
+		t.setName(threadName.toString());
+		LOGGER.info("Starting new Crawler: {}", threadName);
 	}
 
 	@Override

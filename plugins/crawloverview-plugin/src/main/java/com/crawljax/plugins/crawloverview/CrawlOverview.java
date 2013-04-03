@@ -144,7 +144,7 @@ public class CrawlOverview
 			// element.getXpath()
 			return session.getBrowser().getWebElement(element.getIdentification());
 		} catch (WebDriverException e) {
-			LOG.info("Could not locate " + element.getElement().toString());
+			LOG.info("Could not locate element for positioning {}", element.getElement());
 			return null;
 		}
 	}
