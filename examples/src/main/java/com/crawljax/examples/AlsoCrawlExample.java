@@ -8,7 +8,7 @@ import com.crawljax.core.configuration.InputSpecification;
 /**
  * Crawls google.com in IE.
  */
-public final class SiteSimpleExample {
+public final class AlsoCrawlExample {
 
 	private static final String URL = "http://www.google.com";
 
@@ -63,7 +63,7 @@ public final class SiteSimpleExample {
 		return input;
 	}
 
-	private SiteSimpleExample() {
+	private AlsoCrawlExample() {
 		// Utility class
 	}
 }
