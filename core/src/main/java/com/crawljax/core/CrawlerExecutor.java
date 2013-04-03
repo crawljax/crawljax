@@ -23,6 +23,7 @@ import com.google.common.base.Strings;
  * Crawlers will be stored in a workQueue until a Thread will become available.
  */
 public class CrawlerExecutor extends ThreadPoolExecutor {
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CrawlerExecutor.class);
 	/**
 	 * Counter for the number of Crawlers that in total have run. Every time a new Crawler beginning

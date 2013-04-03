@@ -10,12 +10,9 @@ import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.BrowserConfiguration;
 
 /**
- * Original: Test the CrawlerExecutor ThreadPoolExecutor. Basically it test only the correct naming.</br></br>
+ * Original: Test the CrawlerExecutor ThreadPoolExecutor. Basically it test only the correct naming.
  * 
- * Major Overhaul on March 24, 2013 by Jae-Hwan Jung <jaehwan.jeff.jung@gmail.com>: </br>
- * Testing for correct naming does not work properly as scheduling of threads is done by the host OS.
- * As a result, the order of statements may not be the same as the order of actual execution due to the loads
- * of cores at time. 
+ * @author Jae-Hwan  Jung <jaehwan.jeff.jung@gmail.com> since 2013, March 23.
  */
 public class CrawlerExecutorTest {
 

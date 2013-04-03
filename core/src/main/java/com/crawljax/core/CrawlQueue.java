@@ -14,15 +14,11 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Original: This class implements a BlockingQueue with Runnable as its Generic type and extends Stack with
- * also Runnable as generic type. This class is used in the ThreadPoolExecutor and its used to store
- * separate threads in a Queue like fashion (FILO). </br>
- * 
- * <br> Major Overhaul: This class is now implements a BlockingQueue with a LinkedList as its data abstraction rep
- * instead of extending Stack. This is done to make it easy to change implementation between FIFO and FILO.
- * Since there's no random access involved, speed is the same as using Stack. This class is used in the ThreadPoolExecutor 
- * and processes elements in FILO (first-in-last-out). This is now also thread-safe. 
- * Lastly, this class can be either bounded or unbounded.
+ * This class implements a BlockingQueue with a LinkedList as its data abstraction rep
+ * instead of extending Stack, making it easy to change implementation between FIFO and FILO.
+ * Since there's no random access involved, speed is the same as using Stack. This class is used 
+ * in the ThreadPoolExecutor and processes elements in FILO (first-in-last-out). This is now also thread-safe. 
+ * Lastly, this class can be either bounded or unbounded(default).
  * 
  * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl> (original implementation)</br>
  * @author Jae-Hwan Jung <jaehwan.jeff.jung@gmail.com> (Major Overhaul on March 23, 2013)
