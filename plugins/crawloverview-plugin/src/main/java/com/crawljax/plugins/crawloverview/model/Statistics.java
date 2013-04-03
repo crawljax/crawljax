@@ -22,7 +22,7 @@ public class Statistics {
 
 	public Statistics(CrawlSession session, StateStatistics stateStats, Date startDate) {
 		this.stateStats = stateStats;
-		this.startDate = startDate;
+		this.startDate = new Date(startDate.getTime());
 		StateFlowGraph stateFlowGraph = session.getStateFlowGraph();
 		this.duration = calculateDuration(session);
 		this.edges = stateFlowGraph.getAllEdges().size();
@@ -62,7 +62,7 @@ public class Statistics {
 	}
 
 	public Date getStartDate() {
-		return startDate;
+		return new Date(startDate.getTime());
 	}
 
 }

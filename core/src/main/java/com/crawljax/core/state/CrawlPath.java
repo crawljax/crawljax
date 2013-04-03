@@ -8,8 +8,6 @@ import com.google.common.collect.Lists;
 
 /**
  * The Path a Crawler has taken, or is about to backtrack on.
- * 
- * @author slenselink@google.com (Stefan Lenselink)
  */
 public class CrawlPath extends ForwardingList<Eventable> {
 

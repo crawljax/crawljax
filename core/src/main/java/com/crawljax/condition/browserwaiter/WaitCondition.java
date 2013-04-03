@@ -103,7 +103,7 @@ public class WaitCondition {
 				try {
 					Thread.sleep(repeatTime);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					LOGGER.warn("Intterupted while waiting in condition");
 				}
 			}
 			currentTime = System.currentTimeMillis();

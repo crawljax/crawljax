@@ -22,9 +22,6 @@ import com.crawljax.core.state.Eventable;
 public class ElementResolver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ElementResolver.class.getName());
 
-	// private ElementResolverSettings settings = new
-	// ElementResolverSettings();
-
 	private final EmbeddedBrowser browser;
 	private final Eventable eventable;
 

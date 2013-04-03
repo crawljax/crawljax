@@ -73,7 +73,8 @@ class BeanToReadableMap {
 	}
 
 	private static String asName(Method method) {
-		String name = method.getName().substring(3);
+		final int getPrefix = "get".length();
+		String name = method.getName().substring(getPrefix);
 		return splitCamelCase(name);
 	}
 
