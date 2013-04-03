@@ -19,6 +19,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.exception.CrawlPathToException;
+import com.crawljax.core.plugin.OnUrlLoadPlugin;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Element;
@@ -35,18 +36,20 @@ import com.crawljax.util.UrlUtils;
 
 /**
  * Class that performs crawl actions. It is designed to run inside a Thread.
- * 
- * @see #run()
  */
 public class Crawler implements Runnable {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Crawler.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
 
 	/**
-	 * The main browser window 1 to 1 relation; Every Thread will get on browser assigned in the run
-	 * function.
+	 * Enum for describing what has happened after a {@link Crawler#clickTag(Eventable)} has been
+	 * performed.
+	 * 
+	 * @see Crawler#clickTag(Eventable)
 	 */
-	private EmbeddedBrowser browser;
+	private static enum ClickResult {
+		CLONE_DETECTED, NEW_STATE, DOM_UNCHANGED, LEFT_DOMAIN
+	}
 
 	/**
 	 * The central DataController. This is a multiple to 1 relation Every Thread shares an instance
@@ -70,8 +73,6 @@ public class Crawler implements Runnable {
 	 */
 	private CandidateElementExtractor candidateExtractor;
 
-	private boolean fired = false;
-
 	/**
 	 * The name of this Crawler when not default (automatic) this will be added to the Thread name
 	 * in the thread as (name). In the {@link CrawlerExecutor#beforeExecute(Thread, Runnable)} the
@@ -80,7 +81,7 @@ public class Crawler implements Runnable {
 	 * @see Crawler#toString()
 	 * @see CrawlerExecutor#beforeExecute(Thread, Runnable)
 	 */
-	private String name = "";
+	private final String name;
 
 	/**
 	 * The sateMachine for this Crawler, keeping track of the path crawled by this Crawler.
@@ -89,8 +90,6 @@ public class Crawler implements Runnable {
 
 	private final CrawljaxConfiguration config;
 
-	private FormHandler formHandler;
-
 	/**
 	 * The object to places calls to add new Crawlers or to remove one.
 	 */
@@ -98,15 +97,15 @@ public class Crawler implements Runnable {
 
 	private final Plugins plugins;
 
+	private FormHandler formHandler;
+
+	private boolean fired = false;
+
 	/**
-	 * Enum for describing what has happened after a {@link Crawler#clickTag(Eventable)} has been
-	 * performed.
-	 * 
-	 * @see Crawler#clickTag(Eventable)
+	 * The main browser window 1 to 1 relation; Every Thread will get on browser assigned in the run
+	 * function.
 	 */
-	private enum ClickResult {
-		CLONE_DETECTED, NEW_STATE, DOM_UNCHANGED, LEFT_DOMAIN
-	}
+	private EmbeddedBrowser browser;
 
 	/**
 	 * @param mother
@@ -116,10 +115,8 @@ public class Crawler implements Runnable {
 	 * @param name
 	 *            a name for this crawler (default is empty).
 	 */
-	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, String name,
-	        Plugins plugins) {
-		this(mother, new CrawlPath(exactEventPath), plugins);
-		this.name = name;
+	public Crawler(CrawljaxController mother, List<Eventable> exactEventPath, String name) {
+		this(mother, new CrawlPath(exactEventPath), name);
 	}
 
 	/**
@@ -130,11 +127,12 @@ public class Crawler implements Runnable {
 	 * @param returnPath
 	 *            the path used to return to the last state, this can be a empty list
 	 */
-	protected Crawler(CrawljaxController mother, CrawlPath returnPath, Plugins plugins) {
+	protected Crawler(CrawljaxController mother, CrawlPath returnPath, String name) {
 		this.backTrackPath = returnPath;
+		this.name = name;
 		this.controller = mother;
-		this.plugins = plugins;
 		this.config = controller.getConfiguration();
+		this.plugins = config.getPlugins();
 		this.crawlQueueManager = mother.getCrawlQueueManager();
 		if (controller.getSession() != null) {
 			this.stateMachine =
@@ -151,13 +149,162 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Brings the browser to the initial state.
+	 * The main function stated by the ExecutorService. Crawlers add themselves to the list by
+	 * calling {@link CrawlQueueManager#addWorkToQueue(Crawler)}. When the ExecutorService finds a
+	 * free thread this method is called and when this method ends the Thread is released again and
+	 * a new Thread is started
+	 * 
+	 * @see java.util.concurrent.Executors#newFixedThreadPool(int)
+	 * @see java.util.concurrent.ExecutorService
 	 */
-	public void goToInitialURL() {
+	@Override
+	public void run() {
+		if (!shouldContinueCrawling()) {
+			return;
+		}
+
+		try {
+			if (backTrackPath.last() != null
+			        && !backTrackPath.last().getTargetStateVertex().startWorking(this)) {
+				LOG.warn("Could not register crawler. Quitting");
+				return;
+			}
+
+			try {
+				this.init();
+			} catch (InterruptedException e) {
+				LOG.debug("Could not fetch a browser from the pool");
+				return;
+			}
+
+			// Hand over the main crawling
+			if (!this.crawl()) {
+				controller.terminate(false);
+			}
+
+			// Crawling is done; so the crawlPath of the current branch is known
+			if (!fired) {
+				controller.getSession().removeCrawlPath();
+			}
+		} catch (BrowserConnectionException e) {
+			// The connection of the browser has gone down, most of the times it
+			// means that the browser process has crashed.
+			LOG.error("Crawler failed because the used browser died during Crawling",
+			        new CrawlPathToException("Crawler failed due to browser crash", controller
+			                .getSession().getCurrentCrawlPath(), e));
+			// removeBrowser will throw a RuntimeException if the current browser
+			// is the last
+			// browser in the pool.
+			this.controller.getBrowserPool().removeBrowser(this.getBrowser(),
+			        this.controller.getCrawlQueueManager());
+			return;
+		} catch (CrawljaxException e) {
+			LOG.error("Crawl failed!", e);
+		}
+		/**
+		 * At last failure or non shutdown the Crawler.
+		 */
+		this.shutdown();
+	}
+
+	/**
+	 * Initialize the Crawler, retrieve a Browser and go to the initial URL when no browser was
+	 * present. rewind the state machine and goBack to the state if there is exactEventPath is
+	 * specified.
+	 * 
+	 * @throws InterruptedException
+	 *             when the request for a browser is interrupted.
+	 */
+	public void init() throws InterruptedException {
+		// Start a new CrawlPath for this Crawler
+		controller.getSession().startNewPath();
+
+		this.browser = this.getBrowser();
+		if (this.browser == null) {
+			/**
+			 * As the browser is null, request one and got to the initial URL, if the browser is
+			 * Already set the browser will be in the initial URL.
+			 */
+			this.browser = controller.getBrowserPool().requestBrowser();
+			LOG.info("Reloading page for navigating back");
+			this.goToInitialURL(true);
+		}
+		// TODO Stefan ideally this should be placed in the constructor
+		this.formHandler =
+		        new FormHandler(getBrowser(), config.getCrawlRules().getInputSpecification(),
+		                config.getCrawlRules().isRandomInputInForms());
+
+		this.candidateExtractor =
+		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
+		                formHandler, config);
+		/**
+		 * go back into the previous state.
+		 */
+		try {
+			this.goBackExact(backTrackPath);
+		} catch (CrawljaxException e) {
+			LOG.error("Failed to backtrack", e);
+		}
+	}
+
+	/**
+	 * Brings the browser to the initial state.
+	 * 
+	 * @param runPlugins
+	 *            To run the {@link OnUrlLoadPlugin} plugins.
+	 */
+	public void goToInitialURL(boolean runPlugins) {
 		LOG.info("Loading Page {}", config.getUrl());
 		getBrowser().goToUrl(config.getUrl());
 		controller.doBrowserWait(getBrowser());
-		plugins.runOnUrlLoadPlugins(getBrowser());
+		if (runPlugins) {
+			plugins.runOnUrlLoadPlugins(getBrowser());
+		}
+	}
+
+	/**
+	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
+	 * 
+	 * @param b
+	 * @param backTrackPath2
+	 * @throws CrawljaxException
+	 *             if the {@link Eventable#getTargetStateVertex()} encounters an error.
+	 */
+	private void goBackExact(CrawlPath path) throws CrawljaxException {
+		StateVertex curState = controller.getSession().getInitialState();
+
+		for (Eventable clickable : backTrackPath) {
+
+			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
+				return;
+			}
+
+			LOG.info("Backtracking by executing {} on element: {}", clickable.getEventType(),
+			        clickable);
+
+			this.getStateMachine().changeState(clickable.getTargetStateVertex());
+
+			curState = clickable.getTargetStateVertex();
+
+			controller.getSession().addEventableToCrawlPath(clickable);
+
+			this.handleInputElements(clickable);
+
+			if (this.fireEvent(clickable)) {
+
+				int d = depth.incrementAndGet();
+				LOG.debug("Crawl depth now {}", d);
+
+				/*
+				 * Run the onRevisitStateValidator(s)
+				 */
+				plugins.runOnRevisitStatePlugins(this.controller.getSession(), curState);
+			}
+
+			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
+				return;
+			}
+		}
 	}
 
 	/**
@@ -279,8 +426,8 @@ public class Crawler implements Runnable {
 		} else {
 			LOG.info("Found an invisible link with href={}", href);
 			try {
-				URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
-				browser.goToUrl(url);
+				URL url = UrlUtils.extractNewUrl(getBrowser().getCurrentUrl(), href);
+				getBrowser().goToUrl(url);
 				return true;
 			} catch (MalformedURLException e) {
 				LOG.info("Could not visit invisible illegal URL {}", e.getMessage());
@@ -412,19 +559,19 @@ public class Crawler implements Runnable {
 	}
 
 	private boolean crawlerLeftDomain() {
-		return !browser.getCurrentUrl().toLowerCase()
+		return !getBrowser().getCurrentUrl().toLowerCase()
 		        .contains(config.getUrl().getHost().toLowerCase());
 	}
 
 	private void spawnThreads(StateVertex state) {
-		Crawler c = null;
+		Crawler crawler = null;
 		do {
-			if (c != null) {
-				this.crawlQueueManager.addWorkToQueue(c);
+			if (crawler != null) {
+				this.crawlQueueManager.addWorkToQueue(crawler);
 			}
-			c = new Crawler(this.controller, controller.getSession().getCurrentCrawlPath()
-			        .immutableCopy(true), config.getPlugins());
-		} while (state.registerCrawler(c));
+			crawler = new Crawler(this.controller, controller.getSession().getCurrentCrawlPath()
+			        .immutableCopy(true), "");
+		} while (state.registerCrawler(crawler));
 	}
 
 	/**
@@ -455,6 +602,10 @@ public class Crawler implements Runnable {
 			orrigionalState.filterCandidateActions(candidateElements);
 		}
 
+		return crawlThroughActions(orrigionalState);
+	}
+
+	private boolean crawlThroughActions(StateVertex orrigionalState) {
 		CandidateCrawlAction action =
 		        orrigionalState.pollCandidateCrawlAction(this, crawlQueueManager);
 		while (action != null) {
@@ -473,13 +624,23 @@ public class Crawler implements Runnable {
 				case CLONE_DETECTED:
 					return true;
 				case LEFT_DOMAIN:
-					getBrowser().goBack();
+					goBackOneState();
 				default:
 					break;
 			}
 			action = orrigionalState.pollCandidateCrawlAction(this, crawlQueueManager);
 		}
 		return true;
+	}
+
+	private void goBackOneState() {
+		LOG.debug("Going back one state");
+		goToInitialURL(false);
+		if (stateMachine != null) {
+			stateMachine.rewind();
+		}
+		controller.getSession().startNewPath();
+		goBackExact(controller.getSession().getCurrentCrawlPath().immutableCopy(false));
 	}
 
 	/**
@@ -523,124 +684,12 @@ public class Crawler implements Runnable {
 	}
 
 	/**
-	 * Initialize the Crawler, retrieve a Browser and go to the initial URL when no browser was
-	 * present. rewind the state machine and goBack to the state if there is exactEventPath is
-	 * specified.
-	 * 
-	 * @throws InterruptedException
-	 *             when the request for a browser is interrupted.
-	 */
-	public void init() throws InterruptedException {
-		// Start a new CrawlPath for this Crawler
-		controller.getSession().startNewPath();
-
-		this.browser = this.getBrowser();
-		if (this.browser == null) {
-			/**
-			 * As the browser is null, request one and got to the initial URL, if the browser is
-			 * Already set the browser will be in the initial URL.
-			 */
-			this.browser = controller.getBrowserPool().requestBrowser();
-			LOG.info("Reloading page for navigating back");
-			this.goToInitialURL();
-		}
-		// TODO Stefan ideally this should be placed in the constructor
-		this.formHandler =
-		        new FormHandler(getBrowser(), config.getCrawlRules().getInputSpecification(),
-		                config.getCrawlRules().isRandomInputInForms());
-
-		this.candidateExtractor =
-		        new CandidateElementExtractor(controller.getElementChecker(), this.getBrowser(),
-		                formHandler, config);
-		/**
-		 * go back into the previous state.
-		 */
-		try {
-			this.goBackExact();
-		} catch (CrawljaxException e) {
-			LOG.error("Failed to backtrack", e);
-		}
-	}
-
-	/**
 	 * Terminate and clean up this Crawler, release the acquired browser. Notice that other Crawlers
 	 * might still be active. So this function does NOT shutdown all Crawlers active that should be
 	 * done with {@link CrawlerExecutor#shutdown()}
 	 */
 	public void shutdown() {
 		controller.getBrowserPool().freeBrowser(this.getBrowser());
-	}
-
-	/**
-	 * The main function stated by the ExecutorService. Crawlers add themselves to the list by
-	 * calling {@link CrawlQueueManager#addWorkToQueue(Crawler)}. When the ExecutorService finds a
-	 * free thread this method is called and when this method ends the Thread is released again and
-	 * a new Thread is started
-	 * 
-	 * @see java.util.concurrent.Executors#newFixedThreadPool(int)
-	 * @see java.util.concurrent.ExecutorService
-	 */
-	@Override
-	public void run() {
-		if (!shouldContinueCrawling()) {
-			// Constrains are not met at start of this Crawler, so stop immediately
-			return;
-		}
-		if (backTrackPath.last() != null) {
-			try {
-				if (!backTrackPath.last().getTargetStateVertex().startWorking(this)) {
-					return;
-				}
-			} catch (CrawljaxException e) {
-				LOG.error("Received Crawljax exception", e);
-			}
-		}
-
-		try {
-			/**
-			 * Init the Crawler
-			 */
-			try {
-				this.init();
-			} catch (InterruptedException e) {
-				if (this.getBrowser() == null) {
-					return;
-				}
-			}
-
-			/**
-			 * Hand over the main crawling
-			 */
-			if (!this.crawl()) {
-				controller.terminate(false);
-			}
-
-			/**
-			 * Crawling is done; so the crawlPath of the current branch is known
-			 */
-			if (!fired) {
-				controller.getSession().removeCrawlPath();
-			}
-		} catch (BrowserConnectionException e) {
-			// The connection of the browser has gone down, most of the times it
-			// means that the
-			// browser process has crashed.
-			LOG.error("Crawler failed because the used browser died during Crawling",
-			        new CrawlPathToException("Crawler failed due to browser crash", controller
-			                .getSession().getCurrentCrawlPath(), e));
-			// removeBrowser will throw a RuntimeException if the current browser
-			// is the last
-			// browser in the pool.
-			this.controller.getBrowserPool().removeBrowser(this.getBrowser(),
-			        this.controller.getCrawlQueueManager());
-			return;
-		} catch (CrawljaxException e) {
-			LOG.error("Crawl failed!", e);
-		}
-		/**
-		 * At last failure or non shutdown the Crawler.
-		 */
-		this.shutdown();
 	}
 
 	/**

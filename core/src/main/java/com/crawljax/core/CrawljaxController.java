@@ -111,8 +111,6 @@ public class CrawljaxController implements CrawlQueueManager {
 	 * 
 	 * @throws CrawljaxException
 	 *             If the browser cannot be instantiated.
-	 * @throws ConfigurationException
-	 *             if crawljax configuration fails.
 	 * @NotThreadSafe
 	 */
 	public final void run() throws CrawljaxException {
@@ -123,7 +121,7 @@ public class CrawljaxController implements CrawlQueueManager {
 		        .getPreCrawlConfig().getIncludedElements());
 
 		// Create the initailCrawler
-		initialCrawler = new InitialCrawler(this, configuration.getPlugins());
+		initialCrawler = new InitialCrawler(this);
 
 		// Start the Crawling by adding the initialCrawler to the the workQueue.
 		addWorkToQueue(initialCrawler);

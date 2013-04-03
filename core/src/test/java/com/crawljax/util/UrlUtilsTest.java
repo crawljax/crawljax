@@ -45,7 +45,7 @@ public class UrlUtilsTest {
 
 	@Test
 	public void testExtractNewUrl() throws MalformedURLException {
-		String base = "http://example.com";
+		final String base = "http://example.com";
 		URL baseWithA = new URL(base + "/a");
 		assertThat(UrlUtils.extractNewUrl(base, "a"), is(baseWithA));
 
@@ -58,8 +58,11 @@ public class UrlUtilsTest {
 
 		assertThat(UrlUtils.extractNewUrl(base + "/example/b", "../a"), is(baseWithA));
 
-		assertThat(UrlUtils.extractNewUrl("http://example.com", "http://test.example.com"),
-		        is(new URL("http://test.example.com")));
+		assertThat(UrlUtils.extractNewUrl(base, "http://test.example.com"), is(new URL(
+		        "http://test.example.com")));
+
+		assertThat(UrlUtils.extractNewUrl(base, "#someHash"), is(new URL(base + "#someHash")));
+
 	}
 
 }
