@@ -88,7 +88,7 @@ class OutputBuilder {
 			checkArgument(outputDir.list().length == 0, "Directory must be empty");
 			checkArgument(outputDir.canWrite(), "Output dir not writable");
 		} else {
-			boolean created = outputDir.mkdir();
+			boolean created = outputDir.mkdirs();
 			checkArgument(created, "Could not create directory " + outputDir);
 		}
 	}

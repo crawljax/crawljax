@@ -63,7 +63,7 @@ public abstract class FirefoxLinuxCrash {
 		Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
 
 		try {
-			Runtime.getRuntime().exec("/usr/bin/killall firefox-bin --verbose");
+			Runtime.getRuntime().exec("/usr/bin/killall firefox --verbose");
 		} catch (IOException e) {
 			Assume.assumeNoException(e);
 		}

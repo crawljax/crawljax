@@ -160,9 +160,6 @@ public class StyleComparator extends AbstractComparator {
 				}
 			}
 		}
-		// TODO This should be buffer.toString() but a weird behavior of this class results in a
-		// difference.
-		// return buffer.toString();
 		return badWayOfDoingThis;
 	}
 

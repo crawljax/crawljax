@@ -12,11 +12,12 @@ import org.junit.rules.ExpectedException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 
 /**
- * Test to see if the WebDriver team consistently throws the same exception when the Host process
- * dies. This test runs only on linux, its not executed by the test-suite as its platform and
- * browser specific.
+ * Test to see if the WebDriver team consistently throws the same exception when
+ * the Host process dies. This test runs only on linux, its not executed by the
+ * test-suite as its platform and browser specific.
  */
 public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 
@@ -28,12 +29,12 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testClose() {
-		getCrashedDriver().close();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().close();
 	}
 
 	private void expectWebDriverExceptionWithConnectionExceptionCause() {
-		exception.expect(WebDriverException.class);
+		exception.expect(UnreachableBrowserException.class);
 		exception.expectCause(any(ConnectException.class));
 	}
 
@@ -42,6 +43,7 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testFindElement() {
+		expectWebDriverExceptionWithConnectionExceptionCause();
 		getCrashedDriver().findElement(By.name("q"));
 	}
 
@@ -50,8 +52,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testFindElements() {
-		getCrashedDriver().findElements(By.name("q"));
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().findElements(By.name("q"));
 	}
 
 	/**
@@ -59,8 +61,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGet() {
-		getCrashedDriver().get("http://www.google.com");
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().get("http://www.google.com");
 	}
 
 	/**
@@ -68,8 +70,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetCurrentUrl() {
-		getCrashedDriver().getCurrentUrl();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().getCurrentUrl();
 	}
 
 	/**
@@ -77,8 +79,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetPageSource() {
-		getCrashedDriver().getPageSource();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().getPageSource();
 	}
 
 	/**
@@ -86,8 +88,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetTitle() {
-		getCrashedDriver().getTitle();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().getTitle();
 	}
 
 	/**
@@ -95,8 +97,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetWindowHandle() {
-		getCrashedDriver().getWindowHandle();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().getWindowHandle();
 	}
 
 	/**
@@ -104,8 +106,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testGetWindowHandles() {
-		getCrashedDriver().getWindowHandles();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().getWindowHandles();
 	}
 
 	/**
@@ -113,8 +115,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testManage() {
-		getCrashedDriver().manage();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().manage().getCookies();
 	}
 
 	/**
@@ -122,8 +124,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testNavigate() {
-		getCrashedDriver().navigate();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().navigate().back();
 	}
 
 	/**
@@ -131,8 +133,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testQuit() {
-		getCrashedDriver().quit();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().quit();
 	}
 
 	/**
@@ -140,8 +142,8 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	 */
 	@Test
 	public final void testSwitchTo() {
-		getCrashedDriver().switchTo();
 		expectWebDriverExceptionWithConnectionExceptionCause();
+		getCrashedDriver().switchTo().activeElement();
 	}
 
 }

@@ -45,7 +45,6 @@ public class InputValue {
 	@Override
 	public String toString() {
 		return getValue();
-		// + " formInput " + formInput.getId();
 	}
 
 	/**
