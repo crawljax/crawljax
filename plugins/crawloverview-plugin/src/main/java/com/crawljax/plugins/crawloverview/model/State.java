@@ -39,7 +39,7 @@ public class State {
 		return url;
 	}
 
-	public List<CandidateElementPosition> getCandidateElements() {
+	public ImmutableList<CandidateElementPosition> getCandidateElements() {
 		return candidateElements;
 	}
 
