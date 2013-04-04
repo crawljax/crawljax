@@ -53,6 +53,7 @@ public final class PluginImporterHelper
 		String classPath = System.getProperty("java.class.path");
 		String[] paths = classPath.split(";");
 		List<File> files = new ArrayList<File>();
+		//files.add(new File("C:\\Users\\kyle\\Documents\\ourjar\\"));
 		for (int iter = 0; iter < paths.length; iter++)
 			files.add(new File(paths[iter]));
 		return files.toArray(new File[files.size()]);
@@ -64,12 +65,16 @@ public final class PluginImporterHelper
 		{
 			try
 			{
+				File[] blarg = dir.listFiles(_jarsFilter);
+				if(blarg != null)
+				{
 				for (File jar : dir.listFiles(_jarsFilter))
 					jars.add(jar.toURI().toURL());
 
 				if (includeSubDirs)
 					for (File subdir : dir.listFiles(_dirsFilter))
 						fillJarsList(jars, subdir, true);
+				}
 			} catch (Exception e)
 			{
 				LOGGER.warn(e.getMessage(), e);
