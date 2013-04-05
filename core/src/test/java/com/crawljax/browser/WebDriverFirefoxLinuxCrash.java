@@ -15,9 +15,9 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
 /**
- * Test to see if the WebDriver team consistently throws the same exception when the Host process
- * dies. This test runs only on linux, its not executed by the test-suite as its platform and
- * browser specific.
+ * Test to see if the WebDriver team consistently throws the same exception when
+ * the Host process dies. This test runs only on linux, its not executed by the
+ * test-suite as its platform and browser specific.
  */
 public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 
@@ -34,7 +34,6 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	}
 
 	private void expectWebDriverExceptionWithConnectionExceptionCause() {
-		//exception.expect(WebDriverException.class);
 		exception.expect(UnreachableBrowserException.class);
 		exception.expectCause(any(ConnectException.class));
 	}
