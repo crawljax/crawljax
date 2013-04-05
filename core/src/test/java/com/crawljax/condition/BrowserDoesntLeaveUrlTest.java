@@ -18,6 +18,6 @@ public class BrowserDoesntLeaveUrlTest {
 		BaseCrawler crawler = new BaseCrawler("navigate_other_urls.html");
 		// crawler.showWebSite();
 		CrawlSession session = crawler.crawl();
-		assertThat(session.getStateFlowGraph(), hasStates(3));
+		assertThat(session.getStateFlowGraph(), hasStates(5));
 	}
 }

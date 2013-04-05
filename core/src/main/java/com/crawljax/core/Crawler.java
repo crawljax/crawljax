@@ -273,50 +273,7 @@ public class Crawler implements Runnable {
 	private void goBackExact(CrawlPath path) throws CrawljaxException {
 		StateVertex curState = controller.getSession().getInitialState();
 
-		for (Eventable clickable : backTrackPath) {
-
-			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
-				return;
-			}
-
-			LOG.info("Backtracking by executing {} on element: {}", clickable.getEventType(),
-			        clickable);
-
-			this.getStateMachine().changeState(clickable.getTargetStateVertex());
-
-			curState = clickable.getTargetStateVertex();
-
-			controller.getSession().addEventableToCrawlPath(clickable);
-
-			this.handleInputElements(clickable);
-
-			if (this.fireEvent(clickable)) {
-
-				int d = depth.incrementAndGet();
-				LOG.debug("Crawl depth now {}", d);
-
-				/*
-				 * Run the onRevisitStateValidator(s)
-				 */
-				plugins.runOnRevisitStatePlugins(this.controller.getSession(), curState);
-			}
-
-			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
-				return;
-			}
-		}
-	}
-
-	/**
-	 * Reload the browser following the {@link #backTrackPath} to the given currentEvent.
-	 * 
-	 * @throws CrawljaxException
-	 *             if the {@link Eventable#getTargetStateVertex()} encounters an error.
-	 */
-	private void goBackExact() throws CrawljaxException {
-		StateVertex curState = controller.getSession().getInitialState();
-
-		for (Eventable clickable : backTrackPath) {
+		for (Eventable clickable : path) {
 
 			if (!controller.getElementChecker().checkCrawlCondition(getBrowser())) {
 				return;
@@ -500,7 +457,7 @@ public class Crawler implements Runnable {
 	}
 
 	private void waitForRefreshTagIfAny(final Eventable eventable) {
-		if (eventable.getElement().getTag().toLowerCase().equals("meta")) {
+		if (eventable.getElement().getTag().equalsIgnoreCase("meta")) {
 			Pattern p = Pattern.compile("(\\d+);\\s+URL=(.*)");
 			for (Entry<String, String> e : eventable.getElement().getAttributes().entrySet()) {
 				Matcher m = p.matcher(e.getValue());
@@ -635,12 +592,14 @@ public class Crawler implements Runnable {
 
 	private void goBackOneState() {
 		LOG.debug("Going back one state");
+		CrawlPath currentPath =
+		        controller.getSession().getCurrentCrawlPath().immutableCopy(false);
 		goToInitialURL(false);
 		if (stateMachine != null) {
 			stateMachine.rewind();
 		}
 		controller.getSession().startNewPath();
-		goBackExact(controller.getSession().getCurrentCrawlPath().immutableCopy(false));
+		goBackExact(currentPath);
 	}
 
 	/**
