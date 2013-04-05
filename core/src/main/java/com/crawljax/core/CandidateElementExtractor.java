@@ -1,6 +1,7 @@
 package com.crawljax.core;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -49,6 +50,7 @@ public class CandidateElementExtractor {
 	private final boolean crawlFrames;
 	private final ImmutableMultimap<String, CrawlElement> excludeCrawlElements;
 	private final ImmutableList<CrawlElement> includedCrawlElements;
+	private final List<URL> crawlUrls;
 
 	private final boolean clickOnce;
 
@@ -73,6 +75,7 @@ public class CandidateElementExtractor {
 		this.browser = browser;
 		this.formHandler = formHandler;
 		CrawlRules rules = config.getCrawlRules();
+		this.crawlUrls = config.getCrawlUrls();
 		PreCrawlConfiguration preCrawlConfig = rules.getPreCrawlConfig();
 		this.excludeCrawlElements = asMultiMap(preCrawlConfig.getExcludedElements());
 		this.includedCrawlElements =
@@ -305,9 +308,15 @@ public class CandidateElementExtractor {
 		if ("A".equalsIgnoreCase(crawlElement.getTagName())) {
 			String href = element.getAttribute("href");
 			if (!Strings.isNullOrEmpty(href)) {
-				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
-				LOG.debug("HREF: {} isExternal= {}", href, isExternal);
-				if (isExternal || isPDForPS(href)) {
+				boolean isDisallowedExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
+				if (isDisallowedExternal) {
+					for (int i = 0; i < crawlUrls.size(); i++) {
+						if (!UrlUtils.isLinkExternal(crawlUrls.get(i).toString(), href))
+							isDisallowedExternal = false;
+					}
+				}
+				LOG.debug("HREF: {} isDisallowedExternal= {}", href, isDisallowedExternal);
+				if (isDisallowedExternal || isPDForPS(href)) {
 					return;
 				}
 			}

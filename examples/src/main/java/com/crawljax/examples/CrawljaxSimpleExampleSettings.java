@@ -23,6 +23,13 @@ public final class CrawljaxSimpleExampleSettings {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
+		// Allow these external URLs to be crawled by Crawljax
+		builder.alsoCrawlUrl("http://play.google.com/");
+		builder.alsoCrawlUrl("http://mail.google.com/");
+		builder.alsoCrawlUrl("http://news.google.ca/");
+		builder.alsoCrawlUrl("http://maps.google.ca/");
+		builder.alsoCrawlUrl("http://www.youtube.com");
+		
 		builder.crawlRules().click("a");
 		builder.crawlRules().click("button");
 

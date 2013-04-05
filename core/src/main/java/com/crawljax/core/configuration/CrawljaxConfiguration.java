@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -32,7 +34,7 @@ public final class CrawljaxConfiguration {
 			config = new CrawljaxConfiguration();
 			config.url = url;
 		}
-
+		
 		/**
 		 * @param states
 		 *            The maximum number of states the Crawler should crawl. The default is
@@ -88,6 +90,32 @@ public final class CrawljaxConfiguration {
 			config.maximumDepth = 0;
 			return this;
 		}
+		
+		/**
+		 * Allow Crawljax to crawl the specified external URL
+		 * @param url
+		 * 			The external URL
+		 */
+		public CrawljaxConfigurationBuilder alsoCrawlUrl(URL url) {
+			Preconditions.checkNotNull(url, "URL was null");
+			config.crawlUrls.add(url);
+			return this;
+		}
+		
+		/**
+		 * Allow Crawljax to crawl the specified external URL
+		 * @param url
+		 * 			The external URL
+		 */
+		public CrawljaxConfigurationBuilder alsoCrawlUrl(String url) {
+			try {
+				config.crawlUrls.add(new URL(url));
+			} catch (MalformedURLException e) {
+				throw new CrawljaxException("Could not read that URL", e);
+			}
+			return this;
+		}
+
 
 		/**
 		 * Add plugins to Crawljax. Note that without plugins, Crawljax won't give any ouput. For
@@ -165,6 +193,7 @@ public final class CrawljaxConfiguration {
 	}
 
 	private URL url;
+	private List<URL> crawlUrls = new ArrayList<URL>();
 
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.firefox);
 	private Plugins plugins;
@@ -209,6 +238,10 @@ public final class CrawljaxConfiguration {
 
 	public int getMaximumDepth() {
 		return maximumDepth;
+	}
+	
+	public List<URL> getCrawlUrls() {
+		return crawlUrls;
 	}
 
 	@Override
