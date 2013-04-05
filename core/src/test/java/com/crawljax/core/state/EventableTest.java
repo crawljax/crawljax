@@ -108,7 +108,7 @@ public class EventableTest {
 		StateVertex s2 = new StateVertex("stateTarget", "dom2");
 		StateFlowGraph sfg = new StateFlowGraph(s1);
 
-		sfg.addState(s2);
+		sfg.putIfAbsent(s2);
 
 		Eventable e = new Eventable();
 
