@@ -1,7 +1,5 @@
 package com.crawljax.plugins.crawloverview.model;
 
-import java.util.List;
-
 import javax.annotation.concurrent.Immutable;
 
 import org.openqa.selenium.Point;

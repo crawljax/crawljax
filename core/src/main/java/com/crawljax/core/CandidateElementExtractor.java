@@ -145,7 +145,7 @@ public class CandidateElementExtractor {
 			NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
 			addFramesCandidates(dom, results, relatedFrame, iFrameNodes);
 
-			eveluateElements(dom, tag, results, relatedFrame);
+			evaluateElements(dom, tag, results, relatedFrame);
 		}
 	}
 
@@ -208,7 +208,7 @@ public class CandidateElementExtractor {
 		}
 	}
 
-	private void eveluateElements(Document dom, CrawlElement crawl,
+	private void evaluateElements(Document dom, CrawlElement crawl,
 	        Builder<CandidateElement> results, String relatedFrame) {
 		try {
 			List<Element> nodeListForCrawlElement =

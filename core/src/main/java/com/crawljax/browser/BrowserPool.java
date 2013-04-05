@@ -393,7 +393,7 @@ public final class BrowserPool {
 			        + pool.getNumberOfBrowsers());
 			while (!allBrowsersLoaded()) {
 				try {
-					Thread.sleep(pool.SHUTDOWN_TIMEOUT);
+					Thread.sleep(BrowserPool.SHUTDOWN_TIMEOUT);
 				} catch (InterruptedException e) {
 					LOGGER.error("Closing of the browsers faild due to an Interrupt", e);
 				}

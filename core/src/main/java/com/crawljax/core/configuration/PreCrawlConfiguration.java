@@ -4,9 +4,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.base.Objects;
 
 public class PreCrawlConfiguration {
 

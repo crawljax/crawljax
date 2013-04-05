@@ -8,10 +8,10 @@ import javax.annotation.concurrent.Immutable;
 import org.w3c.dom.Node;
 
 import com.crawljax.util.DomUtils;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import com.google.common.base.Objects;
 
 /**
  * This class represents an element. It is built from the node name and node text contents.
