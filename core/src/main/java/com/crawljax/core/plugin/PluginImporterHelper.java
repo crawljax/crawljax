@@ -1,4 +1,5 @@
 // Copyright 2008 Jean-Francois Poilpret
+// Altered and Modified 2013 Ivan Zverev and Kyle Lee
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,79 +27,67 @@ import org.slf4j.LoggerFactory;
 
 // Provides helper functions for the PluginImporterClass that don't
 // directly load files.
-public final class PluginImporterHelper
-{
-	private static final Logger LOGGER = LoggerFactory.getLogger(PluginImporterHelper.class);
-	public static ClassLoader buildClassLoader(
-	        boolean includeSubDirs, File... directories)
-	{
-		return buildClassLoader(
-		        includeSubDirs, Thread.currentThread().getContextClassLoader(), directories);
+public final class PluginImporterHelper {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(PluginImporterHelper.class);
+
+	public static ClassLoader buildClassLoader(boolean includeSubDirs,
+			File... directories) {
+		return buildClassLoader(includeSubDirs, Thread.currentThread()
+				.getContextClassLoader(), directories);
 	}
 
-	static ClassLoader buildClassLoader(
-	        boolean includeSubDirs, ClassLoader parent, File... directories)
-	{
+	static ClassLoader buildClassLoader(boolean includeSubDirs,
+			ClassLoader parent, File... directories) {
 		List<URL> allJars = new ArrayList<URL>();
 		// Find all Jars in each directory
-		for (File dir : directories)
-		{
+		for (File dir : directories) {
 			fillJarsList(allJars, dir, includeSubDirs);
 		}
-		return new URLClassLoader(allJars.toArray(new URL[allJars.size()]), parent);
+		return new URLClassLoader(allJars.toArray(new URL[allJars.size()]),
+				parent);
 	}
 
-	public static File[] getDirsFromClassPath()
-	{
+	public static File[] getDirsFromClassPath() {
 		String classPath = System.getProperty("java.class.path");
 		String[] paths = classPath.split(";");
 		List<File> files = new ArrayList<File>();
-		//files.add(new File("C:\\Users\\kyle\\Documents\\ourjar\\"));
 		for (int iter = 0; iter < paths.length; iter++)
 			files.add(new File(paths[iter]));
 		return files.toArray(new File[files.size()]);
 	}
 
-	static public void fillJarsList(List<URL> jars, File dir, boolean includeSubDirs)
-	{
-		if (dir.exists())
-		{
-			try
-			{
-				File[] blarg = dir.listFiles(_jarsFilter);
-				if(blarg != null)
-				{
-				for (File jar : dir.listFiles(_jarsFilter))
-					jars.add(jar.toURI().toURL());
+	static public void fillJarsList(List<URL> jars, File dir,
+			boolean includeSubDirs) {
+		if (dir.exists()) {
+			try {
+				File[] filesInDir = dir.listFiles(_jarsFilter);
+				if (filesInDir != null) {
+					for (File jar : dir.listFiles(_jarsFilter))
+						jars.add(jar.toURI().toURL());
 
-				if (includeSubDirs)
-					for (File subdir : dir.listFiles(_dirsFilter))
-						fillJarsList(jars, subdir, true);
+					if (includeSubDirs)
+						for (File subdir : dir.listFiles(_dirsFilter))
+							fillJarsList(jars, subdir, true);
 				}
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				LOGGER.warn(e.getMessage(), e);
 			}
 		}
 	}
 
-	private PluginImporterHelper()
-	{
+	private PluginImporterHelper() {
 	}
 
-	static final private FileFilter _jarsFilter = new FileFilter()
-	{
-		public boolean accept(File pathname)
-		{
+	static final private FileFilter _jarsFilter = new FileFilter() {
+		public boolean accept(File pathname) {
 			return pathname.isFile()
-			        && pathname.getName().toUpperCase().endsWith(JAR_SUFFIX);
+					&& pathname.getName().toUpperCase().endsWith(JAR_SUFFIX);
 		}
 	};
 
-	static final private FileFilter _dirsFilter = new FileFilter()
-	{
-		public boolean accept(File pathname)
-		{
+	static final private FileFilter _dirsFilter = new FileFilter() {
+		public boolean accept(File pathname) {
 			return pathname.isDirectory();
 		}
 	};

@@ -13,10 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CreateJarFile {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CreateJarFile.class);
-	public static <T> void createJar(File outputFile, Class<T> inputClass, boolean isValidPlugin) {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(CreateJarFile.class);
+
+	public static <T> void createJar(File outputFile, Class<T> inputClass,
+			boolean isValidPlugin) {
 		try {
-			URL classUrl = inputClass.getResource(inputClass.getSimpleName() + ".class");
+			URL classUrl = inputClass.getResource(inputClass.getSimpleName()
+					+ ".class");
 			if (classUrl == null)
 				return;
 
@@ -25,17 +29,18 @@ public class CreateJarFile {
 
 			FileOutputStream stream = new FileOutputStream(outputFile);
 			JarOutputStream out = new JarOutputStream(stream, new Manifest());
-			if (inputFile == null || !inputFile.exists() || inputFile.isDirectory())
-			{
+			if (inputFile == null || !inputFile.exists()
+					|| inputFile.isDirectory()) {
 				out.close();
 				throw new IOException("Input file not valid.");
-			}
-			else {
-				int folderStructureLength =
-				        inputClass.getName().length() - inputClass.getSimpleName().length();
-				String stuff = inputClass.getName().substring(0, folderStructureLength);
+			} else {
+				int folderStructureLength = inputClass.getName().length()
+						- inputClass.getSimpleName().length();
+				String stuff = inputClass.getName().substring(0,
+						folderStructureLength);
 				String folderName = stuff.replace(".", "/");
-				JarEntry jarAddF = new JarEntry(folderName + inputFile.getName());
+				JarEntry jarAddF = new JarEntry(folderName
+						+ inputFile.getName());
 				jarAddF.setTime(inputFile.lastModified());
 				out.putNextEntry(jarAddF);
 
