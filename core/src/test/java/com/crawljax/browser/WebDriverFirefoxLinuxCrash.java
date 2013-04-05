@@ -117,7 +117,7 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	@Test
 	public final void testManage() {
 		expectWebDriverExceptionWithConnectionExceptionCause();
-		getCrashedDriver().manage();
+		getCrashedDriver().manage().getCookies();
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	@Test
 	public final void testNavigate() {
 		expectWebDriverExceptionWithConnectionExceptionCause();
-		getCrashedDriver().navigate();
+		getCrashedDriver().navigate().back();
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class WebDriverFirefoxLinuxCrash extends FirefoxLinuxCrash {
 	@Test
 	public final void testSwitchTo() {
 		expectWebDriverExceptionWithConnectionExceptionCause();
-		getCrashedDriver().switchTo();
+		getCrashedDriver().switchTo().activeElement();
 	}
 
 }
