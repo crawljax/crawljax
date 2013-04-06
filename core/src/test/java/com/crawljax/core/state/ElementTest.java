@@ -1,6 +1,5 @@
 package com.crawljax.core.state;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -27,7 +26,7 @@ public class ElementTest {
 
 		byte[] serialized = SerializationUtils.serialize(element);
 		Element deserializedElement = (Element) SerializationUtils.deserialize(serialized);
-		assertThat(element, equalTo(deserializedElement));
+		assertThat(element, is(deserializedElement));
 		assertThat(element.getElementId(), is(deserializedElement.getElementId()));
 
 	}

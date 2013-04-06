@@ -1,22 +1,25 @@
 package com.crawljax.core;
 
-import java.io.File;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
-import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.crawljax.core.configuration.CrawlSpecification;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.CrawlPath;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
 
 /**
  * Test class for the Crawler testing.
@@ -24,19 +27,17 @@ import com.crawljax.test.BrowserTest;
 @Category(BrowserTest.class)
 public class CrawlerTest {
 
+	@ClassRule
+	public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
+
 	private Collection<List<Eventable>> paths;
 	private StateVertex index;
 
 	private CrawljaxConfiguration buildController() throws ConfigurationException {
-		CrawljaxConfiguration config = new CrawljaxConfiguration();
-		CrawlSpecification spec =
-		        new CrawlSpecification(
-		                "file://"
-		                        + new File("src/test/resources/site/crawler/index.html")
-		                                .getAbsolutePath());
-		spec.click("a");
-		config.setCrawlSpecification(spec);
-		return config;
+		CrawljaxConfigurationBuilder builder =
+		        CrawljaxConfiguration.builderFor(SERVER.getSiteUrl() + "crawler/index.html");
+		builder.crawlRules().click("a");
+		return builder.build();
 	}
 
 	@Before
@@ -51,28 +52,23 @@ public class CrawlerTest {
 	public void testCrawler() throws ConfigurationException {
 		final TestController controller = new TestController(buildController(), index);
 
-		// Prevent dead-lock
-		// controller.getBrowserPool().freeBrowser(controller.getCrawler().getBrowser());
-
 		for (final List<Eventable> path : paths) {
-			Crawler c = new Crawler(controller, path, "Follow Path") {
+			new Crawler(controller, path, "Follow Path", Plugins.noPlugins()) {
 				@Override
 				public void run() {
 					try {
 						super.init();
+						List<Eventable> newPath = controller.getSession().getCurrentCrawlPath();
+						assertThat(
+						        "Path found by Controller driven Crawling equals the path found in the Crawler",
+						        path, is(newPath));
+						super.shutdown();
 					} catch (InterruptedException e) {
-						Assert.fail(e.getMessage());
+						throw new AssertionError(e);
 					}
-					CrawlPath newPath = controller.getSession().getCurrentCrawlPath();
-					Assert.assertEquals(
-					        "Path found by Controller driven Crawling equals the path found in the Crawler",
-					        path, newPath);
-					super.shutdown();
 				}
-			};
-			c.run();
+			}.run();
 		}
-
 		controller.getBrowserPool().shutdown();
 	}
 

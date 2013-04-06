@@ -2,11 +2,9 @@ package com.crawljax.forms;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -26,30 +24,29 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.configuration.InputSpecification;
-import com.crawljax.core.configuration.InputSpecificationReader;
 import com.crawljax.core.state.Identification;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Helper class for FormHandler.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
- * @author ali mesbah
  */
 public final class FormInputValueHelper {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FormInputValueHelper.class
 	        .getName());
 
-	private Map<String, String> formFields = new HashMap<String, String>();
-	private Map<String, ArrayList<String>> formFieldNames =
-	        new HashMap<String, ArrayList<String>>();
-	private Map<String, ArrayList<String>> fieldValues = new HashMap<String, ArrayList<String>>();
+	private ImmutableMap<String, String> formFields;
+	private ImmutableListMultimap<String, String> formFieldNames;
+	private ImmutableListMultimap<String, String> fieldValues;
 
 	private Configuration config;
 
 	private boolean randomInput;
+
+	private static final int EMPTY = 0;
 
 	/**
 	 * @param inputSpecification
@@ -59,28 +56,16 @@ public final class FormInputValueHelper {
 	 */
 	public FormInputValueHelper(InputSpecification inputSpecification, boolean randomInput) {
 
-		this.randomInput = randomInput;
-		if (inputSpecification != null) {
-			config = new InputSpecificationReader(inputSpecification).getConfiguration();
+		this.formFieldNames = inputSpecification.getFormFieldNames();
+		this.fieldValues = inputSpecification.getFormFieldValues();
 
-			@SuppressWarnings("rawtypes")
-			Iterator keyIterator = config.getKeys();
-			while (keyIterator.hasNext()) {
-				String fieldInfo = keyIterator.next().toString();
-				String id = fieldInfo.split("\\.")[0];
-				String property = fieldInfo.split("\\.")[1];
-				if (property.equalsIgnoreCase("fields") && !formFields.containsKey(id)) {
-					for (String fieldName : getPropertyAsList(fieldInfo)) {
-						formFields.put(fieldName, id);
-					}
-					formFieldNames.put(id, getPropertyAsList(fieldInfo));
-				}
-				if (property.equalsIgnoreCase("values")) {
-					fieldValues.put(id, getPropertyAsList(fieldInfo));
-				}
-			}
+		ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+		for (Entry<String, String> entry : formFieldNames.entries()) {
+			builder.put(entry.getValue(), entry.getKey());
 		}
+		formFields = builder.build();
 
+		this.randomInput = randomInput;
 	}
 
 	private Element getBelongingElement(Document dom, String fieldName) {
@@ -128,7 +113,7 @@ public final class FormInputValueHelper {
 		List<CandidateElement> candidateElements = new ArrayList<CandidateElement>();
 		int maxValues = getMaxNumberOfValues(eventableCondition.getLinkedInputFields());
 
-		if (maxValues == 0) {
+		if (maxValues == EMPTY) {
 			LOGGER.warn("No input values found for element: "
 			        + DomUtils.getElementString(sourceElement));
 			return candidateElements;
@@ -165,8 +150,8 @@ public final class FormInputValueHelper {
 
 			CandidateElement candidateElement =
 			        new CandidateElement(cloneElement,
-			                XPathHelper.getXPathExpression(sourceElement));
-			candidateElement.setFormInputs(formInputsForCurrentIndex);
+			                XPathHelper.getXPathExpression(sourceElement),
+			                formInputsForCurrentIndex);
 			candidateElements.add(candidateElement);
 		}
 		return candidateElements;

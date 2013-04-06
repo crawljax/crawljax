@@ -6,8 +6,7 @@ package com.crawljax.core.state;
 import java.io.Serializable;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -31,7 +30,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	private EventType eventType;
 	private Identification identification;
 	private Element element;
-	private List<FormInput> relatedFormInputs = new ArrayList<FormInput>();
+	private CopyOnWriteArrayList<FormInput> relatedFormInputs = new CopyOnWriteArrayList<>();
 	private String relatedFrame = "";
 
 	/**
@@ -103,7 +102,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 		if (candidateElement.getElement() != null) {
 			this.element = new Element(candidateElement.getElement());
 		}
-		this.relatedFormInputs = candidateElement.getFormInputs();
+		this.relatedFormInputs = new CopyOnWriteArrayList<>(candidateElement.getFormInputs());
 		this.relatedFrame = candidateElement.getRelatedFrame();
 	}
 
@@ -223,7 +222,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 * 
 	 * @return the formInputs
 	 */
-	public List<FormInput> getRelatedFormInputs() {
+	public CopyOnWriteArrayList<FormInput> getRelatedFormInputs() {
 		return relatedFormInputs;
 	}
 
@@ -233,7 +232,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 * @param relatedFormInputs
 	 *            the list of formInputs
 	 */
-	public void setRelatedFormInputs(List<FormInput> relatedFormInputs) {
+	public void setRelatedFormInputs(CopyOnWriteArrayList<FormInput> relatedFormInputs) {
 		this.relatedFormInputs = relatedFormInputs;
 	}
 

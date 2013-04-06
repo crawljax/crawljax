@@ -44,7 +44,6 @@ public class CrawlOverview
 	private final OutputBuilder outputBuilder;
 	private final Map<String, StateVertex> visitedStates;
 
-	private CrawlSession session;
 	private OutPutModel result;
 
 	private final OutPutModelCache outModelCache;
@@ -63,10 +62,9 @@ public class CrawlOverview
 	@Override
 	public void onNewState(CrawlSession session) {
 		LOG.debug("onNewState");
-		this.session = session;
 		StateVertex vertex = session.getCurrentState();
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
-		saveScreenshot(state.getName(), vertex);
+		saveScreenshot(session, state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), session.getBrowser().getDom());
 		Point point = getOffSet(session.getBrowser());
 		state.setScreenShotOffset(point);
@@ -98,7 +96,7 @@ public class CrawlOverview
 		return "relative".equals(position);
 	}
 
-	private void saveScreenshot(String name, StateVertex vertex) {
+	private void saveScreenshot(CrawlSession session, String name, StateVertex vertex) {
 		LOG.trace("Saving screenshot");
 		synchronized (visitedStates) {
 			if (!visitedStates.containsKey(name)) {
@@ -106,10 +104,11 @@ public class CrawlOverview
 			}
 		}
 		LOG.debug("Saving screenshot for state {}", name);
-		File screenShot = outputBuilder.newScreenShotFile(name);
+		File jpg = outputBuilder.newScreenShotFile(name);
+		File thumb = outputBuilder.newThumbNail(name);
 		try {
-			session.getBrowser().saveScreenShot(screenShot);
-			outputBuilder.makeThumbNail(screenShot, name);
+			byte[] screenshot = session.getBrowser().getScreenShot();
+			ImageWriter.writeScreenShotAndThumbnail(screenshot, jpg, thumb);
 		} catch (CrawljaxException e) {
 			LOG.warn("Screenshots are not supported for {}", session.getBrowser());
 		}
@@ -123,7 +122,6 @@ public class CrawlOverview
 	@Override
 	public void preStateCrawling(CrawlSession session, List<CandidateElement> candidateElements) {
 		LOG.debug("preStateCrawling");
-		this.session = session;
 		List<CandidateElementPosition> newElements = Lists.newLinkedList();
 		StateVertex state = session.getCurrentState();
 		LOG.info("Prestate found new state {} with {} candidates", state.getName(),
@@ -146,7 +144,7 @@ public class CrawlOverview
 			// element.getXpath()
 			return session.getBrowser().getWebElement(element.getIdentification());
 		} catch (WebDriverException e) {
-			LOG.info("Could not locate " + element.getElement().toString());
+			LOG.info("Could not locate element for positioning {}", element.getElement());
 			return null;
 		}
 	}
@@ -155,8 +153,8 @@ public class CrawlOverview
 		Point location = webElement.getLocation();
 		Dimension size = webElement.getSize();
 		CandidateElementPosition renderedCandidateElement =
-		// TODO Check if element.getIdentification().getValue() is correct replacement for
-		// element.getXpath()
+		        // TODO Check if element.getIdentification().getValue() is correct replacement for
+		        // element.getXpath()
 		        new CandidateElementPosition(element.getIdentification().getValue(), location,
 		                size);
 		return renderedCandidateElement;
@@ -169,10 +167,8 @@ public class CrawlOverview
 	public void postCrawling(CrawlSession session) {
 		LOG.debug("postCrawling");
 		StateFlowGraph sfg = session.getStateFlowGraph();
-		outModelCache.addEdges(sfg.getAllEdges());
 		result = outModelCache.close(session);
 		outputBuilder.write(result);
-		outputBuilder.write(session.getCrawljaxConfiguration().getCrawlSpecificationReader());
 		synchronized (visitedStates) {
 			StateWriter writer = new StateWriter(outputBuilder, sfg, visitedStates);
 			for (State state : result.getStates().values()) {

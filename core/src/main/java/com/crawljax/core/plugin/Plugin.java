@@ -51,8 +51,6 @@ package com.crawljax.core.plugin;
  * </tr>
  * </tbody>
  * </table>
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 public interface Plugin {
 

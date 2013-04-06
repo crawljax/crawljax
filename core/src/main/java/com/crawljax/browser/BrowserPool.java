@@ -17,18 +17,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlQueueManager;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.ThreadConfigurationReader;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
+import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.Plugins;
 
 /**
  * The Pool class returns an instance of the desired browser as specified in the properties file.
- * 
- * @author mesbah
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  */
 public final class BrowserPool {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(BrowserPool.class);
+
+	/**
+	 * The amount of time used to wait between every check for the close operation.
+	 */
+	private static final int SHUTDOWN_TIMEOUT = 100;
 
 	/**
 	 * BlockingQueue used to block for the moment when a browser comes available.
@@ -46,13 +49,6 @@ public final class BrowserPool {
 	 */
 	private final BrowserBooter booter;
 
-	/**
-	 * The amount of time used to wait between every check for the close operation.
-	 */
-	private final int shutdownTimeout = 100;
-
-	private final ThreadConfigurationReader threadConfig;
-
 	private int retries = 0;
 
 	private final AtomicInteger activeBrowserCount = new AtomicInteger(0);
@@ -65,9 +61,9 @@ public final class BrowserPool {
 
 	private final EmbeddedBrowserBuilder builder;
 
-	private final CrawljaxConfigurationReader configuration;
+	private final CrawljaxConfiguration configuration;
 
-	/* Config values */
+	private final Plugins plugins;
 
 	/**
 	 * Is the browser booting in use?
@@ -75,7 +71,7 @@ public final class BrowserPool {
 	 * @return true if the browser booting is in use.
 	 */
 	private boolean useBooting() {
-		return threadConfig.isBrowserBooting();
+		return configuration.getBrowserConfig().isBootstrap();
 	}
 
 	/**
@@ -84,7 +80,7 @@ public final class BrowserPool {
 	 * @return the number of browsers.
 	 */
 	private int getNumberOfBrowsers() {
-		return threadConfig.getNumberBrowsers();
+		return configuration.getBrowserConfig().getNumberOfBrowsers();
 	}
 
 	/**
@@ -93,7 +89,7 @@ public final class BrowserPool {
 	 *      getNumberBrowserCreateRetries()
 	 */
 	private int getNumberBrowserCreateRetries() {
-		return threadConfig.getNumberBrowserCreateRetries();
+		return BrowserConfiguration.BROWSER_START_RETRIES;
 	}
 
 	/**
@@ -101,8 +97,8 @@ public final class BrowserPool {
 	 * @see com.crawljax.core.configuration.ThreadConfigurationReader#
 	 *      getSleepTimeOnBrowserCreationFailure()
 	 */
-	private int getSleepTimeOnBrowserCreationFailure() {
-		return threadConfig.getSleepTimeOnBrowserCreationFailure();
+	private long getSleepTimeOnBrowserCreationFailure() {
+		return BrowserConfiguration.BROWSER_SLEEP_FAILURE;
 	}
 
 	/**
@@ -112,13 +108,14 @@ public final class BrowserPool {
 	 * @param configurationReader
 	 *            the configurationReader used to read the configuration options from.
 	 */
-	public BrowserPool(CrawljaxConfigurationReader configurationReader) {
+	public BrowserPool(CrawljaxConfiguration configurationReader) {
 		this.configuration = configurationReader;
-		this.threadConfig = configurationReader.getThreadConfigurationReader();
-		this.builder = configurationReader.getBrowserBuilder();
+		this.builder = configurationReader.getBrowserConfig().getBrowserBuilder();
 		this.available =
-		        new ArrayBlockingQueue<EmbeddedBrowser>(threadConfig.getNumberBrowsers(), true);
+		        new ArrayBlockingQueue<EmbeddedBrowser>(configurationReader.getBrowserConfig()
+		                .getNumberOfBrowsers(), true);
 		this.booter = new BrowserBooter(this);
+		this.plugins = configurationReader.getPlugins();
 	}
 
 	/**
@@ -139,10 +136,10 @@ public final class BrowserPool {
 			// preCrawlingRun.compareAndSet(false, true) equals to !preCrawlingRun ->
 			// preCrawlingRun = true
 
-			/**
+			/*
 			 * Start by running the PreCrawlingPlugins
 			 */
-			CrawljaxPluginsUtil.runPreCrawlingPlugins(newBrowser);
+			plugins.runPreCrawlingPlugins(newBrowser);
 
 			// Release the blocker for the total amount of browsers -1 (because this one does not
 			// have to block) anymore
@@ -157,10 +154,10 @@ public final class BrowserPool {
 				        + "continuing with the OnBrowserCreatedPlugins", e);
 			}
 		}
-		/**
+		/*
 		 * Start by running the OnBrowserCreatedPlugins
 		 */
-		CrawljaxPluginsUtil.runOnBrowserCreatedPlugins(newBrowser);
+		plugins.runOnBrowserCreatedPlugins(newBrowser);
 
 		assert (newBrowser != null);
 		return newBrowser;
@@ -396,7 +393,7 @@ public final class BrowserPool {
 			        + pool.getNumberOfBrowsers());
 			while (!allBrowsersLoaded()) {
 				try {
-					Thread.sleep(pool.shutdownTimeout);
+					Thread.sleep(pool.SHUTDOWN_TIMEOUT);
 				} catch (InterruptedException e) {
 					LOGGER.error("Closing of the browsers faild due to an Interrupt", e);
 				}

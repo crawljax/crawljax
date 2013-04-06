@@ -4,26 +4,34 @@
 			<a class="btn btn-navbar" data-toggle="collapse"
 				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 				class="icon-bar"></span> <span class="icon-bar"></span>
-			</a> <a class="brand" href="#">Crawl overview</a>
+			</a>
+			#if($page == "state")
+				<a class="brand" href="../index.html#graph">Crawl overview</a>
+			#else
+				<a class="brand" href="#">Crawl overview</a>
+			#end
 			<div class="nav-collapse collapse">
 				<ul class="nav">
-					<li #if($page == "graph") class="active" #end><a href="$baseUrl/index.html">State graph</a></li>
-					<li #if($page == "statistics") class="active" #end><a href="$baseUrl/statistics.html">Statistics</a></li>
-					<li #if($page == "urls") class="active" #end><a href="$baseUrl/urls.html">URL's</a></li>
-					<li #if($page == "config") class="active" #end><a href="$baseUrl/config.html">Configuration</a></li>
+					#if($page == "state") 
+						<li class="active" ><a href="#">State inspector</a></li>
+					#else
+						<li class="active"><a href="#graph">State graph</a></li>
+						<li><a href="#statistics">Statistics</a></li>
+						<li><a href="#urls">URL's</a></li>
+						<li><a href="#config">Configuration</a></li>
+					#end
 				</ul>
 			</div>
-			#if($page == "graph")
 			<div class="nav pull-right">
-				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
-				<a href="#" class="btn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
+				<a href="#" class="btn graphBtn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
+				<a href="#" class="btn graphBtn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
 				<div style="display: none" id='popup-content'>
 					<p>You can double click a state to inspect it further.</p>
 					<p>Clicking an edge gives more details on the state transition.</p>
 					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
 				</div>
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
 			</div>
-			#end
 			<!--/.nav-collapse -->
 		</div>
 	</div>

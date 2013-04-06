@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.GuardedBy;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +14,7 @@ import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.core.configuration.CrawlSpecificationReader;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.plugin.CrawljaxPluginsUtil;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.oraclecomparator.StateComparator;
@@ -26,8 +22,6 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * The Crawljax Controller class is the core of Crawljax.
- * 
- * @author mesbah
  */
 public class CrawljaxController implements CrawlQueueManager {
 
@@ -47,7 +41,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	// TODO Stefan, Can not be final because, must be created after the loading of the plugins
 	private Crawler initialCrawler;
 
-	private final CrawljaxConfigurationReader configurationReader;
+	private final CrawljaxConfiguration configuration;
 
 	private final ImmutableList<Invariant> invariantList;
 
@@ -67,22 +61,23 @@ public class CrawljaxController implements CrawlQueueManager {
 	 *             if the configuration fails.
 	 */
 	public CrawljaxController(final CrawljaxConfiguration config) throws CrawljaxException {
-		configurationReader = new CrawljaxConfigurationReader(config);
-		CrawlSpecificationReader crawlerReader =
-		        configurationReader.getCrawlSpecificationReader();
+		configuration = config;
 
-		stateComparator = new StateComparator(crawlerReader.getOracleComparators());
-		invariantList = crawlerReader.getInvariants();
+		stateComparator = new StateComparator(config.getCrawlRules().getOracleComparators());
+		invariantList = config.getCrawlRules().getInvariants();
 
-		waitConditionChecker.setWaitConditions(crawlerReader.getWaitConditions());
+		waitConditionChecker.setWaitConditions(config.getCrawlRules().getPreCrawlConfig()
+		        .getWaitConditions());
 		eventableConditionChecker =
-		        new EventableConditionChecker(configurationReader.getEventableConditions());
+		        new EventableConditionChecker(config.getCrawlRules());
 
-		crawlConditionChecker = new ConditionTypeChecker<>(crawlerReader.getCrawlConditions());
+		crawlConditionChecker =
+		        new ConditionTypeChecker<>(config.getCrawlRules().getPreCrawlConfig()
+		                .getCrawlConditions());
 		elementChecker =
 		        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 
-		browserPool = new BrowserPool(configurationReader);
+		browserPool = new BrowserPool(config);
 
 		workQueue = init();
 	}
@@ -96,24 +91,19 @@ public class CrawljaxController implements CrawlQueueManager {
 		LOGGER.info("Starting Crawljax...");
 
 		LOGGER.info("Used plugins:");
-		CrawljaxPluginsUtil.loadPlugins(configurationReader.getPlugins());
 
-		if (configurationReader.getProxyConfiguration() != null) {
-			CrawljaxPluginsUtil
-			        .runProxyServerPlugins(configurationReader.getProxyConfiguration());
+		if (configuration.getProxyConfiguration() != null) {
+			configuration.getPlugins().runProxyServerPlugins(
+			        configuration.getProxyConfiguration());
 		}
 
-		LOGGER.info("Embedded browser implementation: {}", configurationReader.getBrowser());
+		LOGGER.info("Embedded browser implementation: {}", configuration.getBrowserConfig()
+		        .getBrowsertype());
 
-		LOGGER.info("Number of threads: {}", configurationReader.getThreadConfigurationReader()
-		        .getNumberThreads());
-
-		LOGGER.info("Crawl depth: {}", configurationReader.getCrawlSpecificationReader()
-		        .getDepth());
+		LOGGER.info("Crawl depth: {}", configuration.getMaximumDepth());
 		LOGGER.info("Crawljax initialized!");
 
-		return new CrawlerExecutor(configurationReader.getThreadConfigurationReader()
-		        .getNumberThreads());
+		return new CrawlerExecutor(configuration.getBrowserConfig());
 	}
 
 	/**
@@ -129,11 +119,11 @@ public class CrawljaxController implements CrawlQueueManager {
 
 		startCrawl = System.currentTimeMillis();
 
-		LOGGER.info("Start crawling with {} crawl elements", configurationReader
-		        .getAllIncludedCrawlElements().size());
+		LOGGER.info("Start crawling with {} crawl elements", configuration.getCrawlRules()
+		        .getPreCrawlConfig().getIncludedElements());
 
 		// Create the initailCrawler
-		initialCrawler = new InitialCrawler(this);
+		initialCrawler = new InitialCrawler(this, configuration.getPlugins());
 
 		// Start the Crawling by adding the initialCrawler to the the workQueue.
 		addWorkToQueue(initialCrawler);
@@ -167,7 +157,7 @@ public class CrawljaxController implements CrawlQueueManager {
 		} catch (InterruptedException e1) {
 			LOGGER.warn("Re-Request for a browser was interrupted", e1);
 		}
-		CrawljaxPluginsUtil.runPostCrawlingPlugins(session);
+		configuration.getPlugins().runPostCrawlingPlugins(session);
 		this.getBrowserPool().freeBrowser(b);
 
 		this.shutdown(timeCrawlCalc);
@@ -330,8 +320,8 @@ public class CrawljaxController implements CrawlQueueManager {
 	/**
 	 * @return the configurationReader
 	 */
-	public CrawljaxConfigurationReader getConfigurationReader() {
-		return configurationReader;
+	public CrawljaxConfiguration getConfiguration() {
+		return configuration;
 	}
 
 	/**

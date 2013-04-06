@@ -1,11 +1,15 @@
 package com.crawljax.core.configuration;
 
+import javax.annotation.concurrent.Immutable;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+
 /**
  * Class for passing proxy settings to Crawljax' browser builder. It is returned by the
  * ProxyServerPlugin interface.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
+@Immutable
 public class ProxyConfiguration {
 
 	/**
@@ -45,11 +49,46 @@ public class ProxyConfiguration {
 		}
 	}
 
-	public static final int DEFAULT_PORT = 1234;
+	/**
+	 * @see ProxyType#NOTHING
+	 */
+	public static ProxyConfiguration noProxy() {
+		return new ProxyConfiguration(-1, "none", ProxyType.NOTHING);
+	}
 
-	private int port = DEFAULT_PORT;
-	private String hostname = "localhost";
-	private ProxyType type = ProxyType.MANUAL;
+	/**
+	 * @see ProxyType#AUTOMATIC
+	 */
+	public static ProxyConfiguration automatic() {
+		return new ProxyConfiguration(-1, "none", ProxyType.AUTOMATIC);
+	}
+
+	/**
+	 * @see ProxyType#SYSTEM_DEFAULT
+	 */
+	public static ProxyConfiguration systemDefault() {
+		return new ProxyConfiguration(-1, "none", ProxyType.SYSTEM_DEFAULT);
+	}
+
+	/**
+	 * @see ProxyType#MANUAL
+	 */
+	public static ProxyConfiguration manualProxyOn(String host, int port) {
+		Preconditions.checkNotNull(host);
+		Preconditions.checkArgument(port > 0 && port <= 65535,
+		        "port number should be between 0 and 65535 but was " + port);
+		return new ProxyConfiguration(port, host, ProxyType.MANUAL);
+	}
+
+	private final int port;
+	private final String hostname;
+	private final ProxyType type;
+
+	private ProxyConfiguration(int port, String hostname, ProxyType type) {
+		this.port = port;
+		this.hostname = hostname;
+		this.type = type;
+	}
 
 	/**
 	 * @return The port.
@@ -59,34 +98,10 @@ public class ProxyConfiguration {
 	}
 
 	/**
-	 * @param port
-	 *            The port where the proxy is running on.
-	 */
-	public void setPort(int port) {
-		this.port = port;
-	}
-
-	/**
 	 * @return The hostname.
 	 */
 	public String getHostname() {
 		return hostname;
-	}
-
-	/**
-	 * @param hostname
-	 *            The hostname of the proxy.
-	 */
-	public void setHostname(String hostname) {
-		this.hostname = hostname;
-	}
-
-	/**
-	 * @param type
-	 *            The proxy type. Currently only ProxyType.HTTP_PROXY is supported.
-	 */
-	public void setType(ProxyType type) {
-		this.type = type;
 	}
 
 	/**
@@ -98,6 +113,28 @@ public class ProxyConfiguration {
 
 	@Override
 	public String toString() {
-		return type.toString() + ':' + hostname + ':' + port;
+		switch (type) {
+			case MANUAL:
+				return "Manual host: " + hostname + ":" + port;
+			default:
+				return type.toString();
+		}
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(port, hostname, type);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof ProxyConfiguration) {
+			ProxyConfiguration that = (ProxyConfiguration) object;
+			return Objects.equal(this.port, that.port)
+			        && Objects.equal(this.hostname, that.hostname)
+			        && Objects.equal(this.type, that.type);
+		}
+		return false;
+	}
+
 }

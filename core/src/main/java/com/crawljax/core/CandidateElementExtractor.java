@@ -3,7 +3,6 @@ package com.crawljax.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,8 +18,10 @@ import org.w3c.dom.NodeList;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
-import com.crawljax.core.configuration.IgnoreFrameChecker;
+import com.crawljax.core.configuration.CrawlElement;
+import com.crawljax.core.configuration.CrawlRules;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
@@ -31,7 +32,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 
 /**
  * This class extracts candidate elements from the DOM tree, based on the tags provided by the user.
@@ -45,12 +46,13 @@ public class CandidateElementExtractor {
 	private final EmbeddedBrowser browser;
 
 	private final FormHandler formHandler;
-	private final IgnoreFrameChecker ignoreFrameChecker;
-
-	private final ImmutableMultimap<String, TagElement> excludeTagElements;
-	private final ImmutableList<TagElement> includedTagElements;
+	private final boolean crawlFrames;
+	private final ImmutableMultimap<String, CrawlElement> excludeCrawlElements;
+	private final ImmutableList<CrawlElement> includedCrawlElements;
 
 	private final boolean clickOnce;
+
+	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
 	/**
 	 * Create a new CandidateElementExtractor.
@@ -62,24 +64,34 @@ public class CandidateElementExtractor {
 	 *            the current browser instance used in the Crawler
 	 * @param formHandler
 	 *            the form handler.
-	 * @param configurationReader
+	 * @param config
 	 *            the checker used to determine if a certain frame must be ignored.
 	 */
 	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser,
-	        FormHandler formHandler, CrawljaxConfigurationReader configurationReader) {
+	        FormHandler formHandler, CrawljaxConfiguration config) {
 		checkedElements = checker;
 		this.browser = browser;
 		this.formHandler = formHandler;
-		this.excludeTagElements = asMultiMap(configurationReader.getExcludeTagElements());
-		this.includedTagElements = configurationReader.getTagElements();
-		this.ignoreFrameChecker = configurationReader.getCrawlSpecificationReader();
-		clickOnce = configurationReader.getCrawlSpecificationReader().getClickOnce();
+		CrawlRules rules = config.getCrawlRules();
+		PreCrawlConfiguration preCrawlConfig = rules.getPreCrawlConfig();
+		this.excludeCrawlElements = asMultiMap(preCrawlConfig.getExcludedElements());
+		this.includedCrawlElements =
+		        ImmutableList
+		                .<CrawlElement> builder()
+		                .addAll(preCrawlConfig.getIncludedElements())
+		                .addAll(rules.getInputSpecification().getCrawlElements())
+		                .build();
+
+		crawlFrames = rules.shouldCrawlFrames();
+		clickOnce = rules.isClickOnce();
+		ignoredFrameIdentifiers = rules.getIgnoredFrameIdentifiers();
 	}
 
-	private ImmutableMultimap<String, TagElement> asMultiMap(ImmutableList<TagElement> elements) {
-		ImmutableMultimap.Builder<String, TagElement> builder = ImmutableMultimap.builder();
-		for (TagElement tagElement : elements) {
-			builder.put(tagElement.getName(), tagElement);
+	private ImmutableMultimap<String, CrawlElement> asMultiMap(
+	        ImmutableList<CrawlElement> elements) {
+		ImmutableMultimap.Builder<String, CrawlElement> builder = ImmutableMultimap.builder();
+		for (CrawlElement elem : elements) {
+			builder.put(elem.getTagName(), elem);
 		}
 		return builder.build();
 	}
@@ -125,7 +137,7 @@ public class CandidateElementExtractor {
 	private void extractElements(Document dom, Builder<CandidateElement> results,
 	        String relatedFrame) {
 		LOG.debug("Extracting elements for related frame '{}'", relatedFrame);
-		for (TagElement tag : includedTagElements) {
+		for (CrawlElement tag : includedCrawlElements) {
 			LOG.debug("Extracting TAG: {}", tag);
 
 			NodeList frameNodes = dom.getElementsByTagName("FRAME");
@@ -134,7 +146,7 @@ public class CandidateElementExtractor {
 			NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
 			addFramesCandidates(dom, results, relatedFrame, iFrameNodes);
 
-			eveluateElements(dom, tag, results, relatedFrame);
+			evaluateElements(dom, tag, results, relatedFrame);
 		}
 	}
 
@@ -159,7 +171,7 @@ public class CandidateElementExtractor {
 
 			// TODO Stefan; Here the IgnoreFrameChecker is used, also in
 			// WebDriverBackedEmbeddedBrowser. We must get this in 1 place.
-			if (nameId == null || ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
+			if (nameId == null || isFrameIgnored(frameIdentification + nameId)) {
 				continue;
 			} else {
 				frameIdentification += nameId;
@@ -178,15 +190,34 @@ public class CandidateElementExtractor {
 		}
 	}
 
-	private void eveluateElements(Document dom, TagElement tag,
+	private boolean isFrameIgnored(String string) {
+		if (crawlFrames) {
+			for (String ignorePattern : ignoredFrameIdentifiers) {
+				if (ignorePattern.contains("%")) {
+					// replace with a useful wildcard for regex
+					String pattern = ignorePattern.replace("%", ".*");
+					if (string.matches(pattern)) {
+						return true;
+					}
+				} else if (ignorePattern.equals(string)) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private void evaluateElements(Document dom, CrawlElement crawl,
 	        Builder<CandidateElement> results, String relatedFrame) {
 		try {
-			List<Element> nodeListForTagElement =
-			        getNodeListForTagElement(dom, tag,
+			List<Element> nodeListForCrawlElement =
+			        getNodeListForTagElement(dom, crawl,
 			                checkedElements.getEventableConditionChecker());
 
-			for (Element sourceElement : nodeListForTagElement) {
-				evaluateElement(results, relatedFrame, tag, sourceElement);
+			for (Element sourceElement : nodeListForCrawlElement) {
+				evaluateElement(results, relatedFrame, crawl, sourceElement);
 			}
 		} catch (CrawljaxException e) {
 			LOG.warn("Catched exception during NodeList For Tag Element retrieval", e);
@@ -196,23 +227,23 @@ public class CandidateElementExtractor {
 	/**
 	 * Returns a list of Elements form the DOM tree, matching the tag element.
 	 */
-	private ImmutableList<Element> getNodeListForTagElement(Document dom, TagElement tagElement,
+	private ImmutableList<Element> getNodeListForTagElement(Document dom,
+	        CrawlElement crawlElement,
 	        EventableConditionChecker eventableConditionChecker) {
 
 		Builder<Element> result = ImmutableList.builder();
 
-		if (tagElement.getName() == null) {
+		if (crawlElement.getTagName() == null) {
 			return result.build();
 		}
 
 		EventableCondition eventableCondition =
-		        eventableConditionChecker.getEventableCondition(tagElement.getId());
+		        eventableConditionChecker.getEventableCondition(crawlElement.getId());
 		// TODO Stefan; this part of the code should be re-factored, Hack-ed it this way to prevent
 		// performance problems.
 		ImmutableList<String> expressions = getFullXpathForGivenXpath(dom, eventableCondition);
 
-		NodeList nodeList = dom.getElementsByTagName(tagElement.getName());
-		ImmutableSet<TagAttribute> attributes = tagElement.getAttributes();
+		NodeList nodeList = dom.getElementsByTagName(crawlElement.getTagName());
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
@@ -228,11 +259,10 @@ public class CandidateElementExtractor {
 			 */
 			String id = element.getNodeName() + ": " + DomUtils.getAllElementAttributes(element);
 			if (matchesXpath && !checkedElements.isChecked(id)
-			        && !filterElement(attributes, element)
 			        && !isExcluded(dom, element, eventableConditionChecker)) {
-				addElement(element, result, tagElement);
+				addElement(element, result, crawlElement);
 			} else {
-				LOG.debug("Element {} was not added");
+				LOG.debug("Element {} was not added", element);
 			}
 		}
 		return result.build();
@@ -271,8 +301,8 @@ public class CandidateElementExtractor {
 		return ImmutableList.<String> of();
 	}
 
-	private void addElement(Element element, Builder<Element> builder, TagElement tagElement) {
-		if ("A".equalsIgnoreCase(tagElement.getName())) {
+	private void addElement(Element element, Builder<Element> builder, CrawlElement crawlElement) {
+		if ("A".equalsIgnoreCase(crawlElement.getTagName())) {
 			String href = element.getAttribute("href");
 			if (!Strings.isNullOrEmpty(href)) {
 				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
@@ -288,9 +318,10 @@ public class CandidateElementExtractor {
 	}
 
 	private void evaluateElement(Builder<CandidateElement> results, String relatedFrame,
-	        TagElement tag, Element sourceElement) {
+	        CrawlElement crawl, Element sourceElement) {
 		EventableCondition eventableCondition =
-		        checkedElements.getEventableConditionChecker().getEventableCondition(tag.getId());
+		        checkedElements.getEventableConditionChecker().getEventableCondition(
+		                crawl.getId());
 		String xpath = XPathHelper.getXPathExpression(sourceElement);
 		// get multiple candidate elements when there are input
 		// fields connected to this element
@@ -354,10 +385,11 @@ public class CandidateElementExtractor {
 			return true;
 		}
 
-		for (TagElement tag : excludeTagElements.get(element.getTagName().toUpperCase())) {
+		for (CrawlElement crawlElem : excludeCrawlElements
+		        .get(element.getTagName().toUpperCase())) {
 			boolean matchesXPath = false;
 			EventableCondition eventableCondition =
-			        eventableConditionChecker.getEventableCondition(tag.getId());
+			        eventableConditionChecker.getEventableCondition(crawlElem.getId());
 			try {
 				String asXpath = XPathHelper.getXPathExpression(element);
 				matchesXPath =
@@ -373,53 +405,8 @@ public class CandidateElementExtractor {
 				LOG.info("Excluded element because of xpath: " + element);
 				return true;
 			}
-			if (!filterElement(tag.getAttributes(), element) && tag.getAttributes().size() > 0) {
-				LOG.info("Excluded element because of attributes: " + element);
-				return true;
-			}
 		}
 
 		return false;
-	}
-
-	/**
-	 * Return whether the element is filtered out because of its attributes.
-	 */
-	private boolean filterElement(Set<TagAttribute> attributes, Element element) {
-		int matchCounter = 0;
-		if (element == null || attributes == null) {
-			return false;
-		}
-		for (TagAttribute attr : attributes) {
-			LOG.debug("Checking element " + DomUtils.getElementString(element)
-			        + "AttributeName: " + attr.getName() + " value: " + attr.getValue());
-
-			if (attr.matchesValue(element.getAttribute(attr.getName()))) {
-				// make sure that if attribute value is % the element should
-				// have this attribute
-				if (attr.getValue().equals("%")
-				        && element.getAttributeNode(attr.getName()) == null) {
-					return true;
-				} else {
-					matchCounter++;
-				}
-			} else if (attr.getName().equalsIgnoreCase("innertext")
-			        && element.getTextContent() != null) {
-				String value = attr.getValue();
-				String text = element.getTextContent().trim();
-				if (value.contains("%")) {
-					String pattern = value.replace("%", "(.*?)");
-					if (text.matches(pattern)) {
-						matchCounter++;
-					}
-
-				} else if (text.equalsIgnoreCase(value)) {
-					matchCounter++;
-				}
-			}
-
-		}
-
-		return (attributes.size() != matchCounter);
 	}
 }

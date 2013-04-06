@@ -2,22 +2,20 @@ package com.crawljax.plugins.crawloverview;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
+import java.net.URLDecoder;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
@@ -28,15 +26,8 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.configuration.CrawlSpecificationReader;
-import com.crawljax.plugins.crawloverview.model.CrawlConfiguration;
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
-import com.crawljax.plugins.crawloverview.model.Statistics;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
@@ -68,15 +59,20 @@ class OutputBuilder {
 		copySkeleton();
 
 		states = new File(outputDir, STATES_FOLDER_NAME);
-		states.mkdir();
+		boolean created = states.mkdir();
+		checkArgument(created, "Could not create states dir");
 		screenshots = new File(outputDir, SCREENSHOT_FOLDER_NAME);
 		screenshots.mkdir();
 		doms = new File(outputDir, DOMS_OUTPUT_NAME);
-		doms.mkdir();
+		created = doms.mkdir();
+		checkArgument(created, "Could not create doms dir");
 
 		indexFile = new File(outputDir, "index.html");
 		ve = new VelocityEngine();
 		configureVelocity();
+
+		copyGitProperties();
+
 	}
 
 	private void configureVelocity() {
@@ -92,7 +88,8 @@ class OutputBuilder {
 			checkArgument(outputDir.list().length == 0, "Directory must be empty");
 			checkArgument(outputDir.canWrite(), "Output dir not writable");
 		} else {
-			outputDir.mkdir();
+			boolean created = outputDir.mkdirs();
+			checkArgument(created, "Could not create directory " + outputDir);
 		}
 	}
 
@@ -105,7 +102,7 @@ class OutputBuilder {
 			try {
 				FileUtils.copyDirectory(new File(skeleton.toURI()), outputDir);
 			} catch (IOException | URISyntaxException e) {
-				throw new RuntimeException(
+				throw new CrawljaxException(
 				        "Could not copy required resources: " + e.getMessage(), e);
 			}
 		}
@@ -114,52 +111,64 @@ class OutputBuilder {
 
 	private void copySkeletonFromJar(URL skeleton) {
 		LOG.debug("Loading skeleton as JAR entry {}", skeleton);
-		String path = skeleton.getPath();
-		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
-		File jar = new File(jarpath);
-		LOG.debug("Jar file {} from path {}", jar, path);
+		File jar = getJar(skeleton);
 		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(jar))) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				if (entry.getName().startsWith("skeleton") && !entry.isDirectory()) {
 					String filename = entry.getName().substring("skeleton/".length());
 					File newFile = new File(outputDir, filename);
-					new File(newFile.getParent()).mkdirs();
+					File parent = new File(newFile.getParent());
+					if (!parent.exists()) {
+						boolean created = parent.mkdirs();
+						checkArgument(created, "Could not create folder " + newFile.getParent());
+					}
 					FileOutputStream out = new FileOutputStream(newFile);
 					ByteStreams.copy(zis, out);
 					out.close();
 				}
 			}
 		} catch (IOException e1) {
-			throw new RuntimeException("Could not copy required resources: " + e1.getMessage(),
+			throw new CrawljaxException("Could not copy required resources: " + e1.getMessage(),
 			        e1);
 		}
 	}
 
-	File newScreenShotFile(String name) {
-		return new File(screenshots, name + ".png");
+	private File getJar(URL skeleton) {
+		String path;
+		try {
+			path = URLDecoder.decode(skeleton.getPath(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new CrawljaxException("Could not process the path of the Overview skeleton "
+			        + skeleton, e);
+		}
+		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
+		File jar = new File(jarpath);
+		LOG.debug("Jar file {} from path {}", jar, path);
+		return jar;
 	}
 
-	void makeThumbNail(File screenShot, String name) {
-		try {
-			// scale image on disk
-			BufferedImage originalImage = ImageIO.read(screenShot);
-			BufferedImage resizedImage = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+	File newScreenShotFile(String name) {
+		return new File(screenshots, name + ".jpg");
+	}
 
-			Graphics2D g = resizedImage.createGraphics();
-			g.drawImage(originalImage, 0, 0, 200, 200, Color.WHITE, null);
-			g.dispose();
-			ImageIO.write(resizedImage, "jpg", new File(screenshots, name + "_small.jpg"));
+	public File newThumbNail(String name) {
+		return new File(screenshots, name + "_small.jpg");
+	}
+
+	private void copyGitProperties() {
+		File outFile = new File(outputDir, "git.properties");
+		try (InputStream in = OutputBuilder.class.getResourceAsStream("/git.properties");
+		        FileOutputStream out = new FileOutputStream(outFile)) {
+			ByteStreams.copy(in, out);
 		} catch (IOException e) {
-			throw new CrawlOverviewException("Could not create thumbnail");
+			LOG.warn("Could not copy git.properties file", e);
 		}
 	}
 
 	void write(OutPutModel outModel) {
 		try {
 			writeIndexFile(outModel);
-			writeStatistics(outModel.getStatistics());
-			writeConfig(outModel.getConfiguration(), outModel.getCrawlSpecification());
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
@@ -167,20 +176,19 @@ class OutputBuilder {
 		LOG.info("Overview report generated");
 	}
 
-	private void writeConfig(CrawlConfiguration configuration, CrawlSpecificationReader crawlSpec) {
-		File file = new File(outputDir, "config.html");
-		VelocityContext context = new VelocityContext();
-		context.put("config", BeanToReadableMap.toMap(configuration));
-		context.put("spec", BeanToReadableMap.toMap(crawlSpec));
-		writeFile(context, file, "config.html");
-	}
-
 	private void writeIndexFile(OutPutModel model) {
 		LOG.debug("Writing index file");
 		VelocityContext context = new VelocityContext();
-		writeJsonToOutDir(toJson(model));
-		context.put("states", toJson(model.getStates()));
-		context.put("edges", toJson(model.getEdges()));
+		writeJsonToOutDir(Serializer.toPrettyJson(model));
+		context.put("states", Serializer.toPrettyJson(model.getStates()));
+		context.put("edges", Serializer.toPrettyJson(model.getEdges()));
+		context.put("config", BeanToReadableMap.toMap(model.getConfiguration()));
+
+		context.put("stats", model.getStatistics());
+
+		LOG.debug("Writing urls report");
+		context.put("urls", model.getStatistics().getStateStats().getUrls());
+
 		writeFile(context, indexFile, "index.html");
 	}
 
@@ -192,41 +200,15 @@ class OutputBuilder {
 		}
 	}
 
-	private void writeStatistics(Statistics stats) {
-		LOG.debug("Writing statistics report");
-		File file = new File(outputDir, "statistics.html");
-		VelocityContext context = new VelocityContext();
-		context.put("stats", stats);
-		writeFile(context, file, "statistics.html");
-
-		LOG.debug("Writing urls report");
-		file = new File(outputDir, "urls.html");
-		context = new VelocityContext();
-		context.put("urls", stats.getStateStats().getUrls());
-		writeFile(context, file, "urls.html");
-	}
-
-	public void write(CrawlSpecificationReader crawlSpecificationReader) {
-		ObjectMapper objectMapper = new ObjectMapper();
-		try {
-			ObjectWriter prettyPrinter = objectMapper.writer().withDefaultPrettyPrinter();
-			prettyPrinter
-			        .writeValue(new File(outputDir, "config.json"), crawlSpecificationReader);
-		} catch (Exception e) {
-			throw new RuntimeException("Cannot save config", e);
-		}
-	}
-
 	private void writeFile(VelocityContext context, File outFile, String template) {
 		try {
 			Template templatee = ve.getTemplate(template);
 			FileWriter writer = new FileWriter(outFile);
 			templatee.merge(context, writer);
-			// ve.evaluate(context, writer, name, template);
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			throw new CrawlOverviewException("Could not write output state");
+			throw new CrawlOverviewException("Could not write output state", e);
 		}
 	}
 
@@ -257,16 +239,6 @@ class OutputBuilder {
 			return Files.toString(new File(doms, name + ".html"), Charsets.UTF_8);
 		} catch (IOException e) {
 			return "Could not load DOM: " + e.getLocalizedMessage();
-		}
-	}
-
-	private String toJson(Object o) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(o);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
 		}
 	}
 

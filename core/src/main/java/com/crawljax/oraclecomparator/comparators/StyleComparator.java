@@ -62,10 +62,10 @@ public class StyleComparator extends AbstractComparator {
 	}
 
 	private Document stripDom(Document dom) {
-		dom = stripElements(dom);
-		dom = stripAttributes(dom);
-		dom = stripStyleAttributes(dom);
-		return dom;
+		Document strippedDom = stripElements(dom);
+		strippedDom = stripAttributes(strippedDom);
+		strippedDom = stripStyleAttributes(strippedDom);
+		return strippedDom;
 	}
 
 	private Document stripStyleAttributes(Document dom) {
@@ -75,7 +75,7 @@ public class StyleComparator extends AbstractComparator {
 				Node attribute = nl.item(i);
 				if (attribute != null) {
 					attribute.setNodeValue(stripStyleProperties(attribute.getNodeValue()));
-					if (attribute.getNodeValue() == "") {
+					if (attribute.getNodeValue().equals("")) {
 						((Attr) attribute).getOwnerElement().removeAttribute(
 						        attribute.getNodeName());
 					}
@@ -160,9 +160,6 @@ public class StyleComparator extends AbstractComparator {
 				}
 			}
 		}
-		// TODO This should be buffer.toString() but a weird behavior of this class results in a
-		// difference.
-		// return buffer.toString();
 		return badWayOfDoingThis;
 	}
 

@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.AcceptAllFramesChecker;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.IgnoreFrameChecker;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.state.Eventable;
@@ -48,6 +48,7 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.forms.InputValue;
 import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.DomUtils;
+import com.google.common.collect.ImmutableSortedSet;
 
 /**
  * @author mesbah
@@ -61,7 +62,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	        .getLogger(WebDriverBackedEmbeddedBrowser.class);
 	private final WebDriver browser;
 
-	private List<String> filterAttributes;
+	private ImmutableSortedSet<String> filterAttributes;
 	private long crawlWaitReload;
 	private IgnoreFrameChecker ignoreFrameChecker = new AcceptAllFramesChecker();
 
@@ -88,8 +89,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param crawlWaitEvent
 	 *            the period to wait after an event is fired.
 	 */
-	private WebDriverBackedEmbeddedBrowser(WebDriver driver, List<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent) {
+	private WebDriverBackedEmbeddedBrowser(WebDriver driver,
+	        ImmutableSortedSet<String> filterAttributes, long crawlWaitReload, long crawlWaitEvent) {
 		this(driver);
 		this.filterAttributes = filterAttributes;
 		this.crawlWaitEvent = crawlWaitEvent;
@@ -110,8 +111,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param ignoreFrameChecker
 	 *            the checker used to determine if a certain frame must be ignored.
 	 */
-	private WebDriverBackedEmbeddedBrowser(WebDriver driver, List<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent, IgnoreFrameChecker ignoreFrameChecker) {
+	private WebDriverBackedEmbeddedBrowser(WebDriver driver,
+	        ImmutableSortedSet<String> filterAttributes, long crawlWaitReload,
+	        long crawlWaitEvent, IgnoreFrameChecker ignoreFrameChecker) {
 		this(driver, filterAttributes, crawlWaitReload, crawlWaitEvent);
 		this.ignoreFrameChecker = ignoreFrameChecker;
 	}
@@ -130,7 +132,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl,
-	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
+	        ImmutableSortedSet<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
 		return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl),
 		        filterAttributes, crawlWaitEvent, crawlWaitReload);
 	}
@@ -151,8 +153,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl,
-	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
-	        IgnoreFrameChecker ignoreFrameChecker) {
+	        ImmutableSortedSet<String> filterAttributes, long crawlWaitEvent,
+	        long crawlWaitReload, IgnoreFrameChecker ignoreFrameChecker) {
 		return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl),
 		        filterAttributes, crawlWaitEvent, crawlWaitReload, ignoreFrameChecker);
 	}
@@ -171,7 +173,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver,
-	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
+	        ImmutableSortedSet<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
 		return new WebDriverBackedEmbeddedBrowser(driver, filterAttributes, crawlWaitEvent,
 		        crawlWaitReload);
 	}
@@ -192,8 +194,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return The EmbeddedBrowser.
 	 */
 	public static WebDriverBackedEmbeddedBrowser withDriver(WebDriver driver,
-	        List<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload,
-	        IgnoreFrameChecker ignoreFrameChecker) {
+	        ImmutableSortedSet<String> filterAttributes, long crawlWaitEvent,
+	        long crawlWaitReload, IgnoreFrameChecker ignoreFrameChecker) {
 		return new WebDriverBackedEmbeddedBrowser(driver, filterAttributes, crawlWaitEvent,
 		        crawlWaitReload, ignoreFrameChecker);
 	}
@@ -365,10 +367,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		m = p.matcher(html);
 		htmlFormatted = m.replaceAll("");
 
-		// TODO (Stefan), Following lines are a serious performance bottle neck...
-		// Document doc = Helper.getDocument(htmlFormatted);
-		// htmlFormatted = Helper.getDocumentToString(doc);
-
 		htmlFormatted = filterAttributes(htmlFormatted);
 		return htmlFormatted;
 	}
@@ -381,15 +379,16 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return The filtered HTML string.
 	 */
 	private String filterAttributes(String html) {
+		String filteredHtml = html;
 		if (this.filterAttributes != null) {
 			for (String attribute : this.filterAttributes) {
 				String regex = "\\s" + attribute + "=\"[^\"]*\"";
 				Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 				Matcher m = p.matcher(html);
-				html = m.replaceAll("");
+				filteredHtml = m.replaceAll("");
 			}
 		}
-		return html;
+		return filteredHtml;
 	}
 
 	@Override
@@ -413,12 +412,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		try {
 			WebElement field = browser.findElement(identification.getWebDriverBy());
 			if (field != null) {
-				// first clear the field
 				field.clear();
-				// then fill in
 				field.sendKeys(text);
 
-				// this.activeElement = field;
 				return true;
 			}
 			return false;
@@ -781,7 +777,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	/**
 	 * @return the list of attributes to be filtered from DOM.
 	 */
-	protected List<String> getFilterAttributes() {
+	protected ImmutableSortedSet<String> getFilterAttributes() {
 		return filterAttributes;
 	}
 
@@ -792,31 +788,40 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		return crawlWaitReload;
 	}
 
-	private void takeScreenShotOnBrowser(WebDriver driver, File file) throws CrawljaxException {
-		if (driver instanceof TakesScreenshot) {
-			File tmpfile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-
+	@Override
+	public void saveScreenShot(File file) throws CrawljaxException {
+		try {
+			File tmpfile = takeScreenShotOnBrowser(browser, OutputType.FILE);
 			try {
 				FileHandler.copy(tmpfile, file);
 			} catch (IOException e) {
 				throw new CrawljaxException(e);
 			}
+		} catch (WebDriverException e) {
+			throw wrapWebDriverExceptionIfConnectionException(e);
+		}
+	}
 
+	private <T> T takeScreenShotOnBrowser(WebDriver driver, OutputType<T> outType)
+	        throws CrawljaxException {
+		if (driver instanceof TakesScreenshot) {
+			T screenshot = ((TakesScreenshot) driver).getScreenshotAs(outType);
 			removeCanvasGeneratedByFirefoxDriverForScreenshots();
+			return screenshot;
 		} else if (driver instanceof RemoteWebDriver) {
 			WebDriver augmentedWebdriver = new Augmenter().augment(driver);
-			takeScreenShotOnBrowser(augmentedWebdriver, file);
+			return takeScreenShotOnBrowser(augmentedWebdriver, outType);
 		} else if (driver instanceof WrapsDriver) {
-			takeScreenShotOnBrowser(((WrapsDriver) driver).getWrappedDriver(), file);
+			return takeScreenShotOnBrowser(((WrapsDriver) driver).getWrappedDriver(), outType);
 		} else {
 			throw new CrawljaxException("Your current WebDriver doesn't support screenshots.");
 		}
 	}
 
 	@Override
-	public void saveScreenShot(File file) throws CrawljaxException {
+	public byte[] getScreenShot() throws CrawljaxException {
 		try {
-			takeScreenShotOnBrowser(browser, file);
+			return takeScreenShotOnBrowser(browser, OutputType.BYTES);
 		} catch (WebDriverException e) {
 			throw wrapWebDriverExceptionIfConnectionException(e);
 		}
@@ -844,13 +849,12 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
-	public void updateConfiguration(CrawljaxConfigurationReader configuration) {
+	public void updateConfiguration(CrawljaxConfiguration configuration) {
 		// Retrieve the config values used
-		this.filterAttributes = configuration.getFilterAttributeNames();
-		this.crawlWaitReload =
-		        configuration.getCrawlSpecificationReader().getWaitAfterReloadUrl();
-		this.crawlWaitEvent = configuration.getCrawlSpecificationReader().getWaitAfterEvent();
-		this.ignoreFrameChecker = configuration.getCrawlSpecificationReader();
+		this.filterAttributes =
+		        configuration.getCrawlRules().getPreCrawlConfig().getFilterAttributeNames();
+		this.crawlWaitReload = configuration.getCrawlRules().getWaitAfterReloadUrl();
+		this.crawlWaitEvent = configuration.getCrawlRules().getWaitAfterEvent();
 	}
 
 	private boolean exceptionIsConnectionException(WebDriverException exception) {

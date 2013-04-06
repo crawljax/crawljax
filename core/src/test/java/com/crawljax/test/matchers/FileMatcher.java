@@ -14,6 +14,7 @@ public class FileMatcher extends TypeSafeMatcher<File> {
 		return file.exists();
 	}
 
+	@Override
 	public void describeTo(Description description) {
 		description.appendText("file which exists");
 	}

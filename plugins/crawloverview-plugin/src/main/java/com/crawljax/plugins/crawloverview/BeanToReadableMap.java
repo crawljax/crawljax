@@ -7,7 +7,11 @@ import java.util.Collection;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.crawljax.core.configuration.CrawlRules;
+import com.crawljax.core.plugin.Plugin;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
@@ -24,6 +28,8 @@ class BeanToReadableMap {
 	private static final String CAMEL_REGEX = String.format("%s|%s|%s",
 	        "(?<=[A-Z])(?=[A-Z][a-z])", "(?<=[^A-Z])(?=[A-Z])", "(?<=[A-Za-z])(?=[^A-Za-z])");
 
+	private static final Logger LOG = LoggerFactory.getLogger(BeanToReadableMap.class);
+
 	public static ImmutableMap<String, String> toMap(Object o) {
 		Builder<String, String> builder = ImmutableMap.builder();
 		for (Method method : o.getClass().getMethods()) {
@@ -34,6 +40,11 @@ class BeanToReadableMap {
 		return builder.build();
 	}
 
+	private static boolean isGetter(Method method) {
+		return method.getName().startsWith("get") && method.getParameterTypes().length == 0
+		        && !"getClass".equals(method.getName());
+	}
+
 	private static Entry<String, String> addMethodToMap(Object o, Method method) {
 		try {
 			Object[] noArgs = null;
@@ -41,21 +52,29 @@ class BeanToReadableMap {
 			return ImmutablePair.of(asName(method), toString(result));
 
 		} catch (Exception e) {
-			throw new CrawlOverviewException("Could not parse bean " + o.toString() + " because "
-			        + e.getMessage(), e);
+			LOG.error("Could not parse bean {} because {}", o, e.getMessage(), e);
+			return ImmutablePair.of(asName(method), "Unreadable entry");
 		}
 	}
 
 	private static String toString(Object result) {
-		if (result instanceof Collection<?>) {
+		if (result == null) {
+			return "null";
+		} else if (result instanceof Collection<?>) {
 			return asHtmlList((Collection<?>) result);
-		} else {
+		} else if (result instanceof Plugin) {
+			return escapeHtml(result.getClass().getSimpleName());
+		} else if (result instanceof CrawlRules) {
+			return "<pre><code>" + Serializer.toPrettyJson(result) + "</code></pre>";
+		}
+		else {
 			return escapeHtml(result.toString());
 		}
 	}
 
 	private static String asName(Method method) {
-		String name = method.getName().substring(3);
+		final int getPrefix = "get".length();
+		String name = method.getName().substring(getPrefix);
 		return splitCamelCase(name);
 	}
 
@@ -65,14 +84,9 @@ class BeanToReadableMap {
 		}
 		StringBuilder sb = new StringBuilder("<ul>");
 		for (Object object : result) {
-			sb.append("<li>").append(escapeHtml(object.toString())).append("</li>");
+			sb.append("<li>").append(toString(object)).append("</li>");
 		}
 		return sb.append("</ul>").toString();
-	}
-
-	private static boolean isGetter(Method method) {
-		return method.getName().startsWith("get") && method.getParameterTypes().length == 0
-		        && !"getClass".equals(method.getName());
 	}
 
 	private static String splitCamelCase(String s) {

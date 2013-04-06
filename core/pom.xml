@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.crawljax</groupId>
 		<artifactId>crawljax-parent-pom</artifactId>
-		<version>2.3-SNAPSHOT</version>
+		<version>3.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>crawljax-core</artifactId>
@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
-			<version>1.9.17</version>
+			<version>1.9.18</version>
 		</dependency>
 
 		<dependency>
@@ -86,7 +86,7 @@
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.10.0</version>
+			<version>2.11.0</version>
 		</dependency>
 
 
@@ -141,12 +141,9 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>9.0.0.RC0</version>
+			<version>${jetty.version}</version>
 			<scope>test</scope>
 		</dependency>
-
-
-
 
 	</dependencies>
 
@@ -167,9 +164,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12.4</version>
 				<configuration>
-					<systemProperties>
-						<LOG_LEVEL>DEBUG</LOG_LEVEL>
-					</systemProperties>
 					<excludedGroups>${tests.exclude}</excludedGroups>
 				</configuration>
 			</plugin>

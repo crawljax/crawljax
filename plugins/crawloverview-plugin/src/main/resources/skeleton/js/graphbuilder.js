@@ -15,7 +15,7 @@ var graphics = Viva.Graph.View.svgGraphics();
 var renderer = Viva.Graph.View.renderer(graph, {
 	graphics : graphics,
 	layout : layout,
-	container : document.getElementById('graphContainer')
+	container : document.getElementById('container-graph')
 });
 
 renderer.run();
@@ -29,7 +29,7 @@ graphics.node(function(node) {
 		.attr('width', nodeSize)
 		.attr('height', nodeSize)
 		.link(node.data.img); 
-	$(img).dblclick(function() { window.location = node.data.url;});
+	$(img).dblclick(function() { window.open(node.data.url, '_blank');});
 	ui.append(svgText);
 	ui.append(img);	
 	stroke = Viva.Graph.svg('rect')

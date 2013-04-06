@@ -12,6 +12,10 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 public class RandomInputValueGeneratorTest {
+	private static final int NUM_RAND_CHECKS = 1000;
+	private static final int LENGTH_SHORT = 1;
+	private static final int LENGTH_MEDIUM = 15;
+	private static final int LENGTH_LONG = 150;
 
 	private RandomInputValueGenerator generator;
 
@@ -23,16 +27,16 @@ public class RandomInputValueGeneratorTest {
 	@Test
 	public void randomValuesAreUnique() {
 		Set<String> set = new HashSet<>();
-		for (int i = 0; i < 1000; i++) {
-			assertThat(set.add(generator.getRandomString(15)), is(true));
+		for (int i = 0; i < NUM_RAND_CHECKS; i++) {
+			assertThat(set.add(generator.getRandomString(LENGTH_MEDIUM)), is(true));
 		}
 	}
 
 	@Test
 	public void testLengthSpecification() {
-		assertThat(generator.getRandomString(1).length(), is(1));
-		assertThat(generator.getRandomString(15).length(), is(15));
-		assertThat(generator.getRandomString(150).length(), is(150));
+		assertThat(generator.getRandomString(LENGTH_SHORT).length(), is(LENGTH_SHORT));
+		assertThat(generator.getRandomString(LENGTH_MEDIUM).length(), is(LENGTH_MEDIUM));
+		assertThat(generator.getRandomString(LENGTH_LONG).length(), is(LENGTH_LONG));
 	}
 
 	@Test(expected = IllegalArgumentException.class)

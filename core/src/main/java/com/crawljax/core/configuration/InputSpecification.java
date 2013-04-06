@@ -2,10 +2,10 @@ package com.crawljax.core.configuration;
 
 import java.util.List;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Lists;
 
 /**
@@ -27,8 +27,6 @@ import com.google.common.collect.Lists;
  * input.field("agreelicence").setValue(true);
  * </code> Crawljax will set Name, Phone, Mobile, and Agree values. It will enter a random string in
  * the Other field if enabled in {@link CrawlSpecification}
- * 
- * @author DannyRoest@gmail.com (Danny Roest)
  */
 public final class InputSpecification {
 
@@ -82,35 +80,38 @@ public final class InputSpecification {
 
 	// hidden
 
-	private void addProperty(PropertiesConfiguration config, InputField inputField) {
-		String fields = ConfigurationHelper.listToString(inputField.getFieldNames());
-		String values =
-		        ConfigurationHelper.listToStringEmptyStringAllowed(inputField.getFieldValues());
-		config.addProperty(inputField.getId() + ".fields", fields);
-		config.addProperty(inputField.getId() + ".values", values);
-	}
-
-	/**
-	 * @return The properties configuration object.
-	 */
-	protected PropertiesConfiguration getConfiguration() {
-		PropertiesConfiguration config = new PropertiesConfiguration();
+	public ImmutableListMultimap<String, String> getFormFieldNames() {
+		ImmutableListMultimap.Builder<String, String> formFieldNames =
+		        ImmutableListMultimap.builder();
 		for (Form form : this.forms) {
 			for (FormInputField inputField : form.getInputFields()) {
-				addProperty(config, inputField);
+				formFieldNames.putAll(inputField.getId(), inputField.getFieldNames());
 			}
 		}
 		for (InputField inputField : inputFields) {
-			addProperty(config, inputField);
+			formFieldNames.putAll(inputField.getId(), inputField.getFieldNames());
 		}
+		return formFieldNames.build();
+	}
 
-		return config;
+	public ImmutableListMultimap<String, String> getFormFieldValues() {
+		ImmutableListMultimap.Builder<String, String> formFieldNames =
+		        ImmutableListMultimap.builder();
+		for (Form form : this.forms) {
+			for (FormInputField inputField : form.getInputFields()) {
+				formFieldNames.putAll(inputField.getId(), inputField.getFieldValues());
+			}
+		}
+		for (InputField inputField : inputFields) {
+			formFieldNames.putAll(inputField.getId(), inputField.getFieldValues());
+		}
+		return formFieldNames.build();
 	}
 
 	/**
 	 * @return List of crawlelements.
 	 */
-	protected ImmutableList<CrawlElement> getCrawlElements() {
+	public ImmutableList<CrawlElement> getCrawlElements() {
 		Builder<CrawlElement> builder = ImmutableList.builder();
 		for (Form form : this.forms) {
 			CrawlElement crawlTag = form.getCrawlElement();

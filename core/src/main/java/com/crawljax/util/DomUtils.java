@@ -30,7 +30,6 @@ import javax.xml.xpath.XPathFactory;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
-import org.custommonkey.xmlunit.DifferenceListener;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +43,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
@@ -118,21 +118,25 @@ public final class DomUtils {
 	 */
 	public static String getElementAttributes(Element element, ImmutableSet<String> exclude) {
 		StringBuilder buffer = new StringBuilder();
-
 		if (element != null) {
 			NamedNodeMap attributes = element.getAttributes();
 			if (attributes != null) {
-				for (int i = 0; i < attributes.getLength(); i++) {
-					Attr attr = (Attr) attributes.item(i);
-					if (!exclude.contains(attr.getNodeName())) {
-						buffer.append(attr.getNodeName()).append('=');
-						buffer.append(attr.getNodeValue()).append(' ');
-					}
-				}
+				addAttributesToString(exclude, buffer, attributes);
 			}
 		}
 
 		return buffer.toString().trim();
+	}
+
+	private static void addAttributesToString(ImmutableSet<String> exclude, StringBuilder buffer,
+	        NamedNodeMap attributes) {
+		for (int i = 0; i < attributes.getLength(); i++) {
+			Attr attr = (Attr) attributes.item(i);
+			if (!exclude.contains(attr.getNodeName())) {
+				buffer.append(attr.getNodeName()).append('=');
+				buffer.append(attr.getNodeValue()).append(' ');
+			}
+		}
 	}
 
 	/**
@@ -142,17 +146,17 @@ public final class DomUtils {
 	 */
 	public static String getElementString(Element element) {
 		String text = DomUtils.removeNewLines(DomUtils.getTextValue(element)).trim();
-		String info = "";
-		if (!text.equals("")) {
-			info += "\"" + text + "\" ";
+		StringBuilder info = new StringBuilder();
+		if (!Strings.isNullOrEmpty(text)) {
+			info.append("\"").append(text).append("\" ");
 		}
 		if (element != null) {
 			if (element.hasAttribute("id")) {
-				info += "ID: " + element.getAttribute("id") + " ";
+				info.append("ID: ").append(element.getAttribute("id")).append(" ");
 			}
-			info += DomUtils.getAllElementAttributes(element) + " ";
+			info.append(DomUtils.getAllElementAttributes(element)).append(" ");
 		}
-		return info;
+		return info.toString();
 	}
 
 	/**
@@ -281,8 +285,9 @@ public final class DomUtils {
 	 */
 	public static String getTextValue(Element element) {
 		String ret = "";
-		if (element.getTextContent() != null) {
-			ret = element.getTextContent();
+		String textContent = element.getTextContent();
+		if (textContent != null && !textContent.equals("")) {
+			ret = textContent;
 		} else if (element.hasAttribute("title")) {
 			ret = element.getAttribute("title");
 		} else if (element.hasAttribute("alt")) {
@@ -325,29 +330,7 @@ public final class DomUtils {
 		try {
 			Diff d = new Diff(DomUtils.asDocument(controlDom), DomUtils.asDocument(testDom));
 			DetailedDiff dd = new DetailedDiff(d);
-			dd.overrideDifferenceListener(new DifferenceListener() {
-
-				@Override
-				public void skippedComparison(Node control, Node test) {
-				}
-
-				@Override
-				public int differenceFound(Difference difference) {
-					if (difference.getControlNodeDetail() == null
-					        || difference.getControlNodeDetail().getNode() == null
-					        || difference.getTestNodeDetail() == null
-					        || difference.getTestNodeDetail().getNode() == null) {
-						return RETURN_ACCEPT_DIFFERENCE;
-					}
-					if (ignoreAttributes.contains(difference.getTestNodeDetail().getNode()
-					        .getNodeName())
-					        || ignoreAttributes.contains(difference.getControlNodeDetail()
-					                .getNode().getNodeName())) {
-						return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
-					}
-					return RETURN_ACCEPT_DIFFERENCE;
-				}
-			});
+			dd.overrideDifferenceListener(new DomDifferenceListener(ignoreAttributes));
 
 			return dd.getAllDifferences();
 		} catch (IOException e) {
@@ -393,7 +376,7 @@ public final class DomUtils {
 	 * @return The new, correct path.
 	 */
 	public static String addFolderSlashIfNeeded(String folderName) {
-		if (!folderName.equals("") && !folderName.endsWith("/")) {
+		if (!"".equals(folderName) && !folderName.endsWith("/")) {
 			return folderName + "/";
 		} else {
 			return folderName;
@@ -409,8 +392,8 @@ public final class DomUtils {
 	 */
 	private static String getFileNameInPath(String path) {
 		String fname;
-		if (path.indexOf("/") != -1) {
-			fname = path.substring(path.lastIndexOf("/") + 1);
+		if (path.indexOf('/') != -1) {
+			fname = path.substring(path.lastIndexOf('/') + 1);
 		} else {
 			fname = path;
 		}
@@ -460,8 +443,7 @@ public final class DomUtils {
 	 */
 	public static String getJSGetElement(String xpath) {
 		String js =
-		        ""
-		                + "function ATUSA_getElementInNodes(nodes, tagName, number){"
+		        "function ATUSA_getElementInNodes(nodes, tagName, number){"
 		                + "try{"
 		                + "var pos = 1;"
 		                + "for(i=0; i<nodes.length; i++){"

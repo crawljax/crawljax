@@ -7,7 +7,7 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.WebElement;
 
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawljaxConfigurationReader;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
@@ -139,11 +139,18 @@ public interface EmbeddedBrowser {
 	void saveScreenShot(File file) throws CrawljaxException;
 
 	/**
+	 * @return The screenshot in PNG format.
+	 * @throws CrawljaxException
+	 *             if saving screenshots is not supported by the implementing class.
+	 */
+	byte[] getScreenShot() throws CrawljaxException;
+
+	/**
 	 * Update the configuration of the Browser. When this method is called the implementing
 	 * EmbeddedBrowser must updates its internal configuration to the values given as argument.
 	 * 
 	 * @param configuration
 	 *            the new configuration values that needs to be updated.
 	 */
-	void updateConfiguration(CrawljaxConfigurationReader configuration);
+	void updateConfiguration(CrawljaxConfiguration configuration);
 }
