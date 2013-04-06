@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.datatype.Duration;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 
 public class Configuration {
@@ -13,7 +11,7 @@ public class Configuration {
 	private String name;
 	private String url = "http://";
 	private BrowserType browser = BrowserType.firefox;
-	private int numBrowsers;
+	private int numBrowsers = 1;
 	private boolean bootBrowser = true;
 	private int reloadWaitTime = 500;
 	private int eventWaitTime = 500;
@@ -22,19 +20,15 @@ public class Configuration {
 	private int maxDuration = 60;
 	private boolean clickOnce = true;
 	private boolean randomFormInput = true;
-	private ClickRuleType clickRule = ClickRuleType.Default;
+	private boolean clickDefault = true;
 	private List<ClickRule> clickRules = new ArrayList<ClickRule>();
 	private List<Condition> pageConditions = new ArrayList<Condition>();
 	private List<Condition> invariants = new ArrayList<Condition>();
 	private List<Comparator> comparators = new ArrayList<Comparator>();
 	private List<NameValuePair> formInputValues = new ArrayList<NameValuePair>();
 	private Date lastCrawl = null;
-	private Duration lastDuration;
+	private long lastDuration;
 	private Date lastModified = null;
-
-	public enum ClickRuleType {
-		Default, More, Custom
-	}
 
 	/**
 	 * @return the id
@@ -202,6 +196,21 @@ public class Configuration {
 	}
 
 	/**
+	 * @return the clickDefault
+	 */
+	public boolean isClickDefault() {
+		return clickDefault;
+	}
+
+	/**
+	 * @param clickDefault
+	 *            the clickDefault to set
+	 */
+	public void setClickDefault(boolean clickDefault) {
+		this.clickDefault = clickDefault;
+	}
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {
@@ -229,21 +238,6 @@ public class Configuration {
 	 */
 	public void setBootBrowser(boolean bootBrowser) {
 		this.bootBrowser = bootBrowser;
-	}
-
-	/**
-	 * @return the clickRule
-	 */
-	public ClickRuleType getClickRule() {
-		return clickRule;
-	}
-
-	/**
-	 * @param clickRule
-	 *            the clickRule to set
-	 */
-	public void setClickRule(ClickRuleType clickRule) {
-		this.clickRule = clickRule;
 	}
 
 	/**
@@ -332,14 +326,14 @@ public class Configuration {
 	 * @param lastRun
 	 *            the lastRun to set
 	 */
-	public void setLastRun(Date lastCrawl) {
+	public void setLastCrawl(Date lastCrawl) {
 		this.lastCrawl = lastCrawl;
 	}
 
 	/**
 	 * @return the lastDuration
 	 */
-	public Duration getLastDuration() {
+	public long getLastDuration() {
 		return lastDuration;
 	}
 
@@ -347,7 +341,7 @@ public class Configuration {
 	 * @param lastDuration
 	 *            the lastDuration to set
 	 */
-	public void setLastDuration(Duration lastDuration) {
+	public void setLastDuration(long lastDuration) {
 		this.lastDuration = lastDuration;
 	}
 

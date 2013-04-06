@@ -43,14 +43,16 @@
 	<div class="span3">
 		{{view App.BreadcrumbView}}
         <div class="well sidebar-nav">{{view App.SideNavView}}</div>
-		{{! Comment out for now
         <div class="well sidebar-nav">
             <ul class="nav nav-list">
           	  	<li class="nav-header">Crawl Execution Queue</li>
-          	  	<li class="divider"></li>
-          	  	<li class="nav-header">Executor Status</li>
+				{{#each controller.controllers.application.executionQueue}}
+				<li><span>{{#linkTo 'history' this}}#{{id}}{{/linkTo}} {{configurationName}} - <i>{{crawlStatus}}</i></span></li>
+				{{else}}
+				<li><i>empty</i></li>
+				{{/each}}
           	</ul>
-        </div> }}
+        </div> 
     </div> 
 	</script>
 
@@ -62,14 +64,16 @@
  				<tr><th>Name</th><th>Site</th><th>Last Crawl</th><th>Last Duration</th></tr>
  			</thead>
  			<tbody>
+				{{#unless controller.content.isLoading }}
 				{{#each controller}}
  				<tr>
  					<td>{{#linkTo 'config' this.content}}{{name}}{{/linkTo}}</td>
  					<td><a {{bindAttr href="url"}} target="_blank">{{url}}</a></td>
  					<td>{{formatLastCrawl}}</td>
- 					<td>{{lastDuration}}</td>
+ 					<td>{{formatLastDuration}}</td>
  				</tr>
 				{{else}}<tr><td colspan="5">No available configurations.</td></tr>{{/each}}
+				{{else}}<tr><td colspan="5">Loading configurations.</td></tr>{{/unless}}
  			</tbody>
 		</table>
 	</div><!--/span-->	
@@ -82,7 +86,7 @@
 	<script type="text/x-handlebars" data-template-name="_config_tabs">
 	<ul class="nav nav-tabs">
 		{{#view App.NavView route='config.index' }}<a href='#' {{action moveTo view.route }}>Overview</a>{{/view}}
-		{{#view App.NavView route='config.advanced' }}<a href='#' {{action moveTo view.route }}>Crawl Conditions</a>{{/view}}
+		{{#view App.NavView route='config.rules' }}<a href='#' {{action moveTo view.route }}>Crawl Rules</a>{{/view}}
 		{{#view App.NavView route='config.assertions' }}<a href='#' {{action moveTo view.route }}>Assertions</a>{{/view}}
 	</ul>
 	</script>
@@ -102,7 +106,7 @@
 			required="true" pattern="(http|https)://.+" errorText="Must provide a valid url. http://www.example.com"}}
 		{{view App.FormSelect label="Browser: " valueBinding="controller.content.browser" contentBinding="App.browsers" optionValuePath="content.value"
        		optionLabelPath="content.name"}}
-		{{view App.FormTextField type="number" min="0" label="Number of Browsers: " valueBinding="controller.content.numBrowsers"}}
+		{{view App.FormTextField type="number" min="1" label="Number of Browsers: " valueBinding="controller.content.numBrowsers"}}
 		{{view App.FormCheckbox label="Boot Browsers at Start" checkedBinding="controller.content.bootBrowser"}}
 		{{view App.FormTextField type="number" min="0" label="Maximum Crawl Depth: " valueBinding="controller.content.maxDepth"}}
 		{{view App.FormTextField type="number" min="0" label="Maximum Crawl States: " valueBinding="controller.content.maxState"}}
@@ -114,16 +118,17 @@
 	</form>
 	</script>
 	
-	<script type="text/x-handlebars" data-template-name="config/advanced">
+	<script type="text/x-handlebars" data-template-name="config/rules">
 	{{partial config_tabs}}
 	<form id="config_form" class="form-horizontal">	
 		<fieldset>
 			<legend>Click Rules</legend>
-			{{view App.FormSelect valueBinding="controller.content.clickRule" contentBinding="App.clickRules" optionValuePath="content.value"
-       		optionLabelPath="content.name" isForm=''}}
-			{{#if showRules}}<br />
+			<label class="checkbox">
+				{{view Ember.Checkbox checkedBinding="controller.content.clickDefault" }}
+				 Click Default Elements</label>
+			{{#unless controller.content.clickDefault}}<br />
 				{{render 'click_rules' controller.content.clickRules }}
-			{{/if}}
+			{{/unless}}
 		</fieldset><br />
 		<fieldset>
 			<legend>Page Conditions</legend>
@@ -160,7 +165,7 @@
        							optionLabelPath="content.name" isForm=''}}</td>
  							<td>{{view App.FormTextField valueBinding='con.expression' isForm='' required='true' 
 								inputClassNames='input-xlarge' errorText='This field is Required'}}</td>
- 							<td><a href="#" {{action 'removeCondition' con}}><i class="icon-remove"></i></a></td>
+							<td><a href="#" {{action 'removeCondition' con}}><i class="icon-remove"></i></a></td>
  						</tr>
 						{{/each}}
 					</table>
@@ -254,28 +259,46 @@
 	<div class="span9">
 		<table class="table table-striped">
 			<thead>
- 				<tr><th>Crawl Number</th><th>Configuration</th><th>Time Stamp</th></tr>
+ 				<tr><th>Crawl ID</th><th>Configuration</th><th>Execution Time</th></tr>
  			</thead>
  			<tbody>
+				{{#unless controller.content.isLoading }}
 				{{#each controller}}
  				<tr>
- 					<td>{{#linkTo 'history' this.id}}{{id}}{{/linkTo}}</td>
- 					<td><a {{bindAttr href="configURL"}}>{{configurationId}}</a></td>
- 					<td>{{formatCreateTime}}</td>
+ 					<td>{{#linkTo 'history' this.content}}{{id}}{{/linkTo}}</td>
+ 					<td><a {{bindAttr href="configURL"}}>{{configurationName}}</a></td>
+ 					<td>{{formatStartTime}}</td>
  				</tr>
 				{{else}}<tr><td colspan="3">No available crawls.</td></tr>{{/each}}
+				{{else}}<tr><td colspan="3">Loading crawl history.</td></tr>{{/unless}}
  			</tbody>
 		</table>
 	</div><!--/span-->
 	</script>	
 	
-	<script type="text/x-handlebars" data-template-name="history">
+	<script type="text/x-handlebars" data-template-name="history/index">
 	<div class="span9">
-		Run Time Output 
+		<ul class="nav nav-tabs">
+		{{#view App.NavView route='history_list.history.index' }}{{#linkTo 'history.index' }}Log{{/linkTo}}{{/view}}
+		{{#if controller.isFinished}}{{#view App.NavView route='history_list.history.overview' }}{{#linkTo 'history.overview' }}Overview{{/linkTo}}{{/view}}{{/if}}
+		</ul>
+		<div id="logPanel"></div>
+	</div><!--/span-->
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="history/overview">
+	<div class="span9">
+		<ul class="nav nav-tabs">
+		{{#view App.NavView route='history_list.history.index' }}{{#linkTo 'history.index' }}Log{{/linkTo}}{{/view}}
+		{{#view App.NavView route='history_list.history.overview' }}{{#linkTo 'history.overview' }}Overview{{/linkTo}}{{/view}}
+		</ul>
+		<div id="frameContainer">
+		<iframe {{bindAttr src="overviewURL"}} id="overviewFrame" seamless></iframe>
+		</div>
 	</div><!--/span-->
 	</script>
 
-	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/handlebars.js"></script>
 	<script type="text/javascript" src="js/ember-1.0.0-rc.1.js"></script>

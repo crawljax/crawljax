@@ -1,6 +1,8 @@
-//***
+//*******************************************
+// validation.js
+//
 // Form Validation Code using HTML 5 validation
-//***/
+//********************************************
 
 function validateForm(formId)
 {

@@ -25,3 +25,6 @@ body { padding-top: 60px; /* 60px to make the container go all the way to the bo
     left:-7px;
 }
 input:focus:invalid + .hint {display: inline;}
+#frameContainer { overflow-x: scroll; }
+#logPanel { overflow-y: scroll; }
+#overviewFrame { width: 1000px;  }

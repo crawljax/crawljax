@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned by default the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+		<encoder>
+			<pattern>[%thread] %-5level - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+
+
+	<logger name="com.crawljax.web" level="INFO" />
+	
+	<appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <discriminator>
+      <key>crawl_record</key>
+      <defaultValue>general</defaultValue>
+    </discriminator>
+    <sift>
+      <appender name="FILE-${crawl_record}" class="ch.qos.logback.core.FileAppender">
+        <file>${outputFolder}/${crawl_record}/crawl.log</file>
+        <append>true</append>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+          <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{46} - %msg%n</pattern>
+        </layout>
+      </appender>
+    </sift>
+  </appender>
+
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="SIFT" />
+	</root>
+
+</configuration>

@@ -1,3 +1,9 @@
+//********************************************
+// app.js
+// 
+// Contains all the view models and ajax calls
+//********************************************
+
 //Application Models
 App.Link = Ember.Object.extend({ text: null, icon: null, target: null, action: false });
     
@@ -6,12 +12,6 @@ App.browsers = [
          Ember.Object.create({name: "Google Chrome", value:"chrome"}),
          Ember.Object.create({name: "Microsoft Internet Explorer", value:"ie"})
 	];
-
-App.clickRules = [
-         Ember.Object.create({name: "Click Default Elements", value:"Default"}),
-         Ember.Object.create({name: "Click More Elements", value:"More"}),
-         Ember.Object.create({name: "Custom Rules", value:"Custom"})
-    ];
     
 App.clickType = [Ember.Object.create({name: "Click", value:"click"}),
                      Ember.Object.create({name: "Don't Click", value:"noClick"})];
@@ -25,15 +25,19 @@ App.tags = ["a", "abbr", "address", "area", "article", "aside", "audio",
 App.clickConditions = [
         Ember.Object.create({name: "With Attribute (name=value):", value:"wAttribute"}),
         Ember.Object.create({name: "With Text:", value:"wText"}),
-        Ember.Object.create({name: "With XPath:", value:"wXPath"}),
+        Ember.Object.create({name: "Under XPath:", value:"wXPath"}),
         Ember.Object.create({name: "When URL contains:", value:"url"}),
         Ember.Object.create({name: "When URL does not contain:", value:"notUrl"}),
         Ember.Object.create({name: "When Regex:", value:"regex"}),
         Ember.Object.create({name: "When not Regex:", value:"notRegex"}),
         Ember.Object.create({name: "When XPath:", value:"xPath"}),
         Ember.Object.create({name: "When not XPath:", value:"notXPath"}),
-        Ember.Object.create({name: "When element with id is visible:", value:"visible"}),
-        Ember.Object.create({name: "When element with id is not visible:", value:"notVisible"}),
+        Ember.Object.create({name: "When element is visible with id:", value:"visibleId"}),
+        Ember.Object.create({name: "When element is not visible with id:", value:"notVisibleId"}),
+        Ember.Object.create({name: "When element is visible with text:", value:"visibleText"}),
+        Ember.Object.create({name: "When element is not visible with text:", value:"notVisibleText"}),
+        Ember.Object.create({name: "When element is visible with tag:", value:"visibleTag"}),
+        Ember.Object.create({name: "When element is not visible with tag:", value:"notVisibleTag"}),
         Ember.Object.create({name: "When Javascript is true:", value:"javascript"})
     ];
     
@@ -44,8 +48,12 @@ App.pageConditions = [
          Ember.Object.create({name: "When not Regex:", value:"notRegex"}),
          Ember.Object.create({name: "When XPath:", value:"xPath"}),
          Ember.Object.create({name: "When not XPath:", value:"notXPath"}),
-         Ember.Object.create({name: "When element with id is visible:", value:"visible"}),
-         Ember.Object.create({name: "When element with id is not visible:", value:"notVisible"}),
+         Ember.Object.create({name: "When element is visible with id:", value:"visibleId"}),
+         Ember.Object.create({name: "When element is not visible with id:", value:"notVisibleId"}),
+         Ember.Object.create({name: "When element is visible with text:", value:"visibleText"}),
+         Ember.Object.create({name: "When element is not visible with text:", value:"notVisibleText"}),
+         Ember.Object.create({name: "When element is visible with tag:", value:"visibleTag"}),
+         Ember.Object.create({name: "When element is not visible with tag:", value:"notVisibleTag"}),
          Ember.Object.create({name: "When Javascript is true:", value:"javascript"})
     ];
     
@@ -64,8 +72,14 @@ App.comparators = [
 App.Config = Ember.Object.extend();
 App.Config.reopenClass({
     	isSaving: false,
+    	isLoading: false,
+    	cleanJSON: function(key, value){ 
+    		if (key == 'isLoading' || key == 'isSaving') return;
+    		return value;
+    	},
     	findAll: function(){
     		var allConfigs = [];
+    		allConfigs.set('isLoading', true);
     	    $.ajax({
     	      url: '/rest/configurations',
     	      dataType: 'json',
@@ -74,46 +88,53 @@ App.Config.reopenClass({
     	        response.forEach(function(config){
     	          this.addObject(App.Config.create(config))
     	        }, this);
+    	        this.set('isLoading', false);
     	      }
     	    });
     	    return allConfigs;
     	 },
     	 find: function(id){
     		 var config = App.Config.create({id: id });
+    		 config.set('isLoading', true);
     		 $.ajax({
     			 url: '/rest/configurations/' + id,
     			 dataType: 'json',
     			 context: config,
-    			 success: function(response){ this.setProperties(response); }
+    			 success: function(response){ 
+    				 this.setProperties(response); 
+    				 this.set('isLoading', false);}
     		 });
     		 return config;
     	 },
     	 newConfig: function()
     	 {
     		 var config = App.Config.create({});
+    		 config.set('isLoading', true);
     		 $.ajax({
     			 url: '/rest/configurations/new',
     			 dataType: 'json',
     			 context: config,
-    			 success: function(response){ this.setProperties(response); }
+    			 success: function(response){ 
+    				 this.setProperties(response);
+    				 this.set('isLoading', false);}
     		 });
     		 return config;
     	 },
     	 add: function(config, callback)
     	 {
-    		 if (!this.isSaving) {
-    			 this.isSaving = true;
+    		 if (!config.get('isSaving')) {
+    			 config.set('isSaving', true);
     			 $.ajax({
     				 url: '/rest/configurations',
     				 type: 'POST',
     				 contentType: "application/json;",
-    				 data: JSON.stringify(config),
+    				 data: JSON.stringify(config, this.cleanJSON),
     				 dataType: 'json',
-    				 context: this,
+    				 context: config,
     				 success: function(response){ 
-    					 config.setProperties(response);
-    					 this.isSaving = false;
-    					 if (callback !== undefined) callback(config);
+    					 this.setProperties(response);
+    					 this.set('isSaving', false);
+    					 if (callback !== undefined) callback(this);
     			 	}
     			 });
     		 }
@@ -121,18 +142,18 @@ App.Config.reopenClass({
     	 },
     	 update: function(config)
     	 {
-    		 if (!this.isSaving) {
-    			 this.isSaving = true;
+    		 if (!config.get('isSaving')) {
+    			 config.set('isSaving', true);
     			 $.ajax({
     				 url: '/rest/configurations/' + config.id,
     				 type: 'PUT',
     				 contentType: "application/json;",
-    				 data: JSON.stringify(config),
+    				 data: JSON.stringify(config, this.cleanJSON),
     				 dataType: 'json',
-    				 context: this,
+    				 context: config,
     				 success: function(response){ 
-    					 config.setProperties(response);
-    					 this.isSaving = false;
+    					 this.setProperties(response);
+    					 this.set('isSaving', false);
     				 }
     			 });
     		 }
@@ -140,17 +161,17 @@ App.Config.reopenClass({
     	 },
     	 remove: function(config, callback)
     	 {
-    		 if (!this.isSaving) {
-    			 this.isSaving = true;
+    		 if (!config.get('isSaving')) {
+    			 config.set('isSaving', true);
     			 $.ajax({
     				 url: '/rest/configurations/' + config.id,
     				 type: 'DELETE',
     				 contentType: "application/json;",
-    				 data: JSON.stringify(config),
+    				 data: JSON.stringify(config, this.cleanJSON),
     				 dataType: 'json',
-    				 context: this,
+    				 context: config,
     				 success: function(response){ 
-    					 this.isSaving = false;
+    					 this.set('isSaving', false);
     					 if (callback !== undefined) callback(config); 
     				 }
     			 });
@@ -162,10 +183,13 @@ App.Config.reopenClass({
 App.CrawlHistory = Ember.Object.extend();
 App.CrawlHistory.reopenClass({
 	isSaving: false,
-	findAll: function(id){
+	isLoading: false,
+	findAll: function(id, active){
 		var allHistory = [];
+		allHistory.set('isLoading', true);
 		var data = '';
 		if (id !== undefined) data = { config: id };
+		if (active) data = { active: true };
 	    $.ajax({
 	      url: '/rest/history',
 	      dataType: 'json',
@@ -175,12 +199,27 @@ App.CrawlHistory.reopenClass({
 	        response.forEach(function(history){
 	          this.addObject(App.CrawlHistory.create(history))
 	        }, this);
+	        allHistory.set('isLoading', false);
 	      }
 	    });
 	    return allHistory;
 	 },
+	 find: function(id){
+		 var record = App.CrawlHistory.create({id: id });
+		 record.set('isLoading', true);
+		 $.ajax({
+			 url: '/rest/history/' + id,
+			 dataType: 'json',
+			 context: record,
+			 success: function(response){ 
+				 this.setProperties(response); 
+				 this.set('isLoading', false);}
+		 });
+		 return record;
+	 },
 	 add: function(configId, callback)
 	 {
+		 var record = App.CrawlHistory.create({configurationId: configId});
 		 if (!this.isSaving) {
 			 this.isSaving = true;
 			 $.ajax({
@@ -190,11 +229,13 @@ App.CrawlHistory.reopenClass({
 				 data: configId,
 				 dataType: 'json',
 				 context: this,
-				 success: function(response){ 
+				 success: function(response){
+					 record.setProperties(response);
 					 this.isSaving = false;
 					 if (callback !== undefined) callback(response);
 			 	}
 			 });
 		 }
+		 return record;
 	 }
 });

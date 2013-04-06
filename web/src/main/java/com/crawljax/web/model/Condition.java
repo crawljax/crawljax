@@ -5,8 +5,8 @@ public class Condition {
 	private String expression;
 
 	public enum ConditionType {
-		url, notUrl, javascript, regex, notRegex, visible, notVisible, xPath, notXPath,
-		wAttribute, wText, wXPath
+		url, notUrl, javascript, regex, notRegex, visibleId, notVisibleId, visibleText,
+		notVisibleText, visibleTag, notVisibleTag, xPath, notXPath, wAttribute, wText, wXPath
 	}
 
 	/**

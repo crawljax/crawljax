@@ -1,9 +1,15 @@
+	//********************************************
+	// app.js
+	// 
+	// Contains the main ember routing code
+	//********************************************
+	
 	App = Ember.Application.create();
     
     App.Router.map(function() {
    		this.resource("config_list", { path: "/" });
    		this.resource("config", {path: "/:id"}, function(){
-   			this.route("advanced");
+   			this.route("rules");
    			this.route("assertions");
    			this.route("plugins");
    			this.resource("config_history", {path: "history"});
@@ -11,10 +17,20 @@
    		this.route("new");
    		this.resource("about");
    		this.resource("history_list", {path: "/history"}, function() {
-   			this.resource("history", {path: "/:id"})
+   			this.resource("history", {path: "/:id"}, function(){
+   				this.route("overview");
+   			});
    		});
    	});
 
+    App.ApplicationRoute = Ember.Route.extend({
+    	setupController: function(controller, model){
+    		controller.set('executionQueue', App.CrawlHistory.findAll(undefined, true));
+    		if(!("WebSocket" in window))
+    			alert('Need a Browswer that supports Sockets')
+    		else controller.connectSocket();
+    	}
+    });
     
     App.ConfigListRoute = Ember.Route.extend({
       setupController: function(controller, model) {
@@ -55,7 +71,7 @@
     	renderTemplate: function(){ this.render({controller: 'config'}); }
     });
     
-    App.ConfigAdvancedRoute = Ember.Route.extend({
+    App.ConfigRulesRoute = Ember.Route.extend({
     	renderTemplate: function(){ this.render({controller: 'config'}); }
     });
     
@@ -91,4 +107,41 @@
     	renderTemplate: function(){ this.render({controller: 'history_list'}); },
     	setupController: function(controller, model) { 
     		this.controllerFor('history_list').set('content', App.CrawlHistory.findAll()); }
+    });
+    
+    App.HistoryRoute = Ember.Route.extend({
+    	activate: function() {
+    		this.controllerFor('history_list').set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), 
+    		                                                      App.Link.create({text: "History", target: "#/history"}),
+    		                                                      App.Link.create({text: "Crawl"})]);
+    	},
+    	deactivate: function() {
+    		this.controllerFor('history_list').set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), 
+    		                                                      App.Link.create({text: "History"})]); },
+    	serialize: function(object) { return { id: object.id }; },
+        deserialize: function(params) { return App.CrawlHistory.find(params.id); }
+    });
+    
+    App.HistoryIndexRoute = Ember.Route.extend({
+    	setupController: function(controller, model) {
+    		var controller = this.controllerFor('history');
+    		var appController = this.controllerFor('application');
+    		if (controller.get('isLogging')) appController.sendMsg('stoplog');
+    		setTimeout(function(){ 
+    			$('#logPanel').css({'height':(($(document).height())-162)+'px'});
+    			appController.sendMsg('startlog-' + controller.get('content.id')); 
+    			controller.set('isLogging', true);
+    			}, 0); },
+    	deactivate: function() {
+    		this.controllerFor('application').sendMsg('stoplog'); },
+    	renderTemplate: function(){ this.render({controller: 'history'}); }
+    });
+    
+    App.HistoryOverviewRoute = Ember.Route.extend({
+    	setupController: function(controller, model) {
+    		setTimeout(function(){ 
+    			$('#overviewFrame').css({'height':(($(document).height())-150)+'px'});
+    		}, 0);
+    	},
+    	renderTemplate: function(){ this.render({controller: 'history'}); }
     });
