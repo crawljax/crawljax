@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
@@ -19,12 +20,17 @@ import org.apache.commons.lang.SerializationUtils;
 import org.jgrapht.GraphPath;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
+import com.crawljax.util.DomUtils;
 
 public class StateFlowGraphTest {
 
+	private static final Logger LOG = LoggerFactory.getLogger(StateFlowGraphTest.class.getName());
 	private StateVertex index;
 	private StateVertex state2;
 	private StateVertex state3;
@@ -360,4 +366,26 @@ public class StateFlowGraphTest {
 		assertThat(graph.getNumberOfStates(), is(2));
 	}
 
+	@Test
+	public void testTrimUrl() {
+		Document stateDom = null;
+		try {
+			stateDom = DomUtils.asDocument(index.getDom());
+		} catch (IOException e) {
+			LOG.info("dom is null, {}", e.getMessage());
+		}
+		String testTwoSlashes = graph.getNewStateName("http://www.facebook.com", stateDom);
+		assertEquals(testTwoSlashes, "2-[]_[]");
+
+		String testFourSlashes =
+		        graph.getNewStateName(
+		                "http://www.vogella.com/articles/JUnit/article.html", stateDom);
+		assertEquals(testFourSlashes, "3-[]_[articlesJUnitarticlehtml]");
+
+		String testThreeSlashes = graph.getNewStateName("http://www.facebook.com/", stateDom);
+		assertEquals(testThreeSlashes, "4-[]_[]");
+
+		String testNull = graph.getNewStateName(null, stateDom);
+		assertEquals(testNull, "5-[]_[]");
+	}
 }

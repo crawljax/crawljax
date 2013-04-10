@@ -86,7 +86,7 @@ public class StateMachineTest {
 		/**
 		 * Name is correctly changed
 		 */
-		assertEquals("State name changed correctly", "state1", state2.getName());
+		assertEquals("State name changed correctly", 1, getStateNumber(state2.getName()));
 
 		/**
 		 * Current index is the new index
@@ -120,7 +120,7 @@ public class StateMachineTest {
 		/**
 		 * Name is correctly changed
 		 */
-		assertEquals("State name changed correctly", "state1", state2.getName());
+		assertEquals("State name changed correctly", 1, getStateNumber(state2.getName()));
 
 		// can not change to state2 because we are already in state2
 		assertFalse(sm.changeState(state2));
@@ -147,7 +147,8 @@ public class StateMachineTest {
 		/**
 		 * Name is correctly changed
 		 */
-		assertEquals("State name changed correctly", "state1", sm.getCurrentState().getName());
+		assertEquals("State name changed correctly", 1, getStateNumber(sm.getCurrentState()
+		        .getName()));
 
 	}
 
@@ -172,7 +173,7 @@ public class StateMachineTest {
 		/**
 		 * Name is correctly changed
 		 */
-		assertEquals("State name changed correctly", "state1", state2.getName());
+		assertEquals("State name changed correctly", 1, getStateNumber(state2.getName()));
 
 		// can not change to state2 because we are already in state2
 		assertFalse(sm.changeState(state2));
@@ -360,5 +361,14 @@ public class StateMachineTest {
 
 		// New State so plugin execution
 		assertTrue("InvariantViolationPlugin are exeucted", hit);
+	}
+
+	private int getStateNumber(String name) {
+		if ("index".equals(name)) {
+			return 0;
+		}
+
+		String[] temp = name.split("-");
+		return Integer.parseInt(temp[0]);
 	}
 }
