@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -12,6 +14,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.util.UrlUtils;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -121,7 +124,19 @@ public final class CrawljaxConfiguration {
 		public CrawlRulesBuilder crawlRules() {
 			return crawlRules;
 		}
+		
+		/**
+		 * @param URL Used to specify external domains that should also be crawled
+		 * 				if they are linked-to by the seed url.  These whitelisted
+		 * 				urls are added to the configuration object.
+		 */
+		public void alsoCrawl(String url){
+			config.alsoCrawl(url);
+		}
 
+		public void alsoCrawl(URL url){
+			config.alsoCrawl(url);
+		}
 		/**
 		 * @param configuration
 		 *            a custom {@link BrowserConfiguration}. The default is a single
@@ -165,6 +180,7 @@ public final class CrawljaxConfiguration {
 	}
 
 	private URL url;
+	private Deque<URL> whitelist = new ArrayDeque<URL>();
 
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.firefox);
 	private Plugins plugins;
@@ -198,6 +214,24 @@ public final class CrawljaxConfiguration {
 	public CrawlRules getCrawlRules() {
 		return crawlRules;
 	}
+	
+	public void alsoCrawl(String url){
+		try {
+			this.alsoCrawl(new URL(UrlUtils.getBaseUrl(url)));
+		} catch (MalformedURLException e) {
+			throw new CrawljaxException("Could not read that URL", e);
+		} catch (StringIndexOutOfBoundsException e) {
+			try {
+				this.alsoCrawl(new URL(url));
+			} catch (MalformedURLException e1) {
+				throw new CrawljaxException("Could not read that URL", e);
+			}
+		}
+	}
+	
+	public void alsoCrawl(URL url){
+		whitelist.add(url);
+	}
 
 	public int getMaximumStates() {
 		return maximumStates;
@@ -209,6 +243,10 @@ public final class CrawljaxConfiguration {
 
 	public int getMaximumDepth() {
 		return maximumDepth;
+	}
+
+	public Deque<URL> getWhitelist() {
+		return whitelist;
 	}
 
 	@Override

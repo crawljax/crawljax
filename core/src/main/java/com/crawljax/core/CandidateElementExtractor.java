@@ -1,7 +1,10 @@
 package com.crawljax.core;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,6 +52,7 @@ public class CandidateElementExtractor {
 	private final boolean crawlFrames;
 	private final ImmutableMultimap<String, CrawlElement> excludeCrawlElements;
 	private final ImmutableList<CrawlElement> includedCrawlElements;
+	private final Deque<URL> whitelist;
 
 	private final boolean clickOnce;
 
@@ -81,7 +85,7 @@ public class CandidateElementExtractor {
 		                .addAll(preCrawlConfig.getIncludedElements())
 		                .addAll(rules.getInputSpecification().getCrawlElements())
 		                .build();
-
+		this.whitelist = config.getWhitelist();
 		crawlFrames = rules.shouldCrawlFrames();
 		clickOnce = rules.isClickOnce();
 		ignoredFrameIdentifiers = rules.getIgnoredFrameIdentifiers();
@@ -305,9 +309,24 @@ public class CandidateElementExtractor {
 		if ("A".equalsIgnoreCase(crawlElement.getTagName())) {
 			String href = element.getAttribute("href");
 			if (!Strings.isNullOrEmpty(href)) {
+				URL href_url = null;
+				try {
+					href_url = new URL(UrlUtils.getBaseUrl(href));
+				} catch (MalformedURLException e) {
+					// The link on the page was not a proper URL
+					// This means it is not crawlable.  Return...
+					return;
+				} catch (StringIndexOutOfBoundsException e) {
+					// This was a relative path.  These are by
+					// definition not external.  Continue...
+				}
 				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
+				boolean isWhitelisted = whitelist.contains(href_url);
 				LOG.debug("HREF: {} isExternal= {}", href, isExternal);
-				if (isExternal || isPDForPS(href)) {
+				LOG.debug("HREF: {} isWhitelisted = {}", href, isWhitelisted);
+				
+				// Check if it is external and not in the whitelist or a PDF link
+				if ((isExternal && !isWhitelisted) || isPDForPS(href)) {
 					return;
 				}
 			}
