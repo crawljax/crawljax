@@ -12,11 +12,11 @@ import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilde
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.base.Objects;
 
 public class CrawlRules {
 

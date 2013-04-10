@@ -1,6 +1,3 @@
-/**
- * Created Jun 13, 2008
- */
 package com.crawljax.core;
 
 import java.util.Collection;

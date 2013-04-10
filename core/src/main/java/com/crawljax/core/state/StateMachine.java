@@ -96,7 +96,7 @@ public class StateMachine {
 		        currentState.getName(), newState.getName());
 
 		// Add the state to the stateFlowGraph. Store the result
-		StateVertex cloneState = stateFlowGraph.addState(newState);
+		StateVertex cloneState = stateFlowGraph.putIfAbsent(newState);
 
 		// Is there a clone detected?
 		if (cloneState != null) {

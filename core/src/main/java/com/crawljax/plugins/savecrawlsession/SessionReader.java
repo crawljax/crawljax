@@ -39,7 +39,7 @@ public class SessionReader {
 			if (sfg == null) {
 				sfg = new StateFlowGraph(state);
 			} else {
-				sfg.addState(state, false);
+				sfg.putIfAbsent(state, false);
 			}
 		}
 		for (Transition transition : savedCrawlSession.getTransitions()) {
