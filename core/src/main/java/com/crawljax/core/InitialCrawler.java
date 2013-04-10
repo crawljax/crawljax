@@ -25,11 +25,11 @@ public class InitialCrawler extends Crawler {
 
 	private final CrawljaxController controller;
 
+	private final Plugins plugins;
+
 	private EmbeddedBrowser browser; // should be final but try-catch prevents...
 
 	private StateMachine stateMachine;
-
-	private Plugins plugins;
 
 	/**
 	 * The default constructor.
@@ -37,10 +37,10 @@ public class InitialCrawler extends Crawler {
 	 * @param mother
 	 *            the controller to use.
 	 */
-	public InitialCrawler(CrawljaxController mother, Plugins plugins) {
-		super(mother, new ArrayList<Eventable>(), "initial", plugins);
+	public InitialCrawler(CrawljaxController mother) {
+		super(mother, new ArrayList<Eventable>(), "initial");
 		controller = mother;
-		this.plugins = plugins;
+		this.plugins = mother.getConfiguration().getPlugins();
 	}
 
 	@Override
@@ -62,43 +62,27 @@ public class InitialCrawler extends Crawler {
 			LOGGER.error("The request for a browser was interuped.");
 		}
 
-		goToInitialURL();
+		goToInitialURL(true);
 
-		/**
-		 * Build the index state
-		 */
 		StateVertex indexState =
-		        new StateVertex(this.getBrowser().getCurrentUrl(), "index", this.getBrowser()
+		        new StateVertex(browser.getCurrentUrl(), "index", this.getBrowser()
 		                .getDom(), controller.getStrippedDom(this.getBrowser()));
 
-		/**
-		 * Build the StateFlowGraph
-		 */
 		StateFlowGraph stateFlowGraph = new StateFlowGraph(indexState);
 
-		/**
-		 * Build the StateMachine
-		 */
 		stateMachine =
 		        new StateMachine(stateFlowGraph, indexState, controller.getInvariantList(),
 		                plugins);
 
-		/**
-		 * Build the CrawlSession
-		 */
 		CrawlSession session =
 		        new CrawlSession(controller.getBrowserPool(), stateFlowGraph, indexState,
 		                controller.getStartCrawl(), controller.getConfiguration());
 		controller.setSession(session);
 
-		/**
-		 * Run OnNewState Plugins for the index state.
-		 */
+		// Run OnNewState Plugins for the index state.
 		plugins.runOnNewStatePlugins(session);
 
-		/**
-		 * The initial work is done, continue with the normal procedure!
-		 */
+		// The initial work is done, continue with the normal procedure!
 		super.run();
 
 	}

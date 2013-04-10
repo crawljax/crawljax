@@ -113,8 +113,8 @@ public final class Plugins {
 	}
 
 	private void reportFailingPlugin(Plugin plugin, RuntimeException e) {
-	    LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
-    }
+		LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+	}
 
 	/**
 	 * load and run the OnUrlLoadPlugins. The OnURLloadPlugins are run just after the Browser has
