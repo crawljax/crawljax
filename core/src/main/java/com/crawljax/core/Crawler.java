@@ -221,12 +221,12 @@ public class Crawler implements Runnable {
 
 		this.browser = this.getBrowser();
 		if (this.browser == null) {
-			/**
+			/*
 			 * As the browser is null, request one and got to the initial URL, if the browser is
 			 * Already set the browser will be in the initial URL.
 			 */
 			this.browser = controller.getBrowserPool().requestBrowser();
-			LOG.info("Reloading page for navigating back");
+			LOG.debug("Reloading page to start a new crawl path");
 			this.goToInitialURL(true);
 		}
 		// TODO Stefan ideally this should be placed in the constructor
@@ -279,7 +279,7 @@ public class Crawler implements Runnable {
 				return;
 			}
 
-			LOG.info("Backtracking by executing {} on element: {}", clickable.getEventType(),
+			LOG.debug("Backtracking by executing {} on element: {}", clickable.getEventType(),
 			        clickable);
 
 			this.getStateMachine().changeState(clickable.getTargetStateVertex());
@@ -366,7 +366,7 @@ public class Crawler implements Runnable {
 		// Try to find a 'better' / 'quicker' xpath
 		String newXPath = new ElementResolver(eventable, getBrowser()).resolve();
 		if (newXPath != null && !xpath.equals(newXPath)) {
-			LOG.info("XPath changed from {} to {} relatedFrame: {}", xpath, newXPath,
+			LOG.debug("XPath changed from {} to {} relatedFrame: {}", xpath, newXPath,
 			        eventable.getRelatedFrame());
 			eventToFire =
 			        new Eventable(new Identification(Identification.How.xpath, newXPath),
@@ -633,7 +633,7 @@ public class Crawler implements Runnable {
 
 		// An event has been fired so we are one level deeper
 		int d = depth.incrementAndGet();
-		LOG.info("RECURSIVE Call crawl; Current DEPTH= {}", d);
+		LOG.info("Found a new state. Crawl depth is now {}", d);
 		if (!this.crawl()) {
 			// Crawling has stopped
 			controller.terminate(false);

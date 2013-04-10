@@ -40,7 +40,7 @@ public class ConditionTypeChecker<T extends ConditionType> {
 	 *         failed.
 	 */
 	public ImmutableList<T> getFailedConditions(EmbeddedBrowser browser) {
-		LOGGER.info("Checking {} ConditionTypes", invariants.size());
+		LOGGER.debug("Checking {} ConditionTypes", invariants.size());
 		ImmutableList.Builder<T> builder = ImmutableList.builder();
 		for (T invariant : invariants) {
 			if (preConditionsHold(browser, invariant)) {

@@ -40,7 +40,6 @@ public class CrawlOverview
 
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlOverview.class);
 
-	// private final CachedResources resources;
 	private final OutputBuilder outputBuilder;
 	private final Map<String, StateVertex> visitedStates;
 
@@ -185,4 +184,8 @@ public class CrawlOverview
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "Crawl overview plugin";
+	}
 }

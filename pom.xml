@@ -160,7 +160,7 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<groupId>org.apache.maven.plugins</groupId>
-					<version>3.0</version>
+					<version>3.1</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
@@ -271,15 +271,4 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-
-	<repositories>
-		<repository>
-			<id>crawljax.mvn.repo</id>
-			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
 </project>
