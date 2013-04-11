@@ -1,7 +1,40 @@
 #set( $page = "graph") #set( $baseUrl = ".") #parse( "header.html" )
 <style>
-body {
-	padding-top: 40px;
+html,body {
+	height: 100%;
+}
+
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -40px;	
+}
+
+#push, footer {
+	height: 40px;
+}
+
+footer {
+	background-color: #f5f5f5;
+}
+
+footer small {
+	display: inline;
+	margin-top: 10px;
+}
+
+@media ( max-width : 767px) {
+	#footer {
+		margin-left: -20px;
+		margin-right: -20px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+}
+
+#wrap>.container {
+	padding-top: 60px;
 }
 
 .panel-right {
@@ -12,8 +45,9 @@ body {
 	display: block;
 	background-color: rgb(255, 255, 255);
 	background-color: rgba(255, 255, 255, .9);
-	max-width: 300px;	
+	max-width: 300px;
 }
+
 .panel-right dd {
 	text-transform: capitalize;
 	word-wrap: break-word;
@@ -21,50 +55,61 @@ body {
 </style>
 </head>
 <body>
-	#parse( "nav.html")
-		<div class="container page" id="container-graph" style="width: 100%;">
-		<div class="popover fade panel-right">
-			<div class="popover-inner">
-				<h3 class="popover-title">Edge info</h3>
-				<div class="popover-content">
-					<dl>
-						<dt>Element name</dt>
-						<dd name='elemName'></dd>
-					</dl>
-					<dl>
-						<dt>From</dt>
-						<dd name='from'></dd>
-					</dl>
-					<dl>
-						<dt>To</dt>
-						<dd name='to'></dd>
-					</dl>
-					<dl>
-						<dt>Identified by</dt>
-						<dd name='id'></dd>
-					</dl>
-					<dl>
-						<dt>Element</dt>
-						<dd name='element' style="text-transform: none;"></dd>
-					</dl>
-					<dl>
-						<dt>Event type</dt>
-						<dd name='eventType'></dd>
-					</dl>
-					<button class="btn btn-small" id='hideButton'>Hide</button>
+<body>
+	<div id="wrap">
+		#parse( "nav.html")
+		<div class="container page" id="container-graph" style="width: 100%; padding-top: 40px;">
+			<div class="popover fade panel-right">
+				<div class="popover-inner">
+					<h3 class="popover-title">Edge info</h3>
+					<div class="popover-content">
+						<dl>
+							<dt>Element name</dt>
+							<dd name='elemName'></dd>
+						</dl>
+						<dl>
+							<dt>From</dt>
+							<dd name='from'></dd>
+						</dl>
+						<dl>
+							<dt>To</dt>
+							<dd name='to'></dd>
+						</dl>
+						<dl>
+							<dt>Identified by</dt>
+							<dd name='id'></dd>
+						</dl>
+						<dl>
+							<dt>Element</dt>
+							<dd name='element' style="text-transform: none;"></dd>
+						</dl>
+						<dl>
+							<dt>Event type</dt>
+							<dd name='eventType'></dd>
+						</dl>
+						<button class="btn btn-small" id='hideButton'>Hide</button>
+					</div>
 				</div>
 			</div>
 		</div>
+		<div class="container page" id="container-statistics" style="display: none;">
+			#parse( "statistics.html" )
 		</div>
-	<div class="container page" id="container-statistics" style="display: none;">
-		#parse( "statistics.html" )
+		<div class="container page" id="container-urls" style="display: none;">
+			#parse( "urls.html" )
+		</div>
+		<div class="container page" id="container-config" style="display: none;">
+			#parse( "config.html" )
+		</div>
+		<div id="push"></div>
 	</div>
-	<div class="container page" id="container-urls" style="display: none;">
-		#parse( "urls.html" )
-	</div>
-	<div class="container page" id="container-config" style="display: none;">
-		#parse( "config.html" )
-	</div>
+	<footer>
+		<div class="container">
+			<small class="pull-left muted">Crawl of <a href="${url}">${url}</a> at ${stats.startDate}</small>
+			<small class="pull-right muted">Crawled by <a href="http://crawljax.com">Crawljax</a> ${project.version}</small>
+		</div>
+	</footer>
+	
 	<script src="js/jquery-1.8.3.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/vivagraph.min.js"></script>
@@ -72,118 +117,116 @@ body {
 	<script>
 		var edges = ${edges};
 		var states = ${states};
-		$(document).ready(function() {
-			$.each(states, function() {
-				graph.addNode(this.name, {
-					img : 'screenshots/' + this.name + '_small.jpg',
-					url : "states/" + this.name + ".html"
-				});
-			});
-
-			var edgesSeen = {};
-			$.each(edges, function() {
-				var edgeKey = this.from + "-to-" + this.to;
-				if (!(edgeKey in edgesSeen)) {
-					edgesSeen[edgeKey] = true;
-					graph.addLink(this.from, this.to, {
-						text : this.text,
-						id : this.id,
-						eventType : this.eventType,
-						element : this.element
-						
+		$(document).ready(
+				function() {
+					$.each(states, function() {
+						graph.addNode(this.name, {
+							img : 'screenshots/' + this.name + '_small.jpg',
+							url : "states/" + this.name + ".html"
+						});
 					});
-				}
-			});
-			
-			$("#hideButton").click(function() {
-				$(".panel-right").removeClass("in");
-				$('path[stroke="red"]').attr("stroke", "grey");
-			});
-			
-			$("a[rel='popover']").popover({
-				content : $("#popup-content").html(),
-				html : true,
-				trigger : "hover"
-			});
-			
-			$("a[data-toggle='tooltip']").tooltip();
-			
-			var paused = false;
-			$("#pauseButton").click(function(){
-				if (paused) {
-					renderer.resume();
-					paused = false;
-					$(this).children(":first").attr("class", "icon-pause");
-				} else {
-					renderer.pause();
-					paused = true;
-					$(this).children(":first").attr("class", "icon-play");
-				}
-			});
-			
-			$('.navbar li').click(function(e) {
-				$('.navbar li').removeClass('active');
-				var $this = $(this);
-				if (!$this.hasClass('active')) {
-					$this.addClass('active');
-				}
 
+					var edgesSeen = {};
+					$.each(edges, function() {
+						var edgeKey = this.from + "-to-" + this.to;
+						if (!(edgeKey in edgesSeen)) {
+							edgesSeen[edgeKey] = true;
+							graph.addLink(this.from, this.to, {
+								text : this.text,
+								id : this.id,
+								eventType : this.eventType,
+								element : this.element
 
-			});
-			
-			function loadPage(page) {
-				$('.page').hide();
-				$('#container-' + page).show();
-				
-				if (page === "graph") {
-					$('.graphBtn').show();
-				} else {
-					$('.graphBtn').hide();
-				}
-			}
-			
-			$(window).on('hashchange', function(e) {	
-				pageRef = window.location.hash.substring(1);
-				if ($("#container-" + pageRef).length == 0 && pageRef !== "graph") {
-					window.location.hash = "graph";
-				} else {
-					loadPage(pageRef);
-				}
-			});
-			
-			$(window).trigger('hashchange');
-		});
+							});
+						}
+					});
+
+					$("#hideButton").click(function() {
+						$(".panel-right").removeClass("in");
+						$('path[stroke="red"]').attr("stroke", "grey");
+					});
+
+					$("a[rel='popover']").popover({
+						content : $("#popup-content").html(),
+						html : true,
+						trigger : "hover"
+					});
+
+					$("a[data-toggle='tooltip']").tooltip();
+
+					var paused = false;
+					$("#pauseButton").click(
+							function() {
+								if (paused) {
+									renderer.resume();
+									paused = false;
+									$(this).children(":first").attr("class",
+											"icon-pause");
+								} else {
+									renderer.pause();
+									paused = true;
+									$(this).children(":first").attr("class",
+											"icon-play");
+								}
+							});
+
+					$('.navbar li').click(function(e) {
+						$('.navbar li').removeClass('active');
+						var $this = $(this);
+						if (!$this.hasClass('active')) {
+							$this.addClass('active');
+						}
+
+					});
+
+					function loadPage(page) {
+						$('.page').hide();
+						$('#container-' + page).show();
+
+						if (page === "graph") {
+							$('.graphBtn').show();
+						} else {
+							$('.graphBtn').hide();
+						}
+					}
+
+					$(window).on(
+							'hashchange',
+							function(e) {
+								pageRef = window.location.hash.substring(1);
+								if ($("#container-" + pageRef).length == 0
+										&& pageRef !== "graph") {
+									window.location.hash = "graph";
+								} else {
+									loadPage(pageRef);
+								}
+							});
+
+					$(window).trigger('hashchange');
+				});
 
 		function showInfo(link) {
 			$(".panel-right").addClass("in");
-			$(".panel-right [name='elemName']").text(link.data.text);		
-			$(".panel-right [name='from']").html(asStateLink(link.fromId));		
-			$(".panel-right [name='to']").html(asStateLink(link.toId));		
-			$(".panel-right [name='id']").text(link.data.id);	
-			$(".panel-right [name='element']").text(link.data.element);	
-			$(".panel-right [name='eventType']").text(link.data.eventType);	
+			$(".panel-right [name='elemName']").text(link.data.text);
+			$(".panel-right [name='from']").html(asStateLink(link.fromId));
+			$(".panel-right [name='to']").html(asStateLink(link.toId));
+			$(".panel-right [name='id']").text(link.data.id);
+			$(".panel-right [name='element']").text(link.data.element);
+			$(".panel-right [name='eventType']").text(link.data.eventType);
 		}
-		
+
 		function asStateLink(name) {
-			return "<a href='states/" + name + ".html' target='_new'>" + name + "</a>";
+			return "<a href='states/" + name + ".html' target='_new'>" + name
+					+ "</a>";
 		}
-		
-		if($.browser.mozilla) {
-			// Firefox hack to display CVS correctly
-			$('#container-graph svg').css("width", "100%");
-			
-			function resize() {
-				$('#container-graph').css("height", window.innerHeight -45);
-				$('#container-graph svg').css("height", window.innerHeight - 45);
-			}
-			$(window).resize(resize);
-			resize();
+
+		$('#container-graph svg').css("width", "100%");
+		function resize() {
+			$('#container-graph').css("height", window.innerHeight - 80);
+			$('#container-graph svg').css("height", window.innerHeight - 80);
 		}
-		
-		
+		$(window).resize(resize);
+		resize();
 	</script>
 </body>
 </html>
-
-
-
