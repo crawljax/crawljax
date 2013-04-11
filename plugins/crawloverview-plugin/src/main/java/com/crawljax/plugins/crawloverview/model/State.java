@@ -6,6 +6,7 @@ import org.openqa.selenium.Point;
 
 import com.crawljax.core.state.StateVertex;
 import com.google.common.collect.ImmutableList;
+import com.google.common.base.Objects;
 
 @Immutable
 public class State {
@@ -58,9 +59,37 @@ public class State {
 	}
 
 	@Override
+	public int hashCode() {
+		return Objects.hashCode(name, url, candidateElements, fanIn, fanOut, screenshotOffsetTop,
+		        screenshotOffsetLeft);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof State) {
+			State that = (State) object;
+			return Objects.equal(this.name, that.name)
+			        && Objects.equal(this.url, that.url)
+			        && Objects.equal(this.candidateElements, that.candidateElements)
+			        && Objects.equal(this.fanIn, that.fanIn)
+			        && Objects.equal(this.fanOut, that.fanOut)
+			        && Objects.equal(this.screenshotOffsetTop, that.screenshotOffsetTop)
+			        && Objects.equal(this.screenshotOffsetLeft, that.screenshotOffsetLeft);
+		}
+		return false;
+	}
+
+	@Override
 	public String toString() {
-		return "State [name=" + name + ", url=" + url + ", candidateElements="
-		        + candidateElements + "]";
+		return Objects.toStringHelper(this)
+		        .add("name", name)
+		        .add("url", url)
+		        .add("candidateElements", candidateElements)
+		        .add("fanIn", fanIn)
+		        .add("fanOut", fanOut)
+		        .add("screenshotOffsetTop", screenshotOffsetTop)
+		        .add("screenshotOffsetLeft", screenshotOffsetLeft)
+		        .toString();
 	}
 
 }
