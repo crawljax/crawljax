@@ -183,7 +183,7 @@ class OutputBuilder {
 		context.put("states", Serializer.toPrettyJson(model.getStates()));
 		context.put("edges", Serializer.toPrettyJson(model.getEdges()));
 		context.put("config", BeanToReadableMap.toMap(model.getConfiguration()));
-
+		context.put("crawledUrl", model.getConfiguration().getUrl());
 		context.put("stats", model.getStatistics());
 
 		LOG.debug("Writing urls report");

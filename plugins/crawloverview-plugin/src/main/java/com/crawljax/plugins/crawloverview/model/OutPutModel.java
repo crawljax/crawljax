@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Objects;
 
 /**
  * Result of a Crawl session.
@@ -44,85 +45,31 @@ public final class OutPutModel {
 		return configuration;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("OutPutModel [states=");
-		builder.append(states);
-		builder.append(", edges=");
-		builder.append(edges);
-		builder.append(", statistics=");
-		builder.append(statistics);
-		builder.append(", configuration=");
-		builder.append(configuration);
-		builder.append("]");
-		return builder.toString();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((configuration == null) ? 0 : configuration.hashCode());
-		result = prime * result + ((edges == null) ? 0 : edges.hashCode());
-		result = prime * result + ((states == null) ? 0 : states.hashCode());
-		result = prime * result + ((statistics == null) ? 0 : statistics.hashCode());
-		return result;
+		return Objects.hashCode(states, edges, statistics, configuration);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	public boolean equals(Object object) {
+		if (object instanceof OutPutModel) {
+			OutPutModel that = (OutPutModel) object;
+			return Objects.equal(this.states, that.states)
+			        && Objects.equal(this.edges, that.edges)
+			        && Objects.equal(this.statistics, that.statistics)
+			        && Objects.equal(this.configuration, that.configuration);
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		OutPutModel other = (OutPutModel) obj;
-		if (configuration == null) {
-			if (other.configuration != null) {
-				return false;
-			}
-		} else if (!configuration.equals(other.configuration)) {
-			return false;
-		}
-		if (edges == null) {
-			if (other.edges != null) {
-				return false;
-			}
-		} else if (!edges.equals(other.edges)) {
-			return false;
-		}
-		if (states == null) {
-			if (other.states != null) {
-				return false;
-			}
-		} else if (!states.equals(other.states)) {
-			return false;
-		}
-		if (statistics == null) {
-			if (other.statistics != null) {
-				return false;
-			}
-		} else if (!statistics.equals(other.statistics)) {
-			return false;
-		}
-		return true;
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("states", states)
+		        .add("edges", edges)
+		        .add("statistics", statistics)
+		        .add("configuration", configuration)
+		        .toString();
 	}
 
 }

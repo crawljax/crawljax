@@ -20,6 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 
 /**
@@ -389,4 +390,14 @@ public final class Plugins {
 		        .toString();
 	}
 
+	/**
+	 * @return A {@link ImmutableSet} of the {@link Plugin#toString()} that are installed.
+	 */
+	public ImmutableSet<String> pluginNames() {
+		ImmutableSortedSet.Builder<String> names = ImmutableSortedSet.naturalOrder();
+		for (Plugin plugin : plugins.values()) {
+			names.add(plugin.toString());
+		}
+		return names.build();
+	}
 }
