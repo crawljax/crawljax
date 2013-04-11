@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSetMultimap;
+import com.google.common.base.Objects;
 
 @Immutable
 public class StateStatistics {
@@ -68,4 +69,37 @@ public class StateStatistics {
 	public ImmutableSetMultimap<String, String> getUrls() {
 		return urls;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(leastFanOut, leastFanIn, mostFanOut, mostFanIn,
+		        totalNumberOfStates, urls);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof StateStatistics) {
+			StateStatistics that = (StateStatistics) object;
+			return Objects.equal(this.leastFanOut, that.leastFanOut)
+			        && Objects.equal(this.leastFanIn, that.leastFanIn)
+			        && Objects.equal(this.mostFanOut, that.mostFanOut)
+			        && Objects.equal(this.mostFanIn, that.mostFanIn)
+			        && Objects.equal(this.totalNumberOfStates, that.totalNumberOfStates)
+			        && Objects.equal(this.urls, that.urls);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("leastFanOut", leastFanOut)
+		        .add("leastFanIn", leastFanIn)
+		        .add("mostFanOut", mostFanOut)
+		        .add("mostFanIn", mostFanIn)
+		        .add("totalNumberOfStates", totalNumberOfStates)
+		        .add("urls", urls)
+		        .toString();
+	}
+
 }
