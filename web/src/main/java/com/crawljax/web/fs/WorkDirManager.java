@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -22,6 +23,7 @@ import com.crawljax.web.model.CrawlRecord.CrawlStatusType;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
+@Singleton
 public class WorkDirManager {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkDirManager.class);
@@ -31,6 +33,7 @@ public class WorkDirManager {
 
 	@Inject
 	public WorkDirManager(@OutputFolder File outputFolder, ObjectMapper mapper) {
+		LOG.debug("Initiating the Workdir manager");
 		this.outputFolder = outputFolder;
 		this.mapper = mapper;
 		if (!this.outputFolder.exists())

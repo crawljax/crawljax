@@ -12,20 +12,20 @@ import org.eclipse.jetty.webapp.WebAppContext;
  * Starts the Crawljax server at port 8080.
  */
 public class CrawljaxServer {
-	private static final Boolean EXECUTE_WAR = true;
-	private static String outFolder;
+	private static final boolean EXECUTE_WAR = false;
 
 	public static void main(String[] args) throws Exception {
+		String outFolder;
 		if (args.length == 0)
-			CrawljaxServer.outFolder =
+			outFolder =
 			        System.getProperty("user.home") + File.separatorChar + "crawljax";
 		else
-			CrawljaxServer.outFolder = args[0];
-		System.setProperty("outputFolder", CrawljaxServer.outFolder);
+			outFolder = args[0];
+		System.setProperty("outputFolder", outFolder);
 
 		Server server = new Server(8080);
 		HandlerList list = new HandlerList();
-		list.addHandler(buildOutputContext(CrawljaxServer.outFolder));
+		list.addHandler(buildOutputContext(outFolder));
 		list.addHandler(buildWebAppContext());
 		server.setHandler(list);
 		server.start();
