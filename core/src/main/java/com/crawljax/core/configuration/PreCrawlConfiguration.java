@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 
@@ -106,83 +107,32 @@ public class PreCrawlConfiguration {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("PreCrawlConfiguration [waitConditions=");
-		builder.append(waitConditions);
-		builder.append(", crawlConditions=");
-		builder.append(crawlConditions);
-		builder.append(", includedElements=");
-		builder.append(includedElements);
-		builder.append(", excludedElements=");
-		builder.append(excludedElements);
-		builder.append(", filterAttributeNames=");
-		builder.append(filterAttributeNames);
-		builder.append("]");
-		return builder.toString();
+		return Objects.toStringHelper(this)
+		        .add("waitConditions", waitConditions)
+		        .add("crawlConditions", crawlConditions)
+		        .add("includedElements", includedElements)
+		        .add("excludedElements", excludedElements)
+		        .add("filterAttributeNames", filterAttributeNames)
+		        .toString();
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((crawlConditions == null) ? 0 : crawlConditions.hashCode());
-		result = prime * result + ((excludedElements == null) ? 0 : excludedElements.hashCode());
-		result =
-		        prime * result
-		                + ((filterAttributeNames == null) ? 0 : filterAttributeNames.hashCode());
-		result = prime * result + ((includedElements == null) ? 0 : includedElements.hashCode());
-		result = prime * result + ((waitConditions == null) ? 0 : waitConditions.hashCode());
-		return result;
+		return Objects.hashCode(waitConditions, crawlConditions, includedElements,
+		        excludedElements, filterAttributeNames);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	public boolean equals(Object object) {
+		if (object instanceof PreCrawlConfiguration) {
+			PreCrawlConfiguration that = (PreCrawlConfiguration) object;
+			return Objects.equal(this.waitConditions, that.waitConditions)
+			        && Objects.equal(this.crawlConditions, that.crawlConditions)
+			        && Objects.equal(this.includedElements, that.includedElements)
+			        && Objects.equal(this.excludedElements, that.excludedElements)
+			        && Objects.equal(this.filterAttributeNames, that.filterAttributeNames);
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		PreCrawlConfiguration other = (PreCrawlConfiguration) obj;
-		if (crawlConditions == null) {
-			if (other.crawlConditions != null) {
-				return false;
-			}
-		} else if (!crawlConditions.equals(other.crawlConditions)) {
-			return false;
-		}
-		if (excludedElements == null) {
-			if (other.excludedElements != null) {
-				return false;
-			}
-		} else if (!excludedElements.equals(other.excludedElements)) {
-			return false;
-		}
-		if (filterAttributeNames == null) {
-			if (other.filterAttributeNames != null) {
-				return false;
-			}
-		} else if (!filterAttributeNames.equals(other.filterAttributeNames)) {
-			return false;
-		}
-		if (includedElements == null) {
-			if (other.includedElements != null) {
-				return false;
-			}
-		} else if (!includedElements.equals(other.includedElements)) {
-			return false;
-		}
-		if (waitConditions == null) {
-			if (other.waitConditions != null) {
-				return false;
-			}
-		} else if (!waitConditions.equals(other.waitConditions)) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 }

@@ -12,6 +12,7 @@ import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilde
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -343,156 +344,6 @@ public class CrawlRules {
 		return ignoredFrameIdentifiers;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (clickOnce ? 1231 : 1237);
-		result = prime * result + ((crawlEvents == null) ? 0 : crawlEvents.hashCode());
-		result = prime * result + (crawlFrames ? 1231 : 1237);
-		result = prime * result + (crawlHiddenAnchors ? 1231 : 1237);
-		result =
-		        prime
-		                * result
-		                + ((ignoredFrameIdentifiers == null) ? 0 : ignoredFrameIdentifiers
-		                        .hashCode());
-		result =
-		        prime * result
-		                + ((inputSpecification == null) ? 0 : inputSpecification.hashCode());
-		result = prime * result + ((invariants == null) ? 0 : invariants.hashCode());
-		result =
-		        prime * result + ((oracleComparators == null) ? 0 : oracleComparators.hashCode());
-		result = prime * result + ((preCrawlConfig == null) ? 0 : preCrawlConfig.hashCode());
-		result = prime * result + (randomInputInForms ? 1231 : 1237);
-		result = prime * result + (testInvariantsWhileCrawling ? 1231 : 1237);
-		result = prime * result + (int) (waitAfterEvent ^ (waitAfterEvent >>> 32));
-		result = prime * result + (int) (waitAfterReloadUrl ^ (waitAfterReloadUrl >>> 32));
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		CrawlRules other = (CrawlRules) obj;
-		if (clickOnce != other.clickOnce) {
-			return false;
-		}
-		if (crawlEvents == null) {
-			if (other.crawlEvents != null) {
-				return false;
-			}
-		} else if (!crawlEvents.equals(other.crawlEvents)) {
-			return false;
-		}
-		if (crawlFrames != other.crawlFrames) {
-			return false;
-		}
-		if (crawlHiddenAnchors != other.crawlHiddenAnchors) {
-			return false;
-		}
-		if (ignoredFrameIdentifiers == null) {
-			if (other.ignoredFrameIdentifiers != null) {
-				return false;
-			}
-		} else if (!ignoredFrameIdentifiers.equals(other.ignoredFrameIdentifiers)) {
-			return false;
-		}
-		if (inputSpecification == null) {
-			if (other.inputSpecification != null) {
-				return false;
-			}
-		} else if (!inputSpecification.equals(other.inputSpecification)) {
-			return false;
-		}
-		if (invariants == null) {
-			if (other.invariants != null) {
-				return false;
-			}
-		} else if (!invariants.equals(other.invariants)) {
-			return false;
-		}
-		if (oracleComparators == null) {
-			if (other.oracleComparators != null) {
-				return false;
-			}
-		} else if (!oracleComparators.equals(other.oracleComparators)) {
-			return false;
-		}
-		if (preCrawlConfig == null) {
-			if (other.preCrawlConfig != null) {
-				return false;
-			}
-		} else if (!preCrawlConfig.equals(other.preCrawlConfig)) {
-			return false;
-		}
-		if (randomInputInForms != other.randomInputInForms) {
-			return false;
-		}
-		if (testInvariantsWhileCrawling != other.testInvariantsWhileCrawling) {
-			return false;
-		}
-		if (waitAfterEvent != other.waitAfterEvent) {
-			return false;
-		}
-		if (waitAfterReloadUrl != other.waitAfterReloadUrl) {
-			return false;
-		}
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("CrawlRules [crawlEvents=");
-		builder.append(crawlEvents);
-		builder.append(", invariants=");
-		builder.append(invariants);
-		builder.append(", oracleComparators=");
-		builder.append(oracleComparators);
-		builder.append(", ignoredFrameIdentifiers=");
-		builder.append(ignoredFrameIdentifiers);
-		builder.append(", preCrawlConfig=");
-		builder.append(preCrawlConfig);
-		builder.append(", randomInputInForms=");
-		builder.append(randomInputInForms);
-		builder.append(", inputSpecification=");
-		builder.append(inputSpecification);
-		builder.append(", testInvariantsWhileCrawling=");
-		builder.append(testInvariantsWhileCrawling);
-		builder.append(", clickOnce=");
-		builder.append(clickOnce);
-		builder.append(", crawlFrames=");
-		builder.append(crawlFrames);
-		builder.append(", crawlHiddenAnchors=");
-		builder.append(crawlHiddenAnchors);
-		builder.append(", waitAfterReloadUrlMillis=");
-		builder.append(waitAfterReloadUrl);
-		builder.append(", waitAfterEvent=");
-		builder.append(waitAfterEvent);
-		builder.append("]");
-		return builder.toString();
-	}
-
 	/**
 	 * @return All Crawl elements: {@link PreCrawlConfiguration#getIncludedElements()},
 	 *         {@link PreCrawlConfiguration#getExcludedElements()} and
@@ -504,6 +355,57 @@ public class CrawlRules {
 		        .addAll(getPreCrawlConfig().getExcludedElements())
 		        .addAll(getInputSpecification().getCrawlElements()).build();
 
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(crawlEvents, invariants, oracleComparators,
+		        ignoredFrameIdentifiers, preCrawlConfig, randomInputInForms, inputSpecification,
+		        testInvariantsWhileCrawling, clickOnce, crawlFrames, crawlHiddenAnchors,
+		        waitAfterReloadUrl, waitAfterEvent);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof CrawlRules) {
+			CrawlRules that = (CrawlRules) object;
+			return Objects.equal(this.crawlEvents, that.crawlEvents)
+			        && Objects.equal(this.invariants, that.invariants)
+			        && Objects.equal(this.oracleComparators, that.oracleComparators)
+			        && Objects.equal(this.ignoredFrameIdentifiers, that.ignoredFrameIdentifiers)
+			        && Objects.equal(this.preCrawlConfig, that.preCrawlConfig)
+			        && Objects.equal(this.randomInputInForms, that.randomInputInForms)
+			        && Objects.equal(this.inputSpecification, that.inputSpecification)
+			        && Objects.equal(this.testInvariantsWhileCrawling,
+			                that.testInvariantsWhileCrawling)
+			        && Objects.equal(this.clickOnce, that.clickOnce)
+			        && Objects.equal(this.crawlFrames, that.crawlFrames)
+			        && Objects.equal(this.crawlHiddenAnchors, that.crawlHiddenAnchors)
+			        && Objects.equal(this.waitAfterReloadUrl, that.waitAfterReloadUrl)
+			        && Objects.equal(this.waitAfterEvent, that.waitAfterEvent);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("DEFAULT_WAIT_AFTER_RELOAD", DEFAULT_WAIT_AFTER_RELOAD)
+		        .add("DEFAULT_WAIT_AFTER_EVENT", DEFAULT_WAIT_AFTER_EVENT)
+		        .add("crawlEvents", crawlEvents)
+		        .add("invariants", invariants)
+		        .add("oracleComparators", oracleComparators)
+		        .add("ignoredFrameIdentifiers", ignoredFrameIdentifiers)
+		        .add("preCrawlConfig", preCrawlConfig)
+		        .add("randomInputInForms", randomInputInForms)
+		        .add("inputSpecification", inputSpecification)
+		        .add("testInvariantsWhileCrawling", testInvariantsWhileCrawling)
+		        .add("clickOnce", clickOnce)
+		        .add("crawlFrames", crawlFrames)
+		        .add("crawlHiddenAnchors", crawlHiddenAnchors)
+		        .add("waitAfterReloadUrl", waitAfterReloadUrl)
+		        .add("waitAfterEvent", waitAfterEvent)
+		        .toString();
 	}
 
 }

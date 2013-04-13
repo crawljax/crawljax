@@ -109,8 +109,6 @@ public class CrawljaxController implements CrawlQueueManager {
 	 * 
 	 * @throws CrawljaxException
 	 *             If the browser cannot be instantiated.
-	 * @throws ConfigurationException
-	 *             if crawljax configuration fails.
 	 * @NotThreadSafe
 	 */
 	public final void run() throws CrawljaxException {
@@ -121,7 +119,7 @@ public class CrawljaxController implements CrawlQueueManager {
 		        .getPreCrawlConfig().getIncludedElements());
 
 		// Create the initailCrawler
-		initialCrawler = new InitialCrawler(this, configuration.getPlugins());
+		initialCrawler = new InitialCrawler(this);
 
 		// Start the Crawling by adding the initialCrawler to the the workQueue.
 		addWorkToQueue(initialCrawler);
@@ -294,7 +292,7 @@ public class CrawljaxController implements CrawlQueueManager {
 	private void shutdown(long timeCrawlCalc) {
 		StateFlowGraph stateFlowGraph = this.getSession().getStateFlowGraph();
 		for (Eventable c : stateFlowGraph.getAllEdges()) {
-			LOGGER.info("Interaction Element= " + c.toString());
+			LOGGER.trace("Interaction Element= " + c.toString());
 		}
 		LOGGER.info("Total Crawling time(" + timeCrawlCalc + "ms) ~= "
 		        + formatRunningTime(timeCrawlCalc));

@@ -97,6 +97,7 @@
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>version.html</include>
+					<include>index.html</include>
 				</includes>
 				<filtering>true</filtering>
 			</resource>

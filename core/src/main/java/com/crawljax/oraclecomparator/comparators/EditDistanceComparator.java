@@ -1,7 +1,8 @@
 package com.crawljax.oraclecomparator.comparators;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.EditDistance;
 
 /**
  * Oracle Comparator that uses the Levenshtein Edit Distance to determince wheter two states are
@@ -33,7 +34,7 @@ public class EditDistanceComparator extends AbstractComparator {
 	 */
 	@Override
 	public boolean isEquivalent() {
-		return EditDistance.isClone(getOriginalDom(), getNewDom(), getTreshold());
+		return isClone(getOriginalDom(), getNewDom(), getTreshold());
 	}
 
 	/**
@@ -51,4 +52,39 @@ public class EditDistanceComparator extends AbstractComparator {
 		this.treshold = treshold;
 	}
 
+	/**
+	 * @param str1
+	 *            the first string.
+	 * @param str2
+	 *            the second string.
+	 * @param thresholdCoef
+	 *            the threshold coefficient: must be between 0.0-1.0.
+	 * @return true if the Levenshtein distance is lower than or equal to the computed threshold.
+	 */
+	boolean isClone(String str1, String str2, double thresholdCoef) {
+		if ((thresholdCoef < 0.0) || (thresholdCoef > 1.0)) {
+			throw new IllegalArgumentException(
+			        "Threshold Coefficient must be between 0.0 and 1.0!");
+		} else if (StringUtils.getLevenshteinDistance(str1, str2) <= getThreshold(str1, str2,
+		        thresholdCoef)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Calculate a threshold.
+	 * 
+	 * @param x
+	 *            first string.
+	 * @param y
+	 *            second string.
+	 * @param p
+	 *            the threshold coefficient.
+	 * @return 2 maxLength(x, y) (1-p)
+	 */
+	double getThreshold(String x, String y, double p) {
+		return 2 * Math.max(x.length(), y.length()) * (1 - p);
+	}
 }

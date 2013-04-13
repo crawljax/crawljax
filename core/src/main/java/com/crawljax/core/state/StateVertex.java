@@ -302,8 +302,8 @@ public class StateVertex implements Serializable {
 			currentAction = iter.next();
 			if (!candidateElements.contains(currentAction.getCandidateElement())) {
 				iter.remove();
-				LOGGER.info("filtered candidate action: " + currentAction.getEventType().name()
-				        + " on " + currentAction.getCandidateElement().getGeneralString());
+				LOGGER.info("filtered candidate action: {} on {}", currentAction.getEventType()
+				        .name(), currentAction.getCandidateElement().getGeneralString());
 
 			}
 		}
@@ -354,7 +354,7 @@ public class StateVertex implements Serializable {
 			}
 			do {
 				if (manager.removeWorkFromQueue(c)) {
-					LOGGER.info("Crawler {} REMOVED from Queue!", c);
+					LOGGER.debug("Crawler {} REMOVED from Queue!", c);
 					action = registerdCandidateActions.remove(c);
 					if (action != null) {
 						/*
@@ -363,7 +363,7 @@ public class StateVertex implements Serializable {
 						 * might just have started the run method of the crawler must also be added
 						 * with a check hook.
 						 */
-						LOGGER.info("Stolen work from other Crawler");
+						LOGGER.debug("Stolen work from other Crawler");
 						return action;
 					} else {
 						LOGGER.warn("Oh my! I just removed {} from the queue with no action!", c);
@@ -421,7 +421,7 @@ public class StateVertex implements Serializable {
 	 * @param action
 	 *            the action that have been examined
 	 */
-	public void finishedWorking(Crawler crawler, CandidateCrawlAction action) {
+	public void markAsFinished(Crawler crawler, CandidateCrawlAction action) {
 		candidateActions.remove(action);
 		registerdCandidateActions.remove(crawler);
 		workInProgressCandidateActions.remove(crawler);

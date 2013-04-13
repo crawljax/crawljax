@@ -38,6 +38,7 @@ public class StateFlowGraph implements Serializable {
 	 * Thread-safety.
 	 */
 	private final AtomicInteger stateCounter = new AtomicInteger();
+	private final AtomicInteger nextStateNameCounter = new AtomicInteger();
 
 	private final StateVertex initialState;
 
@@ -53,6 +54,7 @@ public class StateFlowGraph implements Serializable {
 		sfg.addVertex(initialState);
 		stateCounter.incrementAndGet();
 		this.initialState = initialState;
+		LOG.debug("Initialized the stateflowgraph with an initial state");
 	}
 
 	/**
@@ -69,8 +71,8 @@ public class StateFlowGraph implements Serializable {
 	 * @return the clone if one is detected null otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	public StateVertex addState(StateVertex stateVertix) {
-		return addState(stateVertix, true);
+	public StateVertex putIfAbsent(StateVertex stateVertix) {
+		return putIfAbsent(stateVertix, true);
 	}
 
 	/**
@@ -90,19 +92,20 @@ public class StateFlowGraph implements Serializable {
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
 	@GuardedBy("sfg")
-	public StateVertex addState(StateVertex stateVertix, boolean correctName) {
+	public StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName) {
 		synchronized (sfg) {
-			if (!sfg.addVertex(stateVertix)) {
-				// Graph already contained the vertix
-				LOG.debug("Graph already contained vertex {}", stateVertix);
-				return this.getStateInGraph(stateVertix);
-			} else {
+			boolean added = sfg.addVertex(stateVertix);
+			if (added) {
 				int count = stateCounter.incrementAndGet();
 				LOG.debug("Number of states is now {}", count);
 				if (correctName) {
 					correctStateName(stateVertix);
 				}
 				return null;
+			} else {
+				// Graph already contained the vertix
+				LOG.debug("Graph already contained vertex {}", stateVertix);
+				return this.getStateInGraph(stateVertix);
 			}
 		}
 	}
@@ -369,8 +372,7 @@ public class StateFlowGraph implements Serializable {
 	 * @return State name the name of the state
 	 */
 	public String getNewStateName() {
-		stateCounter.getAndIncrement();
-		String state = makeStateName(stateCounter.get(), false);
+		String state = makeStateName(nextStateNameCounter.incrementAndGet(), false);
 		return state;
 	}
 

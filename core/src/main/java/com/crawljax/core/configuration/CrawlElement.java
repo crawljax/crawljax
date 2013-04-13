@@ -6,6 +6,7 @@ import java.util.List;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -35,7 +36,6 @@ import com.google.common.collect.Lists;
 public final class CrawlElement {
 
 	private final String tagName;
-	private final List<CrawlAttribute> crawlAttributes = Lists.newLinkedList();
 	private final List<Condition> conditions = Lists.newLinkedList();
 	private final String id;
 	private final EventType eventType;
@@ -54,14 +54,6 @@ public final class CrawlElement {
 		this.tagName = tagName.toUpperCase();
 		this.id = "id" + hashCode();
 		this.eventType = eventType;
-	}
-
-	protected CrawlElement(EventType eventType, String tagName,
-	        List<CrawlAttribute> crawlAttributes) {
-		this.tagName = tagName.toUpperCase();
-		this.id = "id" + hashCode();
-		this.eventType = eventType;
-		this.crawlAttributes.addAll(crawlAttributes);
 	}
 
 	/**
@@ -93,7 +85,14 @@ public final class CrawlElement {
 	 * @return this CrawlElement
 	 */
 	public CrawlElement withAttribute(String attributeName, String value) {
-		this.crawlAttributes.add(new CrawlAttribute(attributeName, value));
+		if (this.underXpath == null || this.underXpath.isEmpty()) {
+			this.underXpath = "//" + this.tagName + "[@" + attributeName + "='" + value + "']";
+		} else {
+			this.underXpath =
+			        this.underXpath + " | " + "//" + this.tagName + "[@" + attributeName + "='"
+			                + value + "']";
+			;
+		}
 		return this;
 	}
 
@@ -127,7 +126,13 @@ public final class CrawlElement {
 	 * @return Crawltag with text
 	 */
 	public CrawlElement withText(String text) {
-		this.crawlAttributes.add(new CrawlAttribute("innertext", text));
+		if (this.underXpath == null || this.underXpath.isEmpty()) {
+			this.underXpath = "//" + this.tagName + "[text()=" + escapeApostrophes(text) + "]";
+		} else {
+			this.underXpath =
+			        this.underXpath + " | " + "//" + this.tagName + "[text()="
+			                + escapeApostrophes(text) + "]";
+		}
 		return this;
 	}
 
@@ -154,43 +159,14 @@ public final class CrawlElement {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("CrawlElement [");
-		if (tagName != null) {
-			builder.append("tagName=");
-			builder.append(tagName);
-			builder.append(", ");
-		}
-		if (crawlAttributes != null && !crawlAttributes.isEmpty()) {
-			builder.append("crawlAttributes=");
-			builder.append(crawlAttributes);
-			builder.append(", ");
-		}
-		if (conditions != null && !conditions.isEmpty()) {
-			builder.append("conditions=");
-			builder.append(conditions);
-			builder.append(", ");
-		}
-		if (id != null) {
-			builder.append("id=");
-			builder.append(id);
-			builder.append(", ");
-		}
-		if (underXpath != null) {
-			builder.append("underXpath=");
-			builder.append(underXpath);
-			builder.append(", ");
-		}
-		if (inputFieldIds != null && !inputFieldIds.isEmpty()) {
-			builder.append("inputFieldIds=");
-			builder.append(inputFieldIds);
-			builder.append(", ");
-		}
-		if (eventType != null) {
-			builder.append("eventType=");
-			builder.append(eventType);
-		}
-		builder.append("]");
-		return builder.toString();
+		return Objects.toStringHelper(this)
+		        .add("tagName", tagName)
+		        .add("conditions", conditions)
+		        .add("id", id)
+		        .add("eventType", eventType)
+		        .add("inputFieldIds", inputFieldIds)
+		        .add("underXpath", underXpath)
+		        .toString();
 	}
 
 	/**
@@ -208,28 +184,6 @@ public final class CrawlElement {
 		ret.append("InputFieldIds: ");
 		ret.append(getInputFieldIds());
 		return ret.toString();
-	}
-
-	/**
-	 * @return the crawlAttributes
-	 */
-	public ImmutableList<CrawlAttribute> getCrawlAttributes() {
-		return ImmutableList.copyOf(crawlAttributes);
-	}
-
-	/**
-	 * @param crawlAttribute
-	 *            Adds a crawlattribute.
-	 */
-	protected void addCrawlAttribute(CrawlAttribute crawlAttribute) {
-		crawlAttributes.add(crawlAttribute);
-	}
-
-	/**
-	 * @return the crawl attributes
-	 */
-	public List<CrawlAttribute> getAttributes() {
-		return crawlAttributes;
 	}
 
 	/**
@@ -292,6 +246,28 @@ public final class CrawlElement {
 	 */
 	public EventType getEventType() {
 		return eventType;
+	}
+
+	/**
+	 * Returns a string to resolve apostrophe issue in xpath
+	 * 
+	 * @param text
+	 * @return the apostrophe resolved xpath value string
+	 */
+	protected String escapeApostrophes(String text)
+	{
+		String resultString;
+		if (text.contains("'")) {
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append("concat('");
+			stringBuilder.append(text.replace("'", "',\"'\",'"));
+			stringBuilder.append("')");
+			resultString = stringBuilder.toString();
+		}
+		else {
+			resultString = "'" + text + "'";
+		}
+		return resultString;
 	}
 
 }

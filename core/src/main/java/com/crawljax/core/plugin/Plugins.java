@@ -15,10 +15,12 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 
 /**
@@ -26,9 +28,6 @@ import com.google.common.collect.Lists;
  */
 public final class Plugins {
 
-	/**
-	 * Make a new Log4j object used to do the logging.
-	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(Plugins.class.getName());
 
 	@SuppressWarnings("unchecked")
@@ -108,10 +107,14 @@ public final class Plugins {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((PreCrawlingPlugin) plugin).preCrawling(browser);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
+	}
+
+	private void reportFailingPlugin(Plugin plugin, RuntimeException e) {
+		LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 	}
 
 	/**
@@ -131,7 +134,7 @@ public final class Plugins {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
@@ -153,7 +156,7 @@ public final class Plugins {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((OnNewStatePlugin) plugin).onNewState(session);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
@@ -179,7 +182,7 @@ public final class Plugins {
 					((OnInvariantViolationPlugin) plugin)
 					        .onInvariantViolation(invariant, session);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
@@ -201,7 +204,7 @@ public final class Plugins {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((PostCrawlingPlugin) plugin).postCrawling(session);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
@@ -225,7 +228,7 @@ public final class Plugins {
 				try {
 					((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
@@ -252,7 +255,7 @@ public final class Plugins {
 					((PreStateCrawlingPlugin) plugin)
 					        .preStateCrawling(session, candidateElements);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
@@ -275,7 +278,7 @@ public final class Plugins {
 				try {
 					((ProxyServerPlugin) plugin).proxyServer(config);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
@@ -298,7 +301,7 @@ public final class Plugins {
 				try {
 					((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
@@ -321,7 +324,7 @@ public final class Plugins {
 				try {
 					((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
 				} catch (RuntimeException e) {
-					LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+					reportFailingPlugin(plugin, e);
 				}
 			}
 		}
@@ -364,5 +367,37 @@ public final class Plugins {
 			LOGGER.debug("Dom not Changed!");
 			return false;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(plugins);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Plugins) {
+			Plugins that = (Plugins) object;
+			return Objects.equal(this.plugins, that.plugins);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("plugins", plugins)
+		        .toString();
+	}
+
+	/**
+	 * @return A {@link ImmutableSet} of the {@link Plugin#toString()} that are installed.
+	 */
+	public ImmutableSet<String> pluginNames() {
+		ImmutableSortedSet.Builder<String> names = ImmutableSortedSet.naturalOrder();
+		for (Plugin plugin : plugins.values()) {
+			names.add(plugin.toString());
+		}
+		return names.build();
 	}
 }

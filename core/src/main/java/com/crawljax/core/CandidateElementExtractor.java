@@ -18,7 +18,6 @@ import org.w3c.dom.NodeList;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import com.crawljax.core.configuration.CrawlAttribute;
 import com.crawljax.core.configuration.CrawlElement;
 import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -27,7 +26,6 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.DomUtils;
-import com.crawljax.util.UrlUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -147,7 +145,7 @@ public class CandidateElementExtractor {
 			NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
 			addFramesCandidates(dom, results, relatedFrame, iFrameNodes);
 
-			eveluateElements(dom, tag, results, relatedFrame);
+			evaluateElements(dom, tag, results, relatedFrame);
 		}
 	}
 
@@ -210,7 +208,7 @@ public class CandidateElementExtractor {
 		}
 	}
 
-	private void eveluateElements(Document dom, CrawlElement crawl,
+	private void evaluateElements(Document dom, CrawlElement crawl,
 	        Builder<CandidateElement> results, String relatedFrame) {
 		try {
 			List<Element> nodeListForCrawlElement =
@@ -245,7 +243,6 @@ public class CandidateElementExtractor {
 		ImmutableList<String> expressions = getFullXpathForGivenXpath(dom, eventableCondition);
 
 		NodeList nodeList = dom.getElementsByTagName(crawlElement.getTagName());
-		List<CrawlAttribute> attributes = crawlElement.getAttributes();
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 
@@ -261,7 +258,6 @@ public class CandidateElementExtractor {
 			 */
 			String id = element.getNodeName() + ": " + DomUtils.getAllElementAttributes(element);
 			if (matchesXpath && !checkedElements.isChecked(id)
-			        && !filterElement(attributes, element)
 			        && !isExcluded(dom, element, eventableConditionChecker)) {
 				addElement(element, result, crawlElement);
 			} else {
@@ -307,12 +303,8 @@ public class CandidateElementExtractor {
 	private void addElement(Element element, Builder<Element> builder, CrawlElement crawlElement) {
 		if ("A".equalsIgnoreCase(crawlElement.getTagName())) {
 			String href = element.getAttribute("href");
-			if (!Strings.isNullOrEmpty(href)) {
-				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
-				LOG.debug("HREF: {} isExternal= {}", href, isExternal);
-				if (isExternal || isPDForPS(href)) {
-					return;
-				}
+			if (!Strings.isNullOrEmpty(href) && isFileForDownloading(href)) {
+				return;
 			}
 		}
 		builder.add(element);
@@ -362,8 +354,8 @@ public class CandidateElementExtractor {
 	 *            the string to check
 	 * @return true if href has the pdf or ps pattern.
 	 */
-	private boolean isPDForPS(String href) {
-		final Pattern p = Pattern.compile(".+.pdf|.+.ps");
+	private boolean isFileForDownloading(String href) {
+		final Pattern p = Pattern.compile(".+.pdf|.+.ps|.+.zip");
 		Matcher m = p.matcher(href);
 
 		if (m.matches()) {
@@ -408,54 +400,8 @@ public class CandidateElementExtractor {
 				LOG.info("Excluded element because of xpath: " + element);
 				return true;
 			}
-			if (!filterElement(crawlElem.getAttributes(), element)
-			        && crawlElem.getAttributes().size() > 0) {
-				LOG.info("Excluded element because of attributes: " + element);
-				return true;
-			}
 		}
 
 		return false;
-	}
-
-	/**
-	 * Return whether the element is filtered out because of its attributes.
-	 */
-	private boolean filterElement(List<CrawlAttribute> attributes, Element element) {
-		int matchCounter = 0;
-		if (element == null || attributes == null) {
-			return false;
-		}
-		for (CrawlAttribute attr : attributes) {
-			LOG.debug("Checking element " + DomUtils.getElementString(element)
-			        + "AttributeName: " + attr.getName() + " value: " + attr.getValue());
-
-			if (attr.matchesValue(element.getAttribute(attr.getName()))) {
-				// make sure that if attribute value is % the element should
-				// have this attribute
-				if (attr.getValue().equals("%")
-				        && element.getAttributeNode(attr.getName()) == null) {
-					return true;
-				} else {
-					matchCounter++;
-				}
-			} else if (attr.getName().equalsIgnoreCase("innertext")
-			        && element.getTextContent() != null) {
-				String value = attr.getValue();
-				String text = element.getTextContent().trim();
-				if (value.contains("%")) {
-					String pattern = value.replace("%", "(.*?)");
-					if (text.matches(pattern)) {
-						matchCounter++;
-					}
-
-				} else if (text.equalsIgnoreCase(value)) {
-					matchCounter++;
-				}
-			}
-
-		}
-
-		return (attributes.size() != matchCounter);
 	}
 }

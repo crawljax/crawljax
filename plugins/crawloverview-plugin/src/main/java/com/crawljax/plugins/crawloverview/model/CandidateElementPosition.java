@@ -6,6 +6,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 
 import com.crawljax.core.CandidateElement;
+import com.google.common.base.Objects;
 
 /**
  * Position of a candidate element of a state. This type is used to build the overlays of screenshot
@@ -63,53 +64,31 @@ public class CandidateElementPosition {
 
 	@Override
 	public String toString() {
-		return "CandidateElementPosition [top=" + top + ", left=" + left + ", xpath=" + xpath
-		        + ", width=" + width + ", height=" + height + "]";
+		return Objects.toStringHelper(this)
+		        .add("top", top)
+		        .add("left", left)
+		        .add("xpath", xpath)
+		        .add("width", width)
+		        .add("height", height)
+		        .toString();
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + height;
-		result = prime * result + left;
-		result = prime * result + top;
-		result = prime * result + width;
-		result = prime * result + ((xpath == null) ? 0 : xpath.hashCode());
-		return result;
+		return Objects.hashCode(top, left, xpath, width, height);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	public boolean equals(Object object) {
+		if (object instanceof CandidateElementPosition) {
+			CandidateElementPosition that = (CandidateElementPosition) object;
+			return Objects.equal(this.top, that.top)
+			        && Objects.equal(this.left, that.left)
+			        && Objects.equal(this.xpath, that.xpath)
+			        && Objects.equal(this.width, that.width)
+			        && Objects.equal(this.height, that.height);
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		CandidateElementPosition other = (CandidateElementPosition) obj;
-		if (height != other.height) {
-			return false;
-		}
-		if (left != other.left) {
-			return false;
-		}
-		if (top != other.top) {
-			return false;
-		}
-		if (width != other.width) {
-			return false;
-		}
-		if (xpath == null) {
-			if (other.xpath != null) {
-				return false;
-			}
-		} else if (!xpath.equals(other.xpath)) {
-			return false;
-		}
-		return true;
+		return false;
 	}
+
 }

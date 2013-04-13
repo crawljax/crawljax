@@ -3,7 +3,7 @@
  */
 package com.crawljax.condition.crawlcondition;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.ConditionType;
@@ -47,7 +47,7 @@ public class CrawlCondition extends ConditionType {
 	 *            Preconditions to check first.
 	 */
 	public CrawlCondition(String description, Condition crawlConditionCondition,
-	        ArrayList<Condition> preConditions) {
+	        List<Condition> preConditions) {
 		super(description, crawlConditionCondition, preConditions);
 	}
 

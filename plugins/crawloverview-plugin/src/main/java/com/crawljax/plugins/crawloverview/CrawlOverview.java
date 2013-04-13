@@ -40,7 +40,6 @@ public class CrawlOverview
 
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlOverview.class);
 
-	// private final CachedResources resources;
 	private final OutputBuilder outputBuilder;
 	private final Map<String, StateVertex> visitedStates;
 
@@ -144,7 +143,7 @@ public class CrawlOverview
 			// element.getXpath()
 			return session.getBrowser().getWebElement(element.getIdentification());
 		} catch (WebDriverException e) {
-			LOG.info("Could not locate " + element.getElement().toString());
+			LOG.info("Could not locate element for positioning {}", element.getElement());
 			return null;
 		}
 	}
@@ -185,4 +184,8 @@ public class CrawlOverview
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "Crawl overview plugin";
+	}
 }

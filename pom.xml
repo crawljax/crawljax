@@ -29,8 +29,8 @@
 	</prerequisites>
 
 	<properties>
-		<slf4j.version>1.7.3</slf4j.version>
-		<logback.version>1.0.10</logback.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<logback.version>1.0.11</logback.version>
 		<selenium.version>[2.31.0,)</selenium.version>
 		<jetty.version>9.0.0.v20130308</jetty.version>
 
@@ -52,8 +52,8 @@
 	</issueManagement>
 
 	<ciManagement>
-		<system>Travis</system>
-		<url>https://travis-ci.org/crawljax/crawljax</url>
+		<system>Jenkins</system>
+		<url>http://jenkins.crawljax.com</url>
 	</ciManagement>
 
 	<mailingLists>
@@ -160,12 +160,12 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<groupId>org.apache.maven.plugins</groupId>
-					<version>3.0</version>
+					<version>3.1</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<groupId>org.apache.maven.plugins</groupId>
-					<version>2.14</version>
+					<version>2.14.1</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
@@ -271,15 +271,4 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-
-	<repositories>
-		<repository>
-			<id>crawljax.mvn.repo</id>
-			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
 </project>

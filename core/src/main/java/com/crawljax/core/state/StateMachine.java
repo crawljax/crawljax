@@ -96,7 +96,7 @@ public class StateMachine {
 		        currentState.getName(), newState.getName());
 
 		// Add the state to the stateFlowGraph. Store the result
-		StateVertex cloneState = stateFlowGraph.addState(newState);
+		StateVertex cloneState = stateFlowGraph.putIfAbsent(newState);
 
 		// Is there a clone detected?
 		if (cloneState != null) {
@@ -105,14 +105,13 @@ public class StateMachine {
 			LOGGER.debug("CLONE CURRENTSTATE: {}", currentState.getName());
 			LOGGER.debug("CLONE STATE: {}", cloneState.getName());
 			LOGGER.debug("CLONE CLICKABLE: {}", eventable);
-			newState = cloneState;
-
+			stateFlowGraph.addEdge(currentState, cloneState, eventable);
 		} else {
+			stateFlowGraph.addEdge(currentState, newState, eventable);
 			LOGGER.info("State {} added to the StateMachine.", newState.getName());
 		}
 
 		// Add the Edge
-		stateFlowGraph.addEdge(currentState, newState, eventable);
 
 		return cloneState;
 	}

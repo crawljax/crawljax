@@ -6,6 +6,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.plugins.crawloverview.CrawlOverviewException;
+import com.google.common.base.Objects;
 
 /**
  * An {@link Edge} between two {@link State}s.
@@ -40,13 +41,11 @@ public class Edge {
 		eventType = eventable.getEventType().toString();
 	}
 
+	/**
+	 * @return The pre-computed hashcode.
+	 */
 	private final int buildHash() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((from == null) ? 0 : from.hashCode());
-		result = prime * result + ((to == null) ? 0 : to.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+		return Objects.hashCode(from, to, hash, text, id, element, eventType);
 	}
 
 	public String getFrom() {
@@ -59,26 +58,6 @@ public class Edge {
 
 	public String getText() {
 		return text;
-	}
-
-	@Override
-	public int hashCode() {
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Edge other = (Edge) obj;
-		return other.hashCode() == hash;
 	}
 
 	@Override
@@ -96,6 +75,26 @@ public class Edge {
 
 	public String getElement() {
 		return element;
+	}
+
+	@Override
+	public int hashCode() {
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Edge) {
+			Edge that = (Edge) object;
+			return Objects.equal(this.from, that.from)
+			        && Objects.equal(this.to, that.to)
+			        && Objects.equal(this.hash, that.hash)
+			        && Objects.equal(this.text, that.text)
+			        && Objects.equal(this.id, that.id)
+			        && Objects.equal(this.element, that.element)
+			        && Objects.equal(this.eventType, that.eventType);
+		}
+		return false;
 	}
 
 }

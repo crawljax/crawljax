@@ -39,7 +39,7 @@ public class SessionReader {
 			if (sfg == null) {
 				sfg = new StateFlowGraph(state);
 			} else {
-				sfg.addState(state, false);
+				sfg.putIfAbsent(state, false);
 			}
 		}
 		for (Transition transition : savedCrawlSession.getTransitions()) {
@@ -69,16 +69,6 @@ public class SessionReader {
 		}
 		return paths;
 	}
-
-	// /**
-	// * @return the CrawlSpecification from the saved CrawlSession
-	// */
-	// public CrawlSpecification getCrawlSpecification() {
-	// CrawlSpecification spec = new CrawlSpecification(savedCrawlSession.getUrl());
-	// spec.setMaximumStates(savedCrawlSession.getMapStates().size());
-	// spec.clickDefaultElements();
-	// return spec;
-	// }
 
 	/**
 	 * @return the crawled url from the saved CrawlSession

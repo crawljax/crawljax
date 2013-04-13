@@ -34,7 +34,8 @@ public class JavaScriptCondition extends AbstractCondition {
 	 * 
 	 * @param browser
 	 *            The browser.
-	 * @return Whether the condition is statisfied.
+	 * @return Whether the condition is statisfied or <code>false</code> when it it isn't or a
+	 *         {@link CrawljaxException} occurs.
 	 */
 	@Override
 	public boolean check(EmbeddedBrowser browser) {

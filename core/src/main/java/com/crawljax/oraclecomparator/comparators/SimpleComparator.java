@@ -33,8 +33,8 @@ public class SimpleComparator extends AbstractComparator {
 	}
 
 	private String removeLinebreaksAndWhitespaces(String string) {
-		String strippedStr; 
-		
+		String strippedStr;
+
 		// remove linebreaks
 		strippedStr = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
 

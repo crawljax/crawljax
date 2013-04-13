@@ -38,8 +38,8 @@ public class PlainStructureComparator extends AbstractComparator {
 	}
 
 	private String stripContent(String string) {
-		String strippedStr; 
-		
+		String strippedStr;
+
 		// remove linebreaks
 		strippedStr = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
 

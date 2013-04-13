@@ -8,6 +8,7 @@ import javax.annotation.concurrent.Immutable;
 import org.w3c.dom.Node;
 
 import com.crawljax.util.DomUtils;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
@@ -47,52 +48,6 @@ public class Element implements Serializable {
 			builder.put(attr.getNodeName().toLowerCase(), attr.getNodeValue());
 		}
 		attributes = builder.build();
-	}
-
-	@Override
-	public String toString() {
-		StringBuffer str = new StringBuffer();
-		if (!this.getText().equals("")) {
-			str.append("\"");
-			str.append(getText());
-			str.append("\" ");
-		}
-		str.append(getTag().toUpperCase());
-		str.append(": ");
-		str.append(attributes);
-		return str.toString();
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		if (object == null || !(object instanceof Element)) {
-			return false;
-		}
-		return toString().equals(((Element) object).toString());
-	}
-
-	@Override
-	public int hashCode() {
-
-		final int prime = 31;
-		int result = 1;
-		result = prime * result;
-		if (attributes != null) {
-			result += attributes.hashCode();
-		}
-		result = prime * result;
-		if (node != null) {
-			result += node.hashCode();
-		}
-		result = prime * result;
-		if (tag != null) {
-			result += tag.hashCode();
-		}
-		result = prime * result;
-		if (text != null) {
-			result += text.hashCode();
-		}
-		return result;
 	}
 
 	/**
@@ -179,4 +134,32 @@ public class Element implements Serializable {
 	public ImmutableMap<String, String> getAttributes() {
 		return attributes;
 	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("node", node)
+		        .add("tag", tag)
+		        .add("text", text)
+		        .add("attributes", attributes)
+		        .toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(node.toString(), tag, text, attributes);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Element) {
+			Element that = (Element) object;
+			return Objects.equal(this.node.toString(), that.node.toString())
+			        && Objects.equal(this.tag, that.tag)
+			        && Objects.equal(this.text, that.text)
+			        && Objects.equal(this.attributes, that.attributes);
+		}
+		return false;
+	}
+
 }

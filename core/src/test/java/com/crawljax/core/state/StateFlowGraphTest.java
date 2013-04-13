@@ -45,12 +45,12 @@ public class StateFlowGraphTest {
 	@Test
 	public void testSFG() throws Exception {
 		StateVertex DOUBLE = new StateVertex("index", "<table><div>index</div></table>");
-		assertTrue(graph.addState(state2) == null);
-		assertTrue(graph.addState(state3) == null);
-		assertTrue(graph.addState(state4) == null);
-		assertTrue(graph.addState(state5) == null);
+		assertTrue(graph.putIfAbsent(state2) == null);
+		assertTrue(graph.putIfAbsent(state3) == null);
+		assertTrue(graph.putIfAbsent(state4) == null);
+		assertTrue(graph.putIfAbsent(state5) == null);
 
-		assertFalse(graph.addState(DOUBLE) == null);
+		assertFalse(graph.putIfAbsent(DOUBLE) == null);
 
 		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification(How.xpath,
 		        "/body/div[4]"), EventType.click)));
@@ -116,8 +116,8 @@ public class StateFlowGraphTest {
 		StateVertex state3clone2 =
 		        new StateVertex("STATE_THREE", "<table><div>state2</div></table>");
 
-		assertTrue(graph.addState(state2) == null);
-		assertTrue(graph.addState(state4) == null);
+		assertTrue(graph.putIfAbsent(state2) == null);
+		assertTrue(graph.putIfAbsent(state4) == null);
 		// assertFalse(graph.addState(state3));
 		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification(How.xpath,
 		        "/body/div[4]"), EventType.click)));
@@ -149,7 +149,7 @@ public class StateFlowGraphTest {
 		                + "<body><div id='firstdiv' class='orange'>";
 
 		StateFlowGraph g = new StateFlowGraph(new StateVertex("", HTML1));
-		g.addState(new StateVertex("", HTML2));
+		g.putIfAbsent(new StateVertex("", HTML2));
 
 		assertEquals(206, g.getMeanStateStringSize());
 	}
@@ -161,8 +161,8 @@ public class StateFlowGraphTest {
 		Eventable c2 =
 		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[2]"),
 		                EventType.click);
-		graph.addState(index);
-		graph.addState(state2);
+		graph.putIfAbsent(index);
+		graph.putIfAbsent(state2);
 
 		graph.addEdge(index, state2, c1);
 		graph.addEdge(index, state2, c2);
@@ -171,10 +171,10 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void testAllPossiblePaths() {
-		graph.addState(state2);
-		graph.addState(state3);
-		graph.addState(state4);
-		graph.addState(state5);
+		graph.putIfAbsent(state2);
+		graph.putIfAbsent(state3);
+		graph.putIfAbsent(state4);
+		graph.putIfAbsent(state5);
 
 		graph.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
 		        EventType.click));
@@ -218,10 +218,10 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void largetTest() {
-		graph.addState(state2);
-		graph.addState(state3);
-		graph.addState(state4);
-		graph.addState(state5);
+		graph.putIfAbsent(state2);
+		graph.putIfAbsent(state3);
+		graph.putIfAbsent(state4);
+		graph.putIfAbsent(state5);
 
 		graph.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
 		        EventType.click));
@@ -271,31 +271,31 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void guidedCrawlingFlag() {
-		graph.addState(state2);
-		graph.addState(state3);
-		graph.addState(state4);
-		graph.addState(state5);
+		graph.putIfAbsent(state2);
+		graph.putIfAbsent(state3);
+		graph.putIfAbsent(state4);
+		graph.putIfAbsent(state5);
 
 		assertThat(graph, hasStates(5));
 
 		StateVertex state6 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
 		state6.setGuidedCrawling(false);
-		graph.addState(state6);
+		graph.putIfAbsent(state6);
 
 		assertThat(graph, hasStates(5));
 
 		state6.setGuidedCrawling(true);
 
-		graph.addState(state6);
+		graph.putIfAbsent(state6);
 		assertThat(graph, hasStates(6));
 
 	}
 
 	@Test
 	public void testEdges() throws Exception {
-		assertTrue(graph.addState(state2) == null);
-		assertTrue(graph.addState(state3) == null);
-		assertTrue(graph.addState(state4) == null);
+		assertTrue(graph.putIfAbsent(state2) == null);
+		assertTrue(graph.putIfAbsent(state3) == null);
+		assertTrue(graph.putIfAbsent(state4) == null);
 
 		Eventable e1 = new Eventable(new Identification(How.xpath, "/4/index"), EventType.click);
 
@@ -333,9 +333,9 @@ public class StateFlowGraphTest {
 		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[6]"),
 		                EventType.click);
 
-		graph.addState(index);
-		graph.addState(state2);
-		graph.addState(state3);
+		graph.putIfAbsent(index);
+		graph.putIfAbsent(state2);
+		graph.putIfAbsent(state3);
 
 		graph.addEdge(index, state2, c1);
 		graph.addEdge(index, state2, c2);
@@ -356,7 +356,7 @@ public class StateFlowGraphTest {
 	@Test
 	public void whenStateAddedTheGraphCouterIsIncremented() {
 		assertThat(graph.getNumberOfStates(), is(1));
-		graph.addState(state2);
+		graph.putIfAbsent(state2);
 		assertThat(graph.getNumberOfStates(), is(2));
 	}
 

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.StateFlowGraph;
+import com.google.common.base.Objects;
 
 @Immutable
 public class Statistics {
@@ -22,7 +23,7 @@ public class Statistics {
 
 	public Statistics(CrawlSession session, StateStatistics stateStats, Date startDate) {
 		this.stateStats = stateStats;
-		this.startDate = startDate;
+		this.startDate = new Date(startDate.getTime());
 		StateFlowGraph stateFlowGraph = session.getStateFlowGraph();
 		this.duration = calculateDuration(session);
 		this.edges = stateFlowGraph.getAllEdges().size();
@@ -62,7 +63,39 @@ public class Statistics {
 	}
 
 	public Date getStartDate() {
-		return startDate;
+		return new Date(startDate.getTime());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(duration, crawlPaths, averageDomSize, edges, startDate,
+		        stateStats);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Statistics) {
+			Statistics that = (Statistics) object;
+			return Objects.equal(this.duration, that.duration)
+			        && Objects.equal(this.crawlPaths, that.crawlPaths)
+			        && Objects.equal(this.averageDomSize, that.averageDomSize)
+			        && Objects.equal(this.edges, that.edges)
+			        && Objects.equal(this.startDate, that.startDate)
+			        && Objects.equal(this.stateStats, that.stateStats);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("duration", duration)
+		        .add("crawlPaths", crawlPaths)
+		        .add("averageDomSize", averageDomSize)
+		        .add("edges", edges)
+		        .add("startDate", startDate)
+		        .add("stateStats", stateStats)
+		        .toString();
 	}
 
 }
