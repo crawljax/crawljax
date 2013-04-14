@@ -1,28 +1,34 @@
 package com.crawljax.core;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.crawljax.di.CoreModule.ConsumersDoneLatch;
 import com.crawljax.di.CoreModule.CrawlQueue;
 import com.crawljax.di.CoreModule.RunningConsumers;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
-@Slf4j
 public class CrawlTaskConsumer implements Runnable {
 
-	private BlockingQueue<CrawlTask> taskQueue;
-	private AtomicInteger runningConsumers;
-	private Provider<CrawlController> controller;
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlTaskConsumer.class);
+
+	private final BlockingQueue<CrawlTask> taskQueue;
+	private final AtomicInteger runningConsumers;
+
+	private final CountDownLatch consumersDoneLatch;
 
 	@Inject
 	CrawlTaskConsumer(@CrawlQueue BlockingQueue<CrawlTask> taskQueue,
-	        @RunningConsumers AtomicInteger runningConsumers, Provider<CrawlController> controller) {
+	        @RunningConsumers AtomicInteger runningConsumers,
+	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch) {
 		this.taskQueue = taskQueue;
 		this.runningConsumers = runningConsumers;
-		this.controller = controller;
+		this.consumersDoneLatch = consumersDoneLatch;
 
 	}
 
@@ -31,20 +37,23 @@ public class CrawlTaskConsumer implements Runnable {
 		try {
 			while (!Thread.interrupted()) {
 				CrawlTask crawlTask = taskQueue.take();
-				runningConsumers.incrementAndGet();
+				int activeConsumers = runningConsumers.incrementAndGet();
+				LOG.debug("There are {} active consumers", activeConsumers);
 				handleTask(crawlTask);
 				if (runningConsumers.decrementAndGet() == 0) {
-					controller.get().shutDown();
+					LOG.debug("No consumers active. Crawl is done. Shutting down...");
+					consumersDoneLatch.countDown();
 					return;
 				}
 			}
 		} catch (InterruptedException e) {
-			log.info("Consumer interrupted");
+			LOG.info("Consumer interrupted");
 		}
 	}
 
-	private void handleTask(CrawlTask crawlTask) {
-		log.debug("Handling task {}", crawlTask);
+	@VisibleForTesting
+	void handleTask(CrawlTask crawlTask) {
+		LOG.debug("Handling task {}", crawlTask);
 
 	}
 

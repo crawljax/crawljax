@@ -8,14 +8,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Singleton;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlTask;
 import com.crawljax.core.configuration.BrowserConfiguration;
@@ -28,9 +29,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Provides;
 
-@Slf4j
 public class CoreModule extends AbstractModule {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CoreModule.class);
 	private CrawljaxConfiguration configuration;
 
 	public CoreModule(CrawljaxConfiguration config) {
@@ -39,7 +40,7 @@ public class CoreModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		log.debug("Configuring the core module");
+		LOG.debug("Configuring the core module");
 
 		bindConfigurations();
 
@@ -55,13 +56,15 @@ public class CoreModule extends AbstractModule {
 		bind(BrowserConfiguration.class).toInstance(configuration.getBrowserConfig());
 		bind(Plugins.class).toInstance(configuration.getPlugins());
 		bind(ProxyConfiguration.class).toInstance(configuration.getProxyConfiguration());
+		bind(CountDownLatch.class).annotatedWith(ConsumersDoneLatch.class).toInstance(
+		        new CountDownLatch(1));
 	}
 
 	@Provides
 	@Singleton
 	@CrawlQueue
 	BlockingQueue<CrawlTask> crawlQueue() {
-		log.debug("Creating the crawl queue");
+		LOG.debug("Creating the crawl queue");
 		return Queues.newLinkedBlockingQueue();
 	}
 
@@ -75,6 +78,12 @@ public class CoreModule extends AbstractModule {
 	@Target({ FIELD, PARAMETER, METHOD })
 	@Retention(RUNTIME)
 	public @interface RunningConsumers {
+	}
+
+	@BindingAnnotation
+	@Target({ FIELD, PARAMETER, METHOD })
+	@Retention(RUNTIME)
+	public @interface ConsumersDoneLatch {
 	}
 
 }

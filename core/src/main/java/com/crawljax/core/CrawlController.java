@@ -1,15 +1,18 @@
 package com.crawljax.core;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.di.CoreModule.ConsumersDoneLatch;
 import com.crawljax.di.CoreModule.CrawlQueue;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
@@ -18,22 +21,26 @@ import com.google.inject.Provider;
 /**
  * Starts and shuts down the crawl.
  */
-@Slf4j
 @Singleton
 public class CrawlController {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlController.class);
 
 	private final Provider<CrawlTaskConsumer> consumerFactory;
 	private final ExecutorService executor;
 	private final BrowserConfiguration config;
 	private final BlockingQueue<CrawlTask> tasks;
+	private final CountDownLatch consumersDoneLatch;
 
 	@Inject
 	CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
-	        BrowserConfiguration config, @CrawlQueue BlockingQueue<CrawlTask> tasks) {
+	        BrowserConfiguration config, @CrawlQueue BlockingQueue<CrawlTask> tasks,
+	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch) {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
 		this.config = config;
 		this.tasks = tasks;
+		this.consumersDoneLatch = consumersDoneLatch;
 	}
 
 	/**
@@ -50,27 +57,32 @@ public class CrawlController {
 	}
 
 	private void executeConsumers() {
+		LOG.debug("Starting {} consumers");
 		for (int i = 0; i < config.getNumberOfBrowsers(); i++) {
 			executor.execute(consumerFactory.get());
 		}
+		try {
+			consumersDoneLatch.await();
+		} catch (InterruptedException e) {
+			LOG.warn("Interrupted before being finished. Shutting down...");
+		} finally {
+			shutDown();
+		}
 	}
 
-	/**
-	 * Shut down the crawl. Sends all browsers the an interrupt signal.
-	 */
-	public void shutDown() {
-		log.info("Received shutdown notice");
+	private void shutDown() {
+		LOG.info("Received shutdown notice");
 		executor.shutdownNow();
 		if (!tasks.isEmpty()) {
-			log.warn("The crawler got the shutdown command while it wasn't finished");
+			LOG.warn("The crawler got the shutdown command while it wasn't finished");
 		}
 		try {
-			log.debug("Waiting for task consumers to stop...");
+			LOG.debug("Waiting for task consumers to stop...");
 			executor.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			log.warn("Interrupted before being able to shut down executor pool");
+			LOG.warn("Interrupted before being able to shut down executor pool", e);
 		}
-		log.debug("terminated");
+		LOG.debug("terminated");
 	}
 
 }
