@@ -1,7 +1,6 @@
 package com.crawljax.oraclecomparator;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
 import net.jcip.annotations.ThreadSafe;
 
@@ -10,7 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
-import com.crawljax.oraclecomparator.comparators.SimpleComparator;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Defines an Oracle Comparator which used multiple Oracles to decide whether two states are
@@ -29,7 +29,7 @@ public class StateComparator {
 	 */
 	public static final boolean COMPARE_IGNORE_CASE = true;
 
-	private final List<OracleComparator> oracleComparator = new ArrayList<OracleComparator>();
+	private final ImmutableList<OracleComparator> oracleComparator;
 
 	private final ThreadLocal<String> strippedOriginalDom = new ThreadLocal<String>();
 	private final ThreadLocal<String> strippedNewDom = new ThreadLocal<String>();
@@ -38,13 +38,9 @@ public class StateComparator {
 	 * @param comparatorsWithPreconditions
 	 *            comparators with one or more preconditions
 	 */
-	public StateComparator(List<OracleComparator> comparatorsWithPreconditions) {
-		this.oracleComparator.addAll(comparatorsWithPreconditions);
-	}
-
-	private void addDefaultOracleComparator() {
-		this.oracleComparator
-		        .add(new OracleComparator("SimpleComparator", new SimpleComparator()));
+	@Inject
+	public StateComparator(CrawljaxConfiguration config) {
+		oracleComparator = config.getCrawlRules().getOracleComparators();
 	}
 
 	/**
@@ -58,11 +54,6 @@ public class StateComparator {
 	 *         oracles and pre-conditions.
 	 */
 	public boolean compare(String originalDom, String newDom, EmbeddedBrowser browser) {
-		if (oracleComparator.isEmpty()) {
-			// add default simpleOracle
-			this.addDefaultOracleComparator();
-		}
-
 		for (OracleComparator oraclePreCondition : oracleComparator) {
 
 			boolean allPreConditionsSucceed = true;

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.inject.assistedinject.Assisted;
 
 /**
  * This class extracts candidate elements from the DOM tree, based on the tags provided by the user.
@@ -66,7 +68,8 @@ public class CandidateElementExtractor {
 	 * @param config
 	 *            the checker used to determine if a certain frame must be ignored.
 	 */
-	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser,
+	@Inject
+	public CandidateElementExtractor(ExtractorManager checker, @Assisted EmbeddedBrowser browser,
 	        FormHandler formHandler, CrawljaxConfiguration config) {
 		checkedElements = checker;
 		this.browser = browser;
@@ -403,5 +406,9 @@ public class CandidateElementExtractor {
 		}
 
 		return false;
+	}
+
+	public boolean checkCrawlCondition() {
+		return checkedElements.checkCrawlCondition(browser);
 	}
 }

@@ -39,7 +39,7 @@ public interface EmbeddedBrowser {
 	 *            the event.
 	 * @return if fails.
 	 */
-	boolean fireEvent(Eventable event) throws ElementNotVisibleException;
+	boolean fireEventAndWait(Eventable event) throws ElementNotVisibleException;
 
 	/**
 	 * @return the DOM string with all the iframe content.

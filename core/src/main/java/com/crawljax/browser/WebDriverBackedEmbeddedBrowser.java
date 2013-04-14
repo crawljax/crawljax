@@ -270,6 +270,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			return;
 		} catch (InterruptedException e) {
 			LOGGER.error("goToUrl got interrupted while waiting for the page to be loaded", e);
+			Thread.currentThread().interrupt();
 			return;
 		}
 	}
@@ -296,7 +297,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            The HTML event type (onclick, onmouseover, ...).
 	 * @return true if firing event is successful.
 	 */
-	protected boolean fireEventWait(WebElement webElement, Eventable eventable)
+	private boolean fireEventWait(WebElement webElement, Eventable eventable)
 	        throws ElementNotVisibleException {
 		switch (eventable.getEventType()) {
 			case click:
@@ -432,7 +433,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return true if it is able to fire the event successfully on the element.
 	 */
 	@Override
-	public synchronized boolean fireEvent(Eventable eventable) throws ElementNotVisibleException,
+	public synchronized boolean fireEventAndWait(Eventable eventable) throws ElementNotVisibleException,
 	        NoSuchElementException {
 		try {
 

@@ -13,7 +13,7 @@ public interface CrawlQueueManager {
 	 * @param work
 	 *            the work (Crawler) to add to the Queue
 	 */
-	void addWorkToQueue(Crawler work);
+	void addWorkToQueue(NewCrawler work);
 
 	/**
 	 * Removes this Crawler from the workQueue if it is present, thus causing it not to be run if it

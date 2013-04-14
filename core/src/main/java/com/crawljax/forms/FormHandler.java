@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.slf4j.Logger;
@@ -20,10 +21,11 @@ import org.w3c.dom.NodeList;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
-import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
+import com.google.inject.assistedinject.Assisted;
 
 /**
  * Handles form values and fills in the form input elements with random values of the defined
@@ -39,7 +41,7 @@ public class FormHandler {
 
 	private static final double HALF = 0.5;
 
-	private FormInputValueHelper formInputValueHelper;
+	private final FormInputValueHelper formInputValueHelper;
 
 	/**
 	 * Public constructor.
@@ -51,10 +53,12 @@ public class FormHandler {
 	 * @param randomInput
 	 *            if random data should be generated on the input fields.
 	 */
-	public FormHandler(EmbeddedBrowser browser, InputSpecification inputSpecification,
-	        boolean randomInput) {
+	@Inject
+	public FormHandler(@Assisted EmbeddedBrowser browser, CrawlRules config) {
 		this.browser = browser;
-		this.formInputValueHelper = new FormInputValueHelper(inputSpecification, randomInput);
+		this.formInputValueHelper =
+		        new FormInputValueHelper(config.getInputSpecification(),
+		                config.isRandomInputInForms());
 	}
 
 	private static final String[] ALLOWED_INPUT_TYPES =

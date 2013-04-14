@@ -158,8 +158,6 @@ public class StateMachine {
 
 		this.changeState(newState);
 
-		session.setCurrentState(newState);
-
 		checkInvariants(browser, session);
 
 		if (cloneState == null) {

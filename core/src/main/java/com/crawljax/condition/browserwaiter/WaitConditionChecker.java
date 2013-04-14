@@ -2,17 +2,19 @@ package com.crawljax.condition.browserwaiter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import net.jcip.annotations.ThreadSafe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.configuration.CrawlRules;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Checks the wait conditions.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 @ThreadSafe
 public class WaitConditionChecker {
@@ -20,23 +22,11 @@ public class WaitConditionChecker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaitConditionChecker.class
 	        .getName());
 
-	private List<WaitCondition> waitConditions;
+	private ImmutableList<WaitCondition> waitConditions;
 
-	/**
-	 * Default constructor.
-	 */
-	public WaitConditionChecker() {
-
-	}
-
-	/**
-	 * Constructor with wait conditions.
-	 * 
-	 * @param waitConditions
-	 *            The wait conditions.
-	 */
-	public WaitConditionChecker(List<WaitCondition> waitConditions) {
-		this.waitConditions = waitConditions;
+	@Inject
+	public WaitConditionChecker(CrawlRules rules) {
+		waitConditions = rules.getPreCrawlConfig().getWaitConditions();
 	}
 
 	/**
@@ -44,14 +34,6 @@ public class WaitConditionChecker {
 	 */
 	public List<WaitCondition> getWaitConditions() {
 		return waitConditions;
-	}
-
-	/**
-	 * @param waitConditions
-	 *            the waitConditions to set
-	 */
-	public void setWaitConditions(List<WaitCondition> waitConditions) {
-		this.waitConditions = waitConditions;
 	}
 
 	/**

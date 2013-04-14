@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.inject.Inject;
+
 import net.jcip.annotations.GuardedBy;
 
 import com.crawljax.browser.EmbeddedBrowser;
@@ -54,6 +56,7 @@ public class CandidateElementManager implements ExtractorManager {
 	 * @param crawlConditionChecker
 	 *            the CrawlConditionChecker to use
 	 */
+	@Inject
 	public CandidateElementManager(EventableConditionChecker eventableConditionChecker,
 	        ConditionTypeChecker<CrawlCondition> crawlConditionChecker) {
 		this.eventableConditionChecker = eventableConditionChecker;

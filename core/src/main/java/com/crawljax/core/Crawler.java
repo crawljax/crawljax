@@ -322,7 +322,7 @@ public class Crawler implements Runnable {
 		}
 		boolean isFired = false;
 		try {
-			isFired = getBrowser().fireEvent(eventToFire);
+			isFired = getBrowser().fireEventAndWait(eventToFire);
 		} catch (ElementNotVisibleException | NoSuchElementException e) {
 			if (config.getCrawlRules().isCrawlHiddenAnchors() && eventToFire.getElement() != null
 			        && "A".equals(eventToFire.getElement().getTag())) {

@@ -11,9 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CoreModule.ConsumersDoneLatch;
 import com.crawljax.di.CoreModule.CrawlQueue;
+import com.crawljax.di.CrawlSessionProvider;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -32,15 +36,22 @@ public class CrawlController {
 	private final BlockingQueue<CrawlTask> tasks;
 	private final CountDownLatch consumersDoneLatch;
 
+	private final CrawlSessionProvider crawlSessionProvider;
+
+	private final Plugins plugins;
+
 	@Inject
 	CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
-	        BrowserConfiguration config, @CrawlQueue BlockingQueue<CrawlTask> tasks,
-	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch) {
+	        CrawljaxConfiguration config, @CrawlQueue BlockingQueue<CrawlTask> tasks,
+	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch,
+	        CrawlSessionProvider crawlSessionProvider) {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
-		this.config = config;
+		this.config = config.getBrowserConfig();
+		this.plugins = config.getPlugins();
 		this.tasks = tasks;
 		this.consumersDoneLatch = consumersDoneLatch;
+		this.crawlSessionProvider = crawlSessionProvider;
 	}
 
 	/**
@@ -48,7 +59,11 @@ public class CrawlController {
 	 */
 	public void run() {
 		tasks.add(initialTask());
-		executeConsumers();
+		CrawlTaskConsumer firstConsumer = consumerFactory.get();
+		StateVertex firstState = firstConsumer.crawlIndex();
+		crawlSessionProvider.setup(firstState);
+		plugins.runOnNewStatePlugins(crawlSessionProvider.get());
+		executeConsumers(firstConsumer);
 	}
 
 	private CrawlTask initialTask() {
@@ -56,15 +71,16 @@ public class CrawlController {
 		return new CrawlTask(ImmutableList.of(event));
 	}
 
-	private void executeConsumers() {
-		LOG.debug("Starting {} consumers");
-		for (int i = 0; i < config.getNumberOfBrowsers(); i++) {
+	private void executeConsumers(CrawlTaskConsumer firstConsumer) {
+		LOG.debug("Starting {} consumers", config.getNumberOfBrowsers());
+		executor.execute(firstConsumer);
+		for (int i = 1; i < config.getNumberOfBrowsers(); i++) {
 			executor.execute(consumerFactory.get());
 		}
 		try {
 			consumersDoneLatch.await();
 		} catch (InterruptedException e) {
-			LOG.warn("Interrupted before being finished. Shutting down...");
+			LOG.warn("The crawl was interrupted before it finished. Shutting down...");
 		} finally {
 			shutDown();
 		}
