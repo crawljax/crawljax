@@ -1,10 +1,10 @@
 package com.crawljax.oraclecomparator.comparators;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.DomUtils;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Regex oracles that strips content from the DOM to check whether the DOMs are equal without the
@@ -15,41 +15,23 @@ import com.crawljax.util.DomUtils;
 public class RegexComparator extends AbstractComparator {
 
 	// NOTE: the ordering can be important
-	private final List<String> regexs = new ArrayList<String>();
+	private final ImmutableList<String> regexs;
 
-	/**
-	 * Default Constructor without any regular expressions.
-	 */
-	public RegexComparator() {
+	public RegexComparator(Collection<String> regexs) {
+		this.regexs = ImmutableList.copyOf(regexs);
 	}
 
-	/**
-	 * @param regexs
-	 *            the regular expressions
-	 */
 	public RegexComparator(String... regexs) {
-		for (String regex : regexs) {
-			this.regexs.add(regex);
-		}
+		this.regexs = ImmutableList.copyOf(regexs);
 	}
 
 	@Override
-	public boolean isEquivalent() {
+	public String normalize(String dom) {
+		String normalized = dom;
 		for (String regex : regexs) {
-			setOriginalDom(DomUtils.replaceString(getOriginalDom(), regex, ""));
-			setNewDom(DomUtils.replaceString(getNewDom(), regex, ""));
+			normalized = DomUtils.replaceString(normalized, regex, "");
 		}
-		return super.compare();
-	}
-
-	/**
-	 * Add a number of regular expression.
-	 * 
-	 * @param regexs
-	 *            The regular expressions.
-	 */
-	public void addRegularExpressions(List<String> regexs) {
-		this.regexs.addAll(regexs);
+		return normalized;
 	}
 
 }

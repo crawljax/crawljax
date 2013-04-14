@@ -23,7 +23,7 @@ import com.google.inject.Injector;
 /**
  * Configures the {@link Crawler}. Set it up using the {@link #builderFor(String)} function.
  */
-public final class CrawljaxConfiguration {
+public class CrawljaxConfiguration {
 
 	public static class CrawljaxConfigurationBuilder {
 
@@ -86,7 +86,7 @@ public final class CrawljaxConfiguration {
 		}
 
 		/**
-		 * Set the crawl depth to unlimited.
+		 * Set the crawl depth to unlimited. The default depth is <code>2</code>.
 		 */
 		public CrawljaxConfigurationBuilder setUnlimitedCrawlDepth() {
 			config.maximumDepth = 0;

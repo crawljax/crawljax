@@ -1,27 +1,24 @@
 package com.crawljax.core;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.crawljax.browser.BrowserPool;
-import com.crawljax.browser.EmbeddedBrowser;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 
 /**
  * The data about the crawlsession.
- * 
- * @author mesbah
  */
+@Singleton
 public class CrawlSession {
 
-	/**
-	 * This variable holds the current stateFlowGraph.
-	 */
 	private final StateFlowGraph stateFlowGraph;
 
 	/**
@@ -31,55 +28,14 @@ public class CrawlSession {
 	private final Collection<List<Eventable>> crawlPaths =
 	        new ConcurrentLinkedQueue<List<Eventable>>();
 
-	/**
-	 * The initial State (indexState).
-	 */
 	private final StateVertex initialState;
 
-	/**
-	 * Variable for reading the Configuration from.
-	 */
-	private final CrawljaxConfiguration crawljaxConfiguration;
+	private final CrawljaxConfiguration config;
 
 	/**
 	 * Denote the time the CrawlSession Started in ms since 1970.
 	 */
 	private final long startTime;
-
-	private final ThreadLocal<CrawlPath> crawlPath = new ThreadLocal<CrawlPath>();
-
-	/**
-	 * ThreadLocal store the have a Thread<->Current State relation.
-	 */
-	private final ThreadLocal<StateVertex> tlState = new ThreadLocal<StateVertex>();
-
-	/**
-	 * The main BrowserPool where the current Browser is stored.
-	 */
-	private final BrowserPool browserPool;
-
-	/**
-	 * @param pool
-	 *            the Embedded browser pool that is in use
-	 */
-	public CrawlSession(BrowserPool pool) {
-		this(pool, null, null, 0);
-	}
-
-	/**
-	 * @param pool
-	 *            the embedded browser pool that is in use.
-	 * @param stateFlowGraph
-	 *            the state flow graph.
-	 * @param state
-	 *            the current state.
-	 * @param startTime
-	 *            the time this session started in milliseconds.
-	 */
-	public CrawlSession(BrowserPool pool, StateFlowGraph stateFlowGraph, StateVertex state,
-	        long startTime) {
-		this(pool, stateFlowGraph, state, startTime, null);
-	}
 
 	/**
 	 * @param pool
@@ -93,21 +49,13 @@ public class CrawlSession {
 	 * @param crawljaxConfiguration
 	 *            the configuration.
 	 */
-	public CrawlSession(BrowserPool pool, StateFlowGraph stateFlowGraph, StateVertex state,
-	        long startTime, CrawljaxConfiguration crawljaxConfiguration) {
-		this.crawljaxConfiguration = crawljaxConfiguration;
-		this.browserPool = pool;
+	@Inject
+	public CrawlSession(CrawljaxConfiguration config, StateFlowGraph stateFlowGraph,
+	        StateVertex state) {
 		this.stateFlowGraph = stateFlowGraph;
 		this.initialState = state;
-		this.startTime = startTime;
-		tlState.set(state);
-	}
-
-	/**
-	 * @return the browser or null if there is none
-	 */
-	public EmbeddedBrowser getBrowser() {
-		return browserPool.getCurrentBrowser();
+		this.config = config;
+		this.startTime = new Date().getTime();
 	}
 
 	/**
@@ -115,27 +63,6 @@ public class CrawlSession {
 	 */
 	public StateFlowGraph getStateFlowGraph() {
 		return stateFlowGraph;
-	}
-
-	/**
-	 * @return the currentState
-	 */
-	public StateVertex getCurrentState() {
-		StateVertex sv = tlState.get();
-		if (sv == null) {
-			tlState.set(getInitialState());
-		} else {
-			return sv;
-		}
-		return tlState.get();
-	}
-
-	/**
-	 * @param currentState
-	 *            the currentState to set
-	 */
-	public void setCurrentState(StateVertex currentState) {
-		this.tlState.set(currentState);
 	}
 
 	/**
@@ -154,104 +81,27 @@ public class CrawlSession {
 	}
 
 	/**
-	 * @return the crawljaxConfiguration
-	 */
-	public CrawljaxConfiguration getCrawljaxConfiguration() {
-		return crawljaxConfiguration;
-	}
-
-	/**
 	 * @return the initialState
 	 */
-	public final StateVertex getInitialState() {
+	public StateVertex getInitialState() {
 		return initialState;
 	}
 
 	/**
 	 * @return the startTime
 	 */
-	public final long getStartTime() {
+	public long getStartTime() {
 		return startTime;
-	}
-
-	/**
-	 * @return the exactEventPath
-	 * @deprecated use the {@link #getCurrentCrawlPath()}
-	 */
-	@Deprecated
-	public List<Eventable> getExactEventPath() {
-		return this.getCurrentCrawlPath();
-	}
-
-	/**
-	 * @param exactEventPath
-	 *            the exactEventPath to set
-	 * @deprecated not used anymore...
-	 */
-	@Deprecated
-	public void setExactEventPath(List<Eventable> exactEventPath) {
 	}
 
 	/**
 	 * Remove the current path from the set of crawlPaths.
 	 */
-	protected final void removeCrawlPath() {
-		List<Eventable> path = crawlPath.get();
-		if (path == null) {
-			return;
-		}
+	protected void removeCrawlPath(List<Eventable> path) {
 		this.crawlPaths.remove(path);
 	}
 
-	/**
-	 * branch the current crawl path, save the old-one and continue with the current.
-	 */
-	protected final void branchCrawlPath() {
-		CrawlPath path = crawlPath.get();
-		if (path == null) {
-			return;
-		}
-		this.addCrawlPath(path.immutableCopy(false));
+	public CrawljaxConfiguration getConfig() {
+		return config;
 	}
-
-	/**
-	 * Add an eventable to the current crawl path.
-	 * 
-	 * @param clickable
-	 *            the clickable to add to the current path.
-	 */
-	protected final void addEventableToCrawlPath(Eventable clickable) {
-		CrawlPath path = crawlPath.get();
-		if (path == null) {
-			path = startNewPath();
-		}
-		path.add(clickable);
-	}
-
-	/**
-	 * Get the current crawl path.
-	 * 
-	 * @return the current current crawl path.
-	 */
-	public CrawlPath getCurrentCrawlPath() {
-		CrawlPath path = this.crawlPath.get();
-		if (path == null) {
-			return new CrawlPath();
-		}
-		return path;
-	}
-
-	/**
-	 * start a new Path, because of the thread local every crawlPath is saved on the thread instead
-	 * of on the Crawler, so without (re)starting a new Path the old path continues.
-	 * 
-	 * @return the new empty path.
-	 */
-	protected final CrawlPath startNewPath() {
-		CrawlPath path = new CrawlPath();
-		crawlPath.set(path);
-		crawlPaths.add(path);
-		return path;
-	}
-
 }

@@ -6,8 +6,9 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.oraclecomparator.StateComparator;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -21,7 +22,6 @@ public class StateMachine {
 	private final StateVertex initialState;
 
 	private StateVertex currentState;
-	private Object stateLock = new Object();
 
 	/**
 	 * The invariantChecker to use when updating the state machine.
@@ -29,6 +29,8 @@ public class StateMachine {
 	private final ConditionTypeChecker<Invariant> invariantChecker;
 
 	private final Plugins plugins;
+
+	private final StateComparator stateComparator;
 
 	/**
 	 * Create a new StateMachine.
@@ -40,13 +42,24 @@ public class StateMachine {
 	 * @param invariantList
 	 *            the invariants to use in the InvariantChecker.
 	 */
-	public StateMachine(StateFlowGraph sfg, StateVertex indexState,
-	        ImmutableList<Invariant> invariantList, Plugins plugins) {
+	public StateMachine(StateFlowGraph sfg,
+	        ImmutableList<Invariant> invariantList, Plugins plugins,
+	        StateComparator stateComparator) {
 		stateFlowGraph = sfg;
-		this.initialState = indexState;
+		this.initialState = sfg.getInitialState();
 		this.plugins = plugins;
+		this.stateComparator = stateComparator;
 		currentState = initialState;
 		invariantChecker = new ConditionTypeChecker<>(invariantList);
+	}
+
+	public StateVertex newStateFor(EmbeddedBrowser browser) {
+		int id = stateFlowGraph.getNextStateId();
+		return new StateVertex(
+		        id, browser.getCurrentUrl(),
+		        stateFlowGraph.getNewStateName(id),
+		        browser.getDom(),
+		        stateComparator.getStrippedDom(browser));
 	}
 
 	/**
@@ -65,20 +78,18 @@ public class StateMachine {
 		LOGGER.debug("Trying to change to state: '{}' from: '{}'", nextState.getName(),
 		        currentState.getName());
 
-		synchronized (stateLock) {
-			if (stateFlowGraph.canGoTo(currentState, nextState)) {
+		if (stateFlowGraph.canGoTo(currentState, nextState)) {
 
-				LOGGER.debug("Changed to state: '{}' from: '{}'", nextState.getName(),
-				        currentState.getName());
+			LOGGER.debug("Changed to state: '{}' from: '{}'", nextState.getName(),
+			        currentState.getName());
 
-				currentState = nextState;
+			currentState = nextState;
 
-				return true;
-			} else {
-				LOGGER.info("Cannot go to state: '{}' from: '{}'", nextState.getName(),
-				        currentState.getName());
-				return false;
-			}
+			return true;
+		} else {
+			LOGGER.info("Cannot go to state: '{}' from: '{}'", nextState.getName(),
+			        currentState.getName());
+			return false;
 		}
 	}
 
@@ -122,21 +133,19 @@ public class StateMachine {
 	 * @return the current State.
 	 */
 	public StateVertex getCurrentState() {
-		synchronized (stateLock) {
-			return currentState;
-		}
+		return currentState;
 	}
 
 	/**
 	 * reset the state machine to the initial state.
 	 */
 	public void rewind() {
-		synchronized (stateLock) {
-			this.currentState = this.initialState;
-		}
+		this.currentState = this.initialState;
 	}
 
 	/**
+	 * Adds an edge between the current and new state.
+	 * 
 	 * @param event
 	 *            the event edge.
 	 * @param newState
@@ -147,34 +156,26 @@ public class StateMachine {
 	 *            the current Session
 	 * @return true if the new state is not found in the state machine.
 	 */
-	public boolean updateAndCheckIfClone(final Eventable event, StateVertex newState,
-	        EmbeddedBrowser browser,
-	        CrawlSession session) {
+	public boolean swithToStateAndCheckIfClone(final Eventable event, StateVertex newState,
+	        CrawlerContext context) {
 		StateVertex cloneState = this.addStateToCurrentState(newState, event);
 
-		if (cloneState != null) {
-			newState = cloneState;
-		}
-
-		this.changeState(newState);
-
-		session.setCurrentState(newState);
-
-		checkInvariants(browser, session);
+		runOnInvriantViolationPlugins(context);
 
 		if (cloneState == null) {
-			plugins.runOnNewStatePlugins(session);
-			// recurse
+			this.changeState(newState);
+			plugins.runOnNewStatePlugins(context, newState);
 			return true;
 		} else {
-			// non recurse
+			this.changeState(cloneState);
 			return false;
 		}
 	}
 
-	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
-		for (Invariant failedInvariant : invariantChecker.getFailedConditions(browser)) {
-			plugins.runOnInvriantViolationPlugins(failedInvariant, session);
+	private void runOnInvriantViolationPlugins(CrawlerContext context) {
+		for (Invariant failedInvariant : invariantChecker.getFailedConditions(context
+		        .getBrowser())) {
+			plugins.runOnInvriantViolationPlugins(failedInvariant, context);
 		}
 	}
 }

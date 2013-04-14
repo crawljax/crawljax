@@ -28,14 +28,14 @@ public class CandidateCrawlAction {
 	/**
 	 * @return the candidateElement
 	 */
-	public final CandidateElement getCandidateElement() {
+	public CandidateElement getCandidateElement() {
 		return candidateElement;
 	}
 
 	/**
 	 * @return the eventType
 	 */
-	public final EventType getEventType() {
+	public EventType getEventType() {
 		return eventType;
 	}
 }

@@ -4,16 +4,18 @@ import java.util.Collection;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableSetMultimap;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableSetMultimap;
 
 @Immutable
 public class StateStatistics {
 
-	private final State leastFanOut;
-	private final State leastFanIn;
-	private final State mostFanOut;
-	private final State mostFanIn;
+	private final Pair<String, Integer> leastFanOut;
+	private final Pair<String, Integer> leastFanIn;
+	private final Pair<String, Integer> mostFanOut;
+	private final Pair<String, Integer> mostFanIn;
 	private final int totalNumberOfStates;
 	private final ImmutableSetMultimap<String, String> urls;
 
@@ -40,25 +42,25 @@ public class StateStatistics {
 			builder.put(state.getUrl(), state.getName());
 		}
 		this.urls = builder.build();
-		this.leastFanOut = tmpLeastFanOut;
-		this.leastFanIn = tmpLeastFanIn;
-		this.mostFanOut = tmpMostFanOut;
-		this.mostFanIn = tmpMostFanIn;
+		this.leastFanOut = Pair.of(tmpLeastFanOut.getName(), tmpLeastFanOut.getFanOut());
+		this.leastFanIn = Pair.of(tmpLeastFanIn.getName(), tmpLeastFanIn.getFanOut());
+		this.mostFanOut = Pair.of(tmpMostFanOut.getName(), tmpMostFanOut.getFanOut());
+		this.mostFanIn = Pair.of(tmpMostFanIn.getName(), tmpMostFanIn.getFanOut());
 	}
 
-	public State getLeastFanOut() {
+	public Pair<String, Integer> getLeastFanOut() {
 		return leastFanOut;
 	}
 
-	public State getLeastFanIn() {
+	public Pair<String, Integer> getLeastFanIn() {
 		return leastFanIn;
 	}
 
-	public State getMostFanOut() {
+	public Pair<String, Integer> getMostFanOut() {
 		return mostFanOut;
 	}
 
-	public State getMostFanIn() {
+	public Pair<String, Integer> getMostFanIn() {
 		return mostFanIn;
 	}
 

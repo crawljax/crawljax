@@ -5,8 +5,6 @@ import com.crawljax.core.CrawlSession;
 /**
  * Plugin type that is called after the crawling phase is finished. Examples: report generation,
  * test generation
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 public interface PostCrawlingPlugin extends Plugin {
 

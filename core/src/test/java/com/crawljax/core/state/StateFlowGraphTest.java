@@ -1,7 +1,5 @@
 package com.crawljax.core.state;
 
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
@@ -10,16 +8,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.SerializationUtils;
 import org.jgrapht.GraphPath;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
 
@@ -34,17 +31,19 @@ public class StateFlowGraphTest {
 
 	@Before
 	public void setup() {
-		index = new StateVertex("index", "<table><div>index</div></table>");
-		state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
-		state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
-		state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
-		graph = new StateFlowGraph(index);
+		index = new StateVertex(StateVertex.INDEX_ID, "index", "<table><div>index</div></table>");
+		state2 = new StateVertex(2, "STATE_TWO", "<table><div>state2</div></table>");
+		state3 = new StateVertex(3, "STATE_THREE", "<table><div>state3</div></table>");
+		state4 = new StateVertex(4, "STATE_FOUR", "<table><div>state4</div></table>");
+		state5 = new StateVertex(5, "STATE_FIVE", "<table><div>state5</div></table>");
+		graph = new StateFlowGraph(new ExitNotifier(0));
+		graph.putIfAbsent(index, false);
 	}
 
 	@Test
 	public void testSFG() throws Exception {
-		StateVertex DOUBLE = new StateVertex("index", "<table><div>index</div></table>");
+		StateVertex DOUBLE =
+		        new StateVertex(StateVertex.INDEX_ID, "index", "<table><div>index</div></table>");
 		assertTrue(graph.putIfAbsent(state2) == null);
 		assertTrue(graph.putIfAbsent(state3) == null);
 		assertTrue(graph.putIfAbsent(state4) == null);
@@ -78,7 +77,8 @@ public class StateFlowGraphTest {
 
 		assertEquals(state2.hashCode(), state2.hashCode());
 
-		assertTrue(state2.equals(new StateVertex("STATE_2", "<table><div>state2</div></table>")));
+		assertTrue(state2
+		        .equals(new StateVertex(2, "STATE_2", "<table><div>state2</div></table>")));
 
 		assertTrue(graph.canGoTo(state2, state3));
 		assertTrue(graph.canGoTo(state2, state5));
@@ -95,7 +95,7 @@ public class StateFlowGraphTest {
 		c = list.get(1);
 		assertEquals(c.getIdentification().getValue(), "/home/a");
 
-		StateVertex hold = new StateVertex(index.getName(), index.getDom());
+		StateVertex hold = new StateVertex(StateVertex.INDEX_ID, index.getName(), index.getDom());
 
 		list = graph.getShortestPath(hold, state3);
 		assertEquals(list.size(), 2);
@@ -114,7 +114,7 @@ public class StateFlowGraphTest {
 	@Test
 	public void testCloneStates() throws Exception {
 		StateVertex state3clone2 =
-		        new StateVertex("STATE_THREE", "<table><div>state2</div></table>");
+		        new StateVertex(3, "STATE_THREE", "<table><div>state2</div></table>");
 
 		assertTrue(graph.putIfAbsent(state2) == null);
 		assertTrue(graph.putIfAbsent(state4) == null);
@@ -148,8 +148,9 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
-		StateFlowGraph g = new StateFlowGraph(new StateVertex("", HTML1));
-		g.putIfAbsent(new StateVertex("", HTML2));
+		StateFlowGraph g = new StateFlowGraph(new ExitNotifier(0));
+		g.putIfAbsent(new StateVertex(1, "", HTML1), false);
+		g.putIfAbsent(new StateVertex(2, "", HTML2));
 
 		assertEquals(206, g.getMeanStateStringSize());
 	}
@@ -270,28 +271,6 @@ public class StateFlowGraphTest {
 	}
 
 	@Test
-	public void guidedCrawlingFlag() {
-		graph.putIfAbsent(state2);
-		graph.putIfAbsent(state3);
-		graph.putIfAbsent(state4);
-		graph.putIfAbsent(state5);
-
-		assertThat(graph, hasStates(5));
-
-		StateVertex state6 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
-		state6.setGuidedCrawling(false);
-		graph.putIfAbsent(state6);
-
-		assertThat(graph, hasStates(5));
-
-		state6.setGuidedCrawling(true);
-
-		graph.putIfAbsent(state6);
-		assertThat(graph, hasStates(6));
-
-	}
-
-	@Test
 	public void testEdges() throws Exception {
 		assertTrue(graph.putIfAbsent(state2) == null);
 		assertTrue(graph.putIfAbsent(state3) == null);
@@ -319,38 +298,6 @@ public class StateFlowGraphTest {
 		assertTrue(graph.addEdge(index, state4, e4));
 		assertFalse(graph.addEdge(index, state4, e5));
 		assertFalse(graph.addEdge(index, state4, e6));
-	}
-
-	@Test
-	public void testSerializability() throws UnsupportedEncodingException {
-		Eventable c1 =
-		        new Eventable(new Identification(How.xpath, "/body/div[4]"), EventType.click);
-		Eventable c2 =
-		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[2]"),
-		                EventType.click);
-
-		Eventable c3 =
-		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[6]"),
-		                EventType.click);
-
-		graph.putIfAbsent(index);
-		graph.putIfAbsent(state2);
-		graph.putIfAbsent(state3);
-
-		graph.addEdge(index, state2, c1);
-		graph.addEdge(index, state2, c2);
-		graph.addEdge(state2, state3, c3);
-		assertThat(graph, hasStates(3));
-		assertThat(graph, hasEdges(3));
-		assertThat(graph.getOutgoingClickables(index).size(), is(2));
-
-		byte[] serializedSFG = SerializationUtils.serialize(graph);
-		StateFlowGraph deserializedSfg =
-		        (StateFlowGraph) SerializationUtils.deserialize(serializedSFG);
-
-		assertThat(deserializedSfg, hasStates(3));
-		assertThat(deserializedSfg, hasEdges(3));
-		assertThat(deserializedSfg.getOutgoingClickables(index).size(), is(2));
 	}
 
 	@Test

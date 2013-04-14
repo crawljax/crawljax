@@ -1,36 +1,28 @@
 package com.crawljax.di;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import lombok.extern.slf4j.Slf4j;
-
-import com.crawljax.core.CrawlTask;
-import com.crawljax.core.configuration.BrowserConfiguration;
-import com.crawljax.core.configuration.CrawlRules;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.ConditionTypeChecker;
+import com.crawljax.condition.crawlcondition.CrawlCondition;
+import com.crawljax.core.CandidateElementExtractor;
+import com.crawljax.core.CandidateElementManager;
+import com.crawljax.core.CrawlSession;
+import com.crawljax.core.ExitNotifier;
+import com.crawljax.core.ExtractorManager;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.ProxyConfiguration;
-import com.crawljax.core.plugin.Plugins;
-import com.google.common.collect.Queues;
+import com.crawljax.forms.FormHandler;
 import com.google.inject.AbstractModule;
-import com.google.inject.BindingAnnotation;
 import com.google.inject.Provides;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
-@Slf4j
 public class CoreModule extends AbstractModule {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CoreModule.class);
 	private CrawljaxConfiguration configuration;
 
 	public CoreModule(CrawljaxConfiguration config) {
@@ -39,42 +31,34 @@ public class CoreModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		log.debug("Configuring the core module");
+		LOG.debug("Configuring the core module");
 
-		bindConfigurations();
+		install(new ConfigurationModule(configuration));
 
-		bind(AtomicInteger.class).annotatedWith(RunningConsumers.class).toInstance(
-		        new AtomicInteger(0));
+		bind(ExitNotifier.class).toInstance(new ExitNotifier(configuration.getMaximumStates()));
 
 		bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
-	}
 
-	private void bindConfigurations() {
-		bind(CrawljaxConfiguration.class).toInstance(configuration);
-		bind(CrawlRules.class).toInstance(configuration.getCrawlRules());
-		bind(BrowserConfiguration.class).toInstance(configuration.getBrowserConfig());
-		bind(Plugins.class).toInstance(configuration.getPlugins());
-		bind(ProxyConfiguration.class).toInstance(configuration.getProxyConfiguration());
+		bind(CrawlSession.class).toProvider(CrawlSessionProvider.class);
+
+		bind(ExtractorManager.class).to(CandidateElementManager.class);
+
+		install(new FactoryModuleBuilder().build(FormHandlerFactory.class));
+		install(new FactoryModuleBuilder().build(CandidateElementExtractorFactory.class));
+
 	}
 
 	@Provides
-	@Singleton
-	@CrawlQueue
-	BlockingQueue<CrawlTask> crawlQueue() {
-		log.debug("Creating the crawl queue");
-		return Queues.newLinkedBlockingQueue();
+	ConditionTypeChecker<CrawlCondition> crawlConditionChecker() {
+		return new ConditionTypeChecker<>(configuration.getCrawlRules().getPreCrawlConfig()
+		        .getCrawlConditions());
 	}
 
-	@BindingAnnotation
-	@Target({ FIELD, PARAMETER, METHOD })
-	@Retention(RUNTIME)
-	public @interface CrawlQueue {
+	public interface FormHandlerFactory {
+		FormHandler newFormHandler(EmbeddedBrowser browser);
 	}
 
-	@BindingAnnotation
-	@Target({ FIELD, PARAMETER, METHOD })
-	@Retention(RUNTIME)
-	public @interface RunningConsumers {
+	public interface CandidateElementExtractorFactory {
+		CandidateElementExtractor newExtractor(EmbeddedBrowser browser);
 	}
-
 }

@@ -68,7 +68,7 @@ class BeanToReadableMap {
 		} else if (result instanceof Plugin) {
 			return escapeHtml(result.getClass().getSimpleName());
 		} else if (result instanceof CrawlRules) {
-			return "<pre><code>" + Serializer.toPrettyJson(result) + "</code></pre>";
+			return "<pre><code>" + escapeHtml(Serializer.toPrettyJson(result)) + "</code></pre>";
 		} else if (result instanceof BrowserConfiguration) {
 			BrowserConfiguration config = (BrowserConfiguration) result;
 			StringBuilder configAsString =

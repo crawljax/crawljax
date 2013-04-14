@@ -1,6 +1,6 @@
 package com.crawljax.examples;
 
-import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
@@ -35,8 +35,8 @@ public final class SiteSimpleExample {
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-		crawljax.run();
+		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+		crawljax.call();
 	}
 
 	private static InputSpecification getInputSpecification() {

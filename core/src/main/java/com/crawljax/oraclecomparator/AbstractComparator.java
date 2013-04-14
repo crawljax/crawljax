@@ -11,93 +11,34 @@ import com.crawljax.util.DomUtils;
 /**
  * The Abstract base class of all the Comparators. All comparators are not Thread safe as
  * comparators are shared between Threads and the origionalDom and newDom can not be final.
- * 
- * @author Danny
  */
 @NotThreadSafe
 public abstract class AbstractComparator implements Comparator {
 
-	private String originalDom;
-	private String newDom;
-
-	/**
-	 * Constructor.
-	 */
-	public AbstractComparator() {
-
+	@Override
+	public List<Difference> getDifferences(String oldDom, String newDom) {
+		return DomUtils.getDifferences(normalize(oldDom), normalize(newDom));
 	}
 
-	/**
-	 * @param originalDom
-	 *            The original DOM.
-	 * @param newDom
-	 *            The new DOM.
-	 */
-	public AbstractComparator(String originalDom, String newDom) {
-		this.originalDom = originalDom;
-		this.newDom = newDom;
-	}
-
-	/**
-	 * @return If the original DOM and the new DOM are equal. Note: Via
-	 *         OracleControllerConfiguration ignore case can be set
-	 */
-	protected boolean compare() {
+	@Override
+	public boolean isEquivalent(String oldDom, String newDom) {
 		boolean equivalent = false;
 		if (StateComparator.COMPARE_IGNORE_CASE) {
-			equivalent = getOriginalDom().equalsIgnoreCase(getNewDom());
+			equivalent = normalize(oldDom).equalsIgnoreCase(normalize(newDom));
 		} else {
-			equivalent = getOriginalDom().equals(getNewDom());
+			equivalent = normalize(oldDom).equals(normalize(newDom));
 		}
 		return equivalent;
 	}
 
 	/**
-	 * @return Whether they are equivalent.
+	 * Override this method to apply normalization to the comparison.
+	 * 
+	 * @param dom
+	 *            The original DOM
+	 * @return the normalized DOM.
 	 */
-	@Override
-	public abstract boolean isEquivalent();
-
-	/**
-	 * @return Differences between the DOMs.
-	 */
-	@Override
-	public List<Difference> getDifferences() {
-		return DomUtils.getDifferences(getOriginalDom(), getNewDom());
+	public String normalize(String dom) {
+		return dom;
 	}
-
-	/**
-	 * @return The original DOM.
-	 */
-	@Override
-	public String getOriginalDom() {
-		return originalDom;
-	}
-
-	/**
-	 * @param originalDom
-	 *            The new original DOM.
-	 */
-	@Override
-	public void setOriginalDom(String originalDom) {
-		this.originalDom = originalDom;
-	}
-
-	/**
-	 * @return The new DOM.
-	 */
-	@Override
-	public String getNewDom() {
-		return newDom;
-	}
-
-	/**
-	 * @param newDom
-	 *            The new DOM.
-	 */
-	@Override
-	public void setNewDom(String newDom) {
-		this.newDom = newDom;
-	}
-
 }

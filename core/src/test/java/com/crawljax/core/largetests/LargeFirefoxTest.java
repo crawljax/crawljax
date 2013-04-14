@@ -11,7 +11,7 @@ public class LargeFirefoxTest extends LargeTestBase {
 
 	@Override
 	BrowserConfiguration getBrowserConfiguration() {
-		return new BrowserConfiguration(BrowserType.firefox, 2);
+		return new BrowserConfiguration(BrowserType.firefox, 1);
 	}
 
 	@Override

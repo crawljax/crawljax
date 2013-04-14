@@ -4,7 +4,6 @@ import static com.crawljax.browser.matchers.StateFlowGraphMatchers.stateWithDomS
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -18,7 +17,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -33,8 +31,8 @@ import com.crawljax.condition.browserwaiter.ExpectedVisibleCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.CrawlerContext;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -42,7 +40,6 @@ import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurati
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
-import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
@@ -113,17 +110,10 @@ public abstract class LargeTestBase {
 	public void setup() throws Exception {
 		if (!HAS_RUN.get()) {
 			HAS_RUN.set(true);
-			CrawljaxController crawljax = null;
-			try {
-				crawljax = new CrawljaxController(getCrawlSpecification());
-				crawljax.run();
-			} finally {
-				HAS_FINISHED.set(true);
-				if (crawljax != null) {
-					session = crawljax.getSession();
-					crawljax.terminate(true);
-				}
-			}
+			CrawljaxRunner crawljax = null;
+			crawljax = new CrawljaxRunner(getCrawlSpecification());
+			session = crawljax.call();
+			HAS_FINISHED.set(true);
 		} else {
 			while (!HAS_FINISHED.get()) {
 				LOG.debug("Waiting for crawl to finish...");
@@ -249,30 +239,14 @@ public abstract class LargeTestBase {
 		crawljaxConfiguration.addPlugin(new OnInvariantViolationPlugin() {
 
 			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
+			public void onInvariantViolation(Invariant invariant, CrawlerContext context) {
 				LargeTestBase.violatedInvariants.add(invariant);
-				if (session.getCurrentState().getDom().contains(INVARIANT_TEXT)) {
+				if (context.getBrowser().getDom().contains(INVARIANT_TEXT)) {
 					violatedInvariantStateIsCorrect = true;
 					LOG.warn("Invariant violated: " + invariant.getDescription());
 				}
 			}
-		});
 
-		crawljaxConfiguration.addPlugin(new OnNewStatePlugin() {
-			@Override
-			public void onNewState(CrawlSession session) {
-				try {
-					if (!session.getCurrentState().equals(session.getInitialState())) {
-						assertEquals(
-						        "Target State from ExactEventPath equals current state",
-						        session.getCurrentCrawlPath()
-						                .get(session.getCurrentCrawlPath().size() - 1)
-						                .getTargetStateVertex(), session.getCurrentState());
-					}
-				} catch (CrawljaxException e) {
-					Assert.fail(e.getMessage());
-				}
-			}
 		});
 	}
 
@@ -416,46 +390,6 @@ public abstract class LargeTestBase {
 			}
 		}
 		assertTrue("Link in SLOW_WIDGET is found", foundLinkInSlowWidget);
-	}
-
-	/**
-	 * Tests the limit for the Crawl Depth. The current crawl depth in this test is limited to 3! It
-	 * test a not to deep path (path a), a to deep path (path b), a path which has a CLONE (path c),
-	 * a to deep path after a CLONE found (path d), a to deep path with a branch in it (path e), a
-	 * to deep path with a nop operations that results in a DOM is not changed event. The test was
-	 * created after a bug found when the depth limit was not applied after a CLONE has been
-	 * detected.
-	 */
-	@Test
-	public void testDepth() {
-		boolean crawlToDeep = false;
-		int level1 = 0;
-		int level2 = 0;
-		for (Eventable eventable : getStateFlowGraph().getAllEdges()) {
-			String txt = eventable.getElement().getText();
-			if (txt.startsWith("Depth")) {
-				// Its a depth eventable were interested in that!
-				String lastPart = txt.substring(5);
-				int nr = Integer.valueOf(lastPart.substring(lastPart.length() - 1));
-				// String id = lastPart.substring(0, lastPart.length() - 1);
-				if (nr == 1) {
-					level1++;
-				} else if (nr == 2) {
-					level2++;
-				} else {
-					crawlToDeep = true;
-				}
-			}
-		}
-		assertTrue("Crawling was to deep, not limited by the setDepth parameter", !crawlToDeep);
-		assertTrue("Too many nodes found at level 1 number of nodes: " + level1 + " Required: "
-		        + 6, level1 <= 6);
-		assertTrue("Too less nodes found at level 1 number of nodes: " + level1 + " Required: "
-		        + 6, level1 >= 6);
-		assertTrue("Too many nodes found at level 2 number of nodes: " + level2 + " Required: "
-		        + 5, level2 <= 5);
-		assertTrue("Too less nodes found at level 2 number of nodes: " + level2 + " Required: "
-		        + 5, level2 >= 5);
 	}
 
 	abstract BrowserConfiguration getBrowserConfiguration();

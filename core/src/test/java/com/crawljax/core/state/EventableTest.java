@@ -22,6 +22,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.DomUtils;
 
@@ -104,9 +105,10 @@ public class EventableTest {
 	@Test
 	public void testEdge() throws CrawljaxException {
 
-		StateVertex s1 = new StateVertex("stateSource", "dom1");
-		StateVertex s2 = new StateVertex("stateTarget", "dom2");
-		StateFlowGraph sfg = new StateFlowGraph(s1);
+		StateVertex s1 = new StateVertex(0, "stateSource", "dom1");
+		StateVertex s2 = new StateVertex(0, "stateTarget", "dom2");
+		StateFlowGraph sfg = new StateFlowGraph(new ExitNotifier(0));
+		sfg.putIfAbsent(s1, false);
 
 		sfg.putIfAbsent(s2);
 

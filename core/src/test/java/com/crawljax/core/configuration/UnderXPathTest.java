@@ -1,17 +1,16 @@
 package com.crawljax.core.configuration;
 
-import static org.junit.Assert.assertEquals;
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
+import static org.junit.Assert.assertThat;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.CrawljaxRunner;
+import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
 
@@ -21,56 +20,22 @@ import com.crawljax.test.RunWithWebServer;
 @Category(BrowserTest.class)
 public class UnderXPathTest {
 
-	private static CrawlSession session = null;
-
 	@ClassRule
 	public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
 
 	@Test
 	public void testDontClickUnderXPath() throws Exception {
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("underxpath.html");
-		builder.crawlRules().click("li");
-		builder.crawlRules().dontClick("li").underXPath("//UL[@class=\"dontclick\"]");
-		runAndSetSession(builder);
+		builder.crawlRules().click("a");
+		builder.crawlRules().dontClick("a").underXPath("//A[@class=\"noClickClass\"]");
+		CrawlRulesBuilder rules = builder.crawlRules();
+		rules.dontClick("a").withAttribute("id", "noClickId");
+		rules.dontClickChildrenOf("div").withClass("noChildrenOfClass");
+		rules.dontClickChildrenOf("div").withId("noChildrenOfId");
 
-		/* test issue 16 */
-		assertEquals("There should be no outgoing links", 0, session.getStateFlowGraph()
-		        .getOutgoingClickables(session.getInitialState()).size());
+		CrawlSession session = new CrawljaxRunner(builder.build()).call();
+
+		assertThat(session.getStateFlowGraph(), hasStates(2));
 	}
 
-	private void runAndSetSession(CrawljaxConfigurationBuilder builder) {
-		builder.addPlugin(new PostCrawlingPlugin() {
-
-			@Override
-			public void postCrawling(CrawlSession session) {
-				UnderXPathTest.session = session;
-			}
-
-		});
-
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-
-		crawljax.run();
-	}
-
-	@Test
-	public void testClickUnderXPath() throws ConfigurationException, CrawljaxException {
-		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("underxpath.html");
-		builder.crawlRules().click("li").underXPath("//UL[@class=\"dontclick\"]");
-		builder.addPlugin(new PostCrawlingPlugin() {
-
-			@Override
-			public void postCrawling(CrawlSession session) {
-				UnderXPathTest.session = session;
-			}
-
-		});
-
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-
-		crawljax.run();
-
-		assertEquals("There should be 2 outgoing links", 2, session.getStateFlowGraph()
-		        .getOutgoingClickables(session.getInitialState()).size());
-	}
 }

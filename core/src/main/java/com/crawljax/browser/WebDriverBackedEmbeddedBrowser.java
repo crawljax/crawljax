@@ -269,7 +269,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			throwIfConnectionException(e);
 			return;
 		} catch (InterruptedException e) {
-			LOGGER.error("goToUrl got interrupted while waiting for the page to be loaded", e);
+			LOGGER.debug("goToUrl got interrupted while waiting for the page to be loaded", e);
+			Thread.currentThread().interrupt();
 			return;
 		}
 	}
@@ -295,9 +296,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param eventable
 	 *            The HTML event type (onclick, onmouseover, ...).
 	 * @return true if firing event is successful.
+	 * @throws InterruptedException
+	 *             when interrupted during the wait.
 	 */
-	protected boolean fireEventWait(WebElement webElement, Eventable eventable)
-	        throws ElementNotVisibleException {
+	private boolean fireEventWait(WebElement webElement, Eventable eventable)
+	        throws ElementNotVisibleException, InterruptedException {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
@@ -317,12 +320,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				return false;
 		}
 
-		try {
-			Thread.sleep(this.crawlWaitEvent);
-		} catch (InterruptedException e) {
-			LOGGER.error("fireEventWait got interrupted during wait process", e);
-			return false;
-		}
+		Thread.sleep(this.crawlWaitEvent);
 		return true;
 	}
 
@@ -333,8 +331,14 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			// close browser and close every associated window.
 			browser.quit();
 		} catch (WebDriverException e) {
+			if (e.getCause() instanceof InterruptedException) {
+				LOGGER.info("Interrupted while waiting for the browser to close. It might not close correctly");
+				Thread.currentThread().interrupt();
+				return;
+			}
 			throw wrapWebDriverExceptionIfConnectionException(e);
 		}
+		LOGGER.debug("Browser closed...");
 	}
 
 	@Override
@@ -430,10 +434,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param eventable
 	 *            The eventable.
 	 * @return true if it is able to fire the event successfully on the element.
+	 * @throws InterruptedException
+	 *             when interrupted during the wait.
 	 */
 	@Override
-	public synchronized boolean fireEvent(Eventable eventable) throws ElementNotVisibleException,
-	        NoSuchElementException {
+	public synchronized boolean fireEventAndWait(Eventable eventable)
+	        throws ElementNotVisibleException,
+	        NoSuchElementException, InterruptedException {
 		try {
 
 			boolean handleChanged = false;

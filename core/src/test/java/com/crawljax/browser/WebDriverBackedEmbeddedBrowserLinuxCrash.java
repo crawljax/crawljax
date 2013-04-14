@@ -70,14 +70,16 @@ public class WebDriverBackedEmbeddedBrowserLinuxCrash extends FirefoxLinuxCrash 
 
 	/**
 	 * Test method for
-	 * {@link com.crawljax.browser.EmbeddedBrowser#fireEvent(com.crawljax.core.state.Eventable)}.
+	 * {@link com.crawljax.browser.EmbeddedBrowser#fireEventAndWait(com.crawljax.core.state.Eventable)}
+	 * .
 	 * 
 	 * @throws CrawljaxException
 	 *             when the event can not be fired.
 	 */
 	@Test(expected = BrowserConnectionException.class)
-	public void testFireEvent() throws CrawljaxException {
-		browser.fireEvent(new Eventable(new Identification(How.xpath, "/HTML"), EventType.click));
+	public void testFireEvent() throws Exception {
+		browser.fireEventAndWait(new Eventable(new Identification(How.xpath, "/HTML"),
+		        EventType.click));
 	}
 
 	/**
