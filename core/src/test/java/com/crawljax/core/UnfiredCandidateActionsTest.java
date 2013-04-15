@@ -1,13 +1,18 @@
 package com.crawljax.core;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Provider;
@@ -75,6 +80,7 @@ public class UnfiredCandidateActionsTest {
 				CandidateCrawlAction action = mock(CandidateCrawlAction.class);
 				newActions.add(action);
 			}
+			LOG.debug("Adding mock ations to CandidateActions");
 			actions.addActions(newActions.build(), contributeTo);
 		}
 	}
@@ -94,6 +100,8 @@ public class UnfiredCandidateActionsTest {
 	@Before
 	public void setup() {
 		when(graphProvider.get()).thenReturn(graph);
+		// todo deze niet null terug geven.
+		when(graph.getShortestPath(Mockito.any(), Mockito.any()));
 		BrowserConfiguration config = new BrowserConfiguration(BrowserType.firefox);
 		candidateActions = new UnfiredCandidateActions(config, graphProvider);
 		executor = Executors.newFixedThreadPool(CONSUMERS);
@@ -102,26 +110,22 @@ public class UnfiredCandidateActionsTest {
 	}
 
 	@Test
-	public void testAddingAndTakingFromTheQueue() throws InterruptedException {
+	public void testAddingAndTakingFromTheQueue() throws InterruptedException, ExecutionException {
+		List<Future<List<Eventable>>> doneEventables = new ArrayList<>(CONSUMERS);
 		for (int i = 0; i < CONSUMERS; i++) {
 			StateVertex state = mock(StateVertex.class);
 			when(state.getId()).thenReturn(i + 1);
 			states.put(i + 1, state);
-			executor.submit(new TaskConsumer(candidateActions, state));
+			doneEventables.add(executor.submit(new TaskConsumer(candidateActions, state)));
 		}
 		candidateActions.addActions(ImmutableList.<CandidateCrawlAction> of(), states.get(1));
 		executor.shutdown();
 		executor.awaitTermination(1, TimeUnit.MINUTES);
-
-	}
-
-	CrawlTask newMockCrawlTask(int size) {
-		ImmutableList.Builder<Eventable> eventableBuilder = ImmutableList.builder();
-		for (int i = 0; i < size; i++) {
-			Eventable event = Mockito.mock(Eventable.class);
-			eventableBuilder.add(event);
+		int totalEvents = 0;
+		for (Future<List<Eventable>> future : doneEventables) {
+			totalEvents += future.get().size();
 		}
-		return new CrawlTask(eventableBuilder.build());
+		assertThat(totalEvents, is(CONSUMERS * EVENTS_PER_CONSUMER));
 	}
 
 }
