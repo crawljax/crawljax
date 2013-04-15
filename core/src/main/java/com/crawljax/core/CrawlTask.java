@@ -17,14 +17,14 @@ public class CrawlTask {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(eventables);
+		return Objects.hashCode(getEventables());
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof CrawlTask) {
 			CrawlTask that = (CrawlTask) object;
-			return Objects.equal(this.eventables, that.eventables);
+			return Objects.equal(this.getEventables(), that.getEventables());
 		}
 		return false;
 	}
@@ -32,8 +32,12 @@ public class CrawlTask {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("eventables", eventables)
+		        .add("eventables", getEventables())
 		        .toString();
 	}
+
+	public ImmutableList<Eventable> getEventables() {
+	    return eventables;
+    }
 
 }

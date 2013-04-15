@@ -13,6 +13,10 @@ public class CrawlPath extends ForwardingList<Eventable> {
 
 	private final List<Eventable> eventablePath;
 
+	public static CrawlPath copyOf(List<Eventable> eventable) {
+		return new CrawlPath(Lists.newLinkedList(eventable));
+	}
+
 	/**
 	 * Start a new empty CrawlPath.
 	 */

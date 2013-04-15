@@ -55,7 +55,7 @@ public class NewCrawler {
 	private final CrawlRules crawlRules;
 	private final WaitConditionChecker waitConditionChecker;
 	private final CandidateElementExtractor candidateExtractor;
-	private final UnhandledCandidatActionCache candidateActionCache;
+	private final UnfiredCandidateActions candidateActionCache;
 
 	private CrawlPath crawlpath;
 	private StateMachine stateMachine;
@@ -63,7 +63,7 @@ public class NewCrawler {
 	@Inject
 	NewCrawler(EmbeddedBrowser browser, @BaseUrl URL url, Plugins plugins, CrawlRules crawlRules,
 	        Provider<CrawlSession> session,
-	        StateComparator stateComparator, UnhandledCandidatActionCache candidateActionCache,
+	        StateComparator stateComparator, UnfiredCandidateActions candidateActionCache,
 	        FormHandlerFactory formHandlerFactory,
 	        WaitConditionChecker waitConditionChecker,
 	        CandidateElementExtractorFactory elementExtractor) {
@@ -107,7 +107,8 @@ public class NewCrawler {
 	 *            The {@link CrawlTask} this {@link NewCrawler} should execute.
 	 */
 	public void execute(CrawlTask crawlTask) {
-		follow(crawlpath.immutableCopy());
+		reset();
+		follow(CrawlPath.copyOf(crawlTask.getEventables()));
 		parseCurrentPageForCandidateElements();
 		crawlThroughActions();
 	}

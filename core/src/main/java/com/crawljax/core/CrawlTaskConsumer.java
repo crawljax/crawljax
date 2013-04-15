@@ -26,10 +26,10 @@ public class CrawlTaskConsumer implements Runnable {
 
 	private final NewCrawler crawler;
 
-	private final UnhandledCandidatActionCache candidates;
+	private final UnfiredCandidateActions candidates;
 
 	@Inject
-	CrawlTaskConsumer(UnhandledCandidatActionCache candidates,
+	CrawlTaskConsumer(UnfiredCandidateActions candidates,
 	        @RunningConsumers AtomicInteger runningConsumers,
 	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch, NewCrawler crawler) {
 		this.candidates = candidates;
@@ -63,7 +63,6 @@ public class CrawlTaskConsumer implements Runnable {
 	@VisibleForTesting
 	void handleTask(CrawlTask crawlTask) {
 		LOG.debug("Handling task {}", crawlTask);
-		crawler.reset();
 		crawler.execute(crawlTask);
 		LOG.debug("Task executed. Returning to queue polling");
 	}

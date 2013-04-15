@@ -21,17 +21,20 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.Striped;
 
+/**
+ * Contains all the {@link CandidateCrawlAction}s that still have to be fired to get a result.
+ */
 @Singleton
-public class UnhandledCandidatActionCache {
+public class UnfiredCandidateActions {
 
-	private static final Logger LOG = LoggerFactory.getLogger(UnhandledCandidatActionCache.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UnfiredCandidateActions.class);
 
 	private final Map<Integer, Queue<CandidateCrawlAction>> cache;
 	private final BlockingQueue<Integer> statesWithCandidates;
 	private final Striped<Lock> locks;
 	private final Provider<StateFlowGraph> sfg;
 
-	UnhandledCandidatActionCache(BrowserConfiguration config, Provider<StateFlowGraph> sfg) {
+	UnfiredCandidateActions(BrowserConfiguration config, Provider<StateFlowGraph> sfg) {
 		this.sfg = sfg;
 		cache = Maps.newHashMap();
 		statesWithCandidates = Queues.newLinkedBlockingQueue();
