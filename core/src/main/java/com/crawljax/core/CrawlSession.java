@@ -8,9 +8,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
@@ -22,7 +19,6 @@ import com.crawljax.core.state.StateVertex;
 @Singleton
 public class CrawlSession {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CrawlSession.class);
 	/**
 	 * This variable holds the current stateFlowGraph.
 	 */
@@ -120,16 +116,4 @@ public class CrawlSession {
 	protected final void removeCrawlPath(List<Eventable> path) {
 		this.crawlPaths.remove(path);
 	}
-
-	// /**
-	// * branch the current crawl path, save the old-one and continue with the current.
-	// */
-	// protected final void branchCrawlPath() {
-	// CrawlPath path = crawlPath.get();
-	// if (path == null) {
-	// return;
-	// }
-	// this.addCrawlPath(path.immutableCopy(false));
-	// }
-
 }

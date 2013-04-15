@@ -1,15 +1,11 @@
 package com.crawljax.core.plugin;
 
-import java.util.List;
-
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
+import com.google.common.collect.ImmutableList;
 
 /**
- * Plugin type that is called before firing events on the current DOM state. Example: filter
- * candidate elements.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
+ * Plugin type that is called before firing events on the current DOM state.
  */
 public interface PreStateCrawlingPlugin extends Plugin {
 
@@ -23,6 +19,6 @@ public interface PreStateCrawlingPlugin extends Plugin {
 	 * @param candidateElements
 	 *            the candidates for the current state.
 	 */
-	void preStateCrawling(CrawlSession session, List<CandidateElement> candidateElements);
+	void preStateCrawling(CrawlSession session, ImmutableList<CandidateElement> candidateElements);
 
 }

@@ -1,6 +1,5 @@
 package com.crawljax.core;
 
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -9,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CoreModule.ConsumersDoneLatch;
-import com.crawljax.di.CoreModule.CrawlQueue;
 import com.crawljax.di.CoreModule.RunningConsumers;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
@@ -22,18 +20,19 @@ public class CrawlTaskConsumer implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlTaskConsumer.class);
 
-	private final BlockingQueue<CrawlTask> taskQueue;
 	private final AtomicInteger runningConsumers;
 
 	private final CountDownLatch consumersDoneLatch;
 
 	private final NewCrawler crawler;
 
+	private final UnhandledCandidatActionCache candidates;
+
 	@Inject
-	CrawlTaskConsumer(@CrawlQueue BlockingQueue<CrawlTask> taskQueue,
+	CrawlTaskConsumer(UnhandledCandidatActionCache candidates,
 	        @RunningConsumers AtomicInteger runningConsumers,
 	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch, NewCrawler crawler) {
-		this.taskQueue = taskQueue;
+		this.candidates = candidates;
 		this.runningConsumers = runningConsumers;
 		this.consumersDoneLatch = consumersDoneLatch;
 		this.crawler = crawler;
@@ -44,7 +43,7 @@ public class CrawlTaskConsumer implements Runnable {
 	public void run() {
 		try {
 			while (!Thread.interrupted()) {
-				CrawlTask crawlTask = taskQueue.take();
+				CrawlTask crawlTask = candidates.awaitNewTask();
 				int activeConsumers = runningConsumers.incrementAndGet();
 				LOG.debug("There are {} active consumers", activeConsumers);
 				handleTask(crawlTask);

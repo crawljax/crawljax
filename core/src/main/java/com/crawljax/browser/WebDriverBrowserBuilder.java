@@ -1,5 +1,8 @@
 package com.crawljax.browser;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -19,9 +22,15 @@ import com.google.common.collect.ImmutableSortedSet;
 /**
  * Default implementation of the EmbeddedBrowserBuilder based on Selenium WebDriver API.
  */
-public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
+public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverBrowserBuilder.class);
+	private final CrawljaxConfiguration configuration;
+
+	@Inject
+	WebDriverBrowserBuilder(CrawljaxConfiguration configuration) {
+		this.configuration = configuration;
+	}
 
 	/**
 	 * Build a new WebDriver based EmbeddedBrowser.
@@ -32,7 +41,7 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 	 * @return the new build WebDriver based embeddedBrowser
 	 */
 	@Override
-	public EmbeddedBrowser buildEmbeddedBrowser(CrawljaxConfiguration configuration) {
+	public EmbeddedBrowser get() {
 		// Retrieve the config values used
 		ImmutableSortedSet<String> filterAttributes =
 		        configuration.getCrawlRules().getPreCrawlConfig().getFilterAttributeNames();

@@ -37,10 +37,9 @@ public class SessionReader {
 		StateFlowGraph sfg = null;
 		for (StateVertex state : savedCrawlSession.getMapStates().values()) {
 			if (sfg == null) {
-				sfg = new StateFlowGraph(state);
-			} else {
-				sfg.putIfAbsent(state, false);
+				sfg = new StateFlowGraph();
 			}
+			sfg.putIfAbsent(state, false);
 		}
 		for (Transition transition : savedCrawlSession.getTransitions()) {
 			sfg.addEdge(savedCrawlSession.getMapStates().get(transition.getFromState()),

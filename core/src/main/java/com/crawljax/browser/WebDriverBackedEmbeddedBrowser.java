@@ -433,7 +433,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @return true if it is able to fire the event successfully on the element.
 	 */
 	@Override
-	public synchronized boolean fireEventAndWait(Eventable eventable) throws ElementNotVisibleException,
+	public synchronized boolean fireEventAndWait(Eventable eventable)
+	        throws ElementNotVisibleException,
 	        NoSuchElementException {
 		try {
 

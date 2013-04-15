@@ -55,7 +55,15 @@ public class CrawlPath extends ForwardingList<Eventable> {
 	 *            should the last element be removed?
 	 * @return the CrawlPath based on an immutable list.
 	 */
-	public CrawlPath immutableCopy(boolean removeLast) {
+	public CrawlPath immutableCopy() {
+		return immutableCopy(false);
+	}
+
+	public CrawlPath immutableCopyWithoutLast() {
+		return immutableCopy(true);
+	}
+
+	private CrawlPath immutableCopy(boolean removeLast) {
 		if (isEmpty()) {
 			return new CrawlPath();
 		}

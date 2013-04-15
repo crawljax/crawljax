@@ -28,6 +28,7 @@ import com.crawljax.core.CrawlTask;
 import com.crawljax.core.CrawlTaskConsumer;
 import com.crawljax.core.ExtractorManager;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.forms.FormHandler;
 import com.google.common.collect.Queues;
 import com.google.inject.AbstractModule;
@@ -71,6 +72,11 @@ public class CoreModule extends AbstractModule {
 	ConditionTypeChecker<CrawlCondition> crawlConditionChecker() {
 		return new ConditionTypeChecker<>(configuration.getCrawlRules().getPreCrawlConfig()
 		        .getCrawlConditions());
+	}
+
+	@Provides
+	StateFlowGraph flowGraph(CrawlSessionProvider sessionProvider) {
+		return sessionProvider.get().getStateFlowGraph();
 	}
 
 	@Provides

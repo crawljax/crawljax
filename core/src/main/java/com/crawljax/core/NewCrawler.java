@@ -2,6 +2,7 @@ package com.crawljax.core;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -37,14 +38,12 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.oraclecomparator.StateComparator;
 import com.crawljax.util.ElementResolver;
 import com.crawljax.util.UrlUtils;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 public class NewCrawler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NewCrawler.class);
-
-	private static enum ClickResult {
-		CLONE_DETECTED, NEW_STATE, DOM_UNCHANGED, LEFT_DOMAIN
-	}
 
 	private final AtomicInteger crawlDepth = new AtomicInteger();
 	private final EmbeddedBrowser browser;
@@ -84,8 +83,7 @@ public class NewCrawler {
 	 * Close the browser.
 	 */
 	public void close() {
-		// TODO Auto-generated method stub
-
+		browser.close();
 	}
 
 	/**
@@ -98,7 +96,7 @@ public class NewCrawler {
 		CrawlSession sess = session.get();
 		stateMachine =
 		        new StateMachine(sess.getStateFlowGraph(), sess.getInitialState(),
-		                crawlRules.getInvariants(), plugins);
+		                crawlRules.getInvariants(), plugins, stateComparator);
 		crawlpath = new CrawlPath();
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(browser);
@@ -109,20 +107,21 @@ public class NewCrawler {
 	 *            The {@link CrawlTask} this {@link NewCrawler} should execute.
 	 */
 	public void execute(CrawlTask crawlTask) {
-		follow(crawlpath.immutableCopy(false));
-		// Store the currentState to be able to 'back-track' later.
-		StateVertex originalState = stateMachine.getCurrentState();
+		follow(crawlpath.immutableCopy());
+		parseCurrentPageForCandidateElements();
+		crawlThroughActions();
+	}
 
-		if (originalState.searchForCandidateElements(candidateExtractor)) {
-			// Only execute the preStateCrawlingPlugins when it's the first time
-			LOG.info("Starting preStateCrawlingPlugins...");
-			List<CandidateElement> candidateElements =
-			        originalState.getUnprocessedCandidateElements();
-			plugins.runPreStateCrawlingPlugins(session.get(), candidateElements);
-			// update crawlActions
-			originalState.filterCandidateActions(candidateElements);
+	private void parseCurrentPageForCandidateElements() {
+		StateVertex currentState = stateMachine.getCurrentState();
+		LOG.debug("Parsing DOM of state {} for candidate elements", currentState.getName());
+		ImmutableList<CandidateElement> extract = candidateExtractor.extract(currentState);
+		List<CandidateCrawlAction> actions = new ArrayList<>(extract.size());
+		for (CandidateElement candidateElement : extract) {
+			actions.add(new CandidateCrawlAction(candidateElement, EventType.click));
 		}
-		crawlThroughActions(originalState);
+		candidateActionCache.addActions(actions, currentState);
+		plugins.runPreStateCrawlingPlugins(session.get(), extract);
 	}
 
 	private void follow(CrawlPath path) throws CrawljaxException {
@@ -140,13 +139,9 @@ public class NewCrawler {
 			        clickable);
 
 			stateMachine.changeState(clickable.getTargetStateVertex());
-
 			curState = clickable.getTargetStateVertex();
-
 			crawlpath.add(clickable);
-
 			handleInputElements(clickable);
-
 			if (this.fireEvent(clickable)) {
 
 				int depth = crawlDepth.incrementAndGet();
@@ -209,21 +204,16 @@ public class NewCrawler {
 		LOG.debug("Event fired={} for eventable {}", isFired, eventable);
 
 		if (isFired) {
-
-			/*
-			 * Let the controller execute its specified wait operation on the browser thread safe.
-			 */
+			// Let the controller execute its specified wait operation on the browser thread safe.
 			waitConditionChecker.wait(browser);
-
 			browser.closeOtherWindows();
-
-			return true; // An event fired
+			return true;
 		} else {
 			/*
 			 * Execute the OnFireEventFailedPlugins with the current crawlPath with the crawlPath
 			 * removed 1 state to represent the path TO here.
 			 */
-			plugins.runOnFireEventFailedPlugins(eventable, crawlpath.immutableCopy(true));
+			plugins.runOnFireEventFailedPlugins(eventable, crawlpath.immutableCopyWithoutLast());
 			return false; // no event fired
 		}
 	}
@@ -266,9 +256,16 @@ public class NewCrawler {
 		return false;
 	}
 
-	private void crawlThroughActions(StateVertex originalState) {
-		String stateName = originalState.getName();
-		CandidateCrawlAction action = candidateActionCache.pollActionOrNull(stateName);
+	/**
+	 * Crawl through the actions of the current state. The browser keeps firing
+	 * {@link CandidateCrawlAction}s stored in the state until the DOM changes. When it does, it
+	 * checks if the new dom is a clone or a new state. In continues crawling in that new or clone
+	 * state. If the browser leaves the current domain, the crawler tries to get back to the
+	 * previous state.
+	 */
+	private void crawlThroughActions() {
+		CandidateCrawlAction action =
+		        candidateActionCache.pollActionOrNull(stateMachine.getCurrentState());
 		while (action != null) {
 			Eventable event = new Eventable(action.getCandidateElement(), action.getEventType());
 			handleInputElements(event);
@@ -276,34 +273,36 @@ public class NewCrawler {
 
 			boolean fired = fireEvent(event);
 			if (fired) {
-				if (crawlerLeftDomain()) {
-					LOG.debug("The browser left the domain");
-					goBackOneState();
-				} else {
-					StateVertex newState =
-					        new StateVertex(browser.getCurrentUrl(),
-					                session.get().getStateFlowGraph().getNewStateName(),
-					                browser.getDom(),
-					                stateComparator.getStrippedDom(browser));
-					if (domChanged(event, newState)) {
-						crawlpath.add(event);
-						boolean isNewState =
-						        stateMachine.swithToStateAndCheckIfClone(event, newState,
-						                browser, session.get());
-						if (isNewState) {
-							int depth = crawlDepth.incrementAndGet();
-							LOG.info("Crawl depth is now {}", depth);
-							// TODO scan for work
-						} else {
-							session.get().addCrawlPath(crawlpath.immutableCopy(false));
-						}
-						LOG.debug("Dom changed, now crawling the new state.");
-					} else {
-						LOG.debug("Dom unchanged");
-					}
-				}
+				inspectNewState(event);
 			}
-			action = candidateActionCache.pollActionOrNull(stateName);
+			// We have to check if we are still in the same state.
+			action = candidateActionCache.pollActionOrNull(stateMachine.getCurrentState());
+		}
+	}
+
+	private void inspectNewState(Eventable event) {
+		if (crawlerLeftDomain()) {
+			LOG.debug("The browser left the domain. Going back one state...");
+			goBackOneState();
+		} else {
+			StateVertex newState = stateMachine.newStateFor(browser);
+			if (domChanged(event, newState)) {
+				crawlpath.add(event);
+				LOG.debug("The DOM has changed. Event added to the crawl path");
+				boolean isNewState =
+				        stateMachine.swithToStateAndCheckIfClone(event, newState,
+				                browser, session.get());
+				if (isNewState) {
+					int depth = crawlDepth.incrementAndGet();
+					LOG.info("New DOM is a new state! crawl depth is now {}", depth);
+					parseCurrentPageForCandidateElements();
+				} else {
+					LOG.debug("New DOM is a clone state. Continuing in that state.");
+					session.get().addCrawlPath(crawlpath.immutableCopy());
+				}
+			} else {
+				LOG.debug("Dom unchanged");
+			}
 		}
 	}
 
@@ -347,7 +346,7 @@ public class NewCrawler {
 
 	private void goBackOneState() {
 		LOG.debug("Going back one state");
-		CrawlPath currentPath = crawlpath.immutableCopy(false);
+		CrawlPath currentPath = crawlpath.immutableCopyWithoutLast();
 		crawlpath = null;
 
 		reset();
@@ -363,8 +362,11 @@ public class NewCrawler {
 	public StateVertex crawlIndex() {
 		LOG.debug("Setting up vertex of the index page");
 		browser.goToUrl(url);
-		return new StateVertex(url.toExternalForm(), "index", browser.getDom(),
+		StateVertex index = new StateVertex(url.toExternalForm(), "index", browser.getDom(),
 		        stateComparator.getStrippedDom(browser));
+		Preconditions.checkArgument(index.getId() == StateVertex.FIRST_STATE_ID,
+		        "It seems some the index state is crawled more than once.");
+		return index;
 
 	}
 }

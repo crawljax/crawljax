@@ -13,7 +13,11 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.google.common.base.Preconditions;
 
+/**
+ * Takes care of the lazy initialization of the {@link CrawlSession}.
+ */
 @Singleton
 public class CrawlSessionProvider implements Provider<CrawlSession> {
 
@@ -21,11 +25,14 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 
 	private final AtomicBoolean isSet = new AtomicBoolean();
 	private final CrawljaxConfiguration config;
+	private final StateFlowGraph stateFlowGraph;
+
 	private CrawlSession session;
 
 	@Inject
-	CrawlSessionProvider(CrawljaxConfiguration config) {
+	CrawlSessionProvider(CrawljaxConfiguration config, StateFlowGraph stateFlowGraph) {
 		this.config = config;
+		this.stateFlowGraph = stateFlowGraph;
 	}
 
 	/**
@@ -37,9 +44,8 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	public void setup(StateVertex indexState) {
 		if (!isSet.getAndSet(true)) {
 			LOG.debug("Setting up the crawlsession");
-			// TODO factor these out of the session.
-			StateFlowGraph stateFlowGraph = new StateFlowGraph(indexState);
-
+			StateVertex added = stateFlowGraph.putIfAbsent(indexState, false);
+			Preconditions.checkArgument(added == null, "Could not set the initial state");
 			session = new CrawlSession(stateFlowGraph, indexState, config);
 		} else {
 			throw new IllegalStateException("Session is already set");

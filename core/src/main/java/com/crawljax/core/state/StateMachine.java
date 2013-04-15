@@ -8,6 +8,7 @@ import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.oraclecomparator.StateComparator;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -30,6 +31,8 @@ public class StateMachine {
 
 	private final Plugins plugins;
 
+	private final StateComparator stateComparator;
+
 	/**
 	 * Create a new StateMachine.
 	 * 
@@ -41,12 +44,21 @@ public class StateMachine {
 	 *            the invariants to use in the InvariantChecker.
 	 */
 	public StateMachine(StateFlowGraph sfg, StateVertex indexState,
-	        ImmutableList<Invariant> invariantList, Plugins plugins) {
+	        ImmutableList<Invariant> invariantList, Plugins plugins,
+	        StateComparator stateComparator) {
 		stateFlowGraph = sfg;
 		this.initialState = indexState;
 		this.plugins = plugins;
+		this.stateComparator = stateComparator;
 		currentState = initialState;
 		invariantChecker = new ConditionTypeChecker<>(invariantList);
+	}
+
+	public StateVertex newStateFor(EmbeddedBrowser browser) {
+		return new StateVertex(browser.getCurrentUrl(),
+		        stateFlowGraph.getNewStateName(),
+		        browser.getDom(),
+		        stateComparator.getStrippedDom(browser));
 	}
 
 	/**
@@ -137,6 +149,8 @@ public class StateMachine {
 	}
 
 	/**
+	 * Adds an edge between teh current and new state.
+	 * 
 	 * @param event
 	 *            the event edge.
 	 * @param newState
@@ -152,7 +166,7 @@ public class StateMachine {
 	        CrawlSession session) {
 		StateVertex cloneState = this.addStateToCurrentState(newState, event);
 
-		checkInvariants(browser, session);
+		runOnInvriantViolationPlugins(browser, session);
 
 		if (cloneState == null) {
 			this.changeState(newState);
@@ -164,7 +178,7 @@ public class StateMachine {
 		}
 	}
 
-	private void checkInvariants(EmbeddedBrowser browser, CrawlSession session) {
+	private void runOnInvriantViolationPlugins(EmbeddedBrowser browser, CrawlSession session) {
 		for (Invariant failedInvariant : invariantChecker.getFailedConditions(browser)) {
 			plugins.runOnInvriantViolationPlugins(failedInvariant, session);
 		}

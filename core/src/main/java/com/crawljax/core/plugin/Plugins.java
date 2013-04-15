@@ -246,7 +246,7 @@ public final class Plugins {
 	 *            the elements which crawljax is about to crawl
 	 */
 	public void runPreStateCrawlingPlugins(CrawlSession session,
-	        List<CandidateElement> candidateElements) {
+	        ImmutableList<CandidateElement> candidateElements) {
 		LOGGER.debug("Running PreStateCrawlingPlugins...");
 		for (Plugin plugin : plugins.get(PreStateCrawlingPlugin.class)) {
 			if (plugin instanceof PreStateCrawlingPlugin) {

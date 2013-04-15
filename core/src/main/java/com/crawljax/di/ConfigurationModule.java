@@ -9,6 +9,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.net.URL;
 
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -16,6 +18,7 @@ import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
+import com.google.inject.util.Providers;
 
 /**
  * Binds the configuration elements so they are injectable.
@@ -36,7 +39,16 @@ public class ConfigurationModule extends AbstractModule {
 		bind(CrawlRules.class).toInstance(config.getCrawlRules());
 		bind(ProxyConfiguration.class).toInstance(config.getProxyConfiguration());
 		bind(Plugins.class).toInstance(config.getPlugins());
-		bind(BrowserConfiguration.class).toInstance(config.getBrowserConfig());
+
+		BrowserConfiguration browserConfig = config.getBrowserConfig();
+		bind(BrowserConfiguration.class).toInstance(browserConfig);
+
+		if (browserConfig.isDefaultBuilder()) {
+			bind(EmbeddedBrowser.class).toProvider(WebDriverBrowserBuilder.class);
+		} else {
+			bind(EmbeddedBrowser.class).toProvider(
+			        Providers.guicify(browserConfig.getBrowserBuilder()));
+		}
 	}
 
 	@BindingAnnotation

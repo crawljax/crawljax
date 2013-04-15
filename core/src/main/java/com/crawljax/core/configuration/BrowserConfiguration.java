@@ -3,9 +3,10 @@ package com.crawljax.core.configuration;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.Immutable;
+import javax.inject.Provider;
 
+import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.browser.EmbeddedBrowserBuilder;
 import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -23,10 +24,25 @@ public class BrowserConfiguration {
 	 */
 	public static final long BROWSER_SLEEP_FAILURE = TimeUnit.SECONDS.toMillis(10);
 
+	private static final Provider<EmbeddedBrowser> DEFAULT_BROWSER_BUILDER =
+	        new Provider<EmbeddedBrowser>() {
+
+		        @Override
+		        public EmbeddedBrowser get() {
+			        throw new IllegalStateException(
+			                "This is just a placeholder and should not be called");
+		        }
+
+		        public String toString() {
+			        return "Default webdriver factory";
+		        };
+
+	        };
+
 	private final BrowserType browsertype;
 	private final int numberOfBrowsers;
 	private final boolean bootstrap;
-	private final EmbeddedBrowserBuilder browserBuilder;
+	private final Provider<EmbeddedBrowser> browserBuilder;
 	private String remoteHubUrl;
 
 	/**
@@ -78,7 +94,7 @@ public class BrowserConfiguration {
 	 *            the browser will only be started when they are needed.
 	 */
 	public BrowserConfiguration(BrowserType browsertype, int numberOfBrowsers, boolean bootstrap) {
-		this(browsertype, numberOfBrowsers, bootstrap, new WebDriverBrowserBuilder());
+		this(browsertype, numberOfBrowsers, bootstrap, DEFAULT_BROWSER_BUILDER);
 	}
 
 	/**
@@ -94,7 +110,7 @@ public class BrowserConfiguration {
 	 *            a custom {@link WebDriverBrowserBuilder}.
 	 */
 	public BrowserConfiguration(BrowserType browsertype, int numberOfBrowsers, boolean bootstrap,
-	        WebDriverBrowserBuilder builder) {
+	        Provider<EmbeddedBrowser> builder) {
 		Preconditions.checkArgument(numberOfBrowsers > 0,
 		        "Number of browsers should be 1 or more");
 		Preconditions.checkNotNull(browsertype);
@@ -118,12 +134,16 @@ public class BrowserConfiguration {
 		return bootstrap;
 	}
 
-	public EmbeddedBrowserBuilder getBrowserBuilder() {
+	public Provider<EmbeddedBrowser> getBrowserBuilder() {
 		return browserBuilder;
 	}
 
 	public String getRemoteHubUrl() {
 		return remoteHubUrl;
+	}
+
+	public boolean isDefaultBuilder() {
+		return browserBuilder.equals(DEFAULT_BROWSER_BUILDER);
 	}
 
 	@Override
