@@ -81,7 +81,7 @@ public class StateMachineTest {
 		 * Add index.
 		 */
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
-		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
 
 		/**
 		 * Name is correctly changed
@@ -115,7 +115,7 @@ public class StateMachineTest {
 		assertNotSame(sm.getCurrentState(), state2);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
-		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
 
 		/**
 		 * Name is correctly changed
@@ -135,7 +135,7 @@ public class StateMachineTest {
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// False because its CLONE!
-		assertFalse(sm.updateAndCheckIfClone(c2, state3, dummyBrowser,
+		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser,
 		        new CrawlSession(dummyPool)));
 
 		// state2.equals(state3)
@@ -167,7 +167,7 @@ public class StateMachineTest {
 		assertNotSame(sm.getCurrentState(), state2);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
-		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
 
 		/**
 		 * Name is correctly changed
@@ -187,14 +187,14 @@ public class StateMachineTest {
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// False because its CLONE!
-		assertFalse(sm.updateAndCheckIfClone(c2, state3, dummyBrowser,
+		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser,
 		        new CrawlSession(dummyPool)));
 
 		Eventable c3 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// True because its not yet known
 		assertTrue(sm
-		        .updateAndCheckIfClone(c3, state4, dummyBrowser, new CrawlSession(dummyPool)));
+		        .swithToStateAndCheckIfClone(c3, state4, dummyBrowser, new CrawlSession(dummyPool)));
 
 		sm.rewind();
 
@@ -247,7 +247,7 @@ public class StateMachineTest {
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertTrue(smLocal.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
+		assertTrue(smLocal.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
 		        dummyPool)));
 
 		// New State so hit must be true;
@@ -257,7 +257,7 @@ public class StateMachineTest {
 
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertFalse(smLocal.updateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
+		assertFalse(smLocal.swithToStateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
 		        dummyPool)));
 		// CLONE State so hit must be true;
 		assertTrue("Invariants are exeucted", hit);
@@ -288,7 +288,7 @@ public class StateMachineTest {
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
 
 		// New State so hit must be true;
 		assertTrue("Plugins are exeucted", hit);
@@ -297,7 +297,7 @@ public class StateMachineTest {
 
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertFalse(sm.updateAndCheckIfClone(c2, state3, dummyBrowser,
+		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser,
 		        new CrawlSession(dummyPool)));
 
 		// CLONE State so no plugin execution
@@ -345,7 +345,7 @@ public class StateMachineTest {
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertTrue(sm.updateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
 		        dummyPool)));
 
 		// New State so hit must be true;
@@ -355,7 +355,7 @@ public class StateMachineTest {
 
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertFalse(sm.updateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
+		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
 		        dummyPool)));
 
 		// New State so plugin execution

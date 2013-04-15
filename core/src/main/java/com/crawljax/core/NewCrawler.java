@@ -3,9 +3,12 @@ package com.crawljax.core;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -28,7 +31,6 @@ import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.ConfigurationModule.BaseUrl;
 import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
-import com.crawljax.di.CoreModule.CrawlQueue;
 import com.crawljax.di.CoreModule.FormHandlerFactory;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
@@ -48,13 +50,13 @@ public class NewCrawler {
 	private final EmbeddedBrowser browser;
 	private final Provider<CrawlSession> session;
 	private final StateComparator stateComparator;
-	private final BlockingQueue<CrawlTask> taskQueue;
 	private final URL url;
 	private final Plugins plugins;
 	private final FormHandler formHandler;
 	private final CrawlRules crawlRules;
 	private final WaitConditionChecker waitConditionChecker;
 	private final CandidateElementExtractor candidateExtractor;
+	private final UnhandledCandidatActionCache candidateActionCache;
 
 	private CrawlPath crawlpath;
 	private StateMachine stateMachine;
@@ -62,7 +64,7 @@ public class NewCrawler {
 	@Inject
 	NewCrawler(EmbeddedBrowser browser, @BaseUrl URL url, Plugins plugins, CrawlRules crawlRules,
 	        Provider<CrawlSession> session,
-	        StateComparator stateComparator, @CrawlQueue BlockingQueue<CrawlTask> taskQueue,
+	        StateComparator stateComparator, UnhandledCandidatActionCache candidateActionCache,
 	        FormHandlerFactory formHandlerFactory,
 	        WaitConditionChecker waitConditionChecker,
 	        CandidateElementExtractorFactory elementExtractor) {
@@ -72,7 +74,7 @@ public class NewCrawler {
 		this.crawlRules = crawlRules;
 		this.session = session;
 		this.stateComparator = stateComparator;
-		this.taskQueue = taskQueue;
+		this.candidateActionCache = candidateActionCache;
 		this.waitConditionChecker = waitConditionChecker;
 		this.candidateExtractor = elementExtractor.newExtractor(browser);
 		this.formHandler = formHandlerFactory.newFormHandler(browser);
@@ -264,52 +266,92 @@ public class NewCrawler {
 		return false;
 	}
 
-	private boolean crawlThroughActions(StateVertex originalState) {
-		CandidateCrawlAction action =
-		        originalState.pollCandidateCrawlAction(this, crawlQueueManager);
+	private void crawlThroughActions(StateVertex originalState) {
+		String stateName = originalState.getName();
+		CandidateCrawlAction action = candidateActionCache.pollActionOrNull(stateName);
 		while (action != null) {
-			ClickResult result = this.crawlAction(action);
-			originalState.markAsFinished(this, action);
+			Eventable event = new Eventable(action.getCandidateElement(), action.getEventType());
+			handleInputElements(event);
+			waitForRefreshTagIfAny(event);
 
-			switch (result) {
-				case NEW_STATE:
-					return newStateDetected(originalState);
-				case CLONE_DETECTED:
-					return true;
-				case LEFT_DOMAIN:
+			boolean fired = fireEvent(event);
+			if (fired) {
+				if (crawlerLeftDomain()) {
+					LOG.debug("The browser left the domain");
 					goBackOneState();
-				default:
-					break;
+				} else {
+					StateVertex newState =
+					        new StateVertex(browser.getCurrentUrl(),
+					                session.get().getStateFlowGraph().getNewStateName(),
+					                browser.getDom(),
+					                stateComparator.getStrippedDom(browser));
+					if (domChanged(event, newState)) {
+						crawlpath.add(event);
+						boolean isNewState =
+						        stateMachine.swithToStateAndCheckIfClone(event, newState,
+						                browser, session.get());
+						if (isNewState) {
+							int depth = crawlDepth.incrementAndGet();
+							LOG.info("Crawl depth is now {}", depth);
+							// TODO scan for work
+						} else {
+							session.get().addCrawlPath(crawlpath.immutableCopy(false));
+						}
+						LOG.debug("Dom changed, now crawling the new state.");
+					} else {
+						LOG.debug("Dom unchanged");
+					}
+				}
 			}
-			action = originalState.pollCandidateCrawlAction(this, crawlQueueManager);
+			action = candidateActionCache.pollActionOrNull(stateName);
 		}
-		return true;
 	}
 
-	private boolean newStateDetected(StateVertex orrigionalState) throws CrawljaxException {
-
-		// An event has been fired so we are one level deeper
-		int d = depth.incrementAndGet();
-		LOG.info("Found a new state. Crawl depth is now {}", d);
-		if (!this.crawl()) {
-			// Crawling has stopped
-			controller.terminate(false);
-			return false;
+	private void waitForRefreshTagIfAny(final Eventable eventable) {
+		if (eventable.getElement().getTag().equalsIgnoreCase("meta")) {
+			Pattern p = Pattern.compile("(\\d+);\\s+URL=(.*)");
+			for (Entry<String, String> e : eventable.getElement().getAttributes().entrySet()) {
+				Matcher m = p.matcher(e.getValue());
+				long waitTime = parseWaitTimeOrReturnDefault(m);
+				try {
+					Thread.sleep(waitTime);
+				} catch (InterruptedException ex) {
+					LOG.info("Crawler timed out while waiting for page to reload");
+				}
+			}
 		}
-		this.getStateMachine().changeState(orrigionalState);
-		return true;
+	}
+
+	private boolean crawlerLeftDomain() {
+		return !browser.getCurrentUrl().toLowerCase()
+		        .contains(url.getHost().toLowerCase());
+	}
+
+	private long parseWaitTimeOrReturnDefault(Matcher m) {
+		long waitTime = TimeUnit.SECONDS.toMillis(10);
+		if (m.find()) {
+			LOG.debug("URL: {}", m.group(2));
+			try {
+				waitTime = Integer.parseInt(m.group(1)) * 1000;
+			} catch (NumberFormatException ex) {
+				LOG.info("Could parse the amount of time to wait for a META tag refresh. Waiting 10 seconds...");
+			}
+		}
+		return waitTime;
+	}
+
+	private boolean domChanged(final Eventable eventable, StateVertex newState) {
+		return plugins.runDomChangeNotifierPlugins(stateMachine.getCurrentState(),
+		        eventable, newState, browser);
 	}
 
 	private void goBackOneState() {
 		LOG.debug("Going back one state");
-		CrawlPath currentPath =
-		        controller.getSession().getCurrentCrawlPath().immutableCopy(false);
-		goToInitialURL(false);
-		if (stateMachine != null) {
-			stateMachine.rewind();
-		}
-		controller.getSession().startNewPath();
-		goBackExact(currentPath);
+		CrawlPath currentPath = crawlpath.immutableCopy(false);
+		crawlpath = null;
+
+		reset();
+		follow(currentPath);
 	}
 
 	/**

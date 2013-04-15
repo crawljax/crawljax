@@ -147,25 +147,19 @@ public class StateMachine {
 	 *            the current Session
 	 * @return true if the new state is not found in the state machine.
 	 */
-	public boolean updateAndCheckIfClone(final Eventable event, StateVertex newState,
+	public boolean swithToStateAndCheckIfClone(final Eventable event, StateVertex newState,
 	        EmbeddedBrowser browser,
 	        CrawlSession session) {
 		StateVertex cloneState = this.addStateToCurrentState(newState, event);
 
-		if (cloneState != null) {
-			newState = cloneState;
-		}
-
-		this.changeState(newState);
-
 		checkInvariants(browser, session);
 
 		if (cloneState == null) {
+			this.changeState(newState);
 			plugins.runOnNewStatePlugins(session);
-			// recurse
 			return true;
 		} else {
-			// non recurse
+			this.changeState(cloneState);
 			return false;
 		}
 	}

@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 
 @Singleton
@@ -40,12 +39,8 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 			LOG.debug("Setting up the crawlsession");
 			// TODO factor these out of the session.
 			StateFlowGraph stateFlowGraph = new StateFlowGraph(indexState);
-			StateMachine stateMachine =
-			        new StateMachine(stateFlowGraph, indexState,
-			                config.getCrawlRules().getInvariants(),
-			                config.getPlugins());
 
-			session = new CrawlSession(stateFlowGraph, indexState, config, stateMachine);
+			session = new CrawlSession(stateFlowGraph, indexState, config);
 		} else {
 			throw new IllegalStateException("Session is already set");
 		}

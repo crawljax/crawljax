@@ -496,7 +496,7 @@ public class Crawler implements Runnable {
 		                this.controller.getStrippedDom(getBrowser()));
 		if (domChanged(eventable, newState)) {
 			controller.getSession().addEventableToCrawlPath(eventable);
-			if (this.getStateMachine().updateAndCheckIfClone(eventable, newState,
+			if (this.getStateMachine().swithToStateAndCheckIfClone(eventable, newState,
 			        this.getBrowser(), this.controller.getSession())) {
 				fired = true;
 				// Recurse because new state found
