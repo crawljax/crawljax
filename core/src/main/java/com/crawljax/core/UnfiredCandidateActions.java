@@ -108,7 +108,7 @@ public class UnfiredCandidateActions {
 		StateFlowGraph graph = sfg.get();
 		ImmutableList<Eventable> shortestPath =
 		        graph.getShortestPath(graph.getInitialState(), graph.getById(id));
-		LOG.debug("New task available over path {}", shortestPath);
+		LOG.debug("New task polled in state with path {}", shortestPath);
 		return new CrawlTask(shortestPath);
 	}
 }

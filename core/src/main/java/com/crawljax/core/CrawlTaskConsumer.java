@@ -1,5 +1,6 @@
 package com.crawljax.core;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -9,14 +10,13 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CoreModule.ConsumersDoneLatch;
 import com.crawljax.di.CoreModule.RunningConsumers;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 
 /**
  * Consumes {@link CrawlTask}s it gets from the {@link CrawlQueueManager}. It delegates the actual
  * browser interactions to a {@link NewCrawler} whom it has a 1 to 1 relation with.
  */
-public class CrawlTaskConsumer implements Runnable {
+public class CrawlTaskConsumer implements Callable<Void> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlTaskConsumer.class);
 
@@ -40,17 +40,23 @@ public class CrawlTaskConsumer implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public Void call() {
 		try {
 			while (!Thread.interrupted()) {
-				CrawlTask crawlTask = candidates.awaitNewTask();
-				int activeConsumers = runningConsumers.incrementAndGet();
-				LOG.debug("There are {} active consumers", activeConsumers);
-				handleTask(crawlTask);
-				if (runningConsumers.decrementAndGet() == 0) {
-					LOG.debug("No consumers active. Crawl is done. Shutting down...");
-					consumersDoneLatch.countDown();
-					break;
+				try {
+					CrawlTask crawlTask = candidates.awaitNewTask();
+					int activeConsumers = runningConsumers.incrementAndGet();
+					LOG.debug("There are {} active consumers", activeConsumers);
+					handleTask(crawlTask);
+					if (runningConsumers.decrementAndGet() == 0) {
+						LOG.debug("No consumers active. Crawl is done. Shutting down...");
+						consumersDoneLatch.countDown();
+						break;
+					}
+				} catch (InterruptedException e) {
+					throw e;
+				} catch (RuntimeException e) {
+					LOG.error("Cound not complete state crawl: " + e.getMessage(), e);
 				}
 			}
 			crawler.close();
@@ -58,10 +64,10 @@ public class CrawlTaskConsumer implements Runnable {
 			LOG.info("Consumer interrupted");
 			crawler.close();
 		}
+		return null;
 	}
 
-	@VisibleForTesting
-	void handleTask(CrawlTask crawlTask) {
+	private void handleTask(CrawlTask crawlTask) {
 		LOG.debug("Handling task {}", crawlTask);
 		crawler.execute(crawlTask);
 		LOG.debug("Task executed. Returning to queue polling");
