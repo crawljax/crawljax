@@ -1,93 +1,85 @@
 package com.crawljax.core;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.Collection;
-import java.util.List;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import org.apache.commons.configuration.ConfigurationException;
+import javax.inject.Provider;
+
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.browserwaiter.WaitConditionChecker;
+import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateVertex;
-import com.crawljax.test.BrowserTest;
-import com.crawljax.test.RunWithWebServer;
+import com.crawljax.core.plugin.Plugins;
+import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
+import com.crawljax.di.CoreModule.FormHandlerFactory;
+import com.crawljax.forms.FormHandler;
+import com.crawljax.oraclecomparator.StateComparator;
 
 /**
  * Test class for the Crawler testing.
  */
-@Category(BrowserTest.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CrawlerTest {
 
-	@ClassRule
-	public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
+	private URL url;
 
-	private Collection<List<Eventable>> paths;
-	private StateVertex index;
+	private NewCrawler crawler;
 
-	private CrawljaxConfiguration buildController() throws ConfigurationException {
-		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(SERVER.getSiteUrl() + "crawler/index.html");
-		builder.crawlRules().click("a");
-		return builder.build();
-	}
+	@Mock
+	private EmbeddedBrowser browser;
+
+	@Spy
+	private Plugins plugins = Plugins.noPlugins();
+
+	private CrawlRules crawlRules;
+
+	@Mock
+	private Provider<CrawlSession> sessionProvider;
+
+	@Mock
+	private CrawlSession session;
+
+	private StateComparator stateComparator;
+	private UnfiredCandidateActions candidateActionCache;
+	private FormHandler formHandler;
+	private WaitConditionChecker waitConditionChecker;
+	private CandidateElementExtractor extractor;
 
 	@Before
-	public void setupController() throws ConfigurationException, CrawljaxException {
-		CrawljaxController controller = new CrawljaxController(buildController());
-		controller.run();
-		paths = controller.getSession().getCrawlPaths();
-		index = controller.getSession().getInitialState();
+	public void setup() throws MalformedURLException {
+		CandidateElementExtractorFactory elementExtractor =
+		        mock(CandidateElementExtractorFactory.class);
+		when(elementExtractor.newExtractor(browser)).thenReturn(extractor);
+
+		FormHandlerFactory formHandlerFactory = mock(FormHandlerFactory.class);
+		when(formHandlerFactory.newFormHandler(browser)).thenReturn(formHandler);
+		url = new URL("http://example.com");
+		when(sessionProvider.get()).thenReturn(session);
+
+		crawlRules = CrawljaxConfiguration.builderFor(url).build().getCrawlRules();
+		crawler =
+		        new NewCrawler(browser, url, plugins, crawlRules, sessionProvider,
+		                stateComparator,
+		                candidateActionCache, formHandlerFactory, waitConditionChecker,
+		                elementExtractor);
 	}
 
 	@Test
-	public void testCrawler() throws ConfigurationException {
-		final TestController controller = new TestController(buildController(), index);
-
-		for (final List<Eventable> path : paths) {
-			new Crawler(controller, path, "Follow Path") {
-				@Override
-				public void run() {
-					try {
-						super.init();
-						List<Eventable> newPath = controller.getSession().getCurrentCrawlPath();
-						assertThat(
-						        "Path found by Controller driven Crawling equals the path found in the Crawler",
-						        path, is(newPath));
-						super.shutdown();
-					} catch (InterruptedException e) {
-						throw new AssertionError(e);
-					}
-				}
-			}.run();
-		}
-		controller.getBrowserPool().shutdown();
+	public void whenResetTheStateIsBackToIndex() {
+		crawler.reset();
+		verify(browser).goToUrl(url);
+		verify(plugins).runOnUrlLoadPlugins(browser);
 	}
 
-	private static class TestController extends CrawljaxController {
-		CrawlSession localSession;
-		StateFlowGraph g;
-		StateVertex i;
-
-		public TestController(CrawljaxConfiguration config, StateVertex index)
-		        throws ConfigurationException {
-			super(config);
-			i = index;
-			g = new StateFlowGraph(i);
-			localSession =
-			        new CrawlSession(this.getBrowserPool(), g, i, System.currentTimeMillis());
-		}
-
-		@Override
-		public CrawlSession getSession() {
-			return localSession;
-		}
-	}
 }

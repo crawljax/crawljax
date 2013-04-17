@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.locks.Lock;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
@@ -58,7 +59,7 @@ public class UnfiredCandidateActions {
 				CandidateCrawlAction action = queue.poll();
 				if (action == null) {
 					LOG.debug("All actions polled for state {}", state.getName());
-					cache.remove(queue);
+					cache.remove(state.getId());
 					LOG.debug("There are now {} states with unfinished actions", cache.size());
 				}
 				removeStateFromQueue(state.getId());
@@ -99,16 +100,24 @@ public class UnfiredCandidateActions {
 	}
 
 	/**
+	 * @return If there are any pending actions to be crawled. This method is not threadsafe and
+	 *         might return a stale value.
+	 */
+	public boolean isEmpty() {
+		return statesWithCandidates.isEmpty();
+	}
+
+	/**
 	 * @return A new crawl task as soon as one is ready. Until then, it blocks.
 	 * @throws InterruptedException
 	 *             when taking from the queue is interrupted.
 	 */
-	public CrawlTask awaitNewTask() throws InterruptedException {
+	public StateVertex awaitNewTask() throws InterruptedException {
 		int id = statesWithCandidates.take();
-		StateFlowGraph graph = sfg.get();
-		ImmutableList<Eventable> shortestPath =
-		        graph.getShortestPath(graph.getInitialState(), graph.getById(id));
-		LOG.debug("New task polled in state with path {}", shortestPath);
-		return new CrawlTask(shortestPath);
+		// Put it back the end of the queue. It will be removed later.
+		statesWithCandidates.add(id);
+		LOG.debug("New task polled for state {}", id);
+		LOG.info("There are {} states with unfired actions", statesWithCandidates.size());
+		return sfg.get().getById(id);
 	}
 }

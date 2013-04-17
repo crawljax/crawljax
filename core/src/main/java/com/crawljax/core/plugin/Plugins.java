@@ -26,7 +26,7 @@ import com.google.common.collect.Lists;
 /**
  * Class for invoking plugins. The methods in this class are invoked from the Crawljax Core.
  */
-public final class Plugins {
+public class Plugins {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Plugins.class.getName());
 

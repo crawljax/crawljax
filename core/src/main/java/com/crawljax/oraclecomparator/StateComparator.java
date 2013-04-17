@@ -31,9 +31,6 @@ public class StateComparator {
 
 	private final ImmutableList<OracleComparator> oracleComparator;
 
-	private final ThreadLocal<String> strippedOriginalDom = new ThreadLocal<String>();
-	private final ThreadLocal<String> strippedNewDom = new ThreadLocal<String>();
-
 	/**
 	 * @param comparatorsWithPreconditions
 	 *            comparators with one or more preconditions
@@ -44,85 +41,50 @@ public class StateComparator {
 	}
 
 	/**
-	 * @param originalDom
-	 *            the original dom
-	 * @param newDom
-	 *            the current DOM in the browser
 	 * @param browser
 	 *            the current browser instance
-	 * @return true iff originalDom and newDom are equivalent. Determining equivalence is done with
-	 *         oracles and pre-conditions.
+	 * @return the stripped dom using {@link OracleComparator}s.
 	 */
-	public boolean compare(String originalDom, String newDom, EmbeddedBrowser browser) {
+	public String getStrippedDom(EmbeddedBrowser browser) {
+		String newDom = browser.getDom();
 		for (OracleComparator oraclePreCondition : oracleComparator) {
-
-			boolean allPreConditionsSucceed = true;
-			// Loop over All the Preconditions of this oracle
-			for (Condition preCondition : oraclePreCondition.getPreConditions()) {
-				LOGGER.debug("Check precondition: " + preCondition.toString());
-				if (!preCondition.check(browser)) {
-					allPreConditionsSucceed = false;
-					break;
-				}
-			}
-
 			// use oracle if preconditions succeeds
-			if (allPreConditionsSucceed) {
+			if (allPreConditionsSucceed(oraclePreCondition, browser)) {
 
 				Comparator oracle = oraclePreCondition.getOracle();
-				LOGGER.debug("Using " + oracle.getClass().getSimpleName() + ": "
-				        + oraclePreCondition.getId());
+				LOGGER.debug("Using {} : {}", oracle.getClass().getSimpleName(),
+				        oraclePreCondition.getId());
 
 				boolean equivalent = false;
 				// Synchronise on a single oracle setting the doms at first and later retrieve them
 				// after synchronised processing.
 				// TODO Stefan the ultimate Goal is to remove this synchronisation
 				synchronized (oracle) {
-					oracle.setOriginalDom(originalDom);
+					oracle.setOriginalDom("");
 					oracle.setNewDom(newDom);
 
 					equivalent = oracle.isEquivalent();
 
-					originalDom = oracle.getOriginalDom();
 					newDom = oracle.getNewDom();
 				}
 
 				if (equivalent) {
-					// All preconditions succeeded & the oracle is Equivalent
-					this.strippedOriginalDom.set(originalDom);
-					this.strippedNewDom.set(newDom);
-					return true;
+					return newDom;
 				}
 			}
 		}
-		/* Update the dom values to the last version */
-		this.strippedOriginalDom.set(originalDom);
-		this.strippedNewDom.set(newDom);
-		return false;
+		return newDom;
 	}
 
-	/**
-	 * @param browser
-	 *            the current browser instance
-	 * @return the stripped fom by the oracle comparators
-	 */
-	public String getStrippedDom(EmbeddedBrowser browser) {
-		compare("", browser.getDom(), browser);
-		return getStrippedNewDom();
-	}
-
-	/**
-	 * @return the strippedOriginalDom
-	 */
-	public String getStrippedOriginalDom() {
-		return strippedOriginalDom.get();
-	}
-
-	/**
-	 * @return the strippedNewDom
-	 */
-	public String getStrippedNewDom() {
-		return strippedNewDom.get();
+	private boolean allPreConditionsSucceed(OracleComparator oraclePreCondition,
+	        EmbeddedBrowser browser) {
+		for (Condition preCondition : oraclePreCondition.getPreConditions()) {
+			LOGGER.debug("Check precondition: " + preCondition.toString());
+			if (!preCondition.check(browser)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

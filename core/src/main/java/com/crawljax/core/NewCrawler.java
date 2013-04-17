@@ -26,6 +26,7 @@ import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateMachine;
@@ -106,11 +107,18 @@ public class NewCrawler {
 	 * @param crawlTask
 	 *            The {@link CrawlTask} this {@link NewCrawler} should execute.
 	 */
-	public void execute(CrawlTask crawlTask) {
+	public void execute(StateVertex crawlTask) {
+		LOG.debug("Restting the crawler and going to state {}", crawlTask.getName());
 		reset();
-		follow(CrawlPath.copyOf(crawlTask.getEventables()));
+		ImmutableList<Eventable> eventables = shortestPathTo(crawlTask);
+		follow(CrawlPath.copyOf(eventables));
 		parseCurrentPageForCandidateElements();
 		crawlThroughActions();
+	}
+
+	private ImmutableList<Eventable> shortestPathTo(StateVertex crawlTask) {
+		StateFlowGraph graph = session.get().getStateFlowGraph();
+		return graph.getShortestPath(graph.getInitialState(), crawlTask);
 	}
 
 	private void parseCurrentPageForCandidateElements() {
@@ -317,6 +325,7 @@ public class NewCrawler {
 					Thread.sleep(waitTime);
 				} catch (InterruptedException ex) {
 					LOG.info("Crawler timed out while waiting for page to reload");
+					Thread.currentThread().interrupt();
 				}
 			}
 		}

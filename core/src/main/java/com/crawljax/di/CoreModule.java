@@ -7,13 +7,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +20,11 @@ import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.core.CandidateElementExtractor;
 import com.crawljax.core.CandidateElementManager;
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawlTask;
 import com.crawljax.core.CrawlTaskConsumer;
 import com.crawljax.core.ExtractorManager;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.forms.FormHandler;
-import com.google.common.collect.Queues;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Provides;
@@ -58,9 +52,6 @@ public class CoreModule extends AbstractModule {
 
 		bind(CrawlSession.class).toProvider(CrawlSessionProvider.class);
 
-		bind(AtomicInteger.class).annotatedWith(RunningConsumers.class).toInstance(
-		        new AtomicInteger(0));
-
 		bind(ExtractorManager.class).to(CandidateElementManager.class);
 
 		install(new FactoryModuleBuilder().build(FormHandlerFactory.class));
@@ -77,32 +68,6 @@ public class CoreModule extends AbstractModule {
 	@Provides
 	StateFlowGraph flowGraph(CrawlSessionProvider sessionProvider) {
 		return sessionProvider.get().getStateFlowGraph();
-	}
-
-	@Provides
-	@Singleton
-	@CrawlQueue
-	BlockingQueue<CrawlTask> crawlQueue() {
-		LOG.debug("Creating the crawl queue");
-		return Queues.newLinkedBlockingQueue();
-	}
-
-	/**
-	 * A {@link BlockingQueue} of {@link CrawlTask}s.
-	 */
-	@BindingAnnotation
-	@Target({ FIELD, PARAMETER, METHOD })
-	@Retention(RUNTIME)
-	public @interface CrawlQueue {
-	}
-
-	/**
-	 * The {@link AtomicInteger} of working {@link CrawlTaskConsumer}s.
-	 */
-	@BindingAnnotation
-	@Target({ FIELD, PARAMETER, METHOD })
-	@Retention(RUNTIME)
-	public @interface RunningConsumers {
 	}
 
 	/**

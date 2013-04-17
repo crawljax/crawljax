@@ -30,7 +30,7 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	private CrawlSession session;
 
 	@Inject
-	CrawlSessionProvider(CrawljaxConfiguration config, StateFlowGraph stateFlowGraph) {
+	public CrawlSessionProvider(CrawljaxConfiguration config, StateFlowGraph stateFlowGraph) {
 		this.config = config;
 		this.stateFlowGraph = stateFlowGraph;
 	}
