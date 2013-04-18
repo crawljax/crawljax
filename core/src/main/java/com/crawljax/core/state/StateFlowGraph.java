@@ -133,7 +133,7 @@ public class StateFlowGraph implements Serializable {
 	}
 
 	public StateVertex getInitialState() {
-		return stateById.get(StateVertex.FIRST_STATE_ID);
+		return stateById.get(StateVertex.INDEX_ID);
 	}
 
 	/**
@@ -386,9 +386,13 @@ public class StateFlowGraph implements Serializable {
 	 * 
 	 * @return State name the name of the state
 	 */
-	public String getNewStateName() {
-		String state = makeStateName(nextStateNameCounter.incrementAndGet());
+	public String getNewStateName(int id) {
+		String state = makeStateName(id);
 		return state;
+	}
+
+	public int getNextStateId() {
+		return nextStateNameCounter.incrementAndGet();
 	}
 
 	/**
@@ -409,4 +413,5 @@ public class StateFlowGraph implements Serializable {
 	public int getNumberOfStates() {
 		return stateCounter.get();
 	}
+
 }

@@ -3,7 +3,6 @@ package com.crawljax.core.state;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -25,9 +24,7 @@ public class StateVertex implements Serializable {
 
 	private static final long serialVersionUID = 123400017983488L;
 
-	private static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
-
-	public static final int FIRST_STATE_ID = 1;
+	public static final int INDEX_ID = 0;
 
 	private final Collection<Eventable> foundEventables;
 	private final int id;
@@ -39,8 +36,8 @@ public class StateVertex implements Serializable {
 	/**
 	 * Default constructor to support saving instances of this class as an XML.
 	 */
-	public StateVertex() {
-		id = ID_GENERATOR.incrementAndGet();
+	public StateVertex(int id) {
+		this.id = id;
 		this.strippedDom = "";
 		this.url = "";
 		foundEventables = Queues.newConcurrentLinkedQueue();
@@ -54,8 +51,8 @@ public class StateVertex implements Serializable {
 	 * @param dom
 	 *            the current DOM tree of the browser
 	 */
-	public StateVertex(String name, String dom) {
-		this(null, name, dom, dom);
+	public StateVertex(int id, String name, String dom) {
+		this(id, null, name, dom, dom);
 	}
 
 	/**
@@ -70,8 +67,8 @@ public class StateVertex implements Serializable {
 	 * @param strippedDom
 	 *            the stripped dom by the OracleComparators
 	 */
-	public StateVertex(String url, String name, String dom, String strippedDom) {
-		id = ID_GENERATOR.incrementAndGet();
+	public StateVertex(int id, String url, String name, String dom, String strippedDom) {
+		this.id = id;
 		this.url = url;
 		this.name = name;
 		this.dom = dom;

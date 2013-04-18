@@ -32,7 +32,8 @@ import com.google.common.collect.ImmutableList;
 @RunWith(MockitoJUnitRunner.class)
 public class StateMachineTest {
 	private StateMachine sm;
-	private final StateVertex index = new StateVertex("index", "<table><div>index</div></table>");
+	private final StateVertex index = new StateVertex(StateVertex.INDEX_ID, "index",
+	        "<table><div>index</div></table>");
 
 	@Mock
 	private EmbeddedBrowser dummyBrowser;
@@ -67,7 +68,7 @@ public class StateMachineTest {
 	 */
 	@Test
 	public void testChangeState() {
-		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex(2, "state2", "<table><div>state2</div></table>");
 
 		/**
 		 * Can not change index because not added.
@@ -104,8 +105,8 @@ public class StateMachineTest {
 	@Test
 	public void testCloneState() {
 		// state2.equals(state3)
-		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex(2, "state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex(3, "state3", "<table><div>state2</div></table>");
 		/**
 		 * Can not change to state2 because not inserted yet.
 		 */
@@ -154,9 +155,9 @@ public class StateMachineTest {
 	@Test
 	public void testRewind() {
 		// state2.equals(state3)
-		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
-		StateVertex state4 = new StateVertex("state4", "<table><div>state4</div></table>");
+		StateVertex state2 = new StateVertex(2, "state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex(3, "state3", "<table><div>state2</div></table>");
+		StateVertex state4 = new StateVertex(4, "state4", "<table><div>state4</div></table>");
 		/**
 		 * Can not change to state2 because not inserted yet.
 		 */
@@ -220,8 +221,8 @@ public class StateMachineTest {
 	@Test
 	public void testInvariants() {
 		// state2.equals(state3)
-		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex(2, "state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex(3, "state3", "<table><div>state2</div></table>");
 
 		hit = false;
 		ImmutableList<Invariant> iList =
@@ -284,8 +285,8 @@ public class StateMachineTest {
 		setStateMachineForConfig(config);
 
 		// state2.equals(state3)
-		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex(2, "state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex(3, "state3", "<table><div>state2</div></table>");
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
@@ -341,8 +342,8 @@ public class StateMachineTest {
 		setStateMachineForConfig(builder.build());
 
 		// state2.equals(state3)
-		StateVertex state2 = new StateVertex("state2", "<table><div>state2</div></table>");
-		StateVertex state3 = new StateVertex("state3", "<table><div>state2</div></table>");
+		StateVertex state2 = new StateVertex(2, "state2", "<table><div>state2</div></table>");
+		StateVertex state3 = new StateVertex(3, "state3", "<table><div>state2</div></table>");
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 

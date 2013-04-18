@@ -28,7 +28,7 @@ public class StateVertexTest {
 	public void setUp() throws Exception {
 		name = "index";
 		dom = "<body></body>";
-		s = new StateVertex(name, dom);
+		s = new StateVertex(0, name, dom);
 	}
 
 	/**
@@ -36,8 +36,8 @@ public class StateVertexTest {
 	 */
 	@Test
 	public void testHashCode() {
-		StateVertex state = new StateVertex("foo", dom);
-		StateVertex temp = new StateVertex(name, dom);
+		StateVertex state = new StateVertex(1, "foo", dom);
+		StateVertex temp = new StateVertex(2, name, dom);
 
 		assertEquals(temp.hashCode(), state.hashCode());
 	}
@@ -47,7 +47,7 @@ public class StateVertexTest {
 	 */
 	@Test
 	public void testStateVertixString() {
-		StateVertex sv = new StateVertex(name, "");
+		StateVertex sv = new StateVertex(2, name, "");
 		assertNotNull(sv);
 	}
 
@@ -78,9 +78,9 @@ public class StateVertexTest {
 	 */
 	@Test
 	public void testEqualsObject() {
-		StateVertex stateEqual = new StateVertex("foo", dom);
-		StateVertex stateNotEqual = new StateVertex("foo", "<table><div>bla</div</table>");
-		StateVertex sv = new StateVertex(name, dom);
+		StateVertex stateEqual = new StateVertex(1, "foo", dom);
+		StateVertex stateNotEqual = new StateVertex(2, "foo", "<table><div>bla</div</table>");
+		StateVertex sv = new StateVertex(1, name, dom);
 		assertTrue(stateEqual.equals(sv));
 
 		assertFalse(stateNotEqual.equals(sv));
@@ -89,7 +89,6 @@ public class StateVertexTest {
 		assertFalse(stateEqual.equals(new Eventable(new Identification(Identification.How.xpath,
 		        "/body/div[3]/a"), EventType.click)));
 
-		assertFalse(stateEqual.equals(sv));
 	}
 
 	/**
@@ -102,7 +101,7 @@ public class StateVertexTest {
 
 	@Test
 	public void testGetDomSize() {
-		StateVertex sv = new StateVertex("test", HTML);
+		StateVertex sv = new StateVertex(1, "test", HTML);
 
 		int count = sv.getDomSize();
 		assertEquals(242, count);
@@ -110,7 +109,7 @@ public class StateVertexTest {
 
 	@Test
 	public void testSerializability() {
-		StateVertex sv = new StateVertex("testSerliazibility", HTML);
+		StateVertex sv = new StateVertex(2, "testSerliazibility", HTML);
 
 		byte[] serializedSv = SerializationUtils.serialize(sv);
 		StateVertex deserializedSv = (StateVertex) SerializationUtils.deserialize(serializedSv);

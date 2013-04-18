@@ -377,9 +377,11 @@ public class Crawler {
 	public StateVertex crawlIndex() {
 		LOG.debug("Setting up vertex of the index page");
 		browser.goToUrl(url);
-		StateVertex index = new StateVertex(url.toExternalForm(), "index", browser.getDom(),
-		        stateComparator.getStrippedDom(browser));
-		Preconditions.checkArgument(index.getId() == StateVertex.FIRST_STATE_ID,
+		StateVertex index =
+		        new StateVertex(StateVertex.INDEX_ID, url.toExternalForm(), "index",
+		                browser.getDom(),
+		                stateComparator.getStrippedDom(browser));
+		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 		        "It seems some the index state is crawled more than once.");
 
 		LOG.debug("Parsing the index for candidate elements");

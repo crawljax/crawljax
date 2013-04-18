@@ -34,18 +34,19 @@ public class StateFlowGraphTest {
 
 	@Before
 	public void setup() {
-		index = new StateVertex("index", "<table><div>index</div></table>");
-		state2 = new StateVertex("STATE_TWO", "<table><div>state2</div></table>");
-		state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
-		state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
-		state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
+		index = new StateVertex(StateVertex.INDEX_ID, "index", "<table><div>index</div></table>");
+		state2 = new StateVertex(2, "STATE_TWO", "<table><div>state2</div></table>");
+		state3 = new StateVertex(3, "STATE_THREE", "<table><div>state3</div></table>");
+		state4 = new StateVertex(4, "STATE_FOUR", "<table><div>state4</div></table>");
+		state5 = new StateVertex(5, "STATE_FIVE", "<table><div>state5</div></table>");
 		graph = new StateFlowGraph();
 		graph.putIfAbsent(index, false);
 	}
 
 	@Test
 	public void testSFG() throws Exception {
-		StateVertex DOUBLE = new StateVertex("index", "<table><div>index</div></table>");
+		StateVertex DOUBLE =
+		        new StateVertex(StateVertex.INDEX_ID, "index", "<table><div>index</div></table>");
 		assertTrue(graph.putIfAbsent(state2) == null);
 		assertTrue(graph.putIfAbsent(state3) == null);
 		assertTrue(graph.putIfAbsent(state4) == null);
@@ -79,7 +80,8 @@ public class StateFlowGraphTest {
 
 		assertEquals(state2.hashCode(), state2.hashCode());
 
-		assertTrue(state2.equals(new StateVertex("STATE_2", "<table><div>state2</div></table>")));
+		assertTrue(state2
+		        .equals(new StateVertex(2, "STATE_2", "<table><div>state2</div></table>")));
 
 		assertTrue(graph.canGoTo(state2, state3));
 		assertTrue(graph.canGoTo(state2, state5));
@@ -96,7 +98,7 @@ public class StateFlowGraphTest {
 		c = list.get(1);
 		assertEquals(c.getIdentification().getValue(), "/home/a");
 
-		StateVertex hold = new StateVertex(index.getName(), index.getDom());
+		StateVertex hold = new StateVertex(StateVertex.INDEX_ID, index.getName(), index.getDom());
 
 		list = graph.getShortestPath(hold, state3);
 		assertEquals(list.size(), 2);
@@ -115,7 +117,7 @@ public class StateFlowGraphTest {
 	@Test
 	public void testCloneStates() throws Exception {
 		StateVertex state3clone2 =
-		        new StateVertex("STATE_THREE", "<table><div>state2</div></table>");
+		        new StateVertex(3, "STATE_THREE", "<table><div>state2</div></table>");
 
 		assertTrue(graph.putIfAbsent(state2) == null);
 		assertTrue(graph.putIfAbsent(state4) == null);
@@ -150,8 +152,8 @@ public class StateFlowGraphTest {
 		                + "<body><div id='firstdiv' class='orange'>";
 
 		StateFlowGraph g = new StateFlowGraph();
-		g.putIfAbsent(new StateVertex("", HTML1), false);
-		g.putIfAbsent(new StateVertex("", HTML2));
+		g.putIfAbsent(new StateVertex(1, "", HTML1), false);
+		g.putIfAbsent(new StateVertex(2, "", HTML2));
 
 		assertEquals(206, g.getMeanStateStringSize());
 	}
