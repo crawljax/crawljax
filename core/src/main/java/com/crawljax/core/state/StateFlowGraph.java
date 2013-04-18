@@ -54,7 +54,6 @@ public class StateFlowGraph implements Serializable {
 	 */
 	public StateFlowGraph() {
 		sfg = new DirectedMultigraph<>(Eventable.class);
-		stateCounter.incrementAndGet();
 		stateById = Maps.newConcurrentMap();
 		LOG.debug("Initialized the stateflowgraph");
 	}

@@ -23,7 +23,6 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlTaskConsumer;
 import com.crawljax.core.ExtractorManager;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.forms.FormHandler;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
@@ -55,7 +54,7 @@ public class CoreModule extends AbstractModule {
 		bind(ExtractorManager.class).to(CandidateElementManager.class);
 
 		install(new FactoryModuleBuilder().build(FormHandlerFactory.class));
-		install(new FactoryModuleBuilder().build(CandidateElementExtractor.class));
+		install(new FactoryModuleBuilder().build(CandidateElementExtractorFactory.class));
 
 	}
 
@@ -63,11 +62,6 @@ public class CoreModule extends AbstractModule {
 	ConditionTypeChecker<CrawlCondition> crawlConditionChecker() {
 		return new ConditionTypeChecker<>(configuration.getCrawlRules().getPreCrawlConfig()
 		        .getCrawlConditions());
-	}
-
-	@Provides
-	StateFlowGraph flowGraph(CrawlSessionProvider sessionProvider) {
-		return sessionProvider.get().getStateFlowGraph();
 	}
 
 	/**

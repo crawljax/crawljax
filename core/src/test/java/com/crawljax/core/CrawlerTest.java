@@ -46,7 +46,7 @@ public class CrawlerTest {
 
 	private URL url;
 
-	private NewCrawler crawler;
+	private Crawler crawler;
 
 	@Mock
 	private EmbeddedBrowser browser;
@@ -110,7 +110,7 @@ public class CrawlerTest {
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
 
 		crawler =
-		        new NewCrawler(browser, url, plugins, crawlRules, sessionProvider,
+		        new Crawler(browser, url, plugins, crawlRules, sessionProvider,
 		                stateComparator,
 		                candidateActionCache, formHandlerFactory, waitConditionChecker,
 		                elementExtractor);

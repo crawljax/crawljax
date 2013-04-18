@@ -1,11 +1,14 @@
 package com.crawljax.core;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.locks.Lock;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
@@ -15,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.Eventable.EventType;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.Striped;
@@ -32,6 +37,7 @@ public class UnfiredCandidateActions {
 	private final Striped<Lock> locks;
 	private final Provider<StateFlowGraph> sfg;
 
+	@Inject
 	UnfiredCandidateActions(BrowserConfiguration config, Provider<StateFlowGraph> sfg) {
 		this.sfg = sfg;
 		cache = Maps.newHashMap();
@@ -46,6 +52,7 @@ public class UnfiredCandidateActions {
 	 * @return The next to-be-crawled action or <code>null</code> if none available.
 	 */
 	CandidateCrawlAction pollActionOrNull(StateVertex state) {
+		LOG.debug("Polling actino for state {}", state.getName());
 		Lock lock = locks.get(state.getId());
 		try {
 			lock.lock();
@@ -57,9 +64,9 @@ public class UnfiredCandidateActions {
 				if (action == null) {
 					LOG.debug("All actions polled for state {}", state.getName());
 					cache.remove(state.getId());
+					removeStateFromQueue(state.getId());
 					LOG.debug("There are now {} states with unfinished actions", cache.size());
 				}
-				removeStateFromQueue(state.getId());
 				return action;
 			}
 		} finally {
@@ -74,6 +81,20 @@ public class UnfiredCandidateActions {
 	}
 
 	/**
+	 * @param extract
+	 *            The actions you want to add to a state.
+	 * @param currentState
+	 *            The state you are in.
+	 */
+	public void addActions(ImmutableList<CandidateElement> extract, StateVertex currentState) {
+		List<CandidateCrawlAction> actions = new ArrayList<>(extract.size());
+		for (CandidateElement candidateElement : extract) {
+			actions.add(new CandidateCrawlAction(candidateElement, EventType.click));
+		}
+		addActions(actions, currentState);
+	}
+
+	/**
 	 * @param actions
 	 *            The actions you want to add to a state.
 	 * @param state
@@ -83,13 +104,14 @@ public class UnfiredCandidateActions {
 		Lock lock = locks.get(state.getId());
 		try {
 			lock.lock();
-			LOG.debug("Adding crawl actions for state {}", state.getId());
+			LOG.debug("Adding {} crawl actions for state {}", actions.size(), state.getId());
 			if (cache.containsKey(state.getId())) {
 				cache.get(state.getId()).addAll(actions);
 			} else {
 				cache.put(state.getId(), Queues.newConcurrentLinkedQueue(actions));
 			}
 			statesWithCandidates.add(state.getId());
+			LOG.info("There are {} states with unfired actions", statesWithCandidates.size());
 		} finally {
 			lock.unlock();
 		}
@@ -117,4 +139,5 @@ public class UnfiredCandidateActions {
 		LOG.info("There are {} states with unfired actions", statesWithCandidates.size());
 		return sfg.get().getById(id);
 	}
+
 }

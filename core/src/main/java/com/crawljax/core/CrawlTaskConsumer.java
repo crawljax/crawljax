@@ -13,7 +13,7 @@ import com.google.inject.Inject;
 
 /**
  * Consumes {@link CrawlTask}s it gets from the {@link CrawlQueueManager}. It delegates the actual
- * browser interactions to a {@link NewCrawler} whom it has a 1 to 1 relation with.
+ * browser interactions to a {@link Crawler} whom it has a 1 to 1 relation with.
  */
 public class CrawlTaskConsumer implements Callable<Void> {
 
@@ -23,13 +23,13 @@ public class CrawlTaskConsumer implements Callable<Void> {
 
 	private final CountDownLatch consumersDoneLatch;
 
-	private final NewCrawler crawler;
+	private final Crawler crawler;
 
 	private final UnfiredCandidateActions candidates;
 
 	@Inject
 	CrawlTaskConsumer(UnfiredCandidateActions candidates,
-	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch, NewCrawler crawler) {
+	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch, Crawler crawler) {
 		this.candidates = candidates;
 		this.consumersDoneLatch = consumersDoneLatch;
 		this.crawler = crawler;
@@ -41,12 +41,13 @@ public class CrawlTaskConsumer implements Callable<Void> {
 	public Void call() {
 		try {
 			while (!Thread.interrupted()) {
-				pollAndHandleCrawlTasks();
-				if (runningConsumers.decrementAndGet() == 0 && candidates.isEmpty()) {
+				if (runningConsumers.get() == 0 && candidates.isEmpty()) {
 					LOG.debug("No consumers active and the cache is empty. Crawl is done. Shutting down...");
 					consumersDoneLatch.countDown();
 					break;
 				}
+				pollAndHandleCrawlTasks();
+				runningConsumers.decrementAndGet();
 			}
 			crawler.close();
 		} catch (InterruptedException e) {

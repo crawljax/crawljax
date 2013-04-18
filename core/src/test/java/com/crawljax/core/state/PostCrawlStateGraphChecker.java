@@ -39,4 +39,8 @@ public class PostCrawlStateGraphChecker implements PostCrawlingPlugin {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
 }

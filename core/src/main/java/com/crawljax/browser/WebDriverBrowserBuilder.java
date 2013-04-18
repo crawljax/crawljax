@@ -42,6 +42,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	 */
 	@Override
 	public EmbeddedBrowser get() {
+		LOGGER.debug("Setting up a Browser");
 		// Retrieve the config values used
 		ImmutableSortedSet<String> filterAttributes =
 		        configuration.getCrawlRules().getPreCrawlConfig().getFilterAttributeNames();

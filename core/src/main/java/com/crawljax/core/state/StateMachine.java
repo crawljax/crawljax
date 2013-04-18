@@ -22,7 +22,6 @@ public class StateMachine {
 	private final StateVertex initialState;
 
 	private StateVertex currentState;
-	private Object stateLock = new Object();
 
 	/**
 	 * The invariantChecker to use when updating the state machine.
@@ -77,20 +76,18 @@ public class StateMachine {
 		LOGGER.debug("Trying to change to state: '{}' from: '{}'", nextState.getName(),
 		        currentState.getName());
 
-		synchronized (stateLock) {
-			if (stateFlowGraph.canGoTo(currentState, nextState)) {
+		if (stateFlowGraph.canGoTo(currentState, nextState)) {
 
-				LOGGER.debug("Changed to state: '{}' from: '{}'", nextState.getName(),
-				        currentState.getName());
+			LOGGER.debug("Changed to state: '{}' from: '{}'", nextState.getName(),
+			        currentState.getName());
 
-				currentState = nextState;
+			currentState = nextState;
 
-				return true;
-			} else {
-				LOGGER.info("Cannot go to state: '{}' from: '{}'", nextState.getName(),
-				        currentState.getName());
-				return false;
-			}
+			return true;
+		} else {
+			LOGGER.info("Cannot go to state: '{}' from: '{}'", nextState.getName(),
+			        currentState.getName());
+			return false;
 		}
 	}
 
@@ -134,18 +131,14 @@ public class StateMachine {
 	 * @return the current State.
 	 */
 	public StateVertex getCurrentState() {
-		synchronized (stateLock) {
-			return currentState;
-		}
+		return currentState;
 	}
 
 	/**
 	 * reset the state machine to the initial state.
 	 */
 	public void rewind() {
-		synchronized (stateLock) {
-			this.currentState = this.initialState;
-		}
+		this.currentState = this.initialState;
 	}
 
 	/**

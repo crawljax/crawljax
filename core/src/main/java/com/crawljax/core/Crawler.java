@@ -2,8 +2,6 @@ package com.crawljax.core;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -42,9 +40,9 @@ import com.crawljax.util.UrlUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-public class NewCrawler {
+public class Crawler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(NewCrawler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
 
 	private final AtomicInteger crawlDepth = new AtomicInteger();
 	private final EmbeddedBrowser browser;
@@ -62,7 +60,7 @@ public class NewCrawler {
 	private StateMachine stateMachine;
 
 	@Inject
-	NewCrawler(EmbeddedBrowser browser, @BaseUrl URL url, Plugins plugins, CrawlRules crawlRules,
+	Crawler(EmbeddedBrowser browser, @BaseUrl URL url, Plugins plugins, CrawlRules crawlRules,
 	        Provider<CrawlSession> session,
 	        StateComparator stateComparator, UnfiredCandidateActions candidateActionCache,
 	        FormHandlerFactory formHandlerFactory,
@@ -105,10 +103,10 @@ public class NewCrawler {
 
 	/**
 	 * @param crawlTask
-	 *            The {@link CrawlTask} this {@link NewCrawler} should execute.
+	 *            The {@link CrawlTask} this {@link Crawler} should execute.
 	 */
 	public void execute(StateVertex crawlTask) {
-		LOG.debug("Restting the crawler and going to state {}", crawlTask.getName());
+		LOG.debug("Resetting the crawler and going to state {}", crawlTask.getName());
 		reset();
 		ImmutableList<Eventable> eventables = shortestPathTo(crawlTask);
 		follow(CrawlPath.copyOf(eventables));
@@ -127,11 +125,7 @@ public class NewCrawler {
 
 		plugins.runPreStateCrawlingPlugins(session.get(), extract, currentState);
 
-		List<CandidateCrawlAction> actions = new ArrayList<>(extract.size());
-		for (CandidateElement candidateElement : extract) {
-			actions.add(new CandidateCrawlAction(candidateElement, EventType.click));
-		}
-		candidateActionCache.addActions(actions, currentState);
+		candidateActionCache.addActions(extract, currentState);
 	}
 
 	private void follow(CrawlPath path) throws CrawljaxException {
@@ -387,6 +381,12 @@ public class NewCrawler {
 		        stateComparator.getStrippedDom(browser));
 		Preconditions.checkArgument(index.getId() == StateVertex.FIRST_STATE_ID,
 		        "It seems some the index state is crawled more than once.");
+
+		LOG.debug("Parsing the index for candidate elements");
+		ImmutableList<CandidateElement> extract = candidateExtractor.extract(index);
+
+		candidateActionCache.addActions(extract, index);
+
 		return index;
 
 	}

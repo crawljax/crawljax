@@ -50,7 +50,7 @@ public class CrawlControllerTest {
 	private CountDownLatch consumersDoneLatch;
 
 	@Mock
-	private NewCrawler crawler;
+	private Crawler crawler;
 
 	@Mock
 	private Provider<CrawlTaskConsumer> consumerFactory;
