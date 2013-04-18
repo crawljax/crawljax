@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -16,6 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.WebDriverBrowserBuilder;
+import com.crawljax.condition.ConditionTypeChecker;
+import com.crawljax.condition.crawlcondition.CrawlCondition;
+import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.state.StateVertex;
@@ -32,13 +37,14 @@ public class CandidateElementExtractorTest {
 
 	@ClassRule
 	public static final RunWithWebServer DEMO_SITE_SERVER = new RunWithWebServer("/demo-site");
-
-	private CrawljaxController controller;
-	private Crawler crawler;
+	private EmbeddedBrowser browser;
 
 	@After
-	public void shutDown() {
-		controller.getBrowserPool().shutdown();
+	public void tearDown() {
+		if (browser != null) {
+			browser.closeOtherWindows();
+			browser.close();
+		}
 	}
 
 	@Test
@@ -49,10 +55,9 @@ public class CandidateElementExtractorTest {
 		builder.crawlRules().click("a");
 		builder.crawlRules().clickOnce(true);
 		CrawljaxConfiguration config = builder.build();
-		setupCrawler(config);
 
 		CandidateElementExtractor extractor = newElementExtractor(config);
-
+		browser.goToUrl(DEMO_SITE_SERVER.getSiteUrl());
 		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
 		assertNotNull(candidates);
@@ -61,24 +66,20 @@ public class CandidateElementExtractorTest {
 	}
 
 	private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config) {
-		FormHandler formHandler =
-		        new FormHandler(crawler.getBrowser(), config.getCrawlRules()
-		                .getInputSpecification(), true);
+		browser = new WebDriverBrowserBuilder(config).get();
+		FormHandler formHandler = new FormHandler(browser, config.getCrawlRules());
 
+		EventableConditionChecker eventableConditionChecker =
+		        new EventableConditionChecker(config.getCrawlRules());
+		ConditionTypeChecker<CrawlCondition> crawlConditionChecker =
+		        new ConditionTypeChecker<>(config.getCrawlRules().getPreCrawlConfig()
+		                .getCrawlConditions());
+		ExtractorManager checker =
+		        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 		CandidateElementExtractor extractor =
-		        new CandidateElementExtractor(controller.getElementChecker(),
-		                crawler.getBrowser(), formHandler, controller.getConfiguration());
+		        new CandidateElementExtractor(checker, browser, formHandler, config);
+
 		return extractor;
-	}
-
-	private void setupCrawler(CrawljaxConfiguration config) throws ConfigurationException,
-	        InterruptedException {
-		controller = new CrawljaxController(config);
-		crawler = new CEETCrawler(controller);
-
-		crawler.goToInitialURL(true);
-
-		Thread.sleep(400);
 	}
 
 	@Test
@@ -90,9 +91,8 @@ public class CandidateElementExtractorTest {
 		builder.crawlRules().clickOnce(true);
 		CrawljaxConfiguration config = builder.build();
 
-		setupCrawler(config);
-
 		CandidateElementExtractor extractor = newElementExtractor(config);
+		browser.goToUrl(DEMO_SITE_SERVER.getSiteUrl());
 
 		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
@@ -110,10 +110,9 @@ public class CandidateElementExtractorTest {
 		                .builderFor(server.getSiteUrl().toExternalForm() + "iframe/");
 		builder.crawlRules().click("a");
 		CrawljaxConfiguration config = builder.build();
-		setupCrawler(config);
 
 		CandidateElementExtractor extractor = newElementExtractor(config);
-
+		browser.goToUrl(new URL(server.getSiteUrl().toExternalForm() + "iframe/"));
 		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
 		for (CandidateElement e : candidates) {
@@ -125,33 +124,6 @@ public class CandidateElementExtractorTest {
 		assertNotNull(extractor);
 		assertNotNull(candidates);
 		assertThat(candidates, hasSize(9));
-
-	}
-
-	/**
-	 * Internal mock-up crawler retrieving its browser.
-	 * 
-	 * @author Stefan Lenselink <slenselink@google.com>
-	 */
-	private static class CEETCrawler extends InitialCrawler {
-		private EmbeddedBrowser browser;
-
-		/**
-		 * @param mother
-		 */
-		public CEETCrawler(CrawljaxController mother) {
-			super(mother);
-			try {
-				browser = mother.getBrowserPool().requestBrowser();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public EmbeddedBrowser getBrowser() {
-			return browser;
-		}
 
 	}
 

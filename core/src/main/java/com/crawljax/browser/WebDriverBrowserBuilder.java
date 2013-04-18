@@ -28,7 +28,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	private final CrawljaxConfiguration configuration;
 
 	@Inject
-	WebDriverBrowserBuilder(CrawljaxConfiguration configuration) {
+	public WebDriverBrowserBuilder(CrawljaxConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
