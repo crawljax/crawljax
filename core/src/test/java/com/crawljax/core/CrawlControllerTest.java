@@ -150,7 +150,7 @@ public class CrawlControllerTest {
 
 	private void runWithOneTask() {
 		candidateActions.addActions(mockActions(1), index);
-		controller.run();
+		controller.call();
 		assertThat(polledActions.get(), is(1));
 	}
 
@@ -160,7 +160,7 @@ public class CrawlControllerTest {
 		candidateActions.addActions(mockActions(2), index);
 		candidateActions.addActions(mockActions(2), state2);
 		candidateActions.addActions(mockActions(2), state3);
-		controller.run();
+		controller.call();
 		assertThat(polledActions.get(), is(6));
 	}
 
@@ -175,7 +175,7 @@ public class CrawlControllerTest {
 		candidateActions.addActions(mockActions(200), index);
 		candidateActions.addActions(mockActions(200), state2);
 		candidateActions.addActions(mockActions(200), state3);
-		controller.run();
+		controller.call();
 		assertThat(polledActions.get(), is(600));
 
 	}

@@ -43,11 +43,11 @@ public class StateMachine {
 	 * @param invariantList
 	 *            the invariants to use in the InvariantChecker.
 	 */
-	public StateMachine(StateFlowGraph sfg, StateVertex indexState,
+	public StateMachine(StateFlowGraph sfg,
 	        ImmutableList<Invariant> invariantList, Plugins plugins,
 	        StateComparator stateComparator) {
 		stateFlowGraph = sfg;
-		this.initialState = indexState;
+		this.initialState = sfg.getInitialState();
 		this.plugins = plugins;
 		this.stateComparator = stateComparator;
 		currentState = initialState;

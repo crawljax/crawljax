@@ -96,7 +96,7 @@ public class NewCrawler {
 		}
 		CrawlSession sess = session.get();
 		stateMachine =
-		        new StateMachine(sess.getStateFlowGraph(), sess.getInitialState(),
+		        new StateMachine(sess.getStateFlowGraph(),
 		                crawlRules.getInvariants(), plugins, stateComparator);
 		crawlpath = new CrawlPath();
 		browser.goToUrl(url);
@@ -112,7 +112,6 @@ public class NewCrawler {
 		reset();
 		ImmutableList<Eventable> eventables = shortestPathTo(crawlTask);
 		follow(CrawlPath.copyOf(eventables));
-		parseCurrentPageForCandidateElements();
 		crawlThroughActions();
 	}
 
@@ -151,7 +150,7 @@ public class NewCrawler {
 			curState = clickable.getTargetStateVertex();
 			crawlpath.add(clickable);
 			handleInputElements(clickable);
-			if (this.fireEvent(clickable)) {
+			if (fireEvent(clickable)) {
 
 				int depth = crawlDepth.incrementAndGet();
 				LOG.info("Crawl depth is now {}", depth);
@@ -316,7 +315,7 @@ public class NewCrawler {
 	}
 
 	private void waitForRefreshTagIfAny(final Eventable eventable) {
-		if (eventable.getElement().getTag().equalsIgnoreCase("meta")) {
+		if ("meta".equalsIgnoreCase(eventable.getElement().getTag())) {
 			Pattern p = Pattern.compile("(\\d+);\\s+URL=(.*)");
 			for (Entry<String, String> e : eventable.getElement().getAttributes().entrySet()) {
 				Matcher m = p.matcher(e.getValue());

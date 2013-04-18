@@ -245,6 +245,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 */
 	public StateVertex getSourceStateVertex() throws CrawljaxException {
 		return getSuperField("source");
+
 	}
 
 	/**

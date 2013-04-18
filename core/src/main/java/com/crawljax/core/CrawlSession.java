@@ -99,21 +99,21 @@ public class CrawlSession {
 	/**
 	 * @return the initialState
 	 */
-	public final StateVertex getInitialState() {
+	public StateVertex getInitialState() {
 		return initialState;
 	}
 
 	/**
 	 * @return the startTime
 	 */
-	public final long getStartTime() {
+	public long getStartTime() {
 		return startTime;
 	}
 
 	/**
 	 * Remove the current path from the set of crawlPaths.
 	 */
-	protected final void removeCrawlPath(List<Eventable> path) {
+	protected void removeCrawlPath(List<Eventable> path) {
 		this.crawlPaths.remove(path);
 	}
 }

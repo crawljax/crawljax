@@ -1,5 +1,6 @@
 package com.crawljax.core;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +23,7 @@ import com.crawljax.di.CrawlSessionProvider;
  * Starts and shuts down the crawl.
  */
 @Singleton
-public class CrawlController {
+public class CrawlController implements Callable<CrawlSession> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlController.class);
 
@@ -50,13 +51,17 @@ public class CrawlController {
 
 	/**
 	 * Run the configured crawl.
+	 * 
+	 * @return
 	 */
-	public void run() {
+	@Override
+	public CrawlSession call() {
 		CrawlTaskConsumer firstConsumer = consumerFactory.get();
 		StateVertex firstState = firstConsumer.crawlIndex();
 		crawlSessionProvider.setup(firstState);
 		plugins.runOnNewStatePlugins(crawlSessionProvider.get());
 		executeConsumers(firstConsumer);
+		return crawlSessionProvider.get();
 	}
 
 	private void executeConsumers(CrawlTaskConsumer firstConsumer) {

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
+import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.google.common.collect.ImmutableList;
 
@@ -36,8 +37,8 @@ public class StateComparator {
 	 *            comparators with one or more preconditions
 	 */
 	@Inject
-	public StateComparator(CrawljaxConfiguration config) {
-		oracleComparator = config.getCrawlRules().getOracleComparators();
+	public StateComparator(CrawlRules config) {
+		oracleComparator = config.getOracleComparators();
 	}
 
 	/**
