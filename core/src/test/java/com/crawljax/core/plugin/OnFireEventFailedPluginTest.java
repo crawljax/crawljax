@@ -68,7 +68,7 @@ public class OnFireEventFailedPluginTest {
 	        CrawljaxException {
 		controller.call();
 		assertThat("The FireEventFaild Plugin has been executed the correct amount of times",
-		        hits.get(), is(1));
+		        hits.get(), is(2));
 	}
 
 }
