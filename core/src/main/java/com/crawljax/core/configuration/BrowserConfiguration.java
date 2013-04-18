@@ -33,6 +33,7 @@ public class BrowserConfiguration {
 			                "This is just a placeholder and should not be called");
 		        }
 
+		        @Override
 		        public String toString() {
 			        return "Default webdriver factory";
 		        };

@@ -39,7 +39,8 @@ public class StateFlowGraphTest {
 		state3 = new StateVertex("STATE_THREE", "<table><div>state3</div></table>");
 		state4 = new StateVertex("STATE_FOUR", "<table><div>state4</div></table>");
 		state5 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
-		graph = new StateFlowGraph(index);
+		graph = new StateFlowGraph();
+		graph.putIfAbsent(index, false);
 	}
 
 	@Test
@@ -148,7 +149,8 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
-		StateFlowGraph g = new StateFlowGraph(new StateVertex("", HTML1));
+		StateFlowGraph g = new StateFlowGraph();
+		g.putIfAbsent(new StateVertex("", HTML1), false);
 		g.putIfAbsent(new StateVertex("", HTML2));
 
 		assertEquals(206, g.getMeanStateStringSize());
@@ -267,28 +269,6 @@ public class StateFlowGraphTest {
 				}
 			}
 		}
-	}
-
-	@Test
-	public void guidedCrawlingFlag() {
-		graph.putIfAbsent(state2);
-		graph.putIfAbsent(state3);
-		graph.putIfAbsent(state4);
-		graph.putIfAbsent(state5);
-
-		assertThat(graph, hasStates(5));
-
-		StateVertex state6 = new StateVertex("STATE_FIVE", "<table><div>state5</div></table>");
-		state6.setGuidedCrawling(false);
-		graph.putIfAbsent(state6);
-
-		assertThat(graph, hasStates(5));
-
-		state6.setGuidedCrawling(true);
-
-		graph.putIfAbsent(state6);
-		assertThat(graph, hasStates(6));
-
 	}
 
 	@Test

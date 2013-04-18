@@ -11,11 +11,11 @@ import com.google.inject.Injector;
  * Runs crawljax given a certain {@link CrawljaxConfiguration}. Run {@link #call()} to start a
  * crawl.
  */
-public class CrawlJaxRunner implements Callable<CrawlSession> {
+public class CrawljaxRunner implements Callable<CrawlSession> {
 
 	private CrawljaxConfiguration config;
 
-	public CrawlJaxRunner(CrawljaxConfiguration config) {
+	public CrawljaxRunner(CrawljaxConfiguration config) {
 		this.config = config;
 	}
 

@@ -25,7 +25,7 @@ import com.crawljax.test.RunWithWebServer;
 @Category(BrowserTest.class)
 public class IFrameTest {
 
-	protected CrawljaxController crawljax;
+	protected CrawljaxRunner crawljax;
 
 	@ClassRule
 	public static final RunWithWebServer WEB_SERVER = new RunWithWebServer("/site");
@@ -45,14 +45,10 @@ public class IFrameTest {
 
 	@Test
 	public void testIFrameCrawlable() throws ConfigurationException, CrawljaxException {
-		crawljax = new CrawljaxController(setupConfig().build());
-		try {
-			crawljax.run();
-			assertThat(crawljax.getSession().getStateFlowGraph(), hasEdges(13));
-			assertThat(crawljax.getSession().getStateFlowGraph(), hasStates(13));
-		} finally {
-			crawljax.terminate(true);
-		}
+		crawljax = new CrawljaxRunner(setupConfig().build());
+		CrawlSession session = crawljax.call();
+		assertThat(session.getStateFlowGraph(), hasEdges(13));
+		assertThat(session.getStateFlowGraph(), hasStates(13));
 	}
 
 	@Test
@@ -62,20 +58,20 @@ public class IFrameTest {
 		builder.crawlRules().dontCrawlFrame("sub");
 		builder.crawlRules().dontCrawlFrame("frame0");
 		CrawljaxConfiguration config = builder.build();
-		crawljax = new CrawljaxController(config);
-		crawljax.run();
-		assertThat(crawljax.getSession().getStateFlowGraph(), hasEdges(3));
-		assertThat(crawljax.getSession().getStateFlowGraph(), hasStates(4));
+		crawljax = new CrawljaxRunner(config);
+		CrawlSession session = crawljax.call();
+		assertThat(session.getStateFlowGraph(), hasEdges(3));
+		assertThat(session.getStateFlowGraph(), hasStates(4));
 	}
 
 	@Test
 	public void testIFramesNotCrawled() throws ConfigurationException, CrawljaxException {
 		CrawljaxConfigurationBuilder builder = setupConfig();
 		builder.crawlRules().crawlFrames(false);
-		crawljax = new CrawljaxController(builder.build());
-		crawljax.run();
-		assertThat(crawljax.getSession().getStateFlowGraph(), hasEdges(3));
-		assertThat(crawljax.getSession().getStateFlowGraph(), hasStates(4));
+		crawljax = new CrawljaxRunner(builder.build());
+		CrawlSession session = crawljax.call();
+		assertThat(session.getStateFlowGraph(), hasEdges(3));
+		assertThat(session.getStateFlowGraph(), hasStates(4));
 	}
 
 	@Test
@@ -84,27 +80,21 @@ public class IFrameTest {
 
 		builder.crawlRules().dontCrawlFrame("frame%");
 		builder.crawlRules().dontCrawlFrame("sub");
-		CrawljaxConfiguration config = builder.build();
-		crawljax = new CrawljaxController(config);
-		crawljax.run();
-		assertThat(crawljax.getSession().getStateFlowGraph(), hasEdges(3));
-		assertThat(crawljax.getSession().getStateFlowGraph(), hasStates(4));
+		crawljax = new CrawljaxRunner(builder.build());
+		CrawlSession session = crawljax.call();
+		assertThat(session.getStateFlowGraph(), hasEdges(3));
+		assertThat(session.getStateFlowGraph(), hasStates(4));
 	}
 
 	@Test
 	public void testCrawlingOnlySubFrames() throws ConfigurationException, CrawljaxException {
 		CrawljaxConfigurationBuilder builder = setupConfig();
 		builder.crawlRules().dontCrawlFrame("frame1.frame10");
-		CrawljaxConfiguration config = builder.build();
-		crawljax = new CrawljaxController(config);
-		try {
-			crawljax.run();
-			assertEquals("Clickables", 12, crawljax.getSession().getStateFlowGraph()
-			        .getAllEdges().size());
-			assertEquals("States", 12, crawljax.getSession().getStateFlowGraph().getAllStates()
-			        .size());
-		} finally {
-			crawljax.terminate(true);
-		}
+		crawljax = new CrawljaxRunner(builder.build());
+		CrawlSession session = crawljax.call();
+		assertEquals("Clickables", 12, session.getStateFlowGraph()
+		        .getAllEdges().size());
+		assertEquals("States", 12, session.getStateFlowGraph().getAllStates()
+		        .size());
 	}
 }

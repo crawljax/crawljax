@@ -59,12 +59,11 @@ public class CrawlOverview
 	 * Saves a screenshot of every new state.
 	 */
 	@Override
-	public void onNewState(CrawlSession session) {
+	public void onNewState(CrawlSession session, StateVertex vertex) {
 		LOG.debug("onNewState");
-		StateVertex vertex = session.getCurrentState();
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
 		saveScreenshot(session, state.getName(), vertex);
-		outputBuilder.persistDom(state.getName(), session.getBrowser().getDom());
+		outputBuilder.persistDom(state.getName(), vertex.getDom());
 		Point point = getOffSet(session.getBrowser());
 		state.setScreenShotOffset(point);
 		LOG.debug("{} has a body offset of {}", vertex.getName(), point);

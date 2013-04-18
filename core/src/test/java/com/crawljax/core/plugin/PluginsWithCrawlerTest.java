@@ -25,7 +25,7 @@ import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.ProxyConfiguration;
@@ -33,6 +33,7 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -42,7 +43,7 @@ import com.google.common.collect.ImmutableSet;
 @Ignore("Will be fixed in other branch")
 public class PluginsWithCrawlerTest {
 
-	private static CrawljaxController controller;
+	private static CrawljaxRunner controller;
 	private static CrawljaxConfiguration config;
 	private static String listAsString;
 
@@ -50,17 +51,15 @@ public class PluginsWithCrawlerTest {
 
 	private static void checkCrawlSession(CrawlSession session) {
 		assertNotNull(session);
-		assertNotNull(session.getBrowser());
 		assertNotNull(session.getCrawljaxConfiguration());
 		assertNotNull(session.getCrawlPaths());
-		assertNotNull(session.getCurrentState());
-		assertNotNull(session.getCurrentCrawlPath());
 		assertNotNull(session.getInitialState());
 		assertNotNull(session.getStateFlowGraph());
 	}
 
 	@ClassRule
 	public static final RunWithWebServer SERVER = new RunWithWebServer("/site/crawler");
+	private static CrawlSession session;
 
 	@BeforeClass
 	public static void setup() throws ConfigurationException {
@@ -89,13 +88,12 @@ public class PluginsWithCrawlerTest {
 
 		builder.addPlugin(new OnNewStatePlugin() {
 			@Override
-			public void onNewState(CrawlSession session) {
+			public void onNewState(CrawlSession session, StateVertex state) {
 				plugins.add(OnNewStatePlugin.class);
 				checkCrawlSession(session);
-				StateVertex cs = session.getCurrentState();
-				if (!cs.getName().equals("index")) {
+				if (!state.getName().equals("index")) {
 					assertTrue("currentState and indexState are never the same",
-					        !cs.equals(session.getInitialState()));
+					        !state.equals(session.getInitialState()));
 				}
 			}
 		});
@@ -125,7 +123,8 @@ public class PluginsWithCrawlerTest {
 		builder.addPlugin(new OnInvariantViolationPlugin() {
 
 			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
+			public void onInvariantViolation(Invariant invariant, CrawlSession session,
+			        EmbeddedBrowser browser) {
 				plugins.add(OnInvariantViolationPlugin.class);
 				checkCrawlSession(session);
 				assertNotNull(invariant);
@@ -164,14 +163,14 @@ public class PluginsWithCrawlerTest {
 
 			@Override
 			public void preStateCrawling(CrawlSession session,
-			        List<CandidateElement> candidateElements) {
+			        ImmutableList<CandidateElement> candidateElements, StateVertex state) {
 				plugins.add(PreStateCrawlingPlugin.class);
 				assertNotNull(candidateElements);
 				checkCrawlSession(session);
 				assertTrue("There are always more than 0 candidates",
 				        candidateElements.size() > 0);
 
-				if (session.getCurrentState().getName().equals("state8")) {
+				if (state.getName().equals("state8")) {
 					/**
 					 * Add to miss invocation for the OnFireEventFaild plugin.
 					 */
@@ -185,6 +184,7 @@ public class PluginsWithCrawlerTest {
 					candidate.getIdentification().setValue("/HTML[1]/BODY[1]/FAILED[1]/A[1]");
 				}
 			}
+
 		});
 
 		builder.addPlugin(new OnRevisitStatePlugin() {
@@ -198,8 +198,8 @@ public class PluginsWithCrawlerTest {
 		});
 
 		config = builder.build();
-		controller = new CrawljaxController(config);
-		controller.run();
+		controller = new CrawljaxRunner(config);
+		session = controller.call();
 
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < plugins.size(); i++) {
@@ -285,14 +285,14 @@ public class PluginsWithCrawlerTest {
 
 	@Test
 	public void domStatesChangesAreEqualToNumberOfStatesAfterIndex() {
-		int numberOfStates = controller.getSession().getStateFlowGraph().getAllStates().size();
+		int numberOfStates = session.getStateFlowGraph().getAllStates().size();
 		int newStatesAfterIndexPage = numberOfStates - 1;
 		assertThat(orrurencesOf(DomChangeNotifierPlugin.class), is(newStatesAfterIndexPage));
 	}
 
 	@Test
 	public void newStatePluginCallsAreEqualToNumberOfStates() {
-		int numberOfStates = controller.getSession().getStateFlowGraph().getAllStates().size();
+		int numberOfStates = session.getStateFlowGraph().getAllStates().size();
 		assertThat(orrurencesOf(OnNewStatePlugin.class), is(numberOfStates));
 	}
 

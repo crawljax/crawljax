@@ -4,7 +4,6 @@ import static com.crawljax.browser.matchers.StateFlowGraphMatchers.stateWithDomS
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -18,13 +17,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.condition.RegexCondition;
@@ -33,8 +32,7 @@ import com.crawljax.condition.browserwaiter.ExpectedVisibleCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
-import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -42,7 +40,6 @@ import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurati
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
-import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
@@ -113,17 +110,10 @@ public abstract class LargeTestBase {
 	public void setup() throws Exception {
 		if (!HAS_RUN.get()) {
 			HAS_RUN.set(true);
-			CrawljaxController crawljax = null;
-			try {
-				crawljax = new CrawljaxController(getCrawlSpecification());
-				crawljax.run();
-			} finally {
-				HAS_FINISHED.set(true);
-				if (crawljax != null) {
-					session = crawljax.getSession();
-					crawljax.terminate(true);
-				}
-			}
+			CrawljaxRunner crawljax = null;
+			crawljax = new CrawljaxRunner(getCrawlSpecification());
+			session = crawljax.call();
+			HAS_FINISHED.set(true);
 		} else {
 			while (!HAS_FINISHED.get()) {
 				LOG.debug("Waiting for crawl to finish...");
@@ -249,28 +239,12 @@ public abstract class LargeTestBase {
 		crawljaxConfiguration.addPlugin(new OnInvariantViolationPlugin() {
 
 			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
+			public void onInvariantViolation(Invariant invariant, CrawlSession session,
+			        EmbeddedBrowser browser) {
 				LargeTestBase.violatedInvariants.add(invariant);
-				if (session.getCurrentState().getDom().contains(INVARIANT_TEXT)) {
+				if (browser.getDom().contains(INVARIANT_TEXT)) {
 					violatedInvariantStateIsCorrect = true;
 					LOG.warn("Invariant violated: " + invariant.getDescription());
-				}
-			}
-		});
-
-		crawljaxConfiguration.addPlugin(new OnNewStatePlugin() {
-			@Override
-			public void onNewState(CrawlSession session) {
-				try {
-					if (!session.getCurrentState().equals(session.getInitialState())) {
-						assertEquals(
-						        "Target State from ExactEventPath equals current state",
-						        session.getCurrentCrawlPath()
-						                .get(session.getCurrentCrawlPath().size() - 1)
-						                .getTargetStateVertex(), session.getCurrentState());
-					}
-				} catch (CrawljaxException e) {
-					Assert.fail(e.getMessage());
 				}
 			}
 		});

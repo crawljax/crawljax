@@ -104,6 +104,7 @@ public class WaitCondition {
 					Thread.sleep(repeatTime);
 				} catch (InterruptedException e) {
 					LOGGER.warn("Intterupted while waiting in condition");
+					Thread.currentThread().interrupt();
 				}
 			}
 			currentTime = System.currentTimeMillis();

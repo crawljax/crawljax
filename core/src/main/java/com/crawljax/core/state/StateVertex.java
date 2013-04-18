@@ -7,8 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import com.crawljax.util.DomUtils;
@@ -26,8 +24,6 @@ import com.google.common.collect.Queues;
 public class StateVertex implements Serializable {
 
 	private static final long serialVersionUID = 123400017983488L;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(StateVertex.class);
 
 	private static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
 

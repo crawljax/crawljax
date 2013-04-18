@@ -147,14 +147,16 @@ public class Plugins {
 	 * 
 	 * @param session
 	 *            the session to load in the plugin
+	 * @param newState
+	 *            The new state
 	 */
-	public void runOnNewStatePlugins(CrawlSession session) {
+	public void runOnNewStatePlugins(CrawlSession session, StateVertex newState) {
 		LOGGER.debug("Running OnNewStatePlugins...");
 		for (Plugin plugin : plugins.get(OnNewStatePlugin.class)) {
 			if (plugin instanceof OnNewStatePlugin) {
 				try {
 					LOGGER.debug("Calling plugin {}", plugin);
-					((OnNewStatePlugin) plugin).onNewState(session);
+					((OnNewStatePlugin) plugin).onNewState(session, newState);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -172,15 +174,19 @@ public class Plugins {
 	 *            the failed invariants
 	 * @param session
 	 *            the session to load in the plugin
+	 * @param browser
+	 * @param state
+	 *            The state containing the violations.
 	 */
-	public void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session) {
+	public void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session,
+	        EmbeddedBrowser browser) {
 		LOGGER.debug("Running OnInvriantViolationPlugins...");
 		for (Plugin plugin : plugins.get(OnInvariantViolationPlugin.class)) {
 			if (plugin instanceof OnInvariantViolationPlugin) {
 				try {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((OnInvariantViolationPlugin) plugin)
-					        .onInvariantViolation(invariant, session);
+					        .onInvariantViolation(invariant, session, browser);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -244,16 +250,18 @@ public class Plugins {
 	 *            the crawl session.
 	 * @param candidateElements
 	 *            the elements which crawljax is about to crawl
+	 * @param state
+	 *            The state being violated.
 	 */
 	public void runPreStateCrawlingPlugins(CrawlSession session,
-	        ImmutableList<CandidateElement> candidateElements) {
+	        ImmutableList<CandidateElement> candidateElements, StateVertex state) {
 		LOGGER.debug("Running PreStateCrawlingPlugins...");
 		for (Plugin plugin : plugins.get(PreStateCrawlingPlugin.class)) {
 			if (plugin instanceof PreStateCrawlingPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
 				try {
 					((PreStateCrawlingPlugin) plugin)
-					        .preStateCrawling(session, candidateElements);
+					        .preStateCrawling(session, candidateElements, state);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}

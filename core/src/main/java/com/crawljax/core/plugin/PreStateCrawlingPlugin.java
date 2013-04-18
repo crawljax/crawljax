@@ -2,6 +2,7 @@ package com.crawljax.core.plugin;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.state.StateVertex;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -10,15 +11,17 @@ import com.google.common.collect.ImmutableList;
 public interface PreStateCrawlingPlugin extends Plugin {
 
 	/**
-	 * Method that is called before firing events on the current DOM state. Example: filter
-	 * candidate elements. Warning the session and candidateElements are not clones, changes will
-	 * result in changed behaviour.
+	 * Method that is called before firing events on the current DOM state. Warning the session and
+	 * candidateElements are not clones, changes will result in changed behavior.
 	 * 
 	 * @param session
 	 *            the current session data.
 	 * @param candidateElements
 	 *            the candidates for the current state.
+	 * @param state
+	 *            The state being crawled
 	 */
-	void preStateCrawling(CrawlSession session, ImmutableList<CandidateElement> candidateElements);
+	void preStateCrawling(CrawlSession session,
+	        ImmutableList<CandidateElement> candidateElements, StateVertex state);
 
 }

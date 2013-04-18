@@ -1,13 +1,12 @@
 package com.crawljax.core.plugin;
 
+import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
 
 /**
  * Plugin type that is called every time an invariant is violated. Invariants are checked after each
  * detected state change.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 public interface OnInvariantViolationPlugin extends Plugin {
 
@@ -19,7 +18,9 @@ public interface OnInvariantViolationPlugin extends Plugin {
 	 *            the failed invariant.
 	 * @param session
 	 *            the current session.
+	 * @param browser
+	 *            The current browser.
 	 */
-	void onInvariantViolation(Invariant invariant, CrawlSession session);
+	void onInvariantViolation(Invariant invariant, CrawlSession session, EmbeddedBrowser browser);
 
 }

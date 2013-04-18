@@ -1,12 +1,11 @@
 package com.crawljax.core.plugin;
 
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.state.StateVertex;
 
 /**
  * Plugin type that is called every time a new state is found by Crawljax. This also happens for the
  * Index State. Example: DOM validation.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 public interface OnNewStatePlugin extends Plugin {
 
@@ -16,7 +15,9 @@ public interface OnNewStatePlugin extends Plugin {
 	 * 
 	 * @param session
 	 *            the current session.
+	 * @param newState
+	 *            The new state
 	 */
-	void onNewState(CrawlSession session);
+	void onNewState(CrawlSession session, StateVertex newState);
 
 }

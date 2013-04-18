@@ -16,7 +16,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import ch.qos.logback.classic.Level;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.core.CrawlJaxRunner;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules;
@@ -292,7 +292,7 @@ public class JarRunner {
 
 	private void runIfConfigured() {
 		if (config != null) {
-			CrawlJaxRunner runner = new CrawlJaxRunner(config);
+			CrawljaxRunner runner = new CrawljaxRunner(config);
 			runner.call();
 		}
 	}

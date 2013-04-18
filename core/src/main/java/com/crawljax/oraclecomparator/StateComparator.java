@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
 import com.crawljax.core.configuration.CrawlRules;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.google.common.collect.ImmutableList;
 
 /**

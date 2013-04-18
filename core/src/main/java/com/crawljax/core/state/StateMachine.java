@@ -170,7 +170,7 @@ public class StateMachine {
 
 		if (cloneState == null) {
 			this.changeState(newState);
-			plugins.runOnNewStatePlugins(session);
+			plugins.runOnNewStatePlugins(session, newState);
 			return true;
 		} else {
 			this.changeState(cloneState);
@@ -180,7 +180,7 @@ public class StateMachine {
 
 	private void runOnInvriantViolationPlugins(EmbeddedBrowser browser, CrawlSession session) {
 		for (Invariant failedInvariant : invariantChecker.getFailedConditions(browser)) {
-			plugins.runOnInvriantViolationPlugins(failedInvariant, session);
+			plugins.runOnInvriantViolationPlugins(failedInvariant, session, browser);
 		}
 	}
 }

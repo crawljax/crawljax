@@ -8,10 +8,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
 
@@ -21,8 +20,6 @@ import com.crawljax.test.RunWithWebServer;
 @Category(BrowserTest.class)
 public class UnderXPathTest {
 
-	private static CrawlSession session = null;
-
 	@ClassRule
 	public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
 
@@ -31,45 +28,18 @@ public class UnderXPathTest {
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("underxpath.html");
 		builder.crawlRules().click("li");
 		builder.crawlRules().dontClick("li").underXPath("//UL[@class=\"dontclick\"]");
-		runAndSetSession(builder);
+		CrawlSession session = new CrawljaxRunner(builder.build()).call();
 
 		/* test issue 16 */
 		assertEquals("There should be no outgoing links", 0, session.getStateFlowGraph()
 		        .getOutgoingClickables(session.getInitialState()).size());
 	}
 
-	private void runAndSetSession(CrawljaxConfigurationBuilder builder) {
-		builder.addPlugin(new PostCrawlingPlugin() {
-
-			@Override
-			public void postCrawling(CrawlSession session) {
-				UnderXPathTest.session = session;
-			}
-
-		});
-
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-
-		crawljax.run();
-	}
-
 	@Test
 	public void testClickUnderXPath() throws ConfigurationException, CrawljaxException {
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("underxpath.html");
 		builder.crawlRules().click("li").underXPath("//UL[@class=\"dontclick\"]");
-		builder.addPlugin(new PostCrawlingPlugin() {
-
-			@Override
-			public void postCrawling(CrawlSession session) {
-				UnderXPathTest.session = session;
-			}
-
-		});
-
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-
-		crawljax.run();
-
+		CrawlSession session = new CrawljaxRunner(builder.build()).call();
 		assertEquals("There should be 2 outgoing links", 2, session.getStateFlowGraph()
 		        .getOutgoingClickables(session.getInitialState()).size());
 	}

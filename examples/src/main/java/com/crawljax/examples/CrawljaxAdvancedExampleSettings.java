@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.condition.NotXPathCondition;
-import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.Form;
@@ -52,8 +52,8 @@ public final class CrawljaxAdvancedExampleSettings {
 		// This will generate a nice output in the output directory.
 		builder.addPlugin(new CrawlOverview(new File("output")));
 
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-		crawljax.run();
+		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+		crawljax.call();
 
 	}
 

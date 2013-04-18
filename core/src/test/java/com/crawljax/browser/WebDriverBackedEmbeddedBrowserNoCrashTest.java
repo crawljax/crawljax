@@ -99,7 +99,8 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 
 	/**
 	 * Test method for
-	 * {@link com.crawljax.browser.EmbeddedBrowser#fireEventAndWait(com.crawljax.core.state.Eventable)}.
+	 * {@link com.crawljax.browser.EmbeddedBrowser#fireEventAndWait(com.crawljax.core.state.Eventable)}
+	 * .
 	 * 
 	 * @throws CrawljaxException
 	 *             when the event can not be fired.
@@ -107,7 +108,8 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	@Test
 	public final void testFireEvent() throws CrawljaxException, MalformedURLException {
 		browser.goToUrl(new URL(SERVER.getSiteUrl() + "simple.html"));
-		browser.fireEventAndWait(new Eventable(new Identification(How.xpath, "//H1"), EventType.click));
+		browser.fireEventAndWait(new Eventable(new Identification(How.xpath, "//H1"),
+		        EventType.click));
 	}
 
 	/**

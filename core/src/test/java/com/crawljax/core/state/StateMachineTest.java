@@ -1,6 +1,3 @@
-/**
- * Created Dec 20, 2007.
- */
 package com.crawljax.core.state;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.w3c.dom.NodeList;
 
-import com.crawljax.browser.BrowserPool;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.invariant.Invariant;
@@ -30,6 +26,7 @@ import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
+import com.crawljax.oraclecomparator.StateComparator;
 import com.google.common.collect.ImmutableList;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,8 +37,11 @@ public class StateMachineTest {
 	@Mock
 	private EmbeddedBrowser dummyBrowser;
 
-	private final BrowserPool dummyPool = new BrowserPool(CrawljaxConfiguration.builderFor(
-	        "http://localhost").build());
+	@Mock
+	private StateComparator comparator;
+
+	@Mock
+	private CrawlSession session;
 
 	private static boolean hit = false;
 
@@ -50,15 +50,13 @@ public class StateMachineTest {
 	 */
 	@Before
 	public void initStateMachine() {
-		StateFlowGraph sfg = new StateFlowGraph(index);
-		sm = new StateMachine(sfg, index, ImmutableList.<Invariant> of(), Plugins.noPlugins());
+		StateFlowGraph sfg = newStateFlowGraph();
+		sm = new StateMachine(sfg, ImmutableList.<Invariant> of(), Plugins.noPlugins(),
+		        comparator);
 	}
 
-	/**
-	 * Init ok?
-	 */
 	@Test
-	public void testStateMachine() {
+	public void testInitOk() {
 		assertNotNull(sm);
 		assertNotNull(sm.getCurrentState());
 		assertEquals(sm.getCurrentState(), index);
@@ -81,7 +79,7 @@ public class StateMachineTest {
 		 * Add index.
 		 */
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
-		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, session));
 
 		/**
 		 * Name is correctly changed
@@ -115,7 +113,7 @@ public class StateMachineTest {
 		assertNotSame(sm.getCurrentState(), state2);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
-		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, session));
 
 		/**
 		 * Name is correctly changed
@@ -135,8 +133,7 @@ public class StateMachineTest {
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// False because its CLONE!
-		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser,
-		        new CrawlSession(dummyPool)));
+		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser, session));
 
 		// state2.equals(state3)
 		assertEquals("state2 equals state3", state2, state3);
@@ -167,7 +164,7 @@ public class StateMachineTest {
 		assertNotSame(sm.getCurrentState(), state2);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
-		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, session));
 
 		/**
 		 * Name is correctly changed
@@ -187,14 +184,13 @@ public class StateMachineTest {
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// False because its CLONE!
-		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser,
-		        new CrawlSession(dummyPool)));
+		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser, session));
 
 		Eventable c3 = new Eventable(new Identification(How.xpath, "/bla2"), EventType.click);
 
 		// True because its not yet known
 		assertTrue(sm
-		        .swithToStateAndCheckIfClone(c3, state4, dummyBrowser, new CrawlSession(dummyPool)));
+		        .swithToStateAndCheckIfClone(c3, state4, dummyBrowser, session));
 
 		sm.rewind();
 
@@ -242,13 +238,13 @@ public class StateMachineTest {
 				        return false;
 			        }
 		        }));
+		StateFlowGraph sfg = newStateFlowGraph();
 		StateMachine smLocal =
-		        new StateMachine(new StateFlowGraph(index), index, iList, Plugins.noPlugins());
+		        new StateMachine(sfg, iList, Plugins.noPlugins(), comparator);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertTrue(smLocal.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
-		        dummyPool)));
+		assertTrue(smLocal.swithToStateAndCheckIfClone(c, state2, dummyBrowser, session));
 
 		// New State so hit must be true;
 		assertTrue("Invariants are exeucted", hit);
@@ -257,10 +253,15 @@ public class StateMachineTest {
 
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertFalse(smLocal.swithToStateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
-		        dummyPool)));
+		assertFalse(smLocal.swithToStateAndCheckIfClone(c2, state3, dummyBrowser, session));
 		// CLONE State so hit must be true;
 		assertTrue("Invariants are exeucted", hit);
+	}
+
+	private StateFlowGraph newStateFlowGraph() {
+		StateFlowGraph sfg = new StateFlowGraph();
+		sfg.putIfAbsent(index, false);
+		return sfg;
 	}
 
 	/**
@@ -276,7 +277,7 @@ public class StateMachineTest {
 		        "http://localhost").addPlugin(new OnNewStatePlugin() {
 
 			@Override
-			public void onNewState(CrawlSession session) {
+			public void onNewState(CrawlSession session, StateVertex state) {
 				hit = true;
 			}
 		}).build();
@@ -288,7 +289,7 @@ public class StateMachineTest {
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(dummyPool)));
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, session));
 
 		// New State so hit must be true;
 		assertTrue("Plugins are exeucted", hit);
@@ -297,16 +298,15 @@ public class StateMachineTest {
 
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser,
-		        new CrawlSession(dummyPool)));
+		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser, session));
 
 		// CLONE State so no plugin execution
 		assertFalse("Plugins are NOT exeucted", hit);
 	}
 
 	private void setStateMachineForConfig(CrawljaxConfiguration config) {
-		sm = new StateMachine(new StateFlowGraph(index), index,
-		        config.getCrawlRules().getInvariants(), config.getPlugins());
+		sm = new StateMachine(newStateFlowGraph(), config.getCrawlRules().getInvariants(),
+		        config.getPlugins(), comparator);
 	}
 
 	/**
@@ -321,7 +321,8 @@ public class StateMachineTest {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(
 		        "http://localhost").addPlugin(new OnInvariantViolationPlugin() {
 			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlSession session) {
+			public void onInvariantViolation(Invariant invariant, CrawlSession session,
+			        EmbeddedBrowser browser) {
 				hit = true;
 			}
 		});
@@ -345,8 +346,7 @@ public class StateMachineTest {
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, new CrawlSession(
-		        dummyPool)));
+		assertTrue(sm.swithToStateAndCheckIfClone(c, state2, dummyBrowser, session));
 
 		// New State so hit must be true;
 		assertTrue("InvariantViolationPlugin are exeucted", hit);
@@ -355,8 +355,7 @@ public class StateMachineTest {
 
 		Eventable c2 = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
-		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser, new CrawlSession(
-		        dummyPool)));
+		assertFalse(sm.swithToStateAndCheckIfClone(c2, state3, dummyBrowser, session));
 
 		// New State so plugin execution
 		assertTrue("InvariantViolationPlugin are exeucted", hit);

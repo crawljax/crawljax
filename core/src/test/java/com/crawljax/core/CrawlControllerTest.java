@@ -30,6 +30,7 @@ import org.mockito.stubbing.Answer;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CrawlSessionProvider;
@@ -68,6 +69,9 @@ public class CrawlControllerTest {
 	private StateVertex state2;
 
 	private AtomicInteger polledActions;
+
+	@Mock
+	private PostCrawlingPlugin postCrawlPlugin;
 
 	@Before
 	public void setup() {
@@ -118,6 +122,7 @@ public class CrawlControllerTest {
 		CrawljaxConfiguration config =
 		        CrawljaxConfiguration
 		                .builderFor("http://example.com")
+		                .addPlugin(postCrawlPlugin)
 		                .setBrowserConfig(
 		                        new BrowserConfiguration(BrowserType.firefox, consumers))
 		                .build();
@@ -193,5 +198,6 @@ public class CrawlControllerTest {
 	public void verifyPerfectEndState() {
 		assertThat(candidateActions.isEmpty(), is(true));
 		assertThat(consumersDoneLatch.getCount(), is(0L));
+		verify(postCrawlPlugin).postCrawling(crawlSessionProvider.get());
 	}
 }

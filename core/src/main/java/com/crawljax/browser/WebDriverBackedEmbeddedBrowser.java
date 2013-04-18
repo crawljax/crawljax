@@ -322,6 +322,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			Thread.sleep(this.crawlWaitEvent);
 		} catch (InterruptedException e) {
 			LOGGER.error("fireEventWait got interrupted during wait process", e);
+			Thread.currentThread().interrupt();
 			return false;
 		}
 		return true;

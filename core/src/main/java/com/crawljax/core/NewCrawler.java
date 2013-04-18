@@ -26,9 +26,9 @@ import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.ConfigurationModule.BaseUrl;
@@ -124,12 +124,14 @@ public class NewCrawler {
 		StateVertex currentState = stateMachine.getCurrentState();
 		LOG.debug("Parsing DOM of state {} for candidate elements", currentState.getName());
 		ImmutableList<CandidateElement> extract = candidateExtractor.extract(currentState);
+
+		plugins.runPreStateCrawlingPlugins(session.get(), extract, currentState);
+
 		List<CandidateCrawlAction> actions = new ArrayList<>(extract.size());
 		for (CandidateElement candidateElement : extract) {
 			actions.add(new CandidateCrawlAction(candidateElement, EventType.click));
 		}
 		candidateActionCache.addActions(actions, currentState);
-		plugins.runPreStateCrawlingPlugins(session.get(), extract);
 	}
 
 	private void follow(CrawlPath path) throws CrawljaxException {
@@ -270,11 +272,14 @@ public class NewCrawler {
 	 * checks if the new dom is a clone or a new state. In continues crawling in that new or clone
 	 * state. If the browser leaves the current domain, the crawler tries to get back to the
 	 * previous state.
+	 * <p>
+	 * The methods stops when {@link Thread#interrupted()}
 	 */
 	private void crawlThroughActions() {
+		boolean interrupted = Thread.interrupted();
 		CandidateCrawlAction action =
 		        candidateActionCache.pollActionOrNull(stateMachine.getCurrentState());
-		while (action != null) {
+		while (action != null && !interrupted) {
 			Eventable event = new Eventable(action.getCandidateElement(), action.getEventType());
 			handleInputElements(event);
 			waitForRefreshTagIfAny(event);
@@ -285,6 +290,13 @@ public class NewCrawler {
 			}
 			// We have to check if we are still in the same state.
 			action = candidateActionCache.pollActionOrNull(stateMachine.getCurrentState());
+			interrupted = Thread.interrupted();
+		}
+		if (interrupted) {
+			LOG.info("Interrupted while firing actions. Putting back the actions on the todo list");
+			candidateActionCache.addActions(ImmutableList.of(action),
+			        stateMachine.getCurrentState());
+			Thread.currentThread().interrupt();
 		}
 	}
 

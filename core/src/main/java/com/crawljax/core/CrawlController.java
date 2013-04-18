@@ -59,7 +59,7 @@ public class CrawlController implements Callable<CrawlSession> {
 		CrawlTaskConsumer firstConsumer = consumerFactory.get();
 		StateVertex firstState = firstConsumer.crawlIndex();
 		crawlSessionProvider.setup(firstState);
-		plugins.runOnNewStatePlugins(crawlSessionProvider.get());
+		plugins.runOnNewStatePlugins(crawlSessionProvider.get(), firstState);
 		executeConsumers(firstConsumer);
 		return crawlSessionProvider.get();
 	}
@@ -76,6 +76,7 @@ public class CrawlController implements Callable<CrawlSession> {
 			LOG.warn("The crawl was interrupted before it finished. Shutting down...");
 		} finally {
 			shutDown();
+			plugins.runPostCrawlingPlugins(crawlSessionProvider.get());
 		}
 	}
 

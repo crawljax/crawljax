@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.crawljax.browser.EmbeddedBrowser;
@@ -72,6 +73,9 @@ public class PluginsTest {
 	@Mock
 	private CrawlSession session;
 
+	@Mock
+	private StateVertex vertex;
+
 	@Before
 	public void setup() {
 		plugins =
@@ -91,9 +95,9 @@ public class PluginsTest {
 
 	@Test
 	public void preStateCrawlisCalled() throws Exception {
-		List<CandidateElement> candidateElements = ImmutableList.of();
-		plugins.runPreStateCrawlingPlugins(session, candidateElements);
-		verify(prestatePlugin).preStateCrawling(session, candidateElements);
+		ImmutableList<CandidateElement> candidateElements = ImmutableList.of();
+		plugins.runPreStateCrawlingPlugins(session, candidateElements, vertex);
+		verify(prestatePlugin).preStateCrawling(session, candidateElements, vertex);
 	}
 
 	@Test
@@ -117,15 +121,16 @@ public class PluginsTest {
 
 	@Test
 	public void newStatePluginIsCalled() throws Exception {
-		plugins.runOnNewStatePlugins(session);
-		verify(newStatePlugin).onNewState(session);
+		plugins.runOnNewStatePlugins(session, vertex);
+		verify(newStatePlugin).onNewState(session, vertex);
 	}
 
 	@Test
 	public void invariantViolatedIsCalled() throws Exception {
+		EmbeddedBrowser browser = Mockito.mock(EmbeddedBrowser.class);
 		Invariant invariant = mock(Invariant.class);
-		plugins.runOnInvriantViolationPlugins(invariant, session);
-		verify(invariantViolationPlugin).onInvariantViolation(invariant, session);
+		plugins.runOnInvriantViolationPlugins(invariant, session, browser);
+		verify(invariantViolationPlugin).onInvariantViolation(invariant, session, browser);
 	}
 
 	@Test
@@ -157,9 +162,9 @@ public class PluginsTest {
 
 	@Test
 	public void verifyPreCrawlPluginIsCalled() {
-		List<CandidateElement> candidateElements = ImmutableList.of();
-		plugins.runPreStateCrawlingPlugins(session, candidateElements);
-		verify(prestatePlugin).preStateCrawling(session, candidateElements);
+		ImmutableList<CandidateElement> candidateElements = ImmutableList.of();
+		plugins.runPreStateCrawlingPlugins(session, candidateElements, vertex);
+		verify(prestatePlugin).preStateCrawling(session, candidateElements, vertex);
 	}
 
 	@Test

@@ -26,7 +26,7 @@ public class PostCrawlStateGraphChecker implements PostCrawlingPlugin {
 
 	private void allEdgesConnectTwoStates(StateFlowGraph stateFlowGraph) {
 		for (StateVertex state : stateFlowGraph.getAllStates()) {
-			if (!stateFlowGraph.isInitialState(state)) {
+			if (stateFlowGraph.getInitialState().getId() != state.getId()) {
 				assertThat(stateFlowGraph.getIncomingClickable(state), is(not(empty())));
 			}
 		}

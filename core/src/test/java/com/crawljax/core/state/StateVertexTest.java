@@ -89,7 +89,6 @@ public class StateVertexTest {
 		assertFalse(stateEqual.equals(new Eventable(new Identification(Identification.How.xpath,
 		        "/body/div[3]/a"), EventType.click)));
 
-		sv.setGuidedCrawling(true);
 		assertFalse(stateEqual.equals(sv));
 	}
 

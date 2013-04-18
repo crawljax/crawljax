@@ -2,7 +2,7 @@ package com.crawljax.examples;
 
 import org.apache.commons.configuration.ConfigurationException;
 
-import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
@@ -36,8 +36,8 @@ public final class CrawljaxSimpleExampleSettings {
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-		crawljax.run();
+		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+		crawljax.call();
 
 	}
 
