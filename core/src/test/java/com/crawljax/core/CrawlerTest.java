@@ -23,7 +23,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
-import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable;
@@ -53,8 +52,6 @@ public class CrawlerTest {
 
 	@Spy
 	private Plugins plugins = Plugins.noPlugins();
-
-	private CrawlRules crawlRules;
 
 	@Mock
 	private Provider<CrawlSession> sessionProvider;
@@ -104,13 +101,13 @@ public class CrawlerTest {
 		url = new URL("http://example.com");
 		when(sessionProvider.get()).thenReturn(session);
 
-		crawlRules = CrawljaxConfiguration.builderFor(url).build().getCrawlRules();
-		stateComparator = new StateComparator(crawlRules);
+		CrawljaxConfiguration config = CrawljaxConfiguration.builderFor(url).build();
+		stateComparator = new StateComparator(config.getCrawlRules());
 
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
 
 		crawler =
-		        new Crawler(browser, url, plugins, crawlRules, sessionProvider,
+		        new Crawler(browser, config, sessionProvider,
 		                stateComparator,
 		                candidateActionCache, formHandlerFactory, waitConditionChecker,
 		                elementExtractor);

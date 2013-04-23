@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript">
+
+	var state = 0;
+	function randomState() {
+		document.getElementById('clicker').innerHTML = 'New state ' + (state++);
+		document.getElementById('clicker').setAttribute("class","state" + state);
+	}
+</script>
+</head>
+
+<body>
+	<h1>Loads an infinite number of states</h1>
+	<a href="#" onclick="randomState();" id='clicker'>Initial state</a>
+</body>
+</html>

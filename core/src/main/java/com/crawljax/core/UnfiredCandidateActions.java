@@ -52,7 +52,7 @@ public class UnfiredCandidateActions {
 	 * @return The next to-be-crawled action or <code>null</code> if none available.
 	 */
 	CandidateCrawlAction pollActionOrNull(StateVertex state) {
-		LOG.debug("Polling actino for state {}", state.getName());
+		LOG.debug("Polling action for state {}", state.getName());
 		Lock lock = locks.get(state.getId());
 		try {
 			lock.lock();

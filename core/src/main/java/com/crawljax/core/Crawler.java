@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.core.configuration.CrawlRules;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.Element;
@@ -29,7 +30,6 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.di.ConfigurationModule.BaseUrl;
 import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
 import com.crawljax.di.CoreModule.FormHandlerFactory;
 import com.crawljax.forms.FormHandler;
@@ -45,6 +45,7 @@ public class Crawler {
 	private static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
 
 	private final AtomicInteger crawlDepth = new AtomicInteger();
+	private final int maxDepth;
 	private final EmbeddedBrowser browser;
 	private final Provider<CrawlSession> session;
 	private final StateComparator stateComparator;
@@ -60,16 +61,17 @@ public class Crawler {
 	private StateMachine stateMachine;
 
 	@Inject
-	Crawler(EmbeddedBrowser browser, @BaseUrl URL url, Plugins plugins, CrawlRules crawlRules,
+	Crawler(EmbeddedBrowser browser, CrawljaxConfiguration config,
 	        Provider<CrawlSession> session,
 	        StateComparator stateComparator, UnfiredCandidateActions candidateActionCache,
 	        FormHandlerFactory formHandlerFactory,
 	        WaitConditionChecker waitConditionChecker,
 	        CandidateElementExtractorFactory elementExtractor) {
 		this.browser = browser;
-		this.url = url;
-		this.plugins = plugins;
-		this.crawlRules = crawlRules;
+		this.url = config.getUrl();
+		this.plugins = config.getPlugins();
+		this.crawlRules = config.getCrawlRules();
+		this.maxDepth = config.getMaximumDepth();
 		this.session = session;
 		this.stateComparator = stateComparator;
 		this.candidateActionCache = candidateActionCache;
@@ -99,6 +101,7 @@ public class Crawler {
 		crawlpath = new CrawlPath();
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(browser);
+		crawlDepth.set(0);
 	}
 
 	/**
@@ -274,14 +277,23 @@ public class Crawler {
 		CandidateCrawlAction action =
 		        candidateActionCache.pollActionOrNull(stateMachine.getCurrentState());
 		while (action != null && !interrupted) {
-			Eventable event = new Eventable(action.getCandidateElement(), action.getEventType());
-			handleInputElements(event);
-			waitForRefreshTagIfAny(event);
+			CandidateElement element = action.getCandidateElement();
+			if (element.allConditionsSatisfied(browser)) {
+				Eventable event = new Eventable(element, action.getEventType());
 
-			boolean fired = fireEvent(event);
-			if (fired) {
-				inspectNewState(event);
+				handleInputElements(event);
+				waitForRefreshTagIfAny(event);
+
+				boolean fired = fireEvent(event);
+				if (fired) {
+					inspectNewState(event);
+				}
+			} else {
+				LOG.info(
+				        "Element {} not clicked because not all crawl conditions where satisfied",
+				        element);
 			}
+
 			// We have to check if we are still in the same state.
 			action = candidateActionCache.pollActionOrNull(stateMachine.getCurrentState());
 			interrupted = Thread.interrupted();
@@ -301,22 +313,30 @@ public class Crawler {
 		} else {
 			StateVertex newState = stateMachine.newStateFor(browser);
 			if (domChanged(event, newState)) {
-				crawlpath.add(event);
-				LOG.debug("The DOM has changed. Event added to the crawl path");
-				boolean isNewState =
-				        stateMachine.swithToStateAndCheckIfClone(event, newState,
-				                browser, session.get());
-				if (isNewState) {
-					int depth = crawlDepth.incrementAndGet();
-					LOG.info("New DOM is a new state! crawl depth is now {}", depth);
-					parseCurrentPageForCandidateElements();
-				} else {
-					LOG.debug("New DOM is a clone state. Continuing in that state.");
-					session.get().addCrawlPath(crawlpath.immutableCopy());
-				}
+				inspectNewDom(event, newState);
 			} else {
 				LOG.debug("Dom unchanged");
 			}
+		}
+	}
+
+	private void inspectNewDom(Eventable event, StateVertex newState) {
+		crawlpath.add(event);
+		LOG.debug("The DOM has changed. Event added to the crawl path");
+		boolean isNewState =
+		        stateMachine.swithToStateAndCheckIfClone(event, newState,
+		                browser, session.get());
+		if (isNewState) {
+			int depth = crawlDepth.incrementAndGet();
+			LOG.info("New DOM is a new state! crawl depth is now {}", depth);
+			if (maxDepth == depth) {
+				LOG.debug("Maximum depth achived. Not crawling this state any further");
+			} else {
+				parseCurrentPageForCandidateElements();
+			}
+		} else {
+			LOG.debug("New DOM is a clone state. Continuing in that state.");
+			session.get().addCrawlPath(crawlpath.immutableCopy());
 		}
 	}
 

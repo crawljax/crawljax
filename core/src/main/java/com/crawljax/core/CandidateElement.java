@@ -11,6 +11,7 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.util.DomUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.base.Objects;
 
 /**
  * Candidate element for crawling. It is possible to link this eventable to form inputs, so that
@@ -147,6 +148,17 @@ public class CandidateElement {
 		}
 		// No condition specified so return true....
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("identification", identification)
+		        .add("element", element)
+		        .add("formInputs", formInputs)
+		        .add("eventableCondition", eventableCondition)
+		        .add("relatedFrame", relatedFrame)
+		        .toString();
 	}
 
 }

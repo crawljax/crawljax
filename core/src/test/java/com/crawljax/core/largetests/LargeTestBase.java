@@ -392,46 +392,6 @@ public abstract class LargeTestBase {
 		assertTrue("Link in SLOW_WIDGET is found", foundLinkInSlowWidget);
 	}
 
-	/**
-	 * Tests the limit for the Crawl Depth. The current crawl depth in this test is limited to 3! It
-	 * test a not to deep path (path a), a to deep path (path b), a path which has a CLONE (path c),
-	 * a to deep path after a CLONE found (path d), a to deep path with a branch in it (path e), a
-	 * to deep path with a nop operations that results in a DOM is not changed event. The test was
-	 * created after a bug found when the depth limit was not applied after a CLONE has been
-	 * detected.
-	 */
-	@Test
-	public void testDepth() {
-		boolean crawlToDeep = false;
-		int level1 = 0;
-		int level2 = 0;
-		for (Eventable eventable : getStateFlowGraph().getAllEdges()) {
-			String txt = eventable.getElement().getText();
-			if (txt.startsWith("Depth")) {
-				// Its a depth eventable were interested in that!
-				String lastPart = txt.substring(5);
-				int nr = Integer.valueOf(lastPart.substring(lastPart.length() - 1));
-				// String id = lastPart.substring(0, lastPart.length() - 1);
-				if (nr == 1) {
-					level1++;
-				} else if (nr == 2) {
-					level2++;
-				} else {
-					crawlToDeep = true;
-				}
-			}
-		}
-		assertTrue("Crawling was to deep, not limited by the setDepth parameter", !crawlToDeep);
-		assertTrue("Too many nodes found at level 1 number of nodes: " + level1 + " Required: "
-		        + 6, level1 <= 6);
-		assertTrue("Too less nodes found at level 1 number of nodes: " + level1 + " Required: "
-		        + 6, level1 >= 6);
-		assertTrue("Too many nodes found at level 2 number of nodes: " + level2 + " Required: "
-		        + 5, level2 <= 5);
-		assertTrue("Too less nodes found at level 2 number of nodes: " + level2 + " Required: "
-		        + 5, level2 >= 5);
-	}
-
 	abstract BrowserConfiguration getBrowserConfiguration();
 
 	abstract long getTimeOutAfterReloadUrl();
