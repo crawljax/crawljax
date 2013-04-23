@@ -206,6 +206,10 @@ public class Crawler {
 			} else {
 				LOG.debug("Ignoring invisble element {}", eventToFire.getElement());
 			}
+		} catch (InterruptedException e) {
+			LOG.debug("Interrupted during fire event");
+			Thread.currentThread().interrupt();
+			return false;
 		}
 
 		LOG.debug("Event fired={} for eventable {}", isFired, eventable);
@@ -280,7 +284,6 @@ public class Crawler {
 			CandidateElement element = action.getCandidateElement();
 			if (element.allConditionsSatisfied(browser)) {
 				Eventable event = new Eventable(element, action.getEventType());
-
 				handleInputElements(event);
 				waitForRefreshTagIfAny(event);
 
@@ -300,8 +303,10 @@ public class Crawler {
 		}
 		if (interrupted) {
 			LOG.info("Interrupted while firing actions. Putting back the actions on the todo list");
-			candidateActionCache.addActions(ImmutableList.of(action),
-			        stateMachine.getCurrentState());
+			if (action != null) {
+				candidateActionCache.addActions(ImmutableList.of(action),
+				        stateMachine.getCurrentState());
+			}
 			Thread.currentThread().interrupt();
 		}
 	}

@@ -46,7 +46,7 @@ public class CoreModule extends AbstractModule {
 
 		bind(ExecutorService.class).toInstance(Executors.newCachedThreadPool());
 
-		bind(CountDownLatch.class).annotatedWith(ConsumersDoneLatch.class).toInstance(
+		bind(CountDownLatch.class).annotatedWith(CrawlerDoneLatch.class).toInstance(
 		        new CountDownLatch(1));
 
 		bind(CrawlSession.class).toProvider(CrawlSessionProvider.class);
@@ -71,7 +71,7 @@ public class CoreModule extends AbstractModule {
 	@BindingAnnotation
 	@Target({ FIELD, PARAMETER, METHOD })
 	@Retention(RUNTIME)
-	public @interface ConsumersDoneLatch {
+	public @interface CrawlerDoneLatch {
 	}
 
 	public interface FormHandlerFactory {

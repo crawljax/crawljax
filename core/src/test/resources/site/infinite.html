@@ -5,14 +5,22 @@
 
 	var state = 0;
 	function randomState() {
-		document.getElementById('clicker').innerHTML = 'New state ' + (state++);
-		document.getElementById('clicker').setAttribute("class","state" + state);
+		var newLink = document.createElement('button');
+		newLink.setAttribute("onclick","randomState();");
+		newLink.innerHTML = "State " + state++;
+		newLink.setAttribute("class","state" + state);
+		var li = document.createElement('li');
+		li.appendChild(newLink);
+		document.getElementById('links').appendChild(li);
+		
 	}
 </script>
 </head>
 
 <body>
 	<h1>Loads an infinite number of states</h1>
-	<a href="#" onclick="randomState();" id='clicker'>Initial state</a>
+	<ul id='links'>
+		<li><a href="#" onclick="randomState();" id='clicker'>Initial state</a></li>
+	</ul>
 </body>
 </html>

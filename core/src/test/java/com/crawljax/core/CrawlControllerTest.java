@@ -118,7 +118,7 @@ public class CrawlControllerTest {
 	}
 
 	private void setupForConsumers(int consumers) {
-		executor = Executors.newFixedThreadPool(consumers);
+		executor = Executors.newFixedThreadPool(consumers + 2);
 		CrawljaxConfiguration config =
 		        CrawljaxConfiguration
 		                .builderFor("http://example.com")

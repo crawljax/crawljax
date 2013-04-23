@@ -16,7 +16,7 @@ import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.di.CoreModule.ConsumersDoneLatch;
+import com.crawljax.di.CoreModule.CrawlerDoneLatch;
 import com.crawljax.di.CrawlSessionProvider;
 
 /**
@@ -36,10 +36,12 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	private final Plugins plugins;
 
+	private final long maximumCrawlTime;
+
 	@Inject
 	CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
 	        CrawljaxConfiguration config,
-	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch,
+	        @CrawlerDoneLatch CountDownLatch consumersDoneLatch,
 	        CrawlSessionProvider crawlSessionProvider) {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
@@ -47,6 +49,7 @@ public class CrawlController implements Callable<CrawlSession> {
 		this.plugins = config.getPlugins();
 		this.consumersDoneLatch = consumersDoneLatch;
 		this.crawlSessionProvider = crawlSessionProvider;
+		this.maximumCrawlTime = config.getMaximumRuntime();
 	}
 
 	/**
@@ -56,12 +59,35 @@ public class CrawlController implements Callable<CrawlSession> {
 	 */
 	@Override
 	public CrawlSession call() {
+		setMaximumCrawlTimeIfNeeded();
 		CrawlTaskConsumer firstConsumer = consumerFactory.get();
 		StateVertex firstState = firstConsumer.crawlIndex();
 		crawlSessionProvider.setup(firstState);
 		plugins.runOnNewStatePlugins(crawlSessionProvider.get(), firstState);
 		executeConsumers(firstConsumer);
 		return crawlSessionProvider.get();
+	}
+
+	private void setMaximumCrawlTimeIfNeeded() {
+		if (maximumCrawlTime == 0) {
+			return;
+		}
+		executor.submit(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					LOG.debug("Waiting {} before killing the crawler", maximumCrawlTime);
+					Thread.sleep(maximumCrawlTime);
+					LOG.info("Time is up! Shutting down...");
+					consumersDoneLatch.countDown();
+				} catch (InterruptedException e) {
+					LOG.debug("Crawler finished before maximum crawltime exceeded");
+				}
+
+			}
+		});
+
 	}
 
 	private void executeConsumers(CrawlTaskConsumer firstConsumer) {

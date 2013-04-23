@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.di.CoreModule.ConsumersDoneLatch;
+import com.crawljax.di.CoreModule.CrawlerDoneLatch;
 import com.google.inject.Inject;
 
 /**
@@ -29,9 +29,9 @@ public class CrawlTaskConsumer implements Callable<Void> {
 
 	@Inject
 	CrawlTaskConsumer(UnfiredCandidateActions candidates,
-	        @ConsumersDoneLatch CountDownLatch consumersDoneLatch, Crawler crawler) {
+	        @CrawlerDoneLatch CountDownLatch crawlerDoneLatch, Crawler crawler) {
 		this.candidates = candidates;
-		this.consumersDoneLatch = consumersDoneLatch;
+		this.consumersDoneLatch = crawlerDoneLatch;
 		this.crawler = crawler;
 		this.runningConsumers = new AtomicInteger(0);
 

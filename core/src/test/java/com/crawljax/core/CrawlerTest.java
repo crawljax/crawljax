@@ -20,6 +20,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.openqa.selenium.ElementNotVisibleException;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
@@ -149,7 +150,7 @@ public class CrawlerTest {
 	}
 
 	@Test
-	public void whenExecuteTaskTheCrawlisCompletedCorrectly() {
+	public void whenExecuteTaskTheCrawlisCompletedCorrectly() throws Exception {
 		when(extractor.checkCrawlCondition()).thenReturn(true);
 		when(browser.fireEventAndWait(eventToTransferToTarget)).thenReturn(true);
 

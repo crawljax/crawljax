@@ -269,7 +269,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			throwIfConnectionException(e);
 			return;
 		} catch (InterruptedException e) {
-			LOGGER.error("goToUrl got interrupted while waiting for the page to be loaded", e);
+			LOGGER.debug("goToUrl got interrupted while waiting for the page to be loaded", e);
 			Thread.currentThread().interrupt();
 			return;
 		}
@@ -296,9 +296,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param eventable
 	 *            The HTML event type (onclick, onmouseover, ...).
 	 * @return true if firing event is successful.
+	 * @throws InterruptedException
+	 *             when interrupted during the wait.
 	 */
 	private boolean fireEventWait(WebElement webElement, Eventable eventable)
-	        throws ElementNotVisibleException {
+	        throws ElementNotVisibleException, InterruptedException {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
@@ -318,13 +320,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				return false;
 		}
 
-		try {
-			Thread.sleep(this.crawlWaitEvent);
-		} catch (InterruptedException e) {
-			LOGGER.error("fireEventWait got interrupted during wait process", e);
-			Thread.currentThread().interrupt();
-			return false;
-		}
+		Thread.sleep(this.crawlWaitEvent);
 		return true;
 	}
 
@@ -337,6 +333,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		} catch (WebDriverException e) {
 			throw wrapWebDriverExceptionIfConnectionException(e);
 		}
+		LOGGER.debug("Browser closed...");
 	}
 
 	@Override
@@ -432,11 +429,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param eventable
 	 *            The eventable.
 	 * @return true if it is able to fire the event successfully on the element.
+	 * @throws InterruptedException
+	 *             when interrupted during the wait.
 	 */
 	@Override
 	public synchronized boolean fireEventAndWait(Eventable eventable)
 	        throws ElementNotVisibleException,
-	        NoSuchElementException {
+	        NoSuchElementException, InterruptedException {
 		try {
 
 			boolean handleChanged = false;

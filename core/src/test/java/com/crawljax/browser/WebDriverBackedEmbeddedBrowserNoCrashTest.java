@@ -106,7 +106,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 *             when the event can not be fired.
 	 */
 	@Test
-	public final void testFireEvent() throws CrawljaxException, MalformedURLException {
+	public final void testFireEvent() throws Exception {
 		browser.goToUrl(new URL(SERVER.getSiteUrl() + "simple.html"));
 		browser.fireEventAndWait(new Eventable(new Identification(How.xpath, "//H1"),
 		        EventType.click));
