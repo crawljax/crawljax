@@ -8,7 +8,6 @@ import static org.junit.Assert.assertThat;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -48,8 +47,7 @@ public class CandidateElementExtractorTest {
 	}
 
 	@Test
-	public void testExtract() throws InterruptedException, CrawljaxException,
-	        ConfigurationException {
+	public void testExtract() throws InterruptedException, CrawljaxException {
 		CrawljaxConfigurationBuilder builder =
 		        CrawljaxConfiguration.builderFor(DEMO_SITE_SERVER.getSiteUrl().toExternalForm());
 		builder.crawlRules().click("a");

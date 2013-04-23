@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +18,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
@@ -260,19 +260,16 @@ public class StateMachineTest {
 	}
 
 	private StateFlowGraph newStateFlowGraph() {
-		StateFlowGraph sfg = new StateFlowGraph();
+		StateFlowGraph sfg = new StateFlowGraph(new ExitNotifier(0));
 		sfg.putIfAbsent(index, false);
 		return sfg;
 	}
 
 	/**
 	 * Make sure On new State Plugin executed.
-	 * 
-	 * @throws ConfigurationException
-	 *             when failure configuring Properties
 	 */
 	@Test
-	public void testOnNewStatePlugin() throws ConfigurationException {
+	public void testOnNewStatePlugin() {
 		hit = false;
 		CrawljaxConfiguration config = CrawljaxConfiguration.builderFor(
 		        "http://localhost").addPlugin(new OnNewStatePlugin() {
@@ -312,12 +309,9 @@ public class StateMachineTest {
 
 	/**
 	 * Make sure InvariantViolationPlugin executed.
-	 * 
-	 * @throws ConfigurationException
-	 *             when failure configuring Properties
 	 */
 	@Test
-	public void testInvariantFailurePlugin() throws ConfigurationException {
+	public void testInvariantFailurePlugin() {
 		hit = false;
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(
 		        "http://localhost").addPlugin(new OnInvariantViolationPlugin() {

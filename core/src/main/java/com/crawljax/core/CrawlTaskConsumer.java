@@ -1,14 +1,12 @@
 package com.crawljax.core;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.di.CoreModule.CrawlerDoneLatch;
 import com.google.inject.Inject;
 
 /**
@@ -21,17 +19,17 @@ public class CrawlTaskConsumer implements Callable<Void> {
 
 	private final AtomicInteger runningConsumers;
 
-	private final CountDownLatch consumersDoneLatch;
-
 	private final Crawler crawler;
 
 	private final UnfiredCandidateActions candidates;
 
+	private final ExitNotifier exitNotifier;
+
 	@Inject
 	CrawlTaskConsumer(UnfiredCandidateActions candidates,
-	        @CrawlerDoneLatch CountDownLatch crawlerDoneLatch, Crawler crawler) {
+	        ExitNotifier exitNotifier, Crawler crawler) {
 		this.candidates = candidates;
-		this.consumersDoneLatch = crawlerDoneLatch;
+		this.exitNotifier = exitNotifier;
 		this.crawler = crawler;
 		this.runningConsumers = new AtomicInteger(0);
 
@@ -43,7 +41,7 @@ public class CrawlTaskConsumer implements Callable<Void> {
 			while (!Thread.interrupted()) {
 				if (runningConsumers.get() == 0 && candidates.isEmpty()) {
 					LOG.debug("No consumers active and the cache is empty. Crawl is done. Shutting down...");
-					consumersDoneLatch.countDown();
+					exitNotifier.signalCrawlExhausted();
 					break;
 				}
 				pollAndHandleCrawlTasks();

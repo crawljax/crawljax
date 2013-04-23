@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.eclipse.jetty.util.BlockingArrayQueue;
 import org.hamcrest.core.IsCollectionContaining;
@@ -51,7 +50,6 @@ public class PluginsWithCrawlerTest {
 
 	private static void checkCrawlSession(CrawlSession session) {
 		assertNotNull(session);
-		assertNotNull(session.getCrawljaxConfiguration());
 		assertNotNull(session.getCrawlPaths());
 		assertNotNull(session.getInitialState());
 		assertNotNull(session.getStateFlowGraph());
@@ -62,7 +60,7 @@ public class PluginsWithCrawlerTest {
 	private static CrawlSession session;
 
 	@BeforeClass
-	public static void setup() throws ConfigurationException {
+	public static void setup() {
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder();
 
 		builder.crawlRules().clickDefaultElements();

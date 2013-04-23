@@ -9,7 +9,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -44,7 +43,7 @@ public class IFrameTest {
 	}
 
 	@Test
-	public void testIFrameCrawlable() throws ConfigurationException, CrawljaxException {
+	public void testIFrameCrawlable() throws CrawljaxException {
 		crawljax = new CrawljaxRunner(setupConfig().build());
 		CrawlSession session = crawljax.call();
 		assertThat(session.getStateFlowGraph(), hasEdges(13));
@@ -52,7 +51,7 @@ public class IFrameTest {
 	}
 
 	@Test
-	public void testIframeExclusions() throws ConfigurationException, CrawljaxException {
+	public void testIframeExclusions() throws CrawljaxException {
 		CrawljaxConfigurationBuilder builder = setupConfig();
 		builder.crawlRules().dontCrawlFrame("frame1");
 		builder.crawlRules().dontCrawlFrame("sub");
@@ -65,7 +64,7 @@ public class IFrameTest {
 	}
 
 	@Test
-	public void testIFramesNotCrawled() throws ConfigurationException, CrawljaxException {
+	public void testIFramesNotCrawled() throws CrawljaxException {
 		CrawljaxConfigurationBuilder builder = setupConfig();
 		builder.crawlRules().crawlFrames(false);
 		crawljax = new CrawljaxRunner(builder.build());
@@ -75,7 +74,7 @@ public class IFrameTest {
 	}
 
 	@Test
-	public void testIFramesWildcardsNotCrawled() throws ConfigurationException, CrawljaxException {
+	public void testIFramesWildcardsNotCrawled() throws CrawljaxException {
 		CrawljaxConfigurationBuilder builder = setupConfig();
 
 		builder.crawlRules().dontCrawlFrame("frame%");
@@ -87,7 +86,7 @@ public class IFrameTest {
 	}
 
 	@Test
-	public void testCrawlingOnlySubFrames() throws ConfigurationException, CrawljaxException {
+	public void testCrawlingOnlySubFrames() throws CrawljaxException {
 		CrawljaxConfigurationBuilder builder = setupConfig();
 		builder.crawlRules().dontCrawlFrame("frame1.frame10");
 		crawljax = new CrawljaxRunner(builder.build());

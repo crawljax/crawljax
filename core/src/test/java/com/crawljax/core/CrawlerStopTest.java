@@ -1,6 +1,7 @@
 package com.crawljax.core;
 
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.TimeUnit;
@@ -9,6 +10,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.crawljax.core.ExitNotifier.Reason;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
@@ -24,19 +26,35 @@ public class CrawlerStopTest {
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
 		int depth = 3;
 
-		CrawlSession session = new CrawljaxRunner(builder.setMaximumDepth(depth).build()).call();
+		CrawljaxRunner runner = new CrawljaxRunner(builder.setMaximumDepth(depth).build());
+		CrawlSession session = runner.call();
 
 		assertThat(session.getStateFlowGraph(), hasStates(depth + 1));
+		assertThat(runner.getReason(), is(Reason.EXHAUSTED));
 	}
 
 	@Test(timeout = 60_000)
 	public void maximumTimeIsOblidged() throws Exception {
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
 
-		new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
+		CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
 		        .setMaximumRunTime(25, TimeUnit.SECONDS)
-		        .build())
-		        .call();
+		        .build());
+		runner.call();
+		assertThat(runner.getReason(), is(Reason.MAX_TIME));
+
+	}
+
+	@Test(timeout = 60_000)
+	public void maximumStatesIsOblidged() throws Exception {
+		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
+
+		CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
+		        .setMaximumStates(3)
+		        .build());
+		CrawlSession session = runner.call();
+		assertThat(session.getStateFlowGraph(), hasStates(3));
+		assertThat(runner.getReason(), is(Reason.MAX_STATES));
 
 	}
 

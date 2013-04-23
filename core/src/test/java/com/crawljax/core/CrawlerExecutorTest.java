@@ -3,7 +3,6 @@ package com.crawljax.core;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -19,11 +18,9 @@ public class CrawlerExecutorTest {
 	 * 
 	 * @throws InterruptedException
 	 *             the the waitForTermination fails.
-	 * @throws ConfigurationException
-	 *             when config fails
 	 */
 	@Test
-	public void testCorrectNamesMultiThread() throws InterruptedException, ConfigurationException {
+	public void testCorrectNamesMultiThread() throws InterruptedException {
 		CrawlerExecutor executor =
 		        new CrawlerExecutor(new BrowserConfiguration(BrowserType.firefox, 2));
 		TestThread t1 = new TestThread("Thread 1 Crawler 1", "");

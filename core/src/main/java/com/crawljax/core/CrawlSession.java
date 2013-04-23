@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
@@ -37,11 +36,6 @@ public class CrawlSession {
 	private final StateVertex initialState;
 
 	/**
-	 * Variable for reading the Configuration from.
-	 */
-	private final CrawljaxConfiguration crawljaxConfiguration;
-
-	/**
 	 * Denote the time the CrawlSession Started in ms since 1970.
 	 */
 	private final long startTime;
@@ -59,9 +53,7 @@ public class CrawlSession {
 	 *            the configuration.
 	 */
 	@Inject
-	public CrawlSession(StateFlowGraph stateFlowGraph, StateVertex state,
-	        CrawljaxConfiguration crawljaxConfiguration) {
-		this.crawljaxConfiguration = crawljaxConfiguration;
+	public CrawlSession(StateFlowGraph stateFlowGraph, StateVertex state) {
 		this.stateFlowGraph = stateFlowGraph;
 		this.initialState = state;
 		this.startTime = new Date().getTime();
@@ -87,13 +79,6 @@ public class CrawlSession {
 	 */
 	public void addCrawlPath(List<Eventable> crawlPath) {
 		this.crawlPaths.add(crawlPath);
-	}
-
-	/**
-	 * @return the crawljaxConfiguration
-	 */
-	public CrawljaxConfiguration getCrawljaxConfiguration() {
-		return crawljaxConfiguration;
 	}
 
 	/**

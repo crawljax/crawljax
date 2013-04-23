@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import net.jcip.annotations.GuardedBy;
@@ -21,6 +22,7 @@ import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.core.ExitNotifier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -46,13 +48,17 @@ public class StateFlowGraph implements Serializable {
 	private final AtomicInteger nextStateNameCounter = new AtomicInteger();
 	private final ConcurrentMap<Integer, StateVertex> stateById;
 
+	private final ExitNotifier exitNotifier;
+
 	/**
 	 * The constructor.
 	 * 
 	 * @param initialState
 	 *            the state to start from.
 	 */
-	public StateFlowGraph() {
+	@Inject
+	public StateFlowGraph(ExitNotifier exitNotifier) {
+		this.exitNotifier = exitNotifier;
 		sfg = new DirectedMultigraph<>(Eventable.class);
 		stateById = Maps.newConcurrentMap();
 		LOG.debug("Initialized the stateflowgraph");
@@ -97,8 +103,9 @@ public class StateFlowGraph implements Serializable {
 		synchronized (sfg) {
 			boolean added = sfg.addVertex(stateVertix);
 			if (added) {
-				int count = stateCounter.incrementAndGet();
 				stateById.put(stateVertix.getId(), stateVertix);
+				int count = stateCounter.incrementAndGet();
+				exitNotifier.incrementNumberOfStates();
 				LOG.debug("Number of states is now {}", count);
 				if (correctName) {
 					correctStateName(stateVertix);

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -35,7 +34,7 @@ public class OnFireEventFailedPluginTest {
 	public static final RunWithWebServer SERVER = new RunWithWebServer("site");
 
 	@Before
-	public void setup() throws ConfigurationException {
+	public void setup() {
 
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("crawler/index.html");
 		builder.addPlugin(new PreStateCrawlingPlugin() {
@@ -64,8 +63,7 @@ public class OnFireEventFailedPluginTest {
 	}
 
 	@Test
-	public void testFireEventFaildHasBeenExecuted() throws ConfigurationException,
-	        CrawljaxException {
+	public void testFireEventFaildHasBeenExecuted() throws CrawljaxException {
 		controller.call();
 		assertThat("The FireEventFaild Plugin has been executed the correct amount of times",
 		        hits.get(), is(2));

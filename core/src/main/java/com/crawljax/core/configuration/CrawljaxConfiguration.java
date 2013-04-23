@@ -22,7 +22,7 @@ import com.google.inject.Injector;
 /**
  * Configures the {@link Crawler}. Set it up using the {@link #builderFor(String)} function.
  */
-public final class CrawljaxConfiguration {
+public class CrawljaxConfiguration {
 
 	public static class CrawljaxConfigurationBuilder {
 

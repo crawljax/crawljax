@@ -1,7 +1,5 @@
 package com.crawljax.core.state;
 
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
@@ -10,16 +8,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.SerializationUtils;
 import org.jgrapht.GraphPath;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
 
@@ -39,7 +36,7 @@ public class StateFlowGraphTest {
 		state3 = new StateVertex(3, "STATE_THREE", "<table><div>state3</div></table>");
 		state4 = new StateVertex(4, "STATE_FOUR", "<table><div>state4</div></table>");
 		state5 = new StateVertex(5, "STATE_FIVE", "<table><div>state5</div></table>");
-		graph = new StateFlowGraph();
+		graph = new StateFlowGraph(new ExitNotifier(0));
 		graph.putIfAbsent(index, false);
 	}
 
@@ -151,7 +148,7 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
-		StateFlowGraph g = new StateFlowGraph();
+		StateFlowGraph g = new StateFlowGraph(new ExitNotifier(0));
 		g.putIfAbsent(new StateVertex(1, "", HTML1), false);
 		g.putIfAbsent(new StateVertex(2, "", HTML2));
 
@@ -301,38 +298,6 @@ public class StateFlowGraphTest {
 		assertTrue(graph.addEdge(index, state4, e4));
 		assertFalse(graph.addEdge(index, state4, e5));
 		assertFalse(graph.addEdge(index, state4, e6));
-	}
-
-	@Test
-	public void testSerializability() throws UnsupportedEncodingException {
-		Eventable c1 =
-		        new Eventable(new Identification(How.xpath, "/body/div[4]"), EventType.click);
-		Eventable c2 =
-		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[2]"),
-		                EventType.click);
-
-		Eventable c3 =
-		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[6]"),
-		                EventType.click);
-
-		graph.putIfAbsent(index);
-		graph.putIfAbsent(state2);
-		graph.putIfAbsent(state3);
-
-		graph.addEdge(index, state2, c1);
-		graph.addEdge(index, state2, c2);
-		graph.addEdge(state2, state3, c3);
-		assertThat(graph, hasStates(3));
-		assertThat(graph, hasEdges(3));
-		assertThat(graph.getOutgoingClickables(index).size(), is(2));
-
-		byte[] serializedSFG = SerializationUtils.serialize(graph);
-		StateFlowGraph deserializedSfg =
-		        (StateFlowGraph) SerializationUtils.deserialize(serializedSFG);
-
-		assertThat(deserializedSfg, hasStates(3));
-		assertThat(deserializedSfg, hasEdges(3));
-		assertThat(deserializedSfg.getOutgoingClickables(index).size(), is(2));
 	}
 
 	@Test

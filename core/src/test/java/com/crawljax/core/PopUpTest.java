@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -23,7 +22,7 @@ public class PopUpTest {
 	public static final RunWithWebServer WEB_SERVER = new RunWithWebServer("site");
 
 	@Test
-	public void testPopups() throws ConfigurationException, CrawljaxException {
+	public void testPopups() throws CrawljaxException {
 		CrawljaxConfigurationBuilder builder =
 		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().toExternalForm()
 		                + "popup");

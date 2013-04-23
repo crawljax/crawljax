@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,6 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.core.ExitNotifier.Reason;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
@@ -47,7 +47,7 @@ public class CrawlControllerTest {
 	private UnfiredCandidateActions candidateActions;
 
 	private ExecutorService executor;
-	private CountDownLatch consumersDoneLatch;
+	private ExitNotifier consumersDoneLatch;
 
 	@Mock
 	private Crawler crawler;
@@ -128,12 +128,12 @@ public class CrawlControllerTest {
 		                .build();
 		candidateActions = new UnfiredCandidateActions(config.getBrowserConfig(), graphProvider);
 
-		consumersDoneLatch = new CountDownLatch(1);
+		consumersDoneLatch = new ExitNotifier(config.getMaximumStates());
 
 		when(consumerFactory.get()).thenReturn(new CrawlTaskConsumer(candidateActions,
 		        consumersDoneLatch, crawler));
 
-		crawlSessionProvider = new CrawlSessionProvider(config, graph);
+		crawlSessionProvider = new CrawlSessionProvider(graph);
 
 		controller =
 		        new CrawlController(executor, consumerFactory, config, consumersDoneLatch,
@@ -197,7 +197,8 @@ public class CrawlControllerTest {
 	@After
 	public void verifyPerfectEndState() {
 		assertThat(candidateActions.isEmpty(), is(true));
-		assertThat(consumersDoneLatch.getCount(), is(0L));
+		assertThat(consumersDoneLatch.isExitCalled(), is(true));
+		assertThat(controller.getReason(), is(Reason.EXHAUSTED));
 		verify(postCrawlPlugin).postCrawling(crawlSessionProvider.get());
 	}
 }

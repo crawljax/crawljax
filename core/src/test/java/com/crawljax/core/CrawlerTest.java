@@ -18,9 +18,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.openqa.selenium.ElementNotVisibleException;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
@@ -102,7 +102,8 @@ public class CrawlerTest {
 		url = new URL("http://example.com");
 		when(sessionProvider.get()).thenReturn(session);
 
-		CrawljaxConfiguration config = CrawljaxConfiguration.builderFor(url).build();
+		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());
+		when(config.getPlugins()).thenReturn(plugins);
 		stateComparator = new StateComparator(config.getCrawlRules());
 
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));

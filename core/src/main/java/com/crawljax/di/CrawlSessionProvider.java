@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.google.common.base.Preconditions;
@@ -24,14 +23,12 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlSessionProvider.class);
 
 	private final AtomicBoolean isSet = new AtomicBoolean();
-	private final CrawljaxConfiguration config;
 	private final StateFlowGraph stateFlowGraph;
 
 	private CrawlSession session;
 
 	@Inject
-	public CrawlSessionProvider(CrawljaxConfiguration config, StateFlowGraph stateFlowGraph) {
-		this.config = config;
+	public CrawlSessionProvider(StateFlowGraph stateFlowGraph) {
 		this.stateFlowGraph = stateFlowGraph;
 	}
 
@@ -46,7 +43,7 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 			LOG.debug("Setting up the crawlsession");
 			StateVertex added = stateFlowGraph.putIfAbsent(indexState, false);
 			Preconditions.checkArgument(added == null, "Could not set the initial state");
-			session = new CrawlSession(stateFlowGraph, indexState, config);
+			session = new CrawlSession(stateFlowGraph, indexState);
 		} else {
 			throw new IllegalStateException("Session is already set");
 		}
