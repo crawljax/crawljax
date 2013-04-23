@@ -92,6 +92,8 @@ public class CrawlerTest {
 	@Mock
 	private CandidateElement action;
 
+	private CrawlerContext context;
+
 	@Before
 	public void setup() throws MalformedURLException {
 		CandidateElementExtractorFactory elementExtractor =
@@ -108,8 +110,9 @@ public class CrawlerTest {
 
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
 
+		context = new CrawlerContext(browser, config, sessionProvider);
 		crawler =
-		        new Crawler(browser, config, sessionProvider,
+		        new Crawler(context, config,
 		                stateComparator,
 		                candidateActionCache, formHandlerFactory, waitConditionChecker,
 		                elementExtractor);
@@ -147,7 +150,7 @@ public class CrawlerTest {
 
 	private void verifyCrawlerReset(InOrder order) {
 		order.verify(browser).goToUrl(url);
-		order.verify(plugins).runOnUrlLoadPlugins(browser);
+		order.verify(plugins).runOnUrlLoadPlugins(context);
 	}
 
 	@Test
@@ -168,7 +171,7 @@ public class CrawlerTest {
 		verifyFormElementsChecked(order);
 		order.verify(waitConditionChecker).wait(browser);
 		order.verify(browser).closeOtherWindows();
-		order.verify(plugins).runOnRevisitStatePlugins(session, target);
+		order.verify(plugins).runOnRevisitStatePlugins(context, target);
 		order.verify(extractor).checkCrawlCondition();
 		order.verify(candidateActionCache).pollActionOrNull(target);
 	}

@@ -9,18 +9,17 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
@@ -31,7 +30,6 @@ import com.google.common.collect.ImmutableList;
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
  */
 @Category(BrowserTest.class)
-@Ignore("Temporary ignored. Will be fixed in a different branch.")
 @RunWith(MockitoJUnitRunner.class)
 public class PluginsTest {
 
@@ -62,13 +60,13 @@ public class PluginsTest {
 	private PostCrawlingPlugin postCrawlingPlugin;
 
 	@Mock
-	private PreCrawlingPlugin preCrawlingPlugin;
-
-	@Mock
 	private PreStateCrawlingPlugin prestatePlugin;
 
 	@Mock
 	private ProxyServerPlugin proxyServerPlugin;
+
+	@Mock
+	private CrawlerContext context;
 
 	@Mock
 	private CrawlSession session;
@@ -82,7 +80,7 @@ public class PluginsTest {
 		        new Plugins(ImmutableList.of(domChange, browserCreatedPlugin,
 		                fireEventFailedPlugin, invariantViolationPlugin, newStatePlugin,
 		                onRevisitStatePlugin,
-		                urlLoadPlugin, postCrawlingPlugin, preCrawlingPlugin, prestatePlugin,
+		                urlLoadPlugin, postCrawlingPlugin, prestatePlugin,
 		                proxyServerPlugin));
 	}
 
@@ -94,13 +92,6 @@ public class PluginsTest {
 	}
 
 	@Test
-	public void preStateCrawlisCalled() throws Exception {
-		ImmutableList<CandidateElement> candidateElements = ImmutableList.of();
-		plugins.runPreStateCrawlingPlugins(session, candidateElements, vertex);
-		verify(prestatePlugin).preStateCrawling(session, candidateElements, vertex);
-	}
-
-	@Test
 	public void postCrawlPluginIsCalled() {
 		plugins.runPostCrawlingPlugins(session);
 		verify(postCrawlingPlugin).postCrawling(session);
@@ -108,29 +99,27 @@ public class PluginsTest {
 
 	@Test
 	public void urlLoadisCalled() throws Exception {
-		EmbeddedBrowser browser = mock(EmbeddedBrowser.class);
-		plugins.runOnUrlLoadPlugins(browser);
+		plugins.runOnUrlLoadPlugins(context);
 	}
 
 	@Test
 	public void revisitStatePluginIsCalled() throws Exception {
 		StateVertex currentState = mock(StateVertex.class);
-		plugins.runOnRevisitStatePlugins(session, currentState);
-		verify(onRevisitStatePlugin).onRevisitState(session, currentState);
+		plugins.runOnRevisitStatePlugins(context, currentState);
+		verify(onRevisitStatePlugin).onRevisitState(context, currentState);
 	}
 
 	@Test
 	public void newStatePluginIsCalled() throws Exception {
-		plugins.runOnNewStatePlugins(session, vertex);
-		verify(newStatePlugin).onNewState(session, vertex);
+		plugins.runOnNewStatePlugins(context, vertex);
+		verify(newStatePlugin).onNewState(context, vertex);
 	}
 
 	@Test
 	public void invariantViolatedIsCalled() throws Exception {
-		EmbeddedBrowser browser = Mockito.mock(EmbeddedBrowser.class);
 		Invariant invariant = mock(Invariant.class);
-		plugins.runOnInvriantViolationPlugins(invariant, session, browser);
-		verify(invariantViolationPlugin).onInvariantViolation(invariant, session, browser);
+		plugins.runOnInvriantViolationPlugins(invariant, context);
+		verify(invariantViolationPlugin).onInvariantViolation(invariant, context);
 	}
 
 	@Test
@@ -138,14 +127,13 @@ public class PluginsTest {
 		StateVertex stateBefore = mock(StateVertex.class);
 		Eventable eventable = mock(Eventable.class);
 		StateVertex stateAfter = mock(StateVertex.class);
-		EmbeddedBrowser browser = mock(EmbeddedBrowser.class);
 		String oldDom = "old";
 		String newDom = "new";
 		when(stateBefore.getDom()).thenReturn(oldDom);
 		when(stateAfter.getDom()).thenReturn(newDom);
 
-		plugins.runDomChangeNotifierPlugins(stateBefore, eventable, stateAfter, browser);
-		verify(domChange).isDomChanged(oldDom, eventable, newDom, browser);
+		plugins.runDomChangeNotifierPlugins(context, stateBefore, eventable, stateAfter);
+		verify(domChange).isDomChanged(context, oldDom, eventable, newDom);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -163,16 +151,16 @@ public class PluginsTest {
 	@Test
 	public void verifyPreCrawlPluginIsCalled() {
 		ImmutableList<CandidateElement> candidateElements = ImmutableList.of();
-		plugins.runPreStateCrawlingPlugins(session, candidateElements, vertex);
-		verify(prestatePlugin).preStateCrawling(session, candidateElements, vertex);
+		plugins.runPreStateCrawlingPlugins(context, candidateElements, vertex);
+		verify(prestatePlugin).preStateCrawling(context, candidateElements, vertex);
 	}
 
 	@Test
 	public void fireEventFailedIsCalled() {
 		List<Eventable> path = ImmutableList.of();
 		Eventable eventable = mock(Eventable.class);
-		plugins.runOnFireEventFailedPlugins(eventable, path);
-		verify(fireEventFailedPlugin).onFireEventFailed(eventable, path);
+		plugins.runOnFireEventFailedPlugins(context, eventable, path);
+		verify(fireEventFailedPlugin).onFireEventFailed(context, eventable, path);
 	}
 
 	@Test
@@ -180,16 +168,15 @@ public class PluginsTest {
 		StateVertex stateBefore = mock(StateVertex.class);
 		Eventable eventable = mock(Eventable.class);
 		StateVertex stateAfter = mock(StateVertex.class);
-		EmbeddedBrowser browser = mock(EmbeddedBrowser.class);
 		String oldDom = "old";
 		String newDom = "new";
 		when(stateBefore.getDom()).thenReturn(oldDom);
 		when(stateAfter.getDom()).thenReturn(newDom);
 
-		when(domChange.isDomChanged(oldDom, eventable, newDom, browser)).thenThrow(
+		when(domChange.isDomChanged(context, oldDom, eventable, newDom)).thenThrow(
 		        new RuntimeException("This is an expected excpetion. ignore"));
 		assertThat(
-		        plugins.runDomChangeNotifierPlugins(stateBefore, eventable, stateAfter, browser),
+		        plugins.runDomChangeNotifierPlugins(context, stateBefore, eventable, stateAfter),
 		        is(true));
 	}
 }

@@ -63,7 +63,7 @@ class OutPutModelCache {
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
 		return new OutPutModel(statesCopy, edgesCopy,
 		        new Statistics(session, stateStats, startDate),
-		        session.getCrawljaxConfiguration());
+		        session.getConfig());
 	}
 
 	private ImmutableList<Edge> asEdges(Set<Eventable> allEdges) {

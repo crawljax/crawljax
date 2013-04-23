@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
@@ -26,6 +27,7 @@ import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -59,12 +61,12 @@ public class CrawlOverview
 	 * Saves a screenshot of every new state.
 	 */
 	@Override
-	public void onNewState(CrawlSession session, StateVertex vertex) {
+	public void onNewState(CrawlerContext context, StateVertex vertex) {
 		LOG.debug("onNewState");
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
-		saveScreenshot(session, state.getName(), vertex);
+		saveScreenshot(context.getBrowser(), state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), vertex.getDom());
-		Point point = getOffSet(session.getBrowser());
+		Point point = getOffSet(context.getBrowser());
 		state.setScreenShotOffset(point);
 		LOG.debug("{} has a body offset of {}", vertex.getName(), point);
 	}
@@ -94,7 +96,7 @@ public class CrawlOverview
 		return "relative".equals(position);
 	}
 
-	private void saveScreenshot(CrawlSession session, String name, StateVertex vertex) {
+	private void saveScreenshot(EmbeddedBrowser browser, String name, StateVertex vertex) {
 		LOG.trace("Saving screenshot");
 		synchronized (visitedStates) {
 			if (!visitedStates.containsKey(name)) {
@@ -105,10 +107,10 @@ public class CrawlOverview
 		File jpg = outputBuilder.newScreenShotFile(name);
 		File thumb = outputBuilder.newThumbNail(name);
 		try {
-			byte[] screenshot = session.getBrowser().getScreenShot();
+			byte[] screenshot = browser.getScreenShot();
 			ImageWriter.writeScreenShotAndThumbnail(screenshot, jpg, thumb);
 		} catch (CrawljaxException e) {
-			LOG.warn("Screenshots are not supported for {}", session.getBrowser());
+			LOG.warn("Screenshots are not supported for {}", browser);
 		}
 		LOG.trace("Screenshot saved");
 	}
@@ -118,29 +120,29 @@ public class CrawlOverview
 	 * elements.
 	 */
 	@Override
-	public void preStateCrawling(CrawlSession session, List<CandidateElement> candidateElements) {
+	public void preStateCrawling(CrawlerContext context,
+	        ImmutableList<CandidateElement> candidateElements, StateVertex state) {
 		LOG.debug("preStateCrawling");
 		List<CandidateElementPosition> newElements = Lists.newLinkedList();
-		StateVertex state = session.getCurrentState();
 		LOG.info("Prestate found new state {} with {} candidates", state.getName(),
 		        candidateElements.size());
 		for (CandidateElement element : candidateElements) {
-			WebElement webElement = getWebElement(session, element);
+			WebElement webElement = getWebElement(context.getBrowser(), element);
 			if (webElement != null) {
 				newElements.add(findElement(webElement, element));
 			}
 		}
 
-		StateBuilder stateOut = outModelCache.addStateIfAbsent(session.getCurrentState());
+		StateBuilder stateOut = outModelCache.addStateIfAbsent(state);
 		stateOut.addCandidates(newElements);
 		LOG.trace("preState finished, elements added to state");
 	}
 
-	private WebElement getWebElement(CrawlSession session, CandidateElement element) {
+	private WebElement getWebElement(EmbeddedBrowser browser, CandidateElement element) {
 		try {
 			// TODO Check if element.getIdentification().getValue() is correct replacement for
 			// element.getXpath()
-			return session.getBrowser().getWebElement(element.getIdentification());
+			return browser.getWebElement(element.getIdentification());
 		} catch (WebDriverException e) {
 			LOG.info("Could not locate element for positioning {}", element.getElement());
 			return null;

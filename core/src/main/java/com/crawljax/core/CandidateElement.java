@@ -9,9 +9,9 @@ import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.DomUtils;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.base.Objects;
 
 /**
  * Candidate element for crawling. It is possible to link this eventable to form inputs, so that

@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CandidateElement;
-import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
@@ -40,7 +40,7 @@ public class OnFireEventFailedPluginTest {
 		builder.addPlugin(new PreStateCrawlingPlugin() {
 
 			@Override
-			public void preStateCrawling(CrawlSession session,
+			public void preStateCrawling(CrawlerContext session,
 			        ImmutableList<CandidateElement> candidateElements, StateVertex state) {
 				for (CandidateElement candidate : candidateElements) {
 					HTMLAnchorElementImpl impl = (HTMLAnchorElementImpl) candidate.getElement();
@@ -54,7 +54,8 @@ public class OnFireEventFailedPluginTest {
 		});
 		builder.addPlugin(new OnFireEventFailedPlugin() {
 			@Override
-			public void onFireEventFailed(Eventable eventable, List<Eventable> pathToFailure) {
+			public void onFireEventFailed(CrawlerContext context, Eventable eventable,
+			        List<Eventable> pathToFailure) {
 				hits.incrementAndGet();
 			}
 		});

@@ -12,6 +12,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
@@ -38,7 +39,7 @@ public class Plugins {
 	                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 	                OnRevisitStatePlugin.class, OnUrlLoadPlugin.class,
 	                PostCrawlingPlugin.class, PreStateCrawlingPlugin.class,
-	                PreCrawlingPlugin.class, ProxyServerPlugin.class);
+	                ProxyServerPlugin.class);
 
 	/**
 	 * @return An empty {@link Plugins} configuration.
@@ -87,32 +88,6 @@ public class Plugins {
 		}
 	}
 
-	/**
-	 * load and run the PreCrawlingPlugins. PreCrawlingPlugins are plugins that are ran before the
-	 * crawling starts and before the initial url has been loaded. This kind of plugins can be used
-	 * to do for example 'once in a crawlsession' operations like logging in or reset the database
-	 * to a 'clean' state. The argument offered to the Plugin is a the current running instance of
-	 * EmbeddedBrowser. Warning the instance of the browser offered is not a clone but the current
-	 * and after wards used browser instance, changes and operations may cause 'strange' behaviour.
-	 * 
-	 * @see EmbeddedBrowser
-	 * @param browser
-	 *            the browser instance to load to the plugin.
-	 */
-	public void runPreCrawlingPlugins(EmbeddedBrowser browser) {
-		LOGGER.debug("Running PreCrawlingPlugins...");
-		for (Plugin plugin : plugins.get(PreCrawlingPlugin.class)) {
-			if (plugin instanceof PreCrawlingPlugin) {
-				try {
-					LOGGER.debug("Calling plugin {}", plugin);
-					((PreCrawlingPlugin) plugin).preCrawling(browser);
-				} catch (RuntimeException e) {
-					reportFailingPlugin(plugin, e);
-				}
-			}
-		}
-	}
-
 	private void reportFailingPlugin(Plugin plugin, RuntimeException e) {
 		LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
 	}
@@ -122,17 +97,20 @@ public class Plugins {
 	 * gone to the initial url. Not only the first time but also every time the Core navigates back.
 	 * Warning the instance of the browser offered is not a clone but the current and after wards
 	 * used browser instance, changes and operations may cause 'strange' behaviour.
+	 * <p>
+	 * This method can be called from multiple threads with different {@link CrawlerContext}
+	 * </p>
 	 * 
 	 * @param browser
 	 *            the embedded browser instance to load in the plugin.
 	 */
-	public void runOnUrlLoadPlugins(EmbeddedBrowser browser) {
+	public void runOnUrlLoadPlugins(CrawlerContext context) {
 		LOGGER.debug("Running OnUrlLoadPlugins...");
 		for (Plugin plugin : plugins.get(OnUrlLoadPlugin.class)) {
 			if (plugin instanceof OnUrlLoadPlugin) {
 				try {
 					LOGGER.debug("Calling plugin {}", plugin);
-					((OnUrlLoadPlugin) plugin).onUrlLoad(browser);
+					((OnUrlLoadPlugin) plugin).onUrlLoad(context);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -144,19 +122,22 @@ public class Plugins {
 	 * load and run the OnNewStatePlugins. OnNewStatePlugins are plugins that are ran when a new
 	 * state was found. This also happens for the Index State. Warning the session is not a clone,
 	 * chaning the session can cause strange behaviour of Crawljax.
+	 * <p>
+	 * This method can be called from multiple threads with different {@link CrawlerContext}
+	 * </p>
 	 * 
 	 * @param session
 	 *            the session to load in the plugin
 	 * @param newState
 	 *            The new state
 	 */
-	public void runOnNewStatePlugins(CrawlSession session, StateVertex newState) {
+	public void runOnNewStatePlugins(CrawlerContext context, StateVertex newState) {
 		LOGGER.debug("Running OnNewStatePlugins...");
 		for (Plugin plugin : plugins.get(OnNewStatePlugin.class)) {
 			if (plugin instanceof OnNewStatePlugin) {
 				try {
 					LOGGER.debug("Calling plugin {}", plugin);
-					((OnNewStatePlugin) plugin).onNewState(session, newState);
+					((OnNewStatePlugin) plugin).onNewState(context, newState);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -172,21 +153,17 @@ public class Plugins {
 	 * 
 	 * @param invariant
 	 *            the failed invariants
-	 * @param session
+	 * @param context
 	 *            the session to load in the plugin
-	 * @param browser
-	 * @param state
-	 *            The state containing the violations.
 	 */
-	public void runOnInvriantViolationPlugins(Invariant invariant, CrawlSession session,
-	        EmbeddedBrowser browser) {
+	public void runOnInvriantViolationPlugins(Invariant invariant, CrawlerContext context) {
 		LOGGER.debug("Running OnInvriantViolationPlugins...");
 		for (Plugin plugin : plugins.get(OnInvariantViolationPlugin.class)) {
 			if (plugin instanceof OnInvariantViolationPlugin) {
 				try {
 					LOGGER.debug("Calling plugin {}", plugin);
 					((OnInvariantViolationPlugin) plugin)
-					        .onInvariantViolation(invariant, session, browser);
+					        .onInvariantViolation(invariant, context);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -199,7 +176,7 @@ public class Plugins {
 	 * finished Warning: changing the session can change the behavior of other post crawl plugins.
 	 * It is not a clone!
 	 * 
-	 * @param session
+	 * @param context
 	 *            the session to load in the plugin
 	 */
 	public void runPostCrawlingPlugins(CrawlSession session) {
@@ -221,18 +198,18 @@ public class Plugins {
 	 * needs an explicit current state because the session.getCurrentState() does not contain the
 	 * correct current state because we are in back-tracking
 	 * 
-	 * @param session
+	 * @param context
 	 *            the session to load in the plugin
 	 * @param currentState
 	 *            the state the 'back tracking' operation is currently in
 	 */
-	public void runOnRevisitStatePlugins(CrawlSession session, StateVertex currentState) {
+	public void runOnRevisitStatePlugins(CrawlerContext context, StateVertex currentState) {
 		LOGGER.debug("Running OnRevisitStatePlugins...");
 		for (Plugin plugin : plugins.get(OnRevisitStatePlugin.class)) {
 			if (plugin instanceof OnRevisitStatePlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
 				try {
-					((OnRevisitStatePlugin) plugin).onRevisitState(session, currentState);
+					((OnRevisitStatePlugin) plugin).onRevisitState(context, currentState);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -253,7 +230,7 @@ public class Plugins {
 	 * @param state
 	 *            The state being violated.
 	 */
-	public void runPreStateCrawlingPlugins(CrawlSession session,
+	public void runPreStateCrawlingPlugins(CrawlerContext context,
 	        ImmutableList<CandidateElement> candidateElements, StateVertex state) {
 		LOGGER.debug("Running PreStateCrawlingPlugins...");
 		for (Plugin plugin : plugins.get(PreStateCrawlingPlugin.class)) {
@@ -261,7 +238,7 @@ public class Plugins {
 				LOGGER.debug("Calling plugin {}", plugin);
 				try {
 					((PreStateCrawlingPlugin) plugin)
-					        .preStateCrawling(session, candidateElements, state);
+					        .preStateCrawling(context, candidateElements, state);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -301,13 +278,15 @@ public class Plugins {
 	 * @param path
 	 *            the path TO this eventable.
 	 */
-	public void runOnFireEventFailedPlugins(Eventable eventable, List<Eventable> path) {
+	public void runOnFireEventFailedPlugins(CrawlerContext context, Eventable eventable,
+	        List<Eventable> path) {
 		LOGGER.debug("Running OnFireEventFailedPlugins...");
 		for (Plugin plugin : plugins.get(OnFireEventFailedPlugin.class)) {
 			if (plugin instanceof OnFireEventFailedPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
 				try {
-					((OnFireEventFailedPlugin) plugin).onFireEventFailed(eventable, path);
+					((OnFireEventFailedPlugin) plugin)
+					        .onFireEventFailed(context, eventable, path);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -341,9 +320,10 @@ public class Plugins {
 	/**
 	 * Load and run the DomChangeNotifierPlugin.
 	 */
-	public boolean runDomChangeNotifierPlugins(final StateVertex stateBefore,
+	public boolean runDomChangeNotifierPlugins(final CrawlerContext context,
+	        final StateVertex stateBefore,
 	        final Eventable event,
-	        final StateVertex stateAfter, final EmbeddedBrowser browser) {
+	        final StateVertex stateAfter) {
 		if (plugins.get(DomChangeNotifierPlugin.class).isEmpty()) {
 			LOGGER.debug("No DomChangeNotifierPlugin found. Performing default DOM comparison...");
 			return defaultDomComparison(stateBefore, stateAfter);
@@ -352,8 +332,8 @@ public class Plugins {
 			        (DomChangeNotifierPlugin) plugins.get(DomChangeNotifierPlugin.class).get(0);
 			LOGGER.debug("Calling plugin {}", domChange);
 			try {
-				return domChange.isDomChanged(stateBefore.getDom(), event, stateAfter.getDom(),
-				        browser);
+				return domChange.isDomChanged(context, stateBefore.getDom(), event,
+				        stateAfter.getDom());
 			} catch (RuntimeException ex) {
 				LOGGER.error(
 				        "Could not run {} because of error {}. Now running default DOM comparison",

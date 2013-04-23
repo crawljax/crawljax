@@ -16,8 +16,6 @@ import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 /**
  * The class is a ExtractorManager for the CandidateElements. It basically implements the
  * ExtractorManager.
- * 
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
  */
 public class CandidateElementManager implements ExtractorManager {
 	/**

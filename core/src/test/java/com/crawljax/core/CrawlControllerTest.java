@@ -133,7 +133,7 @@ public class CrawlControllerTest {
 		when(consumerFactory.get()).thenReturn(new CrawlTaskConsumer(candidateActions,
 		        consumersDoneLatch, crawler));
 
-		crawlSessionProvider = new CrawlSessionProvider(graph);
+		crawlSessionProvider = new CrawlSessionProvider(graph, config);
 
 		controller =
 		        new CrawlController(executor, consumerFactory, config, consumersDoneLatch,

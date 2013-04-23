@@ -1,6 +1,6 @@
 package com.crawljax.core.plugin;
 
-import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.state.StateVertex;
 
 /**
@@ -11,13 +11,16 @@ public interface OnNewStatePlugin extends Plugin {
 
 	/**
 	 * Method that is called when a new state is found. Warning: changing the session can change the
-	 * behavior of Crawljax. It is not a copy!
+	 * behavior of Crawljax. It is not a copy! *
+	 * <p>
+	 * This method can be called from multiple threads with different {@link CrawlerContext}
+	 * </p>
 	 * 
-	 * @param session
-	 *            the current session.
+	 * @param context
+	 *            the current context.
 	 * @param newState
 	 *            The new state
 	 */
-	void onNewState(CrawlSession session, StateVertex newState);
+	void onNewState(CrawlerContext context, StateVertex newState);
 
 }

@@ -51,6 +51,9 @@ public class CrawlTaskConsumer implements Callable<Void> {
 		} catch (InterruptedException e) {
 			LOG.debug("Consumer interrupted");
 			crawler.close();
+		} catch (RuntimeException e) {
+			LOG.error("Unexpected error " + e.getMessage(), e);
+			throw e;
 		}
 		return null;
 	}
@@ -82,6 +85,10 @@ public class CrawlTaskConsumer implements Callable<Void> {
 	 */
 	public StateVertex crawlIndex() {
 		return crawler.crawlIndex();
+	}
+
+	public CrawlerContext getContext() {
+		return crawler.getContext();
 	}
 
 }

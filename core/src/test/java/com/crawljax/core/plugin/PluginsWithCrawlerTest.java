@@ -18,12 +18,14 @@ import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.ErrorCollector;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
@@ -48,15 +50,12 @@ public class PluginsWithCrawlerTest {
 
 	private static List<Class<? extends Plugin>> plugins = new BlockingArrayQueue<>();
 
-	private static void checkCrawlSession(CrawlSession session) {
-		assertNotNull(session);
-		assertNotNull(session.getCrawlPaths());
-		assertNotNull(session.getInitialState());
-		assertNotNull(session.getStateFlowGraph());
-	}
-
 	@ClassRule
 	public static final RunWithWebServer SERVER = new RunWithWebServer("/site/crawler");
+
+	@ClassRule
+	public static final ErrorCollector ERRORS = new ErrorCollector();
+
 	private static CrawlSession session;
 
 	@BeforeClass
@@ -86,12 +85,12 @@ public class PluginsWithCrawlerTest {
 
 		builder.addPlugin(new OnNewStatePlugin() {
 			@Override
-			public void onNewState(CrawlSession session, StateVertex state) {
+			public void onNewState(CrawlerContext context, StateVertex state) {
 				plugins.add(OnNewStatePlugin.class);
-				checkCrawlSession(session);
+
 				if (!state.getName().equals("index")) {
 					assertTrue("currentState and indexState are never the same",
-					        !state.equals(session.getInitialState()));
+					        !state.equals(context.getSession().getInitialState()));
 				}
 			}
 		});
@@ -99,8 +98,8 @@ public class PluginsWithCrawlerTest {
 		builder.addPlugin(new DomChangeNotifierPlugin() {
 
 			@Override
-			public boolean isDomChanged(String domBefore, Eventable e, String domAfter,
-			        EmbeddedBrowser browser) {
+			public boolean isDomChanged(CrawlerContext context, String domBefore, Eventable e,
+			        String domAfter) {
 
 				plugins.add(DomChangeNotifierPlugin.class);
 				return !domAfter.equals(domBefore);
@@ -121,10 +120,9 @@ public class PluginsWithCrawlerTest {
 		builder.addPlugin(new OnInvariantViolationPlugin() {
 
 			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlSession session,
-			        EmbeddedBrowser browser) {
+			public void onInvariantViolation(Invariant invariant, CrawlerContext context) {
 				plugins.add(OnInvariantViolationPlugin.class);
-				checkCrawlSession(session);
+
 				assertNotNull(invariant);
 
 			}
@@ -133,7 +131,7 @@ public class PluginsWithCrawlerTest {
 		builder.addPlugin(new OnUrlLoadPlugin() {
 
 			@Override
-			public void onUrlLoad(EmbeddedBrowser browser) {
+			public void onUrlLoad(CrawlerContext browser) {
 				plugins.add(OnUrlLoadPlugin.class);
 				assertNotNull(browser);
 			}
@@ -144,29 +142,25 @@ public class PluginsWithCrawlerTest {
 			@Override
 			public void postCrawling(CrawlSession session) {
 				plugins.add(PostCrawlingPlugin.class);
-				checkCrawlSession(session);
-			}
-		});
 
-		builder.addPlugin(new PreCrawlingPlugin() {
-
-			@Override
-			public void preCrawling(EmbeddedBrowser browser) {
-				plugins.add(PreCrawlingPlugin.class);
-				assertNotNull(browser);
 			}
 		});
 
 		builder.addPlugin(new PreStateCrawlingPlugin() {
 
 			@Override
-			public void preStateCrawling(CrawlSession session,
+			public void preStateCrawling(CrawlerContext session,
 			        ImmutableList<CandidateElement> candidateElements, StateVertex state) {
 				plugins.add(PreStateCrawlingPlugin.class);
-				assertNotNull(candidateElements);
-				checkCrawlSession(session);
-				assertTrue("There are always more than 0 candidates",
-				        candidateElements.size() > 0);
+				try {
+					assertNotNull(candidateElements);
+
+					assertTrue("There are always more than 0 candidates",
+					        candidateElements.size() > 0);
+
+				} catch (AssertionError e) {
+					ERRORS.addError(e);
+				}
 
 				if (state.getName().equals("state8")) {
 					/**
@@ -188,9 +182,9 @@ public class PluginsWithCrawlerTest {
 		builder.addPlugin(new OnRevisitStatePlugin() {
 
 			@Override
-			public void onRevisitState(CrawlSession session, StateVertex currentState) {
+			public void onRevisitState(CrawlerContext session, StateVertex currentState) {
 				plugins.add(OnRevisitStatePlugin.class);
-				checkCrawlSession(session);
+
 				assertNotNull(currentState);
 			}
 		});
@@ -210,9 +204,8 @@ public class PluginsWithCrawlerTest {
 	@Test
 	public void whenCrawlStartsInitialPluginsAreRun() {
 		assertThat(plugins.get(0), typeCompatibleWith(ProxyServerPlugin.class));
-		assertThat(plugins.get(1), typeCompatibleWith(PreCrawlingPlugin.class));
-		assertThat(plugins.get(2), typeCompatibleWith(OnBrowserCreatedPlugin.class));
-		assertThat(plugins.get(3), typeCompatibleWith(OnUrlLoadPlugin.class));
+		assertThat(plugins.get(1), typeCompatibleWith(OnBrowserCreatedPlugin.class));
+		assertThat(plugins.get(2), typeCompatibleWith(OnUrlLoadPlugin.class));
 	}
 
 	@Test
@@ -277,7 +270,6 @@ public class PluginsWithCrawlerTest {
 	@Test
 	public void startAndEndPluginsAreOnlyRunOnce() {
 		assertThat(orrurencesOf(ProxyServerPlugin.class), is(1));
-		assertThat(orrurencesOf(PreCrawlingPlugin.class), is(1));
 		assertThat(orrurencesOf(PostCrawlingPlugin.class), is(1));
 	}
 

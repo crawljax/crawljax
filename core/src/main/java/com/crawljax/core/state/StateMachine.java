@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.oraclecomparator.StateComparator;
 import com.google.common.collect.ImmutableList;
@@ -144,7 +144,7 @@ public class StateMachine {
 	}
 
 	/**
-	 * Adds an edge between teh current and new state.
+	 * Adds an edge between the current and new state.
 	 * 
 	 * @param event
 	 *            the event edge.
@@ -157,15 +157,14 @@ public class StateMachine {
 	 * @return true if the new state is not found in the state machine.
 	 */
 	public boolean swithToStateAndCheckIfClone(final Eventable event, StateVertex newState,
-	        EmbeddedBrowser browser,
-	        CrawlSession session) {
+	        CrawlerContext context) {
 		StateVertex cloneState = this.addStateToCurrentState(newState, event);
 
-		runOnInvriantViolationPlugins(browser, session);
+		runOnInvriantViolationPlugins(context);
 
 		if (cloneState == null) {
 			this.changeState(newState);
-			plugins.runOnNewStatePlugins(session, newState);
+			plugins.runOnNewStatePlugins(context, newState);
 			return true;
 		} else {
 			this.changeState(cloneState);
@@ -173,9 +172,10 @@ public class StateMachine {
 		}
 	}
 
-	private void runOnInvriantViolationPlugins(EmbeddedBrowser browser, CrawlSession session) {
-		for (Invariant failedInvariant : invariantChecker.getFailedConditions(browser)) {
-			plugins.runOnInvriantViolationPlugins(failedInvariant, session, browser);
+	private void runOnInvriantViolationPlugins(CrawlerContext context) {
+		for (Invariant failedInvariant : invariantChecker.getFailedConditions(context
+		        .getBrowser())) {
+			plugins.runOnInvriantViolationPlugins(failedInvariant, context);
 		}
 	}
 }

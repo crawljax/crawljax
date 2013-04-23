@@ -16,9 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.core.state.Eventable.EventType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;

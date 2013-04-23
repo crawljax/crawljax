@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.condition.RegexCondition;
@@ -32,6 +31,7 @@ import com.crawljax.condition.browserwaiter.ExpectedVisibleCondition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
@@ -239,14 +239,14 @@ public abstract class LargeTestBase {
 		crawljaxConfiguration.addPlugin(new OnInvariantViolationPlugin() {
 
 			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlSession session,
-			        EmbeddedBrowser browser) {
+			public void onInvariantViolation(Invariant invariant, CrawlerContext context) {
 				LargeTestBase.violatedInvariants.add(invariant);
-				if (browser.getDom().contains(INVARIANT_TEXT)) {
+				if (context.getBrowser().getDom().contains(INVARIANT_TEXT)) {
 					violatedInvariantStateIsCorrect = true;
 					LOG.warn("Invariant violated: " + invariant.getDescription());
 				}
 			}
+
 		});
 	}
 

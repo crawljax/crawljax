@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawlController;
+import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
