@@ -331,6 +331,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			// close browser and close every associated window.
 			browser.quit();
 		} catch (WebDriverException e) {
+			if (e.getCause() instanceof InterruptedException) {
+				LOGGER.info("Interrupted while waiting for the browser to close. It might not close correctly");
+				Thread.currentThread().interrupt();
+				return;
+			}
 			throw wrapWebDriverExceptionIfConnectionException(e);
 		}
 		LOGGER.debug("Browser closed...");

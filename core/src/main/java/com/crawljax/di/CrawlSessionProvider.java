@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlSessionNotSetupYetException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
@@ -57,7 +58,7 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 		if (isSet.get()) {
 			return this.session;
 		} else {
-			throw new IllegalStateException("Session is not set");
+			throw new CrawlSessionNotSetupYetException();
 		}
 	}
 

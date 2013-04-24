@@ -410,6 +410,8 @@ public class Crawler {
 		LOG.debug("Parsing the index for candidate elements");
 		ImmutableList<CandidateElement> extract = candidateExtractor.extract(index);
 
+		plugins.runPreStateCrawlingPlugins(context, extract, index);
+
 		candidateActionCache.addActions(extract, index);
 
 		return index;

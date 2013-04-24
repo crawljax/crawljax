@@ -5,10 +5,10 @@ import javax.inject.Provider;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.plugin.Plugin;
 
 /**
- * A context for each {@link Crawler} that can be handed to the plugins.
+ * A context for each {@link Crawler} that can be handed to a {@link Plugin}.
  */
 public class CrawlerContext {
 
