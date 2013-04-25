@@ -5,8 +5,8 @@ import javax.annotation.concurrent.Immutable;
 import org.openqa.selenium.Point;
 
 import com.crawljax.core.state.StateVertex;
-import com.google.common.collect.ImmutableList;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 
 @Immutable
 public class State {
@@ -18,6 +18,7 @@ public class State {
 	private final int fanOut;
 	private final int screenshotOffsetTop;
 	private final int screenshotOffsetLeft;
+	private final int id;
 
 	public State(StateVertex state, int fanIn, int fanOut,
 	        ImmutableList<CandidateElementPosition> candidates, Point offset) {
@@ -28,6 +29,7 @@ public class State {
 		this.url = state.getUrl();
 		this.screenshotOffsetLeft = offset.x;
 		this.screenshotOffsetTop = offset.y;
+		this.id = state.getId();
 	}
 
 	public String getName() {
@@ -58,17 +60,22 @@ public class State {
 		return screenshotOffsetLeft;
 	}
 
+	public int getId() {
+		return id;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(name, url, candidateElements, fanIn, fanOut, screenshotOffsetTop,
-		        screenshotOffsetLeft);
+		        screenshotOffsetLeft, id);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof State) {
 			State that = (State) object;
-			return Objects.equal(this.name, that.name)
+			return Objects.equal(this.id, that.id)
+			        && Objects.equal(this.name, that.name)
 			        && Objects.equal(this.url, that.url)
 			        && Objects.equal(this.candidateElements, that.candidateElements)
 			        && Objects.equal(this.fanIn, that.fanIn)
@@ -83,6 +90,7 @@ public class State {
 	public String toString() {
 		return Objects.toStringHelper(this)
 		        .add("name", name)
+		        .add("id", id)
 		        .add("url", url)
 		        .add("candidateElements", candidateElements)
 		        .add("fanIn", fanIn)

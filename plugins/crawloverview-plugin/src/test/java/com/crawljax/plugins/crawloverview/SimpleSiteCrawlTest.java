@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsArrayWithSize.arrayWithSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.crawltests.SimpleSiteCrawl;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
+import com.crawljax.plugins.crawloverview.model.State;
 import com.crawljax.plugins.crawloverview.model.StateStatistics;
 import com.crawljax.rules.TempDirInTargetFolder;
 
@@ -73,10 +75,10 @@ public class SimpleSiteCrawlTest {
 	@Test
 	public void verifyFanStatistics() {
 		StateStatistics stats = result.getStatistics().getStateStats();
-		assertThat("Least fan in", stats.getLeastFanIn().getFanIn(), is(1));
-		assertThat("Most fan in", stats.getMostFanIn().getFanIn(), is(2));
-		assertThat("Least fan out", stats.getLeastFanOut().getFanIn(), is(1));
-		assertThat("Most fan out", stats.getMostFanOut().getFanOut(), is(2));
+		assertThat("Least fan in", stats.getLeastFanIn().getValue(), is(1));
+		assertThat("Most fan in", stats.getMostFanIn().getValue(), is(2));
+		assertThat("Least fan out", stats.getLeastFanOut().getValue(), is(1));
+		assertThat("Most fan out", stats.getMostFanOut().getValue(), is(2));
 	}
 
 	@Test

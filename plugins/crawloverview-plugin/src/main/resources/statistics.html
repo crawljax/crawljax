@@ -41,25 +41,25 @@
 	<table class="table table-bordered table-striped">
 		<tbody>
 			<tr>
-				<th>Highest fan-out</th> #set ( $state =
-				$stats.stateStats.mostFanOut)
-				<td><a href="states/${state.name}.html">${state.name}</a></td>
-				<td>${state.getFanOut()}</td>
+				<th>Highest fan-out</th> 
+				#set ( $state = $stats.stateStats.mostFanOut)
+				<td><a href="states/${state.left}.html">${state.left}</a></td>
+				<td>${state.right}</td>
 			</tr>
 			<tr>
 				<th>Lowest fan-out</th> #set ( $state = $stats.stateStats.mostFanIn)
-				<td><a href="states/${state.name}.html">${state.name}</a></td>
-				<td>${state.getFanOut()}</td>
+				<td><a href="states/${state.left}.html">${state.left}</a></td>
+				<td>${state.right}</td>
 			</tr>
 			<tr>
 				<th>Highest fan-in</th> #set ( $state = $stats.stateStats.mostFanIn)
-				<td><a href="states/${state.name}.html">${state.name}</a></td>
-				<td>${state.getFanIn()}</td>
+				<td><a href="states/${state.left}.html">${state.left}</a></td>
+				<td>${state.right}</td>
 			</tr>
 			<tr>
 				<th>Lowest fan-in</th> #set ( $state = $stats.stateStats.leastFanIn)
-				<td><a href="states/${state.name}.html">${state.name}</a></td>
-				<td>${state.getFanIn()}</td>
+				<td><a href="states/${state.left}.html">${state.left}</a></td>
+				<td>${state.right}</td>
 			</tr>
 		</tbody>
 	</table>
