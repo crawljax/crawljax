@@ -20,16 +20,12 @@ public class OracleTest {
 
 	private void compareTwoDomsWithComparatorEqual(String original, String newDom,
 	        Comparator comparator) {
-		comparator.setOriginalDom(original);
-		comparator.setNewDom(newDom);
-		assertTrue(comparator.isEquivalent());
+		assertTrue(comparator.isEquivalent(original, newDom));
 	}
 
 	private void compareTwoDomsWithComparatorNotEqual(String original, String newDom,
 	        Comparator comparator) {
-		comparator.setOriginalDom(original);
-		comparator.setNewDom(newDom);
-		assertFalse(comparator.isEquivalent());
+		assertFalse(comparator.isEquivalent(original, newDom));
 	}
 
 	@Test
@@ -170,8 +166,7 @@ public class OracleTest {
 		String control =
 		        "<HTML><A href=\"foo.html\" jquery12421421=\"bla\" myattr=\"true\">foo</A><HTML>";
 		String test = "<HTML><A></A><HTML>";
-		compareTwoDomsWithComparatorEqual(control, test, new PlainStructureComparator(control,
-		        test));
+		compareTwoDomsWithComparatorEqual(control, test, new PlainStructureComparator(true));
 	}
 
 	@Test

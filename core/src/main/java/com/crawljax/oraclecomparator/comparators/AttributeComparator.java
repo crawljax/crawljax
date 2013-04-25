@@ -7,8 +7,6 @@ import com.crawljax.oraclecomparator.AbstractComparator;
 
 /**
  * Oracle Comparator that ignores the specified attributes.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 public class AttributeComparator extends AbstractComparator {
 
@@ -24,19 +22,13 @@ public class AttributeComparator extends AbstractComparator {
 		}
 	}
 
-	private String stripAttributes(String dom) {
+	@Override
+	public String normalize(String dom) {
 		String strippedDom = dom;
 		for (String attribute : ignoreAttributes) {
 			String regExp = "\\s" + attribute + "=\"[^\"]*\"";
 			strippedDom = dom.replaceAll(regExp, "");
 		}
 		return strippedDom;
-	}
-
-	@Override
-	public boolean isEquivalent() {
-		setOriginalDom(stripAttributes(getOriginalDom()));
-		setNewDom(stripAttributes(getNewDom()));
-		return super.compare();
 	}
 }

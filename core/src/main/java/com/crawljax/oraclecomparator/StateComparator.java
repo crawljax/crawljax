@@ -55,18 +55,8 @@ public class StateComparator {
 				LOGGER.debug("Using {} : {}", oracle.getClass().getSimpleName(),
 				        oraclePreCondition.getId());
 
-				boolean equivalent = false;
-				// Synchronise on a single oracle setting the doms at first and later retrieve them
-				// after synchronised processing.
-				// TODO Stefan the ultimate Goal is to remove this synchronisation
-				synchronized (oracle) {
-					oracle.setOriginalDom("");
-					oracle.setNewDom(newDom);
-
-					equivalent = oracle.isEquivalent();
-
-					newDom = oracle.getNewDom();
-				}
+				boolean equivalent = oracle.isEquivalent("", newDom);
+				newDom = oracle.getNewDom();
 
 				if (equivalent) {
 					return newDom;

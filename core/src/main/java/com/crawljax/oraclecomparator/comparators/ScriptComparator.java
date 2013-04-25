@@ -18,36 +18,20 @@ public class ScriptComparator extends AbstractComparator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComparator.class
 	        .getName());
 
-	/**
-	 * Default argument less constructor.
-	 */
-	public ScriptComparator() {
-	}
-
-	/**
-	 * @param originalDom
-	 *            The original DOM.
-	 * @param newDom
-	 *            The new DOM.
-	 */
-	public ScriptComparator(String originalDom, String newDom) {
-		super(originalDom, newDom);
-	}
-
 	@Override
-	public boolean isEquivalent() {
+	public boolean isEquivalent(String oldDom, String newDom) {
 		try {
-			Document orgDoc = DomUtils.asDocument(getOriginalDom());
+			Document orgDoc = DomUtils.asDocument(oldDom);
 			orgDoc = DomUtils.removeScriptTags(orgDoc);
-			setOriginalDom(DomUtils.getDocumentToString(orgDoc));
+			String normalizedOld = DomUtils.getDocumentToString(orgDoc);
 
-			Document newDoc = DomUtils.asDocument(getNewDom());
+			Document newDoc = DomUtils.asDocument(newDom);
 			newDoc = DomUtils.removeScriptTags(newDoc);
-			setNewDom(DomUtils.getDocumentToString(newDoc));
+			String normalizedNew = DomUtils.getDocumentToString(newDoc);
+			return super.compare(normalizedOld, normalizedNew);
 		} catch (IOException | CrawljaxException e) {
 			LOGGER.error("Exception with creating DOM document", e);
 			return false;
 		}
-		return super.compare();
 	}
 }
