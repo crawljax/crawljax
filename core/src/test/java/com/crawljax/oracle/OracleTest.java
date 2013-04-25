@@ -174,7 +174,7 @@ public class OracleTest {
 		String control =
 		        "<HTML><head><script>JavaScript();</script><title>Test</title></head><body><script>JavaScript23();</script>test</body><HTML>";
 		String test = "<HTML><head><title>Test</title></head><body>test</body><HTML>";
-		compareTwoDomsWithComparatorEqual(control, test, new ScriptComparator(control, test));
+		compareTwoDomsWithComparatorEqual(control, test, new ScriptComparator());
 	}
 
 	@Test
@@ -206,17 +206,15 @@ public class OracleTest {
 		XPathExpressionComparator oracle = new XPathExpressionComparator();
 
 		compareTwoDomsWithComparatorEqual(control, test, oracle);
-		compareTwoDomsWithComparatorEqual(control, test, new XPathExpressionComparator(control,
-		        test));
+		compareTwoDomsWithComparatorEqual(control, test, new XPathExpressionComparator());
 
 		test =
 		        "<HTML><head><title>Test</title></head><body>test<div id='ignoreme'>"
 		                + "ignoreme</div></body><HTML>";
 		compareTwoDomsWithComparatorNotEqual(control, test, oracle);
-		compareTwoDomsWithComparatorNotEqual(control, test, new XPathExpressionComparator(
-		        control, test));
+		compareTwoDomsWithComparatorNotEqual(control, test, new XPathExpressionComparator());
 
-		oracle.addExpression("//*[@id='ignoreme']");
+		oracle = new XPathExpressionComparator("//*[@id='ignoreme']");
 		compareTwoDomsWithComparatorEqual(control, test, oracle);
 		compareTwoDomsWithComparatorEqual(test, control, oracle);
 
@@ -227,5 +225,4 @@ public class OracleTest {
 		compareTwoDomsWithComparatorEqual(control, test, oracle);
 		compareTwoDomsWithComparatorEqual(test, control, oracle);
 	}
-
 }

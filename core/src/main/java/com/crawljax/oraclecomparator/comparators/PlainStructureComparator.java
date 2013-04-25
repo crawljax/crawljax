@@ -14,7 +14,7 @@ public class PlainStructureComparator extends AbstractComparator {
 	}
 
 	@Override
-	protected String normalize(String dom) {
+	public String normalize(String dom) {
 		String normalized = dom;
 		if (removeAttributes) {
 			normalized = stripAttributes(normalized);

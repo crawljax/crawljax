@@ -55,8 +55,9 @@ public class StateComparator {
 				LOGGER.debug("Using {} : {}", oracle.getClass().getSimpleName(),
 				        oraclePreCondition.getId());
 
+				// TODO dodgy code. Is the equivalence check necessary?
 				boolean equivalent = oracle.isEquivalent("", newDom);
-				newDom = oracle.getNewDom();
+				newDom = oracle.normalize(newDom);
 
 				if (equivalent) {
 					return newDom;

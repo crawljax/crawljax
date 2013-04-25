@@ -38,7 +38,7 @@ public abstract class AbstractComparator implements Comparator {
 	 *            The original DOM
 	 * @return the normalized DOM.
 	 */
-	protected String normalize(String dom) {
+	public String normalize(String dom) {
 		return dom;
 	}
 }

@@ -22,4 +22,9 @@ public interface Comparator {
 	 */
 	boolean isEquivalent(String oldDom, String newDom);
 
+	/**
+	 * @return The normalized DOM, on which the comparison is made.
+	 */
+	String normalize(String dom);
+
 }
