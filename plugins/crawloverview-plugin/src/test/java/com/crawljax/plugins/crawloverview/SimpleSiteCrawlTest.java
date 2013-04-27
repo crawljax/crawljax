@@ -77,7 +77,7 @@ public class SimpleSiteCrawlTest {
 		StateStatistics stats = result.getStatistics().getStateStats();
 		assertThat("Least fan in", stats.getLeastFanIn().getValue(), is(1));
 		assertThat("Most fan in", stats.getMostFanIn().getValue(), is(2));
-		assertThat("Least fan out", stats.getLeastFanOut().getValue(), is(1));
+		assertThat("Least fan out", stats.getLeastFanOut().getValue(), is(0));
 		assertThat("Most fan out", stats.getMostFanOut().getValue(), is(2));
 	}
 

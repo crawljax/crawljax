@@ -47,7 +47,7 @@
 				<td>${state.right}</td>
 			</tr>
 			<tr>
-				<th>Lowest fan-out</th> #set ( $state = $stats.stateStats.mostFanIn)
+				<th>Lowest fan-out</th> #set ( $state = $stats.stateStats.leastFanOut)
 				<td><a href="states/${state.left}.html">${state.left}</a></td>
 				<td>${state.right}</td>
 			</tr>

@@ -43,9 +43,9 @@ public class StateStatistics {
 		}
 		this.urls = builder.build();
 		this.leastFanOut = Pair.of(tmpLeastFanOut.getName(), tmpLeastFanOut.getFanOut());
-		this.leastFanIn = Pair.of(tmpLeastFanIn.getName(), tmpLeastFanIn.getFanOut());
+		this.leastFanIn = Pair.of(tmpLeastFanIn.getName(), tmpLeastFanIn.getFanIn());
 		this.mostFanOut = Pair.of(tmpMostFanOut.getName(), tmpMostFanOut.getFanOut());
-		this.mostFanIn = Pair.of(tmpMostFanIn.getName(), tmpMostFanIn.getFanOut());
+		this.mostFanIn = Pair.of(tmpMostFanIn.getName(), tmpMostFanIn.getFanIn());
 	}
 
 	public Pair<String, Integer> getLeastFanOut() {
