@@ -11,7 +11,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.ExitNotifier.Reason;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
@@ -38,7 +38,7 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	private final ExitNotifier exitNotifier;
 
-	private Reason exitReason;
+	private ExitStatus exitReason;
 
 	@Inject
 	CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
@@ -71,9 +71,10 @@ public class CrawlController implements Callable<CrawlSession> {
 	}
 
 	/**
-	 * @return The {@link Reason} crawljax stopped or <code>null</code> when it hasn't stopped yet.
+	 * @return The {@link ExitStatus} crawljax stopped or <code>null</code> when it hasn't stopped
+	 *         yet.
 	 */
-	public Reason getReason() {
+	public ExitStatus getReason() {
 		return exitReason;
 	}
 
@@ -109,9 +110,10 @@ public class CrawlController implements Callable<CrawlSession> {
 			exitReason = exitNotifier.awaitTermination();
 		} catch (InterruptedException e) {
 			LOG.warn("The crawl was interrupted before it finished. Shutting down...");
+			exitReason = ExitStatus.ERROR;
 		} finally {
 			shutDown();
-			plugins.runPostCrawlingPlugins(crawlSessionProvider.get());
+			plugins.runPostCrawlingPlugins(crawlSessionProvider.get(), exitReason);
 		}
 	}
 
@@ -120,9 +122,10 @@ public class CrawlController implements Callable<CrawlSession> {
 		executor.shutdownNow();
 		try {
 			LOG.debug("Waiting for task consumers to stop...");
-			executor.awaitTermination(10, TimeUnit.SECONDS);
+			executor.awaitTermination(15, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			LOG.warn("Interrupted before being able to shut down executor pool", e);
+			exitReason = ExitStatus.ERROR;
 		}
 		LOG.debug("terminated");
 	}

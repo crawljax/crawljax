@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
@@ -31,8 +33,12 @@ import com.google.common.collect.Maps;
  */
 class OutPutModelCache {
 
-	private static final Logger LOG = LoggerFactory.getLogger(OutPutModelCache.class);
-	private final ConcurrentMap<String, StateBuilder> states = Maps.newConcurrentMap();
+	private static final Logger LOG = LoggerFactory
+	        .getLogger(OutPutModelCache.class);
+	private final ConcurrentMap<String, StateBuilder> states = Maps
+	        .newConcurrentMap();
+
+	private final AtomicInteger failedEvents = new AtomicInteger();
 
 	private final Date startDate = new Date();
 
@@ -49,21 +55,23 @@ class OutPutModelCache {
 	/**
 	 * @return Makes the final calculations and retuns the {@link OutPutModel}.
 	 */
-	OutPutModel close(CrawlSession session) {
-		ImmutableList<Edge> edgesCopy = asEdges(session.getStateFlowGraph().getAllEdges());
+	public OutPutModel close(CrawlSession session, ExitStatus exitStatus) {
+		ImmutableList<Edge> edgesCopy = asEdges(session.getStateFlowGraph()
+		        .getAllEdges());
 		checkEdgesAndCountFans(edgesCopy);
 		ImmutableMap<String, State> statesCopy = buildStates();
 
-		if (statesCopy.size() != session.getStateFlowGraph().getAllStates().size()) {
+		if (statesCopy.size() != session.getStateFlowGraph().getAllStates()
+		        .size()) {
 			LOG.error("Not all states from the session are in the result. This means there's a bug somewhere");
-			LOG.info("Printing state difference. \nSession states: {} \nResult states: {}",
+			LOG.info(
+			        "Printing state difference. \nSession states: {} \nResult states: {}",
 			        statesCopy, session.getStateFlowGraph().getAllStates());
 		}
 
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
-		return new OutPutModel(statesCopy, edgesCopy,
-		        new Statistics(session, stateStats, startDate),
-		        session.getConfig());
+		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session,
+		        stateStats, startDate, failedEvents.get()), exitStatus);
 	}
 
 	private ImmutableList<Edge> asEdges(Set<Eventable> allEdges) {
@@ -91,6 +99,16 @@ class OutPutModelCache {
 			builder.put(state.getName(), state.build());
 		}
 		return builder.build();
+	}
+
+	public void registerFailEvent(StateVertex currentState, Eventable eventable) {
+		failedEvents.incrementAndGet();
+		if (currentState != null) {
+			StateBuilder builder = states.get(currentState.getName());
+			if (builder != null) {
+				builder.eventFailed(eventable);
+			}
+		}
 	}
 
 }

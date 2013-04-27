@@ -102,6 +102,7 @@ public class CrawlerTest {
 		FormHandlerFactory formHandlerFactory = mock(FormHandlerFactory.class);
 		when(formHandlerFactory.newFormHandler(browser)).thenReturn(formHandler);
 		url = new URL("http://example.com");
+		when(browser.getCurrentUrl()).thenReturn(url.toExternalForm());
 		when(sessionProvider.get()).thenReturn(session);
 
 		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());

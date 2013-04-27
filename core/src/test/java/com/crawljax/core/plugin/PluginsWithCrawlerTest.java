@@ -27,6 +27,7 @@ import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.CrawljaxRunner;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.ProxyConfiguration;
@@ -140,7 +141,7 @@ public class PluginsWithCrawlerTest {
 		builder.addPlugin(new PostCrawlingPlugin() {
 
 			@Override
-			public void postCrawling(CrawlSession session) {
+			public void postCrawling(CrawlSession session, ExitStatus status) {
 				plugins.add(PostCrawlingPlugin.class);
 
 			}

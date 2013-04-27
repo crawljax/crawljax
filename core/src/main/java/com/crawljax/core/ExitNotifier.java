@@ -16,36 +16,48 @@ public class ExitNotifier {
 	/**
 	 * Represents the reason Crawljax stopped.
 	 */
-	public enum Reason {
+	public enum ExitStatus {
 
 		/**
 		 * The maximum number of states is reached as defined in
 		 * {@link CrawljaxConfiguration#getMaximumStates()}.
 		 */
-		MAX_STATES,
+		MAX_STATES("Maximum states passed"),
 
 		/**
 		 * The maximum crawl time is reached as defined in
 		 * {@link CrawljaxConfiguration#getMaximumRuntime()}.
 		 */
-		MAX_TIME,
+		MAX_TIME("Maximum time passed"),
 
 		/**
 		 * The crawl is done.
 		 */
-		EXHAUSTED,
+		EXHAUSTED("Exausted"),
 
 		/**
 		 * The crawler quite because of an error.
 		 */
-		ERROR
+		ERROR("Errored");
+
+		private final String readableName;
+
+		private ExitStatus(String readableName) {
+			this.readableName = readableName;
+
+		}
+
+		@Override
+		public String toString() {
+			return readableName;
+		}
 	}
 
 	private final CountDownLatch latch = new CountDownLatch(1);
 	private final AtomicInteger states = new AtomicInteger();
 	private final int maxStates;
 
-	private Reason reason;
+	private ExitStatus reason;
 
 	public ExitNotifier(int maxStates) {
 		this.maxStates = maxStates;
@@ -57,7 +69,7 @@ public class ExitNotifier {
 	 * @throws InterruptedException
 	 *             When the wait is interrupted.
 	 */
-	public Reason awaitTermination() throws InterruptedException {
+	public ExitStatus awaitTermination() throws InterruptedException {
 		latch.await();
 		return reason;
 	}
@@ -68,14 +80,14 @@ public class ExitNotifier {
 	public int incrementNumberOfStates() {
 		int count = states.incrementAndGet();
 		if (count == maxStates) {
-			reason = Reason.MAX_STATES;
+			reason = ExitStatus.MAX_STATES;
 			latch.countDown();
 		}
 		return count;
 	}
 
 	public void signalTimeIsUp() {
-		reason = Reason.MAX_TIME;
+		reason = ExitStatus.MAX_TIME;
 		latch.countDown();
 	}
 
@@ -83,7 +95,7 @@ public class ExitNotifier {
 	 * Signal that all {@link CrawlTaskConsumer}s are done.
 	 */
 	public void signalCrawlExhausted() {
-		reason = Reason.EXHAUSTED;
+		reason = ExitStatus.EXHAUSTED;
 		latch.countDown();
 	}
 

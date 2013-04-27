@@ -29,7 +29,7 @@ public class IsValidJson {
 			protected boolean matchesSafely(File item) {
 				boolean valid = false;
 				try {
-					JsonParser parser = new ObjectMapper().getFactory().createJsonParser(item);
+					JsonParser parser = new ObjectMapper().getFactory().createParser(item);
 					while (parser.nextToken() != null) {
 					}
 					valid = true;

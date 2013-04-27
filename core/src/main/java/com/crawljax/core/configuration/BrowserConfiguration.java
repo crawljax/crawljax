@@ -42,7 +42,6 @@ public class BrowserConfiguration {
 
 	private final BrowserType browsertype;
 	private final int numberOfBrowsers;
-	private final boolean bootstrap;
 	private final Provider<EmbeddedBrowser> browserBuilder;
 	private String remoteHubUrl;
 
@@ -55,10 +54,9 @@ public class BrowserConfiguration {
 	 * @param remoteUrl
 	 *            the URL of the remote HUB
 	 */
-	public static BrowserConfiguration remoteConfig(int numberOfBrowsers, boolean bootstrap,
-	        String remoteUrl) {
+	public static BrowserConfiguration remoteConfig(int numberOfBrowsers, String remoteUrl) {
 		BrowserConfiguration config =
-		        new BrowserConfiguration(BrowserType.remote, numberOfBrowsers, bootstrap);
+		        new BrowserConfiguration(BrowserType.remote, numberOfBrowsers);
 		config.remoteHubUrl = remoteUrl;
 		return config;
 	}
@@ -81,7 +79,7 @@ public class BrowserConfiguration {
 	 *            crawl starts.
 	 */
 	public BrowserConfiguration(BrowserType browsertype, int numberOfBrowsers) {
-		this(browsertype, numberOfBrowsers, true);
+		this(browsertype, numberOfBrowsers, DEFAULT_BROWSER_BUILDER);
 	}
 
 	/**
@@ -90,27 +88,10 @@ public class BrowserConfiguration {
 	 * @param numberOfBrowsers
 	 *            The number of browsers you'd like to use. They will be started as soon as the
 	 *            crawl starts.
-	 * @param bootstrap
-	 *            if you want the browsers to start when the crawler starts. If <code>false</code>
-	 *            the browser will only be started when they are needed.
-	 */
-	public BrowserConfiguration(BrowserType browsertype, int numberOfBrowsers, boolean bootstrap) {
-		this(browsertype, numberOfBrowsers, bootstrap, DEFAULT_BROWSER_BUILDER);
-	}
-
-	/**
-	 * @param browsertype
-	 *            The browser you'd like to use.
-	 * @param numberOfBrowsers
-	 *            The number of browsers you'd like to use. They will be started as soon as the
-	 *            crawl starts.
-	 * @param bootstrap
-	 *            if you want the browsers to start when the crawler starts. If <code>false</code>
-	 *            the browser will only be started when they are needed.
 	 * @param builder
 	 *            a custom {@link WebDriverBrowserBuilder}.
 	 */
-	public BrowserConfiguration(BrowserType browsertype, int numberOfBrowsers, boolean bootstrap,
+	public BrowserConfiguration(BrowserType browsertype, int numberOfBrowsers,
 	        Provider<EmbeddedBrowser> builder) {
 		Preconditions.checkArgument(numberOfBrowsers > 0,
 		        "Number of browsers should be 1 or more");
@@ -119,7 +100,6 @@ public class BrowserConfiguration {
 
 		this.browsertype = browsertype;
 		this.numberOfBrowsers = numberOfBrowsers;
-		this.bootstrap = bootstrap;
 		this.browserBuilder = builder;
 	}
 
@@ -129,10 +109,6 @@ public class BrowserConfiguration {
 
 	public int getNumberOfBrowsers() {
 		return numberOfBrowsers;
-	}
-
-	public boolean isBootstrap() {
-		return bootstrap;
 	}
 
 	public Provider<EmbeddedBrowser> getBrowserBuilder() {
@@ -152,7 +128,6 @@ public class BrowserConfiguration {
 		return Objects.toStringHelper(this)
 		        .add("browsertype", browsertype)
 		        .add("numberOfBrowsers", numberOfBrowsers)
-		        .add("bootstrap", bootstrap)
 		        .add("browserBuilder", browserBuilder)
 		        .add("remoteHubUrl", remoteHubUrl)
 		        .toString();
@@ -160,7 +135,7 @@ public class BrowserConfiguration {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(browsertype, numberOfBrowsers, bootstrap, browserBuilder,
+		return Objects.hashCode(browsertype, numberOfBrowsers, browserBuilder,
 		        remoteHubUrl);
 	}
 
@@ -170,7 +145,6 @@ public class BrowserConfiguration {
 			BrowserConfiguration that = (BrowserConfiguration) object;
 			return Objects.equal(this.browsertype, that.browsertype)
 			        && Objects.equal(this.numberOfBrowsers, that.numberOfBrowsers)
-			        && Objects.equal(this.bootstrap, that.bootstrap)
 			        && Objects.equal(this.browserBuilder, that.browserBuilder)
 			        && Objects.equal(this.remoteHubUrl, that.remoteHubUrl);
 		}

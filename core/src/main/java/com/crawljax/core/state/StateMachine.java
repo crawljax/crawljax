@@ -163,11 +163,11 @@ public class StateMachine {
 		runOnInvriantViolationPlugins(context);
 
 		if (cloneState == null) {
-			this.changeState(newState);
+			changeState(newState);
 			plugins.runOnNewStatePlugins(context, newState);
 			return true;
 		} else {
-			this.changeState(cloneState);
+			changeState(cloneState);
 			return false;
 		}
 	}

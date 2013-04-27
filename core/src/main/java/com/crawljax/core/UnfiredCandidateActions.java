@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 
 import javax.inject.Inject;
@@ -36,6 +37,8 @@ public class UnfiredCandidateActions {
 	private final BlockingQueue<Integer> statesWithCandidates;
 	private final Striped<Lock> locks;
 	private final Provider<StateFlowGraph> sfg;
+	private final AtomicInteger crawlerLostCount = new AtomicInteger();
+	private final AtomicInteger actionsNotFiredCount = new AtomicInteger();
 
 	@Inject
 	UnfiredCandidateActions(BrowserConfiguration config, Provider<StateFlowGraph> sfg) {
@@ -138,6 +141,24 @@ public class UnfiredCandidateActions {
 		LOG.debug("New task polled for state {}", id);
 		LOG.info("There are {} states with unfired actions", statesWithCandidates.size());
 		return sfg.get().getById(id);
+	}
+
+	public void purgeActionsForState(StateVertex crawlTask) {
+		Lock lock = locks.get(crawlTask.getId());
+		try {
+			lock.lock();
+			LOG.debug("Removing tasks for target state {}", crawlTask.getName());
+			removeStateFromQueue(crawlTask.getId());
+			Queue<CandidateCrawlAction> removed = cache.remove(crawlTask.getId());
+			if (removed != null) {
+				actionsNotFiredCount.addAndGet(removed.size());
+			}
+		} finally {
+			lock.unlock();
+		}
+		crawlerLostCount.incrementAndGet();
+		LOG.info("In total {} actions weren't fired because crawljax got lost {} times",
+		        actionsNotFiredCount, crawlerLostCount);
 	}
 
 }

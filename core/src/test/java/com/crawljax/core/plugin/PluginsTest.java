@@ -20,6 +20,7 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
@@ -93,8 +94,8 @@ public class PluginsTest {
 
 	@Test
 	public void postCrawlPluginIsCalled() {
-		plugins.runPostCrawlingPlugins(session);
-		verify(postCrawlingPlugin).postCrawling(session);
+		plugins.runPostCrawlingPlugins(session, ExitStatus.EXHAUSTED);
+		verify(postCrawlingPlugin).postCrawling(session, ExitStatus.EXHAUSTED);
 	}
 
 	@Test

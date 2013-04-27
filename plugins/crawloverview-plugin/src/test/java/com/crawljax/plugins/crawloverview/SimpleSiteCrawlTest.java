@@ -8,7 +8,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsArrayWithSize.arrayWithSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 
@@ -20,13 +19,13 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.crawltests.SimpleSiteCrawl;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
-import com.crawljax.plugins.crawloverview.model.State;
 import com.crawljax.plugins.crawloverview.model.StateStatistics;
 import com.crawljax.rules.TempDirInTargetFolder;
 
 public class SimpleSiteCrawlTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SimpleSiteCrawlTest.class);
+	private static final Logger LOG = LoggerFactory
+	        .getLogger(SimpleSiteCrawlTest.class);
 	private static OutPutModel result;
 
 	@ClassRule
@@ -49,9 +48,11 @@ public class SimpleSiteCrawlTest {
 	@Test
 	public void allScreenShotsAreSaved() {
 		File screenShotFolder = new File(outFolder, "screenshots");
-		assertThat("Screenshot folder exists", screenShotFolder.exists(), is(true));
+		assertThat("Screenshot folder exists", screenShotFolder.exists(),
+		        is(true));
 		int screenshots = SimpleSiteCrawl.NUMBER_OF_STATES * 2;
-		assertThat("Number of screenshots", screenShotFolder.list(), arrayWithSize(screenshots));
+		assertThat("Number of screenshots", screenShotFolder.list(),
+		        arrayWithSize(screenshots));
 	}
 
 	@Test
@@ -75,16 +76,22 @@ public class SimpleSiteCrawlTest {
 	@Test
 	public void verifyFanStatistics() {
 		StateStatistics stats = result.getStatistics().getStateStats();
-		assertThat("Least fan in", stats.getLeastFanIn().getValue(), is(1));
-		assertThat("Most fan in", stats.getMostFanIn().getValue(), is(2));
-		assertThat("Least fan out", stats.getLeastFanOut().getValue(), is(1));
-		assertThat("Most fan out", stats.getMostFanOut().getValue(), is(2));
+		assertThat("Least fan in", stats.getLeastFanIn().getCount(), is(1));
+		assertThat("Most fan in", stats.getMostFanIn().getCount(), is(2));
+		assertThat("Least fan out", stats.getLeastFanOut().getCount(), is(0));
+		assertThat("Most fan out", stats.getMostFanOut().getCount(), is(2));
 	}
 
 	@Test
 	public void resultFileIsWritten() {
 		assertThat(new File(outFolder, "result.json"), exists());
 		assertThat(new File(outFolder, "result.json"), isValidJson());
+	}
+	
+	@Test
+	public void configFileIsWritten() {
+		assertThat(new File(outFolder, "config.json"), exists());
+		assertThat(new File(outFolder, "config.json"), isValidJson());
 	}
 
 	@Test

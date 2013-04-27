@@ -5,7 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.crawljax.core.ExitNotifier.Reason;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 
 public class ExitNotifierTest {
 
@@ -16,8 +16,8 @@ public class ExitNotifierTest {
 		notifier = new ExitNotifier(2);
 		notifier.incrementNumberOfStates();
 		notifier.incrementNumberOfStates();
-		Reason reason = notifier.awaitTermination();
-		assertThat(reason, is(Reason.MAX_STATES));
+		ExitStatus reason = notifier.awaitTermination();
+		assertThat(reason, is(ExitStatus.MAX_STATES));
 
 	}
 

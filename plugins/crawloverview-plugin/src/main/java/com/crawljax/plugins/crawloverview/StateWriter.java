@@ -14,6 +14,7 @@ import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.State;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 class StateWriter {
@@ -44,6 +45,12 @@ class StateWriter {
 		context.put("fanIn", state.getFanIn());
 		context.put("fanOut", state.getFanOut());
 		context.put("url", state.getUrl());
+
+		String failedEvents = "-";
+		if (!state.getFailedEvents().isEmpty()) {
+			failedEvents = Joiner.on(", ").join(state.getFailedEvents());
+		}
+		context.put("failedEvents", failedEvents);
 		String dom = outBuilder.getDom(state.getName());
 		dom = StringEscapeUtils.escapeHtml4(dom);
 		context.put("dom", dom);

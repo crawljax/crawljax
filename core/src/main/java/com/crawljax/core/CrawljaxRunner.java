@@ -2,7 +2,7 @@ package com.crawljax.core;
 
 import java.util.concurrent.Callable;
 
-import com.crawljax.core.ExitNotifier.Reason;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.di.CoreModule;
 import com.google.inject.Guice;
@@ -15,7 +15,7 @@ import com.google.inject.Injector;
 public class CrawljaxRunner implements Callable<CrawlSession> {
 
 	private final CrawljaxConfiguration config;
-	private Reason reason;
+	private ExitStatus reason;
 
 	public CrawljaxRunner(CrawljaxConfiguration config) {
 		this.config = config;
@@ -36,9 +36,10 @@ public class CrawljaxRunner implements Callable<CrawlSession> {
 	}
 
 	/**
-	 * @return The {@link Reason} Crawljax stopped or <code>null</code> if it hasn't stopped yet.
+	 * @return The {@link ExitStatus} Crawljax stopped or <code>null</code> if it hasn't stopped
+	 *         yet.
 	 */
-	public Reason getReason() {
+	public ExitStatus getReason() {
 		return reason;
 	}
 

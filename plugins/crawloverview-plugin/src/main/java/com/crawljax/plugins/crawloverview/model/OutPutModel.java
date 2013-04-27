@@ -2,10 +2,12 @@ package com.crawljax.plugins.crawloverview.model;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.ExitNotifier.ExitStatus;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.base.Objects;
 
 /**
  * Result of a Crawl session.
@@ -19,14 +21,18 @@ public final class OutPutModel {
 	private final ImmutableMap<String, State> states;
 	private final ImmutableList<Edge> edges;
 	private final Statistics statistics;
-	private final CrawljaxConfiguration configuration;
 
-	public OutPutModel(ImmutableMap<String, State> states, ImmutableList<Edge> edges,
-	        Statistics statistics, CrawljaxConfiguration config) {
+	private final ExitStatus exitStatus;
+
+	@JsonCreator
+	public OutPutModel(@JsonProperty("states") ImmutableMap<String, State> states,
+	        @JsonProperty("edges") ImmutableList<Edge> edges,
+	        @JsonProperty("statistics") Statistics statistics,
+	        @JsonProperty("exitStatus") ExitStatus exitStatus) {
 		this.states = states;
 		this.edges = edges;
 		this.statistics = statistics;
-		configuration = config;
+		this.exitStatus = exitStatus;
 	}
 
 	public ImmutableMap<String, State> getStates() {
@@ -41,13 +47,13 @@ public final class OutPutModel {
 		return statistics;
 	}
 
-	public CrawljaxConfiguration getConfiguration() {
-		return configuration;
+	public ExitStatus getExitStatus() {
+		return exitStatus;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(states, edges, statistics, configuration);
+		return Objects.hashCode(states, edges, statistics, exitStatus);
 	}
 
 	@Override
@@ -57,19 +63,16 @@ public final class OutPutModel {
 			return Objects.equal(this.states, that.states)
 			        && Objects.equal(this.edges, that.edges)
 			        && Objects.equal(this.statistics, that.statistics)
-			        && Objects.equal(this.configuration, that.configuration);
+			        && Objects.equal(this.exitStatus, that.exitStatus);
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("states", states)
-		        .add("edges", edges)
-		        .add("statistics", statistics)
-		        .add("configuration", configuration)
-		        .toString();
+		return Objects.toStringHelper(this).add("exitStatus", exitStatus)
+		        .add("states", states).add("edges", edges)
+		        .add("statistics", statistics).toString();
 	}
 
 }

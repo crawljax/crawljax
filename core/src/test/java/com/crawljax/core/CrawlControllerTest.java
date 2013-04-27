@@ -27,7 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.core.ExitNotifier.Reason;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
@@ -198,7 +198,6 @@ public class CrawlControllerTest {
 	public void verifyPerfectEndState() {
 		assertThat(candidateActions.isEmpty(), is(true));
 		assertThat(consumersDoneLatch.isExitCalled(), is(true));
-		assertThat(controller.getReason(), is(Reason.EXHAUSTED));
-		verify(postCrawlPlugin).postCrawling(crawlSessionProvider.get());
+		verify(postCrawlPlugin).postCrawling(crawlSessionProvider.get(), ExitStatus.EXHAUSTED);
 	}
 }

@@ -96,6 +96,7 @@ public class Crawler {
 		stateMachine =
 		        new StateMachine(sess.getStateFlowGraph(),
 		                crawlRules.getInvariants(), plugins, stateComparator);
+		context.setStateMachine(stateMachine);
 		crawlpath = new CrawlPath();
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
@@ -110,8 +111,14 @@ public class Crawler {
 		LOG.debug("Resetting the crawler and going to state {}", crawlTask.getName());
 		reset();
 		ImmutableList<Eventable> eventables = shortestPathTo(crawlTask);
-		follow(CrawlPath.copyOf(eventables));
-		crawlThroughActions();
+		try {
+			follow(CrawlPath.copyOf(eventables), crawlTask);
+			crawlThroughActions();
+		} catch (StateUnreachableException ex) {
+			LOG.info(ex.getMessage());
+			LOG.debug(ex.getMessage(), ex);
+			candidateActionCache.purgeActionsForState(ex.getTarget());
+		}
 	}
 
 	private ImmutableList<Eventable> shortestPathTo(StateVertex crawlTask) {
@@ -129,37 +136,53 @@ public class Crawler {
 		candidateActionCache.addActions(extract, currentState);
 	}
 
-	private void follow(CrawlPath path) throws CrawljaxException {
+	private void follow(CrawlPath path, StateVertex targetState)
+	        throws StateUnreachableException,
+	        CrawljaxException {
 		StateVertex curState = context.getSession().getInitialState();
 
 		for (Eventable clickable : path) {
 
-			if (!candidateExtractor.checkCrawlCondition()) {
-				LOG.debug("Crawl conditions not complete. Not following path");
-				// TODO this is not correct probably.
-				return;
-			}
+			checkCrawlConditions(targetState);
 
 			LOG.debug("Backtracking by executing {} on element: {}", clickable.getEventType(),
 			        clickable);
 
-			stateMachine.changeState(clickable.getTargetStateVertex());
+			boolean switched = stateMachine.changeState(clickable.getTargetStateVertex());
+			if (!switched) {
+				throw new StateUnreachableException(targetState, "Could not switch states");
+			}
 			curState = clickable.getTargetStateVertex();
 			crawlpath.add(clickable);
 			handleInputElements(clickable);
 			if (fireEvent(clickable)) {
-
+				if (crawlerLeftDomain()) {
+					throw new StateUnreachableException(targetState,
+					        "Domain left while following path");
+				}
 				int depth = crawlDepth.incrementAndGet();
 				LOG.info("Crawl depth is now {}", depth);
-
 				plugins.runOnRevisitStatePlugins(context, curState);
+
+			} else {
+				throw new StateUnreachableException(targetState, "couldn't fire eventable "
+				        + clickable);
 			}
 
-			if (!candidateExtractor.checkCrawlCondition()) {
-				LOG.debug("Crawl conditions not complete. Not following path");
-				// TODO this is not correct probably.
-				return;
-			}
+			checkCrawlConditions(targetState);
+		}
+
+		if (!curState.equals(targetState)) {
+			throw new StateUnreachableException(targetState,
+			        "The path didn't result in the desired state but in state "
+			                + curState.getName());
+		}
+	}
+
+	private void checkCrawlConditions(StateVertex targetState) {
+		if (!candidateExtractor.checkCrawlCondition()) {
+			throw new StateUnreachableException(targetState,
+			        "Crawl conditions not complete. Not following path");
 		}
 	}
 
@@ -295,10 +318,16 @@ public class Crawler {
 				        "Element {} not clicked because not all crawl conditions where satisfied",
 				        element);
 			}
-
 			// We have to check if we are still in the same state.
 			action = candidateActionCache.pollActionOrNull(stateMachine.getCurrentState());
 			interrupted = Thread.interrupted();
+			if (!interrupted && crawlerLeftDomain()) {
+				/*
+				 * It's okay to have left the domain because the action didn't complete due to an
+				 * interruption.
+				 */
+				throw new CrawljaxException("Somehow we left the domain");
+			}
 		}
 		if (interrupted) {
 			LOG.info("Interrupted while firing actions. Putting back the actions on the todo list");
@@ -325,8 +354,8 @@ public class Crawler {
 	}
 
 	private void inspectNewDom(Eventable event, StateVertex newState) {
-		crawlpath.add(event);
 		LOG.debug("The DOM has changed. Event added to the crawl path");
+		crawlpath.add(event);
 		boolean isNewState =
 		        stateMachine.swithToStateAndCheckIfClone(event, newState, context);
 		if (isNewState) {
@@ -384,11 +413,11 @@ public class Crawler {
 
 	private void goBackOneState() {
 		LOG.debug("Going back one state");
-		CrawlPath currentPath = crawlpath.immutableCopyWithoutLast();
+		CrawlPath currentPath = crawlpath.immutableCopy();
 		crawlpath = null;
-
+		StateVertex current = stateMachine.getCurrentState();
 		reset();
-		follow(currentPath);
+		follow(currentPath, current);
 	}
 
 	/**

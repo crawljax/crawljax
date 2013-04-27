@@ -13,6 +13,7 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
@@ -29,12 +30,12 @@ import com.google.common.collect.Lists;
  */
 public class Plugins {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Plugins.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(Plugins.class
+	        .getName());
 
 	@SuppressWarnings("unchecked")
 	private static final ImmutableSet<Class<? extends Plugin>> KNOWN_PLUGINS = ImmutableSet
-	        .of(DomChangeNotifierPlugin.class,
-	                OnBrowserCreatedPlugin.class,
+	        .of(DomChangeNotifierPlugin.class, OnBrowserCreatedPlugin.class,
 	                OnFireEventFailedPlugin.class,
 	                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 	                OnRevisitStatePlugin.class, OnUrlLoadPlugin.class,
@@ -53,7 +54,8 @@ public class Plugins {
 	public Plugins(List<? extends Plugin> plugins) {
 		Preconditions.checkNotNull(plugins);
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
-		        ImmutableListMultimap.builder();
+		        ImmutableListMultimap
+		                .builder();
 		if (plugins.isEmpty()) {
 			LOGGER.warn("No plugins loaded. There will be no output");
 		} else {
@@ -61,12 +63,15 @@ public class Plugins {
 		}
 		this.plugins = builder.build();
 
-		checkArgument(this.plugins.get(DomChangeNotifierPlugin.class).size() < 2,
-		        "Only one or none " + DomChangeNotifierPlugin.class.getSimpleName()
+		checkArgument(
+		        this.plugins.get(DomChangeNotifierPlugin.class).size() < 2,
+		        "Only one or none "
+		                + DomChangeNotifierPlugin.class.getSimpleName()
 		                + " can be specified");
 	}
 
-	private void addPlugins(List<? extends Plugin> plugins,
+	private void addPlugins(
+	        List<? extends Plugin> plugins,
 	        ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder) {
 		ArrayList<Plugin> unusedPlugins = Lists.newArrayList(plugins);
 		for (Plugin plugin : plugins) {
@@ -75,7 +80,8 @@ public class Plugins {
 					@SuppressWarnings("unchecked")
 					Class<? extends Plugin> pluginclass = (Class<? extends Plugin>) clasz;
 					builder.put(pluginclass, plugin);
-					LOGGER.info("Loaded {} as a {}", plugin, clasz.getSimpleName());
+					LOGGER.info("Loaded {} as a {}", plugin,
+					        clasz.getSimpleName());
 					unusedPlugins.remove(plugin);
 				}
 
@@ -89,7 +95,8 @@ public class Plugins {
 	}
 
 	private void reportFailingPlugin(Plugin plugin, RuntimeException e) {
-		LOGGER.error("Plugin {} errored while running. {}", plugin, e.getMessage(), e);
+		LOGGER.error("Plugin {} errored while running. {}", plugin,
+		        e.getMessage(), e);
 	}
 
 	/**
@@ -131,7 +138,8 @@ public class Plugins {
 	 * @param newState
 	 *            The new state
 	 */
-	public void runOnNewStatePlugins(CrawlerContext context, StateVertex newState) {
+	public void runOnNewStatePlugins(CrawlerContext context,
+	        StateVertex newState) {
 		LOGGER.debug("Running OnNewStatePlugins...");
 		for (Plugin plugin : plugins.get(OnNewStatePlugin.class)) {
 			if (plugin instanceof OnNewStatePlugin) {
@@ -156,14 +164,15 @@ public class Plugins {
 	 * @param context
 	 *            the session to load in the plugin
 	 */
-	public void runOnInvriantViolationPlugins(Invariant invariant, CrawlerContext context) {
+	public void runOnInvriantViolationPlugins(Invariant invariant,
+	        CrawlerContext context) {
 		LOGGER.debug("Running OnInvriantViolationPlugins...");
 		for (Plugin plugin : plugins.get(OnInvariantViolationPlugin.class)) {
 			if (plugin instanceof OnInvariantViolationPlugin) {
 				try {
 					LOGGER.debug("Calling plugin {}", plugin);
-					((OnInvariantViolationPlugin) plugin)
-					        .onInvariantViolation(invariant, context);
+					((OnInvariantViolationPlugin) plugin).onInvariantViolation(
+					        invariant, context);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -176,16 +185,18 @@ public class Plugins {
 	 * finished Warning: changing the session can change the behavior of other post crawl plugins.
 	 * It is not a clone!
 	 * 
+	 * @param exitReason
 	 * @param context
 	 *            the session to load in the plugin
 	 */
-	public void runPostCrawlingPlugins(CrawlSession session) {
+	public void runPostCrawlingPlugins(CrawlSession session, ExitStatus exitReason) {
 		LOGGER.debug("Running PostCrawlingPlugins...");
 		for (Plugin plugin : plugins.get(PostCrawlingPlugin.class)) {
 			if (plugin instanceof PostCrawlingPlugin) {
 				try {
 					LOGGER.debug("Calling plugin {}", plugin);
-					((PostCrawlingPlugin) plugin).postCrawling(session);
+					((PostCrawlingPlugin) plugin).postCrawling(session,
+					        exitReason);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -203,13 +214,15 @@ public class Plugins {
 	 * @param currentState
 	 *            the state the 'back tracking' operation is currently in
 	 */
-	public void runOnRevisitStatePlugins(CrawlerContext context, StateVertex currentState) {
+	public void runOnRevisitStatePlugins(CrawlerContext context,
+	        StateVertex currentState) {
 		LOGGER.debug("Running OnRevisitStatePlugins...");
 		for (Plugin plugin : plugins.get(OnRevisitStatePlugin.class)) {
 			if (plugin instanceof OnRevisitStatePlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
 				try {
-					((OnRevisitStatePlugin) plugin).onRevisitState(context, currentState);
+					((OnRevisitStatePlugin) plugin).onRevisitState(context,
+					        currentState);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -237,8 +250,8 @@ public class Plugins {
 			if (plugin instanceof PreStateCrawlingPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
 				try {
-					((PreStateCrawlingPlugin) plugin)
-					        .preStateCrawling(context, candidateElements, state);
+					((PreStateCrawlingPlugin) plugin).preStateCrawling(context,
+					        candidateElements, state);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -278,15 +291,15 @@ public class Plugins {
 	 * @param path
 	 *            the path TO this eventable.
 	 */
-	public void runOnFireEventFailedPlugins(CrawlerContext context, Eventable eventable,
-	        List<Eventable> path) {
+	public void runOnFireEventFailedPlugins(CrawlerContext context,
+	        Eventable eventable, List<Eventable> path) {
 		LOGGER.debug("Running OnFireEventFailedPlugins...");
 		for (Plugin plugin : plugins.get(OnFireEventFailedPlugin.class)) {
 			if (plugin instanceof OnFireEventFailedPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
 				try {
-					((OnFireEventFailedPlugin) plugin)
-					        .onFireEventFailed(context, eventable, path);
+					((OnFireEventFailedPlugin) plugin).onFireEventFailed(
+					        context, eventable, path);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -309,7 +322,8 @@ public class Plugins {
 			if (plugin instanceof OnBrowserCreatedPlugin) {
 				LOGGER.debug("Calling plugin {}", plugin);
 				try {
-					((OnBrowserCreatedPlugin) plugin).onBrowserCreated(newBrowser);
+					((OnBrowserCreatedPlugin) plugin)
+					        .onBrowserCreated(newBrowser);
 				} catch (RuntimeException e) {
 					reportFailingPlugin(plugin, e);
 				}
@@ -321,19 +335,18 @@ public class Plugins {
 	 * Load and run the DomChangeNotifierPlugin.
 	 */
 	public boolean runDomChangeNotifierPlugins(final CrawlerContext context,
-	        final StateVertex stateBefore,
-	        final Eventable event,
+	        final StateVertex stateBefore, final Eventable event,
 	        final StateVertex stateAfter) {
 		if (plugins.get(DomChangeNotifierPlugin.class).isEmpty()) {
 			LOGGER.debug("No DomChangeNotifierPlugin found. Performing default DOM comparison...");
 			return defaultDomComparison(stateBefore, stateAfter);
 		} else {
-			DomChangeNotifierPlugin domChange =
-			        (DomChangeNotifierPlugin) plugins.get(DomChangeNotifierPlugin.class).get(0);
+			DomChangeNotifierPlugin domChange = (DomChangeNotifierPlugin) plugins
+			        .get(DomChangeNotifierPlugin.class).get(0);
 			LOGGER.debug("Calling plugin {}", domChange);
 			try {
-				return domChange.isDomChanged(context, stateBefore.getDom(), event,
-				        stateAfter.getDom());
+				return domChange.isDomChanged(context, stateBefore.getDom(),
+				        event, stateAfter.getDom());
 			} catch (RuntimeException ex) {
 				LOGGER.error(
 				        "Could not run {} because of error {}. Now running default DOM comparison",
@@ -373,16 +386,15 @@ public class Plugins {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("plugins", plugins)
-		        .toString();
+		return Objects.toStringHelper(this).add("plugins", plugins).toString();
 	}
 
 	/**
 	 * @return A {@link ImmutableSet} of the {@link Plugin#toString()} that are installed.
 	 */
 	public ImmutableSet<String> pluginNames() {
-		ImmutableSortedSet.Builder<String> names = ImmutableSortedSet.naturalOrder();
+		ImmutableSortedSet.Builder<String> names = ImmutableSortedSet
+		        .naturalOrder();
 		for (Plugin plugin : plugins.values()) {
 			names.add(plugin.toString());
 		}

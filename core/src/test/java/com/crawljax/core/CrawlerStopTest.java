@@ -10,7 +10,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.crawljax.core.ExitNotifier.Reason;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
@@ -30,7 +30,7 @@ public class CrawlerStopTest {
 		CrawlSession session = runner.call();
 
 		assertThat(session.getStateFlowGraph(), hasStates(depth + 1));
-		assertThat(runner.getReason(), is(Reason.EXHAUSTED));
+		assertThat(runner.getReason(), is(ExitStatus.EXHAUSTED));
 	}
 
 	@Test(timeout = 60_000)
@@ -41,7 +41,7 @@ public class CrawlerStopTest {
 		        .setMaximumRunTime(25, TimeUnit.SECONDS)
 		        .build());
 		runner.call();
-		assertThat(runner.getReason(), is(Reason.MAX_TIME));
+		assertThat(runner.getReason(), is(ExitStatus.MAX_TIME));
 
 	}
 
@@ -54,7 +54,7 @@ public class CrawlerStopTest {
 		        .build());
 		CrawlSession session = runner.call();
 		assertThat(session.getStateFlowGraph(), hasStates(3));
-		assertThat(runner.getReason(), is(Reason.MAX_STATES));
+		assertThat(runner.getReason(), is(ExitStatus.MAX_STATES));
 
 	}
 
