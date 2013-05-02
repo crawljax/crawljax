@@ -126,16 +126,6 @@ public class Crawler {
 		return graph.getShortestPath(graph.getInitialState(), crawlTask);
 	}
 
-	private void parseCurrentPageForCandidateElements() {
-		StateVertex currentState = stateMachine.getCurrentState();
-		LOG.debug("Parsing DOM of state {} for candidate elements", currentState.getName());
-		ImmutableList<CandidateElement> extract = candidateExtractor.extract(currentState);
-
-		plugins.runPreStateCrawlingPlugins(context, extract, currentState);
-
-		candidateActionCache.addActions(extract, currentState);
-	}
-
 	private void follow(CrawlPath path, StateVertex targetState)
 	        throws StateUnreachableException,
 	        CrawljaxException {
@@ -353,6 +343,11 @@ public class Crawler {
 		}
 	}
 
+	private boolean domChanged(final Eventable eventable, StateVertex newState) {
+		return plugins.runDomChangeNotifierPlugins(context, stateMachine.getCurrentState(),
+		        eventable, newState);
+	}
+
 	private void inspectNewDom(Eventable event, StateVertex newState) {
 		LOG.debug("The DOM has changed. Event added to the crawl path");
 		crawlpath.add(event);
@@ -370,6 +365,16 @@ public class Crawler {
 			LOG.debug("New DOM is a clone state. Continuing in that state.");
 			context.getSession().addCrawlPath(crawlpath.immutableCopy());
 		}
+	}
+
+	private void parseCurrentPageForCandidateElements() {
+		StateVertex currentState = stateMachine.getCurrentState();
+		LOG.debug("Parsing DOM of state {} for candidate elements", currentState.getName());
+		ImmutableList<CandidateElement> extract = candidateExtractor.extract(currentState);
+
+		plugins.runPreStateCrawlingPlugins(context, extract, currentState);
+
+		candidateActionCache.addActions(extract, currentState);
 	}
 
 	private void waitForRefreshTagIfAny(final Eventable eventable) {
@@ -406,11 +411,6 @@ public class Crawler {
 		return waitTime;
 	}
 
-	private boolean domChanged(final Eventable eventable, StateVertex newState) {
-		return plugins.runDomChangeNotifierPlugins(context, stateMachine.getCurrentState(),
-		        eventable, newState);
-	}
-
 	private void goBackOneState() {
 		LOG.debug("Going back one state");
 		CrawlPath currentPath = crawlpath.immutableCopy();
@@ -429,6 +429,7 @@ public class Crawler {
 	public StateVertex crawlIndex() {
 		LOG.debug("Setting up vertex of the index page");
 		browser.goToUrl(url);
+		plugins.runOnUrlLoadPlugins(context);
 		StateVertex index =
 		        new StateVertex(StateVertex.INDEX_ID, url.toExternalForm(), "index",
 		                browser.getDom(),

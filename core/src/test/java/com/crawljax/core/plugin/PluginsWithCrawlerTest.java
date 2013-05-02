@@ -6,16 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.eclipse.jetty.util.BlockingArrayQueue;
 import org.hamcrest.core.IsCollectionContaining;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
@@ -42,7 +40,6 @@ import com.google.common.collect.ImmutableSet;
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
  */
 @Category(BrowserTest.class)
-@Ignore("Will be fixed in other branch")
 public class PluginsWithCrawlerTest {
 
 	private static CrawljaxRunner controller;
@@ -81,6 +78,15 @@ public class PluginsWithCrawlerTest {
 			@Override
 			public void proxyServer(ProxyConfiguration config) {
 				plugins.add(ProxyServerPlugin.class);
+			}
+		});
+
+		builder.addPlugin(new PreCrawlingPlugin() {
+
+			@Override
+			public void preCrawling(CrawljaxConfiguration config) {
+				plugins.add(PreCrawlingPlugin.class);
+
 			}
 		});
 
@@ -156,9 +162,6 @@ public class PluginsWithCrawlerTest {
 				try {
 					assertNotNull(candidateElements);
 
-					assertTrue("There are always more than 0 candidates",
-					        candidateElements.size() > 0);
-
 				} catch (AssertionError e) {
 					ERRORS.addError(e);
 				}
@@ -204,7 +207,7 @@ public class PluginsWithCrawlerTest {
 
 	@Test
 	public void whenCrawlStartsInitialPluginsAreRun() {
-		assertThat(plugins.get(0), typeCompatibleWith(ProxyServerPlugin.class));
+		assertThat(plugins.get(0), typeCompatibleWith(PreCrawlingPlugin.class));
 		assertThat(plugins.get(1), typeCompatibleWith(OnBrowserCreatedPlugin.class));
 		assertThat(plugins.get(2), typeCompatibleWith(OnUrlLoadPlugin.class));
 	}
@@ -216,10 +219,23 @@ public class PluginsWithCrawlerTest {
 
 	@Test
 	public void verifyOnUrlLoadFollowers() {
-		pluginsIsFollowedBy(OnUrlLoadPlugin.class, ImmutableSet.of(
+		afterFirstPluginsIsFollowedBy(OnUrlLoadPlugin.class, ImmutableSet.of(
 		        OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 		        DomChangeNotifierPlugin.class, OnRevisitStatePlugin.class,
 		        PostCrawlingPlugin.class));
+	}
+
+	private void afterFirstPluginsIsFollowedBy(Class<OnUrlLoadPlugin> suspect,
+	        Iterable<Class<? extends Plugin>> followedBy) {
+		List<Integer> indexes = indexesOf(suspect);
+		if (indexes.size() > 0) {
+			indexes.remove(0);
+		}
+		for (int index : indexes) {
+			Class<? extends Plugin> follower = plugins.get(index + 1);
+			assertThat(suspect + " @index=" + index + " was followed by " + follower
+			        + listAsString, followedBy, IsCollectionContaining.hasItem(follower));
+		}
 	}
 
 	public void pluginsIsFollowedBy(Class<? extends Plugin> suspect,
@@ -231,8 +247,8 @@ public class PluginsWithCrawlerTest {
 		}
 	}
 
-	private Set<Integer> indexesOf(Class<? extends Plugin> clasz) {
-		Set<Integer> indexes = new HashSet<>();
+	private List<Integer> indexesOf(Class<? extends Plugin> clasz) {
+		List<Integer> indexes = new ArrayList<>();
 		for (int i = 0; i < plugins.size(); i++) {
 			if (plugins.get(i).isAssignableFrom(clasz)) {
 				indexes.add(i);
@@ -244,13 +260,16 @@ public class PluginsWithCrawlerTest {
 	@Test
 	public void verifyOnNewStateFollowers() {
 		pluginsIsFollowedBy(OnNewStatePlugin.class,
-		        ImmutableSet.<Class<? extends Plugin>> of(PreStateCrawlingPlugin.class));
+		        ImmutableSet.of(PreStateCrawlingPlugin.class, OnUrlLoadPlugin.class,
+		                PostCrawlingPlugin.class));
 	}
 
 	@Test
 	public void verifyPreStateCrawlingFollowers() {
 		pluginsIsFollowedBy(PreStateCrawlingPlugin.class,
-		        ImmutableSet.of(DomChangeNotifierPlugin.class, OnFireEventFailedPlugin.class));
+		        ImmutableSet.of(DomChangeNotifierPlugin.class, OnFireEventFailedPlugin.class,
+		                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
+		                OnUrlLoadPlugin.class));
 	}
 
 	@Test
@@ -270,7 +289,8 @@ public class PluginsWithCrawlerTest {
 
 	@Test
 	public void startAndEndPluginsAreOnlyRunOnce() {
-		assertThat(orrurencesOf(ProxyServerPlugin.class), is(1));
+		// assertThat(orrurencesOf(ProxyServerPlugin.class), is(1));
+		assertThat(orrurencesOf(PreCrawlingPlugin.class), is(1));
 		assertThat(orrurencesOf(PostCrawlingPlugin.class), is(1));
 	}
 

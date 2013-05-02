@@ -33,7 +33,6 @@ public class SerializeTest {
 	public void testSerializability() throws IOException {
 		OutPutModel model = createModel();
 		String json = Serializer.toPrettyJson(model);
-		System.out.println(json);
 		OutPutModel deserialized = Serializer.read(json);
 		assertThat(deserialized.toString(), is(model.toString()));
 	}
