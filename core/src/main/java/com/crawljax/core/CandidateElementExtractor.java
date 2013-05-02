@@ -304,15 +304,33 @@ public class CandidateElementExtractor {
 	}
 
 	private void addElement(Element element, Builder<Element> builder, CrawlElement crawlElement) {
-		if ("A".equalsIgnoreCase(crawlElement.getTagName())) {
-			String href = element.getAttribute("href");
-			if (!Strings.isNullOrEmpty(href) && isFileForDownloading(href)) {
-				return;
-			}
+		if ("A".equalsIgnoreCase(crawlElement.getTagName()) && hrefShouldBeIgnored(element)) {
+			return;
 		}
 		builder.add(element);
 		LOG.debug("Adding element {}", element);
 		checkedElements.increaseElementsCounter();
+	}
+
+	private boolean hrefShouldBeIgnored(Element element) {
+		String href = Strings.nullToEmpty(element.getAttribute("href"));
+		return isFileForDownloading(href) || href.startsWith("mailto:");
+	}
+
+	/**
+	 * @param href
+	 *            the string to check
+	 * @return true if href has the pdf or ps pattern.
+	 */
+	private boolean isFileForDownloading(String href) {
+		final Pattern p = Pattern.compile(".+.pdf|.+.ps|.+.zip|.+.mp3");
+		Matcher m = p.matcher(href);
+
+		if (m.matches()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private void evaluateElement(Builder<CandidateElement> results, String relatedFrame,
@@ -350,22 +368,6 @@ public class CandidateElementExtractor {
 				 */
 			}
 		}
-	}
-
-	/**
-	 * @param href
-	 *            the string to check
-	 * @return true if href has the pdf or ps pattern.
-	 */
-	private boolean isFileForDownloading(String href) {
-		final Pattern p = Pattern.compile(".+.pdf|.+.ps|.+.zip");
-		Matcher m = p.matcher(href);
-
-		if (m.matches()) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**

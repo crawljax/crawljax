@@ -1,5 +1,6 @@
 package com.crawljax.plugins.crawloverview.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -70,7 +71,7 @@ public class Serializer {
 		}
 	}
 
-	static <T> T deserialize(String value, TypeReference<T> clasz) throws IOException {
+	public static <T> T deserialize(String value, TypeReference<T> clasz) throws IOException {
 		return MAPPER.readValue(value, clasz);
 	}
 
@@ -80,5 +81,9 @@ public class Serializer {
 	public static OutPutModel read(String json) throws JsonParseException, JsonMappingException,
 	        IOException {
 		return MAPPER.readValue(json, OutPutModel.class);
+	}
+
+	public static OutPutModel read(File file) throws IOException {
+		return MAPPER.readValue(file, OutPutModel.class);
 	}
 }
