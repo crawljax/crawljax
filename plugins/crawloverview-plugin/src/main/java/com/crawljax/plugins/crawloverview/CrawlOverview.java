@@ -2,13 +2,12 @@ package com.crawljax.plugins.crawloverview;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.ErrorHandler.UnknownServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,34 +31,34 @@ import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
- * The overview is a plug-in that generates a HTML report from the crawling
- * session which can be used to inspect what is crawled by Crawljax The report
- * contains screenshots of the visited states and the clicked elements are
- * highlighted. The report also contains the state-flow graph in which the
- * visited states are linked together.
+ * The overview is a plug-in that generates a HTML report from the crawling session which can be
+ * used to inspect what is crawled by Crawljax The report contains screenshots of the visited states
+ * and the clicked elements are highlighted. The report also contains the state-flow graph in which
+ * the visited states are linked together.
  **/
 public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
-		PostCrawlingPlugin, OnFireEventFailedPlugin {
+        PostCrawlingPlugin, OnFireEventFailedPlugin {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(CrawlOverview.class);
+	        .getLogger(CrawlOverview.class);
 
 	private final OutputBuilder outputBuilder;
-	private final Map<String, StateVertex> visitedStates;
+	private final ConcurrentMap<String, StateVertex> visitedStates;
 	private final OutPutModelCache outModelCache;
 
 	private OutPutModel result;
 
 	public CrawlOverview(File outputFolder) {
 		Preconditions
-				.checkNotNull(outputFolder, "Output folder cannot be null");
+		        .checkNotNull(outputFolder, "Output folder cannot be null");
 		outputBuilder = new OutputBuilder(outputFolder);
 		outModelCache = new OutPutModelCache();
-		visitedStates = Maps.newHashMap();
+		visitedStates = Maps.newConcurrentMap();
 		LOG.info("Initialized the Crawl overview plugin");
 	}
 
@@ -70,11 +69,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	public void onNewState(CrawlerContext context, StateVertex vertex) {
 		LOG.debug("onNewState");
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
-		synchronized (visitedStates) {
-			if (!visitedStates.containsKey(state.getName())) {
-				visitedStates.put(state.getName(), vertex);
-			}
-		}
+		visitedStates.putIfAbsent(state.getName(), vertex);
 		saveScreenshot(context.getBrowser(), state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), vertex.getDom());
 		Point point = getOffSet(context.getBrowser());
@@ -86,15 +81,15 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		if (bodyHasOffset(embeddedBrowser)) {
 			try {
 				Number top = (Number) embeddedBrowser
-						.executeJavaScript("return document.body.getBoundingClientRect().top;");
+				        .executeJavaScript("return document.body.getBoundingClientRect().top;");
 				Number left = (Number) embeddedBrowser
-						.executeJavaScript("return document.body.getBoundingClientRect().left;");
+				        .executeJavaScript("return document.body.getBoundingClientRect().left;");
 				Point offset = new Point(left.intValue(), top.intValue());
 				return offset;
 			} catch (CrawljaxException e) {
 				LOG.warn(
-						"Could not locate relative size of body, now using (0,0) instead",
-						e);
+				        "Could not locate relative size of body, now using (0,0) instead",
+				        e);
 			}
 		}
 		return new Point(0, 0);
@@ -102,14 +97,14 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 
 	private boolean bodyHasOffset(EmbeddedBrowser embeddedBrowser) {
 		WebElement body = embeddedBrowser.getWebElement(new Identification(
-				How.tag, "body"));
+		        How.tag, "body"));
 		String position = body.getCssValue("position");
 		LOG.debug("Body has CSS position: {}", position);
 		return "relative".equals(position);
 	}
 
 	private void saveScreenshot(EmbeddedBrowser browser, String name,
-			StateVertex vertex) {
+	        StateVertex vertex) {
 		LOG.debug("Saving screenshot for state {}", name);
 		File jpg = outputBuilder.newScreenShotFile(name);
 		File thumb = outputBuilder.newThumbNail(name);
@@ -118,24 +113,24 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 			ImageWriter.writeScreenShotAndThumbnail(screenshot, jpg, thumb);
 		} catch (CrawljaxException | WebDriverException e) {
 			LOG.warn(
-					"Screenshots are not supported or not functioning for {}. Exception message: {}",
-					browser, e.getMessage());
+			        "Screenshots are not supported or not functioning for {}. Exception message: {}",
+			        browser, e.getMessage());
 			LOG.debug("Screenshot not made because {}", e.getMessage(), e);
 		}
 		LOG.trace("Screenshot saved");
 	}
 
 	/**
-	 * Logs all the canidate elements so that the plugin knows which elements
-	 * were the candidate elements.
+	 * Logs all the canidate elements so that the plugin knows which elements were the candidate
+	 * elements.
 	 */
 	@Override
 	public void preStateCrawling(CrawlerContext context,
-			ImmutableList<CandidateElement> candidateElements, StateVertex state) {
+	        ImmutableList<CandidateElement> candidateElements, StateVertex state) {
 		LOG.debug("preStateCrawling");
 		List<CandidateElementPosition> newElements = Lists.newLinkedList();
 		LOG.info("Prestate found new state {} with {} candidates",
-				state.getName(), candidateElements.size());
+		        state.getName(), candidateElements.size());
 		for (CandidateElement element : candidateElements) {
 			WebElement webElement = getWebElement(context.getBrowser(), element);
 			if (webElement != null) {
@@ -149,7 +144,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	}
 
 	private WebElement getWebElement(EmbeddedBrowser browser,
-			CandidateElement element) {
+	        CandidateElement element) {
 		try {
 			// TODO Check if element.getIdentification().getValue() is correct
 			// replacement for
@@ -157,21 +152,21 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 			return browser.getWebElement(element.getIdentification());
 		} catch (WebDriverException e) {
 			LOG.info("Could not locate element for positioning {}",
-					element.getElement());
+			        element.getElement());
 			return null;
 		}
 	}
 
 	private CandidateElementPosition findElement(WebElement webElement,
-			CandidateElement element) {
+	        CandidateElement element) {
 		Point location = webElement.getLocation();
 		Dimension size = webElement.getSize();
 		CandidateElementPosition renderedCandidateElement =
-		// TODO Check if element.getIdentification().getValue() is correct
-		// replacement for
-		// element.getXpath()
-		new CandidateElementPosition(element.getIdentification().getValue(),
-				location, size);
+		        // TODO Check if element.getIdentification().getValue() is correct
+		        // replacement for
+		        // element.getXpath()
+		        new CandidateElementPosition(element.getIdentification().getValue(),
+		                location, size);
 		return renderedCandidateElement;
 	}
 
@@ -184,19 +179,16 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		StateFlowGraph sfg = session.getStateFlowGraph();
 		result = outModelCache.close(session, exitStatus);
 		outputBuilder.write(result, session.getConfig());
-		synchronized (visitedStates) {
-			StateWriter writer = new StateWriter(outputBuilder, sfg,
-					visitedStates);
-			for (State state : result.getStates().values()) {
-				writer.writeHtmlForState(state);
-			}
+		StateWriter writer = new StateWriter(outputBuilder, sfg,
+		        ImmutableMap.copyOf(visitedStates));
+		for (State state : result.getStates().values()) {
+			writer.writeHtmlForState(state);
 		}
 		LOG.info("Crawl overview plugin has finished");
 	}
 
 	/**
-	 * @return the result of the Crawl or <code>null</code> if it hasn't
-	 *         finished yet.
+	 * @return the result of the Crawl or <code>null</code> if it hasn't finished yet.
 	 */
 	public OutPutModel getResult() {
 		return result;
@@ -209,7 +201,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 
 	@Override
 	public void onFireEventFailed(CrawlerContext context, Eventable eventable,
-			List<Eventable> pathToFailure) {
+	        List<Eventable> pathToFailure) {
 		outModelCache.registerFailEvent(context.getCurrentState(), eventable);
 	}
 }

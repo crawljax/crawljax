@@ -38,11 +38,13 @@ public class State {
 	}
 
 	@JsonCreator
-	public State(@JsonProperty("name") String name, @JsonProperty("url") String url,
+	public State(
+	        @JsonProperty("name") String name,
+	        @JsonProperty("url") String url,
 	        @JsonProperty("candidateElements") ImmutableList<CandidateElementPosition> candidateElements,
 	        @JsonProperty("fanIn") int fanIn, @JsonProperty("fanOut") int fanOut,
 	        @JsonProperty("screenshotOffsetTop") int screenshotOffsetTop,
-	        @JsonProperty("screenshotOffsetLeft") int screenshotOffsetLeft, 
+	        @JsonProperty("screenshotOffsetLeft") int screenshotOffsetLeft,
 	        @JsonProperty("id") int id,
 	        @JsonProperty("failedEvents") ImmutableList<String> failedEvents) {
 		super();
