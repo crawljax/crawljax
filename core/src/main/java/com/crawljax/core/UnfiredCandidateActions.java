@@ -64,7 +64,7 @@ public class UnfiredCandidateActions {
 				return null;
 			} else {
 				CandidateCrawlAction action = queue.poll();
-				if (action == null) {
+				if (queue.isEmpty()) {
 					LOG.debug("All actions polled for state {}", state.getName());
 					cache.remove(state.getId());
 					removeStateFromQueue(state.getId());
@@ -75,6 +75,7 @@ public class UnfiredCandidateActions {
 		} finally {
 			lock.unlock();
 		}
+
 	}
 
 	private void removeStateFromQueue(int id) {
@@ -104,6 +105,10 @@ public class UnfiredCandidateActions {
 	 *            The state name. This should be unique per state.
 	 */
 	void addActions(Collection<CandidateCrawlAction> actions, StateVertex state) {
+		if (actions.isEmpty()) {
+			LOG.debug("Received empty actions list. Ignoring...");
+			return;
+		}
 		Lock lock = locks.get(state.getId());
 		try {
 			lock.lock();

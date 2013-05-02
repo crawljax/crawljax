@@ -14,6 +14,7 @@ import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.ExitNotifier.ExitStatus;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
@@ -40,7 +41,7 @@ public class Plugins {
 	                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 	                OnRevisitStatePlugin.class, OnUrlLoadPlugin.class,
 	                PostCrawlingPlugin.class, PreStateCrawlingPlugin.class,
-	                ProxyServerPlugin.class);
+	                ProxyServerPlugin.class, PreCrawlingPlugin.class);
 
 	/**
 	 * @return An empty {@link Plugins} configuration.
@@ -282,6 +283,20 @@ public class Plugins {
 		}
 	}
 
+	public void runPreCrawlingPlugins(CrawljaxConfiguration config) {
+		LOGGER.debug("Running PreCrawlingPlugins...");
+		for (Plugin plugin : plugins.get(PreCrawlingPlugin.class)) {
+			if (plugin instanceof PreCrawlingPlugin) {
+				LOGGER.debug("Calling plugin {}", plugin);
+				try {
+					((PreCrawlingPlugin) plugin).preCrawling(config);
+				} catch (RuntimeException e) {
+					reportFailingPlugin(plugin, e);
+				}
+			}
+		}
+	}
+
 	/**
 	 * Load and run the OnFireEventFailedPlugins, this call has been made from the fireEvent when
 	 * the event is not fireable. the Path is the Path leading TO this eventable (not included).
@@ -400,4 +415,5 @@ public class Plugins {
 		}
 		return names.build();
 	}
+
 }

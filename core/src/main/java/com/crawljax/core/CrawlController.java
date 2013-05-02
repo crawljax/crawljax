@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.ExitNotifier.ExitStatus;
-import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.StateVertex;
@@ -28,7 +27,7 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	private final Provider<CrawlTaskConsumer> consumerFactory;
 	private final ExecutorService executor;
-	private final BrowserConfiguration config;
+	private final CrawljaxConfiguration config;
 
 	private final CrawlSessionProvider crawlSessionProvider;
 
@@ -48,7 +47,7 @@ public class CrawlController implements Callable<CrawlSession> {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
 		this.exitNotifier = exitNotifier;
-		this.config = config.getBrowserConfig();
+		this.config = config;
 		this.plugins = config.getPlugins();
 		this.crawlSessionProvider = crawlSessionProvider;
 		this.maximumCrawlTime = config.getMaximumRuntime();
@@ -62,6 +61,7 @@ public class CrawlController implements Callable<CrawlSession> {
 	@Override
 	public CrawlSession call() {
 		setMaximumCrawlTimeIfNeeded();
+		plugins.runPreCrawlingPlugins(config);
 		CrawlTaskConsumer firstConsumer = consumerFactory.get();
 		StateVertex firstState = firstConsumer.crawlIndex();
 		crawlSessionProvider.setup(firstState);
@@ -101,9 +101,9 @@ public class CrawlController implements Callable<CrawlSession> {
 	}
 
 	private void executeConsumers(CrawlTaskConsumer firstConsumer) {
-		LOG.debug("Starting {} consumers", config.getNumberOfBrowsers());
+		LOG.debug("Starting {} consumers", config.getBrowserConfig().getNumberOfBrowsers());
 		executor.submit(firstConsumer);
-		for (int i = 1; i < config.getNumberOfBrowsers(); i++) {
+		for (int i = 1; i < config.getBrowserConfig().getNumberOfBrowsers(); i++) {
 			executor.submit(consumerFactory.get());
 		}
 		try {
