@@ -88,7 +88,8 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 				return offset;
 			}
 		} catch (CrawljaxException | WebDriverException e) {
-			LOG.warn("Could not locate relative size of body, now using (0,0) instead", e);
+			LOG.info("Could not locate relative size of body, now using (0,0) instead");
+			LOG.debug("Could not locate relative size of body body because {}", e.getMessage(), e);
 		}
 		return new Point(0, 0);
 	}

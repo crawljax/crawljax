@@ -21,10 +21,11 @@ class StateBuilder {
 	private final BlockingQueue<CandidateElementPosition> candidates = Queues
 	        .newLinkedBlockingQueue();
 	private final StateVertex state;
-	private Point screenShotOffset;
 	private final AtomicInteger fanIn = new AtomicInteger();
 	private final AtomicInteger fanOut = new AtomicInteger();
 	private final ImmutableList.Builder<String> failedEvents = new ImmutableList.Builder<>();
+
+	private Point screenShotOffset = new Point(0, 0);
 
 	public StateBuilder(StateVertex state) {
 		this.state = state;
@@ -58,6 +59,10 @@ class StateBuilder {
 		        screenShotOffset, failedEvents.build());
 	}
 
+	/**
+	 * @param screenShotOffset
+	 *            the offsite from the top left if any. Default is <code>(0,0)</code>
+	 */
 	public void setScreenShotOffset(Point screenShotOffset) {
 		Preconditions.checkNotNull(screenShotOffset);
 		this.screenShotOffset = screenShotOffset;
