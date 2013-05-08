@@ -10,11 +10,6 @@ package com.crawljax.core.plugin;
  * <th>Examples</th>
  * </tr>
  * <tr>
- * <td>PreCrawlingPlugin</td>
- * <td>Before the crawling</td>
- * <td>Login</td>
- * </tr>
- * <tr>
  * <td>OnNewStatePlugin</td>
  * <td>When a new state is found while crawling</td>
  * <td>Create Screenshots, Validate DOM</td>

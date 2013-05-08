@@ -9,6 +9,8 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.StateFlowGraph;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 
 @Immutable
@@ -20,9 +22,12 @@ public class Statistics {
 	private final int edges;
 	private final Date startDate;
 	private final StateStatistics stateStats;
+	private final int failedEvents;
 
-	public Statistics(CrawlSession session, StateStatistics stateStats, Date startDate) {
+	public Statistics(CrawlSession session, StateStatistics stateStats, Date startDate,
+	        int failedEvents) {
 		this.stateStats = stateStats;
+		this.failedEvents = failedEvents;
 		this.startDate = new Date(startDate.getTime());
 		StateFlowGraph stateFlowGraph = session.getStateFlowGraph();
 		this.duration = calculateDuration(session);
@@ -30,6 +35,22 @@ public class Statistics {
 		this.crawlPaths = session.getCrawlPaths().size();
 		double bytes = stateFlowGraph.getMeanStateStringSize();
 		this.averageDomSize = new DecimalFormat().format(bytes / 1000) + " kB";
+	}
+
+	@JsonCreator
+	public Statistics(@JsonProperty("duration") String duration,
+	        @JsonProperty("crawlPaths") int crawlPaths,
+	        @JsonProperty("averageDomSize") String averageDomSize,
+	        @JsonProperty("edges") int edges, @JsonProperty("startDate") Date startDate,
+	        @JsonProperty("stateStats") StateStatistics stateStats,
+	        @JsonProperty("failedEvents") int failedEvents) {
+		this.duration = duration;
+		this.crawlPaths = crawlPaths;
+		this.averageDomSize = averageDomSize;
+		this.edges = edges;
+		this.startDate = startDate;
+		this.stateStats = stateStats;
+		this.failedEvents = failedEvents;
 	}
 
 	private String calculateDuration(CrawlSession session) {
@@ -50,12 +71,8 @@ public class Statistics {
 		return crawlPaths;
 	}
 
-	public int getNumberOfEdges() {
+	public int getEdges() {
 		return edges;
-	}
-
-	public int getNumberOfStates() {
-		return stateStats.getTotalNumberOfStates();
 	}
 
 	public StateStatistics getStateStats() {
@@ -66,10 +83,14 @@ public class Statistics {
 		return new Date(startDate.getTime());
 	}
 
+	public int getFailedEvents() {
+		return failedEvents;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(duration, crawlPaths, averageDomSize, edges, startDate,
-		        stateStats);
+		return Objects.hashCode(duration, crawlPaths, averageDomSize, edges,
+		        stateStats, failedEvents);
 	}
 
 	@Override
@@ -80,8 +101,8 @@ public class Statistics {
 			        && Objects.equal(this.crawlPaths, that.crawlPaths)
 			        && Objects.equal(this.averageDomSize, that.averageDomSize)
 			        && Objects.equal(this.edges, that.edges)
-			        && Objects.equal(this.startDate, that.startDate)
-			        && Objects.equal(this.stateStats, that.stateStats);
+			        && Objects.equal(this.stateStats, that.stateStats)
+			        && Objects.equal(this.failedEvents, that.failedEvents);
 		}
 		return false;
 	}
@@ -90,6 +111,7 @@ public class Statistics {
 	public String toString() {
 		return Objects.toStringHelper(this)
 		        .add("duration", duration)
+		        .add("failedEvents", failedEvents)
 		        .add("crawlPaths", crawlPaths)
 		        .add("averageDomSize", averageDomSize)
 		        .add("edges", edges)

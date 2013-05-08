@@ -6,6 +6,8 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 
 import com.crawljax.core.CandidateElement;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 
 /**
@@ -34,6 +36,17 @@ public class CandidateElementPosition {
 		this.xpath = xpath;
 		this.width = size.width;
 		this.height = size.height;
+	}
+
+	@JsonCreator
+	public CandidateElementPosition(@JsonProperty("top") int top,
+	        @JsonProperty("left") int left, @JsonProperty("xpath") String xpath,
+	        @JsonProperty("width") int width, @JsonProperty("height") int height) {
+		this.top = top;
+		this.left = left;
+		this.xpath = xpath;
+		this.width = width;
+		this.height = height;
 	}
 
 	/**

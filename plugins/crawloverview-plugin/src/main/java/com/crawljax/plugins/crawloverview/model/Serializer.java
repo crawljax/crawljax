@@ -1,5 +1,6 @@
-package com.crawljax.plugins.crawloverview;
+package com.crawljax.plugins.crawloverview.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -9,8 +10,10 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.plugin.Plugin;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -31,7 +34,7 @@ public class Serializer {
 		        .withCreatorVisibility(JsonAutoDetect.Visibility.NONE);
 		MAPPER.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
-		MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:00:ss z", Locale.getDefault()));
+		MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.getDefault()));
 
 		MAPPER.registerModule(new GuavaModule());
 		SimpleModule testModule = new SimpleModule("Plugin serialiezr");
@@ -48,13 +51,15 @@ public class Serializer {
 				return Plugin.class;
 			}
 		});
+
 		MAPPER.registerModule(testModule);
+
 	}
 
 	/**
 	 * Serialize the object JSON. When an error occures return a string with the given error.
 	 */
-	static String toPrettyJson(Object o) {
+	public static String toPrettyJson(Object o) {
 		try {
 			return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(o);
 		} catch (JsonProcessingException e) {
@@ -66,10 +71,19 @@ public class Serializer {
 		}
 	}
 
-	static <T> T deserialize(String value, TypeReference<T> clasz) throws IOException {
+	public static <T> T deserialize(String value, TypeReference<T> clasz) throws IOException {
 		return MAPPER.readValue(value, clasz);
 	}
 
 	private Serializer() {
+	}
+
+	public static OutPutModel read(String json) throws JsonParseException, JsonMappingException,
+	        IOException {
+		return MAPPER.readValue(json, OutPutModel.class);
+	}
+
+	public static OutPutModel read(File file) throws IOException {
+		return MAPPER.readValue(file, OutPutModel.class);
 	}
 }

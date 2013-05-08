@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.openqa.selenium.Point;
 
+import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.State;
@@ -20,9 +21,11 @@ class StateBuilder {
 	private final BlockingQueue<CandidateElementPosition> candidates = Queues
 	        .newLinkedBlockingQueue();
 	private final StateVertex state;
-	private Point screenShotOffset;
 	private final AtomicInteger fanIn = new AtomicInteger();
 	private final AtomicInteger fanOut = new AtomicInteger();
+	private final ImmutableList.Builder<String> failedEvents = new ImmutableList.Builder<>();
+
+	private Point screenShotOffset = new Point(0, 0);
 
 	public StateBuilder(StateVertex state) {
 		this.state = state;
@@ -37,7 +40,8 @@ class StateBuilder {
 	}
 
 	public ImmutableList<CandidateElementPosition> getCandidates() {
-		List<CandidateElementPosition> buffer = Lists.newArrayListWithCapacity(candidates.size());
+		List<CandidateElementPosition> buffer = Lists
+		        .newArrayListWithCapacity(candidates.size());
 		candidates.drainTo(buffer);
 		return ImmutableList.copyOf(buffer);
 	}
@@ -51,12 +55,21 @@ class StateBuilder {
 	}
 
 	public State build() {
-		return new State(state, fanIn.get(), fanOut.get(), getCandidates(), screenShotOffset);
+		return new State(state, fanIn.get(), fanOut.get(), getCandidates(),
+		        screenShotOffset, failedEvents.build());
 	}
 
+	/**
+	 * @param screenShotOffset
+	 *            the offsite from the top left if any. Default is <code>(0,0)</code>
+	 */
 	public void setScreenShotOffset(Point screenShotOffset) {
 		Preconditions.checkNotNull(screenShotOffset);
 		this.screenShotOffset = screenShotOffset;
+	}
+
+	public void eventFailed(Eventable eventable) {
+		failedEvents.add(eventable.getIdentification().toString());
 	}
 
 }

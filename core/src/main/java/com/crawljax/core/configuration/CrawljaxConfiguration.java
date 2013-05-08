@@ -7,19 +7,23 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.core.CrawlController;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.di.CoreModule;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * Configures the {@link Crawler}. Set it up using the {@link #builderFor(String)} function.
  */
-public final class CrawljaxConfiguration {
+public class CrawljaxConfiguration {
 
 	public static class CrawljaxConfigurationBuilder {
 
@@ -82,7 +86,7 @@ public final class CrawljaxConfiguration {
 		}
 
 		/**
-		 * Set the crawl depth to unlimited.
+		 * Set the crawl depth to unlimited. The default depth is <code>2</code>.
 		 */
 		public CrawljaxConfigurationBuilder setUnlimitedCrawlDepth() {
 			config.maximumDepth = 0;
@@ -137,6 +141,11 @@ public final class CrawljaxConfiguration {
 			config.plugins = new Plugins(pluginBuilder.build());
 			config.crawlRules = crawlRules.build();
 			return config;
+		}
+
+		public CrawlController buildControl() {
+			Injector injector = Guice.createInjector(new CoreModule(build()));
+			return injector.getInstance(CrawlController.class);
 		}
 
 	}

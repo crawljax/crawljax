@@ -8,6 +8,10 @@
 	max-width: 300px;
 	word-wrap: break-word;
 }
+
+body {
+	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
 </style>
 </head>
 <body>
@@ -21,21 +25,24 @@
 			</colgroup>
 			<tbody>
 				<tr>
-					<td>URL</td>
+					<th>URL</th>
 					<td><a href='${url}'>${url}</a></td>
 				</tr>
 				<tr>
-					<td>Fan in</td>
+					<th>Fan in</th>
 					<td>${fanIn}</td>
 				</tr>
 				<tr>
-					<td>Fan out</td>
+					<th>Fan out</th>
 					<td>${fanOut}</td>
 				</tr>
 				<tr>
-					<td>Interaction elements</td>
+					<th>Interaction elements</th>
 					<td>${elements.size()}</td>
 				</tr>
+				<tr>
+					<th>Failed events</th>
+					<td>${failedEvents}</td>
 			</tbody>
 		</table>
 		<ul id='tabs' class="nav nav-tabs">

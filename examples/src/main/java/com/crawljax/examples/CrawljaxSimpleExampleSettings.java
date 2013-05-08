@@ -1,8 +1,6 @@
 package com.crawljax.examples;
 
-import org.apache.commons.configuration.ConfigurationException;
-
-import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
@@ -19,7 +17,7 @@ public final class CrawljaxSimpleExampleSettings {
 	/**
 	 * Entry point
 	 */
-	public static void main(String[] args) throws ConfigurationException {
+	public static void main(String[] args) {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
@@ -36,8 +34,8 @@ public final class CrawljaxSimpleExampleSettings {
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
-		CrawljaxController crawljax = new CrawljaxController(builder.build());
-		crawljax.run();
+		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+		crawljax.call();
 
 	}
 

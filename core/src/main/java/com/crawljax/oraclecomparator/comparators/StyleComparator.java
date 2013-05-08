@@ -13,7 +13,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.crawljax.core.CrawljaxException;
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
@@ -31,34 +30,14 @@ public class StyleComparator extends AbstractComparator {
 	        "var", "cite", "tt", "b", "i", "u", "big", "small", "pre", "font" };
 	private static final String[] ALLOW_STYLE_TYPES = { "display", "visibility" };
 
-	/**
-	 * Default argument less constructor.
-	 */
-	public StyleComparator() {
-		super();
-	}
-
-	/**
-	 * @param originalDom
-	 *            The original DOM.
-	 * @param newDom
-	 *            The new DOM.
-	 */
-	public StyleComparator(String originalDom, String newDom) {
-		super(originalDom, newDom);
-	}
-
 	@Override
-	public boolean isEquivalent() {
+	public String normalize(String dom) {
 		try {
-			setOriginalDom(DomUtils.getDocumentToString(stripDom(DomUtils
-			        .asDocument(getOriginalDom()))));
-			setNewDom(DomUtils.getDocumentToString(stripDom(DomUtils.asDocument(getNewDom()))));
-		} catch (IOException | CrawljaxException e) {
-			LOGGER.error(e.getMessage(), e);
-			return false;
+			return DomUtils.getDocumentToString(stripDom(DomUtils.asDocument(dom)));
+		} catch (IOException e) {
+			LOGGER.warn("Could not complete dom comparison", e);
+			return dom;
 		}
-		return super.compare();
 	}
 
 	private Document stripDom(Document dom) {
@@ -82,11 +61,9 @@ public class StyleComparator extends AbstractComparator {
 				}
 			}
 		} catch (XPathExpressionException e) {
-			LOGGER.warn("Error with StyleOracle: " + e.getMessage());
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.warn("Error with StyleOracle: {}", e.getMessage(), e);
 		} catch (DOMException e) {
-			LOGGER.warn("Error with StyleOracle: " + e.getMessage());
-			LOGGER.error(e.getMessage(), e);
+			LOGGER.warn("Error with StyleOracle: {}", e.getMessage(), e);
 		}
 		return dom;
 	}

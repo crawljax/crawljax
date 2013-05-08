@@ -7,6 +7,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 
 /**
@@ -16,7 +17,7 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
 public class PostCrawlStateGraphChecker implements PostCrawlingPlugin {
 
 	@Override
-	public void postCrawling(CrawlSession session) {
+	public void postCrawling(CrawlSession session, ExitStatus status) {
 		StateFlowGraph stateFlowGraph = session.getStateFlowGraph();
 
 		allStatesHaveOneOreMoreIncomingEdges(stateFlowGraph);
@@ -26,7 +27,7 @@ public class PostCrawlStateGraphChecker implements PostCrawlingPlugin {
 
 	private void allEdgesConnectTwoStates(StateFlowGraph stateFlowGraph) {
 		for (StateVertex state : stateFlowGraph.getAllStates()) {
-			if (!stateFlowGraph.isInitialState(state)) {
+			if (stateFlowGraph.getInitialState().getId() != state.getId()) {
 				assertThat(stateFlowGraph.getIncomingClickable(state), is(not(empty())));
 			}
 		}
@@ -39,4 +40,8 @@ public class PostCrawlStateGraphChecker implements PostCrawlingPlugin {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
 }

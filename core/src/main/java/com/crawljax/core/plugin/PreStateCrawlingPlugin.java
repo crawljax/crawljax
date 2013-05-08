@@ -1,28 +1,30 @@
 package com.crawljax.core.plugin;
 
-import java.util.List;
-
 import com.crawljax.core.CandidateElement;
-import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawlerContext;
+import com.crawljax.core.state.StateVertex;
+import com.google.common.collect.ImmutableList;
 
 /**
- * Plugin type that is called before firing events on the current DOM state. Example: filter
- * candidate elements.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
+ * Plugin type that is called before firing events on the current DOM state.
  */
 public interface PreStateCrawlingPlugin extends Plugin {
 
 	/**
-	 * Method that is called before firing events on the current DOM state. Example: filter
-	 * candidate elements. Warning the session and candidateElements are not clones, changes will
-	 * result in changed behaviour.
+	 * Method that is called before firing events on the current DOM state. Warning the session and
+	 * candidateElements are not clones, changes will result in changed behavior.
+	 * <p>
+	 * This method can be called from multiple threads with different {@link CrawlerContext}
+	 * </p>
 	 * 
-	 * @param session
+	 * @param context
 	 *            the current session data.
 	 * @param candidateElements
 	 *            the candidates for the current state.
+	 * @param state
+	 *            The state being crawled
 	 */
-	void preStateCrawling(CrawlSession session, List<CandidateElement> candidateElements);
+	void preStateCrawling(CrawlerContext context,
+	        ImmutableList<CandidateElement> candidateElements, StateVertex state);
 
 }

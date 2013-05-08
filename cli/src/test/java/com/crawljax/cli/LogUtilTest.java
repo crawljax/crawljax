@@ -22,7 +22,7 @@ import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
-import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.test.util.CaptureSystemStreams;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -55,8 +55,8 @@ public class LogUtilTest {
 
 	@Test
 	public void noChangePrintsWarnLogLevel() {
-		LoggerFactory.getLogger(CrawljaxController.class).warn("Test123");
-		LoggerFactory.getLogger(CrawljaxController.class).info("IAmNotPrinted");
+		LoggerFactory.getLogger(CrawljaxRunner.class).warn("Test123");
+		LoggerFactory.getLogger(CrawljaxRunner.class).info("IAmNotPrinted");
 		assertThat(system.getConsoleOutput(), containsString("Test123"));
 		assertThat(system.getConsoleOutput(), not(containsString("IAmNotPrinted")));
 	}
@@ -64,7 +64,7 @@ public class LogUtilTest {
 	@Test
 	public void whenLogLevelChangesConsoleAdepts() {
 		LogUtil.setCrawljaxLogLevel(Level.INFO);
-		LoggerFactory.getLogger(CrawljaxController.class).info("Test123");
+		LoggerFactory.getLogger(CrawljaxRunner.class).info("Test123");
 		assertThat(system.getConsoleOutput(), containsString("Test123"));
 	}
 
@@ -75,7 +75,7 @@ public class LogUtilTest {
 
 		LogUtil.logToFile(file.getPath());
 
-		LoggerFactory.getLogger(CrawljaxController.class).warn("Test123");
+		LoggerFactory.getLogger(CrawljaxRunner.class).warn("Test123");
 
 		assertThat(file.exists(), is(true));
 		assertThat(Files.toString(file, Charsets.UTF_8), containsString("Test123"));
