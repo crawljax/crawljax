@@ -26,6 +26,7 @@ import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.ErrorHandler.UnknownServerException;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
@@ -590,43 +591,50 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		}
 
 		for (int i = 0; i < nodeList.size(); i++) {
-			String frameIdentification = "";
-
-			if (topFrame != null && !topFrame.equals("")) {
-				frameIdentification += topFrame + ".";
+			try {
+				locateFrameAndgetSource(document, topFrame, nodeList.get(i));
+			} catch (UnknownServerException e) {
+				LOGGER.warn("Could not add frame contents for element {}", nodeList.get(i));
+				LOGGER.debug("Could not load frame because of {}", e.getMessage(), e);
 			}
+		}
+	}
 
-			Element frameElement = nodeList.get(i);
+	private void locateFrameAndgetSource(Document document, String topFrame, Element frameElement) {
+		String frameIdentification = "";
 
-			String nameId = DomUtils.getFrameIdentification(frameElement);
+		if (topFrame != null && !topFrame.equals("")) {
+			frameIdentification += topFrame + ".";
+		}
 
-			if (nameId != null
-			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
-				frameIdentification += nameId;
+		String nameId = DomUtils.getFrameIdentification(frameElement);
 
-				String handle = browser.getWindowHandle();
+		if (nameId != null
+		        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
+			frameIdentification += nameId;
 
-				LOGGER.debug("The current H: " + handle);
+			String handle = browser.getWindowHandle();
 
-				switchToFrame(frameIdentification);
+			LOGGER.debug("The current H: " + handle);
 
-				String toAppend = browser.getPageSource();
+			switchToFrame(frameIdentification);
 
-				LOGGER.debug("frame dom: " + toAppend);
+			String toAppend = browser.getPageSource();
 
-				browser.switchTo().defaultContent();
+			LOGGER.debug("frame dom: " + toAppend);
 
-				try {
-					Element toAppendElement = DomUtils.asDocument(toAppend).getDocumentElement();
-					Element importedElement =
-					        (Element) document.importNode(toAppendElement, true);
-					frameElement.appendChild(importedElement);
+			browser.switchTo().defaultContent();
 
-					appendFrameContent(importedElement, document, frameIdentification);
-				} catch (DOMException | IOException e) {
-					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
-					        + " continuing...", e);
-				}
+			try {
+				Element toAppendElement = DomUtils.asDocument(toAppend).getDocumentElement();
+				Element importedElement =
+				        (Element) document.importNode(toAppendElement, true);
+				frameElement.appendChild(importedElement);
+
+				appendFrameContent(importedElement, document, frameIdentification);
+			} catch (DOMException | IOException e) {
+				LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
+				        + " continuing...", e);
 			}
 		}
 	}
