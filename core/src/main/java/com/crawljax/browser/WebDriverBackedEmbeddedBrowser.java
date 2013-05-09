@@ -26,6 +26,7 @@ import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.ErrorHandler.UnknownServerException;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
@@ -269,7 +270,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			throwIfConnectionException(e);
 			return;
 		} catch (InterruptedException e) {
-			LOGGER.error("goToUrl got interrupted while waiting for the page to be loaded", e);
+			LOGGER.debug("goToUrl got interrupted while waiting for the page to be loaded", e);
+			Thread.currentThread().interrupt();
 			return;
 		}
 	}
@@ -295,9 +297,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param eventable
 	 *            The HTML event type (onclick, onmouseover, ...).
 	 * @return true if firing event is successful.
+	 * @throws InterruptedException
+	 *             when interrupted during the wait.
 	 */
-	protected boolean fireEventWait(WebElement webElement, Eventable eventable)
-	        throws ElementNotVisibleException {
+	private boolean fireEventWait(WebElement webElement, Eventable eventable)
+	        throws ElementNotVisibleException, InterruptedException {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
@@ -317,12 +321,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				return false;
 		}
 
-		try {
-			Thread.sleep(this.crawlWaitEvent);
-		} catch (InterruptedException e) {
-			LOGGER.error("fireEventWait got interrupted during wait process", e);
-			return false;
-		}
+		Thread.sleep(this.crawlWaitEvent);
 		return true;
 	}
 
@@ -333,8 +332,14 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			// close browser and close every associated window.
 			browser.quit();
 		} catch (WebDriverException e) {
+			if (e.getCause() instanceof InterruptedException) {
+				LOGGER.info("Interrupted while waiting for the browser to close. It might not close correctly");
+				Thread.currentThread().interrupt();
+				return;
+			}
 			throw wrapWebDriverExceptionIfConnectionException(e);
 		}
+		LOGGER.debug("Browser closed...");
 	}
 
 	@Override
@@ -430,10 +435,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @param eventable
 	 *            The eventable.
 	 * @return true if it is able to fire the event successfully on the element.
+	 * @throws InterruptedException
+	 *             when interrupted during the wait.
 	 */
 	@Override
-	public synchronized boolean fireEvent(Eventable eventable) throws ElementNotVisibleException,
-	        NoSuchElementException {
+	public synchronized boolean fireEventAndWait(Eventable eventable)
+	        throws ElementNotVisibleException,
+	        NoSuchElementException, InterruptedException {
 		try {
 
 			boolean handleChanged = false;
@@ -534,9 +542,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			String current = browser.getWindowHandle();
 			for (String handle : browser.getWindowHandles()) {
 				if (!handle.equals(browser.getWindowHandle())) {
-
 					browser.switchTo().window(handle);
-					LOGGER.info("Closing other window with title \"" + browser.getTitle() + "\"");
+					LOGGER.debug("Closing other window with title \"{}\"", browser.getTitle());
 					browser.close();
 					browser.switchTo().window(current);
 				}
@@ -584,43 +591,50 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		}
 
 		for (int i = 0; i < nodeList.size(); i++) {
-			String frameIdentification = "";
-
-			if (topFrame != null && !topFrame.equals("")) {
-				frameIdentification += topFrame + ".";
+			try {
+				locateFrameAndgetSource(document, topFrame, nodeList.get(i));
+			} catch (UnknownServerException e) {
+				LOGGER.warn("Could not add frame contents for element {}", nodeList.get(i));
+				LOGGER.debug("Could not load frame because of {}", e.getMessage(), e);
 			}
+		}
+	}
 
-			Element frameElement = nodeList.get(i);
+	private void locateFrameAndgetSource(Document document, String topFrame, Element frameElement) {
+		String frameIdentification = "";
 
-			String nameId = DomUtils.getFrameIdentification(frameElement);
+		if (topFrame != null && !topFrame.equals("")) {
+			frameIdentification += topFrame + ".";
+		}
 
-			if (nameId != null
-			        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
-				frameIdentification += nameId;
+		String nameId = DomUtils.getFrameIdentification(frameElement);
 
-				String handle = browser.getWindowHandle();
+		if (nameId != null
+		        && !ignoreFrameChecker.isFrameIgnored(frameIdentification + nameId)) {
+			frameIdentification += nameId;
 
-				LOGGER.debug("The current H: " + handle);
+			String handle = browser.getWindowHandle();
 
-				switchToFrame(frameIdentification);
+			LOGGER.debug("The current H: " + handle);
 
-				String toAppend = browser.getPageSource();
+			switchToFrame(frameIdentification);
 
-				LOGGER.debug("frame dom: " + toAppend);
+			String toAppend = browser.getPageSource();
 
-				browser.switchTo().defaultContent();
+			LOGGER.debug("frame dom: " + toAppend);
 
-				try {
-					Element toAppendElement = DomUtils.asDocument(toAppend).getDocumentElement();
-					Element importedElement =
-					        (Element) document.importNode(toAppendElement, true);
-					frameElement.appendChild(importedElement);
+			browser.switchTo().defaultContent();
 
-					appendFrameContent(importedElement, document, frameIdentification);
-				} catch (DOMException | IOException e) {
-					LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
-					        + " continuing...", e);
-				}
+			try {
+				Element toAppendElement = DomUtils.asDocument(toAppend).getDocumentElement();
+				Element importedElement =
+				        (Element) document.importNode(toAppendElement, true);
+				frameElement.appendChild(importedElement);
+
+				appendFrameContent(importedElement, document, frameIdentification);
+			} catch (DOMException | IOException e) {
+				LOGGER.info("Got exception while inspecting a frame:" + frameIdentification
+				        + " continuing...", e);
 			}
 		}
 	}

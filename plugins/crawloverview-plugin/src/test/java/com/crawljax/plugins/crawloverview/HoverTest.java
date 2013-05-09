@@ -45,7 +45,6 @@ public class HoverTest {
 
 	@BeforeClass
 	public static void runHoverTest() throws Exception {
-		System.out.println("get result");
 		result = HOVER_CRAWL.getResult();
 		resolutionBigEnough = calculateResolution(RunHoverCrawl.getOutDir());
 	}

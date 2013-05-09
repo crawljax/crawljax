@@ -130,8 +130,8 @@ public class OverviewIntegrationTest {
 		// drawnstate -1 because the outer state is also a group.
 		int drawnStates = visibleElementsByCss("g").size() - 1;
 		List<WebElement> drawnEdges = visibleElementsByCss("path");
-		assertThat(drawnStates, is(statistics.getNumberOfStates()));
-		assertThat(drawnEdges, hasSize(statistics.getNumberOfEdges()));
+		assertThat(drawnStates, is(statistics.getStateStats().getTotalNumberOfStates()));
+		assertThat(drawnEdges, hasSize(statistics.getEdges()));
 	}
 
 	private List<WebElement> visibleElementsByCss(String selector) {

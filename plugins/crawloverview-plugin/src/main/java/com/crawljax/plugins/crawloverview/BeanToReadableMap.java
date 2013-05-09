@@ -15,6 +15,7 @@ import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.plugins.crawloverview.model.Serializer;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
@@ -68,7 +69,7 @@ class BeanToReadableMap {
 		} else if (result instanceof Plugin) {
 			return escapeHtml(result.getClass().getSimpleName());
 		} else if (result instanceof CrawlRules) {
-			return "<pre><code>" + Serializer.toPrettyJson(result) + "</code></pre>";
+			return "<pre><code>" + escapeHtml(Serializer.toPrettyJson(result)) + "</code></pre>";
 		} else if (result instanceof BrowserConfiguration) {
 			BrowserConfiguration config = (BrowserConfiguration) result;
 			StringBuilder configAsString =

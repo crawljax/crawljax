@@ -66,6 +66,8 @@ public class OracleComparator {
 	}
 
 	/**
+	 * @param newDom
+	 * @param oldDom
 	 * @return the Oracle
 	 */
 	public Comparator getOracle() {

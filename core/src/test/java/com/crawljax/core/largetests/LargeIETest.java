@@ -3,7 +3,6 @@ package com.crawljax.core.largetests;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assume.assumeThat;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Category;
 
@@ -16,7 +15,7 @@ import com.crawljax.test.BrowserTest;
 public class LargeIETest extends LargeTestBase {
 
 	@BeforeClass
-	public static void setUpBeforeClass() throws ConfigurationException, CrawljaxException {
+	public static void setUpBeforeClass() throws CrawljaxException {
 		assumeThat(System.getProperty("os.name").toLowerCase(), containsString("windows"));
 	}
 
