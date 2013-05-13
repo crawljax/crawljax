@@ -15,10 +15,6 @@ import com.crawljax.browser.EmbeddedBrowser;
 @Immutable
 public final class Logic {
 
-	private Logic() {
-		// Utility
-	}
-
 	/**
 	 * @param condition
 	 *            the condition.
@@ -89,6 +85,9 @@ public final class Logic {
 			}
 
 		};
+	}
+
+	private Logic() {
 	}
 
 }
