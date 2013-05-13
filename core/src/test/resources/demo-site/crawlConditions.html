@@ -13,19 +13,19 @@ addCrawlCondition(String description, Condition crawlCondition, Condition... pre
 <h2>Example 1</h2>
 <p>Crawljax should onlyl crawl pages with the text foo in the URL.</p>
 <pre>
-CrawlSpecification crawler = new CrawlSpecification(URL);
+CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 ...
 UrlCondition onlyFooDomain = new UrlCondition("foo"));
-crawler.addCrawlCondition("Only crawl foo site", onlyFooDomain);
+builder.addCrawlCondition("Only crawl foo site", onlyFooDomain);
 </pre>
 
 <h2>Example 2</h2>
 <p>Crawljax should never crawl a page with a <span class="foo">span with the class 'foo'</span>.</p>
 <pre>
-CrawlSpecification crawler = new CrawlSpecification(URL);
+CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 ...
 NotXPathCondition noFooClass = new NotXPathCondition("//SPAN[@class='foo']"));
-crawler.addCrawlCondition("No spans with foo as class", noFooClass);
+builder.addCrawlCondition("No spans with foo as class", noFooClass);
 </pre>
 
 <p>This page contains a <span class="foo">foo</span> and should therefore not be crawled by Crawljax. <a href="#" onclick="addError('Should not crawl this page');">Thus think link should not be clicked by Crawljax</a></p>

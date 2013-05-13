@@ -22,7 +22,7 @@
 </td><td valign="top">
 <h2>Example Code</h2>
 <pre>
-CrawljaxConfiguration crawljax = new CrawljaxConfiguration();
+CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 ...
 InputSpecification input = new InputSpecification();
 input.field("male").setValue(true);
@@ -31,6 +31,6 @@ input.fields("phone", "mobile").setValue("1234567890");
 input.field("type").setValue("Student");
 input.field("active").setValue(true);
 ...
-crawljax.setInputSpecification(input);
+builder.setInputSpecification(input);
 </pre>
 </td></tr></table>

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -66,4 +67,26 @@ public class ConditionTypeChecker<T extends ConditionType> {
 		LOGGER.debug("Preconditions hold for ConditionType: {}", invariant.getDescription());
 		return true;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(invariants);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof ConditionTypeChecker) {
+			ConditionTypeChecker that = (ConditionTypeChecker) object;
+			return Objects.equal(this.invariants, that.invariants);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("invariants", invariants)
+		        .toString();
+	}
+
 }
