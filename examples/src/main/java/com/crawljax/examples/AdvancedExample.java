@@ -1,33 +1,40 @@
 package com.crawljax.examples;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
+
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 
 /**
- * Example of running Crawljax with the CrawlOverview plugin on a single-page web app.
+ * Example of running Crawljax with the CrawlOverview plugin on a single-page web app. The crawl
+ * will produce output using the {@link CrawlOverview} plugin.
  */
-public final class CrawljaxAdvancedExampleSettings {
+public final class AdvancedExample {
 
 	private static final long WAIT_TIME_AFTER_EVENT = 200;
 	private static final long WAIT_TIME_AFTER_RELOAD = 20;
-	private static final String URL = "http://spci.st.ewi.tudelft.nl/demo/crawljax/";
+	private static final String URL = "http://demo.crawljax.com/";
 
 	/**
-	 * entry point
+	 * Run this method to start the crawl.
+	 * 
+	 * @throws IOException
+	 *             when the output folder cannot be created or emptied.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 		builder.crawlRules().insertRandomDataInInputForms(false);
-
-		builder.crawlRules().click("a");
 
 		// click these elements
 		builder.crawlRules().clickDefaultElements();
@@ -50,7 +57,14 @@ public final class CrawljaxAdvancedExampleSettings {
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
 		// This will generate a nice output in the output directory.
-		builder.addPlugin(new CrawlOverview(new File("output")));
+		File outFolder = new File("output");
+		if (outFolder.exists()) {
+			FileUtils.deleteDirectory(outFolder);
+		}
+		builder.addPlugin(new CrawlOverview(outFolder));
+
+		// We want to use two browsers simultaneously.
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 2));
 
 		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 		crawljax.call();
@@ -71,7 +85,4 @@ public final class CrawljaxAdvancedExampleSettings {
 		return input;
 	}
 
-	private CrawljaxAdvancedExampleSettings() {
-
-	}
 }

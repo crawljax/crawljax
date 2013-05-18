@@ -7,12 +7,11 @@ import net.jcip.annotations.Immutable;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.CrawljaxException;
+import com.google.common.base.Objects;
 
 /**
  * A condition in the form of a JavaScript expression which returns true if the expression return
  * true.
- * 
- * @author Danny
  */
 @Immutable
 public class JavaScriptCondition extends AbstractCondition {
@@ -34,7 +33,7 @@ public class JavaScriptCondition extends AbstractCondition {
 	 * 
 	 * @param browser
 	 *            The browser.
-	 * @return Whether the condition is statisfied or <code>false</code> when it it isn't or a
+	 * @return Whether the condition is satisfied or <code>false</code> when it it isn't or a
 	 *         {@link CrawljaxException} occurs.
 	 */
 	@Override
@@ -52,6 +51,30 @@ public class JavaScriptCondition extends AbstractCondition {
 			// Exception is catched, check failed so return false;
 			return false;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(super.hashCode(), expression);
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof JavaScriptCondition) {
+			if (!super.equals(object))
+				return false;
+			JavaScriptCondition that = (JavaScriptCondition) object;
+			return Objects.equal(this.expression, that.expression);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("super", super.toString())
+		        .add("expression", expression)
+		        .toString();
 	}
 
 }
