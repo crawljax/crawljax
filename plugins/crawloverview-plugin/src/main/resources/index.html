@@ -24,6 +24,17 @@ footer small {
 	margin-top: 10px;
 }
 
+.url-table td {
+	word-wrap: break-word;
+	max-width: 700px;
+}
+
+@media (max-width: 979px) and (min-width: 768px) {
+	.url-table td {
+		max-width: 500px;
+	}
+}
+
 @media ( max-width : 767px) {
 	#footer {
 		margin-left: -20px;
@@ -31,7 +42,12 @@ footer small {
 		padding-left: 20px;
 		padding-right: 20px;
 	}
+	
+	.url-table td {
+		max-width: 450px;
+	}
 }
+
 
 #wrap>.container {
 	padding-top: 60px;
