@@ -29,9 +29,9 @@
 
 	<properties>
 		<slf4j.version>1.7.5</slf4j.version>
-		<logback.version>1.0.12</logback.version>
+		<logback.version>1.0.13</logback.version>
 		<selenium.version>[2.32.0,)</selenium.version>
-		<jetty.version>9.0.2.v20130417</jetty.version>
+		<jetty.version>9.0.3.v20130506</jetty.version>
 
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
