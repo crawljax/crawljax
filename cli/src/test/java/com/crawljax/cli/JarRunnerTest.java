@@ -38,7 +38,7 @@ public class JarRunnerTest {
 	}
 
 	private void assertHelpWasPrinted(boolean missingArguments) {
-		String helpMessage = "usage: " + JarRunner.HELP_MESSAGE;
+		String helpMessage = "usage: " + ParameterInterpeter.HELP_MESSAGE;
 		if (missingArguments) {
 			helpMessage = JarRunner.MISSING_ARGUMENT_MESSAGE + "\n" + helpMessage;
 		}
@@ -144,14 +144,16 @@ public class JarRunnerTest {
 	@Test
 	public void testWaitAfterReload() {
 		CrawlRules crawlRules =
-		        configForArgs("-" + JarRunner.WAIT_AFTER_RELOAD + " 123").getCrawlRules();
+		        configForArgs("-" + ParameterInterpeter.WAIT_AFTER_RELOAD + " 123")
+		                .getCrawlRules();
 		assertThat(crawlRules.getWaitAfterReloadUrl(), is(123L));
 	}
 
 	@Test
 	public void testWaitAfterEvent() {
 		CrawlRules crawlRules =
-		        configForArgs("-" + JarRunner.WAIT_AFTER_EVENT + " 123").getCrawlRules();
+		        configForArgs("-" + ParameterInterpeter.WAIT_AFTER_EVENT + " 123")
+		                .getCrawlRules();
 		assertThat(crawlRules.getWaitAfterEvent(), is(123L));
 	}
 
