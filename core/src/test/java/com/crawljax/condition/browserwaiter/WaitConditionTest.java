@@ -33,19 +33,22 @@ public class WaitConditionTest {
 
 	@Test
 	public void testWaitConditionNoIndexOutOfBounceAfterTwoTries() {
-		WaitCondition wc = new WaitCondition("tmp", WAIT_TIME_LONG, new TimeoutExpectedCondition());
+		WaitCondition wc =
+		        new WaitCondition("tmp", WAIT_TIME_LONG, new TimeoutExpectedCondition());
 		Assert.assertEquals("Wait timed out", WAIT_TIMEOUT, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionSuccessZeroSpecified() {
-		WaitCondition wc = new WaitCondition("tmp", WAIT_TIME_LONG, new ArrayList<ExpectedCondition>());
+		WaitCondition wc =
+		        new WaitCondition("tmp", WAIT_TIME_LONG, new ArrayList<ExpectedCondition>());
 		Assert.assertEquals("Wait success", WAIT_SUCCESS, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionSuccessZeroSpecifiedZeroTimeout() {
-		WaitCondition wc = new WaitCondition("tmp", WAIT_TIME_LONG, new ArrayList<ExpectedCondition>());
+		WaitCondition wc =
+		        new WaitCondition("tmp", WAIT_TIME_LONG, new ArrayList<ExpectedCondition>());
 		Assert.assertEquals("Wait success", WAIT_SUCCESS, wc.testAndWait(browser));
 	}
 
@@ -68,7 +71,8 @@ public class WaitConditionTest {
 
 	@Test
 	public void testWaitConditionNotRunBecauseUrl() {
-		WaitCondition wc = new WaitCondition("tmp/foo", WAIT_TIME_LONG, new TimeoutExpectedCondition());
+		WaitCondition wc =
+		        new WaitCondition("tmp/foo", WAIT_TIME_LONG, new TimeoutExpectedCondition());
 		Assert.assertEquals("Wait not run because browser url missmatch", -1,
 		        wc.testAndWait(browser));
 	}

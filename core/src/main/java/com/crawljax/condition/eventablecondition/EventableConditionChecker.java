@@ -2,6 +2,7 @@ package com.crawljax.condition.eventablecondition;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public class EventableConditionChecker {
 	 * @param eventableConditions
 	 *            The eventable conditions.
 	 */
+	@Inject
 	public EventableConditionChecker(CrawlRules config) {
 		Builder<EventableCondition> builder = ImmutableList.builder();
 		for (CrawlElement crawlTag : config.getAllCrawlElements()) {

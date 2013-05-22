@@ -1,12 +1,11 @@
 package com.crawljax.core.plugin;
 
 import com.crawljax.core.CrawlSession;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 
 /**
  * Plugin type that is called after the crawling phase is finished. Examples: report generation,
  * test generation
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 public interface PostCrawlingPlugin extends Plugin {
 
@@ -16,7 +15,9 @@ public interface PostCrawlingPlugin extends Plugin {
 	 * 
 	 * @param session
 	 *            the crawl session.
+	 * @param exitReason
+	 *            The {@link ExitStatus} Crawljax stopped.
 	 */
-	void postCrawling(CrawlSession session);
+	void postCrawling(CrawlSession session, ExitStatus exitReason);
 
 }

@@ -8,8 +8,6 @@ import org.custommonkey.xmlunit.Difference;
 
 /**
  * Interface for oracle comparators.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 @NotThreadSafe
 public interface Comparator {
@@ -17,32 +15,16 @@ public interface Comparator {
 	/**
 	 * @return The differences between the two DOMs
 	 */
-	List<Difference> getDifferences();
+	List<Difference> getDifferences(String oldDom, String newDom);
 
 	/**
 	 * @return if the originalDom and the newDom are equivalent
 	 */
-	boolean isEquivalent();
+	boolean isEquivalent(String oldDom, String newDom);
 
 	/**
-	 * @return The original DOM
+	 * @return The normalized DOM, on which the comparison is made.
 	 */
-	String getOriginalDom();
+	String normalize(String dom);
 
-	/**
-	 * @param originalDom
-	 *            The original DOM.
-	 */
-	void setOriginalDom(String originalDom);
-
-	/**
-	 * @param newDom
-	 *            The new DOM.
-	 */
-	void setNewDom(String newDom);
-
-	/**
-	 * @return The new DOM
-	 */
-	String getNewDom();
 }

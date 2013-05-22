@@ -4,6 +4,8 @@
 * Crawljax is now configured using a builder
 * Crawljax can now crawl hidden `href` elements as well.
 * Children of a certain elements can be excluded using a nice syntax.
+* The project has been split up in three versions: *core*, *cli* and *examples*.
+* Major performance and stability improvements
 * [View closed issues](https://github.com/crawljax/crawljax/issues?milestone=3&page=1&state=closed)
 * [View the full diff](https://github.com/crawljax/crawljax/compare/crawljax-2.2...crawljax-3.0)
 

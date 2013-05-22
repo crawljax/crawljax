@@ -12,6 +12,7 @@ import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilde
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
+import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -245,10 +246,21 @@ public class CrawlRules {
 				crawlRules.crawlEvents = ImmutableSortedSet.of(EventType.click);
 			}
 			crawlRules.invariants = invariants.build();
-			crawlRules.oracleComparators = oracleComparators.build();
+			setupOracleComparatorsOrDefault();
 			crawlRules.preCrawlConfig = preCrawlConfig.build(crawlActionsBuilder);
 			crawlRules.ignoredFrameIdentifiers = ignoredFrameIdentifiers.build();
 			return crawlRules;
+		}
+
+		private void setupOracleComparatorsOrDefault() {
+			ImmutableList<OracleComparator> comparators = oracleComparators.build();
+			if (comparators.isEmpty()) {
+				crawlRules.oracleComparators =
+				        ImmutableList.of(new OracleComparator("SimpleComparator",
+				                new SimpleComparator()));
+			} else {
+				crawlRules.oracleComparators = comparators;
+			}
 		}
 	}
 

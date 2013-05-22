@@ -4,8 +4,7 @@
 package com.crawljax.oraclecomparator.comparators;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -20,25 +19,24 @@ import org.w3c.dom.NodeList;
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Oracle which can ignore element/attributes by xpath expression.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 public class XPathExpressionComparator extends AbstractComparator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(XPathExpressionComparator.class
 	        .getName());
 
-	private final List<String> expressions = new ArrayList<String>();
+	private final ImmutableList<String> expressions;
 
 	/**
 	 * @param expressions
 	 *            the xpath expressions to ignore
 	 */
-	public XPathExpressionComparator(List<String> expressions) {
-		this.expressions.addAll(expressions);
+	public XPathExpressionComparator(Collection<String> expressions) {
+		this.expressions = ImmutableList.copyOf(expressions);
 	}
 
 	/**
@@ -46,35 +44,7 @@ public class XPathExpressionComparator extends AbstractComparator {
 	 *            the xpath expressions to ignore
 	 */
 	public XPathExpressionComparator(String... expressions) {
-		for (String expression : expressions) {
-			this.expressions.add(expression);
-		}
-	}
-
-	/**
-	 * 
-	 */
-	public XPathExpressionComparator() {
-	}
-
-	/**
-	 * @param originalDom
-	 *            The original DOM.
-	 * @param newDom
-	 *            The new DOM.
-	 */
-	public XPathExpressionComparator(String originalDom, String newDom) {
-		super(originalDom, newDom);
-	}
-
-	/**
-	 * Add another expression.
-	 * 
-	 * @param expression
-	 *            The expression.
-	 */
-	public void addExpression(String expression) {
-		expressions.add(expression);
+		this.expressions = ImmutableList.copyOf(expressions);
 	}
 
 	/**
@@ -82,7 +52,8 @@ public class XPathExpressionComparator extends AbstractComparator {
 	 *            the dom to ignore the xpath expressions from
 	 * @return the stripped dom with the elements found with the xpath expressions
 	 */
-	public String stripXPathExpressions(String dom) {
+	@Override
+	public String normalize(String dom) {
 		String curExpression = "";
 		Document doc = null;
 		String domRet;
@@ -113,13 +84,6 @@ public class XPathExpressionComparator extends AbstractComparator {
 			}
 		}
 		return domRet;
-	}
-
-	@Override
-	public boolean isEquivalent() {
-		setOriginalDom(stripXPathExpressions(getOriginalDom()));
-		setNewDom(stripXPathExpressions(getNewDom()));
-		return super.compare();
 	}
 
 }

@@ -1,27 +1,21 @@
 <nav class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
-			<a class="btn btn-navbar" data-toggle="collapse"
-				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
-				class="icon-bar"></span> <span class="icon-bar"></span>
-			</a>
 			#if($page == "state")
 				<a class="brand" href="../index.html#graph">Crawl overview</a>
 			#else
 				<a class="brand" href="#">Crawl overview</a>
 			#end
-			<div class="nav-collapse collapse">
-				<ul class="nav">
-					#if($page == "state") 
-						<li class="active" ><a href="#">State inspector</a></li>
-					#else
-						<li class="active"><a href="#graph">State graph</a></li>
-						<li><a href="#statistics">Statistics</a></li>
-						<li><a href="#urls">URL's</a></li>
-						<li><a href="#config">Configuration</a></li>
-					#end
-				</ul>
-			</div>
+			<ul class="nav">
+				#if($page == "state") 
+					<li class="active" ><a href="#">State inspector</a></li>
+				#else
+					<li class="active"><a href="#graph">State graph</a></li>
+					<li><a href="#statistics">Statistics</a></li>
+					<li><a href="#urls">URL's</a></li>
+					<li><a href="#config">Configuration</a></li>
+				#end
+			</ul>
 			<div class="nav pull-right">
 				<a href="#" class="btn graphBtn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
 				<a href="#" class="btn graphBtn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>

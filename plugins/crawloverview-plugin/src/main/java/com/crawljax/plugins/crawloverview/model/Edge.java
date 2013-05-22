@@ -6,6 +6,8 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.plugins.crawloverview.CrawlOverviewException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 
 /**
@@ -39,6 +41,20 @@ public class Edge {
 			element = eventable.getElement().toString();
 		}
 		eventType = eventable.getEventType().toString();
+	}
+
+	@JsonCreator
+	public Edge(@JsonProperty("from") String from, @JsonProperty("to") String to,
+	        @JsonProperty("hash") int hash, @JsonProperty("text") String text,
+	        @JsonProperty("id") String id, @JsonProperty("element") String element,
+	        @JsonProperty("eventType") String eventType) {
+		this.from = from;
+		this.to = to;
+		this.hash = hash;
+		this.text = text;
+		this.id = id;
+		this.element = element;
+		this.eventType = eventType;
 	}
 
 	/**

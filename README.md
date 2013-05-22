@@ -1,4 +1,4 @@
-Crawljax [![Build Status](http://jenkins.crawljax.com/job/crawljax-master/badge/icon)](http://jenkins.crawljax.com/job/crawljax-master/)
+Crawljax [![Build Status](http://jenkins.crawljax.com/job/crawljax-fullbuild-master/badge/icon)](http://jenkins.crawljax.com/job/crawljax-fullbuild-master/)
 ========
 
 Crawling Ajax-based Web Applications 

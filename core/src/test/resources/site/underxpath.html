@@ -1,20 +1,25 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
-	<head>
-		<script type="text/javascript">
-			function test() {
-				document.location.href = "simple.html";
-			}
-		</script>
-	</head>
-	
-	<body>
-		<ul class="dontclick">
-			<li onclick="javascript:test();">Test</li>
-		</ul>
-		<p>A paragraph.</p>
-		<ul class="dontclick">
-			<li onclick="javascript:test();">Test</li>
-		</ul>
-	</body>
+<head>
+<script type="text/javascript">
+	function newState(text) {
+		document.getElementById('container').innerHTML = 'New state ' + text;
+	}
+</script>
+</head>
+
+<body>
+	<ul>
+	<li><a href="#" onclick="newState('correct');">This you can click</a></li>
+	<li><a href="#" id='noClickId' onclick="newState('noClickId');">This you cannot click because of id</a></li>
+	<li><a href="#" class='noClickClass' onclick="newState('noClickClass');">This you cannot click because of class</a></li>
+	</ul>
+	<div id='noChildrenOfId'>
+		<a href="#" onclick="newState('noChilderOfId');">This you cannot click because of parent id</a>
+	</div>
+	<div class='noChildrenOfClass'>
+		<a href="#" onclick="newState('noChilderOfClass');">This you cannot click because of parent class</a>
+	</div>
+	<p id='container'></p>
+</body>
 </html>

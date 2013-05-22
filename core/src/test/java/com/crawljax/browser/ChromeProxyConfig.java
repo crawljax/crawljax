@@ -1,10 +1,14 @@
 package com.crawljax.browser;
 
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 
 import org.eclipse.jetty.util.resource.Resource;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawlSession;
@@ -13,10 +17,12 @@ import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurati
 import com.crawljax.test.BaseCrawler;
 import com.crawljax.test.BrowserTest;
 
-public class ChromeProxyConfig implements BrowserTest {
+@Category(BrowserTest.class)
+public class ChromeProxyConfig {
 
 	@Test
 	public void chromeProxyConfig() {
+		assumeThat(System.getProperty("webdriver.chrome.driver"), is(notNullValue()));
 		CrawlSession crawl =
 		        new BaseCrawler(Resource.newClassPathResource("/site"),
 		                "simplelink/simplelink.html") {

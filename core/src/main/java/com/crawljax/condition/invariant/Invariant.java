@@ -7,11 +7,10 @@ import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.ConditionType;
+import com.google.common.base.Objects;
 
 /**
  * An Invariant is an condition which should always hold when its preconditions are satisfied.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 public class Invariant extends ConditionType {
 
@@ -55,6 +54,14 @@ public class Invariant extends ConditionType {
 	 */
 	public Condition getInvariantCondition() {
 		return getCondition();
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("description", getDescription())
+		        .add("condition", getInvariantCondition())
+		        .toString();
 	}
 
 }

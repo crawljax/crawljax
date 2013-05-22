@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import net.jcip.annotations.GuardedBy;
 
@@ -18,14 +22,17 @@ import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
+import com.crawljax.core.ExitNotifier;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
  * clickables (Eventable) on the edges.
  */
+@Singleton
 @SuppressWarnings("serial")
 public class StateFlowGraph implements Serializable {
 
@@ -39,8 +46,9 @@ public class StateFlowGraph implements Serializable {
 	 */
 	private final AtomicInteger stateCounter = new AtomicInteger();
 	private final AtomicInteger nextStateNameCounter = new AtomicInteger();
+	private final ConcurrentMap<Integer, StateVertex> stateById;
 
-	private final StateVertex initialState;
+	private final ExitNotifier exitNotifier;
 
 	/**
 	 * The constructor.
@@ -48,13 +56,12 @@ public class StateFlowGraph implements Serializable {
 	 * @param initialState
 	 *            the state to start from.
 	 */
-	public StateFlowGraph(StateVertex initialState) {
-		Preconditions.checkNotNull(initialState);
+	@Inject
+	public StateFlowGraph(ExitNotifier exitNotifier) {
+		this.exitNotifier = exitNotifier;
 		sfg = new DirectedMultigraph<>(Eventable.class);
-		sfg.addVertex(initialState);
-		stateCounter.incrementAndGet();
-		this.initialState = initialState;
-		LOG.debug("Initialized the stateflowgraph with an initial state");
+		stateById = Maps.newConcurrentMap();
+		LOG.debug("Initialized the stateflowgraph");
 	}
 
 	/**
@@ -88,7 +95,7 @@ public class StateFlowGraph implements Serializable {
 	 * @param correctName
 	 *            if true the name of the state will be corrected according to the internal state
 	 *            counter.
-	 * @return the clone if one is detected null otherwise.
+	 * @return the clone if one is detected <code>null</code> otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
 	@GuardedBy("sfg")
@@ -96,7 +103,9 @@ public class StateFlowGraph implements Serializable {
 		synchronized (sfg) {
 			boolean added = sfg.addVertex(stateVertix);
 			if (added) {
+				stateById.put(stateVertix.getId(), stateVertix);
 				int count = stateCounter.incrementAndGet();
+				exitNotifier.incrementNumberOfStates();
 				LOG.debug("Number of states is now {}", count);
 				if (correctName) {
 					correctStateName(stateVertix);
@@ -113,12 +122,25 @@ public class StateFlowGraph implements Serializable {
 	private void correctStateName(StateVertex stateVertix) {
 		// the -1 is for the "index" state.
 		int totalNumberOfStates = this.getAllStates().size() - 1;
-		String correctedName = makeStateName(totalNumberOfStates, stateVertix.isGuidedCrawling());
+		String correctedName = makeStateName(totalNumberOfStates);
 		if (!"index".equals(stateVertix.getName())
 		        && !stateVertix.getName().equals(correctedName)) {
 			LOG.info("Correcting state name from {}  to {}", stateVertix.getName(), correctedName);
 			stateVertix.setName(correctedName);
 		}
+	}
+
+	/**
+	 * @param id
+	 *            The ID of the state
+	 * @return The state if found or <code>null</code>.
+	 */
+	public StateVertex getById(int id) {
+		return stateById.get(id);
+	}
+
+	public StateVertex getInitialState() {
+		return stateById.get(StateVertex.INDEX_ID);
 	}
 
 	/**
@@ -238,8 +260,8 @@ public class StateFlowGraph implements Serializable {
 	 *            the end state.
 	 * @return a list of shortest path of clickables from the state to the end
 	 */
-	public List<Eventable> getShortestPath(StateVertex start, StateVertex end) {
-		return DijkstraShortestPath.findPathBetween(sfg, start, end);
+	public ImmutableList<Eventable> getShortestPath(StateVertex start, StateVertex end) {
+		return ImmutableList.copyOf(DijkstraShortestPath.findPathBetween(sfg, start, end));
 	}
 
 	/**
@@ -371,9 +393,13 @@ public class StateFlowGraph implements Serializable {
 	 * 
 	 * @return State name the name of the state
 	 */
-	public String getNewStateName() {
-		String state = makeStateName(nextStateNameCounter.incrementAndGet(), false);
+	public String getNewStateName(int id) {
+		String state = makeStateName(id);
 		return state;
+	}
+
+	public int getNextStateId() {
+		return nextStateNameCounter.incrementAndGet();
 	}
 
 	/**
@@ -384,17 +410,8 @@ public class StateFlowGraph implements Serializable {
 	 *            the id where this name needs to be for.
 	 * @return the String containing the new name.
 	 */
-	private String makeStateName(int id, boolean guided) {
-
-		if (guided) {
-			return "guided" + id;
-		}
-
+	private String makeStateName(int id) {
 		return "state" + id;
-	}
-
-	public boolean isInitialState(StateVertex state) {
-		return initialState.equals(state);
 	}
 
 	/**
@@ -403,4 +420,5 @@ public class StateFlowGraph implements Serializable {
 	public int getNumberOfStates() {
 		return stateCounter.get();
 	}
+
 }

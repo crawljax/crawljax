@@ -1,5 +1,8 @@
 package com.crawljax.browser;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import org.openqa.selenium.android.AndroidDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -11,6 +14,7 @@ import org.openqa.selenium.iphone.IPhoneDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -19,9 +23,15 @@ import com.google.common.collect.ImmutableSortedSet;
 /**
  * Default implementation of the EmbeddedBrowserBuilder based on Selenium WebDriver API.
  */
-public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
+public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverBrowserBuilder.class);
+	private final CrawljaxConfiguration configuration;
+
+	@Inject
+	public WebDriverBrowserBuilder(CrawljaxConfiguration configuration) {
+		this.configuration = configuration;
+	}
 
 	/**
 	 * Build a new WebDriver based EmbeddedBrowser.
@@ -32,7 +42,8 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 	 * @return the new build WebDriver based embeddedBrowser
 	 */
 	@Override
-	public EmbeddedBrowser buildEmbeddedBrowser(CrawljaxConfiguration configuration) {
+	public EmbeddedBrowser get() {
+		LOGGER.debug("Setting up a Browser");
 		// Retrieve the config values used
 		ImmutableSortedSet<String> filterAttributes =
 		        configuration.getCrawlRules().getPreCrawlConfig().getFilterAttributeNames();
@@ -40,79 +51,100 @@ public class WebDriverBrowserBuilder implements EmbeddedBrowserBuilder {
 		long crawlWaitEvent = configuration.getCrawlRules().getWaitAfterEvent();
 
 		// Determine the requested browser type
+		EmbeddedBrowser browser = null;
 		switch (configuration.getBrowserConfig().getBrowsertype()) {
 			case firefox:
-				if (configuration.getProxyConfiguration() != null) {
-					FirefoxProfile profile = new FirefoxProfile();
-
-					profile.setPreference("network.proxy.http", configuration
-					        .getProxyConfiguration().getHostname());
-					profile.setPreference("network.proxy.http_port", configuration
-					        .getProxyConfiguration().getPort());
-					profile.setPreference("network.proxy.type", configuration
-					        .getProxyConfiguration().getType().toInt());
-					/* use proxy for everything, including localhost */
-					profile.setPreference("network.proxy.no_proxies_on", "");
-
-					return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(profile),
-					        filterAttributes, crawlWaitReload, crawlWaitEvent);
-				}
-
-				return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
-				        filterAttributes, crawlWaitEvent, crawlWaitReload);
-
+				browser = newFireFoxBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				break;
 			case ie:
-				return WebDriverBackedEmbeddedBrowser.withDriver(new InternetExplorerDriver(),
+				browser = WebDriverBackedEmbeddedBrowser.withDriver(new InternetExplorerDriver(),
 				        filterAttributes, crawlWaitEvent, crawlWaitReload);
-
+				break;
 			case chrome:
-				ChromeDriver driverChrome;
-
-				if (configuration.getProxyConfiguration() != null
-				        && configuration.getProxyConfiguration().getType() != ProxyType.NOTHING) {
-					ChromeOptions optionsChrome = new ChromeOptions();
-					optionsChrome.addArguments("--proxy-server=http://"
-					        + configuration.getProxyConfiguration().getHostname() + ":"
-					        + configuration.getProxyConfiguration().getPort());
-					driverChrome = new ChromeDriver(optionsChrome);
-				} else {
-					driverChrome = new ChromeDriver();
-				}
-
-				return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, filterAttributes,
-				        crawlWaitEvent, crawlWaitReload);
+				browser = newChromeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				break;
 
 			case remote:
-				return WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
+				browser = WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
 				        .getBrowserConfig().getRemoteHubUrl(), filterAttributes, crawlWaitEvent,
 				        crawlWaitReload);
-
+				break;
 			case htmlunit:
-				HtmlUnitDriver driverHtmlUnit = new HtmlUnitDriver(BrowserVersion.FIREFOX_10);
-				driverHtmlUnit.setJavascriptEnabled(true);
-				if (configuration.getProxyConfiguration() != null) {
-					driverHtmlUnit.setProxy(configuration.getProxyConfiguration().getHostname(),
-					        configuration.getProxyConfiguration().getPort());
-				}
-
-				return WebDriverBackedEmbeddedBrowser.withDriver(driverHtmlUnit,
-				        filterAttributes, crawlWaitEvent, crawlWaitReload);
-
+				browser = newHtmlUnitBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				break;
 			case android:
-				return WebDriverBackedEmbeddedBrowser.withDriver(new AndroidDriver(),
+				browser = WebDriverBackedEmbeddedBrowser.withDriver(new AndroidDriver(),
 				        filterAttributes, crawlWaitEvent, crawlWaitReload);
+				break;
 
 			case iphone:
 				try {
-					return WebDriverBackedEmbeddedBrowser.withDriver(new IPhoneDriver(),
+					browser = WebDriverBackedEmbeddedBrowser.withDriver(new IPhoneDriver(),
 					        filterAttributes, crawlWaitEvent, crawlWaitReload);
 				} catch (Exception e) {
 					LOGGER.error("Could not load driver: " + e.getMessage(), e);
+					throw new CrawljaxException(e);
 				}
 
 			default:
-				return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
+				browser = WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
 				        filterAttributes, crawlWaitEvent, crawlWaitReload);
 		}
+		configuration.getPlugins().runOnBrowserCreatedPlugins(browser);
+		return browser;
+	}
+
+	private EmbeddedBrowser newHtmlUnitBrowser(ImmutableSortedSet<String> filterAttributes,
+	        long crawlWaitReload, long crawlWaitEvent) {
+		HtmlUnitDriver driverHtmlUnit = new HtmlUnitDriver(BrowserVersion.FIREFOX_17);
+		driverHtmlUnit.setJavascriptEnabled(true);
+		if (configuration.getProxyConfiguration() != null) {
+			driverHtmlUnit.setProxy(configuration.getProxyConfiguration().getHostname(),
+			        configuration.getProxyConfiguration().getPort());
+		}
+
+		return WebDriverBackedEmbeddedBrowser.withDriver(driverHtmlUnit,
+		        filterAttributes, crawlWaitEvent, crawlWaitReload);
+	}
+
+	private EmbeddedBrowser newFireFoxBrowser(ImmutableSortedSet<String> filterAttributes,
+	        long crawlWaitReload, long crawlWaitEvent) {
+		if (configuration.getProxyConfiguration() != null) {
+			FirefoxProfile profile = new FirefoxProfile();
+
+			profile.setPreference("network.proxy.http", configuration
+			        .getProxyConfiguration().getHostname());
+			profile.setPreference("network.proxy.http_port", configuration
+			        .getProxyConfiguration().getPort());
+			profile.setPreference("network.proxy.type", configuration
+			        .getProxyConfiguration().getType().toInt());
+			/* use proxy for everything, including localhost */
+			profile.setPreference("network.proxy.no_proxies_on", "");
+
+			return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(profile),
+			        filterAttributes, crawlWaitReload, crawlWaitEvent);
+		}
+
+		return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
+		        filterAttributes, crawlWaitEvent, crawlWaitReload);
+	}
+
+	private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
+	        long crawlWaitReload, long crawlWaitEvent) {
+		ChromeDriver driverChrome;
+
+		if (configuration.getProxyConfiguration() != null
+		        && configuration.getProxyConfiguration().getType() != ProxyType.NOTHING) {
+			ChromeOptions optionsChrome = new ChromeOptions();
+			optionsChrome.addArguments("--proxy-server=http://"
+			        + configuration.getProxyConfiguration().getHostname() + ":"
+			        + configuration.getProxyConfiguration().getPort());
+			driverChrome = new ChromeDriver(optionsChrome);
+		} else {
+			driverChrome = new ChromeDriver();
+		}
+
+		return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, filterAttributes,
+		        crawlWaitEvent, crawlWaitReload);
 	}
 }

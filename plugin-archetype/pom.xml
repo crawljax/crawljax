@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.crawljax</groupId>
 		<artifactId>crawljax-parent-pom</artifactId>
-		<version>3.0-SNAPSHOT</version>
+		<version>3.1-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.crawljax.plugins.archetypes</groupId>
@@ -16,18 +16,6 @@
 	<description>
 		Generates a Crawljax project template.
 	</description>
-
-	<developers>
-		<developer>
-			<id>amesbah</id>
-			<name>Ali Mesbah</name>
-			<email>a.mesbah@gmail.com</email>
-			<url>http://www.ece.ubc.ca/~amesbah/</url>
-			<organization>SALTLab, UBC</organization>
-			<organizationUrl>http://salt.ece.ubc.ca</organizationUrl>
-			<timezone>-8</timezone>
-		</developer>
-	</developers>
 
 	<build>
 		<resources>
