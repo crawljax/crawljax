@@ -34,7 +34,7 @@ import com.google.common.collect.Maps;
  */
 @Singleton
 @SuppressWarnings("serial")
-public class StateFlowGraph implements Serializable {
+public class StateFlowGraph implements StateFlowGraphInterface, Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StateFlowGraph.class.getName());
 
