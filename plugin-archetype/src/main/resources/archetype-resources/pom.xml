@@ -23,6 +23,9 @@
 	<build>
 		<plugins>
 			<plugin>
+				<!-- This is disabled in case the plugin you are writing is not a git 
+					repository. If it is, we advise you to remove this <plugin> section so the 
+					plugin is enabled. -->
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
 				<executions>
