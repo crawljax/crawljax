@@ -48,7 +48,7 @@ public class JavaScriptCondition extends AbstractCondition {
 			}
 			return object.toString().equals("1");
 		} catch (CrawljaxException e) {
-			// Exception is catched, check failed so return false;
+			// Exception is caught, check failed so return false;
 			return false;
 		}
 	}
