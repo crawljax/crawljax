@@ -264,7 +264,7 @@ public class StateMachineTest {
 	}
 
 	private StateFlowGraph newStateFlowGraph() {
-		StateFlowGraph sfg = new StateFlowGraph(new ExitNotifier(0));
+		StateFlowGraph sfg = new DefaultStateFlowGraph(new ExitNotifier(0));
 		sfg.putIfAbsent(index, false);
 		return sfg;
 	}

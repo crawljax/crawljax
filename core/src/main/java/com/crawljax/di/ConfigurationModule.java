@@ -16,6 +16,8 @@ import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.core.state.DefaultStateFlowGraph;
+import com.crawljax.core.state.StateFlowGraph;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.util.Providers;
@@ -49,6 +51,9 @@ public class ConfigurationModule extends AbstractModule {
 			bind(EmbeddedBrowser.class).toProvider(
 			        Providers.guicify(browserConfig.getBrowserBuilder()));
 		}
+		
+
+		bind(StateFlowGraph.class).to(DefaultStateFlowGraph.class);
 	}
 
 	@BindingAnnotation
