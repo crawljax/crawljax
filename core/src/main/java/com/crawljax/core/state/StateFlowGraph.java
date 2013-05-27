@@ -17,6 +17,12 @@ import com.google.common.collect.ImmutableSet;
 
 
 public interface StateFlowGraph { 
+	
+	
+	
+	public enum StateFlowGraphType{
+		DEAFAULT,DB 
+	}
 /**
  * Adds a state (as a vertix) to the State-Flow Graph if not already present. More formally,
  * adds the specified vertex, v, to this graph if this graph contains no vertex u such that

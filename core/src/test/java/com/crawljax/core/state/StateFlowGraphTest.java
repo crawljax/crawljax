@@ -36,6 +36,7 @@ public class StateFlowGraphTest {
 		state3 = new StateVertex(3, "STATE_THREE", "<table><div>state3</div></table>");
 		state4 = new StateVertex(4, "STATE_FOUR", "<table><div>state4</div></table>");
 		state5 = new StateVertex(5, "STATE_FIVE", "<table><div>state5</div></table>");
+		// manual
 		graph = new DefaultStateFlowGraph(new ExitNotifier(0));
 		graph.putIfAbsent(index, false);
 	}
@@ -148,6 +149,7 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
+		// manual
 		StateFlowGraph g = new DefaultStateFlowGraph(new ExitNotifier(0));
 		g.putIfAbsent(new StateVertex(1, "", HTML1), false);
 		g.putIfAbsent(new StateVertex(2, "", HTML2));
