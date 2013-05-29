@@ -36,7 +36,7 @@ import com.google.common.collect.Maps;
 @SuppressWarnings("serial")
 public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StateFlowGraph.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultStateFlowGraph.class.getName());
 
 	private final DirectedGraph<StateVertex, Eventable> sfg;
 

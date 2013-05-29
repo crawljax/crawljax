@@ -16,6 +16,7 @@ import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.core.state.DbStateFlowGraph;
 import com.crawljax.core.state.DefaultStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.google.inject.AbstractModule;
@@ -53,7 +54,10 @@ public class ConfigurationModule extends AbstractModule {
 		}
 		
 
-		bind(StateFlowGraph.class).to(DefaultStateFlowGraph.class);
+//		bind(StateFlowGraph.class).to(DefaultStateFlowGraph.class);
+		
+		bind(StateFlowGraph.class).to(DbStateFlowGraph.class);
+
 	}
 
 	@BindingAnnotation
