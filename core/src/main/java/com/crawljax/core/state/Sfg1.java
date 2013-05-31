@@ -18,30 +18,25 @@ import net.jcip.annotations.GuardedBy;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.math.stat.descriptive.moment.Mean;
-
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.alg.KShortestPaths;
 import org.jgrapht.graph.DirectedMultigraph;
-
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.index.Index;
-import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.graphdb.index.RelationshipIndex;
+import org.neo4j.helpers.UTF8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.neo4j.helpers.UTF8;
 
 import com.crawljax.core.ExitNotifier;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -116,25 +111,25 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 	// of length 3
 	// this is used for indexing edges
 	public static final String SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING =
-			"sourceClickableTargetTriple";
+			"Source-Clickable-Target Triple";
 	
 	// the url key
-	public static final String URL_IN_NODES = "urlInNodes";
+	public static final String URL_IN_NODES = "URL";
 	
 
 	// the state name key
-	public static final String STATE_NAME_IN_NODES = "stateNameInNode";
+	public static final String STATE_NAME_IN_NODES = "State Name";
 	
 	// the key for DOM
-	public static final String DOM_IN_NODES = "DomInNodes";
+	public static final String DOM_IN_NODES = "DOM";
 	
 	//
 	
 	// the id used for the for node indexer object
-	public static final String NODES_INDEX_NAME = "nodesIndexName";
+	public static final String NODES_INDEX_NAME = "nodesIndex";
 
 	// the id used for the for edge indexer object
-	public static final String EDGES_INDEX_NAME = "edgesIndexName";
+	public static final String EDGES_INDEX_NAME = "edgesIndex";
 	
 	
 	
@@ -147,6 +142,12 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 	// indexing data structures for fast retrieval
 	private static Index<Node> nodeIndex;
 	private static RelationshipIndex edgesIndex;
+	
+	
+	private static final int SOURCE_VERTEX_INDEX = 0;
+	private static final int TARGET_VERTEX_INDEX = 2;
+	private static final int CLICKABLE_INDEX = 1;
+
 	
 
 
@@ -242,13 +243,13 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 	@GuardedBy("sfgDb")
 	public StateVertex putIfAbsent(StateVertex state, boolean correctName) {
 
-
 		// the node to be added to the graph and then filled with the the data that 
 		// that need to be stored as the state in the database
 
 		Node toBeAddedNode;
 
 		// for saving the returned result of the method putIfAbsentNode
+		// it will be null if the state is not already in the graph
 
 		Node alreadyEsixts;
 
@@ -263,12 +264,9 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 				toBeAddedNode = sfgDb.createNode();
 
 				// indexing the state in Index manager. the key that we are using
-				// for indexing is the stripped_dom field, this in particular is
+				// for indexing is the stripped_dom field. This, in particular, is
 				// compliance with the domChanged method in the class Crawler
 				
-				
-				// the new node is added to the index and
-
 				alreadyEsixts = putIfAbsentNode(toBeAddedNode,
 						UTF8.decode(UTF8.encode(state.getStrippedDom())));
 
@@ -342,7 +340,8 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 			}
 
 			if (alreadyEsixts == null) {
-				// the state was absent so it was stored in the database
+				// the state was not found in the database 
+				//so it was stored in the database
 				return null;
 			} else {
 
@@ -360,7 +359,7 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 
 	private void correctStateName(StateVertex stateVertix) {
 		// the -1 is for the "index" state.
-		int totalNumberOfStates = this.getAllStates().size() - 1;
+		int totalNumberOfStates = this.getAllStatesAndPartialStates().size() - 1;
 		String correctedName = makeStateName(totalNumberOfStates);
 		if (!"index".equals(stateVertix.getName())
 		        && !stateVertix.getName().equals(correctedName)) {
@@ -414,55 +413,34 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 		
 		// this is done automatically with jgraphT
 		
-		
-		byte[] serializedEventable = serializeEventable(eventable, 1);
-		
 		eventable.setSourceStateVertex(sourceVert);
 		eventable.setTargetStateVertex(targetVert);
 		
+		
+		byte[] serializedEventable = serializeEventable(eventable, 1);
+		
+	//	eventable.setSourceStateVertex(sourceVert);
+	//	eventable.setTargetStateVertex(targetVert);
+		
 
-		// for (Relationship relationship: edgesIndex.get(SOURCE_KEY,
-		// sourceVert.getStrippedDom().getBytes())){
-		// if
-		// (relationship.getProperty(TARGET_KEY).equals(targetVert.getStrippedDom().getBytes())){
-		// if(relationship.getProperty(CLICKABLE_KEY).equals(serializedEventable)){
-		// exists= true;
-		// return false;
-		// }
-		// }
-		// }
-		//
-		// for (Relationship relationship:
-		// edgesIndex.get("clickable",serializedEventable )){
-		// if
-		// (relationship.getStartNode().getProperty(DOM_KEY).equals(serializeStateVertex(sourceVert))){
-		// if
-		// (relationship.getEndNode().getProperty(DOM_KEY).equals(serializeStateVertex(targetVert))){
-		//
-		// alreadyExits = true;
-		// return false;
-		// }
-		// }
-		// }
-
-		//
+	
 		Relationship toBeAddedEdge = null;
 		Relationship alreadyExists = null;
 
 		String[] combinedEdgeKey = new String[3];
-		combinedEdgeKey[0] = sourceVert.getStrippedDom();
-		combinedEdgeKey[1] = eventable.toString();
+		combinedEdgeKey[SOURCE_VERTEX_INDEX] = UTF8.decode(UTF8.encode(sourceVert.getStrippedDom()));
+		combinedEdgeKey[CLICKABLE_INDEX] = UTF8.decode(UTF8.encode(eventable.toString()));
 
-		combinedEdgeKey[2] = targetVert.getStrippedDom();
+		combinedEdgeKey[TARGET_VERTEX_INDEX] = UTF8.decode(UTF8.encode(targetVert.getStrippedDom()));
 //		combinedEdgeKey[1] = UTF8.decode(serializedEventable);
 
 		synchronized(sfgDb){
 			Transaction tx = sfgDb.beginTx();
 			try {
 
-				Node sourceNode = getNodeFromDB(sourceVert.getStrippedDom()); // nodeIndex.get(STRIPPED_DOM_KEY,
+				Node sourceNode = getNodeFromDB(UTF8.decode(UTF8.encode(sourceVert.getStrippedDom()))); // nodeIndex.get(STRIPPED_DOM_KEY,
 				// sourceVert.getStrippedDom().getBytes()).getSingle();
-				Node targetNode = getNodeFromDB(targetVert.getStrippedDom());// nodeIndex.get(STRIPPED_DOM_KEY,
+				Node targetNode = getNodeFromDB(UTF8.decode(UTF8.encode(targetVert.getStrippedDom())));// nodeIndex.get(STRIPPED_DOM_KEY,
 				// targetVert.getStrippedDom().getBytes()).getSingle();
 				toBeAddedEdge = sourceNode.createRelationshipTo(targetNode,
 						RelTypes.TRANSITIONS_TO);
@@ -485,12 +463,12 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 					toBeAddedEdge.setProperty(SERIALIZED_CLICKABLE_IN_EDGES, serializedEventable);
 					
 					toBeAddedEdge.setProperty(CLICKABLE_IN_EDGES,
-							UTF8.encode(eventable.toString()));
+							UTF8.decode(UTF8.encode(eventable.toString())));
 								
 					toBeAddedEdge.setProperty(SOURCE_STRIPPED_DOM_IN_EDGES,
-							UTF8.encode(sourceVert.getStrippedDom()));
+							UTF8.decode((UTF8.encode(sourceVert.getStrippedDom()))));
 					toBeAddedEdge.setProperty(TARGET_STRIPPED_DOM_IN_EDGES,
-							UTF8.encode(targetVert.getStrippedDom()));
+							UTF8.decode(UTF8.encode(targetVert.getStrippedDom())));
 				}
 				tx.success();
 			} finally {
@@ -520,7 +498,7 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 	 */
 	@Override
 	public String toString() {
-		return "stateFlowGraph";
+		return buildJgraphT().toString();
 	}
 
 	/**
@@ -532,8 +510,12 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 	 * 
 	 */
 	public ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix) {
+		
+		// todo
+		
+		// retrieve source and targets state too!
 		Set<Eventable> outgoing = new HashSet<Eventable>();
-		Node state = getNodeFromDB(stateVertix.getStrippedDom());
+		Node state = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix.getStrippedDom())));
 		for (Relationship edge : state.getRelationships(
 				RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
 			byte[] serializedEvantable = (byte[]) edge
@@ -554,9 +536,14 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 	 *
 	 */
 	public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix) {
+		
+	// todo
+		
+		// retrieve source and targets state too!
+
 
 		Set<Eventable> incoming = new HashSet<Eventable>();
-		Node state = getNodeFromDB(stateVertix.getStrippedDom());
+		Node state = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix.getStrippedDom())));
 
 		for (Relationship edge : state.getRelationships(
 				RelTypes.TRANSITIONS_TO, Direction.INCOMING)) {
@@ -581,7 +568,7 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 
 		final Set<StateVertex> outgoing = new HashSet<StateVertex>();
 
-		Node sourceNode = getNodeFromDB(stateVertix.getStrippedDom());
+		Node sourceNode = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix.getStrippedDom())));
 
 		for (Relationship edge : sourceNode.getRelationships(
 				RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
@@ -602,6 +589,9 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 	 * @return the target state of this edge.
 	 */
 	public StateVertex getTargetState(Eventable clickable) {
+		
+		//to do
+		// you can get source and target index and look for the eventable another way!
 
 		byte[] serializedEventable = serializeEventable(clickable, 1);
 
@@ -631,7 +621,7 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 	public boolean canGoTo(StateVertex source, StateVertex target) {
 
 		synchronized (sfgDb) {
-			Node sourceNode = getNodeFromDB(source.getStrippedDom());
+			Node sourceNode = getNodeFromDB(UTF8.decode(UTF8.encode(source.getStrippedDom())));
 			for (Relationship edge : sourceNode.getRelationships(
 					RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
 
@@ -646,7 +636,7 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 			}
 
 			// searching for back links
-			Node tagetNode = getNodeFromDB(target.getStrippedDom());
+			Node tagetNode = getNodeFromDB(UTF8.decode(UTF8.encode(target.getStrippedDom())));
 			for (Relationship edge : tagetNode.getRelationships(
 					RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
 
@@ -687,6 +677,41 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 		
 		return ImmutableList.copyOf(DijkstraShortestPath.findPathBetween(sfg, startFromJgraphT, endFromJgraphT));
 	}
+	
+	
+	
+	/**
+	 * Return all the states in the StateFlowGraph.
+	 * 
+	 * @return all the states on the graph.
+	 */
+	public ImmutableSet<StateVertex> getAllStatesAndPartialStates() {
+
+		final Set<StateVertex> allStates = new HashSet<StateVertex>();
+
+		
+//		for (Node node : nodeIndex.query(STRIPPED_DOM_KEY, "*")) {
+		for (Relationship relationship: structuralIndexer.getRelationships(Direction.OUTGOING, RelTypes.INDEXES)){
+
+
+			Node node = relationship.getEndNode();
+			
+			byte[] serializedNode = (byte[]) node.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES,null);
+
+			if (serializedNode!=null){
+				StateVertex state = deserializeStateVertex(serializedNode);
+				allStates.add(state);
+			}else{
+				allStates.add(new StateVertex(Integer.MAX_VALUE, "mock", "mock", "mock", "mock"));
+				
+			}
+			
+
+		}
+
+		return ImmutableSet.copyOf(allStates);
+	}
+	
 	
 	/**
 	 * Return all the states in the StateFlowGraph.
@@ -971,16 +996,13 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 
 		for (Relationship edge : edgesIndex.query(key, "*")) {
 
-			byte[] serSourceDom = (byte[]) edge.getProperty(SOURCE_STRIPPED_DOM_IN_EDGES);
-			byte[] serTargetDom = (byte[]) edge.getProperty(TARGET_STRIPPED_DOM_IN_EDGES);
-			byte[] serClickableToString = (byte[]) edge.getProperty(CLICKABLE_IN_EDGES);
+			String sourceDom = (String) edge.getProperty(SOURCE_STRIPPED_DOM_IN_EDGES);
+			String targetDom = (String) edge.getProperty(TARGET_STRIPPED_DOM_IN_EDGES);
+			String clickableToString = (String) edge.getProperty(CLICKABLE_IN_EDGES);
 
-			String sourceDom = UTF8.decode(serSourceDom);
-			String targetDom = UTF8.decode(serTargetDom);
-			String clickableToString = UTF8.decode(serClickableToString);
-			if (sourceDom.equals(combinedEdgeKey[0])
-					&& targetDom.equals(combinedEdgeKey[2])
-					&& clickableToString.equals(combinedEdgeKey[1])) {
+			if (sourceDom.equals(combinedEdgeKey[SOURCE_VERTEX_INDEX])
+					&& targetDom.equals(combinedEdgeKey[TARGET_VERTEX_INDEX])
+					&& clickableToString.equals(combinedEdgeKey[CLICKABLE_INDEX])) {
 				return edge;
 
 			}
