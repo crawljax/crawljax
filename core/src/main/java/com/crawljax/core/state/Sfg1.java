@@ -92,23 +92,23 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 	// nodes of the graph as "properties"
 
 	// the key for storing the persisted StateVertex objects in nodes
-	public static final String SERIALIZED_STATE_VERTEX_IN_NODES = "serializedStateVertexInNodes";
+	public static final String SERIALIZED_STATE_VERTEX_IN_NODES = "Serialized State Vertex";
 
 	// the key for storing the stripped DOM field of a StateVertex object
 	// as a string in a node
-	public static final String STRIPPED_DOM_IN_NODES = "strippedDomInNodes";
+	public static final String STRIPPED_DOM_IN_NODES = "Stripped Dom";
 
 	// the key for storing the source key in an edge
-	public static final String SOURCE_STRIPPED_DOM_IN_EDGES = "sourceStrippedDomInEdges";
+	public static final String SOURCE_STRIPPED_DOM_IN_EDGES = "Source Stripped Dom";
 
 	// the key for storing the target key in an edge
-	public static final String TARGET_STRIPPED_DOM_IN_EDGES = "targetStrippedDomInEdges";
+	public static final String TARGET_STRIPPED_DOM_IN_EDGES = "Target Stripped Dom";
 
 	// the key for storing the persisted Eventable objects
-	public static final String SERIALIZED_CLICKABLE_IN_EDGES = "serializedClickableInEdges";
+	public static final String SERIALIZED_CLICKABLE_IN_EDGES = "Serialized Clickable";
 	
 	// the key for storing the to string Eventable objects
-	public static final String CLICKABLE_IN_EDGES = "clickableInEdges";
+	public static final String CLICKABLE_IN_EDGES = "Clickable";
 
 
 	// the combined key for storing the persisted triples of
@@ -270,7 +270,7 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 				// the new node is added to the index and
 
 				alreadyEsixts = putIfAbsentNode(toBeAddedNode,
-						UTF8.encode(state.getStrippedDom()));
+						UTF8.decode(UTF8.encode(state.getStrippedDom())));
 
 				if (alreadyEsixts != null) {
 					// the state is already indexed
@@ -299,7 +299,7 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 					// purposes too!
 					toBeAddedNode.setProperty(SERIALIZED_STATE_VERTEX_IN_NODES, serializedSV);
 					toBeAddedNode.setProperty(STRIPPED_DOM_IN_NODES,
-							UTF8.encode(state.getStrippedDom()));
+							UTF8.decode((UTF8.encode(state.getStrippedDom()))));
 					
 					// adding textual data which is not used for crawling porpose but are useful for text based
 					// querie
@@ -1012,15 +1012,17 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 
 	}
 
-	private Node putIfAbsentNode(Node toBeAddedNode, byte[] StrippedDom) {
+	private Node putIfAbsentNode(Node toBeAddedNode, String strippedDom) {
 
 		for (Node node : nodeIndex.query(STRIPPED_DOM_IN_NODES, "*")) {
 
 			byte[] serializedNode = (byte[]) node.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
 
+			
+			// retrieve the stripped dome directly rahter than from the serializedState
 			StateVertex state = deserializeStateVertex(serializedNode);
 
-			String newDom = UTF8.decode(StrippedDom);
+			String newDom = strippedDom;
 			String prev = state.getStrippedDom();
 
 			if (newDom.equals(prev)) {
@@ -1029,7 +1031,7 @@ public class Sfg1 implements Serializable,StateFlowGraph {
 			}
 
 		}
-		nodeIndex.add(toBeAddedNode, STRIPPED_DOM_IN_NODES, StrippedDom);
+		nodeIndex.add(toBeAddedNode, STRIPPED_DOM_IN_NODES, strippedDom);
 		structuralIndexer.createRelationshipTo(toBeAddedNode, RelTypes.INDEXES);
 
 		return null;
