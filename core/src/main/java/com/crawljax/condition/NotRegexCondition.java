@@ -30,14 +30,12 @@ public class NotRegexCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), regexCondition);
+		return Objects.hashCode(regexCondition);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof NotRegexCondition) {
-			if (!super.equals(object))
-				return false;
 			NotRegexCondition that = (NotRegexCondition) object;
 			return Objects.equal(this.regexCondition, that.regexCondition);
 		}

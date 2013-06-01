@@ -32,10 +32,17 @@ public class ConditionTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            { new RegexCondition("rx0"),
-              new RegexCondition("rx0"),
-              new RegexCondition("rx1")}
-        });
+            { 
+                new RegexCondition("rx0"),
+                new RegexCondition("rx0"),
+                new RegexCondition("rx1")
+            },
+            { 
+                new NotRegexCondition("nrx0"),
+                new NotRegexCondition("nrx0"),
+                new NotRegexCondition("nrx1")
+            },
+         });
     }
        
     @Test
