@@ -29,7 +29,7 @@ public class ConditionTest {
         this.different = _different;
     }
     
-    @Parameters
+    @Parameters(name = "c{index}, {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             { 
@@ -51,6 +51,16 @@ public class ConditionTest {
                 new NotUrlCondition("u0"),
                 new NotUrlCondition("u0"),
                 new NotUrlCondition("u1")
+            },
+            { 
+                new XPathCondition("x0"),
+                new XPathCondition("x0"),
+                new XPathCondition("x1")
+            },
+            { 
+                new NotXPathCondition("x0"),
+                new NotXPathCondition("x0"),
+                new NotXPathCondition("x1")
             },
          });
     }
