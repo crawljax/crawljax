@@ -6,7 +6,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.google.common.base.Objects;
 
 /**
- * Conditions that returns true iff the browser's current url contains url. Note: Case insesitive
+ * Conditions that returns true iff the browser's current url contains url. Note: Case insensitive
  * 
  * @author dannyroest@gmail.com (Danny Roest)
  */
@@ -30,14 +30,12 @@ public class UrlCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), url);
+		return Objects.hashCode(url);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof UrlCondition) {
-			if (!super.equals(object))
-				return false;
 			UrlCondition that = (UrlCondition) object;
 			return Objects.equal(this.url, that.url);
 		}
@@ -47,7 +45,6 @@ public class UrlCondition extends AbstractCondition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
 		        .add("url", url)
 		        .toString();
 	}

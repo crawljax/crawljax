@@ -42,6 +42,11 @@ public class ConditionTest {
                 new NotRegexCondition("nrx0"),
                 new NotRegexCondition("nrx1")
             },
+            { 
+                new UrlCondition("u0"),
+                new UrlCondition("u0"),
+                new UrlCondition("u1")
+            },
          });
     }
        
