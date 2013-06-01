@@ -47,6 +47,11 @@ public class ConditionTest {
                 new UrlCondition("u0"),
                 new UrlCondition("u1")
             },
+            { 
+                new NotUrlCondition("u0"),
+                new NotUrlCondition("u0"),
+                new NotUrlCondition("u1")
+            },
          });
     }
        
