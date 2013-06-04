@@ -38,6 +38,11 @@ public class RunWithWebServer extends ExternalResource {
 		this.started = true;
 	}
 
+	/**
+	 * Override this method to configure custom server settings.
+	 * 
+	 * @return a {@link Server}.
+	 */
 	protected Server newWebServer() {
 		Server server = new Server(0);
 		ResourceHandler handler = new ResourceHandler();
