@@ -31,14 +31,19 @@ public class RunWithWebServer extends ExternalResource {
 
 	@Override
 	public void before() throws Exception {
-		server = new Server(0);
-		ResourceHandler handler = new ResourceHandler();
-		handler.setBaseResource(resource);
-		server.setHandler(handler);
+		server = newWebServer();
 		server.start();
 		this.port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
 		this.demoSite = new URL("http", "localhost", port, "/");
 		this.started = true;
+	}
+
+	protected Server newWebServer() {
+		Server server = new Server(0);
+		ResourceHandler handler = new ResourceHandler();
+		handler.setBaseResource(resource);
+		server.setHandler(handler);
+		return server;
 	}
 
 	@Override
