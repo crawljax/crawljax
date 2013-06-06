@@ -40,7 +40,7 @@ public class JarRunnerTest {
 	private void assertHelpWasPrinted(boolean missingArguments) {
 		String helpMessage = "usage: " + ParameterInterpeter.HELP_MESSAGE;
 		if (missingArguments) {
-			helpMessage = JarRunner.MISSING_ARGUMENT_MESSAGE + "\n" + helpMessage;
+			helpMessage = JarRunner.MISSING_ARGUMENT_MESSAGE + System.lineSeparator() + helpMessage;
 		}
 		assertThat(streams.getConsoleOutput(), startsWith(helpMessage));
 	}
