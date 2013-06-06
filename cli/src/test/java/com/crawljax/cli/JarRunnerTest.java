@@ -9,7 +9,6 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,13 +38,11 @@ public class JarRunnerTest {
 	}
 
 	private void assertHelpWasPrinted(boolean missingArguments) {
-		String output = streams.getConsoleOutput();
+		String helpMessage = "usage: " + ParameterInterpeter.HELP_MESSAGE;
 		if (missingArguments) {
-			assertThat(output, startsWith(JarRunner.MISSING_ARGUMENT_MESSAGE));
-			output = StringUtils.removeStart(output, JarRunner.MISSING_ARGUMENT_MESSAGE);
-			output = output.replaceFirst("[[\\r\\n]|\\n|\\r]+", "");
+			helpMessage = JarRunner.MISSING_ARGUMENT_MESSAGE + System.lineSeparator() + helpMessage;
 		}
-		assertThat(output, startsWith("usage: " + ParameterInterpeter.HELP_MESSAGE));
+		assertThat(streams.getConsoleOutput(), startsWith(helpMessage));
 	}
 
 	@Test
