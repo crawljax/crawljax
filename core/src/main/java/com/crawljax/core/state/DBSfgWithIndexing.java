@@ -291,6 +291,9 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 					toBeAddedNode.setProperty(SERIALIZED_STATE_VERTEX_IN_NODES,
 					        serializedSV);
 
+					toBeAddedNode.setProperty(STRIPPED_DOM_IN_NODES,
+					        UTF8.decode((UTF8.encode(state.getStrippedDom()))));
+
 					// adding textual data which is not used for crawling purpose but are useful for
 					// text based queries
 
@@ -401,53 +404,52 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 	        Eventable eventable) {
 		boolean exists = false;
 
-		// this is done automatically with jgraphT
+		// this is done automatically with jgraphT and. When retrieving an edge it is crucial to
+		// retrieve the start state and end state of that edge and set them via the setter methods
+		// which are implemented by reflection
 
 		eventable.setSourceStateVertex(sourceVert);
 		eventable.setTargetStateVertex(targetVert);
 
 		byte[] serializedEventable = serializeEventable(eventable);
 
-		// eventable.setSourceStateVertex(sourceVert);
-		// eventable.setTargetStateVertex(targetVert);
-
 		Relationship toBeAddedEdge = null;
 		Relationship alreadyExists = null;
 
-		String[] combinedEdgeKey = new String[3];
-		combinedEdgeKey[SOURCE_VERTEX_INDEX] = UTF8.decode(UTF8
+		String[] edgeTriadKey = new String[3];
+		edgeTriadKey[SOURCE_VERTEX_INDEX] = UTF8.decode(UTF8
 		        .encode(sourceVert.getStrippedDom()));
-		combinedEdgeKey[CLICKABLE_INDEX] = UTF8.decode(UTF8.encode(eventable
+		edgeTriadKey[CLICKABLE_INDEX] = UTF8.decode(UTF8.encode(eventable
 		        .toString()));
 
-		combinedEdgeKey[TARGET_VERTEX_INDEX] = UTF8.decode(UTF8
+		edgeTriadKey[TARGET_VERTEX_INDEX] = UTF8.decode(UTF8
 		        .encode(targetVert.getStrippedDom()));
-		// combinedEdgeKey[1] = UTF8.decode(serializedEventable);
+
+		String edgeConcatenatedKey =
+		        edgeTriadKey[SOURCE_VERTEX_INDEX] + edgeTriadKey[CLICKABLE_INDEX]
+		                + edgeTriadKey[TARGET_VERTEX_INDEX];
 
 		synchronized (sfgDb) {
 			Transaction tx = sfgDb.beginTx();
 			try {
 
-				Node sourceNode = getNodeFromDB(UTF8.decode(UTF8
-				        .encode(sourceVert.getStrippedDom()))); // nodeIndex.get(STRIPPED_DOM_KEY,
+				// nodeIndex.get(STRIPPED_DOM_KEY,
 				// sourceVert.getStrippedDom().getBytes()).getSingle();
-				Node targetNode = getNodeFromDB(UTF8.decode(UTF8
-				        .encode(targetVert.getStrippedDom())));// nodeIndex.get(STRIPPED_DOM_KEY,
+				// nodeIndex.get(STRIPPED_DOM_KEY,
 				// targetVert.getStrippedDom().getBytes()).getSingle();
+
+				Node sourceNode = getNodeFromDB(UTF8.decode(UTF8
+				        .encode(sourceVert.getStrippedDom())));
+				Node targetNode = getNodeFromDB(UTF8.decode(UTF8
+				        .encode(targetVert.getStrippedDom())));
 				toBeAddedEdge = sourceNode.createRelationshipTo(targetNode,
 				        RelTypes.TRANSITIONS_TO);
 
-				// adding the new edge to the index. it returns null if the edge
-				// is
-				// successfully added
-				// and returns the found edge if and identical edge already
-				// exists
-				// in the index.
-				// alreadyExists = edgesIndex.putIfAbsent(toBeAddedEdge,
-				// EDGE_COMBNINED_KEY, combinedEdgeKey);
-				alreadyExists = edgePutIfAbsent(toBeAddedEdge,
-				        SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING,
-				        combinedEdgeKey);
+				// adding the new edge to the index. it returns null if the edge is successfully
+				// added and returns the found edge if and identical edge already exists in the
+				// index.
+
+				alreadyExists = edgePutIfAbsent(toBeAddedEdge, edgeTriadKey, edgeConcatenatedKey);
 
 				if (alreadyExists != null) {
 					exists = true;
@@ -775,8 +777,8 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 				StateVertex state = deserializeStateVertex(serializedNode);
 				allStates.add(state);
 			} else {
-				allStates.add(new StateVertex(Integer.MAX_VALUE, "mock",
-				        "mock", "mock", "mock"));
+				allStates.add(new StateVertex(Integer.MAX_VALUE, "NotValid",
+				        "NotValid", "NotValid", "NotValid"));
 
 			}
 
@@ -844,15 +846,27 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 	 * @return the copy of the StateVertix in the StateFlowGraph where v.equals(u)
 	 */
 	private StateVertex getStateInGraph(StateVertex state) {
-		Set<StateVertex> states = getAllStates();
 
-		for (StateVertex st : states) {
-			if (state.equals(st)) {
-				return st;
-			}
+		String strippedDom = state.getStrippedDom();
+		Node node = getNodeFromDB(strippedDom);
+
+		byte[] serializedState =
+		        (byte[]) node.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
+		if (serializedState == null) {
+			return null;
 		}
 
-		return null;
+		StateVertex deserializedStateVertex = deserializeStateVertex(serializedState);
+
+		return deserializedStateVertex;
+
+		// for (StateVertex st : states) {
+		// if (state.equals(st)) {
+		// return st;
+		// }
+		// }
+		//
+		// return null;
 	}
 
 	/**
@@ -1018,51 +1032,65 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 		return sfgDb;
 	}
 
-	private Relationship edgePutIfAbsent(Relationship toBeAddedEdge,
-	        String key, String[] combinedEdgeKey) {
+	private Relationship edgePutIfAbsent(Relationship toBeAddedEdge, String[] edgeTriadKey,
+	        String edgeConcatenatedKey) {
 
-		for (Relationship edge : edgesIndex.query(key, "*")) {
+		Relationship alreadyExists = edgesIndex.putIfAbsent(toBeAddedEdge,
+		        SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING, edgeConcatenatedKey);
+		return alreadyExists;
 
-			String sourceDom = (String) edge
-			        .getProperty(SOURCE_STRIPPED_DOM_IN_EDGES);
-			String targetDom = (String) edge
-			        .getProperty(TARGET_STRIPPED_DOM_IN_EDGES);
-			String clickableToString = (String) edge
-			        .getProperty(CLICKABLE_IN_EDGES);
+		// cleanup
 
-			if (sourceDom.equals(combinedEdgeKey[SOURCE_VERTEX_INDEX])
-			        && targetDom.equals(combinedEdgeKey[TARGET_VERTEX_INDEX])
-			        && clickableToString
-			                .equals(combinedEdgeKey[CLICKABLE_INDEX])) {
-				return edge;
+		// for (Relationship edge : edgesIndex.query(
+		// SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING, "*")) {
+		//
+		// String sourceDom = (String) edge
+		// .getProperty(SOURCE_STRIPPED_DOM_IN_EDGES);
+		// String targetDom = (String) edge
+		// .getProperty(TARGET_STRIPPED_DOM_IN_EDGES);
+		// String clickableToString = (String) edge
+		// .getProperty(CLICKABLE_IN_EDGES);
+		//
+		// if (sourceDom.equals(edgeTriadKey[SOURCE_VERTEX_INDEX])
+		// && targetDom.equals(edgeTriadKey[TARGET_VERTEX_INDEX])
+		// && clickableToString
+		// .equals(edgeTriadKey[CLICKABLE_INDEX])) {
+		// return edge;
+		//
+		// }
+		// }
+		// edgesIndex.add(toBeAddedEdge, SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING,
+		// edgeTriadKey);
+		//
+		// return null;
 
-			}
-		}
-
-		edgesIndex.add(toBeAddedEdge, key, combinedEdgeKey);
-
-		return null;
 	}
 
 	private Node getNodeFromDB(String strippedDom) {
-		for (Node node : nodeIndex.query(STRIPPED_DOM_IN_NODES, "*")) {
 
-			byte[] serializedNode = (byte[]) node
-			        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
+		Node node = nodeIndex.get(STRIPPED_DOM_IN_NODES, strippedDom).getSingle();
+		return node;
 
-			StateVertex state = deserializeStateVertex(serializedNode);
+		// cleanup
 
-			String newDom = strippedDom;
-			String prev = state.getStrippedDom();
-
-			if (newDom.equals(prev)) {
-				return node;
-
-			}
-
-		}
-
-		return null;
+		// for (Node node : nodeIndex.query(STRIPPED_DOM_IN_NODES, "*")) {
+		//
+		// byte[] serializedNode = (byte[]) node
+		// .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
+		//
+		// StateVertex state = deserializeStateVertex(serializedNode);
+		//
+		// String newDom = strippedDom;
+		// String prev = state.getStrippedDom();
+		//
+		// if (newDom.equals(prev)) {
+		// return node;
+		//
+		// }
+		//
+		// }
+		//
+		// return null;
 
 	}
 
@@ -1074,6 +1102,7 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 			return alreadyPresent;
 		}
 
+		// cleanup!
 		structuralIndexer.createRelationshipTo(toBeAddedNode, RelTypes.INDEXES);
 
 		return null;
@@ -1150,7 +1179,6 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 			baos.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1178,13 +1206,10 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 			bais.close();
 
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1223,7 +1248,6 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 			baos.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1250,13 +1274,10 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 			bais.close();
 
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1311,7 +1332,7 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 							eventable.setSourceStateVertex(sourceStateVertex);
 							eventable.setTargetStateVertex(targetStateVertex);
 
-							// LOG.info("edge added succesfully to JgraphT");
+							LOG.debug("edge added successfully to JgraphT");
 						} else {
 							LOG.warn("edge insertion failed");
 							System.exit(1);
@@ -1332,12 +1353,12 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 	        DirectedGraph<StateVertex, Eventable> sfg) {
 		boolean added = sfg.addVertex(stateVertix);
 		if (added) {
-			// LOG.debug("state added successfully to JgraphT");
+			LOG.debug("state added successfully to JgraphT");
 			return null;
 		} else {
 			// Graph already contained the vertix
-			// LOG.debug("Graph already contained vertex {}",
-			// stateVertix.getName());
+			LOG.debug("Graph already contained vertex {}",
+			        stateVertix.getName());
 			return this.getStateInGraph(stateVertix);
 		}
 
