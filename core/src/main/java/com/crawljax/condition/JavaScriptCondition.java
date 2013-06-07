@@ -55,14 +55,12 @@ public class JavaScriptCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), expression);
+		return Objects.hashCode(expression);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof JavaScriptCondition) {
-			if (!super.equals(object))
-				return false;
 			JavaScriptCondition that = (JavaScriptCondition) object;
 			return Objects.equal(this.expression, that.expression);
 		}
@@ -72,7 +70,6 @@ public class JavaScriptCondition extends AbstractCondition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
 		        .add("expression", expression)
 		        .toString();
 	}

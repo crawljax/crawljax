@@ -73,7 +73,12 @@ public class ConditionTest {
                 new NotVisibleCondition(new Identification(Identification.How.xpath, "xp")),
                 new NotVisibleCondition(new Identification(Identification.How.xpath, "xp")),
                 new NotVisibleCondition(new Identification(Identification.How.tag, "xp"))
-            }
+            },
+            { 
+                new JavaScriptCondition("0"),
+                new JavaScriptCondition("0"),
+                new JavaScriptCondition("1")
+            },
 
          });
     }
