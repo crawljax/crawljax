@@ -18,8 +18,8 @@ import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.DbStateFlowGraph;
 import com.crawljax.core.state.DefaultStateFlowGraph;
-import com.crawljax.core.state.GraphDBStateFlowGraphNoRam;
-import com.crawljax.core.state.Neo4jBackedStateFlowGraphInMemoryPathFinder;
+import com.crawljax.core.state.DBSfgWithoutRam;
+import com.crawljax.core.state.DBSfgInMemoryPathFinder;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph.StateFlowGraphType;
 import com.google.inject.AbstractModule;
@@ -61,9 +61,9 @@ public class ConfigurationModule extends AbstractModule {
 		} else if (config.getGraphType() == StateFlowGraphType.DB_SIMPLE) {
 			bind(StateFlowGraph.class).to(DbStateFlowGraph.class);
 		} else if (config.getGraphType() == StateFlowGraphType.DB_IN_RAM_PATH) {
-			bind(StateFlowGraph.class).to(Neo4jBackedStateFlowGraphInMemoryPathFinder.class);
+			bind(StateFlowGraph.class).to(DBSfgInMemoryPathFinder.class);
 		} else if (config.getGraphType() == StateFlowGraphType.DB_NO_RAM) {
-			bind(StateFlowGraph.class).to(GraphDBStateFlowGraphNoRam.class);
+			bind(StateFlowGraph.class).to(DBSfgWithoutRam.class);
 		}
 	}
 
