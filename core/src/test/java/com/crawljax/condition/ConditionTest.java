@@ -68,7 +68,13 @@ public class ConditionTest {
                 new VisibleCondition(new Identification(Identification.How.xpath, "xp")),
                 new VisibleCondition(new Identification(Identification.How.xpath, "xp")),
                 new VisibleCondition(new Identification(Identification.How.tag, "xp"))
+            },
+            {
+                new NotVisibleCondition(new Identification(Identification.How.xpath, "xp")),
+                new NotVisibleCondition(new Identification(Identification.How.xpath, "xp")),
+                new NotVisibleCondition(new Identification(Identification.How.tag, "xp"))
             }
+
          });
     }
        
