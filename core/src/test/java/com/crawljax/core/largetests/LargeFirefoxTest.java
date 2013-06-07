@@ -27,7 +27,7 @@ public class LargeFirefoxTest extends LargeTestBase {
 
 	@Override
 	StateFlowGraphType getGraphType() {
-		return StateFlowGraphType.DB_NO_RAM;
+		return StateFlowGraphType.DB_WITH_INDEXING;
 	}
 
 }

@@ -34,7 +34,7 @@ public class StateFlowGraphTestDB {
 		state4 = new StateVertex(4, "STATE_FOUR", "<table><div>state4</div></table>");
 		state5 = new StateVertex(5, "STATE_FIVE", "<table><div>state5</div></table>");
 		// manual
-		graph = new DbStateFlowGraph(new ExitNotifier(0));
+		graph = new DBSfgSimple(new ExitNotifier(0));
 		graph.putIfAbsent(index, false);
 	}
 
@@ -147,7 +147,7 @@ public class StateFlowGraphTestDB {
 		                + "<body><div id='firstdiv' class='orange'>";
 
 		// manual
-		StateFlowGraph g = new DbStateFlowGraph(new ExitNotifier(0));
+		StateFlowGraph g = new DBSfgSimple(new ExitNotifier(0));
 		g.putIfAbsent(new StateVertex(1, "", HTML1), false);
 		g.putIfAbsent(new StateVertex(2, "", HTML2));
 
