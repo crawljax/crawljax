@@ -22,8 +22,6 @@ import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.plugin.PreStateCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
-import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
@@ -72,34 +70,6 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		visitedStates.putIfAbsent(state.getName(), vertex);
 		saveScreenshot(context.getBrowser(), state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), vertex.getDom());
-		Point point = getOffSet(context.getBrowser());
-		state.setScreenShotOffset(point);
-		LOG.debug("{} has a body offset of {}", vertex.getName(), point);
-	}
-
-	private Point getOffSet(EmbeddedBrowser embeddedBrowser) {
-		try {
-			if (bodyHasOffset(embeddedBrowser)) {
-				Number top = (Number) embeddedBrowser
-				        .executeJavaScript("return document.body.getBoundingClientRect().top;");
-				Number left = (Number) embeddedBrowser
-				        .executeJavaScript("return document.body.getBoundingClientRect().left;");
-				Point offset = new Point(left.intValue(), top.intValue());
-				return offset;
-			}
-		} catch (CrawljaxException | WebDriverException e) {
-			LOG.info("Could not locate relative size of body, now using (0,0) instead");
-			LOG.debug("Could not locate relative size of body body because {}", e.getMessage(), e);
-		}
-		return new Point(0, 0);
-	}
-
-	private boolean bodyHasOffset(EmbeddedBrowser embeddedBrowser) {
-		WebElement body = embeddedBrowser.getWebElement(new Identification(
-		        How.tag, "body"));
-		String position = body.getCssValue("position");
-		LOG.debug("Body has CSS position: {}", position);
-		return "relative".equals(position);
 	}
 
 	private void saveScreenshot(EmbeddedBrowser browser, String name,
@@ -166,6 +136,10 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		        // element.getXpath()
 		        new CandidateElementPosition(element.getIdentification().getValue(),
 		                location, size);
+		if (location.getY() < 0) {
+			LOG.error("Position {} for {}", webElement.getLocation(),
+			        renderedCandidateElement.getXpath());
+		}
 		return renderedCandidateElement;
 	}
 
