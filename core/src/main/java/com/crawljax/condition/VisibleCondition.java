@@ -38,14 +38,12 @@ public class VisibleCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), identification);
+		return Objects.hashCode(identification);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof VisibleCondition) {
-			if (!super.equals(object))
-				return false;
 			VisibleCondition that = (VisibleCondition) object;
 			return Objects.equal(this.identification, that.identification);
 		}

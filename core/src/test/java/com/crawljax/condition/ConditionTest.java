@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.crawljax.core.state.Identification;
+
 /**
  * Since many of the AbstractConditions override equals and hashcode,
  * we provide some test cases for them.
@@ -62,6 +64,11 @@ public class ConditionTest {
                 new NotXPathCondition("x0"),
                 new NotXPathCondition("x1")
             },
+            {
+                new VisibleCondition(new Identification(Identification.How.xpath, "xp")),
+                new VisibleCondition(new Identification(Identification.How.xpath, "xp")),
+                new VisibleCondition(new Identification(Identification.How.tag, "xp"))
+            }
          });
     }
        
