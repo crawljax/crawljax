@@ -1,18 +1,15 @@
 package com.crawljax.core.state;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jgrapht.GraphPath;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -201,21 +198,21 @@ public class StateFlowGraphTestDB {
 		graph.addEdge(state3, state4, new Eventable(new Identification(How.xpath, "/3/4"),
 		        EventType.click));
 
-//		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
-//
-//		assertEquals(2, results.size());
-//
-//		List<GraphPath<StateVertex, Eventable>> p = results.get(0);
-//
-//		assertEquals(5, p.size());
-//
-//		GraphPath<StateVertex, Eventable> e = p.get(0);
-//
-//		assertEquals(1, e.getEdgeList().size());
-//
-//		p = results.get(1);
-//
-//		assertEquals(2, p.size());
+		// List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
+		//
+		// assertEquals(2, results.size());
+		//
+		// List<GraphPath<StateVertex, Eventable>> p = results.get(0);
+		//
+		// assertEquals(5, p.size());
+		//
+		// GraphPath<StateVertex, Eventable> e = p.get(0);
+		//
+		// assertEquals(1, e.getEdgeList().size());
+		//
+		// p = results.get(1);
+		//
+		// assertEquals(2, p.size());
 
 	}
 
@@ -245,31 +242,31 @@ public class StateFlowGraphTestDB {
 		graph.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
 		        EventType.click));
 
-//		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
-//
-//		assertThat(results, hasSize(2));
-//
-//		assertThat(results.get(0), hasSize(5));
-//
-//		assertThat(results.get(0).get(0).getEdgeList(), hasSize(1));
-//
-//		assertThat(results.get(1), hasSize(2));
-//		// int max = 0;
-//		Set<Eventable> uEvents = new HashSet<Eventable>();
-//
-//		for (List<GraphPath<StateVertex, Eventable>> paths : results) {
-//			for (GraphPath<StateVertex, Eventable> p : paths) {
-//				// System.out.print(" Edge: " + x + ":" + y);
-//				// int z = 0;
-//				for (Eventable edge : p.getEdgeList()) {
-//					// System.out.print(", " + edge.toString());
-//					if (!uEvents.contains(edge)) {
-//						uEvents.add(edge);
-//					}
-//
-//				}
-//			}
-//		}
+		// List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
+		//
+		// assertThat(results, hasSize(2));
+		//
+		// assertThat(results.get(0), hasSize(5));
+		//
+		// assertThat(results.get(0).get(0).getEdgeList(), hasSize(1));
+		//
+		// assertThat(results.get(1), hasSize(2));
+		// // int max = 0;
+		// Set<Eventable> uEvents = new HashSet<Eventable>();
+		//
+		// for (List<GraphPath<StateVertex, Eventable>> paths : results) {
+		// for (GraphPath<StateVertex, Eventable> p : paths) {
+		// // System.out.print(" Edge: " + x + ":" + y);
+		// // int z = 0;
+		// for (Eventable edge : p.getEdgeList()) {
+		// // System.out.print(", " + edge.toString());
+		// if (!uEvents.contains(edge)) {
+		// uEvents.add(edge);
+		// }
+		//
+		// }
+		// }
+		// }
 	}
 
 	@Test
@@ -293,7 +290,7 @@ public class StateFlowGraphTestDB {
 		assertFalse(graph.addEdge(index, state2, e1));
 		assertFalse(graph.addEdge(index, state2, e3));
 
-//		assertFalse(graph.addEdge(state2, state3, e1));
+		// assertFalse(graph.addEdge(state2, state3, e1));
 		assertTrue(graph.addEdge(state2, state3, e2));
 
 		assertTrue(graph.addEdge(index, state4, e3));

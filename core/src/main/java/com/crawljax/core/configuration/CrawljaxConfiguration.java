@@ -13,6 +13,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.core.state.StateFlowGraph.StateFlowGraphType;
 import com.crawljax.di.CoreModule;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -35,6 +36,14 @@ public class CrawljaxConfiguration {
 			Preconditions.checkNotNull(url);
 			config = new CrawljaxConfiguration();
 			config.url = url;
+		}
+
+		public StateFlowGraphType getGraphType() {
+			return this.config.getGraphType();
+		}
+
+		public void setGraphType(StateFlowGraphType graphType) {
+			this.config.setGraphType(graphType);
 		}
 
 		/**
@@ -184,6 +193,7 @@ public class CrawljaxConfiguration {
 	private int maximumStates = 0;
 	private long maximumRuntime = TimeUnit.HOURS.toMillis(1);;
 	private int maximumDepth = 2;
+	private StateFlowGraphType graphType = StateFlowGraphType.DEAFAULT;
 
 	private CrawljaxConfiguration() {
 	}
@@ -218,6 +228,14 @@ public class CrawljaxConfiguration {
 
 	public int getMaximumDepth() {
 		return maximumDepth;
+	}
+
+	public StateFlowGraphType getGraphType() {
+		return graphType;
+	}
+
+	public void setGraphType(StateFlowGraphType graphType) {
+		this.graphType = graphType;
 	}
 
 	@Override

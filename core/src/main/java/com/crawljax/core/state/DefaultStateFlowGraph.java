@@ -36,7 +36,8 @@ import com.google.common.collect.Maps;
 @SuppressWarnings("serial")
 public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultStateFlowGraph.class.getName());
+	private static final Logger LOG = LoggerFactory
+	        .getLogger(DefaultStateFlowGraph.class.getName());
 
 	private final DirectedGraph<StateVertex, Eventable> sfg;
 
@@ -78,7 +79,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 * @return the clone if one is detected null otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	public StateVertex putIfAbsent(StateVertex stateVertix) {
+	@Override
+    public StateVertex putIfAbsent(StateVertex stateVertix) {
 		return putIfAbsent(stateVertix, true);
 	}
 
@@ -98,7 +100,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 * @return the clone if one is detected <code>null</code> otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	@GuardedBy("sfg")
+	@Override
+    @GuardedBy("sfg")
 	public StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName) {
 		synchronized (sfg) {
 			boolean added = sfg.addVertex(stateVertix);
@@ -125,7 +128,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 		String correctedName = makeStateName(totalNumberOfStates);
 		if (!"index".equals(stateVertix.getName())
 		        && !stateVertix.getName().equals(correctedName)) {
-			LOG.info("Correcting state name from {}  to {}", stateVertix.getName(), correctedName);
+			LOG.info("Correcting state name from {}  to {}",
+			        stateVertix.getName(), correctedName);
 			stateVertix.setName(correctedName);
 		}
 	}
@@ -135,11 +139,13 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 *            The ID of the state
 	 * @return The state if found or <code>null</code>.
 	 */
-	public StateVertex getById(int id) {
+	@Override
+    public StateVertex getById(int id) {
 		return stateById.get(id);
 	}
 
-	public StateVertex getInitialState() {
+	@Override
+    public StateVertex getInitialState() {
 		return stateById.get(StateVertex.INDEX_ID);
 	}
 
@@ -162,11 +168,14 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 * @return true if this graph did not already contain the specified edge.
 	 * @see org.jgrapht.Graph#addEdge(Object, Object, Object)
 	 */
-	@GuardedBy("sfg")
-	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert, Eventable clickable) {
+	@Override
+    @GuardedBy("sfg")
+	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert,
+	        Eventable clickable) {
 		synchronized (sfg) {
 			if (sfg.containsEdge(sourceVert, targetVert)
-			        && sfg.getAllEdges(sourceVert, targetVert).contains(clickable)) {
+			        && sfg.getAllEdges(sourceVert, targetVert).contains(
+			                clickable)) {
 				return false;
 			} else {
 				return sfg.addEdge(sourceVert, targetVert, clickable);
@@ -193,7 +202,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 * @return a set of the outgoing edges (clickables) of the stateVertix.
 	 * @see org.jgrapht.DirectedGraph#outgoingEdgesOf(Object)
 	 */
-	public ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix) {
+	@Override
+    public ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix) {
 		return ImmutableSet.copyOf(sfg.outgoingEdgesOf(stateVertix));
 	}
 
@@ -205,7 +215,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 * @return a set of the incoming edges (clickables) of the stateVertix.
 	 * @see org.jgrapht.DirectedGraph#incomingEdgesOf(Object)
 	 */
-	public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix) {
+	@Override
+    public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix) {
 		return ImmutableSet.copyOf(sfg.incomingEdgesOf(stateVertix));
 	}
 
@@ -216,7 +227,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 *            the state.
 	 * @return the set of outgoing states from the stateVertix.
 	 */
-	public ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix) {
+	@Override
+    public ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix) {
 		final Set<StateVertex> result = new HashSet<>();
 
 		for (Eventable c : getOutgoingClickables(stateVertix)) {
@@ -231,7 +243,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 *            the edge.
 	 * @return the target state of this edge.
 	 */
-	public StateVertex getTargetState(Eventable clickable) {
+	@Override
+    public StateVertex getTargetState(Eventable clickable) {
 		return sfg.getEdgeTarget(clickable);
 	}
 
@@ -244,10 +257,12 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 *            the target state.
 	 * @return true if it is possible (edge exists in graph) to go from source to target.
 	 */
-	@GuardedBy("sfg")
+	@Override
+    @GuardedBy("sfg")
 	public boolean canGoTo(StateVertex source, StateVertex target) {
 		synchronized (sfg) {
-			return sfg.containsEdge(source, target) || sfg.containsEdge(target, source);
+			return sfg.containsEdge(source, target)
+			        || sfg.containsEdge(target, source);
 		}
 	}
 
@@ -260,8 +275,11 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 *            the end state.
 	 * @return a list of shortest path of clickables from the state to the end
 	 */
-	public ImmutableList<Eventable> getShortestPath(StateVertex start, StateVertex end) {
-		return ImmutableList.copyOf(DijkstraShortestPath.findPathBetween(sfg, start, end));
+	@Override
+    public ImmutableList<Eventable> getShortestPath(StateVertex start,
+	        StateVertex end) {
+		return ImmutableList.copyOf(DijkstraShortestPath.findPathBetween(sfg,
+		        start, end));
 	}
 
 	/**
@@ -269,7 +287,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 * 
 	 * @return all the states on the graph.
 	 */
-	public ImmutableSet<StateVertex> getAllStates() {
+	@Override
+    public ImmutableSet<StateVertex> getAllStates() {
 		return ImmutableSet.copyOf(sfg.vertexSet());
 	}
 
@@ -278,7 +297,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 * 
 	 * @return a Set of all edges in the StateFlowGraph
 	 */
-	public ImmutableSet<Eventable> getAllEdges() {
+	@Override
+    public ImmutableSet<Eventable> getAllEdges() {
 		return ImmutableSet.copyOf(sfg.edgeSet());
 	}
 
@@ -303,7 +323,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	/**
 	 * @return Dom string average size (byte).
 	 */
-	public int getMeanStateStringSize() {
+	@Override
+    public int getMeanStateStringSize() {
 		final Mean mean = new Mean();
 
 		for (StateVertex state : sfg.vertexSet()) {
@@ -318,7 +339,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 *            The starting state.
 	 * @return A list of the deepest states (states with no outgoing edges).
 	 */
-	public List<StateVertex> getDeepStates(StateVertex state) {
+	@Override
+    public List<StateVertex> getDeepStates(StateVertex state) {
 		final Set<String> visitedStates = new HashSet<String>();
 		final List<StateVertex> deepStates = new ArrayList<StateVertex>();
 
@@ -327,8 +349,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 		return deepStates;
 	}
 
-	private void traverse(Set<String> visitedStates, List<StateVertex> deepStates,
-	        StateVertex state) {
+	private void traverse(Set<String> visitedStates,
+	        List<StateVertex> deepStates, StateVertex state) {
 		visitedStates.add(state.getName());
 
 		Set<StateVertex> outgoingSet = getOutgoingStates(state);
@@ -348,7 +370,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 		}
 	}
 
-	private boolean cyclic(Set<String> visitedStates, Set<StateVertex> outgoingSet) {
+	private boolean cyclic(Set<String> visitedStates,
+	        Set<StateVertex> outgoingSet) {
 		int i = 0;
 
 		for (StateVertex state : outgoingSet) {
@@ -367,19 +390,24 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 *            the initial state.
 	 * @return a list of GraphPath lists.
 	 */
-	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index) {
-		final List<List<GraphPath<StateVertex, Eventable>>> results = Lists.newArrayList();
+	@Override
+    public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(
+	        StateVertex index) {
+		final List<List<GraphPath<StateVertex, Eventable>>> results = Lists
+		        .newArrayList();
 
-		final KShortestPaths<StateVertex, Eventable> kPaths =
-		        new KShortestPaths<>(this.sfg, index, Integer.MAX_VALUE);
+		final KShortestPaths<StateVertex, Eventable> kPaths = new KShortestPaths<>(
+		        this.sfg, index, Integer.MAX_VALUE);
 
 		for (StateVertex state : getDeepStates(index)) {
 
 			try {
-				List<GraphPath<StateVertex, Eventable>> paths = kPaths.getPaths(state);
+				List<GraphPath<StateVertex, Eventable>> paths = kPaths
+				        .getPaths(state);
 				results.add(paths);
 			} catch (Exception e) {
-				// TODO Stefan; which Exception is catched here???Can this be removed?
+				// TODO Stefan; which Exception is catched here???Can this be
+				// removed?
 				LOG.error("Error with " + state.toString(), e);
 			}
 
@@ -393,12 +421,14 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	 * 
 	 * @return State name the name of the state
 	 */
-	public String getNewStateName(int id) {
+	@Override
+    public String getNewStateName(int id) {
 		String state = makeStateName(id);
 		return state;
 	}
 
-	public int getNextStateId() {
+	@Override
+    public int getNextStateId() {
 		return nextStateNameCounter.incrementAndGet();
 	}
 
@@ -417,7 +447,8 @@ public class DefaultStateFlowGraph implements StateFlowGraph, Serializable {
 	/**
 	 * @return The number of states, currently in the graph.
 	 */
-	public int getNumberOfStates() {
+	@Override
+    public int getNumberOfStates() {
 		return stateCounter.get();
 	}
 
