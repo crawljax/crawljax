@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableSet;
 public interface StateFlowGraph {
 
 	public enum StateFlowGraphType {
-		DEAFAULT, DB1, DB_IN_RAM_PATH, DB_NO_RAM
+		DEAFAULT, DB_SIMPLE, DB_IN_RAM_PATH, DB_NO_RAM
 	}
 
 	/**

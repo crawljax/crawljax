@@ -58,7 +58,7 @@ public class ConfigurationModule extends AbstractModule {
 
 		if (config.getGraphType() == StateFlowGraphType.DEAFAULT) {
 			bind(StateFlowGraph.class).to(DefaultStateFlowGraph.class);
-		} else if (config.getGraphType() == StateFlowGraphType.DB1) {
+		} else if (config.getGraphType() == StateFlowGraphType.DB_SIMPLE) {
 			bind(StateFlowGraph.class).to(DbStateFlowGraph.class);
 		} else if (config.getGraphType() == StateFlowGraphType.DB_IN_RAM_PATH) {
 			bind(StateFlowGraph.class).to(Neo4jBackedStateFlowGraphInMemoryPathFinder.class);
