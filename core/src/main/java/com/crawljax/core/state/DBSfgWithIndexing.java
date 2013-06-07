@@ -251,11 +251,9 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 
 				toBeAddedNode = sfgDb.createNode();
 
-				// indexing the state in Index manager. the key that we are
-				// using
-				// for indexing is the stripped_dom field. This, in particular,
-				// is
-				// compliance with the domChanged method in the class Crawler
+				// indexing the state in Index manager. the key that we are using for indexing is
+				// the stripped_dom field. This, in particular, is compliance with the domChanged
+				// method in the class Crawler
 
 				alreadyEsixts = putIfAbsentNode(toBeAddedNode,
 				        UTF8.decode(UTF8.encode(state.getStrippedDom())));
@@ -271,6 +269,9 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 					tx.failure();
 				} else {
 
+					// the state was not already present in the graph so we go in with adding it to
+					// the graph
+
 					// correcting the name
 					stateById.put(state.getId(), state);
 					int count = stateCounter.incrementAndGet();
@@ -283,22 +284,18 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 					// serializing the state
 					byte[] serializedSV = serializeStateVertex(state);
 
-					// adding the state property which is the main data we store
-					// for
-					// each node (i.e. each StateVertex)
-					// the serialized stateVertex and the Stripped DOM are used
-					// for crawling
-					// purposes too!
+					// adding the state property which is the main data we store for each node (i.e.
+					// each StateVertex) the serialized stateVertex and the Stripped DOM are used
+					// for crawling purposes too!
+
 					toBeAddedNode.setProperty(SERIALIZED_STATE_VERTEX_IN_NODES,
 					        serializedSV);
-					toBeAddedNode.setProperty(STRIPPED_DOM_IN_NODES,
-					        UTF8.decode((UTF8.encode(state.getStrippedDom()))));
 
-					// adding textual data which is not used for crawling
-					// porpose but are useful for text based
-					// querie
+					// adding textual data which is not used for crawling purpose but are useful for
+					// text based queries
 
-					// the url of the state
+					// the URL of the state
+
 					String url = state.getUrl();
 					if (url != null) {
 						toBeAddedNode.setProperty(URL_IN_NODES, state.getUrl());
@@ -1071,25 +1068,12 @@ public class DBSfgWithIndexing implements Serializable, StateFlowGraph {
 
 	private Node putIfAbsentNode(Node toBeAddedNode, String strippedDom) {
 
-		for (Node node : nodeIndex.query(STRIPPED_DOM_IN_NODES, "*")) {
-
-			byte[] serializedNode = (byte[]) node
-			        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
-
-			// retrieve the stripped dome directly rahter than from the
-			// serializedState
-			StateVertex state = deserializeStateVertex(serializedNode);
-
-			String newDom = strippedDom;
-			String prev = state.getStrippedDom();
-
-			if (newDom.equals(prev)) {
-				return node;
-
-			}
-
+		Node alreadyPresent =
+		        nodeIndex.putIfAbsent(toBeAddedNode, STRIPPED_DOM_IN_NODES, strippedDom);
+		if (alreadyPresent != null) {
+			return alreadyPresent;
 		}
-		nodeIndex.add(toBeAddedNode, STRIPPED_DOM_IN_NODES, strippedDom);
+
 		structuralIndexer.createRelationshipTo(toBeAddedNode, RelTypes.INDEXES);
 
 		return null;
