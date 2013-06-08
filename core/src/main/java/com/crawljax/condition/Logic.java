@@ -6,6 +6,7 @@ package com.crawljax.condition;
 import net.jcip.annotations.Immutable;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.Objects;
 
 /**
  * Logic operations for conditions.
@@ -21,14 +22,7 @@ public final class Logic {
 	 * @return the condition negated.
 	 */
 	public static Condition not(final Condition condition) {
-		return new AbstractCondition() {
-
-			@Override
-			public boolean check(EmbeddedBrowser browser) {
-				return !condition.check(browser);
-			}
-
-		};
+	    return new Logic.Not(condition);
 	}
 
 	/**
@@ -88,6 +82,40 @@ public final class Logic {
 	}
 
 	private Logic() {
+	}
+	
+	private static class Not extends AbstractCondition {
+	    private Condition condition;
+	    
+	    public Not(Condition c) {
+	        condition = c;
+	    }
+	    
+        @Override
+        public boolean check(EmbeddedBrowser browser) {
+            return !condition.check(browser);
+        }
+        
+        @Override
+        public String toString() {
+            return Objects.toStringHelper(this)
+                    .add("condition", condition)
+                    .toString();
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(condition);
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            if (object instanceof Not) {
+                Not that = (Not) object;
+                return Objects.equal(this.condition, that.condition);
+            }
+            return false;
+        }       
 	}
 
 }

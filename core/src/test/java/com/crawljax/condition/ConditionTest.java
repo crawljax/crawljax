@@ -79,7 +79,11 @@ public class ConditionTest {
                 new JavaScriptCondition("0"),
                 new JavaScriptCondition("1")
             },
-
+            {
+                Logic.not(new UrlCondition("u0")),
+                Logic.not(new UrlCondition("u0")),
+                Logic.not(new UrlCondition("u1"))
+            }
          });
     }
        
