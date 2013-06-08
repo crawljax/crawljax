@@ -7,9 +7,7 @@ import com.crawljax.core.state.Identification;
 import com.google.common.base.Objects;
 
 /**
- * Conditions that returns true iff element found with By is visible.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
+ * Conditions that returns true iff element found by given identification is visible.
  */
 @Immutable
 public class VisibleCondition extends AbstractCondition {
