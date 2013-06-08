@@ -83,6 +83,11 @@ public class ConditionTest {
                 Logic.not(new UrlCondition("u0")),
                 Logic.not(new UrlCondition("u0")),
                 Logic.not(new UrlCondition("u1"))
+            },
+            {
+                Logic.and(new JavaScriptCondition("js0")),
+                Logic.and(new JavaScriptCondition("js0")),
+                Logic.and(new JavaScriptCondition("js1"))                
             }
          });
     }
