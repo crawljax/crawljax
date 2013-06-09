@@ -94,7 +94,7 @@ public final class Logic {
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(condition);
+            return Objects.hashCode(this.getClass().getName(), condition);
         }
 
         @Override
@@ -133,8 +133,9 @@ public final class Logic {
 
         @Override
         public int hashCode() {
-            return Objects.hashCode((Object[]) conditions);
-        }
+            int args = Objects.hashCode((Object[]) conditions); 
+            return Objects.hashCode(this.getClass().getName(), args);
+       }
 
         @Override
         public boolean equals(Object object) {

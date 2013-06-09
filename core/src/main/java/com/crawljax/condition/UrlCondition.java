@@ -30,7 +30,7 @@ public class UrlCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(url);
+		return Objects.hashCode(this.getClass().getName(), url);
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class NotXPathCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(xpathCondition);
+		return Objects.hashCode(this.getClass().getName(), xpathCondition);
 	}
 
 	@Override

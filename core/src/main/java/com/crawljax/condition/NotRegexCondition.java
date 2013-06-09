@@ -30,7 +30,7 @@ public class NotRegexCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(regexCondition);
+		return Objects.hashCode(this.getClass().getName(), regexCondition);
 	}
 
 	@Override
