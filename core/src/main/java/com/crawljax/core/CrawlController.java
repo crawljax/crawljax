@@ -107,18 +107,19 @@ public class CrawlController implements Callable<CrawlSession> {
 			executor.submit(consumerFactory.get());
 		}
 		try {
-			exitReason = exitNotifier.awaitTermination();
+			exitReason = exitNotifier.awaitTermination();			
 		} catch (InterruptedException e) {
 			LOG.warn("The crawl was interrupted before it finished. Shutting down...");
 			exitReason = ExitStatus.ERROR;
 		} finally {
 			shutDown();
 			plugins.runPostCrawlingPlugins(crawlSessionProvider.get(), exitReason);
+			LOG.info("Shutdown process complete");
 		}
 	}
 
 	private void shutDown() {
-		LOG.info("Received shutdown notice");
+		LOG.info("Received shutdown notice. Reason is {}", exitReason);
 		executor.shutdownNow();
 		try {
 			LOG.debug("Waiting for task consumers to stop...");
@@ -128,6 +129,10 @@ public class CrawlController implements Callable<CrawlSession> {
 			exitReason = ExitStatus.ERROR;
 		}
 		LOG.debug("terminated");
+	}
+
+	void stop() {
+		exitNotifier.stop();
 	}
 
 }
