@@ -1,7 +1,6 @@
 package com.crawljax.core.state;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -12,13 +11,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jgrapht.GraphPath;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 
 public class StateFlowGraphTest {
 
@@ -27,7 +27,7 @@ public class StateFlowGraphTest {
 	private StateVertex state3;
 	private StateVertex state4;
 	private StateVertex state5;
-	private StateFlowGraph graph;
+	private InMemoryStateFlowGraph graph;
 
 	@Before
 	public void setup() {
@@ -36,7 +36,7 @@ public class StateFlowGraphTest {
 		state3 = new StateVertex(3, "STATE_THREE", "<table><div>state3</div></table>");
 		state4 = new StateVertex(4, "STATE_FOUR", "<table><div>state4</div></table>");
 		state5 = new StateVertex(5, "STATE_FIVE", "<table><div>state5</div></table>");
-		graph = new StateFlowGraph(new ExitNotifier(0));
+		graph = new InMemoryStateFlowGraph(new ExitNotifier(0));
 		graph.putIfAbsent(index, false);
 	}
 
@@ -100,7 +100,7 @@ public class StateFlowGraphTest {
 		list = graph.getShortestPath(hold, state3);
 		assertEquals(list.size(), 2);
 
-		Set<StateVertex> states = graph.getOutgoingStates(index);
+		Set<StateVertex> states = getOutgoingStates(index);
 		assertTrue(states.size() == 2);
 		assertTrue(states.contains(state2));
 		assertTrue(states.contains(state4));
@@ -109,6 +109,17 @@ public class StateFlowGraphTest {
 		Set<StateVertex> allStates = graph.getAllStates();
 
 		assertTrue(allStates.size() == 5);
+	}
+
+	@VisibleForTesting
+	ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix) {
+		final Set<StateVertex> result = new HashSet<>();
+
+		for (Eventable c : graph.getOutgoingClickables(stateVertix)) {
+			result.add(c.getTargetStateVertex());
+		}
+
+		return ImmutableSet.copyOf(result);
 	}
 
 	@Test
@@ -148,7 +159,7 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
-		StateFlowGraph g = new StateFlowGraph(new ExitNotifier(0));
+		InMemoryStateFlowGraph g = new InMemoryStateFlowGraph(new ExitNotifier(0));
 		g.putIfAbsent(new StateVertex(1, "", HTML1), false);
 		g.putIfAbsent(new StateVertex(2, "", HTML2));
 
@@ -168,106 +179,6 @@ public class StateFlowGraphTest {
 		graph.addEdge(index, state2, c1);
 		graph.addEdge(index, state2, c2);
 		assertEquals(2, graph.getAllEdges().size());
-	}
-
-	@Test
-	public void testAllPossiblePaths() {
-		graph.putIfAbsent(state2);
-		graph.putIfAbsent(state3);
-		graph.putIfAbsent(state4);
-		graph.putIfAbsent(state5);
-
-		graph.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
-		        EventType.click));
-		graph.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
-		        EventType.click));
-		graph.addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
-		        EventType.click));
-		graph.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
-		        EventType.click));
-		graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
-		        EventType.click));
-		graph.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
-		        EventType.click));
-		graph.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
-		        EventType.click));
-		graph.addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
-		        EventType.click));
-		graph.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
-		        EventType.click));
-
-		graph.addEdge(state3, state4, new Eventable(new Identification(How.xpath, "/3/4"),
-		        EventType.click));
-
-		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
-
-		assertEquals(2, results.size());
-
-		List<GraphPath<StateVertex, Eventable>> p = results.get(0);
-
-		assertEquals(5, p.size());
-
-		GraphPath<StateVertex, Eventable> e = p.get(0);
-
-		assertEquals(1, e.getEdgeList().size());
-
-		p = results.get(1);
-
-		assertEquals(2, p.size());
-
-	}
-
-	@Test
-	public void largetTest() {
-		graph.putIfAbsent(state2);
-		graph.putIfAbsent(state3);
-		graph.putIfAbsent(state4);
-		graph.putIfAbsent(state5);
-
-		graph.addEdge(index, state2, new Eventable(new Identification(How.xpath, "/index/2"),
-		        EventType.click));
-		graph.addEdge(state2, index, new Eventable(new Identification(How.xpath, "/2/index"),
-		        EventType.click));
-		graph.addEdge(state2, state3, new Eventable(new Identification(How.xpath, "/2/3"),
-		        EventType.click));
-		graph.addEdge(index, state4, new Eventable(new Identification(How.xpath, "/index/4"),
-		        EventType.click));
-		graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath, "/2/5"),
-		        EventType.click));
-		graph.addEdge(state4, index, new Eventable(new Identification(How.xpath, "/4/index"),
-		        EventType.click));
-		graph.addEdge(index, state5, new Eventable(new Identification(How.xpath, "/index/5"),
-		        EventType.click));
-		graph.addEdge(state4, state2, new Eventable(new Identification(How.xpath, "/4/2"),
-		        EventType.click));
-		graph.addEdge(state3, state5, new Eventable(new Identification(How.xpath, "/3/5"),
-		        EventType.click));
-
-		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
-
-		assertThat(results, hasSize(2));
-
-		assertThat(results.get(0), hasSize(5));
-
-		assertThat(results.get(0).get(0).getEdgeList(), hasSize(1));
-
-		assertThat(results.get(1), hasSize(2));
-		// int max = 0;
-		Set<Eventable> uEvents = new HashSet<Eventable>();
-
-		for (List<GraphPath<StateVertex, Eventable>> paths : results) {
-			for (GraphPath<StateVertex, Eventable> p : paths) {
-				// System.out.print(" Edge: " + x + ":" + y);
-				// int z = 0;
-				for (Eventable edge : p.getEdgeList()) {
-					// System.out.print(", " + edge.toString());
-					if (!uEvents.contains(edge)) {
-						uEvents.add(edge);
-					}
-
-				}
-			}
-		}
 	}
 
 	@Test

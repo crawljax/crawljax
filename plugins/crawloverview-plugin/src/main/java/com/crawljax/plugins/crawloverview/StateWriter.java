@@ -79,7 +79,7 @@ class StateWriter {
 			LOG.debug("State {} has offset {} {} for element {}", new Object[] { state.getName(),
 			        state.getScreenshotOffsetLeft(), state.getScreenshotOffsetTop(), element });
 			if (eventable != null) {
-				toState = sfg.getTargetState(eventable);
+				toState = eventable.getTargetStateVertex();
 			}
 			if (toState != null) {
 				elementMap.put("targetname", toState.getName());

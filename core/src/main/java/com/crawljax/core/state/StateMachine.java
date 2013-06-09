@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 public class StateMachine {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StateMachine.class.getName());
 
-	private final StateFlowGraph stateFlowGraph;
+	private final InMemoryStateFlowGraph stateFlowGraph;
 
 	private final StateVertex initialState;
 
@@ -42,7 +42,7 @@ public class StateMachine {
 	 * @param invariantList
 	 *            the invariants to use in the InvariantChecker.
 	 */
-	public StateMachine(StateFlowGraph sfg,
+	public StateMachine(InMemoryStateFlowGraph sfg,
 	        ImmutableList<Invariant> invariantList, Plugins plugins,
 	        StateComparator stateComparator) {
 		stateFlowGraph = sfg;

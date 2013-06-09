@@ -55,7 +55,7 @@ public class StateMachineTest {
 	 */
 	@Before
 	public void initStateMachine() {
-		StateFlowGraph sfg = newStateFlowGraph();
+		InMemoryStateFlowGraph sfg = newStateFlowGraph();
 		sm = new StateMachine(sfg, ImmutableList.<Invariant> of(), Plugins.noPlugins(),
 		        comparator);
 	}
@@ -243,7 +243,7 @@ public class StateMachineTest {
 				        return false;
 			        }
 		        }));
-		StateFlowGraph sfg = newStateFlowGraph();
+		InMemoryStateFlowGraph sfg = newStateFlowGraph();
 		StateMachine smLocal =
 		        new StateMachine(sfg, iList, Plugins.noPlugins(), comparator);
 
@@ -263,8 +263,8 @@ public class StateMachineTest {
 		assertTrue("Invariants are exeucted", hit);
 	}
 
-	private StateFlowGraph newStateFlowGraph() {
-		StateFlowGraph sfg = new StateFlowGraph(new ExitNotifier(0));
+	private InMemoryStateFlowGraph newStateFlowGraph() {
+		InMemoryStateFlowGraph sfg = new InMemoryStateFlowGraph(new ExitNotifier(0));
 		sfg.putIfAbsent(index, false);
 		return sfg;
 	}

@@ -104,4 +104,5 @@ public class CrawlSession {
 	public CrawljaxConfiguration getConfig() {
 		return config;
 	}
+
 }

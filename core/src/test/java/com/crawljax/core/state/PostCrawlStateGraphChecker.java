@@ -11,8 +11,8 @@ import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 
 /**
- * This {@link PostCrawlingPlugin} checks the {@link StateFlowGraph} for consistency after the crawl
- * is done.
+ * This {@link PostCrawlingPlugin} checks the {@link InMemoryStateFlowGraph} for consistency after
+ * the crawl is done.
  */
 public class PostCrawlStateGraphChecker implements PostCrawlingPlugin {
 
