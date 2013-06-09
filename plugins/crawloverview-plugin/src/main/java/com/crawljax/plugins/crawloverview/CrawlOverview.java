@@ -26,6 +26,7 @@ import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;

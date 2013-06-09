@@ -36,8 +36,9 @@ public class UrlCondition extends AbstractCondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof UrlCondition) {
-			if (!super.equals(object))
+			if (!super.equals(object)) {
 				return false;
+			}
 			UrlCondition that = (UrlCondition) object;
 			return Objects.equal(this.url, that.url);
 		}

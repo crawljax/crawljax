@@ -37,8 +37,9 @@ public class NotUrlCondition extends AbstractCondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof NotUrlCondition) {
-			if (!super.equals(object))
+			if (!super.equals(object)) {
 				return false;
+			}
 			NotUrlCondition that = (NotUrlCondition) object;
 			return Objects.equal(this.urlCondition, that.urlCondition);
 		}

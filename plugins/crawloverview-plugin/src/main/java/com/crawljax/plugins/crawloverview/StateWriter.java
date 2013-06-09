@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.State;
 import com.google.common.base.Joiner;

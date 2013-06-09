@@ -150,7 +150,8 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	 * @return true if this graph did not already contain the specified edge.
 	 * @see org.jgrapht.Graph#addEdge(Object, Object, Object)
 	 */
-	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert, Eventable clickable) {
+	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert,
+	        Eventable clickable) {
 		writeLock.lock();
 		try {
 			if (sfg.containsEdge(sourceVert, targetVert)
@@ -271,7 +272,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 
 	StateVertex newStateFor(String url, String dom, String strippedDom) {
 		int id = nextStateNameCounter.incrementAndGet();
-		return new StateVertex(id, url, getNewStateName(id), dom, strippedDom);
+		return new StateVertexImpl(id, url, getNewStateName(id), dom, strippedDom);
 	}
 
 	private String getNewStateName(int id) {

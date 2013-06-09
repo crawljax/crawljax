@@ -36,8 +36,9 @@ public class NotXPathCondition extends AbstractCondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof NotXPathCondition) {
-			if (!super.equals(object))
+			if (!super.equals(object)) {
 				return false;
+			}
 			NotXPathCondition that = (NotXPathCondition) object;
 			return Objects.equal(this.xpathCondition, that.xpathCondition);
 		}

@@ -127,7 +127,7 @@ public class CrawlControllerTest {
 		                .setBrowserConfig(
 		                        new BrowserConfiguration(BrowserType.firefox, consumers))
 		                .build();
-		
+
 		candidateActions = new UnfiredCandidateActions(config.getBrowserConfig(), graphProvider);
 
 		consumersDoneLatch = new ExitNotifier(config.getMaximumStates());

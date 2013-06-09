@@ -62,8 +62,9 @@ public class XPathCondition extends AbstractCondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof XPathCondition) {
-			if (!super.equals(object))
+			if (!super.equals(object)) {
 				return false;
+			}
 			XPathCondition that = (XPathCondition) object;
 			return Objects.equal(this.expression, that.expression);
 		}

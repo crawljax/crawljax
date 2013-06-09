@@ -47,8 +47,9 @@ public class RegexCondition extends AbstractCondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof RegexCondition) {
-			if (!super.equals(object))
+			if (!super.equals(object)) {
 				return false;
+			}
 			RegexCondition that = (RegexCondition) object;
 			return Objects.equal(this.expression, that.expression)
 			        && Objects.equal(this.pattern, that.pattern);

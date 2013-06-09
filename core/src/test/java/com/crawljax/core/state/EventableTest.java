@@ -105,8 +105,8 @@ public class EventableTest {
 	@Test
 	public void testEdge() throws CrawljaxException {
 
-		StateVertex s1 = new StateVertex(0, "stateSource", "dom1");
-		StateVertex s2 = new StateVertex(0, "stateTarget", "dom2");
+		StateVertex s1 = new StateVertexImpl(0, "stateSource", "dom1");
+		StateVertex s2 = new StateVertexImpl(0, "stateTarget", "dom2");
 		InMemoryStateFlowGraph sfg = new InMemoryStateFlowGraph(new ExitNotifier(0));
 		sfg.putIndex(s1);
 

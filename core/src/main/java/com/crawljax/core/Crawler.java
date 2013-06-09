@@ -436,10 +436,8 @@ public class Crawler {
 		LOG.debug("Setting up vertex of the index page");
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
-		StateVertex index =
-		        new StateVertex(StateVertex.INDEX_ID, url.toExternalForm(), "index",
-		                browser.getDom(),
-		                stateComparator.getStrippedDom(browser));
+		StateVertex index = StateMachine.createIndex(url.toExternalForm(), browser.getDom(),
+		        stateComparator.getStrippedDom(browser));
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 		        "It seems some the index state is crawled more than once.");
 

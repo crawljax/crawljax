@@ -28,7 +28,7 @@ public class StateVertexTest {
 	public void setUp() throws Exception {
 		name = "index";
 		dom = "<body></body>";
-		s = new StateVertex(0, name, dom);
+		s = new StateVertexImpl(0, name, dom);
 	}
 
 	/**
@@ -36,8 +36,8 @@ public class StateVertexTest {
 	 */
 	@Test
 	public void testHashCode() {
-		StateVertex state = new StateVertex(1, "foo", dom);
-		StateVertex temp = new StateVertex(2, name, dom);
+		StateVertex state = new StateVertexImpl(1, "foo", dom);
+		StateVertex temp = new StateVertexImpl(2, name, dom);
 
 		assertEquals(temp.hashCode(), state.hashCode());
 	}
@@ -47,7 +47,7 @@ public class StateVertexTest {
 	 */
 	@Test
 	public void testStateVertixString() {
-		StateVertex sv = new StateVertex(2, name, "");
+		StateVertex sv = new StateVertexImpl(2, name, "");
 		assertNotNull(sv);
 	}
 
@@ -78,9 +78,9 @@ public class StateVertexTest {
 	 */
 	@Test
 	public void testEqualsObject() {
-		StateVertex stateEqual = new StateVertex(1, "foo", dom);
-		StateVertex stateNotEqual = new StateVertex(2, "foo", "<table><div>bla</div</table>");
-		StateVertex sv = new StateVertex(1, name, dom);
+		StateVertex stateEqual = new StateVertexImpl(1, "foo", dom);
+		StateVertex stateNotEqual = new StateVertexImpl(2, "foo", "<table><div>bla</div</table>");
+		StateVertex sv = new StateVertexImpl(1, name, dom);
 		assertTrue(stateEqual.equals(sv));
 
 		assertFalse(stateNotEqual.equals(sv));
@@ -101,7 +101,7 @@ public class StateVertexTest {
 
 	@Test
 	public void testGetDomSize() {
-		StateVertex sv = new StateVertex(1, "test", HTML);
+		StateVertex sv = new StateVertexImpl(1, "test", HTML);
 
 		int count = sv.getDom().getBytes().length;
 		assertEquals(242, count);
@@ -109,7 +109,7 @@ public class StateVertexTest {
 
 	@Test
 	public void testSerializability() {
-		StateVertex sv = new StateVertex(2, "testSerliazibility", HTML);
+		StateVertex sv = new StateVertexImpl(2, "testSerliazibility", HTML);
 
 		byte[] serializedSv = SerializationUtils.serialize(sv);
 		StateVertex deserializedSv = (StateVertex) SerializationUtils.deserialize(serializedSv);

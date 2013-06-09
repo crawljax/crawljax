@@ -1,7 +1,6 @@
 package com.crawljax.core.state;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collection;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -15,17 +14,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Queues;
 
 /**
- * The state vertex class which represents a state in the browser. This class implements the
- * Iterable interface because on a StateVertex it is possible to iterate over the possible
- * CandidateElements found in this state. When iterating over the possible candidate elements every
- * time a candidate is returned its removed from the list so it is a one time only access to the
- * candidates.
+ * The state vertex class which represents a state in the browser. When iterating over the possible
+ * candidate elements every time a candidate is returned its removed from the list so it is a one
+ * time only access to the candidates.
  */
-public class StateVertex implements Serializable {
+class StateVertexImpl implements StateVertex {
 
 	private static final long serialVersionUID = 123400017983488L;
-
-	public static final int INDEX_ID = 0;
 
 	private final Collection<Eventable> foundEventables;
 	private final int id;
@@ -43,7 +38,7 @@ public class StateVertex implements Serializable {
 	 *            the current DOM tree of the browser
 	 */
 	@VisibleForTesting
-	StateVertex(int id, String name, String dom) {
+	StateVertexImpl(int id, String name, String dom) {
 		this(id, null, name, dom, dom);
 	}
 
@@ -59,7 +54,7 @@ public class StateVertex implements Serializable {
 	 * @param strippedDom
 	 *            the stripped dom by the OracleComparators
 	 */
-	public StateVertex(int id, String url, String name, String dom, String strippedDom) {
+	public StateVertexImpl(int id, String url, String name, String dom, String strippedDom) {
 		this.id = id;
 		this.url = url;
 		this.name = name;
@@ -68,42 +63,28 @@ public class StateVertex implements Serializable {
 		foundEventables = Queues.newConcurrentLinkedQueue();
 	}
 
-	/**
-	 * Retrieve the name of the StateVertex.
-	 * 
-	 * @return the name of the StateVertex
-	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * Retrieve the DOM String.
-	 * 
-	 * @return the dom for this state
-	 */
+	@Override
 	public String getDom() {
 		return dom;
 	}
 
-	/**
-	 * @return the stripped dom by the oracle comparators
-	 */
+	@Override
 	public String getStrippedDom() {
 		return strippedDom;
 	}
 
-	/**
-	 * @return the url
-	 */
+	@Override
 	public String getUrl() {
 		return url;
 	}
 
 	/**
-	 * Returns a hashcode. Uses reflection to determine the fields to test.
-	 * 
-	 * @return the hashCode of this StateVertex
+	 * {@link #hashCode()} is done on the {@link #getStrippedDom()}.
 	 */
 	@Override
 	public int hashCode() {
@@ -118,12 +99,7 @@ public class StateVertex implements Serializable {
 	}
 
 	/**
-	 * Compare this vertex to a other StateVertex.
-	 * 
-	 * @param obj
-	 *            the Object to compare this vertex
-	 * @return Return true if equal. Uses reflection.
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * Equals is done on the {@link #getStrippedDom()}.
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -140,28 +116,17 @@ public class StateVertex implements Serializable {
 		        .isEquals();
 	}
 
-	/**
-	 * Returns the name of this state as string.
-	 * 
-	 * @return a string representation of the current StateVertex
-	 */
 	@Override
 	public String toString() {
 		return name;
 	}
 
-	/**
-	 * @return the id. This is guaranteed to be unique per state.
-	 */
+	@Override
 	public int getId() {
 		return id;
 	}
 
-	/**
-	 * @return a Document instance of the dom string.
-	 * @throws IOException
-	 *             if an exception is thrown.
-	 */
+	@Override
 	public Document getDocument() throws IOException {
 		return DomUtils.asDocument(this.dom);
 	}
@@ -174,6 +139,7 @@ public class StateVertex implements Serializable {
 		foundEventables.add(eventable);
 	}
 
+	@Override
 	public ImmutableList<Eventable> getUsedEventables() {
 		return ImmutableList.copyOf(this.foundEventables);
 	}

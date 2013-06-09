@@ -36,8 +36,9 @@ public class NotRegexCondition extends AbstractCondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof NotRegexCondition) {
-			if (!super.equals(object))
+			if (!super.equals(object)) {
 				return false;
+			}
 			NotRegexCondition that = (NotRegexCondition) object;
 			return Objects.equal(this.regexCondition, that.regexCondition);
 		}

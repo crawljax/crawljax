@@ -37,8 +37,9 @@ public class NotVisibleCondition extends AbstractCondition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof NotVisibleCondition) {
-			if (!super.equals(object))
+			if (!super.equals(object)) {
 				return false;
+			}
 			NotVisibleCondition that = (NotVisibleCondition) object;
 			return Objects.equal(this.visibleCondition, that.visibleCondition);
 		}

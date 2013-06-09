@@ -64,8 +64,9 @@ public class CountCondition implements Condition {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof CountCondition) {
-			if (!super.equals(object))
+			if (!super.equals(object)) {
 				return false;
+			}
 			CountCondition that = (CountCondition) object;
 			return Objects.equal(this.condition, that.condition)
 			        && Objects.equal(this.count, that.count)
