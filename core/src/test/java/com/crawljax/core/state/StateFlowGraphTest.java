@@ -37,7 +37,7 @@ public class StateFlowGraphTest {
 		state4 = new StateVertex(4, "STATE_FOUR", "<table><div>state4</div></table>");
 		state5 = new StateVertex(5, "STATE_FIVE", "<table><div>state5</div></table>");
 		graph = new InMemoryStateFlowGraph(new ExitNotifier(0));
-		graph.putIfAbsent(index, false);
+		graph.putIndex(index);
 	}
 
 	@Test
@@ -160,7 +160,7 @@ public class StateFlowGraphTest {
 		                + "<body><div id='firstdiv' class='orange'>";
 
 		InMemoryStateFlowGraph g = new InMemoryStateFlowGraph(new ExitNotifier(0));
-		g.putIfAbsent(new StateVertex(1, "", HTML1), false);
+		g.putIndex(new StateVertex(1, "", HTML1));
 		g.putIfAbsent(new StateVertex(2, "", HTML2));
 
 		assertEquals(206, g.getMeanStateStringSize());

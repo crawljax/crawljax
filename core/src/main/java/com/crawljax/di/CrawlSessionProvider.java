@@ -46,7 +46,7 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	public void setup(StateVertex indexState) {
 		if (!isSet.getAndSet(true)) {
 			LOG.debug("Setting up the crawlsession");
-			StateVertex added = stateFlowGraph.putIfAbsent(indexState, false);
+			StateVertex added = stateFlowGraph.putIndex(indexState);
 			Preconditions.checkArgument(added == null, "Could not set the initial state");
 			session = new CrawlSession(config, stateFlowGraph, indexState);
 		} else {

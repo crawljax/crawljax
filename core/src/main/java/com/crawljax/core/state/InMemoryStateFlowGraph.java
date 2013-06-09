@@ -81,6 +81,10 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		return putIfAbsent(stateVertix, true);
 	}
 
+	public StateVertex putIndex(StateVertex index) {
+		return putIfAbsent(index, false);
+	}
+
 	/**
 	 * Adds a state (as a vertix) to the State-Flow Graph if not already present. More formally,
 	 * adds the specified vertex, v, to this graph if this graph contains no vertex u such that
@@ -97,7 +101,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	 * @return the clone if one is detected <code>null</code> otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	public StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName) {
+	private StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName) {
 		writeLock.lock();
 		try {
 			boolean added = sfg.addVertex(stateVertix);
@@ -106,28 +110,14 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 				int count = stateCounter.incrementAndGet();
 				exitNotifier.incrementNumberOfStates();
 				LOG.debug("Number of states is now {}", count);
-				if (correctName) {
-					correctStateName(stateVertix);
-				}
 				return null;
 			} else {
-				// Graph already contained the vertix
+				// Graph already contained the vertex
 				LOG.debug("Graph already contained vertex {}", stateVertix);
 				return this.getStateInGraph(stateVertix);
 			}
 		} finally {
 			writeLock.unlock();
-		}
-	}
-
-	private void correctStateName(StateVertex stateVertix) {
-		// the -1 is for the "index" state.
-		int totalNumberOfStates = this.getAllStates().size() - 1;
-		String correctedName = getNewStateName(totalNumberOfStates);
-		if (!"index".equals(stateVertix.getName())
-		        && !stateVertix.getName().equals(correctedName)) {
-			LOG.info("Correcting state name from {}  to {}", stateVertix.getName(), correctedName);
-			stateVertix.setName(correctedName);
 		}
 	}
 
@@ -265,7 +255,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 			final Mean mean = new Mean();
 
 			for (StateVertex state : sfg.vertexSet()) {
-				mean.increment(state.getDomSize());
+				mean.increment(state.getDom().getBytes().length);
 			}
 
 			return (int) mean.getResult();
@@ -274,22 +264,18 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		}
 	}
 
-	/**
-	 * Return the name of the (new)State. By using the AtomicInteger the stateCounter is thread-safe
-	 * 
-	 * @return State name the name of the state
-	 */
-	String getNewStateName(int id) {
-		return "state" + id;
-	}
-
-	int getNextStateId() {
-		return nextStateNameCounter.incrementAndGet();
-	}
-
 	@Override
 	public int getNumberOfStates() {
 		return stateCounter.get();
+	}
+
+	StateVertex newStateFor(String url, String dom, String strippedDom) {
+		int id = nextStateNameCounter.incrementAndGet();
+		return new StateVertex(id, url, getNewStateName(id), dom, strippedDom);
+	}
+
+	private String getNewStateName(int id) {
+		return "state" + id;
 	}
 
 }

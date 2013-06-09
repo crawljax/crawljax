@@ -103,7 +103,7 @@ public class StateVertexTest {
 	public void testGetDomSize() {
 		StateVertex sv = new StateVertex(1, "test", HTML);
 
-		int count = sv.getDomSize();
+		int count = sv.getDom().getBytes().length;
 		assertEquals(242, count);
 	}
 

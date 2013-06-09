@@ -9,6 +9,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.w3c.dom.Document;
 
 import com.crawljax.util.DomUtils;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Queues;
@@ -28,20 +29,10 @@ public class StateVertex implements Serializable {
 
 	private final Collection<Eventable> foundEventables;
 	private final int id;
-	private String name;
-	private String dom;
+	private final String dom;
 	private final String strippedDom;
 	private final String url;
-
-	/**
-	 * Default constructor to support saving instances of this class as an XML.
-	 */
-	public StateVertex(int id) {
-		this.id = id;
-		this.strippedDom = "";
-		this.url = "";
-		foundEventables = Queues.newConcurrentLinkedQueue();
-	}
+	private String name;
 
 	/**
 	 * Creates a current state without an url and the stripped dom equals the dom.
@@ -51,7 +42,8 @@ public class StateVertex implements Serializable {
 	 * @param dom
 	 *            the current DOM tree of the browser
 	 */
-	public StateVertex(int id, String name, String dom) {
+	@VisibleForTesting
+	StateVertex(int id, String name, String dom) {
 		this(id, null, name, dom, dom);
 	}
 
@@ -159,35 +151,10 @@ public class StateVertex implements Serializable {
 	}
 
 	/**
-	 * Return the size of the DOM in bytes.
-	 * 
-	 * @return the size of the dom
-	 */
-	public int getDomSize() {
-		return getDom().getBytes().length;
-	}
-
-	/**
 	 * @return the id. This is guaranteed to be unique per state.
 	 */
 	public int getId() {
 		return id;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @param dom
-	 *            the dom to set
-	 */
-	public void setDom(String dom) {
-		this.dom = dom;
 	}
 
 	/**

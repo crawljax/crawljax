@@ -32,7 +32,8 @@ public class CandidateElementExtractorTest {
 
 	private static final Logger LOG = LoggerFactory
 	        .getLogger(CandidateElementExtractorTest.class);
-	private static final StateVertex DUMMY_STATE = new StateVertex(0, "DUMMY", "");
+	private static final StateVertex DUMMY_STATE = new StateVertex(0, "http://localhost",
+	        "DUMMY", "", "");
 
 	@ClassRule
 	public static final RunWithWebServer DEMO_SITE_SERVER = new RunWithWebServer("/demo-site");

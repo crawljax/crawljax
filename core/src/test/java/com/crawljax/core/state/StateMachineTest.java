@@ -265,7 +265,7 @@ public class StateMachineTest {
 
 	private InMemoryStateFlowGraph newStateFlowGraph() {
 		InMemoryStateFlowGraph sfg = new InMemoryStateFlowGraph(new ExitNotifier(0));
-		sfg.putIfAbsent(index, false);
+		sfg.putIndex(index);
 		return sfg;
 	}
 

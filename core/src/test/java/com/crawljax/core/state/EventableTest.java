@@ -108,7 +108,7 @@ public class EventableTest {
 		StateVertex s1 = new StateVertex(0, "stateSource", "dom1");
 		StateVertex s2 = new StateVertex(0, "stateTarget", "dom2");
 		InMemoryStateFlowGraph sfg = new InMemoryStateFlowGraph(new ExitNotifier(0));
-		sfg.putIfAbsent(s1, false);
+		sfg.putIndex(s1);
 
 		sfg.putIfAbsent(s2);
 
