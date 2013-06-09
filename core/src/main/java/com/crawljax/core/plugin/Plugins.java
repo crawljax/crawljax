@@ -165,9 +165,9 @@ public class Plugins {
 	 * @param context
 	 *            the session to load in the plugin
 	 */
-	public void runOnInvriantViolationPlugins(Invariant invariant,
+	public void runOnInvariantViolationPlugins(Invariant invariant,
 	        CrawlerContext context) {
-		LOGGER.debug("Running OnInvriantViolationPlugins...");
+		LOGGER.debug("Running OnInvariantViolationPlugins...");
 		for (Plugin plugin : plugins.get(OnInvariantViolationPlugin.class)) {
 			if (plugin instanceof OnInvariantViolationPlugin) {
 				try {

@@ -119,7 +119,7 @@ public class PluginsTest {
 	@Test
 	public void invariantViolatedIsCalled() throws Exception {
 		Invariant invariant = mock(Invariant.class);
-		plugins.runOnInvriantViolationPlugins(invariant, context);
+		plugins.runOnInvariantViolationPlugins(invariant, context);
 		verify(invariantViolationPlugin).onInvariantViolation(invariant, context);
 	}
 

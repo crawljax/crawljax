@@ -160,7 +160,7 @@ public class StateMachine {
 	        CrawlerContext context) {
 		StateVertex cloneState = this.addStateToCurrentState(newState, event);
 
-		runOnInvriantViolationPlugins(context);
+		runOnInvariantViolationPlugins(context);
 
 		if (cloneState == null) {
 			changeState(newState);
@@ -172,10 +172,10 @@ public class StateMachine {
 		}
 	}
 
-	private void runOnInvriantViolationPlugins(CrawlerContext context) {
+	private void runOnInvariantViolationPlugins(CrawlerContext context) {
 		for (Invariant failedInvariant : invariantChecker.getFailedConditions(context
 		        .getBrowser())) {
-			plugins.runOnInvriantViolationPlugins(failedInvariant, context);
+			plugins.runOnInvariantViolationPlugins(failedInvariant, context);
 		}
 	}
 }
