@@ -366,8 +366,6 @@ public class CandidateElementExtractor {
 				 * without 'atusa' attribute to make sure an form action element is only clicked for
 				 * its defined values
 				 */
-			} else {
-				System.err.println("\n *** YOU SHOULDNT SEE MEE *** \n");
 			}
 		}
 	}
