@@ -3,6 +3,9 @@ package com.crawljax.core.state;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,6 +34,8 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	        .getName());
 
 	private final DirectedGraph<StateVertex, Eventable> sfg;
+	private final Lock readLock;
+	private final Lock writeLock;
 
 	/**
 	 * Intermediate counter for the number of states, not relaying on getAllStates.size() because of
@@ -39,7 +44,6 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	private final AtomicInteger stateCounter = new AtomicInteger();
 	private final AtomicInteger nextStateNameCounter = new AtomicInteger();
 	private final ConcurrentMap<Integer, StateVertex> stateById;
-
 	private final ExitNotifier exitNotifier;
 
 	/**
@@ -54,6 +58,9 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		sfg = new DirectedMultigraph<>(Eventable.class);
 		stateById = Maps.newConcurrentMap();
 		LOG.debug("Initialized the stateflowgraph");
+		ReadWriteLock lock = new ReentrantReadWriteLock();
+		readLock = lock.readLock();
+		writeLock = lock.writeLock();
 	}
 
 	/**
@@ -91,7 +98,8 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
 	public StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName) {
-		synchronized (sfg) {
+		writeLock.lock();
+		try {
 			boolean added = sfg.addVertex(stateVertix);
 			if (added) {
 				stateById.put(stateVertix.getId(), stateVertix);
@@ -107,6 +115,8 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 				LOG.debug("Graph already contained vertex {}", stateVertix);
 				return this.getStateInGraph(stateVertix);
 			}
+		} finally {
+			writeLock.unlock();
 		}
 	}
 
@@ -151,73 +161,117 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	 * @see org.jgrapht.Graph#addEdge(Object, Object, Object)
 	 */
 	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert, Eventable clickable) {
-		synchronized (sfg) {
+		writeLock.lock();
+		try {
 			if (sfg.containsEdge(sourceVert, targetVert)
 			        && sfg.getAllEdges(sourceVert, targetVert).contains(clickable)) {
 				return false;
 			} else {
 				return sfg.addEdge(sourceVert, targetVert, clickable);
 			}
+		} finally {
+			writeLock.unlock();
 		}
 	}
 
 	@Override
 	public String toString() {
-		synchronized (sfg) {
+		readLock.lock();
+		try {
 			return sfg.toString();
+		} finally {
+			readLock.unlock();
 		}
 	}
 
 	@Override
 	public ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix) {
-		return ImmutableSet.copyOf(sfg.outgoingEdgesOf(stateVertix));
+		readLock.lock();
+		try {
+			return ImmutableSet.copyOf(sfg.outgoingEdgesOf(stateVertix));
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
 	public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix) {
-		return ImmutableSet.copyOf(sfg.incomingEdgesOf(stateVertix));
+		readLock.lock();
+		try {
+			return ImmutableSet.copyOf(sfg.incomingEdgesOf(stateVertix));
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
 	public boolean canGoTo(StateVertex source, StateVertex target) {
-		synchronized (sfg) {
+		readLock.lock();
+		try {
 			return sfg.containsEdge(source, target) || sfg.containsEdge(target, source);
+		} finally {
+			readLock.unlock();
 		}
 	}
 
 	@Override
 	public ImmutableList<Eventable> getShortestPath(StateVertex start, StateVertex end) {
-		return ImmutableList.copyOf(DijkstraShortestPath.findPathBetween(sfg, start, end));
+		readLock.lock();
+		try {
+			return ImmutableList.copyOf(DijkstraShortestPath.findPathBetween(sfg, start, end));
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
 	public ImmutableSet<StateVertex> getAllStates() {
-		return ImmutableSet.copyOf(sfg.vertexSet());
+		readLock.lock();
+		try {
+			return ImmutableSet.copyOf(sfg.vertexSet());
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	@Override
 	public ImmutableSet<Eventable> getAllEdges() {
-		return ImmutableSet.copyOf(sfg.edgeSet());
+		readLock.lock();
+		try {
+			return ImmutableSet.copyOf(sfg.edgeSet());
+		} finally {
+			readLock.unlock();
+		}
 	}
 
 	private StateVertex getStateInGraph(StateVertex state) {
-		for (StateVertex st : sfg.vertexSet()) {
-			if (state.equals(st)) {
-				return st;
+		readLock.lock();
+		try {
+			for (StateVertex st : sfg.vertexSet()) {
+				if (state.equals(st)) {
+					return st;
+				}
 			}
+			return null;
+		} finally {
+			readLock.unlock();
 		}
-		return null;
 	}
 
 	@Override
 	public int getMeanStateStringSize() {
-		final Mean mean = new Mean();
+		readLock.lock();
+		try {
+			final Mean mean = new Mean();
 
-		for (StateVertex state : sfg.vertexSet()) {
-			mean.increment(state.getDomSize());
+			for (StateVertex state : sfg.vertexSet()) {
+				mean.increment(state.getDomSize());
+			}
+
+			return (int) mean.getResult();
+		} finally {
+			readLock.unlock();
 		}
-
-		return (int) mean.getResult();
 	}
 
 	/**
