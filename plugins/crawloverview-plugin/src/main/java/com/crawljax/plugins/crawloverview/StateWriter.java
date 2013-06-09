@@ -72,8 +72,8 @@ class StateWriter {
 			Map<String, String> elementMap = new HashMap<String, String>();
 			elementMap.put("xpath", element.getXpath());
 			elementMap
-			        .put("left", "" + (element.getLeft() - 3 + state.getScreenshotOffsetLeft()));
-			elementMap.put("top", "" + (element.getTop() - 3 + state.getScreenshotOffsetTop()));
+			        .put("left", "" + (element.getLeft() - 3));
+			elementMap.put("top", "" + (element.getTop() - 3));
 			elementMap.put("width", "" + (element.getWidth() + 2));
 			elementMap.put("height", "" + (element.getHeight() + 2));
 			LOG.debug("State {} has offset {} {} for element {}", new Object[] { state.getName(),
