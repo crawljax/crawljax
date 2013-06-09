@@ -60,14 +60,7 @@ public final class Logic {
      * @return NAND conditions
      */
     public static Condition nand(final Condition... conditions) {
-        return new AbstractCondition() {
-
-            @Override
-            public boolean check(EmbeddedBrowser browser) {
-                return not(and(conditions)).check(browser);
-            }
-
-        };
+        return not(and(conditions));
     }
 
     private Logic() {

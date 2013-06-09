@@ -108,6 +108,12 @@ public class ConditionTest {
                 Logic.and(new JavaScriptCondition("js0")),
                 Logic.and(new JavaScriptCondition("js1")),
                 Logic.not(new JavaScriptCondition("js0"))
+            },
+            {
+                Logic.nand(new JavaScriptCondition("js0")),
+                Logic.nand(new JavaScriptCondition("js0")),
+                Logic.nand(new JavaScriptCondition("js1")),
+                Logic.and(new JavaScriptCondition("js0"))
             }
          });
     }
