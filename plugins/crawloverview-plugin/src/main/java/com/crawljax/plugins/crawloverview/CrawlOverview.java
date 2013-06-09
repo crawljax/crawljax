@@ -28,6 +28,7 @@ import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -101,9 +102,13 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		LOG.info("Prestate found new state {} with {} candidates",
 		        state.getName(), candidateElements.size());
 		for (CandidateElement element : candidateElements) {
-			WebElement webElement = getWebElement(context.getBrowser(), element);
-			if (webElement != null) {
-				newElements.add(findElement(webElement, element));
+			try {
+				WebElement webElement = getWebElement(context.getBrowser(), element);
+				if (webElement != null) {
+					newElements.add(findElement(webElement, element));
+				}
+			} catch (WebDriverException e) {
+				LOG.info("Could not get position for {}", element, e);
 			}
 		}
 
@@ -115,10 +120,12 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	private WebElement getWebElement(EmbeddedBrowser browser,
 	        CandidateElement element) {
 		try {
-			// TODO Check if element.getIdentification().getValue() is correct
-			// replacement for
-			// element.getXpath()
-			return browser.getWebElement(element.getIdentification());
+			if (!Strings.isNullOrEmpty(element.getRelatedFrame())) {
+				LOG.warn("Element is in an iFrame. We cannot display it in the Crawl overview");
+				return null;
+			} else {
+				return browser.getWebElement(element.getIdentification());
+			}
 		} catch (WebDriverException e) {
 			LOG.info("Could not locate element for positioning {}", element);
 			return null;
@@ -130,13 +137,10 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		Point location = webElement.getLocation();
 		Dimension size = webElement.getSize();
 		CandidateElementPosition renderedCandidateElement =
-		        // TODO Check if element.getIdentification().getValue() is correct
-		        // replacement for
-		        // element.getXpath()
 		        new CandidateElementPosition(element.getIdentification().getValue(),
 		                location, size);
 		if (location.getY() < 0) {
-			LOG.error("Position {} for {}", webElement.getLocation(),
+			LOG.warn("Weird positioning {} for {}", webElement.getLocation(),
 			        renderedCandidateElement.getXpath());
 		}
 		return renderedCandidateElement;
