@@ -1,67 +1,21 @@
 package com.crawljax.core.state;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import net.jcip.annotations.GuardedBy;
-
-import org.apache.commons.math.stat.descriptive.moment.Mean;
-import org.jgrapht.DirectedGraph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.DijkstraShortestPath;
-import org.jgrapht.alg.KShortestPaths;
-import org.jgrapht.graph.DirectedMultigraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.ExitNotifier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
  * clickables (Eventable) on the edges.
  */
-@Singleton
-@SuppressWarnings("serial")
-public class StateFlowGraph implements Serializable {
 
-	private static final Logger LOG = LoggerFactory.getLogger(StateFlowGraph.class.getName());
+public interface StateFlowGraph {
 
-	private final DirectedGraph<StateVertex, Eventable> sfg;
-
-	/**
-	 * Intermediate counter for the number of states, not relaying on getAllStates.size() because of
-	 * Thread-safety.
-	 */
-	private final AtomicInteger stateCounter = new AtomicInteger();
-	private final AtomicInteger nextStateNameCounter = new AtomicInteger();
-	private final ConcurrentMap<Integer, StateVertex> stateById;
-
-	private final ExitNotifier exitNotifier;
-
-	/**
-	 * The constructor.
-	 * 
-	 * @param initialState
-	 *            the state to start from.
-	 */
-	@Inject
-	public StateFlowGraph(ExitNotifier exitNotifier) {
-		this.exitNotifier = exitNotifier;
-		sfg = new DirectedMultigraph<>(Eventable.class);
-		stateById = Maps.newConcurrentMap();
-		LOG.debug("Initialized the stateflowgraph");
+	public enum StateFlowGraphType {
+		DEAFAULT, DB_SIMPLE, DB_IN_RAM_PATH, DB_NO_RAM
 	}
 
 	/**
@@ -78,9 +32,7 @@ public class StateFlowGraph implements Serializable {
 	 * @return the clone if one is detected null otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	public StateVertex putIfAbsent(StateVertex stateVertix) {
-		return putIfAbsent(stateVertix, true);
-	}
+	public StateVertex putIfAbsent(StateVertex stateVertix);
 
 	/**
 	 * Adds a state (as a vertix) to the State-Flow Graph if not already present. More formally,
@@ -98,50 +50,16 @@ public class StateFlowGraph implements Serializable {
 	 * @return the clone if one is detected <code>null</code> otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	@GuardedBy("sfg")
-	public StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName) {
-		synchronized (sfg) {
-			boolean added = sfg.addVertex(stateVertix);
-			if (added) {
-				stateById.put(stateVertix.getId(), stateVertix);
-				int count = stateCounter.incrementAndGet();
-				exitNotifier.incrementNumberOfStates();
-				LOG.debug("Number of states is now {}", count);
-				if (correctName) {
-					correctStateName(stateVertix);
-				}
-				return null;
-			} else {
-				// Graph already contained the vertix
-				LOG.debug("Graph already contained vertex {}", stateVertix);
-				return this.getStateInGraph(stateVertix);
-			}
-		}
-	}
-
-	private void correctStateName(StateVertex stateVertix) {
-		// the -1 is for the "index" state.
-		int totalNumberOfStates = this.getAllStates().size() - 1;
-		String correctedName = makeStateName(totalNumberOfStates);
-		if (!"index".equals(stateVertix.getName())
-		        && !stateVertix.getName().equals(correctedName)) {
-			LOG.info("Correcting state name from {}  to {}", stateVertix.getName(), correctedName);
-			stateVertix.setName(correctedName);
-		}
-	}
+	public StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName);
 
 	/**
 	 * @param id
 	 *            The ID of the state
 	 * @return The state if found or <code>null</code>.
 	 */
-	public StateVertex getById(int id) {
-		return stateById.get(id);
-	}
+	public StateVertex getById(int id);
 
-	public StateVertex getInitialState() {
-		return stateById.get(StateVertex.INDEX_ID);
-	}
+	public StateVertex getInitialState();
 
 	/**
 	 * Adds the specified edge to this graph, going from the source vertex to the target vertex.
@@ -162,28 +80,15 @@ public class StateFlowGraph implements Serializable {
 	 * @return true if this graph did not already contain the specified edge.
 	 * @see org.jgrapht.Graph#addEdge(Object, Object, Object)
 	 */
-	@GuardedBy("sfg")
-	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert, Eventable clickable) {
-		synchronized (sfg) {
-			if (sfg.containsEdge(sourceVert, targetVert)
-			        && sfg.getAllEdges(sourceVert, targetVert).contains(clickable)) {
-				return false;
-			} else {
-				return sfg.addEdge(sourceVert, targetVert, clickable);
-			}
-		}
-	}
+	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert,
+	        Eventable clickable);
 
 	/**
 	 * @return the string representation of the graph.
 	 * @see org.jgrapht.DirectedGraph#toString()
 	 */
 	@Override
-	public String toString() {
-		synchronized (sfg) {
-			return sfg.toString();
-		}
-	}
+	public String toString();
 
 	/**
 	 * Returns a set of all clickables outgoing from the specified vertex.
@@ -193,9 +98,7 @@ public class StateFlowGraph implements Serializable {
 	 * @return a set of the outgoing edges (clickables) of the stateVertix.
 	 * @see org.jgrapht.DirectedGraph#outgoingEdgesOf(Object)
 	 */
-	public ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix) {
-		return ImmutableSet.copyOf(sfg.outgoingEdgesOf(stateVertix));
-	}
+	public ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix);
 
 	/**
 	 * Returns a set of all edges incoming into the specified vertex.
@@ -205,9 +108,7 @@ public class StateFlowGraph implements Serializable {
 	 * @return a set of the incoming edges (clickables) of the stateVertix.
 	 * @see org.jgrapht.DirectedGraph#incomingEdgesOf(Object)
 	 */
-	public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix) {
-		return ImmutableSet.copyOf(sfg.incomingEdgesOf(stateVertix));
-	}
+	public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix);
 
 	/**
 	 * Returns the set of outgoing states.
@@ -216,24 +117,14 @@ public class StateFlowGraph implements Serializable {
 	 *            the state.
 	 * @return the set of outgoing states from the stateVertix.
 	 */
-	public ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix) {
-		final Set<StateVertex> result = new HashSet<>();
-
-		for (Eventable c : getOutgoingClickables(stateVertix)) {
-			result.add(sfg.getEdgeTarget(c));
-		}
-
-		return ImmutableSet.copyOf(result);
-	}
+	public ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix);
 
 	/**
 	 * @param clickable
 	 *            the edge.
 	 * @return the target state of this edge.
 	 */
-	public StateVertex getTargetState(Eventable clickable) {
-		return sfg.getEdgeTarget(clickable);
-	}
+	public StateVertex getTargetState(Eventable clickable);
 
 	/**
 	 * Is it possible to go from s1 -> s2?
@@ -244,12 +135,7 @@ public class StateFlowGraph implements Serializable {
 	 *            the target state.
 	 * @return true if it is possible (edge exists in graph) to go from source to target.
 	 */
-	@GuardedBy("sfg")
-	public boolean canGoTo(StateVertex source, StateVertex target) {
-		synchronized (sfg) {
-			return sfg.containsEdge(source, target) || sfg.containsEdge(target, source);
-		}
-	}
+	public boolean canGoTo(StateVertex source, StateVertex target);
 
 	/**
 	 * Convenience method to find the Dijkstra shortest path between two states on the graph.
@@ -260,105 +146,34 @@ public class StateFlowGraph implements Serializable {
 	 *            the end state.
 	 * @return a list of shortest path of clickables from the state to the end
 	 */
-	public ImmutableList<Eventable> getShortestPath(StateVertex start, StateVertex end) {
-		return ImmutableList.copyOf(DijkstraShortestPath.findPathBetween(sfg, start, end));
-	}
+	public ImmutableList<Eventable> getShortestPath(StateVertex start,
+	        StateVertex end);
 
 	/**
 	 * Return all the states in the StateFlowGraph.
 	 * 
 	 * @return all the states on the graph.
 	 */
-	public ImmutableSet<StateVertex> getAllStates() {
-		return ImmutableSet.copyOf(sfg.vertexSet());
-	}
+	public ImmutableSet<StateVertex> getAllStates();
 
 	/**
 	 * Return all the edges in the StateFlowGraph.
 	 * 
 	 * @return a Set of all edges in the StateFlowGraph
 	 */
-	public ImmutableSet<Eventable> getAllEdges() {
-		return ImmutableSet.copyOf(sfg.edgeSet());
-	}
-
-	/**
-	 * Retrieve the copy of a state from the StateFlowGraph for a given StateVertix. Basically it
-	 * performs v.equals(u).
-	 * 
-	 * @param state
-	 *            the StateVertix to search
-	 * @return the copy of the StateVertix in the StateFlowGraph where v.equals(u) or
-	 *         <code>null</code> if not found.
-	 */
-	private StateVertex getStateInGraph(StateVertex state) {
-		for (StateVertex st : sfg.vertexSet()) {
-			if (state.equals(st)) {
-				return st;
-			}
-		}
-		return null;
-	}
+	public ImmutableSet<Eventable> getAllEdges();
 
 	/**
 	 * @return Dom string average size (byte).
 	 */
-	public int getMeanStateStringSize() {
-		final Mean mean = new Mean();
-
-		for (StateVertex state : sfg.vertexSet()) {
-			mean.increment(state.getDomSize());
-		}
-
-		return (int) mean.getResult();
-	}
+	public int getMeanStateStringSize();
 
 	/**
 	 * @param state
 	 *            The starting state.
 	 * @return A list of the deepest states (states with no outgoing edges).
 	 */
-	public List<StateVertex> getDeepStates(StateVertex state) {
-		final Set<String> visitedStates = new HashSet<String>();
-		final List<StateVertex> deepStates = new ArrayList<StateVertex>();
-
-		traverse(visitedStates, deepStates, state);
-
-		return deepStates;
-	}
-
-	private void traverse(Set<String> visitedStates, List<StateVertex> deepStates,
-	        StateVertex state) {
-		visitedStates.add(state.getName());
-
-		Set<StateVertex> outgoingSet = getOutgoingStates(state);
-
-		if ((outgoingSet == null) || outgoingSet.isEmpty()) {
-			deepStates.add(state);
-		} else {
-			if (cyclic(visitedStates, outgoingSet)) {
-				deepStates.add(state);
-			} else {
-				for (StateVertex st : outgoingSet) {
-					if (!visitedStates.contains(st.getName())) {
-						traverse(visitedStates, deepStates, st);
-					}
-				}
-			}
-		}
-	}
-
-	private boolean cyclic(Set<String> visitedStates, Set<StateVertex> outgoingSet) {
-		int i = 0;
-
-		for (StateVertex state : outgoingSet) {
-			if (visitedStates.contains(state.getName())) {
-				i++;
-			}
-		}
-
-		return i == outgoingSet.size();
-	}
+	public List<StateVertex> getDeepStates(StateVertex state);
 
 	/**
 	 * This method returns all possible paths from the index state using the Kshortest paths.
@@ -367,58 +182,21 @@ public class StateFlowGraph implements Serializable {
 	 *            the initial state.
 	 * @return a list of GraphPath lists.
 	 */
-	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index) {
-		final List<List<GraphPath<StateVertex, Eventable>>> results = Lists.newArrayList();
-
-		final KShortestPaths<StateVertex, Eventable> kPaths =
-		        new KShortestPaths<>(this.sfg, index, Integer.MAX_VALUE);
-
-		for (StateVertex state : getDeepStates(index)) {
-
-			try {
-				List<GraphPath<StateVertex, Eventable>> paths = kPaths.getPaths(state);
-				results.add(paths);
-			} catch (Exception e) {
-				// TODO Stefan; which Exception is catched here???Can this be removed?
-				LOG.error("Error with " + state.toString(), e);
-			}
-
-		}
-
-		return results;
-	}
+	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(
+	        StateVertex index);
 
 	/**
 	 * Return the name of the (new)State. By using the AtomicInteger the stateCounter is thread-safe
 	 * 
 	 * @return State name the name of the state
 	 */
-	public String getNewStateName(int id) {
-		String state = makeStateName(id);
-		return state;
-	}
+	public String getNewStateName(int id);
 
-	public int getNextStateId() {
-		return nextStateNameCounter.incrementAndGet();
-	}
-
-	/**
-	 * Make a new state name given its id. Separated to get a central point when changing the names
-	 * of states. The automatic state names start with "state" and guided ones with "guide".
-	 * 
-	 * @param id
-	 *            the id where this name needs to be for.
-	 * @return the String containing the new name.
-	 */
-	private String makeStateName(int id) {
-		return "state" + id;
-	}
+	public int getNextStateId();
 
 	/**
 	 * @return The number of states, currently in the graph.
 	 */
-	public int getNumberOfStates() {
-		return stateCounter.get();
-	}
+	public int getNumberOfStates();
 
 }

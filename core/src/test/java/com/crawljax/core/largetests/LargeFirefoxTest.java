@@ -4,6 +4,7 @@ import org.junit.experimental.categories.Category;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.state.StateFlowGraph.StateFlowGraphType;
 import com.crawljax.test.BrowserTest;
 
 @Category(BrowserTest.class)
@@ -22,6 +23,11 @@ public class LargeFirefoxTest extends LargeTestBase {
 	@Override
 	long getTimeOutAfterEvent() {
 		return 200;
+	}
+
+	@Override
+	StateFlowGraphType getGraphType() {
+		return StateFlowGraphType.DEAFAULT;
 	}
 
 }
