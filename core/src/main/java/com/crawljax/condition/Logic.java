@@ -40,19 +40,9 @@ public final class Logic {
      * @return OR conditions
      */
     public static Condition or(final Condition... conditions) {
-        return new AbstractCondition() {
-
-            @Override
-            public boolean check(EmbeddedBrowser browser) {
-                for (Condition condition : conditions) {
-                    if (condition.check(browser)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
+        return new Or(conditions);
     }
+
 
     /**
      * @param conditions
@@ -139,4 +129,46 @@ public final class Logic {
             return false;
         }       
     }
+    
+    private static class Or extends AbstractCondition {
+        private Condition[] conditions;
+
+        public Or(Condition... cs) {
+            conditions = cs;
+        }
+        
+        @Override
+        public boolean check(EmbeddedBrowser browser) {
+            for (Condition condition : conditions) {
+                if (condition.check(browser)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return Objects.toStringHelper(this)
+                    .add("condition", Arrays.deepToString(conditions))
+                    .toString();
+        }
+
+        @Override
+        public int hashCode() {
+            int args = Objects.hashCode((Object[]) conditions); 
+            return Objects.hashCode(this.getClass().getName(), args);
+       }
+
+        @Override
+        public boolean equals(Object object) {
+            if (object instanceof Or) {
+                Or that = (Or) object;
+                return Arrays.equals(this.conditions, that.conditions);
+            }
+            return false;
+        }       
+    }
+
+    
 }
