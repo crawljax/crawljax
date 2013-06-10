@@ -18,6 +18,7 @@ import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.DBSfgInMemoryPathFinder;
 import com.crawljax.core.state.DBSfgSimple;
+import com.crawljax.core.state.DBSfgTransactionLock;
 import com.crawljax.core.state.DBSfgWithIndexing;
 import com.crawljax.core.state.DBSfgWithoutRam;
 import com.crawljax.core.state.DefaultStateFlowGraph;
@@ -67,6 +68,8 @@ public class ConfigurationModule extends AbstractModule {
 			bind(StateFlowGraph.class).to(DBSfgWithoutRam.class);
 		} else if (config.getGraphType() == StateFlowGraphType.DB_WITH_INDEXING) {
 			bind(StateFlowGraph.class).to(DBSfgWithIndexing.class);
+		} else if (config.getGraphType() == StateFlowGraphType.DB_TRANSACTIONAL) {
+			bind(StateFlowGraph.class).to(DBSfgTransactionLock.class);
 		}
 	}
 

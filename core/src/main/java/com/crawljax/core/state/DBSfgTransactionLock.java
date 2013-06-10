@@ -15,13 +15,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import net.jcip.annotations.GuardedBy;
-
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.alg.KShortestPaths;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.neo4j.graphalgo.GraphAlgoFactory;
@@ -55,15 +51,16 @@ import com.google.inject.Singleton;
  * clickables (Eventables) on the edges. It stores the data in a graph database. The graph database
  * of choice for this version of StateFlowGraph class is neo4j community edition.
  */
+
 @Singleton
-public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
+public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 	/**
 	 * serial version for persisting the class
 	 */
 	private static final long serialVersionUID = 8765685878231494104L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(DBSfgInMemoryPathFinder.class
+	private static final Logger LOG = LoggerFactory.getLogger(DBSfgTransactionLock.class
 	        .getName());
 
 	/**
@@ -81,13 +78,14 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 
 	public static String DB_PATH = "target/state-flow-graph-db/atTime";
 
-	// the connector or access point to the graph database
+	// the connector and main access point to the graph database
 
 	private static GraphDatabaseService sfgDb;
 
 	/**
-	 * keys used for key-value pairs. The key-value pairs are the main place holders used in neo4j
-	 * data model of a graph. The data is stored in edges and nodes of the graph as "properties"
+	 * keys used for key-value pairs. The key-value pairs are the main places for storing data in
+	 * neo4j data model of a graph. The data is stored in edges and nodes of the graph as
+	 * "properties". Keys here can be interpreted as labels too.
 	 */
 
 	// the key for storing the persisted StateVertex objects in nodes
@@ -159,19 +157,19 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	 *            the state to start from.
 	 */
 	@Inject
-	public DBSfgInMemoryPathFinder(ExitNotifier exitNotifier) {
+	public DBSfgTransactionLock(ExitNotifier exitNotifier) {
 		this.exitNotifier = exitNotifier;
 		stateById = Maps.newConcurrentMap();
 
 		// creating the graph database
 
-		// fresh is used to ensure that every time we run the program a
+		// time is used to ensure that every time we run the program a
 		// clean empty database is used for storing the data
 
-		long fresh = System.nanoTime();
-		fresh /= 1000;
-		String path = DB_PATH + fresh;
-		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(path);
+		long time = System.nanoTime();
+		time /= 1000;
+		String dirPath = DB_PATH + time;
+		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(dirPath);
 
 		// for quick indexing and retrieval of nodes. This data structure is a
 		// additional
@@ -196,12 +194,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 			tx.finish();
 		}
 
-		if (indexNode == null) {
-			LOG.warn("creating indexNode unsuccessful! exiting now!");
-			System.exit(1);
-		}
-
-		DBSfgInMemoryPathFinder.structuralIndexer = indexNode;
+		DBSfgTransactionLock.structuralIndexer = indexNode;
 		LOG.debug("Initialized the stateflowgraph");
 
 		// adding a shutdown hook to ensure the database will be shut down even
@@ -217,7 +210,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	}
 
 	/**
-	 * Adds a state (as a vertix) to the State-Flow Graph if not already present. It adds the
+	 * Adds a state (as a vertex) to the State-Flow Graph if not already present. It adds the
 	 * specified vertex, v, to this graph if this graph contains no vertex u such that u.equals(v).
 	 * If this graph already contains such vertex, the call leaves this graph unchanged and returns
 	 * false. In combination with the restriction on constructors, this ensures that graphs never
@@ -232,7 +225,6 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	 */
 
 	@Override
-	@GuardedBy("sfgDb")
 	public StateVertex putIfAbsent(StateVertex state, boolean correctName) {
 
 		// the node to be added to the graph and then filled with the the data
@@ -246,113 +238,111 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 
 		Node alreadyEsixts;
 
-		synchronized (sfgDb) {
-			// starting the transaction
-			Transaction tx = sfgDb.beginTx();
-			try {
+		// starting the transaction
+		Transaction tx = sfgDb.beginTx();
+		try {
 
-				// adding the container for the state which is going to be added
-				// to the graph database
+			// adding the container for the state which is going to be added
+			// to the graph database
 
-				toBeAddedNode = sfgDb.createNode();
+			toBeAddedNode = sfgDb.createNode();
 
-				// indexing the state in Index manager. the key that we are
-				// using
-				// for indexing is the stripped_dom field. This, in particular,
-				// is
-				// compliance with the domChanged method in the class Crawler
+			// indexing the state in Index manager. the key that we are using for indexing is
+			// the stripped_dom field. This, in particular, is compliance with the domChanged
+			// method in the class Crawler
 
-				alreadyEsixts = putIfAbsentNode(toBeAddedNode,
-				        UTF8.decode(UTF8.encode(state.getStrippedDom())));
+			alreadyEsixts = putIfAbsentNode(toBeAddedNode,
+			        UTF8.decode(UTF8.encode(state.getStrippedDom())));
 
-				if (alreadyEsixts != null) {
-					// the state is already indexed
-					LOG.debug("putIfAbsent: Graph already contained vertex {}",
-					        state);
+			if (alreadyEsixts != null) {
+				// the state is already indexed
+				LOG.debug("putIfAbsent: Graph already contained vertex {}",
+				        state);
 
-					// because the state already exists in the graph the
-					// transaction
-					// is marked for being rolled back
-					tx.failure();
-				} else {
-
-					// correcting the name
-					stateById.put(state.getId(), state);
-					int count = stateCounter.incrementAndGet();
-					exitNotifier.incrementNumberOfStates();
-					LOG.debug("Number of states is now {}", count);
-					if (correctName) {
-						correctStateName(state);
-					}
-
-					// serializing the state
-					byte[] serializedSV = serializeStateVertex(state);
-
-					// adding the state property which is the main data we store
-					// for
-					// each node (i.e. each StateVertex)
-					// the serialized stateVertex and the Stripped DOM are used
-					// for crawling
-					// purposes too!
-					toBeAddedNode.setProperty(SERIALIZED_STATE_VERTEX_IN_NODES,
-					        serializedSV);
-					toBeAddedNode.setProperty(STRIPPED_DOM_IN_NODES,
-					        UTF8.decode((UTF8.encode(state.getStrippedDom()))));
-
-					// adding textual data which is not used for crawling
-					// porpose but are useful for text based
-					// querie
-
-					// the url of the state
-					String url = state.getUrl();
-					if (url != null) {
-						toBeAddedNode.setProperty(URL_IN_NODES, state.getUrl());
-					} else {
-						toBeAddedNode.setProperty(URL_IN_NODES, "null");
-					}
-
-					// the DOM
-					String dom = state.getUrl();
-					if (dom != null) {
-						toBeAddedNode.setProperty(DOM_IN_NODES, state.getDom());
-					} else {
-						toBeAddedNode.setProperty(DOM_IN_NODES, "null");
-					}
-
-					// the name of the state
-					String name = state.getName();
-					if (name != null) {
-						toBeAddedNode.setProperty(STATE_NAME_IN_NODES,
-						        state.getName());
-					} else {
-						toBeAddedNode.setProperty(STATE_NAME_IN_NODES, "null");
-					}
-
-					// the id of the state
-					int id = state.getId();
-					toBeAddedNode.setProperty(STATE_ID_IN_NODES, id);
-
-					// flagging successful transaction
-					tx.success();
-				}
-			} finally {
-				tx.finish();
-			}
-
-			if (alreadyEsixts == null) {
-				// the state was not found in the database
-				// so it was stored in the database
-				return null;
+				// because the state already exists in the graph the
+				// transaction
+				// is marked for being rolled back
+				tx.failure();
 			} else {
 
-				// // Return the state retrieved from database in case the state
-				// is
-				// // already present in the graph
-				// return (StateVertex) deserializeStateVertex((byte[])
-				// alreadyEsixts
-				// .getProperty(STATE_VERTEX_KEY));
-				return state;
+				// the state was not already present in the graph so we go in with adding it to
+				// the graph
+
+				// correcting the name
+				stateById.put(state.getId(), state);
+				int count = stateCounter.incrementAndGet();
+				exitNotifier.incrementNumberOfStates();
+				LOG.debug("Number of states is now {}", count);
+				if (correctName) {
+					correctStateName(state);
+				}
+
+				// serializing the state
+				byte[] serializedSV = serializeStateVertex(state);
+
+				// adding the state property which is the main data we store for each node (i.e.
+				// each StateVertex) the serialized stateVertex and the Stripped DOM are used
+				// for crawling purposes too!
+
+				toBeAddedNode.setProperty(SERIALIZED_STATE_VERTEX_IN_NODES,
+				        serializedSV);
+
+				toBeAddedNode.setProperty(STRIPPED_DOM_IN_NODES,
+				        UTF8.decode((UTF8.encode(state.getStrippedDom()))));
+
+				// adding textual data which is not used for crawling purpose but are useful for
+				// text based queries
+
+				// the URL of the state
+
+				String url = state.getUrl();
+				if (url != null) {
+					toBeAddedNode.setProperty(URL_IN_NODES, state.getUrl());
+				} else {
+					toBeAddedNode.setProperty(URL_IN_NODES, "null");
+				}
+
+				// the DOM
+				String dom = state.getUrl();
+				if (dom != null) {
+					toBeAddedNode.setProperty(DOM_IN_NODES, state.getDom());
+				} else {
+					toBeAddedNode.setProperty(DOM_IN_NODES, "null");
+				}
+
+				// the name of the state
+				String name = state.getName();
+				if (name != null) {
+					toBeAddedNode.setProperty(STATE_NAME_IN_NODES,
+					        state.getName());
+				} else {
+					toBeAddedNode.setProperty(STATE_NAME_IN_NODES, "null");
+				}
+
+				// the id of the state
+				int id = state.getId();
+				toBeAddedNode.setProperty(STATE_ID_IN_NODES, id);
+
+				// flagging successful transaction
+				tx.success();
 			}
+		} finally {
+			tx.finish();
+		}
+
+		if (alreadyEsixts == null) {
+			// the state was not found in the database
+			// so it was stored in the database
+			return null;
+		} else {
+
+			// // Return the state retrieved from database in case the state
+			// is
+			// // already present in the graph
+			// return (StateVertex) deserializeStateVertex((byte[])
+			// alreadyEsixts
+			// .getProperty(STATE_VERTEX_KEY));
+			return state;
 		}
 
 	}
@@ -404,108 +394,100 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	 */
 
 	@Override
-	@GuardedBy("sfgDb")
 	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert,
 	        Eventable eventable) {
 		boolean exists = false;
 
-		// this is done automatically with jgraphT
+		// this is done automatically with jgraphT and. When retrieving an edge it is crucial to
+		// retrieve the start state and end state of that edge and set them via the setter methods
+		// which are implemented by reflection
 
 		eventable.setSourceStateVertex(sourceVert);
 		eventable.setTargetStateVertex(targetVert);
 
-		byte[] serializedEventable = serializeEventable(eventable, 1);
-
-		// eventable.setSourceStateVertex(sourceVert);
-		// eventable.setTargetStateVertex(targetVert);
+		byte[] serializedEventable = serializeEventable(eventable);
 
 		Relationship toBeAddedEdge = null;
 		Relationship alreadyExists = null;
 
-		String[] combinedEdgeKey = new String[3];
-		combinedEdgeKey[SOURCE_VERTEX_INDEX] = UTF8.decode(UTF8
+		String[] edgeTriadKey = new String[3];
+		edgeTriadKey[SOURCE_VERTEX_INDEX] = UTF8.decode(UTF8
 		        .encode(sourceVert.getStrippedDom()));
-		combinedEdgeKey[CLICKABLE_INDEX] = UTF8.decode(UTF8.encode(eventable
+		edgeTriadKey[CLICKABLE_INDEX] = UTF8.decode(UTF8.encode(eventable
 		        .toString()));
 
-		combinedEdgeKey[TARGET_VERTEX_INDEX] = UTF8.decode(UTF8
+		edgeTriadKey[TARGET_VERTEX_INDEX] = UTF8.decode(UTF8
 		        .encode(targetVert.getStrippedDom()));
-		// combinedEdgeKey[1] = UTF8.decode(serializedEventable);
 
-		synchronized (sfgDb) {
-			Transaction tx = sfgDb.beginTx();
-			try {
+		String edgeConcatenatedKey =
+		        edgeTriadKey[SOURCE_VERTEX_INDEX] + edgeTriadKey[CLICKABLE_INDEX]
+		                + edgeTriadKey[TARGET_VERTEX_INDEX];
 
-				Node sourceNode = getNodeFromDB(UTF8.decode(UTF8
-				        .encode(sourceVert.getStrippedDom()))); // nodeIndex.get(STRIPPED_DOM_KEY,
-				// sourceVert.getStrippedDom().getBytes()).getSingle();
-				Node targetNode = getNodeFromDB(UTF8.decode(UTF8
-				        .encode(targetVert.getStrippedDom())));// nodeIndex.get(STRIPPED_DOM_KEY,
-				// targetVert.getStrippedDom().getBytes()).getSingle();
-				toBeAddedEdge = sourceNode.createRelationshipTo(targetNode,
-				        RelTypes.TRANSITIONS_TO);
+		// synchronized (sfgDb) {
+		Transaction tx = sfgDb.beginTx();
+		try {
 
-				// adding the new edge to the index. it returns null if the edge
-				// is
-				// successfully added
-				// and returns the found edge if and identical edge already
-				// exists
-				// in the index.
-				// alreadyExists = edgesIndex.putIfAbsent(toBeAddedEdge,
-				// EDGE_COMBNINED_KEY, combinedEdgeKey);
-				alreadyExists = edgePutIfAbsent(toBeAddedEdge,
-				        SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING,
-				        combinedEdgeKey);
+			// nodeIndex.get(STRIPPED_DOM_KEY,
+			// sourceVert.getStrippedDom().getBytes()).getSingle();
+			// nodeIndex.get(STRIPPED_DOM_KEY,
+			// targetVert.getStrippedDom().getBytes()).getSingle();
 
-				if (alreadyExists != null) {
-					exists = true;
-					tx.failure();
-				} else {
-					exists = false;
+			Node sourceNode = getNodeFromDB(UTF8.decode(UTF8
+			        .encode(sourceVert.getStrippedDom())));
+			Node targetNode = getNodeFromDB(UTF8.decode(UTF8
+			        .encode(targetVert.getStrippedDom())));
+			toBeAddedEdge = sourceNode.createRelationshipTo(targetNode,
+			        RelTypes.TRANSITIONS_TO);
 
-					toBeAddedEdge.setProperty(SERIALIZED_CLICKABLE_IN_EDGES,
-					        serializedEventable);
+			// adding the new edge to the index. it returns null if the edge is successfully
+			// added and returns the found edge if and identical edge already exists in the
+			// index.
 
-					toBeAddedEdge.setProperty(CLICKABLE_IN_EDGES,
-					        UTF8.decode(UTF8.encode(eventable.toString())));
+			alreadyExists = edgePutIfAbsent(toBeAddedEdge, edgeTriadKey, edgeConcatenatedKey);
 
-					toBeAddedEdge.setProperty(SOURCE_STRIPPED_DOM_IN_EDGES,
-					        UTF8.decode((UTF8.encode(sourceVert
-					                .getStrippedDom()))));
-					toBeAddedEdge
-					        .setProperty(TARGET_STRIPPED_DOM_IN_EDGES, UTF8
-					                .decode(UTF8.encode(targetVert
-					                        .getStrippedDom())));
-				}
-				tx.success();
-			} finally {
-				tx.finish();
-
-			}
-
-			if (exists) {
-
-				return false;
+			if (alreadyExists != null) {
+				exists = true;
+				tx.failure();
 			} else {
-				return true;
+				exists = false;
 
+				toBeAddedEdge.setProperty(SERIALIZED_CLICKABLE_IN_EDGES,
+				        serializedEventable);
+
+				toBeAddedEdge.setProperty(CLICKABLE_IN_EDGES,
+				        UTF8.decode(UTF8.encode(eventable.toString())));
+
+				toBeAddedEdge.setProperty(SOURCE_STRIPPED_DOM_IN_EDGES,
+				        UTF8.decode((UTF8.encode(sourceVert
+				                .getStrippedDom()))));
+				toBeAddedEdge
+				        .setProperty(TARGET_STRIPPED_DOM_IN_EDGES, UTF8
+				                .decode(UTF8.encode(targetVert
+				                        .getStrippedDom())));
 			}
+			tx.success();
+		} finally {
+			tx.finish();
+
 		}
 
-	}
+		if (exists) {
 
-	// it sounds like the name is corrected based on the number of states read
-	// from the graph
-	// but it's safer to use the atomic integer though we might end up having
-	// sparse name space, i.e. we end up having gaps between the numbers
-	// associated to startes.
+			return false;
+		} else {
+			return true;
+
+		}
+		// }
+
+	}
 
 	/**
 	 * @return the string representation of the graph.
 	 */
 	@Override
 	public String toString() {
-		return buildJgraphT().toString();
+		return stateById.toString();
 	}
 
 	/**
@@ -528,7 +510,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 		        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
 			byte[] serializedEvantable = (byte[]) edge
 			        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-			Eventable eventable = deserializeEventable(serializedEvantable, 1);
+			Eventable eventable = deserializeEventable(serializedEvantable);
 			outgoing.add(eventable);
 		}
 
@@ -557,7 +539,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 		        RelTypes.TRANSITIONS_TO, Direction.INCOMING)) {
 			byte[] serializedEvantable = (byte[]) edge
 			        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-			Eventable eventable = deserializeEventable(serializedEvantable, 1);
+			Eventable eventable = deserializeEventable(serializedEvantable);
 			incoming.add(eventable);
 		}
 
@@ -605,7 +587,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 		// you can get source and target index and look for the eventable
 		// another way!
 
-		byte[] serializedEventable = serializeEventable(clickable, 1);
+		byte[] serializedEventable = serializeEventable(clickable);
 
 		Relationship edge = edgesIndex.get(SERIALIZED_CLICKABLE_IN_EDGES,
 		        serializedEventable).getSingle();
@@ -629,43 +611,43 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	 * @return true if it is possible (edge exists in graph) to go from source to target.
 	 */
 	@Override
-	@GuardedBy("sfgDb")
+	// @GuardedBy("sfgDb")
 	public boolean canGoTo(StateVertex source, StateVertex target) {
 
-		synchronized (sfgDb) {
-			Node sourceNode = getNodeFromDB(UTF8.decode(UTF8.encode(source
-			        .getStrippedDom())));
-			for (Relationship edge : sourceNode.getRelationships(
-			        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
+		// synchronized (sfgDb) {
+		Node sourceNode = getNodeFromDB(UTF8.decode(UTF8.encode(source
+		        .getStrippedDom())));
+		for (Relationship edge : sourceNode.getRelationships(
+		        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
 
-				Node targetNode = edge.getEndNode();
-				byte[] serializedNode = (byte[]) targetNode
-				        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
+			Node targetNode = edge.getEndNode();
+			byte[] serializedNode = (byte[]) targetNode
+			        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
 
-				StateVertex ts = deserializeStateVertex(serializedNode);
-				if (ts.equals(target)) {
-					return true;
-				}
+			StateVertex ts = deserializeStateVertex(serializedNode);
+			if (ts.equals(target)) {
+				return true;
 			}
-
-			// searching for back links
-			Node tagetNode = getNodeFromDB(UTF8.decode(UTF8.encode(target
-			        .getStrippedDom())));
-			for (Relationship edge : tagetNode.getRelationships(
-			        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
-
-				Node srcNode = edge.getEndNode();
-				byte[] serializedNode = (byte[]) srcNode
-				        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
-
-				StateVertex ts = deserializeStateVertex(serializedNode);
-				if (ts.equals(source)) {
-					return true;
-				}
-			}
-
-			return false;
 		}
+
+		// searching for back links
+		Node tagetNode = getNodeFromDB(UTF8.decode(UTF8.encode(target
+		        .getStrippedDom())));
+		for (Relationship edge : tagetNode.getRelationships(
+		        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
+
+			Node srcNode = edge.getEndNode();
+			byte[] serializedNode = (byte[]) srcNode
+			        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
+
+			StateVertex ts = deserializeStateVertex(serializedNode);
+			if (ts.equals(source)) {
+				return true;
+			}
+		}
+
+		return false;
+		// }
 	}
 
 	/**
@@ -677,17 +659,6 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	 *            the end state.
 	 * @return a list of shortest path of clickables from the state to the end
 	 */
-
-	public ImmutableList<Eventable> getShortestPath3(StateVertex start,
-	        StateVertex end) {
-
-		DirectedGraph<StateVertex, Eventable> sfg = buildJgraphT();
-		StateVertex startFromJgraphT = getStateInJgrpahT(start, sfg);
-		StateVertex endFromJgraphT = getStateInJgrpahT(end, sfg);
-
-		return ImmutableList.copyOf(DijkstraShortestPath.findPathBetween(sfg,
-		        startFromJgraphT, endFromJgraphT));
-	}
 
 	@Override
 	public ImmutableList<Eventable> getShortestPath(StateVertex start,
@@ -718,7 +689,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 				Relationship edge = (Relationship) container.next();
 				byte[] serEventable = (byte[]) edge
 				        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-				Eventable eventable = deserializeEventable(serEventable, 0);
+				Eventable eventable = deserializeEventable(serEventable);
 				// adding the source state of the edge!
 				eventable.setSourceStateVertex(start);
 
@@ -743,25 +714,6 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 
 		return ImmutableList.copyOf(shortestPath);
 	}
-
-	// public ImmutableList<Eventable> getShortestPath2(StateVertex start,
-	// StateVertex end) {
-	//
-	// DirectedGraph<StateVertex, Eventable> sfg = buildJgraphTLight();
-	// int stateId = start.getId();
-	// StateVertex startFromJgraphT = new StateVertex(stateId, stateId + "",
-	// stateId + "", stateId + "", stateId + "");
-	// startFromJgraphT = getStateInJgrpahT(startFromJgraphT, sfg);
-	//
-	// stateId = end.getId();
-	// StateVertex endFromJgraphT = new StateVertex(stateId, stateId + "",
-	// stateId + "", stateId + "", stateId + "");
-	//
-	// endFromJgraphT = getStateInJgrpahT(end, sfg);
-	//
-	// return ImmutableList.copyOf(DijkstraShortestPath.findPathBetween(sfg,
-	// startFromJgraphT, endFromJgraphT));
-	// }
 
 	/**
 	 * Return all the states in the StateFlowGraph.
@@ -819,31 +771,10 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 				StateVertex state = deserializeStateVertex(serializedNode);
 				allStates.add(state);
 			} else {
-				allStates.add(new StateVertex(Integer.MAX_VALUE, "mock",
-				        "mock", "mock", "mock"));
+				allStates.add(new StateVertex(Integer.MAX_VALUE, "NotValid",
+				        "NotValid", "NotValid", "NotValid"));
 
 			}
-
-		}
-
-		return ImmutableSet.copyOf(allStates);
-	}
-
-	public ImmutableSet<StateVertex> getAllStatesLight() {
-
-		final Set<StateVertex> allStates = new HashSet<StateVertex>();
-
-		// for (Node node : nodeIndex.query(STRIPPED_DOM_KEY, "*")) {
-		for (Relationship relationship : structuralIndexer.getRelationships(
-		        Direction.OUTGOING, RelTypes.INDEXES)) {
-
-			Node node = relationship.getEndNode();
-
-			int stateId = (int) node.getProperty(STATE_ID_IN_NODES,
-			        Integer.MAX_VALUE);
-
-			allStates.add(new StateVertex(stateId, stateId + "", stateId + "",
-			        stateId + "", stateId + ""));
 
 		}
 
@@ -874,8 +805,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 
 					byte[] serializededge = (byte[]) edge
 					        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-					Eventable eventable = deserializeEventable(serializededge,
-					        1);
+					Eventable eventable = deserializeEventable(serializededge);
 
 					Node startNode = edge.getStartNode();
 					byte[] serializedStartNode = (byte[]) startNode
@@ -910,15 +840,27 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	 * @return the copy of the StateVertix in the StateFlowGraph where v.equals(u)
 	 */
 	private StateVertex getStateInGraph(StateVertex state) {
-		Set<StateVertex> states = getAllStates();
 
-		for (StateVertex st : states) {
-			if (state.equals(st)) {
-				return st;
-			}
+		String strippedDom = state.getStrippedDom();
+		Node node = getNodeFromDB(strippedDom);
+
+		byte[] serializedState =
+		        (byte[]) node.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
+		if (serializedState == null) {
+			return null;
 		}
 
-		return null;
+		StateVertex deserializedStateVertex = deserializeStateVertex(serializedState);
+
+		return deserializedStateVertex;
+
+		// for (StateVertex st : states) {
+		// if (state.equals(st)) {
+		// return st;
+		// }
+		// }
+		//
+		// return null;
 	}
 
 	/**
@@ -950,6 +892,16 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 		return deepStates;
 	}
 
+	public List<StateVertex> getDeepStates2(StateVertex state,
+	        DirectedGraph<StateVertex, Eventable> sfg) {
+		final Set<String> visitedStates = new HashSet<String>();
+		final List<StateVertex> deepStates = new ArrayList<StateVertex>();
+
+		traverse2(visitedStates, deepStates, state, sfg);
+
+		return deepStates;
+	}
+
 	private void traverse(Set<String> visitedStates,
 	        List<StateVertex> deepStates, StateVertex state) {
 		visitedStates.add(state.getName());
@@ -965,6 +917,32 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 				for (StateVertex st : outgoingSet) {
 					if (!visitedStates.contains(st.getName())) {
 						traverse(visitedStates, deepStates, st);
+					}
+				}
+			}
+		}
+	}
+
+	private void traverse2(Set<String> visitedStates,
+	        List<StateVertex> deepStates, StateVertex state,
+	        DirectedGraph<StateVertex, Eventable> sfg) {
+		visitedStates.add(state.getName());
+
+		Set<StateVertex> outgoingSet = new HashSet<>();
+
+		for (Eventable c : sfg.outgoingEdgesOf(state)) {
+			outgoingSet.add(sfg.getEdgeTarget(c));
+		}
+
+		if ((outgoingSet == null) || outgoingSet.isEmpty()) {
+			deepStates.add(state);
+		} else {
+			if (cyclic(visitedStates, outgoingSet)) {
+				deepStates.add(state);
+			} else {
+				for (StateVertex st : outgoingSet) {
+					if (!visitedStates.contains(st.getName())) {
+						traverse2(visitedStates, deepStates, st, sfg);
 					}
 				}
 			}
@@ -992,6 +970,14 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	 * @return a list of GraphPath lists.
 	 */
 
+	/**
+	 * This method returns all possible paths from the index state using the Kshortest paths.
+	 * 
+	 * @param index
+	 *            the initial state.
+	 * @return a list of GraphPath lists.
+	 */
+
 	@Override
 	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(
 	        StateVertex index) {
@@ -1009,7 +995,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 		final KShortestPaths<StateVertex, Eventable> kPaths = new KShortestPaths<>(
 		        sfg, indexFromGraph, Integer.MAX_VALUE);
 
-		for (StateVertex state : getDeepStates(index)) {
+		for (StateVertex state : getDeepStates2(indexFromGraph, sfg)) {
 
 			StateVertex stateFromGraph = getStateInJgrpahT(state, sfg);
 			if (stateFromGraph == null) {
@@ -1031,12 +1017,6 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 
 		return results;
 	}
-
-	/**
-	 * Return the name of the (new)State. By using the AtomicInteger the stateCounter is thread-safe
-	 * 
-	 * @return State name the name of the state
-	 */
 
 	/**
 	 * Return the name of the (new)State. By using the AtomicInteger the stateCounter is thread-safe
@@ -1075,82 +1055,84 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	}
 
 	public static void setSfgDb(GraphDatabaseService sfgDb) {
-		DBSfgInMemoryPathFinder.sfgDb = sfgDb;
+		DBSfgTransactionLock.sfgDb = sfgDb;
 	}
 
 	public static GraphDatabaseService getSfgDb() {
 		return sfgDb;
 	}
 
-	private Relationship edgePutIfAbsent(Relationship toBeAddedEdge,
-	        String key, String[] combinedEdgeKey) {
+	private Relationship edgePutIfAbsent(Relationship toBeAddedEdge, String[] edgeTriadKey,
+	        String edgeConcatenatedKey) {
 
-		for (Relationship edge : edgesIndex.query(key, "*")) {
+		Relationship alreadyExists = edgesIndex.putIfAbsent(toBeAddedEdge,
+		        SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING, edgeConcatenatedKey);
+		return alreadyExists;
 
-			String sourceDom = (String) edge
-			        .getProperty(SOURCE_STRIPPED_DOM_IN_EDGES);
-			String targetDom = (String) edge
-			        .getProperty(TARGET_STRIPPED_DOM_IN_EDGES);
-			String clickableToString = (String) edge
-			        .getProperty(CLICKABLE_IN_EDGES);
+		// cleanup
 
-			if (sourceDom.equals(combinedEdgeKey[SOURCE_VERTEX_INDEX])
-			        && targetDom.equals(combinedEdgeKey[TARGET_VERTEX_INDEX])
-			        && clickableToString
-			                .equals(combinedEdgeKey[CLICKABLE_INDEX])) {
-				return edge;
+		// for (Relationship edge : edgesIndex.query(
+		// SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING, "*")) {
+		//
+		// String sourceDom = (String) edge
+		// .getProperty(SOURCE_STRIPPED_DOM_IN_EDGES);
+		// String targetDom = (String) edge
+		// .getProperty(TARGET_STRIPPED_DOM_IN_EDGES);
+		// String clickableToString = (String) edge
+		// .getProperty(CLICKABLE_IN_EDGES);
+		//
+		// if (sourceDom.equals(edgeTriadKey[SOURCE_VERTEX_INDEX])
+		// && targetDom.equals(edgeTriadKey[TARGET_VERTEX_INDEX])
+		// && clickableToString
+		// .equals(edgeTriadKey[CLICKABLE_INDEX])) {
+		// return edge;
+		//
+		// }
+		// }
+		// edgesIndex.add(toBeAddedEdge, SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING,
+		// edgeTriadKey);
+		//
+		// return null;
 
-			}
-		}
-
-		edgesIndex.add(toBeAddedEdge, key, combinedEdgeKey);
-
-		return null;
 	}
 
 	private Node getNodeFromDB(String strippedDom) {
-		for (Node node : nodeIndex.query(STRIPPED_DOM_IN_NODES, "*")) {
 
-			byte[] serializedNode = (byte[]) node
-			        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
+		Node node = nodeIndex.get(STRIPPED_DOM_IN_NODES, strippedDom).getSingle();
+		return node;
 
-			StateVertex state = deserializeStateVertex(serializedNode);
+		// cleanup
 
-			String newDom = strippedDom;
-			String prev = state.getStrippedDom();
-
-			if (newDom.equals(prev)) {
-				return node;
-
-			}
-
-		}
-
-		return null;
+		// for (Node node : nodeIndex.query(STRIPPED_DOM_IN_NODES, "*")) {
+		//
+		// byte[] serializedNode = (byte[]) node
+		// .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
+		//
+		// StateVertex state = deserializeStateVertex(serializedNode);
+		//
+		// String newDom = strippedDom;
+		// String prev = state.getStrippedDom();
+		//
+		// if (newDom.equals(prev)) {
+		// return node;
+		//
+		// }
+		//
+		// }
+		//
+		// return null;
 
 	}
 
 	private Node putIfAbsentNode(Node toBeAddedNode, String strippedDom) {
 
-		for (Node node : nodeIndex.query(STRIPPED_DOM_IN_NODES, "*")) {
-
-			byte[] serializedNode = (byte[]) node
-			        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
-
-			// retrieve the stripped dome directly rahter than from the
-			// serializedState
-			StateVertex state = deserializeStateVertex(serializedNode);
-
-			String newDom = strippedDom;
-			String prev = state.getStrippedDom();
-
-			if (newDom.equals(prev)) {
-				return node;
-
-			}
-
+		Node alreadyPresent =
+		        nodeIndex.putIfAbsent(toBeAddedNode, STRIPPED_DOM_IN_NODES, strippedDom);
+		if (alreadyPresent != null) {
+			return alreadyPresent;
 		}
-		nodeIndex.add(toBeAddedNode, STRIPPED_DOM_IN_NODES, strippedDom);
+
+		// cleanup!
 		structuralIndexer.createRelationshipTo(toBeAddedNode, RelTypes.INDEXES);
 
 		return null;
@@ -1174,7 +1156,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	}
 
 	public static void setIndexManager(IndexManager index) {
-		DBSfgInMemoryPathFinder.indexManager = index;
+		DBSfgTransactionLock.indexManager = index;
 	}
 
 	public static IndexManager getIndexManager() {
@@ -1182,11 +1164,11 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 	}
 
 	public static void setNodeIndex(Index<Node> nodeIndex) {
-		DBSfgInMemoryPathFinder.nodeIndex = nodeIndex;
+		DBSfgTransactionLock.nodeIndex = nodeIndex;
 	}
 
 	public static void setEdgesIndex(RelationshipIndex edgesIndex) {
-		DBSfgInMemoryPathFinder.edgesIndex = edgesIndex;
+		DBSfgTransactionLock.edgesIndex = edgesIndex;
 	}
 
 	/**
@@ -1227,7 +1209,6 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 			baos.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1255,31 +1236,14 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 			bais.close();
 
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return deserializedSV;
-
-	}
-
-	public static byte[] serializeEventable(Eventable eventable, int i) {
-		byte[] result = SerializationUtils.serialize(eventable);
-		return result;
-	}
-
-	public static Eventable deserializeEventable(byte[] serializedEventable,
-	        int i) {
-		Eventable results = (Eventable) SerializationUtils
-		        .deserialize(serializedEventable);
-
-		return results;
 
 	}
 
@@ -1314,7 +1278,6 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 			baos.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1341,13 +1304,10 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 			bais.close();
 
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1359,11 +1319,19 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 		DirectedGraph<StateVertex, Eventable> sfg;
 		sfg = new DirectedMultigraph<>(Eventable.class);
 
+		StateVertex indexState = getInitialState();
+		if (insertStateInJgraphT(indexState, sfg) != null) {
+			LOG.warn("duplicate state found");
+			System.exit(1);
+		}
+
 		// inserting states
 		for (StateVertex state : getAllStates()) {
+			if (state.getId() == StateVertex.INDEX_ID) {
+				continue;
+			}
 			if (insertStateInJgraphT(state, sfg) != null) {
 				LOG.warn("duplicate state found");
-				System.exit(1);
 			}
 		}
 
@@ -1378,8 +1346,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 
 					byte[] serializededge = (byte[]) edge
 					        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-					Eventable eventable = deserializeEventable(serializededge,
-					        1);
+					Eventable eventable = deserializeEventable(serializededge);
 
 					Node sourceNode = edge.getStartNode();
 					byte[] serializedSourceStateVertex = (byte[]) sourceNode
@@ -1403,7 +1370,7 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 							eventable.setSourceStateVertex(sourceStateVertex);
 							eventable.setTargetStateVertex(targetStateVertex);
 
-							// LOG.info("edge added succesfully to JgraphT");
+							LOG.debug("edge added successfully to JgraphT");
 						} else {
 							LOG.warn("edge insertion failed");
 							System.exit(1);
@@ -1420,87 +1387,16 @@ public class DBSfgInMemoryPathFinder implements Serializable, StateFlowGraph {
 		return sfg;
 	}
 
-	//
-	// public DirectedGraph<StateVertex, Eventable> buildJgraphTLight() {
-	// DirectedGraph<StateVertex, Eventable> sfg;
-	// sfg = new DirectedMultigraph<>(Eventable.class);
-	//
-	// // inserting states
-	// for (StateVertex state : getAllStatesLight()) {
-	// if (insertStateInJgraphT(state, sfg) != null) {
-	// LOG.warn("duplicate state found");
-	// System.exit(1);
-	// }
-	// }
-	//
-	// // inserting edges
-	// Transaction tx = sfgDb.beginTx();
-	// try {
-	// for (Relationship relationship : structuralIndexer
-	// .getRelationships(Direction.OUTGOING, RelTypes.INDEXES)) {
-	// for (Relationship edge : relationship.getEndNode()
-	// .getRelationships(Direction.OUTGOING,
-	// RelTypes.TRANSITIONS_TO)) {
-	//
-	// byte[] serializededge = (byte[]) edge
-	// .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-	// Eventable eventable = deserializeEventable(serializededge,
-	// 1);
-	//
-	// Node sourceNode = edge.getStartNode();
-	// int sourceStateId = (int) sourceNode.getProperty(
-	// STATE_ID_IN_NODES, Integer.MAX_VALUE);
-	// StateVertex sourceStateVertex = new StateVertex(
-	// sourceStateId, sourceStateId + "", sourceStateId
-	// + "", sourceStateId + "", sourceStateId
-	// + "");
-	//
-	// Node targetNode = edge.getEndNode();
-	//
-	// int targetStateId = (int) targetNode.getProperty(
-	// STATE_ID_IN_NODES, Integer.MAX_VALUE);
-	// StateVertex targetStateVertex = new StateVertex(
-	// targetStateId, targetStateId + "", targetStateId
-	// + "", targetStateId + "", targetStateId
-	// + "");
-	//
-	// if ((eventable == null) || (sourceStateVertex == null)
-	// || (targetStateVertex == null)) {
-	// LOG.warn("eventable was not retrieved correctly!");
-	// System.exit(1);
-	// } else {
-	// if (sfg.addEdge(sourceStateVertex, targetStateVertex,
-	// eventable)) {
-	// eventable.setSourceStateVertex(sourceStateVertex);
-	// eventable.setTargetStateVertex(targetStateVertex);
-	//
-	// // LOG.info("edge added succesfully to JgraphT");
-	// } else {
-	// LOG.warn("edge insertion failed");
-	// System.exit(1);
-	// }
-	// }
-	//
-	// }
-	// }
-	// tx.success();
-	// } finally {
-	// tx.finish();
-	// }
-	//
-	// return sfg;
-	// }
-
 	private StateVertex insertStateInJgraphT(StateVertex stateVertix,
 	        DirectedGraph<StateVertex, Eventable> sfg) {
 		boolean added = sfg.addVertex(stateVertix);
 		if (added) {
-			// LOG.debug("state added successfully to JgraphT");
+			LOG.debug("state added successfully to JgraphT");
 			return null;
 		} else {
 			// Graph already contained the vertix
-			// LOG.debug("Graph already contained vertex {}",
-			// stateVertix.getName());
+			LOG.debug("Graph already contained vertex {}",
+			        stateVertix.getName());
 			return this.getStateInGraph(stateVertix);
 		}
 
