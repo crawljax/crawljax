@@ -161,16 +161,14 @@ public class CandidateElementExtractor {
 
 		for (int i = 0; i < frameNodes.getLength(); i++) {
 
-			String frameIdentification = "";
-
-			if (relatedFrame != null && !relatedFrame.equals("")) {
-				frameIdentification += relatedFrame + ".";
-			}
-
 			Element frameElement = (Element) frameNodes.item(i);
 
 			String nameId = DomUtils.getFrameIdentification(frameElement);
 
+			String frameIdentification = "";
+			if (!Strings.isNullOrEmpty(relatedFrame)) {
+				frameIdentification += relatedFrame + ".";
+			}
 			// TODO Stefan; Here the IgnoreFrameChecker is used, also in
 			// WebDriverBackedEmbeddedBrowser. We must get this in 1 place.
 			if (nameId == null || isFrameIgnored(frameIdentification + nameId)) {

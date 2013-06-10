@@ -5,13 +5,10 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.openqa.selenium.Point;
-
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.State;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
@@ -24,8 +21,6 @@ class StateBuilder {
 	private final AtomicInteger fanIn = new AtomicInteger();
 	private final AtomicInteger fanOut = new AtomicInteger();
 	private final ImmutableList.Builder<String> failedEvents = new ImmutableList.Builder<>();
-
-	private Point screenShotOffset = new Point(0, 0);
 
 	public StateBuilder(StateVertex state) {
 		this.state = state;
@@ -56,16 +51,7 @@ class StateBuilder {
 
 	public State build() {
 		return new State(state, fanIn.get(), fanOut.get(), getCandidates(),
-		        screenShotOffset, failedEvents.build());
-	}
-
-	/**
-	 * @param screenShotOffset
-	 *            the offsite from the top left if any. Default is <code>(0,0)</code>
-	 */
-	public void setScreenShotOffset(Point screenShotOffset) {
-		Preconditions.checkNotNull(screenShotOffset);
-		this.screenShotOffset = screenShotOffset;
+		        failedEvents.build());
 	}
 
 	public void eventFailed(Eventable eventable) {
