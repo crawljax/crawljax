@@ -1,12 +1,14 @@
 package com.crawljax.core.state;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -252,32 +254,32 @@ public class DBSfgTransactionsLockTest {
 		graph.addEdge(state3, state5, new Eventable(new Identification(
 		        How.xpath, "/3/5"), EventType.click));
 
-		// List<List<GraphPath<StateVertex, Eventable>>> results =
-		// graph.getAllPossiblePaths(index);
-		//
-		// assertThat(results, hasSize(2));
-		//
-		// assertThat(results.get(0), hasSize(5));
-		//
-		// assertThat(results.get(0).get(0).getEdgeList(), hasSize(1));
-		//
-		// assertThat(results.get(1), hasSize(2));
-		// // int max = 0;
-		// Set<Eventable> uEvents = new HashSet<Eventable>();
-		//
-		// for (List<GraphPath<StateVertex, Eventable>> paths : results) {
-		// for (GraphPath<StateVertex, Eventable> p : paths) {
-		// // System.out.print(" Edge: " + x + ":" + y);
-		// // int z = 0;
-		// for (Eventable edge : p.getEdgeList()) {
-		// // System.out.print(", " + edge.toString());
-		// if (!uEvents.contains(edge)) {
-		// uEvents.add(edge);
-		// }
-		//
-		// }
-		// }
-		// }
+		List<List<GraphPath<StateVertex, Eventable>>> results =
+		        graph.getAllPossiblePaths(index);
+
+		assertThat(results, hasSize(2));
+
+		assertThat(results.get(0), hasSize(5));
+
+		assertThat(results.get(0).get(0).getEdgeList(), hasSize(1));
+
+		assertThat(results.get(1), hasSize(2));
+		// int max = 0;
+		Set<Eventable> uEvents = new HashSet<Eventable>();
+
+		for (List<GraphPath<StateVertex, Eventable>> paths : results) {
+			for (GraphPath<StateVertex, Eventable> p : paths) {
+				// System.out.print(" Edge: " + x + ":" + y);
+				// int z = 0;
+				for (Eventable edge : p.getEdgeList()) {
+					// System.out.print(", " + edge.toString());
+					if (!uEvents.contains(edge)) {
+						uEvents.add(edge);
+					}
+
+				}
+			}
+		}
 	}
 
 	@Test
