@@ -30,14 +30,12 @@ public class NotXPathCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), xpathCondition);
+		return Objects.hashCode(getClass(), xpathCondition);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof NotXPathCondition) {
-			if (!super.equals(object))
-				return false;
 			NotXPathCondition that = (NotXPathCondition) object;
 			return Objects.equal(this.xpathCondition, that.xpathCondition);
 		}
@@ -47,7 +45,6 @@ public class NotXPathCondition extends AbstractCondition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
 		        .add("xpathCondition", xpathCondition)
 		        .toString();
 	}
