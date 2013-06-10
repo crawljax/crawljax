@@ -33,6 +33,10 @@ public class CountCondition implements Condition {
 		this.condition = condition;
 	}
 
+	/**
+	 * Note: Check has a side effect (it increments a counter).
+	 * Invoking it multiple times may result in a different answer.
+	 */
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
 		if (condition.check(browser)) {
@@ -49,27 +53,30 @@ public class CountCondition implements Condition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
 		        .add("condition", condition)
-		        .add("count", count)
 		        .add("maxCount", maxCount)
 		        .toString();
 	}
 
+	/**
+	 * Since "count" is a consequence of invoking "check",
+	 * it is not included in the equality / hashCode computation.
+	 */
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), condition, count, maxCount);
+		return Objects.hashCode(getClass(), condition, maxCount.get());
 	}
 
+	/**
+     * Since "count" is a consequence of invoking "check",
+     * it is not included in the equality / hashCode computation.
+	 */
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof CountCondition) {
-			if (!super.equals(object))
-				return false;
 			CountCondition that = (CountCondition) object;
 			return Objects.equal(this.condition, that.condition)
-			        && Objects.equal(this.count, that.count)
-			        && Objects.equal(this.maxCount, that.maxCount);
+			        && Objects.equal(this.maxCount.get(), that.maxCount.get());
 		}
 		return false;
 	}

@@ -120,7 +120,14 @@ public class ConditionTest {
                 Logic.or(new JavaScriptCondition("js0")),
                 Logic.or(new JavaScriptCondition("js1")),
                 Logic.and(new JavaScriptCondition("js0"))
+            },
+            {
+                new CountCondition(2, new JavaScriptCondition("js0")),
+                new CountCondition(2, new JavaScriptCondition("js0")),
+                new CountCondition(2, new JavaScriptCondition("js1")),
+                new CountCondition(1, new JavaScriptCondition("js0"))
             }
+
          });
     }
        
