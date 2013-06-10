@@ -55,7 +55,7 @@ public class JavaScriptCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(this.getClass().getName(), expression);
+		return Objects.hashCode(getClass(), expression);
 	}
 
 	@Override

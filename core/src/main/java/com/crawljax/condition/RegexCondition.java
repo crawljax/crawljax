@@ -41,7 +41,7 @@ public class RegexCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(this.getClass().getName(), expression, pattern.toString());
+		return Objects.hashCode(getClass(), expression, pattern.toString());
 	}
 
 	@Override

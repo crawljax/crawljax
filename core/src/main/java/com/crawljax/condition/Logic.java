@@ -77,7 +77,7 @@ public final class Logic {
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(this.getClass().getName(), condition);
+            return Objects.hashCode(getClass(), condition);
         }
 
         @Override
@@ -117,7 +117,7 @@ public final class Logic {
         @Override
         public int hashCode() {
             int args = Objects.hashCode((Object[]) conditions); 
-            return Objects.hashCode(this.getClass().getName(), args);
+            return Objects.hashCode(getClass(), args);
        }
 
         @Override
@@ -157,7 +157,7 @@ public final class Logic {
         @Override
         public int hashCode() {
             int args = Objects.hashCode((Object[]) conditions); 
-            return Objects.hashCode(this.getClass().getName(), args);
+            return Objects.hashCode(getClass(), args);
        }
 
         @Override

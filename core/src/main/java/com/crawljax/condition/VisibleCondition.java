@@ -36,7 +36,7 @@ public class VisibleCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(this.getClass().getName(), identification);
+		return Objects.hashCode(getClass(), identification);
 	}
 
 	@Override

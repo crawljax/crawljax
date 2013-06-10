@@ -31,7 +31,7 @@ public class NotUrlCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(this.getClass().getName(), urlCondition);
+		return Objects.hashCode(getClass(), urlCondition);
 	}
 
 	@Override

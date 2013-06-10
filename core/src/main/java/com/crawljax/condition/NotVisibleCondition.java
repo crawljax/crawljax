@@ -31,7 +31,7 @@ public class NotVisibleCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(this.getClass().getName(), visibleCondition);
+		return Objects.hashCode(getClass(), visibleCondition);
 	}
 
 	@Override
