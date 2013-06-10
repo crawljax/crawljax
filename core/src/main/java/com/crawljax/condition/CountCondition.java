@@ -20,7 +20,7 @@ public class CountCondition implements Condition {
 
 	private final Condition condition;
 	private final AtomicInteger count = new AtomicInteger(0);
-	private final AtomicInteger maxCount = new AtomicInteger(0);
+	private final int maxCount;
 
 	/**
 	 * @param maxCount
@@ -29,7 +29,7 @@ public class CountCondition implements Condition {
 	 *            the condition.
 	 */
 	public CountCondition(int maxCount, Condition condition) {
-		this.maxCount.set(maxCount);
+		this.maxCount = maxCount;
 		this.condition = condition;
 	}
 
@@ -42,7 +42,7 @@ public class CountCondition implements Condition {
 		if (condition.check(browser)) {
 			count.getAndIncrement();
 		}
-		return count.get() <= maxCount.get();
+		return count.get() <= maxCount;
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class CountCondition implements Condition {
 	 */
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(getClass(), condition, maxCount.get());
+		return Objects.hashCode(getClass(), condition, maxCount);
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class CountCondition implements Condition {
 		if (object instanceof CountCondition) {
 			CountCondition that = (CountCondition) object;
 			return Objects.equal(this.condition, that.condition)
-			        && Objects.equal(this.maxCount.get(), that.maxCount.get());
+			        && Objects.equal(this.maxCount, that.maxCount);
 		}
 		return false;
 	}
