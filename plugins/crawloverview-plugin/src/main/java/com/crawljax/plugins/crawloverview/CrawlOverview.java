@@ -150,8 +150,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 			// element.getXpath()
 			return browser.getWebElement(element.getIdentification());
 		} catch (WebDriverException e) {
-			LOG.info("Could not locate element for positioning {}",
-			        element.getElement());
+			LOG.info("Could not locate element for positioning {}", element);
 			return null;
 		}
 	}
