@@ -2,15 +2,15 @@ package com.crawljax.plugins.crawloverview.model;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.openqa.selenium.Point;
-
 import com.crawljax.core.state.StateVertex;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 @Immutable
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class State {
 
 	private final String name;
@@ -18,13 +18,11 @@ public class State {
 	private final ImmutableList<CandidateElementPosition> candidateElements;
 	private final int fanIn;
 	private final int fanOut;
-	private final int screenshotOffsetTop;
-	private final int screenshotOffsetLeft;
 	private final int id;
 	private final ImmutableList<String> failedEvents;
 
 	public State(StateVertex state, int fanIn, int fanOut,
-	        ImmutableList<CandidateElementPosition> candidates, Point offset,
+	        ImmutableList<CandidateElementPosition> candidates,
 	        ImmutableList<String> failedEvents) {
 		this.fanIn = fanIn;
 		this.fanOut = fanOut;
@@ -32,8 +30,6 @@ public class State {
 		this.failedEvents = failedEvents;
 		this.name = state.getName();
 		this.url = state.getUrl();
-		this.screenshotOffsetLeft = offset.x;
-		this.screenshotOffsetTop = offset.y;
 		this.id = state.getId();
 	}
 
@@ -43,8 +39,6 @@ public class State {
 	        @JsonProperty("url") String url,
 	        @JsonProperty("candidateElements") ImmutableList<CandidateElementPosition> candidateElements,
 	        @JsonProperty("fanIn") int fanIn, @JsonProperty("fanOut") int fanOut,
-	        @JsonProperty("screenshotOffsetTop") int screenshotOffsetTop,
-	        @JsonProperty("screenshotOffsetLeft") int screenshotOffsetLeft,
 	        @JsonProperty("id") int id,
 	        @JsonProperty("failedEvents") ImmutableList<String> failedEvents) {
 		super();
@@ -53,8 +47,6 @@ public class State {
 		this.candidateElements = candidateElements;
 		this.fanIn = fanIn;
 		this.fanOut = fanOut;
-		this.screenshotOffsetTop = screenshotOffsetTop;
-		this.screenshotOffsetLeft = screenshotOffsetLeft;
 		this.id = id;
 		this.failedEvents = failedEvents;
 	}
@@ -79,14 +71,6 @@ public class State {
 		return fanOut;
 	}
 
-	public int getScreenshotOffsetTop() {
-		return screenshotOffsetTop;
-	}
-
-	public int getScreenshotOffsetLeft() {
-		return screenshotOffsetLeft;
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -98,7 +82,7 @@ public class State {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(name, url, candidateElements, fanIn, fanOut,
-		        screenshotOffsetTop, screenshotOffsetLeft, id, failedEvents);
+		        id, failedEvents);
 	}
 
 	@Override
@@ -112,10 +96,6 @@ public class State {
 			                that.candidateElements)
 			        && Objects.equal(this.fanIn, that.fanIn)
 			        && Objects.equal(this.fanOut, that.fanOut)
-			        && Objects.equal(this.screenshotOffsetTop,
-			                that.screenshotOffsetTop)
-			        && Objects.equal(this.screenshotOffsetLeft,
-			                that.screenshotOffsetLeft)
 			        && Objects.equal(this.failedEvents,
 			                that.failedEvents);
 		}
@@ -127,8 +107,6 @@ public class State {
 		return Objects.toStringHelper(this).add("name", name).add("id", id)
 		        .add("url", url).add("candidateElements", candidateElements)
 		        .add("fanIn", fanIn).add("fanOut", fanOut)
-		        .add("screenshotOffsetTop", screenshotOffsetTop)
-		        .add("screenshotOffsetLeft", screenshotOffsetLeft)
 		        .add("failedEvents", failedEvents).toString();
 	}
 
