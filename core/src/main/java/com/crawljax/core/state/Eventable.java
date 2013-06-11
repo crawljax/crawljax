@@ -4,12 +4,9 @@
 package com.crawljax.core.state;
 
 import java.io.Serializable;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jgrapht.graph.DefaultEdge;
 import org.w3c.dom.Node;
 
@@ -17,6 +14,8 @@ import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.XPathHelper;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
 
 /**
  * Eventable class: an element having an event attached to it (onclick, onmouseover, ...) so that it
@@ -107,57 +106,6 @@ public class Eventable extends DefaultEdge implements Serializable {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * 
-	 * @return the String representation of this Eventable
-	 */
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		if (this.element != null) {
-			sb.append(this.getElement());
-		}
-		sb.append(' ').append(this.eventType).append(' ').append(this.identification);
-		return sb.toString();
-	}
-
-	/**
-	 * Returns a hashcode. Uses reflection to determine the fields to test.
-	 * 
-	 * @return the hashCode
-	 */
-	@Override
-	public int hashCode() {
-		String[] exclude = new String[1];
-		exclude[0] = "id";
-
-		return HashCodeBuilder.reflectionHashCode(this, exclude);
-	}
-
-	/**
-	 * Return true if equal. Uses reflection.
-	 * 
-	 * @param obj
-	 *            the object to compare to of type Eventable
-	 * @return true if both Objects are equal
-	 */
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Eventable)) {
-			return false;
-		}
-
-		if (this == obj) {
-			return true;
-		}
-
-		Eventable rhs = (Eventable) obj;
-
-		return new EqualsBuilder().append(toString(), rhs.toString()).isEquals();
-	}
-
-	/**
 	 * @return the eventType.
 	 */
 	public EventType getEventType() {
@@ -236,15 +184,13 @@ public class Eventable extends DefaultEdge implements Serializable {
 		this.relatedFormInputs = relatedFormInputs;
 	}
 
-	/* Horrible stuff happening below, don't look at it! */
-
 	/**
 	 * @return the source state.
 	 * @throws CrawljaxException
 	 *             if the source cannot be found.
 	 */
-	public StateVertex getSourceStateVertex() throws CrawljaxException {
-		return getSuperField("source");
+	public StateVertex getSourceStateVertex() {
+		return (StateVertex) getSource();
 
 	}
 
@@ -253,34 +199,8 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 * @throws CrawljaxException
 	 *             if the target cannot be found.
 	 */
-	public StateVertex getTargetStateVertex() throws CrawljaxException {
-		return getSuperField("target");
-	}
-
-	private StateVertex getSuperField(String name) throws CrawljaxException {
-		try {
-			return (StateVertex) searchSuperField(name).get(this);
-		} catch (IllegalArgumentException e) {
-			throw new CrawljaxException(e.getMessage(), e);
-		} catch (IllegalAccessException e) {
-			throw new CrawljaxException(e.getMessage(), e);
-		}
-
-	}
-
-	private Field searchSuperField(String name) {
-		Class<?> clazz = this.getClass().getSuperclass().getSuperclass();
-		Field[] fields = clazz.getDeclaredFields();
-		AccessibleObject.setAccessible(fields, true);
-
-		for (Field field : fields) {
-			String fieldName = field.getName();
-
-			if (name.equals(fieldName)) {
-				return field;
-			}
-		}
-		throw new InternalError("Field was not found!");
+	public StateVertex getTargetStateVertex() {
+		return (StateVertex) getTarget();
 	}
 
 	/**
@@ -288,5 +208,56 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 */
 	public String getRelatedFrame() {
 		return relatedFrame;
+	}
+
+	@VisibleForTesting
+	void setSource(StateVertex source) {
+		setField("source", source);
+	}
+
+	private void setField(String fieldName, StateVertex source) {
+		Class<?> superclass = Eventable.class.getSuperclass().getSuperclass();
+		try {
+			Field f = superclass.getDeclaredField(fieldName);
+			f.setAccessible(true);
+			f.set(this, source);
+		} catch (ReflectiveOperationException e) {
+			throw new CrawljaxException("Could not set the source field", e);
+		}
+	}
+
+	@VisibleForTesting
+	void setTarget(StateVertex target) {
+		setField("target", target);
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+		        .add("eventType", eventType)
+		        .add("identification", identification)
+		        .add("element", element)
+		        .add("source", getSource())
+		        .add("target", getTarget())
+		        .toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(eventType, identification, element,
+		        this.getSource(), this.getTarget());
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof Eventable) {
+			Eventable that = (Eventable) object;
+			return Objects.equal(this.eventType, that.eventType)
+			        && Objects.equal(this.identification, that.identification)
+			        && Objects.equal(this.element, that.element)
+			        && Objects.equal(this.getSource(), that.getSource())
+			        && Objects.equal(this.getTarget(), that.getTarget());
+		}
+		return false;
 	}
 }

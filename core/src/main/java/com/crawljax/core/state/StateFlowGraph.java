@@ -3,6 +3,9 @@ package com.crawljax.core.state;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+/**
+ * A graph of {@link StateVertex} as vertexes and {@link Eventable} as edges.
+ */
 public interface StateFlowGraph {
 
 	/**
@@ -12,6 +15,9 @@ public interface StateFlowGraph {
 	 */
 	StateVertex getById(int id);
 
+	/**
+	 * @return The index state.
+	 */
 	StateVertex getInitialState();
 
 	/**

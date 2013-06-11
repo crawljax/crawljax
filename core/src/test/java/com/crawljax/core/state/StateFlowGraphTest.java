@@ -1,6 +1,8 @@
 package com.crawljax.core.state;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -43,32 +45,20 @@ public class StateFlowGraphTest {
 	}
 
 	@Test
-	public void testSFG() throws Exception {
-		StateVertex DOUBLE =
-		        new StateVertexImpl(StateVertex.INDEX_ID, "index",
-		                "<table><div>index</div></table>");
-		assertTrue(graph.putIfAbsent(state2) == null);
-		assertTrue(graph.putIfAbsent(state3) == null);
-		assertTrue(graph.putIfAbsent(state4) == null);
-		assertTrue(graph.putIfAbsent(state5) == null);
+	public void testDuplicationAdding() throws Exception {
+		assertThat(graph.putIfAbsent(index), is(not(nullValue())));
+		assertThat(graph.putIfAbsent(state2), is(nullValue()));
+		assertThat(graph.putIfAbsent(state3), is(nullValue()));
+		assertThat(graph.putIfAbsent(state4), is(nullValue()));
+		assertThat(graph.putIfAbsent(state5), is(nullValue()));
 
-		assertFalse(graph.putIfAbsent(DOUBLE) == null);
+		assertTrue(graph.addEdge(index, state2, newXpathEventable("/body/div[4]")));
+		assertTrue(graph.addEdge(state2, index, newXpathEventable("/body/div[89]")));
+		assertTrue(graph.addEdge(state2, state3, newXpathEventable("/home/a")));
+		assertTrue(graph.addEdge(index, state4, newXpathEventable("/body/div[2]/div")));
+		assertTrue(graph.addEdge(state2, state5, newXpathEventable("/body/div[5]")));
 
-		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification(How.xpath,
-		        "/body/div[4]"), EventType.click)));
-
-		assertTrue(graph.addEdge(state2, index, new Eventable(new Identification(How.xpath,
-		        "/body/div[89]"), EventType.click)));
-
-		assertTrue(graph.addEdge(state2, state3, new Eventable(new Identification(How.xpath,
-		        "/home/a"), EventType.click)));
-		assertTrue(graph.addEdge(index, state4, new Eventable(new Identification(How.xpath,
-		        "/body/div[2]/div"), EventType.click)));
-		assertTrue(graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath,
-		        "/body/div[5]"), EventType.click)));
-
-		assertFalse(graph.addEdge(state2, state5, new Eventable(new Identification(How.xpath,
-		        "/body/div[5]"), EventType.click)));
+		assertFalse(graph.addEdge(state2, state5, newXpathEventable("/body/div[5]")));
 
 		Set<Eventable> clickables = graph.getOutgoingClickables(state2);
 		assertEquals(3, clickables.size());
@@ -126,6 +116,10 @@ public class StateFlowGraphTest {
 		return ImmutableSet.copyOf(result);
 	}
 
+	private Eventable newXpathEventable(String xPath) {
+		return new Eventable(new Identification(How.xpath, xPath), EventType.click);
+	}
+
 	@Test
 	public void testCloneStates() throws Exception {
 		StateVertex state3clone2 =
@@ -134,8 +128,7 @@ public class StateFlowGraphTest {
 		assertTrue(graph.putIfAbsent(state2) == null);
 		assertTrue(graph.putIfAbsent(state4) == null);
 		// assertFalse(graph.addState(state3));
-		assertTrue(graph.addEdge(index, state2, new Eventable(new Identification(How.xpath,
-		        "/body/div[4]"), EventType.click)));
+		assertTrue(graph.addEdge(index, state2, newXpathEventable("/body/div[4]")));
 
 		// if (graph.containsVertex(state3)) {
 		// StateVertix state_clone = graph.getStateInGraph(state3);
@@ -172,11 +165,8 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void testDoubleEvents() {
-		Eventable c1 =
-		        new Eventable(new Identification(How.xpath, "/body/div[4]"), EventType.click);
-		Eventable c2 =
-		        new Eventable(new Identification(How.xpath, "/body/div[4]/div[2]"),
-		                EventType.click);
+		Eventable c1 = newXpathEventable("/body/div[4]");
+		Eventable c2 = newXpathEventable("/body/div[4]/div[2]");
 		graph.putIfAbsent(index);
 		graph.putIfAbsent(state2);
 
@@ -191,23 +181,23 @@ public class StateFlowGraphTest {
 		assertTrue(graph.putIfAbsent(state3) == null);
 		assertTrue(graph.putIfAbsent(state4) == null);
 
-		Eventable e1 = new Eventable(new Identification(How.xpath, "/4/index"), EventType.click);
+		Eventable e1 = newXpathEventable("/4/index");
 
-		Eventable e2 = new Eventable(new Identification(How.xpath, "/4/index"), EventType.click);
+		Eventable e2 = newXpathEventable("/4/index");
 
-		Eventable e3 = new Eventable(new Identification(How.xpath, "/4/index"), EventType.click);
+		Eventable e3 = newXpathEventable("/4/index");
 
-		Eventable e4 = new Eventable(new Identification(How.xpath, "/5/index"), EventType.click);
+		Eventable e4 = newXpathEventable("/5/index");
 
-		Eventable e5 = new Eventable(new Identification(How.xpath, "/4/index"), EventType.click);
-		Eventable e6 = new Eventable(new Identification(How.xpath, "/5/index"), EventType.click);
+		Eventable e5 = newXpathEventable("/4/index");
+		Eventable e6 = newXpathEventable("/5/index");
 
 		assertTrue(graph.addEdge(index, state2, e1));
 		assertFalse(graph.addEdge(index, state2, e1));
 		assertFalse(graph.addEdge(index, state2, e3));
 
-		assertFalse(graph.addEdge(state2, state3, e1));
 		assertTrue(graph.addEdge(state2, state3, e2));
+		assertFalse(graph.addEdge(state2, state3, e1));
 
 		assertTrue(graph.addEdge(index, state4, e3));
 		assertTrue(graph.addEdge(index, state4, e4));

@@ -152,14 +152,11 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	 */
 	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert,
 	        Eventable clickable) {
+		clickable.setSource(sourceVert);
+		clickable.setTarget(targetVert);
 		writeLock.lock();
 		try {
-			if (sfg.containsEdge(sourceVert, targetVert)
-			        && sfg.getAllEdges(sourceVert, targetVert).contains(clickable)) {
-				return false;
-			} else {
-				return sfg.addEdge(sourceVert, targetVert, clickable);
-			}
+			return sfg.addEdge(sourceVert, targetVert, clickable);
 		} finally {
 			writeLock.unlock();
 		}

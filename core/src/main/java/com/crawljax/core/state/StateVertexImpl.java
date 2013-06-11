@@ -3,13 +3,11 @@ package com.crawljax.core.state;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.w3c.dom.Document;
 
 import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Queues;
 
@@ -83,42 +81,26 @@ class StateVertexImpl implements StateVertex {
 		return url;
 	}
 
-	/**
-	 * {@link #hashCode()} is done on the {@link #getStrippedDom()}.
-	 */
 	@Override
 	public int hashCode() {
-		HashCodeBuilder builder = new HashCodeBuilder();
-		if (Strings.isNullOrEmpty(strippedDom)) {
-			builder.append(dom);
-		} else {
-			builder.append(strippedDom);
-		}
-
-		return builder.toHashCode();
+		return Objects.hashCode(strippedDom);
 	}
 
-	/**
-	 * Equals is done on the {@link #getStrippedDom()}.
-	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof StateVertex)) {
-			return false;
+	public boolean equals(Object object) {
+		if (object instanceof StateVertex) {
+			StateVertex that = (StateVertex) object;
+			return Objects.equal(this.strippedDom, that.getStrippedDom());
 		}
-
-		if (this == obj) {
-			return true;
-		}
-		final StateVertex rhs = (StateVertex) obj;
-
-		return new EqualsBuilder().append(this.strippedDom, rhs.getStrippedDom())
-		        .isEquals();
+		return false;
 	}
 
 	@Override
 	public String toString() {
-		return name;
+		return Objects.toStringHelper(this)
+		        .add("id", id)
+		        .add("name", name)
+		        .toString();
 	}
 
 	@Override

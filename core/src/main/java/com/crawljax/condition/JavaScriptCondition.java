@@ -48,22 +48,19 @@ public class JavaScriptCondition extends AbstractCondition {
 			}
 			return object.toString().equals("1");
 		} catch (CrawljaxException e) {
-			// Exception is catched, check failed so return false;
+			// Exception is caught, check failed so return false;
 			return false;
 		}
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), expression);
+		return Objects.hashCode(getClass(), expression);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof JavaScriptCondition) {
-			if (!super.equals(object)) {
-				return false;
-			}
 			JavaScriptCondition that = (JavaScriptCondition) object;
 			return Objects.equal(this.expression, that.expression);
 		}
@@ -73,7 +70,6 @@ public class JavaScriptCondition extends AbstractCondition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
 		        .add("expression", expression)
 		        .toString();
 	}

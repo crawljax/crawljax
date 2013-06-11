@@ -7,6 +7,9 @@ import org.w3c.dom.Document;
 
 import com.google.common.collect.ImmutableList;
 
+/**
+ * A vertex in the {@link StateFlowGraph} representing a state in the web appliction.
+ */
 public interface StateVertex extends Serializable {
 
 	/**

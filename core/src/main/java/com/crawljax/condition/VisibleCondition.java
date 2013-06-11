@@ -7,9 +7,7 @@ import com.crawljax.core.state.Identification;
 import com.google.common.base.Objects;
 
 /**
- * Conditions that returns true iff element found with By is visible.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
+ * Conditions that returns true iff element found by given identification is visible.
  */
 @Immutable
 public class VisibleCondition extends AbstractCondition {
@@ -38,15 +36,12 @@ public class VisibleCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), identification);
+		return Objects.hashCode(getClass(), identification);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof VisibleCondition) {
-			if (!super.equals(object)) {
-				return false;
-			}
 			VisibleCondition that = (VisibleCondition) object;
 			return Objects.equal(this.identification, that.identification);
 		}

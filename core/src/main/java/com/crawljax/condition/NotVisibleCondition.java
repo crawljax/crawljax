@@ -31,15 +31,12 @@ public class NotVisibleCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), visibleCondition);
+		return Objects.hashCode(getClass(), visibleCondition);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof NotVisibleCondition) {
-			if (!super.equals(object)) {
-				return false;
-			}
 			NotVisibleCondition that = (NotVisibleCondition) object;
 			return Objects.equal(this.visibleCondition, that.visibleCondition);
 		}
@@ -49,7 +46,6 @@ public class NotVisibleCondition extends AbstractCondition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
 		        .add("visibleCondition", visibleCondition)
 		        .toString();
 	}

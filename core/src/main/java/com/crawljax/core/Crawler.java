@@ -124,6 +124,9 @@ public class Crawler {
 			LOG.info(ex.getMessage());
 			LOG.debug(ex.getMessage(), ex);
 			candidateActionCache.purgeActionsForState(ex.getTarget());
+		} catch (CrawlerLeftDomainException e) {
+			LOG.info("The crawler left the domain. No biggy, whe'll just go somewhere else.");
+			LOG.debug("Domain espace was {}", e.getMessage());
 		}
 	}
 
@@ -322,7 +325,7 @@ public class Crawler {
 				 * It's okay to have left the domain because the action didn't complete due to an
 				 * interruption.
 				 */
-				throw new CrawljaxException("Somehow we left the domain");
+				throw new CrawlerLeftDomainException(browser.getCurrentUrl());
 			}
 		}
 		if (interrupted) {
