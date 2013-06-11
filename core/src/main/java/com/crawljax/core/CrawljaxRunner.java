@@ -1,9 +1,12 @@
 package com.crawljax.core;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.concurrent.Callable;
 
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.di.CoreModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -15,6 +18,7 @@ import com.google.inject.Injector;
 public class CrawljaxRunner implements Callable<CrawlSession> {
 
 	private final CrawljaxConfiguration config;
+	private CrawlController controller;
 	private ExitStatus reason;
 
 	public CrawljaxRunner(CrawljaxConfiguration config) {
@@ -29,10 +33,18 @@ public class CrawljaxRunner implements Callable<CrawlSession> {
 	@Override
 	public CrawlSession call() {
 		Injector injector = Guice.createInjector(new CoreModule(config));
-		CrawlController controller = injector.getInstance(CrawlController.class);
+		controller = injector.getInstance(CrawlController.class);
 		CrawlSession session = controller.call();
 		reason = controller.getReason();
 		return session;
+	}
+
+	/**
+	 * Stops Crawljax. It will try to shutdown gracefully and run the {@link PostCrawlingPlugin}s.
+	 */
+	public void stop() {
+		checkNotNull(controller, "Cannot stop Crawljax if you haven't started it");
+		controller.stop();
 	}
 
 	/**
