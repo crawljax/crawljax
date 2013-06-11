@@ -309,6 +309,9 @@ public class DBSfgTransactionsLockTest {
 		assertFalse(graph.addEdge(index, state2, e1));
 		assertFalse(graph.addEdge(index, state2, e3));
 
+		// this test case relies on the fact that in JgraphT the objects pointed to by edges are
+		// compared to each other, hence you cannot insert e1 between state2 and state3 but if you
+		// make a copy of e1 you can insert it between them.
 		// assertFalse(graph.addEdge(state2, state3, e1));
 		assertTrue(graph.addEdge(state2, state3, e2));
 

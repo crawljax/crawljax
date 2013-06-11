@@ -76,16 +76,17 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	// The directory path for saving the graph database created by neo4j for
 	// storing the state flow graph
 
-	public static String DB_PATH = "target/state-flow-graph-db/atTime";
+	public static String DB_PATH = "target/state-flow-graph-db/graph.db";
 
-	// the connector and main access point to the graph database
+	// the connector and main access point to the neo4j graph database
 
 	private static GraphDatabaseService sfgDb;
 
 	/**
-	 * keys used for key-value pairs. The key-value pairs are the main places for storing data in
-	 * neo4j data model of a graph. The data is stored in edges and nodes of the graph as
-	 * "properties". Keys here can be interpreted as labels too.
+	 * keys listed here are used for the "key-value pairs" with which data re stored in neo4j nodes
+	 * and edges. The key-value pairs are the main places for storing data in neo4j data model of a
+	 * graph. The data is stored in edges and nodes of the graph as "properties". Keys here can be
+	 * interpreted as labels too.
 	 */
 
 	// the key for storing the persisted StateVertex objects in nodes
@@ -107,15 +108,17 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	// the key for storing the to string Eventable objects
 	public static final String CLICKABLE_IN_EDGES = "Clickable";
 
-	// the combined key for storing the persisted triples of
-	// (source StateVertex,Eventable to string ,target StateVertex) saved in a
-	// string array
-	// of length 3
-	// this is used for indexing edges
+	// the combined key for storing the triples of (sourceStateVertex, Eventable, targetStateVertex)
+	// which is used for indexing edges
 	public static final String SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING =
 	        "Source-Clickable-Target Triple";
 
-	// the url key
+	// array indexes for the triple key used in edge indexing
+	private static final int SOURCE_VERTEX_INDEX = 0;
+	private static final int TARGET_VERTEX_INDEX = 2;
+	private static final int CLICKABLE_INDEX = 1;
+
+	// the URL key
 	public static final String URL_IN_NODES = "URL";
 
 	// the state name key
@@ -127,28 +130,21 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	// the key for DOM
 	public static final String DOM_IN_NODES = "DOM";
 
-	//
-
 	// the id used for the for node indexer object
 	public static final String NODES_INDEX_NAME = "nodesIndex";
 
 	// the id used for the for edge indexer object
 	public static final String EDGES_INDEX_NAME = "edgesIndex";
 
-	// for building an indexing structure within the graph for quick access to
-	// nodes and edges.
-	public static Node structuralIndexer;
+	// for building an indexing structure within the graph for quick access to nodes and edges.
+	public static Node root;
 
 	// index manager
 	private static IndexManager indexManager;
 
-	// indexing data structures for fast retrieval
+	// indexing data structures for ensuring valid concurrent insertion and fast retrieval
 	private static Index<Node> nodeIndex;
 	private static RelationshipIndex edgesIndex;
-
-	private static final int SOURCE_VERTEX_INDEX = 0;
-	private static final int TARGET_VERTEX_INDEX = 2;
-	private static final int CLICKABLE_INDEX = 1;
 
 	/**
 	 * The constructor.
@@ -171,15 +167,12 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		String dirPath = DB_PATH + time;
 		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(dirPath);
 
-		// for quick indexing and retrieval of nodes. This data structure is a
-		// additional
-		// capability beside
-		// the main graph data structures which is comprised of nodes and edges
+		// for quick indexing and retrieval of nodes. This data structure is a additional capability
+		// beside the main graph data structures comprised of nodes and edges
 
 		nodeIndex = sfgDb.index().forNodes(NODES_INDEX_NAME);
 
-		// again similar to nodeIndex this is a cross indexing of the edges for
-		// fast retrieval
+		// a cross indexing of the edges for fast retrieval
 
 		edgesIndex = sfgDb.index().forRelationships(EDGES_INDEX_NAME);
 
@@ -194,7 +187,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 			tx.finish();
 		}
 
-		DBSfgTransactionLock.structuralIndexer = indexNode;
+		DBSfgTransactionLock.root = indexNode;
 		LOG.debug("Initialized the stateflowgraph");
 
 		// adding a shutdown hook to ensure the database will be shut down even
@@ -227,14 +220,12 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	@Override
 	public StateVertex putIfAbsent(StateVertex state, boolean correctName) {
 
-		// the node to be added to the graph and then filled with the the data
-		// that
-		// that need to be stored as the state in the database
+		// the node to be added to the graph and then filled with the state data
 
 		Node toBeAddedNode;
 
 		// for saving the returned result of the method putIfAbsentNode
-		// it will be null if the state is not already in the graph
+		// it will be null if the state is not already present in the graph
 
 		Node alreadyEsixts;
 
@@ -248,7 +239,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 			toBeAddedNode = sfgDb.createNode();
 
 			// indexing the state in Index manager. the key that we are using for indexing is
-			// the stripped_dom field. This, in particular, is compliance with the domChanged
+			// the stripped_dom field. This, in particular, is in compliance with the domChanged
 			// method in the class Crawler
 
 			alreadyEsixts = putIfAbsentNode(toBeAddedNode,
@@ -259,13 +250,12 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 				LOG.debug("putIfAbsent: Graph already contained vertex {}",
 				        state);
 
-				// because the state already exists in the graph the
-				// transaction
-				// is marked for being rolled back
+				// because the state already exists in the graph this transaction
+				// is marked to be rolled back
 				tx.failure();
 			} else {
 
-				// the state was not already present in the graph so we go in with adding it to
+				// the state was not present in the graph so we continue with adding it to
 				// the graph
 
 				// correcting the name
@@ -291,21 +281,21 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 				        UTF8.decode((UTF8.encode(state.getStrippedDom()))));
 
 				// adding textual data which is not used for crawling purpose but are useful for
-				// text based queries
+				// text based queries in the future
 
 				// the URL of the state
 
 				String url = state.getUrl();
 				if (url != null) {
-					toBeAddedNode.setProperty(URL_IN_NODES, state.getUrl());
+					toBeAddedNode.setProperty(URL_IN_NODES, url);
 				} else {
 					toBeAddedNode.setProperty(URL_IN_NODES, "null");
 				}
 
 				// the DOM
-				String dom = state.getUrl();
+				String dom = state.getDom();
 				if (dom != null) {
-					toBeAddedNode.setProperty(DOM_IN_NODES, state.getDom());
+					toBeAddedNode.setProperty(DOM_IN_NODES, dom);
 				} else {
 					toBeAddedNode.setProperty(DOM_IN_NODES, "null");
 				}
@@ -314,7 +304,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 				String name = state.getName();
 				if (name != null) {
 					toBeAddedNode.setProperty(STATE_NAME_IN_NODES,
-					        state.getName());
+					        name);
 				} else {
 					toBeAddedNode.setProperty(STATE_NAME_IN_NODES, "null");
 				}
@@ -347,15 +337,15 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 	}
 
-	private void correctStateName(StateVertex stateVertix) {
+	private void correctStateName(StateVertex stateVertex) {
 		// the -1 is for the "index" state.
-		int totalNumberOfStates = this.getAllStatesAndPartialStates().size() - 1;
+		int totalNumberOfStates = this.getAllStatesAndPartiallyFilledStates().size() - 1;
 		String correctedName = makeStateName(totalNumberOfStates);
-		if (!"index".equals(stateVertix.getName())
-		        && !stateVertix.getName().equals(correctedName)) {
+		if (!"index".equals(stateVertex.getName())
+		        && !stateVertex.getName().equals(correctedName)) {
 			LOG.info("Correcting state name from {}  to {}",
-			        stateVertix.getName(), correctedName);
-			stateVertix.setName(correctedName);
+			        stateVertex.getName(), correctedName);
+			stateVertex.setName(correctedName);
 		}
 	}
 
@@ -398,9 +388,9 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	        Eventable eventable) {
 		boolean exists = false;
 
-		// this is done automatically with jgraphT and. When retrieving an edge it is crucial to
-		// retrieve the start state and end state of that edge and set them via the setter methods
-		// which are implemented by reflection
+		// When retrieving an edge it is crucial to retrieve the start state and end state of that
+		// edge and set them via the setter methods which are implemented by reflection. This is
+		// done automatically with jgraphT.
 
 		eventable.setSourceStateVertex(sourceVert);
 		eventable.setTargetStateVertex(targetVert);
@@ -415,7 +405,6 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		        .encode(sourceVert.getStrippedDom()));
 		edgeTriadKey[CLICKABLE_INDEX] = UTF8.decode(UTF8.encode(eventable
 		        .toString()));
-
 		edgeTriadKey[TARGET_VERTEX_INDEX] = UTF8.decode(UTF8
 		        .encode(targetVert.getStrippedDom()));
 
@@ -423,14 +412,8 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		        edgeTriadKey[SOURCE_VERTEX_INDEX] + edgeTriadKey[CLICKABLE_INDEX]
 		                + edgeTriadKey[TARGET_VERTEX_INDEX];
 
-		// synchronized (sfgDb) {
 		Transaction tx = sfgDb.beginTx();
 		try {
-
-			// nodeIndex.get(STRIPPED_DOM_KEY,
-			// sourceVert.getStrippedDom().getBytes()).getSingle();
-			// nodeIndex.get(STRIPPED_DOM_KEY,
-			// targetVert.getStrippedDom().getBytes()).getSingle();
 
 			Node sourceNode = getNodeFromDB(UTF8.decode(UTF8
 			        .encode(sourceVert.getStrippedDom())));
@@ -440,10 +423,10 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 			        RelTypes.TRANSITIONS_TO);
 
 			// adding the new edge to the index. it returns null if the edge is successfully
-			// added and returns the found edge if and identical edge already exists in the
+			// added and returns the found edge if an identical edge already exists in the
 			// index.
 
-			alreadyExists = edgePutIfAbsent(toBeAddedEdge, edgeTriadKey, edgeConcatenatedKey);
+			alreadyExists = edgePutIfAbsent(toBeAddedEdge, edgeConcatenatedKey);
 
 			if (alreadyExists != null) {
 				exists = true;
@@ -478,7 +461,6 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 			return true;
 
 		}
-		// }
 
 	}
 
@@ -487,30 +469,39 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	 */
 	@Override
 	public String toString() {
-		return stateById.toString();
+		return this.buildJgraphT().toString();
 	}
 
 	/**
 	 * Returns a set of all clickables outgoing from the specified vertex.
 	 * 
 	 * @param stateVertix
-	 *            the state vertix.
+	 *            the state vertex.
 	 * @return a set of the outgoing edges (clickables) of the stateVertix.
 	 */
 	@Override
 	public ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix) {
 
-		// todo
-
-		// retrieve source and targets state too!
 		Set<Eventable> outgoing = new HashSet<Eventable>();
-		Node state = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix
+		Node node = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix
 		        .getStrippedDom())));
-		for (Relationship edge : state.getRelationships(
+		for (Relationship edge : node.getRelationships(
 		        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
 			byte[] serializedEvantable = (byte[]) edge
 			        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
 			Eventable eventable = deserializeEventable(serializedEvantable);
+
+			// retrieving outgoing state
+			Node targetNode = edge.getEndNode();
+			byte[] serializedTargetState =
+			        (byte[]) targetNode.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
+			StateVertex targetState = deserializeStateVertex(serializedTargetState);
+
+			// setting target state and start state
+
+			eventable.setTargetStateVertex(targetState);
+			eventable.setSourceStateVertex(stateVertix);
+
 			outgoing.add(eventable);
 		}
 
@@ -527,19 +518,27 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	@Override
 	public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix) {
 
-		// todo
-
-		// retrieve source and targets state too!
-
 		Set<Eventable> incoming = new HashSet<Eventable>();
-		Node state = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix
+		Node node = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix
 		        .getStrippedDom())));
 
-		for (Relationship edge : state.getRelationships(
+		for (Relationship edge : node.getRelationships(
 		        RelTypes.TRANSITIONS_TO, Direction.INCOMING)) {
 			byte[] serializedEvantable = (byte[]) edge
 			        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
 			Eventable eventable = deserializeEventable(serializedEvantable);
+
+			// retrieving starting state
+			Node startNode = edge.getStartNode();
+			byte[] serializedStartState =
+			        (byte[]) startNode.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
+			StateVertex startState = deserializeStateVertex(serializedStartState);
+
+			// setting target state and start state
+
+			eventable.setTargetStateVertex(stateVertix);
+			eventable.setSourceStateVertex(startState);
+
 			incoming.add(eventable);
 		}
 
@@ -583,22 +582,23 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	@Override
 	public StateVertex getTargetState(Eventable clickable) {
 
-		// to do
-		// you can get source and target index and look for the eventable
-		// another way!
+		StateVertex foundTargetState = null;
+		int occurrence = 0;
+		for (Eventable edge : getAllEdges()) {
 
-		byte[] serializedEventable = serializeEventable(clickable);
+			if (edge.equals(clickable)) {
+				return edge.getTargetStateVertex();
+			} else if (edge.toString().equals(clickable.toString())) {
+				foundTargetState = edge.getTargetStateVertex();
+				occurrence++;
+			}
+		}
 
-		Relationship edge = edgesIndex.get(SERIALIZED_CLICKABLE_IN_EDGES,
-		        serializedEventable).getSingle();
-
-		Node targetNode = edge.getEndNode();
-
-		byte[] srializedState = (byte[]) targetNode
-		        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
-		StateVertex target = deserializeStateVertex(srializedState);
-
-		return target;
+		if (occurrence == 1) {
+			return foundTargetState;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -611,10 +611,8 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	 * @return true if it is possible (edge exists in graph) to go from source to target.
 	 */
 	@Override
-	// @GuardedBy("sfgDb")
 	public boolean canGoTo(StateVertex source, StateVertex target) {
 
-		// synchronized (sfgDb) {
 		Node sourceNode = getNodeFromDB(UTF8.decode(UTF8.encode(source
 		        .getStrippedDom())));
 		for (Relationship edge : sourceNode.getRelationships(
@@ -647,7 +645,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		}
 
 		return false;
-		// }
+
 	}
 
 	/**
@@ -690,7 +688,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 				byte[] serEventable = (byte[]) edge
 				        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
 				Eventable eventable = deserializeEventable(serEventable);
-				// adding the source state of the edge!
+				// setting the source state of the edge!
 				eventable.setSourceStateVertex(start);
 
 				// retrieving the target node
@@ -700,7 +698,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 				        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
 				StateVertex endingState = deserializeStateVertex(serEndNode);
 
-				// adding the target state
+				// setting the target state
 				eventable.setTargetStateVertex(endingState);
 
 				// adding the edge to the shortest path
@@ -720,12 +718,11 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	 * 
 	 * @return all the states on the graph.
 	 */
-	public ImmutableSet<StateVertex> getAllStatesAndPartialStates() {
+	public ImmutableSet<StateVertex> getAllStatesAndPartiallyFilledStates() {
 
 		final Set<StateVertex> allStates = new HashSet<StateVertex>();
 
-		// for (Node node : nodeIndex.query(STRIPPED_DOM_KEY, "*")) {
-		for (Relationship relationship : structuralIndexer.getRelationships(
+		for (Relationship relationship : root.getRelationships(
 		        Direction.OUTGOING, RelTypes.INDEXES)) {
 
 			Node node = relationship.getEndNode();
@@ -758,8 +755,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 		final Set<StateVertex> allStates = new HashSet<StateVertex>();
 
-		// for (Node node : nodeIndex.query(STRIPPED_DOM_KEY, "*")) {
-		for (Relationship relationship : structuralIndexer.getRelationships(
+		for (Relationship relationship : root.getRelationships(
 		        Direction.OUTGOING, RelTypes.INDEXES)) {
 
 			Node node = relationship.getEndNode();
@@ -767,6 +763,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 			byte[] serializedNode = (byte[]) node.getProperty(
 			        SERIALIZED_STATE_VERTEX_IN_NODES, null);
 
+			//
 			if (serializedNode != null) {
 				StateVertex state = deserializeStateVertex(serializedNode);
 				allStates.add(state);
@@ -793,11 +790,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 		Transaction tx = sfgDb.beginTx();
 		try {
-
-			// for (Relationship edge : edgesIndex.query(EDGE_COMBNINED_KEY,
-			// "*")) {
-
-			for (Relationship relationship : structuralIndexer
+			for (Relationship relationship : root
 			        .getRelationships(Direction.OUTGOING, RelTypes.INDEXES)) {
 				for (Relationship edge : relationship.getEndNode()
 				        .getRelationships(Direction.OUTGOING,
@@ -853,14 +846,6 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		StateVertex deserializedStateVertex = deserializeStateVertex(serializedState);
 
 		return deserializedStateVertex;
-
-		// for (StateVertex st : states) {
-		// if (state.equals(st)) {
-		// return st;
-		// }
-		// }
-		//
-		// return null;
 	}
 
 	/**
@@ -892,12 +877,12 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		return deepStates;
 	}
 
-	public List<StateVertex> getDeepStates2(StateVertex state,
+	public List<StateVertex> getDeepStatesFromJgraphT(StateVertex state,
 	        DirectedGraph<StateVertex, Eventable> sfg) {
 		final Set<String> visitedStates = new HashSet<String>();
 		final List<StateVertex> deepStates = new ArrayList<StateVertex>();
 
-		traverse2(visitedStates, deepStates, state, sfg);
+		traverseInMemory(visitedStates, deepStates, state, sfg);
 
 		return deepStates;
 	}
@@ -923,7 +908,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		}
 	}
 
-	private void traverse2(Set<String> visitedStates,
+	private void traverseInMemory(Set<String> visitedStates,
 	        List<StateVertex> deepStates, StateVertex state,
 	        DirectedGraph<StateVertex, Eventable> sfg) {
 		visitedStates.add(state.getName());
@@ -942,7 +927,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 			} else {
 				for (StateVertex st : outgoingSet) {
 					if (!visitedStates.contains(st.getName())) {
-						traverse2(visitedStates, deepStates, st, sfg);
+						traverseInMemory(visitedStates, deepStates, st, sfg);
 					}
 				}
 			}
@@ -986,7 +971,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 		DirectedGraph<StateVertex, Eventable> sfg = this.buildJgraphT();
 
-		StateVertex indexFromGraph = getStateInJgrpahT(index, sfg);
+		StateVertex indexFromGraph = getStateFromJgrpahT(index, sfg);
 		if (indexFromGraph == null) {
 			LOG.warn("state not found in JgraphT: {} ", index.getName());
 			System.exit(1);
@@ -995,9 +980,9 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		final KShortestPaths<StateVertex, Eventable> kPaths = new KShortestPaths<>(
 		        sfg, indexFromGraph, Integer.MAX_VALUE);
 
-		for (StateVertex state : getDeepStates2(indexFromGraph, sfg)) {
+		for (StateVertex state : getDeepStatesFromJgraphT(indexFromGraph, sfg)) {
 
-			StateVertex stateFromGraph = getStateInJgrpahT(state, sfg);
+			StateVertex stateFromGraph = getStateFromJgrpahT(state, sfg);
 			if (stateFromGraph == null) {
 				LOG.warn("state not found in JgraphT {}", state.getName());
 				System.exit(1);
@@ -1062,37 +1047,12 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		return sfgDb;
 	}
 
-	private Relationship edgePutIfAbsent(Relationship toBeAddedEdge, String[] edgeTriadKey,
+	private Relationship edgePutIfAbsent(Relationship toBeAddedEdge,
 	        String edgeConcatenatedKey) {
 
 		Relationship alreadyExists = edgesIndex.putIfAbsent(toBeAddedEdge,
 		        SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING, edgeConcatenatedKey);
 		return alreadyExists;
-
-		// cleanup
-
-		// for (Relationship edge : edgesIndex.query(
-		// SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING, "*")) {
-		//
-		// String sourceDom = (String) edge
-		// .getProperty(SOURCE_STRIPPED_DOM_IN_EDGES);
-		// String targetDom = (String) edge
-		// .getProperty(TARGET_STRIPPED_DOM_IN_EDGES);
-		// String clickableToString = (String) edge
-		// .getProperty(CLICKABLE_IN_EDGES);
-		//
-		// if (sourceDom.equals(edgeTriadKey[SOURCE_VERTEX_INDEX])
-		// && targetDom.equals(edgeTriadKey[TARGET_VERTEX_INDEX])
-		// && clickableToString
-		// .equals(edgeTriadKey[CLICKABLE_INDEX])) {
-		// return edge;
-		//
-		// }
-		// }
-		// edgesIndex.add(toBeAddedEdge, SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING,
-		// edgeTriadKey);
-		//
-		// return null;
 
 	}
 
@@ -1100,27 +1060,6 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 		Node node = nodeIndex.get(STRIPPED_DOM_IN_NODES, strippedDom).getSingle();
 		return node;
-
-		// cleanup
-
-		// for (Node node : nodeIndex.query(STRIPPED_DOM_IN_NODES, "*")) {
-		//
-		// byte[] serializedNode = (byte[]) node
-		// .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
-		//
-		// StateVertex state = deserializeStateVertex(serializedNode);
-		//
-		// String newDom = strippedDom;
-		// String prev = state.getStrippedDom();
-		//
-		// if (newDom.equals(prev)) {
-		// return node;
-		//
-		// }
-		//
-		// }
-		//
-		// return null;
 
 	}
 
@@ -1133,7 +1072,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		}
 
 		// cleanup!
-		structuralIndexer.createRelationshipTo(toBeAddedNode, RelTypes.INDEXES);
+		root.createRelationshipTo(toBeAddedNode, RelTypes.INDEXES);
 
 		return null;
 	}
@@ -1179,15 +1118,12 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 	public static byte[] serializeStateVertex(StateVertex stateVertex) {
 
-		// result holder
+		// for storing the return value
 		byte[] serializedStateVertex = null;
 
-		// this an output stream that does not require writing to the file and
-		// instead
-		// the output stream is stored in a buffer
-		// we use this class to utilize the Java serialization api which writes
-		// and reads
-		// objects to and from streams
+		// this an output stream that does not require writing to the file and instead the output
+		// stream is stored in a buffer we use this class to utilize the Java serialization api
+		// which writes and reads objects to and from streams
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -1217,6 +1153,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 	public static StateVertex deserializeStateVertex(
 	        byte[] serializedStateVertex) {
+
 		// the returned value
 
 		StateVertex deserializedSV = null;
@@ -1230,7 +1167,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 			deserializedSV = (StateVertex) ois.readObject();
 
-			// Closing streams
+			// Closing the streams
 
 			ois.close();
 			bais.close();
@@ -1251,12 +1188,9 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 
 		byte[] serializedEventable = null;
 
-		// this an output stream that does not require writing to the file and
-		// instead
-		// the output stream is stored in a buffer
-		// we use this class to utilize the Java serialization api which writes
-		// and reads
-		// object to and from streams
+		// this an output stream that does not require writing to the file and instead the output
+		// stream is stored in a buffer we use this class to utilize the Java serialization api
+		// which writes and reads object to and from streams
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -1319,17 +1253,9 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		DirectedGraph<StateVertex, Eventable> sfg;
 		sfg = new DirectedMultigraph<>(Eventable.class);
 
-		StateVertex indexState = getInitialState();
-		if (insertStateInJgraphT(indexState, sfg) != null) {
-			LOG.warn("duplicate state found");
-			System.exit(1);
-		}
-
 		// inserting states
 		for (StateVertex state : getAllStates()) {
-			if (state.getId() == StateVertex.INDEX_ID) {
-				continue;
-			}
+
 			if (insertStateInJgraphT(state, sfg) != null) {
 				LOG.warn("duplicate state found");
 			}
@@ -1338,7 +1264,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 		// inserting edges
 		Transaction tx = sfgDb.beginTx();
 		try {
-			for (Relationship relationship : structuralIndexer
+			for (Relationship relationship : root
 			        .getRelationships(Direction.OUTGOING, RelTypes.INDEXES)) {
 				for (Relationship edge : relationship.getEndNode()
 				        .getRelationships(Direction.OUTGOING,
@@ -1411,7 +1337,7 @@ public class DBSfgTransactionLock implements Serializable, StateFlowGraph {
 	 * @return the copy of the StateVertix in the StateFlowGraph where v.equals(u) or
 	 *         <code>null</code> if not found.
 	 */
-	private StateVertex getStateInJgrpahT(StateVertex state,
+	private StateVertex getStateFromJgrpahT(StateVertex state,
 	        DirectedGraph<StateVertex, Eventable> sfg) {
 		for (StateVertex st : sfg.vertexSet()) {
 			if (state.equals(st)) {
