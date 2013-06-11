@@ -76,7 +76,7 @@ public class ConditionTypeChecker<T extends ConditionType> {
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof ConditionTypeChecker) {
-			ConditionTypeChecker that = (ConditionTypeChecker) object;
+			ConditionTypeChecker<?> that = (ConditionTypeChecker<?>) object;
 			return Objects.equal(this.invariants, that.invariants);
 		}
 		return false;

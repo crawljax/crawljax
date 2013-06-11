@@ -38,7 +38,12 @@ public class ExitNotifier {
 		/**
 		 * The crawler quite because of an error.
 		 */
-		ERROR("Errored");
+		ERROR("Errored"),
+
+		/**
+		 * When {@link CrawljaxRunner#stop()} has been called.
+		 */
+		STOPPED("Stopped manually");
 
 		private final String readableName;
 
@@ -57,7 +62,7 @@ public class ExitNotifier {
 	private final AtomicInteger states = new AtomicInteger();
 	private final int maxStates;
 
-	private ExitStatus reason;
+	private ExitStatus reason = ExitStatus.ERROR;
 
 	public ExitNotifier(int maxStates) {
 		this.maxStates = maxStates;
@@ -96,6 +101,14 @@ public class ExitNotifier {
 	 */
 	public void signalCrawlExhausted() {
 		reason = ExitStatus.EXHAUSTED;
+		latch.countDown();
+	}
+
+	/**
+	 * Manually stop the crawl.
+	 */
+	public void stop() {
+		reason = ExitStatus.STOPPED;
 		latch.countDown();
 	}
 
