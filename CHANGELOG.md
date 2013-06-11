@@ -1,7 +1,7 @@
 ## [Version 3.1](https://github.com/crawljax/crawljax/issues?milestone=4&state=closed)
 
 * Added the possibility to stop Crawljax from using the runner or by calling stop from any plugin. [#270](https://github.com/crawljax/crawljax/issues/270)
-
+* Fixes bug positioning of elements in the crawloverview
 
 ## [Version 3.0](https://github.com/crawljax/crawljax/issues?milestone=3&state=closed)
 
