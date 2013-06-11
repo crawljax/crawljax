@@ -94,6 +94,9 @@ public class CrawlerTest {
 
 	@Mock
 	private CandidateElement action;
+	
+	@Mock
+	private ExitNotifier exitNotifier;
 
 	private CrawlerContext context;
 
@@ -114,7 +117,8 @@ public class CrawlerTest {
 
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
 		when(graphProvider.get()).thenReturn(graph);
-		context = new CrawlerContext(browser, config, sessionProvider);
+
+		context = new CrawlerContext(browser, config, sessionProvider, exitNotifier);
 		crawler =
 		        new Crawler(context, config,
 		                stateComparator,
