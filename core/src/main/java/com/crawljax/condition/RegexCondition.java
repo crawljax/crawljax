@@ -41,17 +41,15 @@ public class RegexCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), expression, pattern);
+		return Objects.hashCode(getClass(), expression, pattern.toString());
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof RegexCondition) {
-			if (!super.equals(object))
-				return false;
 			RegexCondition that = (RegexCondition) object;
 			return Objects.equal(this.expression, that.expression)
-			        && Objects.equal(this.pattern, that.pattern);
+			        && Objects.equal(this.pattern.toString(), that.pattern.toString());
 		}
 		return false;
 	}
@@ -59,9 +57,8 @@ public class RegexCondition extends AbstractCondition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
-		        .add("expression", expression)
-		        .add("pattern", pattern)
+		        .add("expression", expression.toString())
+		        .add("pattern", pattern.toString())
 		        .toString();
 	}
 
