@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.crawljax</groupId>
 		<artifactId>crawljax-parent-pom</artifactId>
-		<version>3.1-SNAPSHOT</version>
+		<version>3.1</version>
 	</parent>
 
 	<groupId>com.crawljax.plugins</groupId>
@@ -20,7 +19,7 @@
 		<connection>scm:git:git@github.com:crawljax/plugins-parent-pom.git</connection>
 		<developerConnection>scm:git:git@github.com:crawljax/plugins-parent-pom.git</developerConnection>
 		<url>https://github.com/crawljax/plugins-parent-pom</url>
-		<tag>HEAD</tag>
+		<tag>crawljax-parent-pom-3.1</tag>
 	</scm>
 
 	<licenses>
