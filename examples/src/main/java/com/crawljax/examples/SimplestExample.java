@@ -1,5 +1,7 @@
 package com.crawljax.examples;
 
+import java.util.concurrent.TimeUnit;
+
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
@@ -16,8 +18,10 @@ public class SimplestExample {
 	 */
 	public static void main(String[] args) {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor("http://demo.crawljax.com/");
-		builder.setGraphType(StateFlowGraphType.DB_IN_RAM_PATH);
+		builder.setGraphType(StateFlowGraphType.DB_TRANSACTIONAL);
   
+		builder.crawlRules().clickOnce(false);
+		builder.setMaximumRunTime(1, TimeUnit.MINUTES);
 		CrawljaxRunner crawljax =
 		        new CrawljaxRunner(builder.build());
 		crawljax.call();
