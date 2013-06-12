@@ -29,7 +29,7 @@ import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
-import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
 import com.crawljax.di.CoreModule.FormHandlerFactory;
@@ -81,7 +81,10 @@ public class CrawlerTest {
 	private StateVertex target;
 
 	@Mock
-	private StateFlowGraph graph;
+	private InMemoryStateFlowGraph graph;
+
+	@Mock
+	private Provider<InMemoryStateFlowGraph> graphProvider;
 
 	@Mock
 	private Eventable eventToTransferToTarget;
@@ -113,13 +116,14 @@ public class CrawlerTest {
 		stateComparator = new StateComparator(config.getCrawlRules());
 
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
+		when(graphProvider.get()).thenReturn(graph);
 
 		context = new CrawlerContext(browser, config, sessionProvider, exitNotifier);
 		crawler =
 		        new Crawler(context, config,
 		                stateComparator,
 		                candidateActionCache, formHandlerFactory, waitConditionChecker,
-		                elementExtractor);
+		                elementExtractor, graphProvider);
 
 		setupStateFlowGraph();
 	}

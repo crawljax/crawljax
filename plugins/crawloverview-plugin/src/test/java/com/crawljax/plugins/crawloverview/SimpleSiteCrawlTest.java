@@ -87,7 +87,7 @@ public class SimpleSiteCrawlTest {
 		assertThat(new File(outFolder, "result.json"), exists());
 		assertThat(new File(outFolder, "result.json"), isValidJson());
 	}
-	
+
 	@Test
 	public void configFileIsWritten() {
 		assertThat(new File(outFolder, "config.json"), exists());

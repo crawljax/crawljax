@@ -77,7 +77,7 @@ class StateWriter {
 			elementMap.put("width", "" + (element.getWidth() + 2));
 			elementMap.put("height", "" + (element.getHeight() + 2));
 			if (eventable != null) {
-				toState = sfg.getTargetState(eventable);
+				toState = eventable.getTargetStateVertex();
 			}
 			if (toState != null) {
 				elementMap.put("targetname", toState.getName());

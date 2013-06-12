@@ -43,8 +43,6 @@ public class XPathCondition extends AbstractCondition {
 		try {
 			Document document = DomUtils.asDocument(browser.getDom());
 			NodeList nodeList = XPathHelper.evaluateXpathExpression(document, expression);
-			// TODO IF this can be removed, the ThreadLocal store can be removed and increasing
-			// speed!
 			this.setAffectedNodes(nodeList);
 			return nodeList.getLength() > 0;
 		} catch (XPathExpressionException | IOException e) {

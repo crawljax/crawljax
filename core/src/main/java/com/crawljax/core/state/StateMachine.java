@@ -15,9 +15,17 @@ import com.google.common.collect.ImmutableList;
  * The State Machine.
  */
 public class StateMachine {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(StateMachine.class.getName());
 
-	private final StateFlowGraph stateFlowGraph;
+	/**
+	 * @return The index {@link StateVertex}.
+	 */
+	public static StateVertex createIndex(String url, String dom, String strippedDom) {
+		return new StateVertexImpl(StateVertex.INDEX_ID, url, "index", dom, strippedDom);
+	}
+
+	private final InMemoryStateFlowGraph stateFlowGraph;
 
 	private final StateVertex initialState;
 
@@ -42,7 +50,7 @@ public class StateMachine {
 	 * @param invariantList
 	 *            the invariants to use in the InvariantChecker.
 	 */
-	public StateMachine(StateFlowGraph sfg,
+	public StateMachine(InMemoryStateFlowGraph sfg,
 	        ImmutableList<Invariant> invariantList, Plugins plugins,
 	        StateComparator stateComparator) {
 		stateFlowGraph = sfg;
@@ -54,10 +62,8 @@ public class StateMachine {
 	}
 
 	public StateVertex newStateFor(EmbeddedBrowser browser) {
-		int id = stateFlowGraph.getNextStateId();
-		return new StateVertex(
-		        id, browser.getCurrentUrl(),
-		        stateFlowGraph.getNewStateName(id),
+		return stateFlowGraph.newStateFor(
+		        browser.getCurrentUrl(),
 		        browser.getDom(),
 		        stateComparator.getStrippedDom(browser));
 	}
@@ -178,4 +184,5 @@ public class StateMachine {
 			plugins.runOnInvariantViolationPlugins(failedInvariant, context);
 		}
 	}
+
 }
