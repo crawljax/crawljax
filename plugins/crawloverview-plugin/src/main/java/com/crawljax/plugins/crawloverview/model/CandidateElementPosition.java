@@ -49,8 +49,6 @@ public class CandidateElementPosition {
 		this.height = height;
 	}
 
-
-
 	/**
 	 * @return The offset to the top of the document.
 	 */

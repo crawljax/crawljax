@@ -34,8 +34,8 @@ public class CountCondition implements Condition {
 	}
 
 	/**
-	 * Note: Check has a side effect (it increments a counter).
-	 * Invoking it multiple times may result in a different answer.
+	 * Note: Check has a side effect (it increments a counter). Invoking it multiple times may
+	 * result in a different answer.
 	 */
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
@@ -59,8 +59,8 @@ public class CountCondition implements Condition {
 	}
 
 	/**
-	 * Since "count" is a consequence of invoking "check",
-	 * it is not included in the equality / hashCode computation.
+	 * Since "count" is a consequence of invoking "check", it is not included in the equality /
+	 * hashCode computation.
 	 */
 	@Override
 	public int hashCode() {
@@ -68,8 +68,8 @@ public class CountCondition implements Condition {
 	}
 
 	/**
-     * Since "count" is a consequence of invoking "check",
-     * it is not included in the equality / hashCode computation.
+	 * Since "count" is a consequence of invoking "check", it is not included in the equality /
+	 * hashCode computation.
 	 */
 	@Override
 	public boolean equals(Object object) {

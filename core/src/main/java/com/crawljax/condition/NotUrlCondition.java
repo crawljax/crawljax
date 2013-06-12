@@ -46,7 +46,7 @@ public class NotUrlCondition extends AbstractCondition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
- 		        .add("urlCondition", urlCondition)
+		        .add("urlCondition", urlCondition)
 		        .toString();
 	}
 
