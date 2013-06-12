@@ -9,7 +9,7 @@
 
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax-parent-pom</artifactId>
-	<version>3.1</version>
+	<version>3.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Crawljax parent POM</name>
@@ -42,7 +42,7 @@
 		<connection>scm:git:git@github.com:crawljax/crawljax.git</connection>
 		<developerConnection>scm:git:git@github.com:crawljax/crawljax.git</developerConnection>
 		<url>https://github.com/crawljax/crawljax</url>
-	  <tag>crawljax-parent-pom-3.1</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<issueManagement>
