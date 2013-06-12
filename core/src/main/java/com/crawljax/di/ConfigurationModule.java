@@ -22,6 +22,7 @@ import com.crawljax.core.state.DBSfgTransactionLock;
 import com.crawljax.core.state.DBSfgWithIndexing;
 import com.crawljax.core.state.DBSfgWithoutRam;
 import com.crawljax.core.state.DefaultStateFlowGraph;
+import com.crawljax.core.state.ScalableSFG;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph.StateFlowGraphType;
 import com.google.inject.AbstractModule;
@@ -70,7 +71,10 @@ public class ConfigurationModule extends AbstractModule {
 			bind(StateFlowGraph.class).to(DBSfgWithIndexing.class);
 		} else if (config.getGraphType() == StateFlowGraphType.DB_TRANSACTIONAL) {
 			bind(StateFlowGraph.class).to(DBSfgTransactionLock.class);
+		} else if (config.getGraphType() == StateFlowGraphType.SCALABLE) {
+			bind(StateFlowGraph.class).to(ScalableSFG.class);
 		}
+
 	}
 
 	@BindingAnnotation
