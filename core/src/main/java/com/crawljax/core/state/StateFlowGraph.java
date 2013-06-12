@@ -1,10 +1,17 @@
 package com.crawljax.core.state;
 
+import java.util.List;
+import java.util.Set;
+
+import org.jgrapht.GraphPath;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * A graph of {@link StateVertex} as vertexes and {@link Eventable} as edges.
+ * <<<<<<< Updated upstream A graph of {@link StateVertex} as vertexes and {@link Eventable} as
+ * edges. ======= A graph with {@link StateVertex} as vertexes and {@link Eventable} as edges.
+ * >>>>>>> Stashed changes
  */
 public interface StateFlowGraph {
 
@@ -85,5 +92,22 @@ public interface StateFlowGraph {
 	 * @return The number of states, currently in the graph.
 	 */
 	int getNumberOfStates();
+
+	/**
+	 * This method returns all possible paths from the index state using the Kshortest paths.
+	 * 
+	 * @param index
+	 *            the initial state.
+	 * @return a list of GraphPath lists.
+	 */
+	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index);
+
+	/**
+	 * @param stateVertix
+	 *            The source {@link StateVertex}
+	 * @return a {@link Set} of {@link StateVertex} that are connected to the source
+	 *         {@link StateVertex} via one of the sources outgoing edges.
+	 */
+	public abstract ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix);
 
 }

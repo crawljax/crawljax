@@ -1,6 +1,10 @@
 package com.crawljax.core.state;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -12,7 +16,9 @@ import javax.inject.Singleton;
 
 import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.jgrapht.DirectedGraph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.DijkstraShortestPath;
+import org.jgrapht.alg.KShortestPaths;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +26,9 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.ExitNotifier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
@@ -274,6 +282,78 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 
 	private String getNewStateName(int id) {
 		return "state" + id;
+	}
+
+	@Override
+	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index) {
+		final List<List<GraphPath<StateVertex, Eventable>>> results = Lists.newArrayList();
+
+		final KShortestPaths<StateVertex, Eventable> kPaths =
+		        new KShortestPaths<>(this.sfg, index, Integer.MAX_VALUE);
+
+		for (StateVertex state : getDeepStates(index)) {
+			List<GraphPath<StateVertex, Eventable>> paths = kPaths.getPaths(state);
+			results.add(paths);
+		}
+
+		return results;
+	}
+
+	/**
+	 * @param state
+	 *            The starting state.
+	 * @return A list of the deepest states (states with no outgoing edges).
+	 */
+	private List<StateVertex> getDeepStates(StateVertex state) {
+		final List<StateVertex> deepStates = new ArrayList<StateVertex>();
+
+		traverse(Sets.<String> newHashSet(), deepStates, state);
+
+		return deepStates;
+	}
+
+	private void traverse(Set<String> visitedStates, List<StateVertex> deepStates,
+	        StateVertex state) {
+		visitedStates.add(state.getName());
+
+		Set<StateVertex> outgoingSet = getOutgoingStates(state);
+
+		if ((outgoingSet == null) || outgoingSet.isEmpty()) {
+			deepStates.add(state);
+		} else {
+			if (cyclic(visitedStates, outgoingSet)) {
+				deepStates.add(state);
+			} else {
+				for (StateVertex st : outgoingSet) {
+					if (!visitedStates.contains(st.getName())) {
+						traverse(visitedStates, deepStates, st);
+					}
+				}
+			}
+		}
+	}
+
+	private boolean cyclic(Set<String> visitedStates, Set<StateVertex> outgoingSet) {
+		int i = 0;
+
+		for (StateVertex state : outgoingSet) {
+			if (visitedStates.contains(state.getName())) {
+				i++;
+			}
+		}
+
+		return i == outgoingSet.size();
+	}
+
+	@Override
+	public ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix) {
+		final Set<StateVertex> result = new HashSet<>();
+
+		for (Eventable c : getOutgoingClickables(stateVertix)) {
+			result.add(sfg.getEdgeTarget(c));
+		}
+
+		return ImmutableSet.copyOf(result);
 	}
 
 }
