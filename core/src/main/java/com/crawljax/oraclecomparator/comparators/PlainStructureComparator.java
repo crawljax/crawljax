@@ -9,8 +9,12 @@ public class PlainStructureComparator extends AbstractComparator {
 
 	private final boolean removeAttributes;
 
+	public PlainStructureComparator() {
+		this(true);
+	}
+	
 	public PlainStructureComparator(boolean removeAttributes) {
-		this.removeAttributes = true;
+		this.removeAttributes = removeAttributes;
 	}
 
 	@Override

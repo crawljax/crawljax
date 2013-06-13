@@ -21,7 +21,7 @@ import com.crawljax.condition.RegexCondition;
 import com.crawljax.condition.UrlCondition;
 import com.crawljax.condition.VisibleCondition;
 import com.crawljax.condition.XPathCondition;
-import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlElement;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
@@ -104,7 +104,7 @@ public class CrawlRunner {
 				CrawljaxConfigurationBuilder builder =
 				        CrawljaxConfiguration.builderFor(config.getUrl());
 				builder.setBrowserConfig(new BrowserConfiguration(config.getBrowser(), config
-				        .getNumBrowsers(), config.isBootBrowser()));
+				        .getNumBrowsers()));
 
 				if (config.getMaxDepth() > 0)
 					builder.setMaximumDepth(config.getMaxDepth());
@@ -199,7 +199,7 @@ public class CrawlRunner {
 				        + File.separatorChar + "crawloverview")));
 
 				// Build Crawljax
-				CrawljaxController crawljax = new CrawljaxController(builder.build());
+				CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 
 				// Set Timestamps
 				timestamp = new Date();
@@ -209,7 +209,7 @@ public class CrawlRunner {
 				LogWebSocketServlet.sendToAll("run-" + Integer.toString(crawlId));
 
 				// run Crawljax
-				crawljax.run();
+				crawljax.call();
 
 				// set duration
 				long duration = (new Date()).getTime() - timestamp.getTime();
