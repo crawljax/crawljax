@@ -22,10 +22,10 @@ public class IgnoreCasingOracle extends OracleAbstract {
 </pre>
 <p>Adding to the CrawlSpecification<p>
 <pre>
-CrawlSpecification crawler = new CrawlSpecification(URL);
+CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 ...
 UrlCondition onFooPage = new UrlhCondition("#foo"));
-crawler.addOracleComparator("Ignore casing on foo pages", new IgnoreCasingOracle())
+builder.addOracleComparator("Ignore casing on foo pages", new IgnoreCasingOracle())
 </pre>
 
 <h2>Oracle Comparator Pipelining</h2>

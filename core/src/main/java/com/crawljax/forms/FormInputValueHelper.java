@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.configuration.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -41,8 +40,6 @@ public final class FormInputValueHelper {
 	private ImmutableMap<String, String> formFields;
 	private ImmutableListMultimap<String, String> formFieldNames;
 	private ImmutableListMultimap<String, String> fieldValues;
-
-	private Configuration config;
 
 	private boolean randomInput;
 
@@ -304,20 +301,6 @@ public final class FormInputValueHelper {
 
 		}
 		return input;
-	}
-
-	/**
-	 * @param property
-	 *            the property.
-	 * @return the values as a List.
-	 */
-	private ArrayList<String> getPropertyAsList(String property) {
-		ArrayList<String> result = new ArrayList<String>();
-		String[] array = config.getStringArray(property);
-		for (int i = 0; i < array.length; i++) {
-			result.add(array[i]);
-		}
-		return result;
 	}
 
 	private String fieldMatches(String fieldName) {

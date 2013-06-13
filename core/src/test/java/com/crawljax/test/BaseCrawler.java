@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.Plugin;
@@ -132,11 +132,10 @@ public class BaseCrawler {
 		if (!hasSetup.get()) {
 			setup();
 		}
-		CrawljaxController crawljax = new CrawljaxController(configBuilder.build());
-		crawljax.run();
+		CrawljaxRunner crawljax = new CrawljaxRunner(configBuilder.build());
+		CrawlSession session = crawljax.call();
 		webServer.stop();
-		crawljax.getBrowserPool().close();
-		return crawljax.getSession();
+		return session;
 	}
 
 	/**

@@ -9,7 +9,7 @@
 
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax-parent-pom</artifactId>
-	<version>3.0-SNAPSHOT</version>
+	<version>3.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Crawljax parent POM</name>
@@ -29,10 +29,9 @@
 
 	<properties>
 		<slf4j.version>1.7.5</slf4j.version>
-		<logback.version>1.0.11</logback.version>
-		<selenium.version>[2.31.0,)</selenium.version>
-		<jetty.version>9.0.0.v20130308</jetty.version>
-
+		<logback.version>1.0.13</logback.version>
+		<selenium.version>[2.33.0,)</selenium.version>
+		<jetty.version>9.0.3.v20130506</jetty.version>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,7 +42,8 @@
 		<connection>scm:git:git@github.com:crawljax/crawljax.git</connection>
 		<developerConnection>scm:git:git@github.com:crawljax/crawljax.git</developerConnection>
 		<url>https://github.com/crawljax/crawljax</url>
-	</scm>
+	  <tag>HEAD</tag>
+  </scm>
 
 	<issueManagement>
 		<system>GitHub</system>
@@ -160,12 +160,12 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<groupId>org.apache.maven.plugins</groupId>
-					<version>3.0</version>
+					<version>3.1</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<groupId>org.apache.maven.plugins</groupId>
-					<version>2.14</version>
+					<version>2.14.1</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
@@ -188,30 +188,9 @@
 					<version>2.4</version>
 				</plugin>
 				<plugin>
-					<artifactId>maven-site-plugin</artifactId>
-					<groupId>org.apache.maven.plugins</groupId>
-					<version>3.2</version>
-				</plugin>
-				<plugin>
 					<artifactId>maven-resources-plugin</artifactId>
 					<groupId>org.apache.maven.plugins</groupId>
 					<version>2.6</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>cobertura-maven-plugin</artifactId>
-					<version>2.5.2</version>
-					<configuration>
-						<instrumentation>
-							<excludes>
-								<exclude>**/*Test.class</exclude>
-							</excludes>
-						</instrumentation>
-						<formats>
-							<format>html</format>
-							<format>xml</format>
-						</formats>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -238,8 +217,15 @@
 						<dirty>-dirty</dirty>
 					</gitDescribe>
 				</configuration>
-
 			</plugin>
+			<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.4.1</version>
+					<configuration>
+						<tagNameFormat>crawljax-@{project.version}</tagNameFormat>
+					</configuration>
+				</plugin>
 		</plugins>
 	</build>
 
@@ -271,15 +257,4 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-
-	<repositories>
-		<repository>
-			<id>crawljax.mvn.repo</id>
-			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
 </project>

@@ -1,94 +1,192 @@
 package com.crawljax.core;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.util.Collection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.configuration.ConfigurationException;
+import javax.inject.Provider;
+
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Identification.How;
+import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.test.BrowserTest;
-import com.crawljax.test.RunWithWebServer;
+import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
+import com.crawljax.di.CoreModule.FormHandlerFactory;
+import com.crawljax.forms.FormHandler;
+import com.crawljax.forms.FormInput;
+import com.crawljax.oraclecomparator.StateComparator;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Test class for the Crawler testing.
  */
-@Category(BrowserTest.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CrawlerTest {
 
-	@ClassRule
-	public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
+	private URL url;
 
-	private Collection<List<Eventable>> paths;
+	private Crawler crawler;
+
+	@Mock
+	private EmbeddedBrowser browser;
+
+	@Spy
+	private Plugins plugins = Plugins.noPlugins();
+
+	@Mock
+	private Provider<CrawlSession> sessionProvider;
+
+	@Mock
+	private CrawlSession session;
+
+	private StateComparator stateComparator;
+
+	@Mock
+	private FormHandler formHandler;
+
+	@Mock
+	private WaitConditionChecker waitConditionChecker;
+
+	@Mock
+	private CandidateElementExtractor extractor;
+
+	@Mock
+	private UnfiredCandidateActions candidateActionCache;
+
+	@Mock
 	private StateVertex index;
 
-	private CrawljaxConfiguration buildController() throws ConfigurationException {
-		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(SERVER.getSiteUrl() + "crawler/index.html");
-		builder.crawlRules().click("a");
-		return builder.build();
-	}
+	@Mock
+	private StateVertex target;
+
+	@Mock
+	private InMemoryStateFlowGraph graph;
+
+	@Mock
+	private Provider<InMemoryStateFlowGraph> graphProvider;
+
+	@Mock
+	private Eventable eventToTransferToTarget;
+
+	@Captor
+	private ArgumentCaptor<List<FormInput>> formInputsCaptor;
+
+	@Mock
+	private CandidateElement action;
+	
+	@Mock
+	private ExitNotifier exitNotifier;
+
+	private CrawlerContext context;
 
 	@Before
-	public void setupController() throws ConfigurationException, CrawljaxException {
-		CrawljaxController controller = new CrawljaxController(buildController());
-		controller.run();
-		paths = controller.getSession().getCrawlPaths();
-		index = controller.getSession().getInitialState();
+	public void setup() throws MalformedURLException {
+		CandidateElementExtractorFactory elementExtractor =
+		        mock(CandidateElementExtractorFactory.class);
+		when(elementExtractor.newExtractor(browser)).thenReturn(extractor);
+		FormHandlerFactory formHandlerFactory = mock(FormHandlerFactory.class);
+		when(formHandlerFactory.newFormHandler(browser)).thenReturn(formHandler);
+		url = new URL("http://example.com");
+		when(browser.getCurrentUrl()).thenReturn(url.toExternalForm());
+		when(sessionProvider.get()).thenReturn(session);
+
+		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());
+		when(config.getPlugins()).thenReturn(plugins);
+		stateComparator = new StateComparator(config.getCrawlRules());
+
+		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
+		when(graphProvider.get()).thenReturn(graph);
+
+		context = new CrawlerContext(browser, config, sessionProvider, exitNotifier);
+		crawler =
+		        new Crawler(context, config,
+		                stateComparator,
+		                candidateActionCache, formHandlerFactory, waitConditionChecker,
+		                elementExtractor, graphProvider);
+
+		setupStateFlowGraph();
+	}
+
+	private void setupStateFlowGraph() {
+		when(index.getId()).thenReturn(1);
+		when(index.getName()).thenReturn("Index");
+		when(target.getId()).thenReturn(2);
+		when(target.getName()).thenReturn("State 2");
+
+		when(eventToTransferToTarget.getIdentification()).thenReturn(
+		        new Identification(How.name, "//DIV[@id='click]"));
+		when(eventToTransferToTarget.getRelatedFrame()).thenReturn("");
+		when(eventToTransferToTarget.getSourceStateVertex()).thenReturn(index);
+		when(eventToTransferToTarget.getTargetStateVertex()).thenReturn(target);
+		when(eventToTransferToTarget.getRelatedFormInputs()).thenReturn(
+		        new CopyOnWriteArrayList<FormInput>());
+		when(graph.getShortestPath(index, target)).thenReturn(
+		        ImmutableList.of(eventToTransferToTarget));
+		when(graph.getInitialState()).thenReturn(index);
+		when(session.getStateFlowGraph()).thenReturn(graph);
+		when(session.getInitialState()).thenReturn(index);
+
+		when(graph.canGoTo(index, target)).thenReturn(true);
 	}
 
 	@Test
-	public void testCrawler() throws ConfigurationException {
-		final TestController controller = new TestController(buildController(), index);
-
-		for (final List<Eventable> path : paths) {
-			new Crawler(controller, path, "Follow Path", Plugins.noPlugins()) {
-				@Override
-				public void run() {
-					try {
-						super.init();
-						List<Eventable> newPath = controller.getSession().getCurrentCrawlPath();
-						assertThat(
-						        "Path found by Controller driven Crawling equals the path found in the Crawler",
-						        path, is(newPath));
-						super.shutdown();
-					} catch (InterruptedException e) {
-						throw new AssertionError(e);
-					}
-				}
-			}.run();
-		}
-		controller.getBrowserPool().shutdown();
+	public void whenResetTheStateIsBackToIndex() {
+		crawler.reset();
+		verifyCrawlerReset(inOrder(plugins, browser));
 	}
 
-	private static class TestController extends CrawljaxController {
-		CrawlSession localSession;
-		StateFlowGraph g;
-		StateVertex i;
+	private void verifyCrawlerReset(InOrder order) {
+		order.verify(browser).goToUrl(url);
+		order.verify(plugins).runOnUrlLoadPlugins(context);
+	}
 
-		public TestController(CrawljaxConfiguration config, StateVertex index)
-		        throws ConfigurationException {
-			super(config);
-			i = index;
-			g = new StateFlowGraph(i);
-			localSession =
-			        new CrawlSession(this.getBrowserPool(), g, i, System.currentTimeMillis());
-		}
+	@Test
+	public void whenExecuteTaskTheCrawlisCompletedCorrectly() throws Exception {
+		when(extractor.checkCrawlCondition()).thenReturn(true);
+		when(browser.fireEventAndWait(eventToTransferToTarget)).thenReturn(true);
 
-		@Override
-		public CrawlSession getSession() {
-			return localSession;
-		}
+		crawler.execute(target);
+		InOrder order =
+		        inOrder(extractor, browser, formHandler, plugins, waitConditionChecker,
+		                candidateActionCache);
+		verifyPathIsFollowed(order);
+	}
+
+	private void verifyPathIsFollowed(InOrder order) {
+		verifyCrawlerReset(order);
+		order.verify(extractor).checkCrawlCondition();
+		verifyFormElementsChecked(order);
+		order.verify(waitConditionChecker).wait(browser);
+		order.verify(browser).closeOtherWindows();
+		order.verify(plugins).runOnRevisitStatePlugins(context, target);
+		order.verify(extractor).checkCrawlCondition();
+		order.verify(candidateActionCache).pollActionOrNull(target);
+	}
+
+	private void verifyFormElementsChecked(InOrder order) {
+		order.verify(formHandler).getFormInputs();
+		order.verify(formHandler).handleFormElements(formInputsCaptor.capture());
+		formInputsCaptor.getValue().isEmpty();
 	}
 }

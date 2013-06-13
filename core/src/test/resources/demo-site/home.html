@@ -1,7 +1,4 @@
 <h1>Welcome to the Crawljax Testing page</h1>
-
-<strong style="font-size: 12pt">NOTE: This site is currently under construction and will be updated regularly.</strong>
-
 <h2>What is Crawljax?</h2>
 <p>Crawljax is a Java tool for automatically crawling and testing AJAX based applications.</p>
 
@@ -28,37 +25,38 @@ tests.</p>
 	<li>Copy/paste the code fragment below.</li>
 </ul>
 <pre>
-CrawljaxConfiguration config = new CrawljaxConfiguration();
-CrawlSpecification crawler = new CrawlSpecification("http://www.google.com");
+CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+builder.crawlRules().insertRandomDataInInputForms(false);
 
 // click these elements
-crawler.click("a");
-crawler.click("input").withAttribute("type", "submit");
+builder.crawlRules().clickDefaultElements();
+builder.crawlRules().click("div").withAttribute("class", "clickable");
 
-// except these
-crawler.dontClick("a").underXPath("//DIV[@id='guser']");
-crawler.dontClick("a").withText("Language Tools");
+// but don't click these
+builder.crawlRules().dontClick("a").withAttribute("class", "ignore");
+builder.crawlRules().dontClick("a").underXPath("//DIV[@id='footer']");
 
-InputSpecification input = new InputSpecification();
-input.field("q").setValue("Crawljax");
-crawler.setInputSpecification(input);
+// Set timeouts
+builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
+builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
 
-// limit the crawling scope
-crawler.setMaximumStates(5);
-crawler.setDepth(2);
+// Add a condition that this XPath doesn't exits
+builder.crawlRules().addCrawlCondition("No spans with foo as class",
+		        new NotXPathCondition("//*[@class='foo']"));
 
-config.setCrawlSpecification(crawler);
-CrawljaxController crawljax = new CrawljaxController(config);
-try {
-  crawljax.start();
-} catch (Exception e) {
-  e.printStackTrace();
-  System.exit(1);
+// Set some input for fields
+builder.crawlRules().setInputSpec(getInputSpecification());
+
+// This will generate a nice output in the output directory.
+File outFolder = new File("output");
+if (outFolder.exists()) {
+	FileUtils.deleteDirectory(outFolder);
 }
-</pre>
+builder.addPlugin(new CrawlOverview(outFolder));
 
-<h2>Requirements</h2>
-<ul>
-	<li>Java 1.6</li>
-	<li>Browser: Internet Explorer or Firefox (or any other browser supported by WebDriver)</li>
-</ul>
+// We want to use two browsers simultaneously.
+builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 2));
+
+CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+crawljax.call();
+</pre>

@@ -3,21 +3,18 @@
  */
 package com.crawljax.condition;
 
+import java.util.Arrays;
+
 import net.jcip.annotations.Immutable;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.Objects;
 
 /**
  * Logic operations for conditions.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
 public final class Logic {
-
-	private Logic() {
-		// Utility
-	}
 
 	/**
 	 * @param condition
@@ -25,14 +22,7 @@ public final class Logic {
 	 * @return the condition negated.
 	 */
 	public static Condition not(final Condition condition) {
-		return new AbstractCondition() {
-
-			@Override
-			public boolean check(EmbeddedBrowser browser) {
-				return !condition.check(browser);
-			}
-
-		};
+		return new Not(condition);
 	}
 
 	/**
@@ -41,18 +31,7 @@ public final class Logic {
 	 * @return AND of conditions
 	 */
 	public static Condition and(final Condition... conditions) {
-		return new AbstractCondition() {
-
-			@Override
-			public boolean check(EmbeddedBrowser browser) {
-				for (Condition condition : conditions) {
-					if (!condition.check(browser)) {
-						return false;
-					}
-				}
-				return true;
-			}
-		};
+		return new And(conditions);
 	}
 
 	/**
@@ -61,18 +40,7 @@ public final class Logic {
 	 * @return OR conditions
 	 */
 	public static Condition or(final Condition... conditions) {
-		return new AbstractCondition() {
-
-			@Override
-			public boolean check(EmbeddedBrowser browser) {
-				for (Condition condition : conditions) {
-					if (condition.check(browser)) {
-						return true;
-					}
-				}
-				return false;
-			}
-		};
+		return new Or(conditions);
 	}
 
 	/**
@@ -81,14 +49,124 @@ public final class Logic {
 	 * @return NAND conditions
 	 */
 	public static Condition nand(final Condition... conditions) {
-		return new AbstractCondition() {
+		return not(and(conditions));
+	}
 
-			@Override
-			public boolean check(EmbeddedBrowser browser) {
-				return not(and(conditions)).check(browser);
+	private Logic() {
+	}
+
+	private static class Not extends AbstractCondition {
+		private Condition condition;
+
+		public Not(Condition c) {
+			condition = c;
+		}
+
+		@Override
+		public boolean check(EmbeddedBrowser browser) {
+			return !condition.check(browser);
+		}
+
+		@Override
+		public String toString() {
+			return Objects.toStringHelper(this)
+			        .add("condition", condition)
+			        .toString();
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(getClass(), condition);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (object instanceof Not) {
+				Not that = (Not) object;
+				return Objects.equal(this.condition, that.condition);
 			}
+			return false;
+		}
+	}
 
-		};
+	private static class And extends AbstractCondition {
+		private Condition[] conditions;
+
+		public And(Condition... cs) {
+			conditions = cs;
+		}
+
+		@Override
+		public boolean check(EmbeddedBrowser browser) {
+			for (Condition condition : conditions) {
+				if (!condition.check(browser)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		@Override
+		public String toString() {
+			return Objects.toStringHelper(this)
+			        .add("condition", Arrays.deepToString(conditions))
+			        .toString();
+		}
+
+		@Override
+		public int hashCode() {
+			int args = Objects.hashCode((Object[]) conditions);
+			return Objects.hashCode(getClass(), args);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (object instanceof And) {
+				And that = (And) object;
+				return Arrays.equals(this.conditions, that.conditions);
+			}
+			return false;
+		}
+	}
+
+	private static class Or extends AbstractCondition {
+		private Condition[] conditions;
+
+		public Or(Condition... cs) {
+			conditions = cs;
+		}
+
+		@Override
+		public boolean check(EmbeddedBrowser browser) {
+			for (Condition condition : conditions) {
+				if (condition.check(browser)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public String toString() {
+			return Objects.toStringHelper(this)
+			        .add("condition", Arrays.deepToString(conditions))
+			        .toString();
+		}
+
+		@Override
+		public int hashCode() {
+			int args = Objects.hashCode((Object[]) conditions);
+			return Objects.hashCode(getClass(), args);
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (object instanceof Or) {
+				Or that = (Or) object;
+				return Arrays.equals(this.conditions, that.conditions);
+			}
+			return false;
+		}
 	}
 
 }

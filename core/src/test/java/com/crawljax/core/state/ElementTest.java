@@ -19,7 +19,7 @@ public class ElementTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'></div><div><span id='thespan'>"
 		                + "<a id='thea'>test</a></span></div></body>";
-		StateVertex sv = new StateVertex("test", HTML);
+		StateVertex sv = new StateVertexImpl(0, "test", HTML);
 
 		Node node = sv.getDocument().getElementById("thea");
 		Element element = new Element(node);

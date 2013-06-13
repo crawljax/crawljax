@@ -29,9 +29,9 @@ public abstract class FirefoxLinuxCrash {
 		Platform current = Platform.getCurrent();
 		switch (current) {
 			case LINUX:
-			case MAC:
 			case UNIX:
 				return true;
+			case MAC:
 			case ANY:
 			case VISTA:
 			case WINDOWS:
@@ -63,7 +63,7 @@ public abstract class FirefoxLinuxCrash {
 		Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
 
 		try {
-			Runtime.getRuntime().exec("/usr/bin/killall firefox-bin --verbose");
+			Runtime.getRuntime().exec("/usr/bin/killall firefox --verbose");
 		} catch (IOException e) {
 			Assume.assumeNoException(e);
 		}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.slf4j.Logger;
@@ -26,13 +27,13 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.DomUtils;
-import com.crawljax.util.UrlUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.inject.assistedinject.Assisted;
 
 /**
  * This class extracts candidate elements from the DOM tree, based on the tags provided by the user.
@@ -67,7 +68,8 @@ public class CandidateElementExtractor {
 	 * @param config
 	 *            the checker used to determine if a certain frame must be ignored.
 	 */
-	public CandidateElementExtractor(ExtractorManager checker, EmbeddedBrowser browser,
+	@Inject
+	public CandidateElementExtractor(ExtractorManager checker, @Assisted EmbeddedBrowser browser,
 	        FormHandler formHandler, CrawljaxConfiguration config) {
 		checkedElements = checker;
 		this.browser = browser;
@@ -159,16 +161,14 @@ public class CandidateElementExtractor {
 
 		for (int i = 0; i < frameNodes.getLength(); i++) {
 
-			String frameIdentification = "";
-
-			if (relatedFrame != null && !relatedFrame.equals("")) {
-				frameIdentification += relatedFrame + ".";
-			}
-
 			Element frameElement = (Element) frameNodes.item(i);
 
 			String nameId = DomUtils.getFrameIdentification(frameElement);
 
+			String frameIdentification = "";
+			if (!Strings.isNullOrEmpty(relatedFrame)) {
+				frameIdentification += relatedFrame + ".";
+			}
 			// TODO Stefan; Here the IgnoreFrameChecker is used, also in
 			// WebDriverBackedEmbeddedBrowser. We must get this in 1 place.
 			if (nameId == null || isFrameIgnored(frameIdentification + nameId)) {
@@ -302,19 +302,33 @@ public class CandidateElementExtractor {
 	}
 
 	private void addElement(Element element, Builder<Element> builder, CrawlElement crawlElement) {
-		if ("A".equalsIgnoreCase(crawlElement.getTagName())) {
-			String href = element.getAttribute("href");
-			if (!Strings.isNullOrEmpty(href)) {
-				boolean isExternal = UrlUtils.isLinkExternal(browser.getCurrentUrl(), href);
-				LOG.debug("HREF: {} isExternal= {}", href, isExternal);
-				if (isExternal || isPDForPS(href)) {
-					return;
-				}
-			}
+		if ("A".equalsIgnoreCase(crawlElement.getTagName()) && hrefShouldBeIgnored(element)) {
+			return;
 		}
 		builder.add(element);
 		LOG.debug("Adding element {}", element);
 		checkedElements.increaseElementsCounter();
+	}
+
+	private boolean hrefShouldBeIgnored(Element element) {
+		String href = Strings.nullToEmpty(element.getAttribute("href"));
+		return isFileForDownloading(href) || href.startsWith("mailto:");
+	}
+
+	/**
+	 * @param href
+	 *            the string to check
+	 * @return true if href has the pdf or ps pattern.
+	 */
+	private boolean isFileForDownloading(String href) {
+		final Pattern p = Pattern.compile(".+.pdf|.+.ps|.+.zip|.+.mp3");
+		Matcher m = p.matcher(href);
+
+		if (m.matches()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private void evaluateElement(Builder<CandidateElement> results, String relatedFrame,
@@ -355,22 +369,6 @@ public class CandidateElementExtractor {
 	}
 
 	/**
-	 * @param href
-	 *            the string to check
-	 * @return true if href has the pdf or ps pattern.
-	 */
-	private boolean isPDForPS(String href) {
-		final Pattern p = Pattern.compile(".+.pdf|.+.ps");
-		Matcher m = p.matcher(href);
-
-		if (m.matches()) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * @return true if element should be excluded. Also when an ancestor of the given element is
 	 *         marked for exclusion, which allows for recursive exclusion of elements from
 	 *         candidates.
@@ -408,5 +406,9 @@ public class CandidateElementExtractor {
 		}
 
 		return false;
+	}
+
+	public boolean checkCrawlCondition() {
+		return checkedElements.checkCrawlCondition(browser);
 	}
 }

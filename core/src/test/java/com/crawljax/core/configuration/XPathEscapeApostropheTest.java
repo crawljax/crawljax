@@ -2,7 +2,6 @@ package com.crawljax.core.configuration;
 
 import static org.junit.Assert.assertEquals;
 
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,12 +22,12 @@ public class XPathEscapeApostropheTest {
 		test = element.escapeApostrophes(test);
 		assertEquals("'Test String'", test);
 	}
-	
+
 	@Test
 	public void testStringConcat() {
 		String test = "I'm Feeling Lucky";
-		test = element.escapeApostrophes(test);	
+		test = element.escapeApostrophes(test);
 		assertEquals("concat('I',\"'\",'m Feeling Lucky')", test);
 	}
-	
+
 }

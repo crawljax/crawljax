@@ -54,6 +54,6 @@ public class MyTestPlugin implements OnNewStatePlugin {
 
 <p>Add this plugin to your Crawljax configuration.</p>
 <pre>
-CrawljaxConfiguration crawljax = new CrawljaxConfiguration();
-crawljax.addPlugin(new MyTestPlugin());
+CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+builder.addPlugin(new MyTestPlugin());
 </pre>

@@ -10,8 +10,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.browser.WebDriverBrowserBuilder;
+import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.plugin.Plugins;
+import com.crawljax.plugins.crawloverview.model.Serializer;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
@@ -65,9 +69,22 @@ class BeanToReadableMap {
 		} else if (result instanceof Plugin) {
 			return escapeHtml(result.getClass().getSimpleName());
 		} else if (result instanceof CrawlRules) {
-			return "<pre><code>" + Serializer.toPrettyJson(result) + "</code></pre>";
-		}
-		else {
+			return "<pre><code>" + escapeHtml(Serializer.toPrettyJson(result)) + "</code></pre>";
+		} else if (result instanceof BrowserConfiguration) {
+			BrowserConfiguration config = (BrowserConfiguration) result;
+			StringBuilder configAsString =
+			        new StringBuilder().append(config.getNumberOfBrowsers())
+			                .append(" browsers of type ")
+			                .append(config.getBrowsertype());
+			if (!(config.getBrowserBuilder() instanceof WebDriverBrowserBuilder)) {
+				configAsString.append(" using builder ").append(config.getBrowserBuilder());
+			}
+			return configAsString.toString();
+		} else if (result instanceof Plugins) {
+			return toString(((Plugins) result).pluginNames());
+		} else if (result instanceof Number && ((Number) result).intValue() == 0) {
+			return "&infin;";
+		} else {
 			return escapeHtml(result.toString());
 		}
 	}

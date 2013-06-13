@@ -1,13 +1,14 @@
 package com.crawljax.plugins.crawloverview.model;
 
-import java.util.Objects;
-
 import javax.annotation.concurrent.Immutable;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 
 import com.crawljax.core.CandidateElement;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
 
 /**
  * Position of a candidate element of a state. This type is used to build the overlays of screenshot
@@ -35,6 +36,17 @@ public class CandidateElementPosition {
 		this.xpath = xpath;
 		this.width = size.width;
 		this.height = size.height;
+	}
+
+	@JsonCreator
+	public CandidateElementPosition(@JsonProperty("top") int top,
+	        @JsonProperty("left") int left, @JsonProperty("xpath") String xpath,
+	        @JsonProperty("width") int width, @JsonProperty("height") int height) {
+		this.top = top;
+		this.left = left;
+		this.xpath = xpath;
+		this.width = width;
+		this.height = height;
 	}
 
 	/**
@@ -65,28 +77,31 @@ public class CandidateElementPosition {
 
 	@Override
 	public String toString() {
-		return "CandidateElementPosition [top=" + top + ", left=" + left + ", xpath=" + xpath
-		        + ", width=" + width + ", height=" + height + "]";
+		return Objects.toStringHelper(this)
+		        .add("top", top)
+		        .add("left", left)
+		        .add("xpath", xpath)
+		        .add("width", width)
+		        .add("height", height)
+		        .toString();
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(height, left, top, width, xpath);
+		return Objects.hashCode(top, left, xpath, width, height);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	public boolean equals(Object object) {
+		if (object instanceof CandidateElementPosition) {
+			CandidateElementPosition that = (CandidateElementPosition) object;
+			return Objects.equal(this.top, that.top)
+			        && Objects.equal(this.left, that.left)
+			        && Objects.equal(this.xpath, that.xpath)
+			        && Objects.equal(this.width, that.width)
+			        && Objects.equal(this.height, that.height);
 		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-		CandidateElementPosition other = (CandidateElementPosition) obj;
-		return Objects.equals(height, other.height)
-		        && Objects.equals(left, other.left)
-		        && Objects.equals(top, other.top)
-		        && Objects.equals(width, other.width)
-		        && Objects.equals(xpath, other.xpath);
+		return false;
 	}
+
 }

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -14,18 +13,20 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CandidateElement;
-import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawljaxController;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
+import com.google.common.collect.ImmutableList;
 
 @Category(BrowserTest.class)
 public class OnFireEventFailedPluginTest {
 
-	private CrawljaxController controller;
+	private CrawljaxRunner controller;
 
 	private final AtomicInteger hits = new AtomicInteger();
 
@@ -33,15 +34,15 @@ public class OnFireEventFailedPluginTest {
 	public static final RunWithWebServer SERVER = new RunWithWebServer("site");
 
 	@Before
-	public void setup() throws ConfigurationException {
+	public void setup() {
 
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("crawler/index.html");
 		builder.addPlugin(new PreStateCrawlingPlugin() {
 
 			@Override
-			public void preStateCrawling(CrawlSession session,
-			        List<CandidateElement> candidateElement) {
-				for (CandidateElement candidate : candidateElement) {
+			public void preStateCrawling(CrawlerContext session,
+			        ImmutableList<CandidateElement> candidateElements, StateVertex state) {
+				for (CandidateElement candidate : candidateElements) {
 					HTMLAnchorElementImpl impl = (HTMLAnchorElementImpl) candidate.getElement();
 					impl.setName("fail");
 					impl.setId("eventually");
@@ -53,20 +54,20 @@ public class OnFireEventFailedPluginTest {
 		});
 		builder.addPlugin(new OnFireEventFailedPlugin() {
 			@Override
-			public void onFireEventFailed(Eventable eventable, List<Eventable> pathToFailure) {
+			public void onFireEventFailed(CrawlerContext context, Eventable eventable,
+			        List<Eventable> pathToFailure) {
 				hits.incrementAndGet();
 			}
 		});
 
-		controller = new CrawljaxController(builder.build());
+		controller = new CrawljaxRunner(builder.build());
 	}
 
 	@Test
-	public void testFireEventFaildHasBeenExecuted() throws ConfigurationException,
-	        CrawljaxException {
-		controller.run();
+	public void testFireEventFaildHasBeenExecuted() throws CrawljaxException {
+		controller.call();
 		assertThat("The FireEventFaild Plugin has been executed the correct amount of times",
-		        hits.get(), is(controller.getElementChecker().numberOfExaminedElements()));
+		        hits.get(), is(2));
 	}
 
 }

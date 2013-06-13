@@ -2,24 +2,30 @@ package com.crawljax.core.configuration;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.core.CrawlController;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.di.CoreModule;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * Configures the {@link Crawler}. Set it up using the {@link #builderFor(String)} function.
  */
-public final class CrawljaxConfiguration {
+public class CrawljaxConfiguration {
 
 	public static class CrawljaxConfigurationBuilder {
 
@@ -31,6 +37,33 @@ public final class CrawljaxConfiguration {
 			Preconditions.checkNotNull(url);
 			config = new CrawljaxConfiguration();
 			config.url = url;
+		}
+
+		/**
+		 * If the website uses <a
+		 * href="http://en.wikipedia.org/wiki/Basic_access_authentication">Basic auth</a> you can
+		 * set the username and password here.
+		 * 
+		 * @param username
+		 *            The username for the website.
+		 * @param password
+		 *            The password for the website.
+		 * @return {@link CrawljaxConfigurationBuilder} for method chaining.
+		 */
+		public CrawljaxConfigurationBuilder setBasicAuth(String username, String password) {
+			try {
+				String encodedUsername = URLEncoder.encode(username, "UTF-8");
+				String encodedPassword = URLEncoder.encode(password, "UTF-8");
+				config.url =
+				        new URL(config.url.getProtocol()
+				                + "://" + encodedUsername
+				                + ":" + encodedPassword + "@" + config.url.getAuthority()
+				                + config.url.getPath());
+				System.out.println("URL " + config.url);
+			} catch (UnsupportedEncodingException | MalformedURLException e) {
+				throw new CrawljaxException("Could not parse the username/password to a URL", e);
+			}
+			return this;
 		}
 
 		/**
@@ -82,7 +115,7 @@ public final class CrawljaxConfiguration {
 		}
 
 		/**
-		 * Set the crawl depth to unlimited.
+		 * Set the crawl depth to unlimited. The default depth is <code>2</code>.
 		 */
 		public CrawljaxConfigurationBuilder setUnlimitedCrawlDepth() {
 			config.maximumDepth = 0;
@@ -137,6 +170,11 @@ public final class CrawljaxConfiguration {
 			config.plugins = new Plugins(pluginBuilder.build());
 			config.crawlRules = crawlRules.build();
 			return config;
+		}
+
+		public CrawlController buildControl() {
+			Injector injector = Guice.createInjector(new CoreModule(build()));
+			return injector.getInstance(CrawlController.class);
 		}
 
 	}

@@ -5,6 +5,7 @@ package com.crawljax.core.state;
 
 import static com.crawljax.core.state.Identification.How.xpath;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -16,12 +17,15 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.util.DomUtils;
 
@@ -42,6 +46,25 @@ public class EventableTest {
 
 		temp = new Eventable(id, EventType.hover);
 		assertNotSame(temp.hashCode(), c.hashCode());
+	}
+
+	@Test
+	public void EventablesWithDifferentStatesAreNotEqual() throws IllegalArgumentException,
+	        IllegalAccessException, NoSuchFieldException, SecurityException {
+		Identification id = new Identification(Identification.How.xpath, "/DIV");
+		Eventable event1 = new Eventable(id, EventType.click);
+		Eventable event2 = new Eventable(id, EventType.click);
+		assertThat(event1, is(event2));
+
+		StateVertex source = Mockito.mock(StateVertex.class);
+		StateVertex target1 = Mockito.mock(StateVertex.class);
+		StateVertex target2 = Mockito.mock(StateVertex.class);
+		event1.setSource(source);
+		event2.setSource(source);
+		assertThat(event1, is(event2));
+		event1.setTarget(target1);
+		event2.setTarget(target2);
+		assertThat(event1, is(not(event2)));
 	}
 
 	@Test
@@ -74,6 +97,7 @@ public class EventableTest {
 	}
 
 	@Test
+	@Ignore("seems redundant")
 	public void testGetInfo() {
 		Eventable c =
 		        new Eventable(new Identification(Identification.How.xpath, "/body/div[3]"),
@@ -104,11 +128,12 @@ public class EventableTest {
 	@Test
 	public void testEdge() throws CrawljaxException {
 
-		StateVertex s1 = new StateVertex("stateSource", "dom1");
-		StateVertex s2 = new StateVertex("stateTarget", "dom2");
-		StateFlowGraph sfg = new StateFlowGraph(s1);
+		StateVertex s1 = new StateVertexImpl(0, "stateSource", "dom1");
+		StateVertex s2 = new StateVertexImpl(0, "stateTarget", "dom2");
+		InMemoryStateFlowGraph sfg = new InMemoryStateFlowGraph(new ExitNotifier(0));
+		sfg.putIndex(s1);
 
-		sfg.addState(s2);
+		sfg.putIfAbsent(s2);
 
 		Eventable e = new Eventable();
 

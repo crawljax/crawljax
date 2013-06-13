@@ -27,7 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
+import com.crawljax.plugins.crawloverview.model.Serializer;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.ByteStreams;
@@ -166,9 +168,10 @@ class OutputBuilder {
 		}
 	}
 
-	void write(OutPutModel outModel) {
+	public void write(OutPutModel result, CrawljaxConfiguration config) {
 		try {
-			writeIndexFile(outModel);
+			writeIndexFile(result, config);
+			writeJsonToOutDir(Serializer.toPrettyJson(config), "config.json");
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
@@ -176,15 +179,16 @@ class OutputBuilder {
 		LOG.info("Overview report generated");
 	}
 
-	private void writeIndexFile(OutPutModel model) {
+	private void writeIndexFile(OutPutModel model, CrawljaxConfiguration config) {
 		LOG.debug("Writing index file");
 		VelocityContext context = new VelocityContext();
-		writeJsonToOutDir(Serializer.toPrettyJson(model));
+		writeJsonToOutDir(Serializer.toPrettyJson(model), JSON_OUTPUT_NAME);
 		context.put("states", Serializer.toPrettyJson(model.getStates()));
 		context.put("edges", Serializer.toPrettyJson(model.getEdges()));
-		context.put("config", BeanToReadableMap.toMap(model.getConfiguration()));
-
+		context.put("config", BeanToReadableMap.toMap(config));
+		context.put("crawledUrl", config.getUrl());
 		context.put("stats", model.getStatistics());
+		context.put("exitStatus", model.getExitStatus());
 
 		LOG.debug("Writing urls report");
 		context.put("urls", model.getStatistics().getStateStats().getUrls());
@@ -192,9 +196,9 @@ class OutputBuilder {
 		writeFile(context, indexFile, "index.html");
 	}
 
-	private void writeJsonToOutDir(String outModelJson) {
+	private void writeJsonToOutDir(String outModelJson, String filename) {
 		try {
-			Files.write(outModelJson, new File(this.outputDir, JSON_OUTPUT_NAME), Charsets.UTF_8);
+			Files.write(outModelJson, new File(this.outputDir, filename), Charsets.UTF_8);
 		} catch (IOException e) {
 			LOG.warn("Could not write JSON model to output dir. " + e.getMessage());
 		}

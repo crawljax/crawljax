@@ -2,7 +2,10 @@ package com.crawljax.plugins.crawloverview.model;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.ExitNotifier.ExitStatus;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -18,14 +21,18 @@ public final class OutPutModel {
 	private final ImmutableMap<String, State> states;
 	private final ImmutableList<Edge> edges;
 	private final Statistics statistics;
-	private final CrawljaxConfiguration configuration;
 
-	public OutPutModel(ImmutableMap<String, State> states, ImmutableList<Edge> edges,
-	        Statistics statistics, CrawljaxConfiguration config) {
+	private final ExitStatus exitStatus;
+
+	@JsonCreator
+	public OutPutModel(@JsonProperty("states") ImmutableMap<String, State> states,
+	        @JsonProperty("edges") ImmutableList<Edge> edges,
+	        @JsonProperty("statistics") Statistics statistics,
+	        @JsonProperty("exitStatus") ExitStatus exitStatus) {
 		this.states = states;
 		this.edges = edges;
 		this.statistics = statistics;
-		configuration = config;
+		this.exitStatus = exitStatus;
 	}
 
 	public ImmutableMap<String, State> getStates() {
@@ -40,89 +47,32 @@ public final class OutPutModel {
 		return statistics;
 	}
 
-	public CrawljaxConfiguration getConfiguration() {
-		return configuration;
+	public ExitStatus getExitStatus() {
+		return exitStatus;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("OutPutModel [states=");
-		builder.append(states);
-		builder.append(", edges=");
-		builder.append(edges);
-		builder.append(", statistics=");
-		builder.append(statistics);
-		builder.append(", configuration=");
-		builder.append(configuration);
-		builder.append("]");
-		return builder.toString();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((configuration == null) ? 0 : configuration.hashCode());
-		result = prime * result + ((edges == null) ? 0 : edges.hashCode());
-		result = prime * result + ((states == null) ? 0 : states.hashCode());
-		result = prime * result + ((statistics == null) ? 0 : statistics.hashCode());
-		return result;
+		return Objects.hashCode(states, edges, statistics, exitStatus);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	public boolean equals(Object object) {
+		if (object instanceof OutPutModel) {
+			OutPutModel that = (OutPutModel) object;
+			return Objects.equal(this.states, that.states)
+			        && Objects.equal(this.edges, that.edges)
+			        && Objects.equal(this.statistics, that.statistics)
+			        && Objects.equal(this.exitStatus, that.exitStatus);
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		OutPutModel other = (OutPutModel) obj;
-		if (configuration == null) {
-			if (other.configuration != null) {
-				return false;
-			}
-		} else if (!configuration.equals(other.configuration)) {
-			return false;
-		}
-		if (edges == null) {
-			if (other.edges != null) {
-				return false;
-			}
-		} else if (!edges.equals(other.edges)) {
-			return false;
-		}
-		if (states == null) {
-			if (other.states != null) {
-				return false;
-			}
-		} else if (!states.equals(other.states)) {
-			return false;
-		}
-		if (statistics == null) {
-			if (other.statistics != null) {
-				return false;
-			}
-		} else if (!statistics.equals(other.statistics)) {
-			return false;
-		}
-		return true;
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).add("exitStatus", exitStatus)
+		        .add("states", states).add("edges", edges)
+		        .add("statistics", statistics).toString();
 	}
 
 }

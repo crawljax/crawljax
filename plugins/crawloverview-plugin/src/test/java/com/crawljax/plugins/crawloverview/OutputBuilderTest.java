@@ -13,8 +13,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-
 public class OutputBuilderTest {
 
 	@Rule
@@ -46,12 +44,6 @@ public class OutputBuilderTest {
 	public void whenNullPersistedTheDomIsPersistedAsEmpty() {
 		builder.persistDom("test-state", null);
 		assertThat(builder.getDom("test-state"), isEmptyString());
-	}
-
-	@Test
-	public void testConfigIsSerializable() {
-		Serializer.toPrettyJson(CrawljaxConfiguration.builderFor("http://localhost")
-		        .build());
 	}
 
 }
