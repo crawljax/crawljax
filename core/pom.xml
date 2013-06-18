@@ -92,6 +92,13 @@
 			<version>${selenium.version}</version>
 		</dependency>
 
+	<dependency>
+		<groupId>org.neo4j</groupId>
+		<artifactId>neo4j</artifactId>
+		<version>1.9</version>
+	</dependency>
+            
+
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-ie-driver</artifactId>
