@@ -30,7 +30,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	private EventType eventType;
 	private Identification identification;
 	private Element element;
-	private  CopyOnWriteArrayList<FormInput> relatedFormInputs = new CopyOnWriteArrayList<>();
+	private CopyOnWriteArrayList<FormInput> relatedFormInputs = new CopyOnWriteArrayList<>();
 	private String relatedFrame = "";
 
 	/**
@@ -296,9 +296,9 @@ public class Eventable extends DefaultEdge implements Serializable {
 		try {
 			searchSuperField(name).set(this, obj);
 		} catch (IllegalArgumentException e) {
-			throw new CrawljaxException(e.getMessage(), e);
+			throw new CrawljaxException("Illegal or inappropriate argument was passed", e);
 		} catch (IllegalAccessException e) {
-			throw new CrawljaxException(e.getMessage(), e);
+			throw new CrawljaxException("Faild to set super field", e);
 		}
 	}
 

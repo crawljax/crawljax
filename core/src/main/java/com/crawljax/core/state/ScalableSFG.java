@@ -1,13 +1,28 @@
 package com.crawljax.core.state;
 
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.CLICKABLE_IN_EDGES;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.DOM_IN_NODES;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.EDGES_INDEX_NAME;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.NODES_INDEX_NAME;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.NODE_TYPE;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.SERIALIZED_CLICKABLE_IN_EDGES;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.SERIALIZED_STATE_VERTEX_IN_NODES;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.SOURCE_STRIPPED_DOM_IN_EDGES;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.STATE_ID_IN_NODES;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.STATE_NAME_IN_NODES;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.STRIPPED_DOM_IN_NODES;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.TARGET_STRIPPED_DOM_IN_EDGES;
+import static com.crawljax.core.state.DatabaseBackedStateFlowGraphUtilities.URL_IN_NODES;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +53,7 @@ import org.neo4j.kernel.Traversal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.ExitNotifier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -80,62 +96,6 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 	private static GraphDatabaseService sfgDb;
 
-	/**
-	 * keys listed here are used for the "key-value pairs" with which data re stored in neo4j nodes
-	 * and edges. The key-value pairs are the main places for storing data in neo4j data model of a
-	 * graph. The data is stored in edges and nodes of the graph as "properties". Keys here can be
-	 * interpreted as labels too.
-	 */
-
-	// the key for storing the persisted StateVertex objects in nodes
-	public static final String SERIALIZED_STATE_VERTEX_IN_NODES = "Serialized State Vertex";
-
-	// the key for storing the stripped DOM field of a StateVertex object
-	// as a string in a node
-	public static final String STRIPPED_DOM_IN_NODES = "Stripped Dom";
-
-	// the key for storing the source key in an edge
-	public static final String SOURCE_STRIPPED_DOM_IN_EDGES = "Source Stripped Dom";
-
-	// the key for storing the target key in an edge
-	public static final String TARGET_STRIPPED_DOM_IN_EDGES = "Target Stripped Dom";
-
-	// the key for storing the persisted Eventable objects
-	public static final String SERIALIZED_CLICKABLE_IN_EDGES = "Serialized Clickable";
-
-	// the key for storing the to string Eventable objects
-	public static final String CLICKABLE_IN_EDGES = "Clickable";
-
-	// the combined key for storing the triples of (sourceStateVertex, Eventable, targetStateVertex)
-	// which is used for indexing edges
-	public static final String SOURCE_CLICKABLE_TARGET_IN_EDGES_FOR_UNIQUE_INDEXING =
-	        "Source-Clickable-Target Triple";
-
-	// array indexes for the triple key used in edge indexing
-	private static final int SOURCE_VERTEX_INDEX = 0;
-	private static final int TARGET_VERTEX_INDEX = 2;
-	private static final int CLICKABLE_INDEX = 1;
-
-	// node type (indexing, data)
-	public static final String NODE_TYPE = "Node Type";
-	// the URL key
-	public static final String URL_IN_NODES = "URL";
-
-	// the state name key
-	public static final String STATE_NAME_IN_NODES = "State Name";
-
-	// the state id key
-	public static final String STATE_ID_IN_NODES = "State ID";
-
-	// the key for DOM
-	public static final String DOM_IN_NODES = "DOM";
-
-	// the id used for the for node indexer object
-	public static final String NODES_INDEX_NAME = "nodesIndex";
-
-	// the id used for the for edge indexer object
-	public static final String EDGES_INDEX_NAME = "edgesIndex";
-
 	// for building an indexing structure within the graph for quick access to nodes and edges.
 	public static Node root;
 
@@ -145,6 +105,11 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	// indexing data structures for ensuring valid concurrent insertion and fast retrieval
 	private static Index<Node> nodeIndex;
 	private static RelationshipIndex edgesIndex;
+
+	// array indexes for the triple key used in edge indexing
+	private static final int SOURCE_VERTEX_INDEX = 0;
+	private static final int TARGET_VERTEX_INDEX = 2;
+	private static final int CLICKABLE_INDEX = 1;
 
 	/**
 	 * The constructor.
@@ -156,22 +121,43 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	public ScalableSFG(ExitNotifier exitNotifier) {
 		this.exitNotifier = exitNotifier;
 
-		// creating the graph database
+		setUpDatabase();
+		initializeIndices();
 
-		// time is used to ensure that every time we run the program a
-		// clean empty database is used for storing the data
+		LOG.debug("Initialized the stateflowgraph");
+
+		// adding a shutdown hook to ensure the database will be shut down even
+		// if the program breaks
+
+		registerShutdownHook(sfgDb);
+
+	}
+
+	/**
+	 * creating the graph database In this method time microseconds are used to ensure that every
+	 * time we run the program a clean empty database is used for storing the data
+	 */
+
+	private void setUpDatabase() {
+
+		Date date = new Date();
 
 		long time = System.nanoTime();
-		time /= 1000;
-		String dirPath = DB_PATH + time;
+
+		String dirPath = DB_PATH + date.toString() + time;
 		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(dirPath);
+	}
 
-		// for quick indexing and retrieval of nodes. This data structure is a additional capability
-		// beside the main graph data structures comprised of nodes and edges
+	/**
+	 * initializing indices for edges and nodes. This indexing data structure is an additional
+	 * capability for fast retrieval. It is beside the main graph data structures (which is
+	 * comprised of nodes and edges)
+	 */
 
-		nodeIndex = sfgDb.index().forNodes(NODES_INDEX_NAME);
+	private void initializeIndices() {
 
-		// a cross indexing of the edges for fast retrieval
+		nodeIndex =
+		        sfgDb.index().forNodes(NODES_INDEX_NAME);
 
 		edgesIndex = sfgDb.index().forRelationships(EDGES_INDEX_NAME);
 
@@ -187,12 +173,6 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		}
 
 		ScalableSFG.root = indexNode;
-		LOG.debug("Initialized the stateflowgraph");
-
-		// adding a shutdown hook to ensure the database will be shut down even
-		// if the program breaks
-
-		registerShutdownHook(sfgDb);
 
 	}
 
@@ -218,23 +198,17 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 	@Override
 	public StateVertex putIfAbsent(StateVertex state, boolean correctName) {
-
 		// the node to be added to the graph and then filled with the state data
-
 		Node toBeAddedNode;
 
-		// for saving the returned result of the method putIfAbsentNode
-		// it will be null if the state is not already present in the graph
-
+		// for saving the returned result of the method putIfAbsentNode it will be null if the state
+		// is not already present in the graph
 		Node alreadyEsixts;
 
 		// starting the transaction
 		Transaction tx = sfgDb.beginTx();
 		try {
-
-			// adding the container for the state which is going to be added
-			// to the graph database
-
+			// adding the container for the state which is going to be added to the graph database
 			toBeAddedNode = sfgDb.createNode();
 
 			// indexing the state in Index manager. the key that we are using for indexing is
@@ -254,66 +228,9 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 				tx.failure();
 			} else {
 
-				// the state was not present in the graph so we continue with adding it to
-				// the graph
+				addEssentialStateProperties(state, toBeAddedNode, correctName);
 
-				// indexing the state by its id in addition to its stripped DOM
-				nodeIndex.add(toBeAddedNode, STATE_ID_IN_NODES, state.getId());
-
-				// correcting the name
-
-				int count = stateCounter.incrementAndGet();
-				exitNotifier.incrementNumberOfStates();
-				LOG.debug("Number of states is now {}", count);
-				if (correctName) {
-					correctStateName(state);
-				}
-
-				// serializing the state
-				byte[] serializedSV = serializeStateVertex(state);
-
-				// adding the state property which is the main data we store for each node (i.e.
-				// each StateVertex) the serialized stateVertex and the Stripped DOM are used
-				// for crawling purposes too!
-
-				toBeAddedNode.setProperty(SERIALIZED_STATE_VERTEX_IN_NODES,
-				        serializedSV);
-
-				toBeAddedNode.setProperty(STRIPPED_DOM_IN_NODES,
-				        UTF8.decode((UTF8.encode(state.getStrippedDom()))));
-
-				// adding textual data which is not used for crawling purpose but are useful for
-				// text based queries in the future
-
-				// the URL of the state
-
-				String url = state.getUrl();
-				if (url != null) {
-					toBeAddedNode.setProperty(URL_IN_NODES, url);
-				} else {
-					toBeAddedNode.setProperty(URL_IN_NODES, "null");
-				}
-
-				// the DOM
-				String dom = state.getDom();
-				if (dom != null) {
-					toBeAddedNode.setProperty(DOM_IN_NODES, dom);
-				} else {
-					toBeAddedNode.setProperty(DOM_IN_NODES, "null");
-				}
-
-				// the name of the state
-				String name = state.getName();
-				if (name != null) {
-					toBeAddedNode.setProperty(STATE_NAME_IN_NODES,
-					        name);
-				} else {
-					toBeAddedNode.setProperty(STATE_NAME_IN_NODES, "null");
-				}
-
-				// the id of the state
-				int id = state.getId();
-				toBeAddedNode.setProperty(STATE_ID_IN_NODES, id);
+				addAdditionalStateProperties(state, toBeAddedNode);
 
 				// flagging successful transaction
 				tx.success();
@@ -321,21 +238,97 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		} finally {
 			tx.finish();
 		}
-
 		if (alreadyEsixts == null) {
-			// the state was not found in the database
-			// so it was stored in the database
+			// the state was not found in the database so it was stored in the database as a new
+			// state
 			return null;
 		} else {
-
-			// // Return the state retrieved from database in case the state
-			// is
-			// // already present in the graph
-			// return (StateVertex) deserializeStateVertex((byte[])
-			// alreadyEsixts
-			// .getProperty(STATE_VERTEX_KEY));
 			return state;
 		}
+
+	}
+
+	/**
+	 * adding textual data which is not used for crawling purpose but are useful for text based
+	 * queries in the future
+	 * 
+	 * @param state
+	 *            the state whose data is added to the node as properties
+	 * @param toBeAddedNode
+	 *            the node which is just added and is the property container for the state data
+	 */
+
+	private void addAdditionalStateProperties(StateVertex state, Node toBeAddedNode) {
+
+		// the URL of the state
+
+		String url = state.getUrl();
+		if (url != null) {
+			toBeAddedNode.setProperty(URL_IN_NODES, url);
+		} else {
+			toBeAddedNode.setProperty(URL_IN_NODES, "null");
+		}
+
+		// the DOM
+		String dom = state.getDom();
+		if (dom != null) {
+			toBeAddedNode.setProperty(DOM_IN_NODES, dom);
+		} else {
+			toBeAddedNode.setProperty(DOM_IN_NODES, "null");
+		}
+
+		// the name of the state
+		String name = state.getName();
+		if (name != null) {
+			toBeAddedNode.setProperty(STATE_NAME_IN_NODES,
+			        name);
+		} else {
+			toBeAddedNode.setProperty(STATE_NAME_IN_NODES, "null");
+		}
+
+		// the id of the state
+		int id = state.getId();
+		toBeAddedNode.setProperty(STATE_ID_IN_NODES, id);
+
+	}
+
+	/**
+	 * this method is called after making sure the state is not present in the graph so we continue
+	 * with adding it to the graph and add the data which is used in the crawling algorithm of
+	 * Crawljax
+	 * 
+	 * @param state
+	 * @param toBeAddedNode
+	 * @param correctName
+	 */
+
+	private void addEssentialStateProperties(StateVertex state, Node toBeAddedNode,
+	        boolean correctName) {
+
+		// indexing the state by its id in addition to its stripped DOM
+		nodeIndex.add(toBeAddedNode, STATE_ID_IN_NODES, state.getId());
+
+		// correcting the name
+
+		int count = stateCounter.incrementAndGet();
+		exitNotifier.incrementNumberOfStates();
+		LOG.debug("Number of states is now {}", count);
+		if (correctName) {
+			correctStateName(state);
+		}
+
+		// serializing the state
+		byte[] serializedSV = serializeStateVertex(state);
+
+		// adding the state property which is the main data we store for each node (i.e.
+		// each StateVertex) the serialized stateVertex and the Stripped DOM are used
+		// for crawling purposes too!
+
+		toBeAddedNode.setProperty(SERIALIZED_STATE_VERTEX_IN_NODES,
+		        serializedSV);
+
+		toBeAddedNode.setProperty(STRIPPED_DOM_IN_NODES,
+		        UTF8.decode((UTF8.encode(state.getStrippedDom()))));
 
 	}
 
@@ -360,10 +353,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	public StateVertex getById(int id) {
 		Node node = nodeIndex.get(STATE_ID_IN_NODES, id).getSingle();
 
-		byte[] serializedState =
-		        (byte[]) node.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
-
-		StateVertex state = deserializeStateVertex(serializedState);
+		StateVertex state = nodeToState(node);
 		return state;
 	}
 
@@ -477,20 +467,29 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	 */
 	@Override
 	public String toString() {
-		ArrayList<String> statesNames = new ArrayList<String>();
-
+		StringBuilder builder = new StringBuilder();
+		builder.append("[");
 		IndexHits<Node> nodes =
 		        nodeIndex.query(STRIPPED_DOM_IN_NODES, "*");
 		try {
 			for (Node node : nodes) {
 				String name = (String) node.getProperty(STATE_NAME_IN_NODES, "noName");
-				statesNames.add(name);
+
+				builder.append(name);
+				builder.append(", ");
 			}
 		} finally {
 			nodes.close();
 		}
 
-		return statesNames.toString();
+		int lastComma = builder.lastIndexOf(",");
+		if (lastComma == builder.length() - 2) {
+			builder.delete(lastComma, lastComma + 1);
+		}
+
+		builder.append("]");
+
+		return builder.toString();
 
 	}
 
@@ -504,21 +503,16 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	@Override
 	public ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix) {
 
-		Set<Eventable> outgoing = new HashSet<Eventable>();
+		ImmutableSet.Builder<Eventable> outgoing = new ImmutableSet.Builder<Eventable>();
+
 		Node node = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix
 		        .getStrippedDom())));
 		for (Relationship edge : node.getRelationships(
 		        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
-			byte[] serializedEvantable = (byte[]) edge
-			        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-			Eventable eventable = deserializeEventable(serializedEvantable);
-
+			Eventable eventable = edgeToEventable(edge);
 			// retrieving outgoing state
 			Node targetNode = edge.getEndNode();
-			byte[] serializedTargetState =
-			        (byte[]) targetNode.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
-			StateVertex targetState = deserializeStateVertex(serializedTargetState);
-
+			StateVertex targetState = nodeToState(targetNode);
 			// setting target state and start state
 
 			eventable.setTargetStateVertex(targetState);
@@ -527,7 +521,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			outgoing.add(eventable);
 		}
 
-		return ImmutableSet.copyOf(outgoing);
+		return outgoing.build();
 	}
 
 	/**
@@ -540,22 +534,16 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	@Override
 	public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix) {
 
-		Set<Eventable> incoming = new HashSet<Eventable>();
+		ImmutableSet.Builder<Eventable> incoming = new ImmutableSet.Builder<Eventable>();
 		Node node = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix
 		        .getStrippedDom())));
 
 		for (Relationship edge : node.getRelationships(
 		        RelTypes.TRANSITIONS_TO, Direction.INCOMING)) {
-			byte[] serializedEvantable = (byte[]) edge
-			        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-			Eventable eventable = deserializeEventable(serializedEvantable);
-
+			Eventable eventable = edgeToEventable(edge);
 			// retrieving starting state
 			Node startNode = edge.getStartNode();
-			byte[] serializedStartState =
-			        (byte[]) startNode.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
-			StateVertex startState = deserializeStateVertex(serializedStartState);
-
+			StateVertex startState = nodeToState(startNode);
 			// setting target state and start state
 
 			eventable.setTargetStateVertex(stateVertix);
@@ -564,8 +552,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			incoming.add(eventable);
 		}
 
-		return ImmutableSet.copyOf(incoming);
-
+		return incoming.build();
 	}
 
 	/**
@@ -578,7 +565,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	@Override
 	public ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix) {
 
-		final Set<StateVertex> outgoing = new HashSet<StateVertex>();
+		ImmutableSet.Builder<StateVertex> outgoing = new ImmutableSet.Builder<>();
 
 		Node sourceNode = getNodeFromDB(UTF8.decode(UTF8.encode(stateVertix
 		        .getStrippedDom())));
@@ -586,14 +573,11 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		for (Relationship edge : sourceNode.getRelationships(
 		        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
 			Node endNode = edge.getEndNode();
-			byte[] serializedState = (byte[]) endNode
-			        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
-			StateVertex targetState = deserializeStateVertex(serializedState);
+			StateVertex targetState = nodeToState(endNode);
 			outgoing.add(targetState);
 		}
 
-		return ImmutableSet.copyOf(outgoing);
-
+		return outgoing.build();
 	}
 
 	/**
@@ -643,10 +627,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
 
 			Node targetNode = edge.getEndNode();
-			byte[] serializedNode = (byte[]) targetNode
-			        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
 
-			StateVertex ts = deserializeStateVertex(serializedNode);
+			StateVertex ts = nodeToState(targetNode);
 			if (ts.equals(target)) {
 				return true;
 			}
@@ -659,11 +641,9 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		        RelTypes.TRANSITIONS_TO, Direction.OUTGOING)) {
 
 			Node srcNode = edge.getEndNode();
-			byte[] serializedNode = (byte[]) srcNode
-			        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
 
-			StateVertex ts = deserializeStateVertex(serializedNode);
-			if (ts.equals(source)) {
+			StateVertex ss = nodeToState(srcNode);
+			if (ss.equals(source)) {
 				return true;
 			}
 		}
@@ -686,7 +666,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	public ImmutableList<Eventable> getShortestPath(StateVertex start,
 	        StateVertex end) {
 
-		List<Eventable> shortestPath = new ArrayList<Eventable>();
+		ImmutableList.Builder<Eventable> shortestPath = new ImmutableList.Builder<Eventable>();
 		Node startNode = getNodeFromDB(start.getStrippedDom());
 		Node endNode = getNodeFromDB(end.getStrippedDom());
 
@@ -700,7 +680,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 			Iterator<PropertyContainer> container = theShortestPath.iterator();
 
-			// skipping the first node! we already have it!
+			// skipping the first node! we already have it from the method parameters!
 			if (container.hasNext()) {
 				container.next();
 			}
@@ -709,9 +689,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 				// retrieving the edge
 				Relationship edge = (Relationship) container.next();
-				byte[] serEventable = (byte[]) edge
-				        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-				Eventable eventable = deserializeEventable(serEventable);
+
+				Eventable eventable = edgeToEventable(edge);
 
 				// setting the source state of the edge!
 				eventable.setSourceStateVertex(start);
@@ -719,9 +698,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 				// retrieving the target node
 
 				Node endNodeForThisEdge = (Node) container.next();
-				byte[] serEndNode = (byte[]) endNodeForThisEdge
-				        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
-				StateVertex endingState = deserializeStateVertex(serEndNode);
+				StateVertex endingState = nodeToState(endNodeForThisEdge);
 
 				// setting the target state
 				eventable.setTargetStateVertex(endingState);
@@ -735,7 +712,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 		}
 
-		return ImmutableList.copyOf(shortestPath);
+		return shortestPath.build();
 	}
 
 	public int getNumberofStates() {
@@ -750,7 +727,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	 */
 	public ImmutableSet<StateVertex> getAllStatesAndPartiallyFilledStates() {
 
-		final Set<StateVertex> allStates = new HashSet<StateVertex>();
+		ImmutableSet.Builder<StateVertex> allStates = new ImmutableSet.Builder<StateVertex>();
 
 		for (Relationship relationship : root.getRelationships(
 		        Direction.OUTGOING, RelTypes.INDEXES)) {
@@ -770,8 +747,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			}
 
 		}
+		return allStates.build();
 
-		return ImmutableSet.copyOf(allStates);
 	}
 
 	/**
@@ -783,7 +760,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	@Override
 	public ImmutableSet<StateVertex> getAllStates() {
 
-		final Set<StateVertex> allStates = new HashSet<StateVertex>();
+		ImmutableSet.Builder<StateVertex> allStates = new ImmutableSet.Builder<StateVertex>();
 
 		for (Relationship relationship : root.getRelationships(
 		        Direction.OUTGOING, RelTypes.INDEXES)) {
@@ -799,7 +776,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			}
 		}
 
-		return ImmutableSet.copyOf(allStates);
+		return allStates.build();
 	}
 
 	/**
@@ -810,8 +787,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	@Override
 	public ImmutableSet<Eventable> getAllEdges() {
 
-		final Set<Eventable> all = new HashSet<Eventable>();
-
+		ImmutableSet.Builder<Eventable> all = new ImmutableSet.Builder<Eventable>();
 		Transaction tx = sfgDb.beginTx();
 		try {
 			for (Relationship relationship : root
@@ -820,20 +796,16 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 				        .getRelationships(Direction.OUTGOING,
 				                RelTypes.TRANSITIONS_TO)) {
 
-					byte[] serializededge = (byte[]) edge
-					        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
-					Eventable eventable = deserializeEventable(serializededge);
+					Eventable eventable = edgeToEventable(edge);
 
 					Node startNode = edge.getStartNode();
-					byte[] serializedStartNode = (byte[]) startNode
-					        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
-					StateVertex startState = deserializeStateVertex(serializedStartNode);
+					StateVertex startState = nodeToState(startNode);
+
 					eventable.setSourceStateVertex(startState);
 
 					Node endNode = edge.getEndNode();
-					byte[] serializedEndNode = (byte[]) endNode
-					        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES);
-					StateVertex endState = deserializeStateVertex(serializedEndNode);
+					StateVertex endState = nodeToState(endNode);
+
 					eventable.setTargetStateVertex(endState);
 
 					all.add(eventable);
@@ -845,7 +817,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			tx.finish();
 		}
 
-		return ImmutableSet.copyOf(all);
+		return all.build();
 	}
 
 	/**
@@ -861,14 +833,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		String strippedDom = state.getStrippedDom();
 		Node node = getNodeFromDB(strippedDom);
 
-		byte[] serializedState =
-		        (byte[]) node.getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
-		if (serializedState == null) {
-			return null;
-		}
-
-		StateVertex deserializedStateVertex = deserializeStateVertex(serializedState);
-
+		StateVertex deserializedStateVertex = nodeToState(node);
 		return deserializedStateVertex;
 	}
 
@@ -970,14 +935,6 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 		return i == outgoingSet.size();
 	}
-
-	/**
-	 * This method returns all possible paths from the index state using the Kshortest paths.
-	 * 
-	 * @param index
-	 *            the initial state.
-	 * @return a list of GraphPath lists.
-	 */
 
 	/**
 	 * This method returns all possible paths from the index state using the Kshortest paths.
@@ -1148,11 +1105,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		// stream is stored in a buffer we use this class to utilize the Java serialization api
 		// which writes and reads objects to and from streams
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-		try {
-
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		        ObjectOutputStream oos = new ObjectOutputStream(baos)) {
 
 			// Serializing the stateVertex object to the stream
 
@@ -1162,13 +1116,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 			serializedStateVertex = baos.toByteArray();
 
-			// closing streams
-
-			oos.close();
-			baos.close();
-
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new CrawljaxException(e.getMessage(), e);
 		}
 
 		return serializedStateVertex;
@@ -1181,26 +1130,14 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 		StateVertex deserializedSV = null;
 
-		try {
-
-			ByteArrayInputStream bais = new ByteArrayInputStream(
-			        serializedStateVertex);
-
-			ObjectInputStream ois = new ObjectInputStream(bais);
+		try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(
+		        serializedStateVertex))) {
 
 			deserializedSV = (StateVertex) ois.readObject();
 
-			// Closing the streams
+		} catch (Exception e) {
 
-			ois.close();
-			bais.close();
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			throw new CrawljaxException(e.getMessage(), e);
 		}
 
 		return deserializedSV;
@@ -1215,11 +1152,10 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		// stream is stored in a buffer we use this class to utilize the Java serialization api
 		// which writes and reads object to and from streams
 
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		        ObjectOutputStream oos = new ObjectOutputStream(baos)
 
-		try {
-
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
+		) {
 
 			// serializing the Eventable object to the stream
 
@@ -1229,13 +1165,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 			serializedEventable = baos.toByteArray();
 
-			// closing streams
-
-			oos.close();
-			baos.close();
-
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new CrawljaxException(e.getMessage(), e);
 		}
 
 		return serializedEventable;
@@ -1246,28 +1177,16 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 		Eventable deserializedEventable = null;
 
-		try {
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(
+		        serializedEventable);
 
-			ByteArrayInputStream bais = new ByteArrayInputStream(
-			        serializedEventable);
-
-			ObjectInputStream ois = new ObjectInputStream(bais);
+		        ObjectInputStream ois = new ObjectInputStream(bais)) {
 
 			deserializedEventable = (Eventable) ois.readObject();
 
-			// Closing streams
-
-			ois.close();
-			bais.close();
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new CrawljaxException(e.getMessage(), e);
 		}
-
 		return deserializedEventable;
 
 	}
@@ -1297,17 +1216,13 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 					        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES);
 					Eventable eventable = deserializeEventable(serializededge);
 
+					eventable = edgeToEventable(edge);
+
 					Node sourceNode = edge.getStartNode();
-					byte[] serializedSourceStateVertex = (byte[]) sourceNode
-					        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
-					StateVertex sourceStateVertex =
-					        deserializeStateVertex(serializedSourceStateVertex);
+					StateVertex sourceStateVertex = nodeToState(sourceNode);
 
 					Node targetNode = edge.getEndNode();
-					byte[] serializedTargetStateVertex = (byte[]) targetNode
-					        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
-					StateVertex targetStateVertex =
-					        deserializeStateVertex(serializedTargetStateVertex);
+					StateVertex targetStateVertex = nodeToState(targetNode);
 
 					if ((eventable == null) || (sourceStateVertex == null)
 					        || (targetStateVertex == null)) {
@@ -1334,6 +1249,33 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		}
 
 		return sfg;
+	}
+
+	private Eventable edgeToEventable(Relationship edge) {
+
+		byte[] serializededge = (byte[]) edge
+		        .getProperty(SERIALIZED_CLICKABLE_IN_EDGES, null);
+		if (serializededge == null) {
+			return null;
+		} else {
+
+			Eventable eventable = deserializeEventable(serializededge);
+
+			return eventable;
+		}
+	}
+
+	private StateVertex nodeToState(Node sourceNode) {
+
+		byte[] serializedStateVertex = (byte[]) sourceNode
+		        .getProperty(SERIALIZED_STATE_VERTEX_IN_NODES, null);
+		if (serializedStateVertex == null) {
+			return null;
+		} else {
+			StateVertex stateVertex =
+			        deserializeStateVertex(serializedStateVertex);
+			return stateVertex;
+		}
 	}
 
 	private StateVertex insertStateInJgraphT(StateVertex stateVertix,
