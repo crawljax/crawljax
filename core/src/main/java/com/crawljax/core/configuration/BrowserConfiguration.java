@@ -44,6 +44,7 @@ public class BrowserConfiguration {
 	private final int numberOfBrowsers;
 	private final Provider<EmbeddedBrowser> browserBuilder;
 	private String remoteHubUrl;
+	private String lang;
 
 	/**
 	 * @param browsertype
@@ -149,6 +150,20 @@ public class BrowserConfiguration {
 			        && Objects.equal(this.remoteHubUrl, that.remoteHubUrl);
 		}
 		return false;
+	}
+	
+		/**
+	 * @return the language header setting
+	 */
+	public String getLang() {
+		return lang;
+	}
+
+	/**
+	 * @param lang the language header in http requests
+	 */
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 }
