@@ -111,6 +111,10 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	        long crawlWaitReload, long crawlWaitEvent) {
 		if (configuration.getProxyConfiguration() != null) {
 			FirefoxProfile profile = new FirefoxProfile();
+			String lang = configuration.getBrowserConfig().getLang();
+			if(lang != null && !lang.equals(""){
+				profile.setPreference("intl.accept_languages", lang);
+			}
 
 			profile.setPreference("network.proxy.http", configuration
 			        .getProxyConfiguration().getHostname());
