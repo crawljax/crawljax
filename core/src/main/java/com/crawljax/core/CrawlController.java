@@ -41,8 +41,7 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	@Inject
 	CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
-	        CrawljaxConfiguration config,
-	        ExitNotifier exitNotifier,
+	        CrawljaxConfiguration config, ExitNotifier exitNotifier,
 	        CrawlSessionProvider crawlSessionProvider) {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
@@ -60,6 +59,7 @@ public class CrawlController implements Callable<CrawlSession> {
 	 */
 	@Override
 	public CrawlSession call() {
+		plugins.runProxyServerPlugins(config.getProxyConfiguration());
 		setMaximumCrawlTimeIfNeeded();
 		plugins.runPreCrawlingPlugins(config);
 		CrawlTaskConsumer firstConsumer = consumerFactory.get();
@@ -107,7 +107,7 @@ public class CrawlController implements Callable<CrawlSession> {
 			executor.submit(consumerFactory.get());
 		}
 		try {
-			exitReason = exitNotifier.awaitTermination();			
+			exitReason = exitNotifier.awaitTermination();
 		} catch (InterruptedException e) {
 			LOG.warn("The crawl was interrupted before it finished. Shutting down...");
 			exitReason = ExitStatus.ERROR;
