@@ -90,8 +90,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	// The directory path for saving the graph database created by neo4j for
 	// storing the state flow graph
 
-	public static String DB_PATH = "target/state-flow-graph-db/graph.db";
-
+	public static String DB_PATH = null;
 	// the connector and main access point to the neo4j graph database
 
 	private static GraphDatabaseService sfgDb;
@@ -103,8 +102,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	private static IndexManager indexManager;
 
 	// indexing data structures for ensuring valid concurrent insertion and fast retrieval
-	private static Index<Node> nodeIndex;
-	private static RelationshipIndex edgesIndex;
+	public static Index<Node> nodeIndex;
+	public static RelationshipIndex edgesIndex;
 
 	// array indexes for the triple key used in edge indexing
 	private static final int SOURCE_VERTEX_INDEX = 0;
@@ -133,6 +132,18 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 	}
 
+	public ScalableSFG(String dbPath, Node root, Index<Node> nIndex,
+	        RelationshipIndex eIndex, ExitNotifier exitNotifier) {
+		this.exitNotifier = exitNotifier;
+		DB_PATH = dbPath;
+		ScalableSFG.root = root;
+		ScalableSFG.nodeIndex = nIndex;
+		ScalableSFG.edgesIndex = eIndex;
+
+		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(DB_PATH);
+
+	}
+
 	/**
 	 * creating the graph database In this method time microseconds are used to ensure that every
 	 * time we run the program a clean empty database is used for storing the data
@@ -140,12 +151,14 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 	private void setUpDatabase() {
 
+		DB_PATH = "target/state-flow-graph-db/graph.db";
+
 		Date date = new Date();
 
 		long time = System.nanoTime();
 
-		String dirPath = DB_PATH + date.toString() + time;
-		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(dirPath);
+		DB_PATH = DB_PATH + date.toString() + time;
+		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(DB_PATH);
 	}
 
 	/**
