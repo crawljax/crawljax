@@ -83,6 +83,9 @@ public class StateStatistics {
 		return totalNumberOfStates;
 	}
 
+	/**
+	 * @return A mapping from the {@link String} url to the {@link String} state name.
+	 */
 	public ImmutableSetMultimap<String, String> getUrls() {
 		return urls;
 	}

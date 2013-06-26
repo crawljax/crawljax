@@ -22,6 +22,7 @@ import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.test.BrowserTest;
@@ -32,7 +33,8 @@ public class CandidateElementExtractorTest {
 
 	private static final Logger LOG = LoggerFactory
 	        .getLogger(CandidateElementExtractorTest.class);
-	private static final StateVertex DUMMY_STATE = new StateVertex(0, "DUMMY", "");
+	private static final StateVertex DUMMY_STATE = StateMachine.createIndex("http://localhost",
+	        "", "");
 
 	@ClassRule
 	public static final RunWithWebServer DEMO_SITE_SERVER = new RunWithWebServer("/demo-site");

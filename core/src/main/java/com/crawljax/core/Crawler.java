@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
@@ -26,6 +27,7 @@ import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
@@ -55,6 +57,7 @@ public class Crawler {
 	private final WaitConditionChecker waitConditionChecker;
 	private final CandidateElementExtractor candidateExtractor;
 	private final UnfiredCandidateActions candidateActionCache;
+	private final Provider<InMemoryStateFlowGraph> graphProvider;
 
 	private CrawlPath crawlpath;
 	private StateMachine stateMachine;
@@ -64,8 +67,10 @@ public class Crawler {
 	        StateComparator stateComparator, UnfiredCandidateActions candidateActionCache,
 	        FormHandlerFactory formHandlerFactory,
 	        WaitConditionChecker waitConditionChecker,
-	        CandidateElementExtractorFactory elementExtractor) {
+	        CandidateElementExtractorFactory elementExtractor,
+	        Provider<InMemoryStateFlowGraph> graphProvider) {
 		this.context = context;
+		this.graphProvider = graphProvider;
 		this.browser = context.getBrowser();
 		this.url = config.getUrl();
 		this.plugins = config.getPlugins();
@@ -76,6 +81,7 @@ public class Crawler {
 		this.waitConditionChecker = waitConditionChecker;
 		this.candidateExtractor = elementExtractor.newExtractor(browser);
 		this.formHandler = formHandlerFactory.newFormHandler(browser);
+
 	}
 
 	/**
@@ -94,7 +100,7 @@ public class Crawler {
 			sess.addCrawlPath(crawlpath);
 		}
 		stateMachine =
-		        new StateMachine(sess.getStateFlowGraph(),
+		        new StateMachine(graphProvider.get(),
 		                crawlRules.getInvariants(), plugins, stateComparator);
 		context.setStateMachine(stateMachine);
 		crawlpath = new CrawlPath();
@@ -118,6 +124,9 @@ public class Crawler {
 			LOG.info(ex.getMessage());
 			LOG.debug(ex.getMessage(), ex);
 			candidateActionCache.purgeActionsForState(ex.getTarget());
+		} catch (CrawlerLeftDomainException e) {
+			LOG.info("The crawler left the domain. No biggy, whe'll just go somewhere else.");
+			LOG.debug("Domain espace was {}", e.getMessage());
 		}
 	}
 
@@ -316,7 +325,7 @@ public class Crawler {
 				 * It's okay to have left the domain because the action didn't complete due to an
 				 * interruption.
 				 */
-				throw new CrawljaxException("Somehow we left the domain");
+				throw new CrawlerLeftDomainException(browser.getCurrentUrl());
 			}
 		}
 		if (interrupted) {
@@ -430,10 +439,8 @@ public class Crawler {
 		LOG.debug("Setting up vertex of the index page");
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
-		StateVertex index =
-		        new StateVertex(StateVertex.INDEX_ID, url.toExternalForm(), "index",
-		                browser.getDom(),
-		                stateComparator.getStrippedDom(browser));
+		StateVertex index = StateMachine.createIndex(url.toExternalForm(), browser.getDom(),
+		        stateComparator.getStrippedDom(browser));
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 		        "It seems some the index state is crawled more than once.");
 

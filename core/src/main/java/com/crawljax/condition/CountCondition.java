@@ -20,7 +20,7 @@ public class CountCondition implements Condition {
 
 	private final Condition condition;
 	private final AtomicInteger count = new AtomicInteger(0);
-	private final AtomicInteger maxCount = new AtomicInteger(0);
+	private final int maxCount;
 
 	/**
 	 * @param maxCount
@@ -29,16 +29,20 @@ public class CountCondition implements Condition {
 	 *            the condition.
 	 */
 	public CountCondition(int maxCount, Condition condition) {
-		this.maxCount.set(maxCount);
+		this.maxCount = maxCount;
 		this.condition = condition;
 	}
 
+	/**
+	 * Note: Check has a side effect (it increments a counter). Invoking it multiple times may
+	 * result in a different answer.
+	 */
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
 		if (condition.check(browser)) {
 			count.getAndIncrement();
 		}
-		return count.get() <= maxCount.get();
+		return count.get() <= maxCount;
 	}
 
 	@Override
@@ -49,26 +53,29 @@ public class CountCondition implements Condition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
 		        .add("condition", condition)
-		        .add("count", count)
 		        .add("maxCount", maxCount)
 		        .toString();
 	}
 
+	/**
+	 * Since "count" is a consequence of invoking "check", it is not included in the equality /
+	 * hashCode computation.
+	 */
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), condition, count, maxCount);
+		return Objects.hashCode(getClass(), condition, maxCount);
 	}
 
+	/**
+	 * Since "count" is a consequence of invoking "check", it is not included in the equality /
+	 * hashCode computation.
+	 */
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof CountCondition) {
-			if (!super.equals(object))
-				return false;
 			CountCondition that = (CountCondition) object;
 			return Objects.equal(this.condition, that.condition)
-			        && Objects.equal(this.count, that.count)
 			        && Objects.equal(this.maxCount, that.maxCount);
 		}
 		return false;

@@ -43,12 +43,10 @@ public class XPathCondition extends AbstractCondition {
 		try {
 			Document document = DomUtils.asDocument(browser.getDom());
 			NodeList nodeList = XPathHelper.evaluateXpathExpression(document, expression);
-			// TODO IF this can be removed, the ThreadLocal store can be removed and increasing
-			// speed!
 			this.setAffectedNodes(nodeList);
 			return nodeList.getLength() > 0;
 		} catch (XPathExpressionException | IOException e) {
-			// Exception is catched, check failed so return false;
+			// Exception is caught, check failed so return false;
 			return false;
 		}
 
@@ -56,14 +54,12 @@ public class XPathCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), expression);
+		return Objects.hashCode(getClass(), expression);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof XPathCondition) {
-			if (!super.equals(object))
-				return false;
 			XPathCondition that = (XPathCondition) object;
 			return Objects.equal(this.expression, that.expression);
 		}

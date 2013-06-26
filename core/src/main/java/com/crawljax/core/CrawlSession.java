@@ -8,13 +8,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 
 /**
- * The data about the crawlsession.
+ * Contains all data concerned with this crawl. There is one {@link CrawlSession} per crawl. Even if
+ * there are multiple {@link EmbeddedBrowser}s configured.
  */
 @Singleton
 public class CrawlSession {
@@ -104,4 +106,5 @@ public class CrawlSession {
 	public CrawljaxConfiguration getConfig() {
 		return config;
 	}
+
 }

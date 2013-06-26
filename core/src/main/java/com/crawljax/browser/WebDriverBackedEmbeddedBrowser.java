@@ -51,12 +51,6 @@ import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.DomUtils;
 import com.google.common.collect.ImmutableSortedSet;
 
-/**
- * @author mesbah
- * @author Frank Groeneveld
- * @version $Id: WebDriverBackedEmbeddedBrowser.java 387 2010-07-13 13:55:49Z slenselink@google.com
- *          $
- */
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private long crawlWaitEvent;
 	private static final Logger LOGGER = LoggerFactory

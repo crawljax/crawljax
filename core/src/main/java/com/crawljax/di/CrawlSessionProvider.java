@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlSessionNotSetupYetException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.google.common.base.Preconditions;
 
@@ -25,13 +25,14 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlSessionProvider.class);
 
 	private final AtomicBoolean isSet = new AtomicBoolean();
-	private final StateFlowGraph stateFlowGraph;
+	private final InMemoryStateFlowGraph stateFlowGraph;
 	private final CrawljaxConfiguration config;
 
 	private CrawlSession session;
 
 	@Inject
-	public CrawlSessionProvider(StateFlowGraph stateFlowGraph, CrawljaxConfiguration config) {
+	public CrawlSessionProvider(InMemoryStateFlowGraph stateFlowGraph,
+	        CrawljaxConfiguration config) {
 		this.stateFlowGraph = stateFlowGraph;
 		this.config = config;
 	}
@@ -45,7 +46,7 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	public void setup(StateVertex indexState) {
 		if (!isSet.getAndSet(true)) {
 			LOG.debug("Setting up the crawlsession");
-			StateVertex added = stateFlowGraph.putIfAbsent(indexState, false);
+			StateVertex added = stateFlowGraph.putIndex(indexState);
 			Preconditions.checkArgument(added == null, "Could not set the initial state");
 			session = new CrawlSession(config, stateFlowGraph, indexState);
 		} else {

@@ -31,14 +31,12 @@ public class NotUrlCondition extends AbstractCondition {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), urlCondition);
+		return Objects.hashCode(getClass(), urlCondition);
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof NotUrlCondition) {
-			if (!super.equals(object))
-				return false;
 			NotUrlCondition that = (NotUrlCondition) object;
 			return Objects.equal(this.urlCondition, that.urlCondition);
 		}
@@ -48,7 +46,6 @@ public class NotUrlCondition extends AbstractCondition {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("super", super.toString())
 		        .add("urlCondition", urlCondition)
 		        .toString();
 	}

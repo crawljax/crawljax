@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.crawljax</groupId>
 		<artifactId>crawljax-parent-pom</artifactId>
-		<version>3.1-SNAPSHOT</version>
+		<version>3.2-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.crawljax.plugins</groupId>
@@ -14,9 +14,6 @@
 	<name>Crawljax plugins parent POM</name>
 	<description>Parent plugin POM.</description>
 
-	<properties>
-		<crawljax.version>${project.parent.version}</crawljax.version>
-	</properties>
 
 	<scm>
 		<connection>scm:git:git@github.com:crawljax/plugins-parent-pom.git</connection>
@@ -37,7 +34,7 @@
 		<dependency>
 			<groupId>com.crawljax</groupId>
 			<artifactId>crawljax-core</artifactId>
-			<version>${crawljax.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -60,7 +57,7 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-	
+
 	<modules>
 		<module>crawloverview-plugin</module>
 	</modules>

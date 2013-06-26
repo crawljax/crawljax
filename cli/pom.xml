@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.crawljax</groupId>
 		<artifactId>crawljax-parent-pom</artifactId>
-		<version>3.1-SNAPSHOT</version>
+		<version>3.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>crawljax-cli</artifactId>
