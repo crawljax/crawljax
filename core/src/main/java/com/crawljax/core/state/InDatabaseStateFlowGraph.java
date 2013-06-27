@@ -68,14 +68,11 @@ import com.google.inject.Singleton;
  */
 
 @Singleton
-public class ScalableSFG implements Serializable, StateFlowGraph {
+public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 
-	/**
-	 * serial version for persisting the class
-	 */
 	private static final long serialVersionUID = 8765685878231494104L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(ScalableSFG.class
+	private static final Logger LOG = LoggerFactory.getLogger(InDatabaseStateFlowGraph.class
 	        .getName());
 
 	/**
@@ -87,37 +84,45 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 	private final ExitNotifier exitNotifier;
 
-	// The directory path for saving the graph database created by neo4j for
-	// storing the state flow graph
-
+	/**
+	 * The directory path for saving the graph database created by neo4j for storing the state flow
+	 * graph
+	 */
 	public static String DB_PATH = null;
-	// the connector and main access point to the neo4j graph database
 
+	/**
+	 * the connector and main access point to the neo4j graph database
+	 */
 	private static GraphDatabaseService sfgDb;
 
-	// for building an indexing structure within the graph for quick access to nodes and edges.
+	/**
+	 * for building an indexing structure within the graph for quick access to nodes and edges.
+	 */
 	public static Node root;
 
-	// index manager
+	/**
+	 * index manager for indexing nodes and relations in the graph database
+	 */
 	private static IndexManager indexManager;
 
-	// indexing data structures for ensuring valid concurrent insertion and fast retrieval
+	/**
+	 * indexing data structures for ensuring valid concurrent insertion and fast retrieval
+	 */
 	public static Index<Node> nodeIndex;
 	public static RelationshipIndex edgesIndex;
 
-	// array indexes for the triple key used in edge indexing
+	/**
+	 * array indexes for the triple key used in edge indexing
+	 */
 	private static final int SOURCE_VERTEX_INDEX = 0;
 	private static final int TARGET_VERTEX_INDEX = 2;
 	private static final int CLICKABLE_INDEX = 1;
 
 	/**
-	 * The constructor.
-	 * 
-	 * @param initialState
-	 *            the state to start from.
+	 * @param exitNotifier
 	 */
 	@Inject
-	public ScalableSFG(ExitNotifier exitNotifier) {
+	public InDatabaseStateFlowGraph(ExitNotifier exitNotifier) {
 		this.exitNotifier = exitNotifier;
 
 		setUpDatabase();
@@ -132,13 +137,21 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 
 	}
 
-	public ScalableSFG(String dbPath, Node root, Index<Node> nIndex,
+	/**
+	 * @param dbPath
+	 *            the path to the existing neo4j database
+	 * @param root
+	 * @param nIndex
+	 * @param eIndex
+	 * @param exitNotifier
+	 */
+	public InDatabaseStateFlowGraph(String dbPath, Node root, Index<Node> nIndex,
 	        RelationshipIndex eIndex, ExitNotifier exitNotifier) {
 		this.exitNotifier = exitNotifier;
 		DB_PATH = dbPath;
-		ScalableSFG.root = root;
-		ScalableSFG.nodeIndex = nIndex;
-		ScalableSFG.edgesIndex = eIndex;
+		InDatabaseStateFlowGraph.root = root;
+		InDatabaseStateFlowGraph.nodeIndex = nIndex;
+		InDatabaseStateFlowGraph.edgesIndex = eIndex;
 
 		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(DB_PATH);
 
@@ -185,7 +198,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			tx.finish();
 		}
 
-		ScalableSFG.root = indexNode;
+		InDatabaseStateFlowGraph.root = indexNode;
 
 	}
 
@@ -209,7 +222,6 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	 * @return the clone if one is detected <code>null</code> otherwise.
 	 */
 
-	@Override
 	public StateVertex putIfAbsent(StateVertex state, boolean correctName) {
 		// the node to be added to the graph and then filled with the state data
 		Node toBeAddedNode;
@@ -224,9 +236,11 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			// adding the container for the state which is going to be added to the graph database
 			toBeAddedNode = sfgDb.createNode();
 
-			// indexing the state in Index manager. the key that we are using for indexing is
-			// the stripped_dom field. This, in particular, is in compliance with the domChanged
-			// method in the class Crawler
+			/**
+			 * indexing the state in Index manager. the key that we are using for indexing is the
+			 * stripped_dom field. This, in particular, is in compliance with the domChanged method
+			 * in the class Crawler
+			 */
 
 			alreadyEsixts = putIfAbsentNode(toBeAddedNode,
 			        UTF8.decode(UTF8.encode(state.getStrippedDom())));
@@ -241,7 +255,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 				tx.failure();
 			} else {
 
-				addEssentialStateProperties(state, toBeAddedNode, correctName);
+				addEssentialStateProperties(state, toBeAddedNode);
 
 				addAdditionalStateProperties(state, toBeAddedNode);
 
@@ -262,7 +276,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	}
 
 	/**
-	 * adding textual data which is not used for crawling purpose but are useful for text based
+	 * adding textual data which is not used for crawling purposes but are useful for text based
 	 * queries in the future
 	 * 
 	 * @param state
@@ -315,8 +329,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	 * @param correctName
 	 */
 
-	private void addEssentialStateProperties(StateVertex state, Node toBeAddedNode,
-	        boolean correctName) {
+	private void addEssentialStateProperties(StateVertex state, Node toBeAddedNode) {
 
 		// indexing the state by its id in addition to its stripped DOM
 		nodeIndex.add(toBeAddedNode, STATE_ID_IN_NODES, state.getId());
@@ -326,9 +339,6 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		int count = stateCounter.incrementAndGet();
 		exitNotifier.incrementNumberOfStates();
 		LOG.debug("Number of states is now {}", count);
-		if (correctName) {
-			correctStateName(state);
-		}
 
 		// serializing the state
 		byte[] serializedSV = serializeStateVertex(state);
@@ -343,18 +353,6 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		toBeAddedNode.setProperty(STRIPPED_DOM_IN_NODES,
 		        UTF8.decode((UTF8.encode(state.getStrippedDom()))));
 
-	}
-
-	private void correctStateName(StateVertex stateVertex) {
-		// the -1 is for the "index" state.
-		int totalNumberOfStates = this.getNumberofStates() - 1;
-		String correctedName = makeStateName(totalNumberOfStates);
-		if (!"index".equals(stateVertex.getName())
-		        && !stateVertex.getName().equals(correctedName)) {
-			LOG.info("Correcting state name from {}  to {}",
-			        stateVertex.getName(), correctedName);
-			stateVertex.setName(correctedName);
-		}
 	}
 
 	/**
@@ -403,8 +401,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		// edge and set them via the setter methods which are implemented by reflection. This is
 		// done automatically with jgraphT.
 
-		eventable.setSourceStateVertex(sourceVert);
-		eventable.setTargetStateVertex(targetVert);
+		eventable.setSource(sourceVert);
+		eventable.setTarget(targetVert);
 
 		byte[] serializedEventable = serializeEventable(eventable);
 
@@ -486,7 +484,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		        nodeIndex.query(STRIPPED_DOM_IN_NODES, "*");
 		try {
 			for (Node node : nodes) {
-				String name = (String) node.getProperty(STATE_NAME_IN_NODES, "noName");
+				String name = (String) node.getProperty(STATE_NAME_IN_NODES, "No Name Returned");
 
 				builder.append(name);
 				builder.append(", ");
@@ -528,8 +526,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			StateVertex targetState = nodeToState(targetNode);
 			// setting target state and start state
 
-			eventable.setTargetStateVertex(targetState);
-			eventable.setSourceStateVertex(stateVertix);
+			eventable.setTarget(targetState);
+			eventable.setSource(stateVertix);
 
 			outgoing.add(eventable);
 		}
@@ -559,8 +557,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			StateVertex startState = nodeToState(startNode);
 			// setting target state and start state
 
-			eventable.setTargetStateVertex(stateVertix);
-			eventable.setSourceStateVertex(startState);
+			eventable.setTarget(stateVertix);
+			eventable.setSource(startState);
 
 			incoming.add(eventable);
 		}
@@ -591,35 +589,6 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		}
 
 		return outgoing.build();
-	}
-
-	/**
-	 * @param clickable
-	 *            the edge.
-	 * @return the target state of this edge.
-	 */
-	@Override
-	public StateVertex getTargetState(Eventable clickable) {
-
-		// to do
-		// get edges one by one and compare it so as to use less memory
-		StateVertex foundTargetState = null;
-		int occurrence = 0;
-		for (Eventable edge : getAllEdges()) {
-
-			if (edge.equals(clickable)) {
-				return edge.getTargetStateVertex();
-			} else if (edge.toString().equals(clickable.toString())) {
-				foundTargetState = edge.getTargetStateVertex();
-				occurrence++;
-			}
-		}
-
-		if (occurrence == 1) {
-			return foundTargetState;
-		} else {
-			return null;
-		}
 	}
 
 	/**
@@ -706,7 +675,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 				Eventable eventable = edgeToEventable(edge);
 
 				// setting the source state of the edge!
-				eventable.setSourceStateVertex(start);
+				eventable.setSource(start);
 
 				// retrieving the target node
 
@@ -714,7 +683,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 				StateVertex endingState = nodeToState(endNodeForThisEdge);
 
 				// setting the target state
-				eventable.setTargetStateVertex(endingState);
+				eventable.setTarget(endingState);
 
 				// adding the edge to the shortest path
 				shortestPath.add(eventable);
@@ -754,7 +723,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 				StateVertex state = deserializeStateVertex(serializedNode);
 				allStates.add(state);
 			} else {
-				allStates.add(new StateVertex(Integer.MAX_VALUE, "mock",
+				allStates.add(new StateVertexImpl(Integer.MAX_VALUE, "mock",
 				        "mock", "mock", "mock"));
 
 			}
@@ -814,12 +783,12 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 					Node startNode = edge.getStartNode();
 					StateVertex startState = nodeToState(startNode);
 
-					eventable.setSourceStateVertex(startState);
+					eventable.setSource(startState);
 
 					Node endNode = edge.getEndNode();
 					StateVertex endState = nodeToState(endNode);
 
-					eventable.setTargetStateVertex(endState);
+					eventable.setTarget(endState);
 
 					all.add(eventable);
 
@@ -846,8 +815,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		String strippedDom = state.getStrippedDom();
 		Node node = getNodeFromDB(strippedDom);
 
-		StateVertex deserializedStateVertex = nodeToState(node);
-		return deserializedStateVertex;
+		StateVertex stateFromGraph = nodeToState(node);
+		return stateFromGraph;
 	}
 
 	/**
@@ -858,7 +827,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 		final Mean mean = new Mean();
 
 		for (StateVertex state : getAllStates()) {
-			mean.increment(state.getDomSize());
+			mean.increment(state.getDom().getBytes().length);
 		}
 
 		return (int) mean.getResult();
@@ -869,7 +838,6 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	 *            The starting state.
 	 * @return A list of the deepest states (states with no outgoing edges).
 	 */
-	@Override
 	public List<StateVertex> getDeepStates(StateVertex state) {
 		final Set<String> visitedStates = new HashSet<String>();
 		final List<StateVertex> deepStates = new ArrayList<StateVertex>();
@@ -989,6 +957,12 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			} catch (Exception e) {
 				// TODO Stefan; which Exception is catched here???Can this be
 				// removed?
+
+				/**
+				 * Alireza: "I was receiving this error while there was nothing wrong with the graph
+				 * which was passed to this method. So I searched for it and it turned out to be a
+				 * bug in the JgraphT which is fixed in the newest snapshot!"
+				 */
 				LOG.error("Error with " + state.toString(), e);
 			}
 
@@ -1002,13 +976,12 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	 * 
 	 * @return State name the name of the state
 	 */
-	@Override
+
 	public String getNewStateName(int id) {
 		String state = makeStateName(id);
 		return state;
 	}
 
-	@Override
 	public int getNextStateId() {
 		return nextStateNameCounter.incrementAndGet();
 	}
@@ -1034,7 +1007,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	}
 
 	public static void setSfgDb(GraphDatabaseService sfgDb) {
-		ScalableSFG.sfgDb = sfgDb;
+		InDatabaseStateFlowGraph.sfgDb = sfgDb;
 	}
 
 	public static GraphDatabaseService getSfgDb() {
@@ -1088,7 +1061,7 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	}
 
 	public static void setIndexManager(IndexManager index) {
-		ScalableSFG.indexManager = index;
+		InDatabaseStateFlowGraph.indexManager = index;
 	}
 
 	public static IndexManager getIndexManager() {
@@ -1096,11 +1069,11 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 	}
 
 	public static void setNodeIndex(Index<Node> nodeIndex) {
-		ScalableSFG.nodeIndex = nodeIndex;
+		InDatabaseStateFlowGraph.nodeIndex = nodeIndex;
 	}
 
 	public static void setEdgesIndex(RelationshipIndex edgesIndex) {
-		ScalableSFG.edgesIndex = edgesIndex;
+		InDatabaseStateFlowGraph.edgesIndex = edgesIndex;
 	}
 
 	/**
@@ -1244,8 +1217,8 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 					} else {
 						if (sfg.addEdge(sourceStateVertex, targetStateVertex,
 						        eventable)) {
-							eventable.setSourceStateVertex(sourceStateVertex);
-							eventable.setTargetStateVertex(targetStateVertex);
+							eventable.setSource(sourceStateVertex);
+							eventable.setTarget(targetStateVertex);
 
 							LOG.debug("edge added successfully to JgraphT");
 						} else {
@@ -1323,6 +1296,17 @@ public class ScalableSFG implements Serializable, StateFlowGraph {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public StateVertex putIndex(StateVertex index) {
+		return putIfAbsent(index, false);
+	}
+
+	@Override
+	public StateVertex newStateFor(String url, String dom, String strippedDom) {
+		int id = nextStateNameCounter.incrementAndGet();
+		return new StateVertexImpl(id, url, getNewStateName(id), dom, strippedDom);
 	}
 
 }

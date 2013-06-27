@@ -50,21 +50,6 @@ public class ConfigurationModule extends AbstractModule {
 			        Providers.guicify(browserConfig.getBrowserBuilder()));
 		}
 
-		// if (config.getGraphType() == StateFlowGraphType.DEAFAULT) {
-		// bind(StateFlowGraph.class).to(DefaultStateFlowGraph.class);
-		// } else if (config.getGraphType() == StateFlowGraphType.DB_SIMPLE) {
-		// bind(StateFlowGraph.class).to(DBSfgSimple.class);
-		// } else if (config.getGraphType() == StateFlowGraphType.DB_IN_RAM_PATH) {
-		// bind(StateFlowGraph.class).to(DBSfgInMemoryPathFinder.class);
-		// } else if (config.getGraphType() == StateFlowGraphType.DB_NO_RAM) {
-		// bind(StateFlowGraph.class).to(DBSfgWithoutRam.class);
-		// } else if (config.getGraphType() == StateFlowGraphType.DB_WITH_INDEXING) {
-		// bind(StateFlowGraph.class).to(DBSfgWithIndexing.class);
-		// } else if (config.getGraphType() == StateFlowGraphType.DB_TRANSACTIONAL) {
-		// bind(StateFlowGraph.class).to(DBSfgTransactionLock.class);
-		// } else if (config.getGraphType() == StateFlowGraphType.SCALABLE) {
-		// bind(StateFlowGraph.class).to(ScalableSFG.class);
-		// }
 
 	}
 
