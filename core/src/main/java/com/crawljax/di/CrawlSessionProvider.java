@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlSessionNotSetupYetException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.InMemoryStateFlowGraph;
+import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.google.common.base.Preconditions;
 
@@ -25,13 +25,13 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlSessionProvider.class);
 
 	private final AtomicBoolean isSet = new AtomicBoolean();
-	private final InMemoryStateFlowGraph stateFlowGraph;
+	private final StateFlowGraph stateFlowGraph;
 	private final CrawljaxConfiguration config;
 
 	private CrawlSession session;
 
 	@Inject
-	public CrawlSessionProvider(InMemoryStateFlowGraph stateFlowGraph,
+	public CrawlSessionProvider(StateFlowGraph stateFlowGraph,
 	        CrawljaxConfiguration config) {
 		this.stateFlowGraph = stateFlowGraph;
 		this.config = config;

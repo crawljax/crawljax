@@ -27,7 +27,7 @@ public class LargeFirefoxTest extends LargeTestBase {
 
 	@Override
 	StateFlowGraphType getGraphType() {
-		return StateFlowGraphType.SCALABLE;
+		return StateFlowGraphType.DEFAULT;
 	}
 
 }

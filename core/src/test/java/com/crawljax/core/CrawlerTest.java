@@ -29,7 +29,7 @@ import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
-import com.crawljax.core.state.InMemoryStateFlowGraph;
+import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
 import com.crawljax.di.CoreModule.FormHandlerFactory;
@@ -81,10 +81,10 @@ public class CrawlerTest {
 	private StateVertex target;
 
 	@Mock
-	private InMemoryStateFlowGraph graph;
+	private StateFlowGraph graph;
 
 	@Mock
-	private Provider<InMemoryStateFlowGraph> graphProvider;
+	private Provider<StateFlowGraph> graphProvider;
 
 	@Mock
 	private Eventable eventToTransferToTarget;
@@ -94,7 +94,7 @@ public class CrawlerTest {
 
 	@Mock
 	private CandidateElement action;
-	
+
 	@Mock
 	private ExitNotifier exitNotifier;
 

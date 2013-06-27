@@ -29,7 +29,7 @@ public class StateFlowGraphTest {
 	private StateVertex state3;
 	private StateVertex state4;
 	private StateVertex state5;
-	private InMemoryStateFlowGraph graph;
+	private StateFlowGraph graph;
 
 	@Before
 	public void setup() {
@@ -145,7 +145,7 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
-		InMemoryStateFlowGraph g = new InMemoryStateFlowGraph(new ExitNotifier(0));
+		StateFlowGraph g = new InMemoryStateFlowGraph(new ExitNotifier(0));
 		g.putIndex(new StateVertexImpl(1, "", HTML1));
 		g.putIfAbsent(new StateVertexImpl(2, "", HTML2));
 

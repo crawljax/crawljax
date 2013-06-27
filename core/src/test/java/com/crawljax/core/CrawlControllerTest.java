@@ -31,7 +31,6 @@ import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
-import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CrawlSessionProvider;
@@ -40,7 +39,7 @@ import com.crawljax.di.CrawlSessionProvider;
 public class CrawlControllerTest {
 
 	@Mock
-	private InMemoryStateFlowGraph graph;
+	private StateFlowGraph graph;
 
 	@Mock
 	private Provider<StateFlowGraph> graphProvider;
