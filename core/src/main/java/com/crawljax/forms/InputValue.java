@@ -3,13 +3,19 @@
  */
 package com.crawljax.forms;
 
+import java.io.Serializable;
+
 /**
  * Value for a FormInput.
  * 
  * @author dannyroest@gmail.com (Danny Roest)
  */
-public class InputValue {
+public class InputValue implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4873113214366992455L;
 	private long id;
 	private String value;
 	private boolean checked = false;

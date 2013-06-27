@@ -260,4 +260,29 @@ public class Eventable extends DefaultEdge implements Serializable {
 		}
 		return false;
 	}
+
+	// public void setSourceStateVertex(StateVertex source) {
+	// setSuperSuperField("source", source);
+	// }
+
+	// public void setTargetStateVertex(StateVertex target) {
+	// setSuperSuperField("target", target);
+	// }
+	//
+	// private void setSuperSuperField(String name, Object obj) {
+	//
+	// try {
+	// searchSuperField(name).set(this, obj);
+	// } catch (IllegalArgumentException e) {
+	// throw new CrawljaxException("Illegal or inappropriate argument was passed", e);
+	// } catch (IllegalAccessException e) {
+	// throw new CrawljaxException("Faild to set super field", e);
+	// }
+	// }
+	//
+	// private Field searchSuperField(String name) {
+	// // TODO Auto-generated method stub
+	// return null;
+	// }
+
 }

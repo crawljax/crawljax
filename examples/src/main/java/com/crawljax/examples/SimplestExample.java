@@ -1,7 +1,11 @@
 package com.crawljax.examples;
 
+import java.util.concurrent.TimeUnit;
+
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.state.StateFlowGraph.StateFlowGraphType;
 
 /**
  * Crawls our demo site with the default configuration. The crawl will log what it's doing but will
@@ -13,9 +17,14 @@ public class SimplestExample {
 	 * Run this method to start the crawl.
 	 */
 	public static void main(String[] args) {
+		CrawljaxConfigurationBuilder builder =
+		        CrawljaxConfiguration.builderFor("http://demo.crawljax.com/");
+		builder.setGraphType(StateFlowGraphType.SCALABLE);
+
+		builder.crawlRules().clickOnce(false);
+		builder.setMaximumRunTime(1, TimeUnit.MINUTES);
 		CrawljaxRunner crawljax =
-		        new CrawljaxRunner(CrawljaxConfiguration.builderFor("http://demo.crawljax.com/")
-		                .build());
+		        new CrawljaxRunner(builder.build());
 		crawljax.call();
 	}
 }

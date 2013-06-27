@@ -3,6 +3,7 @@
  */
 package com.crawljax.forms;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,8 +18,12 @@ import com.crawljax.core.state.Identification;
 /**
  * @author mesbah
  */
-public class FormInput {
+public class FormInput implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7848107010123174497L;
 	private long id;
 	private String type = "text";
 
