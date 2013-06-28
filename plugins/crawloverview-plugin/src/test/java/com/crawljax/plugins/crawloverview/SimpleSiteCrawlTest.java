@@ -11,6 +11,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
+import com.crawljax.core.plugin.HostInterface;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class SimpleSiteCrawlTest {
 		SimpleSiteCrawl simpleCrawl = new SimpleSiteCrawl();
 		simpleCrawl.setup();
 		outFolder = tmpFolder.getTempDir();
-		CrawlOverview plugin = new CrawlOverview(outFolder);
+		CrawlOverview plugin = new CrawlOverview(new HostInterface(outFolder, null));
 		simpleCrawl.crawlWith(plugin);
 		result = plugin.getResult();
 		LOG.debug("TMP folder is in {}", outFolder.getAbsoluteFile());

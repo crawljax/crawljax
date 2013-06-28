@@ -21,14 +21,16 @@ public class Configuration {
 	private boolean clickOnce = true;
 	private boolean randomFormInput = true;
 	private boolean clickDefault = true;
-	private List<ClickRule> clickRules = new ArrayList<ClickRule>();
-	private List<Condition> pageConditions = new ArrayList<Condition>();
-	private List<Condition> invariants = new ArrayList<Condition>();
-	private List<Comparator> comparators = new ArrayList<Comparator>();
-	private List<NameValuePair> formInputValues = new ArrayList<NameValuePair>();
+	private List<ClickRule> clickRules = new ArrayList<>();
+	private List<Condition> pageConditions = new ArrayList<>();
+	private List<Condition> invariants = new ArrayList<>();
+	private List<Comparator> comparators = new ArrayList<>();
+	private List<NameValuePair> formInputValues = new ArrayList<>();
 	private Date lastCrawl = null;
 	private long lastDuration;
 	private Date lastModified = null;
+
+	private ArrayList<Plugin> plugins = new ArrayList<>();
 
 	/**
 	 * @return the id
@@ -316,14 +318,14 @@ public class Configuration {
 	}
 
 	/**
-	 * @return the lastRun
+	 * @return the lastCrawl
 	 */
 	public Date getLastCrawl() {
 		return lastCrawl;
 	}
 
 	/**
-	 * @param lastRun
+	 * @param lastCrawl
 	 *            the lastRun to set
 	 */
 	public void setLastCrawl(Date lastCrawl) {
@@ -358,5 +360,13 @@ public class Configuration {
 	 */
 	public void setLastModified(Date lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	public ArrayList<Plugin> getPlugins() {
+		return plugins;
+	}
+
+	public void setPlugins(ArrayList<Plugin> plugins) {
+		this.plugins = plugins;
 	}
 }

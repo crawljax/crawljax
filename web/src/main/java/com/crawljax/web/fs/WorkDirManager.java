@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.crawljax.web.model.Plugin;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -28,35 +29,39 @@ public class WorkDirManager {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkDirManager.class);
 
-	private final File outputFolder;
+	private final File configFolder;
+	private final File recordFolder;
 	private final ObjectMapper mapper;
 
 	@Inject
 	public WorkDirManager(@OutputFolder File outputFolder, ObjectMapper mapper) {
 		LOG.debug("Initiating the Workdir manager");
-		this.outputFolder = outputFolder;
+		this.configFolder = new File(outputFolder, "configurations");
+		this.recordFolder = new File(outputFolder, "crawl-records");
 		this.mapper = mapper;
-		if (!this.outputFolder.exists())
-			this.outputFolder.mkdirs();
+		if (!this.configFolder.exists())
+			this.configFolder.mkdirs();
+		if (!this.recordFolder.exists())
+			this.recordFolder.mkdirs();
 	}
 
-	public Map<String, Configuration> loadAll() {
+	public Map<String, Configuration> loadConfigurations() {
 		Map<String, Configuration> configs = new ConcurrentHashMap<String, Configuration>();
-		File[] configFiles = outputFolder.listFiles(new FilenameFilter() {
+		File[] configFiles = configFolder.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.endsWith("json");
 			}
 		});
 		if (configFiles != null) {
 			for (File f : configFiles) {
-				Configuration c = load(f);
+				Configuration c = loadConfiguration(f);
 				configs.put(c.getId(), c);
 			}
 		}
 		return configs;
 	}
 
-	private Configuration load(File configFile) {
+	private Configuration loadConfiguration(File configFile) {
 		Configuration config = null;
 		try {
 			config = mapper.readValue(configFile, Configuration.class);
@@ -66,8 +71,8 @@ public class WorkDirManager {
 		return config;
 	}
 
-	public void save(Configuration config) {
-		File configFile = new File(outputFolder, config.getId() + ".json");
+	public void saveConfiguration(Configuration config) {
+		File configFile = new File(configFolder, config.getId() + ".json");
 		try {
 			if (!configFile.exists()) {
 				configFile.createNewFile();
@@ -78,8 +83,8 @@ public class WorkDirManager {
 		}
 	}
 
-	public void delete(Configuration config) {
-		File configFile = new File(outputFolder, config.getId() + ".json");
+	public void deleteConfiguration(Configuration config) {
+		File configFile = new File(configFolder, config.getId() + ".json");
 		try {
 			configFile.delete();
 		} catch (Exception e) {
@@ -87,15 +92,15 @@ public class WorkDirManager {
 		}
 	}
 
-	public List<CrawlRecord> loadHistory() {
+	public List<CrawlRecord> loadCrawlRecords() {
 		List<CrawlRecord> records = new ArrayList<CrawlRecord>();
-		File[] recordFiles = outputFolder.listFiles();
+		File[] recordFiles = recordFolder.listFiles();
 		if (recordFiles != null) {
 			for (File f : recordFiles) {
 				if (f.isDirectory()) {
 					File record = new File(f, "crawl.json");
 					if (record.exists()) {
-						CrawlRecord c = loadRecord(record);
+						CrawlRecord c = loadCrawlRecord(record);
 
 						// clean up records that crashed unexpectedly
 						if (c.getCrawlStatus() != CrawlStatusType.success
@@ -119,7 +124,7 @@ public class WorkDirManager {
 		return records;
 	}
 
-	private CrawlRecord loadRecord(File recordFile) {
+	private CrawlRecord loadCrawlRecord(File recordFile) {
 		CrawlRecord record = null;
 		try {
 			record = mapper.readValue(recordFile, CrawlRecord.class);
@@ -129,9 +134,9 @@ public class WorkDirManager {
 		return record;
 	}
 
-	public void saveRecord(CrawlRecord record) {
+	public void saveCrawlRecord(CrawlRecord record) {
 		File recordFile =
-		        new File(outputFolder, Integer.toString(record.getId()) + File.separatorChar
+		        new File(recordFolder, Integer.toString(record.getId()) + File.separatorChar
 		                + "crawl.json");
 		try {
 			if (!recordFile.exists()) {
@@ -147,7 +152,7 @@ public class WorkDirManager {
 
 	public String readLog(int crawlId) {
 		File logFile =
-		        new File(outputFolder, Integer.toString(crawlId) + File.separatorChar
+		        new File(recordFolder, Integer.toString(crawlId) + File.separatorChar
 		                + "crawl.log");
 		String content = "";
 		try {

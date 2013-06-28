@@ -17,7 +17,7 @@ public class Configurations {
 	@Inject
 	public Configurations(WorkDirManager workDirManager) {
 		this.workDirManager = workDirManager;
-		configList = workDirManager.loadAll();
+		configList = workDirManager.loadConfigurations();
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class Configurations {
 		}
 		config.setId(id);
 		configList.put(id, config);
-		workDirManager.save(config);
+		workDirManager.saveConfiguration(config);
 
 		return config;
 	}
@@ -45,14 +45,14 @@ public class Configurations {
 	public Configuration update(Configuration config) {
 		config.setLastModified(new Date());
 		configList.put(config.getId(), config);
-		workDirManager.save(config);
+		workDirManager.saveConfiguration(config);
 
 		return config;
 	}
 
 	public Configuration remove(Configuration config) {
 		configList.remove(config.getId());
-		workDirManager.delete(config);
+		workDirManager.deleteConfiguration(config);
 
 		return config;
 	}

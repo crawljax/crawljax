@@ -1,147 +1,229 @@
-	//********************************************
-	// app.js
-	// 
-	// Contains the main ember routing code
-	//********************************************
-	
-	App = Ember.Application.create();
-    
-    App.Router.map(function() {
-   		this.resource("config_list", { path: "/" });
-   		this.resource("config", {path: "/:id"}, function(){
-   			this.route("rules");
-   			this.route("assertions");
-   			this.route("plugins");
-   			this.resource("config_history", {path: "history"});
-   		});
-   		this.route("new");
-   		this.resource("about");
-   		this.resource("history_list", {path: "/history"}, function() {
-   			this.resource("history", {path: "/:id"}, function(){
-   				this.route("overview");
-   			});
-   		});
-   	});
 
-    App.ApplicationRoute = Ember.Route.extend({
-    	setupController: function(controller, model){
-    		controller.set('executionQueue', App.CrawlHistory.findAll(undefined, true));
-    		if(!("WebSocket" in window))
-    			alert('Need a Browswer that supports Sockets')
-    		else controller.connectSocket();
-    	}
-    });
-    
-    App.ConfigListRoute = Ember.Route.extend({
-      setupController: function(controller, model) {
-        controller.set('content', App.Config.findAll());
-        controller.set('sidenav',
-        	[App.Link.create({text:"New Configuration", target:"#/new", icon:"icon-pencil"}), 
-        	 App.Link.create({text:"Crawl History", target:"#/history", icon:"icon-book"})]);
-        controller.set('breadcrumb', [App.Link.create({text: "Home"})]);
-      }
-    });
-    
-    App.NewRoute = Ember.Route.extend({
-    	renderTemplate: function(){ this.render({controller: 'config'}); },
-    	setupController: function(controller, model) {
-    		this.controllerFor('config').set('content', App.Config.newConfig());
-    		this.controllerFor('config').set('sidenav',
-            	[App.Link.create({text:"Save Configuration", target:"add", action:true, icon:"icon-folder-open"})]);
-    		this.controllerFor('config').set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), App.Link.create({text: "New"})]);
-        }
-    });
-    
-    App.ConfigRoute = Ember.Route.extend({
-    	setupController: function(controller, model) {
-            controller.set('content', model);
-            controller.set('sidenav',
-            		[App.Link.create({text:"Run Configuration", target:"run", action:true, icon:"icon-play"}),
-            		 App.Link.create({text:"Save Configuration", target:"save", action:true, icon:"icon-folder-open"}),
-            		 App.Link.create({text:"Crawl History", target:"#/"+model.id+"/history", icon:"icon-book"}),
-            		 App.Link.create({text:"Delete Configuration", target:"delete", action:true, icon:"icon-remove"})]);
-            controller.set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), 
-                                          App.Link.create({text: 'Configuration', target: "#/" + model.id})]);
-        },
-        serialize: function(object) { return { id: object.id }; },
-        deserialize: function(params) { return App.Config.find(params.id); }
-    });
-    
-    App.ConfigIndexRoute = Ember.Route.extend({
-    	renderTemplate: function(){ this.render({controller: 'config'}); }
-    });
-    
-    App.ConfigRulesRoute = Ember.Route.extend({
-    	renderTemplate: function(){ this.render({controller: 'config'}); }
-    });
-    
-    App.ConfigAssertionsRoute = Ember.Route.extend({
-    	renderTemplate: function(){ this.render({controller: 'config'}); }
-    });
-    
-    App.ConfigPluginsRoute = Ember.Route.extend({
-    	renderTemplate: function(){ this.render({controller: 'config'}); }
-    });
-    
-    App.ConfigHistoryRoute = Ember.Route.extend({
-    	setupController: function(controller, model) {
-    		var configController = this.controllerFor('config');
-            this.controllerFor('history_list').set('content', App.CrawlHistory.findAll(configController.get('content').id));
-            configController.set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), 
-                                          App.Link.create({text: 'Configuration', target: "#/" + configController.get('content').id}), 
-                                          App.Link.create({text: "History"})]);
-        },
-    	renderTemplate: function(){ this.render("history_list/index", {controller: 'history_list'}); }
-    });
-    
-    App.HistoryListRoute = Ember.Route.extend({
-        setupController: function(controller, model) {
-            controller.set('sidenav',
-            	[App.Link.create({text:"All Configurations", target:"#", icon:"icon-list"}),
-            	 App.Link.create({text:"New Configuration", target:"#/new", icon:"icon-pencil"})]);
-            controller.set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), App.Link.create({text: "History"})]);
-        }
-   }); 
-    
-    App.HistoryListIndexRoute = Ember.Route.extend({
-    	renderTemplate: function(){ this.render({controller: 'history_list'}); },
-    	setupController: function(controller, model) { 
-    		this.controllerFor('history_list').set('content', App.CrawlHistory.findAll()); }
-    });
-    
-    App.HistoryRoute = Ember.Route.extend({
-    	activate: function() {
-    		this.controllerFor('history_list').set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), 
-    		                                                      App.Link.create({text: "History", target: "#/history"}),
-    		                                                      App.Link.create({text: "Crawl"})]);
-    	},
-    	deactivate: function() {
-    		this.controllerFor('history_list').set('breadcrumb', [App.Link.create({text: "Home", target: "#"}), 
-    		                                                      App.Link.create({text: "History"})]); },
-    	serialize: function(object) { return { id: object.id }; },
-        deserialize: function(params) { return App.CrawlHistory.find(params.id); }
-    });
-    
-    App.HistoryIndexRoute = Ember.Route.extend({
-    	setupController: function(controller, model) {
-    		var controller = this.controllerFor('history');
-    		var appController = this.controllerFor('application');
-    		if (controller.get('isLogging')) appController.sendMsg('stoplog');
-    		setTimeout(function(){ 
-    			$('#logPanel').css({'height':(($(document).height())-162)+'px'});
-    			appController.sendMsg('startlog-' + controller.get('content.id')); 
-    			controller.set('isLogging', true);
-    			}, 0); },
-    	deactivate: function() {
-    		this.controllerFor('application').sendMsg('stoplog'); },
-    	renderTemplate: function(){ this.render({controller: 'history'}); }
-    });
-    
-    App.HistoryOverviewRoute = Ember.Route.extend({
-    	setupController: function(controller, model) {
-    		setTimeout(function(){ 
-    			$('#overviewFrame').css({'height':(($(document).height())-150)+'px'});
-    		}, 0);
-    	},
-    	renderTemplate: function(){ this.render({controller: 'history'}); }
-    });
+App = Ember.Application.create({LOG_TRANSITIONS: true});
+
+Ember.Route.reopen({
+	getTargetRoute: function(){
+		var infos = this.router.router.targetHandlerInfos;
+		return infos[infos.length - 1].handler.routeName;
+	}
+})
+
+App.Router.map(function() {
+	this.resource("configurations", function() {
+		this.resource("configuration", {path: "/:configuration_id"}, function() {
+			this.route("rules");
+   			this.route("assertions");
+			this.route("plugins");
+		});
+		this.route("new");
+	});
+	
+	this.resource("plugin_management", {path: "plugins"});
+	
+	this.resource("crawlrecords", function(){ 
+		this.resource("crawlrecord", {path: "/:crawlrecord_id"}, function() {
+			this.resource("log");
+			this.resource("plugin_output", {path: "plugin/:plugin_no"});
+		});
+		this.resource("config_filter", {path: "filter/:config_id"});
+	});
+});
+
+App.ApplicationRoute = Ember.Route.extend({
+	setupController: function(controller, model){
+		controller.set("executionQueue", App.CrawlRecords.findAll(undefined, true));
+		if(!("WebSocket" in window)) {
+			alert('Need a browser that supports Sockets');
+		} else {
+			controller.connectSocket();
+		}
+	}
+});
+
+App.IndexRoute = Ember.Route.extend({
+	redirect: function() {
+		this.transitionTo('configurations');
+	}
+});
+
+App.ConfigurationsIndexRoute = Ember.Route.extend({
+	model: function (params) {
+		return App.Configurations.findAll();
+	},
+	setupController: function(controller, model) {
+		controller.set('content', model);
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav",
+			[App.Link.create({text:"New Configuration", target:"#/configurations/new", icon:"icon-pencil"})]);
+		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Configurations", target: "#/configurations"})]);
+	},
+	exit: function(router){
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav", []);
+	}
+});
+
+App.ConfigurationRoute = Ember.Route.extend({
+	model: function(params) {
+		return App.Configurations.find(params.configuration_id);
+	},
+	setupController: function(controller, model) {
+		controller.set("content", model);
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("rest", controller.rest);
+		sideNav.set("content", controller.get("content"));
+		sideNav.set("sidenav",
+				[App.Link.create({text:"Run Configuration", target:"run", action:true, icon:"icon-play"}),
+				App.Link.create({text:"Save Configuration", target:"save", action:true, icon:"icon-ok"}),
+				App.Link.create({text:"Crawl History", target:"#/crawlrecords/filter/" + model.id, icon:"icon-book"}),
+				App.Link.create({text:"Delete Configuration", target:"delete", action:true, icon:"icon-remove"})]);
+		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Configurations", target: "#/configurations"}),
+				App.Link.create({text: model.id, target: "#/configurations/" + model.id})]);
+	},
+	serialize: function(context) {
+		return { configuration_id: context.id };
+	},
+	exit: function(router){
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav", []);
+	}
+});
+
+App.ConfigurationIndexRoute = Ember.Route.extend({
+	renderTemplate: function(){ this.render({controller: 'configuration'}); }
+});
+
+App.ConfigurationRulesRoute = Ember.Route.extend({
+	renderTemplate: function(){ this.render({controller: 'configuration'}); }
+});
+
+App.ConfigurationAssertionsRoute = Ember.Route.extend({
+	renderTemplate: function(){ this.render({controller: 'configuration'}); }
+});
+
+App.ConfigurationPluginsRoute = Ember.Route.extend({
+	renderTemplate: function(){ this.render({controller: 'configuration'}); }
+});
+
+App.ConfigurationsNewRoute = Ember.Route.extend({
+	setupController: function(controller, model) {
+		var controller = this.controllerFor('configuration');
+		var model = App.Configurations.getNew();
+		controller.set('content', model);
+		
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("rest", controller.rest);
+		sideNav.set("content", model);
+		sideNav.set("sidenav",
+			[App.Link.create({text:"Save Configuration", target:"add", action:true, icon:"icon-ok"})]);
+		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Configurations", target: "#/configurations"}), App.Link.create({text: "New"})]);
+	},
+	renderTemplate: function() {
+		this.render({controller: 'configuration'});
+	},
+	exit: function(router){
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav", []);
+	}
+});
+
+App.PluginManagementRoute = Ember.Route.extend({
+	model: function(params) {
+		return App.Plugins.findAll();
+	},
+	setupController: function(controller, model) {
+		controller.set('content', model);
+		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Plugins", target: "#/plugins"})]);
+		if(!(window.File && window.FileReader && window.FileList && window.Blob)){
+			alert('The File APIs are not fully supported in this browser.');
+		}
+	},
+	exit: function(router){
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav", []);
+	}
+});
+
+App.CrawlrecordsIndexRoute = Ember.Route.extend({
+	model: function(params) {
+		return App.CrawlRecords.findAll();
+	},
+	setupController: function(controller, model) {
+		controller.set('content', model);
+		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "History", target: "#/crawlrecords"})]);
+	}
+});
+
+App.CrawlrecordRoute = Ember.Route.extend({
+	model: function(params) {
+		return App.CrawlRecords.find(params.crawlrecord_id);
+	},
+	setupController: function(controller, model) {
+		controller.set('content', model);
+		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "History", target: "#/crawlrecords"}), App.Link.create({text: model.id, target: "#/crawlrecords/" + model.id})]);
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav", [App.Link.create({text:"Configuration", target:"#/configurations/" + model.configurationId, icon:"icon-wrench"})]);
+	},
+	serialize: function(context) {
+		return { crawlrecord_id: context.get("id") };
+	},
+	exit: function(router){
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav", []);
+	}
+});
+
+App.CrawlrecordIndexRoute = Ember.Route.extend({
+	redirect: function(arg) {
+		if(this.getTargetRoute() === this.routeName)
+			this.transitionTo('log');
+	}
+});
+
+App.LogRoute = Ember.Route.extend({
+	setupController: function(controller, model) {
+		var controller = this.controllerFor('crawlrecord');
+		var appController = this.controllerFor('application');
+		if (controller.isLogging) appController.sendMsg('stoplog');
+		setTimeout(function(){ 
+			$('#logPanel').css({'height':(($(document).height())-162)+'px'});
+			appController.sendMsg('startlog-' + controller.get('content.id'));
+			controller.set("isLogging", true);
+			}, 0);
+	},
+	deactivate: function() {
+		this.controllerFor('application').sendMsg('stoplog');
+	},
+	renderTemplate: function() {
+		this.render({controller: 'crawlrecord'});
+	}
+});
+
+App.PluginOutputRoute = Ember.Route.extend({
+	model: function(params) {
+		return {key: params.plugin_no};
+	},
+	serialize: function(context) {
+		return { plugin_no: context.key };
+	}
+});
+
+App.ConfigFilterRoute = Ember.Route.extend({
+	model: function(params) {
+		return {config_id: params.config_id}
+	},
+	setupController: function(controller, model) {
+		var controller = this.controllerFor("crawlrecords.index");
+		var model = App.CrawlRecords.findAll(model.config_id);
+		controller.set('content', model);
+		
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav", [App.Link.create({text:"All Crawl Records", target:"#/crawlrecords", icon:"icon-book"})]);
+		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "History", target: "#/crawlrecords"})]);
+	},
+	renderTemplate: function(){ this.render("crawlrecords/index", {controller: "crawlrecords.index"}); },
+	exit: function(router){
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav", []);
+	}
+});

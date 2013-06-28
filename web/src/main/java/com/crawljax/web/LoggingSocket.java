@@ -25,7 +25,9 @@ public class LoggingSocket extends WebSocketAdapter {
 
 	private void sendLogFile(String crawlId) {
 		File log =
-		        new File(System.getProperty("outputFolder") + File.separator + crawlId
+		        new File(System.getProperty("outputFolder")
+						+ File.separator + "crawl-records"
+						+ File.separator + crawlId
 		                + File.separator + "crawl.log");
 		if (log.exists()) {
 			try {

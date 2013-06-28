@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
+import com.crawljax.core.plugin.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriverException;
@@ -17,10 +18,6 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.ExitNotifier.ExitStatus;
-import com.crawljax.core.plugin.OnFireEventFailedPlugin;
-import com.crawljax.core.plugin.OnNewStatePlugin;
-import com.crawljax.core.plugin.PostCrawlingPlugin;
-import com.crawljax.core.plugin.PreStateCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
@@ -52,7 +49,8 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 
 	private OutPutModel result;
 
-	public CrawlOverview(File outputFolder) {
+	public CrawlOverview(IHostInterface hostInterface) {
+		File outputFolder = hostInterface.getOutputDirectory();
 		Preconditions
 		        .checkNotNull(outputFolder, "Output folder cannot be null");
 		outputBuilder = new OutputBuilder(outputFolder);

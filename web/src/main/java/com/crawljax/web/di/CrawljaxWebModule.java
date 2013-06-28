@@ -23,6 +23,11 @@ public class CrawljaxWebModule extends ServletModule {
 	public static @interface OutputFolder {
 	};
 
+	@BindingAnnotation
+	@Retention(RetentionPolicy.RUNTIME)
+	public static @interface PluginDescriptorFolder {
+	};
+
 	@Override
 	protected void configureServlets() {
 
@@ -36,6 +41,7 @@ public class CrawljaxWebModule extends ServletModule {
 		filter("/rest/*").through(GuiceContainer.class, params);
 
 		bind(File.class).annotatedWith(OutputFolder.class).toInstance(outputFolder());
+		bind(File.class).annotatedWith(PluginDescriptorFolder.class).toInstance(pluginFolder());
 
 		bind(WorkDirManager.class).asEagerSingleton();
 
@@ -43,6 +49,10 @@ public class CrawljaxWebModule extends ServletModule {
 
 	private File outputFolder() {
 		return new File(System.getProperty("outputFolder"));
+	}
+
+	private File pluginFolder() {
+		return new File(System.getProperty("outputFolder") + File.separator + "plugins");
 	}
 
 }

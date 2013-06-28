@@ -19,7 +19,7 @@ public class CrawlRecords {
 	public CrawlRecords(WorkDirManager workDirManager, Configurations configurations) {
 		this.workDirManager = workDirManager;
 		this.configurations = configurations;
-		crawlList = this.workDirManager.loadHistory();
+		crawlList = this.workDirManager.loadCrawlRecords();
 		if (crawlList.size() > 0)
 			identity = crawlList.get(0).getId();
 	}
@@ -69,14 +69,14 @@ public class CrawlRecords {
 		r.setConfigurationId(configId);
 		r.setConfigurationName(configurations.findByID(configId).getName());
 		crawlList.add(0, r);
-		workDirManager.saveRecord(r);
+		workDirManager.saveCrawlRecord(r);
 
 		return r;
 	}
 
 	public CrawlRecord update(CrawlRecord record) {
 		// assuming we are not updating from client side and can use same reference
-		workDirManager.saveRecord(record);
+		workDirManager.saveCrawlRecord(record);
 		return record;
 	}
 }

@@ -1,6 +1,10 @@
 package com.crawljax.web.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CrawlRecord {
 	private int id;
@@ -11,6 +15,7 @@ public class CrawlRecord {
 	private long duration;
 	private String outputFolder;
 	private CrawlStatusType crawlStatus = CrawlStatusType.idle;
+	private Map<String, Plugin> plugins = new ConcurrentHashMap<String, Plugin>();
 
 	public enum CrawlStatusType {
 		idle, queued, initializing, running, success, failure
@@ -134,6 +139,14 @@ public class CrawlRecord {
 	 */
 	public void setCrawlStatus(CrawlStatusType crawlStatus) {
 		this.crawlStatus = crawlStatus;
+	}
+
+	public Map<String, Plugin> getPlugins() {
+		return plugins;
+	}
+
+	public void setPlugins(Map<String, Plugin> plugins) {
+		this.plugins = plugins;
 	}
 
 }

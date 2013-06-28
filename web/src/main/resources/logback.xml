@@ -19,7 +19,7 @@
     </discriminator>
     <sift>
       <appender name="FILE-${crawl_record}" class="ch.qos.logback.core.FileAppender">
-        <file>${outputFolder}/${crawl_record}/crawl.log</file>
+        <file>${outputFolder}/crawl-records/${crawl_record}/crawl.log</file>
         <append>true</append>
         <layout class="ch.qos.logback.classic.PatternLayout">
           <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{46} - %msg%n</pattern>
