@@ -6,7 +6,7 @@ package com.crawljax.core.state;
 /**
  * @author arz
  */
-public final class DatabaseBackedStateFlowGraphUtilities {
+public final class InDatabaseStateFlowGraphConstants {
 
 	/**
 	 * keys listed here are used for the "key-value pairs" with which data re stored in neo4j nodes

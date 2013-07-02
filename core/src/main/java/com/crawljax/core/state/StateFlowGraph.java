@@ -33,21 +33,21 @@ public interface StateFlowGraph {
 	 * @return the clone if one is detected null otherwise.
 	 * @see org.jgrapht.Graph#addVertex(Object)
 	 */
-	public abstract StateVertex putIfAbsent(StateVertex stateVertix);
+	public StateVertex putIfAbsent(StateVertex stateVertix);
 
-	public abstract StateVertex putIndex(StateVertex index);
+	public StateVertex putIndex(StateVertex index);
 
 	/**
 	 * @param id
 	 *            The ID of the state
 	 * @return The state if found or <code>null</code>.
 	 */
-	StateVertex getById(int id);
+	public StateVertex getById(int id);
 
 	/**
 	 * @return The index state.
 	 */
-	StateVertex getInitialState();
+	public StateVertex getInitialState();
 
 	/**
 	 * Adds the specified edge to this graph, going from the source vertex to the target vertex.
@@ -68,7 +68,7 @@ public interface StateFlowGraph {
 	 * @return true if this graph did not already contain the specified edge.
 	 * @see org.jgrapht.Graph#addEdge(Object, Object, Object)
 	 */
-	public abstract boolean addEdge(StateVertex sourceVert, StateVertex targetVert,
+	public boolean addEdge(StateVertex sourceVert, StateVertex targetVert,
 	        Eventable clickable);
 
 	/**
@@ -79,7 +79,7 @@ public interface StateFlowGraph {
 	 * @return a set of the outgoing edges (clickables) of the stateVertix.
 	 * @see org.jgrapht.DirectedGraph#outgoingEdgesOf(Object)
 	 */
-	ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix);
+	public ImmutableSet<Eventable> getOutgoingClickables(StateVertex stateVertix);
 
 	/**
 	 * Returns a set of all edges incoming into the specified vertex.
@@ -89,7 +89,7 @@ public interface StateFlowGraph {
 	 * @return a set of the incoming edges (clickables) of the stateVertix.
 	 * @see org.jgrapht.DirectedGraph#incomingEdgesOf(Object)
 	 */
-	ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix);
+	public ImmutableSet<Eventable> getIncomingClickables(StateVertex stateVertix);
 
 	/**
 	 * Is it possible to go from s1 -> s2?
@@ -100,7 +100,7 @@ public interface StateFlowGraph {
 	 *            the target state.
 	 * @return true if it is possible (edge exists in graph) to go from source to target.
 	 */
-	boolean canGoTo(StateVertex source, StateVertex target);
+	public boolean canGoTo(StateVertex source, StateVertex target);
 
 	/**
 	 * Convenience method to find the Dijkstra shortest path between two states on the graph.
@@ -111,33 +111,33 @@ public interface StateFlowGraph {
 	 *            the end state.
 	 * @return a list of shortest path of clickables from the state to the end
 	 */
-	ImmutableList<Eventable> getShortestPath(StateVertex start, StateVertex end);
+	public ImmutableList<Eventable> getShortestPath(StateVertex start, StateVertex end);
 
 	/**
 	 * Return all the states in the StateFlowGraph.
 	 * 
 	 * @return all the states on the graph.
 	 */
-	ImmutableSet<StateVertex> getAllStates();
+	public ImmutableSet<StateVertex> getAllStates();
 
 	/**
 	 * Return all the edges in the StateFlowGraph.
 	 * 
 	 * @return a Set of all edges in the StateFlowGraph
 	 */
-	ImmutableSet<Eventable> getAllEdges();
+	public ImmutableSet<Eventable> getAllEdges();
 
 	/**
 	 * @return Dom string average size (byte).
 	 */
-	int getMeanStateStringSize();
+	public int getMeanStateStringSize();
 
 	/**
 	 * @return The number of states, currently in the graph.
 	 */
-	int getNumberOfStates();
+	public int getNumberOfStates();
 
-	StateVertex newStateFor(String url, String dom, String strippedDom);
+	public StateVertex newStateFor(String url, String dom, String strippedDom);
 
 	/**
 	 * This method returns all possible paths from the index state using the Kshortest paths.
@@ -154,6 +154,6 @@ public interface StateFlowGraph {
 	 * @return a {@link Set} of {@link StateVertex} that are connected to the source
 	 *         {@link StateVertex} via one of the sources outgoing edges.
 	 */
-	public abstract ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix);
+	public ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix);
 
 }
