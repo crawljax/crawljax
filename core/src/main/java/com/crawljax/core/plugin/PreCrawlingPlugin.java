@@ -18,5 +18,5 @@ public interface PreCrawlingPlugin extends Plugin {
 	 * @param config
 	 *            The {@link CrawljaxConfiguration} for the coming crawl.
 	 */
-	void preCrawling(CrawljaxConfiguration config);
+	void preCrawling(CrawljaxConfiguration config) throws RuntimeException;
 }

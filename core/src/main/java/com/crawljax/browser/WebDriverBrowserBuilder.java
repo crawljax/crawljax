@@ -18,6 +18,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSortedSet;
 
 /**
@@ -111,6 +112,10 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	        long crawlWaitReload, long crawlWaitEvent) {
 		if (configuration.getProxyConfiguration() != null) {
 			FirefoxProfile profile = new FirefoxProfile();
+			String lang = configuration.getBrowserConfig().getLangOrNull();
+			if (!Strings.isNullOrEmpty(lang)) {
+				profile.setPreference("intl.accept_languages", lang);
+			}
 
 			profile.setPreference("network.proxy.http", configuration
 			        .getProxyConfiguration().getHostname());
@@ -132,10 +137,13 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
 	        long crawlWaitReload, long crawlWaitEvent) {
 		ChromeDriver driverChrome;
-
 		if (configuration.getProxyConfiguration() != null
 		        && configuration.getProxyConfiguration().getType() != ProxyType.NOTHING) {
 			ChromeOptions optionsChrome = new ChromeOptions();
+			String lang = configuration.getBrowserConfig().getLangOrNull();
+			if (!Strings.isNullOrEmpty(lang)) {
+				optionsChrome.setExperimentalOptions("intl.accept_languages", lang);
+			}
 			optionsChrome.addArguments("--proxy-server=http://"
 			        + configuration.getProxyConfiguration().getHostname() + ":"
 			        + configuration.getProxyConfiguration().getPort());

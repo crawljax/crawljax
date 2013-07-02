@@ -46,6 +46,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	private final OutputBuilder outputBuilder;
 	private final ConcurrentMap<String, StateVertex> visitedStates;
 	private final OutPutModelCache outModelCache;
+	private boolean warnedForElementsInIframe = false;
 
 	private OutPutModel result;
 
@@ -119,7 +120,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	        CandidateElement element) {
 		try {
 			if (!Strings.isNullOrEmpty(element.getRelatedFrame())) {
-				LOG.warn("Element is in an iFrame. We cannot display it in the Crawl overview");
+				warnUserForInvisibleElements();
 				return null;
 			} else {
 				return browser.getWebElement(element.getIdentification());
@@ -129,6 +130,13 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 			return null;
 		}
 	}
+
+	private void warnUserForInvisibleElements() {
+	    if (!warnedForElementsInIframe) {
+	    	LOG.warn("Some elemnts are in an iFrame. We cannot display it in the Crawl overview");
+	    	warnedForElementsInIframe = true;
+	    }
+    }
 
 	private CandidateElementPosition findElement(WebElement webElement,
 	        CandidateElement element) {
