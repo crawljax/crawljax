@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import com.crawljax.core.plugin.HostInterface;
+import com.crawljax.core.plugin.HostInterfaceImpl;
 import org.apache.commons.cli.ParseException;
 
 import ch.qos.logback.classic.Level;
@@ -131,7 +131,7 @@ public class JarRunner {
 
 		configureTimers(builder);
 
-		builder.addPlugin(new CrawlOverview(new HostInterface(new File(outputDir), null)));
+		builder.addPlugin(new CrawlOverview(new HostInterfaceImpl(new File(outputDir), null)));
 
 		if (options.specifiesClickElements()) {
 			builder.crawlRules().click(options.getSpecifiedClickElements());

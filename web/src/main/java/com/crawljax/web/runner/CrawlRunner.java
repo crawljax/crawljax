@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.core.plugin.HostInterface;
-import com.crawljax.core.plugin.IHostInterface;
+import com.crawljax.core.plugin.HostInterfaceImpl;
 import com.crawljax.web.model.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.MDC;
@@ -45,7 +45,6 @@ import com.crawljax.oraclecomparator.comparators.ScriptComparator;
 import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
 import com.crawljax.oraclecomparator.comparators.XPathExpressionComparator;
-import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.crawljax.web.LogWebSocketServlet;
 import com.crawljax.web.model.ClickRule.RuleType;
 import com.crawljax.web.model.CrawlRecord.CrawlStatusType;
@@ -218,7 +217,7 @@ public class CrawlRunner {
 							}
 						}
 					}
-					IHostInterface hostInterface = new HostInterface(outputFolder, parameters);
+					HostInterface hostInterface = new HostInterfaceImpl(outputFolder, parameters);
 					com.crawljax.core.plugin.Plugin instance = plugins.getInstanceOf(plugin, hostInterface);
 					if(instance != null) {
 						builder.addPlugin(instance);

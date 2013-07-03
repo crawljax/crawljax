@@ -1,16 +1,9 @@
 package com.crawljax.web.model;
 
-/**
- * Created with IntelliJ IDEA.
- * User: User
- * Date: 2013/06/21
- * Time: 1:20 PM
- * To change this template use File | Settings | File Templates.
- */
 public class Parameter {
-	protected String id;
-	protected String displayName;
-	protected String value;
+	private String id;
+	private String displayName;
+	private String value;
 
 	public String getId() {
 		return id;
