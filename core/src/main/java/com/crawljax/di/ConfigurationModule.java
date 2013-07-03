@@ -49,8 +49,6 @@ public class ConfigurationModule extends AbstractModule {
 			bind(EmbeddedBrowser.class).toProvider(
 			        Providers.guicify(browserConfig.getBrowserBuilder()));
 		}
-
-
 	}
 
 	@BindingAnnotation
