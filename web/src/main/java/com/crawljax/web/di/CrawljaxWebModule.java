@@ -18,6 +18,8 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 public class CrawljaxWebModule extends ServletModule {
 
+	private final File outputFolder;
+
 	@BindingAnnotation
 	@Retention(RetentionPolicy.RUNTIME)
 	public static @interface OutputFolder {
@@ -27,6 +29,10 @@ public class CrawljaxWebModule extends ServletModule {
 	@Retention(RetentionPolicy.RUNTIME)
 	public static @interface PluginDescriptorFolder {
 	};
+
+	public CrawljaxWebModule(File outputFolder) {
+		this.outputFolder = outputFolder;
+	}
 
 	@Override
 	protected void configureServlets() {
@@ -40,15 +46,11 @@ public class CrawljaxWebModule extends ServletModule {
 		        "/.*\\.(html|js|gif|png|css|ico)");
 		filter("/rest/*").through(GuiceContainer.class, params);
 
-		bind(File.class).annotatedWith(OutputFolder.class).toInstance(outputFolder());
+		bind(File.class).annotatedWith(OutputFolder.class).toInstance(outputFolder);
 		bind(File.class).annotatedWith(PluginDescriptorFolder.class).toInstance(pluginFolder());
 
 		bind(WorkDirManager.class).asEagerSingleton();
 
-	}
-
-	private File outputFolder() {
-		return new File(System.getProperty("outputFolder"));
 	}
 
 	private File pluginFolder() {

@@ -9,13 +9,14 @@
 		<version>3.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>crawljax-web</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>Crawljax web interface</name>
 
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
+		<jersey.version>1.17.1</jersey.version>
 	</properties>
 
 	<dependencies>
@@ -53,22 +54,22 @@
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-guice</artifactId>
-			<version>1.16</version>
+			<version>${jersey.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-multipart</artifactId>
-			<version>1.16</version>
+			<version>${jersey.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-jaxrs</artifactId>
-			<version>1.9.11</version>
+			<version>1.9.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.0.0.v20130308</version>
+			<version>9.0.3.v20130506</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -77,76 +78,58 @@
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>9.0.0.v20130308</version>
+			<version>9.0.3.v20130506</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/config</directory>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<targetPath>web</targetPath>
+			</resource>
+		</resources>
 		<plugins>
-		 	<plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
-                <configuration>
-                    <warName>${project.artifactId}-${project.version}</warName>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.crawljax.web.CrawljaxServer</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-war</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>main-class-placement</id>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <tasks>
-                                <move todir="${project.build.directory}/${project.artifactId}-${project.version}/">
-                                    <fileset dir="${project.build.directory}/classes/">
-                                        <include name="com/crawljax/web/CrawljaxServer.class" />
-                                    </fileset>
-                                </move>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <id>jetty-classpath</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeGroupIds>org.eclipse.jetty,javax.servlet</includeGroupIds>
-                            <excludeArtifactIds>jsp-api,jstl</excludeArtifactIds>
-                            <excludes>META-INF/ECLIPSEF.*</excludes>
-                            <outputDirectory>
-                                ${project.build.directory}/${project.artifactId}-${project.version}
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<descriptors>
+						<descriptor>
+							src/main/assembly/jar-with-dependencies.xml
+						</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>zip-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/ conf/</classpathPrefix>
+							<mainClass>com.crawljax.web.CrawljaxServer</mainClass>
+						</manifest>
+					</archive>
+					<excludes>
+						<exclude>logback.xml</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
