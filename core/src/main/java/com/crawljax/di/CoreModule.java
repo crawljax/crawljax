@@ -18,7 +18,9 @@ import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.ExtractorManager;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
+import com.crawljax.core.state.InDatabaseStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.core.state.StateFlowGraph.StateFlowGraphType;
 import com.crawljax.forms.FormHandler;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -47,8 +49,13 @@ public class CoreModule extends AbstractModule {
 
 		bind(ExtractorManager.class).to(CandidateElementManager.class);
 
-		bind(StateFlowGraph.class).to(InMemoryStateFlowGraph.class);
-		bind(InMemoryStateFlowGraph.class).in(Singleton.class);
+		if (configuration.getGraphType() == StateFlowGraphType.DEFAULT) {
+			bind(StateFlowGraph.class).to(InMemoryStateFlowGraph.class);
+			bind(InMemoryStateFlowGraph.class).in(Singleton.class);
+		} else if (configuration.getGraphType() == StateFlowGraphType.SCALABLE) {
+			bind(StateFlowGraph.class).to(InDatabaseStateFlowGraph.class);
+			bind(InDatabaseStateFlowGraph.class).in(Singleton.class);
+		}
 
 		install(new FactoryModuleBuilder().build(FormHandlerFactory.class));
 		install(new FactoryModuleBuilder().build(CandidateElementExtractorFactory.class));

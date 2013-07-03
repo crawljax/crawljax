@@ -27,7 +27,6 @@ import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
-import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
@@ -57,7 +56,7 @@ public class Crawler {
 	private final WaitConditionChecker waitConditionChecker;
 	private final CandidateElementExtractor candidateExtractor;
 	private final UnfiredCandidateActions candidateActionCache;
-	private final Provider<InMemoryStateFlowGraph> graphProvider;
+	private final Provider<StateFlowGraph> graphProvider;
 
 	private CrawlPath crawlpath;
 	private StateMachine stateMachine;
@@ -68,7 +67,7 @@ public class Crawler {
 	        FormHandlerFactory formHandlerFactory,
 	        WaitConditionChecker waitConditionChecker,
 	        CandidateElementExtractorFactory elementExtractor,
-	        Provider<InMemoryStateFlowGraph> graphProvider) {
+	        Provider<StateFlowGraph> graphProvider) {
 		this.context = context;
 		this.graphProvider = graphProvider;
 		this.browser = context.getBrowser();

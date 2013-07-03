@@ -24,12 +24,17 @@ import com.crawljax.core.state.Identification.How;
 
 public class StateFlowGraphTest {
 
-	private StateVertex index;
-	private StateVertex state2;
-	private StateVertex state3;
-	private StateVertex state4;
-	private StateVertex state5;
-	private InMemoryStateFlowGraph graph;
+	public StateVertex index;
+	public StateVertex state2;
+	public StateVertex state3;
+	public StateVertex state4;
+	public StateVertex state5;
+	public StateFlowGraph graph;
+
+	public StateFlowGraph createStateFlowGraph() {
+		return new InMemoryStateFlowGraph(new ExitNotifier(0));
+
+	}
 
 	@Before
 	public void setup() {
@@ -40,7 +45,7 @@ public class StateFlowGraphTest {
 		state3 = new StateVertexImpl(3, "STATE_THREE", "<table><div>state3</div></table>");
 		state4 = new StateVertexImpl(4, "STATE_FOUR", "<table><div>state4</div></table>");
 		state5 = new StateVertexImpl(5, "STATE_FIVE", "<table><div>state5</div></table>");
-		graph = new InMemoryStateFlowGraph(new ExitNotifier(0));
+		graph = createStateFlowGraph();
 		graph.putIndex(index);
 	}
 
@@ -63,7 +68,7 @@ public class StateFlowGraphTest {
 		Set<Eventable> clickables = graph.getOutgoingClickables(state2);
 		assertEquals(3, clickables.size());
 
-		clickables = graph.getIncomingClickable(state2);
+		clickables = graph.getIncomingClickables(state2);
 		assertTrue(clickables.size() == 1);
 
 		assertNotNull(graph.toString());
@@ -105,7 +110,7 @@ public class StateFlowGraphTest {
 		assertTrue(allStates.size() == 5);
 	}
 
-	private Eventable newXpathEventable(String xPath) {
+	public Eventable newXpathEventable(String xPath) {
 		return new Eventable(new Identification(How.xpath, xPath), EventType.click);
 	}
 
@@ -145,7 +150,7 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
-		InMemoryStateFlowGraph g = new InMemoryStateFlowGraph(new ExitNotifier(0));
+		StateFlowGraph g = createStateFlowGraph();
 		g.putIndex(new StateVertexImpl(1, "", HTML1));
 		g.putIfAbsent(new StateVertexImpl(2, "", HTML2));
 

@@ -19,7 +19,7 @@
 			<groupId>com.crawljax.plugins</groupId>
 			<artifactId>crawloverview-plugin</artifactId>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency>	
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>

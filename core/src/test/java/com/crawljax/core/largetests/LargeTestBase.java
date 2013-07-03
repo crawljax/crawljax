@@ -45,6 +45,7 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.PostCrawlStateGraphChecker;
 import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.core.state.StateFlowGraph.StateFlowGraphType;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.oraclecomparator.OracleComparator;
 import com.crawljax.oraclecomparator.comparators.DateComparator;
@@ -145,6 +146,7 @@ public abstract class LargeTestBase {
 
 		builder.setBrowserConfig(getBrowserConfiguration());
 
+		builder.setGraphType(getGraphType());
 		addCrawlElements(builder);
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
@@ -397,5 +399,9 @@ public abstract class LargeTestBase {
 	abstract long getTimeOutAfterReloadUrl();
 
 	abstract long getTimeOutAfterEvent();
+
+	StateFlowGraphType getGraphType() {
+		return StateFlowGraphType.DEFAULT;
+	}
 
 }
