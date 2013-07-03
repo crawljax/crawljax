@@ -1,0 +1,30 @@
+body { padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */ }
+
+.sidebar-nav {padding: 9px 0;}
+.hint {     background: #d45252;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px;
+    position: absolute;
+    text-align: center;
+    width: 150px;
+    margin-left: 8px;
+    outline: 0;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    z-index: 99;
+    box-shadow: 2px 2px 3px #888888;
+    display: none;
+}
+.hint::before {
+    content: "\25C0"; 
+    color:#d45252;
+    position: absolute;
+    top:3px;
+    left:-7px;
+}
+input:focus:invalid + .hint {display: inline;}
+#frameContainer { overflow-x: scroll; }
+#logPanel { overflow-y: scroll; }
+#frameContainer { width: 1000px;  }

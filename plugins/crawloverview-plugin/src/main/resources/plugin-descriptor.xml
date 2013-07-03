@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin-descriptor>
+	<name>Crawl Overview Plugin</name>
+	<description>Generates an HTML report with a snapshot overview of what is crawled.</description>
+	<implementation>com.crawljax.plugins.crawloverview.CrawlOverview</implementation>
+	<crawljax-version>3.0-SNAPSHOT</crawljax-version>
+	<parameters>
+		<id>test_param_1</id>
+		<display-name>Test Param 1</display-name>
+	</parameters>
+</plugin-descriptor>

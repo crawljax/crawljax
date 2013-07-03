@@ -3,6 +3,7 @@ package com.crawljax.plugins.crawloverview;
 import java.io.File;
 import java.util.concurrent.Future;
 
+import com.crawljax.core.plugin.HostInterfaceImpl;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.util.resource.Resource;
 import org.junit.rules.ExternalResource;
@@ -39,7 +40,7 @@ public class RunHoverCrawl extends ExternalResource {
 					        return builder;
 				        };
 			        };
-			        CrawlOverview plugin = new CrawlOverview(getTempDir());
+			        CrawlOverview plugin = new CrawlOverview(new HostInterfaceImpl(getTempDir(), null));
 			        hoverSiteCrawl.crawlWith(plugin);
 			        return plugin.getResult();
 		        }
