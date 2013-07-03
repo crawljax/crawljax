@@ -14,9 +14,11 @@ import static com.crawljax.core.state.InDatabaseStateFlowGraphConstants.STATE_NA
 import static com.crawljax.core.state.InDatabaseStateFlowGraphConstants.STRIPPED_DOM_IN_NODES;
 import static com.crawljax.core.state.InDatabaseStateFlowGraphConstants.TARGET_STRIPPED_DOM_IN_EDGES;
 import static com.crawljax.core.state.InDatabaseStateFlowGraphConstants.URL_IN_NODES;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -55,6 +57,7 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.ExitNotifier;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
@@ -89,7 +92,7 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 	 * The directory path for saving the graph database created by neo4j for storing the state flow
 	 * graph
 	 */
-	public static String databasePath = null;
+	public static String DATABASE_PATH = null;
 
 	/**
 	 * the connector and main access point to the neo4j graph database
@@ -138,12 +141,12 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 	public InDatabaseStateFlowGraph(String dbPath, Node root, Index<Node> nIndex,
 	        RelationshipIndex eIndex, ExitNotifier exitNotifier) {
 		this.exitNotifier = exitNotifier;
-		databasePath = dbPath;
+		DATABASE_PATH = dbPath;
 		InDatabaseStateFlowGraph.root = root;
 		InDatabaseStateFlowGraph.nodeIndex = nIndex;
 		InDatabaseStateFlowGraph.edgesIndex = eIndex;
 
-		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(databasePath);
+		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(DATABASE_PATH);
 		registerShutdownHook(sfgDb);
 
 	}
@@ -155,14 +158,38 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 
 	private void setUpDatabase() {
 
-		databasePath = "target/state-flow-graph-db/graph.db";
+		DATABASE_PATH = buildDataBaseDirectory();
 
+		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(DATABASE_PATH);
+	}
+
+	private String CreateDatabaseDirectory() {
+
+		String dbDir = null;
+		File dataBaseDir = new File("target");
+		Preconditions
+		        .checkNotNull(dataBaseDir, "the database folder is not valid");
+		if (dataBaseDir.exists()) {
+			checkArgument(dataBaseDir.isDirectory(), dataBaseDir + " is not a directory");
+			checkArgument(dataBaseDir.canWrite(), "Database directory is not writable");
+		} else {
+			boolean created = dataBaseDir.mkdirs();
+			checkArgument(created, "Could not create directory " + dataBaseDir);
+		}
+
+		dbDir = dataBaseDir.getName();
+
+		return dbDir;
+
+	}
+
+	private String buildDataBaseDirectory() {
+
+		String dbDir = CreateDatabaseDirectory() + "/graph-data/graph.db";
 		Date date = new Date();
-
 		long time = System.nanoTime();
-
-		databasePath = databasePath + date.toString() + time;
-		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(databasePath);
+		String timeBasedDatabaseDir = dbDir + date.toString() + time;
+		return timeBasedDatabaseDir;
 	}
 
 	/**

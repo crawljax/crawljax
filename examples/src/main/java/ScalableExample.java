@@ -1,5 +1,4 @@
 
-
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.core.CrawljaxRunner;
@@ -8,8 +7,8 @@ import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurati
 import com.crawljax.core.state.StateFlowGraph.StateFlowGraphType;
 
 /**
- * Crawls our demo site with the default configuration. The crawl will log what it's doing but will
- * not produce any output.
+ * Crawls our demo site with the database backed stateFlowGraph implementation. This will save the
+ * state flow graph in a database.
  */
 public class ScalableExample {
 
