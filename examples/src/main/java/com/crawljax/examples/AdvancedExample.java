@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import com.crawljax.core.plugin.HostInterface;
+import com.crawljax.core.plugin.HostInterfaceImpl;
 import org.apache.commons.io.FileUtils;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -61,7 +61,7 @@ public final class AdvancedExample {
 		if (outFolder.exists()) {
 			FileUtils.deleteDirectory(outFolder);
 		}
-		builder.addPlugin(new CrawlOverview(new HostInterface(outFolder, null)));
+		builder.addPlugin(new CrawlOverview(new HostInterfaceImpl(outFolder, null)));
 
 		// We want to use two browsers simultaneously.
 		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 2));

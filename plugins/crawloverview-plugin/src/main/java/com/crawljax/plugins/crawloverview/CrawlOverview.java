@@ -50,7 +50,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 
 	private OutPutModel result;
 
-	public CrawlOverview(IHostInterface hostInterface) {
+	public CrawlOverview(HostInterface hostInterface) {
 		File outputFolder = hostInterface.getOutputDirectory();
 		Preconditions
 		        .checkNotNull(outputFolder, "Output folder cannot be null");

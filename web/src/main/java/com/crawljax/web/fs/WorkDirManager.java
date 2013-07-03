@@ -35,7 +35,7 @@ public class WorkDirManager {
 
 	@Inject
 	public WorkDirManager(@OutputFolder File outputFolder, ObjectMapper mapper) {
-		LOG.debug("Initiating the Workdir manager");
+		LOG.debug("Initiating the Workdir manager.");
 		this.configFolder = new File(outputFolder, "configurations");
 		this.recordFolder = new File(outputFolder, "crawl-records");
 		this.mapper = mapper;
@@ -52,11 +52,9 @@ public class WorkDirManager {
 				return name.endsWith("json");
 			}
 		});
-		if (configFiles != null) {
-			for (File f : configFiles) {
-				Configuration c = loadConfiguration(f);
-				configs.put(c.getId(), c);
-			}
+		for (File f : configFiles) {
+			Configuration c = loadConfiguration(f);
+			configs.put(c.getId(), c);
 		}
 		return configs;
 	}
@@ -66,7 +64,7 @@ public class WorkDirManager {
 		try {
 			config = mapper.readValue(configFile, Configuration.class);
 		} catch (IOException e) {
-			LOG.error("Could not load config", configFile.getName());
+			LOG.error("Could not load config {}", configFile.getName());
 		}
 		return config;
 	}
@@ -95,29 +93,27 @@ public class WorkDirManager {
 	public List<CrawlRecord> loadCrawlRecords() {
 		List<CrawlRecord> records = new ArrayList<CrawlRecord>();
 		File[] recordFiles = recordFolder.listFiles();
-		if (recordFiles != null) {
-			for (File f : recordFiles) {
-				if (f.isDirectory()) {
-					File record = new File(f, "crawl.json");
-					if (record.exists()) {
-						CrawlRecord c = loadCrawlRecord(record);
+		for (File f : recordFiles) {
+			if (f.isDirectory()) {
+				File record = new File(f, "crawl.json");
+				if (record.exists()) {
+					CrawlRecord c = loadCrawlRecord(record);
 
-						// clean up records that crashed unexpectedly
-						if (c.getCrawlStatus() != CrawlStatusType.success
-						        && c.getCrawlStatus() != CrawlStatusType.failure)
-							c.setCrawlStatus(CrawlStatusType.failure);
+					// clean up records that crashed unexpectedly
+					if (c.getCrawlStatus() != CrawlStatusType.success
+							&& c.getCrawlStatus() != CrawlStatusType.failure)
+						c.setCrawlStatus(CrawlStatusType.failure);
 
-						int length = records.size();
-						if (length > 0) {
-							for (int i = 0; i < length; i++) {
-								if (records.get(i).getId() < c.getId()) {
-									records.add(i, c);
-									break;
-								}
+					int length = records.size();
+					if (length > 0) {
+						for (int i = 0; i < length; i++) {
+							if (records.get(i).getId() < c.getId()) {
+								records.add(i, c);
+								break;
 							}
-						} else
-							records.add(c);
-					}
+						}
+					} else
+						records.add(c);
 				}
 			}
 		}
@@ -129,7 +125,7 @@ public class WorkDirManager {
 		try {
 			record = mapper.readValue(recordFile, CrawlRecord.class);
 		} catch (IOException e) {
-			LOG.error("Could not load record", recordFile.getName());
+			LOG.error("Could not load record {}", recordFile.getName());
 		}
 		return record;
 	}
@@ -160,7 +156,7 @@ public class WorkDirManager {
 			        "<p>" + StringUtils.join(Files.readLines(logFile, Charsets.UTF_8), "</p><p>")
 			                + "</p>";
 		} catch (IOException e) {
-			LOG.error("Could not read log", logFile.getName());
+			LOG.error("Could not read log {}", logFile.getName());
 		}
 		return content;
 	}

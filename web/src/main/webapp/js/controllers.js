@@ -218,7 +218,9 @@ App.PluginsController = Ember.ArrayController.extend({
 });
 
 App.PluginItemController = Ember.Controller.extend({
-	selectItems: App.Plugins.selectItems(),
+	contentChanged: function() {
+		this.set("selectItems", App.Plugins.selectItems());
+	}.observes("content"),
 	selectionChanged: function(id) {
 		var content = this.get('content');
 		this.set('content.id', id);

@@ -40,12 +40,10 @@ public class PluginManager {
 				return name.endsWith(".jar");
 			}
 		});
-		if (pluginJars != null) {
-			for (File f : pluginJars) {
-				Plugin p = load(f);
-				if(p != null) {
-					plugins.put(p.getId(), p);
-				}
+		for (File f : pluginJars) {
+			Plugin p = load(f);
+			if(p != null) {
+				plugins.put(p.getId(), p);
 			}
 		}
 		return plugins;
@@ -62,7 +60,8 @@ public class PluginManager {
 			plugin.setId(jarFile.getName().substring(0, jarFile.getName().indexOf(".jar")));
 			plugin.setUrl(jarFile.toURI().toURL());
 		} catch (Exception e) {
-			LOG.error("Could not load plugin " + jarFile.getName() + ". \n" + e.getStackTrace());
+			LOG.error("Could not load plugin {}", jarFile.getName());
+			LOG.debug("Could not load plugin {}. \n{}", jarFile.getName(), e.getStackTrace());
 		}
 		return plugin;
 	}
@@ -98,14 +97,18 @@ public class PluginManager {
 		PluginDescriptor pluginDescriptor = null;
 		try {
 			ZipFile zipFile = new ZipFile(jarFile);
-			InputStream is = zipFile.getInputStream(zipFile.getEntry("plugin-descriptor.xml"));
-			JAXBContext jc = JAXBContext.newInstance("com.crawljax.core.plugin.jaxb.generated");
-			Unmarshaller u = jc.createUnmarshaller();
-			pluginDescriptor = (PluginDescriptor) u.unmarshal(is);
-		} catch (JAXBException e) {
-			LOG.error("Could not read plugin descriptor. " + e.getStackTrace());
-		} catch (IOException e) {
-			LOG.error("Could not load plugin descriptor. " + e.getStackTrace());
+			try(InputStream is = zipFile.getInputStream(zipFile.getEntry("plugin-descriptor.xml"))) {
+				JAXBContext jc = JAXBContext.newInstance("com.crawljax.core.plugin.jaxb.generated");
+				Unmarshaller u = jc.createUnmarshaller();
+				pluginDescriptor = (PluginDescriptor) u.unmarshal(is);
+				is.close();
+			} catch (JAXBException e) {
+				LOG.error("Could not read plugin descriptor in {}. ", jarFile.getName());
+				LOG.debug("Could not parse plugin descriptor in {}. \n{}", jarFile.getName(), e.getStackTrace());
+			}
+		}  catch (IOException e) {
+			LOG.error("Could not load plugin descriptor in {}. ", jarFile.getName());
+			LOG.debug("Could not load plugin descriptor in {}. \n{}", jarFile.getName(), e.getStackTrace());
 		}
 		//HACK --need to fix xml layout
 		ArrayList<com.crawljax.core.plugin.jaxb.generated.Parameter> toBeDeleted = new ArrayList<>();
@@ -114,8 +117,8 @@ public class PluginManager {
 				toBeDeleted.add(param);
 			}
 		}
-		///HACK
 		pluginDescriptor.getParameters().removeAll(toBeDeleted);
+		//END HACK
 		return pluginDescriptor;
 	}
 
@@ -125,12 +128,14 @@ public class PluginManager {
 			if (!pluginJar.exists()) {
 				pluginJar.createNewFile();
 			}
-			FileOutputStream fos = new FileOutputStream(pluginJar);
-			fos.write(data);
-			fos.flush();
-			fos.close();
+			try(FileOutputStream fos = new FileOutputStream(pluginJar)){
+				fos.write(data);
+				fos.flush();
+				fos.close();
+			}
 		} catch (IOException e) {
-			LOG.error("Could not save plugin file");
+			LOG.error("Could not save plugin file {}.", pluginJar.getName());
+			LOG.debug("Could not save plugin file {}.\n{}", pluginJar.getName(), e.getStackTrace());
 		}
 	}
 
@@ -139,7 +144,8 @@ public class PluginManager {
 		try {
 			pluginJar.delete();
 		} catch (Exception e) {
-			LOG.error("Could not delete plugin {}", pluginJar);
+			LOG.error("Could not delete plugin file {}.", pluginJar.getName());
+			LOG.error("Could not delete plugin file {}.\n{}", pluginJar.getName(), e.getStackTrace());
 		}
 	}
 }

@@ -5,22 +5,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: User
- * Date: 2013/05/31
- * Time: 12:35 PM
- * To change this template use File | Settings | File Templates.
- */
 public class Plugin {
 
-	protected String id;
-	protected String name;
-	protected String description;
-	protected URL url;
-	protected String implementation;
-	protected String crawljaxVersion;
-	protected List<Parameter> parameters = new ArrayList<>();
+	private String id;
+	private String name;
+	private String description;
+	private URL url;
+	private String implementation;
+	private String crawljaxVersion;
+	private List<Parameter> parameters = new ArrayList<>();
 
 	public Plugin() {} //Default constructor
 

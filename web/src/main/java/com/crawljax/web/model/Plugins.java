@@ -1,6 +1,6 @@
 package com.crawljax.web.model;
 
-import com.crawljax.core.plugin.IHostInterface;
+import com.crawljax.core.plugin.HostInterface;
 import com.crawljax.web.LogWebSocketServlet;
 import com.crawljax.web.fs.PluginManager;
 
@@ -62,12 +62,12 @@ public class Plugins {
 		return pluginList.get(id);
 	}
 
-	public com.crawljax.core.plugin.Plugin getInstanceOf(Plugin plugin, IHostInterface hostInterface) {
+	public com.crawljax.core.plugin.Plugin getInstanceOf(Plugin plugin, HostInterface hostInterface) {
 		com.crawljax.core.plugin.Plugin instance = null;
 		ClassLoader cl = new URLClassLoader(new URL[]{plugin.getUrl()});
 		try {
 			Class pluginClass = cl.loadClass(plugin.getImplementation());
-			Constructor constructor = pluginClass.getDeclaredConstructor(IHostInterface.class);
+			Constructor constructor = pluginClass.getDeclaredConstructor(HostInterface.class);
 			instance = (com.crawljax.core.plugin.Plugin)constructor.newInstance(hostInterface);
 		} catch (Throwable e) {
 			LogWebSocketServlet.sendToAll("Could not create instance of plugin " + plugin.getName());
