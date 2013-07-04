@@ -21,7 +21,6 @@ import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.ExitNotifier.ExitStatus;
-import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
@@ -64,9 +63,6 @@ public class PluginsTest {
 	private PreStateCrawlingPlugin prestatePlugin;
 
 	@Mock
-	private ProxyServerPlugin proxyServerPlugin;
-
-	@Mock
 	private CrawlerContext context;
 
 	@Mock
@@ -81,15 +77,7 @@ public class PluginsTest {
 		        new Plugins(ImmutableList.of(domChange, browserCreatedPlugin,
 		                fireEventFailedPlugin, invariantViolationPlugin, newStatePlugin,
 		                onRevisitStatePlugin,
-		                urlLoadPlugin, postCrawlingPlugin, prestatePlugin,
-		                proxyServerPlugin));
-	}
-
-	@Test
-	public void proxyCallisCalled() throws Exception {
-		ProxyConfiguration config = ProxyConfiguration.noProxy();
-		plugins.runProxyServerPlugins(config);
-		verify(proxyServerPlugin).proxyServer(config);
+		                urlLoadPlugin, postCrawlingPlugin, prestatePlugin));
 	}
 
 	@Test
