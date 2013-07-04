@@ -9,6 +9,16 @@
 	<artifactId>crawljax-examples</artifactId>
 	<name>Crawljax Examples</name>
 	<description>Crawljax usage example</description>
+	<repositories>
+		<repository>
+			<id>crawljax.mvn.repo</id>
+			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>

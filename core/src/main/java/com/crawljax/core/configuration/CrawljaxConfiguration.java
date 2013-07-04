@@ -44,8 +44,9 @@ public class CrawljaxConfiguration {
 			return this.config.getGraphType();
 		}
 
-		public void setGraphType(StateFlowGraphType graphType) {
-			this.config.setGraphType(graphType);
+		public void setGraphType(StateFlowGraphType gType) {
+			Preconditions.checkNotNull(gType);
+			this.config.graphType = gType;
 		}
 
 		/**
@@ -261,10 +262,6 @@ public class CrawljaxConfiguration {
 
 	public StateFlowGraphType getGraphType() {
 		return graphType;
-	}
-
-	public void setGraphType(StateFlowGraphType graphType) {
-		this.graphType = graphType;
 	}
 
 	@Override

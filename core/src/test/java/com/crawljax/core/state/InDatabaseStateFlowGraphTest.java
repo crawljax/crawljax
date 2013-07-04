@@ -24,27 +24,30 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	}
 
 	/**
-	 * Test method for
+	 * This test case tests if serialization and deserialization leaves the original states
+	 * unchanged. Test method for
 	 * {@link com.crawljax.core.state.InDatabaseStateFlowGraph#serializeStateVertex(com.crawljax.core.state.StateVertex)}
 	 * and {@link com.crawljax.core.state.InDatabaseStateFlowGraph#deserializeStateVertex(byte[])}.
 	 */
 	@Test
-	public void testSerializationForStateVertexes() {
+	public void testSereializationDoesNotAlterOriginalStates() {
 
-		testSerializationForOneState(index);
-		testSerializationForOneState(state2);
-		testSerializationForOneState(state3);
-		testSerializationForOneState(state4);
-		testSerializationForOneState(state5);
+		testSereializationDoesNotAlterOriginalState(index);
+		testSereializationDoesNotAlterOriginalState(state2);
+		testSereializationDoesNotAlterOriginalState(state3);
+		testSereializationDoesNotAlterOriginalState(state4);
+		testSereializationDoesNotAlterOriginalState(state5);
 
 	}
 
 	/**
-	 * Test method for
+	 * This test case tests if serialization and deserialization leaves the original states
+	 * unchanged. Test method for
 	 * {@link com.crawljax.core.state.InDatabaseStateFlowGraph#serializeStateVertex(com.crawljax.core.state.StateVertex)}
 	 * and {@link com.crawljax.core.state.InDatabaseStateFlowGraph#deserializeStateVertex(byte[])}.
 	 */
-	private void testSerializationForOneState(StateVertex stateVertex)
+	private void testSereializationDoesNotAlterOriginalState(
+	        StateVertex stateVertex)
 	{
 		byte[] serializedStateVertex = InDatabaseStateFlowGraph.serializeStateVertex(stateVertex);
 		StateVertex deserializedStateVertex =
@@ -59,11 +62,11 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * and {@link com.crawljax.core.state.InDatabaseStateFlowGraph#deserializeEventable(byte[])}.
 	 */
 	@Test
-	public void testSerializatoinForEventablesWithoutSourceAndWithoutTargetStates() {
+	public void testEventableWithoutSourceAndTargetStateIsSerializable() {
 
 		String xPath = "/body/div[4]";
 		Eventable original = newXpathEventable(xPath);
-		testSerializatoinForOneEventable(original);
+		testSereializationDoesNotAlterOriginalEventable(original);
 	}
 
 	/**
@@ -73,12 +76,12 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 */
 
 	@Test
-	public void testSerializatoinForEventablesWithSourceButWithoutTargetStates() {
+	public void testEventableWithSourceButWithoutTargetStateIsSerializable() {
 
 		String xPath = "/body/div[4]";
 		Eventable original = newXpathEventable(xPath);
 		original.setSource(index);
-		testSerializatoinForOneEventable(original);
+		testSereializationDoesNotAlterOriginalEventable(original);
 	}
 
 	/**
@@ -87,14 +90,14 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * and {@link com.crawljax.core.state.InDatabaseStateFlowGraph#deserializeEventable(byte[])}.
 	 */
 	@Test
-	public void testSerializatoinForEventables() {
+	public void testEventableWithSourceAndTargetStateIsSerializable() {
 
 		System.out.println("hi");
 		String xPath = "/body/div[4]";
 		Eventable original = newXpathEventable(xPath);
 		original.setSource(index);
 		original.setTarget(state4);
-		testSerializatoinForOneEventable(original);
+		testSereializationDoesNotAlterOriginalEventable(original);
 	}
 
 	/**
@@ -104,7 +107,7 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * 
 	 * @param original
 	 */
-	private void testSerializatoinForOneEventable(Eventable original) {
+	private void testSereializationDoesNotAlterOriginalEventable(Eventable original) {
 		byte[] serializedEventable = InDatabaseStateFlowGraph.serializeEventable(original);
 		Eventable deserializedEventable =
 		        InDatabaseStateFlowGraph.deserializeEventable(serializedEventable);
@@ -116,7 +119,7 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * Test method for {@link com.crawljax.core.state.InDatabaseStateFlowGraph#buildJgraphT()}.
 	 */
 	@Test
-	public void testBuildJgraphT() {
+	public void testJgraphtGraphHasTheExpectedNumberOfEdges() {
 
 		graph.putIfAbsent(state2);
 		graph.putIfAbsent(state3);

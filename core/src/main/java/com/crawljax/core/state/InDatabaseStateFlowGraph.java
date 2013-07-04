@@ -92,29 +92,29 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 	 * The directory path for saving the graph database created by neo4j for storing the state flow
 	 * graph
 	 */
-	public static String DATABASE_PATH = null;
+	private String databasePath;
 
 	/**
 	 * the connector and main access point to the neo4j graph database
 	 */
-	private static GraphDatabaseService sfgDb;
+	private GraphDatabaseService sfgDb;
 
 	/**
 	 * for building an indexing structure within the graph to provide quick access to nodes and
 	 * edges.
 	 */
-	public static Node root;
+	private Node root;
 
 	/**
 	 * index manager for indexing nodes and relations in the graph database
 	 */
-	private static IndexManager indexManager;
+	private IndexManager indexManager;
 
 	/**
 	 * indexing data structures for ensuring valid concurrent insertion and fast retrieval
 	 */
-	public static Index<Node> nodeIndex;
-	public static RelationshipIndex edgesIndex;
+	private Index<Node> nodeIndex;
+	private RelationshipIndex edgesIndex;
 
 	/**
 	 * @param exitNotifier
@@ -126,7 +126,7 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 		setUpDatabase();
 		initializeIndices();
 		LOG.debug("Initialized the stateflowgraph");
-		registerShutdownHook(sfgDb);
+		registerShutdownHook(this.sfgDb);
 
 	}
 
@@ -141,13 +141,13 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 	public InDatabaseStateFlowGraph(String dbPath, Node root, Index<Node> nIndex,
 	        RelationshipIndex eIndex, ExitNotifier exitNotifier) {
 		this.exitNotifier = exitNotifier;
-		DATABASE_PATH = dbPath;
-		InDatabaseStateFlowGraph.root = root;
-		InDatabaseStateFlowGraph.nodeIndex = nIndex;
-		InDatabaseStateFlowGraph.edgesIndex = eIndex;
+		this.databasePath = dbPath;
+		this.root = root;
+		this.nodeIndex = nIndex;
+		this.edgesIndex = eIndex;
 
-		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(DATABASE_PATH);
-		registerShutdownHook(sfgDb);
+		this.sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(this.databasePath);
+		registerShutdownHook(this.sfgDb);
 
 	}
 
@@ -158,9 +158,9 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 
 	private void setUpDatabase() {
 
-		DATABASE_PATH = buildDataBaseDirectory();
+		setDatabasePath(buildDataBaseDirectory());
 
-		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(DATABASE_PATH);
+		sfgDb = new GraphDatabaseFactory().newEmbeddedDatabase(getDatabasePath());
 	}
 
 	private String CreateDatabaseDirectory() {
@@ -216,7 +216,7 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 			tx.finish();
 		}
 
-		InDatabaseStateFlowGraph.root = indexNode;
+		this.root = indexNode;
 
 	}
 
@@ -998,11 +998,11 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 		return stateFromGraph;
 	}
 
-	public static void setSfgDb(GraphDatabaseService sfgDb) {
-		InDatabaseStateFlowGraph.sfgDb = sfgDb;
+	public void setSfgDb(GraphDatabaseService sfgDb) {
+		this.sfgDb = sfgDb;
 	}
 
-	public static GraphDatabaseService getSfgDb() {
+	public GraphDatabaseService getSfgDb() {
 		return sfgDb;
 	}
 
@@ -1040,7 +1040,7 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 	 * @param graphDatabaseService
 	 *            the database for which a shutdown hook will be registered
 	 */
-	private static void registerShutdownHook(
+	private void registerShutdownHook(
 	        final GraphDatabaseService graphDatabaseService) {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -1050,20 +1050,42 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 		});
 	}
 
-	public static void setIndexManager(IndexManager index) {
-		InDatabaseStateFlowGraph.indexManager = index;
+	public void setIndexManager(IndexManager index) {
+		this.indexManager = index;
 	}
 
-	public static IndexManager getIndexManager() {
+	public IndexManager getIndexManager() {
 		return indexManager;
 	}
 
-	public static void setNodeIndex(Index<Node> nodeIndex) {
-		InDatabaseStateFlowGraph.nodeIndex = nodeIndex;
+	public void setNodeIndex(Index<Node> nodeIndex) {
+		this.nodeIndex = nodeIndex;
 	}
 
-	public static void setEdgesIndex(RelationshipIndex edgesIndex) {
-		InDatabaseStateFlowGraph.edgesIndex = edgesIndex;
+	public void setEdgesIndex(RelationshipIndex edgesIndex) {
+		this.edgesIndex = edgesIndex;
+	}
+
+	public void setRoot(Node root) {
+		this.root = root;
+	}
+
+	public Node getRoot() {
+		return root;
+	}
+
+	/**
+	 * @param databasePath
+	 */
+	public void setDatabasePath(String databasePath) {
+		this.databasePath = databasePath;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getDatabasePath() {
+		return databasePath;
 	}
 
 	/**
