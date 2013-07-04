@@ -3,18 +3,27 @@ package com.crawljax.web;
 import java.io.File;
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.web.di.CrawljaxWebModule.OutputFolder;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 public class LoggingSocket extends WebSocketAdapter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoggingSocket.class);
+	private final File outPutFolder;
 	private SocketLogAppender appender;
+
+	@Inject
+	public LoggingSocket(@OutputFolder File outPutFolder) {
+		this.outPutFolder = outPutFolder;
+	}
 
 	@Override
 	public void onWebSocketConnect(Session session) {
@@ -25,9 +34,8 @@ public class LoggingSocket extends WebSocketAdapter {
 
 	private void sendLogFile(String crawlId) {
 		File log =
-		        new File(System.getProperty("outputFolder")
-						+ File.separator + "crawl-records"
-						+ File.separator + crawlId
+		        new File(outPutFolder, "crawl-records"
+		                + File.separator + crawlId
 		                + File.separator + "crawl.log");
 		if (log.exists()) {
 			try {

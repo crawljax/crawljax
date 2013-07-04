@@ -15,19 +15,22 @@ public class Plugin {
 	private String crawljaxVersion;
 	private List<Parameter> parameters = new ArrayList<>();
 
-	public Plugin() {} //Default constructor
+	public Plugin() {
+	} // Default constructor
 
-	public Plugin(Plugin plugin) { //Copy constructor
+	public Plugin(Plugin plugin) { // Copy constructor
 		this.id = plugin.getId();
 		this.name = plugin.getName();
 		this.description = plugin.getDescription();
 		try {
 			this.url = new URL(plugin.getUrl().toString());
-		} catch (MalformedURLException e){};
+		} catch (MalformedURLException e) {
+		}
+		;
 		this.implementation = plugin.getImplementation();
 		this.crawljaxVersion = plugin.getCrawljaxVersion();
 		this.parameters = new ArrayList<>();
-		for(int i = 0; i < plugin.getParameters().size(); i++) {
+		for (int i = 0; i < plugin.getParameters().size(); i++) {
 			Parameter param = new Parameter();
 			param.setId(plugin.getParameters().get(i).getId());
 			param.setDisplayName(plugin.getParameters().get(i).getDisplayName());

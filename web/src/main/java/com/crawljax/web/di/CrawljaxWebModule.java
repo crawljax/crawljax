@@ -9,8 +9,10 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
 import com.crawljax.web.LogWebSocketServlet;
 import com.crawljax.web.fs.WorkDirManager;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.inject.BindingAnnotation;
+import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -47,14 +49,20 @@ public class CrawljaxWebModule extends ServletModule {
 		filter("/rest/*").through(GuiceContainer.class, params);
 
 		bind(File.class).annotatedWith(OutputFolder.class).toInstance(outputFolder);
-		bind(File.class).annotatedWith(PluginDescriptorFolder.class).toInstance(pluginFolder());
 
 		bind(WorkDirManager.class).asEagerSingleton();
 
 	}
 
+	@Provides
+	@PluginDescriptorFolder
 	private File pluginFolder() {
-		return new File(System.getProperty("outputFolder") + File.separator + "plugins");
+		File plugins = new File("plugins");
+		if (!plugins.exists()) {
+			plugins.mkdirs();
+		}
+		Preconditions.checkArgument(plugins.canWrite(), "Plugin directory is writable");
+		return plugins;
 	}
 
 }

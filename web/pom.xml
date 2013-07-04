@@ -121,9 +121,12 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/ conf/</classpathPrefix>
+							<classpathPrefix>lib/</classpathPrefix>
 							<mainClass>com.crawljax.web.CrawljaxServer</mainClass>
 						</manifest>
+						<manifestEntries>
+							<Class-Path>config/</Class-Path>
+						</manifestEntries>
 					</archive>
 					<excludes>
 						<exclude>logback.xml</exclude>

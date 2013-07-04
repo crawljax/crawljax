@@ -10,9 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.crawljax.core.plugin.HostInterface;
-import com.crawljax.core.plugin.HostInterfaceImpl;
-import com.crawljax.web.model.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.MDC;
 
@@ -33,6 +30,8 @@ import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.plugin.HostInterface;
+import com.crawljax.core.plugin.HostInterfaceImpl;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.oraclecomparator.OracleComparator;
@@ -46,8 +45,17 @@ import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 import com.crawljax.oraclecomparator.comparators.StyleComparator;
 import com.crawljax.oraclecomparator.comparators.XPathExpressionComparator;
 import com.crawljax.web.LogWebSocketServlet;
+import com.crawljax.web.model.ClickRule;
 import com.crawljax.web.model.ClickRule.RuleType;
+import com.crawljax.web.model.Configuration;
+import com.crawljax.web.model.Configurations;
+import com.crawljax.web.model.CrawlRecord;
 import com.crawljax.web.model.CrawlRecord.CrawlStatusType;
+import com.crawljax.web.model.CrawlRecords;
+import com.crawljax.web.model.NameValuePair;
+import com.crawljax.web.model.Parameter;
+import com.crawljax.web.model.Plugin;
+import com.crawljax.web.model.Plugins;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -196,30 +204,34 @@ public class CrawlRunner {
 					setComparatorsFromConfig(config.getComparators(), builder.crawlRules());
 
 				// Add Crawl Overview
-				//builder.addPlugin(new CrawlOverview(new File(record.getOutputFolder()
-				//	+ File.separatorChar + "crawloverview")));
+				// builder.addPlugin(new CrawlOverview(new File(record.getOutputFolder()
+				// + File.separatorChar + "crawloverview")));
 
-				for(int i = 0, l = config.getPlugins().size(); i < l; i++){
+				for (int i = 0, l = config.getPlugins().size(); i < l; i++) {
 					Plugin pluginConfig = config.getPlugins().get(i);
 					Plugin plugin = plugins.findByID(pluginConfig.getId());
-					if(plugin == null) {
-						LogWebSocketServlet.sendToAll("Could not find plugin: " + pluginConfig.getId());
+					if (plugin == null) {
+						LogWebSocketServlet.sendToAll("Could not find plugin: "
+						        + pluginConfig.getId());
 						continue;
 					}
 					String pluginKey = String.valueOf(i + 1);
-					File outputFolder = new File(record.getOutputFolder() + File.separatorChar + "plugins" + File.separatorChar + pluginKey);
+					File outputFolder =
+					        new File(record.getOutputFolder() + File.separatorChar + "plugins"
+					                + File.separatorChar + pluginKey);
 					Map<String, String> parameters = new ConcurrentHashMap<>();
-					for(Parameter parameter : plugin.getParameters()) {
+					for (Parameter parameter : plugin.getParameters()) {
 						parameters.put(parameter.getId(), "");
-						for(Parameter configParam : pluginConfig.getParameters()) {
-							if(configParam.getId().equals(parameter.getId())) {
+						for (Parameter configParam : pluginConfig.getParameters()) {
+							if (configParam.getId().equals(parameter.getId())) {
 								parameters.put(parameter.getId(), configParam.getValue());
 							}
 						}
 					}
 					HostInterface hostInterface = new HostInterfaceImpl(outputFolder, parameters);
-					com.crawljax.core.plugin.Plugin instance = plugins.getInstanceOf(plugin, hostInterface);
-					if(instance != null) {
+					com.crawljax.core.plugin.Plugin instance =
+					        plugins.getInstanceOf(plugin, hostInterface);
+					if (instance != null) {
 						builder.addPlugin(instance);
 						record.getPlugins().put(pluginKey, plugin);
 					}
