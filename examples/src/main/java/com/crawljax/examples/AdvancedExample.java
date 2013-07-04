@@ -10,9 +10,9 @@ import org.apache.commons.io.FileUtils;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.core.CrawljaxRunner;
+import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
@@ -25,7 +25,7 @@ public final class AdvancedExample {
 
 	private static final long WAIT_TIME_AFTER_EVENT = 200;
 	private static final long WAIT_TIME_AFTER_RELOAD = 20;
-	private static final String URL = "http://demo.crawljax.com/";
+	private static final String URL = "http://demo.crawljax.com";
 
 	/**
 	 * Run this method to start the crawl.
@@ -51,8 +51,7 @@ public final class AdvancedExample {
 
 		// Add a condition that this XPath doesn't exits
 		builder.crawlRules().addCrawlCondition("No spans with foo as class",
-		        new NotXPathCondition(
-		                "//*[@class='foo']"));
+		        new NotXPathCondition("//*[@class='foo']"));
 
 		// Set some input for fields
 		builder.crawlRules().setInputSpec(getInputSpecification());
