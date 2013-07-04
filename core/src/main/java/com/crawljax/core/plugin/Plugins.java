@@ -15,7 +15,6 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.google.common.base.Objects;
@@ -41,7 +40,7 @@ public class Plugins {
 	                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 	                OnRevisitStatePlugin.class, OnUrlLoadPlugin.class,
 	                PostCrawlingPlugin.class, PreStateCrawlingPlugin.class,
-	                ProxyServerPlugin.class, PreCrawlingPlugin.class);
+	                PreCrawlingPlugin.class);
 
 	/**
 	 * @return An empty {@link Plugins} configuration.
@@ -260,28 +259,7 @@ public class Plugins {
 		}
 	}
 
-	/**
-	 * Load and run the proxyServerPlugins. proxyServerPlugins are used to Starts the proxy server
-	 * and provides Crawljax with the correct settings such as port number. Warning the config
-	 * argument is not a clone, changes will influence the behaviour of the Browser. Changes should
-	 * be returned as new Object.
-	 * 
-	 * @param config
-	 *            The ProxyConfiguration to use.
-	 */
-	public void runProxyServerPlugins(ProxyConfiguration config) {
-		LOGGER.debug("Running ProxyServerPlugins...");
-		for (Plugin plugin : plugins.get(ProxyServerPlugin.class)) {
-			if (plugin instanceof ProxyServerPlugin) {
-				LOGGER.debug("Calling plugin {}", plugin);
-				try {
-					((ProxyServerPlugin) plugin).proxyServer(config);
-				} catch (RuntimeException e) {
-					reportFailingPlugin(plugin, e);
-				}
-			}
-		}
-	}
+	
 
 	public void runPreCrawlingPlugins(CrawljaxConfiguration config) {
 		LOGGER.debug("Running PreCrawlingPlugins...");
