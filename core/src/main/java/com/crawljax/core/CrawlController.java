@@ -59,7 +59,6 @@ public class CrawlController implements Callable<CrawlSession> {
 	 */
 	@Override
 	public CrawlSession call() {
-		plugins.runProxyServerPlugins(config.getProxyConfiguration());
 		setMaximumCrawlTimeIfNeeded();
 		plugins.runPreCrawlingPlugins(config);
 		CrawlTaskConsumer firstConsumer = consumerFactory.get();
