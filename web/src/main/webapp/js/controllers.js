@@ -127,7 +127,7 @@ App.ConfigurationController = Ember.Controller.extend({
 				break;
 			case "save":
 				if (validateForm("config_form")) {
-					App.Configurations.update(this.get('content'));
+					this.set('content', App.Configurations.update(this.get('content')));
 				}
 				break;
 			case "delete":
