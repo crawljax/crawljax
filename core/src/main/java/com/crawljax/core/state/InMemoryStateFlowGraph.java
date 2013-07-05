@@ -191,7 +191,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	}
 
 	@Override
-	public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix) {
+	public ImmutableSet<Eventable> getIncomingClickables(StateVertex stateVertix) {
 		readLock.lock();
 		try {
 			return ImmutableSet.copyOf(sfg.incomingEdgesOf(stateVertix));
@@ -275,7 +275,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		return stateCounter.get();
 	}
 
-	StateVertex newStateFor(String url, String dom, String strippedDom) {
+	public StateVertex newStateFor(String url, String dom, String strippedDom) {
 		int id = nextStateNameCounter.incrementAndGet();
 		return new StateVertexImpl(id, url, getNewStateName(id), dom, strippedDom);
 	}
@@ -284,7 +284,6 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		return "state" + id;
 	}
 
-	@Override
 	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index) {
 		final List<List<GraphPath<StateVertex, Eventable>>> results = Lists.newArrayList();
 

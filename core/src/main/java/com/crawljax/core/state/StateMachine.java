@@ -25,7 +25,7 @@ public class StateMachine {
 		return new StateVertexImpl(StateVertex.INDEX_ID, url, "index", dom, strippedDom);
 	}
 
-	private final InMemoryStateFlowGraph stateFlowGraph;
+	private final StateFlowGraph stateFlowGraph;
 
 	private final StateVertex initialState;
 
@@ -50,7 +50,7 @@ public class StateMachine {
 	 * @param invariantList
 	 *            the invariants to use in the InvariantChecker.
 	 */
-	public StateMachine(InMemoryStateFlowGraph sfg,
+	public StateMachine(StateFlowGraph sfg,
 	        ImmutableList<Invariant> invariantList, Plugins plugins,
 	        StateComparator stateComparator) {
 		stateFlowGraph = sfg;

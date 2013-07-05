@@ -27,7 +27,7 @@ public class PostCrawlStateGraphChecker implements PostCrawlingPlugin {
 	private void allStatesHaveOneOreMoreIncomingEdges(StateFlowGraph stateFlowGraph) {
 		for (StateVertex state : stateFlowGraph.getAllStates()) {
 			if (stateFlowGraph.getInitialState().getId() != state.getId()) {
-				assertThat(stateFlowGraph.getIncomingClickable(state).size(),
+				assertThat(stateFlowGraph.getIncomingClickables(state).size(),
 				        is(greaterThanOrEqualTo(1)));
 			}
 		}
