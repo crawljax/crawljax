@@ -969,7 +969,6 @@ public class InDatabaseStateFlowGraph implements Serializable, StateFlowGraph {
 	 * @return a list of GraphPath lists.
 	 */
 
-	@Override
 	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(
 	        StateVertex index) {
 		final List<List<GraphPath<StateVertex, Eventable>>> results = Lists.newArrayList();

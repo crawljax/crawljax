@@ -1,17 +1,12 @@
 package com.crawljax.core.state;
 
-import java.util.List;
 import java.util.Set;
-
-import org.jgrapht.GraphPath;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * <<<<<<< Updated upstream A graph of {@link StateVertex} as vertexes and {@link Eventable} as
- * edges. ======= A graph with {@link StateVertex} as vertexes and {@link Eventable} as edges.
- * >>>>>>> Stashed changes
+ * A graph with {@link StateVertex} as vertexes and {@link Eventable} as edges.
  */
 public interface StateFlowGraph {
 
@@ -20,7 +15,7 @@ public interface StateFlowGraph {
 	}
 
 	/**
-	 * Adds a state (as a vertix) to the State-Flow Graph if not already present. More formally,
+	 * Adds a state (as a vertex) to the State-Flow Graph if not already present. More formally,
 	 * adds the specified vertex, v, to this graph if this graph contains no vertex u such that
 	 * u.equals(v). If this graph already contains such vertex, the call leaves this graph unchanged
 	 * and returns false. In combination with the restriction on constructors, this ensures that
@@ -138,15 +133,6 @@ public interface StateFlowGraph {
 	public int getNumberOfStates();
 
 	public StateVertex newStateFor(String url, String dom, String strippedDom);
-
-	/**
-	 * This method returns all possible paths from the index state using the Kshortest paths.
-	 * 
-	 * @param index
-	 *            the initial state.
-	 * @return a list of GraphPath lists.
-	 */
-	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index);
 
 	/**
 	 * @param stateVertix

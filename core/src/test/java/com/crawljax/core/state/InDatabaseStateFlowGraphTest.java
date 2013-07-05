@@ -18,7 +18,6 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * @throws java.lang.Exception
 	 */
 
-	@Override
 	public StateFlowGraph createStateFlowGraph() {
 		return new InDatabaseStateFlowGraph(new ExitNotifier(0));
 	}
@@ -30,13 +29,13 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * and {@link com.crawljax.core.state.InDatabaseStateFlowGraph#deserializeStateVertex(byte[])}.
 	 */
 	@Test
-	public void testSereializationDoesNotAlterOriginalStates() {
+	public void testWhenStatesAreSereializedTheyRemainUnchanged() {
 
-		testSereializationDoesNotAlterOriginalState(index);
-		testSereializationDoesNotAlterOriginalState(state2);
-		testSereializationDoesNotAlterOriginalState(state3);
-		testSereializationDoesNotAlterOriginalState(state4);
-		testSereializationDoesNotAlterOriginalState(state5);
+		testWhenAStateIsSereializedItRemainsUnchanged(index);
+		testWhenAStateIsSereializedItRemainsUnchanged(state2);
+		testWhenAStateIsSereializedItRemainsUnchanged(state3);
+		testWhenAStateIsSereializedItRemainsUnchanged(state4);
+		testWhenAStateIsSereializedItRemainsUnchanged(state5);
 
 	}
 
@@ -46,7 +45,7 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * {@link com.crawljax.core.state.InDatabaseStateFlowGraph#serializeStateVertex(com.crawljax.core.state.StateVertex)}
 	 * and {@link com.crawljax.core.state.InDatabaseStateFlowGraph#deserializeStateVertex(byte[])}.
 	 */
-	private void testSereializationDoesNotAlterOriginalState(
+	private void testWhenAStateIsSereializedItRemainsUnchanged(
 	        StateVertex stateVertex)
 	{
 		byte[] serializedStateVertex = InDatabaseStateFlowGraph.serializeStateVertex(stateVertex);
@@ -62,11 +61,11 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * and {@link com.crawljax.core.state.InDatabaseStateFlowGraph#deserializeEventable(byte[])}.
 	 */
 	@Test
-	public void testEventableWithoutSourceAndTargetStateIsSerializable() {
+	public void testWhenAnEventableWithNoSorceNorTargetIsSereializedItRemainsUnchanged() {
 
 		String xPath = "/body/div[4]";
 		Eventable original = newXpathEventable(xPath);
-		testSereializationDoesNotAlterOriginalEventable(original);
+		testWhenAnEventableIsSereializedItRemainsUnchanged(original);
 	}
 
 	/**
@@ -76,12 +75,12 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 */
 
 	@Test
-	public void testEventableWithSourceButWithoutTargetStateIsSerializable() {
+	public void testWhenAnEventableWitSourceIsSereializedItRemainsUnchanged() {
 
 		String xPath = "/body/div[4]";
 		Eventable original = newXpathEventable(xPath);
 		original.setSource(index);
-		testSereializationDoesNotAlterOriginalEventable(original);
+		testWhenAnEventableIsSereializedItRemainsUnchanged(original);
 	}
 
 	/**
@@ -90,14 +89,14 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * and {@link com.crawljax.core.state.InDatabaseStateFlowGraph#deserializeEventable(byte[])}.
 	 */
 	@Test
-	public void testEventableWithSourceAndTargetStateIsSerializable() {
+	public void testWhenAnEventableWithSourceAndTargetIsSereializedItRemainsUnchanged() {
 
 		System.out.println("hi");
 		String xPath = "/body/div[4]";
 		Eventable original = newXpathEventable(xPath);
 		original.setSource(index);
 		original.setTarget(state4);
-		testSereializationDoesNotAlterOriginalEventable(original);
+		testWhenAnEventableIsSereializedItRemainsUnchanged(original);
 	}
 
 	/**
@@ -107,7 +106,7 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * 
 	 * @param original
 	 */
-	private void testSereializationDoesNotAlterOriginalEventable(Eventable original) {
+	private void testWhenAnEventableIsSereializedItRemainsUnchanged(Eventable original) {
 		byte[] serializedEventable = InDatabaseStateFlowGraph.serializeEventable(original);
 		Eventable deserializedEventable =
 		        InDatabaseStateFlowGraph.deserializeEventable(serializedEventable);
@@ -119,25 +118,33 @@ public class InDatabaseStateFlowGraphTest extends StateFlowGraphTest {
 	 * Test method for {@link com.crawljax.core.state.InDatabaseStateFlowGraph#buildJgraphT()}.
 	 */
 	@Test
-	public void testJgraphtGraphHasTheExpectedNumberOfEdges() {
+	public void testWhenDataBaseIsCovertedToJgraphtTheNumberOfEdgesIsValid() {
 
 		graph.putIfAbsent(state2);
 		graph.putIfAbsent(state3);
 		graph.putIfAbsent(state4);
 		graph.putIfAbsent(state5);
 
+		int numberOfEdges = 0;
 		graph.addEdge(index, state2, newXpathEventable("/body/div[12]"));
+		numberOfEdges++;
 		graph.addEdge(index, state3, newXpathEventable("/body/div[13]"));
+		numberOfEdges++;
 		graph.addEdge(index, state5, newXpathEventable("/body/div[15]"));
+		numberOfEdges++;
 
 		graph.addEdge(state2, index, newXpathEventable("/body/div[21]"));
+		numberOfEdges++;
 		graph.addEdge(state2, state3, newXpathEventable("/body/div[23]"));
+		numberOfEdges++;
 		graph.addEdge(state2, state4, newXpathEventable("/body/div[24]"));
+		numberOfEdges++;
 		graph.addEdge(state2, state5, newXpathEventable("/body/div[25]"));
+		numberOfEdges++;
 
 		InDatabaseStateFlowGraph inDbGraph = (InDatabaseStateFlowGraph) graph;
 
-		assertTrue(inDbGraph.buildJgraphT().edgeSet().size() == 7);
+		assertTrue(inDbGraph.buildJgraphT().edgeSet().size() == numberOfEdges);
 
 	}
 

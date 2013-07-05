@@ -9,16 +9,6 @@
 	<artifactId>crawljax-examples</artifactId>
 	<name>Crawljax Examples</name>
 	<description>Crawljax usage example</description>
-	<repositories>
-		<repository>
-			<id>crawljax.mvn.repo</id>
-			<url>https://github.com/crawljax/crawljax-mvn-repo/raw/master</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -29,7 +19,7 @@
 			<groupId>com.crawljax.plugins</groupId>
 			<artifactId>crawloverview-plugin</artifactId>
 			<version>${project.version}</version>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>

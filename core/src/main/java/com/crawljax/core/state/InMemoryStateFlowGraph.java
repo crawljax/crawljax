@@ -284,7 +284,6 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		return "state" + id;
 	}
 
-	@Override
 	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index) {
 		final List<List<GraphPath<StateVertex, Eventable>>> results = Lists.newArrayList();
 

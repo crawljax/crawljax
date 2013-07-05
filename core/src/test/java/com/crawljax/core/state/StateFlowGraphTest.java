@@ -1,6 +1,5 @@
 package com.crawljax.core.state;
 
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -10,19 +9,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jgrapht.GraphPath;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
 
-public class StateFlowGraphTest {
+public abstract class StateFlowGraphTest {
 
 	public StateVertex index;
 	public StateVertex state2;
@@ -31,10 +27,12 @@ public class StateFlowGraphTest {
 	public StateVertex state5;
 	public StateFlowGraph graph;
 
-	public StateFlowGraph createStateFlowGraph() {
-		return new InMemoryStateFlowGraph(new ExitNotifier(0));
-
-	}
+	/**
+	 * returns an empty and newly created instance of the StateFlowGraph implementation
+	 * 
+	 * @return
+	 */
+	abstract public StateFlowGraph createStateFlowGraph();
 
 	@Before
 	public void setup() {
@@ -204,87 +202,6 @@ public class StateFlowGraphTest {
 		assertThat(graph.getNumberOfStates(), is(1));
 		graph.putIfAbsent(state2);
 		assertThat(graph.getNumberOfStates(), is(2));
-	}
-
-	@Test
-	public void testAllPossiblePaths() {
-		graph.putIfAbsent(state2);
-		graph.putIfAbsent(state3);
-		graph.putIfAbsent(state4);
-		graph.putIfAbsent(state5);
-
-		graph.addEdge(index, state2, newXpathEventable("/index/2"));
-		graph.addEdge(state2, index, newXpathEventable("/2/index"));
-		graph.addEdge(state2, state3, newXpathEventable("/2/3"));
-		graph.addEdge(index, state4, newXpathEventable("/index/4"));
-		graph.addEdge(state2, state5, newXpathEventable("/2/5"));
-		graph.addEdge(state4, index, newXpathEventable("/4/index"));
-		graph.addEdge(index, state5, newXpathEventable("/index/5"));
-		graph.addEdge(state4, state2, newXpathEventable("/4/2"));
-		graph.addEdge(state3, state5, newXpathEventable("/3/5"));
-
-		graph.addEdge(state3, state4, newXpathEventable("/3/4"));
-
-		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
-
-		assertEquals(2, results.size());
-
-		List<GraphPath<StateVertex, Eventable>> p = results.get(0);
-
-		assertEquals(5, p.size());
-
-		GraphPath<StateVertex, Eventable> e = p.get(0);
-
-		assertEquals(1, e.getEdgeList().size());
-
-		p = results.get(1);
-
-		assertEquals(2, p.size());
-
-	}
-
-	@Test
-	public void largetTest() {
-		graph.putIfAbsent(state2);
-		graph.putIfAbsent(state3);
-		graph.putIfAbsent(state4);
-		graph.putIfAbsent(state5);
-
-		graph.addEdge(index, state2, newXpathEventable("/index/2"));
-		graph.addEdge(state2, index, newXpathEventable("/2/index"));
-		graph.addEdge(state2, state3, newXpathEventable("/2/3"));
-		graph.addEdge(index, state4, newXpathEventable("/index/4"));
-		graph.addEdge(state2, state5, newXpathEventable("/2/5"));
-		graph.addEdge(state4, index, newXpathEventable("/4/index"));
-		graph.addEdge(index, state5, newXpathEventable("/index/5"));
-		graph.addEdge(state4, state2, newXpathEventable("/4/2"));
-		graph.addEdge(state3, state5, newXpathEventable("/3/5"));
-
-		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
-
-		assertThat(results, hasSize(2));
-
-		assertThat(results.get(0), hasSize(5));
-
-		assertThat(results.get(0).get(0).getEdgeList(), hasSize(1));
-
-		assertThat(results.get(1), hasSize(2));
-		// int max = 0;
-		Set<Eventable> uEvents = new HashSet<Eventable>();
-
-		for (List<GraphPath<StateVertex, Eventable>> paths : results) {
-			for (GraphPath<StateVertex, Eventable> p : paths) {
-				// System.out.print(" Edge: " + x + ":" + y);
-				// int z = 0;
-				for (Eventable edge : p.getEdgeList()) {
-					// System.out.print(", " + edge.toString());
-					if (!uEvents.contains(edge)) {
-						uEvents.add(edge);
-					}
-
-				}
-			}
-		}
 	}
 
 }
