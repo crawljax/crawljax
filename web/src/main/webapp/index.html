@@ -304,7 +304,15 @@
 						
 					</div>
 					{{#each parameter in content.parameters}}
-						{{view App.FormTextField valueBinding="parameter.value" label="{{dynamicLabel}}: " dynamicLabel="displayName" contentBinding="parameter"}}
+						{{#ifEqual parameter.type textbox}}
+							{{view App.FormTextField valueBinding="parameter.value" label="{{dynamicLabel}}: " dynamicLabel="displayName" contentBinding="parameter"}}
+						{{/ifEqual}}
+						{{#ifEqual parameter.type checkbox}}
+							{{view App.FormCheckbox checkedBinding="parameter.value" label="{{dynamicLabel}}" dynamicLabel="displayName" contentBinding="parameter"}}
+						{{/ifEqual}}
+						{{#ifEqual parameter.type select}}
+							{{view App.FormSelect valueBinding="parameter.value" label="{{dynamicLabel}}: " dynamicLabel="displayName" contentBinding="parameter" optionsPath="content.options" optionValuePath="content.value" optionLabelPath="content.name"}}
+						{{/ifEqual}}
 					{{/each}}
 					<div class="row">
 						<div class="pull-right"><a href="#" {{action 'remove' content}} style="float:right;"><i class="icon-remove"></i> Remove Plugin</a></div>
