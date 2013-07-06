@@ -33,8 +33,8 @@ public class PluginManager {
 			this.pluginsFolder.mkdirs();
 	}
 
-	public Map<String, Plugin> loadAll() {
-		Map<String, Plugin> plugins = new ConcurrentHashMap<>();
+	public ConcurrentHashMap<String, Plugin> loadAll() {
+		ConcurrentHashMap<String, Plugin> plugins = new ConcurrentHashMap<>();
 		File[] pluginJars = pluginsFolder.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.endsWith(".jar");
@@ -122,8 +122,9 @@ public class PluginManager {
 		return pluginDescriptor;
 	}
 
-	public void save(String id, byte[] data) {
+	public Plugin save(String id, byte[] data) {
 		File pluginJar = new File(pluginsFolder, id + ".jar");
+		Plugin plugin = null;
 		try {
 			if (!pluginJar.exists()) {
 				pluginJar.createNewFile();
@@ -133,19 +134,16 @@ public class PluginManager {
 				fos.flush();
 				fos.close();
 			}
+			plugin = load(pluginJar);
 		} catch (IOException e) {
 			LOG.error("Could not save plugin file {}.", pluginJar.getName());
 			LOG.debug("Could not save plugin file {}.\n{}", pluginJar.getName(), e.getStackTrace());
 		}
+		return plugin;
 	}
 
-	public void delete(Plugin plugin) {
+	public boolean delete(Plugin plugin) {
 		File pluginJar = new File(pluginsFolder, plugin.getId() + ".jar");
-		try {
-			pluginJar.delete();
-		} catch (Exception e) {
-			LOG.error("Could not delete plugin file {}.", pluginJar.getName());
-			LOG.error("Could not delete plugin file {}.\n{}", pluginJar.getName(), e.getStackTrace());
-		}
+		return pluginJar.delete();
 	}
 }
