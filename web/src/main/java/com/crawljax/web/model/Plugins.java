@@ -45,16 +45,17 @@ public class Plugins {
 			}
 			id += Integer.toString(i);
 		}
-		pluginManager.save(id, data);
-		pluginList.clear();
-		pluginList.putAll(pluginManager.loadAll());
-
-		return pluginList.get(id);
+		Plugin plugin = pluginManager.save(id, data);
+		if(plugin != null) {
+			pluginList.put(plugin.getId(), plugin);
+		}
+		return plugin;
 	}
 
 	public Plugin remove(Plugin plugin) {
-		pluginList.remove(plugin.getId());
-		pluginManager.delete(plugin);
+		if(pluginManager.delete(plugin)) {
+			pluginList.remove(plugin.getId());
+		}
 		return plugin;
 	}
 
