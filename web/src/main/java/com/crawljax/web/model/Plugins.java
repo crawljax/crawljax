@@ -1,16 +1,17 @@
 package com.crawljax.web.model;
 
-import com.crawljax.core.plugin.HostInterface;
-import com.crawljax.web.LogWebSocketServlet;
-import com.crawljax.web.fs.PluginManager;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Map;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import com.crawljax.core.plugin.HostInterface;
+import com.crawljax.web.LogWebSocketServlet;
+import com.crawljax.web.fs.PluginManager;
 
 @Singleton
 public class Plugins {
@@ -32,7 +33,7 @@ public class Plugins {
 
 	public Plugin add(String fileName, byte[] data) {
 		int extensionIndex = fileName.indexOf(".jar");
-		if(extensionIndex < 0) {
+		if (extensionIndex < 0) {
 			LogWebSocketServlet.sendToAll("Expected .jar file, got " + fileName);
 			return null;
 		}
@@ -63,15 +64,17 @@ public class Plugins {
 		return pluginList.get(id);
 	}
 
-	public com.crawljax.core.plugin.Plugin getInstanceOf(Plugin plugin, HostInterface hostInterface) {
+	public com.crawljax.core.plugin.Plugin getInstanceOf(Plugin plugin,
+	        HostInterface hostInterface) {
 		com.crawljax.core.plugin.Plugin instance = null;
-		ClassLoader cl = new URLClassLoader(new URL[]{plugin.getUrl()});
+		ClassLoader cl = new URLClassLoader(new URL[] { plugin.getUrl() });
 		try {
 			Class pluginClass = cl.loadClass(plugin.getImplementation());
 			Constructor constructor = pluginClass.getDeclaredConstructor(HostInterface.class);
-			instance = (com.crawljax.core.plugin.Plugin)constructor.newInstance(hostInterface);
+			instance = (com.crawljax.core.plugin.Plugin) constructor.newInstance(hostInterface);
 		} catch (Throwable e) {
-			LogWebSocketServlet.sendToAll("Could not create instance of plugin " + plugin.getName());
+			LogWebSocketServlet.sendToAll("Could not create instance of plugin "
+			        + plugin.getName());
 		}
 		return instance;
 	}
