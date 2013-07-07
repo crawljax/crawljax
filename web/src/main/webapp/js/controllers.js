@@ -127,7 +127,7 @@ App.ConfigurationController = Ember.Controller.extend({
 				break;
 			case "save":
 				if (validateForm("config_form")) {
-					App.Configurations.update(this.get('content'));
+					this.set('content', App.Configurations.update(this.get('content')));
 				}
 				break;
 			case "delete":
@@ -229,14 +229,16 @@ App.PluginItemController = Ember.Controller.extend({
 			this.set('plugin', plugin);
 			var params = [];
 			var values = content.parameters;
-			for(var i = 0, l = plugin.parameters.length; i < l; i++) {
-				var parameter = plugin.parameters[i];
-				for(var j = 0, l_2 = values.length; i < l_2; i++) {
-					if(values[j].id === parameter.id) {
-						parameter.value = values[j].value;
+			if(plugin.parameters) {
+				for(var i = 0, l = plugin.parameters.length; i < l; i++) {
+					var parameter = plugin.parameters[i];
+					for(var j = 0, l_2 = values.length; j < l_2; j++) {
+						if(values[j].id === parameter.id) {
+							parameter.value = values[j].value;
+						}
 					}
+					params.push(parameter);
 				}
-				params.push(parameter);
 			}
 			this.set('content.parameters', params);
 		} else {

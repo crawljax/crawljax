@@ -104,7 +104,7 @@ App.FormField = Ember.View.extend({
 		errorTextBinding: 'parentView.errorText'
 	}),
 	didInsertElement: function() {
-	    this.set('labelView.inputElementId', this.get('inputField.elementId'));
+		this.set('labelView.inputElementId', this.get('inputField.elementId'));
 		if(this.get('dynamicLabel')) {
 			this.set('label', this.get('label').replace("{{dynamicLabel}}", this.get('content.' + this.get('dynamicLabel'))));
 		}
@@ -137,13 +137,16 @@ App.FormCheckbox = App.FormField.extend({
 	    '	{{view.label}}',
 	    '</label>',
 	    '</div>'].join("\n")),
-	labelView: null,
 	inputField: Ember.Checkbox.extend({
 		checkedBinding:   'parentView.checked',
 	    disabledBinding: 'parentView.disabled',
 	    classNameBindings: 'parentView.inputClassNames'
 	}),
-	didInsertElement: function() {}
+	willInsertElement: function(asdf) {
+		if(this.get(this.get("checkedBinding._from")) === "false") { //hack to have checkbox unchecked when value is the string "false"
+			this.set(this.get("checkedBinding._from"), false);
+		}
+	}
 });
 
 //Select
@@ -151,7 +154,7 @@ App.FormSelect = App.FormField.extend({
 	optionLabelPath: 'content',
 	optionValuePath: 'content',
 	inputField: Ember.Select.extend({
-		contentBinding: 'parentView.content',
+		contentBinding: 'parentView.options',
 		optionLabelPathBinding: 'parentView.optionLabelPath',
 	    optionValuePathBinding: 'parentView.optionValuePath',
 		selectionBinding: 'parentView.selection',
@@ -160,7 +163,21 @@ App.FormSelect = App.FormField.extend({
 		classNameBindings: 'parentView.inputClassNames',
 		requiredBinding: 'parentView.required',
 		attributeBindings: ['required']
-	})
+	}),
+	willInsertElement: function(asdf) {
+		if(this.get('optionsPath')) {
+			this.set('options', this.get(this.get('optionsPath')));
+		} else {
+			this.set('options', this.get('content'));
+		}
+		var options = this.get('options');
+		var value = this.get('value');
+		for(var i = 0, l = options.length; i < l; i++) {
+			if(options[i].value === value) {
+				this.set('selection', options[i]);
+			}
+		}
+	}
 });
 
 App.PluginSelect = App.FormField.extend({
@@ -203,3 +220,34 @@ App.FileUploadView = Ember.TextField.extend({
 		}
 	}
 });
+
+Ember.Handlebars.registerHelper('ifEqual', function(v1, v2, options) {
+	v1 = (Ember.Handlebars.get(this, v1, options)) || v1;
+	v2 = (Ember.Handlebars.get(this, v2, options)) || v2;
+	if(v1 === v2) {
+		return options.fn(this);
+	}
+	return options.inverse(this);
+});
+
+/*Ember.Handlebars.helper('formField', function(type, options) {
+	var _args = arguments;
+	//var raw = "{{formField 'parameter.type' valueBinding='parameter.value' label='{{dynamicLabel}}' dynamicLabel='displayName' contentBinding='parameter'}}";
+	switch(type) {
+		case "textbox":
+			options.hash[label] += ": ";
+			return Ember.Handlebars.helpers.view.call(this, App.FormTextField, options);
+		case "checkbox":
+			var asdf = "{{view App.FormTextField valueBinding='obj.value' label='{{dynamicLabel}}' dynamicLabel='displayName' contentBinding='obj'}}";
+			var template = Handlebars.compile(asdf);
+			return template({obj: options.hash.content})
+			
+			//return Ember.Handlebars.helpers.view.call(this, App.FormCheckbox, options);
+		case "select":
+			return Ember.Handlebars.helpers.view.call(this, App.FormSelect, options);
+	}
+	var view = App.PluginParameterViews[type];
+	if(view) {
+		return Ember.Handlebars.helpers.view.call(this, view, options);
+	}
+});*/
