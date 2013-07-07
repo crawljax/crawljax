@@ -1,9 +1,11 @@
 package com.crawljax.web.fs;
 
+import com.crawljax.core.plugin.jaxb.generated.OptionList;
 import com.crawljax.core.plugin.jaxb.generated.PluginDescriptor;
 import com.crawljax.web.di.CrawljaxWebModule;
 import com.crawljax.web.model.Parameter;
 import com.crawljax.web.model.Plugin;
+import com.crawljax.web.model.SelectOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -83,12 +85,25 @@ public class PluginManager {
 		plugin.setName(pluginDescriptor.getName());
 		plugin.setDescription(pluginDescriptor.getDescription());
 		plugin.setImplementation(pluginDescriptor.getImplementation());
-		plugin.setCrawljaxVersion(pluginDescriptor.getCrawljaxVersion());
-		for(com.crawljax.core.plugin.jaxb.generated.Parameter parameter : pluginDescriptor.getParameters()) {
-			Parameter copy = new Parameter();
-			copy.setId(parameter.getId());
-			copy.setDisplayName(parameter.getDisplayName());
-			plugin.getParameters().add(copy);
+		for(String version : pluginDescriptor.getCrawljaxVersions().getVersion()) {
+			plugin.getCrawljaxVersions().add(version);
+		}
+		if(pluginDescriptor.getParameters() != null) {
+			for(com.crawljax.core.plugin.jaxb.generated.Parameter parameter : pluginDescriptor.getParameters().getParameter()) {
+				Parameter paramCopy = new Parameter();
+				paramCopy.setId(parameter.getId());
+				paramCopy.setDisplayName(parameter.getDisplayName());
+				paramCopy.setType(Parameter.ParameterType.valueOf(parameter.getType()));
+				if(parameter.getOptions() != null) {
+					for(OptionList.Option option : parameter.getOptions().getOption()) {
+						SelectOption optionCopy = new SelectOption();
+						optionCopy.setName(option.getName());
+						optionCopy.setValue(option.getValue());
+						paramCopy.getOptions().add(optionCopy);
+					}
+				}
+				plugin.getParameters().add(paramCopy);
+			}
 		}
 		return plugin;
 	}
@@ -112,12 +127,12 @@ public class PluginManager {
 		}
 		//HACK --need to fix xml layout
 		ArrayList<com.crawljax.core.plugin.jaxb.generated.Parameter> toBeDeleted = new ArrayList<>();
-		for(com.crawljax.core.plugin.jaxb.generated.Parameter param : pluginDescriptor.getParameters()) {
+		for(com.crawljax.core.plugin.jaxb.generated.Parameter param : pluginDescriptor.getParameters().getParameter()) {
 			if(param.getId() == null) {
 				toBeDeleted.add(param);
 			}
 		}
-		pluginDescriptor.getParameters().removeAll(toBeDeleted);
+		pluginDescriptor.getParameters().getParameter().removeAll(toBeDeleted);
 		//END HACK
 		return pluginDescriptor;
 	}
