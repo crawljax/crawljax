@@ -39,7 +39,6 @@ import org.w3c.dom.NodeList;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.AcceptAllFramesChecker;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.IgnoreFrameChecker;
 import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.core.state.Eventable;
@@ -49,69 +48,12 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.forms.InputValue;
 import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.DomUtils;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
 
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
-	private long crawlWaitEvent;
 	private static final Logger LOGGER = LoggerFactory
 	        .getLogger(WebDriverBackedEmbeddedBrowser.class);
-	private final WebDriver browser;
-
-	private ImmutableSortedSet<String> filterAttributes;
-	private long crawlWaitReload;
-	private IgnoreFrameChecker ignoreFrameChecker = new AcceptAllFramesChecker();
-
-	/**
-	 * Constructor without configuration values, these must be updated using the
-	 * {@link #updateConfiguration(CrawljaxConfigurationReader)}.
-	 * 
-	 * @param driver
-	 *            The WebDriver to use.
-	 */
-	private WebDriverBackedEmbeddedBrowser(WebDriver driver) {
-		this.browser = driver;
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param driver
-	 *            The WebDriver to use.
-	 * @param filterAttributes
-	 *            the attributes to be filtered from DOM.
-	 * @param crawlWaitReload
-	 *            the period to wait after a reload.
-	 * @param crawlWaitEvent
-	 *            the period to wait after an event is fired.
-	 */
-	private WebDriverBackedEmbeddedBrowser(WebDriver driver,
-	        ImmutableSortedSet<String> filterAttributes, long crawlWaitReload, long crawlWaitEvent) {
-		this(driver);
-		this.filterAttributes = filterAttributes;
-		this.crawlWaitEvent = crawlWaitEvent;
-		this.crawlWaitReload = crawlWaitReload;
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param driver
-	 *            The WebDriver to use.
-	 * @param filterAttributes
-	 *            the attributes to be filtered from DOM.
-	 * @param crawlWaitReload
-	 *            the period to wait after a reload.
-	 * @param crawlWaitEvent
-	 *            the period to wait after an event is fired.
-	 * @param ignoreFrameChecker
-	 *            the checker used to determine if a certain frame must be ignored.
-	 */
-	private WebDriverBackedEmbeddedBrowser(WebDriver driver,
-	        ImmutableSortedSet<String> filterAttributes, long crawlWaitReload,
-	        long crawlWaitEvent, IgnoreFrameChecker ignoreFrameChecker) {
-		this(driver, filterAttributes, crawlWaitReload, crawlWaitEvent);
-		this.ignoreFrameChecker = ignoreFrameChecker;
-	}
 
 	/**
 	 * Create a RemoteWebDriver backed EmbeddedBrowser.
@@ -239,6 +181,66 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		return new RemoteWebDriver(executor, capabilities);
 	}
 
+	private final ImmutableSortedSet<String> filterAttributes;
+	private final WebDriver browser;
+
+	private long crawlWaitEvent;
+	private long crawlWaitReload;
+	private IgnoreFrameChecker ignoreFrameChecker = new AcceptAllFramesChecker();
+
+	/**
+	 * Constructor without configuration values, these must be updated using the
+	 * {@link #updateConfiguration(CrawljaxConfigurationReader)}.
+	 * 
+	 * @param driver
+	 *            The WebDriver to use.
+	 */
+	private WebDriverBackedEmbeddedBrowser(WebDriver driver) {
+		this.browser = driver;
+		filterAttributes = ImmutableSortedSet.of();
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 */
+	private WebDriverBackedEmbeddedBrowser(WebDriver driver,
+	        ImmutableSortedSet<String> filterAttributes, long crawlWaitReload, long crawlWaitEvent) {
+		this.browser = driver;
+		this.filterAttributes = Preconditions.checkNotNull(filterAttributes);
+		this.crawlWaitEvent = crawlWaitEvent;
+		this.crawlWaitReload = crawlWaitReload;
+	}
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param driver
+	 *            The WebDriver to use.
+	 * @param filterAttributes
+	 *            the attributes to be filtered from DOM.
+	 * @param crawlWaitReload
+	 *            the period to wait after a reload.
+	 * @param crawlWaitEvent
+	 *            the period to wait after an event is fired.
+	 * @param ignoreFrameChecker
+	 *            the checker used to determine if a certain frame must be ignored.
+	 */
+	private WebDriverBackedEmbeddedBrowser(WebDriver driver,
+	        ImmutableSortedSet<String> filterAttributes, long crawlWaitReload,
+	        long crawlWaitEvent, IgnoreFrameChecker ignoreFrameChecker) {
+		this(driver, filterAttributes, crawlWaitReload, crawlWaitEvent);
+		this.ignoreFrameChecker = ignoreFrameChecker;
+	}
+
 	/**
 	 * Create a WebDriver backed EmbeddedBrowser.
 	 * 
@@ -337,7 +339,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
+	@Deprecated
 	public String getDom() {
+		return getStrippedDom();
+	}
+
+	@Override
+	public String getStrippedDom() {
 
 		try {
 			String dom = toUniformDOM(DomUtils.getDocumentToString(getDomTreeWithFrames()));
@@ -347,6 +355,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			LOGGER.warn("Could not get the dom", e);
 			return "";
 		}
+	}
+
+	@Override
+	public String getUnStrippedDom() {
+		return browser.getPageSource();
 	}
 
 	/**
@@ -379,13 +392,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	private String filterAttributes(String html) {
 		String filteredHtml = html;
-		if (this.filterAttributes != null) {
-			for (String attribute : this.filterAttributes) {
-				String regex = "\\s" + attribute + "=\"[^\"]*\"";
-				Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-				Matcher m = p.matcher(html);
-				filteredHtml = m.replaceAll("");
-			}
+		for (String attribute : this.filterAttributes) {
+			String regex = "\\s" + attribute + "=\"[^\"]*\"";
+			Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(html);
+			filteredHtml = m.replaceAll("");
 		}
 		return filteredHtml;
 	}
@@ -587,14 +598,14 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		for (int i = 0; i < nodeList.size(); i++) {
 			try {
 				locateFrameAndgetSource(document, topFrame, nodeList.get(i));
-			} catch (UnknownServerException e) {
+			} catch (UnknownServerException | NoSuchFrameException e) {
 				LOGGER.warn("Could not add frame contents for element {}", nodeList.get(i));
 				LOGGER.debug("Could not load frame because of {}", e.getMessage(), e);
 			}
 		}
 	}
 
-	private void locateFrameAndgetSource(Document document, String topFrame, Element frameElement) {
+	private void locateFrameAndgetSource(Document document, String topFrame, Element frameElement) throws NoSuchFrameException {
 		String frameIdentification = "";
 
 		if (topFrame != null && !topFrame.equals("")) {
@@ -633,7 +644,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		}
 	}
 
-	private void switchToFrame(String frameIdentification) {
+	private void switchToFrame(String frameIdentification) throws NoSuchFrameException {
 		LOGGER.debug("frame identification: " + frameIdentification);
 
 		if (frameIdentification.contains(".")) {
@@ -652,10 +663,10 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	/**
 	 * @return the dom without the iframe contents.
-	 * @see com.crawljax.browser.EmbeddedBrowser#getDomWithoutIframeContent()
+	 * @see com.crawljax.browser.EmbeddedBrowser#getStrippedDomWithoutIframeContent()
 	 */
 	@Override
-	public String getDomWithoutIframeContent() {
+	public String getStrippedDomWithoutIframeContent() {
 		try {
 			String dom = browser.getPageSource();
 			String result = toUniformDOM(dom);
@@ -854,15 +865,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	public WebDriver getBrowser() {
 		return browser;
-	}
-
-	@Override
-	public void updateConfiguration(CrawljaxConfiguration configuration) {
-		// Retrieve the config values used
-		this.filterAttributes =
-		        configuration.getCrawlRules().getPreCrawlConfig().getFilterAttributeNames();
-		this.crawlWaitReload = configuration.getCrawlRules().getWaitAfterReloadUrl();
-		this.crawlWaitEvent = configuration.getCrawlRules().getWaitAfterEvent();
 	}
 
 	private boolean exceptionIsConnectionException(WebDriverException exception) {

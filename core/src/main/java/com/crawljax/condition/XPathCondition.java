@@ -41,7 +41,7 @@ public class XPathCondition extends AbstractCondition {
 	private boolean checkXPathExpression(EmbeddedBrowser browser) {
 
 		try {
-			Document document = DomUtils.asDocument(browser.getDom());
+			Document document = DomUtils.asDocument(browser.getStrippedDom());
 			NodeList nodeList = XPathHelper.evaluateXpathExpression(document, expression);
 			this.setAffectedNodes(nodeList);
 			return nodeList.getLength() > 0;
