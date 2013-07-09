@@ -1,5 +1,8 @@
 package com.crawljax.cli;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,6 +35,7 @@ class ParameterInterpeter {
 	static final String MAXSTATES = "maxstates";
 	static final String DEPTH = "depth";
 	static final String BROWSER = "browser";
+	static final String BROWSER_REMOTE_URL = "browserRemoteUrl";
 	static final String PARALLEL = "parallel";
 	static final String OVERRIDE = "override";
 	static final String CRAWL_HIDDEN_ANCHORS = "crawlHiddenAnchors";
@@ -59,8 +63,11 @@ class ParameterInterpeter {
 		options.addOption("h", HELP, false, "print this message");
 		options.addOption(VERSION, false, "print the version information and exit");
 
-		options.addOption("b", "browser", true,
+		options.addOption("b", BROWSER, true,
 		        "browser type: " + availableBrowsers() + ". Default is Firefox");
+
+		options.addOption(BROWSER_REMOTE_URL, true,
+		        "The remote url if you have configured a remote browser");
 
 		options.addOption("d", DEPTH, true, "crawl depth level. Default is 2");
 
@@ -106,10 +113,19 @@ class ParameterInterpeter {
 		if (parameters.getArgs().length == 2) {
 			checkUrlValidity(getUrl());
 			checkOutDir(getOutputDir());
+			whenRemoteBrowserNeedsUrl();
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	private void whenRemoteBrowserNeedsUrl() {
+		if (specifiesBrowser() && getSpecifiedBrowser() == BrowserType.REMOTE) {
+			checkArgument(!isNullOrEmpty(getSpecifiedRemoteBrowser()),
+			        "When using remote browser the URL cannot be null");
+		}
+
 	}
 
 	private void checkUrlValidity(String urlValue) {
@@ -165,15 +181,11 @@ class ParameterInterpeter {
 	}
 
 	BrowserType getSpecifiedBrowser() {
-		return getBrowserTypeFromStr(parameters.getOptionValue(BROWSER));
-	}
-
-	private BrowserType getBrowserTypeFromStr(String browser) {
-		if (browser != null) {
-			for (BrowserType b : BrowserType.values()) {
-				if (browser.equalsIgnoreCase(b.toString())) {
-					return b;
-				}
+		String browser = parameters.getOptionValue(BROWSER);
+		System.out.println(browser);
+		for (BrowserType b : BrowserType.values()) {
+			if (b.name().equalsIgnoreCase(browser)) {
+				return b;
 			}
 		}
 		throw new IllegalArgumentException("Unrecognized browser: '" + browser
@@ -247,5 +259,9 @@ class ParameterInterpeter {
 
 	long getSpecifiedWaitAfterReload() {
 		return Long.parseLong(parameters.getOptionValue(WAIT_AFTER_RELOAD));
+	}
+
+	public String getSpecifiedRemoteBrowser() {
+		return parameters.getOptionValue(BROWSER_REMOTE_URL);
 	}
 }
