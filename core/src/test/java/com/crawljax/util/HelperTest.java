@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
 import com.crawljax.test.BrowserTest;
+import com.google.common.collect.ImmutableSortedSet;
 
 /**
  * Test for the Helper class.
@@ -48,7 +49,7 @@ public class HelperTest {
 	public void testGetDocumentFromBrowser() throws SAXException, IOException {
 		// TODO Stefan; Refactor out the direct use of FirefoxDriver
 		EmbeddedBrowser browser =
-		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 200, 300);
+		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),  ImmutableSortedSet.<String> of(), 200, 300);
 		File index = new File(INDEX);
 		String html = "";
 		browser.goToUrl(new URL("file://" + index.getAbsolutePath()));

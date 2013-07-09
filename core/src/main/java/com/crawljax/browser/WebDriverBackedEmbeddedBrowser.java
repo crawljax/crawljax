@@ -48,6 +48,7 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.forms.InputValue;
 import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.DomUtils;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
 
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
@@ -214,7 +215,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private WebDriverBackedEmbeddedBrowser(WebDriver driver,
 	        ImmutableSortedSet<String> filterAttributes, long crawlWaitReload, long crawlWaitEvent) {
 		this.browser = driver;
-		this.filterAttributes = filterAttributes;
+		this.filterAttributes = Preconditions.checkNotNull(filterAttributes);
 		this.crawlWaitEvent = crawlWaitEvent;
 		this.crawlWaitReload = crawlWaitReload;
 	}

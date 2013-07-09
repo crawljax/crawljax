@@ -16,6 +16,7 @@ import org.w3c.dom.NodeList;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.util.DomUtils;
+import com.google.common.collect.ImmutableSortedSet;
 
 @Category(BrowserTest.class)
 public class WebDriverBackedEmbeddedBrowserTest {
@@ -26,7 +27,8 @@ public class WebDriverBackedEmbeddedBrowserTest {
 	public void testGetDocument() throws Exception {
 		// TODO Stefan; refactor out the direct use of the FirefoxDriver
 		WebDriverBackedEmbeddedBrowser driver =
-		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 100, 100);
+		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
+		                ImmutableSortedSet.<String> of(), 100, 100);
 
 		Document doc;
 		try {
@@ -49,7 +51,8 @@ public class WebDriverBackedEmbeddedBrowserTest {
 	public void saveScreenShot() throws CrawljaxException, IOException {
 		// TODO Stefan; refactor out the direct use of the FirefoxDriver
 		WebDriverBackedEmbeddedBrowser browser =
-		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), null, 500, 500);
+		        WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
+		                ImmutableSortedSet.<String> of(), 500, 500);
 
 		File f = File.createTempFile("webdriverfirefox-test-screenshot", ".png");
 		if (!f.exists()) {
