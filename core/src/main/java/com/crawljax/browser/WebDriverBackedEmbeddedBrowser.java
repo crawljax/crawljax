@@ -597,14 +597,14 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		for (int i = 0; i < nodeList.size(); i++) {
 			try {
 				locateFrameAndgetSource(document, topFrame, nodeList.get(i));
-			} catch (UnknownServerException e) {
+			} catch (UnknownServerException | NoSuchFrameException e) {
 				LOGGER.warn("Could not add frame contents for element {}", nodeList.get(i));
 				LOGGER.debug("Could not load frame because of {}", e.getMessage(), e);
 			}
 		}
 	}
 
-	private void locateFrameAndgetSource(Document document, String topFrame, Element frameElement) {
+	private void locateFrameAndgetSource(Document document, String topFrame, Element frameElement) throws NoSuchFrameException {
 		String frameIdentification = "";
 
 		if (topFrame != null && !topFrame.equals("")) {
@@ -643,7 +643,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		}
 	}
 
-	private void switchToFrame(String frameIdentification) {
+	private void switchToFrame(String frameIdentification) throws NoSuchFrameException {
 		LOGGER.debug("frame identification: " + frameIdentification);
 
 		if (frameIdentification.contains(".")) {
