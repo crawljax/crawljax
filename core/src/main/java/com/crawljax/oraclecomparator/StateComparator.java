@@ -15,8 +15,6 @@ import com.google.common.collect.ImmutableList;
 /**
  * Defines an Oracle Comparator which used multiple Oracles to decide whether two states are
  * equivalent.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 @ThreadSafe
 public class StateComparator {
@@ -46,7 +44,7 @@ public class StateComparator {
 	 * @return the stripped dom using {@link OracleComparator}s.
 	 */
 	public String getStrippedDom(EmbeddedBrowser browser) {
-		String newDom = browser.getDom();
+		String newDom = browser.getStrippedDom();
 		for (OracleComparator oraclePreCondition : oracleComparator) {
 			// use oracle if preconditions succeeds
 			if (allPreConditionsSucceed(oraclePreCondition, browser)) {

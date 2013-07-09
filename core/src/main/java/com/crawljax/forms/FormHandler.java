@@ -194,7 +194,7 @@ public class FormHandler {
 		List<FormInput> formInputs = new ArrayList<FormInput>();
 		Document dom;
 		try {
-			dom = DomUtils.asDocument(browser.getDom());
+			dom = DomUtils.asDocument(browser.getStrippedDom());
 			List<Node> nodes = getInputElements(dom);
 			for (Node node : nodes) {
 				FormInput formInput =
@@ -227,7 +227,7 @@ public class FormHandler {
 	 */
 	public void handleFormElements(List<FormInput> formInputs) {
 		try {
-			Document dom = DomUtils.asDocument(browser.getDomWithoutIframeContent());
+			Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
 			for (FormInput input : formInputs) {
 				LOGGER.debug("Filling in: " + input);
 				setInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
