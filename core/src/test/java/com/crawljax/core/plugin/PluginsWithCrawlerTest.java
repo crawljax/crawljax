@@ -48,7 +48,7 @@ public class PluginsWithCrawlerTest {
 	private static List<Class<? extends Plugin>> plugins = new BlockingArrayQueue<>();
 
 	@ClassRule
-	public static final RunWithWebServer SERVER = new RunWithWebServer("/site/crawler");
+	public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
 
 	@ClassRule
 	public static final ErrorCollector ERRORS = new ErrorCollector();
@@ -57,7 +57,7 @@ public class PluginsWithCrawlerTest {
 
 	@BeforeClass
 	public static void setup() {
-		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder();
+		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("/crawler/");
 
 		builder.crawlRules().clickDefaultElements();
 
