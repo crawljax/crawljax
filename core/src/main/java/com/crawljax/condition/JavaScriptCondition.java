@@ -14,7 +14,7 @@ import com.google.common.base.Objects;
  * true.
  */
 @Immutable
-public class JavaScriptCondition extends AbstractCondition {
+public class JavaScriptCondition implements Condition {
 
 	private final String expression;
 
