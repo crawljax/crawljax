@@ -59,6 +59,13 @@ public interface EmbeddedBrowser {
 	String getUnStrippedDom();
 
 	/**
+	 * @return implemented by {@link #getStrippedDom()}.
+	 * @deprecated use {@link #getStrippedDom()}.
+	 */
+	@Deprecated
+	String getDom();
+
+	/**
 	 * @return the DOM string WITHOUT the iframe content.
 	 */
 	String getStrippedDomWithoutIframeContent();
