@@ -121,7 +121,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	}
 
 	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getDom()}.
+	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDom()}.
 	 * 
 	 * @throws CrawljaxException
 	 *             when the dom can not be downloaded.
@@ -130,18 +130,18 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	public final void testGetDom() throws CrawljaxException {
 		URL index = WebDriverBackedEmbeddedBrowserTest.class.getResource("/site/simple.html");
 		browser.goToUrl(index);
-		browser.getDom();
+		browser.getStrippedDom();
 	}
 
 	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getDomWithoutIframeContent()}.
+	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDomWithoutIframeContent()}.
 	 * 
 	 * @throws CrawljaxException
 	 *             when the the dom can not be downloaded.
 	 */
 	@Test
 	public final void testGetDomWithoutIframeContent() throws CrawljaxException {
-		browser.getDomWithoutIframeContent();
+		browser.getStrippedDomWithoutIframeContent();
 	}
 
 	/**

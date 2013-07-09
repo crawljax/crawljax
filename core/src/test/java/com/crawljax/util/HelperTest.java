@@ -52,7 +52,7 @@ public class HelperTest {
 		File index = new File(INDEX);
 		String html = "";
 		browser.goToUrl(new URL("file://" + index.getAbsolutePath()));
-		html = browser.getDom();
+		html = browser.getStrippedDom();
 		assertNotNull(html);
 
 		Document doc = DomUtils.asDocument(html);
