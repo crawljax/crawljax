@@ -105,7 +105,7 @@ public class JarRunner {
 	private CrawljaxConfiguration readConfig(String urlValue, String outputDir) {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlValue);
 
-		BrowserType browser = BrowserType.firefox;
+		BrowserType browser = BrowserType.FIREFOX;
 		if (options.specifiesBrowser()) {
 			browser = options.getSpecifiedBrowser();
 		}

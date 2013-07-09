@@ -59,7 +59,7 @@ public class JarRunnerTest {
 
 	@Test
 	public void whenBrowserSpecifiedItIsConfigured() {
-		new JarRunner(defaultArgsPlus("-b " + BrowserType.chrome.name()));
+		new JarRunner(defaultArgsPlus("-b " + BrowserType.CHROME.name()));
 		assertThat(streams.getErrorOutput(), isEmptyString());
 	}
 
@@ -117,9 +117,9 @@ public class JarRunnerTest {
 	@Test
 	public void testCustomBrowserConfig() {
 		BrowserConfiguration config =
-		        configForArgs("-p 123 -b " + BrowserType.chrome).getBrowserConfig();
+		        configForArgs("-p 123 -b " + BrowserType.CHROME).getBrowserConfig();
 		assertThat(config.getNumberOfBrowsers(), is(123));
-		assertThat(config.getBrowsertype(), is(BrowserType.chrome));
+		assertThat(config.getBrowsertype(), is(BrowserType.CHROME));
 	}
 
 	@Test

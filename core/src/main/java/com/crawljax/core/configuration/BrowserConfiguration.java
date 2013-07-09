@@ -57,7 +57,7 @@ public class BrowserConfiguration {
 	 */
 	public static BrowserConfiguration remoteConfig(int numberOfBrowsers, String remoteUrl) {
 		BrowserConfiguration config =
-		        new BrowserConfiguration(BrowserType.remote, numberOfBrowsers);
+		        new BrowserConfiguration(BrowserType.REMOTE, numberOfBrowsers);
 		config.remoteHubUrl = remoteUrl;
 		return config;
 	}
