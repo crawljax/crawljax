@@ -10,7 +10,7 @@ import com.google.common.base.Objects;
  * Conditions that returns true iff element found by given identification is visible.
  */
 @Immutable
-public class VisibleCondition extends AbstractCondition {
+public class VisibleCondition implements Condition {
 
 	private final Identification identification;
 

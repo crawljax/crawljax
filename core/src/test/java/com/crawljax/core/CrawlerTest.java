@@ -94,7 +94,7 @@ public class CrawlerTest {
 
 	@Mock
 	private CandidateElement action;
-	
+
 	@Mock
 	private ExitNotifier exitNotifier;
 

@@ -12,7 +12,7 @@ import com.google.common.base.Objects;
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
-public class NotUrlCondition extends AbstractCondition {
+public class NotUrlCondition implements Condition {
 
 	private final UrlCondition urlCondition;
 

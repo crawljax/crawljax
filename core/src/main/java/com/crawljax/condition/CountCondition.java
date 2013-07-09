@@ -4,8 +4,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import net.jcip.annotations.ThreadSafe;
 
-import org.w3c.dom.NodeList;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.google.common.base.Objects;
 
@@ -43,11 +41,6 @@ public class CountCondition implements Condition {
 			count.getAndIncrement();
 		}
 		return count.get() <= maxCount;
-	}
-
-	@Override
-	public NodeList getAffectedNodes() {
-		return condition.getAffectedNodes();
 	}
 
 	@Override

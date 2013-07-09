@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.w3c.dom.NodeList;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
@@ -205,11 +204,6 @@ public class StateMachineTest {
 		        ImmutableList.of(new Invariant("Test123", new Condition() {
 
 			        @Override
-			        public NodeList getAffectedNodes() {
-				        return null;
-			        }
-
-			        @Override
 			        public boolean check(EmbeddedBrowser browser) {
 				        hit = true;
 				        return false;
@@ -297,11 +291,6 @@ public class StateMachineTest {
 			}
 		});
 		builder.crawlRules().addInvariant(new Invariant("Test123", new Condition() {
-
-			@Override
-			public NodeList getAffectedNodes() {
-				return null;
-			}
 
 			@Override
 			public boolean check(EmbeddedBrowser browser) {

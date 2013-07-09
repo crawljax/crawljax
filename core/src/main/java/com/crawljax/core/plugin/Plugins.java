@@ -259,8 +259,6 @@ public class Plugins {
 		}
 	}
 
-	
-
 	public void runPreCrawlingPlugins(CrawljaxConfiguration config) {
 		LOGGER.debug("Running PreCrawlingPlugins...");
 		for (Plugin plugin : plugins.get(PreCrawlingPlugin.class)) {

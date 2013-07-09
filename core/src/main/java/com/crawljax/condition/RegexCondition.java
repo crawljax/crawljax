@@ -14,7 +14,7 @@ import com.google.common.base.Objects;
  * Condition that returns true iff experssion occurs in the dom.
  */
 @Immutable
-public class RegexCondition extends AbstractCondition {
+public class RegexCondition implements Condition {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RegexCondition.class);
 	private final String expression;

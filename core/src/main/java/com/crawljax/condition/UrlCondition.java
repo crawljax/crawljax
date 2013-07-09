@@ -11,7 +11,7 @@ import com.google.common.base.Objects;
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
-public class UrlCondition extends AbstractCondition {
+public class UrlCondition implements Condition {
 
 	private final String url;
 

@@ -12,7 +12,7 @@ public class PlainStructureComparator extends AbstractComparator {
 	public PlainStructureComparator() {
 		this(true);
 	}
-	
+
 	public PlainStructureComparator(boolean removeAttributes) {
 		this.removeAttributes = removeAttributes;
 	}
