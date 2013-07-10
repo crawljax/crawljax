@@ -125,7 +125,7 @@ public class CrawlControllerTest {
 		                .builderFor("http://example.com")
 		                .addPlugin(postCrawlPlugin)
 		                .setBrowserConfig(
-		                        new BrowserConfiguration(BrowserType.firefox, consumers))
+		                        new BrowserConfiguration(BrowserType.FIREFOX, consumers))
 		                .build();
 
 		candidateActions = new UnfiredCandidateActions(config.getBrowserConfig(), graphProvider);

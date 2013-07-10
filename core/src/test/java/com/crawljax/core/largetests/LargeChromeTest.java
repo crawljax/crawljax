@@ -20,7 +20,7 @@ public class LargeChromeTest extends LargeTestBase {
 
 	@Override
 	BrowserConfiguration getBrowserConfiguration() {
-		return new BrowserConfiguration(BrowserType.chrome);
+		return new BrowserConfiguration(BrowserType.CHROME);
 	}
 
 	@Override

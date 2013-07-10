@@ -529,11 +529,6 @@ public final class DomUtils {
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 		transformer.setOutputProperty(OutputKeys.METHOD, method);
 
-		if (indent > -1) {
-			transformer.setOutputProperty(
-			        org.apache.xml.serializer.OutputPropertiesFactory.S_KEY_INDENT_AMOUNT,
-			        Integer.toString(indent));
-		}
 		transformer.transform(new DOMSource(document), new StreamResult(new FileOutputStream(
 		        filePathname)));
 	}

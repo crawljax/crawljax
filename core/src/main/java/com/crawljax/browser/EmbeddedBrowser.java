@@ -21,7 +21,7 @@ public interface EmbeddedBrowser {
 	 * Browser types.
 	 */
 	public enum BrowserType {
-		firefox, ie, chrome, remote, htmlunit, android, iphone
+		FIREFOX, INTERNET_EXPLORER, CHROME, REMOTE, ANDROID
 	}
 
 	/**
