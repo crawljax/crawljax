@@ -261,7 +261,7 @@ App.PluginManagementController = Ember.ArrayController.extend({
 		var _this = this;
 		var reader = new FileReader();
 		reader.onload = function(e) {
-			App.Plugins.add(file.name, e.srcElement.result, function(){
+			App.Plugins.add(file.name, e.target.result, function(){
 				_this.set('content', App.Plugins.findAll());
 			});
 		}
