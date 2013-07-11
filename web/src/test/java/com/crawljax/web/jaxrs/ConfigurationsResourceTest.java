@@ -58,7 +58,7 @@ public class ConfigurationsResourceTest {
 	}
 
 	@Test
-	public void createNewConfiguration() {
+	public void canCreateNewConfiguration() {
 		selenium.open("/#/configurations");
 		List<WebElement> newConfigurationLink = driver.findElements(By.linkText("New Configuration"));
 		assertFalse(newConfigurationLink.isEmpty());
@@ -84,7 +84,7 @@ public class ConfigurationsResourceTest {
 	}
 
 	@Test
-	public void updateConfiguration() {
+	public void canUpdateConfiguration() {
 		selenium.open("/#/configurations");
 		List<WebElement> configurationLink = driver.findElements(By.linkText(configurationName));
 		assertFalse(configurationLink.isEmpty());

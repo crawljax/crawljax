@@ -3,10 +3,6 @@ package com.crawljax.web.jaxrs;
 import com.crawljax.web.CrawljaxServer;
 import com.google.common.collect.Lists;
 import com.thoughtworks.selenium.DefaultSelenium;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,7 +62,7 @@ public class PluginsResourceTest {
 	}
 
 	@Test
-	public void addNewPlugin() {
+	public void newPluginCanBeUploaded() {
 		selenium.open("/#/plugins");
 
 		final List<WebElement> existingPlugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
@@ -95,7 +91,7 @@ public class PluginsResourceTest {
 	}
 
 	@Test
-	public void addPluginToConfiguration() {
+	public void pluginCanBeAddedToConfiguration() {
 		selenium.open("/#/configurations");
 		List<WebElement> configurationLink = driver.findElements(By.linkText(configurationName));
 		assertFalse(configurationLink.isEmpty());
@@ -122,6 +118,26 @@ public class PluginsResourceTest {
 		WebElement pluginTitle = (WebElement) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"legend:contains('" + pluginId + "')\")[0];");
 		assertNotNull(pluginTitle);
+	}
+
+	@Test
+	public void pluginCanBeDeleted() {
+		selenium.open("/#/plugins");
+
+		final List<WebElement> existingPlugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
+				"return $(\"td:contains('" + pluginName + "')\").toArray();");
+
+		WebElement deleteLink = (WebElement) ((JavascriptExecutor)driver).executeScript(
+				"return $(\"td:contains('" + pluginName + "')\").next().find(\"a:contains('Delete')\")[0];");
+		deleteLink.click();
+
+		Alert confirmDialog = driver.switchTo().alert();
+		confirmDialog.accept();
+
+		List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
+				"return $(\"td:contains('" + pluginName + "')\").toArray();");
+
+		assertEquals(plugins.size(), existingPlugins.size() - 1);
 	}
 
 	private List<WebElement> visibleElementsByCss(String selector) {

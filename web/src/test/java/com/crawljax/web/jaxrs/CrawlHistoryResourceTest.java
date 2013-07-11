@@ -68,7 +68,7 @@ public class CrawlHistoryResourceTest {
 	}
 
 	@Test
-	public void runConfigurationAndViewResult() {
+	public void configurationCanBeRunAndResultViewed() {
 		selenium.open("/#/configurations");
 
 		List<WebElement> configurationLink = driver.findElements(By.linkText(configurationName));
@@ -124,23 +124,14 @@ public class CrawlHistoryResourceTest {
 		}
 		assertNotNull(date);
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
-		cal.add(Calendar.MINUTE, -1);
-		Date oneMinuteBack = cal.getTime();
-
-		assertTrue(date.after(oneMinuteBack));
+		assertTrue(date.after(timeNSecondsAgo(70)));
 	}
 
-	private List<WebElement> visibleElementsByCss(String selector) {
-		List<WebElement> elements = driver.findElements(By.cssSelector(selector));
-		List<WebElement> visible = Lists.newArrayListWithExpectedSize(elements.size());
-		for (WebElement webElement : elements) {
-			if (webElement.isDisplayed()) {
-				visible.add(webElement);
-			}
-		}
-		return visible;
+	private Date timeNSecondsAgo(int n) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.SECOND, -n);
+		return cal.getTime();
 	}
 
 	@AfterClass
