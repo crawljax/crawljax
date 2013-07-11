@@ -1,5 +1,6 @@
 package com.crawljax.web.jaxrs;
 
+import com.crawljax.web.CrawljaxServer;
 import com.google.common.collect.Lists;
 import com.thoughtworks.selenium.DefaultSelenium;
 import org.eclipse.jetty.server.Server;
@@ -23,8 +24,18 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 public class PluginsResourceTest {
+
+	public static class CrawljaxServerRunner implements Runnable {
+		public void run() {
+			try {
+				CrawljaxServer.main(new String[]{"-p 0"});
+			} catch (Exception e) {
+				LOG.debug("Failed to run CrawljaxServer.\n{}", e.getStackTrace().toString());
+			}
+		}
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigurationsResourceTest.class);
-	private static Server server;
 	private static DefaultSelenium selenium;
 	private static WebDriver driver;
 
@@ -33,42 +44,24 @@ public class PluginsResourceTest {
 
 	@BeforeClass
 	public static void setup() throws Exception {
-		LOG.debug("Starting Jetty");
-		server = new Server(0);
 
-		String url = setupJetty();
-		LOG.info("Jetty started on {}", url);
+		CrawljaxServerRunner serverRunner = new CrawljaxServerRunner();
+		Thread serverThread = new Thread(serverRunner);
+		serverThread.setDaemon(true); //so that serverThread is terminated when test is complete.
+		serverThread.start();
+
+		int maxWait_s = 10, currentWait_s = 0;
+		while(CrawljaxServer.url == null) {
+			currentWait_s += 0.5;
+			Thread.sleep(500);
+			assertTrue(currentWait_s < maxWait_s);
+		}
+
 		driver = new FirefoxDriver();
 		LOG.debug("Starting selenium");
-		selenium = new WebDriverBackedSelenium(driver, url);
+		selenium = new WebDriverBackedSelenium(driver, CrawljaxServer.url);
 
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-	}
-
-	private static String setupJetty() throws Exception {
-		HandlerList list = new HandlerList();
-		System.setProperty("outputFolder", System.getProperty("user.home") + File.separatorChar + "crawljax");
-		list.addHandler(buildOutputContext(System.getProperty("outputFolder")));
-		list.addHandler(buildWebAppContext());
-		server.setHandler(list);
-		server.start();
-		int port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
-		String url = "http://localhost:" + port;
-		return url;
-	}
-
-	private static WebAppContext buildWebAppContext() throws Exception {
-		WebAppContext webAppContext = new WebAppContext();
-		webAppContext.setContextPath("/");
-		webAppContext.setWar(new File("src/main/webapp/").getAbsolutePath());
-		return webAppContext;
-	}
-
-	private static WebAppContext buildOutputContext(String outputFolder) throws Exception {
-		WebAppContext webAppContext = new WebAppContext();
-		webAppContext.setContextPath("/output");
-		webAppContext.setWar(new File(outputFolder).getAbsolutePath());
-		return webAppContext;
 	}
 
 	@Test
@@ -113,7 +106,6 @@ public class PluginsResourceTest {
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		server.stop();
 		selenium.stop();
 	}
 }

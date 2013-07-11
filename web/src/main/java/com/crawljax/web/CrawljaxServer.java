@@ -5,6 +5,7 @@ import java.net.URL;
 import java.security.ProtectionDomain;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -14,23 +15,39 @@ import org.eclipse.jetty.webapp.WebAppContext;
 public class CrawljaxServer {
 	private static final boolean EXECUTE_WAR = false;
 
+	public static String url = null;
+
 	public static void main(String[] args) throws Exception {
+
+		final ParameterInterpeter options = new ParameterInterpeter(args);
+
 		String outFolder;
-		if (args.length == 0)
-			outFolder =
-			        System.getProperty("user.home") + File.separatorChar + "crawljax";
-		else
-			outFolder = args[0];
+		if (options.specifiesOutputDir()) {
+			outFolder = options.getSpecifiedOutputDir();
+		} else {
+			outFolder = System.getProperty("user.home") + File.separatorChar + "crawljax";
+		}
+		
 		System.setProperty("outputFolder", outFolder);
 
-		Server server = new Server(8080);
+		Server server;
+		if(options.specifiesPort()) {
+			server = new Server(options.getSpecifiedPort());
+		} else {
+			server = new Server(8080);
+		}
+
 		HandlerList list = new HandlerList();
 		list.addHandler(buildOutputContext(outFolder));
 		list.addHandler(buildWebAppContext());
 		server.setHandler(list);
 		server.start();
 
+		int port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
+		url = "http://localhost:" + port;
+
 		server.join();
+
 	}
 
 	public static WebAppContext buildWebAppContext() throws Exception {
