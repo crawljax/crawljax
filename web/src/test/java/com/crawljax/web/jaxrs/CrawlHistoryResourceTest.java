@@ -68,7 +68,7 @@ public class CrawlHistoryResourceTest {
 	}
 
 	@Test
-	public void configurationCanBeRunAndResultViewed() {
+	public void canRunConfigurationAndViewResults() {
 		selenium.open("/#/configurations");
 
 		List<WebElement> configurationLink = driver.findElements(By.linkText(configurationName));

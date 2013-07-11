@@ -62,7 +62,7 @@ public class PluginsResourceTest {
 	}
 
 	@Test
-	public void newPluginCanBeUploaded() {
+	public void canUploadPlugin() {
 		selenium.open("/#/plugins");
 
 		final List<WebElement> existingPlugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
@@ -87,11 +87,11 @@ public class PluginsResourceTest {
 
 		List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"td:contains('" + pluginName + "')\").toArray();");
-		assertEquals(plugins.size(), existingPlugins.size() + 1);
+		assertEquals(existingPlugins.size() + 1, plugins.size());
 	}
 
 	@Test
-	public void pluginCanBeAddedToConfiguration() {
+	public void canAddPluginToConfiguration() {
 		selenium.open("/#/configurations");
 		List<WebElement> configurationLink = driver.findElements(By.linkText(configurationName));
 		assertFalse(configurationLink.isEmpty());
@@ -121,7 +121,7 @@ public class PluginsResourceTest {
 	}
 
 	@Test
-	public void pluginCanBeDeleted() {
+	public void canDeletePlugin() {
 		selenium.open("/#/plugins");
 
 		final List<WebElement> existingPlugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
@@ -134,10 +134,12 @@ public class PluginsResourceTest {
 		Alert confirmDialog = driver.switchTo().alert();
 		confirmDialog.accept();
 
+		driver.navigate().refresh();
+
 		List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"td:contains('" + pluginName + "')\").toArray();");
 
-		assertEquals(plugins.size(), existingPlugins.size() - 1);
+		assertEquals(existingPlugins.size() - 1, plugins.size());
 	}
 
 	private List<WebElement> visibleElementsByCss(String selector) {
