@@ -3,6 +3,7 @@ package com.crawljax.web.jaxrs;
 import com.crawljax.web.CrawljaxServer;
 import com.google.common.collect.Lists;
 import com.thoughtworks.selenium.DefaultSelenium;
+import org.apache.xerces.impl.dv.xs.SchemaDateTimeException;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -17,7 +18,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +68,7 @@ public class CrawlHistoryResourceTest {
 	}
 
 	@Test
-	public void runConfiguration() {
+	public void runConfigurationAndViewResult() {
 		selenium.open("/#/configurations");
 
 		List<WebElement> configurationLink = driver.findElements(By.linkText(configurationName));
@@ -104,6 +108,28 @@ public class CrawlHistoryResourceTest {
 
 		List<WebElement> logLink = driver.findElements(By.linkText("Log"));
 		assertFalse(logLink.isEmpty());
+
+		List<WebElement> historyLink = driver.findElements(By.linkText("History"));
+		historyLink.get(0).click();
+		WebElement dateContainer = (WebElement) ((JavascriptExecutor)driver).executeScript(
+				"return $(\"td > a:contains('" + configurationName + "')\").first().parent().next()[0];");
+		assertNotNull(dateContainer);
+		String displayedDate = dateContainer.getText();
+		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM d yyyy HH:mm:ss");
+		Date date = null;
+		try {
+			date = dateParser.parse(displayedDate);
+		} catch (ParseException e) {
+
+		}
+		assertNotNull(date);
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.MINUTE, -1);
+		Date oneMinuteBack = cal.getTime();
+
+		assertTrue(date.after(oneMinuteBack));
 	}
 
 	private List<WebElement> visibleElementsByCss(String selector) {

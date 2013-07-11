@@ -41,6 +41,7 @@ public class PluginsResourceTest {
 
 	private String pluginId = "crawloverview-plugin";
 	private String pluginName = "Crawl Overview Plugin";
+	private String configurationName = "TestConfiguration";
 
 	@BeforeClass
 	public static void setup() throws Exception {
@@ -91,6 +92,36 @@ public class PluginsResourceTest {
 		List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"td:contains('" + pluginName + "')\").toArray();");
 		assertEquals(plugins.size(), existingPlugins.size() + 1);
+	}
+
+	@Test
+	public void addPluginToConfiguration() {
+		selenium.open("/#/configurations");
+		List<WebElement> configurationLink = driver.findElements(By.linkText(configurationName));
+		assertFalse(configurationLink.isEmpty());
+		configurationLink.get(0).click();
+
+		WebElement pluginsLink = (WebElement) ((JavascriptExecutor)driver).executeScript(
+				"return $(\"a:contains('Overview')\").parent().find(\"~ li > a:contains('Plugins')\")[0];");
+		assertNotNull(pluginsLink);
+		pluginsLink.click();
+
+		List<WebElement> addPluginLink = driver.findElements(By.linkText("Add Plugin"));
+		addPluginLink.get(0).click();
+
+		WebElement pluginSelectOption = (WebElement) ((JavascriptExecutor)driver).executeScript(
+				"return $(\"select > option:contains('" + pluginId + "')\")[0];");
+		assertNotNull(pluginSelectOption);
+
+		pluginSelectOption.click();
+		List<WebElement> saveLink = driver.findElements(By.linkText("Save Configuration"));
+		saveLink.get(0).click();
+
+		driver.navigate().refresh();
+
+		WebElement pluginTitle = (WebElement) ((JavascriptExecutor)driver).executeScript(
+				"return $(\"legend:contains('" + pluginId + "')\")[0];");
+		assertNotNull(pluginTitle);
 	}
 
 	private List<WebElement> visibleElementsByCss(String selector) {
