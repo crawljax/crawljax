@@ -53,7 +53,7 @@ public class CandidateElementExtractor {
 
 	private final boolean clickOnce;
 
-	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
+	private final ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
 	/**
 	 * Create a new CandidateElementExtractor.
