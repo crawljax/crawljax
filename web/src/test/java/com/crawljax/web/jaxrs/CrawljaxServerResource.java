@@ -3,6 +3,7 @@ package com.crawljax.web.jaxrs;
 import com.crawljax.web.CrawljaxServer;
 import org.junit.rules.ExternalResource;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -47,4 +48,9 @@ public class CrawljaxServerResource extends ExternalResource {
 	public String getUrl() {
 		return server.getUrl();
 	}
+
+	public File getOutputDir() {
+		return server.getOutputDir();
+	}
+
 }

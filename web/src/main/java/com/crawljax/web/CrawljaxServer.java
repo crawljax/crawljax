@@ -20,7 +20,7 @@ public class CrawljaxServer implements Runnable {
 
 	private final boolean EXECUTE_WAR = false;
 
-	private String outputDir;
+	private File outputDir;
 	private int port;
 
 	private Server server;
@@ -28,13 +28,13 @@ public class CrawljaxServer implements Runnable {
 	private String url = null;
 
 	public CrawljaxServer(String outputDir, int port) {
-		this.outputDir = outputDir;
+		this.outputDir = new File(outputDir);
 		this.port = port;
 		isRunning = false;
 	}
 
 	public CrawljaxServer(int port) {
-		this.outputDir = System.getProperty("user.home") + File.separatorChar + "crawljax";
+		this.outputDir = new File(System.getProperty("user.home") + File.separatorChar + "crawljax");
 		this.port = port;
 		isRunning = false;
 	}
@@ -42,7 +42,7 @@ public class CrawljaxServer implements Runnable {
 	@Override
 	public void run() {
 
-		System.setProperty("outputFolder", outputDir);
+		System.setProperty("outputFolder", outputDir.getAbsolutePath());
 
 		server = new Server(port);
 
@@ -85,6 +85,10 @@ public class CrawljaxServer implements Runnable {
 		return url;
 	}
 
+	public File getOutputDir() {
+		return outputDir;
+	}
+
 	private WebAppContext buildWebAppContext() {
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/");
@@ -101,7 +105,7 @@ public class CrawljaxServer implements Runnable {
 	private WebAppContext buildOutputContext() {
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/output");
-		webAppContext.setWar(new File(outputDir).getAbsolutePath());
+		webAppContext.setWar(outputDir.getAbsolutePath());
 		return webAppContext;
 	}
 }
