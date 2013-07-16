@@ -1,6 +1,6 @@
 package com.crawljax.oraclecomparator.comparators;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.crawljax.oraclecomparator.AbstractComparator;
 

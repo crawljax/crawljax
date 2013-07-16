@@ -30,7 +30,7 @@ public class ChromeProxyConfig {
 			        public CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
 				        CrawljaxConfigurationBuilder builder =
 				                super.newCrawlConfigurationBuilder();
-				        builder.setBrowserConfig(new BrowserConfiguration(BrowserType.chrome));
+				        builder.setBrowserConfig(new BrowserConfiguration(BrowserType.CHROME));
 				        return builder;
 			        }
 		        }.crawl();

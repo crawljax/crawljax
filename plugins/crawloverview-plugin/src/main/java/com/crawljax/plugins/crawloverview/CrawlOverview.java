@@ -71,7 +71,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
 		visitedStates.putIfAbsent(state.getName(), vertex);
 		saveScreenshot(context.getBrowser(), state.getName(), vertex);
-		outputBuilder.persistDom(state.getName(), vertex.getDom());
+		outputBuilder.persistDom(state.getName(), context.getBrowser().getUnStrippedDom());
 	}
 
 	private void saveScreenshot(EmbeddedBrowser browser, String name,
@@ -134,11 +134,11 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	}
 
 	private void warnUserForInvisibleElements() {
-	    if (!warnedForElementsInIframe) {
-	    	LOG.warn("Some elemnts are in an iFrame. We cannot display it in the Crawl overview");
-	    	warnedForElementsInIframe = true;
-	    }
-    }
+		if (!warnedForElementsInIframe) {
+			LOG.warn("Some elemnts are in an iFrame. We cannot display it in the Crawl overview");
+			warnedForElementsInIframe = true;
+		}
+	}
 
 	private CandidateElementPosition findElement(WebElement webElement,
 	        CandidateElement element) {

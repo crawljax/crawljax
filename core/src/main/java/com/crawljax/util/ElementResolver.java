@@ -15,12 +15,10 @@ import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 
 /**
- * class for finding and checking elements.
- * 
- * @author danny
+ * Finds and checks elements.
  */
 public class ElementResolver {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ElementResolver.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(ElementResolver.class);
 
 	private final EmbeddedBrowser browser;
 	private final Eventable eventable;
@@ -54,7 +52,7 @@ public class ElementResolver {
 	public String resolve(boolean logging) {
 		Document dom = null;
 		try {
-			dom = DomUtils.asDocument(browser.getDom());
+			dom = DomUtils.asDocument(browser.getStrippedDom());
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return "";

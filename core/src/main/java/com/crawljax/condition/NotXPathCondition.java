@@ -11,7 +11,7 @@ import com.google.common.base.Objects;
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
-public class NotXPathCondition extends AbstractCondition {
+public class NotXPathCondition implements Condition {
 
 	private final XPathCondition xpathCondition;
 

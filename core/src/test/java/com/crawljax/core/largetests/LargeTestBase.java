@@ -241,7 +241,7 @@ public abstract class LargeTestBase {
 			@Override
 			public void onInvariantViolation(Invariant invariant, CrawlerContext context) {
 				LargeTestBase.violatedInvariants.add(invariant);
-				if (context.getBrowser().getDom().contains(INVARIANT_TEXT)) {
+				if (context.getBrowser().getStrippedDom().contains(INVARIANT_TEXT)) {
 					violatedInvariantStateIsCorrect = true;
 					LOG.warn("Invariant violated: " + invariant.getDescription());
 				}

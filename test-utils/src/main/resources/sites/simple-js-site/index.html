@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript" src="../jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="../lib/jquery-2.0.3.min.js"></script>
 <script>
 	$(function() {
 		$("#S1").click(function() {
@@ -9,17 +9,19 @@
 				$('#contents').html(data);
 			});
 		});
-		$("#S2").click(function() {
-			$.get("payload_2.html", function(data) {
-				$('#contents').html(data);
-			});
-		});
+		
 	});
+	
+	function getPayload2() {
+		$.get("payload_2.html", function(data) {
+			$('#contents').html(data);
+		});
+	}
 </script>
 </head>
 <body>
 	<div id="contents">
-		<a id="S1" href="#">S1</a><br /> <a id="S2" href="#">S2</a><br />
+		<a id="S1" href="#">S1</a><br /> <a id="S2" href="javascript:getPayload2()">S2</a><br />
 	</div>
 </body>
 </html>

@@ -40,7 +40,8 @@ public class JarRunnerTest {
 	private void assertHelpWasPrinted(boolean missingArguments) {
 		String helpMessage = "usage: " + ParameterInterpeter.HELP_MESSAGE;
 		if (missingArguments) {
-			helpMessage = JarRunner.MISSING_ARGUMENT_MESSAGE + System.lineSeparator() + helpMessage;
+			helpMessage =
+			        JarRunner.MISSING_ARGUMENT_MESSAGE + System.lineSeparator() + helpMessage;
 		}
 		assertThat(streams.getConsoleOutput(), startsWith(helpMessage));
 	}
@@ -59,8 +60,25 @@ public class JarRunnerTest {
 
 	@Test
 	public void whenBrowserSpecifiedItIsConfigured() {
-		new JarRunner(defaultArgsPlus("-b " + BrowserType.chrome.name()));
+		new JarRunner(defaultArgsPlus("-b " + BrowserType.CHROME.name()));
 		assertThat(streams.getErrorOutput(), isEmptyString());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void whenRemoteBrowserSpecifiedWithoutUrlItStops() {
+		new JarRunner(defaultArgsPlus("-b " + BrowserType.REMOTE.name()));
+	}
+
+	@Test
+	public void whenRemoteBrowserSpecifiedWithUrlItResumes() {
+		JarRunner runner =
+		        new JarRunner(defaultArgsPlus("-b " + BrowserType.REMOTE.name()
+		                + " -" + ParameterInterpeter.BROWSER_REMOTE_URL + " localhost:9000"));
+		assertThat(streams.getErrorOutput(), isEmptyString());
+		BrowserConfiguration config = runner.getConfig().getBrowserConfig();
+		assertThat(config.getBrowsertype(), is(BrowserType.REMOTE));
+		assertThat(config.getRemoteHubUrl(), is("localhost:9000"));
+
 	}
 
 	private String[] defaultArgsPlus(String string) {
@@ -117,9 +135,9 @@ public class JarRunnerTest {
 	@Test
 	public void testCustomBrowserConfig() {
 		BrowserConfiguration config =
-		        configForArgs("-p 123 -b " + BrowserType.chrome).getBrowserConfig();
+		        configForArgs("-p 123 -b " + BrowserType.CHROME).getBrowserConfig();
 		assertThat(config.getNumberOfBrowsers(), is(123));
-		assertThat(config.getBrowsertype(), is(BrowserType.chrome));
+		assertThat(config.getBrowsertype(), is(BrowserType.CHROME));
 	}
 
 	@Test
