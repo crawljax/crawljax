@@ -63,7 +63,7 @@ public final class AdvancedExample {
 		builder.addPlugin(new CrawlOverview(outFolder));
 
 		// We want to use two browsers simultaneously.
-		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.firefox, 2));
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 2));
 
 		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 		crawljax.call();

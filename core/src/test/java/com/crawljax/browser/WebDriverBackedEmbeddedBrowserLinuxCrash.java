@@ -91,25 +91,25 @@ public class WebDriverBackedEmbeddedBrowserLinuxCrash extends FirefoxLinuxCrash 
 	}
 
 	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getDom()}.
+	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDom()}.
 	 * 
 	 * @throws CrawljaxException
 	 *             when the dom can not be downloaded.
 	 */
 	@Test(expected = BrowserConnectionException.class)
 	public void testGetDom() throws CrawljaxException {
-		browser.getDom();
+		browser.getStrippedDom();
 	}
 
 	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getDomWithoutIframeContent()}.
+	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDomWithoutIframeContent()}.
 	 * 
 	 * @throws CrawljaxException
 	 *             when the the dom can not be downloaded.
 	 */
 	@Test(expected = BrowserConnectionException.class)
 	public void testGetDomWithoutIframeContent() throws CrawljaxException {
-		browser.getDomWithoutIframeContent();
+		browser.getStrippedDomWithoutIframeContent();
 	}
 
 	/**

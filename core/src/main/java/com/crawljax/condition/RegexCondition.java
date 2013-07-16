@@ -14,7 +14,7 @@ import com.google.common.base.Objects;
  * Condition that returns true iff experssion occurs in the dom.
  */
 @Immutable
-public class RegexCondition extends AbstractCondition {
+public class RegexCondition implements Condition {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RegexCondition.class);
 	private final String expression;
@@ -31,7 +31,7 @@ public class RegexCondition extends AbstractCondition {
 
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
-		String dom = browser.getDom();
+		String dom = browser.getStrippedDom();
 		boolean found = pattern.matcher(dom).find();
 		if (found) {
 			LOG.trace("Found expression {} in DOM {}", expression, dom);

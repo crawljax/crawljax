@@ -53,37 +53,37 @@ public class ConditionTest {
 		                        new RegexCondition("rx0"),
 		                        new RegexCondition("rx1"),
 		                        new UrlCondition("rx0")
-		                },
+		        },
 		                {
 		                        new NotRegexCondition("nrx0"),
 		                        new NotRegexCondition("nrx0"),
 		                        new NotRegexCondition("nrx1"),
 		                        Logic.and(new RegexCondition("nrx0"))
-		                },
+		        },
 		                {
 		                        new UrlCondition("u0"),
 		                        new UrlCondition("u0"),
 		                        new UrlCondition("u1"),
 		                        new JavaScriptCondition("u0")
-		                },
+		        },
 		                {
 		                        new NotUrlCondition("u0"),
 		                        new NotUrlCondition("u0"),
 		                        new NotUrlCondition("u1"),
 		                        Logic.and(new UrlCondition("u0"))
-		                },
+		        },
 		                {
 		                        new XPathCondition("x0"),
 		                        new XPathCondition("x0"),
 		                        new XPathCondition("x1"),
 		                        new JavaScriptCondition("x0")
-		                },
+		        },
 		                {
 		                        new NotXPathCondition("x0"),
 		                        new NotXPathCondition("x0"),
 		                        new NotXPathCondition("x1"),
 		                        Logic.and(new XPathCondition("x0"))
-		                },
+		        },
 		                {
 		                        new VisibleCondition(new Identification(Identification.How.xpath,
 		                                "xp0")),
@@ -93,7 +93,7 @@ public class ConditionTest {
 		                                "xp0")),
 		                        new VisibleCondition(new Identification(Identification.How.xpath,
 		                                "xp1"))
-		                },
+		        },
 		                {
 		                        new NotVisibleCondition(new Identification(
 		                                Identification.How.xpath, "xp")),
@@ -103,43 +103,43 @@ public class ConditionTest {
 		                                Identification.How.tag, "xp")),
 		                        Logic.and(new VisibleCondition(new Identification(
 		                                Identification.How.xpath, "xp")))
-		                },
+		        },
 		                {
 		                        new JavaScriptCondition("0"),
 		                        new JavaScriptCondition("0"),
 		                        new JavaScriptCondition("1"),
 		                        new UrlCondition("0")
-		                },
+		        },
 		                {
 		                        Logic.not(new UrlCondition("u0")),
 		                        Logic.not(new UrlCondition("u0")),
 		                        Logic.not(new UrlCondition("u1")),
 		                        Logic.and(new UrlCondition("u0"))
-		                },
+		        },
 		                {
 		                        Logic.and(new JavaScriptCondition("js0")),
 		                        Logic.and(new JavaScriptCondition("js0")),
 		                        Logic.and(new JavaScriptCondition("js1")),
 		                        Logic.not(new JavaScriptCondition("js0"))
-		                },
+		        },
 		                {
 		                        Logic.nand(new JavaScriptCondition("js0")),
 		                        Logic.nand(new JavaScriptCondition("js0")),
 		                        Logic.nand(new JavaScriptCondition("js1")),
 		                        Logic.and(new JavaScriptCondition("js0"))
-		                },
+		        },
 		                {
 		                        Logic.or(new JavaScriptCondition("js0")),
 		                        Logic.or(new JavaScriptCondition("js0")),
 		                        Logic.or(new JavaScriptCondition("js1")),
 		                        Logic.and(new JavaScriptCondition("js0"))
-		                },
+		        },
 		                {
 		                        new CountCondition(2, new JavaScriptCondition("js0")),
 		                        new CountCondition(2, new JavaScriptCondition("js0")),
 		                        new CountCondition(2, new JavaScriptCondition("js1")),
 		                        new CountCondition(1, new JavaScriptCondition("js0"))
-		                }
+		        }
 
 		        });
 	}

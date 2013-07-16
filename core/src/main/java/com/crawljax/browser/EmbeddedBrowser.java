@@ -4,10 +4,11 @@ import java.io.File;
 import java.net.URL;
 
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
@@ -21,7 +22,7 @@ public interface EmbeddedBrowser {
 	 * Browser types.
 	 */
 	public enum BrowserType {
-		firefox, ie, chrome, remote, htmlunit, android, iphone
+		FIREFOX, INTERNET_EXPLORER, CHROME, REMOTE, ANDROID
 	}
 
 	/**
@@ -43,14 +44,31 @@ public interface EmbeddedBrowser {
 	        InterruptedException;
 
 	/**
+	 * Removes the stripped items from {@link PreCrawlConfiguration#getFilterAttributeNames()}.
+	 * 
 	 * @return the DOM string with all the iframe content.
 	 */
+	String getStrippedDom();
+
+	/**
+	 * Removes the stripped items from {@link PreCrawlConfiguration#getFilterAttributeNames()}.
+	 * 
+	 * @return The dom without any elements stripped.
+	 * @see WebDriver#getPageSource()
+	 */
+	String getUnStrippedDom();
+
+	/**
+	 * @return implemented by {@link #getStrippedDom()}.
+	 * @deprecated use {@link #getStrippedDom()}.
+	 */
+	@Deprecated
 	String getDom();
 
 	/**
 	 * @return the DOM string WITHOUT the iframe content.
 	 */
-	String getDomWithoutIframeContent();
+	String getStrippedDomWithoutIframeContent();
 
 	/**
 	 * Closes the browser.
@@ -146,12 +164,4 @@ public interface EmbeddedBrowser {
 	 */
 	byte[] getScreenShot() throws CrawljaxException;
 
-	/**
-	 * Update the configuration of the Browser. When this method is called the implementing
-	 * EmbeddedBrowser must updates its internal configuration to the values given as argument.
-	 * 
-	 * @param configuration
-	 *            the new configuration values that needs to be updated.
-	 */
-	void updateConfiguration(CrawljaxConfiguration configuration);
 }

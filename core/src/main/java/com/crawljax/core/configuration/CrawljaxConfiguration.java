@@ -158,7 +158,7 @@ public class CrawljaxConfiguration {
 		/**
 		 * @param configuration
 		 *            a custom {@link BrowserConfiguration}. The default is a single
-		 *            {@link BrowserType#firefox} browser.
+		 *            {@link BrowserType#FIREFOX} browser.
 		 */
 		public CrawljaxConfigurationBuilder setBrowserConfig(BrowserConfiguration configuration) {
 			Preconditions.checkNotNull(configuration);
@@ -204,7 +204,7 @@ public class CrawljaxConfiguration {
 
 	private URL url;
 
-	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.firefox);
+	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.FIREFOX);
 	private Plugins plugins;
 	private ProxyConfiguration proxyConfiguration = ProxyConfiguration.noProxy();
 

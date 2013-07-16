@@ -5,7 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
-import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;

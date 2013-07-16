@@ -5,8 +5,6 @@ package com.crawljax.condition;
 
 import net.jcip.annotations.ThreadSafe;
 
-import org.w3c.dom.NodeList;
-
 import com.crawljax.browser.EmbeddedBrowser;
 
 /**
@@ -24,8 +22,4 @@ public interface Condition {
 	 */
 	boolean check(EmbeddedBrowser browser);
 
-	/**
-	 * @return the affected nodes (can be null)
-	 */
-	NodeList getAffectedNodes();
 }

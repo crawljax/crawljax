@@ -21,7 +21,7 @@ public class LargeIETest extends LargeTestBase {
 
 	@Override
 	BrowserConfiguration getBrowserConfiguration() {
-		return new BrowserConfiguration(BrowserType.ie);
+		return new BrowserConfiguration(BrowserType.INTERNET_EXPLORER);
 	}
 
 	@Override

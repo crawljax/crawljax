@@ -8,16 +8,12 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.iphone.IPhoneDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSortedSet;
 
@@ -54,58 +50,33 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 		// Determine the requested browser type
 		EmbeddedBrowser browser = null;
 		switch (configuration.getBrowserConfig().getBrowsertype()) {
-			case firefox:
+			case FIREFOX:
 				browser = newFireFoxBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
 				break;
-			case ie:
+			case INTERNET_EXPLORER:
 				browser = WebDriverBackedEmbeddedBrowser.withDriver(new InternetExplorerDriver(),
 				        filterAttributes, crawlWaitEvent, crawlWaitReload);
 				break;
-			case chrome:
+			case CHROME:
 				browser = newChromeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
 				break;
 
-			case remote:
+			case REMOTE:
 				browser = WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
 				        .getBrowserConfig().getRemoteHubUrl(), filterAttributes, crawlWaitEvent,
 				        crawlWaitReload);
 				break;
-			case htmlunit:
-				browser = newHtmlUnitBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
-				break;
-			case android:
+			case ANDROID:
 				browser = WebDriverBackedEmbeddedBrowser.withDriver(new AndroidDriver(),
 				        filterAttributes, crawlWaitEvent, crawlWaitReload);
 				break;
 
-			case iphone:
-				try {
-					browser = WebDriverBackedEmbeddedBrowser.withDriver(new IPhoneDriver(),
-					        filterAttributes, crawlWaitEvent, crawlWaitReload);
-				} catch (Exception e) {
-					LOGGER.error("Could not load driver: " + e.getMessage(), e);
-					throw new CrawljaxException(e);
-				}
-
 			default:
-				browser = WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
-				        filterAttributes, crawlWaitEvent, crawlWaitReload);
+				throw new IllegalStateException("Unrecognized browsertype "
+				        + configuration.getBrowserConfig().getBrowsertype());
 		}
 		configuration.getPlugins().runOnBrowserCreatedPlugins(browser);
 		return browser;
-	}
-
-	private EmbeddedBrowser newHtmlUnitBrowser(ImmutableSortedSet<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent) {
-		HtmlUnitDriver driverHtmlUnit = new HtmlUnitDriver(BrowserVersion.FIREFOX_17);
-		driverHtmlUnit.setJavascriptEnabled(true);
-		if (configuration.getProxyConfiguration() != null) {
-			driverHtmlUnit.setProxy(configuration.getProxyConfiguration().getHostname(),
-			        configuration.getProxyConfiguration().getPort());
-		}
-
-		return WebDriverBackedEmbeddedBrowser.withDriver(driverHtmlUnit,
-		        filterAttributes, crawlWaitEvent, crawlWaitReload);
 	}
 
 	private EmbeddedBrowser newFireFoxBrowser(ImmutableSortedSet<String> filterAttributes,

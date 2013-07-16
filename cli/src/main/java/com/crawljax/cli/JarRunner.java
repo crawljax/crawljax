@@ -105,7 +105,7 @@ public class JarRunner {
 	private CrawljaxConfiguration readConfig(String urlValue, String outputDir) {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlValue);
 
-		BrowserType browser = BrowserType.firefox;
+		BrowserType browser = BrowserType.FIREFOX;
 		if (options.specifiesBrowser()) {
 			browser = options.getSpecifiedBrowser();
 		}
@@ -114,7 +114,12 @@ public class JarRunner {
 		if (options.specifiesParallelBrowsers()) {
 			browsers = options.getSpecifiedNumberOfBrowsers();
 		}
-		builder.setBrowserConfig(new BrowserConfiguration(browser, browsers));
+		if (browser == BrowserType.REMOTE) {
+			String remoteUrl = options.getSpecifiedRemoteBrowser();
+			builder.setBrowserConfig(BrowserConfiguration.remoteConfig(browsers, remoteUrl));
+		} else {
+			builder.setBrowserConfig(new BrowserConfiguration(browser, browsers));
+		}
 
 		if (options.specifiesDepth()) {
 			builder.setMaximumDepth(options.getSpecifiedDepth());
