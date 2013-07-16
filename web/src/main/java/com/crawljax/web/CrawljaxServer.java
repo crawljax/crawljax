@@ -27,8 +27,8 @@ public class CrawljaxServer implements Runnable {
 	private boolean isRunning;
 	private String url = null;
 
-	public CrawljaxServer(String outputDir, int port) {
-		this.outputDir = new File(outputDir);
+	public CrawljaxServer(File outputDir, int port) {
+		this.outputDir = outputDir;
 		this.port = port;
 		isRunning = false;
 	}

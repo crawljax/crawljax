@@ -13,7 +13,7 @@ public class Main {
 
 		int port = options.specifiesPort() ? options.getSpecifiedPort() : 8080;
 
-		CrawljaxServer server = new CrawljaxServer(outFolder, port);
+		CrawljaxServer server = new CrawljaxServer(new File(outFolder), port);
 		server.run();
 	}
 }

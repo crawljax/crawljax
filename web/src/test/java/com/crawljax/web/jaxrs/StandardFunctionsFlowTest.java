@@ -27,11 +27,11 @@ public class StandardFunctionsFlowTest {
 	private static DefaultSelenium selenium;
 	private static WebDriver driver;
 
-	private String configurationName = "TestConfiguration";
-	private String configurationUrl = "http://crawljax.com";
+	private final String CONFIG_NAME = "TestConfiguration";
+	private String CONFIG_URL = "http://crawljax.com";
 
-	private String pluginName = "Dummy Plugin";
-	private String pluginId = "dummy-plugin";
+	private String PLUGIN_NAME = "Dummy Plugin";
+	private String PLUGIN_ID = "dummy-plugin";
 
 	@Rule
 	public TestRule globalTimeout = new Timeout(120 * 1000);
@@ -68,20 +68,20 @@ public class StandardFunctionsFlowTest {
 		followLink(newConfigurationLink.get(0));
 		List<WebElement> textBoxes = visibleElementsByCss(".ember-text-field");
 		assertFalse(textBoxes.isEmpty());
-		textBoxes.get(0).sendKeys(configurationName);
+		textBoxes.get(0).sendKeys(CONFIG_NAME);
 		textBoxes.get(1).clear();
-		textBoxes.get(1).sendKeys(configurationUrl);
+		textBoxes.get(1).sendKeys(CONFIG_URL);
 		List<WebElement> saveConfigurationLink = driver.findElements(By.linkText("Save Configuration"));
 		assertFalse(saveConfigurationLink.isEmpty());
 		followLink(saveConfigurationLink.get(0));
 
 		WebElement nameSpan = (WebElement) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"label:contains('Name:')\").parent().find('div > span')[0];");
-		assertTrue(nameSpan.getText().equals(configurationName));
+		assertTrue(nameSpan.getText().equals(CONFIG_NAME));
 
 		WebElement urlInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"label:contains('Site:')\").parent().find('div > input')[0];");
-		assertTrue(urlInput.getAttribute("value").equals(configurationUrl));
+		assertTrue(urlInput.getAttribute("value").equals(CONFIG_URL));
 	}
 
 	private void updateConfiguration() {
@@ -143,7 +143,7 @@ public class StandardFunctionsFlowTest {
 		wait.until(isComplete);
 
 		WebElement link = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li > span:contains('" + configurationName + "')\").parent().find(\"a\")[0];");
+				"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li > span:contains('" + CONFIG_NAME + "')\").parent().find(\"a\")[0];");
 
 		followLink(link);
 
@@ -155,7 +155,7 @@ public class StandardFunctionsFlowTest {
 		driver.navigate().refresh();
 
 		WebElement dateContainer = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td > a:contains('" + configurationName + "')\").first().parent().next()[0];");
+				"return $(\"td > a:contains('" + CONFIG_NAME + "')\").first().parent().next()[0];");
 		assertNotNull(dateContainer);
 		String displayedDate = dateContainer.getText();
 		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM d yyyy HH:mm:ss");
@@ -174,12 +174,12 @@ public class StandardFunctionsFlowTest {
 		open("plugins");
 
 		final List<WebElement> existingPlugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td:contains('" + pluginName + "')\").toArray();");
+				"return $(\"td:contains('" + PLUGIN_NAME + "')\").toArray();");
 
 		WebElement fileInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"input[type='file']\")[0];");
 
-		String fileName = getClass().getClassLoader().getResource(pluginId + ".jar").toExternalForm();
+		String fileName = getClass().getClassLoader().getResource(PLUGIN_ID + ".jar").toExternalForm();
 		fileInput.sendKeys(fileName);
 
 		List<WebElement> uploadLink = driver.findElements(By.linkText("Upload"));
@@ -188,7 +188,7 @@ public class StandardFunctionsFlowTest {
 		ExpectedCondition<Boolean> uploaded = new ExpectedCondition<Boolean>() {
 			public Boolean apply(WebDriver driver) {
 				List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-						"return $(\"td:contains('" + pluginName + "')\").toArray();");
+						"return $(\"td:contains('" + PLUGIN_NAME + "')\").toArray();");
 				return plugins.size() > existingPlugins.size();
 			}
 		};
@@ -196,7 +196,7 @@ public class StandardFunctionsFlowTest {
 		wait.until(uploaded);
 
 		List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td:contains('" + pluginName + "')\").toArray();");
+				"return $(\"td:contains('" + PLUGIN_NAME + "')\").toArray();");
 		assertEquals(existingPlugins.size() + 1, plugins.size());
 	}
 
@@ -212,7 +212,7 @@ public class StandardFunctionsFlowTest {
 		followLink(addPluginLink.get(0));
 
 		WebElement pluginSelectOption = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"select > option:contains('" + pluginId + "')\")[0];");
+				"return $(\"select > option:contains('" + PLUGIN_ID + "')\")[0];");
 		assertNotNull(pluginSelectOption);
 
 		followLink(pluginSelectOption);
@@ -222,7 +222,7 @@ public class StandardFunctionsFlowTest {
 		driver.navigate().refresh();
 
 		WebElement pluginTitle = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"legend:contains('" + pluginId + "')\")[0];");
+				"return $(\"legend:contains('" + PLUGIN_ID + "')\")[0];");
 		assertNotNull(pluginTitle);
 	}
 
@@ -230,10 +230,10 @@ public class StandardFunctionsFlowTest {
 		open("plugins");
 
 		final List<WebElement> existingPlugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td:contains('" + pluginName + "')\").toArray();");
+				"return $(\"td:contains('" + PLUGIN_NAME + "')\").toArray();");
 
 		WebElement deleteLink = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td:contains('" + pluginName + "')\").next().find(\"a:contains('Delete')\")[0];");
+				"return $(\"td:contains('" + PLUGIN_NAME + "')\").next().find(\"a:contains('Delete')\")[0];");
 		followLink(deleteLink);
 
 		Alert confirmDialog = driver.switchTo().alert();
@@ -242,7 +242,7 @@ public class StandardFunctionsFlowTest {
 		driver.navigate().refresh();
 
 		List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td:contains('" + pluginName + "')\").toArray();");
+				"return $(\"td:contains('" + PLUGIN_NAME + "')\").toArray();");
 
 		assertEquals(existingPlugins.size() - 1, plugins.size());
 	}
@@ -251,7 +251,7 @@ public class StandardFunctionsFlowTest {
 		open("configurations");
 
 		List<WebElement> existingConfigurationLinks = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"a:contains('" + configurationName + "')\").toArray();");
+				"return $(\"a:contains('" + CONFIG_NAME + "')\").toArray();");
 
 		openConfiguration();
 
@@ -263,7 +263,7 @@ public class StandardFunctionsFlowTest {
 
 		open("configurations");
 		List<WebElement> configurationLinks = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"a:contains('" + configurationName + "')\").toArray();");
+				"return $(\"a:contains('" + CONFIG_NAME + "')\").toArray();");
 
 		assertEquals(existingConfigurationLinks.size() - 1, configurationLinks.size());
 	}
@@ -289,10 +289,9 @@ public class StandardFunctionsFlowTest {
 	private void openConfiguration() {
 		open("configurations");
 		WebElement configLink = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td > a:contains('" + configurationName + "')\")" + //Candidate link
-						".parent().next().find(\"a:contains('" + configurationUrl + "')\")" + //verify url
-						".parent().next(\":contains('never')\")" + //verify new configuration
-						".prev().prev().find(\"a:contains('" + configurationName + "')\")[0];"); //select the link
+				"return $(\"td > a:contains('" + CONFIG_NAME + "')\")" + //Candidate link
+						".parent().next().find(\"a:contains('" + CONFIG_URL + "')\")" + //verify url
+						".parent().prev().find(\"a:contains('" + CONFIG_NAME + "')\")[0];"); //select the link
 		configLink.click();
 	}
 
