@@ -83,6 +83,7 @@
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
