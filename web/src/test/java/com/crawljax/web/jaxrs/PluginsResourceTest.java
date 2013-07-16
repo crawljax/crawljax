@@ -3,9 +3,9 @@ package com.crawljax.web.jaxrs;
 import com.crawljax.web.CrawljaxServer;
 import com.google.common.collect.Lists;
 import com.thoughtworks.selenium.DefaultSelenium;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.TestRule;
+import org.junit.rules.Timeout;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -21,16 +21,6 @@ import static org.junit.Assert.*;
 
 public class PluginsResourceTest {
 
-	public static class CrawljaxServerRunner implements Runnable {
-		public void run() {
-			try {
-				CrawljaxServer.main(new String[]{"-p 0"});
-			} catch (Exception e) {
-				LOG.debug("Failed to run CrawljaxServer.\n{}", e.getStackTrace().toString());
-			}
-		}
-	}
-
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigurationsResourceTest.class);
 	private static DefaultSelenium selenium;
 	private static WebDriver driver;
@@ -39,25 +29,17 @@ public class PluginsResourceTest {
 	private String pluginName = "Crawl Overview Plugin";
 	private String configurationName = "TestConfiguration";
 
+	@Rule
+	public TestRule globalTimeout = new Timeout(120 * 1000);
+	
+	@ClassRule
+	public static final CrawljaxServerResource SERVER = new CrawljaxServerResource();
+
 	@BeforeClass
 	public static void setup() throws Exception {
-
-		CrawljaxServerRunner serverRunner = new CrawljaxServerRunner();
-		Thread serverThread = new Thread(serverRunner);
-		serverThread.setDaemon(true); //so that serverThread is terminated when test is complete.
-		serverThread.start();
-
-		int maxWait_s = 10, currentWait_s = 0;
-		while(CrawljaxServer.url == null) {
-			currentWait_s += 0.5;
-			Thread.sleep(500);
-			assertTrue(currentWait_s < maxWait_s);
-		}
-
 		driver = new FirefoxDriver();
 		LOG.debug("Starting selenium");
-		selenium = new WebDriverBackedSelenium(driver, CrawljaxServer.url);
-
+		selenium = new WebDriverBackedSelenium(driver, SERVER.getUrl());
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 
