@@ -19,7 +19,7 @@ import com.google.common.base.Objects;
  * element names must be in upper case and attributes in lower case.
  */
 @Immutable
-public class XPathCondition extends AbstractCondition {
+public class XPathCondition implements Condition {
 
 	private final String expression;
 
@@ -39,11 +39,9 @@ public class XPathCondition extends AbstractCondition {
 	}
 
 	private boolean checkXPathExpression(EmbeddedBrowser browser) {
-
 		try {
 			Document document = DomUtils.asDocument(browser.getDom());
 			NodeList nodeList = XPathHelper.evaluateXpathExpression(document, expression);
-			this.setAffectedNodes(nodeList);
 			return nodeList.getLength() > 0;
 		} catch (XPathExpressionException | IOException e) {
 			// Exception is caught, check failed so return false;

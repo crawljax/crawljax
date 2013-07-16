@@ -11,7 +11,7 @@ import com.google.common.base.Objects;
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
-public class NotRegexCondition extends AbstractCondition {
+public class NotRegexCondition implements Condition {
 
 	private final RegexCondition regexCondition;
 
