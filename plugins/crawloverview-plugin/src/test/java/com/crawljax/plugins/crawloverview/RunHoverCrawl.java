@@ -34,12 +34,13 @@ public class RunHoverCrawl extends ExternalResource {
 				        @Override
 				        protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
 					        CrawljaxConfigurationBuilder builder =
-					                super.newCrawlConfigurationBuilder();
+					                super.newCrawlConfigurationBuilder().setOutputDirectory(
+					                        getTempDir());
 
 					        return builder;
 				        };
 			        };
-			        CrawlOverview plugin = new CrawlOverview(getTempDir());
+			        CrawlOverview plugin = new CrawlOverview();
 			        hoverSiteCrawl.crawlWith(plugin);
 			        return plugin.getResult();
 		        }

@@ -105,6 +105,8 @@ public class JarRunner {
 	private CrawljaxConfiguration readConfig(String urlValue, String outputDir) {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlValue);
 
+		builder.setOutputDirectory(new File(outputDir));
+
 		BrowserType browser = BrowserType.FIREFOX;
 		if (options.specifiesBrowser()) {
 			browser = options.getSpecifiedBrowser();
@@ -135,7 +137,7 @@ public class JarRunner {
 
 		configureTimers(builder);
 
-		builder.addPlugin(new CrawlOverview(new File(outputDir)));
+		builder.addPlugin(new CrawlOverview());
 
 		if (options.specifiesClickElements()) {
 			builder.crawlRules().click(options.getSpecifiedClickElements());

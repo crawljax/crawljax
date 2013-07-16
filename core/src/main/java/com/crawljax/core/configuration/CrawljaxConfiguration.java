@@ -2,6 +2,7 @@ package com.crawljax.core.configuration;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -166,6 +167,33 @@ public class CrawljaxConfiguration {
 			return this;
 		}
 
+		/**
+		 * Set the output folder for any {@link Plugin} you might configure. Crawljax itself doesn't
+		 * need an output folder but many plug-ins do.
+		 * 
+		 * @param output
+		 *            The output folder. If it does not exist it will be created.
+		 * @throws IllegalStateException
+		 *             if the specified file is not writable or exists but isn't a folder.
+		 */
+		public CrawljaxConfigurationBuilder setOutputDirectory(File output) {
+			config.output = output;
+			checkOutputDirWritable();
+			return this;
+		}
+
+		private void checkOutputDirWritable() {
+			if (!config.output.exists()) {
+				Preconditions.checkState(config.output.mkdirs(),
+				        "Could not create the output directory %s ", config.output);
+			} else {
+				Preconditions.checkArgument(config.output.isDirectory(),
+				        "Output directory %s is not a folder", config.output);
+				Preconditions.checkState(config.output.canWrite(),
+				        "Output directory %s is not writable", config.output);
+			}
+		}
+
 		public CrawljaxConfiguration build() {
 			config.plugins = new Plugins(pluginBuilder.build());
 			config.crawlRules = crawlRules.build();
@@ -213,6 +241,7 @@ public class CrawljaxConfiguration {
 	private int maximumStates = 0;
 	private long maximumRuntime = TimeUnit.HOURS.toMillis(1);;
 	private int maximumDepth = 2;
+	private File output = new File("out");
 
 	private CrawljaxConfiguration() {
 	}
@@ -247,6 +276,10 @@ public class CrawljaxConfiguration {
 
 	public int getMaximumDepth() {
 		return maximumDepth;
+	}
+
+	public File getOutputDir() {
+		return output;
 	}
 
 	@Override
