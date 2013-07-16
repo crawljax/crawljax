@@ -28,7 +28,7 @@ public class PluginExample {
 			public void onNewState(CrawlerContext context, StateVertex newState) {
 				// This will print the DOM when a new state is detected. You should see it in your
 				// console.
-				LOG.info("Sound a new dom! Here it is:\n{}", context.getBrowser().getStrippedDom());
+				LOG.info("Found a new dom! Here it is:\n{}", context.getBrowser().getStrippedDom());
 			}
 
 			@Override
