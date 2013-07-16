@@ -60,7 +60,8 @@ public final class AdvancedExample {
 		if (outFolder.exists()) {
 			FileUtils.deleteDirectory(outFolder);
 		}
-		builder.addPlugin(new CrawlOverview(outFolder));
+		builder.setOutputDirectory(outFolder);
+		builder.addPlugin(new CrawlOverview());
 
 		// We want to use two browsers simultaneously.
 		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 2));
