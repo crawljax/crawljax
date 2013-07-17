@@ -3,10 +3,7 @@ package com.crawljax.web;
 import java.io.File;
 import java.net.URL;
 import java.security.ProtectionDomain;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -24,19 +21,17 @@ public class CrawljaxServer implements Callable<Void> {
 	private int port;
 
 	private Server server;
-	private boolean isRunning;
+	private final CountDownLatch isRunningLatch = new CountDownLatch(1);
 	private String url = null;
 
 	public CrawljaxServer(File outputDir, int port) {
 		this.outputDir = outputDir;
 		this.port = port;
-		isRunning = false;
 	}
 
 	public CrawljaxServer(int port) {
 		this.outputDir = new File(System.getProperty("user.home") + File.separatorChar + "crawljax");
 		this.port = port;
-		isRunning = false;
 	}
 
 	@Override
@@ -65,24 +60,19 @@ public class CrawljaxServer implements Callable<Void> {
 		port = ((ServerConnector) server.getConnectors()[0]).getLocalPort(); //Value will change if originally set to 0
 		url = "http://localhost:" + port;
 
-		isRunning = true;
+		isRunningLatch.countDown();
 		try {
 			server.join();
 		} catch (InterruptedException e) {
 			throw new RuntimeException("Crawljax server interrupted", e);
 		}
-		isRunning = false;
 	}
 
 	public void waitUntilRunning(long timeOut_ms) {
-		long time_ms = 0;
-		while(!isRunning && time_ms < timeOut_ms) {
-			time_ms += 50;
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
+		try {
+			isRunningLatch.await(timeOut_ms, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -92,10 +82,6 @@ public class CrawljaxServer implements Callable<Void> {
 		} catch (Exception e) {
 			throw new RuntimeException("Could not stop Crawljax web server", e);
 		}
-	}
-
-	public boolean isRunning() {
-		return isRunning;
 	}
 
 	public String getUrl() {
