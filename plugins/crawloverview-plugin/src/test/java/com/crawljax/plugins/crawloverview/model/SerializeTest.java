@@ -64,8 +64,10 @@ public class SerializeTest {
 	@Test
 	public void testConfigSerializibility() throws IOException {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor("http://example.com");
-		builder.addPlugin(new CrawlOverview(tmpFolder.getRoot()));
+		        CrawljaxConfiguration.builderFor("http://example.com")
+		                .addPlugin(new CrawlOverview())
+		                .setOutputDirectory(tmpFolder.getRoot());
+
 		builder.crawlRules().addCrawlCondition(
 		        new CrawlCondition("kers", new RegexCondition("test")));
 

@@ -17,9 +17,11 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.ExitNotifier.ExitStatus;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.OnFireEventFailedPlugin;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
+import com.crawljax.core.plugin.PreCrawlingPlugin;
 import com.crawljax.core.plugin.PreStateCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
@@ -41,25 +43,28 @@ import com.google.common.collect.Maps;
  * the visited states are linked together.
  **/
 public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
-        PostCrawlingPlugin, OnFireEventFailedPlugin {
+        PostCrawlingPlugin, OnFireEventFailedPlugin, PreCrawlingPlugin {
 
-	private static final Logger LOG = LoggerFactory
-	        .getLogger(CrawlOverview.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlOverview.class);
 
-	private final OutputBuilder outputBuilder;
 	private final ConcurrentMap<String, StateVertex> visitedStates;
 	private final OutPutModelCache outModelCache;
+	private OutputBuilder outputBuilder;
 	private boolean warnedForElementsInIframe = false;
 
 	private OutPutModel result;
 
-	public CrawlOverview(File outputFolder) {
-		Preconditions
-		        .checkNotNull(outputFolder, "Output folder cannot be null");
-		outputBuilder = new OutputBuilder(outputFolder);
+	public CrawlOverview() {
 		outModelCache = new OutPutModelCache();
 		visitedStates = Maps.newConcurrentMap();
 		LOG.info("Initialized the Crawl overview plugin");
+	}
+
+	@Override
+	public void preCrawling(CrawljaxConfiguration config) throws RuntimeException {
+		File outputFolder = config.getOutputDir();
+		Preconditions.checkNotNull(outputFolder, "Output folder cannot be null");
+		outputBuilder = new OutputBuilder(outputFolder);
 	}
 
 	/**
@@ -188,4 +193,5 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	        List<Eventable> pathToFailure) {
 		outModelCache.registerFailEvent(context.getCurrentState(), eventable);
 	}
+
 }
