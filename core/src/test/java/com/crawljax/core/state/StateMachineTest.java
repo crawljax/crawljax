@@ -277,7 +277,7 @@ public class StateMachineTest {
 
 	private void setStateMachineForConfig(CrawljaxConfiguration config) {
 		sm = new StateMachine(newStateFlowGraph(), config.getCrawlRules().getInvariants(),
-		        new Plugins(config.getPlugins(), new MetricRegistry()), comparator);
+		        new Plugins(config, new MetricRegistry()), comparator);
 	}
 
 	/**

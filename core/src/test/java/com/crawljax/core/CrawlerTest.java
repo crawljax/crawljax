@@ -54,7 +54,8 @@ public class CrawlerTest {
 	private EmbeddedBrowser browser;
 
 	@Spy
-	private Plugins plugins = new Plugins(ImmutableList.<Plugin> of(), new MetricRegistry());
+	private Plugins plugins = new Plugins(CrawljaxConfiguration.builderFor("http://localhost")
+	        .build(), new MetricRegistry());
 
 	@Mock
 	private Provider<CrawlSession> sessionProvider;
@@ -119,7 +120,9 @@ public class CrawlerTest {
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
 		when(graphProvider.get()).thenReturn(graph);
 
-		context = new CrawlerContext(browser, config, sessionProvider, exitNotifier, new MetricRegistry());
+		context =
+		        new CrawlerContext(browser, config, sessionProvider, exitNotifier,
+		                new MetricRegistry());
 		crawler =
 		        new Crawler(context, config,
 		                stateComparator,

@@ -25,6 +25,7 @@ import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.ExitNotifier.ExitStatus;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.metrics.MetricsModule;
@@ -81,11 +82,12 @@ public class PluginsTest {
 	@Before
 	public void setup() {
 		registry = new MetricRegistry();
-		plugins =
-		        new Plugins(ImmutableList.of(domChange, browserCreatedPlugin,
+		CrawljaxConfiguration config = CrawljaxConfiguration.builderFor("http://localhost")
+		        .addPlugin(domChange, browserCreatedPlugin,
 		                fireEventFailedPlugin, invariantViolationPlugin, newStatePlugin,
 		                onRevisitStatePlugin,
-		                urlLoadPlugin, postCrawlingPlugin, prestatePlugin), registry);
+		                urlLoadPlugin, postCrawlingPlugin, prestatePlugin).build();
+		plugins = new Plugins(config, registry);
 	}
 
 	@Test
@@ -160,7 +162,9 @@ public class PluginsTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void onlyOneDomChangePluginCanBeAdded() {
-		new Plugins(ImmutableList.of(domChange, domChange), new MetricRegistry());
+		new Plugins(CrawljaxConfiguration.builderFor("http://localhost")
+				.addPlugin(domChange)
+		        .addPlugin(domChange).build(), new MetricRegistry());
 	}
 
 	@Test
