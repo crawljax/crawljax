@@ -112,6 +112,6 @@ public class CrawlSession {
 	}
 
 	public MetricRegistry getRegistry() {
-	    return registry;
-    }
+		return registry;
+	}
 }

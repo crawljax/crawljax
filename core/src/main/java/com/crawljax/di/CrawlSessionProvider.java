@@ -28,14 +28,16 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	private final AtomicBoolean isSet = new AtomicBoolean();
 	private final InMemoryStateFlowGraph stateFlowGraph;
 	private final CrawljaxConfiguration config;
+	private final MetricRegistry registry;
 
 	private CrawlSession session;
 
 	@Inject
 	public CrawlSessionProvider(InMemoryStateFlowGraph stateFlowGraph,
-	        CrawljaxConfiguration config) {
+	        CrawljaxConfiguration config, MetricRegistry registry) {
 		this.stateFlowGraph = stateFlowGraph;
 		this.config = config;
+		this.registry = registry;
 	}
 
 	/**
@@ -49,7 +51,7 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 			LOG.debug("Setting up the crawlsession");
 			StateVertex added = stateFlowGraph.putIndex(indexState);
 			Preconditions.checkArgument(added == null, "Could not set the initial state");
-			session = new CrawlSession(config, stateFlowGraph, indexState, new MetricRegistry());
+			session = new CrawlSession(config, stateFlowGraph, indexState, registry);
 		} else {
 			throw new IllegalStateException("Session is already set");
 		}

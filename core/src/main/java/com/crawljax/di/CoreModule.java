@@ -8,7 +8,6 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
@@ -18,7 +17,6 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.ExtractorManager;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.forms.FormHandler;
@@ -62,11 +60,6 @@ public class CoreModule extends AbstractModule {
 	ConditionTypeChecker<CrawlCondition> crawlConditionChecker() {
 		return new ConditionTypeChecker<>(configuration.getCrawlRules().getPreCrawlConfig()
 		        .getCrawlConditions());
-	}
-	
-	@Provides @Singleton
-	public Plugins plugins(CrawljaxConfiguration configuration, MetricRegistry registry) {
-		return new Plugins(configuration.getPlugins(), registry);
 	}
 
 	public interface FormHandlerFactory {

@@ -5,6 +5,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +35,7 @@ import com.google.common.collect.Lists;
 /**
  * Class for invoking plugins. The methods in this class are invoked from the Crawljax Core.
  */
+@Singleton
 public class Plugins {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Plugins.class
@@ -52,8 +56,10 @@ public class Plugins {
 
 	private final MetricRegistry registry;
 
-	public Plugins(List<? extends Plugin> plugins, MetricRegistry registry) {
+	@Inject
+	public Plugins(CrawljaxConfiguration config, MetricRegistry registry) {
 		this.registry = registry;
+		List<? extends Plugin> plugins = config.getPlugins();
 		Preconditions.checkNotNull(plugins);
 		ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder =
 		        ImmutableListMultimap

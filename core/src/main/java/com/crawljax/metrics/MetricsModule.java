@@ -27,8 +27,7 @@ public class MetricsModule extends AbstractModule implements Module {
 
 	@Override
 	protected void configure() {
-
-		bind(MetricRegistry.class).toInstance(new MetricRegistry());
+		bind(MetricRegistry.class).asEagerSingleton();
 	}
 
 }
