@@ -40,6 +40,8 @@ public class CrawlSession {
 	 */
 	private final long startTime;
 
+	private final MetricRegistry registry;
+
 	/**
 	 * @param pool
 	 *            the embedded browser instance pool that is in use.
@@ -58,6 +60,7 @@ public class CrawlSession {
 		this.stateFlowGraph = stateFlowGraph;
 		this.initialState = state;
 		this.config = config;
+		this.registry = registry;
 		this.startTime = new Date().getTime();
 	}
 
@@ -108,4 +111,7 @@ public class CrawlSession {
 		return config;
 	}
 
+	public MetricRegistry getRegistry() {
+	    return registry;
+    }
 }
