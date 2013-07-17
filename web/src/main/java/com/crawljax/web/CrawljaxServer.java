@@ -16,7 +16,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 /**
  * Starts the Crawljax server at port 8080.
  */
-public class CrawljaxServer implements Runnable {
+public class CrawljaxServer implements Callable<Void> {
 
 	private final boolean EXECUTE_WAR = false;
 
@@ -40,6 +40,11 @@ public class CrawljaxServer implements Runnable {
 	}
 
 	@Override
+	public Void call() {
+		run();
+		return null;
+	}
+
 	public void run() {
 
 		System.setProperty("outputFolder", outputDir.getAbsolutePath());
@@ -67,6 +72,18 @@ public class CrawljaxServer implements Runnable {
 			throw new RuntimeException("Crawljax server interrupted", e);
 		}
 		isRunning = false;
+	}
+
+	public void waitUntilRunning(long timeOut_ms) {
+		long time_ms = 0;
+		while(!isRunning && time_ms < timeOut_ms) {
+			time_ms += 50;
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	public void stop() {
