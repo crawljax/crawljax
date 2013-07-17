@@ -131,8 +131,11 @@ App.ConfigurationController = Ember.Controller.extend({
 				}
 				break;
 			case "delete":
-				var router = this.get('target');
-				App.Configurations.remove(this.get("content"), function(data){ router.transitionToRoute('configurations'); });
+				var r = confirm("Are you sure you want to permanently delete this configuration?");
+				if (r == true) {
+					var router = this.get('target');
+					App.Configurations.remove(this.get("content"), function(data){ router.transitionToRoute('configurations'); });
+				}
 				break;
 		}
 	},
@@ -261,7 +264,7 @@ App.PluginManagementController = Ember.ArrayController.extend({
 		var _this = this;
 		var reader = new FileReader();
 		reader.onload = function(e) {
-			App.Plugins.add(file.name, e.srcElement.result, function(){
+			App.Plugins.add(file.name, e.target.result, function(){
 				_this.set('content', App.Plugins.findAll());
 			});
 		}

@@ -8,7 +8,6 @@ import com.crawljax.web.model.Plugin;
 import com.crawljax.web.model.SelectOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,7 +16,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipFile;
 
@@ -111,15 +109,16 @@ public class PluginManager {
 	private PluginDescriptor loadPluginDescriptorFromJar(File jarFile) {
 		PluginDescriptor pluginDescriptor = null;
 		try {
-			ZipFile zipFile = new ZipFile(jarFile);
-			try(InputStream is = zipFile.getInputStream(zipFile.getEntry("plugin-descriptor.xml"))) {
-				JAXBContext jc = JAXBContext.newInstance("com.crawljax.core.plugin.jaxb.generated");
-				Unmarshaller u = jc.createUnmarshaller();
-				pluginDescriptor = (PluginDescriptor) u.unmarshal(is);
-				is.close();
-			} catch (JAXBException e) {
-				LOG.error("Could not read plugin descriptor in {}. ", jarFile.getName());
-				LOG.debug("Could not parse plugin descriptor in {}. \n{}", jarFile.getName(), e.getStackTrace());
+			try(ZipFile zipFile = new ZipFile(jarFile)) {
+				try(InputStream is = zipFile.getInputStream(zipFile.getEntry("plugin-descriptor.xml"))) {
+					JAXBContext jc = JAXBContext.newInstance("com.crawljax.core.plugin.jaxb.generated");
+					Unmarshaller u = jc.createUnmarshaller();
+					pluginDescriptor = (PluginDescriptor) u.unmarshal(is);
+
+				} catch (JAXBException e) {
+					LOG.error("Could not read plugin descriptor in {}. ", jarFile.getName());
+					LOG.debug("Could not parse plugin descriptor in {}. \n{}", jarFile.getName(), e.getStackTrace());
+				}
 			}
 		}  catch (IOException e) {
 			LOG.error("Could not load plugin descriptor in {}. ", jarFile.getName());
