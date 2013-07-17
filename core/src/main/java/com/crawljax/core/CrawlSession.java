@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
@@ -53,7 +54,7 @@ public class CrawlSession {
 	 */
 	@Inject
 	public CrawlSession(CrawljaxConfiguration config, StateFlowGraph stateFlowGraph,
-	        StateVertex state) {
+	        StateVertex state, MetricRegistry registry) {
 		this.stateFlowGraph = stateFlowGraph;
 		this.initialState = state;
 		this.config = config;

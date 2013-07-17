@@ -3,6 +3,7 @@ package com.crawljax.core;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -19,17 +20,19 @@ public class CrawlerContext {
 	private final Provider<CrawlSession> sessionProvider;
 	private final CrawljaxConfiguration config;
 	private final ExitNotifier exitNotifier;
+	private final MetricRegistry registry;
 
 	private StateMachine stateMachine;
 
 	@Inject
 	public CrawlerContext(EmbeddedBrowser browser,
 	        CrawljaxConfiguration config, Provider<CrawlSession> sessionProvider,
-	        ExitNotifier exitNotifier) {
+	        ExitNotifier exitNotifier, MetricRegistry registry) {
 		this.browser = browser;
 		this.config = config;
 		this.sessionProvider = sessionProvider;
 		this.exitNotifier = exitNotifier;
+		this.registry = registry;
 	}
 
 	/**
@@ -76,6 +79,10 @@ public class CrawlerContext {
 		} else {
 			return stateMachine.getCurrentState();
 		}
+	}
+
+	public MetricRegistry getRegistry() {
+		return registry;
 	}
 
 }

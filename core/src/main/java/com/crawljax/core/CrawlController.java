@@ -42,12 +42,13 @@ public class CrawlController implements Callable<CrawlSession> {
 	@Inject
 	CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
 	        CrawljaxConfiguration config, ExitNotifier exitNotifier,
-	        CrawlSessionProvider crawlSessionProvider) {
+	        CrawlSessionProvider crawlSessionProvider,
+	        Plugins plugins) {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
 		this.exitNotifier = exitNotifier;
 		this.config = config;
-		this.plugins = config.getPlugins();
+		this.plugins = plugins;
 		this.crawlSessionProvider = crawlSessionProvider;
 		this.maximumCrawlTime = config.getMaximumRuntime();
 	}

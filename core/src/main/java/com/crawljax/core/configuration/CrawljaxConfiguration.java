@@ -15,7 +15,6 @@ import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
-import com.crawljax.core.plugin.Plugins;
 import com.crawljax.di.CoreModule;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -195,7 +194,7 @@ public class CrawljaxConfiguration {
 		}
 
 		public CrawljaxConfiguration build() {
-			config.plugins = new Plugins(pluginBuilder.build());
+			config.plugins = pluginBuilder.build();
 			config.crawlRules = crawlRules.build();
 			return config;
 		}
@@ -233,7 +232,7 @@ public class CrawljaxConfiguration {
 	private URL url;
 
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.FIREFOX);
-	private Plugins plugins;
+	private ImmutableList<Plugin> plugins;
 	private ProxyConfiguration proxyConfiguration = ProxyConfiguration.noProxy();
 
 	private CrawlRules crawlRules;
@@ -254,7 +253,7 @@ public class CrawljaxConfiguration {
 		return browserConfig;
 	}
 
-	public Plugins getPlugins() {
+	public ImmutableList<Plugin> getPlugins() {
 		return plugins;
 	}
 

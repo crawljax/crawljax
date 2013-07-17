@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
+import com.crawljax.core.plugin.Plugins;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSortedSet;
 
@@ -24,10 +25,12 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverBrowserBuilder.class);
 	private final CrawljaxConfiguration configuration;
+	private final Plugins plugins;
 
 	@Inject
-	public WebDriverBrowserBuilder(CrawljaxConfiguration configuration) {
+	public WebDriverBrowserBuilder(CrawljaxConfiguration configuration, Plugins plugins) {
 		this.configuration = configuration;
+		this.plugins = plugins;
 	}
 
 	/**
@@ -75,7 +78,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 				throw new IllegalStateException("Unrecognized browsertype "
 				        + configuration.getBrowserConfig().getBrowsertype());
 		}
-		configuration.getPlugins().runOnBrowserCreatedPlugins(browser);
+		plugins.runOnBrowserCreatedPlugins(browser);
 		return browser;
 	}
 

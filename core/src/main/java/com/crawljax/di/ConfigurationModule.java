@@ -15,7 +15,6 @@ import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration;
-import com.crawljax.core.plugin.Plugins;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.util.Providers;
@@ -38,7 +37,6 @@ public class ConfigurationModule extends AbstractModule {
 		bind(CrawljaxConfiguration.class).toInstance(config);
 		bind(CrawlRules.class).toInstance(config.getCrawlRules());
 		bind(ProxyConfiguration.class).toInstance(config.getProxyConfiguration());
-		bind(Plugins.class).toInstance(config.getPlugins());
 
 		BrowserConfiguration browserConfig = config.getBrowserConfig();
 		bind(BrowserConfiguration.class).toInstance(browserConfig);

@@ -12,6 +12,9 @@ import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +25,7 @@ import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
@@ -29,6 +33,7 @@ import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
 
 @Category(BrowserTest.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CandidateElementExtractorTest {
 
 	private static final Logger LOG = LoggerFactory
@@ -36,6 +41,8 @@ public class CandidateElementExtractorTest {
 	private static final StateVertex DUMMY_STATE = StateMachine.createIndex("http://localhost",
 	        "", "");
 
+	@Mock private Plugins plugins;
+	
 	@ClassRule
 	public static final RunWithWebServer DEMO_SITE_SERVER = new RunWithWebServer("/demo-site");
 	private EmbeddedBrowser browser;
@@ -66,7 +73,7 @@ public class CandidateElementExtractorTest {
 	}
 
 	private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config) {
-		browser = new WebDriverBrowserBuilder(config).get();
+		browser = new WebDriverBrowserBuilder(config, plugins).get();
 		FormHandler formHandler = new FormHandler(browser, config.getCrawlRules());
 
 		EventableConditionChecker eventableConditionChecker =
