@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 
-import com.crawljax.core.plugin.HostInterfaceImpl;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -65,8 +64,10 @@ public class SerializeTest {
 	@Test
 	public void testConfigSerializibility() throws IOException {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor("http://example.com");
-		builder.addPlugin(new CrawlOverview(new HostInterfaceImpl(tmpFolder.getRoot(), null)));
+		        CrawljaxConfiguration.builderFor("http://example.com")
+		                .addPlugin(new CrawlOverview())
+		                .setOutputDirectory(tmpFolder.getRoot());
+
 		builder.crawlRules().addCrawlCondition(
 		        new CrawlCondition("kers", new RegexCondition("test")));
 

@@ -12,7 +12,7 @@ import com.google.common.base.Objects;
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
-public class NotVisibleCondition extends AbstractCondition {
+public class NotVisibleCondition implements Condition {
 
 	private final VisibleCondition visibleCondition;
 

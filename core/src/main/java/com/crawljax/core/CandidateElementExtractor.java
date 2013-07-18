@@ -53,7 +53,7 @@ public class CandidateElementExtractor {
 
 	private final boolean clickOnce;
 
-	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
+	private final ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
 	/**
 	 * Create a new CandidateElementExtractor.
@@ -125,7 +125,7 @@ public class CandidateElementExtractor {
 		LOG.debug("Looking in state: {} for candidate elements", currentState.getName());
 
 		try {
-			Document dom = DomUtils.asDocument(browser.getDomWithoutIframeContent());
+			Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
 			extractElements(dom, results, "");
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);

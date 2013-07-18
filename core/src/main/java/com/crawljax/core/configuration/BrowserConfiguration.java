@@ -44,6 +44,7 @@ public class BrowserConfiguration {
 	private final int numberOfBrowsers;
 	private final Provider<EmbeddedBrowser> browserBuilder;
 	private String remoteHubUrl;
+	private String lang;
 
 	/**
 	 * @param browsertype
@@ -56,7 +57,7 @@ public class BrowserConfiguration {
 	 */
 	public static BrowserConfiguration remoteConfig(int numberOfBrowsers, String remoteUrl) {
 		BrowserConfiguration config =
-		        new BrowserConfiguration(BrowserType.remote, numberOfBrowsers);
+		        new BrowserConfiguration(BrowserType.REMOTE, numberOfBrowsers);
 		config.remoteHubUrl = remoteUrl;
 		return config;
 	}
@@ -130,13 +131,14 @@ public class BrowserConfiguration {
 		        .add("numberOfBrowsers", numberOfBrowsers)
 		        .add("browserBuilder", browserBuilder)
 		        .add("remoteHubUrl", remoteHubUrl)
+		        .add("language", lang)
 		        .toString();
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(browsertype, numberOfBrowsers, browserBuilder,
-		        remoteHubUrl);
+		        remoteHubUrl, lang);
 	}
 
 	@Override
@@ -146,9 +148,26 @@ public class BrowserConfiguration {
 			return Objects.equal(this.browsertype, that.browsertype)
 			        && Objects.equal(this.numberOfBrowsers, that.numberOfBrowsers)
 			        && Objects.equal(this.browserBuilder, that.browserBuilder)
-			        && Objects.equal(this.remoteHubUrl, that.remoteHubUrl);
+			        && Objects.equal(this.remoteHubUrl, that.remoteHubUrl)
+			        && Objects.equal(this.lang, that.lang);
 		}
 		return false;
+	}
+
+	/**
+	 * @return the language header setting or <code>null</code> if not set.
+	 */
+	public String getLangOrNull() {
+		return lang;
+	}
+
+	/**
+	 * @param lang
+	 *            the language header in http requests
+	 */
+	public void setLang(String lang) {
+		Preconditions.checkNotNull("The language cannot be null", lang);
+		this.lang = lang;
 	}
 
 }

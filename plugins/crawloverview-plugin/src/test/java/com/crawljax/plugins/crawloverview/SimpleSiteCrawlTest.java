@@ -11,13 +11,13 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
-import com.crawljax.core.plugin.HostInterfaceImpl;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.crawltests.SimpleSiteCrawl;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.StateStatistics;
@@ -30,17 +30,23 @@ public class SimpleSiteCrawlTest {
 	private static OutPutModel result;
 
 	@ClassRule
-	public static final TempDirInTargetFolder tmpFolder = new TempDirInTargetFolder(
+	public static final TempDirInTargetFolder TMP_FOLDER = new TempDirInTargetFolder(
 	        "simple-crawl", true);
 
 	private static File outFolder;
 
 	@BeforeClass
 	public static void runCrawl() throws Exception {
-		SimpleSiteCrawl simpleCrawl = new SimpleSiteCrawl();
+		outFolder = TMP_FOLDER.getTempDir();
+		SimpleSiteCrawl simpleCrawl = new SimpleSiteCrawl() {
+			@Override
+			protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
+				return super.newCrawlConfigurationBuilder().setOutputDirectory(
+				        TMP_FOLDER.getTempDir());
+			}
+		};
 		simpleCrawl.setup();
-		outFolder = tmpFolder.getTempDir();
-		CrawlOverview plugin = new CrawlOverview(new HostInterfaceImpl(outFolder, null));
+		CrawlOverview plugin = new CrawlOverview();
 		simpleCrawl.crawlWith(plugin);
 		result = plugin.getResult();
 		LOG.debug("TMP folder is in {}", outFolder.getAbsoluteFile());

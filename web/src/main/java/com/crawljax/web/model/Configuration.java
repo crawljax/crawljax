@@ -10,7 +10,7 @@ public class Configuration {
 	private String id;
 	private String name;
 	private String url = "http://";
-	private BrowserType browser = BrowserType.firefox;
+	private BrowserType browser = BrowserType.FIREFOX;
 	private int numBrowsers = 1;
 	private boolean bootBrowser = true;
 	private int reloadWaitTime = 500;

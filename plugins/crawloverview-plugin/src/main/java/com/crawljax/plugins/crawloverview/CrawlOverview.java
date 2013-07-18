@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
-import com.crawljax.core.plugin.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriverException;
@@ -18,6 +17,12 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.ExitNotifier.ExitStatus;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.OnFireEventFailedPlugin;
+import com.crawljax.core.plugin.OnNewStatePlugin;
+import com.crawljax.core.plugin.PostCrawlingPlugin;
+import com.crawljax.core.plugin.PreCrawlingPlugin;
+import com.crawljax.core.plugin.PreStateCrawlingPlugin;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
@@ -38,25 +43,28 @@ import com.google.common.collect.Maps;
  * the visited states are linked together.
  **/
 public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
-        PostCrawlingPlugin, OnFireEventFailedPlugin {
+        PostCrawlingPlugin, OnFireEventFailedPlugin, PreCrawlingPlugin {
 
-	private static final Logger LOG = LoggerFactory
-	        .getLogger(CrawlOverview.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlOverview.class);
 
-	private final OutputBuilder outputBuilder;
 	private final ConcurrentMap<String, StateVertex> visitedStates;
 	private final OutPutModelCache outModelCache;
+	private OutputBuilder outputBuilder;
+	private boolean warnedForElementsInIframe = false;
 
 	private OutPutModel result;
 
-	public CrawlOverview(HostInterface hostInterface) {
-		File outputFolder = hostInterface.getOutputDirectory();
-		Preconditions
-		        .checkNotNull(outputFolder, "Output folder cannot be null");
-		outputBuilder = new OutputBuilder(outputFolder);
+	public CrawlOverview() {
 		outModelCache = new OutPutModelCache();
 		visitedStates = Maps.newConcurrentMap();
 		LOG.info("Initialized the Crawl overview plugin");
+	}
+
+	@Override
+	public void preCrawling(CrawljaxConfiguration config) throws RuntimeException {
+		File outputFolder = config.getOutputDir();
+		Preconditions.checkNotNull(outputFolder, "Output folder cannot be null");
+		outputBuilder = new OutputBuilder(outputFolder);
 	}
 
 	/**
@@ -68,7 +76,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
 		visitedStates.putIfAbsent(state.getName(), vertex);
 		saveScreenshot(context.getBrowser(), state.getName(), vertex);
-		outputBuilder.persistDom(state.getName(), vertex.getDom());
+		outputBuilder.persistDom(state.getName(), context.getBrowser().getUnStrippedDom());
 	}
 
 	private void saveScreenshot(EmbeddedBrowser browser, String name,
@@ -119,7 +127,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	        CandidateElement element) {
 		try {
 			if (!Strings.isNullOrEmpty(element.getRelatedFrame())) {
-				LOG.warn("Element is in an iFrame. We cannot display it in the Crawl overview");
+				warnUserForInvisibleElements();
 				return null;
 			} else {
 				return browser.getWebElement(element.getIdentification());
@@ -127,6 +135,13 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		} catch (WebDriverException e) {
 			LOG.info("Could not locate element for positioning {}", element);
 			return null;
+		}
+	}
+
+	private void warnUserForInvisibleElements() {
+		if (!warnedForElementsInIframe) {
+			LOG.warn("Some elemnts are in an iFrame. We cannot display it in the Crawl overview");
+			warnedForElementsInIframe = true;
 		}
 	}
 
@@ -178,4 +193,5 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	        List<Eventable> pathToFailure) {
 		outModelCache.registerFailEvent(context.getCurrentState(), eventable);
 	}
+
 }

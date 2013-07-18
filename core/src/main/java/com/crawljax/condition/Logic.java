@@ -55,7 +55,7 @@ public final class Logic {
 	private Logic() {
 	}
 
-	private static class Not extends AbstractCondition {
+	private static class Not implements Condition {
 		private Condition condition;
 
 		public Not(Condition c) {
@@ -89,7 +89,7 @@ public final class Logic {
 		}
 	}
 
-	private static class And extends AbstractCondition {
+	private static class And implements Condition {
 		private Condition[] conditions;
 
 		public And(Condition... cs) {
@@ -129,7 +129,7 @@ public final class Logic {
 		}
 	}
 
-	private static class Or extends AbstractCondition {
+	private static class Or implements Condition {
 		private Condition[] conditions;
 
 		public Or(Condition... cs) {

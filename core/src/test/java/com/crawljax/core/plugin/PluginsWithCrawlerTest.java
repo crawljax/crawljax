@@ -28,7 +28,6 @@ import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
@@ -49,7 +48,7 @@ public class PluginsWithCrawlerTest {
 	private static List<Class<? extends Plugin>> plugins = new BlockingArrayQueue<>();
 
 	@ClassRule
-	public static final RunWithWebServer SERVER = new RunWithWebServer("/site/crawler");
+	public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
 
 	@ClassRule
 	public static final ErrorCollector ERRORS = new ErrorCollector();
@@ -58,7 +57,7 @@ public class PluginsWithCrawlerTest {
 
 	@BeforeClass
 	public static void setup() {
-		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder();
+		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("/crawler/");
 
 		builder.crawlRules().clickDefaultElements();
 
@@ -67,19 +66,6 @@ public class PluginsWithCrawlerTest {
 		 */
 		builder.crawlRules().addInvariant("Never contain Final state S8",
 		        new NotRegexCondition("Final state S2"));
-
-		/**
-		 * Add a empty proxy from running the ProxyConfigurationPlugin
-		 */
-		// config.setProxyConfiguration(new ProxyConfiguration());
-
-		builder.addPlugin(new ProxyServerPlugin() {
-
-			@Override
-			public void proxyServer(ProxyConfiguration config) {
-				plugins.add(ProxyServerPlugin.class);
-			}
-		});
 
 		builder.addPlugin(new PreCrawlingPlugin() {
 
