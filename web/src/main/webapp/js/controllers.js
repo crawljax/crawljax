@@ -251,6 +251,12 @@ App.PluginItemController = Ember.Controller.extend({
 });
 
 App.PluginManagementController = Ember.ArrayController.extend({
+	refresh: function() {
+		var _this = this;
+		App.Plugins.refresh(function(plugins){
+			_this.set('content', plugins);
+		});
+	},
 	add: function() {
 		var file = this.get("pluginFile");
 		if(!file){

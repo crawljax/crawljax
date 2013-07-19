@@ -30,6 +30,11 @@ public class PluginsResource {
 		return Response.ok(plugins.getPluginList()).build();
 	}
 
+	@PUT
+	public Response refresh() {
+		return Response.ok(plugins.reloadFromDisk()).build();
+	}
+
 	@GET
 	@Path("{id}")
 	public Response getPlugin(@PathParam("id") String id) {

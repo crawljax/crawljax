@@ -173,6 +173,23 @@ App.Plugins.reopenClass({
 		});
 		return plugins;
 	},
+	refresh: function(callback){
+		var plugins = [];
+		$.ajax({
+			url: '/rest/plugins',
+			async: false,
+			type: 'PUT',
+			dataType: 'json',
+			context: plugins,
+			success: function(response){
+				response.forEach(function(plugin){
+					this.addObject(App.Plugins.create(plugin));
+				}, this);
+				if (callback !== undefined) callback(plugins);
+			}
+		});
+		return plugins;
+	},
 	find: function(id){
 		var plugin = App.Plugins.create({id: id });
 		$.ajax({

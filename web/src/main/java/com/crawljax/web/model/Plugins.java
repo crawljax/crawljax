@@ -30,6 +30,12 @@ public class Plugins {
 		return pluginList.values();
 	}
 
+	public Collection<Plugin> reloadFromDisk() {
+		pluginList.clear();
+		pluginList.putAll(pluginManager.loadAll());
+		return pluginList.values();
+	}
+
 	public Plugin add(String fileName, byte[] data) {
 		int extensionIndex = fileName.indexOf(".jar");
 		if(extensionIndex < 0) {
