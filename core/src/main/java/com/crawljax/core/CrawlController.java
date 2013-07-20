@@ -54,9 +54,9 @@ public class CrawlController implements Callable<CrawlSession> {
 	}
 
 	/**
-	 * Run the configured crawl.
+	 * Run the configured crawl. This method blocks until the crawl is done.
 	 * 
-	 * @return
+	 * @return the CrawlSession once the crawl is done.
 	 */
 	@Override
 	public CrawlSession call() {
@@ -68,6 +68,14 @@ public class CrawlController implements Callable<CrawlSession> {
 		plugins.runOnNewStatePlugins(firstConsumer.getContext(), firstState);
 		executeConsumers(firstConsumer);
 		return crawlSessionProvider.get();
+	}
+
+	/**
+	 * @return Same as {@link #call()}
+	 * @see #call().
+	 */
+	public CrawlSession run() {
+		return call();
 	}
 
 	/**

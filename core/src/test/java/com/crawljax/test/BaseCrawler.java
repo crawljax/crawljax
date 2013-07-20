@@ -70,13 +70,14 @@ public class BaseCrawler {
 	}
 
 	/**
-	 * Starts the webserver, configures crawljax. Doesn't run the Crawler. For that you need to cal
+	 * Starts the webserver, configures crawljax. Doesn't run the Crawler. For that you need to call
 	 * {@link #crawl()}. After this method completes, you can configure the
-	 * {@link CrawlSpecification} and the {@link CrawljaxConfiguration} using {@link #getConfig()}
-	 * and {@link #getCrawlSpec()}.
+	 * {@link CrawljaxConfiguration} and the {@link CrawljaxConfiguration} using
+	 * {@link #newCrawlConfigurationBuilder()};
 	 * <p>
-	 * The {@link CrawlSpecification} is configured with
-	 * {@link CrawlSpecification#clickDefaultElements()}.
+	 * The {@link CrawljaxConfiguration} is configured with
+	 * {@link CrawljaxConfiguration#clickDefaultElements()}.
+	 * </p>
 	 * 
 	 * @throws Exception
 	 *             When the webserver fails to start.
@@ -141,10 +142,10 @@ public class BaseCrawler {
 	/**
 	 * Runs a crawl with the given plugins.
 	 * 
-	 * @see #crawl();
 	 * @param plugins
 	 *            The plugins you want to run with the {@link CrawljaxConfiguration}.
 	 * @return The resulting {@link CrawlSession}.
+	 * @see #crawl()
 	 */
 	public CrawlSession crawlWith(Plugin... plugins) {
 		if (!hasSetup.get()) {

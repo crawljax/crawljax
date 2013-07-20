@@ -121,9 +121,9 @@ public class Plugins {
 	}
 
 	private void incrementFailCounterFor(Plugin plugin) {
-	    registry.counter(MetricsModule.PLUGINS_PREFIX + plugin.getClass().getSimpleName()
+		registry.counter(MetricsModule.PLUGINS_PREFIX + plugin.getClass().getSimpleName()
 		        + ".fail_count").inc();
-    }
+	}
 
 	/**
 	 * load and run the OnUrlLoadPlugins. The OnURLloadPlugins are run just after the Browser has
@@ -134,8 +134,8 @@ public class Plugins {
 	 * This method can be called from multiple threads with different {@link CrawlerContext}
 	 * </p>
 	 * 
-	 * @param browser
-	 *            the embedded browser instance to load in the plugin.
+	 * @param context
+	 *            the current {@link CrawlerContext} for this crawler.
 	 */
 	public void runOnUrlLoadPlugins(CrawlerContext context) {
 		LOGGER.debug("Running OnUrlLoadPlugins...");
@@ -160,8 +160,8 @@ public class Plugins {
 	 * This method can be called from multiple threads with different {@link CrawlerContext}
 	 * </p>
 	 * 
-	 * @param session
-	 *            the session to load in the plugin
+	 * @param context
+	 *            the current {@link CrawlerContext} for this crawler.
 	 * @param newState
 	 *            The new state
 	 */
@@ -190,7 +190,7 @@ public class Plugins {
 	 * @param invariant
 	 *            the failed invariants
 	 * @param context
-	 *            the session to load in the plugin
+	 *            the current {@link CrawlerContext} for this crawler.
 	 */
 	public void runOnInvariantViolationPlugins(Invariant invariant,
 	        CrawlerContext context) {
@@ -215,8 +215,9 @@ public class Plugins {
 	 * It is not a clone!
 	 * 
 	 * @param exitReason
-	 * @param context
-	 *            the session to load in the plugin
+	 *            The reason Crawljax has stopped.
+	 * @param session
+	 *            the current {@link CrawlSession} for this crawler.
 	 */
 	public void runPostCrawlingPlugins(CrawlSession session, ExitStatus exitReason) {
 		LOGGER.debug("Running PostCrawlingPlugins...");
@@ -240,7 +241,7 @@ public class Plugins {
 	 * correct current state because we are in back-tracking
 	 * 
 	 * @param context
-	 *            the session to load in the plugin
+	 *            the current {@link CrawlerContext} for this crawler.
 	 * @param currentState
 	 *            the state the 'back tracking' operation is currently in
 	 */
@@ -267,8 +268,8 @@ public class Plugins {
 	 * Warning the session and candidateElements are not clones, changes will result in changed
 	 * behaviour.
 	 * 
-	 * @param session
-	 *            the crawl session.
+	 * @param context
+	 *            the current {@link CrawlerContext} for this crawler.
 	 * @param candidateElements
 	 *            the elements which crawljax is about to crawl
 	 * @param state
@@ -291,6 +292,12 @@ public class Plugins {
 		}
 	}
 
+	/**
+	 * Run the {@link PreCrawlingPlugin}s. No {@link CrawlerContext} is available at this stage.
+	 * 
+	 * @param config
+	 *            The given {@link CrawljaxConfiguration}.
+	 */
 	public void runPreCrawlingPlugins(CrawljaxConfiguration config) {
 		LOGGER.debug("Running PreCrawlingPlugins...");
 		counters.get(PreStateCrawlingPlugin.class).inc();
@@ -418,7 +425,7 @@ public class Plugins {
 	}
 
 	/**
-	 * @return A {@link ImmutableSet} of the {@link Plugin#toString()} that are installed.
+	 * @return A {@link ImmutableSet} of the {@link Plugin} names that are installed.
 	 */
 	public ImmutableSet<String> pluginNames() {
 		ImmutableSortedSet.Builder<String> names = ImmutableSortedSet

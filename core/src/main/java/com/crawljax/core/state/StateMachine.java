@@ -40,16 +40,6 @@ public class StateMachine {
 
 	private final StateComparator stateComparator;
 
-	/**
-	 * Create a new StateMachine.
-	 * 
-	 * @param sfg
-	 *            the state flow graph that is shared.
-	 * @param indexState
-	 *            the state representing the Index vertix
-	 * @param invariantList
-	 *            the invariants to use in the InvariantChecker.
-	 */
 	public StateMachine(InMemoryStateFlowGraph sfg,
 	        ImmutableList<Invariant> invariantList, Plugins plugins,
 	        StateComparator stateComparator) {
@@ -152,14 +142,6 @@ public class StateMachine {
 	/**
 	 * Adds an edge between the current and new state.
 	 * 
-	 * @param event
-	 *            the event edge.
-	 * @param newState
-	 *            the new state.
-	 * @param browser
-	 *            used to feet to checkInvariants
-	 * @param session
-	 *            the current Session
 	 * @return true if the new state is not found in the state machine.
 	 */
 	public boolean swithToStateAndCheckIfClone(final Eventable event, StateVertex newState,

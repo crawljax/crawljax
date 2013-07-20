@@ -47,8 +47,6 @@ public class BrowserConfiguration {
 	private String lang;
 
 	/**
-	 * @param browsertype
-	 *            The browser you'd like to use.
 	 * @param numberOfBrowsers
 	 *            The number of browsers you'd like to use. They will be started as soon as the
 	 *            crawl starts.

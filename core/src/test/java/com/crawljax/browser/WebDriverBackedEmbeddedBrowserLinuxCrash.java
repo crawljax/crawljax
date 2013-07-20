@@ -102,7 +102,8 @@ public class WebDriverBackedEmbeddedBrowserLinuxCrash extends FirefoxLinuxCrash 
 	}
 
 	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDomWithoutIframeContent()}.
+	 * Test method for
+	 * {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDomWithoutIframeContent()}.
 	 * 
 	 * @throws CrawljaxException
 	 *             when the the dom can not be downloaded.
@@ -122,10 +123,6 @@ public class WebDriverBackedEmbeddedBrowserLinuxCrash extends FirefoxLinuxCrash 
 
 	/**
 	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#goToUrl(java.lang.String)}.
-	 * 
-	 * @throws CrawljaxException
-	 *             when the url can not be opend.
-	 * @throws MalformedURLException
 	 */
 	@Test(expected = BrowserConnectionException.class)
 	public void testGoToUrl() throws CrawljaxException, MalformedURLException {
@@ -136,9 +133,6 @@ public class WebDriverBackedEmbeddedBrowserLinuxCrash extends FirefoxLinuxCrash 
 	 * Test method for
 	 * {@link com.crawljax.browser.EmbeddedBrowser#input(com.crawljax.core.state.Identification, java.lang.String)}
 	 * .
-	 * 
-	 * @throws CrawljaxException
-	 *             when the input can not be found
 	 */
 	@Test(expected = BrowserConnectionException.class)
 	public void testInput() throws CrawljaxException {

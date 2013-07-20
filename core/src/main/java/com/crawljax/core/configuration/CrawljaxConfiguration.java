@@ -104,7 +104,7 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * @param time
+		 * @param depth
 		 *            The maximum depth the crawler can reach. The default is <code>2</code>.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumDepth(int depth) {
@@ -148,8 +148,7 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * @return The {@link CrawlRulesBuilder} to define crawling rules. If no specified, Crawljax
-		 *         will do {@link CrawlRulesBuilder#}
+		 * @return The {@link CrawlRulesBuilder} to define crawling rules.
 		 */
 		public CrawlRulesBuilder crawlRules() {
 			return crawlRules;

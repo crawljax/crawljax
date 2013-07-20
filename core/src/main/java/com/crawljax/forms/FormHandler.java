@@ -1,6 +1,3 @@
-/**
- * Created Aug 13, 2008
- */
 package com.crawljax.forms;
 
 import java.io.IOException;
@@ -43,16 +40,6 @@ public class FormHandler {
 
 	private final FormInputValueHelper formInputValueHelper;
 
-	/**
-	 * Public constructor.
-	 * 
-	 * @param browser
-	 *            the embedded browser.
-	 * @param inputSpecification
-	 *            the input specification.
-	 * @param randomInput
-	 *            if random data should be generated on the input fields.
-	 */
 	@Inject
 	public FormHandler(@Assisted EmbeddedBrowser browser, CrawlRules config) {
 		this.browser = browser;

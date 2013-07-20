@@ -57,8 +57,8 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	/**
 	 * The constructor.
 	 * 
-	 * @param initialState
-	 *            the state to start from.
+	 * @param exitNotifier
+	 *            used for triggering an exit.
 	 */
 	@Inject
 	public InMemoryStateFlowGraph(ExitNotifier exitNotifier) {

@@ -23,16 +23,12 @@ public class StateComparator {
 
 	/**
 	 * This is an shared public static, as it is final and a primary type no harm can be done. Only
-	 * accessed in {@link AbstractComparator#compare()}.
+	 * accessed in {@link AbstractComparator#getDifferences(String, String)}.
 	 */
 	public static final boolean COMPARE_IGNORE_CASE = true;
 
 	private final ImmutableList<OracleComparator> oracleComparator;
 
-	/**
-	 * @param comparatorsWithPreconditions
-	 *            comparators with one or more preconditions
-	 */
 	@Inject
 	public StateComparator(CrawlRules config) {
 		oracleComparator = config.getOracleComparators();

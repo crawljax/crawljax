@@ -126,7 +126,6 @@ public final class XPathHelper {
 	 *            the Document to search in
 	 * @param xpathExpr
 	 *            the xpath query
-	 * @author cor-paul
 	 * @return the list of nodes which match the query
 	 * @throws XPathExpressionException
 	 *             On error.
@@ -233,7 +232,6 @@ public final class XPathHelper {
 	 *            the Document to search in
 	 * @param xpath
 	 *            the xpath query
-	 * @author Danny
 	 * @return position of xpath element, if fails returns -1
 	 **/
 	public static int getXPathLocation(String dom, String xpath) {

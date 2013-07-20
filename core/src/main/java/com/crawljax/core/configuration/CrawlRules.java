@@ -223,8 +223,6 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param tagName
-		 * @return
 		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#dontClick(java.lang.String)
 		 */
 		public CrawlElement dontClick(String tagName) {
@@ -233,7 +231,6 @@ public class CrawlRules {
 
 		/**
 		 * @param tagname
-		 * @return
 		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#dontClickChildrenOf(java.lang.String)
 		 */
 		public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {

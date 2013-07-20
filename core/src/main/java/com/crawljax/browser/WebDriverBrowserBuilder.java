@@ -36,9 +36,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	/**
 	 * Build a new WebDriver based EmbeddedBrowser.
 	 * 
-	 * @see EmbeddedBrowserBuilder#buildEmbeddedBrowser(CrawljaxConfigurationReader)
-	 * @param configuration
-	 *            the configuration object to read the config values from
 	 * @return the new build WebDriver based embeddedBrowser
 	 */
 	@Override

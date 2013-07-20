@@ -121,8 +121,6 @@ public class CandidateElementManager implements ExtractorManager {
 
 	/**
 	 * @return the eventableConditionChecker
-	 * @NotTheadSafe The Condition classes contains 1 not Thread safe implementation
-	 *               (XPathCondition)
 	 */
 	@Override
 	public EventableConditionChecker getEventableConditionChecker() {

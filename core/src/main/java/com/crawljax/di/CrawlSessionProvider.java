@@ -41,8 +41,6 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	}
 
 	/**
-	 * @param session
-	 *            The session that should be set.
 	 * @throws IllegalStateException
 	 *             when the method is invoked more than once.
 	 */

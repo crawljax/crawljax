@@ -134,7 +134,8 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	}
 
 	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDomWithoutIframeContent()}.
+	 * Test method for
+	 * {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDomWithoutIframeContent()}.
 	 * 
 	 * @throws CrawljaxException
 	 *             when the the dom can not be downloaded.
@@ -153,11 +154,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	}
 
 	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#goToUrl(java.lang.String)}.
-	 * 
-	 * @throws CrawljaxException
-	 *             when the url can not be opend.
-	 * @throws MalformedURLException
+	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#goToUrl(URL))}.
 	 */
 	@Test
 	public final void testGoToUrl() throws CrawljaxException, MalformedURLException {

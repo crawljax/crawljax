@@ -22,16 +22,13 @@ import com.google.common.collect.Lists;
  * used as follows:
  * <p/>
  * <code>
- * CrawlSpecification crawler = new CrawlSpecification();
+ * CrawljaxConfiguration crawler = new CrawljaxConfiguration();
  * crawler.click("a");
  * crawler.click("div").withAttribute("class", "clickable");
  * 
  * crawler.dontClick("a").withText("id", "logout");
  * crawler.dontClick("a").underXpath("//DIV[@id='header']");
  * </code>
- * 
- * @see CrawlSpecification
- * @author DannyRoest@gmail.com (Danny Roest)
  */
 public final class CrawlElement {
 

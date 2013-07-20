@@ -19,9 +19,9 @@ public interface DomChangeNotifierPlugin extends Plugin {
 	 * 
 	 * @param context
 	 *            The Crawler context.
-	 * @param stateBefore
+	 * @param domBefore
 	 *            the state before the event.
-	 * @param stateAfter
+	 * @param domAfter
 	 *            the state after the event.
 	 * @return true if the state is changed according to the compare method of the oracle.
 	 */

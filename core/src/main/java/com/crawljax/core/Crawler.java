@@ -111,7 +111,7 @@ public class Crawler {
 
 	/**
 	 * @param crawlTask
-	 *            The {@link CrawlTask} this {@link Crawler} should execute.
+	 *            The {@link StateVertex} this {@link Crawler} should visit to crawl.
 	 */
 	public void execute(StateVertex crawlTask) {
 		LOG.debug("Resetting the crawler and going to state {}", crawlTask.getName());

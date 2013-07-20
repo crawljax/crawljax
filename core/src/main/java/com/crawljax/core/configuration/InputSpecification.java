@@ -25,7 +25,7 @@ import com.google.common.collect.Lists;
  * //for checkboxes
  * input.field("agreelicence").setValue(true);
  * </code> Crawljax will set Name, Phone, Mobile, and Agree values. It will enter a random string in
- * the Other field if enabled in {@link CrawlSpecification}
+ * the Other field if enabled in {@link CrawljaxConfiguration}
  */
 public final class InputSpecification {
 

@@ -42,18 +42,6 @@ public class CrawlSession {
 
 	private final MetricRegistry registry;
 
-	/**
-	 * @param pool
-	 *            the embedded browser instance pool that is in use.
-	 * @param stateFlowGraph
-	 *            the state flow graph
-	 * @param state
-	 *            the current state.
-	 * @param startTime
-	 *            the time this session started in milliseconds.
-	 * @param crawljaxConfiguration
-	 *            the configuration.
-	 */
 	@Inject
 	public CrawlSession(CrawljaxConfiguration config, StateFlowGraph stateFlowGraph,
 	        StateVertex state, MetricRegistry registry) {

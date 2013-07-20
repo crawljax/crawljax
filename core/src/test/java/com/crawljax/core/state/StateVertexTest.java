@@ -31,9 +31,6 @@ public class StateVertexTest {
 		s = new StateVertexImpl(0, name, dom);
 	}
 
-	/**
-	 * Test method for {@link com.crawljax.core.state.StateVertex#hashCode()}.
-	 */
 	@Test
 	public void testHashCode() {
 		StateVertex state = new StateVertexImpl(1, "foo", dom);
@@ -42,9 +39,6 @@ public class StateVertexTest {
 		assertEquals(temp.hashCode(), state.hashCode());
 	}
 
-	/**
-	 * Test method for {@link com.crawljax.core.state.StateVertex#StateVertix(java.lang.String)}.
-	 */
 	@Test
 	public void testStateVertixString() {
 		StateVertex sv = new StateVertexImpl(2, name, "");
@@ -56,26 +50,17 @@ public class StateVertexTest {
 		assertNotNull(s);
 	}
 
-	/**
-	 * Test method for {@link com.crawljax.core.state.StateVertex#getName()}.
-	 */
 	@Test
 	public void testGetName() {
 		assertEquals(name, s.getName());
 	}
 
-	/**
-	 * Test method for {@link com.crawljax.core.state.StateVertex#getDom()}.
-	 */
 	@Test
 	public void testGetDom() {
 		assertEquals(dom, s.getDom());
 		// assertEquals(newDom, s.getDomJtidied());
 	}
 
-	/**
-	 * Test method for {@link com.crawljax.core.state.StateVertex#equals(java.lang.Object)}.
-	 */
 	@Test
 	public void testEqualsObject() {
 		StateVertex stateEqual = new StateVertexImpl(1, "foo", dom);
@@ -91,9 +76,6 @@ public class StateVertexTest {
 
 	}
 
-	/**
-	 * Test method for {@link com.crawljax.core.state.StateVertex#toString()}.
-	 */
 	@Test
 	public void testToString() {
 		assertNotNull(s.toString());

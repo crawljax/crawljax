@@ -55,8 +55,6 @@ public class CrawlPath extends ForwardingList<Eventable> {
 	 * Create an immutableCopy of the current CrawlPath, used for backtracking for giving them to
 	 * plugins.
 	 * 
-	 * @param removeLast
-	 *            should the last element be removed?
 	 * @return the CrawlPath based on an immutable list.
 	 */
 	public CrawlPath immutableCopy() {
