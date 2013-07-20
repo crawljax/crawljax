@@ -88,7 +88,6 @@ public final class CrawlElement {
 			this.underXpath =
 			        this.underXpath + " | " + "//" + this.tagName + "[@" + attributeName + "='"
 			                + value + "']";
-			;
 		}
 		return this;
 	}
@@ -164,23 +163,6 @@ public final class CrawlElement {
 		        .add("inputFieldIds", inputFieldIds)
 		        .add("underXpath", underXpath)
 		        .toString();
-	}
-
-	/**
-	 * @return a Test string.
-	 */
-	protected String toTestString() {
-		StringBuffer ret = new StringBuffer(toString());
-		ret.append("\nXpath expression: ");
-		ret.append(getWithXpathExpression());
-		ret.append("\n");
-		for (Condition condition : getConditions()) {
-			ret.append(condition.toString());
-			ret.append("\n");
-		}
-		ret.append("InputFieldIds: ");
-		ret.append(getInputFieldIds());
-		return ret.toString();
 	}
 
 	/**

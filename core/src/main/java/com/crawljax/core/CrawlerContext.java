@@ -5,9 +5,7 @@ import javax.inject.Provider;
 
 import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 

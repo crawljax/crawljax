@@ -1,6 +1,5 @@
 package com.crawljax.core.plugin;
 
-import java.net.URL;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 

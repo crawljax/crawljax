@@ -4,11 +4,9 @@ import java.io.File;
 import java.net.URL;
 
 import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;

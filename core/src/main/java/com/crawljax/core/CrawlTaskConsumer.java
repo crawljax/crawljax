@@ -65,8 +65,6 @@ public class CrawlTaskConsumer implements Callable<Void> {
 			int activeConsumers = runningConsumers.incrementAndGet();
 			LOG.debug("There are {} active consumers", activeConsumers);
 			handleTask(crawlTask);
-		} catch (InterruptedException e) {
-			throw e;
 		} catch (RuntimeException e) {
 			LOG.error("Cound not complete state crawl: " + e.getMessage(), e);
 		}

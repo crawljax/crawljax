@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Singleton;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.google.common.annotations.VisibleForTesting;
 
 @Singleton

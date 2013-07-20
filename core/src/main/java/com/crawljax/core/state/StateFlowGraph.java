@@ -1,7 +1,6 @@
 package com.crawljax.core.state;
 
 import java.util.List;
-import java.util.Set;
 
 import org.jgrapht.GraphPath;
 
@@ -100,7 +99,7 @@ public interface StateFlowGraph {
 	 *            the initial state.
 	 * @return a list of GraphPath lists.
 	 */
-	public List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index);
+	 List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index);
 
 	/**
 	 * @param stateVertix
@@ -108,6 +107,6 @@ public interface StateFlowGraph {
 	 * @return a {@link Set} of {@link StateVertex} that are connected to the source
 	 *         {@link StateVertex} via one of the sources outgoing edges.
 	 */
-	public abstract ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix);
+	 ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix);
 
 }
