@@ -34,7 +34,7 @@ public class MetricPluginExample {
 
 	/**
 	 * This plugins implements {@link OnNewStatePlugin} so that for every new state we can calculate
-	 * the DOM site. It also implements the {@link PostCrawlingPlugin} allowing us the print the
+	 * the DOM size. It also implements the {@link PostCrawlingPlugin} allowing us to print the
 	 * result when the crawl is done.
 	 */
 	private static class MetricPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
