@@ -1,3 +1,10 @@
+## [Version 3.2](https://github.com/crawljax/crawljax/issues?milestone=4&state=closed)
+
+* Crawl configuration now has an option to set the output folder. [#316](https://github.com/crawljax/crawljax/issues/316)
+* A crawl now also reports some statistics. These are also extendible. Checkout the example for details. [#314](https://github.com/crawljax/crawljax/issues/314)
+* `Browser.getDom()` is deprecated. You can now choose between `getStrippedDom` and `getUnstrippedDom()` [#305](https://github.com/crawljax/crawljax/issues/305).
+* Proxy plugin has been removed. It didn't work in 3.1 and 3.0 and is now replaced by the `PreCrawlPlugin`. [#286](https://github.com/crawljax/crawljax/issues/286)
+
 ## [Version 3.1](https://github.com/crawljax/crawljax/issues?milestone=4&state=closed)
 
 * Added the possibility to stop Crawljax from using the runner or by calling stop from any plugin. [#270](https://github.com/crawljax/crawljax/issues/270)
