@@ -104,6 +104,7 @@ public class Crawler {
 		                crawlRules.getInvariants(), plugins, stateComparator);
 		context.setStateMachine(stateMachine);
 		crawlpath = new CrawlPath();
+		context.setCrawlPath(crawlpath);
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
 		crawlDepth.set(0);
