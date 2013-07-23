@@ -68,6 +68,9 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 
 	@Override
 	public void preCrawling(CrawljaxConfiguration config) throws RuntimeException {
+		if(hostInterface == null) {
+			hostInterface = new HostInterfaceImpl(config.getOutputDir(), null);
+		}
 		File outputFolder = hostInterface.getOutputDirectory();
 		Preconditions.checkNotNull(outputFolder, "Output folder cannot be null");
 		outputBuilder = new OutputBuilder(outputFolder);

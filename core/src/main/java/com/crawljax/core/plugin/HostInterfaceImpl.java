@@ -8,10 +8,6 @@ public class HostInterfaceImpl implements HostInterface {
 	private File outputDirectory;
 	private Map<String, String> parameters;
 
-	public HostInterfaceImpl() {
-
-	}
-
 	public HostInterfaceImpl(File outputDirectory, Map<String, String> parameters) {
 		this.outputDirectory = outputDirectory;
 		this.parameters = parameters;
