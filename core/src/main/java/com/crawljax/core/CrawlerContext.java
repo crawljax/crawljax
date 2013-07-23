@@ -90,7 +90,7 @@ public class CrawlerContext {
 	/**
 	 * @param The current {@link CrawlPath} in this context.
 	 */
-	public void setCrawlPath(CrawlPath path) {
+	protected void setCrawlPath(CrawlPath path) {
 		crawlpath = path;
 	}
 
@@ -98,7 +98,7 @@ public class CrawlerContext {
 	 * @return The current {@link CrawlPath} in this context.
 	 */
 	public CrawlPath getCrawlPath() {
-		return crawlpath;
+		return crawlpath.immutableCopy();
 	}
 
 }
