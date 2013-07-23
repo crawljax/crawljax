@@ -212,7 +212,7 @@ public class CrawlRunner {
 					for(Parameter parameter : plugin.getParameters()) {
 						parameters.put(parameter.getId(), "");
 						for(Parameter configParam : pluginConfig.getParameters()) {
-							if(configParam.getId().equals(parameter.getId())) {
+							if(configParam.getId().equals(parameter.getId()) && configParam.getValue() != null) {
 								parameters.put(parameter.getId(), configParam.getValue());
 							}
 						}

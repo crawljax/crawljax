@@ -143,7 +143,11 @@ App.FormCheckbox = App.FormField.extend({
 	    classNameBindings: 'parentView.inputClassNames'
 	}),
 	willInsertElement: function(asdf) {
-		if(this.get(this.get("checkedBinding._from")) === "false") { //hack to have checkbox unchecked when value is the string "false"
+		var value = this.get(this.get("checkedBinding._from"));
+		if(value === "false") { //set checkbox to false when value is the string "false"
+			this.set(this.get("checkedBinding._from"), false);
+		}
+		if(value === null || value === undefined) { //set checkbox to false when the value is null or undefined
 			this.set(this.get("checkedBinding._from"), false);
 		}
 	}

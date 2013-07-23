@@ -71,13 +71,17 @@ public class Plugins {
 
 	public com.crawljax.core.plugin.Plugin getInstanceOf(Plugin plugin, HostInterface hostInterface) {
 		com.crawljax.core.plugin.Plugin instance = null;
-		ClassLoader cl = new URLClassLoader(new URL[]{plugin.getUrl()});
+		ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+		ClassLoader newClassLoader = new URLClassLoader(new URL[]{plugin.getUrl()}, originalClassLoader);
 		try {
-			Class pluginClass = cl.loadClass(plugin.getImplementation());
+			Thread.currentThread().setContextClassLoader(newClassLoader);
+			Class pluginClass = newClassLoader.loadClass(plugin.getImplementation());
 			Constructor constructor = pluginClass.getDeclaredConstructor(HostInterface.class);
 			instance = (com.crawljax.core.plugin.Plugin)constructor.newInstance(hostInterface);
 		} catch (Throwable e) {
 			LogWebSocketServlet.sendToAll("Could not create instance of plugin " + plugin.getName());
+		} finally {
+			//Thread.currentThread().setContextClassLoader(originalClassLoader); //Currently commented out so plugins can get their resources from the classloader
 		}
 		return instance;
 	}
