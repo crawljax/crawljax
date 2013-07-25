@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.crawljax.core;
 
 import java.util.Collection;

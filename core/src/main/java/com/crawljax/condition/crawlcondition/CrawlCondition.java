@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.crawljax.condition.crawlcondition;
 
 import java.util.List;
