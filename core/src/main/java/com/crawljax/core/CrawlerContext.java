@@ -5,7 +5,10 @@ import javax.inject.Provider;
 
 import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
 
@@ -21,6 +24,7 @@ public class CrawlerContext {
 	private final MetricRegistry registry;
 
 	private StateMachine stateMachine;
+	private CrawlPath crawlpath;
 
 	@Inject
 	public CrawlerContext(EmbeddedBrowser browser,
@@ -68,7 +72,7 @@ public class CrawlerContext {
 	}
 
 	/**
-	 * @return The curren t {@link StateVertex} or <code>null</code> when the {@link Crawler} isn't
+	 * @return The current {@link StateVertex} or <code>null</code> when the {@link Crawler} isn't
 	 *         initialized yet.
 	 */
 	public StateVertex getCurrentState() {
@@ -81,6 +85,20 @@ public class CrawlerContext {
 
 	public MetricRegistry getRegistry() {
 		return registry;
+	}
+
+	/**
+	 * @param The current {@link CrawlPath} in this context.
+	 */
+	protected void setCrawlPath(CrawlPath path) {
+		crawlpath = path;
+	}
+
+	/**
+	 * @return The current {@link CrawlPath} in this context.
+	 */
+	public CrawlPath getCrawlPath() {
+		return crawlpath.immutableCopy();
 	}
 
 }
