@@ -168,14 +168,14 @@ App.FormSelect = App.FormField.extend({
 		requiredBinding: 'parentView.required',
 		attributeBindings: ['required']
 	}),
-	willInsertElement: function(asdf) {
+	willInsertElement: function() {
 		if(this.get('optionsPath')) {
 			this.set('options', this.get(this.get('optionsPath')));
 		} else {
 			this.set('options', this.get('content'));
 		}
 		var options = this.get('options');
-		if(typeof options === "object") { //Allow a map object to be used for select options
+		if(!$.isArray(options)) { //Allow a map object to be used for select options
 			var opsArray = [];
 			for(var option in options) {
 				opsArray.push({name: option, value: options[option]});
