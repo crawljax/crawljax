@@ -47,6 +47,7 @@ public class WorkDirManager {
 	public Map<String, Configuration> loadConfigurations() {
 		Map<String, Configuration> configs = new ConcurrentHashMap<>();
 		File[] configFiles = configFolder.listFiles(new FilenameFilter() {
+			@Override
 			public boolean accept(File dir, String name) {
 				return name.endsWith("json");
 			}
@@ -100,7 +101,7 @@ public class WorkDirManager {
 
 					// clean up records that crashed unexpectedly
 					if (c.getCrawlStatus() != CrawlStatusType.success
-							&& c.getCrawlStatus() != CrawlStatusType.failure)
+					        && c.getCrawlStatus() != CrawlStatusType.failure)
 						c.setCrawlStatus(CrawlStatusType.failure);
 
 					int length = records.size();

@@ -15,7 +15,7 @@ public class CrawljaxServerResource extends ExternalResource {
 	@Override
 	public void before() {
 		File outputDir = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + File.separatorChar + "outputFolder");
-		server = new CrawljaxServer(outputDir, 0);
+		server = new CrawljaxServer(0, outputDir);
 		executor = Executors.newSingleThreadExecutor();
 		serverResult = executor.submit(server);
 		server.waitUntilRunning(10000);
@@ -37,10 +37,6 @@ public class CrawljaxServerResource extends ExternalResource {
 
 	public String getUrl() {
 		return server.getUrl();
-	}
-
-	public File getOutputDir() {
-		return server.getOutputDir();
 	}
 
 }

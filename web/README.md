@@ -5,8 +5,24 @@ Based on the common java web application stack. [See tutorial here](http://blog.
 ## Running
 Run the web application using the main method in `CrawljaxServer`. This will start the webapplication at [http://localhost:8080]();
 
-### Development notes
-* The project is based on Guice, which isn't implemented yet in core. It will be soon so we can already start using it from web.
-* The project requires Java 7 because of Jetty 9. However, this leads to a dependency conflict with Jetty 8 that is shipped with HTMLUnit in core. We might have to switch back to Jetty 8 if this leads to any problems.
-* We use JAXRS for all ajax calls. JAXRS can easily produce JSON, XML etc. For producing HTML we could use velocity or 
-* To test the webappliction, refer to [this blogpost](http://alex.nederlof.com/blog/2012/11/21/integration-testing-with-jetty/)
+## Distribution
+
+When you run 
+
+	mvm clean package
+	
+The result will be available as a distribution zip and directory in the target folder. The distribution has the following layout:
+
+- *lib* contains the jars that are needed to run
+- *conf* contains any configuration files like `logback.xml`.
+- *plugins* can contain any jars that should be loaded as a plug-in.
+- *crawljax-web-{version}-.jar* is the actual program.
+
+You can run the program by running
+
+	java -jar crawljax-web-{version}-.jar
+	
+The `conf` and `plugins` folders are simply added to the class path.
+
+## Defaults
+The CrawlOverView plugin is automatically added to the plugins folder. When running in Eclipse, it is simply present in the class path via Maven.

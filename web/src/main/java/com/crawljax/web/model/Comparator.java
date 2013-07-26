@@ -3,8 +3,10 @@ package com.crawljax.web.model;
 public class Comparator {
 	private ComparatorType type;
 	private String expression;
-	
-	public enum ComparatorType { attribute, date, regex, script, distance, simple, plain, style, xpath }
+
+	public enum ComparatorType {
+		attribute, date, regex, script, distance, simple, plain, style, xpath
+	}
 
 	/**
 	 * @return the type
@@ -14,7 +16,8 @@ public class Comparator {
 	}
 
 	/**
-	 * @param type the type to set
+	 * @param type
+	 *            the type to set
 	 */
 	public void setType(ComparatorType type) {
 		this.type = type;
@@ -28,7 +31,8 @@ public class Comparator {
 	}
 
 	/**
-	 * @param expression the expression to set
+	 * @param expression
+	 *            the expression to set
 	 */
 	public void setExpression(String expression) {
 		this.expression = expression;

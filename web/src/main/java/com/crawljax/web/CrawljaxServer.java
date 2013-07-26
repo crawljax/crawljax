@@ -1,70 +1,77 @@
 package com.crawljax.web;
 
 import java.io.File;
-import java.net.URL;
-import java.security.ProtectionDomain;
 import java.util.concurrent.*;
-
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
-/**
- * Starts the Crawljax server at port 8080.
- */
+import com.crawljax.web.di.CrawljaxWebModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.servlet.GuiceFilter;
+import com.google.inject.servlet.GuiceServletContextListener;
+
 public class CrawljaxServer implements Callable<Void> {
 
-	private final boolean EXECUTE_WAR = false;
-
-	private File outputDir;
-	private int port;
+	private static final Logger LOG = LoggerFactory.getLogger(CrawljaxServer.class);
 
 	private Server server;
 	private final CountDownLatch isRunningLatch = new CountDownLatch(1);
 	private String url = null;
 
-	public CrawljaxServer(File outputDir, int port) {
-		this.outputDir = outputDir;
-		this.port = port;
+	public CrawljaxServer(int port, File outputDir) {
+		setupJulToSlf4();
+		server = new Server(port);
+		Handler webAppContext = setupWebContext(outputDir);
+		server.setHandler(webAppContext);
 	}
 
 	public CrawljaxServer(int port) {
-		this.outputDir = new File(System.getProperty("user.home") + File.separatorChar + "crawljax");
-		this.port = port;
+		setupJulToSlf4();
+		server = new Server(port);
+		Handler webAppContext = setupWebContext(new File("out"));
+		server.setHandler(webAppContext);
 	}
 
 	@Override
 	public Void call() {
-		run();
+		start(true);
 		return null;
 	}
 
-	public void run() {
+	/**
+	 * @param join
+	 *            If you want to merge with the remote thread.
+	 * @see Thread#join()
+	 */
+	public void start(boolean join) {
 
-		System.setProperty("outputFolder", outputDir.getAbsolutePath());
-
-		server = new Server(port);
-
-		HandlerList list = new HandlerList();
-		list.addHandler(buildOutputContext());
-		list.addHandler(buildWebAppContext());
-		server.setHandler(list);
-
+		LOG.info("Starting the server");
 		try {
 			server.start();
+			LOG.info("Server started");
 		} catch (Exception e) {
 			throw new RuntimeException("Could not start Crawljax web server", e);
 		}
 
-		port = ((ServerConnector) server.getConnectors()[0]).getLocalPort(); //Value will change if originally set to 0
+		int port = ((ServerConnector) server.getConnectors()[0]).getLocalPort(); //Value will change if originally set to 0
 		url = "http://localhost:" + port;
 
 		isRunningLatch.countDown();
-		try {
-			server.join();
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Crawljax server interrupted", e);
+
+		if(join) {
+			LOG.debug("Joining server thread");
+			try {
+				server.join();
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Crawljax server interrupted", e);
+			}
 		}
 	}
 
@@ -77,8 +84,10 @@ public class CrawljaxServer implements Callable<Void> {
 	}
 
 	public void stop() {
+		LOG.info("Stopping the server");
 		try {
 			server.stop();
+			LOG.info("Shutdown complete");
 		} catch (Exception e) {
 			throw new RuntimeException("Could not stop Crawljax web server", e);
 		}
@@ -88,27 +97,31 @@ public class CrawljaxServer implements Callable<Void> {
 		return url;
 	}
 
-	public File getOutputDir() {
-		return outputDir;
+	public int getPort() {
+		return ((ServerConnector) server.getConnectors()[0]).getLocalPort();
 	}
 
-	private WebAppContext buildWebAppContext() {
+	private void setupJulToSlf4() {
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		SLF4JBridgeHandler.install();
+	}
+
+	private WebAppContext setupWebContext(final File outputFolder) {
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/");
-		if (EXECUTE_WAR) {
-			ProtectionDomain domain = CrawljaxServer.class.getProtectionDomain();
-			URL location = domain.getCodeSource().getLocation();
-			webAppContext.setWar(location.toExternalForm());
-		} else
-			webAppContext.setWar(new File("src/main/webapp/").getAbsolutePath());
+		webAppContext.setBaseResource(Resource.newClassPathResource("web"));
+		webAppContext.setParentLoaderPriority(true);
+		webAppContext.addEventListener(new GuiceServletContextListener() {
 
+			@Override
+			protected Injector getInjector() {
+				return Guice.createInjector(new CrawljaxWebModule(outputFolder));
+			}
+
+		});
+
+		webAppContext.addFilter(GuiceFilter.class, "/*", null);
 		return webAppContext;
 	}
 
-	private WebAppContext buildOutputContext() {
-		WebAppContext webAppContext = new WebAppContext();
-		webAppContext.setContextPath("/output");
-		webAppContext.setWar(outputDir.getAbsolutePath());
-		return webAppContext;
-	}
 }
