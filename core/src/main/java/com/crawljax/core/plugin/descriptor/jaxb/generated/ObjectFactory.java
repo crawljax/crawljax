@@ -6,7 +6,7 @@
 //
 
 
-package com.crawljax.core.plugin.jaxb.generated;
+package com.crawljax.core.plugin.descriptor.jaxb.generated;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

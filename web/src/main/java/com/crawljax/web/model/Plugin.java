@@ -1,5 +1,7 @@
 package com.crawljax.web.model;
 
+import com.crawljax.core.plugin.descriptor.Parameter;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ public class Plugin {
 
 	public Plugin() {} //Default constructor
 
-	public Plugin(Plugin plugin) { //Copy constructor
+	/*public Plugin(Plugin plugin) { //Copy constructor
 		this.id = plugin.getId();
 		this.name = plugin.getName();
 		this.description = plugin.getDescription();
@@ -31,7 +33,7 @@ public class Plugin {
 		for(int i = 0; i < plugin.getParameters().size(); i++) {
 			this.parameters.add(new Parameter(plugin.getParameters().get(i)));
 		}
-	}
+	}*/
 
 	public String getId() {
 		return id;
@@ -77,7 +79,7 @@ public class Plugin {
 		return crawljaxVersions;
 	}
 
-	public void setCrawljaxVersion(List<String> crawljaxVersions) {
+	public void setCrawljaxVersions(List<String> crawljaxVersions) {
 		this.crawljaxVersions = crawljaxVersions;
 	}
 

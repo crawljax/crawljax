@@ -1,17 +1,14 @@
 package com.crawljax.web.runner;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.core.plugin.HostInterface;
 import com.crawljax.core.plugin.HostInterfaceImpl;
+import com.crawljax.core.plugin.descriptor.Parameter;
 import com.crawljax.web.model.*;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.MDC;
@@ -168,8 +165,8 @@ public class CrawlRunner {
 				// Form Input
 				if (config.getFormInputValues().size() > 0) {
 					InputSpecification input = new InputSpecification();
-					for (NameValuePair p : config.getFormInputValues())
-						input.field(p.getName()).setValue(p.getValue());
+					for (Map.Entry<String, String> p : config.getFormInputValues().entrySet())
+						input.field(p.getKey()).setValue(p.getValue());
 					builder.crawlRules().setInputSpec(input);
 				}
 
@@ -208,7 +205,7 @@ public class CrawlRunner {
 					}
 					String pluginKey = String.valueOf(i + 1);
 					File outputFolder = new File(record.getOutputFolder() + File.separatorChar + "plugins" + File.separatorChar + pluginKey);
-					Map<String, String> parameters = new ConcurrentHashMap<>();
+					Map<String, String> parameters = new HashMap<>();
 					for(Parameter parameter : plugin.getParameters()) {
 						parameters.put(parameter.getId(), "");
 						for(Parameter configParam : pluginConfig.getParameters()) {

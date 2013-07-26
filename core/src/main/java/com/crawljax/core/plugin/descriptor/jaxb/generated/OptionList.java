@@ -6,7 +6,7 @@
 //
 
 
-package com.crawljax.core.plugin.jaxb.generated;
+package com.crawljax.core.plugin.descriptor.jaxb.generated;
 
 import java.util.ArrayList;
 import java.util.List;

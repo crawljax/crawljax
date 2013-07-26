@@ -175,6 +175,14 @@ App.FormSelect = App.FormField.extend({
 			this.set('options', this.get('content'));
 		}
 		var options = this.get('options');
+		if(typeof options === "object") { //Allow a map object to be used for select options
+			var opsArray = [];
+			for(var option in options) {
+				opsArray.push({name: option, value: options[option]});
+			}
+			this.set('options', opsArray);
+		}
+		options = this.get('options');
 		var value = this.get('value');
 		for(var i = 0, l = options.length; i < l; i++) {
 			if(options[i].value === value) {

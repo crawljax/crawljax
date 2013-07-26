@@ -360,12 +360,12 @@
 	<script type="text/x-handlebars" data-template-name="crawlrecords/index">
 		<table class="table table-striped">
 			<thead>
-				<tr><th>Crawl ID</th><th>Configuration</th><th>Execution Time</th></tr>
+				<tr><th>Crawl</th><th>Configuration</th><th>Execution Time</th></tr>
 			</thead>
 			<tbody>
 				{{#each crawlrecord in controller}}
 				<tr>
-					<td>{{#linkTo 'crawlrecord' crawlrecord}}{{content.id}}{{/linkTo}}</td>
+					<td>{{#linkTo 'crawlrecord' crawlrecord}}Crawl {{content.id}}{{/linkTo}}</td>
 					<td><a {{bindAttr href="configURL"}}>{{content.configurationName}}</a></td>
 					<td>{{crawlrecord.startTimeFormatted}}</td>
 				</tr>

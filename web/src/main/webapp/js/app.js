@@ -160,7 +160,7 @@ App.CrawlrecordRoute = Ember.Route.extend({
 	},
 	setupController: function(controller, model) {
 		controller.set('content', model);
-		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "History", target: "#/crawlrecords"}), App.Link.create({text: model.id, target: "#/crawlrecords/" + model.id})]);
+		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "History", target: "#/crawlrecords"}), App.Link.create({text: "Crawl " + model.id, target: "#/crawlrecords/" + model.id})]);
 		var sideNav = this.controllerFor("sidenav");
 		sideNav.set("sidenav", [App.Link.create({text:"Configuration", target:"#/configurations/" + model.configurationId, icon:"icon-wrench"})]);
 	},

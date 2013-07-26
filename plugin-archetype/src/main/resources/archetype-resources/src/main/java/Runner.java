@@ -1,5 +1,9 @@
 package ${package};
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
@@ -32,7 +36,12 @@ public class Runner {
 		builder.setMaximumStates(MAX_NUMBER_STATES);
 		builder.setMaximumDepth(MAX_DEPTH);
 
-		builder.addPlugin(new SamplePlugin());
+		PluginDescriptor descriptor = PluginDescriptor.forPlugin(SamplePlugin.class);
+		Map<String, String> parameters = new HashMap<>();
+		for(Parameter parameter : descriptor.getParameters()) {
+			parameters.put(parameter.getId(), "value");
+		}
+		builder.addPlugin(new SamplePlugin(new HostInterfaceImpl(new File("out"), parameters)));
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
 

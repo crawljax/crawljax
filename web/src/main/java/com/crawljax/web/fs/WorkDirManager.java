@@ -45,7 +45,7 @@ public class WorkDirManager {
 	}
 
 	public Map<String, Configuration> loadConfigurations() {
-		Map<String, Configuration> configs = new ConcurrentHashMap<String, Configuration>();
+		Map<String, Configuration> configs = new ConcurrentHashMap<>();
 		File[] configFiles = configFolder.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.endsWith("json");
