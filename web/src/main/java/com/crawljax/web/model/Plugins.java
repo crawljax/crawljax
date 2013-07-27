@@ -85,7 +85,7 @@ public class Plugins {
 			LogWebSocketServlet.sendToAll("Could not create instance of plugin " + plugin.getName());
 		} finally {
 			//Thread.currentThread().setContextClassLoader(originalClassLoader); //Currently commented out so plugins can get their resources from the classloader
-			LogWebSocketServlet.sendToAll("Could not create instance of plugin "
+			LogWebSocketServlet.sendToAll("Could not create instance of plugin " 
 			        + plugin.getName());
 		}
 		return instance;
