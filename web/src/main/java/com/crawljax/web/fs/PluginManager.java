@@ -20,7 +20,7 @@ public class PluginManager {
 	private final File pluginsFolder;
 	
 	@Inject
-	public PluginManager(@CrawljaxWebModule.PluginDescriptorFolder File pluginsFolder) {
+	public PluginManager(@CrawljaxWebModule.PluginsFolder File pluginsFolder) {
 		this.pluginsFolder = pluginsFolder;
 		if (!this.pluginsFolder.exists())
 			this.pluginsFolder.mkdirs();

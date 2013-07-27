@@ -1,10 +1,11 @@
 package com.crawljax.web;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.*;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
@@ -26,17 +27,20 @@ public class CrawljaxServer implements Callable<Void> {
 	private String url = null;
 
 	public CrawljaxServer(int port, File outputDir) {
-		setupJulToSlf4();
-		server = new Server(port);
-		Handler webAppContext = setupWebContext(outputDir);
-		server.setHandler(webAppContext);
+		configureServer(port, outputDir);
 	}
 
 	public CrawljaxServer(int port) {
+		configureServer(port, new File("out"));
+	}
+
+	private void configureServer(int port, File outputDir) {
 		setupJulToSlf4();
 		server = new Server(port);
-		Handler webAppContext = setupWebContext(new File("out"));
-		server.setHandler(webAppContext);
+		HandlerList handlerList = new HandlerList();
+		handlerList.addHandler(setupOutputContext(outputDir));
+		handlerList.addHandler(setupWebContext(outputDir));
+		server.setHandler(handlerList);
 	}
 
 	@Override
@@ -121,6 +125,17 @@ public class CrawljaxServer implements Callable<Void> {
 		});
 
 		webAppContext.addFilter(GuiceFilter.class, "/*", null);
+		return webAppContext;
+	}
+
+	private WebAppContext setupOutputContext(File outputFolder) {
+		WebAppContext webAppContext = new WebAppContext();
+		webAppContext.setContextPath("/output");
+		try {
+			webAppContext.setBaseResource(Resource.newResource(outputFolder));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		return webAppContext;
 	}
 

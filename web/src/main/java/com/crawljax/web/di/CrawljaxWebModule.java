@@ -29,7 +29,7 @@ public class CrawljaxWebModule extends ServletModule {
 
 	@BindingAnnotation
 	@Retention(RetentionPolicy.RUNTIME)
-	public static @interface PluginDescriptorFolder {
+	public static @interface PluginsFolder {
 	};
 
 	public CrawljaxWebModule(File outputFolder) {
@@ -55,8 +55,8 @@ public class CrawljaxWebModule extends ServletModule {
 	}
 
 	@Provides
-	@PluginDescriptorFolder
-	private File pluginFolder() {
+	@PluginsFolder
+	private File pluginsFolder() {
 		File plugins = new File("plugins");
 		if (!plugins.exists()) {
 			plugins.mkdirs();
