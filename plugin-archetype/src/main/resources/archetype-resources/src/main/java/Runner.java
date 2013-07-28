@@ -6,8 +6,10 @@ import java.util.Map;
 
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.plugin.HostInterfaceImpl;
+import com.crawljax.core.plugin.descriptor.Parameter;
+import com.crawljax.core.plugin.descriptor.PluginDescriptor;
 
 /**
  * Use the sample plugin in combination with Crawljax.
@@ -22,7 +24,7 @@ public class Runner {
 	 * Entry point
 	 */
 	public static void main(String[] args) {
-		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+		CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
 		builder.crawlRules().click("a");
