@@ -174,8 +174,8 @@ public class CrawlRunner {
 				// Form Input
 				if (config.getFormInputValues().size() > 0) {
 					InputSpecification input = new InputSpecification();
-					for (Map.Entry<String, String> p : config.getFormInputValues().entrySet())
-						input.field(p.getKey()).setValue(p.getValue());
+					for (NameValuePair p : config.getFormInputValues())
+						input.field(p.getName()).setValue(p.getValue());
 					builder.crawlRules().setInputSpec(input);
 				}
 
@@ -217,6 +217,7 @@ public class CrawlRunner {
 					File outputFolder =
 							new File(record.getOutputFolder() + File.separatorChar + "plugins"
 									+ File.separatorChar + pluginKey);
+					outputFolder.mkdirs();
 					Map<String, String> parameters = new HashMap<>();
 					for (Parameter parameter : plugin.getParameters()) {
 						parameters.put(parameter.getId(), "");

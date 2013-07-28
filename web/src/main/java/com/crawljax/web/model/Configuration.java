@@ -1,8 +1,10 @@
 package com.crawljax.web.model;
 
-import java.util.*;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class Configuration {
 	private String id;
@@ -23,7 +25,7 @@ public class Configuration {
 	private List<Condition> pageConditions = new ArrayList<>();
 	private List<Condition> invariants = new ArrayList<>();
 	private List<Comparator> comparators = new ArrayList<>();
-	private Map<String, String> formInputValues = new HashMap<>();
+	private List<NameValuePair> formInputValues = new ArrayList<>();
 	private Date lastCrawl = null;
 	private long lastDuration;
 	private Date lastModified = null;
@@ -303,7 +305,7 @@ public class Configuration {
 	/**
 	 * @return the formInputValues
 	 */
-	public Map<String, String> getFormInputValues() {
+	public List<NameValuePair> getFormInputValues() {
 		return formInputValues;
 	}
 
@@ -311,7 +313,7 @@ public class Configuration {
 	 * @param formInputValues
 	 *            the formInputValues to set
 	 */
-	public void setFormInputValues(Map<String, String> formInputValues) {
+	public void setFormInputValues(List<NameValuePair> formInputValues) {
 		this.formInputValues = formInputValues;
 	}
 
