@@ -212,7 +212,7 @@ public class StandardFunctionsFlowTest {
 		followLink(addPluginLink.get(0));
 
 		WebElement pluginSelectOption = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"select > option:contains('" + PLUGIN_ID + "')\")[0];");
+				"return $(\"select > option:contains('" + PLUGIN_ID + "')\").last()[0];");
 		assertNotNull(pluginSelectOption);
 
 		followLink(pluginSelectOption);
