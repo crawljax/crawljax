@@ -184,9 +184,12 @@ App.LogRoute = Ember.Route.extend({
 	setupController: function(controller, model) {
 		var controller = this.controllerFor('crawlrecord');
 		var appController = this.controllerFor('application');
-		if (controller.isLogging) appController.sendMsg('stoplog');
+		if (controller.isLogging) {
+			appController.sendMsg('stoplog');
+		}
 		setTimeout(function(){ 
 			$('#logPanel').css({'height':(($(document).height())-162)+'px'});
+			$('#logPanel').empty();
 			appController.sendMsg('startlog-' + controller.get('content.id'));
 			controller.set("isLogging", true);
 			}, 0);
