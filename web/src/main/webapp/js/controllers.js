@@ -85,7 +85,6 @@ App.ApplicationController = Ember.Controller.extend({
 		}
    },
    displayMessage: function(text, positivity) {
-		//$('#message').empty();
 		var clazz = "info";
 		if(positivity > 0) clazz = "success";
 		if(positivity < 0) clazz = "danger";

@@ -1,6 +1,7 @@
 package com.crawljax.web.runner;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,6 +11,8 @@ import com.crawljax.core.plugin.HostInterface;
 import com.crawljax.core.plugin.HostInterfaceImpl;
 import com.crawljax.core.plugin.descriptor.Parameter;
 import com.crawljax.web.model.*;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.MDC;
 
@@ -213,6 +216,11 @@ public class CrawlRunner {
 						        + pluginConfig.getId());
 						continue;
 					}
+					if(!plugin.getCrawljaxVersions().contains(getCrawljaxVersion())) {
+						LogWebSocketServlet.sendToAll("Plugin "
+								+ pluginConfig.getId() + " is not compatible with this version of Crawljax (" + getCrawljaxVersion() + ")");
+						continue;
+					}
 					String pluginKey = String.valueOf(i + 1);
 					File outputFolder =
 							new File(record.getOutputFolder() + File.separatorChar + "plugins"
@@ -379,6 +387,22 @@ public class CrawlRunner {
 			if (xpaths.size() > 0)
 				rules.addOracleComparator(new OracleComparator("xpath",
 				        new XPathExpressionComparator(xpaths.toArray(new String[xpaths.size()]))));
+		}
+
+		private String getCrawljaxVersion() {
+			try {
+				String[] lines = Resources.toString(this.getClass().getResource("/crawljax.version"), Charsets.UTF_8)
+						.split(System.getProperty("line.separator"));
+				for(String line : lines) {
+					String[] keyValue = line.split("=");
+					if(keyValue[0].trim().toLowerCase().equals("version")) {
+						return keyValue[1].trim();
+					}
+				}
+				return null;
+			} catch (Exception e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
 		}
 	}
 }
