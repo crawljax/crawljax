@@ -1,4 +1,3 @@
-
 App.ApplicationController = Ember.Controller.extend({
 	needs: ['crawlrecord'],
 	executionQueue: [],
@@ -56,6 +55,16 @@ App.ApplicationController = Ember.Controller.extend({
 					}
 					setTimeout(function(){controller.removeQueue(msg.data.slice(8));}, 5000);
 				}
+				if (msg.data.indexOf('message-') == 0) {
+					var positivity = 0;
+					if (msg.data.indexOf('confirm-') == 8) {
+						positivity = 1;
+					}
+					if (msg.data.indexOf('error-') == 8) {
+						positivity = -1;
+					}
+					this.displayMessage(msg.data.slice(16), positivity);
+				}
 			};
 			this.socket.onclose = function(){
 				controller.connectSocket();
@@ -74,6 +83,14 @@ App.ApplicationController = Ember.Controller.extend({
 		} catch(exception){
 			alert("Socket Timed out. Refresh your browser. ");
 		}
+   },
+   displayMessage: function(text, positivity) {
+		//$('#message').empty();
+		var clazz = "info";
+		if(positivity > 0) clazz = "success";
+		if(positivity < 0) clazz = "danger";
+		$('#messages').prepend('<div class="alert alert-' + clazz + '">' + text + '</div>');
+		setTimeout(function(){$('#messages div:last-child').remove();}, 5000);
    }
 });
 
@@ -128,6 +145,7 @@ App.ConfigurationController = Ember.Controller.extend({
 			case "save":
 				if (validateForm("config_form")) {
 					this.set('content', App.Configurations.update(this.get('content')));
+					this.get("controllers.application").displayMessage("Configuration Saved", 1);
 				}
 				break;
 			case "delete":
@@ -251,10 +269,12 @@ App.PluginItemController = Ember.Controller.extend({
 });
 
 App.PluginManagementController = Ember.ArrayController.extend({
+	needs: ['application'],
 	refresh: function() {
 		var _this = this;
 		App.Plugins.refresh(function(plugins){
 			_this.set('content', plugins);
+			_this.get("controllers.application").displayMessage("List Refreshed", 1);
 		});
 	},
 	add: function() {

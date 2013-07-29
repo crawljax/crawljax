@@ -53,6 +53,7 @@
 			{{render "breadcrumb"}}
 			{{render "sidenav"}}
 			{{render "execution_queue"}}
+			{{render "messages"}}
 		</div>
 	</script>
 	
@@ -79,6 +80,10 @@
 				{{/each}}
 			</ul>
 		</div>
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="messages">
+		<div id="messages"></div>
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="configurations">

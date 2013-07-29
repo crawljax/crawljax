@@ -6,7 +6,7 @@ Ember.Route.reopen({
 		var infos = this.router.router.targetHandlerInfos;
 		return infos[infos.length - 1].handler.routeName;
 	}
-})
+});
 
 App.Router.map(function() {
 	this.resource("configurations", function() {

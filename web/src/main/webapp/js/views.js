@@ -63,10 +63,6 @@ App.NavView = Ember.View.extend({
 		}
 		return active;
 	}.property()
-	/*currentPathChange: function() {
-		console.log('currentPathChange');
-		this.notifyPropertyChange('active');
-	}.observes('controller.controllers.application.currentPath')*/
 });
 
 App.FormField = Ember.View.extend({
