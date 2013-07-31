@@ -13,6 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.crawljax.web.LogWebSocketServlet;
+import com.crawljax.web.exception.CrawljaxWebException;
 import sun.misc.BASE64Decoder;
 
 import com.crawljax.web.model.Plugin;
@@ -62,14 +64,17 @@ public class PluginsResource {
 	        @FormDataParam("file") String file) {
 		String content = file.substring(file.indexOf(',') + 1);
 		BASE64Decoder decoder = new BASE64Decoder();
-		Plugin plugin = new Plugin();
+		Plugin plugin = null;
 		try {
 			byte[] decodedBytes = decoder.decodeBuffer(content);
-			plugin = plugins.add(name, decodedBytes);
+			try {
+				plugin = plugins.add(name, decodedBytes);
+			} catch (CrawljaxWebException e) {
+				LogWebSocketServlet.sendToAll("message-error-" + e.getMessage());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return Response.ok(plugin).build();
 	}
 

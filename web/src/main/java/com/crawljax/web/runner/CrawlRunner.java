@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import com.crawljax.core.plugin.HostInterface;
 import com.crawljax.core.plugin.HostInterfaceImpl;
 import com.crawljax.core.plugin.descriptor.Parameter;
+import com.crawljax.web.Main;
 import com.crawljax.web.model.*;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -204,10 +205,6 @@ public class CrawlRunner {
 				if (config.getComparators().size() > 0)
 					setComparatorsFromConfig(config.getComparators(), builder.crawlRules());
 
-				// Add Crawl Overview
-				// builder.addPlugin(new CrawlOverview(new File(record.getOutputFolder()
-				// + File.separatorChar + "crawloverview")));
-
 				for (int i = 0, l = config.getPlugins().size(); i < l; i++) {
 					Plugin pluginConfig = config.getPlugins().get(i);
 					Plugin plugin = plugins.findByID(pluginConfig.getId());
@@ -216,9 +213,9 @@ public class CrawlRunner {
 						        + pluginConfig.getId());
 						continue;
 					}
-					if(!plugin.getCrawljaxVersions().contains(getCrawljaxVersion())) {
+					if(!plugin.getCrawljaxVersions().contains(Main.getCrawljaxVersion())) {
 						LogWebSocketServlet.sendToAll("Plugin "
-								+ pluginConfig.getId() + " is not compatible with this version of Crawljax (" + getCrawljaxVersion() + ")");
+								+ pluginConfig.getId() + " is not compatible with this version of Crawljax (" + Main.getCrawljaxVersion() + ")");
 						continue;
 					}
 					String pluginKey = String.valueOf(i + 1);
@@ -259,12 +256,15 @@ public class CrawlRunner {
 
 				// set duration
 				long duration = (new Date()).getTime() - timestamp.getTime();
-				record.setDuration(duration);
+				config = configurations.findByID(record.getConfigurationId()); //Reload config in case it was edited during crawl execution
 				config.setLastCrawl(timestamp);
 				config.setLastDuration(duration);
+				configurations.update(config);
+
+				record.setDuration(duration);
 				record.setCrawlStatus(CrawlStatusType.success);
 				crawlRecords.update(record);
-				configurations.update(config);
+
 				LogWebSocketServlet.sendToAll("success-" + Integer.toString(crawlId));
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -387,22 +387,6 @@ public class CrawlRunner {
 			if (xpaths.size() > 0)
 				rules.addOracleComparator(new OracleComparator("xpath",
 				        new XPathExpressionComparator(xpaths.toArray(new String[xpaths.size()]))));
-		}
-
-		private String getCrawljaxVersion() {
-			try {
-				String[] lines = Resources.toString(this.getClass().getResource("/crawljax.version"), Charsets.UTF_8)
-						.split(System.getProperty("line.separator"));
-				for(String line : lines) {
-					String[] keyValue = line.split("=");
-					if(keyValue[0].trim().toLowerCase().equals("version")) {
-						return keyValue[1].trim();
-					}
-				}
-				return null;
-			} catch (Exception e) {
-				throw new RuntimeException(e.getMessage(), e);
-			}
 		}
 	}
 }

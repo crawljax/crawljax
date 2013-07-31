@@ -1,5 +1,7 @@
 package com.crawljax.web;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,5 +36,21 @@ public class Main {
 		});
 
 		server.start(true);
+	}
+
+	public static String getCrawljaxVersion() {
+		try {
+			String[] lines = Resources.toString(Main.class.getResource("/crawljax.version"), Charsets.UTF_8)
+					.split(System.getProperty("line.separator"));
+			for(String line : lines) {
+				String[] keyValue = line.split("=");
+				if(keyValue[0].trim().toLowerCase().equals("version")) {
+					return keyValue[1].trim();
+				}
+			}
+			return null;
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 	}
 }

@@ -57,13 +57,15 @@ App.ApplicationController = Ember.Controller.extend({
 				}
 				if (msg.data.indexOf('message-') == 0) {
 					var positivity = 0;
-					if (msg.data.indexOf('confirm-') == 8) {
+					if (msg.data.indexOf('success-') == 8) {
 						positivity = 1;
-					}
-					if (msg.data.indexOf('error-') == 8) {
+						controller.displayMessage(msg.data.slice(16), positivity);
+					} else if (msg.data.indexOf('error-') == 8) {
 						positivity = -1;
+						controller.displayMessage(msg.data.slice(14), positivity);
+					} else {
+						controller.displayMessage(msg.data.slice(8), positivity);
 					}
-					this.displayMessage(msg.data.slice(16), positivity);
 				}
 			};
 			this.socket.onclose = function(){

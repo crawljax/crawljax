@@ -2,6 +2,7 @@ package com.crawljax.web.fs;
 
 import com.crawljax.core.plugin.descriptor.PluginDescriptor;
 import com.crawljax.web.di.CrawljaxWebModule;
+import com.crawljax.web.exception.CrawljaxWebException;
 import com.crawljax.web.model.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 @Singleton
@@ -68,33 +70,44 @@ public class PluginManager {
 		PluginDescriptor pluginDescriptor = null;
 		try {
 			try(ZipFile zipFile = new ZipFile(jarFile)) {
+				ZipEntry descriptorEntry = zipFile.getEntry("plugin-descriptor.xml");
+				if(descriptorEntry == null) {
+					throw new Exception("Could not find plugin-descriptor.xml in root of " + jarFile.getName());
+				}
 				try(InputStream is = zipFile.getInputStream(zipFile.getEntry("plugin-descriptor.xml"))) {
 					pluginDescriptor = PluginDescriptor.fromXMLStream(is);
 				}
 			}
-		}  catch (IOException e) {
+		}  catch (Exception e) {
 			LOG.error("Could not load plugin descriptor in {}. ", jarFile.getName());
 			LOG.debug("Could not load plugin descriptor in {}. \n{}", jarFile.getName(), e.getStackTrace());
 		}
 		return pluginDescriptor;
 	}
 
-	public Plugin save(String id, byte[] data) {
+	public Plugin save(String id, byte[] data) throws CrawljaxWebException {
 		File pluginJar = new File(pluginsFolder, id + ".jar");
-		Plugin plugin = null;
 		try {
-			if (!pluginJar.exists()) {
-				pluginJar.createNewFile();
+			if (pluginJar.exists()) {
+				pluginJar.delete();
 			}
-			try(FileOutputStream fos = new FileOutputStream(pluginJar)){
+			pluginJar.createNewFile();
+			try(FileOutputStream fos = new FileOutputStream(pluginJar)) {
 				fos.write(data);
 				fos.flush();
 			}
-			plugin = load(pluginJar);
 		} catch (IOException e) {
 			LOG.error("Could not save plugin file {}.", pluginJar.getName());
 			LOG.debug("Could not save plugin file {}.\n{}", pluginJar.getName(), e.getStackTrace());
+			throw new CrawljaxWebException("Could not save plugin file");
 		}
+
+		Plugin plugin = load(pluginJar);
+		if(plugin == null) {
+			pluginJar.delete();
+			throw new CrawljaxWebException("Could not read plugin descriptor");
+		}
+
 		return plugin;
 	}
 

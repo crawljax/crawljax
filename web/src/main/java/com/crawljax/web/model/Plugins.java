@@ -10,11 +10,15 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.crawljax.core.plugin.HostInterface;
-import com.crawljax.web.LogWebSocketServlet;
+import com.crawljax.web.exception.CrawljaxWebException;
 import com.crawljax.web.fs.PluginManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class Plugins {
+	private static final Logger LOG = LoggerFactory.getLogger(Plugins.class);
+
 	private final Map<String, Plugin> pluginList;
 	private final PluginManager pluginManager;
 
@@ -37,11 +41,10 @@ public class Plugins {
 		return pluginList.values();
 	}
 
-	public Plugin add(String fileName, byte[] data) {
+	public Plugin add(String fileName, byte[] data) throws CrawljaxWebException {
 		int extensionIndex = fileName.indexOf(".jar");
 		if (extensionIndex < 0) {
-			LogWebSocketServlet.sendToAll("Expected .jar file, got " + fileName);
-			return null;
+			throw new CrawljaxWebException("Expected .jar file");
 		}
 		String id = fileName.substring(0, extensionIndex);
 		id = id.toLowerCase().replaceAll("[^a-z0-9]+", "-");
@@ -82,11 +85,10 @@ public class Plugins {
 			Constructor constructor = pluginClass.getDeclaredConstructor(HostInterface.class);
 			instance = (com.crawljax.core.plugin.Plugin) constructor.newInstance(hostInterface);
 		} catch (Throwable e) {
-			LogWebSocketServlet.sendToAll("Could not create instance of plugin " + plugin.getName());
+			LOG.error("Could not create instance of plugin " + plugin.getName());
+			LOG.debug("Could not create instance of plugin " + plugin.getName());
 		} finally {
 			//Thread.currentThread().setContextClassLoader(originalClassLoader); //Currently commented out so plugins can get their resources from the classloader
-			LogWebSocketServlet.sendToAll("Could not create instance of plugin "
-			        + plugin.getName());
 		}
 		return instance;
 	}
