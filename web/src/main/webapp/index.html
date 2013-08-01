@@ -53,7 +53,7 @@
 			{{render "breadcrumb"}}
 			{{render "sidenav"}}
 			{{render "execution_queue"}}
-			{{render "messages"}}
+			{{render "notifications"}}
 		</div>
 	</script>
 	
@@ -82,8 +82,12 @@
 		</div>
 	</script>
 	
-	<script type="text/x-handlebars" data-template-name="messages">
-		<div id="messages"></div>
+	<script type="text/x-handlebars" data-template-name="notifications">
+		<div class="well sidebar-nav">
+			<ul class="nav nav-list" id="notifications">
+				<li class="nav-header">Notifications</li>
+			</ul>
+		</div>
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="configurations">

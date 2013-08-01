@@ -89,9 +89,9 @@ App.ApplicationController = Ember.Controller.extend({
    displayMessage: function(text, positivity) {
 		var clazz = "info";
 		if(positivity > 0) clazz = "success";
-		if(positivity < 0) clazz = "danger";
-		$('#messages').prepend('<div class="alert alert-' + clazz + '">' + text + '</div>');
-		setTimeout(function(){$('#messages div:last-child').remove();}, 5000);
+		if(positivity < 0) clazz = "important";
+		$('#notifications').append('<li><span class="label label-' + clazz + '">' + text + '</span></li>');
+		setTimeout(function(){$('#notifications li:first-child').next().remove();}, 5000);
    }
 });
 
