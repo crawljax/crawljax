@@ -278,7 +278,7 @@ App.PluginManagementController = Ember.ArrayController.extend({
 			_this.get("controllers.application").displayMessage("List Refreshed", 1);
 		});
 	},
-	add: function() {
+	addFile: function() {
 		var file = this.get("pluginFile");
 		if(!file){
 			alert("Please select a file");
@@ -291,11 +291,27 @@ App.PluginManagementController = Ember.ArrayController.extend({
 		var _this = this;
 		var reader = new FileReader();
 		reader.onload = function(e) {
-			App.Plugins.add(file.name, e.target.result, function(){
+			App.Plugins.add(file.name, e.target.result, undefined, function() {
 				_this.set('content', App.Plugins.findAll());
 			});
 		}
 		reader.readAsDataURL(file);
+	},
+	addURL: function() {
+		var url = this.get("url");
+		if(!url) {
+			alert("Please enter a url");
+			return;
+		}
+		var name = this.get("name");
+		if(!name) {
+			alert("Please enter a name for the plugin");
+			return;
+		}
+		var _this = this;
+		App.Plugins.add(name, undefined, url, function() {
+			_this.set('content', App.Plugins.findAll());
+		});
 	},
 	itemController: 'pluginManagementItem'
 });

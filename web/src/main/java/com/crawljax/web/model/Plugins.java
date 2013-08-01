@@ -46,7 +46,24 @@ public class Plugins {
 		if (extensionIndex < 0) {
 			throw new CrawljaxWebException("Expected .jar file");
 		}
-		String id = fileName.substring(0, extensionIndex);
+		String id = adaptToId(fileName.substring(0, extensionIndex));
+		Plugin plugin = pluginManager.save(id, data);
+		if(plugin != null) {
+			pluginList.put(plugin.getId(), plugin);
+		}
+		return plugin;
+	}
+
+	public Plugin add(String name, URL url) throws CrawljaxWebException {
+		String id = adaptToId(name);
+		Plugin plugin = pluginManager.save(id, url);
+		if(plugin != null) {
+			pluginList.put(plugin.getId(), plugin);
+		}
+		return plugin;
+	}
+
+	private String adaptToId(String id) {
 		id = id.toLowerCase().replaceAll("[^a-z0-9]+", "-");
 		if (pluginList.containsKey(id)) {
 			int i = 1;
@@ -55,16 +72,14 @@ public class Plugins {
 			}
 			id += Integer.toString(i);
 		}
-		Plugin plugin = pluginManager.save(id, data);
-		if(plugin != null) {
-			pluginList.put(plugin.getId(), plugin);
-		}
-		return plugin;
+		return id;
 	}
 
-	public Plugin remove(Plugin plugin) {
+	public Plugin remove(Plugin plugin) throws CrawljaxWebException {
 		if(pluginManager.delete(plugin)) {
 			pluginList.remove(plugin.getId());
+		} else {
+			throw new CrawljaxWebException("Failed to delete plugin file");
 		}
 		return plugin;
 	}

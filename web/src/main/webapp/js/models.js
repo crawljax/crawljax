@@ -211,11 +211,14 @@ App.Plugins.reopenClass({
 		selectItems.splice(0, 0, Ember.Object.create({name: "Select Plugin", value: ""}));
 		return selectItems;
 	},
-	add: function(fileName, data, callback) {
+	add: function(fileName, data, url, callback) {
 		var fd = new FormData();
 		fd.append("name", fileName);
-		fd.append("file", data);
-		
+		if(data) {
+			fd.append("file", data);
+		} else if(url) {
+			fd.append("url", url);
+		}
 		$.ajax({
 			url: '/rest/plugins',
 			async: false,

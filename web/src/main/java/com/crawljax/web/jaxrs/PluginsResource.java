@@ -1,6 +1,8 @@
 package com.crawljax.web.jaxrs;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -61,19 +63,32 @@ public class PluginsResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response addPlugin(@FormDataParam("name") String name,
-	        @FormDataParam("file") String file) {
-		String content = file.substring(file.indexOf(',') + 1);
-		BASE64Decoder decoder = new BASE64Decoder();
+	        @FormDataParam("file") String file,
+			@FormDataParam("url") String url) {
 		Plugin plugin = null;
-		try {
-			byte[] decodedBytes = decoder.decodeBuffer(content);
+
+		if(file != null) {
+			String content = file.substring(file.indexOf(',') + 1);
+			BASE64Decoder decoder = new BASE64Decoder();
 			try {
-				plugin = plugins.add(name, decodedBytes);
+				byte[] decodedBytes = decoder.decodeBuffer(content);
+				try {
+					plugin = plugins.add(name, decodedBytes);
+				} catch (CrawljaxWebException e) {
+					LogWebSocketServlet.sendToAll("message-error-" + e.getMessage());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else if(url != null) {
+			try {
+				URL urlObject = new URL(url);
+				plugin = plugins.add(name, urlObject);
+			} catch (MalformedURLException e) {
+				LogWebSocketServlet.sendToAll("message-error-Invalid URL");
 			} catch (CrawljaxWebException e) {
 				LogWebSocketServlet.sendToAll("message-error-" + e.getMessage());
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		return Response.ok(plugin).build();
 	}
@@ -81,7 +96,11 @@ public class PluginsResource {
 	@DELETE
 	@Path("{id}")
 	public Response removePlugin(Plugin plugin) {
-		plugin = plugins.remove(plugin);
+		try {
+			plugin = plugins.remove(plugin);
+		} catch (CrawljaxWebException e) {
+			LogWebSocketServlet.sendToAll("message-error-" + e.getMessage());
+		}
 		return Response.ok(plugin).build();
 	}
 }

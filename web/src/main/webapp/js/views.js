@@ -237,25 +237,3 @@ Ember.Handlebars.registerHelper('ifEqual', function(v1, v2, options) {
 	}
 	return options.inverse(this);
 });
-
-/*Ember.Handlebars.helper('formField', function(type, options) {
-	var _args = arguments;
-	//var raw = "{{formField 'parameter.type' valueBinding='parameter.value' label='{{dynamicLabel}}' dynamicLabel='displayName' contentBinding='parameter'}}";
-	switch(type) {
-		case "textbox":
-			options.hash[label] += ": ";
-			return Ember.Handlebars.helpers.view.call(this, App.FormTextField, options);
-		case "checkbox":
-			var asdf = "{{view App.FormTextField valueBinding='obj.value' label='{{dynamicLabel}}' dynamicLabel='displayName' contentBinding='obj'}}";
-			var template = Handlebars.compile(asdf);
-			return template({obj: options.hash.content})
-			
-			//return Ember.Handlebars.helpers.view.call(this, App.FormCheckbox, options);
-		case "select":
-			return Ember.Handlebars.helpers.view.call(this, App.FormSelect, options);
-	}
-	var view = App.PluginParameterViews[type];
-	if(view) {
-		return Ember.Handlebars.helpers.view.call(this, view, options);
-	}
-});*/
