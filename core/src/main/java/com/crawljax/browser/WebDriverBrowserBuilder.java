@@ -9,6 +9,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,23 +56,30 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 				browser = newFireFoxBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
 				break;
 			case INTERNET_EXPLORER:
-				browser = WebDriverBackedEmbeddedBrowser.withDriver(new InternetExplorerDriver(),
-				        filterAttributes, crawlWaitEvent, crawlWaitReload);
+				browser =
+				        WebDriverBackedEmbeddedBrowser.withDriver(new InternetExplorerDriver(),
+				                filterAttributes, crawlWaitEvent, crawlWaitReload);
 				break;
 			case CHROME:
 				browser = newChromeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
 				break;
 
 			case REMOTE:
-				browser = WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
-				        .getBrowserConfig().getRemoteHubUrl(), filterAttributes, crawlWaitEvent,
-				        crawlWaitReload);
+				browser =
+				        WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
+				                .getBrowserConfig().getRemoteHubUrl(), filterAttributes,
+				                crawlWaitEvent, crawlWaitReload);
 				break;
 			case ANDROID:
-				browser = WebDriverBackedEmbeddedBrowser.withDriver(new AndroidDriver(),
-				        filterAttributes, crawlWaitEvent, crawlWaitReload);
+				browser =
+				        WebDriverBackedEmbeddedBrowser.withDriver(new AndroidDriver(),
+				                filterAttributes, crawlWaitEvent, crawlWaitReload);
 				break;
 
+			case PHANTOMJS:
+				browser = newPhantomJSDriver(filterAttributes, crawlWaitReload, crawlWaitEvent);
+
+				break;
 			default:
 				throw new IllegalStateException("Unrecognized browsertype "
 				        + configuration.getBrowserConfig().getBrowsertype());
@@ -88,12 +97,12 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 				profile.setPreference("intl.accept_languages", lang);
 			}
 
-			profile.setPreference("network.proxy.http", configuration
-			        .getProxyConfiguration().getHostname());
+			profile.setPreference("network.proxy.http", configuration.getProxyConfiguration()
+			        .getHostname());
 			profile.setPreference("network.proxy.http_port", configuration
 			        .getProxyConfiguration().getPort());
-			profile.setPreference("network.proxy.type", configuration
-			        .getProxyConfiguration().getType().toInt());
+			profile.setPreference("network.proxy.type", configuration.getProxyConfiguration()
+			        .getType().toInt());
 			/* use proxy for everything, including localhost */
 			profile.setPreference("network.proxy.no_proxies_on", "");
 
@@ -101,8 +110,8 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			        filterAttributes, crawlWaitReload, crawlWaitEvent);
 		}
 
-		return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
-		        filterAttributes, crawlWaitEvent, crawlWaitReload);
+		return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), filterAttributes,
+		        crawlWaitEvent, crawlWaitReload);
 	}
 
 	private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
@@ -126,4 +135,16 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 		return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, filterAttributes,
 		        crawlWaitEvent, crawlWaitReload);
 	}
+
+	private EmbeddedBrowser newPhantomJSDriver(ImmutableSortedSet<String> filterAttributes,
+	        long crawlWaitReload, long crawlWaitEvent) {
+
+		DesiredCapabilities caps = new DesiredCapabilities();
+		caps.setCapability("takesScreenshot", true);
+		PhantomJSDriver phantomJsDriver = new PhantomJSDriver(caps);
+
+		return WebDriverBackedEmbeddedBrowser.withDriver(phantomJsDriver, filterAttributes,
+		        crawlWaitEvent, crawlWaitReload);
+	}
+
 }
