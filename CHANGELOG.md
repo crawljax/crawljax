@@ -1,6 +1,6 @@
 ## [Version 3.3](https://github.com/crawljax/crawljax/issues?milestone=6&state=closed)
 
-* [PhantomJSDriver](https://github.com/detro/ghostdriver) support has added. You can now use PhantomJS as a driver in Crawljax. For details see [#327](https://github.com/crawljax/crawljax/pull/327)
+* [PhantomJSDriver](https://github.com/detro/ghostdriver) support is added. You can now use PhantomJS as a driver in Crawljax. For details see [#327](https://github.com/crawljax/crawljax/pull/327)
 
 
 ## [Version 3.2](https://github.com/crawljax/crawljax/issues?milestone=5&state=closed)
