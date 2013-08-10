@@ -66,7 +66,7 @@ public class PluginsResource {
 	        @FormDataParam("file") String file,
 			@FormDataParam("url") String url) {
 		Plugin plugin = null;
-
+		boolean error = false;
 		if(file != null) {
 			String content = file.substring(file.indexOf(',') + 1);
 			BASE64Decoder decoder = new BASE64Decoder();
@@ -76,6 +76,7 @@ public class PluginsResource {
 					plugin = plugins.add(name, decodedBytes);
 				} catch (CrawljaxWebException e) {
 					LogWebSocketServlet.sendToAll("message-error-" + e.getMessage());
+					error = true;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -86,9 +87,14 @@ public class PluginsResource {
 				plugin = plugins.add(name, urlObject);
 			} catch (MalformedURLException e) {
 				LogWebSocketServlet.sendToAll("message-error-Invalid URL");
+				error = true;
 			} catch (CrawljaxWebException e) {
 				LogWebSocketServlet.sendToAll("message-error-" + e.getMessage());
+				error = true;
 			}
+		}
+		if(!error) {
+			LogWebSocketServlet.sendToAll("message-success-Plugin Loaded");
 		}
 		return Response.ok(plugin).build();
 	}

@@ -177,7 +177,7 @@ App.Plugins.reopenClass({
 		var plugins = [];
 		$.ajax({
 			url: '/rest/plugins',
-			async: false,
+			async: true,
 			type: 'PUT',
 			dataType: 'json',
 			context: plugins,
@@ -188,7 +188,6 @@ App.Plugins.reopenClass({
 				if (callback !== undefined) callback(plugins);
 			}
 		});
-		return plugins;
 	},
 	find: function(id){
 		var plugin = App.Plugins.create({id: id });
@@ -221,11 +220,11 @@ App.Plugins.reopenClass({
 		}
 		$.ajax({
 			url: '/rest/plugins',
-			async: false,
+			async: true,
 			type: 'POST',
 			data: fd,
 			processData: false,
-			contentType: false,//"multipart/form-data",
+			contentType: false,
 			success: function(response) {
 				if (callback !== undefined) callback();
 			}

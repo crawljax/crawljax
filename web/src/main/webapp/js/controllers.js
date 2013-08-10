@@ -272,6 +272,7 @@ App.PluginItemController = Ember.Controller.extend({
 App.PluginManagementController = Ember.ArrayController.extend({
 	needs: ['application'],
 	refresh: function() {
+		this.get("controllers.application").displayMessage("Refreshing List...", 0);
 		var _this = this;
 		App.Plugins.refresh(function(plugins){
 			_this.set('content', plugins);
@@ -288,6 +289,7 @@ App.PluginManagementController = Ember.ArrayController.extend({
 			alert("Please select a .jar file");
 			return;
 		}
+		this.get("controllers.application").displayMessage("Uploading Plugin...", 0);
 		var _this = this;
 		var reader = new FileReader();
 		reader.onload = function(e) {
@@ -308,6 +310,7 @@ App.PluginManagementController = Ember.ArrayController.extend({
 			alert("Please enter a name for the plugin");
 			return;
 		}
+		this.get("controllers.application").displayMessage("Downloading Plugin...", 0);
 		var _this = this;
 		App.Plugins.add(name, undefined, url, function() {
 			_this.set('content', App.Plugins.findAll());

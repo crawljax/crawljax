@@ -132,7 +132,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.crawljax.web.CrawljaxServer</mainClass>
+							<mainClass>com.crawljax.web.Main</mainClass>
 						</manifest>
 						<manifestEntries>
 							<Class-Path>config/</Class-Path>
