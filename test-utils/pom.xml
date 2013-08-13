@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>${jetty.version}</version>			
+			<version>${jetty.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -57,7 +57,10 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
 </project>
