@@ -378,7 +378,7 @@
 	<script type="text/x-handlebars" data-template-name="crawlrecords/index">
 		<table class="table table-striped">
 			<thead>
-				<tr><th>Crawl</th><th>Configuration</th><th>Execution Time</th></tr>
+				<tr><th>Crawl</th><th>Configuration</th><th>Execution Time</th><th>Status</th></tr>
 			</thead>
 			<tbody>
 				{{#each crawlrecord in controller}}
@@ -386,6 +386,7 @@
 					<td>{{#linkTo 'crawlrecord' crawlrecord}}Crawl {{content.id}}{{/linkTo}}</td>
 					<td><a {{bindAttr href="configURL"}}>{{content.configurationName}}</a></td>
 					<td>{{crawlrecord.startTimeFormatted}}</td>
+					<td>{{content.crawlStatus}}</td>
 				</tr>
 				{{else}}<tr><td colspan="3">No available crawl records.</td></tr>{{/each}}
 			</tbody>

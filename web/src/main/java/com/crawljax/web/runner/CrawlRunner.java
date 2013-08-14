@@ -271,7 +271,6 @@ public class CrawlRunner {
 				record.setCrawlStatus(CrawlStatusType.failure);
 				crawlRecords.update(record);
 				LogWebSocketServlet.sendToAll("fail-" + Integer.toString(crawlId));
-				pool.shutdown();
 			} finally {
 				MDC.remove("crawl_record");
 			}
