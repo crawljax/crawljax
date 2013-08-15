@@ -60,5 +60,6 @@
 
 	<modules>
 		<module>crawloverview-plugin</module>
+		<module>test-plugin</module>
   </modules>
 </project>
