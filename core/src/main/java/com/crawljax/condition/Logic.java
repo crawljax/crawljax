@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.crawljax.condition;
 
 import java.util.Arrays;

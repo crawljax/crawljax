@@ -111,7 +111,7 @@ public abstract class LargeTestBase {
 		if (!HAS_RUN.get()) {
 			HAS_RUN.set(true);
 			CrawljaxRunner crawljax = null;
-			crawljax = new CrawljaxRunner(getCrawlSpecification());
+			crawljax = new CrawljaxRunner(getCrawljaxConfiguration());
 			session = crawljax.call();
 			HAS_FINISHED.set(true);
 		} else {
@@ -123,17 +123,9 @@ public abstract class LargeTestBase {
 	}
 
 	/**
-	 * retrieve / build the crawlspecification for the given arguments.
-	 * 
-	 * @param url
-	 *            the url where the large test run is located.
-	 * @param waintAfterEvent
-	 *            the amount of time in ms to wait after an event is fired.
-	 * @param waitAfterReload
-	 *            the amount of time in ms to wait after a reload.
-	 * @return the new CrawlSpecification.
+	 * retrieve / build the CrawljaxConfiguration for the given arguments.
 	 */
-	protected CrawljaxConfiguration getCrawlSpecification() {
+	protected CrawljaxConfiguration getCrawljaxConfiguration() {
 
 		CrawljaxConfigurationBuilder builder =
 		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl());

@@ -68,12 +68,13 @@ public class Crawler {
 	        FormHandlerFactory formHandlerFactory,
 	        WaitConditionChecker waitConditionChecker,
 	        CandidateElementExtractorFactory elementExtractor,
-	        Provider<InMemoryStateFlowGraph> graphProvider) {
+	        Provider<InMemoryStateFlowGraph> graphProvider,
+	        Plugins plugins) {
 		this.context = context;
 		this.graphProvider = graphProvider;
 		this.browser = context.getBrowser();
 		this.url = config.getUrl();
-		this.plugins = config.getPlugins();
+		this.plugins = plugins;
 		this.crawlRules = config.getCrawlRules();
 		this.maxDepth = config.getMaximumDepth();
 		this.stateComparator = stateComparator;
@@ -81,7 +82,6 @@ public class Crawler {
 		this.waitConditionChecker = waitConditionChecker;
 		this.candidateExtractor = elementExtractor.newExtractor(browser);
 		this.formHandler = formHandlerFactory.newFormHandler(browser);
-
 	}
 
 	/**
@@ -104,6 +104,7 @@ public class Crawler {
 		                crawlRules.getInvariants(), plugins, stateComparator);
 		context.setStateMachine(stateMachine);
 		crawlpath = new CrawlPath();
+		context.setCrawlPath(crawlpath);
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
 		crawlDepth.set(0);
@@ -111,7 +112,7 @@ public class Crawler {
 
 	/**
 	 * @param crawlTask
-	 *            The {@link CrawlTask} this {@link Crawler} should execute.
+	 *            The {@link StateVertex} this {@link Crawler} should visit to crawl.
 	 */
 	public void execute(StateVertex crawlTask) {
 		LOG.debug("Resetting the crawler and going to state {}", crawlTask.getName());
@@ -136,38 +137,16 @@ public class Crawler {
 	}
 
 	private void follow(CrawlPath path, StateVertex targetState)
-	        throws StateUnreachableException,
-	        CrawljaxException {
+	        throws StateUnreachableException, CrawljaxException {
 		StateVertex curState = context.getSession().getInitialState();
 
 		for (Eventable clickable : path) {
-
 			checkCrawlConditions(targetState);
-
 			LOG.debug("Backtracking by executing {} on element: {}", clickable.getEventType(),
 			        clickable);
-
-			boolean switched = stateMachine.changeState(clickable.getTargetStateVertex());
-			if (!switched) {
-				throw new StateUnreachableException(targetState, "Could not switch states");
-			}
-			curState = clickable.getTargetStateVertex();
-			crawlpath.add(clickable);
+			curState = changeState(targetState, clickable);
 			handleInputElements(clickable);
-			if (fireEvent(clickable)) {
-				if (crawlerLeftDomain()) {
-					throw new StateUnreachableException(targetState,
-					        "Domain left while following path");
-				}
-				int depth = crawlDepth.incrementAndGet();
-				LOG.info("Crawl depth is now {}", depth);
-				plugins.runOnRevisitStatePlugins(context, curState);
-
-			} else {
-				throw new StateUnreachableException(targetState, "couldn't fire eventable "
-				        + clickable);
-			}
-
+			tryToFireEvent(targetState, curState, clickable);
 			checkCrawlConditions(targetState);
 		}
 
@@ -182,6 +161,32 @@ public class Crawler {
 		if (!candidateExtractor.checkCrawlCondition()) {
 			throw new StateUnreachableException(targetState,
 			        "Crawl conditions not complete. Not following path");
+		}
+	}
+
+	private StateVertex changeState(StateVertex targetState, Eventable clickable) {
+		boolean switched = stateMachine.changeState(clickable.getTargetStateVertex());
+		if (!switched) {
+			throw new StateUnreachableException(targetState, "Could not switch states");
+		}
+		StateVertex curState = clickable.getTargetStateVertex();
+		crawlpath.add(clickable);
+		return curState;
+	}
+
+	private void tryToFireEvent(StateVertex targetState, StateVertex curState, Eventable clickable) {
+		if (fireEvent(clickable)) {
+			if (crawlerLeftDomain()) {
+				throw new StateUnreachableException(targetState,
+				        "Domain left while following path");
+			}
+			int depth = crawlDepth.incrementAndGet();
+			LOG.info("Crawl depth is now {}", depth);
+			plugins.runOnRevisitStatePlugins(context, curState);
+
+		} else {
+			throw new StateUnreachableException(targetState, "couldn't fire eventable "
+			        + clickable);
 		}
 	}
 
@@ -439,8 +444,9 @@ public class Crawler {
 		LOG.debug("Setting up vertex of the index page");
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
-		StateVertex index = StateMachine.createIndex(url.toExternalForm(), browser.getStrippedDom(),
-		        stateComparator.getStrippedDom(browser));
+		StateVertex index =
+		        StateMachine.createIndex(url.toExternalForm(), browser.getStrippedDom(),
+		                stateComparator.getStrippedDom(browser));
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 		        "It seems some the index state is crawled more than once.");
 

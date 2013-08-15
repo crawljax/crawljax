@@ -10,7 +10,7 @@ import com.crawljax.core.state.StateVertex;
 import com.google.inject.Inject;
 
 /**
- * Consumes {@link CrawlTask}s it gets from the {@link CrawlQueueManager}. It delegates the actual
+ * Consumes {@link StateVertex}s it gets from the {@link UnfiredCandidateActions}. It delegates the actual
  * browser interactions to a {@link Crawler} whom it has a 1 to 1 relation with.
  */
 public class CrawlTaskConsumer implements Callable<Void> {
@@ -65,8 +65,6 @@ public class CrawlTaskConsumer implements Callable<Void> {
 			int activeConsumers = runningConsumers.incrementAndGet();
 			LOG.debug("There are {} active consumers", activeConsumers);
 			handleTask(crawlTask);
-		} catch (InterruptedException e) {
-			throw e;
 		} catch (RuntimeException e) {
 			LOG.error("Cound not complete state crawl: " + e.getMessage(), e);
 		}

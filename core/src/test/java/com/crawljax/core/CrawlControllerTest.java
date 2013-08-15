@@ -26,10 +26,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
+import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
@@ -128,18 +130,20 @@ public class CrawlControllerTest {
 		                        new BrowserConfiguration(BrowserType.FIREFOX, consumers))
 		                .build();
 
-		candidateActions = new UnfiredCandidateActions(config.getBrowserConfig(), graphProvider);
+		candidateActions =
+		        new UnfiredCandidateActions(config.getBrowserConfig(), graphProvider,
+		                new MetricRegistry());
 
 		consumersDoneLatch = new ExitNotifier(config.getMaximumStates());
 
 		when(consumerFactory.get()).thenReturn(new CrawlTaskConsumer(candidateActions,
 		        consumersDoneLatch, crawler));
 
-		crawlSessionProvider = new CrawlSessionProvider(graph, config);
+		crawlSessionProvider = new CrawlSessionProvider(graph, config, new MetricRegistry());
 
-		controller =
-		        new CrawlController(executor, consumerFactory, config, consumersDoneLatch,
-		                crawlSessionProvider);
+		Plugins plugins = new Plugins(config, new MetricRegistry());
+		controller = new CrawlController(executor, consumerFactory, config, consumersDoneLatch,
+		        crawlSessionProvider, plugins);
 
 	}
 

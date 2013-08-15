@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.crawljax.oraclecomparator.comparators;
 
 import java.io.IOException;

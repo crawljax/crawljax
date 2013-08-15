@@ -22,9 +22,11 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
@@ -52,7 +54,8 @@ public class CrawlerTest {
 	private EmbeddedBrowser browser;
 
 	@Spy
-	private Plugins plugins = Plugins.noPlugins();
+	private Plugins plugins = new Plugins(CrawljaxConfiguration.builderFor("http://localhost")
+	        .build(), new MetricRegistry());
 
 	@Mock
 	private Provider<CrawlSession> sessionProvider;
@@ -112,18 +115,19 @@ public class CrawlerTest {
 		when(sessionProvider.get()).thenReturn(session);
 
 		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());
-		when(config.getPlugins()).thenReturn(plugins);
 		stateComparator = new StateComparator(config.getCrawlRules());
 
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
 		when(graphProvider.get()).thenReturn(graph);
 
-		context = new CrawlerContext(browser, config, sessionProvider, exitNotifier);
+		context =
+		        new CrawlerContext(browser, config, sessionProvider, exitNotifier,
+		                new MetricRegistry());
 		crawler =
 		        new Crawler(context, config,
 		                stateComparator,
 		                candidateActionCache, formHandlerFactory, waitConditionChecker,
-		                elementExtractor, graphProvider);
+		                elementExtractor, graphProvider, plugins);
 
 		setupStateFlowGraph();
 	}

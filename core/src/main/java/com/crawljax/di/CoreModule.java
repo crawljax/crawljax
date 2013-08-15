@@ -20,6 +20,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.forms.FormHandler;
+import com.crawljax.metrics.MetricsModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
@@ -36,7 +37,7 @@ public class CoreModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		LOG.debug("Configuring the core module");
-
+		install(new MetricsModule());
 		install(new ConfigurationModule(configuration));
 
 		bind(ExitNotifier.class).toInstance(new ExitNotifier(configuration.getMaximumStates()));

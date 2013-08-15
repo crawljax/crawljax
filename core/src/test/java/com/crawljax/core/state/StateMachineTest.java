@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.invariant.Invariant;
@@ -47,6 +48,9 @@ public class StateMachineTest {
 	@Mock
 	private CrawlerContext context;
 
+	@Mock
+	private Plugins plugins;
+
 	private static boolean hit = false;
 
 	/**
@@ -55,8 +59,7 @@ public class StateMachineTest {
 	@Before
 	public void initStateMachine() {
 		InMemoryStateFlowGraph sfg = newStateFlowGraph();
-		sm = new StateMachine(sfg, ImmutableList.<Invariant> of(), Plugins.noPlugins(),
-		        comparator);
+		sm = new StateMachine(sfg, ImmutableList.<Invariant> of(), plugins, comparator);
 	}
 
 	@Test
@@ -211,7 +214,7 @@ public class StateMachineTest {
 		        }));
 		InMemoryStateFlowGraph sfg = newStateFlowGraph();
 		StateMachine smLocal =
-		        new StateMachine(sfg, iList, Plugins.noPlugins(), comparator);
+		        new StateMachine(sfg, iList, plugins, comparator);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
@@ -274,7 +277,7 @@ public class StateMachineTest {
 
 	private void setStateMachineForConfig(CrawljaxConfiguration config) {
 		sm = new StateMachine(newStateFlowGraph(), config.getCrawlRules().getInvariants(),
-		        config.getPlugins(), comparator);
+		        new Plugins(config, new MetricRegistry()), comparator);
 	}
 
 	/**

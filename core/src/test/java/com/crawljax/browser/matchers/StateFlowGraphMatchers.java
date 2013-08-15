@@ -54,8 +54,8 @@ public class StateFlowGraphMatchers {
 	}
 
 	/**
-	 * @param edges
-	 *            The number of expected edges.
+	 * @param substring
+	 *            A {@link String} that occurs in the DOM.
 	 * @return A {@link Matcher} that inspects if the number of edges.
 	 */
 	@Factory

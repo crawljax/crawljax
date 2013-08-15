@@ -1,8 +1,10 @@
 Crawljax [![Build Status](http://jenkins.crawljax.com/job/crawljax-fullbuild-master/badge/icon)](http://jenkins.crawljax.com/job/crawljax-fullbuild-master/)
 ========
 
-Crawling Ajax-based Web Applications 
-------------------------------------
+Crawljax is a tool for automatically crawling and testing modern web applications. 
+Crawljax can explore any JavaScript-based Ajax web application through an event-driven dynamic crawling engine.
+It produces as output a state-flow graph of the dynamic DOM states and the event-based transitions between them.
+Crawljax can easily be extended through its easy-to-use [plugin architecture](https://github.com/crawljax/crawljax/wiki/Writing-a-plugin).
 
 For more project info visit the [Crawljax website](http://crawljax.com).
 

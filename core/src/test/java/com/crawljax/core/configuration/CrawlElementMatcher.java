@@ -9,8 +9,8 @@ import org.hamcrest.Matcher;
 public class CrawlElementMatcher {
 
 	/**
-	 * @param edges
-	 *            The number of expected edges.
+	 * @param xPath
+	 *            checks {@link CrawlElement#getWithXpathExpression()}
 	 * @return A {@link Matcher} that inspects if the number of edges.
 	 */
 	@Factory

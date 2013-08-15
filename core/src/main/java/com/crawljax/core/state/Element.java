@@ -116,9 +116,8 @@ public class Element implements Serializable {
 
 	/**
 	 * @param attribute
-	 *            name
-	 * @return the {@link Attribute} by its name or <code>null</code> if the {@link Attribute}
-	 *         cannot be found.
+	 *            the attribute name.
+	 * @return the attribute by its name or <code>null</code> if the attribute cannot be found.
 	 */
 	public String getAttributeOrNull(String attribute) {
 		return attributes.get(attribute.toLowerCase());

@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.MetricRegistry;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlSessionNotSetupYetException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -27,19 +28,19 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 	private final AtomicBoolean isSet = new AtomicBoolean();
 	private final InMemoryStateFlowGraph stateFlowGraph;
 	private final CrawljaxConfiguration config;
+	private final MetricRegistry registry;
 
 	private CrawlSession session;
 
 	@Inject
 	public CrawlSessionProvider(InMemoryStateFlowGraph stateFlowGraph,
-	        CrawljaxConfiguration config) {
+	        CrawljaxConfiguration config, MetricRegistry registry) {
 		this.stateFlowGraph = stateFlowGraph;
 		this.config = config;
+		this.registry = registry;
 	}
 
 	/**
-	 * @param session
-	 *            The session that should be set.
 	 * @throws IllegalStateException
 	 *             when the method is invoked more than once.
 	 */
@@ -48,7 +49,7 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 			LOG.debug("Setting up the crawlsession");
 			StateVertex added = stateFlowGraph.putIndex(indexState);
 			Preconditions.checkArgument(added == null, "Could not set the initial state");
-			session = new CrawlSession(config, stateFlowGraph, indexState);
+			session = new CrawlSession(config, stateFlowGraph, indexState, registry);
 		} else {
 			throw new IllegalStateException("Session is already set");
 		}

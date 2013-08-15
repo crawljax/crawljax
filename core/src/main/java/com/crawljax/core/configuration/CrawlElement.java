@@ -22,16 +22,13 @@ import com.google.common.collect.Lists;
  * used as follows:
  * <p/>
  * <code>
- * CrawlSpecification crawler = new CrawlSpecification();
+ * CrawljaxConfiguration crawler = new CrawljaxConfiguration();
  * crawler.click("a");
  * crawler.click("div").withAttribute("class", "clickable");
  * 
  * crawler.dontClick("a").withText("id", "logout");
  * crawler.dontClick("a").underXpath("//DIV[@id='header']");
  * </code>
- * 
- * @see CrawlSpecification
- * @author DannyRoest@gmail.com (Danny Roest)
  */
 public final class CrawlElement {
 
@@ -91,7 +88,6 @@ public final class CrawlElement {
 			this.underXpath =
 			        this.underXpath + " | " + "//" + this.tagName + "[@" + attributeName + "='"
 			                + value + "']";
-			;
 		}
 		return this;
 	}
@@ -167,23 +163,6 @@ public final class CrawlElement {
 		        .add("inputFieldIds", inputFieldIds)
 		        .add("underXpath", underXpath)
 		        .toString();
-	}
-
-	/**
-	 * @return a Test string.
-	 */
-	protected String toTestString() {
-		StringBuffer ret = new StringBuffer(toString());
-		ret.append("\nXpath expression: ");
-		ret.append(getWithXpathExpression());
-		ret.append("\n");
-		for (Condition condition : getConditions()) {
-			ret.append(condition.toString());
-			ret.append("\n");
-		}
-		ret.append("InputFieldIds: ");
-		ret.append(getInputFieldIds());
-		return ret.toString();
 	}
 
 	/**

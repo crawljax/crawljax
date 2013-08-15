@@ -9,8 +9,6 @@ import com.crawljax.condition.Condition;
 
 /**
  * This class contains the oracle and its precondition(s).
- * 
- * @author danny
  */
 @Immutable
 public class OracleComparator {
@@ -66,8 +64,6 @@ public class OracleComparator {
 	}
 
 	/**
-	 * @param newDom
-	 * @param oldDom
 	 * @return the Oracle
 	 */
 	public Comparator getOracle() {

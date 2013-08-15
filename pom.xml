@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="Windows-1252"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -9,7 +10,7 @@
 
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax-parent-pom</artifactId>
-	<version>3.2-SNAPSHOT</version>
+	<version>3.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Crawljax parent POM</name>
@@ -24,26 +25,28 @@
 	<inceptionYear>2012</inceptionYear>
 
 	<prerequisites>
-		<maven>3.0.0</maven>
+		<maven>3.0.5</maven>
 	</prerequisites>
 
 	<properties>
-		<slf4j.version>1.7.5</slf4j.version>
-		<logback.version>1.0.13</logback.version>
-		<selenium.version>[2.33.0,)</selenium.version>
-		<jetty.version>9.0.4.v20130625</jetty.version>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<slf4j.version>1.7.5</slf4j.version>
+		<logback.version>1.0.13</logback.version>
+		<selenium.version>[2.34.0,)</selenium.version>
+		<jetty.version>9.0.4.v20130625</jetty.version>
+		<metrics.version>3.0.1</metrics.version>
 	</properties>
 
 	<scm>
 		<connection>scm:git:git@github.com:crawljax/crawljax.git</connection>
 		<developerConnection>scm:git:git@github.com:crawljax/crawljax.git</developerConnection>
 		<url>https://github.com/crawljax/crawljax</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<issueManagement>
 		<system>GitHub</system>
@@ -85,17 +88,7 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-api</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -126,7 +119,13 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<scope>test</scope>
+			<version>${logback.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
@@ -192,40 +191,40 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<version>2.6</version>
 				</plugin>
+				<plugin>
+					<groupId>pl.project13.maven</groupId>
+					<artifactId>git-commit-id-plugin</artifactId>
+					<version>2.1.5</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>revision</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<dateFormat>yyyy-MM-dd HH:mm:ss z</dateFormat>
+						<verbose>true</verbose>
+						<generateGitPropertiesFile>true</generateGitPropertiesFile>
+						<gitDescribe>
+							<always>true</always>
+							<abbrev>7</abbrev>
+							<dirty>-dirty</dirty>
+						</gitDescribe>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
 		<plugins>
 			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
-				<version>2.1.4</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-					</execution>
-				</executions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4.1</version>
 				<configuration>
-					<dateFormat>yyyy-MM-dd HH:mm:ss z</dateFormat>
-					<verbose>true</verbose>
-					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<gitDescribe>
-						<always>true</always>
-						<abbrev>7</abbrev>
-						<dirty>-dirty</dirty>
-					</gitDescribe>
+					<tagNameFormat>crawljax-@{project.version}</tagNameFormat>
 				</configuration>
 			</plugin>
-			<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.4.1</version>
-					<configuration>
-						<tagNameFormat>crawljax-@{project.version}</tagNameFormat>
-					</configuration>
-				</plugin>
 		</plugins>
 	</build>
 

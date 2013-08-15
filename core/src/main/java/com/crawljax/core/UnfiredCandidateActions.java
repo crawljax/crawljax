@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 
 import javax.inject.Inject;
@@ -16,10 +15,13 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.metrics.MetricsModule;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
@@ -37,16 +39,22 @@ public class UnfiredCandidateActions {
 	private final BlockingQueue<Integer> statesWithCandidates;
 	private final Striped<Lock> locks;
 	private final Provider<StateFlowGraph> sfg;
-	private final AtomicInteger crawlerLostCount = new AtomicInteger();
-	private final AtomicInteger actionsNotFiredCount = new AtomicInteger();
+	private final Counter crawlerLostCount;
+	private final Counter unfiredActionsCount;
 
 	@Inject
-	UnfiredCandidateActions(BrowserConfiguration config, Provider<StateFlowGraph> sfg) {
+	UnfiredCandidateActions(BrowserConfiguration config, Provider<StateFlowGraph> sfg,
+	        MetricRegistry registry) {
 		this.sfg = sfg;
 		cache = Maps.newHashMap();
 		statesWithCandidates = Queues.newLinkedBlockingQueue();
 		// Every browser gets a lock.
 		locks = Striped.lock(config.getNumberOfBrowsers());
+
+		crawlerLostCount =
+		        registry.register(MetricsModule.EVENTS_PREFIX + "crawler_lost", new Counter());
+		unfiredActionsCount =
+		        registry.register(MetricsModule.EVENTS_PREFIX + "unfired_actions", new Counter());
 	}
 
 	/**
@@ -156,14 +164,11 @@ public class UnfiredCandidateActions {
 			removeStateFromQueue(crawlTask.getId());
 			Queue<CandidateCrawlAction> removed = cache.remove(crawlTask.getId());
 			if (removed != null) {
-				actionsNotFiredCount.addAndGet(removed.size());
+				unfiredActionsCount.inc(removed.size());
 			}
 		} finally {
 			lock.unlock();
+			crawlerLostCount.inc();
 		}
-		crawlerLostCount.incrementAndGet();
-		LOG.info("In total {} actions weren't fired because crawljax got lost {} times",
-		        actionsNotFiredCount, crawlerLostCount);
 	}
-
 }

@@ -29,9 +29,6 @@ public class FormInput {
 
 	private boolean multiple;
 
-	/**
-	 *
-	 */
 	public FormInput() {
 		super();
 	}

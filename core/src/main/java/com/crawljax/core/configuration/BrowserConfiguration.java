@@ -7,7 +7,6 @@ import javax.inject.Provider;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -47,8 +46,6 @@ public class BrowserConfiguration {
 	private String lang;
 
 	/**
-	 * @param browsertype
-	 *            The browser you'd like to use.
 	 * @param numberOfBrowsers
 	 *            The number of browsers you'd like to use. They will be started as soon as the
 	 *            crawl starts.

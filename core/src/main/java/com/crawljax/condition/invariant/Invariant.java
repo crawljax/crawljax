@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.crawljax.condition.invariant;
 
 import java.util.List;

@@ -25,12 +25,6 @@ public class EventableConditionChecker {
 	private static final Logger LOG = LoggerFactory.getLogger(EventableConditionChecker.class);
 	private final ImmutableList<EventableCondition> eventableConditions;
 
-	/**
-	 * Construct the eventableconditionchecker with its eventable conditions.
-	 * 
-	 * @param eventableConditions
-	 *            The eventable conditions.
-	 */
 	@Inject
 	public EventableConditionChecker(CrawlRules config) {
 		Builder<EventableCondition> builder = ImmutableList.builder();

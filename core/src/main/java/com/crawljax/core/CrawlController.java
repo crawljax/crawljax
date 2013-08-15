@@ -42,20 +42,21 @@ public class CrawlController implements Callable<CrawlSession> {
 	@Inject
 	CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
 	        CrawljaxConfiguration config, ExitNotifier exitNotifier,
-	        CrawlSessionProvider crawlSessionProvider) {
+	        CrawlSessionProvider crawlSessionProvider,
+	        Plugins plugins) {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
 		this.exitNotifier = exitNotifier;
 		this.config = config;
-		this.plugins = config.getPlugins();
+		this.plugins = plugins;
 		this.crawlSessionProvider = crawlSessionProvider;
 		this.maximumCrawlTime = config.getMaximumRuntime();
 	}
 
 	/**
-	 * Run the configured crawl.
+	 * Run the configured crawl. This method blocks until the crawl is done.
 	 * 
-	 * @return
+	 * @return the CrawlSession once the crawl is done.
 	 */
 	@Override
 	public CrawlSession call() {
@@ -67,6 +68,14 @@ public class CrawlController implements Callable<CrawlSession> {
 		plugins.runOnNewStatePlugins(firstConsumer.getContext(), firstState);
 		executeConsumers(firstConsumer);
 		return crawlSessionProvider.get();
+	}
+
+	/**
+	 * @return Same as {@link #call()}
+	 * @see #call().
+	 */
+	public CrawlSession run() {
+		return call();
 	}
 
 	/**

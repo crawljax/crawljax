@@ -102,12 +102,6 @@ public class CandidateElementExtractor {
 	 * This method extracts candidate elements from the current DOM tree in the browser, based on
 	 * the crawl tags defined by the user.
 	 * 
-	 * @param crawlTagElements
-	 *            a list of TagElements to include.
-	 * @param crawlExcludeTagElements
-	 *            a list of TagElements to exclude.
-	 * @param clickOnce
-	 *            true if each candidate elements should be included only once.
 	 * @param currentState
 	 *            the state in which this extract method is requested.
 	 * @return a list of candidate elements that are not excluded.

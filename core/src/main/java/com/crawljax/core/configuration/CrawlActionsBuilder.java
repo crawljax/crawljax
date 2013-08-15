@@ -11,12 +11,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-/**
- * Specifies the actions for CrawlElements NOTE: In general CrawlActions is not designed to be
- * instantiated directly. CrawlActions should be used via {@link CrawlSpecification} To add
- * conditions to check whether a tag should (not) be clicked one can use {@link #when(Condition...)}
- * . See also {@link Condition}
- */
 public class CrawlActionsBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlActionsBuilder.class);
@@ -92,9 +86,8 @@ public class CrawlActionsBuilder {
 	 * click("a") will only include 1 This set can be restricted by {@link #dontClick(String)}. If
 	 * no clicks are specified, {@link #clickDefaultElements()} is enabled.
 	 * 
-	 * @param tagName
+	 * @param tagNames
 	 *            the tag name of the elements to be included
-	 * @return this CrawlElement
 	 */
 	public void click(String... tagNames) {
 		for (String tagName : tagNames) {
