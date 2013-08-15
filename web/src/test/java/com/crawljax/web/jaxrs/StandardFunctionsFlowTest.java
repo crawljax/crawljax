@@ -27,11 +27,11 @@ public class StandardFunctionsFlowTest {
 	private static DefaultSelenium selenium;
 	private static WebDriver driver;
 
-	private final String CONFIG_NAME = "TestConfiguration";
-	private String CONFIG_URL = "http://crawljax.com";
+	private static String CONFIG_NAME = "TestConfiguration";
+	private static String CONFIG_URL = "http://crawljax.com";
 
-	private String PLUGIN_NAME = "Dummy Plugin";
-	private String PLUGIN_ID = "dummy-plugin";
+	private static String PLUGIN_NAME = "Test Plugin";
+	private static String PLUGIN_ID = "test-plugin";
 
 	@Rule
 	public TestRule globalTimeout = new Timeout(120 * 1000);
