@@ -24,7 +24,7 @@ public final class AdvancedExample {
 
 	private static final long WAIT_TIME_AFTER_EVENT = 200;
 	private static final long WAIT_TIME_AFTER_RELOAD = 20;
-	private static final String URL = "http://demo.crawljax.com";
+	private static final String URL = "http://www.google.com";
 
 	/**
 	 * Run this method to start the crawl.
@@ -38,7 +38,10 @@ public final class AdvancedExample {
 
 		// click these elements
 		builder.crawlRules().clickDefaultElements();
-		builder.crawlRules().click("div").withAttribute("class", "clickable");
+		builder.crawlRules().click("div");
+		builder.crawlRules().setRandomize(true);
+		builder.setMaximumStates(6);
+		/*		builder.crawlRules().click("div").withAttribute("class", "clickable");
 
 		// but don't click these
 		builder.crawlRules().dontClick("a").withAttribute("class", "ignore");
@@ -62,9 +65,9 @@ public final class AdvancedExample {
 		}
 		builder.setOutputDirectory(outFolder);
 		builder.addPlugin(new CrawlOverview());
-
+*/
 		// We want to use two browsers simultaneously.
-		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 2));
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 1));
 
 		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 		crawljax.call();

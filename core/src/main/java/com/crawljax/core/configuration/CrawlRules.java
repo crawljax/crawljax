@@ -148,6 +148,11 @@ public class CrawlRules {
 			return this;
 		}
 
+		public CrawlRulesBuilder setRandomize(boolean randomize) {
+			crawlRules.random = randomize;
+			return this;
+		}
+		
 		/**
 		 * @param frames
 		 *            Crawl frames in a page. Default is <code>true</code>.
@@ -287,6 +292,7 @@ public class CrawlRules {
 	private InputSpecification inputSpecification = new InputSpecification();
 	private boolean testInvariantsWhileCrawling = true;
 	private boolean clickOnce = true;
+	private boolean random = false;
 	private boolean crawlFrames = true;
 	private boolean crawlHiddenAnchors = false;
 	private long waitAfterReloadUrl = DEFAULT_WAIT_AFTER_RELOAD;
@@ -325,6 +331,10 @@ public class CrawlRules {
 
 	public boolean isClickOnce() {
 		return clickOnce;
+	}
+	
+	public boolean isRandomized() {
+		return random;
 	}
 
 	public boolean shouldCrawlFrames() {
@@ -388,6 +398,7 @@ public class CrawlRules {
 			        && Objects.equal(this.testInvariantsWhileCrawling,
 			                that.testInvariantsWhileCrawling)
 			        && Objects.equal(this.clickOnce, that.clickOnce)
+			        && Objects.equal(this.random, that.random)
 			        && Objects.equal(this.crawlFrames, that.crawlFrames)
 			        && Objects.equal(this.crawlHiddenAnchors, that.crawlHiddenAnchors)
 			        && Objects.equal(this.waitAfterReloadUrl, that.waitAfterReloadUrl)
@@ -410,6 +421,7 @@ public class CrawlRules {
 		        .add("inputSpecification", inputSpecification)
 		        .add("testInvariantsWhileCrawling", testInvariantsWhileCrawling)
 		        .add("clickOnce", clickOnce)
+		        .add("random", "random")
 		        .add("crawlFrames", crawlFrames)
 		        .add("crawlHiddenAnchors", crawlHiddenAnchors)
 		        .add("waitAfterReloadUrl", waitAfterReloadUrl)
