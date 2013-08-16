@@ -180,10 +180,15 @@ App.FormSelect = App.FormField.extend({
 		}
 		options = this.get('options');
 		var value = this.get('value');
+		var valueSet = false;
 		for(var i = 0, l = options.length; i < l; i++) {
 			if(options[i].value === value) {
 				this.set('selection', options[i]);
+				valueSet = true;
 			}
+		}
+		if(!valueSet && options.length > 0) {
+			this.set('selection', options[0]);
 		}
 	}
 });
