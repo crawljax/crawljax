@@ -88,11 +88,6 @@ public class StandardFunctionsFlowTest {
 
 		openConfiguration();
 
-		WebElement maxCrawlDepthInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('Maximum Crawl Depth:')\").parent().find('div > input')[0];");
-		maxCrawlDepthInput.clear();
-		maxCrawlDepthInput.sendKeys("1");
-
 		WebElement maxCrawlStates = (WebElement) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"label:contains('Maximum Crawl States:')\").parent().find('div > input')[0];");
 		maxCrawlStates.clear();
@@ -102,10 +97,6 @@ public class StandardFunctionsFlowTest {
 		followLink(saveConfigurationLink.get(0));
 
 		driver.navigate().refresh();
-
-		maxCrawlDepthInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('Maximum Crawl Depth:')\").parent().find('div > input')[0];");
-		assertTrue(maxCrawlDepthInput.getAttribute("value").equals("1"));
 
 		maxCrawlStates = (WebElement) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"label:contains('Maximum Crawl States:')\").parent().find('div > input')[0];");
