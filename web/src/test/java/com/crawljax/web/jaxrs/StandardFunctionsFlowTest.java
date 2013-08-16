@@ -222,7 +222,7 @@ public class StandardFunctionsFlowTest {
 		driver.navigate().refresh();
 
 		WebElement pluginTitle = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"legend:contains('" + PLUGIN_ID + "')\")[0];");
+				"return $(\"legend:contains('" + PLUGIN_NAME + "')\")[0];");
 		assertNotNull(pluginTitle);
 	}
 
