@@ -87,11 +87,18 @@ App.ApplicationController = Ember.Controller.extend({
 		}
    },
    displayMessage: function(text, positivity) {
+		var notifications = $('#notifications li').toArray();
+		if(notifications.length >= 4) {
+			$(notifications[1]).remove();
+			notifications = $('#notifications li').toArray();
+		}
+		for(var i = 1, l = notifications.length; i < l; i++) {
+			$("p", notifications[i]).removeClass().addClass("muted");
+		}
 		var clazz = "info";
 		if(positivity > 0) clazz = "success";
-		if(positivity < 0) clazz = "important";
-		$('#notifications').append('<li><span class="label label-' + clazz + '">' + text + '</span></li>');
-		setTimeout(function(){$('#notifications li:first-child').next().remove();}, 5000);
+		if(positivity < 0) clazz = "error";
+		$('#notifications').append('<li><p class="text-' + clazz + '">' + text + '</p></li>');
    }
 });
 

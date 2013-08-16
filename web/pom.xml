@@ -158,7 +158,7 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>test</phase>
+						<phase>generate-test-resources</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
