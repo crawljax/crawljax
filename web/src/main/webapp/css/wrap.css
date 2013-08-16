@@ -28,3 +28,9 @@ input:focus:invalid + .hint {display: inline;}
 #frameContainer { overflow-x: scroll; }
 #logPanel { overflow-y: scroll; }
 #frameContainer { width: 1000px;  }
+
+.alert-mute {
+  color: #9DA0A4;
+  background-color: #F5F5F5;
+  border-color: #dddddd;
+}

@@ -83,11 +83,7 @@
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="notifications">
-		<div class="well sidebar-nav">
-			<ul class="nav nav-list" id="notifications">
-				<li class="nav-header">Notifications</li>
-			</ul>
-		</div>
+		<div id="notification" class="alert alert-mute">Notifications</div>
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="configurations">
@@ -306,7 +302,7 @@
 			{{#each controller}}
 				<div class="well">
 					<div class="row">
-						<div class="span4"><legend>{{content.id}}</legend></div>
+						<div class="span4"><legend>{{plugin.name}}</legend></div>
 						<div class="pull-right">
 								{{view App.PluginSelect valueBinding='content.id' onChange='selectionChanged' contentBinding="selectItems" optionValuePath="content.value"
 											optionLabelPath="content.name" isForm='' required="true" errorText="Please select a plugin"}}</div>
