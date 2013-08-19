@@ -135,7 +135,7 @@ public class CandidateElementExtractor {
 		if(randomize){
 			ArrayList<CandidateElement> shuffleCandidateElements = Lists.newArrayList(found);
 			Collections.shuffle(shuffleCandidateElements);
-			found = ImmutableList.copyOf(shuffleCandidateElements.iterator());
+			found = ImmutableList.copyOf(shuffleCandidateElements);
 		}
 		
 		LOG.debug("Found {} new candidate elements to analyze!", found.size());

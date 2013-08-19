@@ -148,7 +148,7 @@ public class CrawlRules {
 			return this;
 		}
 
-		public CrawlRulesBuilder setRandomize(boolean randomize) {
+		public CrawlRulesBuilder clickElementsInRandomOrder(boolean randomize) {
 			crawlRules.random = randomize;
 			return this;
 		}
