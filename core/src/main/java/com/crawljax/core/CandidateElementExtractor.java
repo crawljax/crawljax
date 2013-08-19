@@ -3,12 +3,12 @@ package com.crawljax.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.slf4j.Logger;
@@ -35,7 +35,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Lists;
 import com.google.inject.assistedinject.Assisted;
 
 /**
@@ -55,7 +54,7 @@ public class CandidateElementExtractor {
 	private final ImmutableList<CrawlElement> includedCrawlElements;
 
 	private final boolean clickOnce;
-	private final boolean randomize;
+	private final boolean randomizeElementsOrder;
 
 	private final ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
@@ -81,16 +80,13 @@ public class CandidateElementExtractor {
 		CrawlRules rules = config.getCrawlRules();
 		PreCrawlConfiguration preCrawlConfig = rules.getPreCrawlConfig();
 		this.excludeCrawlElements = asMultiMap(preCrawlConfig.getExcludedElements());
-		this.includedCrawlElements =
-		        ImmutableList
-		                .<CrawlElement> builder()
-		                .addAll(preCrawlConfig.getIncludedElements())
-		                .addAll(rules.getInputSpecification().getCrawlElements())
-		                .build();
-
+		this.includedCrawlElements = ImmutableList.<CrawlElement> builder()
+		        .addAll(preCrawlConfig.getIncludedElements())
+		        .addAll(rules.getInputSpecification().getCrawlElements())
+		        .build();
 		crawlFrames = rules.shouldCrawlFrames();
 		clickOnce = rules.isClickOnce();
-		randomize = rules.isRandomized();
+		randomizeElementsOrder = rules.isRandomizeCandidateElements();
 		ignoredFrameIdentifiers = rules.getIgnoredFrameIdentifiers();
 	}
 
@@ -115,11 +111,11 @@ public class CandidateElementExtractor {
 	 */
 	public ImmutableList<CandidateElement> extract(StateVertex currentState)
 	        throws CrawljaxException {
-		Builder<CandidateElement> results = ImmutableList.builder();
+		LinkedList<CandidateElement> results = new LinkedList<>();
 
 		if (!checkedElements.checkCrawlCondition(browser)) {
 			LOG.info("State {} did not satisfy the CrawlConditions.", currentState.getName());
-			return results.build();
+			return ImmutableList.of();
 		}
 		LOG.debug("Looking in state: {} for candidate elements", currentState.getName());
 
@@ -130,19 +126,15 @@ public class CandidateElementExtractor {
 			LOG.error(e.getMessage(), e);
 			throw new CrawljaxException(e);
 		}
-		ImmutableList<CandidateElement> found = results.build();
-		
-		if(randomize){
-			ArrayList<CandidateElement> shuffleCandidateElements = Lists.newArrayList(found);
-			Collections.shuffle(shuffleCandidateElements);
-			found = ImmutableList.copyOf(shuffleCandidateElements);
+		if (randomizeElementsOrder) {
+			Collections.shuffle(results);
 		}
-		
-		LOG.debug("Found {} new candidate elements to analyze!", found.size());
-		return found;
+
+		LOG.debug("Found {} new candidate elements to analyze!", results.size());
+		return ImmutableList.copyOf(results);
 	}
 
-	private void extractElements(Document dom, Builder<CandidateElement> results,
+	private void extractElements(Document dom, List<CandidateElement> results,
 	        String relatedFrame) {
 		LOG.debug("Extracting elements for related frame '{}'", relatedFrame);
 		for (CrawlElement tag : includedCrawlElements) {
@@ -158,7 +150,7 @@ public class CandidateElementExtractor {
 		}
 	}
 
-	private void addFramesCandidates(Document dom, Builder<CandidateElement> results,
+	private void addFramesCandidates(Document dom, List<CandidateElement> results,
 	        String relatedFrame, NodeList frameNodes) {
 
 		if (frameNodes == null) {
@@ -216,7 +208,7 @@ public class CandidateElementExtractor {
 	}
 
 	private void evaluateElements(Document dom, CrawlElement crawl,
-	        Builder<CandidateElement> results, String relatedFrame) {
+	        List<CandidateElement> results, String relatedFrame) {
 		try {
 			List<Element> nodeListForCrawlElement =
 			        getNodeListForTagElement(dom, crawl,
@@ -337,7 +329,7 @@ public class CandidateElementExtractor {
 		return false;
 	}
 
-	private void evaluateElement(Builder<CandidateElement> results, String relatedFrame,
+	private void evaluateElement(List<CandidateElement> results, String relatedFrame,
 	        CrawlElement crawl, Element sourceElement) {
 		EventableCondition eventableCondition =
 		        checkedElements.getEventableConditionChecker().getEventableCondition(
