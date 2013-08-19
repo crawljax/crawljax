@@ -23,7 +23,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.ErrorHandler.UnknownServerException;
@@ -50,6 +49,7 @@ import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.DomUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.io.Files;
 
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private static final Logger LOGGER = LoggerFactory
@@ -605,7 +605,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		}
 	}
 
-	private void locateFrameAndgetSource(Document document, String topFrame, Element frameElement) throws NoSuchFrameException {
+	private void locateFrameAndgetSource(Document document, String topFrame, Element frameElement)
+	        throws NoSuchFrameException {
 		String frameIdentification = "";
 
 		if (topFrame != null && !topFrame.equals("")) {
@@ -812,7 +813,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		try {
 			File tmpfile = takeScreenShotOnBrowser(browser, OutputType.FILE);
 			try {
-				FileHandler.copy(tmpfile, file);
+				Files.copy(tmpfile, file);
 			} catch (IOException e) {
 				throw new CrawljaxException(e);
 			}
