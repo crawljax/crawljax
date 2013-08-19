@@ -38,33 +38,19 @@ public final class AdvancedExample {
 
 		// click these elements
 		builder.crawlRules().clickDefaultElements();
-		builder.crawlRules().click("div").withAttribute("class", "clickable");
+		builder.crawlRules().click("div");
 
-		// but don't click these
-		builder.crawlRules().dontClick("a").withAttribute("class", "ignore");
-		builder.crawlRules().dontClick("a").underXPath("//DIV[@id='footer']");
+		builder.setMaximumStates(10);
+		builder.setMaximumDepth(3);
+		builder.crawlRules().clickElementsInRandomOrder(true);
 
 		// Set timeouts
 		builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
 		builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
 
-		// Add a condition that this XPath doesn't exits
-		builder.crawlRules().addCrawlCondition("No spans with foo as class",
-		        new NotXPathCondition("//*[@class='foo']"));
-
-		// Set some input for fields
-		builder.crawlRules().setInputSpec(getInputSpecification());
-
-		// This will generate a nice output in the output directory.
-		File outFolder = new File("output");
-		if (outFolder.exists()) {
-			FileUtils.deleteDirectory(outFolder);
-		}
-		builder.setOutputDirectory(outFolder);
-		builder.addPlugin(new CrawlOverview());
-
+		
 		// We want to use two browsers simultaneously.
-		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 2));
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 1));
 
 		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 		crawljax.call();
