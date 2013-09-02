@@ -34,7 +34,8 @@ public class SerializeTest {
 		OutPutModel model = createModel();
 		String json = Serializer.toPrettyJson(model);
 		OutPutModel deserialized = Serializer.read(json);
-		assertThat(deserialized.toString(), is(model.toString()));
+		assertThat(deserialized.getStates(), is(model.getStates()));
+		assertThat(deserialized, is(model));
 	}
 
 	private OutPutModel createModel() throws IOException {
