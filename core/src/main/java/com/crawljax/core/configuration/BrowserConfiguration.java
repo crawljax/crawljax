@@ -7,6 +7,7 @@ import javax.inject.Provider;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 

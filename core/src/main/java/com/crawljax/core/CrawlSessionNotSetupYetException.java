@@ -1,6 +1,7 @@
 package com.crawljax.core;
 
-
+import com.crawljax.core.state.StateVertex;
+import com.crawljax.di.CrawlSessionProvider;
 
 /**
  * {@link CrawljaxException} that is thrown when you call {@link Provider#get()} of
