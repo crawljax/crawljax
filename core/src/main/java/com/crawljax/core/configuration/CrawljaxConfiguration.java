@@ -10,17 +10,13 @@ import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.core.CrawlController;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
-import com.crawljax.di.CoreModule;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 /**
  * Configures the {@link Crawler}. Set it up using the {@link #builderFor(String)} function.
@@ -31,12 +27,13 @@ public class CrawljaxConfiguration {
 
 		private final ImmutableList.Builder<Plugin> pluginBuilder = ImmutableList.builder();
 		private final CrawljaxConfiguration config;
-		private final CrawlRulesBuilder crawlRules = CrawlRules.builder();
+		private final CrawlRulesBuilder crawlRules;
 
 		private CrawljaxConfigurationBuilder(URL url) {
 			Preconditions.checkNotNull(url);
 			config = new CrawljaxConfiguration();
 			config.url = url;
+			crawlRules = CrawlRules.builder(this);
 		}
 
 		/**
@@ -196,11 +193,6 @@ public class CrawljaxConfiguration {
 			config.plugins = pluginBuilder.build();
 			config.crawlRules = crawlRules.build();
 			return config;
-		}
-
-		public CrawlController buildControl() {
-			Injector injector = Guice.createInjector(new CoreModule(build()));
-			return injector.getInstance(CrawlController.class);
 		}
 
 	}

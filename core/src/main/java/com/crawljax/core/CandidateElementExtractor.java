@@ -1,6 +1,7 @@
 package com.crawljax.core;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -58,6 +59,10 @@ public class CandidateElementExtractor {
 
 	private final ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
+	private final boolean followExternalLinks;
+
+	private final String siteHostName;
+
 	/**
 	 * Create a new CandidateElementExtractor.
 	 * 
@@ -88,6 +93,8 @@ public class CandidateElementExtractor {
 		clickOnce = rules.isClickOnce();
 		randomizeElementsOrder = rules.isRandomizeCandidateElements();
 		ignoredFrameIdentifiers = rules.getIgnoredFrameIdentifiers();
+		followExternalLinks = rules.followExternalLinks();
+		siteHostName = config.getUrl().getHost();
 	}
 
 	private ImmutableMultimap<String, CrawlElement> asMultiMap(
@@ -310,7 +317,21 @@ public class CandidateElementExtractor {
 
 	private boolean hrefShouldBeIgnored(Element element) {
 		String href = Strings.nullToEmpty(element.getAttribute("href"));
-		return isFileForDownloading(href) || href.startsWith("mailto:");
+		return isFileForDownloading(href)
+		        || href.startsWith("mailto:")
+		        || (!followExternalLinks && isExternal(href));
+	}
+
+	private boolean isExternal(String href) {
+		if (href.startsWith("http")) {
+			try {
+				URI uri = URI.create(href);
+				return !uri.getHost().equalsIgnoreCase(siteHostName);
+			} catch (IllegalArgumentException e) {
+				LOG.info("Unreadable externa link {}", href);
+			}
+		}
+		return false;
 	}
 
 	/**
