@@ -41,8 +41,9 @@ public class CandidateElementExtractorTest {
 	private static final StateVertex DUMMY_STATE = StateMachine.createIndex("http://localhost",
 	        "", "");
 
-	@Mock private Plugins plugins;
-	
+	@Mock
+	private Plugins plugins;
+
 	@ClassRule
 	public static final RunWithWebServer DEMO_SITE_SERVER = new RunWithWebServer("/demo-site");
 	private EmbeddedBrowser browser;
