@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
+import com.crawljax.core.state.Eventable;
 import com.crawljax.util.XPathHelper;
 
 /**

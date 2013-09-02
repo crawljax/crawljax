@@ -1,10 +1,12 @@
 package com.crawljax.core;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -14,6 +16,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,7 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
+import com.google.common.io.Resources;
 
 @Category(BrowserTest.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -41,8 +45,9 @@ public class CandidateElementExtractorTest {
 	private static final StateVertex DUMMY_STATE = StateMachine.createIndex("http://localhost",
 	        "", "");
 
-	@Mock private Plugins plugins;
-	
+	@Mock
+	private Plugins plugins;
+
 	@ClassRule
 	public static final RunWithWebServer DEMO_SITE_SERVER = new RunWithWebServer("/demo-site");
 	private EmbeddedBrowser browser;
@@ -112,9 +117,8 @@ public class CandidateElementExtractorTest {
 	public void testExtractIframeContents() throws Exception {
 		RunWithWebServer server = new RunWithWebServer("/site");
 		server.before();
-		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration
-		                .builderFor(server.getSiteUrl().toExternalForm() + "iframe/");
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration
+		        .builderFor(server.getSiteUrl().toExternalForm() + "iframe/");
 		builder.crawlRules().click("a");
 		CrawljaxConfiguration config = builder.build();
 
@@ -132,6 +136,44 @@ public class CandidateElementExtractorTest {
 		assertNotNull(candidates);
 		assertThat(candidates, hasSize(9));
 
+	}
+
+	@Test
+	public void whenNoFollowExternalUrlDoNotFollow() throws IOException {
+		CrawljaxConfigurationBuilder builder =
+		        CrawljaxConfiguration.builderFor("http://example.com");
+		builder.crawlRules().click("a");
+		CrawljaxConfiguration config = builder.build();
+		CandidateElementExtractor extractor = newElementExtractor(config);
+
+		List<CandidateElement> extract = extractFromTestFile(extractor);
+
+		assertThat(config.getCrawlRules().followExternalLinks(), is(false));
+		assertThat(extract, hasSize(2));
+	}
+
+	@Test
+	public void whenFollowExternalUrlDoFollow() throws IOException {
+		CrawljaxConfigurationBuilder builder =
+		        CrawljaxConfiguration.builderFor("http://example.com");
+		builder.crawlRules().click("a");
+		builder.crawlRules().followExternalLinks(true);
+		CrawljaxConfiguration config = builder.build();
+		CandidateElementExtractor extractor = newElementExtractor(config);
+
+		List<CandidateElement> extract = extractFromTestFile(extractor);
+
+		assertThat(config.getCrawlRules().followExternalLinks(), is(true));
+		assertThat(extract, hasSize(3));
+	}
+
+	private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor) {
+		StateVertex currentState = Mockito.mock(StateVertex.class);
+		String file = "/candidateElementExtractorTest/domWithOneExternalAndTwoInternal.html";
+		URL dom = Resources.getResource(getClass(), file);
+		browser.goToUrl(dom);
+		List<CandidateElement> extract = extractor.extract(currentState);
+		return extract;
 	}
 
 }

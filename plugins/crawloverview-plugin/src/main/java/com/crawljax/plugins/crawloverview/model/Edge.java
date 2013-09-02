@@ -61,7 +61,7 @@ public class Edge {
 	 * @return The pre-computed hashcode.
 	 */
 	private final int buildHash() {
-		return Objects.hashCode(from, to, hash, text, id, element, eventType);
+		return Objects.hashCode(from, to, text, id, element, eventType);
 	}
 
 	public String getFrom() {
@@ -104,7 +104,6 @@ public class Edge {
 			Edge that = (Edge) object;
 			return Objects.equal(this.from, that.from)
 			        && Objects.equal(this.to, that.to)
-			        && Objects.equal(this.hash, that.hash)
 			        && Objects.equal(this.text, that.text)
 			        && Objects.equal(this.id, that.id)
 			        && Objects.equal(this.element, that.element)
