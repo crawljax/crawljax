@@ -163,7 +163,7 @@ public class PluginsTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void onlyOneDomChangePluginCanBeAdded() {
 		new Plugins(CrawljaxConfiguration.builderFor("http://localhost")
-				.addPlugin(domChange)
+		        .addPlugin(domChange)
 		        .addPlugin(domChange).build(), new MetricRegistry());
 	}
 

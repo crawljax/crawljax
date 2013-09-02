@@ -1,5 +1,6 @@
 package com.crawljax.metrics;
 
+import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
