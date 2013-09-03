@@ -10,8 +10,8 @@ import com.crawljax.core.state.StateVertex;
 import com.google.inject.Inject;
 
 /**
- * Consumes {@link StateVertex}s it gets from the {@link UnfiredCandidateActions}. It delegates the actual
- * browser interactions to a {@link Crawler} whom it has a 1 to 1 relation with.
+ * Consumes {@link StateVertex}s it gets from the {@link UnfiredCandidateActions}. It delegates the
+ * actual browser interactions to a {@link Crawler} whom it has a 1 to 1 relation with.
  */
 public class CrawlTaskConsumer implements Callable<Void> {
 

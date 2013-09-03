@@ -1,6 +1,7 @@
 package com.crawljax.core.plugin;
 
 import com.crawljax.core.CrawlerContext;
+import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 
 /**

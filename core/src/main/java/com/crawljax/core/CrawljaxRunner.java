@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
 
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.di.CoreModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;

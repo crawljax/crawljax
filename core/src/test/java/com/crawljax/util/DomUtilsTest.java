@@ -1,11 +1,16 @@
 package com.crawljax.util;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 
+import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.junit.Test;
@@ -178,5 +183,47 @@ public class DomUtilsTest {
 		String expectedPath = incompleteFolderName + "/";
 
 		assertEquals(expectedPath, DomUtils.addFolderSlashIfNeeded(incompleteFolderName));
+	}
+
+	@Test
+	public void getElementAttributes() throws SAXException, IOException {
+		Document dom;
+		dom =
+		        DomUtils.getDocumentNoBalance("<html><body><div class=\"bla\" "
+		                + "id=\"test\">Bla</div></body></html>");
+		assertEquals("class=bla id=test",
+		        DomUtils.getAllElementAttributes(dom.getElementById("test")));
+	}
+
+	@Test
+	public void writeAndGetContents() throws IOException, TransformerException, SAXException {
+		File f = File.createTempFile("HelperTest.writeAndGetContents", ".tmp");
+		DomUtils.writeDocumentToFile(
+		        DomUtils.asDocument("<html><body><p>Test</p></body></html>"),
+		        f.getAbsolutePath(), "html", 2);
+
+		assertNotSame("", DomUtils.getTemplateAsString(f.getAbsolutePath()));
+
+		assertTrue(f.exists());
+
+	}
+
+	/**
+	 * Test get document function.
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void testGetDocument() throws IOException {
+		String html = "<html><body><p/></body></html>";
+		Document doc = DomUtils.asDocument(html);
+		assertNotNull(doc);
+	}
+
+	@Test
+	public void whenGetDocumentToStringNoCharEscape() throws IOException {
+		String html = "<html><body><p>bla</p></body></html>";
+		Document doc = DomUtils.asDocument(html);
+		assertThat(DomUtils.getDocumentToString(doc).contains("<P>"), is(true));
 	}
 }

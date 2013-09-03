@@ -9,6 +9,7 @@ import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilder;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
@@ -33,8 +34,10 @@ public class CrawlRules {
 		private final PreCrawlConfigurationBuilder preCrawlConfig;
 		private final ImmutableSortedSet.Builder<String> ignoredFrameIdentifiers =
 		        ImmutableSortedSet.naturalOrder();
+		private final CrawljaxConfigurationBuilder crawljaxBuilder;
 
-		private CrawlRulesBuilder() {
+		private CrawlRulesBuilder(CrawljaxConfigurationBuilder crawljaxBuilder) {
+			this.crawljaxBuilder = crawljaxBuilder;
 			crawlRules = new CrawlRules();
 			crawlActionsBuilder = new CrawlActionsBuilder();
 			preCrawlConfig = PreCrawlConfiguration.builder();
@@ -219,17 +222,21 @@ public class CrawlRules {
 
 		/**
 		 * @param tagNames
+		 * @return
 		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#click(java.lang.String[])
 		 */
-		public void click(String... tagNames) {
+		public CrawlRulesBuilder click(String... tagNames) {
 			crawlActionsBuilder.click(tagNames);
+			return this;
 		}
 
 		/**
+		 * @return
 		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#clickDefaultElements()
 		 */
-		public void clickDefaultElements() {
+		public CrawlRulesBuilder clickDefaultElements() {
 			crawlActionsBuilder.clickDefaultElements();
+			return this;
 		}
 
 		/**
@@ -245,6 +252,39 @@ public class CrawlRules {
 		 */
 		public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {
 			return crawlActionsBuilder.dontClickChildrenOf(tagname);
+		}
+
+		/**
+		 * Follow links in anchor tags that have an <code>href</code> element that points to an URL
+		 * outside of this website. This does not prevent JavaScript from opening an external URL.
+		 * <p>
+		 * Once the browser reaches an external URL it will <em>not</em> accept that URL as a new
+		 * state. Crawljax is not meant to crawl outside a website. This option exists so that you
+		 * can check all URLs for <code>404</code> errors.
+		 * 
+		 * @param follow
+		 *            Set to true to follow exteranl urls. Default is <code>false</code>.
+		 */
+		public CrawlRulesBuilder followExternalLinks(boolean follow) {
+			crawlRules.followExternalLinks = follow;
+			return this;
+		}
+
+		/**
+		 * Helper method for method chaining. Now you can do
+		 * 
+		 * <pre>
+		 * CrawljaxConfiguration.builderFor(&quot;http://example.com&quot;)
+		 *         .crawlRules()
+		 *         .followExternalLinks(true)
+		 *         .endRules()
+		 *         .build();
+		 * </pre>
+		 * 
+		 * @return The {@link CrawljaxConfigurationBuilder} to make method chaining easier.
+		 */
+		public CrawljaxConfigurationBuilder endRules() {
+			return crawljaxBuilder;
 		}
 
 		CrawlRules build() {
@@ -281,8 +321,8 @@ public class CrawlRules {
 	 */
 	public static final long DEFAULT_WAIT_AFTER_EVENT = 500;
 
-	public static CrawlRulesBuilder builder() {
-		return new CrawlRulesBuilder();
+	public static CrawlRulesBuilder builder(CrawljaxConfigurationBuilder builder) {
+		return new CrawlRulesBuilder(builder);
 	}
 
 	private ImmutableSortedSet<EventType> crawlEvents;
@@ -302,6 +342,7 @@ public class CrawlRules {
 	private boolean crawlHiddenAnchors = false;
 	private long waitAfterReloadUrl = DEFAULT_WAIT_AFTER_RELOAD;
 	private long waitAfterEvent = DEFAULT_WAIT_AFTER_EVENT;
+	private boolean followExternalLinks = false;
 
 	private CrawlRules() {
 	}
@@ -381,12 +422,16 @@ public class CrawlRules {
 
 	}
 
+	public boolean followExternalLinks() {
+		return followExternalLinks;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(crawlEvents, invariants, oracleComparators,
 		        ignoredFrameIdentifiers, preCrawlConfig, randomInputInForms, inputSpecification,
 		        testInvariantsWhileCrawling, clickOnce, crawlFrames, crawlHiddenAnchors,
-		        waitAfterReloadUrl, waitAfterEvent);
+		        waitAfterReloadUrl, waitAfterEvent, followExternalLinks);
 	}
 
 	@Override
@@ -408,7 +453,8 @@ public class CrawlRules {
 			        && Objects.equal(this.crawlFrames, that.crawlFrames)
 			        && Objects.equal(this.crawlHiddenAnchors, that.crawlHiddenAnchors)
 			        && Objects.equal(this.waitAfterReloadUrl, that.waitAfterReloadUrl)
-			        && Objects.equal(this.waitAfterEvent, that.waitAfterEvent);
+			        && Objects.equal(this.waitAfterEvent, that.waitAfterEvent)
+			        && Objects.equal(this.followExternalLinks, that.followExternalLinks);
 		}
 		return false;
 	}
@@ -432,6 +478,7 @@ public class CrawlRules {
 		        .add("crawlHiddenAnchors", crawlHiddenAnchors)
 		        .add("waitAfterReloadUrl", waitAfterReloadUrl)
 		        .add("waitAfterEvent", waitAfterEvent)
+		        .add("followExternalLinks", followExternalLinks)
 		        .toString();
 	}
 
