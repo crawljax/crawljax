@@ -1,7 +1,8 @@
 ## [Version 3.3](https://github.com/crawljax/crawljax/issues?milestone=6&state=closed)
 
 * [PhantomJSDriver](https://github.com/detro/ghostdriver) support is added. You can now use PhantomJS as a driver in Crawljax. For details see [#327](https://github.com/crawljax/crawljax/pull/327)
-
+* External URLs are not opened by default [#328](https://github.com/crawljax/crawljax/pull/328)
+* Updated selenium.
 
 ## [Version 3.2](https://github.com/crawljax/crawljax/issues?milestone=5&state=closed)
 
