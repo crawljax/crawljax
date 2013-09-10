@@ -1,6 +1,7 @@
 package com.crawljax.web.runner;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -105,6 +106,8 @@ public class CrawlRunner {
 			Date timestamp = null;
 			CrawlRecord record = crawlRecords.findByID(crawlId);
 			MDC.put("crawl_record", Integer.toString(crawlId));
+			File resourceDir = new File(record.getOutputFolder() + File.separatorChar + "resources");
+			resourceDir.mkdirs();
 			try {
 				Configuration config = configurations.findByID(record.getConfigurationId());
 				record.setCrawlStatus(CrawlStatusType.initializing);
@@ -204,6 +207,7 @@ public class CrawlRunner {
 				if (config.getComparators().size() > 0)
 					setComparatorsFromConfig(config.getComparators(), builder.crawlRules());
 
+				//Plugins
 				for (int i = 0, l = config.getPlugins().size(); i < l; i++) {
 					Plugin pluginConfig = config.getPlugins().get(i);
 					Plugin plugin = plugins.findByID(pluginConfig.getId());
@@ -233,7 +237,7 @@ public class CrawlRunner {
 					}
 					HostInterface hostInterface = new HostInterfaceImpl(outputFolder, parameters);
 					com.crawljax.core.plugin.Plugin instance =
-					        plugins.getInstanceOf(plugin, hostInterface);
+					        plugins.getInstanceOf(plugin, resourceDir, hostInterface);
 					if (instance != null) {
 						builder.addPlugin(instance);
 						record.getPlugins().put(pluginKey, plugin);

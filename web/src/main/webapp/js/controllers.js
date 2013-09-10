@@ -91,8 +91,9 @@ App.ApplicationController = Ember.Controller.extend({
 		if(positivity > 0) clazz = "success";
 		if(positivity < 0) clazz = "error";
 		$('#notification').removeClass().addClass("alert").addClass("alert-" + clazz).text(text);
-		setTimeout(function() {
-			$(notification).removeClass().addClass("alert").addClass("alert-mute");
+		clearTimeout(this.messageTimeout);
+		this.messageTimeout = setTimeout(function() {
+			$('#notification').removeClass().addClass("alert").addClass("alert-mute");
 		}, 3000);
    }
 });

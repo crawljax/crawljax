@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -105,20 +107,18 @@ public class PluginManager {
 	private File download(URL source, File destinationDir, String name) {
 		destinationDir.mkdirs();
 		File result = new File(destinationDir, name);
-		try(InputStream inputStream = source.openStream()){
-			if(result.exists()) {
-				result.delete();
-			}
+		if(result.exists()) {
+			result.delete();
+		}
+		try {
 			result.createNewFile();
-			try(FileOutputStream fos = new FileOutputStream(result)) {
-				int c = inputStream.read();
-				while(c != -1) {
-					fos.write(c);
-					c = inputStream.read();
+			try(ReadableByteChannel rbc = Channels.newChannel(source.openStream())) {
+				try(FileOutputStream fos = new FileOutputStream(result)) {
+					fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+					fos.flush();
 				}
-				fos.flush();
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOG.error(e.toString());
 			LOG.debug(e.toString());
 		}

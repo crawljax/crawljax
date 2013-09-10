@@ -1,6 +1,9 @@
 package com.crawljax.web.model;
 
+import java.io.*;
 import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
@@ -12,6 +15,7 @@ import javax.inject.Singleton;
 import com.crawljax.core.plugin.HostInterface;
 import com.crawljax.web.exception.CrawljaxWebException;
 import com.crawljax.web.fs.PluginManager;
+import com.google.common.io.ByteStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,12 +92,29 @@ public class Plugins {
 		return pluginList.get(id);
 	}
 
-	public com.crawljax.core.plugin.Plugin getInstanceOf(Plugin plugin,
+	public com.crawljax.core.plugin.Plugin getInstanceOf(Plugin plugin, File resourceDir,
 	        HostInterface hostInterface) {
+		File source = null;
+		File dest = new File(resourceDir, plugin.getId() + ".jar");
+		try {
+			source = new File(plugin.getUrl().toURI());
+			copyFile(source, dest);
+		} catch (Exception e) {
+			LOG.error("Could not create instance of plugin {}", plugin.getName());
+			LOG.debug("Could not create instance of plugin {}. {}", plugin.getName(), e.getStackTrace());
+			return null;
+		}
+		URL instanceURL = null;
+		try {
+			instanceURL = (new File(resourceDir.getAbsolutePath() + File.separatorChar + source.getName())).toURI().toURL();
+		} catch (MalformedURLException e) {
+			LOG.error("Could not create instance of plugin {}", plugin.getName());
+			LOG.debug("Could not create instance of plugin {}. {}", plugin.getName(), e.getStackTrace());
+			return null;
+		}
 		com.crawljax.core.plugin.Plugin instance = null;
 		ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-		ClassLoader newClassLoader = new URLClassLoader(new URL[]{plugin.getUrl()}, originalClassLoader);
-		ClassLoader cl = new URLClassLoader(new URL[] { plugin.getUrl() });
+		ClassLoader newClassLoader = new URLClassLoader(new URL[]{instanceURL}, originalClassLoader);
 		try {
 			Thread.currentThread().setContextClassLoader(newClassLoader);
 			Class pluginClass = newClassLoader.loadClass(plugin.getImplementation());
@@ -108,4 +129,13 @@ public class Plugins {
 		return instance;
 	}
 
+	private void copyFile(File source, File dest) {
+		try (InputStream in = new FileInputStream(source)) {
+			try(FileOutputStream out = new FileOutputStream(dest)) {
+				ByteStreams.copy(in, out);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("Could not copy file " + source + " to " + dest);
+		}
+	}
 }
