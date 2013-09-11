@@ -1,17 +1,14 @@
 package com.crawljax.core.state;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import org.jgrapht.GraphPath;
+
 import java.util.List;
 import java.util.Set;
 
-import org.jgrapht.GraphPath;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-
 /**
- * <<<<<<< Updated upstream A graph of {@link StateVertex} as vertexes and {@link Eventable} as
- * edges. ======= A graph with {@link StateVertex} as vertexes and {@link Eventable} as edges.
- * >>>>>>> Stashed changes
+ * A graph of {@link StateVertex} as vertexes and {@link Eventable} as edges
  */
 public interface StateFlowGraph {
 
