@@ -1,0 +1,12 @@
+HTTP/1.1 304 Not Modified
+Cache-Control: private, max-age=0
+Date: Mon, 09 Sep 2013 22:05:03 GMT
+Etag: "YM:1:76a0cc99-2825-4be4-bec6-8d7a8f01a1780004d3ddbec6d444"
+Expires: Mon, 22 Jul 2013 02:07:28 GMT
+Server: ATS/3.2.0
+Via: HTTP/1.1 web2.usw12.mobstor.gq1.yahoo.com UserFiberFramework/1.0, http/1.0 l2.ycs.swp.yahoo.com (ApacheTrafficServer/3.2.0), HTTP/1.1 web2.usw12.mobstor.gq1.yahoo.com UserFiberFramework/1.0
+x-ysws-request-id: 78507b3b-6888-48de-9d19-c19d7e7ee3ff
+x-ysws-visited-replicas: gops.usw12.mobstor.vip.gq1.yahoo.com
+Age: 0
+Connection: keep-alive
+

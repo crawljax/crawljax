@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?os/mit/media/m/markup/iframe-min-158395.css&os/mit/media/m/videos/videoplayerCA-min-659370.css&os/mit/media/m/videos/videometadataCA-min-797402.css&os/mit/media/m/videos/cavideoembedandlink-min-891677.css&os/mit/media/m/carousel/bcarousel-min-1156288.css&os/mit/media/m/carousel/bcarousel-desktop-min-1447403.css&os/mit/media/m/carousel/carousel-min-479268.css&os/mit/media/m/carousel/bcarousel-mixed-min-1357372.css&os/mit/media/m/videos/playlistCA-min-1151255.css&os/mit/media/m/videos/relatedvideos-min-1037701.css&os/mit/media/m/videos/relatedvideos-desktop-min-491666.css HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.sports.yahoo.com/video/playlist/beyond-the-bases/ball-player-routines-150000387.html
+Connection: keep-alive
+

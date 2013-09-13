@@ -1,0 +1,10 @@
+GET http://voken.eyereturn.com:80/?561701&click=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE1dWxkdXFpaihnaWQka1d3Qnh6SXdOaTRKUEtZT1VpNUZsQURGTVRNM0xsSXVSdEhfdk9jWSxzdCQxMzc4NzY0NDk3MDkyODQ3LHNpJDg1MzIwNTEsc3AkOTc1MTUwMzEsY3IkMzIwNjE4ODU1MSx2JDIuMCxhaWQkMjBPQ0JHS0xjNkUtLGN0JDI1LHlieCRlM1d6YnBhUEFOVFVhckJGOHQ5NGVnLGJpJDE2NDExNzI1NTEsciQwLHJkJDE2ZmZxYmtycSkp/0/*http://global.ard.yahoo.com/SIG=15govdjme/M=999999.999999.999999.999999/D=media/S=97515031:LREC/_ylt=AvpNGUGgRToyuQ8UUqmSurMX9s8F/Y=CA/EXP=1378771697/L=kWwBxzIwNi4JPKYOUi5FlADFMTM3LlIuRtH_vOcY/B=20OCBGKLc6E-/J=1378764497128398/K=uwWFyPejVl.eUOdEyH.ZJg/A=6887257303974132488/R=0/X=6/*&params=1378764497.128398 HTTP/1.1
+Host: voken.eyereturn.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.weather.yahoo.com/
+Cookie: er_guid=40050EA9-442A-6170-0ED7-4A97CC3498D4; erTok="AwAAAAD09AkADrM1AAcAAAb/CQAMszUAAQAA86QIAA+zNQADAADxpAgAD7M1AAIAAPKkCAAQszUAAQAA"; cmggl=1
+Connection: keep-alive
+

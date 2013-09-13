@@ -1,0 +1,100 @@
+HTTP/1.1 301 Moved Permanently
+Date: Mon, 09 Sep 2013 22:04:11 GMT
+Location: http://ca.screen.yahoo.com/700-ton-ship-flipped-over-150511969.html
+Vary: Accept-Encoding
+Content-Type: text/html; charset=utf-8
+Cache-Control: private
+Age: 0
+Transfer-Encoding: chunked
+Connection: keep-alive
+Via: HTTP/1.1 ir13.fp.gq1.yahoo.com (YahooTrafficServer/1.20.13 [c s f ])
+Server: YTS/1.20.13
+
+7bd
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<SCRIPT src="http://mutation-summary.googlecode.com/git/src/mutation-summary.js" type="text/javascript" yyy="injected"></SCRIPT>
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<SCRIPT type="text/javascript" xxx="injected">var rel = Node.prototype.removeEventListener;
+Node.prototype.removeEventListener = function() {
+	rel.apply(this, arguments);
+	unannotate(this);
+}
+
+var ael = Node.prototype.addEventListener;
+Node.prototype.addEventListener = function() {
+	ael.apply(this, arguments);
+	annotate(this);
+}
+
+function annotate(e) {
+	e.setAttribute("data-cj-clickable", "true");
+}
+
+function unannotate(e) {
+	e.removeAttribute("data-cj-clickable");
+}
+
+var observer = new MutationSummary({
+	callback : handleChanges,
+	queries : [ {
+		all : true
+	} ]
+});
+
+function handleChanges(summaries) {
+	// alert("DOM mutated!");
+	detectClickables();
+}
+
+function detectClickables() {
+	var all = document.getElementsByTagName("*");
+	for ( var i = 0; i < all.length; i++) {
+		var node = all[i];
+		if (all[i].onclick != null) {
+			annotate(node);
+		} else {
+			if (node.nodeType == 1) {// element of type html-object/tag
+				if (node.tagName == "A" || node.tagName == "BUTTON") {
+					annotate(node);
+				}
+				if (node.tagName == "INPUT"
+						&& node.getAttribute("type").toUpperCase() == "SUBMIT") {
+					annotate(node);
+				}
+			}
+		}
+	}
+}</SCRIPT>
+
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<STYLE xxx="injected">[data-cj-clickable=true] {
+  border-style: double;
+  border-color: green;
+  color: green;
+}</STYLE>
+
+
+</HEAD>
+<BODY>The document has moved <A href="http://ca.screen.yahoo.com/700-ton-ship-flipped-over-150511969.html">here</A>.<P>
+<!-- w78.fp.gq1.yahoo.com uncompressed/chunked Mon Sep  9 22:04:11 UTC 2013 -->
+
+
+
+</P>
+
+
+
+
+</BODY>
+</HTML>
+
+0
+

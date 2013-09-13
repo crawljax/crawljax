@@ -1,0 +1,10 @@
+GET http://csc.beap.bc.yahoo.com:80/yi?bv=1.0.0&bs=(136b1k9hb(gid$c9IeRs6.JDQJPKYOUi5FlBwmiVL8J1IuRpgAAw2E,st$1378764440305799,si$8522051,sp$2142623533,pv$1,v$2.0))&t=JR_3-DR_3&al=(as$125msv6cb,aid$fkM6CWKLc0w-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=SLVR)(as$125mfebel,aid$LtQ6CWKLc0w-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=QL1)(as$125ek12l0,aid$ROY6CWKLc0w-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=QL2)(as$125dacpsc,aid$Wvg6CWKLc0w-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=QL3)(as$12rs1v9ok,aid$lFU6CWKLc0w-,bi$1629520051,cr$3577678051,ct$25,at$HR,eob$gd1_match_id=-1:ypos=TL1)(as$12r557smn,aid$qmc6CWKLc0w-,bi$1629516551,cr$3616635551,ct$25,at$HR,eob$gd1_match_id=-1:ypos=TL2)(as$1259982o1,aid$GMI6CWKLc0w-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=CMNTL)(as$125t2ak8j,aid$aDE6CWKLc0w-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=SEVNT)(as$125q72q52,aid$Uh86CWKLc0w-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=STCK)(as$125lkuge3,aid$ArA6CWKLc0w-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=WLPR)(as$12rbjvetv,aid$cAo7CWKLc0w-,bi$1838344051,cr$3612573051,ct$25,at$HR,eob$gd1_match_id=-1:ypos=FPAD)(as$12riuq3ve,aid$wHk6CWKLc0w-,bi$1880192551,cr$3676029551,ct$25,at$HR,eob$gd1_match_id=-1:ypos=PROMO)(as$1251b18tr,aid$1os6CWKLc0w-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=ADBCN)&s=0&r=0.42427097489402177 HTTP/1.1
+Host: csc.beap.bc.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.yahoo.com/
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764440X; CH=AgBSLkUQARKhsAAMuiABCsmgAAfUoAAyHKAAKjSwAAOfEAEaqaAAJfcQATEpoAAu9RABCCiwADF+EAEqZxABEY4QAR7QEAE7b6AAPKUQARyEEAE0mBABEFwQASckEAEnWxABPV6wACfy; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=193@yvap=208@cc=6@al=3@vl=4@ac=2; ucs=bnas=0; DK=v=2&d=mi6&r=mi0
+Connection: keep-alive
+

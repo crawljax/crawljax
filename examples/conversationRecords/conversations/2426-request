@@ -1,0 +1,9 @@
+GET http://p.typekit.net:80/p.gif?s=1&k=avg7igj&ht=tk&h=www.zoocasa.com&f=5178.5035&a=674098&_=1378764425977 HTTP/1.1
+Host: p.typekit.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.zoocasa.com/en
+Connection: keep-alive
+

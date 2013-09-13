@@ -1,0 +1,9 @@
+GET http://l3.yimg.com:80/bt/api/res/1.2/Vb8JaBmr.JCBnruqXUcp3Q--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTcwO3B5b2ZmPTI1O3E9ODU7dz03MA--/http://media.zenfs.com/fr_FR/News/20minutes/Une_nouvelle_campagne_sur_Facebook-e7a0604b5bd641a477cb04f8531e0718 HTTP/1.1
+Host: l3.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/
+Connection: keep-alive
+

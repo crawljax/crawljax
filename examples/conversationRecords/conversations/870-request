@@ -1,0 +1,9 @@
+GET http://l1.yimg.com:80/bt/api/res/1.2/ohYmjczyp_3jAFXp4AGv9w--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTIyMDtxPTg1O3c9MjMw/http://media.zenfs.com/en-US/video/video.pd2upload.com/video.ycanadaoriginals.com@0cc827e5-3ad0-349b-b823-df555cf08d3b_FULL.jpg HTTP/1.1
+Host: l1.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.shine.yahoo.com/video/best-yogurt-040000523.html?format=embed&player_autoplay=true
+Connection: keep-alive
+

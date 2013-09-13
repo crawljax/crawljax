@@ -1,0 +1,10 @@
+GET http://clicks.beap.bc.yahoo.com:80/yc/YnY9MS4wLjAmYnM9KDE2aDQzcGw1NyhnaWQkU21RSHg4Ni5KRFFKUEtZT1VpNUZsQmtNaVZMOEoxSXVSc2tBQjlEcSxzdCQxMzc4NzY0NDg5NjIxMjcyLHNpJDg1MjIwNTEsc3AkMjE0MjYyMzUzMyxjciQzNjkyMjQ1MDUxLHYkMi4wLGFpZCQ2Sm9NUTJLTGMyUS0sY3QkMjUseWJ4JGouQ1BGY2xJdXlYT3p6WHRERF9rSWcsYmkkMTkwMzY0NDU1MSxyJDEsaWQkcmVkaXJlY3RfY29weSxyZCQxOTFwNGN0NnUpKQ/2/*http://global.ard.yahoo.com/SIG=15hoasrvh/M=999999.999999.999999.999999/D=catop/S=2142623533:TL2/_ylt=Amb9sgn1Q8v4k3krSurX3GYt17V_/Y=CA/EXP=1378771689/L=SmQHx86.JDQJPKYOUi5FlBkMiVL8J1IuRskAB9Dq/B=6JoMQ2KLc2Q-/J=1378764489661475/K=kfU51Fyuv0y5G83sufZuyg/A=8005477809292360774/R=1/X=6/id=redirect_copy/SIG=11lict9c2/*http://ad.doubleclick.net/clk;275468650;102413878;m HTTP/1.1
+Host: clicks.beap.bc.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.yahoo.com/
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764489X; CH=AgBSLkUQARKhYAAMuiABCslQAAfUUAAyHFAAKjRgAAOfEAEaqVAAJfcQATEpUAAu9RABCChgADF+EAEqZxABEY4QAR7QEAE7b1AAPKUQARyEEAE0mBABEFwQASckEAEnWxABPV5gACfy; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=193@yvap=208@cc=6@al=3@vl=4@ac=2; ucs=bnas=0; DK=v=2&d=mi6&r=mi0
+Connection: keep-alive
+

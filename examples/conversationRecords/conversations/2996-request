@@ -1,0 +1,10 @@
+GET http://csc.beap.bc.yahoo.com:80/yi?bv=1.0.0&bs=(1360t4dr0(gid$K4OtKc6.JDQJPKYOUi5FlBH2iVL8J1IuRukAB4ab,st$1378764521603452,si$8522051,sp$2142623533,pv$1,v$2.0))&t=JR_3-DR_3&al=(as$1257vej7g,aid$iEktI2KLc6I-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=SLVR)(as$125mtfe2l,aid$uEAvI2KLc6I-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=QL1)(as$1250brl7d,aid$nn8vI2KLc6I-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=QL2)(as$125g4uckq,aid$hL4vI2KLc6I-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=QL3)(as$12rs5vm1u,aid$bogtI2KLc6I-,bi$1897797551,cr$3695263551,ct$25,at$HR,eob$gd1_match_id=-1:ypos=TL1)(as$12r7losm3,aid$VMctI2KLc6I-,bi$1629516551,cr$3616635551,ct$25,at$HR,eob$gd1_match_id=-1:ypos=TL2)(as$125eot9d8,aid$0gEvI2KLc6I-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=CMNTL)(as$125i1ovs7,aid$ogotI2KLc6I-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=SEVNT)(as$125uggqqb,aid$vMssI2KLc6I-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=STCK)(as$1259p10i4,aid$7MIuI2KLc6I-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=WLPR)(as$12r03ts11,aid$av0vI2KLc6I-,bi$1838344051,cr$3612573051,ct$25,at$HR,eob$gd1_match_id=-1:ypos=FPAD)(as$12rn1abp6,aid$OgYuI2KLc6I-,bi$1833478551,cr$3575471051,ct$25,at$HR,eob$gd1_match_id=-1:ypos=PROMO)(as$125ajjuqj,aid$IEUuI2KLc6I-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=ADBCN)&s=0&r=0.8050241883379201 HTTP/1.1
+Host: csc.beap.bc.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.yahoo.com/
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764521X; CH=AgBSLkUQARKhEAAMuiABCskAAAfUAAAyHAAAKjQQAAOfEAEaqQAAJfcQATEpAAAu9RABCCgQADF+EAEqZxABEY4QAR7QEAE7bwAAPKUQARyEEAE0mBABEFwQASckEAEnWxABPV4QACfy; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=193@yvap=208@cc=6@al=3@vl=4@ac=2; ucs=bnas=0; DK=v=2&d=mi6&r=mi0
+Connection: keep-alive
+

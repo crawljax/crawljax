@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?d/lib/yui/3.4.1/build/cssreset/cssreset-min.css&d/lib/yui/3.4.1/build/cssfonts/cssfonts-min.css&os/mit/media/p/presentation/grids/master-min-464195.css&os/mit/media/p/presentation/grids/desktop-min-1134270.css&os/mit/media/p/presentation/base/master-min-1134270.css&os/mit/media/p/presentation/base/desktop-min-341885.css&os/mit/media/m/header/header-desktop-min-1061089.css&os/mit/media/m/navigation/navigation-desktop-min-1140221.css&os/mit/media/m/linkbox/linkbox-min-248956.css&os/mit/media/m/trending/trending-min-150139.css&os/mit/media/m/ads/ads-min-1305513.css&os/mit/media/m/footer/footer_sponsor-min-188629.css&os/mit/media/m/footer/footer_links-min-188629.css&os/mit/media/m/footer/footer_info-min-323669.css&os/mit/media/m/footer/footer_info-desktop-min-1442026.css HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://shine.yahoo.com/horoscope/
+Connection: keep-alive
+

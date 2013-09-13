@@ -1,0 +1,9 @@
+GET http://l2.yimg.com:80/bt/api/res/1.2/SPlCl5ZAYtq7j34zwxA0ow--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTExMjtweG9mZj01MDtweW9mZj0wO3E9ODU7dz0xNTA-/http://l.yimg.com/os/publish-images/omg/2013-09-08/e78b3a1d-c886-4bbf-ad89-210523b9fc8f_180013817.jpg HTTP/1.1
+Host: l2.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/photos/photos-of-the-day-september-9-2013-1378734202-slideshow/
+Connection: keep-alive
+

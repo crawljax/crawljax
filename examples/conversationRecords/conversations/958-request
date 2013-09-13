@@ -1,0 +1,11 @@
+GET http://ca.screen.yahoo.com:80/_remote/?m_id=MediaRemoteInstance&m_mode=multipart&instance_id=9c373069-f738-3baa-b09f-5e5b5a60c970&mi_content_type=cavideo&mi_context_id=44596141-2c98-3f14-900f-f7059143de2f&mi_context_title=700%20Ton%20Ship%20Flipped%20Over!%20%7C%20Watch%20the%20video%20-%20Yahoo!%20Screen%20Canada&mi_pt=vid-gallery&mi_spaceid=793452770&y_proc_embeds=1&_device=full&mod_units=16&mod_id=mediacommentsugc&content_id=44596141-2c98-3f14-900f-f7059143de2f&nolz=1&y_map_urn=urn%3Armp%3Alite&r_load=1&_product_version=classic&_sig=xIQlJ9gF1ezXJlL8W90wodL_CTw- HTTP/1.1
+Host: ca.screen.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+X-Requested-With: XMLHttpRequest
+Referer: http://ca.screen.yahoo.com/700-ton-ship-flipped-over-150511969.html
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764246X; CH=AgBSLkWwAAy6sAAH1LAAMhywACo0sAADn7AAJfewAC71sAAxfrAAPKWwACfy; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=460@yvap=208@cc=2@al=0@vl=0@ac=0; ywadp115488662=543485749
+Connection: keep-alive
+

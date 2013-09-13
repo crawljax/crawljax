@@ -1,0 +1,10 @@
+GET http://tags.bluekai.com:80/site/13841?ret=js HTTP/1.1
+Host: tags.bluekai.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://network.realmedia.com/2/247-Access/Targeting/Xaxis/1170010320@x96?_RM_OAX_REDIR_
+Cookie: bkc=KJ0nRsHQmsfJpee5PuX/0sEQ8sJQteb59zyczCArXe1y79CZxrcwKLS/y3XlxND4yTnQ9yY1zH/V; bkdc=snv; bklc=0; bkst=KJhMRqM9pX9QysOGjZCCSZarSsJGjZkojsT8lPDFY9Oa39VA; bku=69X99J5ankn3FQoJ
+Connection: keep-alive
+

@@ -1,0 +1,9 @@
+GET http://l1.yimg.com:80/bt/api/res/1.2/SJwkQ5ha7UGm5HrW2PUl1w--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTg0O3B5b2ZmPTA7cT04NTt3PTE1MA--/http://l.yimg.com/os/401/2013/01/29/00011-78397759-BURMA-jpg_105846.jpg HTTP/1.1
+Host: l1.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/
+Connection: keep-alive
+

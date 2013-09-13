@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?os/mit/media/m/quotes/quotes-search-min-1427335.css&os/mit/media/m/quotes/quotes-common-min-1327596.css&os/mit/media/m/quotes/quotes-streaming-min-366964.css&os/mit/media/m/finance/finance-redirect-min-1427334.css&os/mit/media/m/videos/videometadataCA-min-797402.css&os/mit/media/m/videos/videoplayerCA-min-659370.css&os/mit/media/m/videos/cavideoembedandlink-min-891677.css&os/mit/media/m/videos/relatedvideos-min-1037701.css&os/mit/media/m/videos/relatedvideos-desktop-min-491666.css HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/video/where-save-now-top-4-040000424.html
+Connection: keep-alive
+

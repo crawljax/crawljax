@@ -1,0 +1,10 @@
+GET http://z.analytics.yahoo.com:80/p.pl?a=1000115488662&dpid=1940573164&vp=1987846497&vpm=1987846497&vid=b37d31a9-e214-3d0c-a6fb-fa47cc36f6f0&vn=Video%3A%20Doomsday%20Preppers%20Go%20Upscale%20With%20Luxury%20Bunkers&vlng=100&vx=13&vb=Video%3A%20Doomsday%20Preppers%20Go%20Upscale%20With%20Luxury%20Bunkers%20%7C%20Watch%20the%20video%20-%20Yahoo!%20News%20Canada&vf=http%3A%2F%2Fca.news.yahoo.com%2Fvideo%2Fdoomsday-preppers-upscale-luxury-bunkers-065738891.html&cf63=true&vpl=1&cf201=news&cf202=ca&cf203=en-ca&cf204=News&cf205=Canadian%20Press%20Enterprises&cf206=0017000000T5cH9AAJ&cf207=Canadian%20Press%20(2013%2B)%20Content%20License%20Agreement&cf208=a07700000041NrRAAU&vsn=AP%20Canada&vss=na&vse=na&cf58=&cf54=2055&ve=http%3A%2F%2Fca.yahoo.com%2F&rn=0.05216205383231676 HTTP/1.1
+Host: z.analytics.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/video/doomsday-preppers-upscale-luxury-bunkers-065738891.html
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764206X; CH=AgBSLkVgAAy6YAAH1GAAMhxgACo0YAADn2AAJfdgAC71YAAxfmAAPKVgACfy; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; itsc=6YWTryjNaa|ZQtqZGdA|fvis1000586174356=|8MHoH0Ts8Y|8MHoH0Ts8Y|8MHoH0Ts8Y|8|8MHoH0Ts8Y|8MHoH0Ts8Y; V=v=0.75&cc=0&m=0; itvisitorid1000115488662=W99TryjNaa|ZaTRvQQ2|fvis1000115488662=ZT1odHRwJTNBJTJGJTJGY2EueWFob28uY29tJTJGJmY9aHR0cCUzQSUyRiUyRmNhLm5ld3MueWFob28uY29tJTJGdmlkZW8lMkZkb29tc2RheS1wcmVwcGVycy11cHNjYWxlLWx1eHVyeS1idW5rZXJzLTA2NTczODg5MS5odG1sJmI9VmlkZW8lM0ElMjBEb29tc2RheSUyMFByZXBwZXJzJTIwR28lMjBVcHNjYWxlJTIwV2l0aCUyMEx1eHVyeSUyMEJ1bmtlcnMlMjAlN0MlMjBXYXRjaCUyMHRoZSUyMHZpZGVvJTIwLSUyMFlhaG9vISUyME5ld3MlMjBDYW5hZGE=|8|8|8|M|8MHoH0Ts8s|8; itsessionid1000115488662=W99TryjNaa|fses1000115488662=; yvap=208@cc=1@al=0@vl=0@ac=0
+Connection: keep-alive
+

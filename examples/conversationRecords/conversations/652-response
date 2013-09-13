@@ -1,0 +1,103 @@
+HTTP/1.1 302 Found
+Date: Mon, 09 Sep 2013 22:03:38 GMT
+Server: Microsoft-IIS/6.0
+X-Powered-By: ASP.NET
+X-AspNet-Version: 2.0.50727
+Pragma: no-cache
+P3P: CP="NOI DSP COR LAW CURa DEVa TAIa PSAa PSDa OUR BUS UNI COM NAV", an.n="Advertising.com", an.pp="http://advertising.aol.com/privacy/advertisingcom", an.oo="http://advertising.aol.com/privacy/advertisingcom/opt-out", an.by="Y"
+Location: http://r1.ace.advertising.com/ctst=1/site=808036/size=728090/u=2/bnum=4971846/wkhr=39/hr=15/hl=12/scres=5/swh=1920x1080/tile=1/f=2/r=1/optn=1/fv=11/aolexp=0/dref=http%253A%252F%252Fad.yieldmanager.com%252Fst%253Fad_type%253Diframe%2526publisher_blob%253Dlmsid%253Aa097000000WBOW7AAP%253Brevsp%253Ausmagazine.com%257CLY.q9DIwNi4JPKYOUi5FlAAZMTM3LlIuRbj_4kIY%257C2121000241%257CN%257C1378764216.313577%2526ad_size%253D728x90%2526site%253D1258184%2526section_code%253D2308143551%2526cb%253D1378764216.313577%2526yud%253Dsmpv%25253d3%252526ed%25253dzAomdC267kvgcnoVlvRc2UlanpzF9ARWnsPP3Q--%2526pub_url%253Dhttp%253A%252F%252Fca.yahoo.com%252F%2526pub_redirect_unencoded%253D1%2526pub_redirect%253Dhttp%253A%252F%252Fclicks.beap.bc.yahoo.com%252Fyc%252FYnY9MS4wLjAmYnM9KDE2MGZvajBnOShnaWQkTFkucTlESXdOaTRKUEtZT1VpNUZsQUFaTVRNM0xsSXVSYmpfNGtJWSxzdCQxMzc4NzY0MjE2Mjc4Mzg1LHNpJDg1NTM1NTEsc3AkMjEyMTAwMDI0MSxjciQzMDkyODM4NTUxLHYkMi4wLGFpZCRnRG1BR21LTGMyRS0sY3QkMjUseWJ4JHIzN0RBNWY1bzlOU29UV0o0eFZSWUEsYmkkMTYwMjg2ODA1MSxyJDAscmQkMTZmZGR2dW1hKSk%252F1%252F*http%253A%252F%252Fglobal.ard.yahoo.com%252FSIG%253D15f48anav%252FM%253D999999.999999.999999.999999%252FD%253Dmedia%252FS%253D2121000241%253AN%252F_ylt%253DAv.EzQLt_BURVSu6SnToyY4x5Wt.%252FY%253DCA%252FEXP%253D1378771416%252FL%253DLY.q9DIwNi4JPKYOUi5FlAAZMTM3LlIuRbj_4kIY%252FB%253DgDmAGmKLc2E-%252FJ%253D1378764216313577%252FK%253DBt99WtPRtfmf3iKy9fywdw%252FA%253D6723595427676214898%252FR%253D0%252FX%253D6%252F*
+Set-Cookie: ACID=RP180013787642180115; domain=advertising.com; expires=Wed, 09-Sep-2015 22:03:38 GMT; path=/
+Set-Cookie: ASCID=RP180013787642180115; domain=advertising.com; path=/
+Cache-Control: private, max-age=0, no-cache
+Expires: Mon, 09 Sep 2013 22:03:38 GMT
+Content-Type: text/html; charset=utf-8
+Content-length: 3322
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<SCRIPT src="http://mutation-summary.googlecode.com/git/src/mutation-summary.js" type="text/javascript" yyy="injected"></SCRIPT>
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<SCRIPT type="text/javascript" xxx="injected">var rel = Node.prototype.removeEventListener;
+Node.prototype.removeEventListener = function() {
+	rel.apply(this, arguments);
+	unannotate(this);
+}
+
+var ael = Node.prototype.addEventListener;
+Node.prototype.addEventListener = function() {
+	ael.apply(this, arguments);
+	annotate(this);
+}
+
+function annotate(e) {
+	e.setAttribute("data-cj-clickable", "true");
+}
+
+function unannotate(e) {
+	e.removeAttribute("data-cj-clickable");
+}
+
+var observer = new MutationSummary({
+	callback : handleChanges,
+	queries : [ {
+		all : true
+	} ]
+});
+
+function handleChanges(summaries) {
+	// alert("DOM mutated!");
+	detectClickables();
+}
+
+function detectClickables() {
+	var all = document.getElementsByTagName("*");
+	for ( var i = 0; i < all.length; i++) {
+		var node = all[i];
+		if (all[i].onclick != null) {
+			annotate(node);
+		} else {
+			if (node.nodeType == 1) {// element of type html-object/tag
+				if (node.tagName == "A" || node.tagName == "BUTTON") {
+					annotate(node);
+				}
+				if (node.tagName == "INPUT"
+						&& node.getAttribute("type").toUpperCase() == "SUBMIT") {
+					annotate(node);
+				}
+			}
+		}
+	}
+}</SCRIPT>
+
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<TITLE>Object moved</TITLE>
+
+
+<STYLE xxx="injected">[data-cj-clickable=true] {
+  border-style: double;
+  border-color: green;
+  color: green;
+}</STYLE>
+
+
+</HEAD>
+<BODY>
+
+
+
+<H2>Object moved to <A href="http://r1.ace.advertising.com/ctst=1/site=808036/size=728090/u=2/bnum=4971846/wkhr=39/hr=15/hl=12/scres=5/swh=1920x1080/tile=1/f=2/r=1/optn=1/fv=11/aolexp=0/dref=http%253A%252F%252Fad.yieldmanager.com%252Fst%253Fad_type%253Diframe%2526publisher_blob%253Dlmsid%253Aa097000000WBOW7AAP%253Brevsp%253Ausmagazine.com%257CLY.q9DIwNi4JPKYOUi5FlAAZMTM3LlIuRbj_4kIY%257C2121000241%257CN%257C1378764216.313577%2526ad_size%253D728x90%2526site%253D1258184%2526section_code%253D2308143551%2526cb%253D1378764216.313577%2526yud%253Dsmpv%25253d3%252526ed%25253dzAomdC267kvgcnoVlvRc2UlanpzF9ARWnsPP3Q--%2526pub_url%253Dhttp%253A%252F%252Fca.yahoo.com%252F%2526pub_redirect_unencoded%253D1%2526pub_redirect%253Dhttp%253A%252F%252Fclicks.beap.bc.yahoo.com%252Fyc%252FYnY9MS4wLjAmYnM9KDE2MGZvajBnOShnaWQkTFkucTlESXdOaTRKUEtZT1VpNUZsQUFaTVRNM0xsSXVSYmpfNGtJWSxzdCQxMzc4NzY0MjE2Mjc4Mzg1LHNpJDg1NTM1NTEsc3AkMjEyMTAwMDI0MSxjciQzMDkyODM4NTUxLHYkMi4wLGFpZCRnRG1BR21LTGMyRS0sY3QkMjUseWJ4JHIzN0RBNWY1bzlOU29UV0o0eFZSWUEsYmkkMTYwMjg2ODA1MSxyJDAscmQkMTZmZGR2dW1hKSk%252F1%252F*http%253A%252F%252Fglobal.ard.yahoo.com%252FSIG%253D15f48anav%252FM%253D999999.999999.999999.999999%252FD%253Dmedia%252FS%253D2121000241%253AN%252F_ylt%253DAv.EzQLt_BURVSu6SnToyY4x5Wt.%252FY%253DCA%252FEXP%253D1378771416%252FL%253DLY.q9DIwNi4JPKYOUi5FlAAZMTM3LlIuRbj_4kIY%252FB%253DgDmAGmKLc2E-%252FJ%253D1378764216313577%252FK%253DBt99WtPRtfmf3iKy9fywdw%252FA%253D6723595427676214898%252FR%253D0%252FX%253D6%252F*">here</A>.</H2>
+
+
+
+
+
+
+</BODY>
+</HTML>

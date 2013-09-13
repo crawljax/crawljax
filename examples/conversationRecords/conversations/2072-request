@@ -1,0 +1,9 @@
+GET http://bs.serving-sys.com:80/BurstingPipe/adServer.bs?cn=rsb&c=28&pli=7717066&PluID=2&w=728&h=90&ncu=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE1dnZsMW8ybihnaWQkUE4zX0N6SXdOaTRKUEtZT1VpNUZsQUJfTVRNM0xsSXVSbVhfX2w2NCxzdCQxMzc4NzY0Mzg5ODkzOTI3LHNpJDg1NDQ1NTEsc3AkOTczMzA5NTIyLGNyJDM3MDU1NTgwNTEsdiQyLjAsYWlkJC5EZFFGbUtMYzJVLSxjdCQyNSx5YngkX1RrZUNZWUE5d2x3alRNWF8zZHFLdyxiaSQxOTE1MjE4NTUxLHIkMCxyZCQxOHZyamhoNGMpKQ/2/*http://global.ard.yahoo.com/SIG=15gbqbdkp/M=999999.999999.999999.999999/D=media/S=973309522:NT1/_ylt=AnXvReN53SrIjKA0cMzu.AxShgM6/Y=CA/EXP=1378771589/L=PN3_CzIwNi4JPKYOUi5FlAB_MTM3LlIuRmX__l64/B=.DdQFmKLc2U-/J=1378764389937240/K=GGhXe8wSuxPtE_Lt9C71yA/A=8054717461857424615/R=0/X=6/SIG=124kaqrgh/*http://us.yimg.com/i/sh/bl.gif&ord=1378764389.937240&ucm=true&cs=1 HTTP/1.1
+Host: bs.serving-sys.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.sports.yahoo.com/
+Connection: keep-alive
+

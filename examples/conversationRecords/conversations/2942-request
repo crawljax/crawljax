@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?mk/ura/0.8.29/yui-min.js&mk/ura/0.8.29/ura-config-min.js&mk/ura/0.8.29/init-min.js HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.search.yahoo.com/?fr=404
+Connection: keep-alive
+

@@ -1,0 +1,9 @@
+GET http://qsearch.media.net:80/bping.php?cid=8CUCN7VBB&crid=244546249&lf=6&ic=valid&requrl=http%3A%2F%2Fca.finance.yahoo.com%2F&kwrf=http%3A%2F%2Fca.yahoo.com&r=1378764273135 HTTP/1.1
+Host: qsearch.media.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/
+Connection: keep-alive
+

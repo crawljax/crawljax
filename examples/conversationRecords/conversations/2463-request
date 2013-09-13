@@ -1,0 +1,10 @@
+GET http://tags.bluekai.com:80/site/5386?id=f54394f8-e2db-4728-aaf4-f10a12001ecc&redir=http%3A%2F%2Fmatch.adsrvr.org%2Ftrack%2Fcmf%2Fgeneric%3Fttd_pid%3Dbluekai HTTP/1.1
+Host: tags.bluekai.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://d1eoo1tco6rr5e.cloudfront.net/5qmysw4/qz38mxeq/iframe
+Cookie: bkc=KJyEBsBQrY7wpeeePuI/ARsOxHe/F2fnQ1vwRDcy/TeWzD+ZCrkxwizU9XwtbxhQwCmx4Ts4QKaW1OBzcLu42RyHCP2FhGeYO8AwTy19wJ9j0Q==; bkdc=snv; bklc=522e4598; bkst=KJhMRqM9pX9QysOGjZCCSZarSsJGjZkojsb8yPDFY9Ose9V2; bku=69X99J5ankn3FQoJ
+Connection: keep-alive
+

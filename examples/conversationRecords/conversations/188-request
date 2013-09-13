@@ -1,0 +1,10 @@
+GET http://b3.mookie1.com:80/1/xaxis/synch/1$%7BCACHEBUSTER%7D@Bottom3 HTTP/1.1
+Host: b3.mookie1.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://b3.mookie1.com/0/USNetwork/GroupM_DataManagement/groupm.html
+Cookie: id=3377705468790172; mdata=1|3377705468790172|1378763659; OAX=TmK/2FIuQ4sACySj; NSC_o4efm_qppm_iuuq=ffffffff09499e6f45525d5f4f58455e445a4a423660; 3pdi=set; RMFW=011VJ9PZ710fru
+Connection: keep-alive
+

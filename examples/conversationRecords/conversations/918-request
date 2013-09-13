@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?qj/ycar/v1.1/js/buttonariaplugin.js&qj/ycar/v1.1/js/containerariaplugin.js&qj/ycar/v1.1/js/menuariaplugin.js&qj/ycar/v1.1/js/01222013_carousel.js&qj/ycar/v1.1/js/swfobject.js&qj/ycar/v1.1/js/07-02-12-yc-common.js?&qj/ycar/v1.1/js/03-06-13-ycareers.js HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.careers.yahoo.com/
+Connection: keep-alive
+

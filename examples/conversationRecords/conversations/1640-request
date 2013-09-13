@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/bt/api/res/1.2/jL53rsQtkxrnQ6Gvpbq6eg--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTY3O3E9ODU7dz0xMjA-/http://media.zenfs.com/en-US/video/video.pd2upload.com/video.chowciao.com@8c4043d0-b597-39c2-b4c1-108e605a53a8_FULL.jpg HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.shine.yahoo.com/video/easy-chicken-dinner-070000941.html
+Connection: keep-alive
+

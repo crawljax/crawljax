@@ -1,0 +1,10 @@
+GET http://beap.adx.yahoo.com:80/av?v=1.0.0&f=2143334970%2C_P35RDIwNi4JPKYOUi5FlABPMTM3LlIuRiD_udJ4%2C1378764320283279&p=%5B-1%2CN%2C728x106%2C999999%2C999999%2C999999%2C-1%2C100%2C1%2C3092809551%2CDrvSAWKLc4c-%5D HTTP/1.1
+Host: beap.adx.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/thai-airways-jet-skids-off-runway-while-landing-134632584.html
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764315X; CH=AgBSLkVAAAy6EAEKyTAAB9QwADIcMAAqNEAAA58QARqpMAAl9zAALvVAADF+EAEqZxABEY4QAR7QMAA8pRABEFwQASdbMAAn8g==; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=389@yvap=208@cc=3@al=0@vl=2@ac=0
+Connection: keep-alive
+

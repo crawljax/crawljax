@@ -1,0 +1,11 @@
+GET http://l.yimg.com:80/qj/ycar/v1.1/images/12-01-12-yc-sprite.png HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://l.yimg.com/zz/combo?qj/ycar/v1.1/css/09-01-14-ycareers.css&qj/ycar/v1.1/css/popup.css
+Connection: keep-alive
+If-Modified-Since: Thu, 12 Jan 2012 08:58:28 GMT
+If-None-Match: "YM:1:9da0b8a7-75f7-45c4-837b-d223de2fb8680004b650f3aa4580"
+

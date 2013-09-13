@@ -1,0 +1,9 @@
+GET http://l2.yimg.com:80/bt/api/res/1.2/5vntruYImvCBKwtMIDNrXw--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTExMjtweG9mZj01MDtweW9mZj0wO3E9ODU7dz0xNTA-/http://l.yimg.com/os/publish-images/news/2013-09-06/6dfd4fb2-6e87-4089-b209-8bcb52c958c3_BLAST-OFF_PAUL-NICKLEN.gif HTTP/1.1
+Host: l2.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/photos/photos-of-the-day-september-9-2013-1378734202-slideshow/
+Connection: keep-alive
+

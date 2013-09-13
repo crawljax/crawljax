@@ -1,0 +1,9 @@
+GET http://qos.video.yimg.com:80/yep/3/qos?env=p&pver=3.9.2.10498&vp=1260141076&b=50&r=f&vid=fdcbf7e5-ba57-3350-9402-eea2eb2e43b7&vn=Long-lost%20Van%20Gogh%20Painting%20Found%20in%20Attic&reg=ca&site=news&sn=na&lid=a07700000041NrRAAU&loc=2&apl=false&psid=2143335053&fver=Shockwave%20Flash%2011.2%20r202&expn=default&expt=embed_video&expb=na&vpurl=http%3A%2F%2Fca.news.yahoo.com%2Fblogs%2Fgood-news%2Fvan-gogh-museum-identifies-artist-long-lost-painting-143109483.html&e.400.101&vm=loadClips-meta%3B%20Failed%20to%20load%20http%3A%2F%2Fvideo.query.yahoo.com%2Fv1%2Fpublic%2Fyql%3Fq%3DSELECT%2520*%2520from%2520yahoo.media.video.abstract%2520WHERE%2520id%253D%2522fdcbf7e5-ba57-3350-9402-eea2eb2e43b7%2522%2520AND%2520site%253D%2522news%2522%2520AND%2520lang%253D%2522en-CA%2522%2520AND%2520region%253D%2522CA%2522%253B%26env%3Dprod%26format%3Djson%26callback%3DYUI.Env.JSONP.yui_3_9_1_1_1378764364663_278&rn=0.334915921166441 HTTP/1.1
+Host: qos.video.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/video/long-lost-van-gogh-painting-203431190.html?format=embed&player_autoplay=false
+Connection: keep-alive
+

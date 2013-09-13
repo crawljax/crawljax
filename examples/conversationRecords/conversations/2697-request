@@ -1,0 +1,9 @@
+GET http://platform.twitter.com:80/widgets/follow_button.html?screen_name=YahooCanadaNews&show_count=false&show_screen_name=false&width=61&height=22&lang=en HTTP/1.1
+Host: platform.twitter.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/german-ex-rapper-converted-islam-reportedly-injured-syria-180111595.html
+Connection: keep-alive
+

@@ -1,0 +1,10 @@
+GET http://geo.yahoo.com:80/p?s=396520182&_R=http%3A%2F%2Fca.yahoo.com%2F&_L=m%06home%01l%06Blogger%07_p%0389%02Privacy%20Policy%02Terms%20of%20Service%02Contact%20Us%02Pressroom%02Twitter%02linkedin%02Facebook%08m%06Mail%20To%20Friend%01l%06Close&t=1378764303&_P=1.9.0%05A_pn%03home%04A_sid%0354x6WWCVqjg5%04_w%03ca.careers.yahoo.com%2F HTTP/1.1
+Host: geo.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.careers.yahoo.com/
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764299X; CH=AgBSLkUQAAy6EAAH1BAAMhwQACo0EAADnxAAJfcQAC71EAAxfhAAPKUQACfy; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=389@yvap=208@cc=3@al=0@vl=2@ac=0
+Connection: keep-alive
+

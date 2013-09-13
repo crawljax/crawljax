@@ -1,0 +1,9 @@
+GET http://l1.yimg.com:80/bt/api/res/1.2/gkDWyniLBPg_BeK3801xcg--/YXBwaWQ9eW5ld3M7Y2g9MjMxNztjcj0xO2N3PTMwOTQ7ZHg9MzMyO2R5PTA7Zmk9dWxjcm9wO2g9MTUyO3E9ODU7dz0yMDM-/http://media.zenfs.com/en_US/Sports/USA_Today/20130909_jel_usa_027-4b35ee1a2e983198741d8976956826aa HTTP/1.1
+Host: l1.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.sports.yahoo.com/
+Connection: keep-alive
+

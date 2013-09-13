@@ -1,0 +1,10 @@
+GET http://dcs.adgear.com:80/interactions/ext/b=VFhOPTEwZTQ3YjVlLTE5OWMtMTFlMy04MWE1LWY3YTZkOGQ2MWEzMw**/p=120538/ag=4778/a=22662/i=58963?AG_R=31916255970985 HTTP/1.1
+Host: dcs.adgear.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://cdn.adgear.com/acs/adgear.js/current/iframes/iframe_placement.html?AG_PID=120538&AG_SOURCE_CLICKTRACKER_EXPECTS_ENCODED=false&AG_SOURCE_CLICKTRACKER_IS_ENCODED=false&AG_SOURCE_CLICKTRACKER_IS_DOUBLE_ENCODED=false&AG_R=1378764383&AG_SOURCE_CLICKTRACKER=http://ads.bluelithium.com/clk?3,eJytUtuSmkAQ.Zp9WyzmAkJZeUBAV2RGuan4kgJEREDIgsvl6zNosqlN5TFd1HRz-szpmQMAzaZQiEUIEAphGGIczgAGPI5gLIrCKz-bzWQsCjwQsfwaJmmn7rbxNlEmb7t6roxhlvwhUZ7xyP6z3krjqupLnFLrCc3LHVT-T8CqXf0qV4-5iSYp9H5Q57o-.2RpervZL.KNS1rT1YXNnjTEXeSk5wX.SoDpZgMtdORfaeoPnkD-6H97vTRN9YKUF7hgT5SnUVZPwjioJmE06YNLWU6ismCtPmKLf.Nl4uDWvCqFfyPyWtMh0aLevxndUb3cgr2VnZbdu-2edOdw2gSuvfb05uiCXUW9Y2159g93Z1PCd7Vz2DmhRs-nQgBh3w0n1erIEGE6-DwZkm7jJogMq9Z8o5WhJYCyW1JXryOkZOSqMw4ZqJaBjdpdo9QaiJb1G00RqOt15pufkZSdc7mojqpthXl-twbDdJekoypf-8hiGl4d7w1s6MKZgGq997regk1AC8M.Loyzmx3XHoxqv8gy4votuSaYaB4gTtcbmlJHBdNwj0V4ODYU2fnayZhD4GGk8sXVJC.DIJ8E76cvjjqr5QvSgHDmsRigK0MIe5cfMflXYgyNMR4a435WQ4ARQlgWJDaNjl-Igeo4Vz9sR3U0laZTIEiQQSYDmjzTp9qqpSk2tmt.46XCIle0K3EJMvPV3c7R94.bfdSfM.r25t9UuDYjgDkGGb8lRYwkyEMZyBKD1wx22mi1W-I-se7tR9Ly09YsHIs1FdYUpxCJQJR5KAAoyliSxsvYrMOzfBgZT99eIP7rjwwmt7itvxhXXcqmrD8LrjxzzSXmTkHP1XHVxEUYv3MyB3mAuMdpEWZn5eo8PcX1pWzZzp8gVTPp,
+Cookie: AdGear_UID=c49e617e-199b-11e3-8027-cb79950dd180; AdGear_Session=0000____
+Connection: keep-alive
+

@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/bt/api/res/1.2/meldzuM0luM.Ec6.Hfph3A--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTY3O3E9ODU7dz0xMjA-/http://l.yimg.com/os/publish-images/ivy/2013-08-20/c257db7e-dc3b-4b7e-8a14-9fca950c5729_421_QT_Cheese_Package_Split-2-.jpg HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.shine.yahoo.com/video/easy-chicken-dinner-070000941.html
+Connection: keep-alive
+

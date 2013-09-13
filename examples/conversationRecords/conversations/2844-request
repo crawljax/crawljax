@@ -1,0 +1,10 @@
+GET http://www.vistaprint.ca:80/sf/_sv-27.0/_hc--1306361730/_/vp/js-lib/jquery/vpextensions/menu-skins/jquery-menu-minimal_min.js HTTP/1.1
+Host: www.vistaprint.ca
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.vistaprint.ca/radio-offer.aspx?GP=9%2f9%2f2013+6%3a08%3a11+PM&GPS=2949297617&GNF=0
+Cookie: P=V=27.0&SID=1048954303&PID=1110&COUPON=t8mz6r9y7kkz%7et8mz6r9y7kkz; SITE=sc=on&sps=0&TTASID=&ns=True&SPOTEXT=&S=2949297617&SUBSN=2466785817&TTID=2084567016&TT=W1OI1jR6xvPY38cYZuMSvGkPjZ%2fxlgE0oCZ%2bBMKwm%2fYTd8JoFE0qibNRMFon&TTup=1378764491&TTSS=2466785817&TTV=559542526429; PSC=PDATE=9%2f9%2f2013+6%3a08%3a11+PM&gld=9%2f9%2f2013+6%3a08%3a11+PM&SID=1048954303&PSID=&pc=on&LANGID=6&VID=559542526429&MS=1; v1st=1CB0240ACCD45A30; device=w=1920&h=1080&dpr=1; tpl=0
+Connection: keep-alive
+

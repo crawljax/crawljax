@@ -1,0 +1,10 @@
+GET http://ca.yahoo.com:80/jserror?moduleId=p_30345721_e52&msg=signal(view%3Dundefined%2CpageMode%3D%20)%3AModule%20missing%20a%20node%20for%20%27default%27%20view&rid=ukYuUjQkvs7wUgAAigvugg..& HTTP/1.1
+Host: ca.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.yahoo.com/
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764474X; fpc=d=dtjPrA7uajkhsxDDYHbX6yggPDwj17yU.DZwei2e1kzIhIjVul87QEud.FYQxVJwML1vtewUKN3AaOMq1eyS4lH5zmDS1z._MJD5RpCJhYxAPcQPJzF4lSDle0Oz9lYOfc2Mvcvkw4FueOBxVGYZ.rN2ql..EpWhwOpngK6RdC7YSJyx3huNeGQIuSwKGrUCznYSt2A-&v=2; CH=AgBSLkUQARKhIAAMuiABCskQAAfUEAAyHBAAKjQgAAOfEAEaqRAAJfcQATEpEAAu9RABCCggADF+EAEqZxABEY4QAR7QEAE7bxAAPKUQARyEEAE0mBABEFwQASckEAEnWxABPV4gACfy; fpt=d=Yh2TifzXet4EXw_ylnH6BVeTdNZjWSvUv4XLJ4.tUJkk8eK8DwQkOM1d.VUPOLYzMB07uQATcYe2sVCGP0jlgwDM.i757m8XhzzKDIorO_b4Pi_gwmYasNUzCQ6xuviaavEh4LJzz.w15SuK7wD1_rh_Huh.TybPTeeX9vHmmk0MTMKM2dcy__RmhQImGQngPhgDwKc4L17.GpmuYJrsoXa7pFeixTDthvj6URAmF0T_5cy66NLiZMQ._qYSK.Rj9rCf.Y2bWSt9Ce9IgyOhK05M8cj14FKEoxB2Y8nkBlmI5an3vEg7k.nDlE.duUXWtJguls6nZKaI5EYmmsBvYE0EGCpsOYfylqH1RtHhMtBP.1E.hUuda_HT_FakKiEPzEVF1oaaDB9bTRjm35PDQHZ.3T5qOijCavCXR6WrKXdzd0tLKnR1t5_6_XmMUU_KwWUdcCF2vpkh&v=1; fpc_s=d=FfLV.unAaTme8qE25soQxAUM_0ibJFKMHkWyzSYr57V2QcBprUyLHPL3hkQEempWohoK.2c_inq7jlNBsCMguZ8hfSkIIKRcBF6ofJ0kwhJ73Nc3ogimHg9W8xriRdRpOE79iJ4KPkKdY5szNw1NgDG5BLRtc4UHMA8WUdXMM5xjaZ4je5Kk9BlI.spiJsHF4idQGYMyCKZWnJ1kXx72sIihgLblyLFEHDa1YpSht6vWkz3i4f_7GolpUxmBLE.XD.Byr6DgEdE0oajHQmvpW_rhtApm.k_esqk6ZrY0VN2iq0sePAq1SRYPgVcPF2PAetF1h39_YBnmA5lE7U05RMtHnig-&v=2; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=193@yvap=208@cc=6@al=3@vl=4@ac=2; fpms=p_13872472=%7B%22ta%22%3A%220%22%2C%22ca%22%3Anull%7D&p_13923988=%7B%22showMore10%22%3A2%7D; ucs=bnas=0; DK=v=2&d=mi6&r=mi0
+Connection: keep-alive
+

@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?nn/lib/metro/g/core_yui_3.4.11.js&nn/lib/metro/g/uicontrib/yui/features_3.4.4.js&nn/lib/metro/g/uicontrib/yui/dom-core_3.4.4.js&nn/lib/metro/g/uicontrib/yui/node-core_3.4.5.js&nn/lib/metro/g/core_pf_1.0.18.js&nn/lib/metro/g/core_srvc_1.0.54.js&nn/lib/metro/g/core_mod_1.0.194.js&nn/lib/metro/g/uicontrib/yui/event-synthetic_3.4.4.js&nn/lib/metro/g/uicontrib/yui/event-focus_3.4.4.js&nn/lib/metro/g/uicontrib/yui/plugin_3.4.5.js&nn/lib/metro/g/uicontrib/yui/base-pluginhost_3.4.6.js&nn/lib/metro/g/uicontrib/miniassist-yui3_0.0.9.js&nn/lib/metro/g/masthead/masthead_miniassist_baseline_0.4.16.js&nn/lib/metro/g/news/news_accordion_1.9.8.js&nn/lib/metro/g/euprivacy/euprivacy_0.0.15.js&nn/lib/metro/g/contentcarousel/contentcarousel_polls_0.0.31.js&nn/lib/metro/g/tabbar/tabbar_0.0.32.js&nn/lib/metro/g/mail/mail_0.0.46.js&nn/lib/metro/g/pa/pa_0.1.237.js HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://qc.yahoo.com/
+Connection: keep-alive
+

@@ -1,0 +1,10 @@
+GET http://resources.eyereturn.com:80/14390/13-337.9_300x250_p2_v1.jpg HTTP/1.1
+Host: resources.eyereturn.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://resources.eyereturn.com/14390/static_container_300x250_v1.swf
+Cookie: er_guid=40050EA9-442A-6170-0ED7-4A97CC3498D4; erTok="AwAAAAD09AkAC7M1AAEAAA=="; cmggl=1
+Connection: keep-alive
+

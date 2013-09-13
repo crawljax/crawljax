@@ -1,0 +1,9 @@
+GET http://l1.yimg.com:80/bt/api/res/1.2/Nx4O_TxIoShowuW_Bv0YIw--/YXBwaWQ9eW5ld3M7aD0wO3E9ODU7dz0yODU-/http://media.zenfs.com/en_us/News/Reuters/2013-09-05T233819Z_894860611_GM1E9960L1001_RTRMADP_3_G20.JPG HTTP/1.1
+Host: l1.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/u-expect-everything-response-syria-strikes-assad-113448146.html
+Connection: keep-alive
+

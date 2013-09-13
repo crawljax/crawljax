@@ -1,0 +1,19 @@
+HTTP/1.1 302 Found
+Date: Mon, 09 Sep 2013 22:03:53 GMT
+Server: YTS/1.20.13
+X-RightMedia-Hostname: raptor0602.rm.gq1.yahoo.com
+P3P: policyref="/w3c/p3p.xml", CP="NOI DSP COR NID CURa ADMa DEVa PSAa PSDa OUR BUS COM INT OTC PUR STA"
+Set-Cookie: bh="b!!!!#!%ODP!!!!#>G*G_"; path=/; expires=Wed, 09-Sep-2015 22:03:53 GMT
+Location: http://ad.yieldmanager.com/cms/v1?esig=1~862d802dd86fb59368388ad078a7f298ddbbd0b7&nwid=10000424978&sigv=1
+Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+Vary: *
+Last-Modified: Mon, 09 Sep 2013 22:03:53 GMT
+Expires: Mon, 09 Sep 2013 22:03:53 GMT
+Pragma: no-cache
+Content-Encoding: gzip
+Age: 0
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+0
+

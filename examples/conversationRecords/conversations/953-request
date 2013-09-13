@@ -1,0 +1,9 @@
+GET http://cdn.adgear.com:80/acs/adgear.js/current/iframes/iframe_placement.html?AG_PID=116738&AG_R=1378764252.681268&AG_SOURCE_CLICKTRACKER_EXPECTS_ENCODED=false&AG_SOURCE_CLICKTRACKER_IS_ENCODED=true&AG_SOURCE_CLICKTRACKER_IS_DOUBLE_ENCODED=false&AG_SOURCE_CLICKTRACKER=http%253a%252f%252fclicks.beap.bc.yahoo.com%252fyc%252fYnY9MS4wLjAmYnM9KDE1dmc5djE2YShnaWQkQVoxdmN6SXdOaTRKUEtZT1VpNUZsQUN6TVRNM0xsSXVSZHpfc2xDbyxzdCQxMzc4NzY0MjUyNjUwODkxLHNpJDg1NTI1NTEsc3AkNzkzNDUyNzcwLGNyJDM2NTI2NjAwNTEsdiQyLjAsYWlkJENlQ1hCV0tMYzB3LSxjdCQyNSx5YngkdTR0YWxkc1VZNFlTeXZ3R0lETE5aUSxiaSQxODczMDc1MDUxLHIkMCxyZCQxNmY2NmdmcWIpKQ%252f2%2F*http%3A%2F%2Fglobal.ard.yahoo.com%2FSIG%3D15hgq5dr8%2FM%3D999999.999999.999999.999999%2FD%3Dmedia%2FS%3D793452770%3ALREC%2F_ylt%3DAnUMNweWxFkkBCdH2WyN__TiIEsv%2FY%3DCA%2FEXP%3D1378771452%2FL%3DAZ1vczIwNi4JPKYOUi5FlACzMTM3LlIuRdz_slCo%2FB%3DCeCXBWKLc0w-%2FJ%3D1378764252681268%2FK%3D3.bodm5NVORxjYx97yQtEg%2FA%3D7876291635479508634%2FR%3D0%2FX%3D6%2F* HTTP/1.1
+Host: cdn.adgear.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.screen.yahoo.com/700-ton-ship-flipped-over-150511969.html
+Connection: keep-alive
+

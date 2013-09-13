@@ -1,0 +1,10 @@
+GET http://voken.eyereturn.com:80/?561699&click=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MGs5bmZtayhnaWQkY3c1ZV9USXdOaTRKUEtZT1VpNUZsQURYTVRNM0xsSXVSeTdfMlBCSSxzdCQxMzc4NzY0NTkxMDE0MzgyLHNpJDg1NDEwNTEsc3AkMjE0MzMzNDk0MCxjciQzMjA2MTg5NTUxLHYkMi4wLGFpZCRDakJOQldLTGM2RS0sY3QkMjUseWJ4JGhxejkwSXdPNlI3V3RuU05BV3dlcmcsYmkkMTY0MTE3MzU1MSxyJDAscmQkMTZmam9yNXRyKSk/1/*http://global.ard.yahoo.com/SIG=15fai4uhu/M=999999.999999.999999.999999/D=yahoo/S=2143334940:N/Y=CA/EXP=1378771791/L=cw5e_TIwNi4JPKYOUi5FlADXMTM3LlIuRy7_2PBI/B=CjBNBWKLc6E-/J=1378764591052259/K=IeUSua3sFf3Rk48LxSv0Wg/A=6887265893908724490/R=0/X=6/*&params=1378764591.52259 HTTP/1.1
+Host: voken.eyereturn.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://l.yimg.com/rq/darla/2-6-7/html/r-sf.html
+Cookie: er_guid=40050EA9-442A-6170-0ED7-4A97CC3498D4; erTok="AwAAAAD09AkADrM1AAcAAAb/CQAMszUAAQAA86QIABGzNQAGAADxpAgAD7M1AAIAAPKkCAARszUAAwAA8KQIABGzNQABAAC2TgkAEbM1AAEAAA=="; cmggl=1
+Connection: keep-alive
+

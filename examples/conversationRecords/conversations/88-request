@@ -1,0 +1,10 @@
+GET http://network.realmedia.com:80/2/247-Access/Targeting/Xaxis/1170010320@x96?_RM_OAX_REDIR_ HTTP/1.1
+Host: network.realmedia.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://dm.de.mookie1.com/2/B3DM/DLX/@x71
+Cookie: OAX=vwEB9VIuRZcADTRy; NSC_o1efm_qppm_iuuq=ffffffff09419e0e45525d5f4f58455e445a4a423660
+Connection: keep-alive
+

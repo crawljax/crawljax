@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Server: nginx/1.2.7
+Date: Mon, 09 Sep 2013 22:03:04 GMT
+Content-Type: application/x-javascript
+Transfer-Encoding: chunked
+Connection: close
+X-Powered-By: PHP/5.3.23
+P3P: policyref=/w3c/p3p.xml, CP=NOI DSP COR NID CURa ADMa DEVa PSAa PSDa OUR BUS COM INT OTC PUR STA
+Set-Cookie: ud=eJxrXlyWWnRgUUnxaccr3RPTFAX2L8kvykxf5OwIALP%252FDIo%253D; expires=Tue, 07-Jan-2014 22:03:04 GMT; path=/; domain=exelator.com
+
+b1
+document.write('<iframe width="0" height="0" frameborder="0" src="http://network.realmedia.com/2/247-Access/Exelate_CallBack/1378764184.4937@x96?_RM_HTML_EXELATE_="></iframe>');
+0
+

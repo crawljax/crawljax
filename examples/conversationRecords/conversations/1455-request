@@ -1,0 +1,11 @@
+GET http://l.yimg.com:80/qj/ycar/images/4e5b542867178_tiny.gif HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.careers.yahoo.com/
+Connection: keep-alive
+If-Modified-Since: Mon, 29 Aug 2011 08:56:08 GMT
+If-None-Match: "YM:1:0d70fef9-899e-429e-ae6c-2cba5433d9b9"
+

@@ -1,0 +1,9 @@
+GET http://l2.yimg.com:80/bt/api/res/1.2/4N5_SGTzzSnbRAf1vuAzyA--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTEwMDtweW9mZj0yNTtxPTg1O3c9MTAw/http://d.yimg.com/hd/cbc/lotus/1378578549455_572_21ypba6bg2gq1_0_0.jpg?a=cbc&c=911adf758e294946c44606e2d335d958&mr=0&s=2cad96e64213da55daac201ba7eb44ad HTTP/1.1
+Host: l2.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/u-expect-everything-response-syria-strikes-assad-113448146.html
+Connection: keep-alive
+

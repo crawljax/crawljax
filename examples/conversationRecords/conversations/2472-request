@@ -1,0 +1,10 @@
+GET http://beacon-1.newrelic.com:80/1/7e71844a14?a=23848&be=665&qt=0&ap=67&dc=2367&fe=3818&to=cgsNQRYMWA1cFxoNClwBTFwKB1EZ&v=42&jsonp=NREUM.setToken&perf=%7B%22timing%22%3A%7B%22of%22%3A1378764424396%2C%20%22n%22%3A0%2C%20%22dl%22%3A603%2C%20%22di%22%3A3151%2C%20%22ds%22%3A3162%2C%20%22de%22%3A3350%2C%20%22dc%22%3A4483%2C%20%22l%22%3A4483%2C%20%22le%22%3A4489%2C%20%22f%22%3A244%2C%20%22dn%22%3A244%2C%20%22dne%22%3A244%2C%20%22c%22%3A244%2C%20%22ce%22%3A244%2C%20%22rq%22%3A245%2C%20%22rp%22%3A602%2C%20%22rpe%22%3A602%7D%2C%20%22navigation%22%3A%7B%7D%7D HTTP/1.1
+Host: beacon-1.newrelic.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.zoocasa.com/en
+Cookie: JSESSIONID=e2a23338011dcb80
+Connection: keep-alive
+

@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?/os/mit/media/m/quotes/recent-quotes-min-1264955.js&/os/mit/media/m/quotes/dropdown-min-262352.js&/os/mit/media/m/quotes/hover-charts-min-1080522.js&yui:gallery-2011.04.20-13-04/build/gallery-simple-menu/gallery-simple-menu-min.js HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/
+Connection: keep-alive
+

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import se.fishtank.css.selectors.NodeSelectorException;
+import se.fishtank.css.selectors.dom.DOMNodeSelector;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
@@ -416,5 +420,38 @@ public class CandidateElementExtractor {
 
 	public boolean checkCrawlCondition() {
 		return checkedElements.checkCrawlCondition(browser);
+	}
+
+
+	public ImmutableList<CandidateElement> extractClickables(StateVertex currentState) {
+		ImmutableList<CandidateElement> finalExtractedClickables;
+		ArrayList<Element> elements = new ArrayList<Element>();
+		ArrayList<CandidateElement> candidatElements = new ArrayList<CandidateElement>();
+		String dom = currentState.getDom();
+		try {
+				Set<Node> result =
+				        new DOMNodeSelector(DomUtils.asDocument(dom))
+				                .querySelectorAll("[data-cj-clickable]");
+				LOG.debug("Found {} clickable candidates.", result.size());
+			for(Node n : result){
+				Element currentElement = (Element) n;
+				String xpath = XPathHelper.getXPathExpression(currentElement);
+				String relatedFrame = "";
+				elements.add(currentElement);
+				candidatElements.add(new CandidateElement(currentElement, new Identification(
+						Identification.How.xpath, xpath), relatedFrame));
+			}
+		} catch (NodeSelectorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(randomize){
+			Collections.shuffle(candidatElements);
+		}
+		finalExtractedClickables = ImmutableList.copyOf(candidatElements);
+		return finalExtractedClickables;
 	}
 }

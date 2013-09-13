@@ -1,0 +1,9 @@
+GET http://s0.2mdn.net:80/ads/richmedia/studio/5116915/24858357_20130905035909211_CA_en_M1_300x250.swf HTTP/1.1
+Host: s0.2mdn.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://s0.2mdn.net/ads/richmedia/studio/5116915/24858357_20130905035851007_CA_en_M1_300x250_container.swf
+Connection: keep-alive
+

@@ -1,0 +1,10 @@
+GET http://ad.yieldmanager.com:80/user-match?nid=12345&eid=7324991387890365220&y=GcA2sOQ.Fy9tRuzkDkWhwVI549Q.xEK2Q_0SFg-- HTTP/1.1
+Host: ad.yieldmanager.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ad.yieldmanager.com/st?ad_type=iframe&publisher_blob=lmsid:a097000000WBOW7AAP;revsp:usmagazine.com|LY.q9DIwNi4JPKYOUi5FlAAZMTM3LlIuRbj_4kIY|2121000241|LREC|1378764216.313977&ad_size=300x250&site=1258184&section_code=2308142551&cb=1378764216.313977&yud=smpv%3d3%26ed%3dzAomdC267kvgcnoVlvRc2UlanpzF9ARWnsPP3Q--&pub_url=http://ca.yahoo.com/&pub_redirect_unencoded=1&pub_redirect=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MHFtMWg2dihnaWQkTFkucTlESXdOaTRKUEtZT1VpNUZsQUFaTVRNM0xsSXVSYmpfNGtJWSxzdCQxMzc4NzY0MjE2Mjc4Mzg1LHNpJDg1NTM1NTEsc3AkMjEyMTAwMDI0MSxjciQzMDkyODM3NTUxLHYkMi4wLGFpZCRJT3lCR21LTGMyRS0sY3QkMjUseWJ4JHIzN0RBNWY1bzlOU29UV0o0eFZSWUEsYmkkMTYwMjg2MjU1MSxyJDAscmQkMTZmcWIxb2tyKSk/1/*http://global.ard.yahoo.com/SIG=15ik2am2c/M=999999.999999.999999.999999/D=media/S=2121000241:LREC/_ylt=An67U2Ok7nh0ilkvEF31s38x5Wt./Y=CA/EXP=1378771416/L=LY.q9DIwNi4JPKYOUi5FlAAZMTM3LlIuRbj_4kIY/B=IOyBGmKLc2E-/J=1378764216313977/K=Bt99WtPRtfmf3iKy9fywdw/A=6723548183035958896/R=0/X=6/*
+Cookie: ih="b!!!!%!<KsR!!!!#>G*GN!HBqy!!!!#>G*G9!Har'!!!!$>G*GG"; vuday1=HD!OVr<bymFf*ABAr:4D!.DO]#^)q#; uid=uid=a1d5218c-199b-11e3-a463-83591f9f97bd&_hmacv=1&_salt=3264766711&_keyid=k1&_hmac=0d00ac62a9366ebe45fa12a1e4c851293f34d64b; bx=0if561p92shck&b=3&s=d6&t=251; liday1=tJKS:-?S`[!.DO]Eu<_.; RMBX=0if561p92shck&b=3&s=d6&t=251
+Connection: keep-alive
+

@@ -1,0 +1,10 @@
+GET http://ad.yieldmanager.com:80/pixel?id=2379670&t=2 HTTP/1.1
+Host: ad.yieldmanager.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://d1eoo1tco6rr5e.cloudfront.net/5qmysw4/qz38mxeq/iframe
+Cookie: ih="b!!!!/!<KsR!!!!#>G*GN!FVg4!!!!#>G*H'!FVg:!!!!#>G*I6!Fr2v!!!!#>G*IC!G3bd!!!!#>G*Hu!GSKM!!!!#>G*HJ!GSKo!!!!#>G*I6!H*HU!!!!#>G*HZ!HBqy!!!!#>G*G9!Har'!!!!+>G*Hh!Hv1Z!!!!%>G*I-!I%U1!!!!#>G*IJ"; vuday1=HD!OVr<bym<3hMkFf*ABHD!OViF5D<On-:.Ar:4DZGNjZ!.DO]!Y7`s; uid=uid=a1d5218c-199b-11e3-a463-83591f9f97bd&_hmacv=1&_salt=3264766711&_keyid=k1&_hmac=0d00ac62a9366ebe45fa12a1e4c851293f34d64b; bx=0if561p92shck&b=3&s=d6&t=251; liday1=$+17%NJixjppkO)PXKPxUL7:RNWjRoC7>bVgKkPdtJKS:-?S`[truwa!.DO]_$^lz; RMBX=0if561p92shck&b=3&s=d6&t=251; bh="b!!!!$!!Kf`!!!!#>G*H:!%ODP!!!!#>G*G_"; ioday1=l_=:T![_^?!.DO]i=nl^; pv1="b!!!!'!#T:g%,efU!)a99!FVg:!,^7]!!!!$!?5%!(/>l5!ZmB)!(]w?!/7)b~~~~~~>G*I6>I'mj~!#8oc%,efU!)a9?!H*HU!,^?G!!!!$!?5%!(/>l5!wVd.!(]w?J>kLB!/71v~~~~~>G*HZ>H).tM.jTN!#Z`A%,efU!)a99!G3bd!,1_j!!!%%!?5%!(/>l5!ZmB)!(]w?!._>_~~~~~~>G*Hu~~!%r7Y%,efU!)a99!H@y?!,P+O!!!%%!?5%!(/>l5!w1K*!(]w?!!_L:!/(f6~~~~~>G*IJ>H)/d~"
+Connection: keep-alive
+

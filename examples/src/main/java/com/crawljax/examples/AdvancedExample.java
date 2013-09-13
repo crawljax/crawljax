@@ -2,19 +2,26 @@ package com.crawljax.examples;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.NotXPathCondition;
+import com.crawljax.condition.UrlCondition;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
+
+import crawljax.plugins.clickabledetector.ClickableDetectorPlugin;
+
+//import crawljax.plugins.clickabledetector.ClickableDetectorPlugin;
 
 /**
  * Example of running Crawljax with the CrawlOverview plugin on a single-page web app. The crawl
@@ -24,7 +31,7 @@ public final class AdvancedExample {
 
 	private static final long WAIT_TIME_AFTER_EVENT = 200;
 	private static final long WAIT_TIME_AFTER_RELOAD = 20;
-	private static final String URL = "http://demo.crawljax.com";
+	private static final String URL = "https://www.yahoo.com";
 
 	/**
 	 * Run this method to start the crawl.
@@ -37,21 +44,25 @@ public final class AdvancedExample {
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
 		// click these elements
-		builder.crawlRules().clickDefaultElements();
-		builder.crawlRules().click("div");
+	//	builder.crawlRules().clickDefaultElements();
+	//	builder.crawlRules().click("div");
 
-		builder.setMaximumStates(10);
+		builder.setMaximumStates(3);
 		builder.setMaximumDepth(3);
 		builder.crawlRules().clickElementsInRandomOrder(true);
-
-		// Set timeouts
-		builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
-		builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
-
 		
-		// We want to use two browsers simultaneously.
-		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 1));
+		try {
+			ClickableDetectorPlugin.configure(builder,
+			        ProxyConfiguration.manualProxyOn("127.0.0.1", 8084));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 1));
+		System.setProperty("webdriver.firefox.bin",
+		        "/ubc/ece/home/am/grads/janab/Firefox19/firefox/firefox");
 		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 		crawljax.call();
 

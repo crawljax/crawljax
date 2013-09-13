@@ -1,0 +1,9 @@
+GET http://l1.yimg.com:80/bt/api/res/1.2/Z4YSJVB.hBCAKf3LywP3CA--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTcwO3B5b2ZmPTA7cT04NTt3PTcw/http://media.zenfs.com/es_AR/News/iprofesional.com/372978.gif HTTP/1.1
+Host: l1.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/
+Connection: keep-alive
+

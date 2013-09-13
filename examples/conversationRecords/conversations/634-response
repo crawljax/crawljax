@@ -1,0 +1,8 @@
+HTTP/1.0 302 Moved Temporarily
+Connection: keep-alive
+Expires: Mon, 15 Jun 1998 00:00:00 GMT
+Pragma: no-cache
+Cache-Control: no-store, no-cache
+Location: http://ad.yieldmanager.com/user-match?nid=606282&eid=522E44E36E650E72334AA8CAF23037E2&y=GcA2sOQ.Fy9tRuzkDkWhwVI549Q.xEK2Q_0SFg--
+Content-Length: 0
+

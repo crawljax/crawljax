@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?kx/ucs/uh/css/291/yunivhead-min.css&kx/ucs/uh/css/221/logo-min.css&kx/ucs/avatar/css/17/avatar-min.css&kx/ucs/notif_v2/css/145/notifications_v2-min.css&kx/ucs/mailcount/css/39/mailcount_v2-min.css&kx/ucs/mailcount/css/37/mail_preview-min.css&kx/ucs/search/css/190/search_all-min.css&kx/ucs/search/css/190/search_buttons-min.css&bm/lib/fi/common/p/d/static/css/2.0.281854/2.0.0/mini/yfi_quote_summary_lego_concat.css&bm/lib/fi/common/p/d/static/css/2.0.281854/2.0.0/mini/yfi_symbol_suggest.css&bm/lib/fi/common/p/d/static/css/2.0.281854/2.0.0/mini/yui_helper.css&bm/lib/fi/common/p/d/static/css/2.0.281854/2.0.0/mini/yfi_theme_teal.css HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/q?s=CADUSD=X
+Connection: keep-alive
+

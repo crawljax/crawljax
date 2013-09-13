@@ -1,0 +1,142 @@
+HTTP/1.1 200 OK
+Date: Mon, 09 Sep 2013 22:03:04 GMT
+Server: Apache/2.2.3 (Red Hat)
+P3P: CP="NON NID PSAa PSDa OUR IND UNI COM NAV STA",policyref="/w3c/p3p.xml"
+Pragma: no-cache
+Expires: Fri, 30 Oct 1998 14:19:41 GMT
+Cache-Control: no-cache,no-store,private
+Content-length: 3618
+Keep-Alive: timeout=60
+Connection: Keep-Alive
+Content-Type: text/html
+Set-Cookie: NSC_o1efm_qppm_iuuq=ffffffff09419e0e45525d5f4f58455e445a4a423660;expires=Mon, 09-Sep-2013 22:04:04 GMT;path=/;httponly
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<SCRIPT src="http://mutation-summary.googlecode.com/git/src/mutation-summary.js" type="text/javascript" yyy="injected"></SCRIPT>
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<SCRIPT type="text/javascript" xxx="injected">var rel = Node.prototype.removeEventListener;
+Node.prototype.removeEventListener = function() {
+	rel.apply(this, arguments);
+	unannotate(this);
+}
+
+var ael = Node.prototype.addEventListener;
+Node.prototype.addEventListener = function() {
+	ael.apply(this, arguments);
+	annotate(this);
+}
+
+function annotate(e) {
+	e.setAttribute("data-cj-clickable", "true");
+}
+
+function unannotate(e) {
+	e.removeAttribute("data-cj-clickable");
+}
+
+var observer = new MutationSummary({
+	callback : handleChanges,
+	queries : [ {
+		all : true
+	} ]
+});
+
+function handleChanges(summaries) {
+	// alert("DOM mutated!");
+	detectClickables();
+}
+
+function detectClickables() {
+	var all = document.getElementsByTagName("*");
+	for ( var i = 0; i < all.length; i++) {
+		var node = all[i];
+		if (all[i].onclick != null) {
+			annotate(node);
+		} else {
+			if (node.nodeType == 1) {// element of type html-object/tag
+				if (node.tagName == "A" || node.tagName == "BUTTON") {
+					annotate(node);
+				}
+				if (node.tagName == "INPUT"
+						&& node.getAttribute("type").toUpperCase() == "SUBMIT") {
+					annotate(node);
+				}
+			}
+		}
+	}
+}</SCRIPT>
+
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    
+
+
+<TITLE>B3/TFSA_CallBack_DLX - 20276217</TITLE>
+
+
+
+<STYLE xxx="injected">[data-cj-clickable=true] {
+  border-style: double;
+  border-color: green;
+  color: green;
+}</STYLE>
+
+
+</HEAD>
+<BODY>
+    
+
+
+<SCRIPT type="text/javascript">
+        dlx_na_id = '';
+        dlx_na_mp = '';
+        dlx_na_da = '';
+        dlx_query = '';
+        if (dlx_na_mp != '') { dlx_query += ((dlx_query != '') ? ',' : '') + 'MP:' + dlx_na_mp; }
+        if (dlx_na_da != '') {
+			dlxTerms = dlx_na_da.split('|');
+            for (i = 0; i < dlxTerms.length; i++) {
+                dlxPair = dlxTerms[i].split('=');
+                if (dlxPair[0] != '') {
+                    dlx_query += ((dlx_query != '') ? ',' : '') + dlxPair[0] + ':' + dlxPair[1];
+                }
+            }
+			dlx_query = dlx_query.replace(/\|/g, ',');
+        }
+        dlx_url = 'http://network.realmedia.com/2/247-Access/CookieMonster/DLX/85751499@x96?cAction=Add&cName=dlx&cExpires=30&cAnalytics=Data_DLX&cValue=' + dlx_query;
+        appendIframe(dlx_url, 'DLX3');
+        function appendIframe(iFrameURL, iFrameID) {
+            try {
+                pixel_iframe = document.createElement('iframe');
+                pixel_iframe.setAttribute('id', iFrameID + '_85751499');
+                pixel_iframe.setAttribute('style', 'display:none');
+                pixel_iframe.style.cssText = 'display:none';
+                pixel_iframe.src = iFrameURL;
+                document.body.appendChild(pixel_iframe);
+                pixel_iframe = null;
+            }
+            catch (e) { }
+        }
+
+	// Cross Screen (Jumptap) data sync
+    var testOAX = 'vwEB9VIuRZcADTRy';
+
+	 if (testOAX != '') {
+			var jtPix = new Image(1,1);
+			jtPix.src = 'http://t.mookie1.com/rsp?dnv=85751499&min_age=1&rurl=http://pixel.jumptap.com/e/v1/pixel/networks/1/partners/17225/users/[MOOKIE]-' + encodeURIComponent(encodeURIComponent('vwEB9VIuRZcADTRy')) + '?puid=10600_';
+		
+    } 
+
+    </SCRIPT>
+
+
+
+
+
+</BODY>
+</HTML>

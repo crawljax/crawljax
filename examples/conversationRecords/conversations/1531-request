@@ -1,0 +1,10 @@
+GET http://csc.beap.bc.yahoo.com:80/yi?bv=1.0.0&bs=(136ikh8k0(gid$U.d5YTIwNi4JPKYOUi5FlAATMTM3LlIuRhn_7hgI,st$1378764313365720,si$8541051,sp$2145231460,pv$0,v$2.0))&t=J_3-DR_3&al=(as$125vpaebh,aid$oIVBC2KLc2A-,cr$-1,ct$25,at$H,eob$gd1_match_id=-1:ypos=FSRVY)(as$12rlpoi23,aid$GvBBC2KLc2A-,bi$1602863051,cr$3092809051,ct$25,at$H,eob$gd1_match_id=-1:ypos=LREC2)(as$125as2f4g,aid$VyVCC2KLc2A-,cr$-1,ct$25,at$H,eob$gd1_match_id=-1:ypos=MH)(as$12rnj2hin,aid$lFpCC2KLc2A-,bi$1602880551,cr$3092809551,ct$25,at$H,eob$gd1_match_id=-1:ypos=N)(as$12rdq4psl,aid$3bpBC2KLc2A-,bi$1602874551,cr$3092808551,ct$25,at$H,eob$gd1_match_id=-1:ypos=LREC)(as$125tksqi5,aid$0Y9CC2KLc2A-,cr$-1,ct$25,at$H,eob$gd1_match_id=-1:ypos=NT1)(as$1255id42h,aid$DsVCC2KLc2A-,cr$-1,ct$25,at$H,eob$gd1_match_id=-1:ypos=RICH)&s=0&r=0.5388008272583703 HTTP/1.1
+Host: csc.beap.bc.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://l.yimg.com/rq/darla/2-6-7/html/r-csc.html
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764310X; CH=AgBSLkUwAAy6EAEKySAAB9QgADIcIAAqNDAAA58QARqpIAAl9yAALvUwADF+EAEqZxABEY4QAR7QIAA8pRABEFwQASdbIAAn8g==; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=389@yvap=208@cc=3@al=0@vl=2@ac=0
+Connection: keep-alive
+

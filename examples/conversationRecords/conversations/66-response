@@ -1,0 +1,115 @@
+HTTP/1.1 302 Found
+Date: Mon, 09 Sep 2013 22:03:03 GMT
+Server: Apache/2.2.3 (Red Hat)
+P3P: CP="NON NID PSAa PSDa OUR IND UNI COM NAV STA",policyref="/w3c/p3p.xml"
+Pragma: no-cache
+Cache-control: no-cache
+Set-Cookie: NXCLICK2=011VJ9XzNX_B3DM/Exelate/11170010320!y!x93!6qI!WJA; path=/RealMedia/ads/click_nx.ads/B3DM/Exelate/11170010320@x93; domain=.mookie1.com
+Location: https://t.mookie1.com/rsp?dnv=1272177005&rurl=https://loadm.exelator.com/load/?p=204%26g=210%26j=0%26buid=[MOOKIE]%26buid2=792f4f7a576c4975525a594144624634
+Content-length: 2128
+Keep-Alive: timeout=60
+Connection: Keep-Alive
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<SCRIPT src="http://mutation-summary.googlecode.com/git/src/mutation-summary.js" type="text/javascript" yyy="injected"></SCRIPT>
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<SCRIPT type="text/javascript" xxx="injected">var rel = Node.prototype.removeEventListener;
+Node.prototype.removeEventListener = function() {
+	rel.apply(this, arguments);
+	unannotate(this);
+}
+
+var ael = Node.prototype.addEventListener;
+Node.prototype.addEventListener = function() {
+	ael.apply(this, arguments);
+	annotate(this);
+}
+
+function annotate(e) {
+	e.setAttribute("data-cj-clickable", "true");
+}
+
+function unannotate(e) {
+	e.removeAttribute("data-cj-clickable");
+}
+
+var observer = new MutationSummary({
+	callback : handleChanges,
+	queries : [ {
+		all : true
+	} ]
+});
+
+function handleChanges(summaries) {
+	// alert("DOM mutated!");
+	detectClickables();
+}
+
+function detectClickables() {
+	var all = document.getElementsByTagName("*");
+	for ( var i = 0; i < all.length; i++) {
+		var node = all[i];
+		if (all[i].onclick != null) {
+			annotate(node);
+		} else {
+			if (node.nodeType == 1) {// element of type html-object/tag
+				if (node.tagName == "A" || node.tagName == "BUTTON") {
+					annotate(node);
+				}
+				if (node.tagName == "INPUT"
+						&& node.getAttribute("type").toUpperCase() == "SUBMIT") {
+					annotate(node);
+				}
+			}
+		}
+	}
+}</SCRIPT>
+
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+
+<TITLE>302 Found</TITLE>
+
+
+
+<STYLE xxx="injected">[data-cj-clickable=true] {
+  border-style: double;
+  border-color: green;
+  color: green;
+}</STYLE>
+
+
+</HEAD>
+<BODY>
+
+
+
+<H1>Found</H1>
+
+
+
+<P>The document has moved <A href="https://t.mookie1.com/rsp?dnv=1272177005&amp;rurl=https://loadm.exelator.com/load/?p=204%26g=210%26j=0%26buid=[MOOKIE]%26buid2=792f4f7a576c4975525a594144624634">here</A>.</P>
+
+
+
+<HR>
+
+
+
+<ADDRESS>Apache/2.2.3 (Red Hat) Server at b3.mookie1.com Port 80</ADDRESS>
+
+
+
+
+
+
+</BODY>
+</HTML>

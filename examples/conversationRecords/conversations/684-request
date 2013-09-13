@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?os/mit/media/m/ydn/module_ydn_header-min-1461981.css&os/mit/media/m/ydn/ydn_megatron-min-1102156.css&os/mit/media/m/ydn/ydn_megatron-desktop-min-1102156.css&os/mit/media/m/markup/iframe-min-158395.css&os/mit/media/m/ydn/module_ydn_featured-min-887743.css&os/mit/media/m/index/index-min-1409788.css&os/mit/media/m/ydn/module_ydn_rss-min-894956.css&os/mit/media/m/carousel/bcarousel-min-1156288.css&os/mit/media/m/carousel/bcarousel-desktop-min-1447403.css&os/mit/media/m/carousel/carousel-min-479268.css&os/mit/media/m/carousel/bcarousel-mixed-min-1357372.css&os/mit/media/m/ydn/ydn_events_list-min-894872.css HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://developer.yahoo.com/
+Connection: keep-alive
+

@@ -1,0 +1,10 @@
+GET http://uav.tidaltv.com:80/3PDPHandler.aspx?tpdp=27&pid=1&segs=&xid=1618587141699279 HTTP/1.1
+Host: uav.tidaltv.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://dm.de.mookie1.com/2/B3DM/DLX/@x71
+Cookie: tidal_ttid=32387ab5-30ad-471f-ac12-aee7c7a3f307
+Connection: keep-alive
+

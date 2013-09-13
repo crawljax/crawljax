@@ -1,0 +1,93 @@
+HTTP/1.1 301 Moved Permanently
+Cache-Control: private, no-cache, no-store, must-revalidate
+Expires: Sat, 01 Jan 2000 00:00:00 GMT
+Location: https://www.facebook.com/
+P3P: CP="Facebook does not have a P3P policy. Learn why here: http://fb.me/p3p"
+Pragma: no-cache
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Set-Cookie: datr=2EYuUh4ofzxK0YYcVR5s6D9-; expires=Wed, 09-Sep-2015 22:08:24 GMT; path=/; domain=.facebook.com; httponly
+Content-Type: text/html; charset=utf-8
+X-FB-Debug: 32n/DznNfFBkr6UIoOS3K4MBd1NYOhN/rjWdNKYH8eE=
+Date: Mon, 09 Sep 2013 22:08:24 GMT
+Connection: keep-alive
+Content-length: 1779
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<SCRIPT src="http://mutation-summary.googlecode.com/git/src/mutation-summary.js" type="text/javascript" yyy="injected"></SCRIPT>
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<SCRIPT type="text/javascript" xxx="injected">var rel = Node.prototype.removeEventListener;
+Node.prototype.removeEventListener = function() {
+	rel.apply(this, arguments);
+	unannotate(this);
+}
+
+var ael = Node.prototype.addEventListener;
+Node.prototype.addEventListener = function() {
+	ael.apply(this, arguments);
+	annotate(this);
+}
+
+function annotate(e) {
+	e.setAttribute("data-cj-clickable", "true");
+}
+
+function unannotate(e) {
+	e.removeAttribute("data-cj-clickable");
+}
+
+var observer = new MutationSummary({
+	callback : handleChanges,
+	queries : [ {
+		all : true
+	} ]
+});
+
+function handleChanges(summaries) {
+	// alert("DOM mutated!");
+	detectClickables();
+}
+
+function detectClickables() {
+	var all = document.getElementsByTagName("*");
+	for ( var i = 0; i < all.length; i++) {
+		var node = all[i];
+		if (all[i].onclick != null) {
+			annotate(node);
+		} else {
+			if (node.nodeType == 1) {// element of type html-object/tag
+				if (node.tagName == "A" || node.tagName == "BUTTON") {
+					annotate(node);
+				}
+				if (node.tagName == "INPUT"
+						&& node.getAttribute("type").toUpperCase() == "SUBMIT") {
+					annotate(node);
+				}
+			}
+		}
+	}
+}</SCRIPT>
+
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<STYLE xxx="injected">[data-cj-clickable=true] {
+  border-style: double;
+  border-color: green;
+  color: green;
+}</STYLE>
+
+
+</HEAD>
+<BODY>
+
+
+
+</BODY>
+</HTML>

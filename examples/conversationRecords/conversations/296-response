@@ -1,0 +1,10 @@
+HTTP/1.0 302 Moved Temporarily
+Connection: keep-alive
+Expires: Mon, 15 Jun 1998 00:00:00 GMT
+Pragma: no-cache
+Cache-Control: no-store, no-cache
+P3P: CP="NOI DSP DEVa OUR BUS UNI COM NAV INT"
+Location: http://ums.adtechus.com/mapuser?providerid=1004;getuser=http://ad.yieldmanager.com/user-match?nid=606282&eid=$UID&y=DJW9oSI.Fy_5JZqcpSs9vlM5SLLU1vucbFGIkQ--&cfp
+Content-Length: 0
+Set-Cookie: CfP=1;domain=adtechus.com;path=/
+

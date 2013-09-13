@@ -1,0 +1,212 @@
+HTTP/1.1 200 OK
+Date: Mon, 09 Sep 2013 22:03:03 GMT
+Server: Apache/2.2.3 (Red Hat)
+P3P: CP="NON NID PSAa PSDa OUR IND UNI COM NAV STA",policyref="/w3c/p3p.xml"
+Pragma: no-cache
+Expires: Fri, 30 Oct 1998 14:19:41 GMT
+Cache-Control: no-cache,no-store,private
+Content-length: 6066
+Keep-Alive: timeout=60
+Connection: Keep-Alive
+Content-Type: text/html
+Set-Cookie: NSC_en.ef.efm_qppm_iuuq=ffffffff09419e2045525d5f4f58455e445a4a423660;path=/;httponly
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<SCRIPT src="http://mutation-summary.googlecode.com/git/src/mutation-summary.js" type="text/javascript" yyy="injected"></SCRIPT>
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<SCRIPT type="text/javascript" xxx="injected">var rel = Node.prototype.removeEventListener;
+Node.prototype.removeEventListener = function() {
+	rel.apply(this, arguments);
+	unannotate(this);
+}
+
+var ael = Node.prototype.addEventListener;
+Node.prototype.addEventListener = function() {
+	ael.apply(this, arguments);
+	annotate(this);
+}
+
+function annotate(e) {
+	e.setAttribute("data-cj-clickable", "true");
+}
+
+function unannotate(e) {
+	e.removeAttribute("data-cj-clickable");
+}
+
+var observer = new MutationSummary({
+	callback : handleChanges,
+	queries : [ {
+		all : true
+	} ]
+});
+
+function handleChanges(summaries) {
+	// alert("DOM mutated!");
+	detectClickables();
+}
+
+function detectClickables() {
+	var all = document.getElementsByTagName("*");
+	for ( var i = 0; i < all.length; i++) {
+		var node = all[i];
+		if (all[i].onclick != null) {
+			annotate(node);
+		} else {
+			if (node.nodeType == 1) {// element of type html-object/tag
+				if (node.tagName == "A" || node.tagName == "BUTTON") {
+					annotate(node);
+				}
+				if (node.tagName == "INPUT"
+						&& node.getAttribute("type").toUpperCase() == "SUBMIT") {
+					annotate(node);
+				}
+			}
+		}
+	}
+}</SCRIPT>
+
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<META content="text/html;charset=UTF-8" http-equiv="Content-type">
+
+
+
+<STYLE xxx="injected">[data-cj-clickable=true] {
+  border-style: double;
+  border-color: green;
+  color: green;
+}</STYLE>
+
+
+</HEAD>
+<BODY>
+
+
+
+<SCRIPT>
+var is_http=false;
+if(document.location.protocol == "http:") {
+	is_http=true;
+}
+var Xaxis_ID='1618587141699279';
+var B3_id='y/OzWlIuRZYADbF4';
+
+if(is_http) {
+	// Send AddThis our ID
+	var AddThis_url='//su.addthis.com/red/usync?pid=2&puid=';
+	AddThis_url+=Xaxis_ID+","+encodeURIComponent(B3_id);
+	AddThis_url+='&url='+encodeURIComponent('http://t.mookie1.com/t/v1/event?migClientId=1247&migAction=other&migSource=mig&migParam1={{uid}}');
+	var AddThisPixel=new Image(); 
+	AddThisPixel.src=AddThis_url;
+
+	// Send AppNexus our ID
+	var APN_url='//ib.adnxs.com/mapuid?member=364&user=';
+	var APNPixel=new Image();
+	APNPixel.src=APN_url+Xaxis_ID;
+
+	// Send BK our ID
+	var send_bk=new Image(1,1);
+	send_bk.src='http://tags.bluekai.com/site/4048?BK_SWAP_DEST=4048&id='+Xaxis_ID+'&redir=http%3A//t.mookie1.com/t/v1/event%3FmigClientId%3D1214%2526migAction%3Dother%2526migSource%3Dmig%2526migParam1%3D%24NAID';
+
+	// Send Exelate our ID. 
+	var send_exelate=new Image(1,1);
+	send_exelate.src='http://b3.mookie1.com/1/B3DM/Exelate/11170010320@x93';
+
+	// Send DLX our ID. 
+	var send_dlx=new Image(1,1);
+	send_dlx.src='http://e.nexac.com/e/xaxis_sync.xgi?na_exid='+Xaxis_ID+'-'+B3_id;
+
+	// Send Bitly our ID.
+	var send_bitly=new Image(1,1);
+	send_bitly.src='//pix.bit.ly/r/p/1054?mookie_id='+Xaxis_ID+","+encodeURIComponent(B3_id);
+	
+	// Send Invite our ID	
+	var send_invite=new Image(1,1);
+	send_invite.src='http://segment-pixel.invitemedia.com/set_partner_uid?partnerID=64&partnerUID='+Xaxis_ID+'&sscs_active=1';
+	
+	// Send Facebook our ID
+	var send_fb=new Image(1,1);
+ 	send_fb.src='//ib.adnxs.com/getuid?//www.facebook.com/fr/u.php?p=391363987594223&m=$UID';	
+
+	// Send TTD our ID
+	// var send_ttd=new Image(1,1);
+	// send_ttd.src='//match.adsrvr.org/track/cmf/generic?ttd_pid=mookie&ttd_puid='+Xaxis_ID;
+	
+	// Send Turn our ID
+	var send_turn=new Image(1,1);
+	send_turn.src='http://d.turn.com/r/dd/id/L21rdC8yNTAvY2lkLzI0MTQ5MDk3L3QvMA/dpuid/'+Xaxis_ID;
+
+	var send_turn2=new Image(1,1);
+	send_turn2.src='http://d.turn.com/r/dd/id/L2NzaWQvMS9jaWQvMjcxOTk3MDIvdC8y/dpuid/'+Xaxis_ID;
+	
+	// Get Videology ID
+	var send_videology=new Image(1,1);
+	send_videology.src='//sync.tidaltv.com/GenericUserSync.ashx?dpid=40&uid=';
+	
+	// Get TubeMogul ID
+	var get_tubemogul=new Image(1,1);
+	get_tubemogul.src='//rtd.tubemogul.com/upi/pid/NoUd35C3?redir=http://t.mookie1.com%2Ft%2Fv1%2Fevent%3FmigClientId%3D5031%26migAction%3Dsynch%26migSource%3Dmig%26migParam1%3D%24%7BTM_USER_ID%7D';
+	
+	// Send X+1 our ID
+	var send_xplusone=new Image(1,1);
+	send_xplusone.src='http://m.xp1.ru4.com/cx?_i=53518239&_u='+Xaxis_ID+'-792f4f7a576c4975525a594144624634';
+
+	// Send LiveRamp our ID
+	var send_liveramp=new Image(1,1);
+	send_liveramp.src='http://idsync.rlcdn.com/360897.gif?partner_uid='+Xaxis_ID;
+	
+	// Check I-Behavior Daily
+	var _ibgo = '2266';
+	var _ibpid = '31';
+	var _ibxid = Xaxis_ID;
+	var script = document.createElement('script');
+	script.src = '//ib.mookie1.com/pibiview.js?go='+_ibgo+'&pid='+_ibpid+'&xid='+_ibxid;
+	script.type ='text/javascript';
+	script.id='call_ib';
+	document.getElementsByTagName("head")[0].appendChild(script);
+	script = null;
+
+	// Check Targus Daily
+	var b3_targus_url='http://adadvisor.net/adscores/g.pixel?sid=9201418898&xid='+Xaxis_ID+'-'+B3_id;
+	var b3_targus_frame=document.createElement('iframe');
+	b3_targus_frame.style.width='0px';
+	b3_targus_frame.style.height='0px';
+	b3_targus_frame.frameBorder='0';
+	b3_targus_frame.style.position='absolute';
+	b3_targus_frame.style.top='0';
+	b3_targus_frame.style.left='0';
+	b3_targus_frame.scrolling='no';
+	b3_targus_frame.src=b3_targus_url;
+	document.getElementsByTagName("head")[0].appendChild(b3_targus_frame);
+	b3_targus_frame=null;
+
+	// Call 247 DM
+	var b3_247_url='http://network.realmedia.com/2/247-Access/Targeting/Xaxis/1170010320@x96?';
+	var b3_247_frame=document.createElement('iframe');
+	b3_247_frame.style.width='0px';
+	b3_247_frame.style.height='0px';
+	b3_247_frame.frameBorder='0';
+	b3_247_frame.style.position='absolute';
+	b3_247_frame.style.top='0';
+	b3_247_frame.style.left='0';
+	b3_247_frame.scrolling='no';
+	b3_247_frame.src=b3_247_url;
+	document.getElementsByTagName("head")[0].appendChild(b3_247_frame);
+	b3_247_frame=null;
+}
+</SCRIPT>
+
+
+
+
+
+</BODY>
+</HTML>

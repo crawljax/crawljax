@@ -1,0 +1,10 @@
+GET http://geo.yahoo.com:80/p?t=0.11371188839104018&s=793452770&_P=V_sec%03pb%04V_slk%03pr%04V_vid%0344596141-2c98-3f14-900f-f7059143de2f%04V_pls%03na%04V_plrs%03a9s2nBzL3upVnRU8GOLlPP%04V_plist%03{CTX_PLAYLIST_ID}%04site%03ivy%04lang%03en-ca%04intl%03ca%04juris%03na%04_w%03http%3A%2F%2Fca.screen.yahoo.com%2F700-ton-ship-flipped-over-150511969.html%04V_pver%033.9.2.10498%04V_expn%03cavideo%04V_expt%03default%04V_expb%03na&_R=http%3A%2F%2Fca.yahoo.com%2F HTTP/1.1
+Host: geo.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.screen.yahoo.com/700-ton-ship-flipped-over-150511969.html
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764246X; CH=AgBSLkWwAAy6sAAH1LAAMhywACo0sAADn7AAJfewAC71sAAxfrAAPKWwACfy; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=460@yvap=208@cc=2@al=0@vl=0@ac=0
+Connection: keep-alive
+

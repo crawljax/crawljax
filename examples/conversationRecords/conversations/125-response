@@ -1,0 +1,11 @@
+HTTP/1.1 302 Found
+Date: Mon, 09 Sep 2013 22:03:04 GMT
+Content-Length: 0
+Connection: keep-alive
+Cache-Control: no-cache
+Expires: 0
+Pragma: no-cache
+P3P: CP=NOI DSP COR NID PSAa PSDa OUR UNI COM NAV
+X-Server: 172.17.11.0
+Location: http://uav.tidaltv.com/3PDPHandler.aspx?tpdp=14&segs=
+
