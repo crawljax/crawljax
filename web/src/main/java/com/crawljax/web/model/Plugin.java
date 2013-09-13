@@ -2,6 +2,7 @@ package com.crawljax.web.model;
 
 import com.crawljax.core.plugin.descriptor.Parameter;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Plugin {
 	private String id;
 	private String name;
 	private String description;
-	private URL url;
+	private File jarFile;
 	private String implementation;
 	private List<String> crawljaxVersions = new ArrayList<>();
 	private List<Parameter> parameters = new ArrayList<>();
@@ -59,12 +60,12 @@ public class Plugin {
 		this.description = description;
 	}
 
-	public URL getUrl() {
-		return url;
+	public File getJarFile() {
+		return jarFile;
 	}
 
-	public void setUrl(URL url) {
-		this.url = url;
+	public void setJarFile(File jarFile) {
+		this.jarFile = jarFile;
 	}
 
 	public String getImplementation() {

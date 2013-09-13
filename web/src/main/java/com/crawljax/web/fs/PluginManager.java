@@ -21,6 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -41,36 +43,36 @@ public class PluginManager {
 
 	public ConcurrentHashMap<String, Plugin> loadAll() {
 		ConcurrentHashMap<String, Plugin> plugins = new ConcurrentHashMap<>();
-		File[] pluginJars = pluginsFolder.listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".jar");
-			}
-		});
-		for (File f : pluginJars) {
-			Plugin p = load(f);
-			if(p != null) {
-				plugins.put(p.getId(), p);
-			}
-		}
+		List<String> pluginIds = new ArrayList<>();
+
 		File[] locators = pluginsFolder.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				return name.endsWith(".locator");
 			}
 		});
-		for (File f : locators) {
-			URL url = null;
-			try {
-				url = new URL(readFile(f).trim());
-			} catch (MalformedURLException e) {
-				LOG.error(e.toString());
-				LOG.debug(e.toString());
+		for(File locator : locators) {
+			pluginIds.add(locator.getName().substring(0, locator.getName().indexOf(".locator")));
+		}
+
+		File[] jars = pluginsFolder.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".jar");
 			}
-			File jar = download(url, pluginsFolder, f.getName().replace(".locator", ".jar"));
-			Plugin p = load(jar);
+		});
+		for(File jar : jars) {
+			String id = jar.getName().substring(0, jar.getName().indexOf(".jar"));
+			if(!pluginIds.contains(id)) {
+				pluginIds.add(id);
+			}
+		}
+
+		for (String id : pluginIds) {
+			Plugin p = load(id);
 			if(p != null) {
 				plugins.put(p.getId(), p);
 			}
 		}
+
 		return plugins;
 	}
 
@@ -104,16 +106,14 @@ public class PluginManager {
 		return result;
 	}
 
-	private File download(URL source, File destinationDir, String name) {
-		destinationDir.mkdirs();
-		File result = new File(destinationDir, name);
-		if(result.exists()) {
-			result.delete();
+	private File download(URL source, File destination) {
+		if(destination.exists()) {
+			destination.delete();
 		}
 		try {
-			result.createNewFile();
+			destination.createNewFile();
 			try(ReadableByteChannel rbc = Channels.newChannel(source.openStream())) {
-				try(FileOutputStream fos = new FileOutputStream(result)) {
+				try(FileOutputStream fos = new FileOutputStream(destination)) {
 					fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 					fos.flush();
 				}
@@ -122,29 +122,45 @@ public class PluginManager {
 			LOG.error(e.toString());
 			LOG.debug(e.toString());
 		}
-		return result;
+		return destination;
 	}
 
-	private Plugin load(File jarFile) {
+	public Plugin load(String pluginId) {
+		File jar = loadPluginJar(pluginId);
 		Plugin plugin = null;
 		try {
-			PluginDescriptor descriptor = loadPluginDescriptorFromJar(jarFile);
+			PluginDescriptor descriptor = loadPluginDescriptorFromJar(jar);
 			if(descriptor == null) {
 				throw new Exception("Failed to load plugin descriptor");
 			}
 			plugin = new Plugin();
-			plugin.setId(jarFile.getName().substring(0, jarFile.getName().indexOf(".jar")));
-			plugin.setUrl(jarFile.toURI().toURL());
+			plugin.setId(pluginId);
+			plugin.setJarFile(jar);
 			plugin.setName(descriptor.getName());
 			plugin.setDescription(descriptor.getDescription());
 			plugin.setImplementation(descriptor.getImplementation());
 			plugin.setParameters(descriptor.getParameters());
 			plugin.setCrawljaxVersions(descriptor.getCrawljaxVersions());
 		} catch (Exception e) {
-			LOG.error("Could not load plugin {}", jarFile.getName());
-			LOG.debug("Could not load plugin {}. \n{}", jarFile.getName(), e.getStackTrace());
+			LOG.error("Could not load plugin {}", jar.getName());
+			LOG.debug("Could not load plugin {}. \n{}", jar.getName(), e.getStackTrace());
 		}
 		return plugin;
+	}
+
+	private File loadPluginJar(String pluginId) {
+		File locator = new File(pluginsFolder, pluginId + ".locator");
+		File jar = new File(pluginsFolder, pluginId + ".jar");
+		if(locator.exists()) {
+			try {
+				URL url = new URL(readFile(locator).trim());
+				jar = download(url, jar);
+			} catch (MalformedURLException e) {
+				LOG.error(e.toString());
+				LOG.debug(e.toString());
+			}
+		}
+		return jar;
 	}
 
 	private PluginDescriptor loadPluginDescriptorFromJar(File jarFile) {
@@ -183,9 +199,9 @@ public class PluginManager {
 			throw new CrawljaxWebException("Could not save plugin file");
 		}
 
-		Plugin plugin = load(pluginJar);
+		Plugin plugin = load(id);
 		if(plugin == null) {
-			pluginJar.delete();
+			delete(id);
 			throw new CrawljaxWebException("Could not read plugin descriptor");
 		}
 
@@ -193,34 +209,32 @@ public class PluginManager {
 	}
 
 	public Plugin save(String id, URL url) throws CrawljaxWebException {
-		File jar = download(url, pluginsFolder, id + ".jar");
-		Plugin plugin = load(jar);
-		if(plugin == null) {
-			jar.delete();
-			throw new CrawljaxWebException("Could not read plugin descriptor");
-		} else {
-			File urlFile = new File(pluginsFolder, id + ".locator");
-			try {
-				if (urlFile.exists()) {
-					urlFile.delete();
-				}
-				urlFile.createNewFile();
-				try(FileOutputStream fos = new FileOutputStream(urlFile)) {
-					fos.write(url.toExternalForm().getBytes());
-					fos.flush();
-				}
-			} catch (IOException e) {
-				jar.delete();
-				LOG.error(e.toString());
-				LOG.debug(e.toString());
-				throw new CrawljaxWebException("Could not save plugin file");
+		File urlFile = new File(pluginsFolder, id + ".locator");
+		try {
+			if (urlFile.exists()) {
+				urlFile.delete();
 			}
+			urlFile.createNewFile();
+			try(FileOutputStream fos = new FileOutputStream(urlFile)) {
+				fos.write(url.toExternalForm().getBytes());
+				fos.flush();
+			}
+		} catch (IOException e) {
+			urlFile.delete();
+			LOG.error(e.toString());
+			LOG.debug(e.toString());
+			throw new CrawljaxWebException("Could not save plugin file");
+		}
+		Plugin plugin = load(id);
+		if(plugin == null) {
+			delete(id);
+			throw new CrawljaxWebException("Could not read plugin descriptor");
 		}
 		return plugin;
 	}
 
-	public boolean delete(Plugin plugin) {
-		File pluginLocator = new File(pluginsFolder, plugin.getId() + ".locator");
+	public boolean delete(String id) {
+		File pluginLocator = new File(pluginsFolder, id + ".locator");
 		boolean removedPL = true;
 		if(pluginLocator.exists()) {
 			removedPL = pluginLocator.delete();
@@ -229,7 +243,7 @@ public class PluginManager {
 				LOG.debug("Failed to delete plugin file: " + pluginLocator);
 			}
 		}
-		File pluginJar = new File(pluginsFolder, plugin.getId() + ".jar");
+		File pluginJar = new File(pluginsFolder, id + ".jar");
 		boolean removedJar = pluginJar.delete();
 		if(!removedJar) {
 			LOG.error("Failed to delete plugin file: " + pluginJar);

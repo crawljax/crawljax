@@ -39,12 +39,6 @@ public class Plugins {
 		return pluginList.values();
 	}
 
-	public Collection<Plugin> reloadFromDisk() {
-		pluginList.clear();
-		pluginList.putAll(pluginManager.loadAll());
-		return pluginList.values();
-	}
-
 	public Plugin add(String fileName, byte[] data) throws CrawljaxWebException {
 		int extensionIndex = fileName.indexOf(".jar");
 		if (extensionIndex < 0) {
@@ -80,7 +74,7 @@ public class Plugins {
 	}
 
 	public Plugin remove(Plugin plugin) throws CrawljaxWebException {
-		if(pluginManager.delete(plugin)) {
+		if(pluginManager.delete(plugin.getId())) {
 			pluginList.remove(plugin.getId());
 		} else {
 			throw new CrawljaxWebException("Failed to delete plugin file");
@@ -94,17 +88,11 @@ public class Plugins {
 
 	public com.crawljax.core.plugin.Plugin getInstanceOf(Plugin plugin, File resourceDir,
 	        HostInterface hostInterface) {
-		File source = null;
+		File source;
 		File dest = new File(resourceDir, plugin.getId() + ".jar");
-		try {
-			source = new File(plugin.getUrl().toURI());
-			copyFile(source, dest);
-		} catch (Exception e) {
-			LOG.error("Could not create instance of plugin {}", plugin.getName());
-			LOG.debug("Could not create instance of plugin {}. {}", plugin.getName(), e.getStackTrace());
-			return null;
-		}
-		URL instanceURL = null;
+		source = reload(plugin.getId()).getJarFile();
+		copyFile(source, dest);
+		URL instanceURL;
 		try {
 			instanceURL = (new File(resourceDir.getAbsolutePath() + File.separatorChar + source.getName())).toURI().toURL();
 		} catch (MalformedURLException e) {
@@ -127,6 +115,17 @@ public class Plugins {
 			//Thread.currentThread().setContextClassLoader(originalClassLoader); //Currently commented out so plugins can get their resources from the classloader
 		}
 		return instance;
+	}
+
+	public Plugin reload(String pluginId) {
+		pluginList.put(pluginId, pluginManager.load(pluginId));
+		return pluginList.get(pluginId);
+	}
+
+	public Collection<Plugin> reloadAll() {
+		pluginList.clear();
+		pluginList.putAll(pluginManager.loadAll());
+		return pluginList.values();
 	}
 
 	private void copyFile(File source, File dest) {

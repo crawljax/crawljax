@@ -45,7 +45,7 @@ public class PluginsResource {
 
 	@PUT
 	public Response refresh() {
-		return Response.ok(plugins.reloadFromDisk()).build();
+		return Response.ok(plugins.reloadAll()).build();
 	}
 
 	@GET
