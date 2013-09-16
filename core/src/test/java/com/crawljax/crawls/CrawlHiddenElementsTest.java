@@ -4,6 +4,7 @@ import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
@@ -11,6 +12,7 @@ import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.test.BaseCrawler;
 import com.crawljax.test.BrowserTest;
 
+@Category(BrowserTest.class)
 public class CrawlHiddenElementsTest implements BrowserTest {
 
 	/**

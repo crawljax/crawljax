@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="Windows-1252"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -10,7 +9,7 @@
 
 	<groupId>com.crawljax</groupId>
 	<artifactId>crawljax-parent-pom</artifactId>
-	<version>3.3-SNAPSHOT</version>
+	<version>3.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Crawljax parent POM</name>
@@ -36,8 +35,8 @@
 
 		<slf4j.version>1.7.5</slf4j.version>
 		<logback.version>1.0.13</logback.version>
-		<selenium.version>[2.34.0,)</selenium.version>
-		<jetty.version>9.0.4.v20130625</jetty.version>
+		<selenium.version>[2.35.0,)</selenium.version>
+		<jetty.version>9.0.5.v20130815</jetty.version>
 		<metrics.version>3.0.1</metrics.version>
 	</properties>
 

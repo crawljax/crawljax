@@ -19,7 +19,9 @@ import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,6 +107,9 @@ public abstract class LargeTestBase {
 
 	@ClassRule
 	public static final RunWithWebServer WEB_SERVER = new RunWithWebServer("/site");
+
+	@Rule
+	public final Timeout timeout = new Timeout((int) TimeUnit.MINUTES.toMillis(15));
 
 	@Before
 	public void setup() throws Exception {
