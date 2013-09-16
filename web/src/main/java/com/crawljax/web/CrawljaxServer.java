@@ -1,8 +1,11 @@
 package com.crawljax.web;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.*;
+import ch.qos.logback.classic.LoggerContext;
+import com.crawljax.web.di.CrawljaxWebModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.servlet.GuiceFilter;
+import com.google.inject.servlet.GuiceServletContextListener;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -12,11 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import com.crawljax.web.di.CrawljaxWebModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceFilter;
-import com.google.inject.servlet.GuiceServletContextListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class CrawljaxServer implements Callable<Void> {
 
@@ -26,20 +29,14 @@ public class CrawljaxServer implements Callable<Void> {
 	private final CountDownLatch isRunningLatch = new CountDownLatch(1);
 	private String url = null;
 
-	public CrawljaxServer(int port, File outputDir) {
-		configureServer(port, outputDir);
-	}
-
-	public CrawljaxServer(int port) {
-		configureServer(port, new File("out"));
-	}
-
-	private void configureServer(int port, File outputDir) {
+	public CrawljaxServer(CrawljaxServerConfigurationBuilder configurationBuilder) {
+		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+		loggerContext.putProperty("output_folder", configurationBuilder.getOutputDir().getAbsolutePath());
 		setupJulToSlf4();
-		server = new Server(port);
+		server = new Server(configurationBuilder.getPort());
 		HandlerList handlerList = new HandlerList();
-		handlerList.addHandler(setupOutputContext(outputDir));
-		handlerList.addHandler(setupWebContext(outputDir));
+		handlerList.addHandler(setupOutputContext(configurationBuilder.getOutputDir()));
+		handlerList.addHandler(setupWebContext(configurationBuilder.getOutputDir(), configurationBuilder.getPluginDir()));
 		server.setHandler(handlerList);
 	}
 
@@ -55,7 +52,6 @@ public class CrawljaxServer implements Callable<Void> {
 	 * @see Thread#join()
 	 */
 	public void start(boolean join) {
-
 		LOG.info("Starting the server");
 		try {
 			server.start();
@@ -110,7 +106,7 @@ public class CrawljaxServer implements Callable<Void> {
 		SLF4JBridgeHandler.install();
 	}
 
-	private WebAppContext setupWebContext(final File outputFolder) {
+	private WebAppContext setupWebContext(final File outputFolder, final File pluginsFolder) {
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/");
 		webAppContext.setBaseResource(Resource.newClassPathResource("web"));
@@ -119,7 +115,7 @@ public class CrawljaxServer implements Callable<Void> {
 
 			@Override
 			protected Injector getInjector() {
-				return Guice.createInjector(new CrawljaxWebModule(outputFolder));
+				return Guice.createInjector(new CrawljaxWebModule(outputFolder, pluginsFolder));
 			}
 
 		});
@@ -128,7 +124,7 @@ public class CrawljaxServer implements Callable<Void> {
 		return webAppContext;
 	}
 
-	private WebAppContext setupOutputContext(File outputFolder) {
+	private WebAppContext setupOutputContext(final File outputFolder) {
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/output");
 		try {

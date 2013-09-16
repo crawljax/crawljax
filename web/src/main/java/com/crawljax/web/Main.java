@@ -19,7 +19,8 @@ public class Main {
 
 		int port = options.specifiesPort() ? options.getSpecifiedPort() : 8080;
 
-		final CrawljaxServer server = new CrawljaxServer(port, new File(outFolder));
+		final CrawljaxServer server = new CrawljaxServer(new CrawljaxServerConfigurationBuilder()
+				.setPort(port).setOutputDir(new File(outFolder)));
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 

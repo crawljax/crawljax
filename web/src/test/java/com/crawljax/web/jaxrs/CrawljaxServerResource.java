@@ -1,6 +1,7 @@
 package com.crawljax.web.jaxrs;
 
 import com.crawljax.web.CrawljaxServer;
+import com.crawljax.web.CrawljaxServerConfigurationBuilder;
 import org.junit.rules.ExternalResource;
 
 import java.io.File;
@@ -15,7 +16,9 @@ public class CrawljaxServerResource extends ExternalResource {
 	@Override
 	public void before() {
 		File outputDir = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + File.separatorChar + "outputFolder");
-		server = new CrawljaxServer(0, outputDir);
+		File pluginsDir = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + File.separatorChar + "plugins");
+		server = new CrawljaxServer(new CrawljaxServerConfigurationBuilder()
+				.setPort(0).setOutputDir(outputDir).setPluginDir(pluginsDir));
 		executor = Executors.newSingleThreadExecutor();
 		serverResult = executor.submit(server);
 		server.waitUntilRunning(10000);

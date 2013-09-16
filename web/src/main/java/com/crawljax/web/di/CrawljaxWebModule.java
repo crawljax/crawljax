@@ -21,6 +21,7 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
 public class CrawljaxWebModule extends ServletModule {
 
 	private final File outputFolder;
+	private final File pluginsFolder;
 
 	@BindingAnnotation
 	@Retention(RetentionPolicy.RUNTIME)
@@ -34,6 +35,12 @@ public class CrawljaxWebModule extends ServletModule {
 
 	public CrawljaxWebModule(File outputFolder) {
 		this.outputFolder = outputFolder;
+		this.pluginsFolder = new File("plugins");
+	}
+
+	public CrawljaxWebModule(File outputFolder, File pluginsFolder) {
+		this.outputFolder = outputFolder;
+		this.pluginsFolder = pluginsFolder;
 	}
 
 	@Override
@@ -57,12 +64,11 @@ public class CrawljaxWebModule extends ServletModule {
 	@Provides
 	@PluginsFolder
 	private File pluginsFolder() {
-		File plugins = new File("plugins");
-		if (!plugins.exists()) {
-			plugins.mkdirs();
+		if (!pluginsFolder.exists()) {
+			pluginsFolder.mkdirs();
 		}
-		Preconditions.checkArgument(plugins.canWrite(), "Plugin directory is writable");
-		return plugins;
+		Preconditions.checkArgument(pluginsFolder.canWrite(), "Plugin directory is writable");
+		return pluginsFolder;
 	}
 
 }

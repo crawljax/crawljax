@@ -28,7 +28,7 @@ public class StandardFunctionsFlowTest {
 	private static WebDriver driver;
 
 	private static String CONFIG_NAME = "TestConfiguration";
-	private static String CONFIG_URL = "http://crawljax.com";
+	private static String CONFIG_URL = "http://demo.crawljax.com/";
 
 	private static String PLUGIN_NAME = "Test Plugin";
 	private static String PLUGIN_ID = "test-plugin";
@@ -52,13 +52,13 @@ public class StandardFunctionsFlowTest {
 		createNewConfiguration();
 		updateConfiguration();
 
-		runConfigurationAndViewResults();
-
 		uploadPlugin();
 		addPluginToConfiguration();
-		deletePlugin();
+
+		runConfigurationAndViewResults();
 
 		deleteConfiguration();
+		deletePlugin();
 	}
 
 	private void createNewConfiguration() {
@@ -123,6 +123,11 @@ public class StandardFunctionsFlowTest {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		wait.until(isRunning);
 
+		WebElement link = (WebElement) ((JavascriptExecutor)driver).executeScript(
+				"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li > span:contains('" + CONFIG_NAME + "')\").parent().find(\"a\")[0];");
+
+		followLink(link);
+
 		ExpectedCondition<Boolean> isComplete = new ExpectedCondition<Boolean>() {
 			public Boolean apply(WebDriver driver) {
 				WebElement success = (WebElement) ((JavascriptExecutor)driver).executeScript(
@@ -133,13 +138,14 @@ public class StandardFunctionsFlowTest {
 		wait = new WebDriverWait(driver, 60);
 		wait.until(isComplete);
 
-		WebElement link = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li > span:contains('" + CONFIG_NAME + "')\").parent().find(\"a\")[0];");
-
-		followLink(link);
-
 		List<WebElement> logLink = driver.findElements(By.linkText("Log"));
 		assertFalse(logLink.isEmpty());
+
+		List<WebElement> crawlOverviewLink = driver.findElements(By.linkText("Crawl Overview"));
+		assertFalse(crawlOverviewLink.isEmpty());
+
+		List<WebElement> pluginLink = driver.findElements(By.linkText(PLUGIN_NAME));
+		assertFalse(pluginLink.isEmpty());
 
 		List<WebElement> historyLink = driver.findElements(By.linkText("History"));
 		followLink(historyLink.get(0));
