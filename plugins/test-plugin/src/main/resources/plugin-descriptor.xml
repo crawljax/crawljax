@@ -3,7 +3,6 @@
 				   xsi:schemaLocation="https://raw.github.com/crawljax/crawljax/web-ui-plugin-support/core/src/main/resources/com/crawljax/core/plugin/jaxb/plugin-descriptor.xsd">
 	<name>Test Plugin</name>
 	<description>A plugin to use for testing</description>
-	<implementation>com.crawljax.plugins.testplugin.TestPlugin</implementation>
 	<crawljax-versions>
 		<version>${project.version}</version>
 	</crawljax-versions>

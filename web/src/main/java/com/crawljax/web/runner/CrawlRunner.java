@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import com.crawljax.core.plugin.HostInterface;
 import com.crawljax.core.plugin.HostInterfaceImpl;
 import com.crawljax.core.plugin.descriptor.Parameter;
+import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.crawljax.web.Main;
 import com.crawljax.web.model.ClickRule;
 import com.crawljax.web.model.Configuration;
@@ -208,6 +209,10 @@ public class CrawlRunner {
 					setComparatorsFromConfig(config.getComparators(), builder.crawlRules());
 
 				//Plugins
+				File outputFolder = new File(record.getOutputFolder() + File.separatorChar + "plugins"
+								+ File.separatorChar + "0");
+				outputFolder.mkdirs();
+				builder.addPlugin(new CrawlOverview(new HostInterfaceImpl(outputFolder, new HashMap<String, String>())));
 				for (int i = 0, l = config.getPlugins().size(); i < l; i++) {
 					Plugin pluginConfig = config.getPlugins().get(i);
 					Plugin plugin = plugins.findByID(pluginConfig.getId());
@@ -222,8 +227,7 @@ public class CrawlRunner {
 						continue;
 					}
 					String pluginKey = String.valueOf(i + 1);
-					File outputFolder =
-							new File(record.getOutputFolder() + File.separatorChar + "plugins"
+					outputFolder = new File(record.getOutputFolder() + File.separatorChar + "plugins"
 									+ File.separatorChar + pluginKey);
 					outputFolder.mkdirs();
 					Map<String, String> parameters = new HashMap<>();

@@ -138,7 +138,6 @@ public class PluginManager {
 			plugin.setJarFile(jar);
 			plugin.setName(descriptor.getName());
 			plugin.setDescription(descriptor.getDescription());
-			plugin.setImplementation(descriptor.getImplementation());
 			plugin.setParameters(descriptor.getParameters());
 			plugin.setCrawljaxVersions(descriptor.getCrawljaxVersions());
 		} catch (Exception e) {

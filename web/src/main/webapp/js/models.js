@@ -263,6 +263,7 @@ App.CrawlRecords.reopenClass({
 			success: function(response){
 				response.forEach(function(record){
 					var pluginArray = [];
+					pluginArray.push({key: "0", name: "Crawl Overview"});
 					for(key in record.plugins){
 						record.plugins[key].key = key;
 						pluginArray.push(record.plugins[key]);
@@ -283,6 +284,7 @@ App.CrawlRecords.reopenClass({
 			context: record,
 			success: function(response){
 				var pluginArray = [];
+				pluginArray.push({key: "0", name: "Crawl Overview"});
 				for(key in response.plugins){
 					response.plugins[key].key = key;
 					pluginArray.push(response.plugins[key]);
@@ -305,6 +307,7 @@ App.CrawlRecords.reopenClass({
 			context: record,
 			success: function(response){
 				var pluginArray = [];
+				pluginArray.push({key: "0", name: "Crawl Overview"});
 				for(key in response.plugins){
 					response.plugins[key].key = key;
 					pluginArray.push(response.plugins[key]);

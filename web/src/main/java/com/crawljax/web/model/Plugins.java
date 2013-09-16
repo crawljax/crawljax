@@ -1,23 +1,29 @@
 package com.crawljax.web.model;
 
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Collection;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.crawljax.core.plugin.HostInterface;
 import com.crawljax.web.exception.CrawljaxWebException;
 import com.crawljax.web.fs.PluginManager;
 import com.google.common.io.ByteStreams;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 @Singleton
 public class Plugins {
@@ -26,10 +32,15 @@ public class Plugins {
 	private final Map<String, Plugin> pluginList;
 	private final PluginManager pluginManager;
 
+	Set<Class<? extends com.crawljax.core.plugin.Plugin>> basePluginClasses;
+
 	@Inject
 	public Plugins(PluginManager pluginManager) {
 		this.pluginManager = pluginManager;
 		pluginList = pluginManager.loadAll();
+
+		Reflections reflections = new Reflections("com.crawljax.core.plugin");
+		basePluginClasses = reflections.getSubTypesOf(com.crawljax.core.plugin.Plugin.class);
 	}
 
 	/**
@@ -88,32 +99,42 @@ public class Plugins {
 
 	public com.crawljax.core.plugin.Plugin getInstanceOf(Plugin plugin, File resourceDir,
 	        HostInterface hostInterface) {
-		File source;
-		File dest = new File(resourceDir, plugin.getId() + ".jar");
-		source = reload(plugin.getId()).getJarFile();
-		copyFile(source, dest);
+		File source = reload(plugin.getId()).getJarFile();
+		File dest = new File(resourceDir, plugin.getJarFile().getName());
+		copyFileContents(source, dest);
 		URL instanceURL;
 		try {
-			instanceURL = (new File(resourceDir.getAbsolutePath() + File.separatorChar + source.getName())).toURI().toURL();
+			instanceURL = dest.toURI().toURL();
 		} catch (MalformedURLException e) {
 			LOG.error("Could not create instance of plugin {}", plugin.getName());
 			LOG.debug("Could not create instance of plugin {}. {}", plugin.getName(), e.getStackTrace());
 			return null;
 		}
+
+		ClassLoader newClassLoader = new URLClassLoader(new URL[]{instanceURL}, Thread.currentThread().getContextClassLoader());
+		Thread.currentThread().setContextClassLoader(newClassLoader);
+
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+					.addUrls(instanceURL, ClasspathHelper.forClass(com.crawljax.core.plugin.Plugin.class))
+					.addClassLoader(newClassLoader));
+
+		Set<Class<? extends com.crawljax.core.plugin.Plugin>> pluginClasses = reflections.getSubTypesOf(com.crawljax.core.plugin.Plugin.class);
+		pluginClasses.removeAll(basePluginClasses);
+
 		com.crawljax.core.plugin.Plugin instance = null;
-		ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-		ClassLoader newClassLoader = new URLClassLoader(new URL[]{instanceURL}, originalClassLoader);
-		try {
-			Thread.currentThread().setContextClassLoader(newClassLoader);
-			Class pluginClass = newClassLoader.loadClass(plugin.getImplementation());
-			Constructor constructor = pluginClass.getDeclaredConstructor(HostInterface.class);
-			instance = (com.crawljax.core.plugin.Plugin) constructor.newInstance(hostInterface);
-		} catch (Throwable e) {
+		for(Class<? extends com.crawljax.core.plugin.Plugin> pluginClass : pluginClasses) {
+			try {
+				Constructor constructor = pluginClass.getDeclaredConstructor(HostInterface.class);
+				instance = (com.crawljax.core.plugin.Plugin) constructor.newInstance(hostInterface);
+				break;
+			} catch (Exception e) { }
+		}
+
+		if(instance == null) {
 			LOG.error("Could not create instance of plugin " + plugin.getName());
 			LOG.debug("Could not create instance of plugin " + plugin.getName());
-		} finally {
-			//Thread.currentThread().setContextClassLoader(originalClassLoader); //Currently commented out so plugins can get their resources from the classloader
 		}
+
 		return instance;
 	}
 
@@ -128,7 +149,7 @@ public class Plugins {
 		return pluginList.values();
 	}
 
-	private void copyFile(File source, File dest) {
+	private void copyFileContents(File source, File dest) {
 		try (InputStream in = new FileInputStream(source)) {
 			try(FileOutputStream out = new FileOutputStream(dest)) {
 				ByteStreams.copy(in, out);

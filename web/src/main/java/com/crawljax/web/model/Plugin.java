@@ -14,27 +14,10 @@ public class Plugin {
 	private String name;
 	private String description;
 	private File jarFile;
-	private String implementation;
 	private List<String> crawljaxVersions = new ArrayList<>();
 	private List<Parameter> parameters = new ArrayList<>();
 
 	public Plugin() {} //Default constructor
-
-	/*public Plugin(Plugin plugin) { //Copy constructor
-		this.id = plugin.getId();
-		this.name = plugin.getName();
-		this.description = plugin.getDescription();
-		try {
-			this.url = new URL(plugin.getUrl().toString());
-		} catch (MalformedURLException e){};
-		this.implementation = plugin.getImplementation();
-		for(int i = 0; i < plugin.getParameters().size(); i++) {
-			this.crawljaxVersions.add(plugin.getCrawljaxVersions().get(i));
-		}
-		for(int i = 0; i < plugin.getParameters().size(); i++) {
-			this.parameters.add(new Parameter(plugin.getParameters().get(i)));
-		}
-	}*/
 
 	public String getId() {
 		return id;
@@ -66,14 +49,6 @@ public class Plugin {
 
 	public void setJarFile(File jarFile) {
 		this.jarFile = jarFile;
-	}
-
-	public String getImplementation() {
-		return implementation;
-	}
-
-	public void setImplementation(String implementation) {
-		this.implementation = implementation;
 	}
 
 	public List<String> getCrawljaxVersions() {

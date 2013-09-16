@@ -48,16 +48,6 @@ public class ConfigurationsResource {
 	@Path("/new")
 	public Response getNewConfiguration() {
 		Configuration config = new Configuration();
-		Plugin crawloverview = null;
-		for(Plugin plugin : plugins.getPluginList()) {
-			if(plugin.getImplementation().equals("com.crawljax.plugins.crawloverview.CrawlOverview")) {
-				crawloverview = plugin;
-				break;
-			}
-		}
-		if(crawloverview != null) {
-			config.getPlugins().add(crawloverview);
-		}
 		return Response.ok(config).build();
 	}
 

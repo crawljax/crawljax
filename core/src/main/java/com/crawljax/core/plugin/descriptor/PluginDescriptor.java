@@ -18,7 +18,6 @@ public class PluginDescriptor {
 
 	private String name;
 	private String description;
-	private String implementation;
 	private List<String> crawljaxVersions = new ArrayList<>();
 	private List<Parameter> parameters = new ArrayList<>();
 
@@ -50,7 +49,6 @@ public class PluginDescriptor {
 		PluginDescriptor plugin = new PluginDescriptor();
 		plugin.name = source.getName();
 		plugin.description = source.getDescription();
-		plugin.implementation = source.getImplementation();
 		for(String version : source.getCrawljaxVersions().getVersion()) {
 			plugin.getCrawljaxVersions().add(version);
 		}
@@ -69,10 +67,6 @@ public class PluginDescriptor {
 
 	public String getDescription() {
 		return description;
-	}
-
-	public String getImplementation() {
-		return implementation;
 	}
 
 	public List<String> getCrawljaxVersions() {
