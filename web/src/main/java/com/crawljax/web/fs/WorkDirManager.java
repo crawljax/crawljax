@@ -49,18 +49,20 @@ public class WorkDirManager {
 		File[] configFiles = configFolder.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.endsWith("json");
+				return name.endsWith(".json");
 			}
 		});
 		for (File f : configFiles) {
-			Configuration c = loadConfiguration(f);
+			String id = f.getName().substring(0, f.getName().indexOf(".json"));
+			Configuration c = loadConfiguration(id);
 			configs.put(c.getId(), c);
 		}
 		return configs;
 	}
 
-	private Configuration loadConfiguration(File configFile) {
+	public Configuration loadConfiguration(String id) {
 		Configuration config = null;
+		File configFile = new File(configFolder, id + ".json");
 		try {
 			config = mapper.readValue(configFile, Configuration.class);
 		} catch (IOException e) {

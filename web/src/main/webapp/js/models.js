@@ -90,10 +90,10 @@ App.Configurations.reopenClass({
 		});
 		return configuration;
 	},
-	getNew: function() {
+	getNew: function(id) {
 		var config = App.Configurations.create({});
 		$.ajax({
-			url: '/rest/configurations/new',
+			url: '/rest/configurations/new' + (id ? '/' + id : ""),
 			async: false,
 			dataType: 'json',
 			context: config,

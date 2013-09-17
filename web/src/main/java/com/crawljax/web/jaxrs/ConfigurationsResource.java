@@ -45,6 +45,16 @@ public class ConfigurationsResource {
 	}
 
 	@GET
+	@Path("/new/{id}")
+	public Response getNewConfiguration(@PathParam("id") String id) {
+		Configuration config = new Configuration();
+		if(id != null && !id.isEmpty()) {
+			config = configurations.getCopyOf(id);
+		}
+		return Response.ok(config).build();
+	}
+
+	@GET
 	@Path("/new")
 	public Response getNewConfiguration() {
 		Configuration config = new Configuration();

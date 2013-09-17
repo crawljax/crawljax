@@ -60,4 +60,14 @@ public class Configurations {
 	public Configuration findByID(final String id) {
 		return configList.get(id);
 	}
+
+	public Configuration getCopyOf(String id) {
+		Configuration copy = workDirManager.loadConfiguration(id);
+		copy.setId(null);
+		copy.setName(null);
+		copy.setLastCrawl(null);
+		copy.setLastDuration(0);
+		copy.setLastModified(null);
+		return copy;
+	}
 }

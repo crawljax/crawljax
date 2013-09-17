@@ -16,6 +16,7 @@ App.Router.map(function() {
 			this.route("plugins");
 		});
 		this.route("new");
+		this.resource("new", {path: "new/:configuration_id"});
 	});
 	
 	this.resource("plugin_management", {path: "plugins"});
@@ -76,6 +77,7 @@ App.ConfigurationRoute = Ember.Route.extend({
 				[App.Link.create({text:"Run Configuration", target:"run", action:true, icon:"icon-play"}),
 				App.Link.create({text:"Save Configuration", target:"save", action:true, icon:"icon-ok"}),
 				App.Link.create({text:"Crawl History", target:"#/crawlrecords/filter/" + model.id, icon:"icon-book"}),
+				App.Link.create({text:"New Copy", target:"#/configurations/new/" + model.id, icon:"icon-pencil"}),
 				App.Link.create({text:"Delete Configuration", target:"delete", action:true, icon:"icon-remove"})]);
 		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Configurations", target: "#/configurations"}),
 				App.Link.create({text: model.id, target: "#/configurations/" + model.id})]);
@@ -120,6 +122,31 @@ App.ConfigurationsNewRoute = Ember.Route.extend({
 	},
 	renderTemplate: function() {
 		this.render({controller: 'configuration'});
+	},
+	exit: function(router){
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("sidenav", []);
+	}
+});
+
+App.NewRoute = Ember.Route.extend({
+	model: function(params) {
+		return {id: params.configuration_id};
+	},
+	setupController: function(controller, model) {
+		var controller = this.controllerFor('configuration');
+		var model = App.Configurations.getNew(model.id);
+		controller.set('content', model);
+		
+		var sideNav = this.controllerFor("sidenav");
+		sideNav.set("rest", controller.rest);
+		sideNav.set("content", model);
+		sideNav.set("sidenav",
+			[App.Link.create({text:"Save Configuration", target:"add", action:true, icon:"icon-ok"})]);
+		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Configurations", target: "#/configurations"}), App.Link.create({text: "New"})]);
+	},
+	renderTemplate: function() {
+		this.render("configurations/new", {controller: 'configuration'});
 	},
 	exit: function(router){
 		var sideNav = this.controllerFor("sidenav");
