@@ -11,7 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +19,6 @@ import com.crawljax.web.di.CrawljaxWebModule.OutputFolder;
 import com.crawljax.web.model.Configuration;
 import com.crawljax.web.model.CrawlRecord;
 import com.crawljax.web.model.CrawlRecord.CrawlStatusType;
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 
 @Singleton
 public class WorkDirManager {
@@ -148,18 +145,4 @@ public class WorkDirManager {
 		}
 	}
 
-	public String readLog(int crawlId) {
-		File logFile =
-		        new File(recordFolder, Integer.toString(crawlId) + File.separatorChar
-		                + "crawl.log");
-		String content = "";
-		try {
-			content =
-			        "<p>" + StringUtils.join(Files.readLines(logFile, Charsets.UTF_8), "</p><p>")
-			                + "</p>";
-		} catch (IOException e) {
-			LOG.error("Could not read log {}", logFile.getName());
-		}
-		return content;
-	}
 }

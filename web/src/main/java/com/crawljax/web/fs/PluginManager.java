@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -76,29 +75,23 @@ public class PluginManager {
 		return plugins;
 	}
 
-	private String readFile(File file) {
+	private String readTextFile(File file) {
 		String result = null;
-		try(FileReader fr = new FileReader(file)) {
-			result = readAll(fr);
-		} catch (IOException e) {
-			LOG.error(e.toString());
-			LOG.debug(e.toString());
-		}
-		return result;
-	}
+		try(FileReader reader = new FileReader(file)) {
+			try(BufferedReader br = new BufferedReader(reader)) {
+				StringBuilder sb = new StringBuilder();
+				String line = br.readLine();
 
-	private String readAll(Reader reader) {
-		String result = null;
-		try(BufferedReader br = new BufferedReader(reader)) {
-			StringBuilder sb = new StringBuilder();
-			String line = br.readLine();
-
-			while (line != null) {
-				sb.append(line);
-				sb.append('\n');
-				line = br.readLine();
+				while (line != null) {
+					sb.append(line);
+					sb.append('\n');
+					line = br.readLine();
+				}
+				result = sb.toString();
+			} catch (IOException e) {
+				LOG.error(e.toString());
+				LOG.debug(e.toString());
 			}
-			result = sb.toString();
 		} catch (IOException e) {
 			LOG.error(e.toString());
 			LOG.debug(e.toString());
@@ -152,7 +145,7 @@ public class PluginManager {
 		File jar = new File(pluginsFolder, pluginId + ".jar");
 		if(locator.exists()) {
 			try {
-				URL url = new URL(readFile(locator).trim());
+				URL url = new URL(readTextFile(locator).trim());
 				jar = download(url, jar);
 			} catch (MalformedURLException e) {
 				LOG.error(e.toString());

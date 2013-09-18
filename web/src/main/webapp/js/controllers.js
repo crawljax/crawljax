@@ -156,7 +156,11 @@ App.ConfigurationController = Ember.Controller.extend({
 				var r = confirm("Are you sure you want to permanently delete this configuration?");
 				if (r == true) {
 					var router = this.get('target');
-					App.Configurations.remove(this.get("content"), function(data){ router.transitionToRoute('configurations'); });
+					var _this = this;
+					App.Configurations.remove(this.get("content"), function(data){ 
+						router.transitionToRoute('configurations');
+						_this.get("controllers.application").displayMessage("Configuration Deleted", 1);
+					});
 				}
 				break;
 		}
@@ -323,16 +327,15 @@ App.PluginManagementController = Ember.ArrayController.extend({
 });
 
 App.PluginManagementItemController = Ember.Controller.extend({
-	needs: ['pluginManagement'],
+	needs: ['application', 'pluginManagement'],
 	remove: function() {
 		var r = confirm("Are you sure you want to remove " + this.get('content.name') + " (id: " + this.get('content.id') + ")");
 		if (r == true) {
 			var _this = this;
 			App.Plugins.remove(this.get('content'), function(){
 				_this.get('controllers.pluginManagement').set('content', App.Plugins.findAll());
+				_this.get("controllers.application").displayMessage("Plugin Deleted", 1);
 			});
-		} else {
-			alert("Not deleting");
 		}
 	}
 });

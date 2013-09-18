@@ -177,17 +177,16 @@ App.FormSelect = App.FormField.extend({
 				opsArray.push({name: option, value: options[option]});
 			}
 			this.set('options', opsArray);
+			options = this.get('options');
 		}
-		options = this.get('options');
 		var value = this.get('value');
-		var valueSet = false;
 		for(var i = 0, l = options.length; i < l; i++) {
-			if(options[i].value === value) {
+			if(options[i].value === value || ((typeof options[i] === "string") && options[i] === value)) {
 				this.set('selection', options[i]);
-				valueSet = true;
+				break;
 			}
 		}
-		if(!valueSet && options.length > 0) {
+		if(i >= l && options.length > 0) {
 			this.set('selection', options[0]);
 		}
 	}

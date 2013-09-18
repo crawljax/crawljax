@@ -182,9 +182,9 @@
 			<table class="table table-condensed">
 				{{#each controller}}
 					<tr>
-						<td width="30px">{{view App.FormSelect valueBinding='rule' contentBinding='App.clickType' optionValuePath="content.value"
+						<td width="30px">{{view App.FormSelect valueBinding='content.rule' contentBinding='App.clickType' optionValuePath="content.value"
 							optionLabelPath="content.name" inputClassNames='input-small' isForm=''}}</td>
-						<td width="30px">{{view App.FormSelect valueBinding='elementTag' contentBinding='App.tags' inputClassNames='input-small' isForm=''}}</td>
+						<td width="30px">{{view App.FormSelect valueBinding='content.elementTag' contentBinding='App.tags' inputClassNames='input-small' isForm=''}}</td>
 						<td>
 							{{#if content.conditions}}
 							<table class="table table-striped table-condensed" style="margin-bottom: 0px;">

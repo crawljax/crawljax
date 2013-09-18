@@ -33,11 +33,6 @@ public class CrawljaxWebModule extends ServletModule {
 	public static @interface PluginsFolder {
 	};
 
-	public CrawljaxWebModule(File outputFolder) {
-		this.outputFolder = outputFolder;
-		this.pluginsFolder = new File("plugins");
-	}
-
 	public CrawljaxWebModule(File outputFolder, File pluginsFolder) {
 		this.outputFolder = outputFolder;
 		this.pluginsFolder = pluginsFolder;

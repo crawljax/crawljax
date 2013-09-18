@@ -69,16 +69,4 @@ public class CrawlHistoryResource {
 		return r;
 	}
 
-	@GET
-	@Path("{id}/log")
-	public Response getCrawlRecordLog(@PathParam("id") int id) {
-		Response r;
-		CrawlRecord record = crawlRecords.findByID(id);
-		if (record != null) {
-			String content = workDirManager.readLog(id);
-			r = Response.ok(content).build();
-		} else
-			r = Response.serverError().build();
-		return r;
-	}
 }

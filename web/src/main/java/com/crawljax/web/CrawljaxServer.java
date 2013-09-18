@@ -97,10 +97,6 @@ public class CrawljaxServer implements Callable<Void> {
 		return url;
 	}
 
-	public int getPort() {
-		return ((ServerConnector) server.getConnectors()[0]).getLocalPort();
-	}
-
 	private void setupJulToSlf4() {
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
