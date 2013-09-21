@@ -26,11 +26,13 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.CrawlElement;
+import com.crawljax.core.configuration.CrawlElementMatcher;
 import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
@@ -41,6 +43,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.inject.assistedinject.Assisted;
+import com.sun.jna.platform.win32.Netapi32Util.User;
 
 /**
  * This class extracts candidate elements from the DOM tree, based on the tags provided by the user.
@@ -91,7 +94,6 @@ public class CandidateElementExtractor {
 		                .addAll(preCrawlConfig.getIncludedElements())
 		                .addAll(rules.getInputSpecification().getCrawlElements())
 		                .build();
-
 		crawlFrames = rules.shouldCrawlFrames();
 		clickOnce = rules.isClickOnce();
 		randomize = rules.isRandomized();
@@ -135,11 +137,12 @@ public class CandidateElementExtractor {
 			throw new CrawljaxException(e);
 		}
 		ImmutableList<CandidateElement> found = results.build();
-		
 		if(randomize){
-			ArrayList<CandidateElement> shuffleCandidateElements = Lists.newArrayList(found);
-			Collections.shuffle(shuffleCandidateElements);
-			found = ImmutableList.copyOf(shuffleCandidateElements);
+		//	shuffleCandidateElements(Lists.newArrayList(found));
+		//	ArrayList<CandidateElement> shuffleCandidateElements = Lists.newArrayList(found);
+		//	Collections.shuffle(shuffleCandidateElements);
+		//	found = ImmutableList.copyOf(shuffleCandidateElements);
+			found = ImmutableList.copyOf(shuffleCandidateElements(Lists.newArrayList(found)));
 		}
 		
 		LOG.debug("Found {} new candidate elements to analyze!", found.size());
@@ -423,10 +426,9 @@ public class CandidateElementExtractor {
 	}
 
 
-	public ImmutableList<CandidateElement> extractClickables(StateVertex currentState) {
+	public ImmutableList<CandidateElement> extractAllClickables(StateVertex currentState) {
 		ImmutableList<CandidateElement> finalExtractedClickables;
-		ArrayList<Element> elements = new ArrayList<Element>();
-		ArrayList<CandidateElement> candidatElements = new ArrayList<CandidateElement>();
+		List<CandidateElement> candidatElements = new ArrayList<CandidateElement>();
 		String dom = currentState.getDom();
 		try {
 				Set<Node> result =
@@ -437,21 +439,85 @@ public class CandidateElementExtractor {
 				Element currentElement = (Element) n;
 				String xpath = XPathHelper.getXPathExpression(currentElement);
 				String relatedFrame = "";
-				elements.add(currentElement);
 				candidatElements.add(new CandidateElement(currentElement, new Identification(
 						Identification.How.xpath, xpath), relatedFrame));
 			}
 		} catch (NodeSelectorException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		candidatElements = checkUserDefinedConditions(candidatElements);
 		if(randomize){
-			Collections.shuffle(candidatElements);
+			candidatElements = shuffleCandidateElements(candidatElements);
+			
 		}
+		
 		finalExtractedClickables = ImmutableList.copyOf(candidatElements);
 		return finalExtractedClickables;
 	}
+
+	private List<CandidateElement> shuffleCandidateElements(List<CandidateElement> candidatElements) {
+		Collections.shuffle(candidatElements);
+		return candidatElements; 
+		
+	}
+
+	private List<CandidateElement> checkUserDefinedConditions(List<CandidateElement> candidatElements) {
+		List<CandidateElement> getUserDefinedCandidateElements = new ArrayList<CandidateElement>();
+		EventableCondition eventableCondition = null;
+		String relatedFrame = "";
+		String xpath;
+		if(includedCrawlElements != null){
+			if(!isDefaultElements()){
+				for (CrawlElement tag : includedCrawlElements) {
+					for(CandidateElement candidateElement : candidatElements){
+						if(candidateElement.getElement().getTagName().equalsIgnoreCase(tag.getTagName())){
+							eventableCondition = checkedElements.getEventableConditionChecker().getEventableCondition(tag.getId());
+						if (eventableCondition != null && eventableCondition.getLinkedInputFields() != null
+						        && eventableCondition.getLinkedInputFields().size() > 0) {
+							getUserDefinedCandidateElements  =
+							        formHandler.getCandidateElementsForInputs(candidateElement.getElement(), eventableCondition);
+						} else {
+							xpath = XPathHelper.getXPathExpression(candidateElement.getElement());
+							getUserDefinedCandidateElements.add(new CandidateElement(candidateElement.getElement(), new Identification(
+								Identification.How.xpath, xpath), relatedFrame));
+							}
+						}							
+					}
+				}
+			}else{
+				for(CandidateElement candidateElement : candidatElements){
+					xpath = XPathHelper.getXPathExpression(candidateElement.getElement());
+					getUserDefinedCandidateElements.add(new CandidateElement(candidateElement.getElement(), new Identification(
+						Identification.How.xpath, xpath), relatedFrame));
+				}
+			}
+		}
+		for (CandidateElement candidateElement : getUserDefinedCandidateElements ) {
+			if (!clickOnce || checkedElements.markChecked(candidateElement)) {
+				LOG.debug("Found new candidate element: {} with eventableCondition {}",
+				        candidateElement.getUniqueString(), eventableCondition);
+				candidateElement.setEventableCondition(eventableCondition);
+			}
+		}
+		return getUserDefinedCandidateElements;
+	}
+
+	private boolean isDefaultElements() {
+		boolean isSetToDefault = false;
+		if(includedCrawlElements.size() == 4)
+			if(includedCrawlElements.get(0).getTagName().equalsIgnoreCase("a") &&
+				includedCrawlElements.get(1).getTagName().equalsIgnoreCase("button") &&
+				includedCrawlElements.get(2).getTagName().equalsIgnoreCase("input") &&
+				includedCrawlElements.get(2).getWithXpathExpression().equalsIgnoreCase("//INPUT[@type='submit']") &&
+				includedCrawlElements.get(3).getTagName().equalsIgnoreCase("input") &&
+				includedCrawlElements.get(3).getWithXpathExpression().equalsIgnoreCase("//INPUT[@type='button']")) {
+						isSetToDefault = true;		
+				}else{
+						isSetToDefault = false;		
+				}
+			return isSetToDefault;
+	}
+	
 }

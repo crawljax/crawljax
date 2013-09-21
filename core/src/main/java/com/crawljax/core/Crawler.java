@@ -391,7 +391,7 @@ public class Crawler {
 		LOG.debug("Parsing DOM of state {} for candidate elements", currentState.getName());
 		ImmutableList<CandidateElement> extract;
 			if(clickableDetectingPluginEnabled){
-		 		extract = candidateExtractor.extractClickables(currentState);
+		 		extract = candidateExtractor.extractAllClickables(currentState);
 		}else{
 			extract = candidateExtractor.extract(currentState);	
 		}
@@ -465,7 +465,7 @@ public class Crawler {
 		LOG.debug("Parsing the index for candidate elements");
 		ImmutableList<CandidateElement> extract;
 		if(isClickableDetectingPluginEnabled(index.getDom())){
-			extract = candidateExtractor.extractClickables(index);
+			extract = candidateExtractor.extractAllClickables(index);
 		}else{
 			extract = candidateExtractor.extract(index);
 		}

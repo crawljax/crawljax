@@ -41,24 +41,20 @@ public final class AdvancedExample {
 	 */
 	public static void main(String[] args) throws IOException {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
-		builder.crawlRules().insertRandomDataInInputForms(false);
+	//	builder.crawlRules().insertRandomDataInInputForms(false);
 
-		// click these elements
-	//	builder.crawlRules().clickDefaultElements();
-	//	builder.crawlRules().click("div");
-
+		builder.crawlRules().click("div");
 		builder.setMaximumStates(3);
 		builder.setMaximumDepth(3);
 		builder.crawlRules().clickElementsInRandomOrder(true);
-		
+
+
 		try {
 			ClickableDetectorPlugin.configure(builder,
 			        ProxyConfiguration.manualProxyOn("127.0.0.1", 8084));
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 
 		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 1));
 		System.setProperty("webdriver.firefox.bin",
