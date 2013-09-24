@@ -138,10 +138,6 @@ public class CandidateElementExtractor {
 		}
 		ImmutableList<CandidateElement> found = results.build();
 		if(randomize){
-		//	shuffleCandidateElements(Lists.newArrayList(found));
-		//	ArrayList<CandidateElement> shuffleCandidateElements = Lists.newArrayList(found);
-		//	Collections.shuffle(shuffleCandidateElements);
-		//	found = ImmutableList.copyOf(shuffleCandidateElements);
 			found = ImmutableList.copyOf(shuffleCandidateElements(Lists.newArrayList(found)));
 		}
 		
