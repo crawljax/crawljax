@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?/os/mit/media/p/common/ylc-min-1066530.js&/ss/strip_3.2.js&/os/mit/media/p/common/iesitemode-min-1198391.js&/os/mit/media/p/common/trfsm-min-797026.js&/os/mit/media/p/common/i13n-min-1454417.js&/os/mit/media/p/common/ywa-tracking-min-1460478.js&/os/mit/media/m/carousel/carousel-social-buttons-sync-min-182654.js&/os/mit/media/m/photos/tabbed-list-min-1233217.js&/os/mit/media/m/photos/gallery-preview-min-352946.js&yui:3.9.1/build/anim-base/anim-base-min.js&yui:3.9.1/build/anim-color/anim-color-min.js&yui:3.9.1/build/anim-xy/anim-xy-min.js&yui:3.9.1/build/anim-curve/anim-curve-min.js&yui:3.9.1/build/anim-easing/anim-easing-min.js&yui:3.9.1/build/anim-node-plugin/anim-node-plugin-min.js&yui:3.9.1/build/anim-scroll/anim-scroll-min.js&/os/mit/media/m/footer/footer-min-923366.js HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.news.yahoo.com/photos/photos-of-the-day-september-9-2013-1378734202-slideshow/
-Connection: keep-alive
-

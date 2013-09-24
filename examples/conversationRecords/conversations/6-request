@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?nn/lib/metro/g/core_yui_3.4.6.css&nn/lib/metro/g/core_srvc_1.0.24.css&nn/lib/metro/g/core_mod_1.0.129.css&nn/lib/metro/g/fp/fp_widecc_0.0.37.css&nn/lib/metro/g/fp/fp_403_0.0.7.css&nn/lib/metro/g/masthead/masthead_0.2.165.css&nn/lib/metro/g/uicontrib/miniassist-yui3_0.0.9.css&nn/lib/metro/g/masthead/masthead_miniassist_baseline_0.0.13.css&nn/lib/metro/g/masthead/masthead_403_0.0.49.css&nn/lib/metro2/g/announcebar/announcebar_1.0.27.css&nn/lib/metro/g/contentcarousel/contentcarousel_widecc_0.0.20.css&nn/lib/metro/g/multimedia/multimedia_1.0.53.css&nn/lib/metro/g/contentcarousel/contentcarousel_news_0.0.13.css&nn/lib/metro/g/mostpopular/mostpopular_0.0.13.css&nn/lib/metro/g/marketindices/marketindices_widecc_0.0.14.css&nn/lib/metro/g/news/offlead_0.1.21.css&nn/lib/metro/g/news/news_accordion_1.9.11.css&nn/lib/metro/g/tabbar/tabbar_0.0.100.css&nn/lib/metro/g/tuc/tuc_wave3_0.0.29.css&nn/lib/metro/g/mail/mail_0.0.55.css&nn/lib/metro/g/mail/mail_403_0.0.47.css&nn/lib/metro/g/fptoday/fptoday_widecc_0.0.29.css&nn/lib/metro/g/contentcarousel/contentcarousel_polls_0.0.49.css&nn/lib/metro/g/pa/pa_widecc_0.1.31.css&nn/lib/metro/g/pa/pa_detached_0.1.96.css&nn/lib/metro/g/pa/pa_add_0.1.75.css&nn/lib/metro/g/tts/tts_widecc_0.0.29.css&nn/lib/metro/g/footer/footer_0.1.84.css&nn/lib/metro/g/footer/subfooter_0.0.35.css HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/css,*/*;q=0.1
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.yahoo.com/
-Connection: keep-alive
-

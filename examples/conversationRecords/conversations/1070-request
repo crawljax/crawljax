@@ -1,9 +1,0 @@
-GET http://s0.2mdn.net:80/3755243/RBC_DI_FY13_Big_300x250.swf HTTP/1.1
-Host: s0.2mdn.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ad.doubleclick.net/adi/N7916.8578.YAHOOINC/B7866386.4;sz=300x250;dcopt=rcl;mtfIFPath=nofile;click=http://ads.bluelithium.com/clk?3,eJytUsuOozgU.ZraFZENBoKiWZBAUiHYCe.ApuUAIbzpgmogXz-mqqelGs1yrpBtzjn3wTFQ2FBeThPxDgBM4J0KwgYiCFAMIQ.lV7DZbGTEQyjJCnq9Zfm08-T0kqmiu2-36hIHal5H9SuyZTl-nS.rZd3pB5QT6zd9IYL6.wTfjb.7LP1Y30xbq4X9tt3q-vaP6oBFzPs1qT1gurp4Do4DdvcVnmF-dsPJDPw8fGKRuCrj7Edk.cn86.UxDN2LoL7we.bEVR6X.eqW0m51i1czfbTtKm5rRs0xW8ImVLCDRrNQ67DByknTeawZMy2MnOweDQ2sMnDtKQn2nnNNztS1T54-RC70O-JFveXtS9e3CQZT71x9JwqMO-aTn44zPZOdNeFnjMgzBLgIZ1J4AGveaL6RztAySDR9JK7ex4JaYvaV5GkJWNOf591UxLn1xFo5nzUVEdebzLewxDmb87Dvop0d-no7WWViugc8kR3oQ8EqceH1aWAgQ-.FoDDeaC2KLiBBpD2cCNhjWHXNFeh9WJesXzjiIhOI5kHsTLOhqX1csxpuVEcHn83qP05OyRyCn0aq31zNqvZGqxV9T7456hwPL4IGxVwq--EdMASzd-UzVv-1MYXGFJ81lvwlGyoykgEU1qybaeu75ZIYvlta69fLIhHktSxDJPEMMhkQop8f1D2OJEfG5RSevVzcV6qaYBcLZnX8sNPbDyErjky-ZfKra8Dt4WTGEHEMMv4pKSFe4iVFWqNl9BODUfLDT7O6MfW7VGHQHOu9dcsYqTJSknlBAhKURKAgJKL1WmaMzZgl.boovqx74dG.fkq6atKx.-bdrWqznu3dR9Wn7T2mDU3op3Y5cLd2jtth4Po2fuRcW811l8c91.5K37n3j77PKUebIecyOnOQTSUqChBWj6Gu.gYtCjzz,;ord=1378764263?
-Connection: keep-alive
-

@@ -1,9 +1,0 @@
-GET http://yui.yahooapis.com:80/combo?3.5.1/build/node-event-delegate/node-event-delegate-min.js&3.5.1/build/pluginhost-base/pluginhost-base-min.js&3.5.1/build/pluginhost-config/pluginhost-config-min.js&3.5.1/build/node-pluginhost/node-pluginhost-min.js&3.5.1/build/dom-style/dom-style-min.js&3.5.1/build/dom-screen/dom-screen-min.js&3.5.1/build/node-screen/node-screen-min.js&3.5.1/build/node-style/node-style-min.js&3.5.1/build/substitute/substitute-min.js&3.5.1/build/attribute-core/attribute-core-min.js&3.5.1/build/attribute-events/attribute-events-min.js&3.5.1/build/attribute-extras/attribute-extras-min.js&3.5.1/build/attribute-base/attribute-base-min.js&3.5.1/build/attribute-complex/attribute-complex-min.js&3.5.1/build/base-core/base-core-min.js&3.5.1/build/base-base/base-base-min.js&3.5.1/build/plugin/plugin-min.js&3.5.1/build/event-simulate/event-simulate-min.js&3.5.1/build/node-event-simulate/node-event-simulate-min.js&3.5.1/build/node-focusmanager/node-focusmanager-min.js HTTP/1.1
-Host: yui.yahooapis.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.answers.yahoo.com/
-Connection: keep-alive
-

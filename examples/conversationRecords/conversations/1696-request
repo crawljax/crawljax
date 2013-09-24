@@ -1,9 +1,0 @@
-GET http://s0.2mdn.net:80/2802150/300x250_testimonial_IAB.swf HTTP/1.1
-Host: s0.2mdn.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ad.doubleclick.net/adi/N5229.851084.CA.YAHOO.COM/B7765210.9;sz=300x250;dcopt=rcl;mtfIFPath=nofile;click=http://ads.bluelithium.com/clk?3,eJytUk2TojAQ.TVzG6mEBIGy9oCCjkqiQEDhsgXIIALCig4fv37DzOxUzdYetyvVnfR73Z16CUQzEENu6kmCchIBpMwghgDHInpVwTOYzWZQRaIkAyQrz1GadQtXTvbpHIE8n2uj7W.As7QPSw3u1h.7vTL6hbHCGf3EVX951.6PiXX7OWecl.KlKxrW5cXcMOZfrJWPyJBjwta9yQxpd1jfCVsWpAcSj2eTnctAj0VSBiUdtMG3vip.PJ.v9.oJaU.ikq-4yOK8EaIkrIUoFvrwXFVCXJUc6mPu.KuvEge35kUr.StRt7ohEt37FR7tMsrO1.Bg5d6VHikqXOd42oXM3rrGPWDQq6kbNJZr28yzKQFd4xw9Jyzmr7RU4MHphtPC6sgQYzr4gAxE2jEf0cFtzRdab.QUUt1oKTOaGGk5uRgjZ6BMg6TvLnFmDUTP-52uYcrcznzxc5Lxe66WdbCwAV1trtYBmmxFescBjY8s3sNtksMGb16qzhZd7OTBLVh5tiVK9-PAz2I3d65x45d5TpjfkkuKqO5C4nT9RteauOQ9WFD6bCmGZd1tnZwrBN-F1L6pmhZVFBZCeDt9U9RZr56QDqXsIqpvv8Ziws.quwn.Cpyhc8Z7j7Ge70WIEUISkBCfZtrGYnwknl-Mo43jfhzAv7QsQwmN9SZPeM1B7tm6pRne7Lf-zs2kZaHpFmEEmcX6YV.2P6eV5HP6nNPvOEq1cmvG4nrCU5s.Lad8Mr.UVJQxT295elosW.lQX0rZbHFVpn5bZQeLg9oIyiKagimcSkDFWMKKInPE5gjg8TgyPqR7EvFfnzIUrknbfNPuLTslowanqiqbU9hP6ltS18mtmTzqJg6LZFI8usetn0SPaz6mwVSSkaKoUDjfy-I31FQ0MQ==,;ord=1378764340?
-Connection: keep-alive
-

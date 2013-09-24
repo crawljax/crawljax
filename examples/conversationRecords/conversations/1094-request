@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?nt/tyc/v1/css/galaxy_toolbar-20130808.css HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/css,*/*;q=0.1
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.toolbar.yahoo.com/
-Connection: keep-alive
-

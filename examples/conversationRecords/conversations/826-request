@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?yui:3.9.1/build/widget-stack/assets/skins/sam/widget-stack.css&yui:3.9.1/build/overlay/assets/skins/sam/overlay.css&yui:3.9.1/build/autocomplete-list/assets/skins/sam/autocomplete-list.css HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/css,*/*;q=0.1
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.shine.yahoo.com/blogs/the-perfect-bite-canada/perfect-bite-yogurt-healthiest-210324336.html?vp=1
-Connection: keep-alive
-

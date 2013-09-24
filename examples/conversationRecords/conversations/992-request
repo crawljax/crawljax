@@ -1,9 +1,0 @@
-GET http://qos.video.yimg.com:80/yep/3/qos?env=p&pver=3.9.2.10498&vp=3012842750&b=50&r=f&vid=44596141-2c98-3f14-900f-f7059143de2f&vn=700%20Ton%20Ship%20Flipped%20Over!&reg=ca&site=ivy&sn=na&lid=a0770000004Lwp7AAC&loc=1&apl=true&psid=793452770&fver=Shockwave%20Flash%2011.2%20r202&expn=cavideo&expt=default&expb=na&vpurl=http%3A%2F%2Fca.screen.yahoo.com%2F700-ton-ship-flipped-over-150511969.html&hd=true&vtyp=clip&tyvapr=70&rn=0.07335984063668188 HTTP/1.1
-Host: qos.video.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.screen.yahoo.com/700-ton-ship-flipped-over-150511969.html
-Connection: keep-alive
-

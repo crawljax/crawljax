@@ -1,9 +1,0 @@
-GET http://content.yieldmanager.edgesuite.net:80/atoms/51/90/76/87/519076870d3554ed9f7b4090792ee07b.gif HTTP/1.1
-Host: content.yieldmanager.edgesuite.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ad.yieldmanager.com/st?ad_type=iframe&publisher_blob=${RS}|3xObLjk4LjEJPKYOUi5FlAAHMTM3LlIuRlf__xkY|1351216063|REC|1378764375.952457&ad_size=180x150&site=173871&section_code=2324505051&cb=1378764375.952457&yud=smpv%3d3%26ed%3dzAomdF31xQxuVsRcCEyKD3Vp7OVj&pub_url=http://ca.yahoo.com/&pub_redirect_unencoded=1&pub_redirect=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MHF0ZWRsaChnaWQkM3hPYkxqazRMakVKUEtZT1VpNUZsQUFITVRNM0xsSXVSbGZfX3hrWSxzdCQxMzc4NzY0Mzc1OTMxNzM4LHNpJDg1NDMwNTEsc3AkMTM1MTIxNjA2MyxjciQzMTExNzE5NTUxLHYkMi4wLGFpZCRqTTBjRkdLTDRKWS0sY3QkMjUseWJ4JDBNc0NoRGJRZjNUbjM0UjRwdGJpX3csYmkkMTYwMjg3NTA1MSxyJDAscmQkMTZmZGdzdDhqKSk/1/*http://global.ard.yahoo.com/SIG=15ggavoum/M=999999.999999.999999.999999/D=know/S=1351216063:REC/Y=CA/EXP=1378771575/L=3xObLjk4LjEJPKYOUi5FlAAHMTM3LlIuRlf__xkY/B=jM0cFGKL4JY-/J=1378764375952457/K=mU5.thaEQPWS_.XdBMtiSA/A=6723610460061774973/R=0/X=6/*
-Connection: keep-alive
-

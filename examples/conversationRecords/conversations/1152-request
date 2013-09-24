@@ -1,9 +1,0 @@
-GET http://l1.yimg.com:80/bt/api/res/1.2/SbaAPDLkErUNoGGkm1JlLQ--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTg0O3B5b2ZmPTA7cT04NTt3PTE1MA--/http://l.yimg.com/os/publish-images/homes/2013-09-04/def7c588-4a5c-4451-a112-06f2bc1a8eeb_Quartiere-Schuetzenstrasse-Berlin-urlo-nero.jpg HTTP/1.1
-Host: l1.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.finance.yahoo.com/
-Connection: keep-alive
-

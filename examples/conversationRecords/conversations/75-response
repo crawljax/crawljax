@@ -1,9 +1,0 @@
-HTTP/1.1 302 Moved Temporarily
-Date: Mon,  09 Sep 2013 22:03:03 GMT
-Connection: close
-Server: AAWebServer
-P3P: policyref="http://www.adadvisor.net/w3c/p3p.xml",CP="NOI NID"
-Content-Length: 0
-Location: http://dm.de.mookie1.com/2/TRACK_Targus/ZAPSegments@x96?_RM_HTML_segment_=000&_RM_HTML_zip_=&_RM_HTML_age_=&_RM_HTML_gender_=
-Set-Cookie: ab=0001%3AK8txDCJkd0QsADiUo4oBTxLX0Bby9X%2Bg; Domain=.adadvisor.net; Expires=Mon,  09 Sep 2014 22:03:03 GMT; Path=/
-

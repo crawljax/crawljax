@@ -1,9 +1,0 @@
-GET http://www.google-analytics.com:80/__utm.gif?utmwv=5.4.4&utms=1&utmn=2114499090&utmhn=www.zoocasa.com&utmcs=UTF-8&utmsr=1920x1080&utmvp=925x864&utmsc=24-bit&utmul=en-us&utmje=1&utmfl=11.2%20r202&utmdt=Canada%20Real%20Estate%20Listings%2C%20Homes%20for%20Sale%2C%20Condos%20%26%20MLS%20%7C%20Zoocasa.com&utmhid=1573759904&utmr=http%3A%2F%2Fca.yahoo.com%2F&utmp=%2Fen&utmht=1378764427578&utmac=UA-3358848-17&utmcc=__utma%3D221791507.53025414.1378764428.1378764428.1378764428.1%3B%2B__utmz%3D221791507.1378764428.1.1.utmcsr%3Dca.yahoo.com%7Cutmccn%3D(referral)%7Cutmcmd%3Dreferral%7Cutmcct%3D%2F%3B&utmu=qBAg~ HTTP/1.1
-Host: www.google-analytics.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://www.zoocasa.com/en
-Connection: keep-alive
-

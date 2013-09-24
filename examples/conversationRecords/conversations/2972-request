@@ -1,9 +1,0 @@
-GET http://l1.yimg.com:80/bm/combo?fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yui-min-3.5.1.js&fi/common/p/d/static/js/2.0.281854/yui_2.8.0/build/yuiloader-dom-event/2.0.0/mini/yuiloader-dom-event.js&fi/common/p/d/static/js/2.0.281854/yui_2.8.0/build/container/2.0.0/mini/container.js&fi/common/p/d/static/js/2.0.281854/yui_2.8.0/build/datasource/2.0.0/mini/datasource.js&fi/common/p/d/static/js/2.0.281854/yui_2.8.0/build/autocomplete/2.0.0/mini/autocomplete.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/ylc_1.9.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yfi_loader.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yfi_symbol_suggest.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yfi_init_symbol_suggest.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yfi_nav_topnav_init.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yfi_nav_topnav.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yfi_nav_portfolio.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yfi_fb2_expandables.js&fi/common/p/d/static/js/2.0.281854/yui_2.8.0/build/get/2.0.0/mini/get.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yfi_lazy_load.js&fi/common/p/d/static/js/2.0.281854/2.0.0/mini/yfs_concat.js&fi/common/p/d/static/js/2.0.281854/translations/2.0.0/mini/yfs_l10n_en-CA.js HTTP/1.1
-Host: l1.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.finance.yahoo.com/q?s=CADUSD=X
-Connection: keep-alive
-

@@ -1,8 +1,0 @@
-HTTP/1.1 302 Found
-Cache-Control: no-cache, no-store
-Date: Mon, 09 Sep 2013 22:07:08 GMT
-Location: http://rc.rlcdn.com/362588.gif?partner_uid=f54394f8-e2db-4728-aaf4-f10a12001ecc
-P3P: CP: "NON DSP COR PSDo SAMo BUS IND UNI COM NAV INT POL PRE"
-Content-Length: 0
-Connection: keep-alive
-

@@ -1,9 +1,0 @@
-GET http://mycdn.media.net:80/mediamain.html?cid=8CUCN7VBB&crid=244546249&pid=8PO17N6IX&size=630x178&cpnet=yVb1sHm%2B0KKoFeunLBVJxRZNdYEU6hmvfoQPAwjG8LU%3D&cme=%2BGrnje2DVSUEOXxUGC8xNiavel%2FfZ5Xsnz4bMh%2Blsr2y9cSqHE3VUyQktXJ1%2BfoMvtRtwN16AdqxG3QiEzO0j3XfP9bc8S6riyf3No9743Y%3D%7C%7CN7fu2vKt8%2Fs%3D%7CFcl4VLL%2BIaJOm1BfGhSiz7K0G5DbQtM2mXe%2FnNHpdwY%3D%7CJf0d%2BWoAdPtYeYeTsG8fm0gTW9218Q%2FR%7C&cc=CA&bf=0&staticIframe=1&vif=1&chid=200001495&bid=28674&nb=1 HTTP/1.1
-Host: mycdn.media.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.finance.yahoo.com/
-Connection: keep-alive
-

@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?d/lib/yui/2.8.0r4/build/reset/reset-min.css&d/lib/yui/2.8.0r4/build/fonts/fonts-min.css&d/lib/yui/2.8.0r4/build/button/assets/skins/sam/button.css&d/lib/yui/2.8.0r4/build/container/assets/skins/sam/container.css&d/lib/yui/2.8.0r4/build/menu/assets/skins/sam/menu.css&d/lib/yui/2.8.0r4/build/carousel/assets/skins/sam/carousel.css&pc/autos/p/common/autos_grids-min-39383.css&pc/autos/p/common/autos_global-min-53152.css&pc/autos/p/mmt/mmt_global-min-54100.css&kx/ucs/uh/css/291/yunivhead-min.css&kx/ucs/uh/css/221/logo-min.css&kx/ucs/avatar/css/17/avatar-min.css&kx/ucs/notif_v2/css/145/notifications_v2-min.css&kx/ucs/mailcount/css/39/mailcount_v2-min.css&kx/ucs/mailcount/css/37/mail_preview-min.css&kx/ucs/search/css/190/search_all-min.css&kx/ucs/search/css/190/search_buttons-min.css&pc/autos/p/common/autos_nav-min-45253.css&pc/autos/p/common/autos_jumbotron-min-50330.css&pc/autos/p/homepage/homepage-min-53152.css HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/css,*/*;q=0.1
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.autos.yahoo.com/
-Connection: keep-alive
-

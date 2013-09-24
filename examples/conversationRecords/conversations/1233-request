@@ -1,9 +1,0 @@
-GET http://www.yahoo.com:80/ HTTP/1.1
-Host: www.yahoo.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Cookie: B=7ssod6l92sg9i&b=3&s=ho; fpc=d=VkpLHZFIbjmEWee1jLnTpOYaL457fnXAH83ON.kdW97jW_hB.RNJ48PE0WobBG1ZFUL_mOgLtDKo1SQDZ72iCM0Yc450heYX650CNL5B1GqcawObbLmZT5b7ACu0lHI6F5A7DB.cF5SBTN5zGOSP3LZH_HewQQkN5869.YepgPAEZQqqJJqG_pMFBVGWZIaofFhpXXA-&v=2; MSC=t=1378763206X; CH=AgBSLkGwABKhwAAnUrAADLqwADIcwAADnxAAGqnAACX3sAAu9RAAGciwADF+EAAJ2RAAHtAQADXYEAA7b7AAPKUQAB4RsAAn8g==; ypcdb=d3e494275347b86b88ce51b2d65f999d; HP=1; V=v=0.75&cc=0&m=0; yvap=389@cc=1@al=0@vl=1@ac=0; DK=v=2&d=mi6&r=mi0; ucs=bnas=0
-Connection: keep-alive
-

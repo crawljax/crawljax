@@ -1,9 +1,0 @@
-GET http://cdn.cb.yp.ca:80/c411/00110-00000/jsp/images/homepage/ico-phone.png HTTP/1.1
-Host: cdn.cb.yp.ca
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://cdn.cb.yp.ca/c411/00128-00000/jsp/css/home-bundle.css
-Connection: keep-alive
-

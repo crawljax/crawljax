@@ -1,9 +1,0 @@
-GET http://use.typekit.net:80/c/39e184/ff-meta-serif-web-pro:i7:n7.VbR:M:2,VbQ:M:2/d?3bb2a6e53c9684ffdc9a99f6195b2a6209107d27f153411aa02e79ead263934ffe28b0a8d0757f456f449f429a62aea1aa8bb5dff281999e5622a5ddaab957d3704032deb4cf5f044138000a883cb6b6b927ce1dc0e86b4829ddcabefb0834dd09b7a39f6ecda88d662c6799b130f56e284bd391b0bd48b24ba1751d98d1fe550624fdfb9fca41a6ccd23266b94b402359c755047cb7cda21bc1fab7e8d3d08f623a04eb78a7b36a6856a2deffdc0a031f500aaa01cbd3df32e74302b1daf228d3e433260bd694a6b865368ee3935511e5fc54442dacb1b8c9922a5fc06f13602504b416b3bf6d6fddd389d37483a17a401324871c894e7ecd494a3e18edff9b40ad7f7c04dfee188bc94290fd364f2e22467a8c869ced9d786bcb2961925e5f1c9f785d6eed84d6484e0b450d82fd HTTP/1.1
-Host: use.typekit.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/css,*/*;q=0.1
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://www.zoocasa.com/en
-Connection: keep-alive
-

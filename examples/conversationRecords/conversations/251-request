@@ -1,9 +1,0 @@
-GET http://ts2.mm.bing.net:80/th?id=U.4554758126243231&pid=15.1 HTTP/1.1
-Host: ts2.mm.bing.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.search.yahoo.com/search?cs=bz&vm=r&p=Riddick&fr=fp-tts-715&fr2=ps
-Connection: keep-alive
-

@@ -1,9 +1,0 @@
-GET http://ca.search.yahoo.com:80/favicon.ico HTTP/1.1
-Host: ca.search.yahoo.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Cookie: B=ci9mmu192sgs9&b=3&s=a5; MSC=t=1378763671X; CH=AgBSLkMgACdSIAAMuiAAB9QgADIcIAADnyAAJfcgAC71IAAxfiAAPKUgACfy; ypcdb=7f24664b0b63ee29c94b1a04b84e3a10; HP=1; DK=v=2&d=mi6&r=mi0; sSN=fUHLR8U2wWH1YEfPf7I03zU0TthJRaDEGlWHYP6ItIOn9gWsPDAJ9aAdorYtqZDOf58JzmullVHQwbQspsZeyg--
-Connection: keep-alive
-

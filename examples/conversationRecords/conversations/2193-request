@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/pv/static/lib/srp-core-js-metro-2-sa_201309031808.js HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.search.yahoo.com/search?cs=bz&vm=r&p=%2440M%20meth%20lab&fr=fp-tts-715&fr2=ps
-Connection: keep-alive
-

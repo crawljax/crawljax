@@ -1,9 +1,0 @@
-GET http://s0.2mdn.net:80/879366/flash_inpage_rendering_lib_200_27.js HTTP/1.1
-Host: s0.2mdn.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ad.doubleclick.net/adi/N6640.8578.YAHOOINC/B7869414;sz=300x250;dcopt=rcl;mtfIFPath=nofile;click=http://ads.bluelithium.com/clk?3,eJytUl1vozgU.TV9K5ENdgOK9oHGTtIEOwmQD3hZgWH4TijQIfDr17S7I3U0j3tlXdvnHN9rHRtqCwOHOPoRBiKM5wCFxgIiCJBAUEXaM1gsFhow9PlcncPnMMkey7MVHxLTyFb3V3OKnRJde.Mrkim9fa0P-pSXdI0yfvyCir5E5v8Tat3.22fqJ.smRDebdENfKX39pSK85COv9pdVarkU7y-sY-6qZAPAbL2qLDeqvOqcM5Lmfh5VPPl18q.ntOvqJ818UldyiDITRTsL46CehWI2BOn9PhP3SlKDkMm7eQZzUG.lZuXdmLEjVGUbc9y7vAmc9BZcjsW55DkH6btzjfaBa-9OtPNdeK75yW-PpzN3zzZn4NE617Mjrtsf7GK3fPkYo-XxwUaB-OgBTk6Ik0JjxMPWhtdbkkBOaM9d2grNLFhOARvZKDWALR-5yI4jI8WwJyZm5PSwNl7BMnnP9ar2l.YQwrPq0Mhy16wPBtB62lHWOLXxZYu2xGZBvnp3q61n5357BX4XX3o1piUVJW29qiiY6.UsT1Q2mpA5j2FLzFZUsobrV1zt3sXoZzunkA7BTyPNb64m5T0MylnQRN8cdd7WTxqBOA.VVOAPiTC5Nz5j9qdJKohUfNaYzsu1CpGmachAQHazbLpUp1eSxHLqTa-HqYM2lx8bvmBdQpYEpO.zTf7W8wxtDztvf8rwqjQpYy7TrPLtw35v.oZRiaT8Vcqb--nnZr2zBCgUCW3.K.mCENaxTBhLeCfh1jm6B2J35gfJcjxYgT-M3lGSpiRf5qqGsYrmOgCaipGuT.exJQPkfJ0UX949qei3XxnMbnHffjMviZsquCnxQ2mCuo4bRdxvP-OmiyMla8ugUpq4vk.bclCyW.7RSKIdmixQoA4ghNjAs7Sryn8Aydo6Xw==,;ord=1378764460?
-Connection: keep-alive
-

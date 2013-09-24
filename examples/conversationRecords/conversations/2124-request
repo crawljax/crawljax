@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/a/i/us/sp/ed/bg-tabs2.png HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://l.yimg.com/j/assets/eJyFkGEPgiAQhn9RWSLp1o9hCJewwHNwZv77GLU1zean2973YfccKsZCoffYF4ToWhmOoaxYXVZX9a0mq2Ern-Nw8KjzJJA-MZwz1vxlJksEyxUGPYgEjA7ib-FA6kgYZnEDSWNYMTKQVQ62siKOAwRBZvRt3JNv8RkVht0jlQF1t_0Cyw_J5JSfmxN_Wyhhkruz_Ur5c4cWrcNuWT3SN-OWgoMu5zW78Bdej5VK.css?z&m
-Connection: keep-alive
-

@@ -1,9 +1,0 @@
-GET http://s0.2mdn.net:80/3764506/BRD_NA_NA_Phew_NA__300x250_EN_Purchase%20Protection.swf HTTP/1.1
-Host: s0.2mdn.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ad.doubleclick.net/adi/N7861.285959.YAHOO.COM/B7759562.4;sz=300x250;dcopt=rcl;mtfIFPath=nofile;click=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MHRvb2ZvdShnaWQkQWdhUllzNi5KRFFKUEtZT1VpNUZsQm1haVZMOEoxSXVSWm9BQnNCYyxzdCQxMzc4NzY0MTg2NTQ4MDE4LHNpJDg1MjIwNTEsc3AkMjE0MjYyMzUzMyxjciQzNjEyNTczMDUxLHYkMi4wLGFpZCRrR2VnRFdLTGM0WS0sY3QkMjUseWJ4JGhYNjh4ZUt3U0ZTcHU5bzd5enpmRVEsYmkkMTgzODM0NDA1MSxyJDAscmQkMTZmdGtiZGE2KSk/1/*http://global.ard.yahoo.com/SIG=15inkh576/M=999999.999999.999999.999999/D=catop/S=2142623533:FPAD/_ylt=AgQ6yVzmIi_GXHYu3H9u3nQt17V_/Y=CA/EXP=1378771386/L=AgaRYs6.JDQJPKYOUi5FlBmaiVL8J1IuRZoABsBc/B=kGegDWKLc4Y-/J=1378764186585260/K=xhOMEtZrj7uaNI98xFjlMA/A=7728445976249205154/R=0/X=6/*;ord=1378764186.585260?
-Connection: keep-alive
-

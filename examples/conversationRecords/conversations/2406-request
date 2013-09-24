@@ -1,9 +1,0 @@
-GET http://assets2.zoocasa.com:80/assets/favicon-034b70437c9faa1ecc0ef86bc296381b.png HTTP/1.1
-Host: assets2.zoocasa.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Cookie: __usertrack=192.168.2.152.1378764424598970
-Connection: keep-alive
-

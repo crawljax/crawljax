@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?/os/mit/media/p/common/ylc-min-1066530.js&/ss/strip_3.2.js&/os/mit/media/p/common/trfsm-min-797026.js&yui:3.9.1/build/jsonp/jsonp-min.js&/os/mit/media/p/common/i13n-min-1454417.js&/os/mit/media/p/common/ywa-tracking-min-1460478.js&/os/mit/media/m/jumbotron/megatron-min-1131676.js&yui:3.9.1/build/transition/transition-min.js&/os/mit/media/m/footer/footer-min-923366.js&/os/mit/media/m/base/tracking-min-1154405.js HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://info.yahoo.com/
-Connection: keep-alive
-

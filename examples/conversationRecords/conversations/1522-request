@@ -1,9 +1,0 @@
-GET http://l1.yimg.com:80/bt/api/res/1.2/ZAOPOZvAOf5LmaH2a.3cvA--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTU2O3c9MTM1/http://l.yimg.com/os/153/2012/09/17/geekquinox-logo-jpg_203316.jpg HTTP/1.1
-Host: l1.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.news.yahoo.com/blogs/canada-politics/teachers-pay-tied-student-success-193531050.html
-Connection: keep-alive
-

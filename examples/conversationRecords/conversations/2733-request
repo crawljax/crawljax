@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/ho/api/res/1.2/yDzA10toG.TTDKFs5JnKug--/Zmk9ZmlsbDtoPTEwMDt3PTExNjtxPTkwO2FwcGlkPXluZXdzcmNo/http://d.yimg.com/hd/wowtv/lotus/1378269606030_653_21ynPW64pygq1_0_0.jpg?a=wowtv&c=fdff4447d44767c952514f2370c5577b&mr=0&s=793a9108c402f8db62ba1602e4a9bec4 HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.news.search.yahoo.com/search?cs=bz&vm=r&p=Will%20and%20Jada%20Smith&fr=fp-tts-715&fr2=ps
-Connection: keep-alive
-

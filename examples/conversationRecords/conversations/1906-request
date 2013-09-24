@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/kx/yucs/uh3/uh/images/659/uh_sprite.png HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://l.yimg.com/zz/combo?kx/yucs/uh3/uh/css/678/uh_non_mail-min.css&kx/yucs/uh3/uh3_top_bar/css/255/no_icons-min.css&kx/yucs/uh3/uh3_top_bar/css/228/persistent-min.css&kx/yucs/uh3/search/css/392/blue_border-min.css&kx/yucs/uh3/breakingnews/css/1/breaking_news-min.css
-Connection: keep-alive
-

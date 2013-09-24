@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?kx/ucs/sts/js/442/skip-min.js&kx/ucs/uh/js/279/timestamp_library-min.js&kx/ucs/menu_utils/js/164/menu_utils_v2-min.js&kx/ucs/uh/js/267/aria_toolbar-min.js&kx/ucs/username/js/43/user_menu-min.js&kx/ucs/help/js/41/help_menu-min.js&kx/ucs/utility_link/js/20/utility_menu-min.js&kx/ucs/uh/js/262/logo_debug-min.js&kx/ucs/common/js/131/jsonp-super-cached-min.js&kx/ucs/avatar/js/29/avatar-min.js&kx/ucs/common/js/131/jsonp-cached-min.js&kx/ucs/notif_v2/js/177/notifications_bootstrap-min.js&kx/ucs/mailcount/js/70/mailcount_v2-min.js&kx/ucs/common/js/1/setup-min.js&kx/ucs/search/js/226/search-min.js&kx/ucs/search/js/210/search_text_dir-min.js&kx/ucs/uh/js/286/activate_library-min.js HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.screen.yahoo.com/snl/
-Connection: keep-alive
-

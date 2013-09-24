@@ -1,8 +1,0 @@
-HTTP/1.1 304 Not Modified
-ETag: "fa1176ad0b921f9ff69b1d3becc6f7937431d148/src/mutation-summary.js"
-Date: Mon, 09 Sep 2013 22:09:09 GMT
-X-Content-Type-Options: nosniff
-Server: git_frontend
-X-XSS-Protection: 1; mode=block
-Alternate-Protocol: 80:quic
-

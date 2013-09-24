@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/bt/api/res/1.2/iB3nhPDlvQZS3IN3zqIgPQ--/YXBwaWQ9eW5ld3M7Y2g9MzYwO2NyPTE7Y3c9NjQwO2R4PTA7ZHk9MDtmaT11bGNyb3A7aD0xMDc7cT04NTt3PTE5MA--/http://d.yimg.com/hd/cbc/lotus/1378319351605_778_21yo3u64X8gq1_0_0.jpg?a=cbc&c=3f236dec7fcb7ee7f04ed29e43df2138&mr=0&s=dea45f511e0c52f9c9f9f71025bd2363 HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.news.yahoo.com/no-crime-90k-duffy-cheque-says-former-house-090640246.html
-Connection: keep-alive
-

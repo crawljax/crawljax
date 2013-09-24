@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?yui:3.9.1/build/anim-base/anim-base-min.js&yui:3.9.1/build/anim-color/anim-color-min.js&yui:3.9.1/build/anim-xy/anim-xy-min.js&yui:3.9.1/build/anim-curve/anim-curve-min.js&yui:3.9.1/build/anim-easing/anim-easing-min.js&yui:3.9.1/build/anim-node-plugin/anim-node-plugin-min.js&yui:3.9.1/build/anim-scroll/anim-scroll-min.js&yui:3.9.1/build/yui-throttle/yui-throttle-min.js&yui:3.9.1/build/dd-ddm-base/dd-ddm-base-min.js&yui:3.9.1/build/dd-drag/dd-drag-min.js&yui:3.9.1/build/dd-plugin/dd-plugin-min.js&yui:3.9.1/build/dump/dump-min.js HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.news.yahoo.com/video/doomsday-preppers-upscale-luxury-bunkers-065738891.html
-Connection: keep-alive
-

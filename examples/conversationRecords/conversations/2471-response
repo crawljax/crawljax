@@ -1,16 +1,0 @@
-HTTP/1.1 101 Switching Protocols
-Upgrade: websocket
-Connection: Upgrade
-Sec-WebSocket-Accept: 1sxaqGG9wkA/9k1ol0HlQq9ZQp4=
-
-Å1378764429222
-526
-1
-0
-n
-30000Å}1378764429272
-526
-2
-0
-d
-{"path":"connection","update":{"status$string":"connected","server$string":"us12.zopim.com"},"seq":2}

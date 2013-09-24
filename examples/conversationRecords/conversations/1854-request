@@ -1,9 +1,0 @@
-GET http://l3.yimg.com:80/bt/api/res/1.2/3fWtGs3bfH5evTb3ydRzPg--/YXBwaWQ9eW5ld3M7cT04NTt3PTM1MA--/http://media.zenfs.com/en-CA/blogs/goodnews/04981292.jpg HTTP/1.1
-Host: l3.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.news.yahoo.com/blogs/good-news/van-gogh-museum-identifies-artist-long-lost-painting-143109483.html
-Connection: keep-alive
-

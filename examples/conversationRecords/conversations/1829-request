@@ -1,9 +1,0 @@
-GET http://ci.beap.ad.yieldmanager.net:80/reg_ci?bv=1.0.0&bs=(13nn8k2u1(gid$Tim_sQAAAAAgSFouhDZOQjXJzr4jmVIuRkMADKJ.,si$8531051,sp$1184582864,bi$1903318551,cr$3696243051,st$1378764355829236))&al=(as$11vt5j56d,aid$V..REGKLc6I-,ct$25,id(type$playback,value$0,ad_dur$31,s$1)) HTTP/1.1
-Host: ci.beap.ad.yieldmanager.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://l.yimg.com/rx/builds/3.9.2.10498/assets/player.swf
-Connection: keep-alive
-

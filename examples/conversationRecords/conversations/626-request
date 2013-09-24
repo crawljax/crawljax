@@ -1,9 +1,0 @@
-GET http://a.ermisvc.com:80/au/?t=652532&s=647724&d=ca.omg.yahoo.com&f=N1lnxf&v=19.0&vv=11 HTTP/1.1
-Host: a.ermisvc.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ad.yieldmanager.com/st?ad_type=iframe&publisher_blob=lmsid:a097000000WBOW7AAP;revsp:usmagazine.com|LY.q9DIwNi4JPKYOUi5FlAAZMTM3LlIuRbj_4kIY|2121000241|LREC2|1378764216.313137&ad_size=300x250&site=1258184&section_code=2308143051&cb=1378764216.313137&yud=smpv%3d3%26ed%3dzAomdC267kvgcnoVlvRc2UlanpzF9ARWnsPP3Q--&pub_url=http://ca.yahoo.com/&pub_redirect_unencoded=1&pub_redirect=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MG1vNG83MihnaWQkTFkucTlESXdOaTRKUEtZT1VpNUZsQUFaTVRNM0xsSXVSYmpfNGtJWSxzdCQxMzc4NzY0MjE2Mjc4Mzg1LHNpJDg1NTM1NTEsc3AkMjEyMTAwMDI0MSxjciQzMDkyODM4MDUxLHYkMi4wLGFpZCQyTXhfR21LTGMyRS0sY3QkMjUseWJ4JHIzN0RBNWY1bzlOU29UV0o0eFZSWUEsYmkkMTYwMjg3MTA1MSxyJDAscmQkMTZmNm03cjR2KSk/1/*http://global.ard.yahoo.com/SIG=15jg0g06r/M=999999.999999.999999.999999/D=media/S=2121000241:LREC2/_ylt=Ag5Y9P1qEg9zuePoMDMEAywx5Wt./Y=CA/EXP=1378771416/L=LY.q9DIwNi4JPKYOUi5FlAAZMTM3LlIuRbj_4kIY/B=2Mx_GmKLc2E-/J=1378764216313137/K=Bt99WtPRtfmf3iKy9fywdw/A=6723576100323382897/R=0/X=6/*
-Connection: keep-alive
-

@@ -1,9 +1,0 @@
-GET http://p.twitter.com:80/f.gif?screen_name=YahooCanadaNews&show_count=false&show_screen_name=false&width=61&height=22&lang=en&twttr_variant=2.0&twttr_referrer=http%3A%2F%2Fca.news.yahoo.com%2Fgerman-ex-rapper-converted-islam-reportedly-injured-syria-180111595.html&twttr_widget=0&twttr_hask=0&twttr_li=0&twttr_pid= HTTP/1.1
-Host: p.twitter.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://platform.twitter.com/widgets/follow_button.html?screen_name=YahooCanadaNews&show_count=false&show_screen_name=false&width=61&height=22&lang=en
-Connection: keep-alive
-

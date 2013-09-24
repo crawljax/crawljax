@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/bt/api/res/1.2/Ex6_FZkNjIp..R2_f59ASQ--/YXBwaWQ9eW5ld3M7aD04MDt3PTYzMA--/http://l.yimg.com/os/153/2012/01/20/lighterside-banner2_212422.jpg HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.news.yahoo.com/blogs/good-news/van-gogh-museum-identifies-artist-long-lost-painting-143109483.html
-Connection: keep-alive
-

@@ -1,9 +1,0 @@
-GET http://l2.yimg.com:80/bt/api/res/1.2/cda7vOfeqfSKiCNIQlZp1g--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTY3O3E9ODU7dz0xMjA-/http://media.zenfs.com/en-US/video/video.snl.com/SNL_1372_16_Goodnights_and_Credits.png HTTP/1.1
-Host: l2.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.screen.yahoo.com/700-ton-ship-flipped-over-150511969.html
-Connection: keep-alive
-

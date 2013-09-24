@@ -1,9 +1,0 @@
-GET http://qos.video.yimg.com:80/yep/3/qos?env=p&pver=3.9.2.10498&vp=109678007&b=50&r=f&vid=na&vn=na&reg=ca&site=news&sn=na&lid=na&loc=2&apl=false&psid=2143335053&fver=Shockwave%20Flash%2011.2%20r202&expn=default&expt=embed_playlist&expb=na&vpurl=http%3A%2F%2Fca.news.yahoo.com%2Fblogs%2Fpulseofcanada%2Fcanada-boycott-sochi-olympics-over-russia-anti-gay-160659903.html&e.400.101&vm=loadPlaylist%3B%20Failed%20to%20load%20http%3A%2F%2Fvideo.query.yahoo.com%2Fv1%2Fpublic%2Fyql%3Fq%3DSELECT%2520*%2520from%2520yahoo.media.video.playlist(0%252C12)%2520WHERE%2520id%253D%252264c64b10-3e57-11e2-b7e8-0b9bf03597e0%2522%2520AND%2520startvideo%253D%252293fcf693-3f0e-3cc0-ada7-8f5212e2e508%2522%2520AND%2520pidx%253D%25220%2522%2520AND%2520plrs%253D%2522I27hvRwZ417Wap8YFjazBW%2522%2520AND%2520site%253D%2522news%2522%2520AND%2520region%253D%2522CA%2522%2520AND%2520lang%253D%2522en-CA%2522%2520AND%2520acctid%253D%2522208%2522%2520AND%2520plidl%253D%2522default%2522%2520AND%2520pspid%253D%25222143335053%2522%2520AND%2520format%253D%2522mp4%252Cflv%2522%2520AND%2520protocol%253D%2522rtmp%252Chttp%2522%2520AND%2520offnetwork%253D%2522false%2522%2520AND%2520override%253D%2522none%2522%2520AND%2520width%253D%2522634%2522%2520AND%2520height%253D%2522345%2522%253B%26env%3Dprod%26format%3Djson%26callback%3DYUI.Env.JSONP.yui_3_9_1_1_1378764263892_272&rn=0.7475107861604949 HTTP/1.1
-Host: qos.video.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.news.yahoo.com/video/playlist/pulse-of-canada/canada-refuse-send-athletes-2014-040000919.html?format=embed&show_carousel=true&player_autoplay=false
-Connection: keep-alive
-

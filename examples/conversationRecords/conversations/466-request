@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/os/mit/media/m/list/img/ajax-loader-181843.gif HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://l.yimg.com/zz/combo?os/mit/media/m/videos/videometadataCA-min-797402.css&os/mit/media/m/videos/videoplayerCA-min-659370.css&os/mit/media/m/videos/cavideoembedandlink-min-891677.css&os/mit/media/m/videos/relatedvideos-min-1037701.css&os/mit/media/m/videos/relatedvideos-desktop-min-491666.css&os/mit/media/m/list/blist-mixed-min-1381994.css&os/mit/media/m/list/blist-mixed-desktop-min-228854.css
-Connection: keep-alive
-

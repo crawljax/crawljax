@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?yui:3.7.2/build/event-delegate/event-delegate-min.js&yui:3.7.2/build/node-event-delegate/node-event-delegate-min.js&yui:3.7.2/build/pluginhost-base/pluginhost-base-min.js&yui:3.7.2/build/pluginhost-config/pluginhost-config-min.js&yui:3.7.2/build/node-pluginhost/node-pluginhost-min.js&yui:3.7.2/build/dom-screen/dom-screen-min.js&yui:3.7.2/build/node-screen/node-screen-min.js&yui:3.7.2/build/event-custom-complex/event-custom-complex-min.js&yui:3.7.2/build/event-synthetic/event-synthetic-min.js&yui:3.7.2/build/event-mousewheel/event-mousewheel-min.js&yui:3.7.2/build/event-mouseenter/event-mouseenter-min.js&yui:3.7.2/build/event-key/event-key-min.js&yui:3.7.2/build/event-focus/event-focus-min.js&yui:3.7.2/build/event-resize/event-resize-min.js&yui:3.7.2/build/event-hover/event-hover-min.js&yui:3.7.2/build/event-outside/event-outside-min.js&yui:3.7.2/build/event-touch/event-touch-min.js&yui:3.7.2/build/event-move/event-move-min.js&yui:3.7.2/build/event-flick/event-flick-min.js HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.toolbar.yahoo.com/
-Connection: keep-alive
-

@@ -1,9 +1,0 @@
-HTTP/1.1 304 Not Modified
-Date: Mon, 09 Sep 2013 22:05:03 GMT
-Etag: "YM:1:75d090f5-0d1d-4285-82c1-74f7894767e7"
-Expires: Thu, 23 Feb 2012 14:53:42 GMT
-Cache-Control: public
-Connection: keep-alive
-Via: http/1.1 l7.ycs.swp.yahoo.com (ApacheTrafficServer/3.2.0), HTTP/1.1 web7.usw12.mobstor.gq1.yahoo.com UserFiberFramework/1.0
-Server: ATS/3.2.0
-

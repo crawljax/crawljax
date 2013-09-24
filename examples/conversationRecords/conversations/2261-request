@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?os/mit/media/m/search/searchform-min-354549.css&os/mit/media/m/markup/iframe-min-158395.css&os/mit/media/m/article/master-min-1019209.css&os/mit/media/m/article/desktop-min-1151111.css&os/mit/media/m/pagination/pagination-min-452452.css&os/mit/media/m/article/video-embed-player-min-88359.css&os/mit/media/m/carousel/bcarousel-min-1156288.css&os/mit/media/m/carousel/bcarousel-desktop-min-1447403.css&os/mit/media/m/carousel/carousel-min-479268.css&os/mit/media/m/carousel/bcarousel-mixed-min-1357372.css&os/mit/media/m/list/blist-mixed-min-1381994.css&os/mit/media/m/list/blist-mixed-desktop-min-228854.css HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/css,*/*;q=0.1
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.movies.yahoo.com/blogs/tiff/kim-cattrall-surprises-grand-seduction-premiere-appearance-150638990.html
-Connection: keep-alive
-

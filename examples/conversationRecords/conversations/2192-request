@@ -1,9 +1,0 @@
-GET http://sk.ybinst0.ec.yimg.com:80/ec/fd/ls/l?IG=4a06926ba805427da6522e4676d6e6c4&CID=846355796066514482ad8bfbe99eccd6&Type=Event.CPT&DATA=%7B%22pp%22%3A%7B%22S%22%3A%22L%22%7D%7D&1378764407571 HTTP/1.1
-Host: sk.ybinst0.ec.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ca.search.yahoo.com/search?cs=bz&vm=r&p=%2440M%20meth%20lab&fr=fp-tts-715&fr2=ps
-Connection: keep-alive
-

@@ -1,9 +1,0 @@
-GET http://s0.2mdn.net:80/viewad/2769108/Amazon_TUCAN_WorkHard_300x250.gif HTTP/1.1
-Host: s0.2mdn.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ad.doubleclick.net/adi/N3175.153731.YAHOOINC.NETWORK-PR/B4561715.16;sz=300x250;dcopt=rcl;mtfIFPath=nofile;click=http://ads.bluelithium.com/clk?3,eJydUlmPozgQ.jX91kQYmyOK9oErhAST5kgIvIzM0YSbadLD8evXpHdG6tU-bYEo8x1VpjCAOzZLBQmmnESyDMVouwMIsCgBgMvAK7vb7ZAoihAigXuN82JSr1b2lsunEzAVeQ1V7YJc.opnNr.Wb9KT1Q1U2M4XdFUGmI5P-PBx-Ef3.4Lrx99-mmnNXJNkd7IURdeVPyoD83ZggrOhz5av8-fAfGB.X-MZFFGpFJbvFvaC1wtFhl3b4x.nX6.3x6N.gfILt6d3UhdJNWzijPSbONnM5N51m6RrKDUn9BG24RZ7aLRKuQlbvD1pOoeNHNiLcifzvSWBUwW-O6XB.uLd0jPx3dNFf0Q-uPb2JRqcy77yr66N2WnwblcvCo7vmEt.et60pKoz4SVB9hKyuAxnu7ywWLuM1sHujxrtoemj7etDAuUK06-0FwdiTV.O6lQmhbNgrZrPmsxTz2QdwgoXdJ.Gvo9UhydQnpwqtXwDT7bKDiF0Klxehiw4oqM-8EF5PJCG533WDiLt7kWsO4Z1395YfQibivYLR1zmHF5kgL1pPmrykDS0hh81OMg5-t3TyavohMBzkPK3qeZ1F5N6Qz7SbxP1TOMFaoAvs7b-lccUwfR9-4zNfyWq0KjiWWP1r26wFZHIAijRbparq9z6lyihrr3129uqgaIkioCebApZFAjRz0.im6NdoOPbKTxfCn5fy3KKfQyt2vx0s.gHzEuTypV1R1UPFONkJQAxFDr-LikgTuCErcgJLIVPFEbpj2uWN62lvws1Zluz2TtxTkmZkoLIQZ7nkCixLOR4JEkSZVzKrPbbqvia3QuH.nUqyabNxuHb8OK6ywea-896yLr3hLQkJU.tumDibk66x4MZuuReMF09N32RDEz3K.tgPj6HoSAMaR8Fk5OZAQIr8NstCzf3R1P.DcFTPn8=,;ord=1378764264?
-Connection: keep-alive
-

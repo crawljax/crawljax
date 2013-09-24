@@ -1,9 +1,0 @@
-GET http://s0.2mdn.net:80/viewad/2413715/CA_GlobalBond_Web_728x90_0513.jpg HTTP/1.1
-Host: s0.2mdn.net
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: image/png,image/*;q=0.8,*/*;q=0.5
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://ad.doubleclick.net/adi/N4860.SD1509N4860SN0/B7807794.3;sz=728x90;dcopt=rcl;mtfIFPath=nofile;click=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MGJscnYzdChnaWQkSktkWUZUWTNMakVKUEtZT1VpNUZsQUhuTVRNM0xsSXVSdWpfX3phbyxzdCQxMzc4NzY0NTIwNTc0MDkwLHNpJDg1MzEwNTEsc3AkMTE4NDU1MDAxMixjciQzNjkwNjcxNTUxLHYkMi4wLGFpZCRZdkZwRjBQRG1Pay0sY3QkMjUseWJ4JFoya3QxSEZTQ0hMbDlUbGlJb1ZoVUEsYmkkMTg3MzA3OTU1MSxyJDAscmQkMTZmbThjZmg4KSk/1/*http://global.ard.yahoo.com/SIG=15hpjf4j0/M=999999.999999.999999.999999/D=finance/S=1184550012:N/Y=CA/EXP=1378771720/L=JKdYFTY3LjEJPKYOUi5FlAHnMTM3LlIuRuj__zao/B=YvFpF0PDmOk-/J=1378764520600063/K=cYt8gcNrbySY9jP3uLU3FQ/A=7876338880119867630/R=0/X=6/*;mtfIFrameRequest=false;ord=1378764520.600063?
-Connection: keep-alive
-

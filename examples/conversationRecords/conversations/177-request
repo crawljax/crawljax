@@ -1,9 +1,0 @@
-GET http://ca.yahoo.com:80/?p=us HTTP/1.1
-Host: ca.yahoo.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Cookie: B=ci9mmu192sgs9&b=3&s=a5; MSC=t=1378763657X; fpc=d=0sTi3g3zbDnp.AurQ7Q84NSB2g4dd4e2369eGeg2utWDcyMINNAID_uCRtsCu9IeXns3qlWt6RCiGqeDOizeWzgpMvtpDjc5pVjS_w_4CEb41YxUNCCIlKNubjfXSPsINLlIxYJY.bD4LZ5ogakMRToiXBNqwjmra2g64MWe.rv5.cYK3Kn1EdJ0x.jeBRR.I_vpbeH9PQJACnh7A2d4ZkmqL8tTejAIMSlaDSQu_pge_UyVsZV1BVVVks_EgK_sKLvJwJ5o&v=2; fpps=_page=%7B%22wsid%22%3A%2221445690%22%7D; CH=AgBSLkMQACdSEAAMuhAAB9QQADIcEAADnxAAJfcQAC71EAAxfhAAPKUQACfy; fpt=d=lfwkfTvXet7_lobPNEruE86.Qg.4NWCGPsWcLpriUqhm52HcwPmZficYMZgU7_Oz23zUrBGFGO3fdY5cdNgcxD824OonROgVUryy_RtuTTIQ38gs81josGxSQ1jTJ6ii1yXuwViRf7hze8GCXF08AmZ.Oow6JFnWM0pE3M_eouwUWuLxd8eh4aA3qhP6VEUn9SMHb3_XCKNLf4PSYO1mwh3CwPoy6Ef_6MVmRW5fULFp0IgiBVwZVkLHLrksSozP9XZZ2U3SVAyoR3thh7c7_ox8b55aELQ64vhmrgwFDk83f246x4MbJbgPKBWYmYVHVXUzfAdj3si2nGkGw1_dw0tzEmmAPyC1WOHe5ESs33Vys86gwq0_E2qaurn2Om1UtEZ.gnO6gQrI1malKP4MbaRvmklhYvlnkmfZt4A1yeUnyGoZDO0wmA6PclcWA1mkm93dY5CvY4Wt&v=1; fpc_s=d=HbBCfJDwbDmd7q.gyfhKNZWbNTQRs6i6bOumQ6aRGl8VdG5FCW_jAdO03ugZxqcVhLC9qga.YBocuNwKzYLcd7zktT9_Ubmd0vEwL126wVyaWnECSHmQvCJVwxBV.lmHefATfi1Cnj3leQkqnK4fiQF0ScFwWUsRkWTsiZHgYMCKDwEwzrNSZIxnHb9gSylkjeEYZP6oLE3AsKpZY_APDTamZ7_187yGKZ_v0zZJHng6VnT2IE5iqnQVU4V1s6zxtIoQB1ZnH.MUkCPRjFoJp2NxDVrvh6N3_4B4P98MPuvfhmfw6BtpLi9YMi0-&v=2; ypcdb=7f24664b0b63ee29c94b1a04b84e3a10; HP=1
-Connection: keep-alive
-

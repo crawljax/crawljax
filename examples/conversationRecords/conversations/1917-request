@@ -1,9 +1,0 @@
-GET http://l.yimg.com:80/zz/combo?kx/yucs/uh3/uh/js/1/uh-min.js&kx/yucs/uh3/uh/js/102/gallery-jsonp-min.js&kx/yucs/uh3/uh/js/607/menu_utils_v3-min.js&kx/yucs/uh3/uh/js/610/timestamp_library-min.js&kx/yucs/uh3/uh3_top_bar/js/242/top_bar_v3-min.js&kx/yucs/uh3/uh3_top_bar/js/230/persistent-min.js&kx/yucs/uh3/search/js/395/search-min.js&kx/ucs/common/js/131/jsonp-super-cached-min.js&kx/yucs/uh3/avatar/js/21/avatar-min.js&kx/yucs/uh3/mail_link/js/64/mailcount-min.js&kx/yucs/uh3/help/js/46/help_menu_v3-min.js&kx/ucs/common/js/131/jsonp-cached-min.js&kx/yucs/uh3/breakingnews/js/5/breaking_news-min.js HTTP/1.1
-Host: l.yimg.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http://info.yahoo.com/
-Connection: keep-alive
-

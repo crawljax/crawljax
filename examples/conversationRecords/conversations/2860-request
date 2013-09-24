@@ -1,8 +1,0 @@
-GET http://www.vphosted.com:80/sf/_sv-27.0/_langid-6/_hc-1150/_/vp/images/b09/common/icon/favicon-vistaprint.ico HTTP/1.1
-Host: www.vphosted.com
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Connection: keep-alive
-
