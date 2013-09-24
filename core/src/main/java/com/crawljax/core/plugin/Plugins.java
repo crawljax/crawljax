@@ -48,7 +48,8 @@ public class Plugins {
 	                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 	                OnRevisitStatePlugin.class, OnUrlLoadPlugin.class,
 	                PostCrawlingPlugin.class, PreStateCrawlingPlugin.class,
-	                PreCrawlingPlugin.class);
+	                PreCrawlingPlugin.class,
+	                ClickablesDetectorPlugin.class);
 
 	private final ImmutableListMultimap<Class<? extends Plugin>, Plugin> plugins;
 
@@ -390,6 +391,27 @@ public class Plugins {
 			}
 		}
 
+	}
+	
+	public boolean runClickablesDetectingPlugin(final String dom){
+		LOGGER.debug("Running ClickableDetectingPlugins ...");
+		counters.get(ClickablesDetectorPlugin.class).inc();
+		if(plugins.get(ClickablesDetectorPlugin.class).isEmpty()){
+			LOGGER.debug("No ClickablesDetectingPlugin found. Extracting elements as usual");
+			return false;
+		}else{
+			ClickablesDetectorPlugin clickablesDetectingPlugin = (ClickablesDetectorPlugin) plugins
+					.get(ClickablesDetectorPlugin.class).get(0);
+			LOGGER.debug("Calling plugin {}", clickablesDetectingPlugin);
+			try{
+				return clickablesDetectingPlugin.isEnabled(dom);
+			} catch(RuntimeException ex){
+				LOGGER.error("Could not run {} because of error{}.",
+						clickablesDetectingPlugin, ex.getMessage(),ex);
+				return false;
+			}
+		}
+		
 	}
 
 	private boolean defaultDomComparison(final StateVertex stateBefore,

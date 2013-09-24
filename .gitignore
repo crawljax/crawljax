@@ -7,3 +7,5 @@ release.properties
 pom.xml.releaseBackup
 git.properties
 output/
+conversationRecords/
+.keystore
