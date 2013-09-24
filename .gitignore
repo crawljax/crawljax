@@ -8,4 +8,4 @@ pom.xml.releaseBackup
 git.properties
 output/
 examples/.keystore
-examples/conversations/
+examples/conversationRecords/
