@@ -39,19 +39,8 @@ public final class AdvancedExample {
 	//	builder.crawlRules().insertRandomDataInInputForms(false);
 
 		builder.crawlRules().click("div");
-		builder.setMaximumStates(10);
-		builder.setMaximumDepth(3);
-
-		try {
-			ClickableDetectorPlugin.configure(builder,
-			        ProxyConfiguration.manualProxyOn("127.0.0.1", 8084));
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-
 		builder.setMaximumStates(3);
 		builder.setMaximumDepth(3);
-		builder.crawlRules().clickElementsInRandomOrder(true);
 
 
 		try {
