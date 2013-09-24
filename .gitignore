@@ -7,5 +7,5 @@ release.properties
 pom.xml.releaseBackup
 git.properties
 output/
-examples/conversationRecords/
-examples/.keystore
+crawljax/examples/conversationRecords/
+crawljax/examples/.keystore
