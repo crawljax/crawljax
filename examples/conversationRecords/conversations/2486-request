@@ -1,0 +1,10 @@
+GET http://voken.eyereturn.com:80/?561701&click=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MGRkMzFsYihnaWQkdjczcDZUSXdOaTRKUEtZT1VpNUZsQUNPTVRNM0xsSXVScERfN0N1WSxzdCQxMzc4NzY0NDMyOTI4NDQwLHNpJDg1NDEwNTEsc3AkMTE5NzQ3MDEzOCxjciQzMjA2MTg4NTUxLHYkMi4wLGFpZCR6cXRMQ21LTGMyQS0sY3QkMjUseWJ4JE9sTGU2UXNlZXFrWFFRVGdWS05WdFEsYmkkMTY0MTE3MjU1MSxyJDAscmQkMTZmYmU2MmkyKSk/1/*http://global.ard.yahoo.com/SIG=15i3kt6ul/M=999999.999999.999999.999999/D=yahoo/S=1197470138:LREC/Y=CA/EXP=1378771632/L=v73p6TIwNi4JPKYOUi5FlACOMTM3LlIuRpD_7CuY/B=zqtLCmKLc2A-/J=1378764432976141/K=CFcMTepHhMDggxm3JuClIQ/A=6887257303974132488/R=0/X=6/*&params=1378764432.976141 HTTP/1.1
+Host: voken.eyereturn.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/blogs/pulseofcanada/canada-boycott-sochi-olympics-over-russia-anti-gay-160659903.html
+Cookie: er_guid=40050EA9-442A-6170-0ED7-4A97CC3498D4; erTok="AwAAAAD09AkADrM1AAcAAAb/CQAMszUAAQAA"; cmggl=1
+Connection: keep-alive
+

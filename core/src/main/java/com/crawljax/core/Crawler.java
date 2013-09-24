@@ -356,6 +356,10 @@ public class Crawler {
 			}
 		}
 	}
+	
+	private boolean isClickableDetectingPluginEnabled(final String dom){
+		return plugins.runClickablesDetectingPlugin(dom);
+	}
 
 	private boolean domChanged(final Eventable eventable, StateVertex newState) {
 		return plugins.runDomChangeNotifierPlugins(context, stateMachine.getCurrentState(),
@@ -383,13 +387,21 @@ public class Crawler {
 
 	private void parseCurrentPageForCandidateElements() {
 		StateVertex currentState = stateMachine.getCurrentState();
+		boolean clickableDetectingPluginEnabled = isClickableDetectingPluginEnabled(currentState.getDom());
 		LOG.debug("Parsing DOM of state {} for candidate elements", currentState.getName());
-		ImmutableList<CandidateElement> extract = candidateExtractor.extract(currentState);
-
+		ImmutableList<CandidateElement> extract;
+			if(clickableDetectingPluginEnabled){
+		 		extract = candidateExtractor.extractAllClickables(currentState);
+		}else{
+			extract = candidateExtractor.extract(currentState);	
+		}
+		
 		plugins.runPreStateCrawlingPlugins(context, extract, currentState);
 
 		candidateActionCache.addActions(extract, currentState);
-	}
+}
+	
+
 
 	private void waitForRefreshTagIfAny(final Eventable eventable) {
 		if ("meta".equalsIgnoreCase(eventable.getElement().getTag())) {
@@ -451,8 +463,12 @@ public class Crawler {
 		        "It seems some the index state is crawled more than once.");
 
 		LOG.debug("Parsing the index for candidate elements");
-		ImmutableList<CandidateElement> extract = candidateExtractor.extract(index);
-
+		ImmutableList<CandidateElement> extract;
+		if(isClickableDetectingPluginEnabled(index.getDom())){
+			extract = candidateExtractor.extractAllClickables(index);
+		}else{
+			extract = candidateExtractor.extract(index);
+		}
 		plugins.runPreStateCrawlingPlugins(context, extract, index);
 
 		candidateActionCache.addActions(extract, index);

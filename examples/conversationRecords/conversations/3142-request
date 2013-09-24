@@ -1,0 +1,10 @@
+GET http://mutation-summary.googlecode.com:80/git/src/mutation-summary.js HTTP/1.1
+Host: mutation-summary.googlecode.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.screen.yahoo.com/
+Connection: keep-alive
+If-None-Match: "fa1176ad0b921f9ff69b1d3becc6f7937431d148/src/mutation-summary.js"
+

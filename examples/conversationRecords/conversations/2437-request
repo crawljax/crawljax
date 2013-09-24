@@ -1,0 +1,9 @@
+GET http://www.google.com:80/ads/user-lists/1040794343/?label=vOl8CJ2HgwUQ54Wl8AM&fmt=1&num=1&cv=7&frm=0&url=http%3A%2F%2Fwww.zoocasa.com%2Fen&ref=http%3A%2F%2Fca.yahoo.com%2F&random=2493515429 HTTP/1.1
+Host: www.google.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.zoocasa.com/en
+Connection: keep-alive
+

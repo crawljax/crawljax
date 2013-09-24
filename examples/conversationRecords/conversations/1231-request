@@ -1,0 +1,10 @@
+GET http://b3.mookie1.com:80/0/USNetwork/GroupM_DataManagement/groupm.html HTTP/1.1
+Host: b3.mookie1.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ad.doubleclick.net/adi/N7861.285959.YAHOO.COM/B7759562.4;sz=300x250;dcopt=rcl;mtfIFPath=nofile;click=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MG01MTdoYShnaWQkLmVtUTBjNi5KRFIuY3cwMVVpNUJNaVFWaVZMOEoxSXVRY1lBQkNHQyxzdCQxMzc4NzYzMjA2Mzg1NTQ3LHNpJDg1MjIwNTEsc3AkMjE0MjYyMzUzMyxjciQzNjEyNTczMDUxLHYkMi4wLGFpZCQwT3Myem1LTGM2SS0sY3QkMjUseWJ4JGpvb1ZTdlB6TVVBdWJtUEt2ZmtCN0EsYmkkMTgzODM0NDA1MSxyJDAscmQkMTZmamNiaWY2KSk/1/*http://global.ard.yahoo.com/SIG=15ije2jc7/M=999999.999999.999999.999999/D=catop/S=2142623533:FPAD/_ylt=AuxRinivkZgcQmAzJ0MxsPQt17V_/Y=CA/EXP=1378770406/L=.emQ0c6.JDR.cw01Ui5BMiQViVL8J1IuQcYABCGC/B=0Os2zmKLc6I-/J=1378763206420856/K=mDrMFg7saT8vq6bIY_T09g/A=7728445976249205154/R=0/X=6/*;ord=1378763206.420856?
+Cookie: id=985269336403414; mdata=1|985269336403414|1378763060; OAX=qUAjfVIuQTQAB6lH; NSC_o4efm_qppm_iuuq=ffffffff09419e9045525d5f4f58455e445a4a423660; 3pdi=set; RMFW=011VJ9Ft710fru!710oab!710oqh!710qbw!710rkL!710w5g!710w5h!710wyz!710xWe!71018ls
+Connection: keep-alive
+

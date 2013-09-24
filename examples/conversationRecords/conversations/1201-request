@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?/os/mit/media/m/finance/finance-redirect-min-1431576.js&/os/mit/media/m/quotes/market-summary-min-1167186.js&/os/mit/media/m/userdata/userdata-min-172604.js&yui:3.9.1/build/datatype-xml-parse/datatype-xml-parse-min.js&yui:3.9.1/build/io-xdr/io-xdr-min.js&yui:3.9.1/build/io-form/io-form-min.js&yui:3.9.1/build/io-upload-iframe/io-upload-iframe-min.js&yui:3.9.1/build/queue-promote/queue-promote-min.js&yui:3.9.1/build/io-queue/io-queue-min.js&yui:3.9.1/build/widget-base/widget-base-min.js&yui:3.9.1/build/widget-htmlparser/widget-htmlparser-min.js&yui:3.9.1/build/widget-skin/widget-skin-min.js&yui:3.9.1/build/widget-uievents/widget-uievents-min.js&yui:3.9.1/build/arraylist/arraylist-min.js&yui:3.9.1/build/widget-parent/widget-parent-min.js&yui:3.9.1/build/widget-child/widget-child-min.js&yui:3.9.1/build/tabview-base/tabview-base-min.js&yui:3.9.1/build/tabview/tabview-min.js&yui:3.9.1/build/escape/escape-min.js&/os/mit/media/m/carousel/bcarousel-scrollview-base-min-1157008.js&/os/mit/media/m/carousel/bcarousel-scrollview-paginator-min-950292.js&/os/mit/media/m/carousel/bcarousel-min-1447403.js&/os/mit/media/m/search/searchform-min-367604.js HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/
+Connection: keep-alive
+

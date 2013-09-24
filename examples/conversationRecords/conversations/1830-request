@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?/os/mit/media/p/common/ylc-min-1066530.js&/ss/strip_3.2.js&/os/mit/media/p/common/trfsm-min-797026.js&/os/mit/media/p/common/i13n-min-1454417.js&/os/mit/media/p/common/ywa-tracking-min-1460478.js&/os/mit/media/m/quotes/quotes-search-min-1427335.js&yui:3.9.1/build/array-invoke/array-invoke-min.js&yui:3.9.1/build/datasource-local/datasource-local-min.js&yui:3.9.1/build/datasource-get/datasource-get-min.js&/os/mit/media/m/quotes/quotes-streaming-min-1294445.js&/os/mit/media/m/quotes/yfs_l10n_en-US-min-301836.js&/os/mit/media/m/videos/ellipsis-min-93218.js&/os/mit/media/m/videos/vmtd-min-859171.js&/os/mit/media/m/videos/videocommentsync-min-1206261.js&/os/mit/media/m/videos/emlnk-min-891677.js&/os/mit/media/m/videos/rv-min-1075775.js&/os/mit/media/m/footer/footer-min-923366.js HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/video/where-save-now-top-4-040000424.html
+Connection: keep-alive
+

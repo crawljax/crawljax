@@ -1,0 +1,9 @@
+GET http://qos.video.yimg.com:80/yep/3/qos?env=p&pver=3.9.2.10498&vp=1989719814&b=50&r=f&vid=0cc827e5-3ad0-349b-b823-df555cf08d3b&vn=The%20best%20yogurt&reg=ca&site=lifestyles&sn=Perfect%20Bite&lid=a077000000Ln5ANAAZ&loc=2&apl=true&psid=2143418490&fver=Shockwave%20Flash%2011.2%20r202&expn=default&expt=embed_video&expb=na&vpurl=http%3A%2F%2Fca.shine.yahoo.com%2Fblogs%2Fthe-perfect-bite-canada%2Fperfect-bite-yogurt-healthiest-210324336.html&hd=false&vtyp=clip&tswfl=17&rn=0.38551810843225587 HTTP/1.1
+Host: qos.video.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.shine.yahoo.com/video/best-yogurt-040000523.html?format=embed&player_autoplay=true
+Connection: keep-alive
+

@@ -1,0 +1,13 @@
+HTTP/1.1 302 Found
+Server: Apache-Coyote/1.1
+P3P: CP="NOI DSP COR NID CURa ADMo TAIa PSAo PSDo OUR SAMo BUS UNI PUR COM NAV INT DEM CNT STA PRE LOC"
+ANServer: app6.ny
+Pragma: no-cache
+Cache-Control: no-cache, no-store, must-revalidate
+Expires: Mon, 1 Jan 1990 0:0:0 GMT
+Location: http://uav.tidaltv.com/3PDPHandler.aspx?tpdp=26&app=3&&rnd=95373817846468
+Content-Type: image/gif
+Content-Length: 0
+Date: Mon, 09 Sep 2013 22:03:04 GMT
+Connection: close
+

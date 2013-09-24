@@ -1,0 +1,10 @@
+GET http://b.scorecardresearch.com:80/p?c1=2&c2=7241469&c4=http%253A%252F%252Fca.yahoo.com&c5=2142623533&ns__t=1378764398776&ns_c=UTF-8 HTTP/1.1
+Host: b.scorecardresearch.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.yahoo.com/
+Cookie: UID=992bab1-142.231.1.175-1378764182; UIDR=1378764182
+Connection: keep-alive
+

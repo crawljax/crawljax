@@ -1,0 +1,10 @@
+GET http://rd.rlcdn.com:80/rd?type=redir&site=109016&partner_uid=f54394f8-e2db-4728-aaf4-f10a12001ecc&url=http%3A%2F%2Fmatch.adsrvr.org%2Ftrack%2Fcmf%2Fgeneric%3Fttd_pid%3Dliveramp HTTP/1.1
+Host: rd.rlcdn.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://d1eoo1tco6rr5e.cloudfront.net/5qmysw4/qz38mxeq/iframe
+Cookie: ck1=ck1; rlas3="OG1NSYNcYMU9XMmchyLl/dy7WYEU8ZYNEKv1o+lKTKw="; rtn1=08326bd3ce5b4fb431118253f2b29624; drtn504898530=ad9ff91eac9f5fdb8c0ff26208a68f58d26b0985bdae8d9f; dids73982841=c76209164778d09f68ba76312a2db748bd4fd3738431e916cc905d57e5136aaa00610245cbd53672815e976a1799d4dd
+Connection: keep-alive
+

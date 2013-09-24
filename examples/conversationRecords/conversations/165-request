@@ -1,0 +1,10 @@
+GET http://t.mookie1.com:80/t/v1/imp?migAgencyId=626&migSource=adsrv2&migRandom=6081432&migTrackDataExt=3764506;99961339;273752708;54918938&migTrackFmtExt=client;io;ad;crtv HTTP/1.1
+Host: t.mookie1.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ad.doubleclick.net/adi/N7861.285959.YAHOO.COM/B7759562.4;sz=300x250;dcopt=rcl;mtfIFPath=nofile;click=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MDI5MWFyZShnaWQkajZGWkVNNi5KRFIuY3cwMVVpNUJNZ3c1aVZMOEoxSXVRVGtBQWg4eixzdCQxMzc4NzYzMDY1MjUyNTQwLHNpJDg1MjIwNTEsc3AkMjE0MjYyMzUzMyxjciQzNjEyNTczMDUxLHYkMi4wLGFpZCRwS21ZdDJLTGMwVS0sY3QkMjUseWJ4JDR5MngwRlVwb0lvbDlmYm1lUm4ydmcsYmkkMTgzODM0NDA1MSxyJDAscmQkMTZmbWV2dTh2KSk/1/*http://global.ard.yahoo.com/SIG=15i2bk8ig/M=999999.999999.999999.999999/D=catop/S=2142623533:FPAD/_ylt=AuxRinivkZgcQmAzJ0MxsPQt17V_/Y=CA/EXP=1378770265/L=j6FZEM6.JDR.cw01Ui5BMgw5iVL8J1IuQTkAAh8z/B=pKmYt2KLc0U-/J=1378763065291791/K=ljBQNj50qLTw4DJRswP89Q/A=7728445976249205154/R=0/X=6/*;ord=1378763065.291791?
+Cookie: id=985269336403414; mdata=1|985269336403414|1378763060; OAX=qUAjfVIuQTQAB6lH; 3pdi=set; RMFW=011VJ9Ft710w5h
+Connection: keep-alive
+

@@ -1,0 +1,9 @@
+GET http://l2.yimg.com:80/bt/api/res/1.2/wbm6I9_LzuupTihcjJYDtg--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTg0O3B5b2ZmPTA7cT04NTt3PTE1MA--/http://d.yimg.com/hd/snlprod/lotus/2fdd81870fd761cebdb9073d15eb8197_21yh045CmGgq1_0_0.jpg?a=snlprod&c=f687648c03e851ae034d1dafb16dc6e0&mr=0&s=0e941fcb687c110fc51302b0ffaf4c23 HTTP/1.1
+Host: l2.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.screen.yahoo.com/snl-hosts/
+Connection: keep-alive
+

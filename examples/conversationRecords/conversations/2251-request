@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?os/mit/media/m/search/searchform-min-354549.css&os/mit/media/m/markup/iframe-min-158395.css&os/mit/media/m/photos/master-min-1005034.css&os/mit/media/m/photos/desktop-min-1344440.css&os/mit/media/m/carousel/carousel-template-min-399603.css&os/mit/media/m/carousel/carousel-min-479268.css&os/mit/media/m/photos/modules-min-673224.css&os/mit/media/m/carousel/bcarousel-min-1156288.css&os/mit/media/m/carousel/bcarousel-desktop-min-1447403.css&os/mit/media/m/carousel/bcarousel-mixed-min-1357372.css&os/mit/media/m/list/blist-mixed-min-1381994.css&os/mit/media/m/list/blist-mixed-desktop-min-228854.css HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.movies.yahoo.com/photos/tiff-2013-the-best-red-carpet-moments-slideshow/
+Connection: keep-alive
+

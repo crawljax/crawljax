@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?yui:3.9.1/build/datatype-xml-parse/datatype-xml-parse-min.js&yui:3.9.1/build/io-xdr/io-xdr-min.js&yui:3.9.1/build/io-upload-iframe/io-upload-iframe-min.js&yui:3.9.1/build/queue-promote/queue-promote-min.js&yui:3.9.1/build/io-queue/io-queue-min.js HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.omg.yahoo.com/news/michelle-obamas-hair-highlights-better-173000745-us-weekly.html
+Connection: keep-alive
+

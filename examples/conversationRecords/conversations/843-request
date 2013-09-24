@@ -1,0 +1,9 @@
+GET http://s0.2mdn.net:80/4168044/JetSetParking_Nobel_300x250_EN.swf HTTP/1.1
+Host: s0.2mdn.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ad.yieldmanager.com/st?ad_type=iframe&publisher_blob=lmsid:a077000000CFoGyAAL;revsp:ed1b9eaf-4150-401f-913c-5b63f121ac1f|5iI3IDIwNi4JPKYOUi5FlABDMTM3LlIuRcb_lqF4|2143418500|LREC|1378764230.86661&ad_size=300x250&site=173872&section_code=2308206051&cb=1378764230.86661&yud=smpv%3d3%26ed%3dzAomdC267kvgcnoVlvRc2UlanpzF9ARWnsPP3Q--&pub_url=http://ca.yahoo.com/&pub_redirect_unencoded=1&pub_redirect=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MDVkMXN2YShnaWQkNWlJM0lESXdOaTRKUEtZT1VpNUZsQUJETVRNM0xsSXVSY2JfbHFGNCxzdCQxMzc4NzY0MjMwMDQ4NTMwLHNpJDg1NDQwNTEsc3AkMjE0MzQxODUwMCxjciQzMDkyODgzMDUxLHYkMi4wLGFpZCRJZ0FjQVdLTGM2RS0sY3QkMjUseWJ4JEp2aS5qMXBDX29IQlhIMFBUYmlfTlEsYmkkMTYwMjg3OTU1MSxyJDAscmQkMTZmb2tmcTBvKSk/1/*http://global.ard.yahoo.com/SIG=15i7ql8gt/M=999999.999999.999999.999999/D=media/S=2143418500:LREC/_ylt=Aq8LpxMfZrpDx3QpXpUSQN2E.MF_/Y=CA/EXP=1378771430/L=5iI3IDIwNi4JPKYOUi5FlABDMTM3LlIuRcb_lqF4/B=IgAcAWKLc6E-/J=1378764230086661/K=ynpliwF.9MUZv0TRCvrLIw/A=6723724276695094998/R=0/X=6/*
+Connection: keep-alive
+

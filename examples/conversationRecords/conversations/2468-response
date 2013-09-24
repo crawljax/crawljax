@@ -1,0 +1,17 @@
+HTTP/1.1 302 Found
+Cache-Control: no-cache, no-store
+Content-Type: image/gif; charset=ISO-8859-1
+Date: Mon, 09 Sep 2013 22:07:08 GMT
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Location: http://match.adsrvr.org/track/cmf/generic?ttd_pid=liveramp
+P3P: CP: "NON DSP COR PSDo SAMo BUS IND UNI COM NAV INT POL PRE"
+Set-Cookie: rlas3="XcvCwa82vppzmp6TSHq269y7WYEU8ZYNEKv1o+lKTKw=";Version=1;Domain=.rlcdn.com;Expires=Sat, 08-Mar-2014 22:07:07 GMT;Max-Age=15551999
+Set-Cookie: rtn1=ad9ff91eac9f5fdbbcdcff21d380bb42231813f49ad8e9e856b57a7eb0876a4fd7bc3abc87599140;Domain=.rlcdn.com;Expires=Sat, 08-Mar-2014 22:07:08 GMT
+Set-Cookie: drtn504898530=;Domain=.rlcdn.com;Expires=Thu, 01-Jan-1970 00:00:00 GMT
+Set-Cookie: drtn406026833=0ee5d68480ee909a86de73b342e827d4ddc00863ba8522df;Domain=.rlcdn.com;Expires=Sat, 08-Mar-2014 22:07:07 GMT
+Set-Cookie: dids73982841=;Domain=.rlcdn.com;Expires=Thu, 01-Jan-1970 00:00:00 GMT
+Set-Cookie: dids1426022495=76cb6771b73ec1a4f2266b0a803d855e7a93605c06fd69ccd899f1b3eae7710daea51ee94e62bb4ad21e8059970118487aa2f04bbd18c6099c1306b0a2d6e5b10563e96c291db07b25f70794332d5381be3c2614f767825a;Domain=.rlcdn.com;Expires=Sat, 08-Mar-2014 22:07:06 GMT
+status: 302
+Content-Length: 0
+Connection: keep-alive
+

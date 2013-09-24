@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/os/mit/media/themes/base/images/map-theme_ltr-96834.png HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://l.yimg.com/zz/combo?os/mit/media/m/carousel/bcarousel-min-1156288.css&os/mit/media/m/carousel/bcarousel-desktop-min-1447403.css&os/mit/media/m/carousel/carousel-min-479268.css&os/mit/media/m/carousel/bcarousel-mixed-min-1357372.css
+Connection: keep-alive
+

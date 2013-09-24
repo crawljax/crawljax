@@ -1,0 +1,10 @@
+GET http://socialprofiles.zenfs.com:80/images/de455b1ed84d6beee77ab854b43bc48e_48.png HTTP/1.1
+Host: socialprofiles.zenfs.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/video/where-save-now-top-4-040000424.html
+Cookie: BX=40lqh4l92shdo&b=3&s=9b
+Connection: keep-alive
+

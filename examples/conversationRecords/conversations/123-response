@@ -1,0 +1,13 @@
+HTTP/1.1 302 Moved Temporarily
+Server: Apache-Coyote/1.1
+Pragma: no-cache
+Cache-Control: max-age=0, no-cache, no-store, private, must-revalidate, s-maxage=0
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Set-Cookie: BriligContact=d6a9b7fc-e780-4c1e-ac8d-da4262e62331; Domain=.brilig.com; Expires=Wed, 02-Sep-2043 22:03:04 GMT
+Set-Cookie: hph=6856a984431acc79bc68aff8316950a0; Domain=.brilig.com; Expires=Wed, 02-Sep-2043 22:03:04 GMT
+Location: http://uav.tidaltv.com/3PDPHandler.aspx?tpdp=30
+Content-Length: 0
+Date: Mon, 09 Sep 2013 22:03:03 GMT
+Connection: close
+P3P: CP="NOI DSP COR CURo DEVo TAIo PSAo PSDo OUR BUS UNI COM"
+

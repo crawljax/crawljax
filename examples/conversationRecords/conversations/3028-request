@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?kx/ucs/uh/css/291/yunivhead-min.css&kx/ucs/uh/css/221/logo-min.css&kx/ucs/mailcount/css/39/mailcount_v2-min.css&kx/ucs/search/css/190/search_all-min.css&kx/ucs/search/css/190/search_buttons-min.css HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ucs.netsvs.yahoo.com/a?property=peoplefinder&component=universalheader&languagetag=en-CA&spaceid=972715001&tag=comarketing:standard;format:offnet;iframe:1
+Connection: keep-alive
+

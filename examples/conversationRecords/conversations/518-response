@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+Expires: Mon, 09 Sep 2013 22:08:32 GMT
+Cache-Control: max-age=300
+Content-Type: text/xml
+Accept-Ranges: bytes
+ETag: "1976415691"
+Last-Modified: Tue, 20 Aug 2013 20:43:03 GMT
+Content-Length: 290
+Date: Mon, 09 Sep 2013 22:03:32 GMT
+Server: lighttpd/1.4.31
+Set-Cookie: BIGipServerpool_livepass.conviva.com_http=1275199498.37663.0000; path=/
+
+<?xml version="1.0" ?> 
+<!DOCTYPE cross-domain-policy SYSTEM "http://www.adobe.com/xml/dtds/cross-domain-policy.dtd">
+<cross-domain-policy>
+  <allow-access-from domain="*" secure="false" /> 
+  <allow-http-request-headers-from domain="*" headers="*" secure="false" />
+</cross-domain-policy>

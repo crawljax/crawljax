@@ -1,0 +1,16 @@
+HTTP/1.1 302 Moved Temporarily
+Date: Mon, 09 Sep 2013 22:03:31 GMT
+P3P: policyref="http://info.yahoo.com/w3c/p3p.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC GOV"
+Location: http://z.analytics.yahoo.com/itr.pl?a=1000115488662&dpid=1940573164&vp=1987846497&vpm=1987846497&cf12=Shockwave%20Flash%2011.2%20r202&cf08=p&cf01=50&cf07=3.9.2.10498&cf09=default&cf10=cavideo&.ys=2143335053&cf13=f&cf71=na&b=Video%3A%20Doomsday%20Preppers%20Go%20Upscale%20With%20Luxury%20Bunkers%20%7C%20Watch%20the%20video%20-%20Yahoo!%20News%20Canada&f=http%3A%2F%2Fca.news.yahoo.com%2Fvideo%2Fdoomsday-preppers-upscale-luxury-bunkers-065738891.html&e=http%3A%2F%2Fca.yahoo.com%2F&rn=0.9349717886065549
+Set-Cookie: itvisitorid1000115488662=W99TryjNaa||fvis1000115488662=ZT1odHRwJTNBJTJGJTJGY2EueWFob28uY29tJTJGJmY9aHR0cCUzQSUyRiUyRmNhLm5ld3MueWFob28uY29tJTJGdmlkZW8lMkZkb29tc2RheS1wcmVwcGVycy11cHNjYWxlLWx1eHVyeS1idW5rZXJzLTA2NTczODg5MS5odG1sJmI9VmlkZW8lM0ElMjBEb29tc2RheSUyMFByZXBwZXJzJTIwR28lMjBVcHNjYWxlJTIwV2l0aCUyMEx1eHVyeSUyMEJ1bmtlcnMlMjAlN0MlMjBXYXRjaCUyMHRoZSUyMHZpZGVvJTIwLSUyMFlhaG9vISUyME5ld3MlMjBDYW5hZGE=|8MHoH0Ts88|8MHoH0Ts88|8MHoH0Ts88|8|8MHoH0Ts88|8MHoH0Ts88; path=/; domain=.analytics.yahoo.com
+Set-Cookie: itsessionid1000115488662=W99TryjNaa|fses1000115488662=; path=/; domain=.analytics.yahoo.com
+TS: 0 411 dc43_ne1
+Pragma: no-cache
+Expires: Mon, 09 Sep 2013 22:03:32 GMT
+Cache-Control: no-cache, private, must-revalidate
+Accept-Ranges: bytes
+Content-Length: 0
+Tracking-Status: redirected
+Connection: close
+Content-Type: image/gif
+

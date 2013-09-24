@@ -1,0 +1,9 @@
+GET http://l2.yimg.com:80/bt/api/res/1.2/sZIt4kaDqhvOUJX6aItjJQ--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTg0O3B5b2ZmPTA7cT04NTt3PTE1MA--/http://d.yimg.com/hd/canpress/lotus/1378764004990_319_21ypZuosr6bf1_0_0.jpg?a=Canpress&c=b742f99b3aeff76765f5731285df2f0a&mr=0&s=63e0ae25da14182c64ebfc024fed0fae HTTP/1.1
+Host: l2.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/thai-airways-jet-skids-off-runway-while-landing-134632584.html
+Connection: keep-alive
+

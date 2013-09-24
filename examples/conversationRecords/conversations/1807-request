@@ -1,0 +1,9 @@
+GET http://qos.video.yimg.com:80/yep/3/qos?env=p&pver=3.9.2.10498&vp=4140016328&b=50&r=f&vid=d6d7f2e4-8e03-34d0-bb5b-323598bc6793&vn=Where%20to%20save%20now%3A%20Top%204%20fall%20deals&reg=ca&site=finance&sn=Money%20Minute&lid=a0Vd0000001xcOHEAY&loc=1&apl=true&psid=1184582864&fver=Shockwave%20Flash%2011.2%20r202&expn=cavideo&expt=default&expb=na&vpurl=http%3A%2F%2Fca.finance.yahoo.com%2Fvideo%2Fwhere-save-now-top-4-040000424.html&hd=false&vtyp=clip&tyvapr=132&rn=0.9853551828949987 HTTP/1.1
+Host: qos.video.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/video/where-save-now-top-4-040000424.html
+Connection: keep-alive
+

@@ -1,0 +1,10 @@
+GET http://b.scorecardresearch.com:80/b?c1=2&c2=7241469&c7=http%3A%2F%2Fca.news.yahoo.com%2Fblogs%2Fgood-news%2Fvan-gogh-museum-identifies-artist-long-lost-painting-143109483.html&c5=2144970300&c15=$-1 HTTP/1.1
+Host: b.scorecardresearch.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/blogs/good-news/van-gogh-museum-identifies-artist-long-lost-painting-143109483.html
+Cookie: UID=992bab1-142.231.1.175-1378764182; UIDR=1378764182
+Connection: keep-alive
+

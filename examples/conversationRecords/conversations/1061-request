@@ -1,0 +1,9 @@
+GET http://yui.yahooapis.com:80/combo?3.9.1/build/event-mouseenter/event-mouseenter-min.js&3.9.1/build/event-key/event-key-min.js&3.9.1/build/event-hover/event-hover-min.js&3.9.1/build/json-stringify/json-stringify-min.js&3.9.1/build/classnamemanager/classnamemanager-min.js&3.9.1/build/event-touch/event-touch-min.js&3.9.1/build/cookie/cookie-min.js&3.9.1/build/async-queue/async-queue-min.js&3.9.1/build/intl/intl-min.js&3.9.1/build/console/lang/console_en.js&3.9.1/build/attribute-complex/attribute-complex-min.js&3.9.1/build/event-focus/event-focus-min.js&3.9.1/build/widget-base/widget-base-min.js&3.9.1/build/widget-htmlparser/widget-htmlparser-min.js&3.9.1/build/widget-skin/widget-skin-min.js&3.9.1/build/widget-uievents/widget-uievents-min.js&3.9.1/build/console/console-min.js HTTP/1.1
+Host: yui.yahooapis.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/video/playlist/pulse-of-canada/canada-refuse-send-athletes-2014-040000919.html?format=embed&show_carousel=true&player_autoplay=false
+Connection: keep-alive
+

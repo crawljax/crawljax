@@ -1,0 +1,608 @@
+HTTP/1.1 200 OK
+Date: Mon, 09 Sep 2013 22:04:27 GMT
+P3P: policyref="http://info.yahoo.com/w3c/p3p.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC GOV"
+Vary: Host
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=UTF-8
+Cache-Control: private
+
+3e2c
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<SCRIPT src="http://mutation-summary.googlecode.com/git/src/mutation-summary.js" type="text/javascript" yyy="injected"></SCRIPT>
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<SCRIPT type="text/javascript" xxx="injected">var rel = Node.prototype.removeEventListener;
+Node.prototype.removeEventListener = function() {
+	rel.apply(this, arguments);
+	unannotate(this);
+}
+
+var ael = Node.prototype.addEventListener;
+Node.prototype.addEventListener = function() {
+	ael.apply(this, arguments);
+	annotate(this);
+}
+
+function annotate(e) {
+	e.setAttribute("data-cj-clickable", "true");
+}
+
+function unannotate(e) {
+	e.removeAttribute("data-cj-clickable");
+}
+
+var observer = new MutationSummary({
+	callback : handleChanges,
+	queries : [ {
+		all : true
+	} ]
+});
+
+function handleChanges(summaries) {
+	// alert("DOM mutated!");
+	detectClickables();
+}
+
+function detectClickables() {
+	var all = document.getElementsByTagName("*");
+	for ( var i = 0; i < all.length; i++) {
+		var node = all[i];
+		if (all[i].onclick != null) {
+			annotate(node);
+		} else {
+			if (node.nodeType == 1) {// element of type html-object/tag
+				if (node.tagName == "A" || node.tagName == "BUTTON") {
+					annotate(node);
+				}
+				if (node.tagName == "INPUT"
+						&& node.getAttribute("type").toUpperCase() == "SUBMIT") {
+					annotate(node);
+				}
+			}
+		}
+	}
+}</SCRIPT>
+
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+                
+
+
+<META content="text/html; charset=UTF-8" http-equiv="content-type">
+				
+
+
+<META content="IE=9" http-equiv="X-UA-Compatible">
+                
+
+
+<TITLE>Yahoo! Toolbar - Stay in touch with your world.</TITLE>
+                
+
+
+<LINK href="http://yui.yahooapis.com/combo?2.5.2/build/reset-fonts-grids/reset-fonts-grids.css&amp;2.5.2/build/container/assets/skins/sam/container.css" rel="stylesheet" type="text/css">
+				
+
+
+<META content="(pics-1.1 &quot;http://www.icra.org/ratingsv02.html&quot; l gen true for &quot;http://ca.toolbar.yahoo.com&quot; r ( nz 0 vz 0 lz 0 oz 0 ca 1))" http-equiv="pics-label">
+
+
+
+<LINK href="http://l.yimg.com/zz/combo?nt/tyc/v1/css/galaxy_toolbar-20130808.css" rel="stylesheet" type="text/css">
+
+
+<STYLE type="text/css">
+</STYLE>
+
+
+
+<STYLE xxx="injected">[data-cj-clickable=true] {
+  border-style: double;
+  border-color: green;
+  color: green;
+}</STYLE>
+
+
+</HEAD>
+<BODY class="yui-skin-sam">
+        
+
+
+<DIV id="doc-tyc">
+                                
+
+
+<DIV id="doc-header">
+<!-- begin header -->
+	
+
+
+<LINK href="http://l.yimg.com/nt/lib/uh/css/uh-1.1.4.css" rel="stylesheet" type="text/css">
+	
+
+
+<DIV id="ygma">
+		
+
+
+<DIV id="ygmaheader">
+			
+
+
+<DIV class="bd sprite_bg">
+				
+
+
+<DIV class="sprite_bg" id="ygmatop">
+					
+
+
+<UL id="ygmanav">
+						
+
+
+<LI class="sprite_bg delim">
+
+
+<A href="http://ca.yahoo.com/" target="_top">Yahoo!</A>
+
+
+</LI>
+						
+
+
+<LI class="sprite_bg delim">
+
+
+<A href="http://ca.my.yahoo.com/" target="_top">My Yahoo!</A>
+
+
+</LI>
+						
+
+
+<LI class="last-child">
+
+
+<A href="http://mail.yahoo.com?.intl=ca" target="_top">Mail</A>
+
+
+</LI>
+					
+
+
+</UL>
+					
+
+
+<DIV id="ygmauserinfo">
+						
+
+
+<SPAN class="sprite_bg delim">
+	<EM>New User?</EM> <A href="https://edit.yahoo.com/config/eval_register?.done=http://ca.toolbar.yahoo.com%3F&amp;.src=slv&amp;.intl=ca">Sign Up</A>
+</SPAN>
+<A class="sprite_bg delim" href="https://login.yahoo.com/config/login?.done=http://ca.toolbar.yahoo.com%3F&amp;.src=slv&amp;.intl=ca"><EM>Sign In</EM></A>
+
+						<A href="http://help.yahoo.com/l/ca/yahoo/toolbar/" id="ygmahelp" target="_top" title="Yahoo! Help Central">Help</A>
+					
+
+
+</DIV>						
+				
+
+
+</DIV>
+				
+
+
+<DIV class="sprite_bg" id="ygmabot">
+					
+
+
+<A href="http://ca.toolbar.yahoo.com" id="ygmalogo" target="_top"><IMG alt="Yahoo! Toolbar" id="ygmalogoimg" src="http://l.yimg.com/rz/d/yahoo_toolbar_en-CA_s_f_p_bestfit_toolbar.gif"></A>
+					
+
+
+<DIV class="srch sprite_bg">
+						
+
+
+<FORM action="http://ca.search.yahoo.com/search" id="ygmasrchfrm" method="get" name="ygmasrchfrm">
+							
+
+
+<DIV class="fieldset">
+								
+
+
+<INPUT id="ygmasrchquery" maxlength="100" name="p" type="text">
+								<SPAN class="btn sprite_bg">
+									<SPAN class="first-child">
+										<BUTTON id="ygmasrchbtn" name="ygmasrchbtn" type="submit" value="websearch">WEB SEARCH</BUTTON>
+									</SPAN>
+								</SPAN>
+								<INPUT id="fr" name="fr" type="hidden" value="ush-toolbar">
+							
+
+
+</DIV>
+						
+
+
+</FORM>
+					
+
+
+</DIV>
+				
+
+
+</DIV>
+			
+
+
+</DIV>			
+		
+
+
+</DIV>
+	
+
+
+</DIV>			
+<!-- end header -->
+
+<!-- spaceId: 151352084 -->
+
+
+</DIV>
+<!-- hd -->
+                                
+
+
+<DIV id="bd">
+                                        
+
+
+<DIV class="galaxy" id="tyc-main">
+                                                
+
+
+<DIV id="tyc-main-header">
+                                                        
+
+
+<DIV id="headline">
+                                                                
+
+
+<H1>Web at your fingertips</H1>
+                                                        
+
+
+</DIV>
+														
+
+
+<DIV id="headdesc">
+															Get Facebook, email, news, weather and more - right from your toolbar.
+														</DIV>
+                                                
+
+
+</DIV>
+                                                
+
+
+<DIV class="tyc-main_intro">
+													
+
+
+<UL>
+                                                        
+
+
+<LI class="panel-holder" id="intro_marker1">
+
+
+<SPAN class="search-edit-text hidden">Yahoo! Search</SPAN>
+
+
+<DIV class="panel hidden"></DIV>
+
+
+<DIV class="search-btn-text hidden">SEARCH</DIV>
+
+
+</LI>
+                                                        
+
+
+<LI class="panel-holder" id="intro_marker2">
+
+
+<DIV class="panel hidden"></DIV>
+
+
+</LI>
+                                                        
+
+
+<LI class="panel-holder" id="intro_marker3">
+
+
+<DIV class="panel hidden"></DIV>
+
+
+</LI>
+                                                        
+
+
+<LI class="panel-holder" id="intro_marker4">
+
+
+<DIV class="panel hidden"></DIV>
+
+
+</LI>
+                                                        
+
+
+<LI class="panel-holder" id="intro_marker5">
+
+
+<DIV class="panel hidden"></DIV>
+
+
+</LI>
+													
+
+
+</UL>
+													
+
+
+<DIV id="instructions_holder">
+														
+
+
+<DIV id="instructions">
+															Roll over the toolbar to learn more
+														</DIV>
+													
+
+
+</DIV>
+                                                
+
+
+</DIV>
+                                                
+
+
+<DIV id="cta-intl-op-hldr">
+													
+
+
+<DIV id="feature-wrapper">
+														
+
+
+<DIV id="feature-info">
+		                                                        
+
+
+<DIV class="feature-header-container">
+	                                                                	
+
+
+<H2 class="feature-dd" id="feature-dd">Yahoo! Toolbar</H2>
+																																			                                                                
+
+
+<H2 class="feature-dd hidden" id="feature-dd1">Get Answers, Not Links</H2>
+	                                                                
+
+
+<H2 class="feature-dd hidden" id="feature-dd2">Organize Your Web</H2>
+																	
+
+
+<H2 class="feature-dd hidden" id="feature-dd3">Connect and Share</H2>
+	                                                                
+
+
+<H2 class="feature-dd hidden" id="feature-dd4">All-Inclusive Communication</H2>
+	                                                                
+
+
+<H2 class="feature-dd hidden" id="feature-dd5">Rain or Shine?</H2>
+		                                                        
+
+
+</DIV>
+		                                                        
+
+
+<DIV class="feature-description-container">
+                                                               			
+
+
+<P class="feature-dd-desc" id="feature-dd-desc">Keep your favorites close</P>
+																																		                                                               		
+
+
+<P class="feature-dd-desc hidden" id="feature-dd-desc">Keep your favorites close</P>
+	                                                                
+
+
+<P class="feature-dd-desc hidden" id="feature-dd-desc1">Find answers instantly in your search box.</P>
+	                                                                
+
+
+<P class="feature-dd-desc hidden" id="feature-dd-desc2">Keep your favorite sites front and center on any computer.</P>
+	                                                                
+
+
+<P class="feature-dd-desc hidden" id="feature-dd-desc3">Catch up with your friends from wherever you are on the Web.</P>
+	                                                                
+
+
+<P class="feature-dd-desc hidden" id="feature-dd-desc4">Easily get to your Mail wherever you are on the web.</P>
+	                                                                
+
+
+<P class="feature-dd-desc hidden" id="feature-dd-desc5">Monitor weather in cities relevant to you &ndash; home, work, or travel.</P>
+		                                                        
+
+
+</DIV>
+		                                                
+
+
+</DIV>
+													
+
+
+</DIV>
+													
+
+
+<DIV id="cta_block_wrapper">
+															
+
+
+<EM><A class="cta_btn" href="http://ca.toolbar.yahoo.com/_ylt=Asda9lSuZVVu46wFodQ4LwU0RAUJ?.intl=ca&amp;.redir=1&amp;.cpdl=tyc9&amp;.promo=" target="download_iframe">Download Now</A></EM>
+
+
+
+
+
+
+
+
+
+
+
+
+<P id="chkbox">
+
+
+<INPUT checked="true" class="chk" id="sethomesrch" type="checkbox"><LABEL for="sethomesrch">Set Yahoo! as default home page and default search</LABEL>
+
+
+</P>														                                                		
+
+
+<P id="eula">By clicking "Download Now", you agree to the <A href="http://info.yahoo.com/legal/ca/yahoo/utos/utos-ca01.html" target="_blank">Yahoo! Terms of Service</A>,<A href="http://info.yahoo.com/legal/us/yahoo/toolbar/tbeula/tbeula-282.html" target="_blank">Toolbar License Agreement</A> and <A href="http://info.yahoo.com/privacy/ca/yahoo/toolbar/" target="_blank">Privacy Policy</A>.</P>
+                                                        
+
+
+<DIV class="intl-option">
+                                                        	
+
+
+<FORM accept-charset="UTF-8" id="intlpickerform">
+	
+
+
+<SELECT id="language" onchange="var l=this.value;this.selectedIndex=0;window.location=l;">
+		<OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/us/*http://us.toolbar.yahoo.com">U.S.</OPTION><OPTION disabled value="">=====================</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/ar/*http://ar.toolbar.yahoo.com">Argentina</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/au/*http://au.toolbar.yahoo.com">Australia</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/br/*http://br.toolbar.yahoo.com">Brazil</OPTION><OPTION selected value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/ca/*http://ca.toolbar.yahoo.com">Canada</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/cl/*http://cl.toolbar.yahoo.com">Chile</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/co/*http://co.toolbar.yahoo.com">Colombia</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/de/*http://de.toolbar.yahoo.com">Deutschland</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/e1/*http://espanol.toolbar.yahoo.com">En Espa&ntilde;ol</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/es/*http://es.toolbar.yahoo.com">Espa&ntilde;a</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/fr/*http://fr.toolbar.yahoo.com">France</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/in/*http://in.toolbar.yahoo.com">India</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/id/*http://id.toolbar.yahoo.com">Indonesia</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/it/*http://it.toolbar.yahoo.com">Italia</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/my/*http://my.toolbar.yahoo.com">Malaysia</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/mx/*http://mx.toolbar.yahoo.com">M&eacute;xico</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/nz/*http://nz.toolbar.yahoo.com">New Zealand</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/pe/*http://pe.toolbar.yahoo.com">Per&uacute;</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/ph/*http://ph.toolbar.yahoo.com">Philippines</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/sg/*http://sg.toolbar.yahoo.com">Singapore</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/cf/*http://cf.toolbar.yahoo.com">Y! Qu&eacute;bec</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/uk/*http://uk.toolbar.yahoo.com">U.K.</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/us/*http://us.toolbar.yahoo.com">U.S.</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/ve/*http://ve.toolbar.yahoo.com">Venezuela</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/vn/*http://vn.toolbar.yahoo.com">Việt Nam (Vietnam)</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/cn/*http://cn.toolbar.yahoo.com">中国 (China)</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/hk/*http://hk.toolbar.yahoo.com">香港 (Hong Kong)</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/jp/*http://toolbar.yahoo.co.jp/firefox">日本 (Japan)</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/th/*http://th.toolbar.yahoo.com">ราชอาณาจักรไทย (Thailand)</OPTION><OPTION value="http://rd.toolbar.yahoo.com/moz/intlrd/ca/tw/*http://tw.toolbar.yahoo.com">台灣 (Taiwan)</OPTION>
+	</SELECT>
+
+
+
+</FORM>
+
+														
+
+
+</DIV>													
+
+
+</DIV>
+                                                
+
+
+</DIV>
+                                        
+
+
+</DIV>
+<!-- intro -->
+	
+
+
+<IFRAME class="hidden" name="download_iframe"></IFRAME>
+        
+
+
+</DIV>
+<!-- bd -->
+        
+
+
+<DIV id="ft">
+                
+
+
+<P class="piped">
+	Copyright &copy; 2013 Yahoo! All rights reserved. <A href="http://info.yahoo.com/relevantads/" target="_blank">About Our Ads</A> <A href="http://us.rd.yahoo.com/tb/ms/featuressearch/ft/copyright/*http://info.yahoo.com/copyright/ca/details.html" target="_blank">Copyright/IP Policy</A> <A href="http://feedback.help.yahoo.com/feedback.php?.src=TOOLBAR8&amp;.done=http://toolbar.yahoo.com&amp;.from=inproduct" target="_blank">Share Your Ideas</A> <A href="http://help.yahoo.com/l/ca/yahoo/toolbar/toolbar8/" target="_blank">Help</A>
+
+
+
+</P>
+
+
+
+<P>NOTICE: We collect personal information on this site. To learn more about how we use your information, see our <A href="http://us.rd.yahoo.com/tb/ms/featuressearch/ft/tos/*http://info.yahoo.com/privacy/ca/yahoo/" target="_blank">Privacy Policy</A>
+
+
+</P>
+
+        
+
+
+</DIV>
+<!-- ft -->
+        
+
+
+</DIV>
+<!-- doctyc -->
+
+
+
+<SCRIPT src="http://l.yimg.com/zz/combo?yui:3.7.2/build/yui/yui-min.js"></SCRIPT>
+<SCRIPT type="text/javascript">
+TYC= {};
+
+TYC.config= {"loader":{"lang":"en-CA","combine":true,"filter":"min","comboBase":"http:\/\/l.yimg.com\/zz\/combo?","root":"yui:3.7.2\/build\/","groups":{"tyc":{"base":"http:\/\/l.yimg.com\/","combine":true,"root":"","comboBase":"http:\/\/l1.yimg.com\/zz\/combo?","modules":{"TYC.glx":{"path":"nt\/tyc\/v1\/js\/galaxy_toolbar-20130806.js","type":"js"}}}}}};
+var Y= YUI(TYC.config.loader),
+    uselist= ['TYC.glx','node-base','node-style','event-base'];
+
+Y.use(uselist, function(Y)
+{
+	Y.TYC.glx.rollover=true;
+	Y.TYC.glx.defaultPanel='';
+	Y.TYC.glx.init('./b.gif/_ylt=AsnJV.ZIpmX.Daj9FPztPGw0RAUJ', true);
+});
+
+</SCRIPT>
+<!-- p33.toolbar.gq1.yahoo.com uncompressed/chunked Mon Sep  9 22:04:27 UTC 2013 -->
+
+
+
+
+
+</BODY>
+</HTML>
+
+0
+

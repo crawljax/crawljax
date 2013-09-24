@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/os/publish-images/movies/2013-08-27/0409907e-046d-4c3f-81b1-2c677a4c9876_TIFF-banner-final.jpg HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.movies.yahoo.com/photos/tiff-2013-the-best-red-carpet-moments-slideshow/
+Connection: keep-alive
+

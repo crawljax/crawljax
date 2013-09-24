@@ -1,0 +1,15 @@
+HTTP/1.1 200 OK
+Date: Mon, 09 Sep 2013 22:07:05 GMT
+Server: Apache/2.2.25 (Fedora)
+X-Powered-By: Phusion Passenger (mod_rails/mod_rack) 3.0.19
+Cache-Control: must-revalidate, no-cache, private, max-age=0
+X-UA-Compatible: IE=Edge,chrome=1
+X-Request-Id: 2a40491567a9fe22391be3a8c17b5955
+X-Runtime: 0.006175
+X-Rack-Cache: miss
+Status: 200
+Content-Length: 87
+Connection: close
+Content-Type: text/javascript; charset=utf-8
+
+APP = window['APP'] || {}; APP.Authentication = {"loggedIn":false,"firstName":"Guest"};

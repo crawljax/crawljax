@@ -1,0 +1,10 @@
+GET http://ad.doubleclick.net:80/adi/N7861.285959.YAHOO.COM/B7759562.4;sz=300x250;dcopt=rcl;mtfIFPath=nofile;click=http://clicks.beap.bc.yahoo.com/yc/YnY9MS4wLjAmYnM9KDE2MGI2OTVkYyhnaWQkZ2ExTUVzNi5KRFFKUEtZT1VpNUZsQWFnaVZMOEoxSXVSczBBQmpIeixzdCQxMzc4NzY0NDkzNTQwNDkzLHNpJDg1MjIwNTEsc3AkMjE0MjYyMzUzMyxjciQzNjEyNTczMDUxLHYkMi4wLGFpZCRiMURrSm1LTGM0WS0sY3QkMjUseWJ4JDdMQWdXcHZYSVpsX2VVT2F3NmU2a1EsYmkkMTgzODM0NDA1MSxyJDAscmQkMTZmbHN1Y3RzKSk/1/*http://global.ard.yahoo.com/SIG=15i93nff8/M=999999.999999.999999.999999/D=catop/S=2142623533:FPAD/_ylt=AgQ6yVzmIi_GXHYu3H9u3nQt17V_/Y=CA/EXP=1378771693/L=ga1MEs6.JDQJPKYOUi5FlAagiVL8J1IuRs0ABjHz/B=b1DkJmKLc4Y-/J=1378764493579568/K=LH6KQ4xcu06LUrHxHHB0yA/A=7728445976249205154/R=0/X=6/*;ord=1378764493.579568? HTTP/1.1
+Host: ad.doubleclick.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.yahoo.com/
+Cookie: id=c290c3652000047|3857089/1342392/15957|t=1378764183|et=730|cs=002213fd48c5175117a6f59a19
+Connection: keep-alive
+

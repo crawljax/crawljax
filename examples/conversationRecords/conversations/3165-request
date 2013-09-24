@@ -1,0 +1,9 @@
+GET http://yui.yahooapis.com:80/combo?3.5.1/build/jsonp/jsonp-min.js HTTP/1.1
+Host: yui.yahooapis.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://info.yahoo.com/legal/ca/yahoo/utos/utos-ca01.html
+Connection: keep-alive
+

@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/j/assets/eJyFkO0KgzAMRZ-o6nSTyR5mZDXOqE2krRPffioIdh_4K3BzyLlt4-JpoDiNiiiJJ6hFVClG4QvZRzY9n7LkfGv2kBZm1J6ElSH-zQCTgX9IFl0X10Cfy_my88De7UPXi12TS5rm-ZJYrCy6eg95eLjwkrSE-6QWg3cj5dBhQI7EpYyBUItFX4fVqm6SIfyQEZZSWb4ZjRGOJ9er2bLOEmwHYasvZpUp5y31B2QFGh_zsw4wwkL1xMpb0C3xc8PfEFSfBA,,.js?z&m HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.sports.yahoo.com/top/proxy/html/scorethin?ysp_body_styles=scorethin%20top;parent_domain=ca.sports.yahoo.com
+Connection: keep-alive
+

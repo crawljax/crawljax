@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?os/mit/media/m/search/searchform-min-354549.css&os/mit/media/m/astrology/astrology-min-1181521.css&os/mit/media/m/astrology/astrology-desktop-min-1015993.css&os/mit/media/m/markup/iframe-min-158395.css&os/mit/media/m/astrology/user-feedback-min-1053095.css HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/css,*/*;q=0.1
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://shine.yahoo.com/horoscope/
+Connection: keep-alive
+

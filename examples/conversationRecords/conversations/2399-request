@@ -1,0 +1,10 @@
+GET http://cdn3.zoocasa.com:80/images/listings/a475130440d4007e534137d95bb57bf0c0ded62893993ce78cf6324cd181e283_200x150.jpg HTTP/1.1
+Host: cdn3.zoocasa.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://www.zoocasa.com/en
+Cookie: __usertrack=192.168.2.152.1378764424598970
+Connection: keep-alive
+

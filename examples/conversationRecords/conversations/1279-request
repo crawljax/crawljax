@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/bt/api/res/1.2/ZyIdxnxxWWYd8358GGVQzA--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTExMDtweW9mZj0wO3E9ODU7dz0xMTA-/http://media.zenfs.com/en_us/Games/Yahoo/web_tapa/tapa-150.gif HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.games.yahoo.com/
+Connection: keep-alive
+

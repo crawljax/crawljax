@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+Date: Mon, 09 Sep 2013 22:09:00 GMT
+P3P: policyref="http://info.yahoo.com/w3c/p3p.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC GOV"
+Set-Cookie: itsc=6YWTryjNaa|Zd_0b2ep|fvis1000586174356=|8MHoH0T1TY|8MHoH0T1TY|8MHoH0T1TY|8|8MHoH0T1TY|8MHoH0T1TY; path=/; domain=.analytics.yahoo.com
+TS: 0 301 onodc4-sp2
+Pragma: no-cache
+Expires: Mon, 09 Sep 2013 22:09:01 GMT
+Cache-Control: no-cache, private, must-revalidate
+Content-Length: 48
+Accept-Ranges: bytes
+Tracking-Status: fpc site tracked
+Vary: Accept-Encoding
+Connection: close
+Content-Type: application/x-javascript
+
+// First Party Cookies
+// TS: 0 301 onodc4-sp2
+

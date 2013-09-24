@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Cache-Control: no-store, no-cache, private
+Pragma: no-cache
+Expires: Sat, 15 Nov 2008 16:00:00 GMT
+P3P: policyref="http://cdn.adnxs.com/w3c/policy/p3p.xml", CP="NOI DSP COR ADM PSAo PSDo OURo SAMo UNRo OTRo BUS COM NAV DEM STA PRE"
+X-XSS-Protection: 0
+Set-Cookie: uuid2=7324991387890365220; path=/; expires=Sun, 08-Dec-2013 22:07:42 GMT; domain=.adnxs.com; HttpOnly
+Set-Cookie: sess=1; path=/; expires=Tue, 10-Sep-2013 22:07:42 GMT; domain=.adnxs.com; HttpOnly
+Set-Cookie: anj=Kfu=8fG1aVCxrx)0s]#%2LcVTiWd4z$[-T_g+2't3^vP-bh`r#h7-.LdM]W$/WUTY$-YXK(hg?f'SvK^; path=/; expires=Sun, 08-Dec-2013 22:07:42 GMT; domain=.adnxs.com; HttpOnly
+Content-Type: text/javascript
+Date: Mon, 09 Sep 2013 22:07:42 GMT
+Content-Length: 0
+

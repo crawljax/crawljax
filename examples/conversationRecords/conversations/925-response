@@ -1,0 +1,20 @@
+HTTP/1.1 200 OK
+Date: Mon, 09 Sep 2013 22:04:05 GMT
+P3P: policyref="http://info.yahoo.com/w3c/p3p.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC GOV"
+Set-Cookie: itsc=cXw8ryjNaa|ZSebbmWV|fvis1000532192362=|8MHoH0TsT1|8MHoH0TsT1|8MHoH0TsT1|8|8MHoH0TsT1|8MHoH0TsT1; path=/; domain=.analytics.yahoo.com
+TS: 0 243 dc7sp2
+Pragma: no-cache
+Expires: Mon, 09 Sep 2013 22:04:06 GMT
+Cache-Control: no-cache, private, must-revalidate
+Content-Length: 235
+Accept-Ranges: bytes
+Tracking-Status: fpc site tracked
+Vary: Accept-Encoding
+Connection: close
+Content-Type: application/x-javascript
+
+// First Party Cookies
+// TS: 0 243 dc7sp2
+
+window.ITTs[0].FPCV = 'ZSebbmWV|cXw8ryjNaa|fses1000532192362=|cXw8ryjNaa|ZSebbmWV|fvis1000532192362=|8MHoH0TsT1|8MHoH0TsT1|8MHoH0TsT1|8|8MHoH0TsT1|8MHoH0TsT1';
+window.ITTs[0].setFPCookies();

@@ -1,0 +1,9 @@
+GET http://mycdn.media.net:80/fcmdynet.js?&cid=8CUCN7VBB&crid=244546249&size=630x178&cc=CA&chnm=ca.finance.yahoo.com&nb=1&vif=1&requrl=http%3A%2F%2Fca.finance.yahoo.com%2F&kwrf=http%3A%2F%2Fca.yahoo.com HTTP/1.1
+Host: mycdn.media.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/
+Connection: keep-alive
+

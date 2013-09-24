@@ -1,0 +1,9 @@
+GET http://l2.yimg.com:80/bt/api/res/1.2/Ls88gBHvVHk_nJ0HVcl9Lw--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTM1NDtweW9mZj0wO3E9ODU7dz05NTA-/http://l.yimg.com/os/publish-images/info/2013-03-22/db21f8ec-7e6c-49f7-a4c6-a297907d30f2_Yahoo-At-Night-2.jpg HTTP/1.1
+Host: l2.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://info.yahoo.com/
+Connection: keep-alive
+

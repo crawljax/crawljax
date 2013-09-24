@@ -1,0 +1,10 @@
+GET http://assets0.zoocasa.com:80/assets/common/icons/slider_buttons-c24a9b221c0a2b00eb03c3862a78ef11.png HTTP/1.1
+Host: assets0.zoocasa.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://assets0.zoocasa.com/assets/common-6f3165ed6b26d4d1e15538772bbffc6e.css
+Cookie: __usertrack=192.168.2.152.1378764424598970; __utma=221791507.53025414.1378764428.1378764428.1378764428.1; __utmb=221791507.1.10.1378764428; __utmc=221791507; __utmz=221791507.1378764428.1.1.utmcsr=ca.yahoo.com|utmccn=(referral)|utmcmd=referral|utmcct=/
+Connection: keep-alive
+

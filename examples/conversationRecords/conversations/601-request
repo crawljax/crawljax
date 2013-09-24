@@ -1,0 +1,9 @@
+GET http://mycdn.media.net:80/mediamain.html?cid=8CU62L5NZ&crid=796521556&pid=8POY3G55J&size=630x178&cpnet=yVb1sHm%2B0KKoFeunLBVJxapX7RZHdd%2FjIWwoaJf%2FzmQ%3D&cme=%2BGrnje2DVSUEOXxUGC8xNiavel%2FfZ5Xsnz4bMh%2Blsr2y9cSqHE3VUyQktXJ1%2BfoMvtRtwN16AdqxG3QiEzO0j7c%2F7myRRNEEmmCjCW9rOSo%3D%7C%7CN7fu2vKt8%2Fs%3D%7CiMOF4gfrUmTbk4C06BCt0bg031MD1plsrF6ow1VoVMiQKIRpmCeUyAEmQOuZg1HMHey3BMloZ1ESZBFWrP6E1m2q9V3FDDULHa7OP9a1GARCQvMsflDuIA%3D%3D%7CJf0d%2BWoAdPtYeYeTsG8fm0gTW9218Q%2FR%7C&cc=CA&bf=0&staticIframe=1&vif=1&chid=200001493&nb=1 HTTP/1.1
+Host: mycdn.media.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.omg.yahoo.com/news/michelle-obamas-hair-highlights-better-173000745-us-weekly.html
+Connection: keep-alive
+

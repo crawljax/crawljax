@@ -1,0 +1,23 @@
+<html>
+<head>
+<title>Index</title>
+</head>
+<body>
+	<div>
+		<h1>Index</h1>
+		<p>This is the index. The site contains 3 sub sites:</p>
+		<ul>
+			<li>A is visible but has class 'noclick' so the Crawler should
+				skip that.</li>
+			<li>B is visible and has class 'click'</li>
+		</ul>
+	</div>
+	<div>
+		<div id='dontClick'>
+			<a href="a.html" class="noclick">Go to A</a>
+		</div>
+		<a href="b.html" class="click">Go to B</a>
+	</div>
+	<iframe src="index-iframe.html"></iframe>
+</body>
+</html>

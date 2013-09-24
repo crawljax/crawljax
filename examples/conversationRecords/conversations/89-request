@@ -1,0 +1,10 @@
+GET http://t.mookie1.com:80/t/v1/event?migClientId=4078&migAction=synch&migSource=mig&migParam1=32387ab5-30ad-471f-ac12-aee7c7a3f307 HTTP/1.1
+Host: t.mookie1.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://dm.de.mookie1.com/2/B3DM/DLX/@x71
+Cookie: id=1618587141699279; mdata=1|1618587141699279|1378764182; OAX=y/OzWlIuRZYADbF4; 3pdi=set; RMFW=011VJ9Xz71018ls
+Connection: keep-alive
+

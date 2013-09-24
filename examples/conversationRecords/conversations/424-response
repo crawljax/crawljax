@@ -1,0 +1,12 @@
+HTTP/1.1 302 Moved Temporarily
+Server: nginx/0.7.67
+Date: Mon, 09 Sep 2013 22:03:26 GMT
+Connection: keep-alive
+Cache-Control: no-cache
+Pragma: no-cache
+P3P: policyref="/w3c/p3p.xml", CP="NOI DSP NID PSAo PSDa OUR STP IND UNI COM NAV"
+Set-Cookie: er_guid=2E9CAC52-8713-3439-07CA-FAEB0D28F51B; Domain=.eyereturn.com; Expires=Wed, 09-Sep-2015 22:03:26 GMT; Path=/
+Location: http://voken.eyereturn.com/pb/get?647724&click=http://ads.bluelithium.com/clk?3,eJytUl2TojgU.TX91mMlJICUNQ9RAqIkNBJUfOlKgyPKh67gCPz6DTO9u9Vb-7i3qOTmnpOcW4cL0QxYZpoiaErdmE4xzmYQQ4BTgGCKX8FsNrOwoQNoYOvV3O7KxR7l8-fcoc5pTsZ4Wxp78hmncfF-52.TcV3QNX7w8BMWGST.S9hP-vx8dNRTuid7StZiSeaUzv-muRQx28kTbVP6gurBzmuZcErWA8x3DPkiRYEgIKk8mAg2BP8IfH.N2.b2gsiL5qgvLc9p0Uw-jvI2-Ugnvcyv10l6rRTUp2pJ6sRiEX76F1IlNbPWNoVZTQeJHC3t81ruwuJYbh4BdWi0zwIpNuuYtgcBtzceH5owzmqx3XAGuibab6NE8B9HiuFH3w3ZIuzYkGI-JIBdCGTCg.xSIH.Jbyv7BPl4FrRJESn4UAz8QgZmx8B3eb-y2TMQHg5s7zlysnPYqx6bZFcWq-UhP9LDnBUtS4bVwY-6i9LqedTpSX0qDm7bhdq24uL0jEH7Q17yKKZwJ93ci6PuLKOwU1p9YCeAi7jzl17BFl1.UP3y6lBzdwplhW.rUBmk.fKRfDH1VF4.ZDmR9-yLoZHnviAb6vmxLrMKqApTZ-tXTP5rUwxbMapjdpbjfZWbFjIAAjpWYv6GLlT5vS9bhZCHp7E4JGZdS7cP3-96yfNF.ZAA.Bx.pKIsxv7o.m3sAplT04QY6Krkq8Ig6ikZzTzj1ds6CeKz7pTEPTGhxqn0HhuJ3juuXxV9rug.ZecQbe2nWvJNlVZ.PWlgDehQN01jNGatytsJ1gm2MS-q-x9lc1eDdHHHRogCDVNDuqEjQ7PUNaxZFlbIRiGjPfuR8dvfFw3.a3DlpEnvx2P9xeKmLr.l16ZtVP4nC1Ysug==,&params=1378764206
+Content-Length: 0
+Expires: Mon, 09 Sep 2013 22:03:25 GMT
+

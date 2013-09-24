@@ -1,0 +1,9 @@
+GET http://l2.yimg.com:80/bt/api/res/1.2/b9CeWBvuTe24tw0vQ6jDjA--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTM4O3B5b2ZmPTA7cT04NTt3PTM4/http://l.yimg.com/os/publish-images/finance/2013-04-09/70a4862c-e6e4-4538-a176-f4da53c77fc4_Brenda.jpg HTTP/1.1
+Host: l2.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.finance.yahoo.com/
+Connection: keep-alive
+

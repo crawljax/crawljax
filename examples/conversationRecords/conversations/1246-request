@@ -1,0 +1,9 @@
+GET http://l3.yimg.com:80/bt/api/res/1.2/nqoauBCNg_pRum3OzYUP2A--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTEwNztweW9mZj0wO3E9ODU7dz0xOTA-/http://l.yimg.com/os/publish-images/games/2013-05-09/e49c7b61-4bdb-4aad-9a16-12c2d2378286_kyobi_430x242.jpg HTTP/1.1
+Host: l3.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.games.yahoo.com/
+Connection: keep-alive
+

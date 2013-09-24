@@ -1,0 +1,19 @@
+HTTP/1.1 200 OK
+Cache-Control: no-cache
+Pragma: no-cache
+Content-Type: application/javascript; charset=utf-8
+Expires: -1
+Server: Microsoft-IIS/7.5
+p3p: CP=\"DSP COR ADM DEV PSA PSD OUR\"
+X-AspNet-Version: 4.0.30319
+Set-Cookie: ibkukiuno=s=e9b3ec28-1ee0-4296-839b-4100e2771e3f&h=&v=0&l=-8588228427015970650&op=0&m=1001057724613829; domain=ib.mookie1.com; expires=Tue, 09-Sep-2014 22:03:03 GMT; path=/; HttpOnly
+Set-Cookie: ibkukinet=2303917095=-8588228427015970650; domain=ib.mookie1.com; expires=Tue, 09-Sep-2014 22:03:03 GMT; path=/; HttpOnly
+X-Powered-By: ASP.NET
+p3p: CP="DSP COR ADM DEV PSA PSD OUR"
+X-Server: R310
+Date: Mon, 09 Sep 2013 22:03:03 GMT
+Content-Length: 687
+
+IB_PartnerViewSetupScript=new function(){this.LoadViewScript=function(){try{var s=window.document.createElement("script");s.setAttribute("type","text/javascript");s.setAttribute("src","https://ev.ib-ibi.com/ibiview.js");window.document.getElementsByTagName("head")[0].appendChild(s);}catch(Error){}};this.ProcessRequest=function(){this.LoadViewScript();};}
+function IBPartner(){}
+IBPartner.prototype.Go='2266';IBPartner.prototype.Xid='1618587141699279';IBPartner.prototype.Ida='';IBPartner.prototype.Pid='31';IBPartner.prototype.Id1='';IBPartner.Go='2266';IBPartner.Xid='1618587141699279';IBPartner.Ida='';IBPartner.Pid='31';IBPartner.Id1='';IB_PartnerViewSetupScript.ProcessRequest();

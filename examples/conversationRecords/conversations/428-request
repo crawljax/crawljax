@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/zz/combo?/os/mit/media/p/common/ylc-min-1066530.js&/ss/strip_3.2.js&/os/mit/media/p/common/trfsm-min-797026.js&yui:3.9.1/build/jsonp/jsonp-min.js&/os/mit/media/p/common/i13n-min-1454417.js&/os/mit/media/p/common/ywa-tracking-min-1460478.js&/os/mit/media/m/search/searchform-autocomplete-min-274781.js&yui:3.9.1/build/array-extras/array-extras-min.js&yui:3.9.1/build/escape/escape-min.js&yui:3.9.1/build/autocomplete-base/autocomplete-base-min.js&yui:3.9.1/build/autocomplete-sources/autocomplete-sources-min.js&yui:3.9.1/build/intl/intl-min.js&yui:3.9.1/build/autocomplete-list/lang/autocomplete-list_en.js&yui:3.9.1/build/selector-css2/selector-css2-min.js&yui:3.9.1/build/selector-css3/selector-css3-min.js&yui:3.9.1/build/shim-plugin/shim-plugin-min.js&yui:3.9.1/build/widget-position/widget-position-min.js&yui:3.9.1/build/widget-position-align/widget-position-align-min.js&yui:3.9.1/build/autocomplete-list/autocomplete-list-min.js&yui:3.9.1/build/autocomplete-list-keys/autocomplete-list-keys-min.js&yui:3.9.1/build/autocomplete-plugin/autocomplete-plugin-min.js&yui:3.9.1/build/text-data-wordbreak/text-data-wordbreak-min.js&yui:3.9.1/build/text-wordbreak/text-wordbreak-min.js&yui:3.9.1/build/autocomplete-filters/autocomplete-filters-min.js&yui:3.9.1/build/highlight-base/highlight-base-min.js&yui:3.9.1/build/autocomplete-highlighters/autocomplete-highlighters-min.js&/os/mit/media/m/videos/rv-min-1075775.js&/os/mit/media/m/videos/ellipsis-min-93218.js&/os/mit/media/m/footer/footer-min-923366.js&/os/mit/media/m/base/tracking-min-1154405.js HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.screen.yahoo.com/snl-hosts/
+Connection: keep-alive
+

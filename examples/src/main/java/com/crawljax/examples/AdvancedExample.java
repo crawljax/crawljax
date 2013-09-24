@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.NotXPathCondition;
+import com.crawljax.condition.UrlCondition;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -20,15 +21,12 @@ import com.crawljax.plugins.crawloverview.CrawlOverview;
 
 import crawljax.plugins.clickabledetector.ClickableDetectorPlugin;
 
-/**
- * Example of running Crawljax with the CrawlOverview plugin on a single-page web app. The crawl
- * will produce output using the {@link CrawlOverview} plugin.
- */
 public final class AdvancedExample {
 
 	private static final long WAIT_TIME_AFTER_EVENT = 200;
 	private static final long WAIT_TIME_AFTER_RELOAD = 20;
 	private static final String URL = "http://www.yahoo.com";
+
 
 	/**
 	 * Run this method to start the crawl.
@@ -38,11 +36,23 @@ public final class AdvancedExample {
 	 */
 	public static void main(String[] args) throws IOException {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
-		builder.crawlRules().insertRandomDataInInputForms(false);
+	//	builder.crawlRules().insertRandomDataInInputForms(false);
 
+		builder.crawlRules().click("div");
 		builder.setMaximumStates(10);
 		builder.setMaximumDepth(3);
+
+		try {
+			ClickableDetectorPlugin.configure(builder,
+			        ProxyConfiguration.manualProxyOn("127.0.0.1", 8084));
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+
+		builder.setMaximumStates(3);
+		builder.setMaximumDepth(3);
 		builder.crawlRules().clickElementsInRandomOrder(true);
+
 
 		try {
 			ClickableDetectorPlugin.configure(builder,
@@ -52,7 +62,8 @@ public final class AdvancedExample {
 		}
 
 		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 1));
-
+		System.setProperty("webdriver.firefox.bin",
+		        "/ubc/ece/home/am/grads/janab/Firefox19/firefox/firefox");
 		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 		crawljax.call();
 

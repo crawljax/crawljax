@@ -1,0 +1,9 @@
+GET http://pt200233.unica.com:80/ntpagetag.gif?js=1&ts=1378764525327.150&lc=http%3A%2F%2Fyahoo.canada411.ca%2F%3Fni_title%3D%2F&rf=http%3A%2F%2Fca.yahoo.com%2F&rs=1920x1080&cd=24&ln=en&tz=GMT%20-07%3A00&jv=1&ck=UnicaID%3DcElZAwt7lJ4-YQ87bLR&m.mlc=%2F&m.cv_c13=yahoo&m.cv_c14=en&m.utv=ut.c411.2.2.130325.70&m.host=yahoo.canada411.ca&m.page=%2F&ets=1378764525334.836&site=can411 HTTP/1.1
+Host: pt200233.unica.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://yahoo.canada411.ca/
+Connection: keep-alive
+

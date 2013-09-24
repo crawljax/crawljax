@@ -1,0 +1,16 @@
+POST http://analytics.query.yahoo.com:80/v1/public/yql?format=json&yhlVer=2&yhlCT=2&yhlBTMS=1378764343121&yhlClientVer=3.5.2&yhlS=2143335053&yhlRnd=PFlwf7amARLW&yhlCompressed=0 HTTP/1.1
+Host: analytics.query.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Referer: http://ca.news.yahoo.com/video/doomsday-preppers-upscale-luxury-bunkers-065738891.html
+Content-Length: 1201
+Origin: http://ca.news.yahoo.com
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764335X; CH=AgBSLkUQARKhYAAMuiABCslQAAfUUAAyHFAAKjRgAAOfEAEaqVAAJfcQATEpUAAu9RABCChgADF+EAEqZxABEY4QAR7QEAE7b1AAPKUQARyEEAE0mBABEFwQASckEAEnWxABPV5gACfy; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=208@yvap=208@cc=5@al=1@vl=3@ac=1
+Connection: keep-alive
+Pragma: no-cache
+Cache-Control: no-cache
+
+q=INSERT%20INTO%20data.track2%20(trackdata)%20VALUES%20('%7B%22bp%22%3A%7B%22_pl%22%3A1%2C%22A_v%22%3A%223.5.2%22%2C%22_R%22%3A%22http%3A%2F%2Fca.yahoo.com%2F%22%2C%22_bt%22%3A%22rapid%22%7D%2C%22r%22%3A%5B%7B%22t%22%3A%22lv%22%2C%22s%22%3A%222143335053%22%2C%22pp%22%3A%7B%22A_sid%22%3A%22YTjvUrIX59fh%22%2C%22_w%22%3A%22ca.news.yahoo.com%2Fvideo%2Fdoomsday-preppers-upscale-luxury-bunkers-065738891.html%22%2C%22intl%22%3A%22CA%22%2C%22lang%22%3A%22en-CA%22%2C%22pcp%22%3A%22AP%20Canada%22%2C%22pstaid%22%3A%22b37d31a9-e214-3d0c-a6fb-fa47cc36f6f0%22%2C%22pstcat%22%3A%22video%22%2C%22pstth%22%3A%22Video%3A%20Doomsday%20Preppers%20Go%20Upscale%20With%20Luxury%20Bunkers%22%2C%22pt%22%3A%22vid-gallery%22%2C%22ptopic%22%3A%22%22%2C%22revsp%22%3A%22%22%2C%22version%22%3A%22lego%22%2C%22authfb%22%3A%220%22%2C%22rid%22%3A%22632835fb-6785-4f49-b1c6-ba070bbe696d%22%2C%22A_am%22%3A1%7D%2C%22_ts%22%3A1378764343%2C%22lv%22%3A%5B%7B%22m%22%3A%22mediasocialbuttonseasy%22%2C%22l%22%3A%5B%7B%22slk%22%3A%22Email%22%7D%2C%7B%22slk%22%3A%220%22%7D%2C%7B%22slk%22%3A%22Share%22%7D%2C%7B%22slk%22%3A%223%22%7D%2C%7B%22slk%22%3A%22Share%22%7D%2C%7B%22slk%22%3A%220%22%7D%5D%7D%5D%7D%5D%2C%22yrid%22%3A%22%22%7D')

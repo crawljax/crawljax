@@ -1,0 +1,92 @@
+HTTP/1.1 302 Found
+Date: Mon, 09 Sep 2013 22:07:07 GMT
+Server: Apache/2.2.24 (Unix)
+P3P: CP="NOI DSP COR CUR ADMo DEVo PSAo PSDo OUR SAMo BUS UNI NAV", policyref="http://tags.bluekai.com/w3c/p3p.xml"
+Expires: Tue, 10 Sep 2013 22:07:07 GMT
+Cache-Control: max-age=86400, private
+Location: http://match.adsrvr.org/track/cmf/generic?ttd_pid=bluekai
+Content-length: 1779
+Set-Cookie: bkc=KJpMWZPQzYkCjrCt6y+ijsOQT9n0gD3jDwQVSwyRaQRTU2Y1QKsZweweeazWdlGF9yG4oOfsMy9uh0tjsSjeIjhze9pqopm9Izy1n9yUIOAREQxpyKPOda7wsacT2VR1vc0xIE9I9w47/QT=; expires=Sat, 08-Mar-2014 22:07:07 GMT; path=/; domain=.bluekai.com
+Set-Cookie: bkst=KJhMRqM9pX9QysOGjZCCSZarSsJGjZkojsb8yPDFi/VOu8uOxRDCp5EWtB/ApD/lNuQku54Wl1CYBpWhpDxlp59Q65e/y19yBEZ8t66FY99IxCeg; expires=Sat, 08-Mar-2014 22:07:07 GMT; path=/; domain=.bluekai.com
+Set-Cookie: bku=69X99J5ankn3FQoJ; expires=Sat, 08-Mar-2014 22:07:07 GMT; path=/; domain=.bluekai.com
+BK-Server: ed27
+Content-Type: text/html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<SCRIPT src="http://mutation-summary.googlecode.com/git/src/mutation-summary.js" type="text/javascript" yyy="injected"></SCRIPT>
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<SCRIPT type="text/javascript" xxx="injected">var rel = Node.prototype.removeEventListener;
+Node.prototype.removeEventListener = function() {
+	rel.apply(this, arguments);
+	unannotate(this);
+}
+
+var ael = Node.prototype.addEventListener;
+Node.prototype.addEventListener = function() {
+	ael.apply(this, arguments);
+	annotate(this);
+}
+
+function annotate(e) {
+	e.setAttribute("data-cj-clickable", "true");
+}
+
+function unannotate(e) {
+	e.removeAttribute("data-cj-clickable");
+}
+
+var observer = new MutationSummary({
+	callback : handleChanges,
+	queries : [ {
+		all : true
+	} ]
+});
+
+function handleChanges(summaries) {
+	// alert("DOM mutated!");
+	detectClickables();
+}
+
+function detectClickables() {
+	var all = document.getElementsByTagName("*");
+	for ( var i = 0; i < all.length; i++) {
+		var node = all[i];
+		if (all[i].onclick != null) {
+			annotate(node);
+		} else {
+			if (node.nodeType == 1) {// element of type html-object/tag
+				if (node.tagName == "A" || node.tagName == "BUTTON") {
+					annotate(node);
+				}
+				if (node.tagName == "INPUT"
+						&& node.getAttribute("type").toUpperCase() == "SUBMIT") {
+					annotate(node);
+				}
+			}
+		}
+	}
+}</SCRIPT>
+
+
+<META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+
+<STYLE xxx="injected">[data-cj-clickable=true] {
+  border-style: double;
+  border-color: green;
+  color: green;
+}</STYLE>
+
+
+</HEAD>
+<BODY>
+
+
+
+</BODY>
+</HTML>

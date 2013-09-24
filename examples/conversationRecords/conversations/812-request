@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/bt/api/res/1.2/49urg5lBatPi7jaR_jMdsQ--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTExMjtweW9mZj0wO3E9ODU7dz0xNTA-/http://media.zenfs.com/en-US/blogs/partner/2658199.jpg HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.shine.yahoo.com/blogs/the-perfect-bite-canada/perfect-bite-yogurt-healthiest-210324336.html?vp=1
+Connection: keep-alive
+

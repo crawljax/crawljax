@@ -1,0 +1,12 @@
+HTTP/1.1 302 Found
+Date: Mon, 09 Sep 2013 22:03:04 GMT
+Content-Length: 0
+Connection: keep-alive
+Cache-Control: no-cache
+Pragma: no-cache
+P3P: CP=NOI DSP COR NID PSAa PSDa OUR UNI COM NAV
+X-Server: 172.17.10.123
+Set-Cookie: _cc_cc=ctst;Path=/;Domain=crwdcntrl.net
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Location: http://ad.crwdcntrl.net/5/ct=y/c=432/pe=y/seg=ccoverlap?http%3A%2F%2Fuav.tidaltv.com%2F3PDPHandler.aspx%3Ftpdp%3D31%26segs%3D${aud_ids}
+

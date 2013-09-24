@@ -1,0 +1,10 @@
+GET http://csc.beap.bc.yahoo.com:80/yi?bv=1.0.0&bs=(136tsj3ui(gid$OY9rOs6.JDQJPKYOUi5FlAbiiVL8J1IuRroABFNK,st$1378764474395385,si$8522051,sp$2142623533,pv$1,v$2.0))&t=JR_3-DR_3&al=(as$125oo0po6,aid$yBQLAmKLc04-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=SLVR)(as$125n907i9,aid$OD0LAmKLc04-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=QL1)(as$125tkq8h7,aid$RkILAmKLc04-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=QL2)(as$125v9ptbc,aid$VEcLAmKLc04-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=QL3)(as$12rsn3khf,aid$1hkLAmKLc04-,bi$1629520051,cr$3577678551,ct$25,at$HR,eob$gd1_match_id=-1:ypos=TL1)(as$12rtujcpd,aid$5B4LAmKLc04-,bi$1629516551,cr$3616635551,ct$25,at$HR,eob$gd1_match_id=-1:ypos=TL2)(as$1253rct91,aid$KjgLAmKLc04-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=CMNTL)(as$125l1a33h,aid$ug8LAmKLc04-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=SEVNT)(as$125d32lu0,aid$HDMLAmKLc04-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=WLPR)(as$12ran56im,aid$YkwLAmKLc04-,bi$1838344051,cr$3612573051,ct$25,at$HR,eob$gd1_match_id=-1:ypos=FPAD)(as$12rafqhk8,aid$8iMLAmKLc04-,bi$1880192551,cr$3676029051,ct$25,at$HR,eob$gd1_match_id=-1:ypos=PROMO)(as$125nte8ke,aid$ACkLAmKLc04-,cr$-1,ct$25,at$HR,eob$gd1_match_id=-1:ypos=ADBCN)&s=0&r=0.0028880652179532618 HTTP/1.1
+Host: csc.beap.bc.yahoo.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.yahoo.com/
+Cookie: B=0if561p92shck&b=3&s=d6; MSC=t=1378764474X; CH=AgBSLkUQARKhIAAMuiABCskQAAfUEAAyHBAAKjQgAAOfEAEaqRAAJfcQATEpEAAu9RABCCggADF+EAEqZxABEY4QAR7QEAE7bxAAPKUQARyEEAE0mBABEFwQASckEAEnWxABPV4gACfy; HP=1; ypcdb=b1cfe73a810b6a585fab5fe4cd200d40; F=a=RJvXXcUMvTamwkfycUTGVR__j6PGEQPTKZmZVkXDE.AwTL2728VxYX2gQw_m0vQPIv5G1Uo-&b=8CL4; YLS=v=1&p=0&n=9; V=v=0.75&cc=0&m=0; yvap=193@yvap=208@cc=6@al=3@vl=4@ac=2; ucs=bnas=0; DK=v=2&d=mi6&r=mi0
+Connection: keep-alive
+

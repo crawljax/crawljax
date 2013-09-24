@@ -1,0 +1,11 @@
+GET http://l.yimg.com:80/os/assets/globalmedia/traffic/traffic-simulation.js HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.screen.yahoo.com/snl/
+Connection: keep-alive
+If-Modified-Since: Fri, 01 Mar 2013 08:12:56 GMT
+If-None-Match: "YM:1:35a18f4b-ecdd-4777-80d3-ec9eeb74ba9a0004d6d8931f0632"
+

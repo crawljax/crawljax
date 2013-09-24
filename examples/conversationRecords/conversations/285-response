@@ -1,0 +1,18 @@
+HTTP/1.1 302 Found
+Date: Mon, 09 Sep 2013 22:03:17 GMT
+Server: YTS/1.20.13
+X-RightMedia-Hostname: raptor0457.rm.gq1.yahoo.com
+P3P: policyref="/w3c/p3p.xml", CP="NOI DSP COR NID CURa ADMa DEVa PSAa PSDa OUR BUS COM INT OTC PUR STA"
+Location: http://cookex.amp.yahoo.com/v2/cexposer/SIG=1vv2j46ro/*http%3A//ad.yieldmanager.com/imp?Z=300x250&cb=1378764195.399723&x=http%3A%2F%2Fclicks%2Ebeap%2Ebc%2Eyahoo%2Ecom%2Fyc%2FYnY9MS4wLjAmYnM9KDE1dmhkMzNoMChnaWQkVVpWcU5qSXdOaTRKUEtZT1VpNUZsQUNLTVRNM0xsSXVSYVBfdFowNCxzdCQxMzc4NzY0MTk1MzY5MTIwLHNpJDg1NTI1NTEsc3AkNzkzNjAzMDU0LGNyJDMwOTI4ODIwNTEsdiQyLjAsYWlkJG5kRGVBbUtMYzJjLSxjdCQyNSx5YngkSnNzb1ZKOWl5cl9vT2RPV0dPVTFQdyxiaSQxNjAyODY0NTUxLHIkMCxyZCQxNmZyMW9odG8pKQ%2F2%2F%2Ahttp%3A%2F%2Fglobal%2Eard%2Eyahoo%2Ecom%2FSIG%3D15hp3688i%2FM%3D999999%2E999999%2E999999%2E999999%2FD%3Dmedia%2FS%3D793603054%3ALREC%2F%5Fylt%3DAuI2MUQA7nnaGyQ%5Fr5lNhCnua00v%2FY%3DCA%2FEXP%3D1378771395%2FL%3DUZVqNjIwNi4JPKYOUi5FlACKMTM3LlIuRaP%5FtZ04%2FB%3DndDeAmKLc2c%2D%2FJ%3D1378764195399723%2FK%3D85BpIwrSPS%5Fk50bB%2EkAoVQ%2FA%3D6723565362905142994%2FR%3D0%2FX%3D6%2F%2A%24&u=http%3a%2f%2fca.yahoo.com%2f&P=%24%7bRS%7d%7cUZVqNjIwNi4JPKYOUi5FlACKMTM3LlIuRaP_tZ04%7c793603054%7cLREC%7c1378764195.399723&S=2308144051&i=267248&D=smpv%3d3%26ed%3dzAomdC267kvgcnoVlvRc2UlanpzF9ARWnsPP3Q--&T=3&_salt=160275205&B=10&r=0
+Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+Vary: *
+Last-Modified: Mon, 09 Sep 2013 22:03:17 GMT
+Expires: Mon, 09 Sep 2013 22:03:17 GMT
+Pragma: no-cache
+Content-Encoding: gzip
+Age: 0
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+0
+

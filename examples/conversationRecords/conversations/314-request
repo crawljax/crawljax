@@ -1,0 +1,9 @@
+GET http://l.yimg.com:80/bt/api/res/1.2/xYH4BJ9jpFxFqAr7e9CZDg--/YXBwaWQ9eW5ld3M7Zmk9ZmlsbDtoPTg0O3B5b2ZmPTI1O3E9ODU7dz0xNTA-/http://media.zenfs.com/en-CA/video/video.canadianpress.com/712c8e8615cad084b7e3fbdb8b7f1dd9 HTTP/1.1
+Host: l.yimg.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://ca.news.yahoo.com/blogs/good-news/van-gogh-museum-identifies-artist-long-lost-painting-143109483.html
+Connection: keep-alive
+
