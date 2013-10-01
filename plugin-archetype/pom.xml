@@ -23,6 +23,7 @@
 				<filtering>true</filtering>
 				<includes>
 					<include>archetype-resources/pom.xml</include>
+					<include>archetype-resources/src/main/resources/plugin-descriptor.xml</include>
 				</includes>
 			</resource>
 			<resource>
@@ -30,6 +31,7 @@
 				<filtering>false</filtering>
 				<excludes>
 					<exclude>archetype-resources/pom.xml</exclude>
+					<exclude>archetype-resources/src/main/resources/plugin-descriptor.xml</exclude>
 				</excludes>
 			</resource>
 		</resources>
