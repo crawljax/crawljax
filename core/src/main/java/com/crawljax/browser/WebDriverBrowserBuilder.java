@@ -10,11 +10,13 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
 import com.crawljax.core.plugin.Plugins;
 import com.google.common.base.Strings;
@@ -141,6 +143,17 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 		DesiredCapabilities caps = new DesiredCapabilities();
 		caps.setCapability("takesScreenshot", true);
+		
+		final ProxyConfiguration proxyConf = configuration
+				.getProxyConfiguration();
+		if (proxyConf != null && proxyConf.getType() != ProxyType.NOTHING) {
+			final String proxyAddrCap = "--proxy=" + proxyConf.getHostname()
+					+ ":" + proxyConf.getPort();
+			final String proxyTypeCap = "--proxy-type=http";
+			final String[] args = new String[] { proxyAddrCap, proxyTypeCap };
+			caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, args);
+		}
+		
 		PhantomJSDriver phantomJsDriver = new PhantomJSDriver(caps);
 
 		return WebDriverBackedEmbeddedBrowser.withDriver(phantomJsDriver, filterAttributes,
