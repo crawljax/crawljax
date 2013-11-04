@@ -34,3 +34,13 @@ input:focus:invalid + .hint {display: inline;}
   background-color: #F5F5F5;
   border-color: #dddddd;
 }
+
+table.restricted td {
+	text-overflow:ellipsis;
+	overflow: hidden;
+	max-width: 500px;
+}
+
+table.restricted {
+	white-space:nowrap;
+}

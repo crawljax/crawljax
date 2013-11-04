@@ -63,8 +63,12 @@ public class Plugins {
 		return plugin;
 	}
 
-	public Plugin add(String name, URL url) throws CrawljaxWebException {
-		String id = adaptToId(name);
+	public Plugin add(String fileName, URL url) throws CrawljaxWebException {
+		int extensionIndex = fileName.indexOf(".jar");
+		if (extensionIndex > 0) {
+			fileName = fileName.substring(0, extensionIndex);
+		}
+		String id = adaptToId(fileName);
 		Plugin plugin = pluginManager.save(id, url);
 		if(plugin != null) {
 			pluginList.put(plugin.getId(), plugin);

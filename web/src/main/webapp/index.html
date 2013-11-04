@@ -91,7 +91,7 @@
 	</script>
 	
 	<script type="text/x-handlebars" data-template-name="configurations/index">
-		<table class="table table-striped">
+		<table class="table table-striped restricted">
 			<thead>
 				<tr><th>Name</th><th>Site</th><th>Last Crawl</th><th>Last Duration</th></tr>
 			</thead>
@@ -335,15 +335,16 @@
 	
 	<script type="text/x-handlebars" data-template-name="plugin_management">
 		<legend>Available Plugins</legend>
-		<table class="table table-striped">
+		<table class="table table-striped restricted">
 			<thead>
-				<tr><th>Plugin ID</th><th>Name</th><th></th></tr>
+				<tr><th>Name</th><th>Description</th><th>ID</th><th></th></tr>
 			</thead>
 			<tbody>
 				{{#each plugin in controller}}
 				<tr>
-					<td>{{plugin.content.id}}</td>
 					<td>{{plugin.content.name}}</td>
+					<td>{{plugin.content.description}}</td>
+					<td>{{plugin.content.id}}</td>
 					<td><a href="#" {{action 'remove'}}><i class="icon-remove"></i> Delete</a></td>
 				</tr>
 				{{else}}<tr><td colspan="3">No available plugins.</td></tr>{{/each}}
@@ -361,7 +362,6 @@
 			<fieldset>
 				<legend>Add Remote Plugin</legend>
 				{{view App.FormTextField label="URL: " valueBinding="url"}}
-				{{view App.FormTextField label="Plugin Name: " valueBinding="name"}}
 				<a href="#" {{action 'addURL'}}><i class="icon-plus"></i> Add</a>
 			</fieldset>
 		</form>

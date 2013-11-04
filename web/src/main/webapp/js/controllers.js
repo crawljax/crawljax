@@ -312,11 +312,7 @@ App.PluginManagementController = Ember.ArrayController.extend({
 			alert("Please enter a url");
 			return;
 		}
-		var name = this.get("name");
-		if(!name) {
-			alert("Please enter a name for the plugin");
-			return;
-		}
+		var name =  url.split("/").pop();
 		this.get("controllers.application").displayMessage("Downloading Plugin...", 0);
 		var _this = this;
 		App.Plugins.add(name, undefined, url, function() {

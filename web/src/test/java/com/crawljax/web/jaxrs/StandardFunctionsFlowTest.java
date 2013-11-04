@@ -33,7 +33,6 @@ public class StandardFunctionsFlowTest {
 	private static String LOCAL_PLUGIN_NAME = "Test Plugin";
 	private static String LOCAL_PLUGIN_ID = "test-plugin";
 
-	private static String REMOTE_PLUGIN_ID = "Dummy Plugin";
 	private static String REMOTE_PLUGIN_NAME = "dummy-plugin";
 	private static String REMOTE_PLUGIN_URL = "https://raw.github.com/crawljax/crawljax/web-ui-plugin-integration/web/src/test/resources/dummy-plugin.jar";
 
@@ -278,10 +277,6 @@ public class StandardFunctionsFlowTest {
 		WebElement urlInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
 				"return $(\"label:contains('URL:')\").parent().find(\"input[type='text']\")[0];");
 		urlInput.sendKeys(REMOTE_PLUGIN_URL);
-
-		WebElement nameInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('Plugin Name:')\").parent().find(\"input[type='text']\")[0];");
-		nameInput.sendKeys(REMOTE_PLUGIN_ID);
 
 		List<WebElement> downloadLink = driver.findElements(By.linkText("Add"));
 		followLink(downloadLink.get(0));
