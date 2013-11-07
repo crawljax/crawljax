@@ -408,8 +408,7 @@ public class Crawler {
 	}
 
 	private boolean crawlerLeftDomain() {
-		return !browser.getCurrentUrl().toLowerCase()
-		        .contains(url.getHost().toLowerCase());
+		return !UrlUtils.isSameDomain(browser.getCurrentUrl(), url);
 	}
 
 	private long parseWaitTimeOrReturnDefault(Matcher m) {
