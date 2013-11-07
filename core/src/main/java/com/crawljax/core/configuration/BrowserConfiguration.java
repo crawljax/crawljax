@@ -164,7 +164,7 @@ public class BrowserConfiguration {
 	 *            the language header in http requests
 	 */
 	public void setLang(String lang) {
-		Preconditions.checkNotNull("The language cannot be null", lang);
+		Preconditions.checkNotNull(lang, "The language cannot be null");
 		this.lang = lang;
 	}
 
