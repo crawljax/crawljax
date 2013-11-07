@@ -35,7 +35,7 @@ public class StatesContainElementsTest {
 		Set<StateVertex> allStates = crawl.getStateFlowGraph().getAllStates();
 		for (StateVertex stateVertex : allStates) {
 			if ("index".equals(stateVertex.getName())) {
-				assertThat(stateVertex.getUsedEventables(), is(not(empty())));
+				assertThat(stateVertex.getCandidateElements(), is(not(empty())));
 			}
 		}
 	}
