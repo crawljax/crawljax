@@ -128,7 +128,7 @@ public class OverviewIntegrationTest {
 		selenium.open("/#graph");
 		Statistics statistics = HOVER_CRAWL.getResult().getStatistics();
 		// drawnstate -1 because the outer state is also a group.
-		int drawnStates = visibleElementsByCss("g").size() - 1;
+		int drawnStates = driver.findElements(By.cssSelector("g")).size() - 1;
 		List<WebElement> drawnEdges = visibleElementsByCss("path");
 		assertThat(drawnStates, is(statistics.getStateStats().getTotalNumberOfStates()));
 		assertThat(drawnEdges, hasSize(statistics.getEdges()));
