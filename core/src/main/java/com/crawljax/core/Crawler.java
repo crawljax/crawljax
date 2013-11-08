@@ -385,9 +385,8 @@ public class Crawler {
 		StateVertex currentState = stateMachine.getCurrentState();
 		LOG.debug("Parsing DOM of state {} for candidate elements", currentState.getName());
 		ImmutableList<CandidateElement> extract = candidateExtractor.extract(currentState);
-
+		
 		plugins.runPreStateCrawlingPlugins(context, extract, currentState);
-
 		candidateActionCache.addActions(extract, currentState);
 	}
 

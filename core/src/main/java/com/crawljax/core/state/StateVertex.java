@@ -2,9 +2,11 @@ package com.crawljax.core.state;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.LinkedList;
 
 import org.w3c.dom.Document;
 
+import com.crawljax.core.CandidateElement;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -53,6 +55,18 @@ public interface StateVertex extends Serializable {
 	 */
 	Document getDocument() throws IOException;
 
-	ImmutableList<Eventable> getUsedEventables();
+	/**
+	 * @param elements
+	 *            Set the candidate elements for this state vertex that might be fired.
+	 */
+	void setElementsFound(LinkedList<CandidateElement> elements);
+
+	/**
+	 * @return A list of {@link CandidateElement} that might have been fired during the crawl. If an
+	 *         event was fired it is registered as an {@link Eventable} an can be retrieved from
+	 *         {@link StateFlowGraph#getAllEdges()}. If the candidates were not set because of an
+	 *         error it returns <code>null</code>.
+	 */
+	ImmutableList<CandidateElement> getCandidateElements();
 
 }
