@@ -1,6 +1,8 @@
 package com.crawljax.util;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.regex.PatternSyntaxException;
 
@@ -91,6 +93,26 @@ public class UrlUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if the given URL is part of the domain, or a subdomain of the given {@link URL}.
+	 * 
+	 * @param currentUrl
+	 *            The url you want to check.
+	 * @param url
+	 *            The URL acting as the base.
+	 * @return If the URL is part of the domain.
+	 */
+	public static boolean isSameDomain(String currentUrl, URL url) {
+		try {
+			String current = URI.create(currentUrl).getHost().toLowerCase();
+			String original = url.toURI().getHost().toLowerCase();
+			return current.endsWith(original);
+		} catch (URISyntaxException e) {
+			LOG.warn("Could not parse URI {}", currentUrl);
+			return false;
+		}
 	}
 
 	private UrlUtils() {

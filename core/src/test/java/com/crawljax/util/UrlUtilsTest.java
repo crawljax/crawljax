@@ -65,4 +65,23 @@ public class UrlUtilsTest {
 
 	}
 
+	@Test
+	public void testIsSameDomain() throws MalformedURLException {
+
+		// Same URL
+		assertThat(UrlUtils.isSameDomain("http://example.com",
+		        new URL("http://example.com")), is(true));
+
+		// Different URL
+		assertThat(UrlUtils.isSameDomain("http://test.com",
+		        new URL("http://example.com")), is(false));
+
+		// Same URL with subdomain
+		assertThat(UrlUtils.isSameDomain("http://test.example.com",
+		        new URL("http://example.com")), is(true));
+
+		// Same URL but with HTTPS
+		assertThat(UrlUtils.isSameDomain("https://example.com",
+		        new URL("http://example.com")), is(true));
+	}
 }
