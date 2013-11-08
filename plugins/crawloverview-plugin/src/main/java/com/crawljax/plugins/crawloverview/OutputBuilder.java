@@ -64,7 +64,8 @@ class OutputBuilder {
 		boolean created = states.mkdir();
 		checkArgument(created, "Could not create states dir");
 		screenshots = new File(outputDir, SCREENSHOT_FOLDER_NAME);
-		screenshots.mkdir();
+		created = screenshots.mkdir();
+		checkArgument(created, "Could not create screenshots dir");
 		doms = new File(outputDir, DOMS_OUTPUT_NAME);
 		created = doms.mkdir();
 		checkArgument(created, "Could not create doms dir");
