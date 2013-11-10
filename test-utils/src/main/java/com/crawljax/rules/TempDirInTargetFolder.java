@@ -21,8 +21,10 @@ public class TempDirInTargetFolder extends ExternalResource {
 		this.prefix = prefix;
 		this.override = override;
 		target = new File("target/test-data");
-		boolean created = target.mkdirs();
-		checkArgument(created, "Could not create target/test-data dir");
+		if (!target.exists()) {
+			boolean created = target.mkdirs();
+			checkArgument(created, "Could not create target/test-data dir");
+		}
 	}
 
 	@Override
