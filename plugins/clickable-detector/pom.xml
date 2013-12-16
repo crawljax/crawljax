@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.crawljax.plugins</groupId>
+        <artifactId>crawljax-plugins-parent</artifactId>
+        <version>3.5-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>clickable-detector</artifactId>
+    <packaging>jar</packaging>
+    <name>Proxy plugin</name>
+    <description>A Crawljax plugin that uses a proxy</description>
+    <url>http://crawljax.com</url>
+
+    <properties>
+        <crawljax.version>3.5-SNAPSHOT</crawljax.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.littleshoot</groupId>
+            <artifactId>littleproxy</artifactId>
+            <version>1.0.0-beta5</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
+        </dependency>
+    </dependencies>
+
+</project>

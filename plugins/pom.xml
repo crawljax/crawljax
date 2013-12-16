@@ -60,5 +60,6 @@
 
 	<modules>
 		<module>crawloverview-plugin</module>
-	</modules>
+        <module>clickable-detector</module>
+    </modules>
 </project>
