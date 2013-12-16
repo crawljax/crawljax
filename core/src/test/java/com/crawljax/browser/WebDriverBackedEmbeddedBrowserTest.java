@@ -1,27 +1,28 @@
 package com.crawljax.browser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
+import com.crawljax.util.DomUtils;
+import com.google.common.collect.ImmutableSortedSet;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.test.BrowserTest;
-import com.crawljax.util.DomUtils;
-import com.google.common.collect.ImmutableSortedSet;
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category(BrowserTest.class)
 public class WebDriverBackedEmbeddedBrowserTest {
 
-	private final File index = new File("src/test/resources/site/iframe/index.html");
+	@ClassRule
+	public static final RunWithWebServer SERVER = new RunWithWebServer("/site/iframe");
 
 	@Test
 	public void testGetDocument() throws Exception {
@@ -32,7 +33,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 		Document doc;
 		try {
-			driver.goToUrl(new URL("file://" + index.getAbsolutePath()));
+			driver.goToUrl(SERVER.getSiteUrl());
 
 			doc = DomUtils.asDocument(driver.getStrippedDom());
 			NodeList frameNodes = doc.getElementsByTagName("IFRAME");
@@ -56,7 +57,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 		File f = File.createTempFile("webdriverfirefox-test-screenshot", ".png");
 		if (!f.exists()) {
-			browser.goToUrl(new URL("file://" + index.getAbsolutePath()));
+			browser.goToUrl(SERVER.getSiteUrl());
 			browser.saveScreenShot(f);
 			assertTrue(f.exists());
 			assertTrue(f.delete());
