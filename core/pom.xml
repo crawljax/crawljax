@@ -145,6 +145,10 @@
 					<artifactId>servlet-api-2.5</artifactId>
 					<groupId>org.mortbay.jetty</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>selenium-htmlunit-driver</artifactId>
+					<groupId>org.seleniumhq.selenium</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -222,20 +226,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.seleniumhq.selenium</groupId>
-				<artifactId>selenium-server</artifactId>
-				<version>${selenium.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.seleniumhq.selenium</groupId>
-				<artifactId>selenium-java</artifactId>
-				<version>${selenium.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 </project>
