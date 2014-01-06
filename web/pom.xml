@@ -176,6 +176,7 @@
 						<configuration>
 							<includeArtifactIds>test-plugin</includeArtifactIds>
 							<outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
 				</executions>
