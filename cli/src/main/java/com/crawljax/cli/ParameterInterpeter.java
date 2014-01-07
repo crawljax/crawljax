@@ -182,7 +182,6 @@ class ParameterInterpeter {
 
 	BrowserType getSpecifiedBrowser() {
 		String browser = parameters.getOptionValue(BROWSER);
-		System.out.println(browser);
 		for (BrowserType b : BrowserType.values()) {
 			if (b.name().equalsIgnoreCase(browser)) {
 				return b;

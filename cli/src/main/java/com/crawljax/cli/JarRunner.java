@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.cli.ParseException;
-
 import ch.qos.logback.classic.Level;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.CrawljaxRunner;
@@ -20,6 +17,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import org.apache.commons.cli.ParseException;
 
 public class JarRunner {
 
