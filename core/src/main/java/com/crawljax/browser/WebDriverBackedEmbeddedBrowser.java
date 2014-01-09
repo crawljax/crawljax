@@ -11,6 +11,20 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.AcceptAllFramesChecker;
+import com.crawljax.core.configuration.IgnoreFrameChecker;
+import com.crawljax.core.exception.BrowserConnectionException;
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
+import com.crawljax.forms.FormHandler;
+import com.crawljax.forms.FormInput;
+import com.crawljax.forms.InputValue;
+import com.crawljax.forms.RandomInputValueGenerator;
+import com.crawljax.util.DomUtils;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.io.Files;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -28,6 +42,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.ErrorHandler.UnknownServerException;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,21 +50,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.AcceptAllFramesChecker;
-import com.crawljax.core.configuration.IgnoreFrameChecker;
-import com.crawljax.core.exception.BrowserConnectionException;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
-import com.crawljax.forms.FormHandler;
-import com.crawljax.forms.FormInput;
-import com.crawljax.forms.InputValue;
-import com.crawljax.forms.RandomInputValueGenerator;
-import com.crawljax.util.DomUtils;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.io.Files;
 
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private static final Logger LOGGER = LoggerFactory
@@ -328,7 +328,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			// close browser and close every associated window.
 			browser.quit();
 		} catch (WebDriverException e) {
-			if (e.getCause() instanceof InterruptedException) {
+			if (e.getCause() instanceof InterruptedException || e.getCause().getCause() instanceof InterruptedException) {
 				LOGGER.info("Interrupted while waiting for the browser to close. It might not close correctly");
 				Thread.currentThread().interrupt();
 				return;
