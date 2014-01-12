@@ -21,8 +21,10 @@ public class TempDirInTargetFolder extends ExternalResource {
 		this.prefix = prefix;
 		this.override = override;
 		target = new File("target/test-data");
-		target.mkdirs();
-		checkArgument(target.exists());
+		if (!target.exists()) {
+			boolean created = target.mkdirs();
+			checkArgument(created, "Could not create target/test-data dir");
+		}
 	}
 
 	@Override
@@ -37,7 +39,8 @@ public class TempDirInTargetFolder extends ExternalResource {
 			String suffix = format.format(new Date());
 			tmpDir = new File(target, prefix + '-' + suffix);
 		}
-		tmpDir.mkdirs();
+		boolean created = tmpDir.mkdirs();
+		checkArgument(created, "Could not create tmpDir");
 	}
 
 	public File getTempDir() {

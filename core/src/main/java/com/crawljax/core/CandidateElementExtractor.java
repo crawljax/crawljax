@@ -136,7 +136,7 @@ public class CandidateElementExtractor {
 		if (randomizeElementsOrder) {
 			Collections.shuffle(results);
 		}
-
+		currentState.setElementsFound(results);
 		LOG.debug("Found {} new candidate elements to analyze!", results.size());
 		return ImmutableList.copyOf(results);
 	}

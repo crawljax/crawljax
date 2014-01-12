@@ -35,3 +35,5 @@ Changelog
 
 Detailed change history is avaialbe in our [changelog](https://github.com/crawljax/crawljax/blob/master/CHANGELOG.md).
 
+
+[![Analytics](https://ga-beacon.appspot.com/UA-12224196-2/crawljax/crawljax?pixel)](https://github.com/igrigorik/ga-beacon)

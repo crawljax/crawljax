@@ -1,12 +1,9 @@
 package com.crawljax.di;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javax.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
@@ -24,6 +21,9 @@ import com.crawljax.metrics.MetricsModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class CoreModule extends AbstractModule {
 
@@ -37,6 +37,7 @@ public class CoreModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		LOG.debug("Configuring the core module");
+		disableJulLogging();
 		install(new MetricsModule());
 		install(new ConfigurationModule(configuration));
 
@@ -54,6 +55,11 @@ public class CoreModule extends AbstractModule {
 		install(new FactoryModuleBuilder().build(FormHandlerFactory.class));
 		install(new FactoryModuleBuilder().build(CandidateElementExtractorFactory.class));
 
+	}
+
+	private void disableJulLogging() {
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		SLF4JBridgeHandler.install();
 	}
 
 	@Provides
