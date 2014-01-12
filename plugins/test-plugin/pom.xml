@@ -37,11 +37,6 @@
 			</resource>
 		</resources>
 
-		<plugins>
-			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
-			</plugin>
-		</plugins>
+
 	</build>
 </project>
