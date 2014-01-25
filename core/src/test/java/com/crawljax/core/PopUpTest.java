@@ -24,8 +24,7 @@ public class PopUpTest {
 	@Test
 	public void testPopups() throws CrawljaxException {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().toExternalForm()
-		                + "popup");
+		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().resolve("popup"));
 		builder.setMaximumDepth(3);
 		builder.crawlRules().click("a");
 		builder.crawlRules().waitAfterEvent(100, TimeUnit.MILLISECONDS);

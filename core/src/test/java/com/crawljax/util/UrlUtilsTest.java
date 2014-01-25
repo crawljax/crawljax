@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 
 import org.junit.Test;
 
@@ -33,12 +33,12 @@ public class UrlUtilsTest {
 
 	}
 
-	@Test(expected = MalformedURLException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void whenUrlIsJavaScriptItDoesNotExtract() throws MalformedURLException {
 		UrlUtils.extractNewUrl("http://example.com", "javascript:void(0)");
 	}
 
-	@Test(expected = MalformedURLException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void whenUrlisMailItDoesNotExtract() throws MalformedURLException {
 		UrlUtils.extractNewUrl("http://example.com", "mailto:test@example.com");
 	}
@@ -46,22 +46,23 @@ public class UrlUtilsTest {
 	@Test
 	public void testExtractNewUrl() throws MalformedURLException {
 		final String base = "http://example.com";
-		URL baseWithA = new URL(base + "/a");
+		URI baseWithA = URI.create(base + "/a");
+
 		assertThat(UrlUtils.extractNewUrl(base, "a"), is(baseWithA));
 
 		assertThat(UrlUtils.extractNewUrl(base + "/example", "/a"), is(baseWithA));
 
 		assertThat(UrlUtils.extractNewUrl(base + "/example/b", "/a"), is(baseWithA));
 
-		assertThat(UrlUtils.extractNewUrl(base + "/example/b", "a"), is(new URL(base
+		assertThat(UrlUtils.extractNewUrl(base + "/example/b", "a"), is(URI.create(base
 		        + "/example/a")));
 
 		assertThat(UrlUtils.extractNewUrl(base + "/example/b", "../a"), is(baseWithA));
 
-		assertThat(UrlUtils.extractNewUrl(base, "http://test.example.com"), is(new URL(
+		assertThat(UrlUtils.extractNewUrl(base, "http://test.example.com"), is(URI.create(
 		        "http://test.example.com")));
 
-		assertThat(UrlUtils.extractNewUrl(base, "#someHash"), is(new URL(base + "#someHash")));
+		assertThat(UrlUtils.extractNewUrl(base, "#someHash"), is(URI.create(base + "/#someHash")));
 
 	}
 
@@ -70,18 +71,18 @@ public class UrlUtilsTest {
 
 		// Same URL
 		assertThat(UrlUtils.isSameDomain("http://example.com",
-		        new URL("http://example.com")), is(true));
+		  URI.create("http://example.com")), is(true));
 
 		// Different URL
 		assertThat(UrlUtils.isSameDomain("http://test.com",
-		        new URL("http://example.com")), is(false));
+		  URI.create("http://example.com")), is(false));
 
 		// Same URL with subdomain
 		assertThat(UrlUtils.isSameDomain("http://test.example.com",
-		        new URL("http://example.com")), is(true));
+		  URI.create("http://example.com")), is(true));
 
 		// Same URL but with HTTPS
 		assertThat(UrlUtils.isSameDomain("https://example.com",
-		        new URL("http://example.com")), is(true));
+		  URI.create("http://example.com")), is(true));
 	}
 }

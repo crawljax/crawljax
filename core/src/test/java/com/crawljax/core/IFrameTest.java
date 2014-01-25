@@ -31,8 +31,7 @@ public class IFrameTest {
 
 	protected CrawljaxConfigurationBuilder setupConfig() {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().toExternalForm()
-		                + "iframe");
+		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().resolve("iframe"));
 		builder.crawlRules().waitAfterEvent(100, TimeUnit.MILLISECONDS);
 		builder.crawlRules().waitAfterReloadUrl(100, TimeUnit.MILLISECONDS);
 		builder.setMaximumDepth(3);

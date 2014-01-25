@@ -1,21 +1,15 @@
 package com.crawljax.core;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import java.net.URI;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
@@ -40,6 +34,10 @@ import com.crawljax.util.ElementResolver;
 import com.crawljax.util.UrlUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoSuchElementException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Crawler {
 
@@ -50,7 +48,7 @@ public class Crawler {
 	private final EmbeddedBrowser browser;
 	private final CrawlerContext context;
 	private final StateComparator stateComparator;
-	private final URL url;
+	private final URI url;
 	private final Plugins plugins;
 	private final FormHandler formHandler;
 	private final CrawlRules crawlRules;
@@ -282,13 +280,9 @@ public class Crawler {
 			LOG.info("Anchor {} has no href and is invisble so it will be ignored", element);
 		} else {
 			LOG.info("Found an invisible link with href={}", href);
-			try {
-				URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
-				browser.goToUrl(url);
-				return true;
-			} catch (MalformedURLException e) {
-				LOG.info("Could not visit invisible illegal URL {}", e.getMessage());
-			}
+			URI url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
+			browser.goToUrl(url);
+			return true;
 		}
 		return false;
 	}
@@ -443,7 +437,7 @@ public class Crawler {
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
 		StateVertex index =
-		        StateMachine.createIndex(url.toExternalForm(), browser.getStrippedDom(),
+		        StateMachine.createIndex(url.toString(), browser.getStrippedDom(),
 		                stateComparator.getStrippedDom(browser));
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 		        "It seems some the index state is crawled more than once.");

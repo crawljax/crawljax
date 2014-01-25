@@ -3,6 +3,7 @@ package com.crawljax.browser;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +43,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.ErrorHandler.UnknownServerException;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.support.ui.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,8 +189,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private IgnoreFrameChecker ignoreFrameChecker = new AcceptAllFramesChecker();
 
 	/**
-	 * Constructor without configuration values, these must be updated using the
-	 * {@link #updateConfiguration(CrawljaxConfigurationReader)}.
+	 * Constructor without configuration values.
 	 * 
 	 * @param driver
 	 *            The WebDriver to use.
@@ -257,9 +256,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 *            The URL.
 	 */
 	@Override
-	public void goToUrl(URL url) {
+	public void goToUrl(URI url) {
 		try {
-			browser.navigate().to(url);
+			browser.navigate().to(url.toString());
 			Thread.sleep(this.crawlWaitReload);
 			handlePopups();
 		} catch (WebDriverException e) {
