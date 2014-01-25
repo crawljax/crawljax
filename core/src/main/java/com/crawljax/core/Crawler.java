@@ -25,6 +25,7 @@ import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.StateVertexFactory;
 import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
 import com.crawljax.di.CoreModule.FormHandlerFactory;
 import com.crawljax.forms.FormHandler;
@@ -56,6 +57,7 @@ public class Crawler {
 	private final CandidateElementExtractor candidateExtractor;
 	private final UnfiredCandidateActions candidateActionCache;
 	private final Provider<InMemoryStateFlowGraph> graphProvider;
+	private final StateVertexFactory vertexFactory;
 
 	private CrawlPath crawlpath;
 	private StateMachine stateMachine;
@@ -67,9 +69,10 @@ public class Crawler {
 	        WaitConditionChecker waitConditionChecker,
 	        CandidateElementExtractorFactory elementExtractor,
 	        Provider<InMemoryStateFlowGraph> graphProvider,
-	        Plugins plugins) {
+	        Plugins plugins, StateVertexFactory vertexFactory) {
 		this.context = context;
 		this.graphProvider = graphProvider;
+		this.vertexFactory = vertexFactory;
 		this.browser = context.getBrowser();
 		this.url = config.getUrl();
 		this.plugins = plugins;
@@ -124,8 +127,8 @@ public class Crawler {
 			LOG.debug(ex.getMessage(), ex);
 			candidateActionCache.purgeActionsForState(ex.getTarget());
 		} catch (CrawlerLeftDomainException e) {
-			LOG.info("The crawler left the domain. No biggy, whe'll just go somewhere else.");
-			LOG.debug("Domain espace was {}", e.getMessage());
+			LOG.info("The crawler left the domain. No biggy, we'll just go somewhere else.");
+			LOG.debug("Domain escape was {}", e.getMessage());
 		}
 	}
 
@@ -436,8 +439,7 @@ public class Crawler {
 		LOG.debug("Setting up vertex of the index page");
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
-		StateVertex index =
-		        StateMachine.createIndex(url.toString(), browser.getStrippedDom(),
+		StateVertex index = vertexFactory.createIndex(url.toString(), browser.getStrippedDom(),
 		                stateComparator.getStrippedDom(browser));
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 		        "It seems some the index state is crawled more than once.");

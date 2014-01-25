@@ -1,17 +1,14 @@
 package com.crawljax.core.state;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.LinkedList;
-
-import org.w3c.dom.Document;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Queues;
+import org.w3c.dom.Document;
 
 /**
  * The state vertex class which represents a state in the browser. When iterating over the possible
@@ -22,7 +19,6 @@ class StateVertexImpl implements StateVertex {
 
 	private static final long serialVersionUID = 123400017983488L;
 
-	private final Collection<Eventable> foundEventables;
 	private final int id;
 	private final String dom;
 	private final String strippedDom;
@@ -62,7 +58,6 @@ class StateVertexImpl implements StateVertex {
 		this.name = name;
 		this.dom = dom;
 		this.strippedDom = strippedDom;
-		foundEventables = Queues.newConcurrentLinkedQueue();
 	}
 
 	@Override
@@ -115,14 +110,6 @@ class StateVertexImpl implements StateVertex {
 	@Override
 	public Document getDocument() throws IOException {
 		return DomUtils.asDocument(this.dom);
-	}
-
-	/**
-	 * @param eventable
-	 *            The eventable that was clicked in this state.
-	 */
-	public void registerEventable(Eventable eventable) {
-		foundEventables.add(eventable);
 	}
 
 	@Override
