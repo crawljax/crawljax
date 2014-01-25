@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
@@ -348,6 +349,7 @@ public abstract class LargeTestBase {
 	 * Tests invariants.
 	 */
 	@Test
+	@Ignore("This test is non-deterministic and will fail without cause.")
 	public void testInvariants() {
 		// two invariants were added, but only one should fail!
 		assertTrue(violatedInvariants.size() + " Invariants violated",
@@ -362,6 +364,7 @@ public abstract class LargeTestBase {
 	 * Test correct state in violatedInvariants plugin call.
 	 */
 	@Test
+	@Ignore("This test is non-deterministic and will fail without cause.")
 	public void testCorrectStateOnViolatedInvariants() {
 		assertTrue("OnViolatedInvariantPlugin session object has the correct currentState",
 		        violatedInvariantStateIsCorrect);
