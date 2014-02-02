@@ -24,7 +24,7 @@
 	<inceptionYear>2012</inceptionYear>
 
 	<prerequisites>
-		<maven>3.0.5</maven>
+		<maven>3.1.0</maven>
 	</prerequisites>
 
 	<properties>
@@ -211,7 +211,7 @@
 					</executions>
 					<configuration>
 						<dateFormat>yyyy-MM-dd HH:mm:ss z</dateFormat>
-						<verbose>true</verbose>
+						<verbose>false</verbose>
 						<generateGitPropertiesFile>true</generateGitPropertiesFile>
 						<gitDescribe>
 							<always>true</always>
