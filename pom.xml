@@ -34,9 +34,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<slf4j.version>1.7.5</slf4j.version>
-		<logback.version>1.0.13</logback.version>
+		<logback.version>1.1.0</logback.version>
 		<selenium.version>[2.39.0,)</selenium.version>
-		<jetty.version>9.1.0.v20131115</jetty.version>
+		<jetty.version>9.1.1.v20140108</jetty.version>
 		<metrics.version>3.0.1</metrics.version>
 	</properties>
 
@@ -109,7 +109,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>15.0</version>
+			<version>16.0</version>
 		</dependency>
 
 		<!-- Logging -->
@@ -201,7 +201,7 @@
 				<plugin>
 					<groupId>pl.project13.maven</groupId>
 					<artifactId>git-commit-id-plugin</artifactId>
-					<version>2.1.5</version>
+					<version>2.1.6</version>
 					<executions>
 						<execution>
 							<goals>
