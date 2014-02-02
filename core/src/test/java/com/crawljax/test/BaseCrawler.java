@@ -1,13 +1,9 @@
 package com.crawljax.test;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.eclipse.jetty.util.resource.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxException;
@@ -17,6 +13,9 @@ import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurati
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.state.PostCrawlStateGraphChecker;
 import com.google.common.base.Strings;
+import org.eclipse.jetty.util.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for Crawler examples.
@@ -76,7 +75,7 @@ public class BaseCrawler {
 	 * {@link #newCrawlConfigurationBuilder()};
 	 * <p>
 	 * The {@link CrawljaxConfiguration} is configured with
-	 * {@link CrawljaxConfiguration#clickDefaultElements()}.
+	 * {@link com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder}.
 	 * </p>
 	 * 
 	 * @throws Exception
@@ -106,12 +105,8 @@ public class BaseCrawler {
 		return builder;
 	}
 
-	protected URL getUrl() {
-		try {
-			return new URL(webServer.getSiteUrl(), siteExtension);
-		} catch (MalformedURLException e) {
-			throw new CrawljaxException("Invalid URL: " + webServer.getSiteUrl() + siteExtension);
-		}
+	protected URI getUrl() {
+		return webServer.getSiteUrl().resolve(siteExtension);
 	}
 
 	/**

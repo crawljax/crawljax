@@ -22,7 +22,7 @@ public class NestedFramesTest {
 	@Test
 	public void testNestedFramesIndex() {
 		driver = new FirefoxDriver();
-		driver.get(SERVER.getSiteUrl().toExternalForm());
+		driver.get(SERVER.getSiteUrl().toString());
 
 		driver.switchTo().frame(0);
 		driver.switchTo().frame(0);

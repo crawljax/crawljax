@@ -8,17 +8,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.state.Eventable;
@@ -28,6 +20,15 @@ import com.crawljax.core.state.Identification.How;
 import com.crawljax.forms.FormInput;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 /**
  * This Test checks the 'default' behavior of {@link EmbeddedBrowser} implemented by
@@ -107,7 +108,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Test
 	public final void testFireEvent() throws Exception {
-		browser.goToUrl(new URL(SERVER.getSiteUrl() + "simple.html"));
+		browser.goToUrl(SERVER.getSiteUrl().resolve("simple.html"));
 		browser.fireEventAndWait(new Eventable(new Identification(How.xpath, "//H1"),
 		        EventType.click));
 	}
@@ -127,9 +128,9 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 *             when the dom can not be downloaded.
 	 */
 	@Test
-	public final void testGetDom() throws CrawljaxException {
+	public final void testGetDom() throws CrawljaxException, URISyntaxException {
 		URL index = WebDriverBackedEmbeddedBrowserTest.class.getResource("/site/simple.html");
-		browser.goToUrl(index);
+		browser.goToUrl(index.toURI());
 		browser.getStrippedDom();
 	}
 
@@ -154,12 +155,12 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	}
 
 	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#goToUrl(URL))}.
+	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#goToUrl(java.net.URI)}.
 	 */
 	@Test
 	public final void testGoToUrl() throws CrawljaxException, MalformedURLException {
 		// TODO Stefan; bug in WebDriver iff you specify bla:// will end up in NullPointer.
-		browser.goToUrl(new URL("http://non.exsisting.domain"));
+		browser.goToUrl(URI.create("http://non.exsisting.domain"));
 	}
 
 	/**

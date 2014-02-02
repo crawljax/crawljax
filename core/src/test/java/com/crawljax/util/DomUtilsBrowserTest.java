@@ -3,6 +3,7 @@ package com.crawljax.util;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.junit.Before;
@@ -26,11 +27,11 @@ public class DomUtilsBrowserTest {
 	private EmbeddedBrowser browser;
 
 	@Before
-	public void before() {
+	public void before() throws URISyntaxException {
 		browser = WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
 		        ImmutableSortedSet.<String> of(), 200, 300);
 		URL url = DomUtilsBrowserTest.class.getResource("/site/index.html");
-		browser.goToUrl(url);
+		browser.goToUrl(url.toURI());
 	}
 
 	/**

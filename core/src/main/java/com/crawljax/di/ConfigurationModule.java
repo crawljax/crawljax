@@ -7,7 +7,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.net.URL;
+import java.net.URI;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.WebDriverBrowserBuilder;
@@ -33,7 +33,7 @@ public class ConfigurationModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(URL.class).annotatedWith(BaseUrl.class).toInstance(config.getUrl());
+		bind(URI.class).annotatedWith(BaseUrl.class).toInstance(config.getUrl());
 		bind(CrawljaxConfiguration.class).toInstance(config);
 		bind(CrawlRules.class).toInstance(config.getCrawlRules());
 		bind(ProxyConfiguration.class).toInstance(config.getProxyConfiguration());

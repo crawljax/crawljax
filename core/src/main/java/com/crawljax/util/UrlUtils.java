@@ -1,11 +1,6 @@
 package com.crawljax.util;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.regex.PatternSyntaxException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,19 +9,23 @@ public class UrlUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(UrlUtils.class);
 
 	/**
-	 * @param currentUrl
-	 *            The current url
-	 * @param href
-	 *            The target URL, relative or not
+	 * @param currentUrl The current url
+	 * @param href       The target URL, relative or not
 	 * @return The new URL.
 	 */
-	public static URL extractNewUrl(String currentUrl, String href) throws MalformedURLException {
+	public static URI extractNewUrl(String currentUrl, String href) {
 		if (href == null || isJavascript(href) || href.startsWith("mailto:")) {
-			throw new MalformedURLException(href + " is not a HTTP url");
-		} else if (href.contains("://")) {
-			return new URL(href);
-		} else {
-			return new URL(new URL(currentUrl), href);
+			throw new IllegalArgumentException(href + " is not a HTTP url");
+		}
+		else if (href.contains("://")) {
+			return URI.create(href);
+		}
+		else {
+			URI current = URI.create(currentUrl);
+			if (current.getPath().isEmpty() && !href.startsWith("/")) {
+				return URI.create(currentUrl).resolve("/" + href);
+			}
+			return URI.create(currentUrl).resolve(href);
 		}
 	}
 
@@ -35,27 +34,7 @@ public class UrlUtils {
 	}
 
 	/**
-	 * Internal used function to strip the basePath from a given url.
-	 * 
-	 * @param url
-	 *            the url to examine
-	 * @return the base path with file stipped
-	 */
-	static String getBasePath(URL url) {
-		String file = url.getFile().replaceAll("\\*", "");
-
-		try {
-			return url.getPath().replaceAll(file, "");
-		} catch (PatternSyntaxException pe) {
-			LOG.error(pe.getMessage());
-			return "";
-		}
-
-	}
-
-	/**
-	 * @param url
-	 *            the URL string.
+	 * @param url the URL string.
 	 * @return the base part of the URL.
 	 */
 	public static String getBaseUrl(String url) {
@@ -67,11 +46,9 @@ public class UrlUtils {
 	/**
 	 * Retrieve the var value for varName from a HTTP query string (format is
 	 * "var1=val1&var2=val2").
-	 * 
-	 * @param varName
-	 *            the name.
-	 * @param haystack
-	 *            the haystack.
+	 *
+	 * @param varName  the name.
+	 * @param haystack the haystack.
 	 * @return variable value for varName
 	 */
 	public static String getVarFromQueryString(String varName, String haystack) {
@@ -96,23 +73,17 @@ public class UrlUtils {
 	}
 
 	/**
-	 * Checks if the given URL is part of the domain, or a subdomain of the given {@link URL}.
-	 * 
-	 * @param currentUrl
-	 *            The url you want to check.
-	 * @param url
-	 *            The URL acting as the base.
+	 * Checks if the given URL is part of the domain, or a subdomain of the given {@link java.net.URI}.
+	 *
+	 * @param currentUrl The url you want to check.
+	 * @param url        The URL acting as the base.
 	 * @return If the URL is part of the domain.
 	 */
-	public static boolean isSameDomain(String currentUrl, URL url) {
-		try {
-			String current = URI.create(currentUrl).getHost().toLowerCase();
-			String original = url.toURI().getHost().toLowerCase();
-			return current.endsWith(original);
-		} catch (URISyntaxException e) {
-			LOG.warn("Could not parse URI {}", currentUrl);
-			return false;
-		}
+	public static boolean isSameDomain(String currentUrl, URI url) {
+		String current = URI.create(currentUrl).getHost().toLowerCase();
+		String original = url.getHost().toLowerCase();
+		return current.endsWith(original);
+
 	}
 
 	private UrlUtils() {
