@@ -1,4 +1,4 @@
-package ${package};
+package com.crawljax.plugins.testplugin;
 
 import java.io.File;
 import java.util.HashMap;
@@ -13,12 +13,13 @@ import com.crawljax.core.plugin.descriptor.PluginDescriptor;
 
 /**
  * Use the sample plugin in combination with Crawljax.
+ * 
  */
 public class Runner {
 
 	private static final String URL = "http://www.google.com";
-	private static final int MAX_DEPTH = 2;
-	private static final int MAX_NUMBER_STATES = 8;
+	private static final int MAX_DEPTH = 1;
+	private static final int MAX_NUMBER_STATES = 3;
 
 	/**
 	 * Entry point
@@ -38,12 +39,12 @@ public class Runner {
 		builder.setMaximumStates(MAX_NUMBER_STATES);
 		builder.setMaximumDepth(MAX_DEPTH);
 
-		PluginDescriptor descriptor = PluginDescriptor.forPlugin(SamplePlugin.class);
+		PluginDescriptor descriptor = PluginDescriptor.forPlugin(TestPlugin.class);
 		Map<String, String> parameters = new HashMap<>();
 		for(Parameter parameter : descriptor.getParameters()) {
 			parameters.put(parameter.getId(), "value");
 		}
-		builder.addPlugin(new SamplePlugin(new HostInterfaceImpl(new File("out"), parameters)));
+		builder.addPlugin(new TestPlugin(new HostInterfaceImpl(new File("out"), parameters)));
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
 

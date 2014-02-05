@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.crawljax.plugins</groupId>
+		<artifactId>crawljax-plugins-parent</artifactId>
+		<version>3.4-SNAPSHOT</version>
+	</parent>
+	<artifactId>test-plugin</artifactId>
+	<name>Test Plugin</name>
+	<description>A plugin for testing</description>
+	<url>http://crawljax.com</url>
+	<dependencies>
+		<dependency>
+			<groupId>com.crawljax</groupId>
+			<artifactId>crawljax-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>${artifactId}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>plugin-descriptor.xml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>plugin-descriptor.xml</exclude>
+				</excludes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

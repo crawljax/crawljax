@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin-descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="https://raw.github.com/crawljax/crawljax/web-ui-plugin-support/core/src/main/resources/com/crawljax/core/plugin/jaxb/plugin-descriptor.xsd">
+	<name>Test Plugin</name>
+	<description>A plugin to use for testing</description>
+	<crawljax-versions>
+		<version>${project.version}</version>
+	</crawljax-versions>
+	<parameters>
+		<parameter>
+			<id>test_textbox</id>
+			<display-name>Test Textbox</display-name>
+			<type>textbox</type>
+		</parameter>
+		<parameter>
+			<id>test_checkbox</id>
+			<display-name>Test Checkbox</display-name>
+			<type>checkbox</type>
+		</parameter>
+		<parameter>
+			<id>test_select</id>
+			<display-name>Test Select</display-name>
+			<type>select</type>
+			<options>
+				<option>
+					<name>Option 1</name>
+					<value>1</value>
+				</option>
+				<option>
+					<name>Option 2</name>
+					<value>2</value>
+				</option>
+				<option>
+					<name>Option 3</name>
+					<value>3</value>
+				</option>
+			</options>
+		</parameter>
+	</parameters>
+</plugin-descriptor>

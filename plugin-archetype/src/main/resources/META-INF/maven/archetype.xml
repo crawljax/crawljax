@@ -7,5 +7,8 @@
 	<sources>
 		<source>src/main/java/SamplePlugin.java</source>
 		<source>src/main/java/Runner.java</source>
-	</sources>	
+	</sources>
+	<resources>
+		<resource>src/main/resources/plugin-descriptor.xml</resource>
+	</resources>
 </archetype>
