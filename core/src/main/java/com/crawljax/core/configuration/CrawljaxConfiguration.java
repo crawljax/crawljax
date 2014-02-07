@@ -4,8 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +28,7 @@ public class CrawljaxConfiguration {
 		private final CrawljaxConfiguration config;
 		private final CrawlRulesBuilder crawlRules;
 
-		private CrawljaxConfigurationBuilder(URL url) {
+		private CrawljaxConfigurationBuilder(URI url) {
 			Preconditions.checkNotNull(url);
 			config = new CrawljaxConfiguration();
 			config.url = url;
@@ -40,36 +39,32 @@ public class CrawljaxConfiguration {
 		 * If the website uses <a
 		 * href="http://en.wikipedia.org/wiki/Basic_access_authentication">Basic auth</a> you can
 		 * set the username and password here.
-		 * 
-		 * @param username
-		 *            The username for the website.
-		 * @param password
-		 *            The password for the website.
+		 *
+		 * @param username The username for the website.
+		 * @param password The password for the website.
 		 * @return {@link CrawljaxConfigurationBuilder} for method chaining.
 		 */
 		public CrawljaxConfigurationBuilder setBasicAuth(String username, String password) {
 			try {
 				String encodedUsername = URLEncoder.encode(username, "UTF-8");
 				String encodedPassword = URLEncoder.encode(password, "UTF-8");
-				config.url =
-				        new URL(config.url.getProtocol()
-				                + "://" + encodedUsername
-				                + ":" + encodedPassword + "@" + config.url.getAuthority()
-				                + config.url.getPath());
-				System.out.println("URL " + config.url);
-			} catch (UnsupportedEncodingException | MalformedURLException e) {
+				config.url = URI.create(config.url.getScheme()
+				  + "://" + encodedUsername
+				  + ":" + encodedPassword + "@" + config.url.getAuthority()
+				  + config.url.getPath());
+			}
+			catch (UnsupportedEncodingException e) {
 				throw new CrawljaxException("Could not parse the username/password to a URL", e);
 			}
 			return this;
 		}
 
 		/**
-		 * @param states
-		 *            The maximum number of states the Crawler should crawl. The default is
-		 *            unlimited.
+		 * @param states The maximum number of states the Crawler should crawl. The default is
+		 *               unlimited.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumStates(int states) {
-			checkArgument(states > 1, "Number of maximum states should be largen than 1");
+			checkArgument(states > 1, "Number of maximum states should be larger than 1");
 			config.maximumStates = states;
 			return this;
 		}
@@ -83,8 +78,7 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * @param time
-		 *            The maximum time the crawler should run. Default is one hour.
+		 * @param time The maximum time the crawler should run. Default is one hour.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumRunTime(long time, TimeUnit unit) {
 			checkArgument(time >= 0, "Time should be larger than 0, or 0 for infinate.");
@@ -101,12 +95,11 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * @param depth
-		 *            The maximum depth the crawler can reach. The default is <code>2</code>.
+		 * @param depth The maximum depth the crawler can reach. The default is <code>2</code>.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumDepth(int depth) {
 			Preconditions.checkArgument(depth >= 0,
-			        "Depth should be 0 for infinite, or larger for a certain depth.");
+			  "Depth should be 0 for infinite, or larger for a certain depth.");
 			config.maximumDepth = depth;
 			return this;
 		}
@@ -125,9 +118,8 @@ public class CrawljaxConfiguration {
 		 * <p>
 		 * You can call this method several times to add multiple plugins
 		 * </p>
-		 * 
-		 * @param plugins
-		 *            the plugins you would like to enable.
+		 *
+		 * @param plugins the plugins you would like to enable.
 		 */
 		public CrawljaxConfigurationBuilder addPlugin(Plugin... plugins) {
 			pluginBuilder.add(plugins);
@@ -135,8 +127,7 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * @param configuration
-		 *            The proxy configuration. Default is {@link ProxyConfiguration#noProxy()}
+		 * @param configuration The proxy configuration. Default is {@link ProxyConfiguration#noProxy()}
 		 */
 		public CrawljaxConfigurationBuilder setProxyConfig(ProxyConfiguration configuration) {
 			Preconditions.checkNotNull(configuration);
@@ -152,9 +143,8 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * @param configuration
-		 *            a custom {@link BrowserConfiguration}. The default is a single
-		 *            {@link BrowserType#FIREFOX} browser.
+		 * @param configuration a custom {@link BrowserConfiguration}. The default is a single
+		 *                      {@link BrowserType#FIREFOX} browser.
 		 */
 		public CrawljaxConfigurationBuilder setBrowserConfig(BrowserConfiguration configuration) {
 			Preconditions.checkNotNull(configuration);
@@ -165,11 +155,9 @@ public class CrawljaxConfiguration {
 		/**
 		 * Set the output folder for any {@link Plugin} you might configure. Crawljax itself doesn't
 		 * need an output folder but many plug-ins do.
-		 * 
-		 * @param output
-		 *            The output folder. If it does not exist it will be created.
-		 * @throws IllegalStateException
-		 *             if the specified file is not writable or exists but isn't a folder.
+		 *
+		 * @param output The output folder. If it does not exist it will be created.
+		 * @throws IllegalStateException if the specified file is not writable or exists but isn't a folder.
 		 */
 		public CrawljaxConfigurationBuilder setOutputDirectory(File output) {
 			config.output = output;
@@ -180,12 +168,13 @@ public class CrawljaxConfiguration {
 		private void checkOutputDirWritable() {
 			if (!config.output.exists()) {
 				Preconditions.checkState(config.output.mkdirs(),
-				        "Could not create the output directory %s ", config.output);
-			} else {
+				  "Could not create the output directory %s ", config.output);
+			}
+			else {
 				Preconditions.checkArgument(config.output.isDirectory(),
-				        "Output directory %s is not a folder", config.output);
+				  "Output directory %s is not a folder", config.output);
 				Preconditions.checkState(config.output.canWrite(),
-				        "Output directory %s is not writable", config.output);
+				  "Output directory %s is not writable", config.output);
 			}
 		}
 
@@ -198,29 +187,23 @@ public class CrawljaxConfiguration {
 	}
 
 	/**
-	 * @param url
-	 *            The url you want to setup a configuration for
+	 * @param url The url you want to setup a configuration for
 	 * @return The builder to configure the crawler.
 	 */
-	public static CrawljaxConfigurationBuilder builderFor(URL url) {
+	public static CrawljaxConfigurationBuilder builderFor(URI url) {
 		Preconditions.checkNotNull(url, "URL was null");
 		return new CrawljaxConfigurationBuilder(url);
 	}
 
 	/**
-	 * @param url
-	 *            The url you want to setup a configuration for
+	 * @param url The url you want to setup a configuration for
 	 * @return The builder to configure the crawler.
 	 */
 	public static CrawljaxConfigurationBuilder builderFor(String url) {
-		try {
-			return new CrawljaxConfigurationBuilder(new URL(url));
-		} catch (MalformedURLException e) {
-			throw new CrawljaxException("Could not read that URL", e);
-		}
+		return new CrawljaxConfigurationBuilder(URI.create(url));
 	}
 
-	private URL url;
+	private URI url;
 
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.FIREFOX);
 	private ImmutableList<Plugin> plugins;
@@ -229,14 +212,15 @@ public class CrawljaxConfiguration {
 	private CrawlRules crawlRules;
 
 	private int maximumStates = 0;
-	private long maximumRuntime = TimeUnit.HOURS.toMillis(1);;
+	private long maximumRuntime = TimeUnit.HOURS.toMillis(1);
+	;
 	private int maximumDepth = 2;
 	private File output = new File("out");
 
 	private CrawljaxConfiguration() {
 	}
 
-	public URL getUrl() {
+	public URI getUrl() {
 		return url;
 	}
 
@@ -275,7 +259,7 @@ public class CrawljaxConfiguration {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(url, browserConfig, plugins, proxyConfiguration, crawlRules,
-		        maximumStates, maximumRuntime, maximumDepth);
+		  maximumStates, maximumRuntime, maximumDepth);
 	}
 
 	@Override
@@ -283,13 +267,13 @@ public class CrawljaxConfiguration {
 		if (object instanceof CrawljaxConfiguration) {
 			CrawljaxConfiguration that = (CrawljaxConfiguration) object;
 			return Objects.equal(this.url, that.url)
-			        && Objects.equal(this.browserConfig, that.browserConfig)
-			        && Objects.equal(this.plugins, that.plugins)
-			        && Objects.equal(this.proxyConfiguration, that.proxyConfiguration)
-			        && Objects.equal(this.crawlRules, that.crawlRules)
-			        && Objects.equal(this.maximumStates, that.maximumStates)
-			        && Objects.equal(this.maximumRuntime, that.maximumRuntime)
-			        && Objects.equal(this.maximumDepth, that.maximumDepth);
+			  && Objects.equal(this.browserConfig, that.browserConfig)
+			  && Objects.equal(this.plugins, that.plugins)
+			  && Objects.equal(this.proxyConfiguration, that.proxyConfiguration)
+			  && Objects.equal(this.crawlRules, that.crawlRules)
+			  && Objects.equal(this.maximumStates, that.maximumStates)
+			  && Objects.equal(this.maximumRuntime, that.maximumRuntime)
+			  && Objects.equal(this.maximumDepth, that.maximumDepth);
 		}
 		return false;
 	}
@@ -297,15 +281,15 @@ public class CrawljaxConfiguration {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-		        .add("url", url)
-		        .add("browserConfig", browserConfig)
-		        .add("plugins", plugins)
-		        .add("proxyConfiguration", proxyConfiguration)
-		        .add("crawlRules", crawlRules)
-		        .add("maximumStates", maximumStates)
-		        .add("maximumRuntime", maximumRuntime)
-		        .add("maximumDepth", maximumDepth)
-		        .toString();
+					  .add("url", url)
+					  .add("browserConfig", browserConfig)
+					  .add("plugins", plugins)
+					  .add("proxyConfiguration", proxyConfiguration)
+					  .add("crawlRules", crawlRules)
+					  .add("maximumStates", maximumStates)
+					  .add("maximumRuntime", maximumRuntime)
+					  .add("maximumDepth", maximumDepth)
+					  .toString();
 	}
 
 }
