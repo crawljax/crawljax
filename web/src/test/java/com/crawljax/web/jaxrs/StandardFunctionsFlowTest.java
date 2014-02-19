@@ -34,7 +34,7 @@ public class StandardFunctionsFlowTest {
 	private static String LOCAL_PLUGIN_ID = "test-plugin";
 
 	private static String REMOTE_PLUGIN_NAME = "dummy-plugin";
-	private static String REMOTE_PLUGIN_URL = "https://raw.github.com/crawljax/crawljax/web-ui-plugin-integration/web/src/test/resources/dummy-plugin.jar";
+	private static String REMOTE_PLUGIN_URL = "https://raw.github.com/crawljax/crawljax/web-ui-with-plugins/web/src/test/resources/dummy-plugin.jar";
 
 	@Rule
 	public TestRule globalTimeout = new Timeout(120 * 1000);
