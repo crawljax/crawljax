@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin-descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="https://raw.github.com/crawljax/crawljax/web-ui-plugin-support/core/src/main/resources/com/crawljax/core/plugin/jaxb/plugin-descriptor.xsd">
+	<name>Crawl Overview Plugin</name>
+	<description>Generates an HTML report with a snapshot overview of what is crawled.</description>
+	<crawljax-versions>
+		<version>${project.version}</version>
+	</crawljax-versions>
+</plugin-descriptor>

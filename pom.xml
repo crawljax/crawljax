@@ -82,7 +82,8 @@
 		<module>test-utils</module>
 		<module>plugins</module>
 		<module>plugin-archetype</module>
-	</modules>
+    	<module>web</module>
+  </modules>
 
 	<dependencyManagement>
 		<dependencies>
