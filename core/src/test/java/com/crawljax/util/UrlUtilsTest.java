@@ -43,6 +43,12 @@ public class UrlUtilsTest {
 		UrlUtils.extractNewUrl("http://example.com", "mailto:test@example.com");
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void whenUrlAboutBlankDoesNotExtract() throws MalformedURLException {
+		UrlUtils.extractNewUrl("http://example.com", "about:blank");
+	}
+
+
 	@Test
 	public void testExtractNewUrl() throws MalformedURLException {
 		final String base = "http://example.com";

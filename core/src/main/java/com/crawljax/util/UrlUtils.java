@@ -1,6 +1,7 @@
 package com.crawljax.util;
 
 import java.net.URI;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,13 +15,11 @@ public class UrlUtils {
 	 * @return The new URL.
 	 */
 	public static URI extractNewUrl(String currentUrl, String href) {
-		if (href == null || isJavascript(href) || href.startsWith("mailto:")) {
-			throw new IllegalArgumentException(href + " is not a HTTP url");
-		}
-		else if (href.contains("://")) {
+		if (href == null || isJavascript(href) || href.startsWith("mailto:") || href.equals("about:blank")) {
+			throw new IllegalArgumentException(String.format("%s is not a HTTP url", href));
+		} else if (href.contains("://")) {
 			return URI.create(href);
-		}
-		else {
+		} else {
 			URI current = URI.create(currentUrl);
 			if (current.getPath().isEmpty() && !href.startsWith("/")) {
 				return URI.create(currentUrl).resolve("/" + href);
