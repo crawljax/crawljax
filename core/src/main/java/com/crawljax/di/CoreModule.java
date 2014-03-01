@@ -14,8 +14,10 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.ExtractorManager;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.state.DefaultStateVertexFactory;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.core.state.StateVertexFactory;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.metrics.MetricsModule;
 import com.google.inject.AbstractModule;
@@ -54,6 +56,12 @@ public class CoreModule extends AbstractModule {
 
 		install(new FactoryModuleBuilder().build(FormHandlerFactory.class));
 		install(new FactoryModuleBuilder().build(CandidateElementExtractorFactory.class));
+
+		if (configuration.getStateVertexFactory() == null) {
+			bind(StateVertexFactory.class).to(DefaultStateVertexFactory.class);
+		} else {
+			bind(StateVertexFactory.class).toInstance(configuration.getStateVertexFactory());
+		}
 
 	}
 

@@ -7,9 +7,24 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.WebDriverBrowserBuilder;
+import com.crawljax.condition.ConditionTypeChecker;
+import com.crawljax.condition.crawlcondition.CrawlCondition;
+import com.crawljax.condition.eventablecondition.EventableConditionChecker;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.plugin.Plugins;
+import com.crawljax.core.state.DefaultStateVertexFactory;
+import com.crawljax.core.state.StateVertex;
+import com.crawljax.forms.FormHandler;
+import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
+import com.google.common.io.Resources;
 import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -21,28 +36,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.WebDriverBrowserBuilder;
-import com.crawljax.condition.ConditionTypeChecker;
-import com.crawljax.condition.crawlcondition.CrawlCondition;
-import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.plugin.Plugins;
-import com.crawljax.core.state.StateMachine;
-import com.crawljax.core.state.StateVertex;
-import com.crawljax.forms.FormHandler;
-import com.crawljax.test.BrowserTest;
-import com.crawljax.test.RunWithWebServer;
-import com.google.common.io.Resources;
-
 @Category(BrowserTest.class)
 @RunWith(MockitoJUnitRunner.class)
 public class CandidateElementExtractorTest {
 
 	private static final Logger LOG = LoggerFactory
 	        .getLogger(CandidateElementExtractorTest.class);
-	private static final StateVertex DUMMY_STATE = StateMachine.createIndex("http://localhost",
+	private static final StateVertex DUMMY_STATE = new DefaultStateVertexFactory().createIndex("http://localhost",
 	        "", "");
 
 	@Mock
@@ -63,7 +63,7 @@ public class CandidateElementExtractorTest {
 	@Test
 	public void testExtract() throws InterruptedException, CrawljaxException {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(DEMO_SITE_SERVER.getSiteUrl().toExternalForm());
+		        CrawljaxConfiguration.builderFor(DEMO_SITE_SERVER.getSiteUrl());
 		builder.crawlRules().click("a");
 		builder.crawlRules().clickOnce(true);
 		CrawljaxConfiguration config = builder.build();
@@ -97,7 +97,7 @@ public class CandidateElementExtractorTest {
 	@Test
 	public void testExtractExclude() throws Exception {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(DEMO_SITE_SERVER.getSiteUrl().toExternalForm());
+		        CrawljaxConfiguration.builderFor(DEMO_SITE_SERVER.getSiteUrl());
 		builder.crawlRules().click("a");
 		builder.crawlRules().dontClick("div").withAttribute("id", "menubar");
 		builder.crawlRules().clickOnce(true);
@@ -118,12 +118,12 @@ public class CandidateElementExtractorTest {
 		RunWithWebServer server = new RunWithWebServer("/site");
 		server.before();
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration
-		        .builderFor(server.getSiteUrl().toExternalForm() + "iframe/");
+		        .builderFor(server.getSiteUrl().resolve("iframe/"));
 		builder.crawlRules().click("a");
 		CrawljaxConfiguration config = builder.build();
 
 		CandidateElementExtractor extractor = newElementExtractor(config);
-		browser.goToUrl(new URL(server.getSiteUrl().toExternalForm() + "iframe/"));
+		browser.goToUrl(server.getSiteUrl().resolve("iframe/"));
 		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
 		for (CandidateElement e : candidates) {
@@ -139,7 +139,7 @@ public class CandidateElementExtractorTest {
 	}
 
 	@Test
-	public void whenNoFollowExternalUrlDoNotFollow() throws IOException {
+	public void whenNoFollowExternalUrlDoNotFollow() throws IOException, URISyntaxException {
 		CrawljaxConfigurationBuilder builder =
 		        CrawljaxConfiguration.builderFor("http://example.com");
 		builder.crawlRules().click("a");
@@ -153,7 +153,7 @@ public class CandidateElementExtractorTest {
 	}
 
 	@Test
-	public void whenFollowExternalUrlDoFollow() throws IOException {
+	public void whenFollowExternalUrlDoFollow() throws IOException, URISyntaxException {
 		CrawljaxConfigurationBuilder builder =
 		        CrawljaxConfiguration.builderFor("http://example.com");
 		builder.crawlRules().click("a");
@@ -167,11 +167,11 @@ public class CandidateElementExtractorTest {
 		assertThat(extract, hasSize(3));
 	}
 
-	private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor) {
+	private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor) throws URISyntaxException {
 		StateVertex currentState = Mockito.mock(StateVertex.class);
 		String file = "/candidateElementExtractorTest/domWithOneExternalAndTwoInternal.html";
 		URL dom = Resources.getResource(getClass(), file);
-		browser.goToUrl(dom);
+		browser.goToUrl(dom.toURI());
 		List<CandidateElement> extract = extractor.extract(currentState);
 		return extract;
 	}

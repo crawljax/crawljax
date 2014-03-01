@@ -1,24 +1,20 @@
 package com.crawljax.test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 
+import com.crawljax.core.CrawljaxException;
 import org.eclipse.jetty.util.resource.Resource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.crawljax.core.CrawljaxException;
-
 public class WebServerTest {
-	private URL site;
+	private URI site;
 	private WebServer server;
 
 	private static final int MAX_PORT = 65535;
@@ -26,10 +22,11 @@ public class WebServerTest {
 
 	@Before
 	public void setup() throws Exception {
-		site = BaseCrawler.class.getResource("/site");
+		site = BaseCrawler.class.getResource("/site").toURI();
 		try {
 			server = new WebServer(Resource.newResource(site));
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new CrawljaxException("Could not load resource", e);
 		}
 		server.start();
@@ -38,13 +35,6 @@ public class WebServerTest {
 	@After
 	public void stopServer() {
 		server.stop();
-	}
-
-	@Test
-	public void testSiteUrl() throws Exception {
-		site = new URL("http", "localhost", server.getPort(), "/");
-		assertEquals(site.getPort(), server.getSiteUrl().getPort());
-		assertTrue(site.getPath().equals(server.getSiteUrl().getPath()));
 	}
 
 	@Test

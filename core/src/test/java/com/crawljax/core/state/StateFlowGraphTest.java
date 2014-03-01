@@ -40,7 +40,7 @@ public class StateFlowGraphTest {
 		state3 = new StateVertexImpl(3, "STATE_THREE", "<table><div>state3</div></table>");
 		state4 = new StateVertexImpl(4, "STATE_FOUR", "<table><div>state4</div></table>");
 		state5 = new StateVertexImpl(5, "STATE_FIVE", "<table><div>state5</div></table>");
-		graph = new InMemoryStateFlowGraph(new ExitNotifier(0));
+		graph = new InMemoryStateFlowGraph(new ExitNotifier(0), new DefaultStateVertexFactory());
 		graph.putIndex(index);
 	}
 
@@ -145,7 +145,7 @@ public class StateFlowGraphTest {
 		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
 		                + "<body><div id='firstdiv' class='orange'>";
 
-		InMemoryStateFlowGraph g = new InMemoryStateFlowGraph(new ExitNotifier(0));
+		InMemoryStateFlowGraph g = new InMemoryStateFlowGraph(new ExitNotifier(0), new DefaultStateVertexFactory());
 		g.putIndex(new StateVertexImpl(1, "", HTML1));
 		g.putIfAbsent(new StateVertexImpl(2, "", HTML2));
 

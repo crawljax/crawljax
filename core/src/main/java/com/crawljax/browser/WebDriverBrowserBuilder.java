@@ -3,7 +3,12 @@ package com.crawljax.browser;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import org.openqa.selenium.android.AndroidDriver;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.ProxyConfiguration;
+import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
+import com.crawljax.core.plugin.Plugins;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSortedSet;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -14,13 +19,6 @@ import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.ProxyConfiguration;
-import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
-import com.crawljax.core.plugin.Plugins;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSortedSet;
 
 /**
  * Default implementation of the EmbeddedBrowserBuilder based on Selenium WebDriver API.
@@ -72,12 +70,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 				                .getBrowserConfig().getRemoteHubUrl(), filterAttributes,
 				                crawlWaitEvent, crawlWaitReload);
 				break;
-			case ANDROID:
-				browser =
-				        WebDriverBackedEmbeddedBrowser.withDriver(new AndroidDriver(),
-				                filterAttributes, crawlWaitEvent, crawlWaitReload);
-				break;
-
 			case PHANTOMJS:
 				browser = newPhantomJSDriver(filterAttributes, crawlWaitReload, crawlWaitEvent);
 

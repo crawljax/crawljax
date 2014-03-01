@@ -4,29 +4,19 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import javax.inject.Provider;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InOrder;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.core.state.DefaultStateVertexFactory;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
@@ -38,6 +28,16 @@ import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
 import com.crawljax.oraclecomparator.StateComparator;
 import com.google.common.collect.ImmutableList;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Test class for the Crawler testing.
@@ -45,7 +45,7 @@ import com.google.common.collect.ImmutableList;
 @RunWith(MockitoJUnitRunner.class)
 public class CrawlerTest {
 
-	private URL url;
+	private URI url;
 
 	private Crawler crawler;
 
@@ -109,8 +109,8 @@ public class CrawlerTest {
 		when(elementExtractor.newExtractor(browser)).thenReturn(extractor);
 		FormHandlerFactory formHandlerFactory = mock(FormHandlerFactory.class);
 		when(formHandlerFactory.newFormHandler(browser)).thenReturn(formHandler);
-		url = new URL("http://example.com");
-		when(browser.getCurrentUrl()).thenReturn(url.toExternalForm());
+		url = URI.create("http://example.com");
+		when(browser.getCurrentUrl()).thenReturn(url.toString());
 		when(sessionProvider.get()).thenReturn(session);
 
 		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());
@@ -126,7 +126,7 @@ public class CrawlerTest {
 		        new Crawler(context, config,
 		                stateComparator,
 		                candidateActionCache, formHandlerFactory, waitConditionChecker,
-		                elementExtractor, graphProvider, plugins);
+		                elementExtractor, graphProvider, plugins, new DefaultStateVertexFactory());
 
 		setupStateFlowGraph();
 	}

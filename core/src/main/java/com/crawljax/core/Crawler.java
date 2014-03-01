@@ -1,21 +1,15 @@
 package com.crawljax.core;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import java.net.URI;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
@@ -31,6 +25,7 @@ import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.StateVertexFactory;
 import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
 import com.crawljax.di.CoreModule.FormHandlerFactory;
 import com.crawljax.forms.FormHandler;
@@ -40,6 +35,10 @@ import com.crawljax.util.ElementResolver;
 import com.crawljax.util.UrlUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoSuchElementException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Crawler {
 
@@ -50,7 +49,7 @@ public class Crawler {
 	private final EmbeddedBrowser browser;
 	private final CrawlerContext context;
 	private final StateComparator stateComparator;
-	private final URL url;
+	private final URI url;
 	private final Plugins plugins;
 	private final FormHandler formHandler;
 	private final CrawlRules crawlRules;
@@ -58,6 +57,7 @@ public class Crawler {
 	private final CandidateElementExtractor candidateExtractor;
 	private final UnfiredCandidateActions candidateActionCache;
 	private final Provider<InMemoryStateFlowGraph> graphProvider;
+	private final StateVertexFactory vertexFactory;
 
 	private CrawlPath crawlpath;
 	private StateMachine stateMachine;
@@ -69,9 +69,10 @@ public class Crawler {
 	        WaitConditionChecker waitConditionChecker,
 	        CandidateElementExtractorFactory elementExtractor,
 	        Provider<InMemoryStateFlowGraph> graphProvider,
-	        Plugins plugins) {
+	        Plugins plugins, StateVertexFactory vertexFactory) {
 		this.context = context;
 		this.graphProvider = graphProvider;
+		this.vertexFactory = vertexFactory;
 		this.browser = context.getBrowser();
 		this.url = config.getUrl();
 		this.plugins = plugins;
@@ -126,8 +127,8 @@ public class Crawler {
 			LOG.debug(ex.getMessage(), ex);
 			candidateActionCache.purgeActionsForState(ex.getTarget());
 		} catch (CrawlerLeftDomainException e) {
-			LOG.info("The crawler left the domain. No biggy, whe'll just go somewhere else.");
-			LOG.debug("Domain espace was {}", e.getMessage());
+			LOG.info("The crawler left the domain. No biggy, we'll just go somewhere else.");
+			LOG.debug("Domain escape was {}", e.getMessage());
 		}
 	}
 
@@ -282,13 +283,9 @@ public class Crawler {
 			LOG.info("Anchor {} has no href and is invisble so it will be ignored", element);
 		} else {
 			LOG.info("Found an invisible link with href={}", href);
-			try {
-				URL url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
-				browser.goToUrl(url);
-				return true;
-			} catch (MalformedURLException e) {
-				LOG.info("Could not visit invisible illegal URL {}", e.getMessage());
-			}
+			URI url = UrlUtils.extractNewUrl(browser.getCurrentUrl(), href);
+			browser.goToUrl(url);
+			return true;
 		}
 		return false;
 	}
@@ -442,8 +439,7 @@ public class Crawler {
 		LOG.debug("Setting up vertex of the index page");
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
-		StateVertex index =
-		        StateMachine.createIndex(url.toExternalForm(), browser.getStrippedDom(),
+		StateVertex index = vertexFactory.createIndex(url.toString(), browser.getStrippedDom(),
 		                stateComparator.getStrippedDom(browser));
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 		        "It seems some the index state is crawled more than once.");

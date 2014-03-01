@@ -1,9 +1,15 @@
 package ${package};
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.plugin.HostInterfaceImpl;
+import com.crawljax.core.plugin.descriptor.Parameter;
+import com.crawljax.core.plugin.descriptor.PluginDescriptor;
 
 /**
  * Use the sample plugin in combination with Crawljax.
@@ -18,7 +24,7 @@ public class Runner {
 	 * Entry point
 	 */
 	public static void main(String[] args) {
-		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+		CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 		builder.crawlRules().insertRandomDataInInputForms(false);
 
 		builder.crawlRules().click("a");
@@ -32,7 +38,12 @@ public class Runner {
 		builder.setMaximumStates(MAX_NUMBER_STATES);
 		builder.setMaximumDepth(MAX_DEPTH);
 
-		builder.addPlugin(new SamplePlugin());
+		PluginDescriptor descriptor = PluginDescriptor.forPlugin(SamplePlugin.class);
+		Map<String, String> parameters = new HashMap<>();
+		for(Parameter parameter : descriptor.getParameters()) {
+			parameters.put(parameter.getId(), "value");
+		}
+		builder.addPlugin(new SamplePlugin(new HostInterfaceImpl(new File("out"), parameters)));
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
