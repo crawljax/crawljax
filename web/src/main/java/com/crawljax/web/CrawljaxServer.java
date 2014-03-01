@@ -1,5 +1,10 @@
 package com.crawljax.web;
 
+import java.io.File;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import ch.qos.logback.classic.LoggerContext;
 import com.crawljax.web.di.CrawljaxWebModule;
 import com.google.inject.Guice;
@@ -14,12 +19,6 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class CrawljaxServer implements Callable<Void> {
 
@@ -123,11 +122,7 @@ public class CrawljaxServer implements Callable<Void> {
 	private WebAppContext setupOutputContext(final File outputFolder) {
 		WebAppContext webAppContext = new WebAppContext();
 		webAppContext.setContextPath("/output");
-		try {
-			webAppContext.setBaseResource(Resource.newResource(outputFolder));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		webAppContext.setBaseResource(Resource.newResource(outputFolder));
 		return webAppContext;
 	}
 

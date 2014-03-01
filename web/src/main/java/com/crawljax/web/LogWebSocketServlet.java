@@ -1,18 +1,17 @@
 package com.crawljax.web;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import org.eclipse.jetty.websocket.api.UpgradeRequest;
-import org.eclipse.jetty.websocket.api.UpgradeResponse;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import com.google.inject.Singleton;
+import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
+import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
-
-import com.google.inject.Singleton;
 
 /**
  * Socket that serves log entries.
@@ -34,7 +33,8 @@ public class LogWebSocketServlet extends WebSocketServlet {
 		factory.setCreator(new WebSocketCreator() {
 
 			@Override
-			public Object createWebSocket(UpgradeRequest req, UpgradeResponse resp) {
+			public Object createWebSocket(ServletUpgradeRequest servletUpgradeRequest,
+			                              ServletUpgradeResponse servletUpgradeResponse) {
 				return logSocketProvider.get();
 			}
 		});

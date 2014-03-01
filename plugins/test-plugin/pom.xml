@@ -19,7 +19,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>${artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
