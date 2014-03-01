@@ -233,7 +233,7 @@ public class StateMachineTest {
 	}
 
 	private InMemoryStateFlowGraph newStateFlowGraph() {
-		InMemoryStateFlowGraph sfg = new InMemoryStateFlowGraph(new ExitNotifier(0));
+		InMemoryStateFlowGraph sfg = new InMemoryStateFlowGraph(new ExitNotifier(0), new DefaultStateVertexFactory());
 		sfg.putIndex(index);
 		return sfg;
 	}

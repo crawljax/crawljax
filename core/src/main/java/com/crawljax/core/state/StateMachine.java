@@ -18,13 +18,6 @@ public class StateMachine {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StateMachine.class.getName());
 
-	/**
-	 * @return The index {@link StateVertex}.
-	 */
-	public static StateVertex createIndex(String url, String dom, String strippedDom) {
-		return new StateVertexImpl(StateVertex.INDEX_ID, url, "index", dom, strippedDom);
-	}
-
 	private final InMemoryStateFlowGraph stateFlowGraph;
 
 	private final StateVertex initialState;

@@ -11,6 +11,20 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.WebDriverBrowserBuilder;
+import com.crawljax.condition.ConditionTypeChecker;
+import com.crawljax.condition.crawlcondition.CrawlCondition;
+import com.crawljax.condition.eventablecondition.EventableConditionChecker;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.plugin.Plugins;
+import com.crawljax.core.state.DefaultStateVertexFactory;
+import com.crawljax.core.state.StateVertex;
+import com.crawljax.forms.FormHandler;
+import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
+import com.google.common.io.Resources;
 import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -22,28 +36,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.WebDriverBrowserBuilder;
-import com.crawljax.condition.ConditionTypeChecker;
-import com.crawljax.condition.crawlcondition.CrawlCondition;
-import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.plugin.Plugins;
-import com.crawljax.core.state.StateMachine;
-import com.crawljax.core.state.StateVertex;
-import com.crawljax.forms.FormHandler;
-import com.crawljax.test.BrowserTest;
-import com.crawljax.test.RunWithWebServer;
-import com.google.common.io.Resources;
-
 @Category(BrowserTest.class)
 @RunWith(MockitoJUnitRunner.class)
 public class CandidateElementExtractorTest {
 
 	private static final Logger LOG = LoggerFactory
 	        .getLogger(CandidateElementExtractorTest.class);
-	private static final StateVertex DUMMY_STATE = StateMachine.createIndex("http://localhost",
+	private static final StateVertex DUMMY_STATE = new DefaultStateVertexFactory().createIndex("http://localhost",
 	        "", "");
 
 	@Mock

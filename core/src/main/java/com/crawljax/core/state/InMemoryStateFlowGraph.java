@@ -1,5 +1,8 @@
 package com.crawljax.core.state;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,9 +14,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
+import com.crawljax.core.ExitNotifier;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.GraphPath;
@@ -22,13 +28,6 @@ import org.jgrapht.alg.KShortestPaths;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.crawljax.core.ExitNotifier;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * The State-Flow Graph is a multi-edge directed graph with states (StateVetex) on the vertices and
@@ -53,6 +52,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	private final AtomicInteger nextStateNameCounter = new AtomicInteger();
 	private final ConcurrentMap<Integer, StateVertex> stateById;
 	private final ExitNotifier exitNotifier;
+	private final StateVertexFactory vertexFactory;
 
 	/**
 	 * The constructor.
@@ -61,8 +61,9 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	 *            used for triggering an exit.
 	 */
 	@Inject
-	public InMemoryStateFlowGraph(ExitNotifier exitNotifier) {
+	public InMemoryStateFlowGraph(ExitNotifier exitNotifier, StateVertexFactory vertexFactory) {
 		this.exitNotifier = exitNotifier;
+		this.vertexFactory = vertexFactory;
 		sfg = new DirectedMultigraph<>(Eventable.class);
 		stateById = Maps.newConcurrentMap();
 		LOG.debug("Initialized the stateflowgraph");
@@ -277,7 +278,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 
 	StateVertex newStateFor(String url, String dom, String strippedDom) {
 		int id = nextStateNameCounter.incrementAndGet();
-		return new StateVertexImpl(id, url, getNewStateName(id), dom, strippedDom);
+		return vertexFactory.newStateVertex(id, url, getNewStateName(id), dom, strippedDom);
 	}
 
 	private String getNewStateName(int id) {

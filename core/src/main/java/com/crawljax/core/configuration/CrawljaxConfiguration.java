@@ -13,6 +13,7 @@ import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.state.StateVertexFactory;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -153,6 +154,22 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
+		 * Set a custom {@link com.crawljax.core.state.StateVertexFactory} to be able to use your own
+		 * {@link com.crawljax.core.state.StateVertex} objects. This is useful when you want to have a custom
+		 * comparator
+		 * in the stateflowgraph which relies on the {@link Object#hashCode()} or {@link Object#equals(Object)} of the
+		 * {@link com.crawljax.core.state.StateVertex}.
+		 *
+		 * @param vertexFactory The factory you want to use.
+		 * @return The builder for method chaining.
+		 */
+		public CrawljaxConfigurationBuilder setStateVertexFactory(StateVertexFactory vertexFactory) {
+			Preconditions.checkNotNull(vertexFactory);
+			config.stateVertexFactory = vertexFactory;
+			return this;
+		}
+
+		/**
 		 * Set the output folder for any {@link Plugin} you might configure. Crawljax itself doesn't
 		 * need an output folder but many plug-ins do.
 		 *
@@ -217,6 +234,8 @@ public class CrawljaxConfiguration {
 	private int maximumDepth = 2;
 	private File output = new File("out");
 
+	private StateVertexFactory stateVertexFactory;
+
 	private CrawljaxConfiguration() {
 	}
 
@@ -254,6 +273,11 @@ public class CrawljaxConfiguration {
 
 	public File getOutputDir() {
 		return output;
+	}
+
+
+	public StateVertexFactory getStateVertexFactory() {
+		return stateVertexFactory;
 	}
 
 	@Override

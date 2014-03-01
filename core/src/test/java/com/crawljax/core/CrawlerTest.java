@@ -16,6 +16,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
+import com.crawljax.core.state.DefaultStateVertexFactory;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
@@ -125,7 +126,7 @@ public class CrawlerTest {
 		        new Crawler(context, config,
 		                stateComparator,
 		                candidateActionCache, formHandlerFactory, waitConditionChecker,
-		                elementExtractor, graphProvider, plugins);
+		                elementExtractor, graphProvider, plugins, new DefaultStateVertexFactory());
 
 		setupStateFlowGraph();
 	}
