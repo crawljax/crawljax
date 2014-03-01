@@ -11,8 +11,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
@@ -25,8 +25,8 @@ import com.crawljax.forms.FormHandler;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
 import com.google.common.io.Resources;
-import org.junit.After;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -50,15 +50,12 @@ public class CandidateElementExtractorTest {
 
 	@ClassRule
 	public static final RunWithWebServer DEMO_SITE_SERVER = new RunWithWebServer("/demo-site");
+
+	@Rule
+	public final BrowserProvider provider = new BrowserProvider();
+
 	private EmbeddedBrowser browser;
 
-	@After
-	public void tearDown() {
-		if (browser != null) {
-			browser.closeOtherWindows();
-			browser.close();
-		}
-	}
 
 	@Test
 	public void testExtract() throws InterruptedException, CrawljaxException {
@@ -78,7 +75,7 @@ public class CandidateElementExtractorTest {
 	}
 
 	private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config) {
-		browser = new WebDriverBrowserBuilder(config, plugins).get();
+		browser = provider.newEmbeddedBrowser();
 		FormHandler formHandler = new FormHandler(browser, config.getCrawlRules());
 
 		EventableConditionChecker eventableConditionChecker =

@@ -38,7 +38,7 @@ public class CrawlerStopTest {
 	}
 
 	@Test(timeout = 60_000)
-	public void maximumTimeIsOblidged() throws Exception {
+	public void maximumTimeIsObliged() throws Exception {
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
 
 		CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
@@ -50,7 +50,7 @@ public class CrawlerStopTest {
 	}
 
 	@Test(timeout = 60_000)
-	public void maximumStatesIsOblidged() throws Exception {
+	public void maximumStatesIsObliged() throws Exception {
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
 
 		CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()

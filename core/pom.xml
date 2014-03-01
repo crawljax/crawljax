@@ -21,12 +21,14 @@
 			</activation>
 			<properties>
 				<tests.exclude>com.crawljax.test.BrowserTest.class</tests.exclude>
+				<test.browser>PHANTOMJS</test.browser>
 			</properties>
 		</profile>
 		<profile>
 			<id>integrationtests</id>
 			<properties>
 				<tests.exclude />
+				<test.browser>PHANTOMJS</test.browser>
 			</properties>
 		</profile>
 	</profiles>
@@ -165,6 +167,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<excludedGroups>${tests.exclude}</excludedGroups>
+					<systemPropertyVariables>
+						<test.browser>${test.browser}</test.browser>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 			<plugin>

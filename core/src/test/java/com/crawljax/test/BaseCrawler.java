@@ -5,9 +5,11 @@ import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.crawljax.browser.BrowserProvider;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.CrawljaxRunner;
+import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.Plugin;
@@ -102,6 +104,7 @@ public class BaseCrawler {
 		builder.setUnlimitedRuntime();
 		builder.setUnlimitedCrawlDepth();
 		builder.addPlugin(new PostCrawlStateGraphChecker());
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
 		return builder;
 	}
 

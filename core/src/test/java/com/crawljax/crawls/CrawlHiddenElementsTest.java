@@ -13,7 +13,7 @@ import com.crawljax.test.BaseCrawler;
 import com.crawljax.test.BrowserTest;
 
 @Category(BrowserTest.class)
-public class CrawlHiddenElementsTest implements BrowserTest {
+public class CrawlHiddenElementsTest {
 
 	/**
 	 * Shows <a href='https://github.com/crawljax/crawljax/issues/97'>Issue 97</a>

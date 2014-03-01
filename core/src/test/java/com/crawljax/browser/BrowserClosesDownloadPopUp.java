@@ -9,8 +9,10 @@ import org.junit.Test;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.test.BaseCrawler;
 import com.crawljax.test.BrowserTest;
+import org.junit.experimental.categories.Category;
 
-public class BrowserClosesDownloadPopUp implements BrowserTest {
+@Category(BrowserTest.class)
+public class BrowserClosesDownloadPopUp {
 
 	@Test
 	public void webBrowserWindowOpensItIsIgnored() {

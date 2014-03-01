@@ -6,17 +6,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import com.crawljax.browser.BrowserProvider;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.test.BrowserTest;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
-import com.crawljax.test.BrowserTest;
-import com.google.common.collect.ImmutableSortedSet;
 
 /**
  * Test for the Helper class.
@@ -24,12 +22,15 @@ import com.google.common.collect.ImmutableSortedSet;
 @Category(BrowserTest.class)
 public class DomUtilsBrowserTest {
 
+
+	@Rule
+	public BrowserProvider provider = new BrowserProvider();
+
 	private EmbeddedBrowser browser;
 
 	@Before
 	public void before() throws URISyntaxException {
-		browser = WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(),
-		        ImmutableSortedSet.<String> of(), 200, 300);
+		browser = provider.newEmbeddedBrowser();
 		URL url = DomUtilsBrowserTest.class.getResource("/site/index.html");
 		browser.goToUrl(url.toURI());
 	}
@@ -39,7 +40,6 @@ public class DomUtilsBrowserTest {
 	 */
 	@Test
 	public void testGetDocumentFromBrowser() throws SAXException, IOException {
-		// TODO Stefan; Refactor out the direct use of FirefoxDriver
 
 		String html = browser.getStrippedDom();
 		assertNotNull(html);

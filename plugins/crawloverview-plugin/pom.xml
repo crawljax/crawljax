@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -12,7 +13,7 @@
 	<name>Crawl Overview Plugin</name>
 	<description>
 		Generates an HTML report with a snapshot overview of what is crawled.
-  	</description>
+	</description>
 	<url>http://www.crawljax.com</url>
 
 	<scm>
@@ -34,6 +35,12 @@
 		<system>GitHub</system>
 		<url>https://github.com/crawljax/crawloverview-plugin/issues</url>
 	</issueManagement>
+
+
+	<properties>
+		<test.browser>PHANTOMJS</test.browser>
+	</properties>
+
 
 	<dependencies>
 		<dependency>
@@ -106,6 +113,15 @@
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<test.browser>${test.browser}</test.browser>
+					</systemPropertyVariables>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
