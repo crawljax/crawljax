@@ -1,15 +1,15 @@
 package com.crawljax.core;
 
+import com.crawljax.browser.BrowserProvider;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
-import org.junit.After;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 @Category(BrowserTest.class)
 public class NestedFramesTest {
@@ -19,9 +19,12 @@ public class NestedFramesTest {
 
 	private WebDriver driver;
 
+	@Rule
+	public BrowserProvider provider = new BrowserProvider();
+
 	@Test
 	public void testNestedFramesIndex() {
-		driver = new FirefoxDriver();
+		driver = provider.newBrowser();
 		driver.get(SERVER.getSiteUrl().toString());
 
 		driver.switchTo().frame(0);
@@ -31,9 +34,5 @@ public class NestedFramesTest {
 		button002.click();
 	}
 
-	@After
-	public void close() {
-		driver.close();
 
-	}
 }

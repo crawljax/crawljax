@@ -37,3 +37,21 @@ Detailed change history is avaialbe in our [changelog](https://github.com/crawlj
 
 
 [![Analytics](https://ga-beacon.appspot.com/UA-12224196-2/crawljax/crawljax?pixel)](https://github.com/igrigorik/ga-beacon)
+
+
+Testing
+-------
+
+You can run the tests using maven with the command
+
+	mvn clean package
+	
+If you want to run all the test, including browser tests, run 
+
+	mvn clean test -P integrationtests
+
+The default driver used for testing uses [PhantomJS](http://phantomjs.org) so make sure you have PhantomJS installed on your machine. You can also specify which browser you'd like to use with the `test.browser` variable. For example, if you want to test with Firefox, use:
+
+	mvn clean test -P integrationtests -Dtest.browser=FIREFOX
+
+Again, make sure a recent version of Firefox is installed on your machine before running the tests.	

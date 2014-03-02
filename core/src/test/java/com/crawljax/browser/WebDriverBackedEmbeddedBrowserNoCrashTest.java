@@ -20,15 +20,14 @@ import com.crawljax.core.state.Identification.How;
 import com.crawljax.forms.FormInput;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 /**
  * This Test checks the 'default' behavior of {@link EmbeddedBrowser} implemented by
@@ -40,6 +39,9 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	@ClassRule
 	public static final RunWithWebServer SERVER = new RunWithWebServer("site");
 
+	@Rule
+	public final BrowserProvider provider = new BrowserProvider();
+
 	private EmbeddedBrowser browser;
 
 	/**
@@ -47,20 +49,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	 */
 	@Before
 	public void setUp() {
-		browser = WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver());
-	}
-
-	/**
-	 * Clean-up our stuff.
-	 */
-	@After
-	public void tearDown() {
-		try {
-			browser.close();
-		} catch (NullPointerException e) {
-			// This will be thrown when close is already been called. Due to a WebDriver bug.
-			return;
-		}
+		browser = WebDriverBackedEmbeddedBrowser.withDriver(provider.newBrowser());
 	}
 
 	/**
