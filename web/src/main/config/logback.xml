@@ -4,7 +4,7 @@
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<!-- encoders are assigned by default the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
 		<encoder>
-			<pattern>[%thread] %-5level %logger{46} - %msg%n</pattern>
+            <pattern>[%thread] %-5level %logger{46} - %msg%n</pattern>
 		</encoder>
 	</appender>
 
@@ -28,7 +28,7 @@
     </sift>
   </appender>
 
-	<root level="WARN">
+	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="SIFT" />
 	</root>
