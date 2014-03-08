@@ -1,3 +1,14 @@
+## [Version 3.5](https://github.com/crawljax/crawljax/issues?milestone=8&state=closed)
+* Deprecated the malfunctioning DomChangeNotifierPlugin. Introuced StateVertexFactoryl. [#347](https://github.com/crawljax/crawljax/issues/347)
+* Better PhantomJS support. Tests run on PhantomJS by default.
+* Switched from URL's to URI's for better performance. [#322](https://github.com/crawljax/crawljax/issues/322)
+* Added Web UI project.
+
+## [Version 3.4](https://github.com/crawljax/crawljax/issues?milestone=7&state=closed)
+* Crawljax doesn't accidentally go to other URLs anymore during a Crawl. [#339](https://github.com/crawljax/crawljax/issues/339)
+* `StateVertexImpl.getUsedEventables()` Always returned an empty list [#350](https://github.com/crawljax/crawljax/issues/350)
+* Fixed some Findbugs errors (thanks to [@keheliya](https://github.com/keheliya))
+
 ## [Version 3.3](https://github.com/crawljax/crawljax/issues?milestone=6&state=closed)
 
 * [PhantomJSDriver](https://github.com/detro/ghostdriver) support is added. You can now use PhantomJS as a driver in Crawljax. For details see [#327](https://github.com/crawljax/crawljax/pull/327)
