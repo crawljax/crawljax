@@ -49,10 +49,8 @@ public class CrawljaxConfiguration {
 			try {
 				String encodedUsername = URLEncoder.encode(username, "UTF-8");
 				String encodedPassword = URLEncoder.encode(password, "UTF-8");
-				config.url = URI.create(config.url.getScheme()
-				  + "://" + encodedUsername
-				  + ":" + encodedPassword + "@" + config.url.getAuthority()
-				  + config.url.getPath());
+				String hostPrefix = encodedUsername + ":" + encodedPassword + "@";
+				config.url = URI.create(config.url.toString().replaceFirst("://", "://" + hostPrefix));
 			}
 			catch (UnsupportedEncodingException e) {
 				throw new CrawljaxException("Could not parse the username/password to a URL", e);
