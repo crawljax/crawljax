@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.crawljax</groupId>
 		<artifactId>crawljax-parent-pom</artifactId>
-		<version>3.5-SNAPSHOT</version>
+		<version>3.6-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>crawljax-core</artifactId>
@@ -124,7 +124,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.2.1</version>
+			<version>3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.codahale.metrics</groupId>
