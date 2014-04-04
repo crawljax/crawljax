@@ -4,18 +4,9 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map.Entry;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
@@ -28,9 +19,15 @@ import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.metrics.MetricsModule;
 import com.crawljax.test.BrowserTest;
 import com.google.common.collect.ImmutableList;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
@@ -40,9 +37,6 @@ import com.google.common.collect.ImmutableList;
 public class PluginsTest {
 
 	private Plugins plugins;
-
-	@Mock
-	private DomChangeNotifierPlugin domChange;
 
 	@Mock
 	private OnBrowserCreatedPlugin browserCreatedPlugin;
@@ -83,10 +77,10 @@ public class PluginsTest {
 	public void setup() {
 		registry = new MetricRegistry();
 		CrawljaxConfiguration config = CrawljaxConfiguration.builderFor("http://localhost")
-		        .addPlugin(domChange, browserCreatedPlugin,
-		                fireEventFailedPlugin, invariantViolationPlugin, newStatePlugin,
-		                onRevisitStatePlugin,
-		                urlLoadPlugin, postCrawlingPlugin, prestatePlugin).build();
+				.addPlugin(browserCreatedPlugin,
+						fireEventFailedPlugin, invariantViolationPlugin, newStatePlugin,
+						onRevisitStatePlugin,
+						urlLoadPlugin, postCrawlingPlugin, prestatePlugin).build();
 		plugins = new Plugins(config, registry);
 	}
 
@@ -105,7 +99,7 @@ public class PluginsTest {
 	private int counterFor(Class<? extends Plugin> plugin) {
 		for (Entry<String, Counter> counter : registry.getCounters().entrySet()) {
 			if (counter.getKey().contains(plugin.getSimpleName())
-			        && counter.getKey().endsWith("invocations")) {
+					&& counter.getKey().endsWith("invocations")) {
 				return (int) counter.getValue().getCount();
 			}
 		}
@@ -145,29 +139,6 @@ public class PluginsTest {
 	}
 
 	@Test
-	public void domChangeNotifierIsCalled() {
-		StateVertex stateBefore = mock(StateVertex.class);
-		Eventable eventable = mock(Eventable.class);
-		StateVertex stateAfter = mock(StateVertex.class);
-		String oldDom = "old";
-		String newDom = "new";
-		when(stateBefore.getDom()).thenReturn(oldDom);
-		when(stateAfter.getDom()).thenReturn(newDom);
-
-		plugins.runDomChangeNotifierPlugins(context, stateBefore, eventable, stateAfter);
-		verify(domChange).isDomChanged(context, oldDom, eventable, newDom);
-
-		assertThat(counterFor(DomChangeNotifierPlugin.class), is(1));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void onlyOneDomChangePluginCanBeAdded() {
-		new Plugins(CrawljaxConfiguration.builderFor("http://localhost")
-		        .addPlugin(domChange)
-		        .addPlugin(domChange).build(), new MetricRegistry());
-	}
-
-	@Test
 	public void browserCreatedIsCalled() {
 		EmbeddedBrowser newBrowser = mock(EmbeddedBrowser.class);
 		plugins.runOnBrowserCreatedPlugins(newBrowser);
@@ -192,25 +163,5 @@ public class PluginsTest {
 		verify(fireEventFailedPlugin).onFireEventFailed(context, eventable, path);
 		assertThat(counterFor(OnFireEventFailedPlugin.class), is(1));
 	}
-
-	@Test
-	public void whenDomChangeErrorsTheDefaultIsUsed() {
-		StateVertex stateBefore = mock(StateVertex.class);
-		Eventable eventable = mock(Eventable.class);
-		StateVertex stateAfter = mock(StateVertex.class);
-		String oldDom = "old";
-		String newDom = "new";
-		when(stateBefore.getDom()).thenReturn(oldDom);
-		when(stateAfter.getDom()).thenReturn(newDom);
-		when(domChange.isDomChanged(context, oldDom, eventable, newDom)).thenThrow(
-		        new RuntimeException("This is an expected excpetion. ignore"));
-		assertThat(
-		        plugins.runDomChangeNotifierPlugins(context, stateBefore, eventable, stateAfter),
-		        is(true));
-
-		assertThat(counterFor(DomChangeNotifierPlugin.class), is(1));
-		String failName = MetricsModule.PLUGINS_PREFIX + domChange.getClass().getSimpleName()
-		        + ".fail_count";
-		assertThat(registry.counter(failName).getCount(), is(1L));
-	}
 }
+

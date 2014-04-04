@@ -1,15 +1,10 @@
 package com.crawljax.core.plugin;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
@@ -31,6 +26,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for invoking plugins. The methods in this class are invoked from the Crawljax Core.
@@ -43,7 +40,7 @@ public class Plugins {
 
 	@SuppressWarnings("unchecked")
 	static final ImmutableSet<Class<? extends Plugin>> KNOWN_PLUGINS = ImmutableSet
-	        .of(DomChangeNotifierPlugin.class, OnBrowserCreatedPlugin.class,
+	        .of(OnBrowserCreatedPlugin.class,
 	                OnFireEventFailedPlugin.class,
 	                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 	                OnRevisitStatePlugin.class, OnUrlLoadPlugin.class,
@@ -70,13 +67,6 @@ public class Plugins {
 			addPlugins(plugins, builder);
 		}
 		this.plugins = builder.build();
-
-		checkArgument(
-		        this.plugins.get(DomChangeNotifierPlugin.class).size() < 2,
-		        "Only one or none "
-		                + DomChangeNotifierPlugin.class.getSimpleName()
-		                + " can be specified");
-
 		this.counters = registerCounters(registry);
 	}
 
@@ -361,47 +351,6 @@ public class Plugins {
 					reportFailingPlugin(plugin, e);
 				}
 			}
-		}
-	}
-
-	/**
-	 * Load and run the DomChangeNotifierPlugin.
-	 */
-	public boolean runDomChangeNotifierPlugins(final CrawlerContext context,
-	        final StateVertex stateBefore, final Eventable event,
-	        final StateVertex stateAfter) {
-		counters.get(DomChangeNotifierPlugin.class).inc();
-		if (plugins.get(DomChangeNotifierPlugin.class).isEmpty()) {
-			LOGGER.debug("No DomChangeNotifierPlugin found. Performing default DOM comparison...");
-			return defaultDomComparison(stateBefore, stateAfter);
-		} else {
-			DomChangeNotifierPlugin domChange = (DomChangeNotifierPlugin) plugins
-			        .get(DomChangeNotifierPlugin.class).get(0);
-			LOGGER.debug("Calling plugin {}", domChange);
-			try {
-				return domChange.isDomChanged(context, stateBefore.getDom(),
-				        event, stateAfter.getDom());
-			} catch (RuntimeException ex) {
-				LOGGER.error(
-				        "Could not run {} because of error {}. Now running default DOM comparison",
-				        domChange, ex.getMessage(), ex);
-				incrementFailCounterFor(domChange);
-				return defaultDomComparison(stateBefore, stateAfter);
-			}
-		}
-
-	}
-
-	private boolean defaultDomComparison(final StateVertex stateBefore,
-	        final StateVertex stateAfter) {
-		// default DOM comparison behavior
-		boolean isChanged = !stateAfter.equals(stateBefore);
-		if (isChanged) {
-			LOGGER.debug("Dom is Changed!");
-			return true;
-		} else {
-			LOGGER.debug("Dom not Changed!");
-			return false;
 		}
 	}
 
