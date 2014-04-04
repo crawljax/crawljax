@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.crawljax</groupId>
 		<artifactId>crawljax-parent-pom</artifactId>
-		<version>3.6-SNAPSHOT</version>
+		<version>3.5.1</version>
 	</parent>
 	<artifactId>crawljax-web</artifactId>
 	<packaging>jar</packaging>
