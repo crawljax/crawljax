@@ -40,9 +40,6 @@ import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.PostCrawlStateGraphChecker;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.oraclecomparator.OracleComparator;
-import com.crawljax.oraclecomparator.comparators.DateComparator;
-import com.crawljax.oraclecomparator.comparators.StyleComparator;
 import com.crawljax.test.RunWithWebServer;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -54,8 +51,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is the base abstract class for all different kind of largeTests. Sub classes tests specific
- * browser implementations like FireFox, Chrome, IE, etc.
+ * This is the base abstract class for all different kind of largeTests. Sub classes tests specific browser
+ * implementations like FireFox, Chrome, IE, etc.
  */
 public abstract class LargeTestBase {
 
@@ -81,7 +78,7 @@ public abstract class LargeTestBase {
 
 	private static final String TITLE_RESULT_RANDOM_INPUT = "RESULT_RANDOM_INPUT";
 	private static final String REGEX_RESULT_RANDOM_INPUT = "[a-zA-Z]{8};" + "[a-zA-Z]{8};"
-	  + "(true|false);" + "(true|false);" + "OPTION[1234];" + "[a-zA-Z]{8}";
+			+ "(true|false);" + "(true|false);" + "OPTION[1234];" + "[a-zA-Z]{8}";
 
 	// manual values
 	private static final String TITLE_MANUAL_INPUT_RESULT = "RESULT_MANUAL_INPUT";
@@ -103,7 +100,7 @@ public abstract class LargeTestBase {
 
 	private static final String TITLE_MULTIPLE_INPUT_RESULT = "RESULT_MULTIPLE_INPUT";
 	private static final String[] MULTIPLE_INPUT_RESULTS = { "first;foo;true;false;OPTION1;same",
-	  "second;bar;false;true;OPTION2;same", ";foo;true;false;OPTION1;same" };
+			"second;bar;false;true;OPTION2;same", ";foo;true;false;OPTION1;same" };
 
 	@ClassRule
 	public static final RunWithWebServer WEB_SERVER = new RunWithWebServer("/site");
@@ -134,10 +131,10 @@ public abstract class LargeTestBase {
 	protected CrawljaxConfiguration getCrawljaxConfiguration() {
 
 		CrawljaxConfigurationBuilder builder =
-		  CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl());
+				CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl());
 		builder.crawlRules().waitAfterEvent(getTimeOutAfterEvent(), TimeUnit.MILLISECONDS);
 		builder.crawlRules()
-			   .waitAfterReloadUrl(getTimeOutAfterReloadUrl(), TimeUnit.MILLISECONDS);
+				.waitAfterReloadUrl(getTimeOutAfterReloadUrl(), TimeUnit.MILLISECONDS);
 		builder.setMaximumDepth(3);
 		builder.crawlRules().clickOnce(true);
 
@@ -148,7 +145,6 @@ public abstract class LargeTestBase {
 		builder.crawlRules().setInputSpec(getInputSpecification());
 
 		addCrawlConditions(builder);
-		addOracleComparators(builder);
 		addInvariants(builder);
 		addWaitConditions(builder);
 		addPlugins(builder);
@@ -178,24 +174,26 @@ public abstract class LargeTestBase {
 
 	private static void addWaitConditions(CrawljaxConfigurationBuilder crawler) {
 		crawler.crawlRules().addWaitCondition(
-		  new WaitCondition("testWaitCondition.html", 2000, new ExpectedVisibleCondition(
-			new Identification(How.id, "SLOW_WIDGET"))));
+				new WaitCondition("testWaitCondition.html", 2000, new ExpectedVisibleCondition(
+						new Identification(How.id, "SLOW_WIDGET")))
+		);
 	}
 
 	private static void addInvariants(CrawljaxConfigurationBuilder builder) {
 		// should always fail on test invariant page
 		NotXPathCondition neverDivWithInvariantViolationId =
-		  new NotXPathCondition("//DIV[@id='INVARIANT_VIOLATION']");
+				new NotXPathCondition("//DIV[@id='INVARIANT_VIOLATION']");
 		builder.crawlRules().addInvariant(VIOLATED_INVARIANT_DESCRIPTION,
-		  neverDivWithInvariantViolationId);
+				neverDivWithInvariantViolationId);
 
 		// should never fail
 		RegexCondition onInvariantsPagePreCondition = new RegexCondition(INVARIANT_TEXT);
 		XPathCondition expectElement =
-		  new XPathCondition("//DIV[@id='SHOULD_ALWAYS_BE_ON_THIS_PAGE']");
+				new XPathCondition("//DIV[@id='SHOULD_ALWAYS_BE_ON_THIS_PAGE']");
 		builder.crawlRules().addInvariant(
-		  new Invariant("testInvariantWithPrecondiions", expectElement,
-			onInvariantsPagePreCondition));
+				new Invariant("testInvariantWithPrecondiions", expectElement,
+						onInvariantsPagePreCondition)
+		);
 	}
 
 	private static void addCrawlElements(CrawljaxConfigurationBuilder builder) {
@@ -205,24 +203,16 @@ public abstract class LargeTestBase {
 		rules.click("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
 		rules.click("button").when(new NotRegexCondition("DONT_CLICK_BUTTONS_ON_THIS_PAGE"));
 		rules.click("div").withAttribute(ATTRIBUTE, "condition")
-			 .when(new RegexCondition("REGEX_CONDITION_TRUE"));
+				.when(new RegexCondition("REGEX_CONDITION_TRUE"));
 
 		rules.dontClick("a").withText(DONT_CLICK_TEXT);
 		rules.dontClick("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);
 		rules.dontClick("a").underXPath("//DIV[@id='" + DONT_CLICK_UNDER_XPATH_ID + "']");
 	}
 
-	private static void addOracleComparators(CrawljaxConfigurationBuilder builder) {
-		builder.crawlRules().addOracleComparator(
-		  new OracleComparator("style", new StyleComparator()));
-
-		builder.crawlRules().addOracleComparator(
-		  new OracleComparator("date", new DateComparator()));
-	}
-
 	private static void addCrawlConditions(CrawljaxConfigurationBuilder builder) {
 		builder.crawlRules().addCrawlCondition("DONT_CRAWL_ME",
-		  new NotRegexCondition("DONT_CRAWL_ME"));
+				new NotRegexCondition("DONT_CRAWL_ME"));
 	}
 
 	/**
@@ -275,7 +265,7 @@ public abstract class LargeTestBase {
 		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains(TITLE_MANUAL_INPUT_RESULT)) {
 				assertTrue("Result contains the correct data",
-				  state.getDom().contains(MANUAL_INPUT_RESULT));
+						state.getDom().contains(MANUAL_INPUT_RESULT));
 				return;
 			}
 		}
@@ -311,14 +301,14 @@ public abstract class LargeTestBase {
 
 			// elements with DONT_CLICK_TEXT should never be clicked
 			assertTrue("No illegal element is clicked: " + eventable, !eventable.getElement()
-																				.getText().startsWith
-				(DONT_CLICK_TEXT));
+					.getText().startsWith
+							(DONT_CLICK_TEXT));
 			if (eventable.getElement().getText().startsWith(CLICK_TEXT)) {
 				clickMeFound++;
 			}
 		}
 		assertTrue(CLICKED_CLICK_ME_ELEMENTS + " CLICK_TEXT elements are clicked ",
-		  clickMeFound == CLICKED_CLICK_ME_ELEMENTS);
+				clickMeFound == CLICKED_CLICK_ME_ELEMENTS);
 	}
 
 	/**
@@ -327,22 +317,7 @@ public abstract class LargeTestBase {
 	@Test
 	public void testForIllegalStates() {
 		assertThat(getStateFlowGraph().getAllStates(),
-		  everyItem(not(stateWithDomSubstring(ILLEGAL_STATE))));
-	}
-
-	/**
-	 * this tests whether the oracle comparators are working correctly the home page is different
-	 * every load, but is equivalent when the oracle comparators are functioning.
-	 */
-	@Test
-	public void testOracleComparators() {
-		int countHomeStates = 0;
-		for (StateVertex state : getStateFlowGraph().getAllStates()) {
-			if (state.getDom().contains("HOMEPAGE")) {
-				countHomeStates++;
-			}
-		}
-		assertTrue("Only one home page. Found: " + countHomeStates, countHomeStates == 1);
+				everyItem(not(stateWithDomSubstring(ILLEGAL_STATE))));
 	}
 
 	/**
@@ -353,13 +328,13 @@ public abstract class LargeTestBase {
 	public void testInvariants() {
 		// two invariants were added, but only one should fail!
 		assertTrue(violatedInvariants.size() + " Invariants violated",
-		  violatedInvariants.size() == VIOLATED_INVARIANTS);
+				violatedInvariants.size() == VIOLATED_INVARIANTS);
 
 		// test whether the right invariant failed
 		assertTrue(VIOLATED_INVARIANT_DESCRIPTION + " failed", violatedInvariants.get(0)
-																				 .getDescription()
-																				 .equals(
-																				   VIOLATED_INVARIANT_DESCRIPTION));
+				.getDescription()
+				.equals(
+						VIOLATED_INVARIANT_DESCRIPTION));
 	}
 
 	/**
@@ -369,7 +344,7 @@ public abstract class LargeTestBase {
 	@Ignore("This test is non-deterministic and will fail without cause.")
 	public void testCorrectStateOnViolatedInvariants() {
 		assertTrue("OnViolatedInvariantPlugin session object has the correct currentState",
-		  violatedInvariantStateIsCorrect);
+				violatedInvariantStateIsCorrect);
 	}
 
 	/**
@@ -380,7 +355,7 @@ public abstract class LargeTestBase {
 		boolean foundSlowWidget = false;
 		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains("TEST_WAITCONDITION")
-			  && state.getDom().contains("LOADED_SLOW_WIDGET")) {
+					&& state.getDom().contains("LOADED_SLOW_WIDGET")) {
 				foundSlowWidget = true;
 			}
 		}

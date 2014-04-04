@@ -1,10 +1,10 @@
 package com.crawljax.web.model;
 
-import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 
 public class Configuration {
 	private String id;
@@ -12,7 +12,6 @@ public class Configuration {
 	private String url = "http://";
 	private BrowserType browser = BrowserType.FIREFOX;
 	private int numBrowsers = 1;
-	private boolean bootBrowser = true;
 	private int reloadWaitTime = 500;
 	private int eventWaitTime = 500;
 	private int maxDepth = 2;
@@ -24,7 +23,6 @@ public class Configuration {
 	private List<ClickRule> clickRules = new ArrayList<>();
 	private List<Condition> pageConditions = new ArrayList<>();
 	private List<Condition> invariants = new ArrayList<>();
-	private List<Comparator> comparators = new ArrayList<>();
 	private List<NameValuePair> formInputValues = new ArrayList<>();
 	private Date lastCrawl = null;
 	private long lastDuration;
@@ -228,21 +226,6 @@ public class Configuration {
 	}
 
 	/**
-	 * @return the bootBrowser
-	 */
-	public boolean isBootBrowser() {
-		return bootBrowser;
-	}
-
-	/**
-	 * @param bootBrowser
-	 *            the bootBrowser to set
-	 */
-	public void setBootBrowser(boolean bootBrowser) {
-		this.bootBrowser = bootBrowser;
-	}
-
-	/**
 	 * @return the clickRules
 	 */
 	public List<ClickRule> getClickRules() {
@@ -285,21 +268,6 @@ public class Configuration {
 	 */
 	public void setInvariants(List<Condition> invariants) {
 		this.invariants = invariants;
-	}
-
-	/**
-	 * @return the comparators
-	 */
-	public List<Comparator> getComparators() {
-		return comparators;
-	}
-
-	/**
-	 * @param comparators
-	 *            the comparators to set
-	 */
-	public void setComparators(List<Comparator> comparators) {
-		this.comparators = comparators;
 	}
 
 	/**

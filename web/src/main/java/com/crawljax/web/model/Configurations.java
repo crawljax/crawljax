@@ -62,7 +62,7 @@ public class Configurations {
 	}
 
 	public Configuration getCopyOf(String id) {
-		Configuration copy = workDirManager.loadConfiguration(id);
+		Configuration copy = workDirManager.loadConfigurationOrNull(id);
 		copy.setId(null);
 		copy.setName(null);
 		copy.setLastCrawl(null);

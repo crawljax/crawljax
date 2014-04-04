@@ -11,8 +11,6 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
-import com.crawljax.oraclecomparator.OracleComparator;
-import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -25,8 +23,6 @@ public class CrawlRules {
 
 		private final CrawlRules crawlRules;
 		private ImmutableList.Builder<Invariant> invariants = ImmutableList.builder();
-		private ImmutableList.Builder<OracleComparator> oracleComparators = ImmutableList
-		        .builder();
 		private final CrawlActionsBuilder crawlActionsBuilder;
 		private final PreCrawlConfigurationBuilder preCrawlConfig;
 		private final ImmutableSortedSet.Builder<String> ignoredFrameIdentifiers =
@@ -72,11 +68,6 @@ public class CrawlRules {
 			Preconditions.checkNotNull(description);
 			Preconditions.checkNotNull(condition);
 			invariants.add(new Invariant(description, condition));
-			return this;
-		}
-
-		public CrawlRulesBuilder addOracleComparator(OracleComparator... oracle) {
-			oracleComparators.add(oracle);
 			return this;
 		}
 
@@ -267,21 +258,9 @@ public class CrawlRules {
 
 		CrawlRules build() {
 			crawlRules.invariants = invariants.build();
-			setupOracleComparatorsOrDefault();
 			crawlRules.preCrawlConfig = preCrawlConfig.build(crawlActionsBuilder);
 			crawlRules.ignoredFrameIdentifiers = ignoredFrameIdentifiers.build();
 			return crawlRules;
-		}
-
-		private void setupOracleComparatorsOrDefault() {
-			ImmutableList<OracleComparator> comparators = oracleComparators.build();
-			if (comparators.isEmpty()) {
-				crawlRules.oracleComparators =
-				        ImmutableList.of(new OracleComparator("SimpleComparator",
-				                new SimpleComparator()));
-			} else {
-				crawlRules.oracleComparators = comparators;
-			}
 		}
 	}
 
@@ -300,7 +279,6 @@ public class CrawlRules {
 	}
 
 	private ImmutableList<Invariant> invariants;
-	private ImmutableList<OracleComparator> oracleComparators;
 	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
 
 	private PreCrawlConfiguration preCrawlConfig;
@@ -320,10 +298,6 @@ public class CrawlRules {
 
 	public ImmutableList<Invariant> getInvariants() {
 		return invariants;
-	}
-
-	public ImmutableList<OracleComparator> getOracleComparators() {
-		return oracleComparators;
 	}
 
 	public PreCrawlConfiguration getPreCrawlConfig() {
@@ -391,8 +365,8 @@ public class CrawlRules {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(invariants, oracleComparators,
-		        ignoredFrameIdentifiers, preCrawlConfig, randomInputInForms, inputSpecification,
+		return Objects.hashCode(invariants, ignoredFrameIdentifiers, preCrawlConfig,
+				randomInputInForms, inputSpecification,
 		        clickOnce, crawlFrames, crawlHiddenAnchors,
 		        waitAfterReloadUrl, waitAfterEvent, followExternalLinks);
 	}
@@ -402,7 +376,7 @@ public class CrawlRules {
 		if (object instanceof CrawlRules) {
 			CrawlRules that = (CrawlRules) object;
 			return Objects.equal(this.invariants, that.invariants)
-			        && Objects.equal(this.oracleComparators, that.oracleComparators)
+			        && Objects.equal(this.invariants, that.invariants)
 			        && Objects.equal(this.ignoredFrameIdentifiers, that.ignoredFrameIdentifiers)
 			        && Objects.equal(this.preCrawlConfig, that.preCrawlConfig)
 			        && Objects.equal(this.randomInputInForms, that.randomInputInForms)
@@ -425,7 +399,6 @@ public class CrawlRules {
 		        .add("DEFAULT_WAIT_AFTER_RELOAD", DEFAULT_WAIT_AFTER_RELOAD)
 		        .add("DEFAULT_WAIT_AFTER_EVENT", DEFAULT_WAIT_AFTER_EVENT)
 		        .add("invariants", invariants)
-		        .add("oracleComparators", oracleComparators)
 		        .add("ignoredFrameIdentifiers", ignoredFrameIdentifiers)
 		        .add("preCrawlConfig", preCrawlConfig)
 		        .add("randomInputInForms", randomInputInForms)

@@ -1,5 +1,8 @@
 package com.crawljax.web.fs;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -8,17 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.crawljax.web.di.CrawljaxWebModule.OutputFolder;
 import com.crawljax.web.model.Configuration;
 import com.crawljax.web.model.CrawlRecord;
 import com.crawljax.web.model.CrawlRecord.CrawlStatusType;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class WorkDirManager {
@@ -51,19 +50,26 @@ public class WorkDirManager {
 		});
 		for (File f : configFiles) {
 			String id = f.getName().substring(0, f.getName().indexOf(".json"));
-			Configuration c = loadConfiguration(id);
+			Configuration c = loadConfigurationOrNull(id);
+			if (c == null) {
+				continue;
+			}
 			configs.put(c.getId(), c);
 		}
 		return configs;
 	}
 
-	public Configuration loadConfiguration(String id) {
+	public Configuration loadConfigurationOrNull(String id) {
 		Configuration config = null;
 		File configFile = new File(configFolder, id + ".json");
 		try {
 			config = mapper.readValue(configFile, Configuration.class);
 		} catch (IOException e) {
-			LOG.error("Could not load config {}", configFile.getName());
+			LOG.error("Could not load config {} because {}. Removing the file...", configFile.getName(), e.getMessage());
+			boolean deleted = configFile.delete();
+			if (!deleted) {
+				LOG.warn("Could not delete {}", configFile);
+			}
 		}
 		return config;
 	}

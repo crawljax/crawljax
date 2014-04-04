@@ -113,12 +113,12 @@ public class CrawlerTest {
 		when(browser.getCurrentUrl()).thenReturn(url.toString());
 		when(sessionProvider.get()).thenReturn(session);
 
-		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());
-		stateComparator = new StateComparator(config.getCrawlRules());
 
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
+		stateComparator = new StateComparator();
 		when(graphProvider.get()).thenReturn(graph);
 
+		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());
 		context =
 		        new CrawlerContext(browser, config, sessionProvider, exitNotifier,
 		                new MetricRegistry());

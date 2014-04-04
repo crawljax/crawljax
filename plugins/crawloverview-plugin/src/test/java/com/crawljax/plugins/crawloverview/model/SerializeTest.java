@@ -18,8 +18,6 @@ import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.oraclecomparator.OracleComparator;
-import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -71,9 +69,6 @@ public class SerializeTest {
 
 		builder.crawlRules().addCrawlCondition(
 		        new CrawlCondition("kers", new RegexCondition("test")));
-
-		builder.crawlRules().addOracleComparator(
-		        new OracleComparator("tes", new SimpleComparator()));
 
 		Serializer.toPrettyJson(builder.build());
 	}
