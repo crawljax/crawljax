@@ -116,7 +116,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			ChromeOptions optionsChrome = new ChromeOptions();
 			String lang = configuration.getBrowserConfig().getLangOrNull();
 			if (!Strings.isNullOrEmpty(lang)) {
-				optionsChrome.setExperimentalOptions("intl.accept_languages", lang);
+				optionsChrome.addArguments("--lang=" + lang);
 			}
 			optionsChrome.addArguments("--proxy-server=http://"
 			        + configuration.getProxyConfiguration().getHostname() + ":"
@@ -135,7 +135,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 		DesiredCapabilities caps = new DesiredCapabilities();
 		caps.setCapability("takesScreenshot", true);
-		
+		caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--webdriver-loglevel=WARN"});
 		final ProxyConfiguration proxyConf = configuration
 				.getProxyConfiguration();
 		if (proxyConf != null && proxyConf.getType() != ProxyType.NOTHING) {

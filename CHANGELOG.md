@@ -1,3 +1,8 @@
+## [Version 3.5.1]
+* Updated Selenium to 2.41.0
+* Fixed stripped DOM method
+* Updated dependencies
+
 ## [Version 3.5](https://github.com/crawljax/crawljax/issues?milestone=8&state=closed)
 * Deprecated the malfunctioning DomChangeNotifierPlugin. Introuced StateVertexFactoryl. [#347](https://github.com/crawljax/crawljax/issues/347)
 * Better PhantomJS support. Tests run on PhantomJS by default.

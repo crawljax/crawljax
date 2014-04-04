@@ -11,6 +11,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.crawljax.plugins.crawloverview.model.Statistics;
+import com.google.common.collect.Lists;
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -20,15 +24,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.crawljax.plugins.crawloverview.model.Statistics;
-import com.google.common.collect.Lists;
-import com.thoughtworks.selenium.DefaultSelenium;
 
 public class OverviewIntegrationTest {
 
