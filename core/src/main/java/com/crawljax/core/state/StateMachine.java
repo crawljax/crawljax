@@ -8,7 +8,7 @@ import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.plugin.Plugins;
-import com.crawljax.oraclecomparator.StateComparator;
+import com.crawljax.domcomparators.StateComparator;
 import com.google.common.collect.ImmutableList;
 
 /**

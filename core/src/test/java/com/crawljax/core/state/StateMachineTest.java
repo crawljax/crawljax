@@ -27,7 +27,7 @@ import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
-import com.crawljax.oraclecomparator.StateComparator;
+import com.crawljax.domcomparators.StateComparator;
 import com.google.common.collect.ImmutableList;
 
 @RunWith(MockitoJUnitRunner.class)

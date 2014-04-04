@@ -14,6 +14,10 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.state.StateVertexFactory;
+import com.crawljax.domcomparators.DomTextContentStripper;
+import com.crawljax.domcomparators.AttributesStripper;
+import com.crawljax.domcomparators.DomStripper;
+import com.crawljax.domcomparators.ValidDomStripper;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -26,6 +30,8 @@ public class CrawljaxConfiguration {
 	public static class CrawljaxConfigurationBuilder {
 
 		private final ImmutableList.Builder<Plugin> pluginBuilder = ImmutableList.builder();
+		private final ImmutableList.Builder<ValidDomStripper> validStrippers = ImmutableList.builder();
+		private final ImmutableList.Builder<DomStripper> strippers = ImmutableList.builder();
 		private final CrawljaxConfiguration config;
 		private final CrawlRulesBuilder crawlRules;
 
@@ -37,8 +43,8 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * If the website uses <a
-		 * href="http://en.wikipedia.org/wiki/Basic_access_authentication">Basic auth</a> you can
+		 * If the website uses <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">Basic auth</a> you
+		 * can
 		 * set the username and password here.
 		 *
 		 * @param username The username for the website.
@@ -59,8 +65,7 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * @param states The maximum number of states the Crawler should crawl. The default is
-		 *               unlimited.
+		 * @param states The maximum number of states the Crawler should crawl. The default is unlimited.
 		 */
 		public CrawljaxConfigurationBuilder setMaximumStates(int states) {
 			checkArgument(states > 1, "Number of maximum states should be larger than 1");
@@ -98,7 +103,7 @@ public class CrawljaxConfiguration {
 		 */
 		public CrawljaxConfigurationBuilder setMaximumDepth(int depth) {
 			Preconditions.checkArgument(depth >= 0,
-			  "Depth should be 0 for infinite, or larger for a certain depth.");
+					"Depth should be 0 for infinite, or larger for a certain depth.");
 			config.maximumDepth = depth;
 			return this;
 		}
@@ -112,11 +117,8 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * Add plugins to Crawljax. Note that without plugins, Crawljax won't give any ouput. For
-		 * basic output at least enable the CrawlOverviewPlugin.
-		 * <p>
-		 * You can call this method several times to add multiple plugins
-		 * </p>
+		 * Add plugins to Crawljax. Note that without plugins, Crawljax won't give any ouput. For basic output at least
+		 * enable the CrawlOverviewPlugin. <p> You can call this method several times to add multiple plugins </p>
 		 *
 		 * @param plugins the plugins you would like to enable.
 		 */
@@ -142,8 +144,8 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * @param configuration a custom {@link BrowserConfiguration}. The default is a single
-		 *                      {@link BrowserType#FIREFOX} browser.
+		 * @param configuration a custom {@link BrowserConfiguration}. The default is a single {@link
+		 *                      BrowserType#FIREFOX} browser.
 		 */
 		public CrawljaxConfigurationBuilder setBrowserConfig(BrowserConfiguration configuration) {
 			Preconditions.checkNotNull(configuration);
@@ -152,11 +154,11 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * Set a custom {@link com.crawljax.core.state.StateVertexFactory} to be able to use your own
-		 * {@link com.crawljax.core.state.StateVertex} objects. This is useful when you want to have a custom
-		 * comparator
-		 * in the stateflowgraph which relies on the {@link Object#hashCode()} or {@link Object#equals(Object)} of the
-		 * {@link com.crawljax.core.state.StateVertex}.
+		 * Set a custom {@link com.crawljax.core.state.StateVertexFactory} to be able to use your own {@link
+		 * com.crawljax.core.state.StateVertex} objects. This is useful when you want to have a custom comparator in
+		 * the
+		 * stateflowgraph which relies on the {@link Object#hashCode()} or {@link Object#equals(Object)} of the {@link
+		 * com.crawljax.core.state.StateVertex}.
 		 *
 		 * @param vertexFactory The factory you want to use.
 		 * @return The builder for method chaining.
@@ -168,8 +170,8 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * Set the output folder for any {@link Plugin} you might configure. Crawljax itself doesn't
-		 * need an output folder but many plug-ins do.
+		 * Set the output folder for any {@link Plugin} you might configure. Crawljax itself doesn't need an output
+		 * folder but many plug-ins do.
 		 *
 		 * @param output The output folder. If it does not exist it will be created.
 		 * @throws IllegalStateException if the specified file is not writable or exists but isn't a folder.
@@ -180,22 +182,86 @@ public class CrawljaxConfiguration {
 			return this;
 		}
 
+		/**
+		 * Add a {@link com.crawljax.domcomparators.DomStripper}.
+		 *
+		 * <p>
+		 * If no {@link com.crawljax.domcomparators.DomStripper} or
+		 * {@link com.crawljax.domcomparators.ValidDomStripper} is added,
+		 * Crawljax uses the build-in {@link com.crawljax.domcomparators.DomStructureStripper}
+		 *  and {@link com.crawljax.domcomparators.AttributesStripper}</p>
+		 *
+		 * <p>
+		 * Out-of-the-box available strippers are:
+		 * <ul>
+		 * <li>{@link com.crawljax.domcomparators.DomTextContentStripper}</li>
+		 * <li>{@link com.crawljax.domcomparators.DomStructureStripper}</li>
+		 * <li>{@link com.crawljax.domcomparators.DomTextContentStripper}</li>
+		 * <li>{@link com.crawljax.domcomparators.WhiteSpaceStripper}</li>
+		 * </ul>
+		 * </p>
+		 * <p/>
+		 * @param stripper The stripper you want to add. Order matters. Duplicates are allowed.
+		 * @return the builder for method chaining.
+		 */
+		public CrawljaxConfigurationBuilder addDomStripper(DomStripper stripper) {
+			strippers.add(stripper);
+			return this;
+		}
+
+		/**
+		 * Add a {@link com.crawljax.domcomparators.ValidDomStripper}.
+		 *
+		 * <p>If no {@link com.crawljax.domcomparators.DomStripper} or {@link com.crawljax.domcomparators
+		 * .ValidDomStripper} is added, Crawljax uses the build-in
+		 * {@link com.crawljax.domcomparators.DomTextContentStripper}
+		 * and {@link com.crawljax.domcomparators.AttributesStripper}</p>
+		 *
+		 * <p>
+		 * Out-of-the-box available strippers are:
+		 * <ul>
+		 * <li>{@link com.crawljax.domcomparators.DomTextContentStripper}</li>
+		 * <li>{@link com.crawljax.domcomparators.DomStructureStripper}</li>
+		 * <li>{@link com.crawljax.domcomparators.ByCssSelectorStripper}</li>
+		 * <li>{@link com.crawljax.domcomparators.WhiteSpaceStripper}</li>
+		 * <li>{@link com.crawljax.domcomparators.AttributesStripper}</li>
+		 * </ul>
+		 * </p>
+		 * <p/>
+		 *
+		 * @param stripper The stripper you want to add. Order matters. Duplicates are allowed.
+		 * @return the builder for method chaining.
+		 */
+		public CrawljaxConfigurationBuilder addValidDomStripper(ValidDomStripper stripper) {
+			validStrippers.add(stripper);
+			return this;
+		}
+
 		private void checkOutputDirWritable() {
 			if (!config.output.exists()) {
 				Preconditions.checkState(config.output.mkdirs(),
-				  "Could not create the output directory %s ", config.output);
+						"Could not create the output directory %s ", config.output);
 			}
 			else {
 				Preconditions.checkArgument(config.output.isDirectory(),
-				  "Output directory %s is not a folder", config.output);
+						"Output directory %s is not a folder", config.output);
 				Preconditions.checkState(config.output.canWrite(),
-				  "Output directory %s is not writable", config.output);
+						"Output directory %s is not writable", config.output);
 			}
 		}
 
 		public CrawljaxConfiguration build() {
 			config.plugins = pluginBuilder.build();
 			config.crawlRules = crawlRules.build();
+			config.strippers = strippers.build();
+			config.validStrippers = validStrippers.build();
+
+			if (config.strippers.isEmpty() && config.validStrippers.isEmpty()) {
+				config.strippers = ImmutableList.of(
+						new DomTextContentStripper(),
+						new AttributesStripper()
+				);
+			}
 			return config;
 		}
 
@@ -222,6 +288,8 @@ public class CrawljaxConfiguration {
 
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.FIREFOX);
 	private ImmutableList<Plugin> plugins;
+	private ImmutableList<DomStripper> strippers;
+	private ImmutableList<ValidDomStripper> validStrippers;
 	private ProxyConfiguration proxyConfiguration = ProxyConfiguration.noProxy();
 
 	private CrawlRules crawlRules;
@@ -273,6 +341,9 @@ public class CrawljaxConfiguration {
 		return output;
 	}
 
+	public ImmutableList<DomStripper> getStrippers() {
+		return strippers;
+	}
 
 	public StateVertexFactory getStateVertexFactory() {
 		return stateVertexFactory;
@@ -281,7 +352,7 @@ public class CrawljaxConfiguration {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(url, browserConfig, plugins, proxyConfiguration, crawlRules,
-		  maximumStates, maximumRuntime, maximumDepth);
+				maximumStates, maximumRuntime, maximumDepth, strippers, validStrippers);
 	}
 
 	@Override
@@ -289,13 +360,15 @@ public class CrawljaxConfiguration {
 		if (object instanceof CrawljaxConfiguration) {
 			CrawljaxConfiguration that = (CrawljaxConfiguration) object;
 			return Objects.equal(this.url, that.url)
-			  && Objects.equal(this.browserConfig, that.browserConfig)
-			  && Objects.equal(this.plugins, that.plugins)
-			  && Objects.equal(this.proxyConfiguration, that.proxyConfiguration)
-			  && Objects.equal(this.crawlRules, that.crawlRules)
-			  && Objects.equal(this.maximumStates, that.maximumStates)
-			  && Objects.equal(this.maximumRuntime, that.maximumRuntime)
-			  && Objects.equal(this.maximumDepth, that.maximumDepth);
+					&& Objects.equal(this.browserConfig, that.browserConfig)
+					&& Objects.equal(this.plugins, that.plugins)
+					&& Objects.equal(this.proxyConfiguration, that.proxyConfiguration)
+					&& Objects.equal(this.crawlRules, that.crawlRules)
+					&& Objects.equal(this.maximumStates, that.maximumStates)
+					&& Objects.equal(this.maximumRuntime, that.maximumRuntime)
+					&& Objects.equal(this.maximumDepth, that.maximumDepth)
+					&& Objects.equal(this.strippers, that.strippers)
+					&& Objects.equal(this.validStrippers, that.validStrippers);
 		}
 		return false;
 	}
@@ -303,15 +376,15 @@ public class CrawljaxConfiguration {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-					  .add("url", url)
-					  .add("browserConfig", browserConfig)
-					  .add("plugins", plugins)
-					  .add("proxyConfiguration", proxyConfiguration)
-					  .add("crawlRules", crawlRules)
-					  .add("maximumStates", maximumStates)
-					  .add("maximumRuntime", maximumRuntime)
-					  .add("maximumDepth", maximumDepth)
-					  .toString();
+				.add("url", url)
+				.add("browserConfig", browserConfig)
+				.add("plugins", plugins)
+				.add("proxyConfiguration", proxyConfiguration)
+				.add("crawlRules", crawlRules)
+				.add("maximumStates", maximumStates)
+				.add("maximumRuntime", maximumRuntime)
+				.add("maximumDepth", maximumDepth)
+				.toString();
 	}
 
 }

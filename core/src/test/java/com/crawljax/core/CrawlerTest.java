@@ -24,9 +24,9 @@ import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
 import com.crawljax.di.CoreModule.FormHandlerFactory;
+import com.crawljax.domcomparators.StateComparator;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
-import com.crawljax.oraclecomparator.StateComparator;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
@@ -115,7 +115,7 @@ public class CrawlerTest {
 
 
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
-		stateComparator = new StateComparator();
+		stateComparator = StateComparator.noStrippingComparator();
 		when(graphProvider.get()).thenReturn(graph);
 
 		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());
