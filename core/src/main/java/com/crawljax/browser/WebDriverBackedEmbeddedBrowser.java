@@ -338,12 +338,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	}
 
 	@Override
-	@Deprecated
-	public String getDom() {
-		return getStrippedDom();
-	}
-
-	@Override
 	public String getStrippedDom() {
 
 		try {
