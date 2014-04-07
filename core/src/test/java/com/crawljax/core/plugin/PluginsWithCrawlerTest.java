@@ -9,15 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.html.dom.HTMLAnchorElementImpl;
-import org.eclipse.jetty.util.BlockingArrayQueue;
-import org.hamcrest.core.IsCollectionContaining;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.ErrorCollector;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.NotRegexCondition;
 import com.crawljax.condition.invariant.Invariant;
@@ -28,12 +19,19 @@ import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import org.apache.html.dom.HTMLAnchorElementImpl;
+import org.eclipse.jetty.util.BlockingArrayQueue;
+import org.hamcrest.core.IsCollectionContaining;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.rules.ErrorCollector;
 
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
@@ -86,19 +84,6 @@ public class PluginsWithCrawlerTest {
 					        !state.equals(context.getSession().getInitialState()));
 				}
 			}
-		});
-
-		builder.addPlugin(new DomChangeNotifierPlugin() {
-
-			@Override
-			public boolean isDomChanged(CrawlerContext context, String domBefore, Eventable e,
-			        String domAfter) {
-
-				plugins.add(DomChangeNotifierPlugin.class);
-				return !domAfter.equals(domBefore);
-
-			}
-
 		});
 
 		builder.addPlugin(new OnBrowserCreatedPlugin() {
@@ -207,8 +192,7 @@ public class PluginsWithCrawlerTest {
 	public void verifyOnUrlLoadFollowers() {
 		afterFirstPluginsIsFollowedBy(OnUrlLoadPlugin.class, ImmutableSet.of(
 		        OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
-		        DomChangeNotifierPlugin.class, OnRevisitStatePlugin.class,
-		        PostCrawlingPlugin.class));
+		        OnRevisitStatePlugin.class, PostCrawlingPlugin.class));
 	}
 
 	private void afterFirstPluginsIsFollowedBy(Class<OnUrlLoadPlugin> suspect,
@@ -253,7 +237,7 @@ public class PluginsWithCrawlerTest {
 	@Test
 	public void verifyPreStateCrawlingFollowers() {
 		pluginsIsFollowedBy(PreStateCrawlingPlugin.class,
-		        ImmutableSet.of(DomChangeNotifierPlugin.class, OnFireEventFailedPlugin.class,
+		        ImmutableSet.of(OnFireEventFailedPlugin.class,
 		                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 		                OnUrlLoadPlugin.class));
 	}
@@ -261,30 +245,14 @@ public class PluginsWithCrawlerTest {
 	@Test
 	public void onRevisitStatesFollowers() {
 		pluginsIsFollowedBy(OnRevisitStatePlugin.class, ImmutableSet.of(
-		        OnFireEventFailedPlugin.class, DomChangeNotifierPlugin.class,
-		        OnInvariantViolationPlugin.class, OnNewStatePlugin.class));
-	}
-
-	@Test
-	public void verifyOnDomChangedFollowers() {
-		pluginsIsFollowedBy(DomChangeNotifierPlugin.class, ImmutableSet.of(
-		        OnFireEventFailedPlugin.class, DomChangeNotifierPlugin.class,
-		        OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
-		        PostCrawlingPlugin.class));
+		        OnFireEventFailedPlugin.class, OnInvariantViolationPlugin.class,
+				OnNewStatePlugin.class));
 	}
 
 	@Test
 	public void startAndEndPluginsAreOnlyRunOnce() {
-		// assertThat(orrurencesOf(ProxyServerPlugin.class), is(1));
 		assertThat(orrurencesOf(PreCrawlingPlugin.class), is(1));
 		assertThat(orrurencesOf(PostCrawlingPlugin.class), is(1));
-	}
-
-	@Test
-	public void domStatesChangesAreEqualToNumberOfStatesAfterIndex() {
-		int numberOfStates = session.getStateFlowGraph().getAllStates().size();
-		int newStatesAfterIndexPage = numberOfStates - 1;
-		assertThat(orrurencesOf(DomChangeNotifierPlugin.class), is(newStatesAfterIndexPage));
 	}
 
 	@Test

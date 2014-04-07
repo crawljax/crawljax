@@ -346,17 +346,13 @@ public class Crawler {
 			goBackOneState();
 		} else {
 			StateVertex newState = stateMachine.newStateFor(browser);
-			if (domChanged(event, newState)) {
+			// The state vertex is responsible for comparing DOMS.
+			if (!stateMachine.getCurrentState().equals(newState)) {
 				inspectNewDom(event, newState);
 			} else {
 				LOG.debug("Dom unchanged");
 			}
 		}
-	}
-
-	private boolean domChanged(final Eventable eventable, StateVertex newState) {
-		return plugins.runDomChangeNotifierPlugins(context, stateMachine.getCurrentState(),
-		        eventable, newState);
 	}
 
 	private void inspectNewDom(Eventable event, StateVertex newState) {
