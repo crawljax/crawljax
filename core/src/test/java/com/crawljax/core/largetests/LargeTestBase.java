@@ -40,6 +40,7 @@ import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.PostCrawlStateGraphChecker;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.domcomparators.WhiteSpaceStripper;
 import com.crawljax.test.RunWithWebServer;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -131,19 +132,20 @@ public abstract class LargeTestBase {
 	protected CrawljaxConfiguration getCrawljaxConfiguration() {
 
 		CrawljaxConfigurationBuilder builder =
-				CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl());
-		builder.crawlRules().waitAfterEvent(getTimeOutAfterEvent(), TimeUnit.MILLISECONDS);
-		builder.crawlRules()
-				.waitAfterReloadUrl(getTimeOutAfterReloadUrl(), TimeUnit.MILLISECONDS);
-		builder.setMaximumDepth(3);
-		builder.crawlRules().clickOnce(true);
+				CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl())
+						.addDomStripper(new WhiteSpaceStripper())
+						.setMaximumDepth(3)
+						.setBrowserConfig(getBrowserConfiguration())
+						.crawlRules()
+						.waitAfterEvent(getTimeOutAfterEvent(), TimeUnit.MILLISECONDS)
+						.waitAfterReloadUrl(getTimeOutAfterReloadUrl(), TimeUnit.MILLISECONDS)
+						.clickOnce(true)
+						.crawlFrames(true)
+						.setInputSpec(getInputSpecification())
+						.endRules();
 
-		builder.setBrowserConfig(getBrowserConfiguration());
 
 		addCrawlElements(builder);
-
-		builder.crawlRules().setInputSpec(getInputSpecification());
-
 		addCrawlConditions(builder);
 		addInvariants(builder);
 		addWaitConditions(builder);
@@ -228,7 +230,7 @@ public abstract class LargeTestBase {
 			@Override
 			public void onInvariantViolation(Invariant invariant, CrawlerContext context) {
 				LargeTestBase.violatedInvariants.add(invariant);
-				if (context.getBrowser().getStrippedDom().contains(INVARIANT_TEXT)) {
+				if (context.getBrowser().getDom().contains(INVARIANT_TEXT)) {
 					violatedInvariantStateIsCorrect = true;
 					LOG.warn("Invariant violated: " + invariant.getDescription());
 				}

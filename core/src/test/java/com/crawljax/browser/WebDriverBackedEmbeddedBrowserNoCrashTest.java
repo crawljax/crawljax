@@ -111,7 +111,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	}
 
 	/**
-	 * Test method for {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDom()}.
+	 * Test method for {@link EmbeddedBrowser#getDom()} ()}.
 	 * 
 	 * @throws CrawljaxException
 	 *             when the dom can not be downloaded.
@@ -120,19 +120,7 @@ public class WebDriverBackedEmbeddedBrowserNoCrashTest {
 	public final void testGetDom() throws CrawljaxException, URISyntaxException {
 		URL index = WebDriverBackedEmbeddedBrowserTest.class.getResource("/site/simple.html");
 		browser.goToUrl(index.toURI());
-		browser.getStrippedDom();
-	}
-
-	/**
-	 * Test method for
-	 * {@link com.crawljax.browser.EmbeddedBrowser#getStrippedDomWithoutIframeContent()}.
-	 * 
-	 * @throws CrawljaxException
-	 *             when the the dom can not be downloaded.
-	 */
-	@Test
-	public final void testGetDomWithoutIframeContent() throws CrawljaxException {
-		browser.getStrippedDomWithoutIframeContent();
+		browser.getDom();
 	}
 
 	/**

@@ -18,7 +18,7 @@ import com.crawljax.core.state.DefaultStateVertexFactory;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertexFactory;
-import com.crawljax.domcomparators.StateComparator;
+import com.crawljax.domcomparators.DomStrippers;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.metrics.MetricsModule;
 import com.google.inject.AbstractModule;
@@ -64,7 +64,7 @@ public class CoreModule extends AbstractModule {
 			bind(StateVertexFactory.class).toInstance(configuration.getStateVertexFactory());
 		}
 
-		bind(StateComparator.class).toInstance(new StateComparator(configuration.getStrippers()));
+		bind(DomStrippers.class).toInstance(new DomStrippers(configuration.getStrippers(), configuration.getValidStrippers()));
 
 	}
 

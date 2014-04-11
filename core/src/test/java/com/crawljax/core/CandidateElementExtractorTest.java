@@ -117,6 +117,7 @@ public class CandidateElementExtractorTest {
 		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration
 		        .builderFor(server.getSiteUrl().resolve("iframe/"));
 		builder.crawlRules().click("a");
+		builder.crawlRules().crawlFrames(true);
 		CrawljaxConfiguration config = builder.build();
 
 		CandidateElementExtractor extractor = newElementExtractor(config);

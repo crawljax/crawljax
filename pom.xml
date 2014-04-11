@@ -80,7 +80,6 @@
 		<module>core</module>
 		<module>cli</module>
 		<module>examples</module>
-		<module>test-utils</module>
 		<module>plugins</module>
 		<module>plugin-archetype</module>
 		<module>web</module>

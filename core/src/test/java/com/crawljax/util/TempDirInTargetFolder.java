@@ -1,4 +1,4 @@
-package com.crawljax.rules;
+package com.crawljax.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.io.FileUtils.deleteQuietly;
@@ -34,7 +34,8 @@ public class TempDirInTargetFolder extends ExternalResource {
 			if (tmpDir.exists()) {
 				deleteQuietly(tmpDir);
 			}
-		} else {
+		}
+		else {
 			SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
 			String suffix = format.format(new Date());
 			tmpDir = new File(target, prefix + '-' + suffix);

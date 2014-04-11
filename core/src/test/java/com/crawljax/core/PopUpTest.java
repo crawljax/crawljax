@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
+import com.crawljax.domcomparators.WhiteSpaceStripper;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -24,7 +25,8 @@ public class PopUpTest {
 	@Test
 	public void testPopups() throws CrawljaxException {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().resolve("popup"));
+		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().resolve("popup"))
+				.addDomStripper(new WhiteSpaceStripper());
 		builder.setMaximumDepth(3);
 		builder.crawlRules().click("a");
 		builder.crawlRules().waitAfterEvent(100, TimeUnit.MILLISECONDS);

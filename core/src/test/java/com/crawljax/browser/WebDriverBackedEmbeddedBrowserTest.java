@@ -10,7 +10,6 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
 import com.crawljax.util.DomUtils;
-import com.google.common.collect.ImmutableSortedSet;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,17 +30,16 @@ public class WebDriverBackedEmbeddedBrowserTest {
 	public void testGetDocument() throws Exception {
 		// TODO Stefan; refactor out the direct use of the FirefoxDriver
 		WebDriverBackedEmbeddedBrowser driver =
-		  WebDriverBackedEmbeddedBrowser.withDriver(provider.newBrowser(),
-			ImmutableSortedSet.<String>of(), 100, 100);
+				WebDriverBackedEmbeddedBrowser.withDriver(provider.newBrowser(), 100, 100);
 
 		Document doc;
 		driver.goToUrl(SERVER.getSiteUrl());
 
-		doc = DomUtils.asDocument(driver.getStrippedDom());
+		doc = DomUtils.asDocument(driver.getDom());
 		NodeList frameNodes = doc.getElementsByTagName("IFRAME");
 		assertEquals(2, frameNodes.getLength());
 
-		doc = DomUtils.asDocument(driver.getStrippedDomWithoutIframeContent());
+		doc = DomUtils.asDocument(driver.getDom());
 		frameNodes = doc.getElementsByTagName("IFRAME");
 		assertEquals(2, frameNodes.getLength());
 
@@ -52,8 +50,7 @@ public class WebDriverBackedEmbeddedBrowserTest {
 	public void saveScreenShot() throws CrawljaxException, IOException {
 		// TODO Stefan; refactor out the direct use of the FirefoxDriver
 		WebDriverBackedEmbeddedBrowser browser =
-		  WebDriverBackedEmbeddedBrowser.withDriver(provider.newBrowser(),
-			ImmutableSortedSet.<String>of(), 500, 500);
+				WebDriverBackedEmbeddedBrowser.withDriver(provider.newBrowser(), 500, 500);
 
 		File f = File.createTempFile("webdriverfirefox-test-screenshot", ".png");
 		if (!f.exists()) {

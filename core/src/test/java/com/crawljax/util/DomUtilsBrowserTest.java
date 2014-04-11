@@ -41,7 +41,7 @@ public class DomUtilsBrowserTest {
 	@Test
 	public void testGetDocumentFromBrowser() throws SAXException, IOException {
 
-		String html = browser.getStrippedDom();
+		String html = browser.getDom();
 		assertNotNull(html);
 		Document doc = DomUtils.asDocument(html);
 		assertNotNull(doc);

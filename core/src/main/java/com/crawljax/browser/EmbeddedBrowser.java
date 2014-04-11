@@ -4,12 +4,10 @@ import java.io.File;
 import java.net.URI;
 
 import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -43,24 +41,9 @@ public interface EmbeddedBrowser {
 	        InterruptedException;
 
 	/**
-	 * Removes the stripped items from {@link PreCrawlConfiguration#getFilterAttributeNames()}.
-	 * 
-	 * @return the DOM string with all the iframe content.
+	 * @return The current DOM in the browser.
 	 */
-	String getStrippedDom();
-
-	/**
-	 * Removes the stripped items from {@link PreCrawlConfiguration#getFilterAttributeNames()}.
-	 * 
-	 * @return The dom without any elements stripped.
-	 * @see WebDriver#getPageSource()
-	 */
-	String getUnStrippedDom();
-
-	/**
-	 * @return the DOM string WITHOUT the iframe content.
-	 */
-	String getStrippedDomWithoutIframeContent();
+	String getDom();
 
 	/**
 	 * Closes the browser.
@@ -71,6 +54,11 @@ public interface EmbeddedBrowser {
 	 * Closes all other windows.
 	 */
 	void closeOtherWindows();
+
+	/**
+	 * @return the page source with the iFrame contents copied in.
+	 */
+	String getDomWithIFrameContents();
 
 	/**
 	 * Go back to the previous state.

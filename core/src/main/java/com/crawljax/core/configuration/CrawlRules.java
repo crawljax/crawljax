@@ -96,14 +96,6 @@ public class CrawlRules {
 			        crawlCondition));
 		}
 
-		/**
-		 * @param names
-		 *            add an attribute name you want to filter before parsing the dom.
-		 */
-		public PreCrawlConfigurationBuilder filterAttributeNames(String names) {
-			return preCrawlConfig.filterAttributeNames(names);
-		}
-
 		public CrawlRulesBuilder setInputSpec(InputSpecification spec) {
 			Preconditions.checkNotNull(spec);
 			crawlRules.inputSpecification = spec;
@@ -131,8 +123,11 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param frames
-		 *            Crawl frames in a page. Default is <code>true</code>.
+		 * Makes the crawler also Crawl iFrame contents. This also makes the content of the iFrame
+		 * part of the DOM comparison. e.g. the outer BODY can be unchanged but Crawljax will generate new states
+		 * for every change within the iFrame.
+		 *
+		 * @param frames true to enable, false to disable. Default is <code>false</code>.
 		 */
 		public CrawlRulesBuilder crawlFrames(boolean frames) {
 			crawlRules.crawlFrames = frames;
@@ -146,7 +141,7 @@ public class CrawlRules {
 		 *            The time unit.
 		 */
 		public CrawlRulesBuilder waitAfterReloadUrl(long time, TimeUnit unit) {
-			checkArgument(time > 0, "Wait after reload time should be larget than 0");
+			checkArgument(time > 0, "Wait after reload time should be larger than 0");
 			crawlRules.waitAfterReloadUrl = unit.toMillis(time);
 			return this;
 		}
@@ -158,7 +153,7 @@ public class CrawlRules {
 		 *            The time unit.
 		 */
 		public CrawlRulesBuilder waitAfterEvent(long time, TimeUnit unit) {
-			checkArgument(time > 0, "Wait after event time should be larget than 0");
+			checkArgument(time > 0, "Wait after event time should be larger than 0");
 			crawlRules.waitAfterEvent = unit.toMillis(time);
 			return this;
 		}
@@ -230,7 +225,7 @@ public class CrawlRules {
 		 * Once the browser reaches an external URL it will <em>not</em> accept that URL as a new
 		 * state. Crawljax is not meant to crawl outside a website. This option exists so that you
 		 * can check all URLs for <code>404</code> errors.
-		 * 
+		 *
 		 * @param follow
 		 *            Set to true to follow exteranl urls. Default is <code>false</code>.
 		 */
@@ -241,7 +236,7 @@ public class CrawlRules {
 
 		/**
 		 * Helper method for method chaining. Now you can do
-		 * 
+		 *
 		 * <pre>
 		 * CrawljaxConfiguration.builderFor(&quot;http://example.com&quot;)
 		 *         .crawlRules()
@@ -249,7 +244,7 @@ public class CrawlRules {
 		 *         .endRules()
 		 *         .build();
 		 * </pre>
-		 * 
+		 *
 		 * @return The {@link CrawljaxConfigurationBuilder} to make method chaining easier.
 		 */
 		public CrawljaxConfigurationBuilder endRules() {
@@ -287,7 +282,7 @@ public class CrawlRules {
 	private InputSpecification inputSpecification = new InputSpecification();
 	private boolean clickOnce = true;
 	private boolean randomizeCandidateElements = false;
-	private boolean crawlFrames = true;
+	private boolean crawlFrames = false;
 	private boolean crawlHiddenAnchors = false;
 	private long waitAfterReloadUrl = DEFAULT_WAIT_AFTER_RELOAD;
 	private long waitAfterEvent = DEFAULT_WAIT_AFTER_EVENT;

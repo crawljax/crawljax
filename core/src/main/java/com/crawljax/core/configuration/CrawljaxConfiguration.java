@@ -345,6 +345,10 @@ public class CrawljaxConfiguration {
 		return strippers;
 	}
 
+	public ImmutableList<ValidDomStripper> getValidStrippers() {
+		return validStrippers;
+	}
+
 	public StateVertexFactory getStateVertexFactory() {
 		return stateVertexFactory;
 	}

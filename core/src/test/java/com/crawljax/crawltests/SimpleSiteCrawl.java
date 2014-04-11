@@ -13,6 +13,6 @@ public class SimpleSiteCrawl extends BaseCrawler {
 	public static final int NUMBER_OF_EDGES = 5;
 
 	public SimpleSiteCrawl() {
-		super(Resource.newClassPathResource("sites"), "simple-site");
+		super(Resource.newClassPathResource("site"), "simple-site");
 	}
 }

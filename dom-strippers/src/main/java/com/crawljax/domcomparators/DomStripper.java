@@ -7,6 +7,8 @@ import com.google.common.base.Function;
  * .DomStripper} no not have to be valid DOMs.
  *
  * <p>Note that browser interaction is always done on the original DOM, not the modified dom return by a stripper</p>
+ *
+ * <p>DomStrippers should be stateless as they can be called from multiple threads at once.</p>
  */
 public interface DomStripper extends Function<String, String> {
 

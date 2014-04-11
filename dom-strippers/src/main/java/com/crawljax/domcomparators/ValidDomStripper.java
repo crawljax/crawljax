@@ -10,6 +10,8 @@ import org.jsoup.nodes.Document;
  * an invalid DOM</p>
  *
  * <p>Not that browser interaction is always done on the original DOM, not the modified dom return by a stripper</p>
+ *
+ * <p>DomStrippers should be stateless as they can be called from multiple threads at once.</p>
  */
 public interface ValidDomStripper extends Function<Document, Document> {
 

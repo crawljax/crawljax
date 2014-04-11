@@ -85,7 +85,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
 		visitedStates.putIfAbsent(state.getName(), vertex);
 		saveScreenshot(context.getBrowser(), state.getName(), vertex);
-		outputBuilder.persistDom(state.getName(), context.getBrowser().getUnStrippedDom());
+		outputBuilder.persistDom(state.getName(), context.getBrowser().getDom());
 	}
 
 	private void saveScreenshot(EmbeddedBrowser browser, String name,

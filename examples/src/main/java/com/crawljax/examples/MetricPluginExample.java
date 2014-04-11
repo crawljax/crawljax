@@ -54,8 +54,7 @@ public class MetricPluginExample {
 				        .build();
 			}
 
-			int domSizeInKb =
-			        context.getBrowser().getUnStrippedDom().getBytes().length / 1000;
+			int domSizeInKb = context.getBrowser().getDom().getBytes().length / 1000;
 
 			// Get the histogram or create one. After that update with the DOM value we found.
 			context.getRegistry().histogram(metricName).update(domSizeInKb);
