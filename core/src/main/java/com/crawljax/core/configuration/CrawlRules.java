@@ -11,7 +11,6 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
-import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
 import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 import com.google.common.base.Objects;
@@ -25,8 +24,6 @@ public class CrawlRules {
 	public static final class CrawlRulesBuilder {
 
 		private final CrawlRules crawlRules;
-		private ImmutableSortedSet.Builder<EventType> crawlEvents = ImmutableSortedSet
-		        .naturalOrder();
 		private ImmutableList.Builder<Invariant> invariants = ImmutableList.builder();
 		private ImmutableList.Builder<OracleComparator> oracleComparators = ImmutableList
 		        .builder();
@@ -56,16 +53,6 @@ public class CrawlRules {
 		public CrawlRulesBuilder dontCrawlFrame(String frame) {
 			Preconditions.checkNotNull(frame);
 			ignoredFrameIdentifiers.add(frame);
-			return this;
-		}
-
-		/**
-		 * @param eventTypes
-		 *            Add an {@link EventType} that should be triggered by Crawljax. If none are
-		 *            defined, it will only use {@link EventType#click}
-		 */
-		public CrawlRulesBuilder addEventType(EventType... eventTypes) {
-			crawlEvents.add(eventTypes);
 			return this;
 		}
 
@@ -129,15 +116,6 @@ public class CrawlRules {
 		public CrawlRulesBuilder setInputSpec(InputSpecification spec) {
 			Preconditions.checkNotNull(spec);
 			crawlRules.inputSpecification = spec;
-			return this;
-		}
-
-		/**
-		 * @param test
-		 *            Test the invariants while crawling or not. Default is <code>true</code>.
-		 */
-		public CrawlRulesBuilder testInvariantsWhileCrawling(boolean test) {
-			crawlRules.testInvariantsWhileCrawling = test;
 			return this;
 		}
 
@@ -288,10 +266,6 @@ public class CrawlRules {
 		}
 
 		CrawlRules build() {
-			crawlRules.crawlEvents = crawlEvents.build();
-			if (crawlRules.crawlEvents.isEmpty()) {
-				crawlRules.crawlEvents = ImmutableSortedSet.of(EventType.click);
-			}
 			crawlRules.invariants = invariants.build();
 			setupOracleComparatorsOrDefault();
 			crawlRules.preCrawlConfig = preCrawlConfig.build(crawlActionsBuilder);
@@ -325,8 +299,6 @@ public class CrawlRules {
 		return new CrawlRulesBuilder(builder);
 	}
 
-	private ImmutableSortedSet<EventType> crawlEvents;
-
 	private ImmutableList<Invariant> invariants;
 	private ImmutableList<OracleComparator> oracleComparators;
 	private ImmutableSortedSet<String> ignoredFrameIdentifiers;
@@ -335,7 +307,6 @@ public class CrawlRules {
 
 	private boolean randomInputInForms = true;
 	private InputSpecification inputSpecification = new InputSpecification();
-	private boolean testInvariantsWhileCrawling = true;
 	private boolean clickOnce = true;
 	private boolean randomizeCandidateElements = false;
 	private boolean crawlFrames = true;
@@ -345,10 +316,6 @@ public class CrawlRules {
 	private boolean followExternalLinks = false;
 
 	private CrawlRules() {
-	}
-
-	public ImmutableSortedSet<EventType> getCrawlEvents() {
-		return crawlEvents;
 	}
 
 	public ImmutableList<Invariant> getInvariants() {
@@ -369,10 +336,6 @@ public class CrawlRules {
 
 	public InputSpecification getInputSpecification() {
 		return inputSpecification;
-	}
-
-	public boolean isTestInvariantsWhileCrawling() {
-		return testInvariantsWhileCrawling;
 	}
 
 	public boolean isClickOnce() {
@@ -428,9 +391,9 @@ public class CrawlRules {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(crawlEvents, invariants, oracleComparators,
+		return Objects.hashCode(invariants, oracleComparators,
 		        ignoredFrameIdentifiers, preCrawlConfig, randomInputInForms, inputSpecification,
-		        testInvariantsWhileCrawling, clickOnce, crawlFrames, crawlHiddenAnchors,
+		        clickOnce, crawlFrames, crawlHiddenAnchors,
 		        waitAfterReloadUrl, waitAfterEvent, followExternalLinks);
 	}
 
@@ -438,15 +401,12 @@ public class CrawlRules {
 	public boolean equals(Object object) {
 		if (object instanceof CrawlRules) {
 			CrawlRules that = (CrawlRules) object;
-			return Objects.equal(this.crawlEvents, that.crawlEvents)
-			        && Objects.equal(this.invariants, that.invariants)
+			return Objects.equal(this.invariants, that.invariants)
 			        && Objects.equal(this.oracleComparators, that.oracleComparators)
 			        && Objects.equal(this.ignoredFrameIdentifiers, that.ignoredFrameIdentifiers)
 			        && Objects.equal(this.preCrawlConfig, that.preCrawlConfig)
 			        && Objects.equal(this.randomInputInForms, that.randomInputInForms)
 			        && Objects.equal(this.inputSpecification, that.inputSpecification)
-			        && Objects.equal(this.testInvariantsWhileCrawling,
-			                that.testInvariantsWhileCrawling)
 			        && Objects.equal(this.clickOnce, that.clickOnce)
 			        && Objects.equal(this.randomizeCandidateElements,
 			                that.randomizeCandidateElements)
@@ -464,14 +424,12 @@ public class CrawlRules {
 		return Objects.toStringHelper(this)
 		        .add("DEFAULT_WAIT_AFTER_RELOAD", DEFAULT_WAIT_AFTER_RELOAD)
 		        .add("DEFAULT_WAIT_AFTER_EVENT", DEFAULT_WAIT_AFTER_EVENT)
-		        .add("crawlEvents", crawlEvents)
 		        .add("invariants", invariants)
 		        .add("oracleComparators", oracleComparators)
 		        .add("ignoredFrameIdentifiers", ignoredFrameIdentifiers)
 		        .add("preCrawlConfig", preCrawlConfig)
 		        .add("randomInputInForms", randomInputInForms)
 		        .add("inputSpecification", inputSpecification)
-		        .add("testInvariantsWhileCrawling", testInvariantsWhileCrawling)
 		        .add("clickOnce", clickOnce)
 		        .add("randomizeCandidateElements", randomizeCandidateElements)
 		        .add("crawlFrames", crawlFrames)
