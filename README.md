@@ -1,4 +1,4 @@
-Crawljax [![Build Status](http://jenkins.crawljax.com/job/crawljax-fullbuild-master/badge/icon)](http://jenkins.crawljax.com/job/crawljax-fullbuild-master/)
+Crawljax 
 ========
 
 Crawljax is a tool for automatically crawling and testing modern web applications. 

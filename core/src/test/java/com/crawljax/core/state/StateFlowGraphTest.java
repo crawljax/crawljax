@@ -265,14 +265,12 @@ public class StateFlowGraphTest {
 
 		assertThat(results.get(1), hasSize(2));
 		// int max = 0;
-		Set<Eventable> uEvents = new HashSet<Eventable>();
+		Set<Eventable> uEvents = new HashSet<>();
 
 		for (List<GraphPath<StateVertex, Eventable>> paths : results) {
 			for (GraphPath<StateVertex, Eventable> p : paths) {
-				// System.out.print(" Edge: " + x + ":" + y);
 				// int z = 0;
 				for (Eventable edge : p.getEdgeList()) {
-					// System.out.print(", " + edge.toString());
 					if (!uEvents.contains(edge)) {
 						uEvents.add(edge);
 					}
