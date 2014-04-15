@@ -30,6 +30,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,8 +121,6 @@ public class StandardFunctionsFlowTest {
 		followLink(crawlRulesLink);
 
 		WebElement clickDefaultElements = driver.findElements(By.xpath("//label[@class='checkbox']")).get(0);
-		//WebElement clickDefaultElements = (WebElement) ((JavascriptExecutor)driver).executeScript(
-		//		"return $(\"legend:contains('Click Rules')\").parent().find('input[type=\"checkbox\"]')[0];");
 		followLink(clickDefaultElements);
 
 		WebElement addANewClickRule = driver.findElements(By.linkText("Add a New Click Rule")).get(0);
@@ -131,8 +131,6 @@ public class StandardFunctionsFlowTest {
 
 		WebElement pageConditionInput = driver.findElements(By.xpath(
 				"//legend[contains(text(),'Page Conditions')]/following-sibling::table//input[@type='text']")).get(0);
-//		WebElement pageConditionInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-//				"return $(\"legend:contains('Page Conditions')\").parent().find('div > input[type=\"text\"]')[0];");
 		pageConditionInput.clear();
 		pageConditionInput.sendKeys("crawljax");
 
@@ -217,8 +215,6 @@ public class StandardFunctionsFlowTest {
 
 		WebElement empty = driver.findElement(By.xpath(
 				"//li[contains(text(),'Crawl Execution Queue')]/following-sibling::li[contains(i,'empty')]"));
-		//WebElement empty = (WebElement) ((JavascriptExecutor)driver).executeScript(
-		//		"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li:contains('empty')\")[0];");
 		assertNotNull(empty);
 
 		List<WebElement> runConfigurationLink = driver.findElements(By.linkText("Run Configuration"));
@@ -238,7 +234,6 @@ public class StandardFunctionsFlowTest {
 			public Boolean apply(WebDriver driver) {
 				WebElement success = driver.findElement(By.xpath(
 						"//li[contains(text(),'Crawl Execution Queue')]/following-sibling::li//span[contains(i,'success')]"));
-//						"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li > span:contains('" + CONFIG_NAME + "')\").parent().find(\"i:contains('success')\")[0];");
 				return success != null;
 			}
 		};
@@ -248,8 +243,8 @@ public class StandardFunctionsFlowTest {
 		List<WebElement> crawlHistoryLink = driver.findElements(By.linkText("Crawl History"));
 		followLink(crawlHistoryLink.get(0));
 
-		WebElement crawlLink = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td > a:contains('" + CONFIG_NAME + "')\").first().parent().parent().find(\"td > a:contains('Crawl')\")[0];");
+		WebElement crawlLink =  driver.findElement(By.xpath(
+				"//td[following-sibling::td[contains(a,'"+CONFIG_NAME+"')]]/a"));
 		followLink(crawlLink);
 
 		List<WebElement> logLink = driver.findElements(By.linkText("Log"));
@@ -265,8 +260,8 @@ public class StandardFunctionsFlowTest {
 		followLink(historyLink.get(0));
 		driver.navigate().refresh();
 
-		WebElement dateContainer = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td > a:contains('" + CONFIG_NAME + "')\").first().parent().next()[0];");
+		WebElement dateContainer = driver.findElement(By.xpath(
+				"//td[preceding-sibling::td[contains(a,'"+CONFIG_NAME+"')]]"));
 		assertNotNull(dateContainer);
 		String displayedDate = dateContainer.getText();
 		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM d yyyy HH:mm:ss");
@@ -287,11 +282,8 @@ public class StandardFunctionsFlowTest {
 		List<WebElement> refreshLink = driver.findElements(By.linkText("Refresh List"));
 		followLink(refreshLink.get(0));
 
-		final List<WebElement> existingPlugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td:contains('" + LOCAL_PLUGIN_NAME + "')\").toArray();");
 
-		WebElement fileInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"input[type='file']\")[0];");
+		WebElement fileInput =  driver.findElement(By.xpath("//input[@type='file']"));
 
 		String fileName = getClass().getClassLoader().getResource(LOCAL_PLUGIN_ID + ".jar").toExternalForm();
 		fileInput.sendKeys(fileName);
@@ -299,19 +291,11 @@ public class StandardFunctionsFlowTest {
 		List<WebElement> uploadLink = driver.findElements(By.linkText("Upload"));
 		followLink(uploadLink.get(0));
 
-		ExpectedCondition<Boolean> uploaded = new ExpectedCondition<Boolean>() {
-			public Boolean apply(WebDriver driver) {
-				List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-						"return $(\"td:contains('" + LOCAL_PLUGIN_NAME + "')\").toArray();");
-				return plugins.size() > existingPlugins.size();
-			}
-		};
-		WebDriverWait wait = new WebDriverWait(driver, 60);
-		wait.until(uploaded);
+		WebElement uploaded = (new WebDriverWait(driver, 10))
+				.until(ExpectedConditions.presenceOfElementLocated(By.xpath(
+						"//legend[contains(text(),'Available Plugins')]/following-sibling::table//td[contains(text(),'" + LOCAL_PLUGIN_NAME + "')]")));
+		assertNotNull(uploaded);
 
-		List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td:contains('" + LOCAL_PLUGIN_NAME + "')\").toArray();");
-		assertEquals(existingPlugins.size() + 1, plugins.size());
 	}
 
 	private void addRemotePlugin() {
@@ -320,54 +304,41 @@ public class StandardFunctionsFlowTest {
 		List<WebElement> refreshLink = driver.findElements(By.linkText("Refresh List"));
 		followLink(refreshLink.get(0));
 
-		final List<WebElement> existingPlugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td:contains('" + REMOTE_PLUGIN_NAME + "')\").toArray();");
 
-		WebElement urlInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('URL:')\").parent().find(\"input[type='text']\")[0];");
+		WebElement urlInput = driver.findElement(By.xpath(
+				"//label[contains(text(),'URL:')]/following-sibling::div//input[@type='text']"));
 		urlInput.sendKeys(REMOTE_PLUGIN_URL);
 
 		List<WebElement> downloadLink = driver.findElements(By.linkText("Add"));
 		followLink(downloadLink.get(0));
 
-		ExpectedCondition<Boolean> uploaded = new ExpectedCondition<Boolean>() {
-			public Boolean apply(WebDriver driver) {
-				List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-						"return $(\"td:contains('" + REMOTE_PLUGIN_NAME + "')\").toArray();");
-				return plugins.size() > existingPlugins.size();
-			}
-		};
-		WebDriverWait wait = new WebDriverWait(driver, 60);
-		wait.until(uploaded);
+		WebElement uploaded = (new WebDriverWait(driver, 10))
+				.until(ExpectedConditions.presenceOfElementLocated(By.xpath(
+						"//legend[contains(text(),'Available Plugins')]/following-sibling::table//td[contains(text(),'" + REMOTE_PLUGIN_NAME + "')]")));
+		assertNotNull(uploaded);
 
-		List<WebElement> plugins = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td:contains('" + REMOTE_PLUGIN_NAME + "')\").toArray();");
-		assertEquals(existingPlugins.size() + 1, plugins.size());
 	}
 
 	private void addPluginToConfiguration() {
 		openConfiguration();
 
-		WebElement pluginsLink = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"a:contains('Overview')\").parent().find(\"~ li > a:contains('Plugins')\")[0];");
+		WebElement pluginsLink =  driver.findElement(By.xpath(
+				"//li[preceding-sibling::li[contains(a,'Overview')]]/a[contains(text(),'Plugins')]"));
 		assertNotNull(pluginsLink);
 		followLink(pluginsLink);
 
 		List<WebElement> addPluginLink = driver.findElements(By.linkText("Add Plugin"));
 		followLink(addPluginLink.get(0));
+		Select select = new Select(driver.findElement(By.xpath("//select")));
 
-		WebElement pluginSelectOption = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"select > option:contains('" + LOCAL_PLUGIN_ID + "')\").last()[0];");
-		assertNotNull(pluginSelectOption);
+		select.selectByValue(LOCAL_PLUGIN_ID);
 
-		followLink(pluginSelectOption);
 		List<WebElement> saveLink = driver.findElements(By.linkText("Save Configuration"));
 		followLink(saveLink.get(0));
 
 		driver.navigate().refresh();
 
-		WebElement pluginTitle = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"legend:contains('" + LOCAL_PLUGIN_NAME + "')\")[0];");
+		WebElement pluginTitle = driver.findElement(By.xpath("//legend[contains(text(),'" + LOCAL_PLUGIN_NAME + "')]"));
 		assertNotNull(pluginTitle);
 	}
 
@@ -421,11 +392,10 @@ public class StandardFunctionsFlowTest {
 
 		assertEquals(existingConfigurationLinks.size() - 1, configurationLinks.size());
 	}
-
 	private void open(String hashLocation) {
 		selenium.open("/#/" + hashLocation);
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -434,7 +404,7 @@ public class StandardFunctionsFlowTest {
 	private void followLink(WebElement link) {
 		link.click();
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -442,10 +412,8 @@ public class StandardFunctionsFlowTest {
 
 	private void openConfiguration() {
 		open("configurations");
-		WebElement configLink = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"td > a:contains('" + CONFIG_NAME + "')\")" + //Candidate link
-						".parent().next().find(\"a:contains('" + CONFIG_URL + "')\")" + //verify url
-						".parent().prev().find(\"a:contains('" + CONFIG_NAME + "')\")[0];"); //select the link
+		WebElement configLink = driver.findElement(By.xpath(
+				"//td[contains(a,'" + CONFIG_NAME + "') and following-sibling::td[contains(a,'" + CONFIG_URL + "')]]/a"));
 		configLink.click();
 	}
 
