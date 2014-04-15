@@ -24,7 +24,7 @@ public class TestPlugin implements OnNewStatePlugin,
 	public void onNewState(CrawlerContext context, StateVertex newState) {
 		try {
 			String dom = context.getBrowser().getStrippedDom();
-			File file = new File(hostInterface.getOutputDirectory(), context.getCurrentState().getName() + ".html");
+			File file = new File(hostInterface.getOutputDirectory(), newState.getName() + ".html");
 
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(dom);

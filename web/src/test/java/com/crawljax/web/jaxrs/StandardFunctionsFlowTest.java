@@ -34,7 +34,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Ignore("Broken. Fix in ")
 public class StandardFunctionsFlowTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StandardFunctionsFlowTest.class);
@@ -94,12 +93,12 @@ public class StandardFunctionsFlowTest {
 		assertFalse(saveConfigurationLink.isEmpty());
 		followLink(saveConfigurationLink.get(0));
 
-		WebElement nameSpan = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('Name:')\").parent().find('div > span')[0];");
+		WebElement nameSpan = driver.findElements(By.xpath(
+				"//label[contains(text(),'Name:')]/following-sibling::div/span")).get(0);
 		assertTrue(nameSpan.getText().equals(CONFIG_NAME));
 
-		WebElement urlInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('Site:')\").parent().find('div > input')[0];");
+		WebElement urlInput = driver.findElements(By.xpath(
+				"//label[contains(text(),'Site:')]/following-sibling::div/input")).get(0);
 		assertTrue(urlInput.getAttribute("value").equals(CONFIG_URL));
 	}
 
@@ -107,20 +106,21 @@ public class StandardFunctionsFlowTest {
 
 		openConfiguration();
 
-		WebElement maxCrawlStates = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('Maximum Crawl States:')\").parent().find('div > input')[0];");
+		WebElement maxCrawlStates = driver.findElements(By.xpath(
+				"//label[contains(text(),'Maximum Crawl States:')]/following-sibling::div/input")).get(0);
 		maxCrawlStates.clear();
 		maxCrawlStates.sendKeys("3");
 
-		maxCrawlStates = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('Maximum Crawl States:')\").parent().find('div > input')[0];");
+		maxCrawlStates = driver.findElements(By.xpath(
+				"//label[contains(text(),'Maximum Crawl States:')]/following-sibling::div/input")).get(0);
 		assertTrue(maxCrawlStates.getAttribute("value").equals("3"));
 
 		WebElement crawlRulesLink = driver.findElements(By.linkText("Crawl Rules")).get(0);
 		followLink(crawlRulesLink);
 
-		WebElement clickDefaultElements = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"legend:contains('Click Rules')\").parent().find('input[type=\"checkbox\"]')[0];");
+		WebElement clickDefaultElements = driver.findElements(By.xpath("//label[@class='checkbox']")).get(0);
+		//WebElement clickDefaultElements = (WebElement) ((JavascriptExecutor)driver).executeScript(
+		//		"return $(\"legend:contains('Click Rules')\").parent().find('input[type=\"checkbox\"]')[0];");
 		followLink(clickDefaultElements);
 
 		WebElement addANewClickRule = driver.findElements(By.linkText("Add a New Click Rule")).get(0);
@@ -129,26 +129,28 @@ public class StandardFunctionsFlowTest {
 		WebElement addANewConditionLink = driver.findElements(By.linkText("Add a New Condition")).get(0);
 		followLink(addANewConditionLink);
 
-		WebElement pageConditionInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"legend:contains('Page Conditions')\").parent().find('div > input[type=\"text\"]')[0];");
+		WebElement pageConditionInput = driver.findElements(By.xpath(
+				"//legend[contains(text(),'Page Conditions')]/following-sibling::table//input[@type='text']")).get(0);
+//		WebElement pageConditionInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
+//				"return $(\"legend:contains('Page Conditions')\").parent().find('div > input[type=\"text\"]')[0];");
 		pageConditionInput.clear();
 		pageConditionInput.sendKeys("crawljax");
 
 		WebElement addANewFilter = driver.findElements(By.linkText("Add a New Filter")).get(0);
 		followLink(addANewFilter);
-		WebElement filterInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"legend:contains('State Filters')\").parent().find('div > input[type=\"text\"]')[0];");
+		WebElement filterInput = driver.findElements(By.xpath(
+				"//legend[contains(text(),'State Filters')]/following-sibling::table//input[@type='text']")).get(0);
 		filterInput.clear();
 		filterInput.sendKeys(" ");
 
 		WebElement addANewField = driver.findElements(By.linkText("Add a New Field")).get(0);
 		followLink(addANewField);
-		WebElement fieldIdInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"legend:contains('Form Field Input Values')\").parent().find('div > input[type=\"text\"]')[0];");
+		WebElement fieldIdInput = driver.findElements(By.xpath(
+				"//legend[contains(text(),'Form Field Input Values')]/following-sibling::table//input[@type='text']")).get(0);
 		fieldIdInput.clear();
 		fieldIdInput.sendKeys(" ");
-		WebElement fieldValueInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"legend:contains('Form Field Input Values')\").parent().find('div > input[type=\"text\"]')[1];");
+		WebElement fieldValueInput = driver.findElements(By.xpath(
+				"//legend[contains(text(),'Form Field Input Values')]/following-sibling::table//input[@type='text']")).get(0);
 		fieldValueInput.clear();
 		fieldValueInput.sendKeys(" ");
 
@@ -157,8 +159,8 @@ public class StandardFunctionsFlowTest {
 
 		addANewConditionLink = driver.findElements(By.linkText("Add a New Condition")).get(0);
 		followLink(addANewConditionLink);
-		WebElement newConditionInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"legend:contains('Invariants')\").parent().find('div > input[type=\"text\"]')[0];");
+		WebElement newConditionInput = driver.findElements(By.xpath(
+				"//legend[contains(text(),'Invariants')]/following-sibling::table//input[@type='text']")).get(0);
 		newConditionInput.clear();
 		newConditionInput.sendKeys("crawljax");
 
@@ -181,16 +183,16 @@ public class StandardFunctionsFlowTest {
 		WebElement copyConfigurationLink = driver.findElements(By.linkText("New Copy")).get(0);
 		followLink(copyConfigurationLink);
 
-		WebElement nameInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('Name:')\").parent().find('div > input')[0];");
+		WebElement nameInput = driver.findElement(By.xpath(
+				"//label[contains(text(),'Name:')]/following-sibling::div/input"));
 		nameInput.clear();
 		nameInput.sendKeys("copy");
 
 		WebElement saveConfigurationLink = driver.findElements(By.linkText("Save Configuration")).get(0);
 		followLink(saveConfigurationLink);
 
-		WebElement siteInput = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"label:contains('Site:')\").parent().find('div > input')[0];");
+		WebElement siteInput = driver.findElement(By.xpath(
+				"//label[contains(text(),'Site:')]/following-sibling::div/input"));
 		String asdf = siteInput.getAttribute("value");
 		assertEquals(CONFIG_URL, siteInput.getAttribute("value"));
 
@@ -213,8 +215,10 @@ public class StandardFunctionsFlowTest {
 	private void runConfigurationAndViewResults() {
 		openConfiguration();
 
-		WebElement empty = (WebElement) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li:contains('empty')\")[0];");
+		WebElement empty = driver.findElement(By.xpath(
+				"//li[contains(text(),'Crawl Execution Queue')]/following-sibling::li[contains(i,'empty')]"));
+		//WebElement empty = (WebElement) ((JavascriptExecutor)driver).executeScript(
+		//		"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li:contains('empty')\")[0];");
 		assertNotNull(empty);
 
 		List<WebElement> runConfigurationLink = driver.findElements(By.linkText("Run Configuration"));
@@ -222,8 +226,8 @@ public class StandardFunctionsFlowTest {
 
 		ExpectedCondition<Boolean> isRunning = new ExpectedCondition<Boolean>() {
 			public Boolean apply(WebDriver driver) {
-				WebElement running = (WebElement) ((JavascriptExecutor)driver).executeScript(
-						"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li:contains('running')\")[0];");
+				WebElement running = driver.findElement(By.xpath(
+						"//li[contains(text(),'Crawl Execution Queue')]/following-sibling::li//span[contains(i,'running')]"));
 				return running != null;
 			}
 		};
@@ -232,8 +236,9 @@ public class StandardFunctionsFlowTest {
 
 		ExpectedCondition<Boolean> isComplete = new ExpectedCondition<Boolean>() {
 			public Boolean apply(WebDriver driver) {
-				WebElement success = (WebElement) ((JavascriptExecutor)driver).executeScript(
-						"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li > span:contains('" + CONFIG_NAME + "')\").parent().find(\"i:contains('success')\")[0];");
+				WebElement success = driver.findElement(By.xpath(
+						"//li[contains(text(),'Crawl Execution Queue')]/following-sibling::li//span[contains(i,'success')]"));
+//						"return $(\"li:contains('Crawl Execution Queue')\").parent().find(\"li > span:contains('" + CONFIG_NAME + "')\").parent().find(\"i:contains('success')\")[0];");
 				return success != null;
 			}
 		};
