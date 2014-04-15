@@ -52,7 +52,7 @@ public class StandardFunctionsFlowTest {
 	private static String REMOTE_PLUGIN_URL = "https://raw.github.com/crawljax/crawljax/web-ui-with-plugins/web/src/test/resources/dummy-plugin.jar";
 
 	@Rule
-	public TestRule globalTimeout = new Timeout(120 * 1000);
+	public TestRule globalTimeout = new Timeout(150 * 1000);
 
 	@ClassRule
 	public static final CrawljaxServerResource SERVER = new CrawljaxServerResource();
@@ -345,11 +345,9 @@ public class StandardFunctionsFlowTest {
 	private void deletePlugins() {
 		open("plugins");
 
-		List<WebElement> deleteLinks = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"a:contains('Delete')\").toArray()");
+		List<WebElement> deleteLinks = driver.findElements(By.linkText("Delete"));
 
 		while(deleteLinks.size() > 0) {
-			final int count = deleteLinks.size();
 			followLink(deleteLinks.get(0));
 			Alert confirmDialog = driver.switchTo().alert();
 			confirmDialog.accept();
@@ -361,22 +359,19 @@ public class StandardFunctionsFlowTest {
 			};
 			WebDriverWait wait = new WebDriverWait(driver, 10);
 			wait.until(isDeleted);
-			deleteLinks = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-					"return $(\"a:contains('Delete')\").toArray()");
+			deleteLinks = driver.findElements(By.linkText("Delete"));
 		}
 
 		driver.navigate().refresh();
 
-		deleteLinks = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"a:contains('Delete')\").toArray();");
+		deleteLinks = driver.findElements(By.linkText("Delete"));
 		assertEquals(0, deleteLinks.size());
 	}
 
 	private void deleteConfiguration() {
 		open("configurations");
 
-		List<WebElement> existingConfigurationLinks = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"a:contains('" + CONFIG_NAME + "')\").toArray();");
+		List<WebElement> existingConfigurationLinks = driver.findElements(By.linkText(CONFIG_NAME));
 
 		openConfiguration();
 
@@ -387,8 +382,7 @@ public class StandardFunctionsFlowTest {
 		confirmDialog.accept();
 
 		open("configurations");
-		List<WebElement> configurationLinks = (List<WebElement>) ((JavascriptExecutor)driver).executeScript(
-				"return $(\"a:contains('" + CONFIG_NAME + "')\").toArray();");
+		List<WebElement> configurationLinks = driver.findElements(By.linkText(CONFIG_NAME));
 
 		assertEquals(existingConfigurationLinks.size() - 1, configurationLinks.size());
 	}
