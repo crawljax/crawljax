@@ -51,32 +51,38 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 		// Determine the requested browser type
 		EmbeddedBrowser browser = null;
-		switch (configuration.getBrowserConfig().getBrowsertype()) {
-			case FIREFOX:
-				browser = newFireFoxBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
-				break;
-			case INTERNET_EXPLORER:
-				browser =
-				        WebDriverBackedEmbeddedBrowser.withDriver(new InternetExplorerDriver(),
-				                filterAttributes, crawlWaitEvent, crawlWaitReload);
-				break;
-			case CHROME:
-				browser = newChromeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
-				break;
+		EmbeddedBrowser.BrowserType browserType = configuration.getBrowserConfig().getBrowsertype();
+		try {
+			switch (browserType) {
+				case FIREFOX:
+					browser = newFireFoxBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
+					break;
+				case INTERNET_EXPLORER:
+					browser =
+							WebDriverBackedEmbeddedBrowser.withDriver(new InternetExplorerDriver(),
+									filterAttributes, crawlWaitEvent, crawlWaitReload);
+					break;
+				case CHROME:
+					browser = newChromeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
+					break;
 
-			case REMOTE:
-				browser =
-				        WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
-				                .getBrowserConfig().getRemoteHubUrl(), filterAttributes,
-				                crawlWaitEvent, crawlWaitReload);
-				break;
-			case PHANTOMJS:
-				browser = newPhantomJSDriver(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				case REMOTE:
+					browser =
+							WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
+									.getBrowserConfig().getRemoteHubUrl(), filterAttributes,
+									crawlWaitEvent, crawlWaitReload);
+					break;
+				case PHANTOMJS:
+					browser = newPhantomJSDriver(filterAttributes, crawlWaitReload, crawlWaitEvent);
 
-				break;
-			default:
-				throw new IllegalStateException("Unrecognized browsertype "
-				        + configuration.getBrowserConfig().getBrowsertype());
+					break;
+				default:
+					throw new IllegalStateException("Unrecognized browsertype "
+							+ configuration.getBrowserConfig().getBrowsertype());
+			}
+		} catch (IllegalStateException e) {
+			LOGGER.error("Crawling with {} failed: " + e.getMessage(), browserType.toString());
+			throw e;
 		}
 		plugins.runOnBrowserCreatedPlugins(browser);
 		return browser;
@@ -123,12 +129,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 					+ configuration.getProxyConfiguration().getPort());
 			driverChrome = new ChromeDriver(optionsChrome);
 		} else {
-			try {
-				driverChrome = new ChromeDriver();
-			} catch (IllegalStateException e) {
-				LOGGER.error("Crawling with Google Chrome browser failed: "+e.getMessage());
-				throw new RuntimeException(e.getMessage(), e);
-			}
+			driverChrome = new ChromeDriver();
 		}
 
 		return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, filterAttributes,
