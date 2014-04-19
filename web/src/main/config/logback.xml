@@ -9,7 +9,6 @@
 	</appender>
 
 
-
 	<logger name="com.crawljax.web" level="INFO" />
 	
 	<appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
@@ -28,7 +27,7 @@
     </sift>
   </appender>
 
-	<root level="WARN">
+	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="SIFT" />
 	</root>
