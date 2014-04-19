@@ -37,7 +37,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 	/**
 	 * Build a new WebDriver based EmbeddedBrowser.
-	 * 
+	 *
 	 * @return the new build WebDriver based embeddedBrowser
 	 */
 	@Override
@@ -120,10 +120,15 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			}
 			optionsChrome.addArguments("--proxy-server=http://"
 			        + configuration.getProxyConfiguration().getHostname() + ":"
-			        + configuration.getProxyConfiguration().getPort());
+					+ configuration.getProxyConfiguration().getPort());
 			driverChrome = new ChromeDriver(optionsChrome);
 		} else {
-			driverChrome = new ChromeDriver();
+			try {
+				driverChrome = new ChromeDriver();
+			} catch (IllegalStateException e) {
+				LOGGER.error("Crawling with Google Chrome browser failed: "+e.getMessage());
+				throw new RuntimeException(e.getMessage(), e);
+			}
 		}
 
 		return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, filterAttributes,
@@ -145,7 +150,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			final String[] args = new String[] { proxyAddrCap, proxyTypeCap };
 			caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, args);
 		}
-		
+
 		PhantomJSDriver phantomJsDriver = new PhantomJSDriver(caps);
 
 		return WebDriverBackedEmbeddedBrowser.withDriver(phantomJsDriver, filterAttributes,
