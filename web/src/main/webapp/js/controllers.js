@@ -219,16 +219,6 @@ App.FormInputItemController = Ember.Controller.extend({
 	
 });
 
-App.ComparatorsController = Ember.ArrayController.extend({
-	add: function() {
-		this.content.pushObject({type: 'attribute', expression: ''});
-	},
-	remove: function(item) {
-		this.content.removeObject(item);
-	},
-	itemController: 'comparatorItem'
-});
-
 App.ComparatorItemController = Ember.Controller.extend({
 	needsExpression: function() { 
 		var type = this.get('content.type');

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import com.crawljax.core.configuration.CrawlRules;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +28,7 @@ import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification.How;
-import com.crawljax.oraclecomparator.StateComparator;
+import com.crawljax.domcomparators.DomStrippers;
 import com.google.common.collect.ImmutableList;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,13 +41,16 @@ public class StateMachineTest {
 	private EmbeddedBrowser dummyBrowser;
 
 	@Mock
-	private StateComparator comparator;
+	private DomStrippers comparator;
 
 	@Mock
 	private CrawlSession session;
 
 	@Mock
 	private CrawlerContext context;
+
+	@Mock
+	private CrawlRules rules;
 
 	@Mock
 	private Plugins plugins;
@@ -59,7 +63,7 @@ public class StateMachineTest {
 	@Before
 	public void initStateMachine() {
 		InMemoryStateFlowGraph sfg = newStateFlowGraph();
-		sm = new StateMachine(sfg, ImmutableList.<Invariant> of(), plugins, comparator);
+		sm = new StateMachine(sfg, ImmutableList.<Invariant> of(), plugins, comparator, rules);
 	}
 
 	@Test
@@ -214,7 +218,7 @@ public class StateMachineTest {
 		        }));
 		InMemoryStateFlowGraph sfg = newStateFlowGraph();
 		StateMachine smLocal =
-		        new StateMachine(sfg, iList, plugins, comparator);
+		        new StateMachine(sfg, iList, plugins, comparator, rules);
 
 		Eventable c = new Eventable(new Identification(How.xpath, "/bla"), EventType.click);
 
@@ -277,7 +281,7 @@ public class StateMachineTest {
 
 	private void setStateMachineForConfig(CrawljaxConfiguration config) {
 		sm = new StateMachine(newStateFlowGraph(), config.getCrawlRules().getInvariants(),
-		        new Plugins(config, new MetricRegistry()), comparator);
+		        new Plugins(config, new MetricRegistry()), comparator, rules);
 	}
 
 	/**

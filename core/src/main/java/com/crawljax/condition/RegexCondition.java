@@ -31,7 +31,7 @@ public class RegexCondition implements Condition {
 
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
-		String dom = browser.getStrippedDom();
+		String dom = browser.getDom();
 		boolean found = pattern.matcher(dom).find();
 		if (found) {
 			LOG.trace("Found expression {} in DOM {}", expression, dom);

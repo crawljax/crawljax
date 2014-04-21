@@ -118,7 +118,7 @@ public final class FormInputValueHelper {
 
 		Document dom;
 		try {
-			dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+			dom = DomUtils.asDocument(browser.getDom());
 		} catch (IOException e) {
 			LOGGER.error("Catched IOException while parsing dom", e);
 			return candidateElements;

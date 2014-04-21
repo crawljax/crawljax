@@ -69,9 +69,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.crawljax</groupId>
-			<artifactId>crawljax-test-utils</artifactId>
+			<artifactId>crawljax-core</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
+			<type>test-jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>

@@ -1,15 +1,15 @@
 package com.crawljax.core.state;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CrawlerContext;
+import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.plugin.Plugins;
-import com.crawljax.oraclecomparator.StateComparator;
+import com.crawljax.domcomparators.DomStrippers;
 import com.google.common.collect.ImmutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The State Machine.
@@ -21,6 +21,7 @@ public class StateMachine {
 	private final InMemoryStateFlowGraph stateFlowGraph;
 
 	private final StateVertex initialState;
+	private final boolean shouldCrawlFrames;
 
 	private StateVertex currentState;
 
@@ -31,24 +32,31 @@ public class StateMachine {
 
 	private final Plugins plugins;
 
-	private final StateComparator stateComparator;
+	private final DomStrippers domStrippers;
 
 	public StateMachine(InMemoryStateFlowGraph sfg,
 	        ImmutableList<Invariant> invariantList, Plugins plugins,
-	        StateComparator stateComparator) {
+	        DomStrippers domStrippers, CrawlRules crawlRules) {
 		stateFlowGraph = sfg;
 		this.initialState = sfg.getInitialState();
 		this.plugins = plugins;
-		this.stateComparator = stateComparator;
+		this.domStrippers = domStrippers;
 		currentState = initialState;
 		invariantChecker = new ConditionTypeChecker<>(invariantList);
+		shouldCrawlFrames = crawlRules.shouldCrawlFrames();
 	}
 
 	public StateVertex newStateFor(EmbeddedBrowser browser) {
+		String dom;
+		if (shouldCrawlFrames) {
+			dom = browser.getDomWithIFrameContents();
+		} else {
+			dom = browser.getDom();
+		}
 		return stateFlowGraph.newStateFor(
 		        browser.getCurrentUrl(),
-		        browser.getStrippedDom(),
-		        stateComparator.getStrippedDom(browser));
+		        dom,
+		        domStrippers.getStrippedDom(dom));
 	}
 
 	/**

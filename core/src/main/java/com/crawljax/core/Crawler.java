@@ -30,7 +30,7 @@ import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
 import com.crawljax.di.CoreModule.FormHandlerFactory;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
-import com.crawljax.oraclecomparator.StateComparator;
+import com.crawljax.domcomparators.DomStrippers;
 import com.crawljax.util.ElementResolver;
 import com.crawljax.util.UrlUtils;
 import com.google.common.base.Preconditions;
@@ -48,7 +48,7 @@ public class Crawler {
 	private final int maxDepth;
 	private final EmbeddedBrowser browser;
 	private final CrawlerContext context;
-	private final StateComparator stateComparator;
+	private final DomStrippers domStrippers;
 	private final URI url;
 	private final Plugins plugins;
 	private final FormHandler formHandler;
@@ -58,13 +58,13 @@ public class Crawler {
 	private final UnfiredCandidateActions candidateActionCache;
 	private final Provider<InMemoryStateFlowGraph> graphProvider;
 	private final StateVertexFactory vertexFactory;
-
+	private final boolean shouldCrawliFrames;
 	private CrawlPath crawlpath;
 	private StateMachine stateMachine;
 
 	@Inject
 	Crawler(CrawlerContext context, CrawljaxConfiguration config,
-	        StateComparator stateComparator, UnfiredCandidateActions candidateActionCache,
+	        DomStrippers domStrippers, UnfiredCandidateActions candidateActionCache,
 	        FormHandlerFactory formHandlerFactory,
 	        WaitConditionChecker waitConditionChecker,
 	        CandidateElementExtractorFactory elementExtractor,
@@ -78,11 +78,12 @@ public class Crawler {
 		this.plugins = plugins;
 		this.crawlRules = config.getCrawlRules();
 		this.maxDepth = config.getMaximumDepth();
-		this.stateComparator = stateComparator;
+		this.domStrippers = domStrippers;
 		this.candidateActionCache = candidateActionCache;
 		this.waitConditionChecker = waitConditionChecker;
 		this.candidateExtractor = elementExtractor.newExtractor(browser);
 		this.formHandler = formHandlerFactory.newFormHandler(browser);
+		shouldCrawliFrames = config.getCrawlRules().shouldCrawlFrames();
 	}
 
 	/**
@@ -100,9 +101,9 @@ public class Crawler {
 		if (crawlpath != null) {
 			sess.addCrawlPath(crawlpath);
 		}
-		stateMachine =
-		        new StateMachine(graphProvider.get(),
-		                crawlRules.getInvariants(), plugins, stateComparator);
+		stateMachine = new StateMachine(graphProvider.get(),
+				crawlRules.getInvariants(), plugins, domStrippers,
+				sess.getConfig().getCrawlRules());
 		context.setStateMachine(stateMachine);
 		crawlpath = new CrawlPath();
 		context.setCrawlPath(crawlpath);
@@ -435,8 +436,13 @@ public class Crawler {
 		LOG.debug("Setting up vertex of the index page");
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
-		StateVertex index = vertexFactory.createIndex(url.toString(), browser.getStrippedDom(),
-		                stateComparator.getStrippedDom(browser));
+		String dom;
+		if (shouldCrawliFrames) {
+			dom = browser.getDomWithIFrameContents();
+		} else {
+			dom = browser.getDom();
+		}
+		StateVertex index = vertexFactory.createIndex(url.toString(), dom, domStrippers.getStrippedDom(dom));
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 		        "It seems some the index state is crawled more than once.");
 

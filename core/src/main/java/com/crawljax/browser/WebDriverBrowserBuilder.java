@@ -8,7 +8,6 @@ import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
 import com.crawljax.core.plugin.Plugins;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSortedSet;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -44,8 +43,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	public EmbeddedBrowser get() {
 		LOGGER.debug("Setting up a Browser");
 		// Retrieve the config values used
-		ImmutableSortedSet<String> filterAttributes =
-		        configuration.getCrawlRules().getPreCrawlConfig().getFilterAttributeNames();
 		long crawlWaitReload = configuration.getCrawlRules().getWaitAfterReloadUrl();
 		long crawlWaitEvent = configuration.getCrawlRules().getWaitAfterEvent();
 
@@ -53,25 +50,24 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 		EmbeddedBrowser browser = null;
 		switch (configuration.getBrowserConfig().getBrowsertype()) {
 			case FIREFOX:
-				browser = newFireFoxBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				browser = newFireFoxBrowser(crawlWaitReload, crawlWaitEvent);
 				break;
 			case INTERNET_EXPLORER:
 				browser =
 				        WebDriverBackedEmbeddedBrowser.withDriver(new InternetExplorerDriver(),
-				                filterAttributes, crawlWaitEvent, crawlWaitReload);
+				                crawlWaitEvent, crawlWaitReload);
 				break;
 			case CHROME:
-				browser = newChromeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				browser = newChromeBrowser(crawlWaitReload, crawlWaitEvent);
 				break;
 
 			case REMOTE:
 				browser =
 				        WebDriverBackedEmbeddedBrowser.withRemoteDriver(configuration
-				                .getBrowserConfig().getRemoteHubUrl(), filterAttributes,
-				                crawlWaitEvent, crawlWaitReload);
+				                .getBrowserConfig().getRemoteHubUrl(), crawlWaitEvent, crawlWaitReload);
 				break;
 			case PHANTOMJS:
-				browser = newPhantomJSDriver(filterAttributes, crawlWaitReload, crawlWaitEvent);
+				browser = newPhantomJSDriver(crawlWaitReload, crawlWaitEvent);
 
 				break;
 			default:
@@ -82,8 +78,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 		return browser;
 	}
 
-	private EmbeddedBrowser newFireFoxBrowser(ImmutableSortedSet<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent) {
+	private EmbeddedBrowser newFireFoxBrowser(long crawlWaitReload, long crawlWaitEvent) {
 		if (configuration.getProxyConfiguration() != null) {
 			FirefoxProfile profile = new FirefoxProfile();
 			String lang = configuration.getBrowserConfig().getLangOrNull();
@@ -100,16 +95,13 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			/* use proxy for everything, including localhost */
 			profile.setPreference("network.proxy.no_proxies_on", "");
 
-			return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(profile),
-			        filterAttributes, crawlWaitReload, crawlWaitEvent);
+			return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(profile), crawlWaitReload, crawlWaitEvent);
 		}
 
-		return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), filterAttributes,
-		        crawlWaitEvent, crawlWaitReload);
+		return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(), crawlWaitEvent, crawlWaitReload);
 	}
 
-	private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent) {
+	private EmbeddedBrowser newChromeBrowser(long crawlWaitReload, long crawlWaitEvent) {
 		ChromeDriver driverChrome;
 		if (configuration.getProxyConfiguration() != null
 		        && configuration.getProxyConfiguration().getType() != ProxyType.NOTHING) {
@@ -126,12 +118,10 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			driverChrome = new ChromeDriver();
 		}
 
-		return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, filterAttributes,
-		        crawlWaitEvent, crawlWaitReload);
+		return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, crawlWaitEvent, crawlWaitReload);
 	}
 
-	private EmbeddedBrowser newPhantomJSDriver(ImmutableSortedSet<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent) {
+	private EmbeddedBrowser newPhantomJSDriver(long crawlWaitReload, long crawlWaitEvent) {
 
 		DesiredCapabilities caps = new DesiredCapabilities();
 		caps.setCapability("takesScreenshot", true);
@@ -148,8 +138,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 		
 		PhantomJSDriver phantomJsDriver = new PhantomJSDriver(caps);
 
-		return WebDriverBackedEmbeddedBrowser.withDriver(phantomJsDriver, filterAttributes,
-		        crawlWaitEvent, crawlWaitReload);
+		return WebDriverBackedEmbeddedBrowser.withDriver(phantomJsDriver, crawlWaitEvent, crawlWaitReload);
 	}
 
 }

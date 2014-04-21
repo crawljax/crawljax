@@ -11,27 +11,25 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.crawltests.SimpleSiteCrawl;
+import com.crawljax.plugins.crawloverview.model.OutPutModel;
+import com.crawljax.plugins.crawloverview.model.StateStatistics;
+import com.crawljax.util.TempDirInTargetFolder;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.crawltests.SimpleSiteCrawl;
-import com.crawljax.plugins.crawloverview.model.OutPutModel;
-import com.crawljax.plugins.crawloverview.model.StateStatistics;
-import com.crawljax.rules.TempDirInTargetFolder;
-
 public class SimpleSiteCrawlTest {
 
 	private static final Logger LOG = LoggerFactory
-	        .getLogger(SimpleSiteCrawlTest.class);
+			.getLogger(SimpleSiteCrawlTest.class);
 	private static OutPutModel result;
 
 	@ClassRule
-	public static final TempDirInTargetFolder TMP_FOLDER = new TempDirInTargetFolder(
-	        "simple-crawl", true);
+	public static final TempDirInTargetFolder TMP_FOLDER = new TempDirInTargetFolder("simple-crawl", true);
 
 	private static File outFolder;
 
@@ -42,7 +40,7 @@ public class SimpleSiteCrawlTest {
 			@Override
 			protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
 				return super.newCrawlConfigurationBuilder().setOutputDirectory(
-				        TMP_FOLDER.getTempDir());
+						TMP_FOLDER.getTempDir());
 			}
 		};
 		simpleCrawl.setup();
@@ -56,10 +54,10 @@ public class SimpleSiteCrawlTest {
 	public void allScreenShotsAreSaved() {
 		File screenShotFolder = new File(outFolder, "screenshots");
 		assertThat("Screenshot folder exists", screenShotFolder.exists(),
-		        is(true));
+				is(true));
 		int screenshots = SimpleSiteCrawl.NUMBER_OF_STATES * 2;
 		assertThat("Number of screenshots", screenShotFolder.list(),
-		        arrayWithSize(screenshots));
+				arrayWithSize(screenshots));
 	}
 
 	@Test
@@ -67,7 +65,7 @@ public class SimpleSiteCrawlTest {
 		File statesFolder = new File(outFolder, "states");
 		assertThat("States folder exists", statesFolder.exists(), is(true));
 		assertThat("Number of states matches", statesFolder.list(),
-		        arrayWithSize(NUMBER_OF_STATES));
+				arrayWithSize(NUMBER_OF_STATES));
 	}
 
 	@Test

@@ -1,5 +1,8 @@
 package com.crawljax.core;
 
+import javax.inject.Inject;
+import javax.xml.xpath.XPathExpressionException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -8,16 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.inject.Inject;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
@@ -37,6 +30,12 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.inject.assistedinject.Assisted;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * This class extracts candidate elements from the DOM tree, based on the tags provided by the user.
@@ -127,7 +126,7 @@ public class CandidateElementExtractor {
 		LOG.debug("Looking in state: {} for candidate elements", currentState.getName());
 
 		try {
-			Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+			Document dom = DomUtils.asDocument(browser.getDom());
 			extractElements(dom, results, "");
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
@@ -147,17 +146,18 @@ public class CandidateElementExtractor {
 		for (CrawlElement tag : includedCrawlElements) {
 			LOG.debug("Extracting TAG: {}", tag);
 
-			NodeList frameNodes = dom.getElementsByTagName("FRAME");
-			addFramesCandidates(dom, results, relatedFrame, frameNodes);
+			if (crawlFrames) {
+				NodeList frameNodes = dom.getElementsByTagName("FRAME");
+				addFramesCandidates(results, relatedFrame, frameNodes);
 
-			NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
-			addFramesCandidates(dom, results, relatedFrame, iFrameNodes);
-
+				NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
+				addFramesCandidates(results, relatedFrame, iFrameNodes);
+			}
 			evaluateElements(dom, tag, results, relatedFrame);
 		}
 	}
 
-	private void addFramesCandidates(Document dom, List<CandidateElement> results,
+	private void addFramesCandidates(List<CandidateElement> results,
 	        String relatedFrame, NodeList frameNodes) {
 
 		if (frameNodes == null) {
@@ -196,22 +196,18 @@ public class CandidateElementExtractor {
 	}
 
 	private boolean isFrameIgnored(String string) {
-		if (crawlFrames) {
-			for (String ignorePattern : ignoredFrameIdentifiers) {
-				if (ignorePattern.contains("%")) {
-					// replace with a useful wildcard for regex
-					String pattern = ignorePattern.replace("%", ".*");
-					if (string.matches(pattern)) {
-						return true;
-					}
-				} else if (ignorePattern.equals(string)) {
+		for (String ignorePattern : ignoredFrameIdentifiers) {
+			if (ignorePattern.contains("%")) {
+				// replace with a useful wildcard for regex
+				String pattern = ignorePattern.replace("%", ".*");
+				if (string.matches(pattern)) {
 					return true;
 				}
+			} else if (ignorePattern.equals(string)) {
+				return true;
 			}
-			return false;
-		} else {
-			return true;
 		}
+		return false;
 	}
 
 	private void evaluateElements(Document dom, CrawlElement crawl,

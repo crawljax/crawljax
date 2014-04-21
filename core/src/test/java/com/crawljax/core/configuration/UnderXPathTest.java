@@ -3,6 +3,7 @@ package com.crawljax.core.configuration;
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.junit.Assert.assertThat;
 
+import com.crawljax.domcomparators.WhiteSpaceStripper;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -28,6 +29,7 @@ public class UnderXPathTest {
 		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("underxpath.html");
 		builder.crawlRules().click("a");
 		builder.crawlRules().dontClick("a").underXPath("//A[@class=\"noClickClass\"]");
+		builder.addDomStripper(new WhiteSpaceStripper());
 		CrawlRulesBuilder rules = builder.crawlRules();
 		rules.dontClick("a").withAttribute("id", "noClickId");
 		rules.dontClickChildrenOf("div").withClass("noChildrenOfClass");

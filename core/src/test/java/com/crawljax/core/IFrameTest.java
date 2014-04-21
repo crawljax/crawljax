@@ -9,14 +9,14 @@ import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.domcomparators.WhiteSpaceStripper;
+import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.test.BrowserTest;
-import com.crawljax.test.RunWithWebServer;
 
 /**
  * This abstract class is used a specification of all the iframe related tests.
@@ -31,13 +31,16 @@ public class IFrameTest {
 
 	protected CrawljaxConfigurationBuilder setupConfig() {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().resolve("iframe"));
-		builder.crawlRules().waitAfterEvent(100, TimeUnit.MILLISECONDS);
-		builder.crawlRules().waitAfterReloadUrl(100, TimeUnit.MILLISECONDS);
-		builder.setMaximumDepth(3);
+				CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().resolve("iframe"))
+						.addDomStripper(new WhiteSpaceStripper())
+						.setMaximumDepth(3)
+						.crawlRules()
+						.waitAfterEvent(100, TimeUnit.MILLISECONDS)
+						.waitAfterReloadUrl(100, TimeUnit.MILLISECONDS)
+						.crawlFrames(true)
+						.endRules();
 		builder.crawlRules().click("a");
 		builder.crawlRules().click("input");
-
 		return builder;
 	}
 
@@ -91,8 +94,8 @@ public class IFrameTest {
 		crawljax = new CrawljaxRunner(builder.build());
 		CrawlSession session = crawljax.call();
 		assertEquals("Clickables", 12, session.getStateFlowGraph()
-		        .getAllEdges().size());
+				.getAllEdges().size());
 		assertEquals("States", 12, session.getStateFlowGraph().getAllStates()
-		        .size());
+				.size());
 	}
 }

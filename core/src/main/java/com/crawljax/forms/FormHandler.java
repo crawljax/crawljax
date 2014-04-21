@@ -1,19 +1,12 @@
 package com.crawljax.forms;
 
+import javax.inject.Inject;
+import javax.xml.xpath.XPathExpressionException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
@@ -23,6 +16,12 @@ import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.inject.assistedinject.Assisted;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Handles form values and fills in the form input elements with random values of the defined
@@ -181,7 +180,7 @@ public class FormHandler {
 		List<FormInput> formInputs = new ArrayList<FormInput>();
 		Document dom;
 		try {
-			dom = DomUtils.asDocument(browser.getStrippedDom());
+			dom = DomUtils.asDocument(browser.getDom());
 			List<Node> nodes = getInputElements(dom);
 			for (Node node : nodes) {
 				FormInput formInput =
@@ -197,16 +196,6 @@ public class FormHandler {
 	}
 
 	/**
-	 * Handle form elements.
-	 * 
-	 * @throws Exception
-	 *             the exception.
-	 */
-	public void handleFormElements() throws Exception {
-		handleFormElements(getFormInputs());
-	}
-
-	/**
 	 * Fills in form/input elements.
 	 * 
 	 * @param formInputs
@@ -214,7 +203,7 @@ public class FormHandler {
 	 */
 	public void handleFormElements(List<FormInput> formInputs) {
 		try {
-			Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+			Document dom = DomUtils.asDocument(browser.getDom());
 			for (FormInput input : formInputs) {
 				LOGGER.debug("Filling in: " + input);
 				setInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);

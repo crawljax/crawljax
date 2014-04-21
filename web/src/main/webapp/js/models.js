@@ -49,16 +49,6 @@ App.pageConditions = [
 		 Ember.Object.create({name: "When element is not visible with tag:", value:"notVisibleTag"}),
 		 Ember.Object.create({name: "When Javascript is true:", value:"javascript"})];
 		
-App.comparators = [
-		 Ember.Object.create({name: "Ignore Attribute:", value:"attribute"}),
-		 Ember.Object.create({name: "Ignore White Space", value:"simple"}),
-		 Ember.Object.create({name: "Ignore Dates", value:"date"}),
-		 Ember.Object.create({name: "Ignore Scripts", value:"script"}),
-		 Ember.Object.create({name: "Only observe plain DOM structure", value:"plain"}),
-		 Ember.Object.create({name: "Ignore Regex:", value:"regex"}),
-		 Ember.Object.create({name: "Ignore XPath:", value:"xPath"}),
-		 Ember.Object.create({name: "Ignore within Distance Edit Threshold:", value:"distance"})];
-
 //Configuration Model
 App.Configurations = Ember.Object.extend();
 App.Configurations.reopenClass({

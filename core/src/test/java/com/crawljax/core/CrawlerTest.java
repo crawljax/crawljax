@@ -24,9 +24,9 @@ import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CoreModule.CandidateElementExtractorFactory;
 import com.crawljax.di.CoreModule.FormHandlerFactory;
+import com.crawljax.domcomparators.DomStrippers;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.forms.FormInput;
-import com.crawljax.oraclecomparator.StateComparator;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,9 +52,11 @@ public class CrawlerTest {
 	@Mock
 	private EmbeddedBrowser browser;
 
+	private final CrawljaxConfiguration config = CrawljaxConfiguration.builderFor("http://localhost")
+			.build();
+
 	@Spy
-	private Plugins plugins = new Plugins(CrawljaxConfiguration.builderFor("http://localhost")
-	        .build(), new MetricRegistry());
+	private Plugins plugins = new Plugins(config, new MetricRegistry());
 
 	@Mock
 	private Provider<CrawlSession> sessionProvider;
@@ -62,7 +64,7 @@ public class CrawlerTest {
 	@Mock
 	private CrawlSession session;
 
-	private StateComparator stateComparator;
+	private DomStrippers domStrippers;
 
 	@Mock
 	private FormHandler formHandler;
@@ -112,19 +114,19 @@ public class CrawlerTest {
 		url = URI.create("http://example.com");
 		when(browser.getCurrentUrl()).thenReturn(url.toString());
 		when(sessionProvider.get()).thenReturn(session);
-
-		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());
-		stateComparator = new StateComparator(config.getCrawlRules());
+		when(session.getConfig()).thenReturn(config);
 
 		when(extractor.extract(target)).thenReturn(ImmutableList.of(action));
+		domStrippers = DomStrippers.noStrippers();
 		when(graphProvider.get()).thenReturn(graph);
 
+		CrawljaxConfiguration config = Mockito.spy(CrawljaxConfiguration.builderFor(url).build());
 		context =
 		        new CrawlerContext(browser, config, sessionProvider, exitNotifier,
 		                new MetricRegistry());
 		crawler =
 		        new Crawler(context, config,
-		                stateComparator,
+				        domStrippers,
 		                candidateActionCache, formHandlerFactory, waitConditionChecker,
 		                elementExtractor, graphProvider, plugins, new DefaultStateVertexFactory());
 

@@ -1,30 +1,12 @@
 package com.crawljax.web.runner;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import com.crawljax.core.plugin.HostInterface;
-import com.crawljax.core.plugin.HostInterfaceImpl;
-import com.crawljax.core.plugin.descriptor.Parameter;
-import com.crawljax.plugins.crawloverview.CrawlOverview;
-import com.crawljax.web.Main;
-import com.crawljax.web.model.ClickRule;
-import com.crawljax.web.model.Configuration;
-import com.crawljax.web.model.Configurations;
-import com.crawljax.web.model.CrawlRecord;
-import com.crawljax.web.model.CrawlRecords;
-import com.crawljax.web.model.NameValuePair;
-import com.crawljax.web.model.Plugin;
-import com.crawljax.web.model.Plugins;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.MDC;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.JavaScriptCondition;
@@ -39,27 +21,31 @@ import com.crawljax.condition.XPathCondition;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlElement;
-import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.plugin.HostInterface;
+import com.crawljax.core.plugin.HostInterfaceImpl;
+import com.crawljax.core.plugin.descriptor.Parameter;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
-import com.crawljax.oraclecomparator.OracleComparator;
-import com.crawljax.oraclecomparator.comparators.AttributeComparator;
-import com.crawljax.oraclecomparator.comparators.DateComparator;
-import com.crawljax.oraclecomparator.comparators.EditDistanceComparator;
-import com.crawljax.oraclecomparator.comparators.PlainStructureComparator;
-import com.crawljax.oraclecomparator.comparators.RegexComparator;
-import com.crawljax.oraclecomparator.comparators.ScriptComparator;
-import com.crawljax.oraclecomparator.comparators.SimpleComparator;
-import com.crawljax.oraclecomparator.comparators.StyleComparator;
-import com.crawljax.oraclecomparator.comparators.XPathExpressionComparator;
+import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.crawljax.web.LogWebSocketServlet;
+import com.crawljax.web.Main;
+import com.crawljax.web.model.ClickRule;
 import com.crawljax.web.model.ClickRule.RuleType;
+import com.crawljax.web.model.Configuration;
+import com.crawljax.web.model.Configurations;
+import com.crawljax.web.model.CrawlRecord;
 import com.crawljax.web.model.CrawlRecord.CrawlStatusType;
+import com.crawljax.web.model.CrawlRecords;
+import com.crawljax.web.model.NameValuePair;
+import com.crawljax.web.model.Plugin;
+import com.crawljax.web.model.Plugins;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.MDC;
 
 @Singleton
 public class CrawlRunner {
@@ -203,10 +189,6 @@ public class CrawlRunner {
 					}
 				}
 
-				// Comparators
-				if (config.getComparators().size() > 0)
-					setComparatorsFromConfig(config.getComparators(), builder.crawlRules());
-
 				//Plugins
 				File outputFolder = new File(record.getOutputFolder() + File.separatorChar + "plugins"
 								+ File.separatorChar + "0");
@@ -335,63 +317,6 @@ public class CrawlRunner {
 					break;
 			}
 			return condition;
-		}
-
-		private void setComparatorsFromConfig(List<com.crawljax.web.model.Comparator> list,
-		        CrawlRulesBuilder rules) {
-			List<String> attributes = new ArrayList<String>();
-			List<String> regexs = new ArrayList<String>();
-			List<String> xpaths = new ArrayList<String>();
-
-			for (com.crawljax.web.model.Comparator c : list) {
-				switch (c.getType()) {
-					case attribute:
-						attributes.add(c.getExpression());
-						break;
-					case date:
-						rules.addOracleComparator(new OracleComparator(c.getType().toString()
-						        + c.getExpression(), new DateComparator()));
-						break;
-					case regex:
-						regexs.add(c.getExpression());
-						break;
-					case script:
-						rules.addOracleComparator(new OracleComparator(c.getType().toString()
-						        + c.getExpression(), new ScriptComparator()));
-						break;
-					case distance:
-						rules.addOracleComparator(new OracleComparator(c.getType().toString()
-						        + c.getExpression(), new EditDistanceComparator(Double
-						        .parseDouble(c.getExpression()))));
-						break;
-					case simple:
-						rules.addOracleComparator(new OracleComparator(c.getType().toString()
-						        + c.getExpression(), new SimpleComparator()));
-						break;
-					case plain:
-						rules.addOracleComparator(new OracleComparator(c.getType().toString()
-						        + c.getExpression(), new PlainStructureComparator()));
-						break;
-					case style:
-						rules.addOracleComparator(new OracleComparator(c.getType().toString()
-						        + c.getExpression(), new StyleComparator()));
-						break;
-					case xpath:
-						xpaths.add(c.getExpression());
-						break;
-				}
-			}
-			// create collection comparators
-			if (attributes.size() > 0)
-				rules.addOracleComparator(new OracleComparator(
-				        "attribute",
-				        new AttributeComparator(attributes.toArray(new String[attributes.size()]))));
-			if (regexs.size() > 0)
-				rules.addOracleComparator(new OracleComparator("regex", new RegexComparator(
-				        regexs.toArray(new String[regexs.size()]))));
-			if (xpaths.size() > 0)
-				rules.addOracleComparator(new OracleComparator("xpath",
-				        new XPathExpressionComparator(xpaths.toArray(new String[xpaths.size()]))));
 		}
 	}
 }

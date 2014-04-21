@@ -7,7 +7,6 @@
 	</parent>
 
 	<artifactId>crawljax-core</artifactId>
-	<packaging>jar</packaging>
 
 	<name>Crawljax core</name>
 
@@ -33,9 +32,13 @@
 		</profile>
 	</profiles>
 
-
-
 	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>dom-strippers</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>commons-math</groupId>
 			<artifactId>commons-math</artifactId>
@@ -131,7 +134,6 @@
 			<artifactId>metrics-core</artifactId>
 			<version>${metrics.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.github.detro.ghostdriver</groupId>
 			<artifactId>phantomjsdriver</artifactId>
