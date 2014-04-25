@@ -10,11 +10,14 @@ import com.crawljax.core.plugin.HostInterface;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PreCrawlingPlugin;
 import com.crawljax.core.state.StateVertex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestPlugin implements OnNewStatePlugin,
 		PreCrawlingPlugin {
 
 	private HostInterface hostInterface;
+	private static final Logger LOG = LoggerFactory.getLogger(TestPlugin.class);
 
 	public TestPlugin(HostInterface hostInterface) {
 		this.hostInterface = hostInterface;
@@ -24,13 +27,13 @@ public class TestPlugin implements OnNewStatePlugin,
 	public void onNewState(CrawlerContext context, StateVertex newState) {
 		try {
 			String dom = context.getBrowser().getStrippedDom();
-			File file = new File(hostInterface.getOutputDirectory(), context.getCurrentState().getName() + ".html");
+			File file = new File(hostInterface.getOutputDirectory(), newState.getName() + ".html");
 
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(dom);
 			fw.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 		}
 	}
 
@@ -44,7 +47,7 @@ public class TestPlugin implements OnNewStatePlugin,
 			}
 			fw.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(),e);
 		}
 	}
 }
