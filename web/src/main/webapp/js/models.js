@@ -4,7 +4,8 @@ App.Link = Ember.Object.extend({ text: null, icon: null, target: null, action: f
 App.browsers = [
 		 Ember.Object.create({name: "Mozilla Firefox", value:"FIREFOX"}),
 		 Ember.Object.create({name: "Google Chrome", value:"CHROME"}),
-		 Ember.Object.create({name: "Microsoft Internet Explorer", value:"INTERNET_EXPLORER"})
+		 Ember.Object.create({name: "Microsoft Internet Explorer", value:"INTERNET_EXPLORER"}),
+		 Ember.Object.create({name: "PhantomJS", value:"PHANTOMJS"})
 	];
 		
 App.clickType = [Ember.Object.create({name: "Click", value:"click"}),
