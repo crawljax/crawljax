@@ -34,6 +34,8 @@ public class DomStrippers {
 				for (ValidDomStripper stripper : validDomStrippers) {
 					document = applySafely(stripper, document);
 				}
+				// Apply changes to String representation
+ +				dom = document.toString();
 			}
 			for (DomStripper stripper : strippers) {
 				dom = applySafely(stripper, dom);
