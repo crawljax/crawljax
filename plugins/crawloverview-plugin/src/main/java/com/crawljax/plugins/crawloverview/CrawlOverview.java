@@ -47,6 +47,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	private final OutPutModelCache outModelCache;
 	private OutputBuilder outputBuilder;
 	private boolean warnedForElementsInIframe = false;
+    private boolean shouldPersistStrippedDom = false;
 
 	private OutPutModel result;
 
@@ -85,8 +86,14 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
 		visitedStates.putIfAbsent(state.getName(), vertex);
 		saveScreenshot(context.getBrowser(), state.getName(), vertex);
-		outputBuilder.persistDom(state.getName(), context.getBrowser().getDom());
-	}
+        
+        if (shouldPersistStrippedDom) {
+            outputBuilder.persistDom(state.getName(), vertex.getStrippedDom());
+        } else {
+            outputBuilder
+                    .persistDom(state.getName(), context.getBrowser().getDom());
+        }
+    }
 
 	private void saveScreenshot(EmbeddedBrowser browser, String name,
 	        StateVertex vertex) {
@@ -191,6 +198,17 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	public OutPutModel getResult() {
 		return result;
 	}
+
+    /**
+     * Sets whether full DOM should be stored to disk at <code>onNewState</code>,
+     * or the stripped DOM. Default is full DOM, i.e. <code>false</code>.
+     *
+     * @param persistStrippedDom
+     *            whether the stripped DOM should be stored
+     */
+    public void setShouldPersistStrippedDom(boolean persistStrippedDom) {
+        shouldPersistStrippedDom = persistStrippedDom;
+    }
 
 	@Override
 	public String toString() {
