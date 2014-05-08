@@ -52,8 +52,8 @@ class StateWriter {
 		}
 		context.put("failedEvents", failedEvents);
 		String dom = outBuilder.getDom(state.getName());
-		dom = StringEscapeUtils.escapeHtml4(dom);
-		context.put("dom", dom);
+		context.put("javascriptDom", StringEscapeUtils.escapeEcmaScript(dom));
+		context.put("dom", StringEscapeUtils.escapeHtml4(dom));
 
 		// writing
 		String name = state.getName();

@@ -45,6 +45,7 @@ body {
 					<td>${failedEvents}</td>
 			</tbody>
 		</table>
+
 		<ul id='tabs' class="nav nav-tabs">
 			<li class="active">
 				<a href="#screenshot">Screenshot</a>
@@ -54,7 +55,10 @@ body {
 			</li>	
 			<li>
 				<a href="#interactions">Interactions</a>
-			</li>			
+			</li>
+			<li>
+				<a href="#diff" onclick="diffLoader.initDiff()">DOM diff</a>
+			</li>
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane active" style="position: relative;" id='screenshot'>			
@@ -74,7 +78,7 @@ body {
 					<tbody>
 						<tr>
 							<th>Xpath</th>
-							<th>Destination</tg>
+							<th>Destination</th>
 						</tr>
 						#foreach( $element in $elements )
 						<tr>
@@ -84,6 +88,18 @@ body {
 						#end						
 					</tbody>
 				</table>
+			</div>
+			<div class="tab-pane" id="diff">
+				<div>Or select other file(s) to compare:&nbsp;&nbsp;
+					<input type="file" id="diffFile1">&nbsp;&nbsp;
+					<input type="file" id="diffFile2">
+				</div>
+				<br>
+				<div id="diffOutput"></div>
+				<br>
+				<a href="javascript:void(0);" onclick="diffLoader.loadDomDiff();">
+					Reload diff
+				</a>
 			</div>
 		</div>
 	</div>
@@ -116,6 +132,13 @@ body {
     	        return "top";
     	    }
     	});
+	</script>
+	<!-- Scripts for diff -->
+	<script>
+		$("document").ready(function() {
+			diffLoader.setupFileInputListeners();
+			diffLoader.updateStateHistoryWithDom("${javascriptDom}");
+		});
 	</script>
 </body>
 </html>
