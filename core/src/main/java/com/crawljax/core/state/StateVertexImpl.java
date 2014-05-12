@@ -89,7 +89,7 @@ class StateVertexImpl implements StateVertex {
 	public boolean equals(Object object) {
 		if (object instanceof StateVertex) {
 			StateVertex that = (StateVertex) object;
-			return Objects.equal(this.strippedDom, that.getStrippedDom());
+			return NearDuplicateDetectionFactory.getInstance().isNearDuplicate(this, that);
 		}
 		return false;
 	}
@@ -122,5 +122,4 @@ class StateVertexImpl implements StateVertex {
 	public ImmutableList<CandidateElement> getCandidateElements() {
 		return candidateElements;
 	}
-
 }
