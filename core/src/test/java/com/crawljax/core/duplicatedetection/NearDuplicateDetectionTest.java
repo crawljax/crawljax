@@ -8,11 +8,11 @@ import org.junit.Test;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.core.state.StateVertexImpl;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetection;
-import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionFactory;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionSingleton;
 
 public class NearDuplicateDetectionTest {
 	
-	NearDuplicateDetection ndd = NearDuplicateDetectionFactory.getInstance();
+	NearDuplicateDetection ndd = NearDuplicateDetectionSingleton.getInstance();
 	StateVertex v = new StateVertexImpl(1, "http://demo.crawljax.com", "State1", "<html><body><h1>Test</h1></body></html>", "<html><body><h1></h1></body></html>");
 	
 	@Test
@@ -56,5 +56,17 @@ public class NearDuplicateDetectionTest {
 		long hashOfvFromDom = ndd.generateHash(v.getDom());
 		long hashOfwFromDom = ndd.generateHash(w.getDom());
 		assertTrue(hashOfvFromDom != hashOfwFromDom);
+	}
+	
+	@Test (expected = AssertionError.class)
+	public void testDomIsNull() {
+		StateVertex v = new StateVertexImpl(1, "http://something.com", "State5", null, "<p></p>");
+		ndd.generateHash(v.getDom());
+	}
+	
+	@Test (expected = AssertionError.class)
+	public void testStrippedDomIsNull() {
+		StateVertex v = new StateVertexImpl(1, "http://something.com", "State5", "<p>Hallo</p>", null);
+		ndd.generateHash(v.getStrippedDom());
 	}
 }
