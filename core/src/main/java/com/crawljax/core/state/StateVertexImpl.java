@@ -5,10 +5,12 @@ import java.util.LinkedList;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionFactory;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash32;
 import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+
 import org.w3c.dom.Document;
 
 /**
@@ -24,6 +26,7 @@ public class StateVertexImpl implements StateVertex {
 	private final String dom;
 	private final String strippedDom;
 	private final String url;
+	private final int hash;
 	private String name;
 
 	private ImmutableList<CandidateElement> candidateElements;
@@ -39,6 +42,7 @@ public class StateVertexImpl implements StateVertex {
 	@VisibleForTesting
 	StateVertexImpl(int id, String name, String dom) {
 		this(id, null, name, dom, dom);
+		
 	}
 
 	/**
@@ -59,6 +63,7 @@ public class StateVertexImpl implements StateVertex {
 		this.name = name;
 		this.dom = dom;
 		this.strippedDom = strippedDom;
+		this.hash = (int) NearDuplicateDetectionFactory.getInstance().generateHash(dom);
 	}
 
 	@Override
@@ -83,14 +88,14 @@ public class StateVertexImpl implements StateVertex {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(strippedDom);
+		return this.hash;
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof StateVertex) {
 			StateVertex that = (StateVertex) object;
-			return NearDuplicateDetectionFactory.getInstance().isNearDuplicate(this, that);
+			return NearDuplicateDetectionFactory.getInstance().isNearDuplicateHash(this.hashCode(), that.hashCode());
 		}
 		return false;
 	}
