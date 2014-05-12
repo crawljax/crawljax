@@ -1,5 +1,6 @@
 package com.crawljax.core.state.duplicatedetection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,13 +14,21 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	private static final Logger logger = LoggerFactory.getLogger(NearDuplicateDetectionCrawlHash32.class);
 	
 	private XXHash32 xxhash;
-	private FeatureSelection features;
+	private List<FeatureType> features;
 	private int threshold = 1;
 	
-	public NearDuplicateDetectionCrawlHash32(int threshold) {
+	public NearDuplicateDetectionCrawlHash32(int threshold, List<FeatureType> fs) {
 		xxhash = XXHashFactory.fastestInstance().hash32();
-		features = new FeatureShinglesChars(2);
+		features = fs;
 		this.threshold = threshold;
+	}
+	
+	private List<String> generateFeatures(String doc) {
+		List<String> li = new ArrayList<String>();
+		for(FeatureType feature : features) {
+			li.addAll(feature.generateFeatures(doc));
+		}
+		return li;
 	}
 	
 	@Override
@@ -29,7 +38,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		int hash = 0x00000000;
 		int one = 0x00000001; //8
 		int[] bits = new int[bitLen];
-		List<String> tokens = features.generateFeatures(doc);
+		List<String> tokens = generateFeatures(doc);
 		for (String t : tokens) {
 			int v = xxhash.hash(t.getBytes(), 0, t.length(), 0x9747b28c);
 			logger.debug(String.valueOf(v));
