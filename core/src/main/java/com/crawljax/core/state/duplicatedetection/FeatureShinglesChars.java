@@ -3,7 +3,7 @@ package com.crawljax.core.state.duplicatedetection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FeatureShinglesChars implements FeatureSelection {
+public class FeatureShinglesChars implements FeatureType {
 
 	int shingleSize;
 	
