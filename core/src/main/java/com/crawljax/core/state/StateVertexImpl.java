@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import com.crawljax.core.CandidateElement;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionFactory;
 import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
@@ -15,7 +16,7 @@ import org.w3c.dom.Document;
  * candidate elements every time a candidate is returned its removed from the list so it is a one
  * time only access to the candidates.
  */
-class StateVertexImpl implements StateVertex {
+public class StateVertexImpl implements StateVertex {
 
 	private static final long serialVersionUID = 123400017983488L;
 
