@@ -1,11 +1,11 @@
 package com.crawljax.core.state.duplicatedetection;
 
 public class NearDuplicateDetectionFactory {
-	private static NearDuplicateDetectionCrawlHash ndd;
+	private static NearDuplicateDetection ndd;
 	
-	public static NearDuplicateDetectionCrawlHash getInstance() {
+	public static NearDuplicateDetection getInstance() {
 		if (ndd == null) {
-			ndd = new NearDuplicateDetectionCrawlHash();
+			ndd = new NearDuplicateDetectionCrawlHash32();
 		}
 		return ndd;
 	}
