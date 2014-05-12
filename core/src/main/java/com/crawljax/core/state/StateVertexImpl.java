@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import com.crawljax.core.CandidateElement;
-import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionFactory;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionSingleton;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash32;
 import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
@@ -63,7 +63,7 @@ public class StateVertexImpl implements StateVertex {
 		this.name = name;
 		this.dom = dom;
 		this.strippedDom = strippedDom;
-		this.hash = (int) NearDuplicateDetectionFactory.getInstance().generateHash(dom);
+		this.hash = (int) NearDuplicateDetectionSingleton.getInstance().generateHash(dom);
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class StateVertexImpl implements StateVertex {
 	public boolean equals(Object object) {
 		if (object instanceof StateVertex) {
 			StateVertex that = (StateVertex) object;
-			return NearDuplicateDetectionFactory.getInstance().isNearDuplicateHash(this.hashCode(), that.hashCode());
+			return NearDuplicateDetectionSingleton.getInstance().isNearDuplicateHash(this.hashCode(), that.hashCode());
 		}
 		return false;
 	}
