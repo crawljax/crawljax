@@ -15,7 +15,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	
 	private XXHash32 xxhash;
 	private List<FeatureType> features;
-	private int threshold = 1;
+	private int threshold;
 	
 	public NearDuplicateDetectionCrawlHash32(int threshold, List<FeatureType> fs) {
 		xxhash = XXHashFactory.fastestInstance().hash32();
@@ -25,8 +25,13 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	
 	private List<String> generateFeatures(String doc) {
 		List<String> li = new ArrayList<String>();
+			
 		for(FeatureType feature : features) {
-			li.addAll(feature.generateFeatures(doc));
+			try {
+				li.addAll(feature.getFeatures(doc));
+			} catch (FeatureShinglesException e) {
+				logger.error(e.getMessage());
+			}
 		}
 		return li;
 	}
@@ -87,4 +92,8 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	public boolean isNearDuplicateHash(long hash1, long hash2) {
 		return hammingDistance((int) hash1,(int) hash2) < threshold;
 	}	
+	
+	public int getThreshold() {
+		return threshold;
+	}
 }

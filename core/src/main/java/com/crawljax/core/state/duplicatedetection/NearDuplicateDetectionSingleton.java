@@ -10,7 +10,7 @@ public class NearDuplicateDetectionSingleton {
 	
 	public static NearDuplicateDetection getInstance() {
 		if (ndd == null) {
-			features.add(new FeatureShinglesChars(2));
+			features.add(new FeatureShingles(2, Type.CHARS));
 			ndd = new NearDuplicateDetectionCrawlHash32(4, features);
 		}
 		return ndd;
