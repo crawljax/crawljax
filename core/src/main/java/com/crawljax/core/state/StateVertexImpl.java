@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionSingleton;
-import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash32;
 import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
