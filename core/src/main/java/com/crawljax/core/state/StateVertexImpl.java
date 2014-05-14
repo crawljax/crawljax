@@ -62,7 +62,7 @@ public class StateVertexImpl implements StateVertex {
 		this.name = name;
 		this.dom = dom;
 		this.strippedDom = strippedDom;
-		this.hash = (int) NearDuplicateDetectionSingleton.getInstance().generateHash(dom);
+		this.hash = (int) NearDuplicateDetectionSingleton.getInstance().generateHash(strippedDom);
 	}
 
 	@Override
