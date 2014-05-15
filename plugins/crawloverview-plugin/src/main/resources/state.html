@@ -30,11 +30,31 @@ body {
 				</tr>
 				<tr>
 					<th>Fan in</th>
-					<td>${fanIn}</td>
+					<td>
+						${fanIn}&nbsp;
+						#if( !$incomingStates.isEmpty() )
+						<a href="javascript:void(0);" onclick="$('#incomingStates').toggle()">Show states</a><br>
+						<span id="incomingStates" style="display:none;">
+							#foreach( $state in $incomingStates )
+							<a href="${state}.html">${state}</a><br>
+							#end
+						</span>
+						#end
+					</td>
 				</tr>
 				<tr>
 					<th>Fan out</th>
-					<td>${fanOut}</td>
+					<td>
+						${fanOut}&nbsp;
+						#if( !$outgoingStates.isEmpty() )
+						<a href="javascript:void(0);" onclick="$('#outgoingStates').toggle()">Show states</a><br>
+						<span id="outgoingStates" style="display:none">
+							#foreach( $state in $outgoingStates )
+							<a href="${state}.html">${state}</a><br>
+							#end
+						</span>
+						#end
+					</td>
 				</tr>
 				<tr>
 					<th>Interaction elements</th>

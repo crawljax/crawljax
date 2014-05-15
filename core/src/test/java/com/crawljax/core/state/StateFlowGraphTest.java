@@ -63,7 +63,7 @@ public class StateFlowGraphTest {
 		Set<Eventable> clickables = graph.getOutgoingClickables(state2);
 		assertEquals(3, clickables.size());
 
-		clickables = graph.getIncomingClickable(state2);
+		clickables = graph.getIncomingClickables(state2);
 		assertTrue(clickables.size() == 1);
 
 		assertNotNull(graph.toString());

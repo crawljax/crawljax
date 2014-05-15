@@ -1,9 +1,12 @@
 package com.crawljax.plugins.crawloverview;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
@@ -43,7 +46,9 @@ class StateWriter {
 		context.put("screenshot", state.getName() + ".jpg");
 		context.put("elements", getElements(sfg, state));
 		context.put("fanIn", state.getFanIn());
+		context.put("incomingStates", incomingStateNamesForState(state));
 		context.put("fanOut", state.getFanOut());
+		context.put("outgoingStates", outgoingStateNamesForState(state));
 		context.put("url", state.getUrl());
 
 		String failedEvents = "-";
@@ -114,6 +119,26 @@ class StateWriter {
 			}
 		}
 		return null;
+	}
+
+	private List<String> incomingStateNamesForState(State state) {
+		ImmutableSet<StateVertex> incomingStates = sfg.getIncomingStates(sfg.getById(state.getId()));
+		return sortedNamesForStates(incomingStates);
+	}
+
+	private List<String> outgoingStateNamesForState(State state) {
+		ImmutableSet<StateVertex> outgoingStates = sfg.getOutgoingStates(sfg.getById(state.getId()));
+		return sortedNamesForStates(outgoingStates);
+	}
+
+	private List<String> sortedNamesForStates(ImmutableSet<StateVertex> incomingStates) {
+		List<String> stateNames = new ArrayList<>(incomingStates.size());
+		for (StateVertex vertix : incomingStates) {
+			stateNames.add(vertix.getName());
+		}
+
+		Collections.sort(stateNames);
+		return stateNames;
 	}
 
 	private int getStateNumber(String name) {

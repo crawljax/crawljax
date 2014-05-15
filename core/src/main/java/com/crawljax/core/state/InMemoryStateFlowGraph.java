@@ -192,7 +192,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	}
 
 	@Override
-	public ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix) {
+	public ImmutableSet<Eventable> getIncomingClickables(StateVertex stateVertix) {
 		readLock.lock();
 		try {
 			return ImmutableSet.copyOf(sfg.incomingEdgesOf(stateVertix));
@@ -357,4 +357,14 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		return ImmutableSet.copyOf(result);
 	}
 
+	@Override
+	public ImmutableSet<StateVertex> getIncomingStates(StateVertex stateVertix) {
+		final Set<StateVertex> result = new HashSet<>();
+
+		for (Eventable c : getIncomingClickables(stateVertix)) {
+			result.add(sfg.getEdgeSource(c));
+		}
+
+		return ImmutableSet.copyOf(result);
+	}
 }
