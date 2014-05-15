@@ -64,7 +64,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		return hash;
 	}
 
-	private int hammingDistance(int hash1, int hash2) {
+	public int hammingDistance(int hash1, int hash2) {
 		int i = hash1 ^ hash2;
 		i = i - ((i >>> 1) & 0x55555555);
 		i = (i & 0x33333333) + ((i >>> 2) & 0x33333333);
@@ -90,7 +90,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 
 	@Override
 	public boolean isNearDuplicateHash(long hash1, long hash2) {
-		return hammingDistance((int) hash1,(int) hash2) < threshold;
+		return hammingDistance((int) hash1,(int) hash2) <= threshold;
 	}	
 	
 	public int getThreshold() {
