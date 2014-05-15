@@ -10,6 +10,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
+import org.jgrapht.DirectedGraph;
 import org.w3c.dom.Document;
 
 /**
@@ -126,5 +127,15 @@ public class StateVertexImpl implements StateVertex {
 	@Override
 	public ImmutableList<CandidateElement> getCandidateElements() {
 		return candidateElements;
+	}
+	
+	public boolean hasNearDuplicate(DirectedGraph<StateVertex, Eventable> sfg) {
+		boolean duplicate = false;
+		for(StateVertex vertexOfGraph : sfg.vertexSet()) {
+			if (this.equals(vertexOfGraph)) {
+				duplicate = true;
+			}
+		}
+		return duplicate;
 	}
 }
