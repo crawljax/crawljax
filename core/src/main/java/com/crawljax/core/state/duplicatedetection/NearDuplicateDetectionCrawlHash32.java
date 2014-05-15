@@ -37,7 +37,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	}
 	
 	@Override
-	public long generateHash(String doc) {
+	public int generateHash(String doc) throws FeatureShinglesException{
 		assert doc != null;
 		int bitLen = 32;
 		int hash = 0x00000000;
@@ -75,22 +75,22 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	}
 	
 	@Override
-	public boolean hasNearDuplicateHash(long hash) {
+	public boolean hasNearDuplicateHash(int hash) {
 		// Not supported in this implementation
 		logger.warn("hasNearDuplicateHash/1 is not supported by NDD-crawlhash32");
 		return false;
 	}
 
 	@Override
-	public long findNearDuplicateHash(long hash) {
+	public int findNearDuplicateHash(int hash) {
 		// Not supported in this implementation
 		logger.warn("findNearDuplicateHash/1 is not supported by NDD-crawlhash32");
 		return 0;
 	}
 
 	@Override
-	public boolean isNearDuplicateHash(long hash1, long hash2) {
-		return hammingDistance((int) hash1,(int) hash2) <= threshold;
+	public boolean isNearDuplicateHash(int hash1, int hash2) {
+		return hammingDistance(hash1,hash2) <= threshold;
 	}	
 	
 	public int getThreshold() {

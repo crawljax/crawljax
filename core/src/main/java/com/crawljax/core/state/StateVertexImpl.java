@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import com.crawljax.core.CandidateElement;
+import com.crawljax.core.state.duplicatedetection.FeatureShinglesException;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionSingleton;
 import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
@@ -11,6 +12,8 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 import org.jgrapht.DirectedGraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 /**
@@ -21,12 +24,13 @@ import org.w3c.dom.Document;
 public class StateVertexImpl implements StateVertex {
 
 	private static final long serialVersionUID = 123400017983488L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(StateMachine.class.getName());
 
 	private final int id;
 	private final String dom;
 	private final String strippedDom;
 	private final String url;
-	private final int hash;
+	private int hash;
 	private String name;
 
 	private ImmutableList<CandidateElement> candidateElements;
@@ -63,7 +67,13 @@ public class StateVertexImpl implements StateVertex {
 		this.name = name;
 		this.dom = dom;
 		this.strippedDom = strippedDom;
-		this.hash = (int) NearDuplicateDetectionSingleton.getInstance().generateHash(strippedDom);
+		try {
+			this.hash = NearDuplicateDetectionSingleton.getInstance().generateHash(strippedDom);
+		} catch (FeatureShinglesException e) {
+			this.hash = strippedDom.hashCode();
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -133,7 +143,11 @@ public class StateVertexImpl implements StateVertex {
 		boolean duplicate = false;
 		for(StateVertex vertexOfGraph : sfg.vertexSet()) {
 			if (this.equals(vertexOfGraph)) {
+				LOGGER.debug("Duplicate found: {}, {}", this.getId(), vertexOfGraph.getId());
 				duplicate = true;
+				break;
+			} else {
+				LOGGER.debug("Is not a duplicate: {}, {}", this.getId(), vertexOfGraph.getId());
 			}
 		}
 		return duplicate;

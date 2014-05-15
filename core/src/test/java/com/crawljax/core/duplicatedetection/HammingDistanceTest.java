@@ -18,25 +18,25 @@ public class HammingDistanceTest {
 	@Test
 	public void testHammingDistance() {
 		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(3, new ArrayList<FeatureType>());
-		String hash1 = "11111111111111111111111111111111";
-		String hash2 = "11111111111101111111110111110111";
+		String hash1 = "-1111111111111111111111111111111";
+		String hash2 = "-1111111111101111111111111110111";
 		
-		int hash1AsInt = (int) Long.parseLong(hash1, 2);
-		int hash2AsInt = (int) Long.parseLong(hash2, 2);
+		int hash1AsInt = Integer.parseInt(hash1, 2);
+		int hash2AsInt = Integer.parseInt(hash2, 2);
 		
 		int hammingDistance = crawlHesh.hammingDistance(hash1AsInt, hash2AsInt);
 		
-		assertEquals(3, hammingDistance);
+		assertEquals(2, hammingDistance);
 	}
 	
 	@Test
 	public void testHammingDistance2() {
 		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(3, new ArrayList<FeatureType>());
-		String hash1 = "11110111111111111011111110110111";
-		String hash2 = "11111111111101111111110111110111";
+		String hash1 = "01110111111111111011111110110111";
+		String hash2 = "01111111111101111111110111110111";
 		
-		int hash1AsInt = (int) Long.parseLong(hash1, 2);
-		int hash2AsInt = (int) Long.parseLong(hash2, 2);
+		int hash1AsInt = Integer.parseInt(hash1, 2);
+		int hash2AsInt = Integer.parseInt(hash2, 2);
 		int hammingDistance = crawlHesh.hammingDistance(hash1AsInt, hash2AsInt);
 		
 		assertEquals(5, hammingDistance);
@@ -45,11 +45,11 @@ public class HammingDistanceTest {
 	@Test
 	public void testIsNearDuplicateOnBoundary() {
 		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(3, new ArrayList<FeatureType>());
-		String hash1 = "11111111111111111111111111111111";
-		String hash2 = "11111111111101111111110111110111";
+		String hash1 = "01111111111111111111111111111111";
+		String hash2 = "01111111111101111111110111110111";
 		
-		long hash1AsInt = Long.parseLong(hash1, 2);
-		long hash2AsInt = Long.parseLong(hash2, 2);
+		int hash1AsInt = Integer.parseInt(hash1, 2);
+		int hash2AsInt = Integer.parseInt(hash2, 2);
 		
 		boolean duplicate = crawlHesh.isNearDuplicateHash(hash1AsInt, hash2AsInt);
 		
@@ -60,11 +60,11 @@ public class HammingDistanceTest {
 	@Test
 	public void testIsNearDuplicateOfBoundary() {
 		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(2, new ArrayList<FeatureType>());
-		String hash1 = "11111111111111111111111111111111";
-		String hash2 = "11111111111101111111110111110111";
+		String hash1 = "01111111111111111111111111111111";
+		String hash2 = "01111111111101111111110111110111";
 		
-		long hash1AsInt = Long.parseLong(hash1, 2);
-		long hash2AsInt = Long.parseLong(hash2, 2);
+		int hash1AsInt = Integer.parseInt(hash1, 2);
+		int hash2AsInt = Integer.parseInt(hash2, 2);
 		
 		boolean duplicate = crawlHesh.isNearDuplicateHash(hash1AsInt, hash2AsInt);
 		
