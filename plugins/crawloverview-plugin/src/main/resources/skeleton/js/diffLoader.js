@@ -128,5 +128,15 @@ var diffLoader = {
 			}
 			}
 		});
+	},
+
+	swapDiff: function() {
+		tempCurrentDom = localStorage.getItem("currentDom");
+		tempCurrentState = localStorage.getItem("currentState");
+		localStorage.setItem("currentDom", localStorage.getItem("previousDom"));
+		localStorage.setItem("currentState", localStorage.getItem("previousState"));
+		localStorage.setItem("previousDom", tempCurrentDom);
+		localStorage.setItem("previousState", tempCurrentState);
+		diffLoader.loadDomDiff();
 	}
 } // End diffLoader
