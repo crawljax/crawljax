@@ -118,9 +118,6 @@ public class StateMachine {
 			stateFlowGraph.addEdge(currentState, newState, eventable);
 			LOGGER.info("State {} added to the StateMachine.", newState.getName());
 		}
-
-		// Add the Edge
-
 		return cloneState;
 	}
 

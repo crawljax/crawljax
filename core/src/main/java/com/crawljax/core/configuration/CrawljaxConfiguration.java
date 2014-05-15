@@ -119,6 +119,20 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
+		 * @param threshold The threshold that will be used for the hammingdistance comparison.
+		 * Two states are near-duplicates if the hammingdistance between the two hashes 
+		 * are less or equal than the threshold.
+		 */
+		public CrawljaxConfigurationBuilder setThresholdNearDuplicateDetection(int threshold) {
+			Preconditions.checkArgument(threshold >= 0,
+					"The theshold should be greater or equal to 0.");
+			Preconditions.checkArgument(threshold <= 32,
+					"The theshold should be smaller or equal to " + 32);
+			config.thresholdNearDuplicateDetection = threshold;
+			return this;
+		}
+		
+		/**
 		 * Add plugins to Crawljax. Note that without plugins, Crawljax won't give any ouput. For basic output at least
 		 * enable the CrawlOverviewPlugin. <p> You can call this method several times to add multiple plugins </p>
 		 *
@@ -303,6 +317,7 @@ public class CrawljaxConfiguration {
 	;
 	private int maximumDepth = 2;
 	private File output = new File("out");
+	private int thresholdNearDuplicateDetection = 3;
 
 	private StateVertexFactory stateVertexFactory;
 
@@ -344,6 +359,10 @@ public class CrawljaxConfiguration {
 	public File getOutputDir() {
 		return output;
 	}
+	
+	public int getThresholdNearDuplicateDetection() {
+		return thresholdNearDuplicateDetection;
+	}
 
 	public ImmutableList<DomStripper> getStrippers() {
 		return strippers;
@@ -360,7 +379,7 @@ public class CrawljaxConfiguration {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(url, browserConfig, plugins, proxyConfiguration, crawlRules,
-				maximumStates, maximumRuntime, maximumDepth, strippers, validStrippers);
+				maximumStates, maximumRuntime, maximumDepth, thresholdNearDuplicateDetection, strippers, validStrippers);
 	}
 
 	@Override
@@ -375,6 +394,7 @@ public class CrawljaxConfiguration {
 					&& Objects.equal(this.maximumStates, that.maximumStates)
 					&& Objects.equal(this.maximumRuntime, that.maximumRuntime)
 					&& Objects.equal(this.maximumDepth, that.maximumDepth)
+					&& Objects.equal(this.thresholdNearDuplicateDetection, that.thresholdNearDuplicateDetection)
 					&& Objects.equal(this.strippers, that.strippers)
 					&& Objects.equal(this.validStrippers, that.validStrippers);
 		}
@@ -392,6 +412,7 @@ public class CrawljaxConfiguration {
 				.add("maximumStates", maximumStates)
 				.add("maximumRuntime", maximumRuntime)
 				.add("maximumDepth", maximumDepth)
+				.add("thresholdNearDuplicateDetection", thresholdNearDuplicateDetection)
 				.toString();
 	}
 

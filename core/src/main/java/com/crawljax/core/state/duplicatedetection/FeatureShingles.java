@@ -5,10 +5,9 @@ import java.util.List;
 
 public class FeatureShingles implements FeatureType {
 
-	List<String> binaryWords;
-	
-	Type type;
-	int count;
+	private List<String> binaryWords;
+	private Type type;
+	private int count;
 	
 	public FeatureShingles(int count, Type value) {
 		this.type = value;
@@ -38,7 +37,10 @@ public class FeatureShingles implements FeatureType {
 		}
 	}
 	
-	private String[] getChars(String doc) {
+	private String[] getChars(String doc) throws FeatureShinglesException {
+		if (doc.length() < this.count) {
+			throw new FeatureShinglesException("The size of the chars per feature is to big for this document. The document has only a size of " + doc.length() + " char(s).");
+		}
 		String[] resultFeatures = new String[doc.length() - count + 1];
 		for (int j=0; j<resultFeatures.length; j++) {
 			String feature = "";
@@ -50,15 +52,19 @@ public class FeatureShingles implements FeatureType {
 		return resultFeatures;
 	}
 	
-	private String[] getWords(String doc) {
+	private String[] getWords(String doc) throws FeatureShinglesException {
 		String[] words = doc.split(" ");
-		
+		if (words.length < this.count) {
+			throw new FeatureShinglesException("The size of the words per feature is to big for this document. The document has only a size of " + words.length + " word(s).");
+		}
 		return generateFeatures(doc, words);
 	}
 	
-	private String[] getSentences(String doc) {
+	private String[] getSentences(String doc) throws FeatureShinglesException {
 		String[] sentences = doc.split("\\.");
-		
+		if (sentences.length < this.count) {
+			throw new FeatureShinglesException("The size of the sentences per feature is to big for this document. The document has only a size of " + sentences.length + " sentence(s).");
+		}
 		return generateFeatures(doc, sentences);
 	}
 	

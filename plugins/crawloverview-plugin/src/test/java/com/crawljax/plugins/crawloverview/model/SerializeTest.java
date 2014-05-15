@@ -41,10 +41,10 @@ public class SerializeTest {
 		        ImmutableList.of(new CandidateElementPosition("a/b/c", new Point(1, 2),
 		                new Dimension(3, 4)));
 		State state1 =
-		        new State("state1", "http://example.com/a", candidateElements, 1, 1, 1,
+		        new State("state1", "http://example.com/a", candidateElements, 1, 1, 1, 1,
 		                ImmutableList.of("failedEvent1"));
 		State state2 =
-		        new State("state2", "http://example.com/b", candidateElements, 1, 1, 1,
+		        new State("state2", "http://example.com/b", candidateElements, 1, 1, 1, 1,
 		                ImmutableList.of("failedEvent2"));
 		ImmutableMap<String, State> states =
 		        ImmutableMap.of(state1.getName(), state1, state2.getName(), state2);

@@ -113,15 +113,18 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	private StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName) {
 		writeLock.lock();
 		try {
-			boolean added = sfg.addVertex(stateVertix);
-			if (added) {
+			StateVertexImpl vertex = (StateVertexImpl) stateVertix;
+			boolean duplicate = vertex.hasNearDuplicate(sfg);
+			
+			if (!duplicate) {
+				sfg.addVertex(stateVertix);
 				stateById.put(stateVertix.getId(), stateVertix);
 				int count = stateCounter.incrementAndGet();
 				exitNotifier.incrementNumberOfStates();
 				LOG.debug("Number of states is now {}", count);
 				return null;
 			} else {
-				// Graph already contained the vertex
+				// Graph has already a near duplicate of the vertex
 				LOG.debug("Graph already contained vertex {}", stateVertix);
 				return this.getStateInGraph(stateVertix);
 			}
