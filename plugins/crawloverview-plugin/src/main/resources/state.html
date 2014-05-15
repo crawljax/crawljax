@@ -33,7 +33,7 @@ body {
 					<td>
 						${fanIn}&nbsp;
 						#if( !$incomingStates.isEmpty() )
-						<a href="javascript:void(0);" onclick="$('#incomingStates').toggle()">Show states</a><br>
+						<button onclick="$('#incomingStates').toggle()">Show states</button><br>
 						<span id="incomingStates" style="display:none;">
 							#foreach( $state in $incomingStates )
 							<a href="${state}.html">${state}</a><br>
@@ -47,7 +47,7 @@ body {
 					<td>
 						${fanOut}&nbsp;
 						#if( !$outgoingStates.isEmpty() )
-						<a href="javascript:void(0);" onclick="$('#outgoingStates').toggle()">Show states</a><br>
+						<button onclick="$('#outgoingStates').toggle()">Show states</button><br>
 						<span id="outgoingStates" style="display:none">
 							#foreach( $state in $outgoingStates )
 							<a href="${state}.html">${state}</a><br>
@@ -117,9 +117,7 @@ body {
 				<br>
 				<div id="diffOutput"></div>
 				<br>
-				<a href="javascript:void(0);" onclick="diffLoader.loadDomDiff();">
-					Reload diff
-				</a>
+				<button onclick="diffLoader.loadDomDiff();">Reload diff</button>
 			</div>
 		</div>
 	</div>
