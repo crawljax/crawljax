@@ -15,6 +15,7 @@ import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionSingleton;
 import com.crawljax.di.CrawlSessionProvider;
 
 /**
@@ -61,6 +62,7 @@ public class CrawlController implements Callable<CrawlSession> {
 	@Override
 	public CrawlSession call() {
 		setMaximumCrawlTimeIfNeeded();
+		NearDuplicateDetectionSingleton.setThreshold(config.getThresholdNearDuplicateDetection());
 		plugins.runPreCrawlingPlugins(config);
 		CrawlTaskConsumer firstConsumer = consumerFactory.get();
 		StateVertex firstState = firstConsumer.crawlIndex();
