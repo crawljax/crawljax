@@ -6,10 +6,10 @@ import java.util.List;
 public class FeatureShingles implements FeatureType {
 
 	private List<String> binaryWords;
-	private Type type;
+	private FeatureSizeType type;
 	private int count;
 	
-	public FeatureShingles(int count, Type value) {
+	public FeatureShingles(int count, FeatureSizeType value) {
 		this.type = value;
 		this.count = count;
 	}
@@ -25,12 +25,12 @@ public class FeatureShingles implements FeatureType {
 		return binaryWords;
 	}
 	
-	private String[] getFeatures(Type type, String doc) throws FeatureShinglesException {
-		if (type == Type.CHARS) {
+	private String[] getFeatures(FeatureSizeType type, String doc) throws FeatureShinglesException {
+		if (type == FeatureSizeType.CHARS) {
 			return this.getChars(doc);
-		} else if (type == Type.WORDS) {
+		} else if (type == FeatureSizeType.WORDS) {
 			return this.getWords(doc);
-		} else if (type == Type.SENTENCES) {
+		} else if (type == FeatureSizeType.SENTENCES) {
 			return this.getSentences(doc);
 		} else {
 			throw new FeatureShinglesException("The type of the feature selection is not possible"); 

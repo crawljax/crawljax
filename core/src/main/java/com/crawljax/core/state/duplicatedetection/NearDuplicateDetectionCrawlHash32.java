@@ -23,15 +23,11 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		this.threshold = threshold;
 	}
 	
-	private List<String> generateFeatures(String doc) {
+	private List<String> generateFeatures(String doc) throws FeatureShinglesException {
 		List<String> li = new ArrayList<String>();
 			
 		for(FeatureType feature : features) {
-			try {
-				li.addAll(feature.getFeatures(doc));
-			} catch (FeatureShinglesException e) {
-				logger.error(e.getMessage());
-			}
+			li.addAll(feature.getFeatures(doc));
 		}
 		return li;
 	}
@@ -43,7 +39,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		int hash = 0x00000000;
 		int one = 0x00000001; //8
 		int[] bits = new int[bitLen];
-		List<String> tokens = generateFeatures(doc);
+		List<String> tokens = this.generateFeatures(doc);
 		for (String t : tokens) {
 			int v = xxhash.hash(t.getBytes(), 0, t.length(), 0x9747b28c);
 			logger.debug(String.valueOf(v));
@@ -95,5 +91,10 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	
 	public int getThreshold() {
 		return threshold;
+	}
+
+	@Override
+	public int getDistance(int hash1, int hash2) {
+		return hammingDistance(hash1, hash2);
 	}
 }
