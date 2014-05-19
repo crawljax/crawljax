@@ -16,4 +16,6 @@ public interface NearDuplicateDetection {
 	public int findNearDuplicateHash(int hash); // Threshold defined internal or in settings
 
 	public boolean isNearDuplicateHash(int hash1, int hash2);
+		
+	public int getDistance(int hash1, int hash2);
 }
