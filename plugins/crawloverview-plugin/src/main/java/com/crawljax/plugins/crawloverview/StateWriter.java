@@ -1,12 +1,13 @@
 package com.crawljax.plugins.crawloverview;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Ordering;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
@@ -123,22 +124,32 @@ class StateWriter {
 
 	private List<String> incomingStateNamesForState(State state) {
 		ImmutableSet<StateVertex> incomingStates = sfg.getIncomingStates(sfg.getById(state.getId()));
-		return sortedNamesForStates(incomingStates);
+		return sortedStateNames(incomingStates);
 	}
 
 	private List<String> outgoingStateNamesForState(State state) {
 		ImmutableSet<StateVertex> outgoingStates = sfg.getOutgoingStates(sfg.getById(state.getId()));
-		return sortedNamesForStates(outgoingStates);
+		return sortedStateNames(outgoingStates);
 	}
 
-	private List<String> sortedNamesForStates(ImmutableSet<StateVertex> incomingStates) {
-		List<String> stateNames = new ArrayList<>(incomingStates.size());
-		for (StateVertex vertix : incomingStates) {
+	private List<String> sortedStateNames(ImmutableSet<StateVertex> states) {
+		List<StateVertex> statesList = sortStatesById(states);
+		List<String> stateNames = new ArrayList<>(statesList.size());
+
+		for (StateVertex vertix : statesList) {
 			stateNames.add(vertix.getName());
 		}
-
-		Collections.sort(stateNames);
 		return stateNames;
+	}
+
+	private List<StateVertex> sortStatesById(ImmutableSet<StateVertex> states) {
+		Ordering<StateVertex> orderingById = Ordering.from(new Comparator<StateVertex>() {
+			@Override
+			public int compare(StateVertex state1, StateVertex state2) {
+				return state1.getId() - state2.getId();
+			}
+		});
+		return orderingById.immutableSortedCopy(states);
 	}
 
 	private int getStateNumber(String name) {
