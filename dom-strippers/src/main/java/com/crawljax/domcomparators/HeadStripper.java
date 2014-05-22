@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  */
 public class HeadStripper implements DomStripper {
 
-	private static final Pattern PATTERN = Pattern.compile("<head>.*</head>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+	private static final Pattern PATTERN = Pattern.compile("<head.*</head>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
 	@Override
 	public String apply(String input) {
