@@ -42,7 +42,6 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		List<String> tokens = this.generateFeatures(doc);
 		for (String t : tokens) {
 			int v = xxhash.hash(t.getBytes(), 0, t.length(), 0x9747b28c);
-			logger.debug(String.valueOf(v));
 			for (int i = bitLen; i >= 1; --i) {
 				if (((v >> (bitLen - i)) & 1) == 1)
 					++bits[i - 1];
@@ -56,7 +55,6 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 			}
 			one = one << 1;
 		}
-		logger.debug("hash: " + String.valueOf(hash));
 		return hash;
 	}
 
@@ -69,23 +67,10 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		i = i + (i >>> 16);
 		return i & 0x3f;
 	}
-	
-	@Override
-	public boolean hasNearDuplicateHash(int hash) {
-		// Not supported in this implementation
-		logger.warn("hasNearDuplicateHash/1 is not supported by NDD-crawlhash32");
-		return false;
-	}
-
-	@Override
-	public int findNearDuplicateHash(int hash) {
-		// Not supported in this implementation
-		logger.warn("findNearDuplicateHash/1 is not supported by NDD-crawlhash32");
-		return 0;
-	}
 
 	@Override
 	public boolean isNearDuplicateHash(int hash1, int hash2) {
+		logger.debug("Comparing hash {} with hash {} using a threshold of {}", hash1, hash2, threshold);
 		return hammingDistance(hash1,hash2) <= threshold;
 	}	
 	
