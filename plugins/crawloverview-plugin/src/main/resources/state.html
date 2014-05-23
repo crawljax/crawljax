@@ -30,11 +30,31 @@ body {
 				</tr>
 				<tr>
 					<th>Fan in</th>
-					<td>${fanIn}</td>
+					<td>
+						${fanIn}&nbsp;
+						#if( !$incomingStates.isEmpty() )
+						<button onclick="$('#incomingStates').toggle()">Show states</button><br>
+						<span id="incomingStates" style="display:none;">
+							#foreach( $state in $incomingStates )
+							<a href="${state}.html">${state}</a><br>
+							#end
+						</span>
+						#end
+					</td>
 				</tr>
 				<tr>
 					<th>Fan out</th>
-					<td>${fanOut}</td>
+					<td>
+						${fanOut}&nbsp;
+						#if( !$outgoingStates.isEmpty() )
+						<button onclick="$('#outgoingStates').toggle()">Show states</button><br>
+						<span id="outgoingStates" style="display:none">
+							#foreach( $state in $outgoingStates )
+							<a href="${state}.html">${state}</a><br>
+							#end
+						</span>
+						#end
+					</td>
 				</tr>
 				<tr>
 					<th>Interaction elements</th>
@@ -97,9 +117,7 @@ body {
 				<br>
 				<div id="diffOutput"></div>
 				<br>
-				<a href="javascript:void(0);" onclick="diffLoader.loadDomDiff();">
-					Reload diff
-				</a>
+				<button onclick="diffLoader.loadDomDiff();">Reload diff</button>
 			</div>
 		</div>
 	</div>

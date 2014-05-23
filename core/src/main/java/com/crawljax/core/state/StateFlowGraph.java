@@ -42,7 +42,7 @@ public interface StateFlowGraph {
 	 * @return a set of the incoming edges (clickables) of the stateVertix.
 	 * @see org.jgrapht.DirectedGraph#incomingEdgesOf(Object)
 	 */
-	ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix);
+	ImmutableSet<Eventable> getIncomingClickables(StateVertex stateVertix);
 
 	/**
 	 * Is it possible to go from s1 -> s2?
@@ -106,5 +106,13 @@ public interface StateFlowGraph {
 	 *         {@link StateVertex} via one of the sources outgoing edges.
 	 */
 	ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix);
+
+	/**
+	 * @param stateVertix
+	 *            The source {@link StateVertex}
+	 * @return a {@link Set} of {@link StateVertex} that are connected to the source
+	 *         {@link StateVertex} via one of the sources incoming edges.
+	 */
+	ImmutableSet<StateVertex> getIncomingStates(StateVertex stateVertix);
 
 }
