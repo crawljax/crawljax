@@ -17,6 +17,12 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	private List<FeatureType> features;
 	private int threshold;
 	
+	
+	
+	public List<FeatureType> getFeatures() {
+		return features;
+	}
+
 	public NearDuplicateDetectionCrawlHash32(int threshold, List<FeatureType> fs) {
 		xxhash = XXHashFactory.fastestInstance().hash32();
 		features = fs;
