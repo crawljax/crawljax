@@ -15,7 +15,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	
 	private XXHash32 xxhash;
 	private List<FeatureType> features;
-	private int threshold;
+	private double threshold;
 	
 	
 	
@@ -23,7 +23,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		return features;
 	}
 
-	public NearDuplicateDetectionCrawlHash32(int threshold, List<FeatureType> fs) {
+	public NearDuplicateDetectionCrawlHash32(double threshold, List<FeatureType> fs) {
 		xxhash = XXHashFactory.fastestInstance().hash32();
 		features = fs;
 		this.threshold = threshold;
@@ -39,7 +39,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	}
 	
 	@Override
-	public int generateHash(String doc) throws FeatureShinglesException{
+	public int[] generateHash(String doc) throws FeatureShinglesException{
 		assert doc != null;
 		int bitLen = 32;
 		int hash = 0x00000000;
@@ -61,7 +61,8 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 			}
 			one = one << 1;
 		}
-		return hash;
+		int[] hashArray = {hash};
+		return hashArray;
 	}
 
 	public int hammingDistance(int hash1, int hash2) {
@@ -75,17 +76,18 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	}
 
 	@Override
-	public boolean isNearDuplicateHash(int hash1, int hash2) {
-		logger.debug("Comparing hash {} with hash {} using a threshold of {}", hash1, hash2, threshold);
-		return hammingDistance(hash1,hash2) <= threshold;
-	}	
+	public boolean isNearDuplicateHash(int[] hash1, int[] hash2) {
+		logger.debug("Comparing hash {} with hash {} using a threshold of {}", hash1[0], hash2[0], threshold);
+		return ((double) hammingDistance(hash1[0],hash2[0])) <= threshold;
+	}
 	
-	public int getThreshold() {
+	public double getThreshold() {
 		return threshold;
 	}
 
 	@Override
-	public int getDistance(int hash1, int hash2) {
-		return hammingDistance(hash1, hash2);
+	public double getDistance(int[] hash1, int[] hash2) {
+		return hammingDistance(hash1[0], hash2[0]);
+		
 	}
 }

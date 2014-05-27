@@ -5,27 +5,27 @@ import java.util.List;
 
 public class NearDuplicateDetectionSingleton {
 	private static NearDuplicateDetection ndd;
-	private static int threshold;
+	private static double threshold;
 	private static List<FeatureType> features = new ArrayList<FeatureType>();
 	
 	/*
 	static {
-		features.add(new FeatureShingles(3, FeatureSizeType.WORDS));
+	//	features.add(new FeatureShingles(3, FeatureSizeType.WORDS));
 	}
 	*/
 	
 	public static NearDuplicateDetection getInstance() {
 		if (ndd == null) {
-			ndd = new NearDuplicateDetectionCrawlHash32(threshold, features);
+			ndd = new NearDuplicateDetectionBroder32(threshold, features);
 		}
 		return ndd;
 	}
 	
-	public static void setThreshold(int t) {
+	public static void setThreshold(double t) {
 		threshold = t;
 		resetInstance();
 	}
-	public static int getThreshold() {
+	public static double getThreshold() {
 		return threshold;
 	}
 	

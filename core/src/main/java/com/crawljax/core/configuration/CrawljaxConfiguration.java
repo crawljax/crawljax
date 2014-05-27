@@ -123,7 +123,7 @@ public class CrawljaxConfiguration {
 		 * Two states are near-duplicates if the hammingdistance between the two hashes 
 		 * are less or equal than the threshold.
 		 */
-		public CrawljaxConfigurationBuilder setThresholdNearDuplicateDetection(int threshold) {
+		public CrawljaxConfigurationBuilder setThresholdNearDuplicateDetection(double threshold) {
 			Preconditions.checkArgument(threshold >= 0,
 					"The theshold should be greater or equal to 0.");
 			Preconditions.checkArgument(threshold <= 32,
@@ -317,7 +317,7 @@ public class CrawljaxConfiguration {
 	;
 	private int maximumDepth = 2;
 	private File output = new File("out");
-	private int thresholdNearDuplicateDetection = 3;
+	private double thresholdNearDuplicateDetection = 3;
 
 	private StateVertexFactory stateVertexFactory;
 
@@ -360,7 +360,7 @@ public class CrawljaxConfiguration {
 		return output;
 	}
 	
-	public int getThresholdNearDuplicateDetection() {
+	public double getThresholdNearDuplicateDetection() {
 		return thresholdNearDuplicateDetection;
 	}
 

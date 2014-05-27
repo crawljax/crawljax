@@ -22,7 +22,7 @@ public class CrawlHashTest {
 		features.add(new FeatureShingles(9, FeatureSizeType.WORDS));
 		
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
-		assertEquals(3, ndd.getThreshold());
+		assertEquals(3, ndd.getThreshold(), 0.001);
 	}
 	
 	@Test
@@ -32,12 +32,12 @@ public class CrawlHashTest {
 		
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
 		String strippedDom = "This is some text for the test.";
-		int hash = ndd.generateHash(strippedDom);
+		int[] hash = ndd.generateHash(strippedDom);
 		boolean duplicate = ndd.isNearDuplicateHash(hash, hash);
 		assertTrue(duplicate);
 		
-		int distance = ndd.getDistance(hash, hash);
-		assertEquals(0, distance);
+		double distance = ndd.getDistance(hash, hash);
+		assertEquals(0, distance, 0.001);
 	}
 	
 	@Test
@@ -93,8 +93,8 @@ public class CrawlHashTest {
 		String strippedDom1 = "Test";
 		String strippedDom2 = "Test";
 		
-		int hash1 = ndd.generateHash(strippedDom1);
-		int hash2 = ndd.generateHash(strippedDom2);
+		int[] hash1 = ndd.generateHash(strippedDom1);
+		int[] hash2 = ndd.generateHash(strippedDom2);
 		assertEquals(hash1, hash2);
 	}
 	
@@ -107,8 +107,8 @@ public class CrawlHashTest {
 		String strippedDom1 = "This is some text for the test.";
 		String strippedDom2 = "Other text will be shown";
 		
-		int hashOfvFromDom = ndd.generateHash(strippedDom1);
-		int hashOfwFromDom = ndd.generateHash(strippedDom2);
+		int[] hashOfvFromDom = ndd.generateHash(strippedDom1);
+		int[] hashOfwFromDom = ndd.generateHash(strippedDom2);
 		assertFalse(hashOfvFromDom == hashOfwFromDom);
 	}
 	
