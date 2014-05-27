@@ -30,7 +30,7 @@ public class StateVertexImpl implements StateVertex {
 	private final String dom;
 	private final String strippedDom;
 	private final String url;
-	private int hash;
+	private int[] hash;
 	private String name;
 
 	private ImmutableList<CandidateElement> candidateElements;
@@ -70,7 +70,8 @@ public class StateVertexImpl implements StateVertex {
 		try {
 			this.hash = NearDuplicateDetectionSingleton.getInstance().generateHash(strippedDom);
 		} catch (FeatureShinglesException e) {
-			this.hash = strippedDom.hashCode();
+			this.hash = new int[1];
+			this.hash[0] = strippedDom.hashCode();
 			LOGGER.error(e.getMessage());
 			e.printStackTrace();
 		}
@@ -96,16 +97,16 @@ public class StateVertexImpl implements StateVertex {
 		return url;
 	}
 
-	@Override
-	public int hashCode() {
+	public int[] getHashes() {
 		return this.hash;
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof StateVertex) {
-			StateVertex that = (StateVertex) object;
-			return NearDuplicateDetectionSingleton.getInstance().isNearDuplicateHash(this.hashCode(), that.hashCode());
+			StateVertexImpl that = (StateVertexImpl) object;
+			
+			return NearDuplicateDetectionSingleton.getInstance().isNearDuplicateHash(this.getHashes(), that.getHashes());
 		}
 		return false;
 	}
@@ -140,16 +141,14 @@ public class StateVertexImpl implements StateVertex {
 	}
 	
 	public boolean hasNearDuplicate(DirectedGraph<StateVertex, Eventable> sfg) {
-		boolean duplicate = false;
 		for(StateVertex vertexOfGraph : sfg.vertexSet()) {
 			if (this.equals(vertexOfGraph)) {
 				LOGGER.debug("Duplicate found: {}, {}", this.getId(), vertexOfGraph.getId());
-				duplicate = true;
-				break;
+				return true;
 			} else {
 				LOGGER.debug("Is not a duplicate: {}, {}", this.getId(), vertexOfGraph.getId());
 			}
 		}
-		return duplicate;
+		return false;
 	}
 }

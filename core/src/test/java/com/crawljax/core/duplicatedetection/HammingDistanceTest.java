@@ -48,12 +48,12 @@ public class HammingDistanceTest {
 		String hash1 = "01111111111111111111111111111111";
 		String hash2 = "01111111111101111111110111110111";
 		
-		int hash1AsInt = Integer.parseInt(hash1, 2);
-		int hash2AsInt = Integer.parseInt(hash2, 2);
+		int[] hash1AsInt = {Integer.parseInt(hash1, 2)};
+		int[] hash2AsInt = {Integer.parseInt(hash2, 2)};
 		
 		boolean duplicate = crawlHesh.isNearDuplicateHash(hash1AsInt, hash2AsInt);
 		
-		assertEquals(3, crawlHesh.getThreshold());
+		assertEquals(3, crawlHesh.getThreshold(), 0.001);
 		assertTrue(duplicate);
 	}
 	
@@ -63,12 +63,12 @@ public class HammingDistanceTest {
 		String hash1 = "01111111111111111111111111111111";
 		String hash2 = "01111111111101111111110111110111";
 		
-		int hash1AsInt = Integer.parseInt(hash1, 2);
-		int hash2AsInt = Integer.parseInt(hash2, 2);
+		int[] hash1AsInt = {Integer.parseInt(hash1, 2)};
+		int[] hash2AsInt = {Integer.parseInt(hash2, 2)};
 		
 		boolean duplicate = crawlHesh.isNearDuplicateHash(hash1AsInt, hash2AsInt);
 		
-		assertEquals(2, crawlHesh.getThreshold());
+		assertEquals(2, crawlHesh.getThreshold(), 0.001);
 		assertFalse(duplicate);
 	}
 	

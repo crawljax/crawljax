@@ -11,11 +11,11 @@ import java.util.List;
  */
 public interface NearDuplicateDetection {
 	
-	public int generateHash(String doc) throws FeatureShinglesException;
+	public int[] generateHash(String doc) throws FeatureShinglesException;
 
-	public boolean isNearDuplicateHash(int hash1, int hash2);
+	public boolean isNearDuplicateHash(int[] hash1, int[] hash2);
 		
-	public int getDistance(int hash1, int hash2);
+	public double getDistance(int[] hash1, int[] hash2);
 	
 	public List<FeatureType> getFeatures();
 	
