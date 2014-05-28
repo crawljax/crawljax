@@ -4,10 +4,16 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import com.crawljax.core.CandidateElement;
+import com.crawljax.core.state.duplicatedetection.FeatureException;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionSingleton;
 import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+
+import org.jgrapht.DirectedGraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 /**
@@ -15,14 +21,16 @@ import org.w3c.dom.Document;
  * candidate elements every time a candidate is returned its removed from the list so it is a one
  * time only access to the candidates.
  */
-class StateVertexImpl implements StateVertex {
+public class StateVertexNDD implements StateVertex {
 
 	private static final long serialVersionUID = 123400017983488L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(StateMachine.class.getName());
 
 	private final int id;
 	private final String dom;
 	private final String strippedDom;
 	private final String url;
+	private int[] hash;
 	private String name;
 
 	private ImmutableList<CandidateElement> candidateElements;
@@ -36,8 +44,9 @@ class StateVertexImpl implements StateVertex {
 	 *            the current DOM tree of the browser
 	 */
 	@VisibleForTesting
-	StateVertexImpl(int id, String name, String dom) {
+	StateVertexNDD(int id, String name, String dom) {
 		this(id, null, name, dom, dom);
+		
 	}
 
 	/**
@@ -52,12 +61,20 @@ class StateVertexImpl implements StateVertex {
 	 * @param strippedDom
 	 *            the stripped dom by the OracleComparators
 	 */
-	public StateVertexImpl(int id, String url, String name, String dom, String strippedDom) {
+	public StateVertexNDD(int id, String url, String name, String dom, String strippedDom) {
 		this.id = id;
 		this.url = url;
 		this.name = name;
 		this.dom = dom;
 		this.strippedDom = strippedDom;
+		try {
+			this.hash = NearDuplicateDetectionSingleton.getInstance().generateHash(strippedDom);
+		} catch (FeatureException e) {
+			this.hash = new int[1];
+			this.hash[0] = strippedDom.hashCode();
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -80,16 +97,16 @@ class StateVertexImpl implements StateVertex {
 		return url;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(strippedDom);
+	public int[] getHashes() {
+		return this.hash;
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof StateVertex) {
-			StateVertex that = (StateVertex) object;
-			return Objects.equal(this.strippedDom, that.getStrippedDom());
+			StateVertexNDD that = (StateVertexNDD) object;
+			
+			return NearDuplicateDetectionSingleton.getInstance().isNearDuplicateHash(this.getHashes(), that.getHashes());
 		}
 		return false;
 	}
@@ -122,5 +139,16 @@ class StateVertexImpl implements StateVertex {
 	public ImmutableList<CandidateElement> getCandidateElements() {
 		return candidateElements;
 	}
-
+	
+	public boolean hasNearDuplicate(DirectedGraph<StateVertex, Eventable> sfg) {
+		for(StateVertex vertexOfGraph : sfg.vertexSet()) {
+			if (this.equals(vertexOfGraph)) {
+				LOGGER.debug("Duplicate found: {}, {}", this.getId(), vertexOfGraph.getId());
+				return true;
+			} else {
+				LOGGER.debug("Is not a duplicate: {}, {}", this.getId(), vertexOfGraph.getId());
+			}
+		}
+		return false;
+	}
 }

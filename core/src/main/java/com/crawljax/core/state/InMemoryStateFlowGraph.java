@@ -113,7 +113,8 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	private StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName) {
 		writeLock.lock();
 		try {
-			StateVertexImpl vertex = (StateVertexImpl) stateVertix;
+			// TODO: fix this, so it uses StateVertex in stead of StateVertexNDD
+			StateVertexNDD vertex = (StateVertexNDD) stateVertix;
 			boolean duplicate = vertex.hasNearDuplicate(sfg);
 			
 			if (!duplicate) {
