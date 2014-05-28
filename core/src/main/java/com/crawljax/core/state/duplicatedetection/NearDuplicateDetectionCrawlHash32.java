@@ -29,7 +29,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		this.threshold = threshold;
 	}
 	
-	private List<String> generateFeatures(String doc) throws FeatureShinglesException {
+	private List<String> generateFeatures(String doc) throws FeatureException {
 		List<String> li = new ArrayList<String>();
 			
 		for(FeatureType feature : features) {
@@ -39,7 +39,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	}
 	
 	@Override
-	public int[] generateHash(String doc) throws FeatureShinglesException{
+	public int[] generateHash(String doc) throws FeatureException{
 		assert doc != null;
 		int bitLen = 32;
 		int hash = 0x00000000;

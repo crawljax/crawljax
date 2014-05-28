@@ -26,7 +26,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	 * @return an array of the hashes, generated from the features, of the given string
 	 */
 	@Override
-	public int[] generateHash(String doc) throws FeatureShinglesException {
+	public int[] generateHash(String doc) throws FeatureException {
 		List<String> shingles = this.generateFeatures(doc);
 		int length = shingles.size();
 		
@@ -77,9 +77,9 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	 * Generate the features from the content of the state.
 	 * @param doc The content of the state
 	 * @return A list of strings that represent the features
-	 * @throws FeatureShinglesException if the feature sie is to big of if the chosen feature type does not exist
+	 * @throws FeatureException if the feature sie is to big of if the chosen feature type does not exist
 	 */
-	private List<String> generateFeatures(String doc) throws FeatureShinglesException {
+	private List<String> generateFeatures(String doc) throws FeatureException {
 		List<String> li = new ArrayList<String>();
 			
 		for(FeatureType feature : features) {
