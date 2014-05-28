@@ -3,6 +3,7 @@ package com.crawljax.core.duplicatedetection;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -11,6 +12,7 @@ import com.crawljax.core.state.duplicatedetection.FeatureShingles;
 import com.crawljax.core.state.duplicatedetection.FeatureShinglesException;
 import com.crawljax.core.state.duplicatedetection.FeatureType;
 import com.crawljax.core.state.duplicatedetection.FeatureSizeType;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash32;
 
 public class FeatureShingleTest {
 
@@ -108,5 +110,65 @@ public class FeatureShingleTest {
 		
 		boolean first = features.remove(" No more inspiration right now");
 		assertFalse(first);
+	}
+	
+	@Test
+	public void testFeatureSizeOnBoundary() throws FeatureShinglesException {
+		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
+		features.add(new FeatureShingles(7, FeatureSizeType.WORDS));
+		
+		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
+		String strippedDom = "This is some text for the test.";
+		ndd.generateHash(strippedDom);
+	}
+	
+	@Test (expected = FeatureShinglesException.class)
+	public void testFeatureSizeWordsOffBoundary() throws FeatureShinglesException {
+		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
+		features.add(new FeatureShingles(8, FeatureSizeType.WORDS));
+		
+		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
+		String strippedDom = "This is some text for the test.";
+		ndd.generateHash(strippedDom);
+	}
+	
+	@Test
+	public void testFeatureSizeCharsOnBoundary() throws FeatureShinglesException {
+		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
+		features.add(new FeatureShingles(14, FeatureSizeType.CHARS));
+		
+		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
+		String strippedDom = "A simple test.";
+		ndd.generateHash(strippedDom);
+	}
+	
+	@Test (expected = FeatureShinglesException.class)
+	public void testFeatureSizeCharsOffBoundary() throws FeatureShinglesException {
+		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
+		features.add(new FeatureShingles(15, FeatureSizeType.CHARS));
+		
+		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
+		String strippedDom = "A simple test.";
+		ndd.generateHash(strippedDom);
+	}
+	
+	@Test
+	public void testFeatureSizeSentencesOnBoundary() throws FeatureShinglesException {
+		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
+		features.add(new FeatureShingles(2, FeatureSizeType.SENTENCES));
+		
+		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
+		String strippedDom = "This is some text for the test. Will it work.";
+		ndd.generateHash(strippedDom);
+	}
+	
+	@Test (expected = FeatureShinglesException.class)
+	public void testFeatureSizeSentencesOffBoundary() throws FeatureShinglesException {
+		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
+		features.add(new FeatureShingles(3, FeatureSizeType.SENTENCES));
+		
+		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
+		String strippedDom = "This is some text for the test. Will it work.";
+		ndd.generateHash(strippedDom);
 	}
 }
