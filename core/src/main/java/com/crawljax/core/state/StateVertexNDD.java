@@ -11,7 +11,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
-import org.jgrapht.DirectedGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -138,17 +137,5 @@ public class StateVertexNDD implements StateVertex {
 	@Override
 	public ImmutableList<CandidateElement> getCandidateElements() {
 		return candidateElements;
-	}
-	
-	public boolean hasNearDuplicate(DirectedGraph<StateVertex, Eventable> sfg) {
-		for(StateVertex vertexOfGraph : sfg.vertexSet()) {
-			if (this.equals(vertexOfGraph)) {
-				LOGGER.debug("Duplicate found: {}, {}", this.getId(), vertexOfGraph.getId());
-				return true;
-			} else {
-				LOGGER.debug("Is not a duplicate: {}, {}", this.getId(), vertexOfGraph.getId());
-			}
-		}
-		return false;
 	}
 }

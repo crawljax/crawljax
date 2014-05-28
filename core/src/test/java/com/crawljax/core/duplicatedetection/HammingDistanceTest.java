@@ -65,7 +65,7 @@ public class HammingDistanceTest {
 	@Test
 	public void testIsNearDuplicateOfBoundary() {
 		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
-		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(3, new ArrayList<FeatureType>(), hasher);
+		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(2, new ArrayList<FeatureType>(), hasher);
 		String hash1 = "01111111111111111111111111111111";
 		String hash2 = "01111111111101111111110111110111";
 		
