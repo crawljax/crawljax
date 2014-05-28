@@ -76,9 +76,9 @@ public class FeatureShingleTest {
 		
 		boolean first = features.remove("This is a test");
 		assertTrue(first);
-		boolean second = features.remove(" Yes");
+		boolean second = features.remove("Yes");
 		assertTrue(second);
-		boolean third = features.remove(" No more inspiration right now");
+		boolean third = features.remove("No more inspiration right now.");
 		assertTrue(third);
 		
 		assertTrue(features.isEmpty());
@@ -90,9 +90,9 @@ public class FeatureShingleTest {
 		String docSen = "This is a test. Yes. No more inspiration right now.";
 		List<String> features = shingleSentences.getFeatures(docSen);
 		
-		boolean first = features.remove("This is a test Yes");
+		boolean first = features.remove("This is a testYes");
 		assertTrue(first);
-		boolean second = features.remove(" Yes No more inspiration right now");
+		boolean second = features.remove("YesNo more inspiration right now.");
 		assertTrue(second);
 		
 		assertTrue(features.isEmpty());
