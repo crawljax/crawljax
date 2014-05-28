@@ -65,26 +65,6 @@ public class CrawlHashTest {
 	}
 	
 	@Test
-	public void testFeatureSizeOnBoundary() throws FeatureShinglesException {
-		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(7, FeatureSizeType.WORDS));
-		
-		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
-		String strippedDom = "This is some text for the test.";
-		ndd.generateHash(strippedDom);
-	}
-	
-	@Test (expected = FeatureShinglesException.class)
-	public void testFeatureSizeOffBoundary() throws FeatureShinglesException {
-		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(8, FeatureSizeType.WORDS));
-		
-		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features);
-		String strippedDom = "This is some text for the test.";
-		ndd.generateHash(strippedDom);
-	}
-	
-	@Test
 	public void testSameDomToSameHash() throws FeatureShinglesException {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureSizeType.CHARS));
@@ -95,7 +75,7 @@ public class CrawlHashTest {
 		
 		int[] hash1 = ndd.generateHash(strippedDom1);
 		int[] hash2 = ndd.generateHash(strippedDom2);
-		assertEquals(hash1, hash2);
+		assertEquals(hash1[0], hash2[0]);
 	}
 	
 	@Test
@@ -109,7 +89,7 @@ public class CrawlHashTest {
 		
 		int[] hashOfvFromDom = ndd.generateHash(strippedDom1);
 		int[] hashOfwFromDom = ndd.generateHash(strippedDom2);
-		assertFalse(hashOfvFromDom == hashOfwFromDom);
+		assertFalse(hashOfvFromDom[0] == hashOfwFromDom[0]);
 	}
 	
 	@Test (expected = AssertionError.class)
