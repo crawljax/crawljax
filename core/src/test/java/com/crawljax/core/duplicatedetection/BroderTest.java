@@ -10,8 +10,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.crawljax.core.state.duplicatedetection.FeatureShingles;
-import com.crawljax.core.state.duplicatedetection.FeatureShinglesException;
-import com.crawljax.core.state.duplicatedetection.FeatureSizeType;
+import com.crawljax.core.state.duplicatedetection.FeatureException;
 import com.crawljax.core.state.duplicatedetection.FeatureType;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionBroder32;
 
@@ -20,8 +19,8 @@ public class BroderTest {
 	private List<FeatureType> features = new ArrayList<FeatureType>();
 	
 	@Test
-	public void testGenerateHash() throws FeatureShinglesException {
-		features.add(new FeatureShingles(2, FeatureSizeType.WORDS));
+	public void testGenerateHash() throws FeatureException {
+		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.8, features);
 		
 		String testDoc = "This will be a test";
@@ -33,8 +32,8 @@ public class BroderTest {
 	}
 	
 	@Test
-	public void testGetDistance1() throws FeatureShinglesException {
-		features.add(new FeatureShingles(2, FeatureSizeType.WORDS));
+	public void testGetDistance1() throws FeatureException {
+		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.8, features);
 		
 		int[] set1 = {1010, 1110, 1011, 0000};
@@ -45,8 +44,8 @@ public class BroderTest {
 	}
 	
 	@Test
-	public void testGetDistance2() throws FeatureShinglesException {
-		features.add(new FeatureShingles(2, FeatureSizeType.WORDS));
+	public void testGetDistance2() throws FeatureException {
+		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.8, features);
 		
 		int[] set1 = {1111};
@@ -57,8 +56,8 @@ public class BroderTest {
 	}
 	
 	@Test
-	public void testGetDistance3() throws FeatureShinglesException {
-		features.add(new FeatureShingles(2, FeatureSizeType.WORDS));
+	public void testGetDistance3() throws FeatureException {
+		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.8, features);
 		
 		int[] set1 = {1111, 0000, 1010, 0101};
@@ -69,8 +68,8 @@ public class BroderTest {
 	}
 	
 	@Test
-	public void testIsNearDuplicateHash1() throws FeatureShinglesException {
-		features.add(new FeatureShingles(2, FeatureSizeType.WORDS));
+	public void testIsNearDuplicateHash1() throws FeatureException {
+		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.8, features);
 		
 		int[] set1 = {1111, 0000, 1010, 0101};
@@ -81,8 +80,8 @@ public class BroderTest {
 	}
 	
 	@Test
-	public void testIsNearDuplicateHashOnBoundary() throws FeatureShinglesException {
-		features.add(new FeatureShingles(2, FeatureSizeType.WORDS));
+	public void testIsNearDuplicateHashOnBoundary() throws FeatureException {
+		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(4.0/6.0, features);
 		
 		int[] set1 = {1111, 0000, 1010, 0101, 1110};
@@ -93,8 +92,8 @@ public class BroderTest {
 	}
 	
 	@Test
-	public void testIsNearDuplicateHashOffBoundary() throws FeatureShinglesException {
-		features.add(new FeatureShingles(2, FeatureSizeType.WORDS));
+	public void testIsNearDuplicateHashOffBoundary() throws FeatureException {
+		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(4.0/6.0 + 0.001, features);
 		
 		int[] set1 = {1111, 0000, 1010, 0101, 1110};
