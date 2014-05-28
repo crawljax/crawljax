@@ -6,16 +6,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.jpountz.xxhash.XXHash32;
-import net.jpountz.xxhash.XXHashFactory;
 
 public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection {
 
 	private static final Logger logger = LoggerFactory.getLogger(NearDuplicateDetectionCrawlHash32.class);
 	
-	private XXHash32 xxhash;
 	private List<FeatureType> features;
 	private double threshold;
+	private HashGenerator hashGenerator;
 	
 	
 	
@@ -23,15 +21,14 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		return features;
 	}
 
-	public NearDuplicateDetectionCrawlHash32(double threshold, List<FeatureType> fs) {
-		xxhash = XXHashFactory.fastestInstance().hash32();
-		features = fs;
+	public NearDuplicateDetectionCrawlHash32(double threshold, List<FeatureType> fs, HashGenerator hg) {
+		this.hashGenerator = hg;
+		this.features = fs;
 		this.threshold = threshold;
 	}
 	
 	private List<String> generateFeatures(String doc) throws FeatureException {
 		List<String> li = new ArrayList<String>();
-			
 		for(FeatureType feature : features) {
 			li.addAll(feature.getFeatures(doc));
 		}
@@ -47,7 +44,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		int[] bits = new int[bitLen];
 		List<String> tokens = this.generateFeatures(doc);
 		for (String t : tokens) {
-			int v = xxhash.hash(t.getBytes(), 0, t.length(), 0x9747b28c);
+			int v = hashGenerator.generateHash(t);
 			for (int i = bitLen; i >= 1; --i) {
 				if (((v >> (bitLen - i)) & 1) == 1)
 					++bits[i - 1];
@@ -88,6 +85,5 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	@Override
 	public double getDistance(int[] hash1, int[] hash2) {
 		return hammingDistance(hash1[0], hash2[0]);
-		
 	}
 }

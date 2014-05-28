@@ -14,10 +14,12 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 
 	private List<FeatureType> features;
 	private double treshold;
+	private HashGenerator hashGenerator;
 	
-	public NearDuplicateDetectionBroder32(double t, List<FeatureType> fs) {
+	public NearDuplicateDetectionBroder32(double t, List<FeatureType> fs, HashGenerator hg) {
 		this.treshold = t;
 		this.features = fs;
+		this.hashGenerator = hg;
 	}
 	
 	/**
@@ -32,8 +34,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 		
 		int[] hashes = new int[length];
 		for (int i=0; i<length; i++) {
-			// TODO Maybe xxHash instead of hashCode
-			hashes[i] = shingles.get(i).hashCode();
+			hashes[i] = hashGenerator.generateHash(shingles.get(i));
 		}
 		return hashes;
 	}
@@ -88,12 +89,12 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 		return li;
 	}
 	
-	private int unionCount(HashSet<Integer> list1, HashSet<Integer> list2) {
+	private int unionCount(Set<Integer> list1, Set<Integer> list2) {
 		Set<Integer> union = Sets.union(list1, list2);
 		return union.size();
 	}
 	
-	private int intersectionCount(HashSet<Integer> list1, HashSet<Integer> list2) {
+	private int intersectionCount(Set<Integer> list1, Set<Integer> list2) {
 		Set<Integer> intersection = Sets.intersection(list1, list2);
 		return intersection.size();
 	}

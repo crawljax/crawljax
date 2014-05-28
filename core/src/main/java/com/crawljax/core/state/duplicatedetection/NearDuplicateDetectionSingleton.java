@@ -11,12 +11,7 @@ public class NearDuplicateDetectionSingleton {
 	private static NearDuplicateDetection ndd;
 	private static double threshold;
 	private static List<FeatureType> features = new ArrayList<FeatureType>();
-	
-	/*
-	static {
-	//	features.add(new FeatureShingles(3, FeatureSizeType.WORDS));
-	}
-	*/
+	private static HashGeneratorFactory hashGeneratorFactory = new XxHashGeneratorFactory();
 	
 	/**
 	 * Retrieves, if necessary creates, an instance
@@ -24,9 +19,17 @@ public class NearDuplicateDetectionSingleton {
 	 */
 	public static NearDuplicateDetection getInstance() {
 		if (ndd == null) {
-			ndd = new NearDuplicateDetectionBroder32(threshold, features);
+			ndd = new NearDuplicateDetectionBroder32(threshold, features, hashGeneratorFactory.getInstance());
 		}
 		return ndd;
+	}
+	
+	/**
+	 * Sets new hash-generator-factory.
+	 * @param hgf new HashGeneratorFactory
+	 */
+	public static void setHashGeneratorFactory(HashGeneratorFactory hgf) {
+		hashGeneratorFactory = hgf;
 	}
 	
 	/**
