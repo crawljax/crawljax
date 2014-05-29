@@ -3,6 +3,7 @@ package com.crawljax.plugins.crawloverview.model;
 import javax.annotation.concurrent.Immutable;
 
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.StateVertexNDD;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,7 +19,7 @@ public class State {
 	private final ImmutableList<CandidateElementPosition> candidateElements;
 	private final int fanIn;
 	private final int fanOut;
-	private final int hash;
+	private final int[] hash;
 	private final int id;
 	private final ImmutableList<String> failedEvents;
 
@@ -32,7 +33,15 @@ public class State {
 		this.name = state.getName();
 		this.url = state.getUrl();
 		this.id = state.getId();
-		this.hash = state.hashCode();
+		if (state instanceof StateVertexNDD) {
+			StateVertexNDD stateNDD = (StateVertexNDD) state;
+			this.hash = stateNDD.getHashes();
+		} else {
+			int[] hashCode = new int[1];
+			hashCode[0] = state.hashCode();
+			this.hash = hashCode;
+		}
+		
 	}
 
 	@JsonCreator
@@ -41,7 +50,7 @@ public class State {
 	        @JsonProperty("url") String url,
 	        @JsonProperty("candidateElements") ImmutableList<CandidateElementPosition> candidateElements,
 	        @JsonProperty("fanIn") int fanIn, @JsonProperty("fanOut") int fanOut,
-	        @JsonProperty("hash") int hash, @JsonProperty("id") int id,
+	        @JsonProperty("hash") int[] hash, @JsonProperty("id") int id,
 	        @JsonProperty("failedEvents") ImmutableList<String> failedEvents) {
 		super();
 		this.name = name;
@@ -74,7 +83,7 @@ public class State {
 		return fanOut;
 	}
 	
-	public int getHash() {
+	public int[] getHash() {
 		return hash;
 	}
 
