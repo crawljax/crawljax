@@ -22,6 +22,10 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 		this.hashGenerator = hg;
 	}
 	
+	public double getThreshold() {
+		return treshold;
+	}
+	
 	/**
 	 * Generate the hashes from the features of the string.
 	 * @param doc The string that will be divided into features
@@ -44,23 +48,25 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	 */
 	@Override
 	public boolean isNearDuplicateHash(int[] state1, int[] state2) {
-		return (this.getDistance(state1, state2) >= this.treshold);
+		return (this.getDistance(state1, state2) <= this.treshold);
 	}
 	
 	/**
 	 * Get the distance between two sets.
-	 * @return One if both sets are completely different and zero if the two sets are exactly the same.
+	 * @return 	
+	 * 			Zero if both sets contains exactly the same hashes and one if the two sets contains all different hashes
+	 * 			and values in between for the corresponding difference. The closer the value is to zero, the more hashes
+	 * 			in the sets are the same.
 	 */
 	@Override
 	public double getDistance(int[] state1, int[] state2) {
-		//double jaccardCoefficient = this.getJaccardCoefficient(state1, state2);
-		//return 1 - jaccardCoefficient;
-		return this.getJaccardCoefficient(state1, state2);
+		double jaccardCoefficient = this.getJaccardCoefficient(state1, state2);
+		return 1 - jaccardCoefficient;
 	}
 	
 	private double getJaccardCoefficient(int[] state1, int[] state2) {
-		HashSet<Integer> setOfFirstArg = new HashSet<Integer>();
-		HashSet<Integer> setOfSecondArg = new HashSet<Integer>();
+		Set<Integer> setOfFirstArg = new HashSet<>();
+		Set<Integer> setOfSecondArg = new HashSet<>();
 		for (int i=0; i<state1.length; i++) {
 			setOfFirstArg.add(state1[i]);
 		}
@@ -78,10 +84,10 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	 * Generate the features from the content of the state.
 	 * @param doc The content of the state
 	 * @return A list of strings that represent the features
-	 * @throws FeatureException if the feature sie is to big of if the chosen feature type does not exist
+	 * @throws FeatureException if the feature size is to big of if the chosen feature type does not exist
 	 */
 	private List<String> generateFeatures(String doc) throws FeatureException {
-		List<String> li = new ArrayList<String>();
+		List<String> li = new ArrayList<>();
 			
 		for(FeatureType feature : features) {
 			li.addAll(feature.getFeatures(doc));
