@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 import com.crawljax.core.state.duplicatedetection.FeatureType;
 import com.crawljax.core.state.duplicatedetection.HashGenerator;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash32;
-import com.crawljax.core.state.duplicatedetection.XxHashGeneratorFactory;
+import com.crawljax.core.state.duplicatedetection.XxHashGenerator;
 
 public class HammingDistanceTest {
 	
@@ -19,7 +19,7 @@ public class HammingDistanceTest {
 	
 	@Test
 	public void testHammingDistance() {
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(3, new ArrayList<FeatureType>(), hasher);
 		String hash1 = "-1111111111111111111111111111111";
 		String hash2 = "-1111111111101111111111111110111";
@@ -34,7 +34,7 @@ public class HammingDistanceTest {
 	
 	@Test
 	public void testHammingDistance2() {
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(3, new ArrayList<FeatureType>(), hasher);
 		String hash1 = "01110111111111111011111110110111";
 		String hash2 = "01111111111101111111110111110111";
@@ -48,7 +48,7 @@ public class HammingDistanceTest {
 	
 	@Test
 	public void testIsNearDuplicateOnBoundary() {
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(3, new ArrayList<FeatureType>(), hasher);
 		String hash1 = "01111111111111111111111111111111";
 		String hash2 = "01111111111101111111110111110111";
@@ -64,7 +64,7 @@ public class HammingDistanceTest {
 	
 	@Test
 	public void testIsNearDuplicateOfBoundary() {
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(2, new ArrayList<FeatureType>(), hasher);
 		String hash1 = "01111111111111111111111111111111";
 		String hash2 = "01111111111101111111110111110111";

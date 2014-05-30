@@ -13,7 +13,7 @@ import com.crawljax.core.state.duplicatedetection.FeatureException;
 import com.crawljax.core.state.duplicatedetection.FeatureType;
 import com.crawljax.core.state.duplicatedetection.HashGenerator;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash32;
-import com.crawljax.core.state.duplicatedetection.XxHashGeneratorFactory;
+import com.crawljax.core.state.duplicatedetection.XxHashGenerator;
 
 public class CrawlHashTest {
 
@@ -22,7 +22,7 @@ public class CrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(9, FeatureShingles.SizeType.WORDS));
 
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		assertEquals(3, ndd.getThreshold(), 0.001);
 	}
@@ -32,7 +32,7 @@ public class CrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(3, FeatureShingles.SizeType.WORDS));
 
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
 		int[] hash = ndd.generateHash(strippedDom);
@@ -47,7 +47,7 @@ public class CrawlHashTest {
 	public void testDuplicateOnNewState() throws FeatureException {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(3, FeatureShingles.SizeType.WORDS));
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom1 = "This is some text for the test.";
 		String strippedDom2 = "This is some text for the test.";
@@ -60,7 +60,7 @@ public class CrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(3, FeatureShingles.SizeType.WORDS));
 
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom1 = "This is some text for the test.";
 		String strippedDom2 = "Whole other test goes in here.";
@@ -73,7 +73,7 @@ public class CrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(7, FeatureShingles.SizeType.WORDS));
 
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
 		ndd.generateHash(strippedDom);
@@ -84,7 +84,7 @@ public class CrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(8, FeatureShingles.SizeType.WORDS));
 
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
 		ndd.generateHash(strippedDom);
@@ -95,7 +95,7 @@ public class CrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.CHARS));
 
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom1 = "Test";
 		String strippedDom2 = "Test";
@@ -110,7 +110,7 @@ public class CrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom1 = "This is some text for the test.";
 		String strippedDom2 = "Other text will be shown";
@@ -125,7 +125,7 @@ public class CrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String dom = null;
 		ndd.generateHash(dom);
@@ -136,7 +136,7 @@ public class CrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom = null;
 		ndd.generateHash(strippedDom);

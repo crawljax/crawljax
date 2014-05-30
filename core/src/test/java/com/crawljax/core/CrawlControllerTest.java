@@ -36,7 +36,10 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetection;
+import com.crawljax.di.CoreModule;
 import com.crawljax.di.CrawlSessionProvider;
+import com.google.inject.Guice;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CrawlControllerTest {
@@ -142,8 +145,12 @@ public class CrawlControllerTest {
 		crawlSessionProvider = new CrawlSessionProvider(graph, config, new MetricRegistry());
 
 		Plugins plugins = new Plugins(config, new MetricRegistry());
+		
+		NearDuplicateDetection ndd = Guice.createInjector(
+				new CoreModule(config)).getInstance(NearDuplicateDetection.class);
+		
 		controller = new CrawlController(executor, consumerFactory, config, consumersDoneLatch,
-		        crawlSessionProvider, plugins);
+		        crawlSessionProvider, plugins,ndd);
 
 	}
 

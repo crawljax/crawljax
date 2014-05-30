@@ -18,12 +18,14 @@ import com.crawljax.core.state.DefaultStateVertexFactory;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertexFactory;
+import com.crawljax.core.state.duplicatedetection.DuplicateDetectionModule;
 import com.crawljax.domcomparators.DomStrippers;
 import com.crawljax.forms.FormHandler;
 import com.crawljax.metrics.MetricsModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -43,6 +45,7 @@ public class CoreModule extends AbstractModule {
 		disableJulLogging();
 		install(new MetricsModule());
 		install(new ConfigurationModule(configuration));
+		install(new DuplicateDetectionModule());
 
 		bind(ExitNotifier.class).toInstance(new ExitNotifier(configuration.getMaximumStates()));
 

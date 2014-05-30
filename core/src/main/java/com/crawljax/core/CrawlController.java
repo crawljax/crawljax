@@ -15,7 +15,7 @@ import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionSingleton;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetection;
 import com.crawljax.di.CrawlSessionProvider;
 
 /**
@@ -40,11 +40,13 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	private ExitStatus exitReason;
 
+	private NearDuplicateDetection nearDuplicateDetection;
+
 	@Inject
 	CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
 	        CrawljaxConfiguration config, ExitNotifier exitNotifier,
 	        CrawlSessionProvider crawlSessionProvider,
-	        Plugins plugins) {
+	        Plugins plugins, NearDuplicateDetection nearDuplicateDetection) {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
 		this.exitNotifier = exitNotifier;
@@ -52,6 +54,7 @@ public class CrawlController implements Callable<CrawlSession> {
 		this.plugins = plugins;
 		this.crawlSessionProvider = crawlSessionProvider;
 		this.maximumCrawlTime = config.getMaximumRuntime();
+		this.nearDuplicateDetection = nearDuplicateDetection;
 	}
 
 	/**
@@ -62,7 +65,8 @@ public class CrawlController implements Callable<CrawlSession> {
 	@Override
 	public CrawlSession call() {
 		setMaximumCrawlTimeIfNeeded();
-		NearDuplicateDetectionSingleton.setThreshold(config.getThresholdNearDuplicateDetection());
+		nearDuplicateDetection.setThreshold(config.getThresholdNearDuplicateDetection());
+		nearDuplicateDetection.setFeatures(config.getFeaturesNearDuplicateDetection());
 		plugins.runPreCrawlingPlugins(config);
 		CrawlTaskConsumer firstConsumer = consumerFactory.get();
 		StateVertex firstState = firstConsumer.crawlIndex();
