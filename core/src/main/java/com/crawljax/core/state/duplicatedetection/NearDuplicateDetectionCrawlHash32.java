@@ -3,17 +3,19 @@ package com.crawljax.core.state.duplicatedetection;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Singleton;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 @Singleton
 public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NearDuplicateDetectionCrawlHash32.class);
+	private static final int HASH_LENGTH = 32;
+	private static final int HEX_ONE = 0x00000001;
+	private static final int HEX_ZERO = 0x00000000;
 	
 	private List<FeatureType> features;
 	private double threshold;
@@ -36,39 +38,53 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		this.features = fs != null ? fs : new ArrayList<FeatureType>();
 	}
 	
-	private List<String> generateFeatures(String doc) throws FeatureException {
+	private List<String> generateFeatures(String doc) {
 		List<String> li = new ArrayList<String>();
-		for (FeatureType feature : features) {
+		for(FeatureType feature : features) {
 			li.addAll(feature.getFeatures(doc));
 		}
 		return li;
 	}
-
+	
 	@Override
-	public int[] generateHash(String doc) throws FeatureException {
+	public int[] generateHash(String doc) {
 		assert doc != null;
-		int bitLen = 32;
-		int hash = 0x00000000;
-		int one = 0x00000001; // 8
-		int[] bits = new int[bitLen];
+		int[] bits = new int[HASH_LENGTH];
 		List<String> tokens = this.generateFeatures(doc);
+		// loop through all tokens (ie shingles), calculate the hash, and add
+		// the hash to the array.
 		for (String t : tokens) {
 			int v = hashGenerator.generateHash(t);
-			for (int i = bitLen; i >= 1; --i) {
-				if (((v >> (bitLen - i)) & 1) == 1)
-					++bits[i - 1];
-				else
-					--bits[i - 1];
-			}
+			bits = addHashToArray(v, bits);
 		}
-		for (int i = bitLen; i >= 1; --i) {
-			if (bits[i - 1] > 1) {
+		int[] hashArray = {projectArrayOnHash(bits)};
+		return hashArray;
+	}
+	
+	private int projectArrayOnHash(int[] bits) {
+		int hash = HEX_ZERO;
+		int one = HEX_ONE;
+		for (int i = HASH_LENGTH; i >= 1; --i) {
+			// for each int in bits, if the current position > 1, set bit to 1
+			if (bits[i - 1] > 1) { 
 				hash |= one;
 			}
+			// Move the bit position one bit to the left.
 			one = one << 1;
 		}
-		int[] hashArray = { hash };
-		return hashArray;
+		return hash;
+	}
+	
+	private int[] addHashToArray(int hash, int[] bits) {
+		// Loop through each bit-position, starting with the least significant.
+		for (int i = HASH_LENGTH; i >= 1; --i) {
+			// check if bit-position is one, if so add 1 to array at current position.
+			if (((hash >> (HASH_LENGTH - i)) & 1) == 1)
+				++bits[i - 1];
+			else
+				--bits[i - 1];
+		}
+		return bits;
 	}
 
 	public int hammingDistance(int hash1, int hash2) {
@@ -98,10 +114,6 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 
 	public List<FeatureType> getFeatures() {
 		return features;
-	}
-
-	public HashGenerator getHashGenerator() {
-		return hashGenerator;
 	}
 
 	@Override

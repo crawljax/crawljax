@@ -5,10 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Singleton;
-
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Near-duplicate detection based on the Jaccard coefficient and shingles.
@@ -49,7 +48,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	 * @return an array of the hashes, generated from the features, of the given string
 	 */
 	@Override
-	public int[] generateHash(String doc) throws FeatureException {
+	public int[] generateHash(String doc) {
 		List<String> shingles = this.generateFeatures(doc);
 		int length = shingles.size();
 
@@ -106,7 +105,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	 * @throws FeatureException
 	 *             if the feature size is to big or if the chosen feature type does not exist
 	 */
-	private List<String> generateFeatures(String doc) throws FeatureException {
+	private List<String> generateFeatures(String doc) {
 		List<String> li = new ArrayList<>();
 
 		for (FeatureType feature : features) {
@@ -135,10 +134,6 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 
 	public List<FeatureType> getFeatures() {
 		return features;
-	}
-
-	public HashGenerator getHashGenerator() {
-		return hashGenerator;
 	}
 	
 	public void setFeatures(List<FeatureType> features) {

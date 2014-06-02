@@ -124,8 +124,8 @@ public class CrawljaxConfiguration {
 		}
 
 		/**
-		 * @param threshold The threshold that will be used for the hammingdistance comparison.
-		 * Two states are near-duplicates if the hammingdistance between the two hashes 
+		 * @param threshold The threshold that will be used for the Hamming distance comparison.
+		 * Two states are near-duplicates if the Hamming distance between the two hashes 
 		 * are less or equal than the threshold.
 		 */
 		public CrawljaxConfigurationBuilder setThresholdNearDuplicateDetection(double threshold) {
@@ -137,6 +137,10 @@ public class CrawljaxConfiguration {
 			return this;
 		}
 		
+		/**
+		 * @param features The features that will be used to in the Near-Duplicate Detection algorithm.
+		 * Features determine how the relevant (stripped) content of a page is processed into a hash.  
+		 */
 		public CrawljaxConfigurationBuilder setFeaturesNearDuplicateDetection(List<FeatureType> features) {
 			config.featuresNearDuplicateDetection = features;
 			return this;
