@@ -23,6 +23,7 @@ public class Statistics {
 	private final Date startDate;
 	private final StateStatistics stateStats;
 	private final int failedEvents;
+	private final double duplicateDetectionTreshold;
 
 	public Statistics(CrawlSession session, StateStatistics stateStats, Date startDate,
 	        int failedEvents) {
@@ -35,6 +36,7 @@ public class Statistics {
 		this.crawlPaths = session.getCrawlPaths().size();
 		double bytes = stateFlowGraph.getMeanStateStringSize();
 		this.averageDomSize = new DecimalFormat().format(bytes / 1000) + " kB";
+		this.duplicateDetectionTreshold = session.getConfig().getThresholdNearDuplicateDetection();
 	}
 
 	@JsonCreator
@@ -43,7 +45,8 @@ public class Statistics {
 	        @JsonProperty("averageDomSize") String averageDomSize,
 	        @JsonProperty("edges") int edges, @JsonProperty("startDate") Date startDate,
 	        @JsonProperty("stateStats") StateStatistics stateStats,
-	        @JsonProperty("failedEvents") int failedEvents) {
+	        @JsonProperty("failedEvents") int failedEvents,
+	        @JsonProperty("duplicateDetectionTreshold") double duplicateDetectionTreshold) {
 		this.duration = duration;
 		this.crawlPaths = crawlPaths;
 		this.averageDomSize = averageDomSize;
@@ -51,6 +54,7 @@ public class Statistics {
 		this.startDate = startDate;
 		this.stateStats = stateStats;
 		this.failedEvents = failedEvents;
+		this.duplicateDetectionTreshold = duplicateDetectionTreshold;
 	}
 
 	private String calculateDuration(CrawlSession session) {
@@ -86,6 +90,10 @@ public class Statistics {
 	public int getFailedEvents() {
 		return failedEvents;
 	}
+	
+	public double getDuplicateDetectionTreshold() {
+		return duplicateDetectionTreshold;
+	}
 
 	@Override
 	public int hashCode() {
@@ -102,7 +110,8 @@ public class Statistics {
 			        && Objects.equal(this.averageDomSize, that.averageDomSize)
 			        && Objects.equal(this.edges, that.edges)
 			        && Objects.equal(this.stateStats, that.stateStats)
-			        && Objects.equal(this.failedEvents, that.failedEvents);
+			        && Objects.equal(this.failedEvents, that.failedEvents)
+			        && Objects.equal(this.duplicateDetectionTreshold, that.duplicateDetectionTreshold);
 		}
 		return false;
 	}
@@ -117,6 +126,7 @@ public class Statistics {
 		        .add("edges", edges)
 		        .add("startDate", startDate)
 		        .add("stateStats", stateStats)
+		        .add("duplicateDetectionTreshold", duplicateDetectionTreshold)
 		        .toString();
 	}
 
