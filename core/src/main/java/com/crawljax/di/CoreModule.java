@@ -45,7 +45,8 @@ public class CoreModule extends AbstractModule {
 		disableJulLogging();
 		install(new MetricsModule());
 		install(new ConfigurationModule(configuration));
-		install(new DuplicateDetectionModule());
+		install(new DuplicateDetectionModule(configuration.getThresholdNearDuplicateDetection(),
+		        configuration.getFeaturesNearDuplicateDetection()));
 
 		bind(ExitNotifier.class).toInstance(new ExitNotifier(configuration.getMaximumStates()));
 

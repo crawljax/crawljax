@@ -10,7 +10,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Near-duplicate detection based on the Jaccard coefficient and shingles.
+ * Near-duplicate detection based on the use of a Jaccard coefficient. Given a set of features,
+ * these features are first hashed. Afterwards the collections of hashes of SiteA and SiteB compared
+ * using the Jaccard coefficients (intersection(SiteA,SiteB)/union(SiteA,SiteB)).
  */
 @Singleton
 public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
@@ -20,28 +22,16 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	private HashGenerator hashGenerator;
 	private final static float THRESHOLD_UPPERLIMIT = 1;
 	private final static float THRESHOLD_LOWERLIMIT = 0;
-	
-	public NearDuplicateDetectionBroder32(double t, List<FeatureType> fs, HashGenerator hg) {
+
+	@Inject
+	public NearDuplicateDetectionBroder32(double threshold, List<FeatureType> fs, HashGenerator hg) {
 		checkPreconditionsFeatures(fs);
-		checkPreconditionsThreshold(t);
-		this.threshold = t;
+		checkPreconditionsThreshold(threshold);
 		this.hashGenerator = hg;
 		this.features = fs;
+		this.threshold = threshold;
 	}
 	
-	/**
-	 * This constructor uses the default, generally most optimal, values for the threshold and 
-	 * features. It is also used for Guice-invocations.
-	 * @param hg a hash-generator, such as the XxHashGenerator.
-	 */
-	@Inject
-	public NearDuplicateDetectionBroder32(HashGenerator hg) {
-		// TODO should be done in the configuration?
-		this.hashGenerator = hg;
-		this.features = new ArrayList<FeatureType>();
-		this.threshold = 0.32;
-	}
-
 	/**
 	 * Generate the hashes from the features of the string.
 	 * 
@@ -54,7 +44,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 		// Check preconditions
 		checkPreconditionsFeatures(features);
 		checkPreconditionsThreshold(threshold);
-		
+
 		List<String> shingles = this.generateFeatures(doc);
 		int length = shingles.size();
 
@@ -64,7 +54,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 		}
 		return hashes;
 	}
-	
+
 	/**
 	 * Return true if the JaccardCoefficient is higher than the threshold.
 	 */
@@ -72,7 +62,6 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	public boolean isNearDuplicateHash(int[] state1, int[] state2) {
 		return (this.getDistance(state1, state2) <= this.threshold);
 	}
-	
 
 	/**
 	 * Get the distance between two sets.
@@ -98,7 +87,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 		}
 
 		double unionCount = Sets.union(setOfFirstArg, setOfSecondArg).size();
-		double intersectionCount =Sets.intersection(setOfFirstArg, setOfSecondArg).size();
+		double intersectionCount = Sets.intersection(setOfFirstArg, setOfSecondArg).size();
 
 		return (intersectionCount / unionCount);
 	}
@@ -123,26 +112,33 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 
 	/**
 	 * Checks the precondition for the feature-list, which should not be empty or null.
-	 * @param features feature-list to be checked
+	 * 
+	 * @param features
+	 *            feature-list to be checked
 	 */
 	private void checkPreconditionsFeatures(List<FeatureType> features) {
-		if(features == null || features.isEmpty()) {
-			throw new FeatureException("Invalid feature-list provided, feature-list cannot be null or empty. (Provided: " + features + ")");
-		}		
+		if (features == null || features.isEmpty()) {
+			throw new DuplicateDetectionException(
+			        "Invalid feature-list provided, feature-list cannot be null or empty. (Provided: "
+			                + features + ")");
+		}
 	}
 
-	/**'
-	 * Checks the precondition for the threshold, which should be within the predefined upper and lower bounds.
+	/**
+	 * ' Checks the precondition for the threshold, which should be within the predefined upper and
+	 * lower bounds.
+	 * 
 	 * @param threshold
 	 */
 	private void checkPreconditionsThreshold(double threshold) {
-		if(threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
-			throw new FeatureException("Invalid threshold value " + threshold + ", threshold as to "
-					+ "be between " + THRESHOLD_LOWERLIMIT + " and " + THRESHOLD_UPPERLIMIT + ".");
+		if (threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
+			throw new DuplicateDetectionException("Invalid threshold value " + threshold
+			        + ", threshold as to be between " + THRESHOLD_LOWERLIMIT + " and "
+			        + THRESHOLD_UPPERLIMIT + ".");
 		}
 	}
-	
-	public double getTreshold() {
+
+	public double getThreshold() {
 		return threshold;
 	}
 
@@ -154,9 +150,9 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	public List<FeatureType> getFeatures() {
 		return features;
 	}
-	
+
 	public void setFeatures(List<FeatureType> features) {
 		checkPreconditionsFeatures(features);
-		this.features = features;	
-	}	
+		this.features = features;
+	}
 }
