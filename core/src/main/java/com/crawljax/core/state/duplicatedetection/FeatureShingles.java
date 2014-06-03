@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * FeatureShingles represents the features based on collecting shingles from a document. An example
  * of a 2-shingle-collection of the string "abcd" => {"ab","bc","cd"}.
+ * More information: http://en.wikipedia.org/wiki/W-shingling
  */
 public class FeatureShingles implements FeatureType {
 
@@ -151,6 +152,6 @@ public class FeatureShingles implements FeatureType {
 	}
 
 	public String toString() {
-		return "FeatureShingles[" + this.count + ", " + this.type + "]";		
+		return "FeatureShingles[" + this.size + ", " + this.type + "]";		
 	}
 }
