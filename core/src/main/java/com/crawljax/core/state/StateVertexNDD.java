@@ -9,9 +9,8 @@ import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import com.google.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 /**
@@ -21,8 +20,6 @@ import org.w3c.dom.Document;
  */
 @SuppressWarnings("serial")
 public class StateVertexNDD implements StateVertex {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(StateMachine.class.getName());
 
 	private final int id;
 	private final String dom;

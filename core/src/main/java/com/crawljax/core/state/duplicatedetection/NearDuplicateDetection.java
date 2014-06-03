@@ -6,11 +6,11 @@ import java.util.List;
  * NearDuplicateDetection is the main class of the duplicate-detection-package. Depending on
  * features, hashGenerator and a threshold, it is tasked to determine whether two hashes are
  * (near-)duplicates. To run the NearDuplicateDetection (NDD) classes correctly, the following
- * criteria should be met: - provide a threshold, which should adhere to the constraints of the
- * specific implementation of the NDD. - provide at least 1 featureType. This lets the NDD know how
- * to hash the relevant content. Usage: - Assume you have two documents (strings), which need to be
- * evaluated, docA and docB - Initialize a NearDuplicateDetection-implementation, and provide a
- * threshold and feature(s). - Use generateHash to calculate HashA and HashB for docA and docB - To
+ * criteria should be met: 1. provide a threshold, which should adhere to the constraints of the
+ * specific implementation of the NDD. 2. provide at least 1 featureType. This lets the NDD know how
+ * to hash the relevant content. Usage: 1. Assume you have two documents (strings), which need to be
+ * evaluated, docA and docB 2. Initialize a NearDuplicateDetection-implementation, and provide a
+ * threshold and feature(s). 3. Use generateHash to calculate HashA and HashB for docA and docB 4. To
  * check if docA and docB are duplicates, run isNearDuplicate(hashA, hashB).
  */
 public interface NearDuplicateDetection {

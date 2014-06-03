@@ -3,6 +3,11 @@ package com.crawljax.core.state.duplicatedetection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
+
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -23,7 +28,9 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	private List<FeatureType> features;
 	private double threshold;
 	private HashGenerator hashGenerator;
+	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionCrawlHash32.class);
 
+	@Inject
 	public NearDuplicateDetectionCrawlHash32(double threshold, List<FeatureType> fs,
 	        HashGenerator hg) {
 		checkPreconditionsFeatures(fs);
@@ -31,6 +38,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		this.hashGenerator = hg;
 		this.features = fs;
 		this.threshold = threshold;
+		LOG.info("NearDuplicateDetectionCrawlHash32[threshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
 	}
 
 	@Override
@@ -140,12 +148,14 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 
 	public void setThreshold(double threshold) {
 		checkPreconditionsThreshold(threshold);
+		LOG.info("Threshold changed from {} to {}", this.threshold, threshold);
 		this.threshold = threshold;
 
 	}
 
 	public void setFeatures(List<FeatureType> features) {
 		checkPreconditionsFeatures(features);
+		LOG.info("Feature-set changed from {} to {}", this.features, features);
 		this.features = features;
 	}
 }

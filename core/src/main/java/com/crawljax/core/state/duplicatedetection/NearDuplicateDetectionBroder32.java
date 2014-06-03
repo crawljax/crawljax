@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
+
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -16,6 +20,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
+
+	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionBroder32.class);
 
 	private List<FeatureType> features;
 	private double threshold;
@@ -30,6 +36,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 		this.hashGenerator = hg;
 		this.features = fs;
 		this.threshold = threshold;
+		LOG.info("NearDuplicateDetectionBroder32[threshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
 	}
 	
 	/**
@@ -125,7 +132,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	}
 
 	/**
-	 * ' Checks the precondition for the threshold, which should be within the predefined upper and
+	 * Checks the precondition for the threshold, which should be within the predefined upper and
 	 * lower bounds.
 	 * 
 	 * @param threshold
@@ -144,6 +151,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 
 	public void setThreshold(double threshold) {
 		checkPreconditionsThreshold(threshold);
+		LOG.info("Threshold changed from {} to {}", this.threshold, threshold);
 		this.threshold = threshold;
 	}
 
@@ -153,6 +161,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 
 	public void setFeatures(List<FeatureType> features) {
 		checkPreconditionsFeatures(features);
+		LOG.info("Feature-set changed from {} to {}", this.features, features);
 		this.features = features;
 	}
 }

@@ -142,6 +142,7 @@ public class CrawljaxConfiguration {
 		 * Features determine how the relevant (stripped) content of a page is processed into a hash.  
 		 */
 		public CrawljaxConfigurationBuilder setFeaturesNearDuplicateDetection(List<FeatureType> features) {
+			Preconditions.checkArgument(!features.isEmpty(), "The feature-list has to contain at least 1 feature.");
 			config.featuresNearDuplicateDetection = features;
 			return this;
 		}

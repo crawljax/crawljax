@@ -1,6 +1,5 @@
 package com.crawljax.core.duplicatedetection;
 
-import static org.mockito.Mockito.mock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -63,7 +62,7 @@ public class BroderTest {
 	@Test
 	public void testGetDistance3() throws FeatureException {
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		HashGenerator hasher = new XxHashGeneratorFactory().getInstance();
+		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.2, features, hasher);
 		
 		int[] set1 = {1111, 0000, 1010, 0101};
