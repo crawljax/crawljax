@@ -3,9 +3,13 @@ package com.crawljax.core.state.duplicatedetection;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+/**
+ * A Simhash-inspired algorithm for detecting near-duplicates. The idea is that all the features are
+ * hashed to 32-bit hashes. The space of the hashes is projected on a 1-dimensional hash. Example:
+ * {1011,1100,1001} -> 1001
+ */
 @Singleton
 public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection {
 
@@ -15,32 +19,20 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 
 	private final static float THRESHOLD_UPPERLIMIT = HASH_LENGTH;
 	private final static float THRESHOLD_LOWERLIMIT = 0;
-	
+
 	private List<FeatureType> features;
 	private double threshold;
 	private HashGenerator hashGenerator;
-	
-	public NearDuplicateDetectionCrawlHash32(double threshold, List<FeatureType> fs, HashGenerator hg) {
+
+	public NearDuplicateDetectionCrawlHash32(double threshold, List<FeatureType> fs,
+	        HashGenerator hg) {
 		checkPreconditionsFeatures(fs);
 		checkPreconditionsThreshold(threshold);
 		this.hashGenerator = hg;
 		this.features = fs;
 		this.threshold = threshold;
 	}
-	
-	/**
-	 * This constructor uses the default, generally most optimal, values for the threshold and 
-	 * features. It is also used for Guice-invocations.
-	 * @param hg a hash-generator, such as the XxHashGenerator.
-	 */
-	@Inject
-	public NearDuplicateDetectionCrawlHash32(HashGenerator hg) {
-		// TODO should be done in the configuration?
-		this.hashGenerator = hg;
-		this.features = new ArrayList<FeatureType>();
-		this.threshold = 3;
-	}
-	
+
 	@Override
 	public int[] generateHash(String doc) {
 		checkPreconditionsFeatures(features);
@@ -53,24 +45,24 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 			int v = hashGenerator.generateHash(t);
 			bits = addHashToArray(v, bits);
 		}
-		int[] hashArray = {projectArrayOnHash(bits)};
+		int[] hashArray = { projectArrayOnHash(bits) };
 		return hashArray;
 	}
 
 	private List<String> generateFeatures(String doc) {
 		List<String> li = new ArrayList<String>();
-		for(FeatureType feature : features) {
+		for (FeatureType feature : features) {
 			li.addAll(feature.getFeatures(doc));
 		}
 		return li;
 	}
-	
+
 	private int projectArrayOnHash(int[] bits) {
 		int hash = HEX_ZERO;
 		int one = HEX_ONE;
 		for (int i = HASH_LENGTH; i >= 1; --i) {
 			// for each int in bits, if the current position > 1, set bit to 1
-			if (bits[i - 1] > 1) { 
+			if (bits[i - 1] > 1) {
 				hash |= one;
 			}
 			// Move the bit position one bit to the left.
@@ -78,7 +70,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		}
 		return hash;
 	}
-	
+
 	private int[] addHashToArray(int hash, int[] bits) {
 		// Loop through each bit-position, starting with the least significant.
 		for (int i = HASH_LENGTH; i >= 1; --i) {
@@ -103,27 +95,34 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 
 	@Override
 	public boolean isNearDuplicateHash(int[] hash1, int[] hash2) {
-		return ((double) hammingDistance(hash1[0],hash2[0])) <= threshold;
-	}
-	
-	/**
-	 * Checks the precondition for the feature-list, which should not be empty or null.
-	 * @param features feature-list to be checked
-	 */
-	private void checkPreconditionsFeatures(List<FeatureType> features) {
-		if(features == null || features.isEmpty()) {
-			throw new FeatureException("Invalid feature-list provided, feature-list cannot be null or empty. (Provided: " + features + ")");
-		}		
+		return ((double) hammingDistance(hash1[0], hash2[0])) <= threshold;
 	}
 
-	/**'
-	 * Checks the precondition for the threshold, which should be within the predefined upper and lower bounds.
+	/**
+	 * Checks the precondition for the feature-list, which should not be empty or null.
+	 * 
+	 * @param features
+	 *            feature-list to be checked
+	 */
+	private void checkPreconditionsFeatures(List<FeatureType> features) {
+		if (features == null || features.isEmpty()) {
+			throw new DuplicateDetectionException(
+			        "Invalid feature-list provided, feature-list cannot be "
+			                + "null or empty. (Provided: " + features + ")");
+		}
+	}
+
+	/**
+	 * Checks the precondition for the threshold, which should be within the predefined upper and
+	 * lower bounds.
+	 * 
 	 * @param threshold
 	 */
 	private void checkPreconditionsThreshold(double threshold) {
-		if(threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
-			throw new FeatureException("Invalid threshold value " + threshold + ", threshold as to "
-					+ "be between " + THRESHOLD_LOWERLIMIT + " and " + THRESHOLD_UPPERLIMIT + ".");
+		if (threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
+			throw new DuplicateDetectionException("Invalid threshold value " + threshold
+			        + ", threshold as to be between " + THRESHOLD_LOWERLIMIT + " and "
+			        + THRESHOLD_UPPERLIMIT + ".");
 		}
 	}
 	
@@ -131,7 +130,6 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		return threshold;
 	}
 
-	@Override
 	public double getDistance(int[] hash1, int[] hash2) {
 		return hammingDistance(hash1[0], hash2[0]);
 	}
@@ -140,11 +138,10 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		return features;
 	}
 
-	@Override
 	public void setThreshold(double threshold) {
 		checkPreconditionsThreshold(threshold);
 		this.threshold = threshold;
-		
+
 	}
 
 	public void setFeatures(List<FeatureType> features) {
