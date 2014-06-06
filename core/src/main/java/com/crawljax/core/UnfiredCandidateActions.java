@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import com.codahale.metrics.Gauge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,12 @@ public class UnfiredCandidateActions {
 		        registry.register(MetricsModule.EVENTS_PREFIX + "crawler_lost", new Counter());
 		unfiredActionsCount =
 		        registry.register(MetricsModule.EVENTS_PREFIX + "unfired_actions", new Counter());
+		registry.register(MetricsModule.EVENTS_PREFIX + "states_with_candidates", new Gauge<Integer>() {
+			@Override
+			public Integer getValue() {
+				return statesWithCandidates.size();
+			}
+		});
 	}
 
 	/**
