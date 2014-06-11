@@ -134,12 +134,4 @@ public class StateVertexNDD implements StateVertex {
 	public ImmutableList<CandidateElement> getCandidateElements() {
 		return candidateElements;
 	}
-
-	public double getMinDuplicateDistance() {
-		return minDuplicateDistance;
-	}
-	
-	public void setMinDuplicateDistance(double minDuplicateDistance) {
-		this.minDuplicateDistance = minDuplicateDistance;
-	}
 }

@@ -114,9 +114,11 @@ footer small {
 				
 			</script>
 			
-			Remove duplicate states: 
-			<input id="thresholdSlider" type="range"  min=${stats.duplicateDetectionTreshold} max="1" value=${stats.duplicateDetectionTreshold} step="0.1" />
+			
 			<span id="thresholdValue">Threshold: ${stats.duplicateDetectionTreshold}</span>
+			<br />
+			Remove duplicate states: 
+			<input id="thresholdSlider" type="range"  min=${stats.duplicateDetectionTreshold} max="1" value=${stats.duplicateDetectionTreshold} step="0.05" />
 		</div>
 		
 		<div class="container page" id="container-statistics" style="display: none;">
@@ -178,20 +180,46 @@ footer small {
 					document.getElementById("thresholdValue").innerHTML = "Threshold: " + threshold;
 					
 					var statesInGraph = [];
-					#foreach( $state in $sortedStates )
+					var sortedStates = [#foreach($var in $sortedStates)#if($foreach.index > 0),#end "$var" #end]; 
+					console.log(sortedStates);
+					for (var key in sortedStates) {
+						var state = states[sortedStates[key]];
+						if(canBeReachedFromIndex(state, statesInGraph)) {
+							console.log(state.name + "canBeReached!!!")
+							removeIfDuplicate(state, statesInGraph);
+						} else {
+							graph.removeNode(state.name);
+						}
+					}
+					loadPage("graph");	
+					
+					function removeIfDuplicate(currentState, statesInGraph) {
 						var inGraph = true;
-						var currentState = states.$state;
-						for (var key in currentState.duplicateDistance) {
-							if ($.inArray(key, statesInGraph.name) && currentState.duplicateDistance[key]< threshold) {
+						for (var otherState in currentState.duplicateDistance) {
+							if ($.inArray(otherState, statesInGraph) >= 0 && currentState.duplicateDistance[otherState] <= threshold) {
+								console.log("Remove!");
 								graph.removeNode(currentState.name);
 								inGraph = false;
 							}
 						}
 						if (inGraph) {
+							console.log("add " +currentState.name + " to statesingraph" );
 							statesInGraph.push(currentState.name);
 						}
-					#end
-					loadPage("graph");	
+					}
+					
+					function canBeReachedFromIndex(currentState, statesInGraph) {
+						if(currentState.name == "index") return true;
+						console.log(statesInGraph);
+						for(var key in edges) {
+							console.log(edges[key].to + " == " + currentState.name + " && " + edges[key].from + " => " + (edges[key].to == currentState.name && $.inArray(edges[key].from, statesInGraph)))
+							if(edges[key].to == currentState.name && $.inArray(edges[key].from, statesInGraph) >= 0) {
+								return true;								
+							}
+						}
+						console.log(currentState.name + " cannot be reached!");
+						return false;
+					}
 				});
 					
 					$("#hideButton").click(function() {

@@ -15,7 +15,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.crawljax.core.ExitNotifier;
-import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionSingleton;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -136,28 +135,12 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 
 	private boolean hasNearDuplicate(StateVertex vertex) {
 		for (StateVertex vertexOfGraph : sfg.vertexSet()) {
-			
-			if (vertex instanceof StateVertexNDD) {
-				StateVertexNDD vertexNDD = (StateVertexNDD) vertex;
-				StateVertexNDD vertexOfGraphNDD = (StateVertexNDD) vertexOfGraph;
-				updateMinDuplicateDistance(vertexNDD, vertexOfGraphNDD);
-			}
-			
 			if (vertex.equals(vertexOfGraph)) {
 				LOGGER.info("Duplicate found: {}, {}", vertex.getId(), vertexOfGraph.getId());
 				return true;
 			}
 		}
 		return false;
-	}
-	
-	private void updateMinDuplicateDistance(StateVertexNDD vertex, StateVertexNDD vertexFromSFG) {
-		double duplicateDistance = NearDuplicateDetectionSingleton.getInstance().getDistance(vertex.getHashes(), vertexFromSFG.getHashes());
-		
-		if (duplicateDistance < vertex.getMinDuplicateDistance()) {
-			vertex.setMinDuplicateDistance(duplicateDistance);
-			LOGGER.error("UPDATE minDuplicateDistance to {} at ({},{})", duplicateDistance, vertex.getId(), vertexFromSFG.getId());
-		}
 	}
 
 	@Override

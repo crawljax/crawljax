@@ -122,5 +122,4 @@ class StateVertexImpl implements StateVertex {
 	public ImmutableList<CandidateElement> getCandidateElements() {
 		return candidateElements;
 	}
-
 }

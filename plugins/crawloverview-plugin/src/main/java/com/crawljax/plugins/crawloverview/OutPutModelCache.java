@@ -47,7 +47,7 @@ class OutPutModelCache {
 	
 	private List<String> sortedStates = new ArrayList<>();
 
-	StateBuilder addStateIfAbsent(StateVertex state, HashMap<Integer,Double> distance) {
+	StateBuilder addStateIfAbsent(StateVertex state, HashMap<String,Double> distance) {
 		StateBuilder newState = new StateBuilder(state, distance);
 		StateBuilder found = states.putIfAbsent(state.getName(), newState);
 		if (found == null) {

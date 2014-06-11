@@ -22,9 +22,9 @@ class StateBuilder {
 	private final AtomicInteger fanIn = new AtomicInteger();
 	private final AtomicInteger fanOut = new AtomicInteger();
 	private final ImmutableList.Builder<String> failedEvents = new ImmutableList.Builder<>();
-	private final HashMap<Integer,Double> differenceDistance;
+	private final HashMap<String,Double> differenceDistance;
 	
-	public StateBuilder(StateVertex state, HashMap<Integer,Double> differenceDistance) {
+	public StateBuilder(StateVertex state, HashMap<String,Double> differenceDistance) {
 		this.state = state;
 		this.differenceDistance = differenceDistance;
 	}
