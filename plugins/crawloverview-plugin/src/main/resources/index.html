@@ -110,27 +110,13 @@ footer small {
 		</div>
 		
 		<div id="duplicate-detection-slider" style="width:35%; margin:auto; text-align:center;">
-			Remove duplicate states: 
-			<input type="range"  min=${stats.duplicateDetectionTreshold} max="32" value=${stats.duplicateDetectionTreshold} step="1" onchange="changeTreshold(this.value)" />
-			<span id="thresholdValue">Threshold: ${stats.duplicateDetectionTreshold}</span>
-			
 			<script type="text/javascript">
-				function changeTreshold(threshold) {
-					// Make the whole graph again, because it is possible that some nodes are removed previously by this function
-					makeGraph();
-					
-					document.getElementById("thresholdValue").innerHTML = "Threshold: " + threshold;
-					
-					// Remove the states that are considered as near-duplicates of already existing states for the given threshold
-					$.each(states, function() {
-						if (this.minDuplicateDistance <= threshold) {
-							graph.removeNode(this.name);
-						}
-					});
-					
-					loadPage(pageRef);
-				}
+				
 			</script>
+			
+			Remove duplicate states: 
+			<input id="thresholdSlider" type="range"  min=${stats.duplicateDetectionTreshold} max="1" value=${stats.duplicateDetectionTreshold} step="0.1" />
+			<span id="thresholdValue">Threshold: ${stats.duplicateDetectionTreshold}</span>
 		</div>
 		
 		<div class="container page" id="container-statistics" style="display: none;">
@@ -160,7 +146,8 @@ footer small {
 		var states = ${states};
 		$(document).ready(makeGraph);
 		
-		function makeGraph() {
+		function makeGraph() {	
+				function buildGraph() {
 					$.each(states, function() {
 						graph.addNode(this.name, {
 							img : 'screenshots/' + this.name + '_small.jpg',
@@ -182,7 +169,31 @@ footer small {
 							});
 						}
 					});
-
+				}
+				buildGraph();
+				
+				$("#thresholdSlider").change(function() {
+					buildGraph();
+					var threshold = $("#thresholdSlider").val();
+					document.getElementById("thresholdValue").innerHTML = "Threshold: " + threshold;
+					
+					var statesInGraph = [];
+					#foreach( $state in $sortedStates )
+						var inGraph = true;
+						var currentState = states.$state;
+						for (var key in currentState.duplicateDistance) {
+							if ($.inArray(key, statesInGraph.name) && currentState.duplicateDistance[key]< threshold) {
+								graph.removeNode(currentState.name);
+								inGraph = false;
+							}
+						}
+						if (inGraph) {
+							statesInGraph.push(currentState.name);
+						}
+					#end
+					loadPage("graph");	
+				});
+					
 					$("#hideButton").click(function() {
 						$(".panel-right").removeClass("in");
 						$('path[stroke="red"]').attr("stroke", "grey");
