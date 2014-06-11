@@ -175,7 +175,7 @@ class OutputBuilder {
 		context.put("crawledUrl", config.getUrl());
 		context.put("stats", model.getStatistics());
 		context.put("exitStatus", model.getExitStatus());
-
+		context.put("sortedStates", model.getSortedStates().toArray());
 		LOG.debug("Writing urls report");
 		context.put("urls", model.getStatistics().getStateStats().getUrls());
 
