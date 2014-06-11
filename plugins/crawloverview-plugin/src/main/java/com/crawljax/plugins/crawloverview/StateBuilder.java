@@ -1,6 +1,7 @@
 package com.crawljax.plugins.crawloverview;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,9 +22,11 @@ class StateBuilder {
 	private final AtomicInteger fanIn = new AtomicInteger();
 	private final AtomicInteger fanOut = new AtomicInteger();
 	private final ImmutableList.Builder<String> failedEvents = new ImmutableList.Builder<>();
-
-	public StateBuilder(StateVertex state) {
+	private final HashMap<Integer,Double> differenceDistance;
+	
+	public StateBuilder(StateVertex state, HashMap<Integer,Double> differenceDistance) {
 		this.state = state;
+		this.differenceDistance = differenceDistance;
 	}
 
 	public String getName() {
@@ -51,7 +54,7 @@ class StateBuilder {
 
 	public State build() {
 		return new State(state, fanIn.get(), fanOut.get(), getCandidates(),
-		        failedEvents.build());
+		        failedEvents.build(), differenceDistance);
 	}
 
 	public void eventFailed(Eventable eventable) {
