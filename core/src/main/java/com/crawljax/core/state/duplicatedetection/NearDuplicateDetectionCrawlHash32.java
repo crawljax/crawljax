@@ -26,7 +26,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	private final static float THRESHOLD_LOWERLIMIT = 0;
 
 	private List<FeatureType> features;
-	private double threshold;
+	private double defaultThreshold;
 	private HashGenerator hashGenerator;
 	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionCrawlHash32.class);
 
@@ -37,14 +37,14 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		checkPreconditionsThreshold(threshold);
 		this.hashGenerator = hg;
 		this.features = fs;
-		this.threshold = threshold;
-		LOG.info("NearDuplicateDetectionCrawlHash32[threshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
+		this.defaultThreshold = threshold;
+		LOG.info("NearDuplicateDetectionCrawlHash32[defaultThreshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
 	}
 
 	@Override
-	public int[] generateHash(String doc) {
+	public Fingerprint generateHash(String doc) {
 		checkPreconditionsFeatures(features);
-		checkPreconditionsThreshold(threshold);
+		checkPreconditionsThreshold(defaultThreshold);
 		int[] bits = new int[HASH_LENGTH];
 		List<String> tokens = this.generateFeatures(doc);
 		// loop through all tokens (ie shingles), calculate the hash, and add
@@ -53,8 +53,7 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 			int v = hashGenerator.generateHash(t);
 			bits = addHashToArray(v, bits);
 		}
-		int[] hashArray = { projectArrayOnHash(bits) };
-		return hashArray;
+		return new CrawlhashFingerprint(projectArrayOnHash(bits), defaultThreshold);
 	}
 
 	private List<String> generateFeatures(String doc) {
@@ -90,22 +89,6 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 		}
 		return bits;
 	}
-
-	public int hammingDistance(int hash1, int hash2) {
-		int i = hash1 ^ hash2;
-		i = i - ((i >>> 1) & 0x55555555);
-		i = (i & 0x33333333) + ((i >>> 2) & 0x33333333);
-		i = (i + (i >>> 4)) & 0x0f0f0f0f;
-		i = i + (i >>> 8);
-		i = i + (i >>> 16);
-		return i & 0x3f;
-	}
-
-	@Override
-	public boolean isNearDuplicateHash(int[] hash1, int[] hash2) {
-		return ((double) hammingDistance(hash1[0], hash2[0])) <= threshold;
-	}
-
 	/**
 	 * Checks the precondition for the feature-list, which should not be empty or null.
 	 * 
@@ -121,35 +104,31 @@ public class NearDuplicateDetectionCrawlHash32 implements NearDuplicateDetection
 	}
 
 	/**
-	 * Checks the precondition for the threshold, which should be within the predefined upper and
+	 * Checks the precondition for the defaultThreshold, which should be within the predefined upper and
 	 * lower bounds.
 	 * 
-	 * @param threshold
+	 * @param defaultThreshold
 	 */
 	private void checkPreconditionsThreshold(double threshold) {
 		if (threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
-			throw new DuplicateDetectionException("Invalid threshold value " + threshold
-			        + ", threshold as to be between " + THRESHOLD_LOWERLIMIT + " and "
+			throw new DuplicateDetectionException("Invalid defaultThreshold value " + threshold
+			        + ", defaultThreshold as to be between " + THRESHOLD_LOWERLIMIT + " and "
 			        + THRESHOLD_UPPERLIMIT + ".");
 		}
 	}
 	
 	public double getThreshold() {
-		return threshold;
+		return defaultThreshold;
 	}
-
-	public double getDistance(int[] hash1, int[] hash2) {
-		return hammingDistance(hash1[0], hash2[0]);
-	}
-
+	
 	public List<FeatureType> getFeatures() {
 		return features;
 	}
 
 	public void setThreshold(double threshold) {
 		checkPreconditionsThreshold(threshold);
-		LOG.info("Threshold changed from {} to {}", this.threshold, threshold);
-		this.threshold = threshold;
+		LOG.info("Threshold changed from {} to {}", this.defaultThreshold, threshold);
+		this.defaultThreshold = threshold;
 
 	}
 

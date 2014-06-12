@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import com.crawljax.core.CandidateElement;
-import com.crawljax.core.state.duplicatedetection.NearDuplicateDetection;
+import com.crawljax.core.state.duplicatedetection.Fingerprint;
 import com.crawljax.util.DomUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
@@ -25,11 +25,10 @@ public class StateVertexNDD implements StateVertex {
 	private final String dom;
 	private final String strippedDom;
 	private final String url;
-	private int[] hash;
 	private String name;
 
 	private ImmutableList<CandidateElement> candidateElements;
-	private NearDuplicateDetection nearDuplicateDetection;
+	private Fingerprint fingerprint;
 
 	/**
 	 * Creates a current state without an url and the stripped dom equals the dom.
@@ -40,8 +39,8 @@ public class StateVertexNDD implements StateVertex {
 	 *            the current DOM tree of the browser
 	 */
 	@VisibleForTesting
-	StateVertexNDD(int id, String name, String dom, NearDuplicateDetection ndd) {
-		this(id, null, name, dom, dom, ndd);
+	StateVertexNDD(int id, String name, String dom, Fingerprint fingerprint) {
+		this(id, null, name, dom, dom, fingerprint);
 		
 	}
 
@@ -58,14 +57,13 @@ public class StateVertexNDD implements StateVertex {
 	 *            the stripped dom by the OracleComparators
 	 */
 	@Inject
-	public StateVertexNDD(int id, String url, String name, String dom, String strippedDom, NearDuplicateDetection ndd) {
+	public StateVertexNDD(int id, String url, String name, String dom, String strippedDom, Fingerprint fingerprint) {
 		this.id = id;
 		this.url = url;
 		this.name = name;
 		this.dom = dom;
-		this.nearDuplicateDetection = ndd;
 		this.strippedDom = strippedDom;
-		this.hash = ndd.generateHash(strippedDom);
+		this.fingerprint = fingerprint;
 	}
 
 	@Override
@@ -88,15 +86,22 @@ public class StateVertexNDD implements StateVertex {
 		return url;
 	}
 
-	public int[] getHashes() {
-		return this.hash;
+	public Fingerprint getFingerprint() {
+		return this.fingerprint;
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		if (object instanceof StateVertex) {
+		if (object instanceof StateVertexNDD) {
+			// If the other Object is a StateVertexNDD, use the fingerprints
+			// to compare both objects
 			StateVertexNDD that = (StateVertexNDD) object;
-			return nearDuplicateDetection.isNearDuplicateHash(this.getHashes(), that.getHashes());
+			return fingerprint.isNearDuplicateHash(that.getFingerprint());
+		} else if (object instanceof StateVertex) {
+			// If the other StateVertex does not support near-duplicate detection,
+			// use the default approach of comparing (using StrippedDoms).
+			StateVertex that = (StateVertex) object;
+			return Objects.equal(this.strippedDom, that.getStrippedDom());
 		}
 		return false;
 	}
