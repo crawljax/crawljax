@@ -1,6 +1,7 @@
 package com.crawljax.core.duplicatedetection;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -9,9 +10,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.crawljax.core.state.duplicatedetection.CrawlhashFingerprint;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles.SizeType;
 import com.crawljax.core.state.duplicatedetection.FeatureType;
 import com.crawljax.core.state.duplicatedetection.HashGenerator;
-import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash32;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash;
 import com.crawljax.core.state.duplicatedetection.XxHashGenerator;
 
 public class HammingDistanceTest {
@@ -46,7 +49,9 @@ public class HammingDistanceTest {
 	@Test
 	public void testIsNearDuplicateOnBoundary() {
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(3, new ArrayList<FeatureType>(), hasher);
+		List<FeatureType> features = new ArrayList<>();
+		features.add(new FeatureShingles(2, SizeType.CHARS));
+		NearDuplicateDetectionCrawlHash crawlHesh = new NearDuplicateDetectionCrawlHash(3, features, hasher);
 		String hash1 = "01111111111111111111111111111111";
 		String hash2 = "01111111111101111111110111110111";
 		
@@ -61,7 +66,9 @@ public class HammingDistanceTest {
 	@Test
 	public void testIsNearDuplicateOfBoundary() {
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionCrawlHash32 crawlHesh = new NearDuplicateDetectionCrawlHash32(2, new ArrayList<FeatureType>(), hasher);
+		List<FeatureType> features = new ArrayList<>();
+		features.add(new FeatureShingles(2, SizeType.CHARS));
+		NearDuplicateDetectionCrawlHash crawlHesh = new NearDuplicateDetectionCrawlHash(2, features, hasher);
 		String hash1 = "01111111111111111111111111111111";
 		String hash2 = "01111111111101111111110111110111";
 

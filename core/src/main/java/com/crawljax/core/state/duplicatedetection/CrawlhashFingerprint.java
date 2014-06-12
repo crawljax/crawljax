@@ -21,6 +21,15 @@ public class CrawlhashFingerprint implements Fingerprint {
 		this.defaultThreshold = defaultThreshold;
 	}
 	
+	/**
+	 * Constructor without setting the defaultThreshold, which will be set to 1.
+	 * @param hash the generated hash on which this fingerprint is based.
+	 */
+	public CrawlhashFingerprint(int hash) {
+		this.hash = hash;
+		this.defaultThreshold = 1;
+	}
+	
 	@Override
 	public boolean isNearDuplicateHash(Fingerprint other) {
 		return ((double) getDistance(other)) <= defaultThreshold;
@@ -42,7 +51,7 @@ public class CrawlhashFingerprint implements Fingerprint {
 	 * @param other the Fingerprint of which the type should be the same as this.
 	 */
 	private void fingerprintTypeCheck(Fingerprint other) {
-		if(this.getClass().isInstance(other))
+		if(!this.getClass().isInstance(other))
 			throw new DuplicateDetectionException("Cannot compare fingerprints of different types. (this: " + this.getClass() + " vs. that: " + other.getClass() + ")");
 	}
 	

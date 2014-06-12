@@ -27,6 +27,6 @@ public class DuplicateDetectionModule extends AbstractModule {
 
 	@Provides
 	NearDuplicateDetection provideNearDuplicateDetection(HashGenerator hasher) {
-		return new NearDuplicateDetectionCrawlHash32(this.threshold, this.fs, hasher);
+		return new NearDuplicateDetectionCrawlHash(this.threshold, this.fs, hasher);
 	}
 }
