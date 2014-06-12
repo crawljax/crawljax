@@ -16,9 +16,9 @@ import com.google.inject.Singleton;
  * using the Jaccard coefficients (intersection(SiteA,SiteB)/union(SiteA,SiteB)).
  */
 @Singleton
-public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
+public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 
-	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionBroder32.class);
+	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionBroder.class);
 
 	private List<FeatureType> features;
 	private double defaultThreshold;
@@ -27,13 +27,13 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	private final static float THRESHOLD_LOWERLIMIT = 0;
 
 	@Inject
-	public NearDuplicateDetectionBroder32(double threshold, List<FeatureType> fs, HashGenerator hg) {
+	public NearDuplicateDetectionBroder(double threshold, List<FeatureType> fs, HashGenerator hg) {
 		checkPreconditionsFeatures(fs);
 		checkPreconditionsThreshold(threshold);
 		this.hashGenerator = hg;
 		this.features = fs;
 		this.defaultThreshold = threshold;
-		LOG.info("NearDuplicateDetectionBroder32[threshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
+		LOG.info("NearDuplicateDetectionBroder[threshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
 	}
 	
 	/**
