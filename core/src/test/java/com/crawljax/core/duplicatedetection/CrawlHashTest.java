@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.crawljax.core.state.duplicatedetection.FeatureShingles;
 import com.crawljax.core.state.duplicatedetection.FeatureException;
 import com.crawljax.core.state.duplicatedetection.FeatureType;
+import com.crawljax.core.state.duplicatedetection.Fingerprint;
 import com.crawljax.core.state.duplicatedetection.HashGenerator;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash32;
 import com.crawljax.core.state.duplicatedetection.XxHashGenerator;
@@ -35,11 +36,11 @@ public class CrawlHashTest {
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
-		int[] hash = ndd.generateHash(strippedDom);
-		boolean duplicate = ndd.isNearDuplicateHash(hash, hash);
+		Fingerprint hash = ndd.generateHash(strippedDom);
+		boolean duplicate = hash.isNearDuplicateHash(hash);
 		assertTrue(duplicate);
 		
-		double distance = ndd.getDistance(hash, hash);
+		double distance = hash.getDistance(hash);
 		assertEquals(0, distance, 0.001);
 	}
 	
@@ -51,7 +52,7 @@ public class CrawlHashTest {
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom1 = "This is some text for the test.";
 		String strippedDom2 = "This is some text for the test.";
-		boolean duplicate = ndd.isNearDuplicateHash(ndd.generateHash(strippedDom1),ndd.generateHash(strippedDom2));
+		boolean duplicate = ndd.generateHash(strippedDom1).isNearDuplicateHash(ndd.generateHash(strippedDom2));
 		assertTrue(duplicate);
 	}
 	
@@ -64,7 +65,7 @@ public class CrawlHashTest {
 		NearDuplicateDetectionCrawlHash32 ndd = new NearDuplicateDetectionCrawlHash32(3, features, hasher);
 		String strippedDom1 = "This is some text for the test.";
 		String strippedDom2 = "Whole other test goes in here.";
-		boolean duplicate = ndd.isNearDuplicateHash(ndd.generateHash(strippedDom1),ndd.generateHash(strippedDom2));
+		boolean duplicate = ndd.generateHash(strippedDom1).isNearDuplicateHash(ndd.generateHash(strippedDom2));
 		assertFalse(duplicate);
 	}
 	
@@ -100,9 +101,9 @@ public class CrawlHashTest {
 		String strippedDom1 = "Test";
 		String strippedDom2 = "Test";
 		
-		int[] hash1 = ndd.generateHash(strippedDom1);
-		int[] hash2 = ndd.generateHash(strippedDom2);
-		assertEquals(hash1[0], hash2[0]);
+		Fingerprint hash1 = ndd.generateHash(strippedDom1);
+		Fingerprint hash2 = ndd.generateHash(strippedDom2);
+		assertEquals(hash1.getHashesAsIntArray()[0], hash2.getHashesAsIntArray()[0]);
 	}
 	
 	@Test
@@ -115,9 +116,9 @@ public class CrawlHashTest {
 		String strippedDom1 = "This is some text for the test.";
 		String strippedDom2 = "Other text will be shown";
 		
-		int[] hashOfvFromDom = ndd.generateHash(strippedDom1);
-		int[] hashOfwFromDom = ndd.generateHash(strippedDom2);
-		assertFalse(hashOfvFromDom[0] == hashOfwFromDom[0]);
+		Fingerprint hashOfvFromDom = ndd.generateHash(strippedDom1);
+		Fingerprint hashOfwFromDom = ndd.generateHash(strippedDom2);
+		assertFalse(hashOfvFromDom.getHashesAsIntArray()[0] == hashOfwFromDom.getHashesAsIntArray()[0]);
 	}
 	
 	@Test (expected = AssertionError.class)

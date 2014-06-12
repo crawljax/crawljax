@@ -1,7 +1,7 @@
 package com.crawljax.core.state.duplicatedetection;
 
 /**
- * Exceptions thrown by NearDuplicateDetection-algorithms.
+ * Default exception thrown by NearDuplicateDetection-algorithms.
  */
 @SuppressWarnings("serial")
 public class DuplicateDetectionException extends RuntimeException {

@@ -1,15 +1,12 @@
 package com.crawljax.core.state.duplicatedetection;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -24,7 +21,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionBroder32.class);
 
 	private List<FeatureType> features;
-	private double threshold;
+	private double defaultThreshold;
 	private HashGenerator hashGenerator;
 	private final static float THRESHOLD_UPPERLIMIT = 1;
 	private final static float THRESHOLD_LOWERLIMIT = 0;
@@ -35,7 +32,7 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 		checkPreconditionsThreshold(threshold);
 		this.hashGenerator = hg;
 		this.features = fs;
-		this.threshold = threshold;
+		this.defaultThreshold = threshold;
 		LOG.info("NearDuplicateDetectionBroder32[threshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
 	}
 	
@@ -47,10 +44,10 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	 * @return an array of the hashes, generated from the features, of the given string
 	 */
 	@Override
-	public int[] generateHash(String doc) {
+	public Fingerprint generateHash(String doc) {
 		// Check preconditions
 		checkPreconditionsFeatures(features);
-		checkPreconditionsThreshold(threshold);
+		checkPreconditionsThreshold(defaultThreshold);
 
 		List<String> shingles = this.generateFeatures(doc);
 		int length = shingles.size();
@@ -59,45 +56,8 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 		for (int i = 0; i < length; i++) {
 			hashes[i] = hashGenerator.generateHash(shingles.get(i));
 		}
-		return hashes;
-	}
-
-	/**
-	 * Return true if the JaccardCoefficient is higher than the threshold.
-	 */
-	@Override
-	public boolean isNearDuplicateHash(int[] state1, int[] state2) {
-		return (this.getDistance(state1, state2) <= this.threshold);
-	}
-
-	/**
-	 * Get the distance between two sets.
-	 * 
-	 * @return Zero if both sets contains exactly the same hashes and one if the two sets contains
-	 *         all different hashes and values in between for the corresponding difference. The
-	 *         closer the value is to zero, the more hashes in the sets are the same.
-	 */
-	@Override
-	public double getDistance(int[] state1, int[] state2) {
-		double jaccardCoefficient = this.getJaccardCoefficient(state1, state2);
-		return 1 - jaccardCoefficient;
-	}
-
-	private double getJaccardCoefficient(int[] state1, int[] state2) {
-		Set<Integer> setOfFirstArg = new HashSet<Integer>(state1.length);
-		Set<Integer> setOfSecondArg = new HashSet<Integer>(state2.length);
-		for (int state : state1) {
-			setOfFirstArg.add(state);
-		}
-		for (int state : state2) {
-			setOfSecondArg.add(state);
-		}
-
-		double unionCount = Sets.union(setOfFirstArg, setOfSecondArg).size();
-		double intersectionCount = Sets.intersection(setOfFirstArg, setOfSecondArg).size();
-
-		return (intersectionCount / unionCount);
-	}
+		return new BroderFingerprint(hashes, defaultThreshold);
+	}	
 
 	/**
 	 * Generate the features from the content of the state.
@@ -146,13 +106,13 @@ public class NearDuplicateDetectionBroder32 implements NearDuplicateDetection {
 	}
 
 	public double getThreshold() {
-		return threshold;
+		return defaultThreshold;
 	}
 
 	public void setThreshold(double threshold) {
 		checkPreconditionsThreshold(threshold);
-		LOG.info("Threshold changed from {} to {}", this.threshold, threshold);
-		this.threshold = threshold;
+		LOG.info("Threshold changed from {} to {}", this.defaultThreshold, threshold);
+		this.defaultThreshold = threshold;
 	}
 
 	public List<FeatureType> getFeatures() {

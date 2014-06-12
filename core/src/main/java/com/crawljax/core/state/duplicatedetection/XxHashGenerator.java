@@ -6,10 +6,11 @@ import net.jpountz.xxhash.XXHash32;
 import net.jpountz.xxhash.XXHashFactory;
 
 /**
- * HashGenerator using the xxhash32-algorithm (https://code.google.com/p/xxhash/)
+ * A hashGenerator using the xxhash32-algorithm (https://code.google.com/p/xxhash/)
  */
 public class XxHashGenerator implements HashGenerator {
-
+	
+	private static final int SEED = 0x9747b28c;
 	private XXHash32 xxhash;
 
 	/**
@@ -22,7 +23,7 @@ public class XxHashGenerator implements HashGenerator {
 
 	@Override
 	public int generateHash(String input) {
-		return xxhash.hash(input.getBytes(), 0, input.length(), 0x9747b28c);
+		return xxhash.hash(input.getBytes(), 0, input.length(), SEED);
 	}
 
 }

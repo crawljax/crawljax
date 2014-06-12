@@ -26,7 +26,7 @@ public class BroderTest {
 		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.8, features, hasher);
 		
 		String testDoc = "This will be a test";
-		int[] hashes = broder.generateHash(testDoc);
+		int[] hashes = broder.generateHash(testDoc).getHashesAsIntArray();
 		assertEquals(hasher.generateHash("Thiswill"), hashes[0]);
 		assertEquals(hasher.generateHash("willbe"), hashes[1]);
 		assertEquals(hasher.generateHash("bea"), hashes[2]);
@@ -36,39 +36,33 @@ public class BroderTest {
 	@Test
 	public void testGetDistance1() throws FeatureException {
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.8, features, hasher);
 		
 		int[] set1 = {1010, 1110, 1011, 0000};
 		int[] set2 = {1011};
 		
-		double distance = broder.getDistance(set1, set2);
+		double distance = new BroderFingerprint(set1,0.8).getDistance(new BroderFingerprint(set2,0.8));
 		assertEquals(3.0/4.0, distance, 0.001);
 	}
 	
 	@Test
 	public void testGetDistance2() throws FeatureException {
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.8, features, hasher);
 		
 		int[] set1 = {1111};
 		int[] set2 = {1111, 1111, 1111};
-		
-		double distance = broder.getDistance(set1, set2);
+
+		double distance = new BroderFingerprint(set1,0.8).getDistance(new BroderFingerprint(set2,0.8));
 		assertEquals(0, distance, 0.001);
 	}
 	
 	@Test
 	public void testGetDistance3() throws FeatureException {
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionBroder32 broder = new NearDuplicateDetectionBroder32(0.2, features, hasher);
 		
 		int[] set1 = {1111, 0000, 1010, 0101};
 		int[] set2 = {0001, 1111, 0101, 1110};
-		
-		double distance = broder.getDistance(set1, set2);
+
+		double distance = new BroderFingerprint(set1,0.8).getDistance(new BroderFingerprint(set2,0.8));
 		assertEquals(4.0/6.0, distance, 0.001);
 	}
 	
@@ -80,8 +74,8 @@ public class BroderTest {
 		
 		int[] set1 = {1111, 0000, 1010, 0101};
 		int[] set2 = {0101, 1111, 0000, 1010};
-		
-		assertThat(broder.getDistance(set1, set2), lessThan(broder.getThreshold()));
+
+		assertThat(new BroderFingerprint(set1,0.8).getDistance(new BroderFingerprint(set2,0.8)), lessThan(broder.getThreshold()));
 	}
 	
 	@Test
@@ -92,11 +86,11 @@ public class BroderTest {
 		
 		int[] set1 = {1111, 0000, 1010, 0101, 1110};
 		int[] set2 = {0101, 1111, 0000, 1010, 0001};
-		
-		double distance = broder.getDistance(set1, set2);
+
+		double distance = new BroderFingerprint(set1,0.8).getDistance(new BroderFingerprint(set2,0.8));
 		assertThat(distance, lessThan(broder.getThreshold()));
-		
-		boolean duplicate = broder.isNearDuplicateHash(set1, set2);
+
+		boolean duplicate = new BroderFingerprint(set1,0.8).isNearDuplicateHash(new BroderFingerprint(set2,0.8));
 		assertTrue(duplicate);
 	}
 	
@@ -108,11 +102,11 @@ public class BroderTest {
 		
 		int[] set1 = {1111, 0000, 1010, 0101, 1110};
 		int[] set2 = {0101, 1111, 0000, 1010, 0001};
-		
-		double distance = broder.getDistance(set1, set2);
+
+		double distance = new BroderFingerprint(set1,0.8).getDistance(new BroderFingerprint(set2,0.8));
 		assertThat(distance, greaterThan(broder.getThreshold()));
-		
-		boolean duplicate = broder.isNearDuplicateHash(set1, set2);
+
+		boolean duplicate = new BroderFingerprint(set1,0.8).isNearDuplicateHash(new BroderFingerprint(set2,0.8));
 		assertFalse(duplicate);
 	}
 }
