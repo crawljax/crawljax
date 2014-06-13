@@ -34,8 +34,7 @@ public class State {
 		this.url = state.getUrl();
 		this.id = state.getId();
 		if (state instanceof StateVertexNDD) {
-			StateVertexNDD stateNDD = (StateVertexNDD) state;
-			this.hash = stateNDD.getFingerprint().getHashesAsIntArray(); // temporary fix
+			this.hash = new int[]{0}; // temporary fix
 		} else {
 			int[] hashCode = new int[1];
 			hashCode[0] = state.hashCode();

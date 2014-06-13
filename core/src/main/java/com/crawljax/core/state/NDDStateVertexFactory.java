@@ -16,7 +16,7 @@ public class NDDStateVertexFactory extends StateVertexFactory {
 	@Override
 	public StateVertex newStateVertex(int id, String url, String name,
 			String dom, String strippedDom) {
-		Fingerprint fingerprint = nearDuplicateDetection.generateHash(dom);
+		Fingerprint fingerprint = nearDuplicateDetection.generateFingerprint(dom);
 		return new StateVertexNDD(id, url, name, dom, strippedDom, fingerprint);
 	}
 

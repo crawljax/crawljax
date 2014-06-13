@@ -33,7 +33,6 @@ public class BroderFingerprint implements Fingerprint {
 		this.defaultThreshold = 1;
 	}
 	
-
 	@Override
 	public boolean isNearDuplicateHash(Fingerprint other) {
 		return (this.getDistance(other) <= this.defaultThreshold);
@@ -53,22 +52,18 @@ public class BroderFingerprint implements Fingerprint {
 	 */
 	@Override
 	public double getDistance(Fingerprint other) {
-		assertFingerprintType(other);
-		return 1 - this.getJaccardCoefficient(this.getHashesAsIntArray(), other.getHashesAsIntArray());
+		BroderFingerprint that = assertFingerprintType(other);
+		return 1 - this.getJaccardCoefficient(this.hashes, that.hashes);
 	}
-	
-	@Override
-    public int[] getHashesAsIntArray() {
-	    return this.hashes;
-    }
 	
 	/**
 	 * Checks whether the other Fingerprint is of the same type as this, otherwise throw an exception.
 	 * @param other the Fingerprint of which the type should be the same as this.
 	 */
-	private void assertFingerprintType(Fingerprint other) {
+	private BroderFingerprint assertFingerprintType(Fingerprint other) {
 		if(!this.getClass().isInstance(other))
 			throw new DuplicateDetectionException("Cannot compare fingerprints of different types. (this: " + this.getClass() + " vs. that: " + other.getClass() + ")");
+		return (BroderFingerprint) other;
 	}
 
 	/**
@@ -91,5 +86,21 @@ public class BroderFingerprint implements Fingerprint {
 		double intersectionCount = Sets.intersection(setOfFirstArg, setOfSecondArg).size();
 		return (intersectionCount / unionCount);
 	}
+	
+	/**
+	 * A fingerprint equals another fingerprint, when the hashes are completely the same.
+	 * Another implicit way of invoking an equals is to invoke isNearDuplicateHash(other,0).
+	 */
+	@Override
+    public boolean equals(Object obj) {
+	    if (this == obj)
+		    return true;
+	    if (obj == null)
+		    return false;
+	    if (getClass() != obj.getClass())
+		    return false;
+	    BroderFingerprint other = (BroderFingerprint) obj;
+	    return this.isNearDuplicateHash(other, 0);
+    }
 
 }

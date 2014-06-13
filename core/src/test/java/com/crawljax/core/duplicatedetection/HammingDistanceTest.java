@@ -59,7 +59,7 @@ public class HammingDistanceTest {
 		int hash2AsInt = Integer.parseInt(hash2, 2);
 		
 		boolean duplicate = new CrawlhashFingerprint(hash1AsInt, 3).isNearDuplicateHash(new CrawlhashFingerprint(hash2AsInt, 3));
-		assertEquals(3, crawlHesh.getThreshold(), 0.001);
+		assertEquals(3, crawlHesh.getDefaultThreshold(), 0.001);
 		assertTrue(duplicate);
 	}
 	
@@ -77,7 +77,7 @@ public class HammingDistanceTest {
 		
 		boolean duplicate = new CrawlhashFingerprint(hash1AsInt, 2).isNearDuplicateHash(new CrawlhashFingerprint(hash2AsInt, 2));
 		
-		assertEquals(2, crawlHesh.getThreshold(), 0.001);
+		assertEquals(2, crawlHesh.getDefaultThreshold(), 0.001);
 		assertFalse(duplicate);
 	}
 	

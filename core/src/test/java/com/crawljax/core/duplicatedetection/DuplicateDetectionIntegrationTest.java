@@ -23,8 +23,8 @@ public class DuplicateDetectionIntegrationTest {
 		NearDuplicateDetection ndd = new NearDuplicateDetectionBroder(0.2, features, hashGenerator);
 		
 		// Generate fingerprints
-		Fingerprint fingerprint1 = ndd.generateHash("Chuck Norris writes code that optimizes itself.");
-		Fingerprint fingerprint2 = ndd.generateHash("Chuck Norris orders code to optimize itself.");
+		Fingerprint fingerprint1 = ndd.generateFingerprint("Chuck Norris writes code that optimizes itself.");
+		Fingerprint fingerprint2 = ndd.generateFingerprint("Chuck Norris orders code to optimize itself.");
 		
 		// Compare fingerprints
 		assertTrue(fingerprint1.isNearDuplicateHash(fingerprint1, 0));
@@ -44,8 +44,8 @@ public class DuplicateDetectionIntegrationTest {
 		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlHash(2, features, hashGenerator);
 		
 		// Generate fingerprints
-		Fingerprint fingerprint1 = ndd.generateHash("Chuck Norris writes code that optimizes itself.");
-		Fingerprint fingerprint2 = ndd.generateHash("Chuck Norris orders code to optimize itself.");
+		Fingerprint fingerprint1 = ndd.generateFingerprint("Chuck Norris writes code that optimizes itself.");
+		Fingerprint fingerprint2 = ndd.generateFingerprint("Chuck Norris orders code to optimize itself.");
 		
 		// Compare fingerprints
 		assertTrue(fingerprint1.isNearDuplicateHash(fingerprint1, 0));

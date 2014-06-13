@@ -34,10 +34,4 @@ public interface Fingerprint {
 	 * @return the distance (i.e. # of different bit positions) between the hashes
 	 */
 	public double getDistance(Fingerprint hash2);
-	
-	/**
-	 * Gets the internal hashes of the fingerprint. These internals should only be accessed on package-level.
-	 * @return hashes represented as integers.
-	 */
-	int[] getHashesAsIntArray();
 }

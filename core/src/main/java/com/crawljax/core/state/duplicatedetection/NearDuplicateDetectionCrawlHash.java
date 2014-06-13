@@ -42,7 +42,7 @@ public class NearDuplicateDetectionCrawlHash implements NearDuplicateDetection {
 	}
 
 	@Override
-	public Fingerprint generateHash(String doc) {
+	public Fingerprint generateFingerprint(String doc) {
 		checkPreconditionsFeatures(features);
 		checkPreconditionsThreshold(defaultThreshold);
 		int[] bits = new int[HASH_LENGTH];
@@ -117,7 +117,7 @@ public class NearDuplicateDetectionCrawlHash implements NearDuplicateDetection {
 		}
 	}
 	
-	public double getThreshold() {
+	public double getDefaultThreshold() {
 		return defaultThreshold;
 	}
 	
@@ -125,7 +125,7 @@ public class NearDuplicateDetectionCrawlHash implements NearDuplicateDetection {
 		return features;
 	}
 
-	public void setThreshold(double threshold) {
+	public void setDefaultThreshold(double threshold) {
 		checkPreconditionsThreshold(threshold);
 		LOG.info("Threshold changed from {} to {}", this.defaultThreshold, threshold);
 		this.defaultThreshold = threshold;

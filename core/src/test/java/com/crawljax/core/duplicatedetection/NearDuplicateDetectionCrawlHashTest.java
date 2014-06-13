@@ -1,7 +1,6 @@
 package com.crawljax.core.duplicatedetection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class NearDuplicateDetectionCrawlHashTest {
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
-		assertEquals(3, ndd.getThreshold(), 0.001);
+		assertEquals(3, ndd.getDefaultThreshold(), 0.001);
 	}
 	
 	@Test
@@ -38,7 +37,7 @@ public class NearDuplicateDetectionCrawlHashTest {
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
-		ndd.generateHash(strippedDom);
+		ndd.generateFingerprint(strippedDom);
 	}
 	
 	@Test (expected = FeatureException.class)
@@ -49,7 +48,7 @@ public class NearDuplicateDetectionCrawlHashTest {
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
-		ndd.generateHash(strippedDom);
+		ndd.generateFingerprint(strippedDom);
 	}
 	
 	@Test
@@ -62,9 +61,9 @@ public class NearDuplicateDetectionCrawlHashTest {
 		String strippedDom1 = "Test";
 		String strippedDom2 = "Test";
 		
-		Fingerprint hash1 = ndd.generateHash(strippedDom1);
-		Fingerprint hash2 = ndd.generateHash(strippedDom2);
-		assertEquals(hash1.getHashesAsIntArray()[0], hash2.getHashesAsIntArray()[0]);
+		Fingerprint fingerprint = ndd.generateFingerprint(strippedDom1);
+		Fingerprint fingerprint2 = ndd.generateFingerprint(strippedDom2);
+		assertTrue(fingerprint.isNearDuplicateHash(fingerprint2,0));
 	}
 	
 	@Test
@@ -77,9 +76,9 @@ public class NearDuplicateDetectionCrawlHashTest {
 		String strippedDom1 = "This is some text for the test.";
 		String strippedDom2 = "Other text will be shown";
 		
-		Fingerprint hashOfvFromDom = ndd.generateHash(strippedDom1);
-		Fingerprint hashOfwFromDom = ndd.generateHash(strippedDom2);
-		assertFalse(hashOfvFromDom.getHashesAsIntArray()[0] == hashOfwFromDom.getHashesAsIntArray()[0]);
+		Fingerprint fingerprint = ndd.generateFingerprint(strippedDom1);
+		Fingerprint fingerprint2 = ndd.generateFingerprint(strippedDom2);
+		assertFalse(fingerprint.isNearDuplicateHash(fingerprint2, 0));
 	}
 	
 	@Test (expected = DuplicateDetectionException.class)
@@ -117,7 +116,7 @@ public class NearDuplicateDetectionCrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetection crawlHash = new NearDuplicateDetectionCrawlHash(1, features, hasher);
-		crawlHash.setThreshold(-1);
+		crawlHash.setDefaultThreshold(-1);
 	}
 	
 	@Test
@@ -126,8 +125,8 @@ public class NearDuplicateDetectionCrawlHashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetection crawlHash = new NearDuplicateDetectionCrawlHash(1, features, hasher);
-		crawlHash.setThreshold(8);
-		assertEquals(8, crawlHash.getThreshold(), 0.1);
+		crawlHash.setDefaultThreshold(8);
+		assertEquals(8, crawlHash.getDefaultThreshold(), 0.1);
 	}
 	
 	@Test

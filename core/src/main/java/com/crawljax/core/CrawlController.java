@@ -65,7 +65,7 @@ public class CrawlController implements Callable<CrawlSession> {
 	@Override
 	public CrawlSession call() {
 		setMaximumCrawlTimeIfNeeded();
-		nearDuplicateDetection.setThreshold(config.getThresholdNearDuplicateDetection());
+		nearDuplicateDetection.setDefaultThreshold(config.getThresholdNearDuplicateDetection());
 		nearDuplicateDetection.setFeatures(config.getFeaturesNearDuplicateDetection());
 		plugins.runPreCrawlingPlugins(config);
 		CrawlTaskConsumer firstConsumer = consumerFactory.get();

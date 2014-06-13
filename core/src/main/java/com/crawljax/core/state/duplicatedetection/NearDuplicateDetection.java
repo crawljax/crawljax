@@ -22,13 +22,29 @@ public interface NearDuplicateDetection {
 	 *            a string, which should be larger than the feature-types.
 	 * @return the hash(es) generated from the document.
 	 */
-	public Fingerprint generateHash(String doc);
+	public Fingerprint generateFingerprint(String doc);
 
+	/**
+	 * Get the features used in the hash generation
+	 * @return list of features
+	 */
 	public List<FeatureType> getFeatures();
 
-	public void setThreshold(double threshold);
-
+	/**
+	 * Set new features to be used in fingerprint generation
+	 * @param features a list of features with at least 1 feature
+	 */
 	public void setFeatures(List<FeatureType> features);
 
-	public double getThreshold();
+	/**
+	 * Set new default threshold. Has to be within constraint of the implementation.
+	 * @param threshold new default threshold.
+	 */
+	public void setDefaultThreshold(double threshold);
+
+	/**
+	 * get the current default threshold
+	 * @return the default threshold
+	 */
+	public double getDefaultThreshold();
 }

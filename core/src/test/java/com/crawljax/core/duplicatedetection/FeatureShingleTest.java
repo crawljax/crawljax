@@ -1,7 +1,6 @@
 package com.crawljax.core.duplicatedetection;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +115,7 @@ public class FeatureShingleTest {
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
-		ndd.generateHash(strippedDom);
+		ndd.generateFingerprint(strippedDom);
 	}
 	
 	@Test (expected = FeatureException.class)
@@ -127,7 +126,7 @@ public class FeatureShingleTest {
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
-		ndd.generateHash(strippedDom);
+		ndd.generateFingerprint(strippedDom);
 	}
 	
 	@Test
@@ -138,7 +137,7 @@ public class FeatureShingleTest {
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
 		String strippedDom = "A simple test.";
-		ndd.generateHash(strippedDom);
+		ndd.generateFingerprint(strippedDom);
 	}
 	
 	@Test (expected = FeatureException.class)
@@ -149,7 +148,7 @@ public class FeatureShingleTest {
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
 		String strippedDom = "A simple test.";
-		ndd.generateHash(strippedDom);
+		ndd.generateFingerprint(strippedDom);
 	}
 	
 	@Test
@@ -160,7 +159,7 @@ public class FeatureShingleTest {
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
 		String strippedDom = "This is some text for the test. Will it work.";
-		ndd.generateHash(strippedDom);
+		ndd.generateFingerprint(strippedDom);
 	}
 	
 	@Test (expected = FeatureException.class)
@@ -171,6 +170,6 @@ public class FeatureShingleTest {
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
 		String strippedDom = "This is some text for the test. Will it work.";
-		ndd.generateHash(strippedDom);
+		ndd.generateFingerprint(strippedDom);
 	}
 }
