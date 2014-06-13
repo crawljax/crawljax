@@ -13,8 +13,9 @@ import com.crawljax.core.state.duplicatedetection.CrawlhashFingerprint;
 import com.crawljax.core.state.duplicatedetection.FeatureShingles;
 import com.crawljax.core.state.duplicatedetection.FeatureShingles.SizeType;
 import com.crawljax.core.state.duplicatedetection.FeatureType;
+import com.crawljax.core.state.duplicatedetection.Fingerprint;
 import com.crawljax.core.state.duplicatedetection.HashGenerator;
-import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlHash;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlhash;
 import com.crawljax.core.state.duplicatedetection.XxHashGenerator;
 
 public class HammingDistanceTest {
@@ -51,15 +52,21 @@ public class HammingDistanceTest {
 		HashGenerator hasher = new XxHashGenerator();
 		List<FeatureType> features = new ArrayList<>();
 		features.add(new FeatureShingles(2, SizeType.CHARS));
-		NearDuplicateDetectionCrawlHash crawlHesh = new NearDuplicateDetectionCrawlHash(3, features, hasher);
-		String hash1 = "01111111111111111111111111111111";
-		String hash2 = "01111111111101111111110111110111";
+		NearDuplicateDetectionCrawlhash crawlhash = new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		String hash = "01111111111111111111111111111111";
+		String threeBitsDiffHash = "01111111111101111111110111110111";
 		
-		int hash1AsInt = Integer.parseInt(hash1, 2);
-		int hash2AsInt = Integer.parseInt(hash2, 2);
+		int hash1AsInt = Integer.parseInt(hash, 2);
+		int hash2AsInt = Integer.parseInt(threeBitsDiffHash, 2);
 		
-		boolean duplicate = new CrawlhashFingerprint(hash1AsInt, 3).isNearDuplicateHash(new CrawlhashFingerprint(hash2AsInt, 3));
-		assertEquals(3, crawlHesh.getDefaultThreshold(), 0.001);
+		Fingerprint fpHash = new CrawlhashFingerprint(hash1AsInt, crawlhash.getDefaultThreshold());
+		Fingerprint fpThreeBitsDIffHash = new CrawlhashFingerprint(hash2AsInt, crawlhash.getDefaultThreshold());
+		
+		double distance = fpHash.getDistance(fpThreeBitsDIffHash);
+		assertEquals(distance, 3, 0.01);
+		
+		boolean duplicate = fpHash.isNearDuplicateHash(new CrawlhashFingerprint(hash2AsInt, 3));
+		assertEquals(3, crawlHesh.getThreshold(), 0.001);
 		assertTrue(duplicate);
 	}
 	
@@ -68,16 +75,21 @@ public class HammingDistanceTest {
 		HashGenerator hasher = new XxHashGenerator();
 		List<FeatureType> features = new ArrayList<>();
 		features.add(new FeatureShingles(2, SizeType.CHARS));
-		NearDuplicateDetectionCrawlHash crawlHesh = new NearDuplicateDetectionCrawlHash(2, features, hasher);
-		String hash1 = "01111111111111111111111111111111";
-		String hash2 = "01111111111101111111110111110111";
+		NearDuplicateDetectionCrawlhash crawlhash = new NearDuplicateDetectionCrawlhash(2, features, hasher);
+		String hash = "01111111111111111111111111111111";
+		String threeBitsDiffhash = "01111111111101111111110111110111";
 
-		int hash1AsInt = Integer.parseInt(hash1, 2);
-		int hash2AsInt = Integer.parseInt(hash2, 2);
+		int hash1AsInt = Integer.parseInt(hash, (int) crawlhash.getDefaultThreshold());
+		int hash2AsInt = Integer.parseInt(threeBitsDiffhash, (int) crawlhash.getDefaultThreshold());
+		
+		Fingerprint fpHash = new CrawlhashFingerprint(hash1AsInt, crawlhash.getDefaultThreshold());
+		Fingerprint fpThreeBitsDIffHash = new CrawlhashFingerprint(hash2AsInt, crawlhash.getDefaultThreshold());
+		
+		double distance = fpHash.getDistance(fpThreeBitsDIffHash);
+		assertEquals(distance, 3, 0.01);
 		
 		boolean duplicate = new CrawlhashFingerprint(hash1AsInt, 2).isNearDuplicateHash(new CrawlhashFingerprint(hash2AsInt, 2));
-		
-		assertEquals(2, crawlHesh.getDefaultThreshold(), 0.001);
+		assertEquals(2, crawlHesh.getThreshold(), 0.001);
 		assertFalse(duplicate);
 	}
 	
