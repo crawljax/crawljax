@@ -1,4 +1,4 @@
-package com.crawljax.core.duplicatedetection;
+package com.crawljax.core.state.duplicatedetection;
 
 import static org.junit.Assert.*;
 
@@ -20,18 +20,22 @@ public class DuplicateDetectionIntegrationTest {
 		List<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(1, FeatureShingles.SizeType.WORDS));
 		HashGenerator hashGenerator = new XxHashGenerator();
-		NearDuplicateDetection ndd = new NearDuplicateDetectionBroder(0.2, features, hashGenerator);
-		
+		NearDuplicateDetection ndd =
+		        new NearDuplicateDetectionBroder(0.2, features, hashGenerator);
+
 		// Generate fingerprints
-		Fingerprint fingerprint1 = ndd.generateFingerprint("Chuck Norris writes code that optimizes itself.");
-		Fingerprint fingerprint2 = ndd.generateFingerprint("Chuck Norris orders code to optimize itself.");
-		
+		Fingerprint fingerprint1 =
+		        ndd.generateFingerprint("Chuck Norris writes code that optimizes itself.");
+		Fingerprint fingerprint2 =
+		        ndd.generateFingerprint("Chuck Norris orders code to optimize itself.");
+
 		// Compare fingerprints
 		assertTrue(fingerprint1.isNearDuplicateHash(fingerprint1, 0));
 		assertFalse(fingerprint1.isNearDuplicateHash(fingerprint2, 0));
-		assertEquals(fingerprint1.getDistance(fingerprint2), fingerprint2.getDistance(fingerprint1), 0.01);
+		assertEquals(fingerprint1.getDistance(fingerprint2),
+		        fingerprint2.getDistance(fingerprint1), 0.01);
 	}
-	
+
 	/**
 	 * Tests the generation and comparison of Crawlhash-fingerprints
 	 */
@@ -41,15 +45,19 @@ public class DuplicateDetectionIntegrationTest {
 		List<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(1, FeatureShingles.SizeType.WORDS));
 		HashGenerator hashGenerator = new XxHashGenerator();
-		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(2, features, hashGenerator);
-		
+		NearDuplicateDetection ndd =
+		        new NearDuplicateDetectionCrawlhash(2, features, hashGenerator);
+
 		// Generate fingerprints
-		Fingerprint fingerprint1 = ndd.generateFingerprint("Chuck Norris writes code that optimizes itself.");
-		Fingerprint fingerprint2 = ndd.generateFingerprint("Chuck Norris orders code to optimize itself.");
-		
+		Fingerprint fingerprint1 =
+		        ndd.generateFingerprint("Chuck Norris writes code that optimizes itself.");
+		Fingerprint fingerprint2 =
+		        ndd.generateFingerprint("Chuck Norris orders code to optimize itself.");
+
 		// Compare fingerprints
 		assertTrue(fingerprint1.isNearDuplicateHash(fingerprint1, 0));
 		assertFalse(fingerprint1.isNearDuplicateHash(fingerprint2, 0));
-		assertEquals(fingerprint1.getDistance(fingerprint2), fingerprint2.getDistance(fingerprint1), 0.01);
+		assertEquals(fingerprint1.getDistance(fingerprint2),
+		        fingerprint2.getDistance(fingerprint1), 0.01);
 	}
 }

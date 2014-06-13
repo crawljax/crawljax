@@ -1,4 +1,4 @@
-package com.crawljax.core.duplicatedetection;
+package com.crawljax.core.state.duplicatedetection;
 
 import static org.junit.Assert.*;
 import net.jpountz.xxhash.XXHash32;
@@ -19,7 +19,7 @@ public class XxHashGeneratorTest {
 		int real = xxhash.hash(input.getBytes(), 0, input.length(), 0x9747b28c);
 		assertEquals(tested, real);
 	}
-	
+
 	@Test
 	public void testGenerateHashEmpty() {
 		XXHash32 xxhash = XXHashFactory.fastestInstance().hash32();
@@ -28,13 +28,12 @@ public class XxHashGeneratorTest {
 		int tested = hg.generateHash(input);
 		int real = xxhash.hash(input.getBytes(), 0, input.length(), 0x9747b28c);
 		assertEquals(tested, real);
-	}	
-	
-	@Test(expected=NullPointerException.class)
+	}
+
+	@Test(expected = NullPointerException.class)
 	public void testGenerateHashNull() {
 		XxHashGenerator hg = new XxHashGenerator();
 		hg.generateHash(null);
-	}	
-	
+	}
 
 }

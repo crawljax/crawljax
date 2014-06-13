@@ -9,7 +9,7 @@ import net.jpountz.xxhash.XXHashFactory;
  * A hashGenerator using the xxhash32-algorithm (https://code.google.com/p/xxhash/)
  */
 public class XxHashGenerator implements HashGenerator {
-	
+
 	private static final int SEED = 0x9747b28c;
 	private XXHash32 xxhash;
 

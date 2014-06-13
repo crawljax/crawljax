@@ -18,7 +18,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 
-	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionBroder.class);
+	private static final Logger LOG = (Logger) LoggerFactory
+	        .getLogger(NearDuplicateDetectionBroder.class);
 
 	private List<FeatureType> features;
 	private double defaultThreshold;
@@ -33,9 +34,10 @@ public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 		this.hashGenerator = hg;
 		this.features = fs;
 		this.defaultThreshold = threshold;
-		LOG.info("NearDuplicateDetectionBroder[threshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
+		LOG.info("NearDuplicateDetectionBroder[threshold=" + threshold + ", feature-list = " + fs
+		        + ", HashGenerator= " + hg + "]");
 	}
-	
+
 	/**
 	 * Generate the hashes from the features of the string.
 	 * 
@@ -57,7 +59,7 @@ public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 			hashes[i] = hashGenerator.generateHash(shingles.get(i));
 		}
 		return new BroderFingerprint(hashes, defaultThreshold);
-	}	
+	}
 
 	/**
 	 * Generate the features from the content of the state.

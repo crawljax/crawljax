@@ -28,7 +28,8 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 	private List<FeatureType> features;
 	private double defaultThreshold;
 	private HashGenerator hashGenerator;
-	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionCrawlhash.class);
+	private static final Logger LOG = (Logger) LoggerFactory
+	        .getLogger(NearDuplicateDetectionCrawlhash.class);
 
 	@Inject
 	public NearDuplicateDetectionCrawlhash(double threshold, List<FeatureType> fs,
@@ -38,7 +39,8 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 		this.hashGenerator = hg;
 		this.features = fs;
 		this.defaultThreshold = threshold;
-		LOG.info("NearDuplicateDetectionCrawlhash[defaultThreshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
+		LOG.info("NearDuplicateDetectionCrawlhash[defaultThreshold=" + threshold
+		        + ", feature-list = " + fs + ", HashGenerator= " + hg + "]");
 	}
 
 	@Override
@@ -89,6 +91,7 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 		}
 		return bits;
 	}
+
 	/**
 	 * Checks the precondition for the feature-list, which should not be empty or null.
 	 * 
@@ -104,8 +107,8 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 	}
 
 	/**
-	 * Checks the precondition for the defaultThreshold, which should be within the predefined upper and
-	 * lower bounds.
+	 * Checks the precondition for the defaultThreshold, which should be within the predefined upper
+	 * and lower bounds.
 	 * 
 	 * @param defaultThreshold
 	 */
@@ -116,11 +119,11 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 			        + THRESHOLD_UPPERLIMIT + ".");
 		}
 	}
-	
+
 	public double getDefaultThreshold() {
 		return defaultThreshold;
 	}
-	
+
 	public List<FeatureType> getFeatures() {
 		return features;
 	}
