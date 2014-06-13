@@ -41,7 +41,7 @@ public class DuplicateDetectionIntegrationTest {
 		List<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(1, FeatureShingles.SizeType.WORDS));
 		HashGenerator hashGenerator = new XxHashGenerator();
-		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlHash(2, features, hashGenerator);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(2, features, hashGenerator);
 		
 		// Generate fingerprints
 		Fingerprint fingerprint1 = ndd.generateFingerprint("Chuck Norris writes code that optimizes itself.");

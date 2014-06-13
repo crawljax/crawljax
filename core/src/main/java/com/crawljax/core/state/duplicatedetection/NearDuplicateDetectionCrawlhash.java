@@ -16,7 +16,7 @@ import com.google.inject.Singleton;
  * {1011,1100,1001} -> 1001
  */
 @Singleton
-public class NearDuplicateDetectionCrawlHash implements NearDuplicateDetection {
+public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 
 	private static final int HASH_LENGTH = 32;
 	private static final int HEX_ONE = 0x00000001;
@@ -28,17 +28,17 @@ public class NearDuplicateDetectionCrawlHash implements NearDuplicateDetection {
 	private List<FeatureType> features;
 	private double defaultThreshold;
 	private HashGenerator hashGenerator;
-	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionCrawlHash.class);
+	private static final Logger LOG = (Logger) LoggerFactory.getLogger(NearDuplicateDetectionCrawlhash.class);
 
 	@Inject
-	public NearDuplicateDetectionCrawlHash(double threshold, List<FeatureType> fs,
+	public NearDuplicateDetectionCrawlhash(double threshold, List<FeatureType> fs,
 	        HashGenerator hg) {
 		checkPreconditionsFeatures(fs);
 		checkPreconditionsThreshold(threshold);
 		this.hashGenerator = hg;
 		this.features = fs;
 		this.defaultThreshold = threshold;
-		LOG.info("NearDuplicateDetectionCrawlHash[defaultThreshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
+		LOG.info("NearDuplicateDetectionCrawlhash[defaultThreshold=" + threshold + ", feature-list = " + fs + ", HashGenerator= " + hg +"]");
 	}
 
 	@Override

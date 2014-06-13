@@ -18,17 +18,17 @@ public class FeatureShingleTest {
 		List<String> features = shingleChars.getFeatures(doc);
 		
 		boolean tes = features.remove("Tes");
-		assertTrue(tes);
+		assertTrue("'Tes' does not exist in the list of features", tes);
 		boolean est = features.remove("est");
-		assertTrue(est);
+		assertTrue("'est' does not exist in the list of features", est);
 		boolean st = features.remove("st ");
-		assertTrue(st);
+		assertTrue("'st ' does not exist in the list of features", st);
 		boolean th = features.remove("t h");
-		assertTrue(th);
+		assertTrue("'t h' does not exist in the list of features", th);
 		boolean ha = features.remove(" ha");
-		assertTrue(ha);
+		assertTrue("' ha' does not exist in the list of features", ha);
 		
-		assertTrue(features.isEmpty());
+		assertEquals(features.size(), 0);
 	}
 	
 	@Test
@@ -38,7 +38,7 @@ public class FeatureShingleTest {
 		List<String> features = shingleChars.getFeatures(doc);
 		
 		boolean tes = features.remove("ha ");
-		assertFalse(tes);
+		assertFalse("'ha ' does exists in the list of features, but should not", tes);
 	}
 	
 	@Test
@@ -48,13 +48,13 @@ public class FeatureShingleTest {
 		List<String> features = shingleWords.getFeatures(doc);
 		
 		boolean thisis = features.remove("Thisis");
-		assertTrue(thisis);
+		assertTrue("'Thisis' does not exist in the list of features", thisis);
 		boolean isa = features.remove("isa");
-		assertTrue(isa);
+		assertTrue("'isa' does not exist in the list of features", isa);
 		boolean atest = features.remove("atest");
-		assertTrue(atest);
+		assertTrue("'atest' does not exist in the list of features", atest);
 		
-		assertTrue(features.isEmpty());
+		assertEquals(features.size(), 0);
 	}
 	
 	@Test
@@ -64,7 +64,7 @@ public class FeatureShingleTest {
 		List<String> features = shingleWords.getFeatures(doc);
 		
 		boolean test = features.remove("test");
-		assertFalse(test);
+		assertFalse("'test' exist in the list of features, but should not exists", test);
 	}
 	
 	@Test
@@ -74,13 +74,13 @@ public class FeatureShingleTest {
 		List<String> features = shingleSentences.getFeatures(docSen);
 		
 		boolean first = features.remove("This is a test");
-		assertTrue(first);
+		assertTrue("'This is a test' does not exist in the list of features", first);
 		boolean second = features.remove("Yes");
-		assertTrue(second);
+		assertTrue("'Yes' does not exist in the list of features", second);
 		boolean third = features.remove("No more inspiration right now.");
-		assertTrue(third);
+		assertTrue("'No more inspiration right now.' does not exist in the list of features", third);
 		
-		assertTrue(features.isEmpty());
+		assertEquals(features.size(), 0);
 	}
 	
 	@Test
@@ -90,11 +90,11 @@ public class FeatureShingleTest {
 		List<String> features = shingleSentences.getFeatures(docSen);
 		
 		boolean first = features.remove("This is a testYes");
-		assertTrue(first);
+		assertTrue("'This is a testYes' does not exist in the list of features", first);
 		boolean second = features.remove("YesNo more inspiration right now.");
-		assertTrue(second);
+		assertTrue("'YesNo more inspiration right now.' does not exist in the list of features", second);
 		
-		assertTrue(features.isEmpty());
+		assertEquals(features.size(), 0);
 	}
 	
 	@Test
@@ -103,8 +103,8 @@ public class FeatureShingleTest {
 		String docSen = "This is a test. Yes. No more inspiration right now.";
 		List<String> features = shingleSentences.getFeatures(docSen);
 		
-		boolean first = features.remove(" No more inspiration right now");
-		assertFalse(first);
+		boolean first = features.remove("No more inspiration right now.");
+		assertFalse("'No more inspiration right now.' exists in the list of features, but should not", first);
 	}
 	
 	@Test
@@ -113,7 +113,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(7, FeatureShingles.SizeType.WORDS));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -124,7 +124,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(8, FeatureShingles.SizeType.WORDS));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
 		String strippedDom = "This is some text for the test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -135,7 +135,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(14, FeatureShingles.SizeType.CHARS));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
 		String strippedDom = "A simple test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -146,7 +146,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(15, FeatureShingles.SizeType.CHARS));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
 		String strippedDom = "A simple test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -157,7 +157,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.SENTENCES));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
 		String strippedDom = "This is some text for the test. Will it work.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -168,7 +168,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(3, FeatureShingles.SizeType.SENTENCES));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetectionCrawlHash ndd = new NearDuplicateDetectionCrawlHash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
 		String strippedDom = "This is some text for the test. Will it work.";
 		ndd.generateFingerprint(strippedDom);
 	}
