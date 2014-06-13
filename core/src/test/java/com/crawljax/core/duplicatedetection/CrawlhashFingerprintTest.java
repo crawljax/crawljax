@@ -102,16 +102,6 @@ public class CrawlhashFingerprintTest {
 		assertEquals(hash1.getDistance(hash2), hash2.getDistance(hash1), 0.01);
 	}
 
-	/**
-	 * Test method for {@link com.crawljax.core.state.duplicatedetection.CrawlhashFingerprint#getHashesAsIntArray()}.
-	 */
-	@Test
-	public void testGetHashesAsIntArray() {
-		int hash = Integer.parseInt("1000", 2);
-		Fingerprint fp = new CrawlhashFingerprint(hash);
-		assertEquals(hash, fp.getHashesAsIntArray()[0]);
-	}
-
 	@Test(expected=RuntimeException.class)
 	public void testGetDistanceOtherObjectType() {
 		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
@@ -122,5 +112,37 @@ public class CrawlhashFingerprintTest {
 	public void testGetDistanceNull() {
 		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
 		hash1.getDistance(null);
+	}
+	
+	@Test
+	public void testEqualsNull() {
+		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
+		assertFalse(hash1.equals(null));
+	}
+	
+	@Test
+	public void testEqualsOtherObject() {
+		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
+		assertFalse(hash1.equals(new Object()));
+	}
+	
+	@Test
+	public void testEqualsSame() {
+		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
+		assertTrue(hash1.equals(hash1));
+	}
+	
+	@Test
+	public void testEqualsSameHash() {
+		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
+		Fingerprint hash2 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
+		assertTrue(hash1.equals(hash2));
+	}
+	
+	@Test
+	public void testEqualsOtherHash() {
+		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
+		Fingerprint hash2 = new CrawlhashFingerprint(Integer.parseInt("1111", 2));
+		assertFalse(hash1.equals(hash2));
 	}
 }

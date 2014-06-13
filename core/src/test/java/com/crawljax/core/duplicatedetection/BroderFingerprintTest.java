@@ -122,16 +122,6 @@ public class BroderFingerprintTest {
 		assertFalse(duplicate);
 	}
 	
-	/**
-	 * Test method for {@link com.crawljax.core.state.duplicatedetection.BroderFingerprint#getHashesAsIntArray()}.
-	 */
-	@Test
-	public void testGetHashesAsIntArray() {
-		int[] set1 = {1111, 0000, 1010, 0101, 1110};
-		BroderFingerprint fingerprint = new BroderFingerprint(set1);
-		assertEquals(set1, fingerprint.getHashesAsIntArray());
-	}
-	
 	@Test(expected=RuntimeException.class)
 	public void testGetDistanceOtherObjectType() {
 		int[] set1 = {1111, 0000, 1010, 0101, 1110};
@@ -146,4 +136,41 @@ public class BroderFingerprintTest {
 		fingerprint.getDistance(null);
 	}
 	
+	@Test
+	public void testEqualsNull() {
+		int[] set1 = {1111, 0000, 1010, 0101, 1110};
+		BroderFingerprint hash1 = new BroderFingerprint(set1);
+		assertFalse(hash1.equals(null));
+	}
+	
+	@Test
+	public void testEqualsOtherObject() {
+		int[] set1 = {1111, 0000, 1010, 0101, 1110};
+		BroderFingerprint hash1 = new BroderFingerprint(set1);
+		assertFalse(hash1.equals(new Object()));
+	}
+	
+	@Test
+	public void testEqualsSame() {
+		int[] set1 = {1111, 0000, 1010, 0101, 1110};
+		BroderFingerprint hash1 = new BroderFingerprint(set1);
+		assertTrue(hash1.equals(hash1));
+	}
+	
+	@Test
+	public void testEqualsSameHash() {
+		int[] set1 = {1111, 0000, 1010, 0101, 1110};
+		BroderFingerprint hash1 = new BroderFingerprint(set1);
+		BroderFingerprint hash2 = new BroderFingerprint(set1);
+		assertTrue(hash1.equals(hash2));
+	}
+	
+	@Test
+	public void testEqualsOtherHash() {
+		int[] set1 = {1111, 0000};
+		int[] set2 = {1111, 1110};
+		BroderFingerprint hash1 = new BroderFingerprint(set1);
+		BroderFingerprint hash2 = new BroderFingerprint(set2);
+		assertFalse(hash1.equals(hash2));
+	}
 }

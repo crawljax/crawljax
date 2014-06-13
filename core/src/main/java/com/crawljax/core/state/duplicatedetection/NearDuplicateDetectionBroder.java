@@ -44,7 +44,7 @@ public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 	 * @return an array of the hashes, generated from the features, of the given string
 	 */
 	@Override
-	public Fingerprint generateHash(String doc) {
+	public Fingerprint generateFingerprint(String doc) {
 		// Check preconditions
 		checkPreconditionsFeatures(features);
 		checkPreconditionsThreshold(defaultThreshold);
@@ -105,11 +105,11 @@ public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 		}
 	}
 
-	public double getThreshold() {
+	public double getDefaultThreshold() {
 		return defaultThreshold;
 	}
 
-	public void setThreshold(double threshold) {
+	public void setDefaultThreshold(double threshold) {
 		checkPreconditionsThreshold(threshold);
 		LOG.info("Threshold changed from {} to {}", this.defaultThreshold, threshold);
 		this.defaultThreshold = threshold;

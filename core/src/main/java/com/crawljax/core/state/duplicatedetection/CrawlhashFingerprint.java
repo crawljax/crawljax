@@ -42,17 +42,18 @@ public class CrawlhashFingerprint implements Fingerprint {
 	
 	@Override
 	public double getDistance(Fingerprint other) {
-		fingerprintTypeCheck(other);
-		return hammingDistance(this.hash, other.getHashesAsIntArray()[0]);
+		CrawlhashFingerprint that = fingerprintTypeCheck(other);
+		return hammingDistance(this.hash, that.hash);
 	}
 	
 	/**
 	 * Checks whether the other Fingerprint is of the same type as this, otherwise throw an exception.
 	 * @param other the Fingerprint of which the type should be the same as this.
 	 */
-	private void fingerprintTypeCheck(Fingerprint other) {
+	private CrawlhashFingerprint fingerprintTypeCheck(Fingerprint other) {
 		if(!this.getClass().isInstance(other))
 			throw new DuplicateDetectionException("Cannot compare fingerprints of different types. (this: " + this.getClass() + " vs. that: " + other.getClass() + ")");
+		return (CrawlhashFingerprint) other;
 	}
 	
 	/**
@@ -72,9 +73,21 @@ public class CrawlhashFingerprint implements Fingerprint {
 		return i & 0x3f;
 	}
 
+	/**
+	 * A fingerprint equals another fingerprint, when the hashes are completely the same.
+	 * Another implicit way of invoking an equals is to invoke isNearDuplicateHash(other,0).
+	 */
 	@Override
-	public int[] getHashesAsIntArray() {
-		return new int[]{hash};
-	}
-
+    public boolean equals(Object obj) {
+	    if (this == obj)
+		    return true;
+	    if (obj == null)
+		    return false;
+	    if (getClass() != obj.getClass())
+		    return false;
+	    CrawlhashFingerprint other = (CrawlhashFingerprint) obj;
+	    return this.isNearDuplicateHash(other, 0);
+    }
+	
+	
 }
