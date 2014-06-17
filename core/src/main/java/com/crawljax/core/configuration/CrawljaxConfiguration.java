@@ -16,6 +16,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.state.StateVertexFactory;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles;
 import com.crawljax.core.state.duplicatedetection.FeatureType;
 import com.crawljax.domcomparators.DomStructureStripper;
 import com.crawljax.domcomparators.AttributesStripper;
@@ -338,6 +339,7 @@ public class CrawljaxConfiguration {
 	private StateVertexFactory stateVertexFactory;
 
 	private CrawljaxConfiguration() {
+		featuresNearDuplicateDetection.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 	}
 
 	public URI getUrl() {
