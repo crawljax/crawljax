@@ -36,6 +36,18 @@ public class CrawlerStopTest {
 		assertThat(session.getStateFlowGraph(), hasStates(depth + 1));
 		assertThat(runner.getReason(), is(ExitStatus.EXHAUSTED));
 	}
+	
+	@Test
+	public void cloneAtMaximumDepthIsParsed() throws Exception {
+		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("shortcutToUrlOnMaxDepth.html");
+		int depth = 3;
+
+		CrawljaxRunner runner = new CrawljaxRunner(builder.setMaximumDepth(depth).build());
+		CrawlSession session = runner.call();
+
+		assertThat(session.getStateFlowGraph(), hasStates(2 * depth)); // index, 1, 2, 3*, 4, 5
+		assertThat(runner.getReason(), is(ExitStatus.EXHAUSTED));
+	}
 
 	@Test(timeout = 60_000)
 	public void maximumTimeIsObliged() throws Exception {
