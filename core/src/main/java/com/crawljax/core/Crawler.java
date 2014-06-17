@@ -371,6 +371,11 @@ public class Crawler {
 			}
 		} else {
 			LOG.debug("New DOM is a clone state. Continuing in that state.");
+			if (stateMachine.getCurrentState().getCandidateElements() == null
+			        && maxDepth > crawlDepth.incrementAndGet()) {
+				LOG.info("Original state has not been parsed yet. Parsing state for candidate elements.");
+				parseCurrentPageForCandidateElements();
+			}
 			context.getSession().addCrawlPath(crawlpath.immutableCopy());
 		}
 	}
