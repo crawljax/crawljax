@@ -21,6 +21,7 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.Edge;
+import com.crawljax.plugins.crawloverview.model.DuplicateDetectionStatistics;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
 import com.crawljax.plugins.crawloverview.model.StateStatistics;
@@ -76,8 +77,9 @@ class OutPutModelCache {
 		}
 
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
+		DuplicateDetectionStatistics duplicateDetectionStats = new DuplicateDetectionStatistics();
 		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session,
-		        stateStats, startDate, failedEvents.get()), exitStatus, sortedStates);
+		        stateStats, startDate, failedEvents.get(), duplicateDetectionStats), exitStatus);
 	}
 
 	private ImmutableList<Edge> asEdges(Set<Eventable> allEdges) {

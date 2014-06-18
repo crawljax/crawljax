@@ -54,12 +54,13 @@ public class SerializeTest {
 		        ImmutableList.of(new Edge(state1.getName(), state2.getName(), 1, "the link",
 		                "id1", "A", "click"));
 		return new OutPutModel(states, edges, newStatistics(states.values()),
-		        ExitStatus.EXHAUSTED, null); //TODO fix null
+		        ExitStatus.EXHAUSTED);
 	}
 
 	private Statistics newStatistics(Collection<State> states) {
 		StateStatistics stateStats = new StateStatistics(states);
-		return new Statistics("1 hour", 1, "2KB", 1, new Date(), stateStats, 2, 32.0);
+		DuplicateDetectionStatistics duplicateDetectionStats = new DuplicateDetectionStatistics();
+		return new Statistics("1 hour", 1, "2KB", 1, new Date(), stateStats, 2, duplicateDetectionStats);
 	}
 
 	@Test

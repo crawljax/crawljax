@@ -1,7 +1,5 @@
 package com.crawljax.plugins.crawloverview.model;
 
-import java.util.List;
-
 import javax.annotation.concurrent.Immutable;
 
 import com.crawljax.core.ExitNotifier.ExitStatus;
@@ -25,19 +23,16 @@ public final class OutPutModel {
 	private final Statistics statistics;
 
 	private final ExitStatus exitStatus;
-	private final List<String> sortedStates;
 
 	@JsonCreator
 	public OutPutModel(@JsonProperty("states") ImmutableMap<String, State> states,
 	        @JsonProperty("edges") ImmutableList<Edge> edges,
 	        @JsonProperty("statistics") Statistics statistics,
-	        @JsonProperty("exitStatus") ExitStatus exitStatus,
-	        @JsonProperty("sortedStates") List<String> sortedStates) {
+	        @JsonProperty("exitStatus") ExitStatus exitStatus) {
 		this.states = states;
 		this.edges = edges;
 		this.statistics = statistics;
 		this.exitStatus = exitStatus;
-		this.sortedStates = sortedStates;
 	}
 
 	public ImmutableMap<String, State> getStates() {
@@ -55,10 +50,6 @@ public final class OutPutModel {
 	public ExitStatus getExitStatus() {
 		return exitStatus;
 	}
-	
-	public List<String> getSortedStates() {
-		return sortedStates;
-	}
 
 	@Override
 	public int hashCode() {
@@ -72,8 +63,7 @@ public final class OutPutModel {
 			return Objects.equal(this.states, that.states)
 			        && Objects.equal(this.edges, that.edges)
 			        && Objects.equal(this.statistics, that.statistics)
-			        && Objects.equal(this.exitStatus, that.exitStatus)
-					&& Objects.equal(this.sortedStates, that.sortedStates);
+			        && Objects.equal(this.exitStatus, that.exitStatus);
 		}
 		return false;
 	}
@@ -82,7 +72,7 @@ public final class OutPutModel {
 	public String toString() {
 		return Objects.toStringHelper(this).add("exitStatus", exitStatus)
 		        .add("states", states).add("edges", edges)
-		        .add("statistics", statistics).add("sortedStates", sortedStates).toString();
+		        .add("statistics", statistics).toString();
 	}
 
 }
