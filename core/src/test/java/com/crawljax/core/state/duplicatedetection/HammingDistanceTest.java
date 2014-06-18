@@ -70,7 +70,7 @@ public class HammingDistanceTest {
 		double distance = fpHash.getDistance(fpThreeBitsDIffHash);
 		assertEquals(distance, 3, 0.01);
 
-		boolean duplicate = fpHash.isNearDuplicateHash(new CrawlhashFingerprint(hash2AsInt, 3));
+		boolean duplicate = fpHash.isNearDuplicate(new CrawlhashFingerprint(hash2AsInt, 3));
 		assertEquals(3, crawlhash.getDefaultThreshold(), 0.001);
 		assertTrue(duplicate);
 	}
@@ -99,7 +99,7 @@ public class HammingDistanceTest {
 
 		boolean duplicate =
 		        new CrawlhashFingerprint(hash1AsInt, 2)
-		                .isNearDuplicateHash(new CrawlhashFingerprint(hash2AsInt, 2));
+		                .isNearDuplicate(new CrawlhashFingerprint(hash2AsInt, 2));
 		assertEquals(2, crawlhash.getDefaultThreshold(), 0.001);
 		assertFalse(duplicate);
 	}

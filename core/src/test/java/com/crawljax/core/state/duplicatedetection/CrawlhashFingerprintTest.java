@@ -19,7 +19,7 @@ public class CrawlhashFingerprintTest {
 
 	/**
 	 * Test method for
-	 * {@link com.crawljax.core.state.duplicatedetection.CrawlhashFingerprint#isNearDuplicateHash(com.crawljax.core.state.duplicatedetection.Fingerprint)}
+	 * {@link com.crawljax.core.state.duplicatedetection.CrawlhashFingerprint#isNearDuplicate(com.crawljax.core.state.duplicatedetection.Fingerprint)}
 	 * .
 	 */
 	@Test
@@ -30,7 +30,7 @@ public class CrawlhashFingerprintTest {
 		double distance = hash.getDistance(oneBitsDiffHash);
 		assertThat(distance, is(1.0));
 
-		assertTrue(hash.isNearDuplicateHash(oneBitsDiffHash));
+		assertTrue(hash.isNearDuplicate(oneBitsDiffHash));
 	}
 
 	@Test
@@ -41,7 +41,7 @@ public class CrawlhashFingerprintTest {
 		double distance = hash.getDistance(threeBitsDiffHash);
 		assertThat(distance, is(3.0));
 
-		assertFalse(hash.isNearDuplicateHash(threeBitsDiffHash));
+		assertFalse(hash.isNearDuplicate(threeBitsDiffHash));
 	}
 
 	@Test
@@ -52,19 +52,19 @@ public class CrawlhashFingerprintTest {
 		double distance = hash.getDistance(hashSame);
 		assertThat(distance, is(0.0));
 
-		assertTrue(hash.isNearDuplicateHash(hashSame));
+		assertTrue(hash.isNearDuplicate(hashSame));
 	}
 
 	@Test
 	public void testIsNearDuplicateHashFingerprintReverse() {
 		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
 		Fingerprint hash2 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
-		assertEquals(hash1.isNearDuplicateHash(hash2, 0), hash2.isNearDuplicateHash(hash1, 0));
+		assertEquals(hash1.isNearDuplicate(hash2, 0), hash2.isNearDuplicate(hash1, 0));
 	}
 
 	/**
 	 * Test method for
-	 * {@link com.crawljax.core.state.duplicatedetection.CrawlhashFingerprint#isNearDuplicateHash(com.crawljax.core.state.duplicatedetection.Fingerprint, double)}
+	 * {@link com.crawljax.core.state.duplicatedetection.CrawlhashFingerprint#isNearDuplicate(com.crawljax.core.state.duplicatedetection.Fingerprint, double)}
 	 * .
 	 */
 	@Test
@@ -75,7 +75,7 @@ public class CrawlhashFingerprintTest {
 		double distance = hash.getDistance(oneBitsDiffHash);
 		assertThat(distance, is(1.0));
 
-		assertTrue(hash.isNearDuplicateHash(oneBitsDiffHash, 2));
+		assertTrue(hash.isNearDuplicate(oneBitsDiffHash, 2));
 	}
 
 	@Test
@@ -86,21 +86,21 @@ public class CrawlhashFingerprintTest {
 		double distance = hash.getDistance(threeBitsDiffHash);
 		assertThat(distance, is(3.0));
 
-		assertFalse(hash.isNearDuplicateHash(threeBitsDiffHash, 2));
+		assertFalse(hash.isNearDuplicate(threeBitsDiffHash, 2));
 	}
 
 	@Test
 	public void testIsNearDuplicateHashFingerprintDoubleEqual() {
 		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
 		Fingerprint hash2 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
-		assertTrue(hash1.isNearDuplicateHash(hash2, 0));
+		assertTrue(hash1.isNearDuplicate(hash2, 0));
 	}
 
 	@Test
 	public void testIsNearDuplicateHashFingerprintDoubleReverse() {
 		Fingerprint hash1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
 		Fingerprint hash2 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
-		assertEquals(hash1.isNearDuplicateHash(hash2, 0), hash2.isNearDuplicateHash(hash1, 0));
+		assertEquals(hash1.isNearDuplicate(hash2, 0), hash2.isNearDuplicate(hash1, 0));
 	}
 
 	/**

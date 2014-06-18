@@ -59,7 +59,7 @@ public class SerializeTest {
 
 	private Statistics newStatistics(Collection<State> states) {
 		StateStatistics stateStats = new StateStatistics(states);
-		DuplicateDetectionStatistics duplicateDetectionStats = new DuplicateDetectionStatistics();
+		DuplicateDetectionStatistics duplicateDetectionStats = new DuplicateDetectionStatistics(null);
 		return new Statistics("1 hour", 1, "2KB", 1, new Date(), stateStats, 2, duplicateDetectionStats);
 	}
 

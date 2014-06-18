@@ -13,6 +13,9 @@ public class CrawlhashFingerprint implements Fingerprint {
 	private int hash;
 	private double defaultThreshold;
 
+	private final static double THRESHOLD_UPPERLIMIT = 32;
+	private final static double THRESHOLD_LOWERLIMIT = 0;
+
 	/**
 	 * Constructor for this used by the NearDuplicateDetectionCrawlhash32
 	 * 
@@ -22,6 +25,7 @@ public class CrawlhashFingerprint implements Fingerprint {
 	 *            the default threshold, which is used when no threshold is provided.
 	 */
 	public CrawlhashFingerprint(int hash, double defaultThreshold) {
+		checkIfValidThreshold(defaultThreshold);
 		this.hash = hash;
 		this.defaultThreshold = defaultThreshold;
 	}
@@ -38,12 +42,13 @@ public class CrawlhashFingerprint implements Fingerprint {
 	}
 
 	@Override
-	public boolean isNearDuplicateHash(Fingerprint other) {
+	public boolean isNearDuplicate(Fingerprint other) {
 		return ((double) getDistance(other)) <= defaultThreshold;
 	}
 
 	@Override
-	public boolean isNearDuplicateHash(Fingerprint other, double threshold) {
+	public boolean isNearDuplicate(Fingerprint other, double threshold) {
+		checkIfValidThreshold(threshold);
 		return ((double) getDistance(other)) <= threshold;
 	}
 
@@ -103,7 +108,31 @@ public class CrawlhashFingerprint implements Fingerprint {
 		if (getClass() != obj.getClass())
 			return false;
 		CrawlhashFingerprint other = (CrawlhashFingerprint) obj;
-		return this.isNearDuplicateHash(other, 0);
+		return this.isNearDuplicate(other, 0);
+	}
+	
+	private void checkIfValidThreshold(double threshold) {
+		if (threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
+			throw new DuplicateDetectionException("Invalid threshold value " + threshold
+			        + ", threshold as to be between " + THRESHOLD_LOWERLIMIT + " and "
+			        + THRESHOLD_UPPERLIMIT + ".");
+		}
 	}
 
+	@Override
+	public double getThresholdUpperlimit() {
+		return THRESHOLD_UPPERLIMIT;
+	}
+
+	@Override
+	public double getThresholdLowerlimit() {
+		return THRESHOLD_LOWERLIMIT;
+	}
+
+	@Override
+	public double getDefaultThreshold() {
+		return defaultThreshold;
+	}
+	
+	
 }

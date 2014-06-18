@@ -24,13 +24,10 @@ public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 	private List<FeatureType> features;
 	private double defaultThreshold;
 	private HashGenerator hashGenerator;
-	private final static float THRESHOLD_UPPERLIMIT = 1;
-	private final static float THRESHOLD_LOWERLIMIT = 0;
 
 	@Inject
 	public NearDuplicateDetectionBroder(double threshold, List<FeatureType> fs, HashGenerator hg) {
 		checkPreconditionsFeatures(fs);
-		checkPreconditionsThreshold(threshold);
 		this.hashGenerator = hg;
 		this.features = fs;
 		this.defaultThreshold = threshold;
@@ -49,7 +46,6 @@ public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 	public Fingerprint generateFingerprint(String doc) {
 		// Check preconditions
 		checkPreconditionsFeatures(features);
-		checkPreconditionsThreshold(defaultThreshold);
 
 		List<String> shingles = this.generateFeatures(doc);
 		int length = shingles.size();
@@ -93,27 +89,12 @@ public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 		}
 	}
 
-	/**
-	 * Checks the precondition for the threshold, which should be within the predefined upper and
-	 * lower bounds.
-	 * 
-	 * @param threshold
-	 */
-	private void checkPreconditionsThreshold(double threshold) {
-		if (threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
-			throw new DuplicateDetectionException("Invalid threshold value " + threshold
-			        + ", threshold as to be between " + THRESHOLD_LOWERLIMIT + " and "
-			        + THRESHOLD_UPPERLIMIT + ".");
-		}
-	}
-
 	public double getDefaultThreshold() {
 		return defaultThreshold;
 	}
 
 	public void setDefaultThreshold(double threshold) {
-		checkPreconditionsThreshold(threshold);
-		LOG.info("Threshold changed from {} to {}", this.defaultThreshold, threshold);
+		LOG.info("Default threshold changed from {} to {}", this.defaultThreshold, threshold);
 		this.defaultThreshold = threshold;
 	}
 

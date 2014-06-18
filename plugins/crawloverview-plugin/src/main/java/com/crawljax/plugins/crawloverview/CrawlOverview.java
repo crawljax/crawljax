@@ -3,6 +3,7 @@ package com.crawljax.plugins.crawloverview;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import com.crawljax.core.plugin.*;
@@ -86,7 +87,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	@Override
 	public void onNewState(CrawlerContext context, StateVertex vertex) {
 		LOG.debug("onNewState");
-		HashMap<String,Double> differenceDistance = updateSimilarityDistance(vertex, context.getSession().getStateFlowGraph());
+		Map<String,Double> differenceDistance = updateSimilarityDistance(vertex, context.getSession().getStateFlowGraph());
 		StateBuilder state = outModelCache.addStateIfAbsent(vertex, differenceDistance);
 		visitedStates.putIfAbsent(state.getName(), vertex);
 		saveScreenshot(context.getBrowser(), state.getName(), vertex);
@@ -114,24 +115,6 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 			LOG.debug("Screenshot not made because {}", e.getMessage(), e);
 		}
 		LOG.trace("Screenshot saved");
-	}
-	
-	private HashMap<String,Double> updateSimilarityDistance(StateVertex vertex, StateFlowGraph sfg) {
-		StateVertexNDD vertexNDD = (StateVertexNDD) vertex;
-		HashMap<String,Double> entry = new HashMap<>();
-		for (StateVertex v: sfg.getAllStates()) {
-			if (vertex.getId() != v.getId()) {
-				StateVertexNDD that = (StateVertexNDD) v;
-				double duplicateDistance = vertexNDD.getFingerprint().getDistance(that.getFingerprint());
-				entry.put(v.getName(), duplicateDistance);
-			}
-		}
-		
-		return entry;
-		//HashMap<Integer, HashMap<Integer,Double>> element = new HashMap<Integer, HashMap<Integer,Double>>();
-		//element.put(vertex.getId(), entry);
-		//System.out.println(similarityDistanceOfStates); % [{0={}}, {2={0=0.8190045248868778}}, {3={0=0.8, 2=0.63}}]
-		//similarityDistanceOfStates.add(element);
 	}
 
 	/**
@@ -241,6 +224,22 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	public void onFireEventFailed(CrawlerContext context, Eventable eventable,
 	        List<Eventable> pathToFailure) {
 		outModelCache.registerFailEvent(context.getCurrentState(), eventable);
+	}
+
+	private HashMap<String,Double> updateSimilarityDistance(StateVertex vertex, StateFlowGraph sfg) {
+		HashMap<String,Double> entry = new HashMap<>();
+		if(vertex instanceof StateVertexNDD) {
+			StateVertexNDD vertexNDD = (StateVertexNDD) vertex;
+			for (StateVertex v: sfg.getAllStates()) {
+				if (vertex.getId() != v.getId()) {
+					StateVertexNDD that = (StateVertexNDD) v;
+					double duplicateDistance = vertexNDD.getFingerprint().getDistance(that.getFingerprint());
+					entry.put(v.getName(), duplicateDistance);
+				}
+			}
+		}
+		
+		return entry;
 	}
 
 }

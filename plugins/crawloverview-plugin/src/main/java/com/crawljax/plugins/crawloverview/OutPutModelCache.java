@@ -2,10 +2,8 @@ package com.crawljax.plugins.crawloverview;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,14 +43,11 @@ class OutPutModelCache {
 	private final AtomicInteger failedEvents = new AtomicInteger();
 
 	private final Date startDate = new Date();
-	
-	private List<String> sortedStates = new ArrayList<>();
 
-	StateBuilder addStateIfAbsent(StateVertex state, HashMap<String,Double> distance) {
+	StateBuilder addStateIfAbsent(StateVertex state, Map<String,Double> distance) {
 		StateBuilder newState = new StateBuilder(state, distance);
 		StateBuilder found = states.putIfAbsent(state.getName(), newState);
 		if (found == null) {
-			sortedStates.add(state.getName());
 			return newState;
 		} else {
 			return found;
@@ -75,9 +70,9 @@ class OutPutModelCache {
 			        "Printing state difference. \nSession states: {} \nResult states: {}",
 			        statesCopy, session.getStateFlowGraph().getAllStates());
 		}
-
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
-		DuplicateDetectionStatistics duplicateDetectionStats = new DuplicateDetectionStatistics();
+		
+		DuplicateDetectionStatistics duplicateDetectionStats = new DuplicateDetectionStatistics(session);
 		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session,
 		        stateStats, startDate, failedEvents.get(), duplicateDetectionStats), exitStatus);
 	}

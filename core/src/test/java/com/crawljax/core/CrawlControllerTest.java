@@ -36,10 +36,12 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles;
+import com.crawljax.core.state.duplicatedetection.FeatureType;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetection;
-import com.crawljax.di.CoreModule;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlhash;
+import com.crawljax.core.state.duplicatedetection.XxHashGenerator;
 import com.crawljax.di.CrawlSessionProvider;
-import com.google.inject.Guice;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CrawlControllerTest {
@@ -146,11 +148,13 @@ public class CrawlControllerTest {
 
 		Plugins plugins = new Plugins(config, new MetricRegistry());
 		
-		NearDuplicateDetection ndd = Guice.createInjector(
-				new CoreModule(config)).getInstance(NearDuplicateDetection.class);
+		List<FeatureType> features = new ArrayList<FeatureType>();
+		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
+		
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, new XxHashGenerator());
 		
 		controller = new CrawlController(executor, consumerFactory, config, consumersDoneLatch,
-		        crawlSessionProvider, plugins,ndd);
+		        crawlSessionProvider, plugins, ndd);
 
 	}
 

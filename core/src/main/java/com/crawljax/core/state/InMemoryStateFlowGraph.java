@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryStateFlowGraph.class
+	private static final Logger LOG = LoggerFactory.getLogger(InMemoryStateFlowGraph.class
 	        .getName());
 
 	private final DirectedGraph<StateVertex, Eventable> sfg;
@@ -67,7 +67,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		this.vertexFactory = vertexFactory;
 		sfg = new DirectedMultigraph<>(Eventable.class);
 		stateById = Maps.newConcurrentMap();
-		LOGGER.debug("Initialized the stateflowgraph");
+		LOG.debug("Initialized the stateflowgraph");
 		ReadWriteLock lock = new ReentrantReadWriteLock();
 		readLock = lock.readLock();
 		writeLock = lock.writeLock();
@@ -121,11 +121,11 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 				stateById.put(stateVertix.getId(), stateVertix);
 				int count = stateCounter.incrementAndGet();
 				exitNotifier.incrementNumberOfStates();
-				LOGGER.debug("Number of states is now {}", count);
+				LOG.debug("Number of states is now {}", count);
 				return null;
 			} else {
 				// Graph already contained the vertex
-				LOGGER.debug("Graph already contained vertex {}", stateVertix);
+				LOG.debug("Graph already contained vertex {}", stateVertix);
 				return this.getStateInGraph(stateVertix);
 			}
 		} finally {
@@ -136,7 +136,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	private boolean hasNearDuplicate(StateVertex vertex) {
 		for (StateVertex vertexOfGraph : sfg.vertexSet()) {
 			if (vertex.equals(vertexOfGraph)) {
-				LOGGER.info("Duplicate found: {}, {}", vertex.getId(), vertexOfGraph.getId());
+				LOG.info("Duplicate found: {}, {}", vertex.getId(), vertexOfGraph.getId());
 				return true;
 			}
 		}

@@ -1,21 +1,27 @@
 package com.crawljax.plugins.crawloverview.model;
 
+import com.crawljax.core.CrawlSession;
+import com.crawljax.core.state.StateVertexNDD;
+import com.crawljax.core.state.duplicatedetection.Fingerprint;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DuplicateDetectionStatistics {
 	
-	private double threshold;
-	private double minThreshold;
-	private double maxThreshold;
-	private double stepsize;
+	private double threshold = 0;
+	private double minThreshold = 0;
+	private double maxThreshold = 0;
+	private double stepsize = 0;
 
-	public DuplicateDetectionStatistics() {
-		// TODO link to duplicateDetection-class.
-		this.threshold = 3;
-		this.maxThreshold = 32;
-		this.minThreshold = 0;
-		this.stepsize = 0.5;
+	public DuplicateDetectionStatistics(CrawlSession session) {
+		if(session.getInitialState() instanceof StateVertexNDD) {
+			StateVertexNDD stateVertex = (StateVertexNDD) session.getInitialState();
+			Fingerprint fingerprint = stateVertex .getFingerprint();
+			this.threshold = fingerprint.getDefaultThreshold();
+			this.maxThreshold = fingerprint.getThresholdUpperlimit();
+			this.minThreshold = fingerprint.getThresholdLowerlimit();
+			this.stepsize = this.maxThreshold > 1 ? 1 : 0.05;
+		}
 	}
 
 	@JsonCreator

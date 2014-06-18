@@ -96,7 +96,7 @@ public class StateVertexNDD implements StateVertex {
 			// If the other Object is a StateVertexNDD, use the fingerprints
 			// to compare both objects
 			StateVertexNDD that = (StateVertexNDD) object;
-			return fingerprint.isNearDuplicateHash(that.getFingerprint());
+			return fingerprint.isNearDuplicate(that.getFingerprint());
 		} else if (object instanceof StateVertex) {
 			// If the other StateVertex does not support near-duplicate detection,
 			// use the default approach of comparing (using StrippedDoms).

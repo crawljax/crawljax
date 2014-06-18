@@ -15,6 +15,9 @@ public class BroderFingerprint implements Fingerprint {
 	private double defaultThreshold;
 	private int[] hashes;
 
+	private final static double THRESHOLD_UPPERLIMIT = 1;
+	private final static double THRESHOLD_LOWERLIMIT = 0;
+
 	/**
 	 * Constructor for this used by the NearDuplicateDetectionBroder
 	 * 
@@ -24,6 +27,7 @@ public class BroderFingerprint implements Fingerprint {
 	 *            the default threshold, which is used when no threshold is provided.
 	 */
 	public BroderFingerprint(int[] hashes, double defaultThreshold) {
+		checkIfValidThreshold(defaultThreshold);
 		this.defaultThreshold = defaultThreshold;
 		this.hashes = hashes;
 	}
@@ -40,12 +44,13 @@ public class BroderFingerprint implements Fingerprint {
 	}
 
 	@Override
-	public boolean isNearDuplicateHash(Fingerprint other) {
+	public boolean isNearDuplicate(Fingerprint other) {
 		return (this.getDistance(other) <= this.defaultThreshold);
 	}
 
 	@Override
-	public boolean isNearDuplicateHash(Fingerprint other, double threshold) {
+	public boolean isNearDuplicate(Fingerprint other, double threshold) {
+		checkIfValidThreshold(threshold);
 		return (this.getDistance(other) <= threshold);
 	}
 
@@ -102,6 +107,7 @@ public class BroderFingerprint implements Fingerprint {
 		return (intersectionCount / unionCount);
 	}
 
+
 	/**
 	 * A fingerprint equals another fingerprint, when the hashes are completely the same. Another
 	 * implicit way of invoking an equals is to invoke isNearDuplicateHash(other,0).
@@ -115,7 +121,29 @@ public class BroderFingerprint implements Fingerprint {
 		if (getClass() != obj.getClass())
 			return false;
 		BroderFingerprint other = (BroderFingerprint) obj;
-		return this.isNearDuplicateHash(other, 0);
+		return this.isNearDuplicate(other, 0);
+	}
+	
+	private void checkIfValidThreshold(double threshold) {
+		if (threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
+			throw new DuplicateDetectionException("Invalid threshold value " + threshold
+			        + ", threshold as to be between " + THRESHOLD_LOWERLIMIT + " and "
+			        + THRESHOLD_UPPERLIMIT + ".");
+		}
 	}
 
+	@Override
+	public double getThresholdUpperlimit() {
+		return THRESHOLD_UPPERLIMIT;
+	}
+
+	@Override
+	public double getThresholdLowerlimit() {
+		return THRESHOLD_LOWERLIMIT;
+	}
+
+	@Override
+	public double getDefaultThreshold() {
+		return defaultThreshold;
+	}
 }

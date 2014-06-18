@@ -52,7 +52,7 @@ public class BroderFingerprintTest {
 
 	/**
 	 * Test method for
-	 * {@link com.crawljax.core.state.duplicatedetection.BroderFingerprint#isNearDuplicateHash(com.crawljax.core.state.duplicatedetection.Fingerprint)}
+	 * {@link com.crawljax.core.state.duplicatedetection.BroderFingerprint#isNearDuplicate(com.crawljax.core.state.duplicatedetection.Fingerprint)}
 	 * .
 	 */
 	@Test
@@ -77,7 +77,7 @@ public class BroderFingerprintTest {
 		assertThat(distance, lessThan(2.0 / 6.0 + 0.00001));
 
 		boolean duplicate =
-		        new BroderFingerprint(set1).isNearDuplicateHash(new BroderFingerprint(set2), 0.8);
+		        new BroderFingerprint(set1).isNearDuplicate(new BroderFingerprint(set2), 0.8);
 		assertTrue(duplicate);
 	}
 
@@ -93,7 +93,7 @@ public class BroderFingerprintTest {
 		assertThat(distance, greaterThan(2.0 / 6.0));
 
 		boolean duplicate =
-		        new BroderFingerprint(set1).isNearDuplicateHash(new BroderFingerprint(set2),
+		        new BroderFingerprint(set1).isNearDuplicate(new BroderFingerprint(set2),
 		                2.0 / 6.0);
 		assertFalse(duplicate);
 	}
@@ -111,7 +111,7 @@ public class BroderFingerprintTest {
 		assertThat(distance, lessThan(2.0 / 6.0 + 0.00001));
 
 		boolean duplicate =
-		        new BroderFingerprint(set1, 0.8).isNearDuplicateHash(new BroderFingerprint(set2));
+		        new BroderFingerprint(set1, 0.8).isNearDuplicate(new BroderFingerprint(set2));
 		assertTrue(duplicate);
 	}
 
@@ -127,7 +127,7 @@ public class BroderFingerprintTest {
 		assertThat(distance, greaterThan(2.0 / 6.0));
 
 		boolean duplicate =
-		        new BroderFingerprint(set1, 2.0 / 6.0).isNearDuplicateHash(new BroderFingerprint(
+		        new BroderFingerprint(set1, 2.0 / 6.0).isNearDuplicate(new BroderFingerprint(
 		                set2));
 		assertFalse(duplicate);
 	}

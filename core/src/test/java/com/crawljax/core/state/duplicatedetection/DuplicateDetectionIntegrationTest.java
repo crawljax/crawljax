@@ -30,8 +30,8 @@ public class DuplicateDetectionIntegrationTest {
 		        ndd.generateFingerprint("Chuck Norris orders code to optimize itself.");
 
 		// Compare fingerprints
-		assertTrue(fingerprint1.isNearDuplicateHash(fingerprint1, 0));
-		assertFalse(fingerprint1.isNearDuplicateHash(fingerprint2, 0));
+		assertTrue(fingerprint1.isNearDuplicate(fingerprint1, 0));
+		assertFalse(fingerprint1.isNearDuplicate(fingerprint2, 0));
 		assertEquals(fingerprint1.getDistance(fingerprint2),
 		        fingerprint2.getDistance(fingerprint1), 0.01);
 	}
@@ -55,8 +55,8 @@ public class DuplicateDetectionIntegrationTest {
 		        ndd.generateFingerprint("Chuck Norris orders code to optimize itself.");
 
 		// Compare fingerprints
-		assertTrue(fingerprint1.isNearDuplicateHash(fingerprint1, 0));
-		assertFalse(fingerprint1.isNearDuplicateHash(fingerprint2, 0));
+		assertTrue(fingerprint1.isNearDuplicate(fingerprint1, 0));
+		assertFalse(fingerprint1.isNearDuplicate(fingerprint2, 0));
 		assertEquals(fingerprint1.getDistance(fingerprint2),
 		        fingerprint2.getDistance(fingerprint1), 0.01);
 	}

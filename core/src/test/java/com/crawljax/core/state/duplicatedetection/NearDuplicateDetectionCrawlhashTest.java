@@ -68,7 +68,7 @@ public class NearDuplicateDetectionCrawlhashTest {
 
 		Fingerprint fingerprint = ndd.generateFingerprint(strippedDom1);
 		Fingerprint fingerprint2 = ndd.generateFingerprint(strippedDom2);
-		assertTrue(fingerprint.isNearDuplicateHash(fingerprint2, 0));
+		assertTrue(fingerprint.isNearDuplicate(fingerprint2, 0));
 	}
 
 	@Test

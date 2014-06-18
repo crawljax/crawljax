@@ -22,9 +22,6 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 	private static final int HEX_ONE = 0x00000001;
 	private static final int HEX_ZERO = 0x00000000;
 
-	private final static float THRESHOLD_UPPERLIMIT = HASH_LENGTH;
-	private final static float THRESHOLD_LOWERLIMIT = 0;
-
 	private List<FeatureType> features;
 	private double defaultThreshold;
 	private HashGenerator hashGenerator;
@@ -35,7 +32,6 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 	public NearDuplicateDetectionCrawlhash(double threshold, List<FeatureType> fs,
 	        HashGenerator hg) {
 		checkPreconditionsFeatures(fs);
-		checkPreconditionsThreshold(threshold);
 		this.hashGenerator = hg;
 		this.features = fs;
 		this.defaultThreshold = threshold;
@@ -46,7 +42,6 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 	@Override
 	public Fingerprint generateFingerprint(String doc) {
 		checkPreconditionsFeatures(features);
-		checkPreconditionsThreshold(defaultThreshold);
 		int[] bits = new int[HASH_LENGTH];
 		List<String> tokens = this.generateFeatures(doc);
 		// loop through all tokens (ie shingles), calculate the hash, and add
@@ -106,20 +101,6 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 		}
 	}
 
-	/**
-	 * Checks the precondition for the defaultThreshold, which should be within the predefined upper
-	 * and lower bounds.
-	 * 
-	 * @param defaultThreshold
-	 */
-	private void checkPreconditionsThreshold(double threshold) {
-		if (threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
-			throw new DuplicateDetectionException("Invalid defaultThreshold value " + threshold
-			        + ", defaultThreshold as to be between " + THRESHOLD_LOWERLIMIT + " and "
-			        + THRESHOLD_UPPERLIMIT + ".");
-		}
-	}
-
 	public double getDefaultThreshold() {
 		return defaultThreshold;
 	}
@@ -129,8 +110,7 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 	}
 
 	public void setDefaultThreshold(double threshold) {
-		checkPreconditionsThreshold(threshold);
-		LOG.info("Threshold changed from {} to {}", this.defaultThreshold, threshold);
+		LOG.info("Default threshold changed from {} to {}", this.defaultThreshold, threshold);
 		this.defaultThreshold = threshold;
 
 	}

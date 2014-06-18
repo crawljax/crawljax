@@ -16,7 +16,7 @@ public interface Fingerprint {
 	 *            hash(es)
 	 * @return true if near-duplicate, else return false
 	 */
-	public boolean isNearDuplicateHash(Fingerprint other);
+	public boolean isNearDuplicate(Fingerprint other);
 
 	/**
 	 * Checks whether hash1 and hash2 are near-duplicates.
@@ -27,7 +27,7 @@ public interface Fingerprint {
 	 *            hash(es)
 	 * @return true if near-duplicate, else return false
 	 */
-	public boolean isNearDuplicateHash(Fingerprint other, double threshold);
+	public boolean isNearDuplicate(Fingerprint other, double threshold);
 
 	/**
 	 * An extension of isNearDuplicateHash, which also shows the distance between two hashes.
@@ -39,4 +39,20 @@ public interface Fingerprint {
 	 * @return the distance (i.e. # of different bit positions) between the hashes
 	 */
 	public double getDistance(Fingerprint hash2);
+	
+
+	/**
+	 * @return The upper limit of valid thresholds
+	 */
+	public double getThresholdUpperlimit();
+	
+	/**
+	 * @return The lower limit of valid thresholds
+	 */
+	public double getThresholdLowerlimit();
+	
+	/**
+	 * @return the threshold used in case when no custom threshold is set (ie isNearDuplicate/1)
+	 */
+	public double getDefaultThreshold();
 }

@@ -1,6 +1,7 @@
 package com.crawljax.plugins.crawloverview.model;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -22,11 +23,11 @@ public class State {
 	private final int fanOut;
 	private final int id;
 	private final ImmutableList<String> failedEvents;
-	private final HashMap<String,Double> duplicateDistance;
+	private final Map<String,Double> duplicateDistance;
 	
 	public State(StateVertex state, int fanIn, int fanOut,
 	        ImmutableList<CandidateElementPosition> candidates,
-	        ImmutableList<String> failedEvents, HashMap<String,Double> differenceDistance) {
+	        ImmutableList<String> failedEvents, Map<String,Double> differenceDistance) {
 		this.fanIn = fanIn;
 		this.fanOut = fanOut;
 		candidateElements = candidates;
@@ -92,7 +93,7 @@ public class State {
 		        id, failedEvents);
 	}
 
-	public HashMap<String,Double> getDuplicateDistance() {
+	public Map<String,Double> getDuplicateDistance() {
 		return duplicateDistance;
 	}
 	@Override
