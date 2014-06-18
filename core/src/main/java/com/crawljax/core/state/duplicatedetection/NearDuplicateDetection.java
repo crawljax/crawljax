@@ -53,4 +53,11 @@ public interface NearDuplicateDetection {
 	 * @return the default threshold
 	 */
 	public double getDefaultThreshold();
+	
+	/**
+	 * Sets a new hashGenerator.
+	 * 
+	 * @param hashGenerator a HashGenerator-implementation
+	 */
+	public void setHashGenerator(HashGenerator hashGenerator);
 }

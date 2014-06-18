@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -15,9 +13,9 @@ import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.state.NDDStateVertexFactory;
 import com.crawljax.core.state.StateVertexFactory;
-import com.crawljax.core.state.duplicatedetection.FeatureShingles;
-import com.crawljax.core.state.duplicatedetection.FeatureType;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetection;
 import com.crawljax.domcomparators.DomStructureStripper;
 import com.crawljax.domcomparators.AttributesStripper;
 import com.crawljax.domcomparators.DomStripper;
@@ -34,7 +32,6 @@ import com.google.common.collect.ImmutableList;
 public class CrawljaxConfiguration {
 
 	public static class CrawljaxConfigurationBuilder {
-		public static final int LENGTH_OF_DUPLICATE_DETECTION_HASH = 32;
 		
 		private final ImmutableList.Builder<Plugin> pluginBuilder = ImmutableList.builder();
 		private final ImmutableList.Builder<ValidDomStripper> validStrippers = ImmutableList.builder();
@@ -122,30 +119,6 @@ public class CrawljaxConfiguration {
 			config.maximumDepth = 0;
 			return this;
 		}
-
-		/**
-		 * @param threshold The threshold that will be used for the Hamming distance comparison.
-		 * Two states are near-duplicates if the Hamming distance between the two hashes 
-		 * are less or equal than the threshold.
-		 */
-		public CrawljaxConfigurationBuilder setThresholdNearDuplicateDetection(double threshold) {
-			Preconditions.checkArgument(threshold >= 0,
-					"The theshold should be greater or equal to 0.");
-			Preconditions.checkArgument(threshold <= LENGTH_OF_DUPLICATE_DETECTION_HASH,
-					"The theshold should be smaller or equal to " + 32);
-			config.thresholdNearDuplicateDetection = threshold;
-			return this;
-		}
-		
-		/**
-		 * @param features The features that will be used to in the Near-Duplicate Detection algorithm.
-		 * Features determine how the relevant (stripped) content of a page is processed into a hash.  
-		 */
-		public CrawljaxConfigurationBuilder setFeaturesNearDuplicateDetection(List<FeatureType> features) {
-			Preconditions.checkArgument(!features.isEmpty(), "The feature-list has to contain at least 1 feature.");
-			config.featuresNearDuplicateDetection = features;
-			return this;
-		}
 		
 		/**
 		 * Add plugins to Crawljax. Note that without plugins, Crawljax won't give any ouput. For basic output at least
@@ -197,6 +170,24 @@ public class CrawljaxConfiguration {
 		public CrawljaxConfigurationBuilder setStateVertexFactory(StateVertexFactory vertexFactory) {
 			Preconditions.checkNotNull(vertexFactory);
 			config.stateVertexFactory = vertexFactory;
+			return this;
+		}
+		
+		/**
+		 * Set a custom {@link com.crawljax.core.state.duplicatedetection.NearDuplicateDetection}, which resembles a
+		 * particular type of near-duplicate detection algorithm.
+		 * 
+		 * To enable near-duplicate detection a {@link com.crawljax.core.state.NDDStateVertexFactory} needs to be set.
+		 * Therefore, if no stateVertexFactory has been set yet, the default NDDStateVertexFactory will be set.
+		 * 
+		 * @param factory a NearDuplicateDetection-factory.
+		 * @return The builder for method chaining.
+		 */
+		public CrawljaxConfigurationBuilder setNearDuplicateDetectionFactory(NearDuplicateDetection factory) {
+			Preconditions.checkNotNull(factory);
+			config.nearDuplicateDetectionFactory = factory;
+			if(config.stateVertexFactory == null)
+				this.setStateVertexFactory(new NDDStateVertexFactory());
 			return this;
 		}
 
@@ -332,14 +323,11 @@ public class CrawljaxConfiguration {
 	;
 	private int maximumDepth = 2;
 	private File output = new File("out");
-	
-	private double thresholdNearDuplicateDetection = 3;
-	public List<FeatureType> featuresNearDuplicateDetection = new ArrayList<FeatureType>();
 	private StateVertexFactory stateVertexFactory;
+	
+	private NearDuplicateDetection nearDuplicateDetectionFactory;
 
-	private CrawljaxConfiguration() {
-		featuresNearDuplicateDetection.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-	}
+	private CrawljaxConfiguration() {}
 
 	public URI getUrl() {
 		return url;
@@ -377,12 +365,8 @@ public class CrawljaxConfiguration {
 		return output;
 	}
 	
-	public double getThresholdNearDuplicateDetection() {
-		return thresholdNearDuplicateDetection;
-	}
-
-	public List<FeatureType> getFeaturesNearDuplicateDetection() { 
-		return featuresNearDuplicateDetection;
+	public NearDuplicateDetection getNearDuplicateDetectionFactory() {
+		return nearDuplicateDetectionFactory;
 	}
 	
 	public ImmutableList<DomStripper> getStrippers() {
@@ -400,7 +384,7 @@ public class CrawljaxConfiguration {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(url, browserConfig, plugins, proxyConfiguration, crawlRules,
-				maximumStates, maximumRuntime, maximumDepth, thresholdNearDuplicateDetection, strippers, validStrippers);
+				maximumStates, maximumRuntime, maximumDepth, strippers, validStrippers, nearDuplicateDetectionFactory);
 	}
 
 	@Override
@@ -415,7 +399,6 @@ public class CrawljaxConfiguration {
 					&& Objects.equal(this.maximumStates, that.maximumStates)
 					&& Objects.equal(this.maximumRuntime, that.maximumRuntime)
 					&& Objects.equal(this.maximumDepth, that.maximumDepth)
-					&& Objects.equal(this.thresholdNearDuplicateDetection, that.thresholdNearDuplicateDetection)
 					&& Objects.equal(this.strippers, that.strippers)
 					&& Objects.equal(this.validStrippers, that.validStrippers);
 		}
@@ -433,7 +416,6 @@ public class CrawljaxConfiguration {
 				.add("maximumStates", maximumStates)
 				.add("maximumRuntime", maximumRuntime)
 				.add("maximumDepth", maximumDepth)
-				.add("thresholdNearDuplicateDetection", thresholdNearDuplicateDetection)
 				.toString();
 	}
 

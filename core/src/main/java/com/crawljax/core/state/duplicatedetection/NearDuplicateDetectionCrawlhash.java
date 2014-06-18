@@ -27,16 +27,21 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 	private HashGenerator hashGenerator;
 	private static final Logger LOG = (Logger) LoggerFactory
 	        .getLogger(NearDuplicateDetectionCrawlhash.class);
-
-	@Inject
-	public NearDuplicateDetectionCrawlhash(double threshold, List<FeatureType> fs,
-	        HashGenerator hg) {
+	
+	public NearDuplicateDetectionCrawlhash(double threshold, List<FeatureType> fs) {
 		checkPreconditionsFeatures(fs);
-		this.hashGenerator = hg;
 		this.features = fs;
 		this.defaultThreshold = threshold;
 		LOG.info("NearDuplicateDetectionCrawlhash[defaultThreshold=" + threshold
-		        + ", feature-list = " + fs + ", HashGenerator= " + hg + "]");
+		        + ", feature-list = " + fs + "]");
+	}
+
+	public NearDuplicateDetectionCrawlhash(double threshold, List<FeatureType> fs,
+	        HashGenerator hg) {
+		checkPreconditionsFeatures(fs);
+		this.features = fs;
+		this.defaultThreshold = threshold;
+		this.hashGenerator = hg;
 	}
 
 	@Override
@@ -120,4 +125,10 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 		LOG.info("Feature-set changed from {} to {}", this.features, features);
 		this.features = features;
 	}
+
+	@Inject
+	@Override
+    public void setHashGenerator(HashGenerator hashGenerator) {
+		this.hashGenerator = hashGenerator;	    
+    }
 }

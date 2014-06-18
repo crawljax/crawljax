@@ -25,15 +25,20 @@ public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 	private double defaultThreshold;
 	private HashGenerator hashGenerator;
 
-	@Inject
-	public NearDuplicateDetectionBroder(double threshold, List<FeatureType> fs, HashGenerator hg) {
+	public NearDuplicateDetectionBroder(double threshold, List<FeatureType> fs) {
 		checkPreconditionsFeatures(fs);
-		this.hashGenerator = hg;
 		this.features = fs;
 		this.defaultThreshold = threshold;
-		LOG.info("NearDuplicateDetectionBroder[threshold=" + threshold + ", feature-list = " + fs
-		        + ", HashGenerator= " + hg + "]");
+		LOG.info("NearDuplicateDetectionBroder[threshold=" + threshold + ", feature-list = " + fs + "]");
 	}
+
+	public NearDuplicateDetectionBroder(double threshold, List<FeatureType> fs,
+            HashGenerator hg) {
+		checkPreconditionsFeatures(fs);
+		this.features = fs;
+		this.defaultThreshold = threshold;
+		this.hashGenerator = hg;
+    }
 
 	/**
 	 * Generate the hashes from the features of the string.
@@ -107,4 +112,10 @@ public class NearDuplicateDetectionBroder implements NearDuplicateDetection {
 		LOG.info("Feature-set changed from {} to {}", this.features, features);
 		this.features = features;
 	}
+
+	@Inject
+	@Override
+    public void setHashGenerator(HashGenerator hashGenerator) {
+		this.hashGenerator = hashGenerator;	    
+    }
 }

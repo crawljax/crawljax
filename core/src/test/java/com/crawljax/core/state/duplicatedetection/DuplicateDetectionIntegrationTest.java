@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.crawljax.core.state.duplicatedetection.*;
-
 public class DuplicateDetectionIntegrationTest {
 
 	/**
