@@ -1,6 +1,6 @@
 package com.crawljax.core.state.duplicatedetection;
 
-import java.util.List;
+import com.google.common.collect.ImmutableCollection;
 
 /**
  * NearDuplicateDetection is the main class of the duplicate-detection-package. Depending on
@@ -22,14 +22,14 @@ public interface NearDuplicateDetection {
 	 *            a string, which should be larger than the feature-types.
 	 * @return the hash(es) generated from the document.
 	 */
-	public Fingerprint generateFingerprint(String doc);
+	Fingerprint generateFingerprint(String doc);
 
 	/**
 	 * Get the features used in the hash generation
 	 * 
 	 * @return list of features
 	 */
-	public List<FeatureType> getFeatures();
+	ImmutableCollection<FeatureType> getFeatures();
 
 	/**
 	 * Set new features to be used in fingerprint generation
@@ -37,7 +37,7 @@ public interface NearDuplicateDetection {
 	 * @param features
 	 *            a list of features with at least 1 feature
 	 */
-	public void setFeatures(List<FeatureType> features);
+	void setFeatures(ImmutableCollection<FeatureType> features);
 
 	/**
 	 * Set new default threshold. Has to be within constraint of the implementation.
@@ -45,19 +45,20 @@ public interface NearDuplicateDetection {
 	 * @param threshold
 	 *            new default threshold.
 	 */
-	public void setDefaultThreshold(double threshold);
+	void setDefaultThreshold(double threshold);
 
 	/**
 	 * get the current default threshold
 	 * 
 	 * @return the default threshold
 	 */
-	public double getDefaultThreshold();
-	
+	double getDefaultThreshold();
+
 	/**
 	 * Sets a new hashGenerator.
 	 * 
-	 * @param hashGenerator a HashGenerator-implementation
+	 * @param hashGenerator
+	 *            a HashGenerator-implementation
 	 */
-	public void setHashGenerator(HashGenerator hashGenerator);
+	void setHashGenerator(HashGenerator hashGenerator);
 }

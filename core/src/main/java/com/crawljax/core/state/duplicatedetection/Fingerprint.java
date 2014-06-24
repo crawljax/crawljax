@@ -8,51 +8,47 @@ package com.crawljax.core.state.duplicatedetection;
 public interface Fingerprint {
 
 	/**
-	 * Checks whether hash1 and hash2 are near-duplicates.
+	 * Checks whether this and that fingerprints are near-duplicates.
 	 * 
-	 * @param hash1
-	 *            hash(es)
-	 * @param hash2
-	 *            hash(es)
+	 * @param other
+	 *            The other fingerprint to check this with.
 	 * @return true if near-duplicate, else return false
 	 */
-	public boolean isNearDuplicate(Fingerprint other);
+	boolean isNearDuplicate(Fingerprint other);
 
 	/**
-	 * Checks whether hash1 and hash2 are near-duplicates.
+	 * Checks whether this and that fingerprints are near-duplicates, using a custom threshold
+	 * instead of the default-threshold in this.
 	 * 
-	 * @param hash1
-	 *            hash(es)
-	 * @param hash2
-	 *            hash(es)
+	 * @param other
+	 *            The other fingerprint to check this with.
+	 * @param threshold
+	 *            The custom threshold to be used.
 	 * @return true if near-duplicate, else return false
 	 */
-	public boolean isNearDuplicate(Fingerprint other, double threshold);
+	boolean isNearDuplicate(Fingerprint other, double threshold);
 
 	/**
-	 * An extension of isNearDuplicateHash, which also shows the distance between two hashes.
+	 * An extension of isNearDuplicateHash, which also shows the distance between two fingerprints.
 	 * 
-	 * @param hash1
-	 *            hash(es)
-	 * @param hash2
-	 *            hash(es)
+	 * @param other
+	 *            The other fingerprint to check this with.
 	 * @return the distance (i.e. # of different bit positions) between the hashes
 	 */
-	public double getDistance(Fingerprint hash2);
-	
+	double getDistance(Fingerprint other);
 
 	/**
 	 * @return The upper limit of valid thresholds
 	 */
-	public double getThresholdUpperlimit();
-	
+	double getThresholdUpperlimit();
+
 	/**
 	 * @return The lower limit of valid thresholds
 	 */
-	public double getThresholdLowerlimit();
-	
+	double getThresholdLowerlimit();
+
 	/**
 	 * @return the threshold used in case when no custom threshold is set (ie isNearDuplicate/1)
 	 */
-	public double getDefaultThreshold();
+	double getDefaultThreshold();
 }

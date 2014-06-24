@@ -12,5 +12,5 @@ public interface HashGenerator {
 	 *            the string to be hashed
 	 * @return a hash, bits stored in an int representation.
 	 */
-	public int generateHash(String input);
+	int generateHash(String input);
 }

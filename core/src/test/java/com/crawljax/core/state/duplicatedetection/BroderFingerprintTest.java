@@ -1,7 +1,7 @@
 package com.crawljax.core.state.duplicatedetection;
 
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -130,6 +130,23 @@ public class BroderFingerprintTest {
 		        new BroderFingerprint(set1, 2.0 / 6.0).isNearDuplicate(new BroderFingerprint(
 		                set2));
 		assertFalse(duplicate);
+	}
+	
+	/**
+	 * Tests isNearDuplicateHash/2 for a case that hashes are not near-duplicate
+	 */
+	@Test
+	public void testIsNearDuplicateHashFingerprintZero() {
+		int[] set1 = { 1111 };
+		int[] set2 = { 1111 };
+
+		double distance = new BroderFingerprint(set1).getDistance(new BroderFingerprint(set2));
+		assertThat(distance, is(0.0));
+
+		boolean duplicate =
+		        new BroderFingerprint(set1, 0).isNearDuplicate(new BroderFingerprint(
+		                set2));
+		assertThat(duplicate, is(true));
 	}
 
 	@Test(expected = RuntimeException.class)

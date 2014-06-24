@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
+
 public class NearDuplicateDetectionBroderTest {
 
 	private List<FeatureType> features = new ArrayList<FeatureType>();
@@ -14,7 +16,7 @@ public class NearDuplicateDetectionBroderTest {
 	@Test(expected = DuplicateDetectionException.class)
 	public void testMissingFeatures() {
 		HashGenerator hasher = new XxHashGenerator();
-		new NearDuplicateDetectionBroder(2.0 / 6.0, features, hasher);
+		new NearDuplicateDetectionBroder(2.0 / 6.0, ImmutableList.copyOf(features), hasher);
 	}
 
 	@Test(expected = DuplicateDetectionException.class)
@@ -23,18 +25,18 @@ public class NearDuplicateDetectionBroderTest {
 		new NearDuplicateDetectionBroder(2.0 / 6.0, null, hasher);
 	}
 
-	@Test(expected = DuplicateDetectionException.class)
+	@Test
 	public void testToHighThreshold() {
 		HashGenerator hasher = new XxHashGenerator();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		new NearDuplicateDetectionBroder(5, features, hasher);
+		new NearDuplicateDetectionBroder(5, ImmutableList.copyOf(features), hasher);
 	}
 
-	@Test(expected = DuplicateDetectionException.class)
+	@Test
 	public void testToLowThreshold() {
 		HashGenerator hasher = new XxHashGenerator();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		NearDuplicateDetection broder = new NearDuplicateDetectionBroder(1, features, hasher);
+		NearDuplicateDetection broder = new NearDuplicateDetectionBroder(1, ImmutableList.copyOf(features), hasher);
 		broder.setDefaultThreshold(-1);
 	}
 
@@ -42,7 +44,7 @@ public class NearDuplicateDetectionBroderTest {
 	public void testSetThresholdCorrect() {
 		HashGenerator hasher = new XxHashGenerator();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		NearDuplicateDetection broder = new NearDuplicateDetectionBroder(1, features, hasher);
+		NearDuplicateDetection broder = new NearDuplicateDetectionBroder(1, ImmutableList.copyOf(features), hasher);
 		broder.setDefaultThreshold(0.3);
 		assertEquals(0.3, broder.getDefaultThreshold(), 0.0001);
 	}
@@ -51,13 +53,13 @@ public class NearDuplicateDetectionBroderTest {
 	public void testSetFeaturesCorrect() {
 		HashGenerator hasher = new XxHashGenerator();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		NearDuplicateDetection broder = new NearDuplicateDetectionBroder(1, features, hasher);
+		NearDuplicateDetection broder = new NearDuplicateDetectionBroder(1, ImmutableList.copyOf(features), hasher);
 
 		List<FeatureType> newFeatures = new ArrayList<FeatureType>();
 		newFeatures.add(new FeatureShingles(1, FeatureShingles.SizeType.CHARS));
-		broder.setFeatures(newFeatures);
+		broder.setFeatures(ImmutableList.copyOf(newFeatures));
 
-		List<String> listOfFeatures = broder.getFeatures().get(0).getFeatures("Test");
+		List<String> listOfFeatures = broder.getFeatures().asList().get(0).getFeatures("Test");
 		assertEquals("T", listOfFeatures.get(0));
 		assertEquals("e", listOfFeatures.get(1));
 		assertEquals("s", listOfFeatures.get(2));

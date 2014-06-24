@@ -3,6 +3,7 @@ package com.crawljax.core.state.duplicatedetection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
@@ -10,12 +11,12 @@ import com.google.inject.Provides;
  * The Guice-module for the NearDuplicateDetection-package for Crawljax
  */
 public class DuplicateDetectionModule extends AbstractModule {
-	
+
 	private NearDuplicateDetection nearDuplicateDetectionFactory;
 
 	public DuplicateDetectionModule(NearDuplicateDetection factory) {
 		// Set defaults
-		this.nearDuplicateDetectionFactory = factory;
+		nearDuplicateDetectionFactory = factory;
 	}
 
 	@Override
@@ -27,10 +28,11 @@ public class DuplicateDetectionModule extends AbstractModule {
 	@Provides
 	NearDuplicateDetection provideNearDuplicateDetection(HashGenerator hasher) {
 		double threshold = 1;
-		if(this.nearDuplicateDetectionFactory == null) {
-			List<FeatureType> features = new ArrayList<FeatureType>();
+		if (nearDuplicateDetectionFactory == null) {
+			List<FeatureType> features = new ArrayList<FeatureType>(1);
 			features.add(new FeatureShingles(3, FeatureShingles.SizeType.WORDS));
-			nearDuplicateDetectionFactory = new NearDuplicateDetectionCrawlhash(threshold, features);
+			nearDuplicateDetectionFactory =
+			        new NearDuplicateDetectionCrawlhash(threshold, ImmutableList.copyOf(features));
 		}
 		nearDuplicateDetectionFactory.setHashGenerator(hasher);
 		return nearDuplicateDetectionFactory;

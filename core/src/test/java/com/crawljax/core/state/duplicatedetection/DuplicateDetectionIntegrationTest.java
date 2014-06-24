@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
+
 public class DuplicateDetectionIntegrationTest {
 
 	/**
@@ -19,7 +21,7 @@ public class DuplicateDetectionIntegrationTest {
 		features.add(new FeatureShingles(1, FeatureShingles.SizeType.WORDS));
 		HashGenerator hashGenerator = new XxHashGenerator();
 		NearDuplicateDetection ndd =
-		        new NearDuplicateDetectionBroder(0.2, features, hashGenerator);
+		        new NearDuplicateDetectionBroder(0.2, ImmutableList.copyOf(features), hashGenerator);
 
 		// Generate fingerprints
 		Fingerprint fingerprint1 =
@@ -44,7 +46,7 @@ public class DuplicateDetectionIntegrationTest {
 		features.add(new FeatureShingles(1, FeatureShingles.SizeType.WORDS));
 		HashGenerator hashGenerator = new XxHashGenerator();
 		NearDuplicateDetection ndd =
-		        new NearDuplicateDetectionCrawlhash(2, features, hashGenerator);
+		        new NearDuplicateDetectionCrawlhash(2, ImmutableList.copyOf(features), hashGenerator);
 
 		// Generate fingerprints
 		Fingerprint fingerprint1 =

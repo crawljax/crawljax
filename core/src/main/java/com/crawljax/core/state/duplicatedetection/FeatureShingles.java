@@ -6,8 +6,8 @@ import java.util.List;
 
 /**
  * FeatureShingles represents the features based on collecting shingles from a document. An example
- * of a 2-shingle-collection of the string "abcd" => {"ab","bc","cd"}. More information:
- * http://en.wikipedia.org/wiki/W-shingling
+ * of a 2-shingle-collection of the string <code>"abcd" => {"ab","bc","cd"}</code>.
+ * <a href="http://en.wikipedia.org/wiki/W-shingling">More information.</a>
  */
 public class FeatureShingles implements FeatureType {
 
@@ -18,8 +18,8 @@ public class FeatureShingles implements FeatureType {
 		CHARS, WORDS, SENTENCES
 	}
 
-	private SizeType type;
-	private int size;
+	private final SizeType type;
+	private final int size;
 
 	/**
 	 * @param size
@@ -80,15 +80,8 @@ public class FeatureShingles implements FeatureType {
 	 * @throws FeatureException
 	 *             the doc is too small to represent in this feature-type and size.
 	 */
-	private String[] getChars(String doc) throws FeatureException {
-		String[] chars = doc.split("(?!^)");
-		if (doc.length() < this.size) {
-			throw new FeatureException(
-			        "The size of the chars per feature is too large for this document. "
-			                + "The document has a size of " + doc.length()
-			                + " char(s), feature needs " + size);
-		}
-		return generateFeatures(chars);
+	private String[] getChars(String doc) {
+		return getShinglesByRegEx(doc, "(?!^)");
 	}
 
 	/**
@@ -100,15 +93,8 @@ public class FeatureShingles implements FeatureType {
 	 * @throws FeatureException
 	 *             the doc is too small to represent in this feature-type and size.
 	 */
-	private String[] getWords(String doc) throws FeatureException {
-		String[] words = doc.split(" ");
-		if (words.length < this.size) {
-			throw new FeatureException(
-			        "The size of the words per feature is too large for this document. "
-			                + "The document has a size of " + words.length
-			                + " word(s), feature needs " + size);
-		}
-		return generateFeatures(words);
+	private String[] getWords(String doc) {
+		return getShinglesByRegEx(doc, " ");
 	}
 
 	/**
@@ -120,15 +106,28 @@ public class FeatureShingles implements FeatureType {
 	 * @throws FeatureException
 	 *             the doc is too small to represent in this feature-type and size.
 	 */
-	private String[] getSentences(String doc) throws FeatureException {
-		String[] sentences = doc.split("(\\!|\\?|\\. )");
-		if (sentences.length < this.size) {
+	private String[] getSentences(String doc) {
+		return getShinglesByRegEx(doc, "(\\!|\\?|\\. )");
+	}
+
+	/**
+	 * Splits the document in shingles based on a particular regular expression.
+	 * 
+	 * @param doc
+	 *            the original document.
+	 * @param regex
+	 *            the regular expression that is used to split the doc.
+	 * @return shingles of the doc split using the regex.
+	 */
+	private String[] getShinglesByRegEx(String doc, String regex) {
+		String[] shingles = doc.split(regex);
+		if (shingles.length < size) {
 			throw new FeatureException(
-			        "The size of the sentences per feature is too large for this document. "
-			                + "The document has a size of " + sentences.length
-			                + " sentence(s), feature needs " + size);
+			        "The size of the chosen feature is too large for this document. "
+			                + "The document has a size of " + shingles.length
+			                + " shingles, feature needs at least " + size);
 		}
-		return generateFeatures(sentences);
+		return generateFeatures(shingles);
 	}
 
 	/**
@@ -140,8 +139,9 @@ public class FeatureShingles implements FeatureType {
 	 */
 	private String[] generateFeatures(String[] originalStrings) {
 		String[] resultFeatures = new String[originalStrings.length - size + 1];
+		StringBuilder feature = null;
 		for (int j = 0; j < resultFeatures.length; j++) {
-			String feature = "";
+			feature = new StringBuilder(originalStrings[j].length() * size);
 			// Append this.size strings to each other to form a shingle
 			for (int i = 0; i < size; i++) {
 				feature += originalStrings[j + i];
@@ -152,6 +152,6 @@ public class FeatureShingles implements FeatureType {
 	}
 
 	public String toString() {
-		return "FeatureShingles[" + this.size + ", " + this.type + "]";
+		return "FeatureShingles[" + size + ", " + type + "]";
 	}
 }

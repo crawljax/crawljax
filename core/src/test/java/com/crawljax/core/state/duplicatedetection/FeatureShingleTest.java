@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
+
 public class FeatureShingleTest {
 
 	@Test
@@ -115,7 +117,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(7, FeatureShingles.SizeType.WORDS));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom = "This is some text for the test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -126,7 +128,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(8, FeatureShingles.SizeType.WORDS));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom = "This is some text for the test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -137,7 +139,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(14, FeatureShingles.SizeType.CHARS));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom = "A simple test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -148,7 +150,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(15, FeatureShingles.SizeType.CHARS));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom = "A simple test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -159,7 +161,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.SENTENCES));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom = "This is some text for the test. Will it work.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -170,7 +172,7 @@ public class FeatureShingleTest {
 		features.add(new FeatureShingles(3, FeatureShingles.SizeType.SENTENCES));
 
 		HashGenerator hasher = new XxHashGenerator();
-		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom = "This is some text for the test. Will it work.";
 		ndd.generateFingerprint(strippedDom);
 	}

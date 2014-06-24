@@ -11,7 +11,7 @@ import net.jpountz.xxhash.XXHashFactory;
 public class XxHashGenerator implements HashGenerator {
 
 	private static final int SEED = 0x9747b28c;
-	private XXHash32 xxhash;
+	private final XXHash32 xxhash;
 
 	/**
 	 * Setup the xxHash-32 hash-generator
@@ -26,4 +26,8 @@ public class XxHashGenerator implements HashGenerator {
 		return xxhash.hash(input.getBytes(), 0, input.length(), SEED);
 	}
 
+	@Override
+	public String toString() {
+		return "XxHashGenerator [xxhash=" + xxhash + ", seed=" + SEED + "]";
+	}
 }

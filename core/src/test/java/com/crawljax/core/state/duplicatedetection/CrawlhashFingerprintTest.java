@@ -77,6 +77,19 @@ public class CrawlhashFingerprintTest {
 
 		assertTrue(hash.isNearDuplicate(oneBitsDiffHash, 2));
 	}
+	
+	/**
+	 * Tests isNearDuplicateHash/2 for a case that hashes are not near-duplicate
+	 */
+	@Test
+	public void testIsNearDuplicateHashFingerprintZero() {
+		Fingerprint fingerprint1 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
+		Fingerprint fingerprint2 = new CrawlhashFingerprint(Integer.parseInt("1000", 2));
+		
+		boolean result = fingerprint1.isNearDuplicate(fingerprint2, 0);
+		assertThat(result, is(true));
+	}
+
 
 	@Test
 	public void testIsNearDuplicateHashFingerprintDoubleNot() {

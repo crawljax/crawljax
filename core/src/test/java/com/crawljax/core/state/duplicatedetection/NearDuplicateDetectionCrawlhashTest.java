@@ -17,6 +17,7 @@ import com.crawljax.core.state.duplicatedetection.HashGenerator;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetection;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlhash;
 import com.crawljax.core.state.duplicatedetection.XxHashGenerator;
+import com.google.common.collect.ImmutableList;
 
 public class NearDuplicateDetectionCrawlhashTest {
 
@@ -27,7 +28,7 @@ public class NearDuplicateDetectionCrawlhashTest {
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlhash ndd =
-		        new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		assertEquals(3, ndd.getDefaultThreshold(), 0.001);
 	}
 
@@ -38,7 +39,7 @@ public class NearDuplicateDetectionCrawlhashTest {
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlhash ndd =
-		        new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom = "This is some text for the test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -50,7 +51,7 @@ public class NearDuplicateDetectionCrawlhashTest {
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlhash ndd =
-		        new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom = "This is some text for the test.";
 		ndd.generateFingerprint(strippedDom);
 	}
@@ -62,7 +63,7 @@ public class NearDuplicateDetectionCrawlhashTest {
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlhash ndd =
-		        new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom1 = "Test";
 		String strippedDom2 = "Test";
 
@@ -78,7 +79,7 @@ public class NearDuplicateDetectionCrawlhashTest {
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetectionCrawlhash ndd =
-		        new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom1 = "This is some text for the test.";
 		String strippedDom2 = "Other text will be shown";
 
@@ -91,7 +92,7 @@ public class NearDuplicateDetectionCrawlhashTest {
 	public void testMissingFeatures() {
 		HashGenerator hasher = new XxHashGenerator();
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 	}
 
 	@Test(expected = DuplicateDetectionException.class)
@@ -105,24 +106,24 @@ public class NearDuplicateDetectionCrawlhashTest {
 		HashGenerator hasher = new XxHashGenerator();
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		new NearDuplicateDetectionCrawlhash(32, features, hasher);
+		new NearDuplicateDetectionCrawlhash(32, ImmutableList.copyOf(features), hasher);
 	}
 
-	@Test(expected = DuplicateDetectionException.class)
+	@Test
 	public void testThresholdOffBoundary() {
 		HashGenerator hasher = new XxHashGenerator();
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
-		new NearDuplicateDetectionCrawlhash(33, features, hasher);
+		new NearDuplicateDetectionCrawlhash(33, ImmutableList.copyOf(features), hasher);
 	}
 
-	@Test(expected = DuplicateDetectionException.class)
+	@Test
 	public void testToLowThreshold() {
 		HashGenerator hasher = new XxHashGenerator();
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetection crawlhash =
-		        new NearDuplicateDetectionCrawlhash(1, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(1, ImmutableList.copyOf(features), hasher);
 		crawlhash.setDefaultThreshold(-1);
 	}
 
@@ -132,7 +133,7 @@ public class NearDuplicateDetectionCrawlhashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetection crawlHash =
-		        new NearDuplicateDetectionCrawlhash(1, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(1, ImmutableList.copyOf(features), hasher);
 		crawlHash.setDefaultThreshold(8);
 		assertEquals(8, crawlHash.getDefaultThreshold(), 0.1);
 	}
@@ -143,13 +144,13 @@ public class NearDuplicateDetectionCrawlhashTest {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		NearDuplicateDetection crawlHash =
-		        new NearDuplicateDetectionCrawlhash(1, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(1, ImmutableList.copyOf(features), hasher);
 
 		List<FeatureType> newFeatures = new ArrayList<FeatureType>();
 		newFeatures.add(new FeatureShingles(1, FeatureShingles.SizeType.CHARS));
-		crawlHash.setFeatures(newFeatures);
+		crawlHash.setFeatures(ImmutableList.copyOf(newFeatures));
 
-		List<String> listOfFeatures = crawlHash.getFeatures().get(0).getFeatures("Test");
+		List<String> listOfFeatures = crawlHash.getFeatures().asList().get(0).getFeatures("Test");
 		assertEquals("T", listOfFeatures.get(0));
 		assertEquals("e", listOfFeatures.get(1));
 		assertEquals("s", listOfFeatures.get(2));

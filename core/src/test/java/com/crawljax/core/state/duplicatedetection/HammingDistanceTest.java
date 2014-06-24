@@ -17,6 +17,7 @@ import com.crawljax.core.state.duplicatedetection.Fingerprint;
 import com.crawljax.core.state.duplicatedetection.HashGenerator;
 import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlhash;
 import com.crawljax.core.state.duplicatedetection.XxHashGenerator;
+import com.google.common.collect.ImmutableList;
 
 public class HammingDistanceTest {
 
@@ -55,7 +56,7 @@ public class HammingDistanceTest {
 		List<FeatureType> features = new ArrayList<>();
 		features.add(new FeatureShingles(2, SizeType.CHARS));
 		NearDuplicateDetectionCrawlhash crawlhash =
-		        new NearDuplicateDetectionCrawlhash(3, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String hash = "01111111111111111111111111111111";
 		String threeBitsDiffHash = "01111111111101111111110111110111";
 
@@ -81,7 +82,7 @@ public class HammingDistanceTest {
 		List<FeatureType> features = new ArrayList<>();
 		features.add(new FeatureShingles(2, SizeType.CHARS));
 		NearDuplicateDetectionCrawlhash crawlhash =
-		        new NearDuplicateDetectionCrawlhash(2, features, hasher);
+		        new NearDuplicateDetectionCrawlhash(2, ImmutableList.copyOf(features), hasher);
 		String hash = "01111111111111111111111111111111";
 		String threeBitsDiffhash = "01111111111101111111110111110111";
 

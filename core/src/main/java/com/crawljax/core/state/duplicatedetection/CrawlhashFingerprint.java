@@ -10,11 +10,11 @@ import com.google.common.annotations.VisibleForTesting;
  */
 public class CrawlhashFingerprint implements Fingerprint {
 
-	private int hash;
-	private double defaultThreshold;
+	private final int hash;
+	private final double defaultThreshold;
 
-	private final static double THRESHOLD_UPPERLIMIT = 32;
-	private final static double THRESHOLD_LOWERLIMIT = 0;
+	private static final double THRESHOLD_UPPERLIMIT = 32;
+	private static final double THRESHOLD_LOWERLIMIT = 0;
 
 	/**
 	 * Constructor for this used by the NearDuplicateDetectionCrawlhash32
@@ -24,7 +24,7 @@ public class CrawlhashFingerprint implements Fingerprint {
 	 * @param defaultThreshold
 	 *            the default threshold, which is used when no threshold is provided.
 	 */
-	public CrawlhashFingerprint(int hash, double defaultThreshold) {
+	CrawlhashFingerprint(int hash, double defaultThreshold) {
 		checkIfValidThreshold(defaultThreshold);
 		this.hash = hash;
 		this.defaultThreshold = defaultThreshold;
@@ -36,26 +36,26 @@ public class CrawlhashFingerprint implements Fingerprint {
 	 * @param hash
 	 *            the generated hash on which this fingerprint is based.
 	 */
-	public CrawlhashFingerprint(int hash) {
+	CrawlhashFingerprint(int hash) {
 		this.hash = hash;
 		this.defaultThreshold = 1;
 	}
 
 	@Override
 	public boolean isNearDuplicate(Fingerprint other) {
-		return ((double) getDistance(other)) <= defaultThreshold;
+		return getDistance(other) <= defaultThreshold;
 	}
 
 	@Override
 	public boolean isNearDuplicate(Fingerprint other, double threshold) {
 		checkIfValidThreshold(threshold);
-		return ((double) getDistance(other)) <= threshold;
+		return getDistance(other) <= threshold;
 	}
 
 	@Override
 	public double getDistance(Fingerprint other) {
 		CrawlhashFingerprint that = fingerprintTypeCheck(other);
-		return hammingDistance(this.hash, that.hash);
+		return hammingDistance(hash, that.hash);
 	}
 
 	/**
@@ -64,6 +64,7 @@ public class CrawlhashFingerprint implements Fingerprint {
 	 * 
 	 * @param other
 	 *            the Fingerprint of which the type should be the same as this.
+	 * @return Broderfingerprint if other is a Broderfingerprint, else a Runtime-exception is thrown.
 	 */
 	private CrawlhashFingerprint fingerprintTypeCheck(Fingerprint other) {
 		if (!this.getClass().isInstance(other))
@@ -95,22 +96,33 @@ public class CrawlhashFingerprint implements Fingerprint {
 		return i & 0x3f;
 	}
 
-	/**
-	 * A fingerprint equals another fingerprint, when the hashes are completely the same. Another
-	 * implicit way of invoking an equals is to invoke isNearDuplicateHash(other,0).
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!getClass().isInstance(obj))
 			return false;
 		CrawlhashFingerprint other = (CrawlhashFingerprint) obj;
-		return this.isNearDuplicate(other, 0);
+		if (hash != other.hash)
+			return false;
+		return true;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		return prime + hash;
+	}
+
+	/**
+	 * Checks if threshold is a double within the upper and lower bounds of the fingerprint-type. If
+	 * not a runtime-exception is thrown.
+	 * 
+	 * @param threshold
+	 *            The threshold-value that should be checked.
+	 */
 	private void checkIfValidThreshold(double threshold) {
 		if (threshold > THRESHOLD_UPPERLIMIT || threshold < THRESHOLD_LOWERLIMIT) {
 			throw new DuplicateDetectionException("Invalid threshold value " + threshold
@@ -133,6 +145,10 @@ public class CrawlhashFingerprint implements Fingerprint {
 	public double getDefaultThreshold() {
 		return defaultThreshold;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "CrawlhashFingerprint [hash=" + hash + ", defaultThreshold=" + defaultThreshold
+		        + "]";
+	}
 }
