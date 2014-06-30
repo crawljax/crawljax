@@ -1,13 +1,11 @@
 package com.crawljax.core.state.duplicatedetection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /**
  * FeatureShingles represents the features based on collecting shingles from a document. An example
- * of a 2-shingle-collection of the string <code>"abcd" => {"ab","bc","cd"}</code>.
- * <a href="http://en.wikipedia.org/wiki/W-shingling">More information.</a>
+ * of a 2-shingle-collection of the string <code>"abcd" = {"ab","bc","cd"}</code>. <a
+ * href="http://en.wikipedia.org/wiki/W-shingling">More information.</a>
  */
 public class FeatureShingles implements FeatureType {
 
@@ -15,11 +13,39 @@ public class FeatureShingles implements FeatureType {
 	 * Specifies the type of chunks used to be shingled.
 	 */
 	public enum SizeType {
-		CHARS, WORDS, SENTENCES
+		CHARS, WORDS, SENTENCES, REGEX
 	}
 
 	private final SizeType type;
 	private final int size;
+	private String regex;
+
+	/**
+	 * Constructs a FeatureShingle using a shingle based on a predefined type and a given size.
+	 * 
+	 * @param size
+	 *            the number of elements in a shingle
+	 * @param type
+	 *            a predefined type of shingle.
+	 * @return FeatureShingle with a given size and the provided type.
+	 */
+	public static FeatureShingles withSize(int size, SizeType type) {
+		return new FeatureShingles(size, type);
+	}
+
+	/**
+	 * Constructs a FeatureShingle using a shingle based on a regex expression and a given size.
+	 * 
+	 * @param size
+	 *            the number of elements in a shingle
+	 * @param regex
+	 *            a string representation of a regular expression-pattern.
+	 * @see java.util.regex.Pattern
+	 * @return FeatureShingle with type REGEX, given size and the given regex.
+	 */
+	public static FeatureShingles withSize(int size, String regex) {
+		return new FeatureShingles(size, regex);
+	}
 
 	/**
 	 * @param size
@@ -27,9 +53,22 @@ public class FeatureShingles implements FeatureType {
 	 * @param type
 	 *            the SizeType to be used for the shingles.
 	 */
-	public FeatureShingles(int size, SizeType type) {
+	FeatureShingles(int size, SizeType type) {
 		this.type = type;
 		this.size = size;
+	}
+
+	/**
+	 * @param size
+	 *            represents the size of a single shingle in the number of chunks.
+	 * @param regex
+	 *            a string representation of a regular expression-pattern.
+	 * @see java.util.regex.Pattern
+	 */
+	FeatureShingles(int size, String regex) {
+		this.type = SizeType.REGEX;
+		this.size = size;
+		this.regex = regex;
 	}
 
 	/**
@@ -41,9 +80,9 @@ public class FeatureShingles implements FeatureType {
 	 * @throws FeatureException
 	 *             Unknown feature-type or document to small for feature-generation.
 	 */
-	public List<String> getFeatures(String doc) throws FeatureException {
+	public ImmutableList<String> getFeatures(String doc) throws FeatureException {
 		String[] features = this.getFeatures(type, doc);
-		return new ArrayList<String>(Arrays.asList(features));
+		return ImmutableList.copyOf(features);
 	}
 
 	/**
@@ -65,6 +104,8 @@ public class FeatureShingles implements FeatureType {
 				return this.getWords(doc);
 			case SENTENCES:
 				return this.getSentences(doc);
+			case REGEX:
+				return getShinglesByRegEx(doc, regex);
 			default:
 				throw new FeatureException("Unkown size-type " + type
 				        + " provided for the Shingle-feature.");
@@ -119,7 +160,7 @@ public class FeatureShingles implements FeatureType {
 	 *            the regular expression that is used to split the doc.
 	 * @return shingles of the doc split using the regex.
 	 */
-	private String[] getShinglesByRegEx(String doc, String regex) {
+	protected String[] getShinglesByRegEx(String doc, String regex) {
 		String[] shingles = doc.split(regex);
 		if (shingles.length < size) {
 			throw new FeatureException(
@@ -144,14 +185,14 @@ public class FeatureShingles implements FeatureType {
 			feature = new StringBuilder(originalStrings[j].length() * size);
 			// Append this.size strings to each other to form a shingle
 			for (int i = 0; i < size; i++) {
-				feature += originalStrings[j + i];
+				feature.append(originalStrings[j + i]);
 			}
-			resultFeatures[j] = feature;
+			resultFeatures[j] = feature.toString();
 		}
 		return resultFeatures;
 	}
 
 	public String toString() {
-		return "FeatureShingles[" + size + ", " + type + "]";
+		return "FeatureShingles[" + size + ", " + type + ", " + regex + "]";
 	}
 }

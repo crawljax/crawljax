@@ -14,7 +14,7 @@ import ch.qos.logback.classic.Logger;
 /**
  * A Simhash-inspired algorithm for detecting near-duplicates. The idea is that all the features are
  * hashed to 32-bit hashes. The space of the hashes is projected on a 1-dimensional hash. Example:
- * {1011,1100,1001} -> 1001
+ * <code>{1011,1100,1001} = 1001</code>
  */
 @Singleton
 public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
@@ -93,7 +93,7 @@ public class NearDuplicateDetectionCrawlhash implements NearDuplicateDetection {
 
 	/**
 	 * Creates a bit representation of the bits array. All positive integers will be transformed to
-	 * a 1 and all negative integers are transformed to a 0. So {8,9,-2,0} -> 1100
+	 * a 1 and all negative integers are transformed to a 0. So <code>{8,9,-2,0} = 1100</code>
 	 * 
 	 * @param bits
 	 *            the original array of integers

@@ -1,6 +1,7 @@
 package com.crawljax.core.state.duplicatedetection;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class NearDuplicateDetectionBroderTest {
 	}
 
 	@Test
-	public void testToHighThreshold() {
+	public void testTooHighThreshold() {
 		HashGenerator hasher = new XxHashGenerator();
 		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 		new NearDuplicateDetectionBroder(5, ImmutableList.copyOf(features), hasher);
@@ -64,5 +65,15 @@ public class NearDuplicateDetectionBroderTest {
 		assertEquals("e", listOfFeatures.get(1));
 		assertEquals("s", listOfFeatures.get(2));
 		assertEquals("t", listOfFeatures.get(3));
+	}
+	
+	@Test
+	public void testBroderConstructorNoHashFactory() {
+		List<FeatureType> newFeatures = new ArrayList<FeatureType>();
+		newFeatures.add(new FeatureShingles(1, FeatureShingles.SizeType.CHARS));
+		NearDuplicateDetection ndd = new NearDuplicateDetectionBroder(1, ImmutableList.copyOf(newFeatures));
+		String oldString = ndd.toString();
+		ndd.setHashGenerator(new XxHashGenerator());
+		assertNotEquals(ndd.toString(), oldString);
 	}
 }

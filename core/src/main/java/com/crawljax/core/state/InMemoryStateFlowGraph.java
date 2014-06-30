@@ -136,7 +136,6 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	private boolean hasNearDuplicate(StateVertex vertex) {
 		for (StateVertex vertexOfGraph : sfg.vertexSet()) {
 			if (vertex.equals(vertexOfGraph)) {
-				LOG.info("Duplicate found: {}, {}", vertex.getId(), vertexOfGraph.getId());
 				return true;
 			}
 		}

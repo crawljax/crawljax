@@ -156,4 +156,14 @@ public class NearDuplicateDetectionCrawlhashTest {
 		assertEquals("s", listOfFeatures.get(2));
 		assertEquals("t", listOfFeatures.get(3));
 	}
+	
+	@Test
+	public void testCrawlhashConstructorNoHashFactory() {
+		List<FeatureType> newFeatures = new ArrayList<FeatureType>();
+		newFeatures.add(new FeatureShingles(1, FeatureShingles.SizeType.CHARS));
+		NearDuplicateDetectionCrawlhash ndd = new NearDuplicateDetectionCrawlhash(1, ImmutableList.copyOf(newFeatures));
+		String oldString = ndd.toString();
+		ndd.setHashGenerator(new XxHashGenerator());
+		assertNotEquals(ndd.toString(), oldString);
+	}
 }

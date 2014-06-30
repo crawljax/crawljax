@@ -17,6 +17,7 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.StateVertexNDD;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.Edge;
 import com.crawljax.plugins.crawloverview.model.DuplicateDetectionStatistics;
@@ -72,7 +73,10 @@ class OutPutModelCache {
 		}
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
 		
-		DuplicateDetectionStatistics duplicateDetectionStats = new DuplicateDetectionStatistics(session);
+		// Add duplicate-detection stats, if specified.
+		DuplicateDetectionStatistics duplicateDetectionStats = null;
+		if(session.getInitialState() instanceof StateVertexNDD)
+			duplicateDetectionStats = new DuplicateDetectionStatistics(session);
 		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session,
 		        stateStats, startDate, failedEvents.get(), duplicateDetectionStats), exitStatus);
 	}

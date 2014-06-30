@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.crawljax.core.state.duplicatedetection.FeatureShingles.SizeType;
 import com.google.common.collect.ImmutableList;
 
 public class FeatureShingleTest {
@@ -17,18 +18,18 @@ public class FeatureShingleTest {
 		String doc = "Test ha";
 		List<String> features = shingleChars.getFeatures(doc);
 
-		boolean tes = features.remove("Tes");
+		boolean tes = features.contains("Tes");
 		assertTrue("'Tes' does not exist in the list of features", tes);
-		boolean est = features.remove("est");
+		boolean est = features.contains("est");
 		assertTrue("'est' does not exist in the list of features", est);
-		boolean st = features.remove("st ");
+		boolean st = features.contains("st ");
 		assertTrue("'st ' does not exist in the list of features", st);
-		boolean th = features.remove("t h");
+		boolean th = features.contains("t h");
 		assertTrue("'t h' does not exist in the list of features", th);
-		boolean ha = features.remove(" ha");
+		boolean ha = features.contains(" ha");
 		assertTrue("' ha' does not exist in the list of features", ha);
 
-		assertEquals(features.size(), 0);
+		assertEquals(features.size(), 5);
 	}
 
 	@Test
@@ -37,7 +38,7 @@ public class FeatureShingleTest {
 		String doc = "Test ha";
 		List<String> features = shingleChars.getFeatures(doc);
 
-		boolean tes = features.remove("ha ");
+		boolean tes = features.contains("ha ");
 		assertFalse("'ha ' does exists in the list of features, but should not", tes);
 	}
 
@@ -47,14 +48,14 @@ public class FeatureShingleTest {
 		String doc = "This is a test";
 		List<String> features = shingleWords.getFeatures(doc);
 
-		boolean thisis = features.remove("Thisis");
+		boolean thisis = features.contains("Thisis");
 		assertTrue("'Thisis' does not exist in the list of features", thisis);
-		boolean isa = features.remove("isa");
+		boolean isa = features.contains("isa");
 		assertTrue("'isa' does not exist in the list of features", isa);
-		boolean atest = features.remove("atest");
+		boolean atest = features.contains("atest");
 		assertTrue("'atest' does not exist in the list of features", atest);
 
-		assertEquals(features.size(), 0);
+		assertEquals(features.size(), 3);
 	}
 
 	@Test
@@ -63,7 +64,7 @@ public class FeatureShingleTest {
 		String doc = "This is a test";
 		List<String> features = shingleWords.getFeatures(doc);
 
-		boolean test = features.remove("test");
+		boolean test = features.contains("test");
 		assertFalse("'test' exist in the list of features, but should not exists", test);
 	}
 
@@ -73,15 +74,16 @@ public class FeatureShingleTest {
 		String docSen = "This is a test. Yes. No more inspiration right now.";
 		List<String> features = shingleSentences.getFeatures(docSen);
 
-		boolean first = features.remove("This is a test");
+		boolean first = features.contains("This is a test");
 		assertTrue("'This is a test' does not exist in the list of features", first);
-		boolean second = features.remove("Yes");
+		boolean second = features.contains("Yes");
 		assertTrue("'Yes' does not exist in the list of features", second);
-		boolean third = features.remove("No more inspiration right now.");
+		boolean third = features.contains("No more inspiration right now.");
 		assertTrue("'No more inspiration right now.' does not exist in the list of features",
 		        third);
-
-		assertEquals(features.size(), 0);
+		
+		assertNotNull(shingleSentences.toString());
+		assertEquals(features.size(), 3);
 	}
 
 	@Test
@@ -90,13 +92,13 @@ public class FeatureShingleTest {
 		String docSen = "This is a test. Yes. No more inspiration right now.";
 		List<String> features = shingleSentences.getFeatures(docSen);
 
-		boolean first = features.remove("This is a testYes");
+		boolean first = features.contains("This is a testYes");
 		assertTrue("'This is a testYes' does not exist in the list of features", first);
-		boolean second = features.remove("YesNo more inspiration right now.");
+		boolean second = features.contains("YesNo more inspiration right now.");
 		assertTrue("'YesNo more inspiration right now.' does not exist in the list of features",
 		        second);
 
-		assertEquals(features.size(), 0);
+		assertEquals(features.size(), 2);
 	}
 
 	@Test
@@ -105,7 +107,7 @@ public class FeatureShingleTest {
 		String docSen = "This is a test. Yes. No more inspiration right now.";
 		List<String> features = shingleSentences.getFeatures(docSen);
 
-		boolean first = features.remove("No more inspiration right now.");
+		boolean first = features.contains("No more inspiration right now.");
 		assertFalse(
 		        "'No more inspiration right now.' exists in the list of features, but should not",
 		        first);
@@ -169,11 +171,22 @@ public class FeatureShingleTest {
 	@Test(expected = FeatureException.class)
 	public void testFeatureSizeSentencesOffBoundary() throws FeatureException {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(3, FeatureShingles.SizeType.SENTENCES));
+		features.add(FeatureShingles.withSize(3, FeatureShingles.SizeType.SENTENCES));
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String strippedDom = "This is some text for the test. Will it work.";
 		ndd.generateFingerprint(strippedDom);
+	} 
+	
+	@Test
+	public void testFeatureShingleWithRegex() {
+		String doc = "1_2_3_4_5"; 
+		FeatureShingles feature = FeatureShingles.withSize(3, "_");
+		List<String> elements = feature.getFeatures(doc);
+		assertEquals(elements.get(0),"123");
+		assertEquals(elements.get(1),"234");
+		assertEquals(elements.get(2),"345"); 
+		assertEquals(elements.size(), 3);
 	}
 }

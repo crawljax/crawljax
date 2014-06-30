@@ -1,6 +1,5 @@
 package com.crawljax.core.state.duplicatedetection;
 
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -200,4 +199,28 @@ public class BroderFingerprintTest {
 		BroderFingerprint hash2 = new BroderFingerprint(set2);
 		assertFalse(hash1.equals(hash2));
 	}
+	
+	@Test(expected=DuplicateDetectionException.class)
+	public void testInvalidThresholdException() {
+		int[] set1 = { 1111, 0000 };
+		new BroderFingerprint(set1,42);
+	}
+	
+	@Test(expected=DuplicateDetectionException.class)
+	public void testInvalidThresholdException2() {
+		int[] set1 = { 1111, 0000 };
+		new BroderFingerprint(set1,-1);
+	}
+	
+	@Test
+	public void testCrawlhashFingerprint() {
+		final double threshold = 0.2;
+		int[] set1 = { 1111, 0000 };
+		Fingerprint fingerprint = new BroderFingerprint(set1, threshold);
+		assertNotNull(fingerprint.toString());
+		assertEquals(fingerprint.getDefaultThreshold(),threshold,0.01);
+		assertEquals(fingerprint.getThresholdLowerlimit(), 0, 0.01);
+		assertEquals(fingerprint.getThresholdUpperlimit(), 1, 0.01);
+	}
+	
 }

@@ -33,6 +33,7 @@ public class XxHashGeneratorTest {
 	@Test(expected = NullPointerException.class)
 	public void testGenerateHashNull() {
 		XxHashGenerator hg = new XxHashGenerator();
+		assertNotNull(hg.toString());
 		hg.generateHash(null);
 	}
 

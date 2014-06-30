@@ -108,7 +108,7 @@ footer small {
 				</div>
 			</div>
 		</div>
-		
+		#if ($stats.duplicateDetectionStats) 
 		<div id="duplicate-detection-slider" style="width:35%; margin:auto; text-align:center;">
 			<script type="text/javascript">
 				
@@ -121,7 +121,7 @@ footer small {
 			<input id="thresholdSlider" type="range"  min=${stats.duplicateDetectionStats.threshold} 
 				max="${stats.duplicateDetectionStats.maxThreshold}" value=${stats.duplicateDetectionStats.threshold} step="${stats.duplicateDetectionStats.stepsize}" />
 		</div>
-		
+		#end
 		<div class="container page" id="container-statistics" style="display: none;">
 			#parse( "statistics.html" )
 		</div>

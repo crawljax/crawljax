@@ -185,4 +185,24 @@ public class CrawlhashFingerprintTest {
 		Fingerprint hash2 = new CrawlhashFingerprint(Integer.parseInt("1111", 2));
 		assertFalse(hash1.equals(hash2));
 	}
+	
+	@Test(expected=DuplicateDetectionException.class)
+	public void testInvalidThresholdException() {
+		new CrawlhashFingerprint(Integer.parseInt("1000", 2), 42);
+	}
+	
+	@Test(expected=DuplicateDetectionException.class)
+	public void testInvalidThresholdException2() {
+		new CrawlhashFingerprint(Integer.parseInt("1000", 2), -1);
+	}
+	
+	@Test
+	public void testCrawlhashFingerprint() {
+		final double threshold = 2;
+		Fingerprint fingerprint = new CrawlhashFingerprint(Integer.parseInt("1000", 2), threshold);
+		assertNotNull(fingerprint.toString());
+		assertEquals(fingerprint.getDefaultThreshold(),threshold,0.01);
+		assertEquals(fingerprint.getThresholdLowerlimit(), 0, 0.01);
+		assertEquals(fingerprint.getThresholdUpperlimit(), 32, 0.01);
+	}
 }

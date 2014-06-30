@@ -76,7 +76,8 @@ public class BroderFingerprint implements Fingerprint {
 	 * 
 	 * @param other
 	 *            the Fingerprint of which the type should be the same as this.
-	 * @return Broderfingerprint if other is a Broderfingerprint, else a Runtime-exception is thrown.
+	 * @return Broderfingerprint if other is a Broderfingerprint, else a Runtime-exception is
+	 *         thrown.
 	 */
 	private BroderFingerprint fingerprintTypeCheck(Fingerprint other) {
 		if (!this.getClass().isInstance(other))
@@ -87,8 +88,8 @@ public class BroderFingerprint implements Fingerprint {
 	}
 
 	/**
-	 * Calculate the <a href="http://en.wikipedia.org/wiki/Jaccard_index">Jaccard Coefficient</a> of two sets of
-	 * integers.
+	 * Calculate the <a href="http://en.wikipedia.org/wiki/Jaccard_index">Jaccard Coefficient</a> of
+	 * two sets of integers.
 	 * 
 	 * @param state1
 	 *            first set of integers
@@ -124,12 +125,6 @@ public class BroderFingerprint implements Fingerprint {
 		if (!Arrays.equals(hashes, other.hashes))
 			return false;
 		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		return prime + Arrays.hashCode(hashes);
 	}
 
 	/**
