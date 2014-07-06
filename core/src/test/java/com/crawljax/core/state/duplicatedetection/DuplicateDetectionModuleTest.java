@@ -23,7 +23,7 @@ public class DuplicateDetectionModuleTest {
 	@Test
 	public void testDuplicateDetectionModuleCustomNdd() {
 		List<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
+		features.add(new FeatureShingles(2, FeatureShingles.ShingleType.WORDS));
 		NearDuplicateDetection defaultNdd = new NearDuplicateDetectionBroder(5, ImmutableList.copyOf(features));
 		DuplicateDetectionModule ddm = new DuplicateDetectionModule(defaultNdd);
 		NearDuplicateDetection ndd = ddm.provideNearDuplicateDetection(new XxHashGenerator());

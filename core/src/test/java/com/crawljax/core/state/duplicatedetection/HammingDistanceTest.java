@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.crawljax.core.state.duplicatedetection.CrawlhashFingerprint;
 import com.crawljax.core.state.duplicatedetection.FeatureShingles;
-import com.crawljax.core.state.duplicatedetection.FeatureShingles.SizeType;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles.ShingleType;
 import com.crawljax.core.state.duplicatedetection.FeatureType;
 import com.crawljax.core.state.duplicatedetection.Fingerprint;
 import com.crawljax.core.state.duplicatedetection.HashGenerator;
@@ -54,7 +54,7 @@ public class HammingDistanceTest {
 	public void testIsNearDuplicateOnBoundary() {
 		HashGenerator hasher = new XxHashGenerator();
 		List<FeatureType> features = new ArrayList<>();
-		features.add(new FeatureShingles(2, SizeType.CHARS));
+		features.add(new FeatureShingles(2, ShingleType.CHARS));
 		NearDuplicateDetectionCrawlhash crawlhash =
 		        new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
 		String hash = "01111111111111111111111111111111";
@@ -80,7 +80,7 @@ public class HammingDistanceTest {
 	public void testIsNearDuplicateOfBoundary() {
 		HashGenerator hasher = new XxHashGenerator();
 		List<FeatureType> features = new ArrayList<>();
-		features.add(new FeatureShingles(2, SizeType.CHARS));
+		features.add(new FeatureShingles(2, ShingleType.CHARS));
 		NearDuplicateDetectionCrawlhash crawlhash =
 		        new NearDuplicateDetectionCrawlhash(2, ImmutableList.copyOf(features), hasher);
 		String hash = "01111111111111111111111111111111";

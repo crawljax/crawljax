@@ -18,7 +18,7 @@ public class DuplicateDetectionIntegrationTest {
 	public void BroderGenerateAndCompare() {
 		// Setup
 		List<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(1, FeatureShingles.SizeType.WORDS));
+		features.add(new FeatureShingles(1, FeatureShingles.ShingleType.WORDS));
 		HashGenerator hashGenerator = new XxHashGenerator();
 		NearDuplicateDetection ndd =
 		        new NearDuplicateDetectionBroder(0.2, ImmutableList.copyOf(features), hashGenerator);
@@ -43,7 +43,7 @@ public class DuplicateDetectionIntegrationTest {
 	public void CrawlhashGenerateAndCompare() {
 		// Setup
 		List<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(1, FeatureShingles.SizeType.WORDS));
+		features.add(new FeatureShingles(1, FeatureShingles.ShingleType.WORDS));
 		HashGenerator hashGenerator = new XxHashGenerator();
 		NearDuplicateDetection ndd =
 		        new NearDuplicateDetectionCrawlhash(2, ImmutableList.copyOf(features), hashGenerator);

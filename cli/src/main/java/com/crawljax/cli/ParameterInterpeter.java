@@ -18,6 +18,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles.ShingleType;
 import com.google.common.base.Joiner;
 
 class ParameterInterpeter {
@@ -44,6 +45,12 @@ class ParameterInterpeter {
 	static final String WAIT_AFTER_EVENT = "waitAfterEvent";
 	static final String LOG_FILE = "log";
 	static final String CLICK = "click";
+	static final String BRODER_DUPLICATE_DETECTION = "useBroder";
+	static final String CRAWLHASH_DUPLICATE_DETECTION = "useCrawlhash";
+	static final String THRESHOLD = "threshold";
+	static final String FEATURE_TYPE = "featureType";
+	static final String FEATURE_SIZE = "featureSize";
+	
 
 	private final Options options;
 	private final CommandLine parameters;
@@ -96,7 +103,15 @@ class ParameterInterpeter {
 		                + CrawlRules.DEFAULT_WAIT_AFTER_RELOAD);
 
 		options.addOption("v", VERBOSE, false, "Be extra verbose");
+		
 		options.addOption(LOG_FILE, true, "Log to this file instead of the console");
+		
+		//Duplicate Detection options		
+		options.addOption(BRODER_DUPLICATE_DETECTION,  false, "Use the near-duplicate detection using Broder's algorithm.");
+		options.addOption(CRAWLHASH_DUPLICATE_DETECTION,  false, "Use the near-duplicate detection using Broder's algorithm.");
+		options.addOption(THRESHOLD,  true, "Set a threshold for Broder or Crawlhash near-duplicate detection.");
+		options.addOption(FEATURE_SIZE,  true, "set the feature-size for a feature-type.");
+		options.addOption(FEATURE_TYPE,  true, "set the feature-type used in Broder or Crawlhash near-duplicate detection.");
 
 		return options;
 	}
@@ -260,7 +275,64 @@ class ParameterInterpeter {
 		return Long.parseLong(parameters.getOptionValue(WAIT_AFTER_RELOAD));
 	}
 
-	public String getSpecifiedRemoteBrowser() {
+	String getSpecifiedRemoteBrowser() {
 		return parameters.getOptionValue(BROWSER_REMOTE_URL);
+	}
+
+	// Duplicate Detection arguments
+	boolean specifiesUseBroder() {
+		return parameters.hasOption(BRODER_DUPLICATE_DETECTION);
+	}
+
+	boolean specifiesUseCrawlhash() {
+		return parameters.hasOption(CRAWLHASH_DUPLICATE_DETECTION);
+	}
+
+	double getSpecifiedThreshold() {
+		return Double.parseDouble(parameters.getOptionValue(THRESHOLD));
+	}
+
+	int getSpecifiedFeatureSize() {
+		return Integer.parseInt(parameters.getOptionValue(FEATURE_SIZE));
+	}
+
+	ShingleType getSpecifiedFeatureType() {
+		String featureType = parameters.getOptionValue(FEATURE_TYPE);
+		for (ShingleType type : ShingleType.values()) {
+			String[] args = featureType.split(":");
+			if (type.name().equalsIgnoreCase(args[0])) {
+				return type;
+			}
+		}
+		throw new IllegalArgumentException("Unrecognized FeatureType: '" + featureType
+		        + "'. Available FeatureTypes are: " + availableFeatureTypes());
+	}
+
+	boolean specifiesThreshold() {
+		return parameters.hasOption(THRESHOLD);
+	}
+
+	boolean specifiesFeatureSize() {
+		return parameters.hasOption(FEATURE_SIZE);
+	}
+
+	boolean specifiesFeatureType() {
+		return parameters.hasOption(FEATURE_TYPE);
+	}
+
+	String getSpecifiedFeatureRegEx() {
+		String featureType = parameters.getOptionValue(FEATURE_TYPE);
+		if (getSpecifiedFeatureType() == ShingleType.REGEX) {
+			String[] parts = featureType.split(":");
+			if (parts.length != 2)
+				throw new IllegalArgumentException(
+				        "REGEX-type was provided without a valid regular expression. Syntax: regex:<REGEX-HERE> (without <>)");
+			return parts[1];
+		}
+		throw new IllegalArgumentException("Unrecognized Regular Expression: '" + featureType);
+	}
+
+	private String availableFeatureTypes() {
+		return Joiner.on(", ").join(ShingleType.values());
 	}
 }

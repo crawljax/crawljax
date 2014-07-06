@@ -8,7 +8,11 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.state.NDDStateVertexFactory;
 import com.crawljax.core.state.duplicatedetection.*;
-import com.crawljax.core.state.duplicatedetection.FeatureShingles.SizeType;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles.ShingleType;
+import com.crawljax.domcomparators.AttributesStripper;
+import com.crawljax.domcomparators.DomStructureStripper;
+import com.crawljax.domcomparators.HeadStripper;
+import com.crawljax.domcomparators.RedundantWhiteSpaceStripper;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.google.common.collect.ImmutableList;
 
@@ -26,9 +30,10 @@ public class DuplicateDetectionExample {
 	public static void main(String[] args) {
 		// Setup the custom near-duplicate detection.
 		// We will use a feature of 2 WORDS to generate fingerprints.
-		FeatureType feature = FeatureShingles.withSize(2, SizeType.WORDS);
+		FeatureType feature = FeatureShingles.withSize(2, ShingleType.WORDS);
 		List<FeatureType> features = new ArrayList<FeatureType>();
 		features.add(feature);
+		
 		// Broder's algorithm for the fingerprint-generation;
 		NearDuplicateDetection ndd =
 		        new NearDuplicateDetectionBroder(THRESHOLD, ImmutableList.copyOf(features));
@@ -40,6 +45,12 @@ public class DuplicateDetectionExample {
 		// Set a custom near-duplicate detection Factory.
 		builder.setNearDuplicateDetectionFactory(ndd);
 
+		// Use recommended strippers for the words-type
+		builder.addDomStripper(new HeadStripper());
+		builder.addDomStripper(new DomStructureStripper());
+		builder.addDomStripper(new AttributesStripper());
+		builder.addDomStripper(new RedundantWhiteSpaceStripper());
+		
 		// Run crawler
 		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 		crawljax.call();

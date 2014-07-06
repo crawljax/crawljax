@@ -7,14 +7,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.crawljax.core.state.duplicatedetection.FeatureShingles.SizeType;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles.ShingleType;
 import com.google.common.collect.ImmutableList;
 
 public class FeatureShingleTest {
 
 	@Test
 	public void testShingleChars() throws FeatureException {
-		FeatureType shingleChars = new FeatureShingles(3, FeatureShingles.SizeType.CHARS);
+		FeatureType shingleChars = new FeatureShingles(3, FeatureShingles.ShingleType.CHARS);
 		String doc = "Test ha";
 		List<String> features = shingleChars.getFeatures(doc);
 
@@ -34,7 +34,7 @@ public class FeatureShingleTest {
 
 	@Test
 	public void testShingleCharNotExist() throws FeatureException {
-		FeatureType shingleChars = new FeatureShingles(3, FeatureShingles.SizeType.CHARS);
+		FeatureType shingleChars = new FeatureShingles(3, FeatureShingles.ShingleType.CHARS);
 		String doc = "Test ha";
 		List<String> features = shingleChars.getFeatures(doc);
 
@@ -44,7 +44,7 @@ public class FeatureShingleTest {
 
 	@Test
 	public void testShingleWords() throws FeatureException {
-		FeatureType shingleWords = new FeatureShingles(2, FeatureShingles.SizeType.WORDS);
+		FeatureType shingleWords = new FeatureShingles(2, FeatureShingles.ShingleType.WORDS);
 		String doc = "This is a test";
 		List<String> features = shingleWords.getFeatures(doc);
 
@@ -60,7 +60,7 @@ public class FeatureShingleTest {
 
 	@Test
 	public void testShingleWordNotExist() throws FeatureException {
-		FeatureType shingleWords = new FeatureShingles(2, FeatureShingles.SizeType.WORDS);
+		FeatureType shingleWords = new FeatureShingles(2, FeatureShingles.ShingleType.WORDS);
 		String doc = "This is a test";
 		List<String> features = shingleWords.getFeatures(doc);
 
@@ -70,7 +70,7 @@ public class FeatureShingleTest {
 
 	@Test
 	public void testShingleSentencesSizeOne() throws FeatureException {
-		FeatureType shingleSentences = new FeatureShingles(1, FeatureShingles.SizeType.SENTENCES);
+		FeatureType shingleSentences = new FeatureShingles(1, FeatureShingles.ShingleType.SENTENCES);
 		String docSen = "This is a test. Yes. No more inspiration right now.";
 		List<String> features = shingleSentences.getFeatures(docSen);
 
@@ -88,7 +88,7 @@ public class FeatureShingleTest {
 
 	@Test
 	public void testShingleSentencesSizeTwo() throws FeatureException {
-		FeatureType shingleSentences = new FeatureShingles(2, FeatureShingles.SizeType.SENTENCES);
+		FeatureType shingleSentences = new FeatureShingles(2, FeatureShingles.ShingleType.SENTENCES);
 		String docSen = "This is a test. Yes. No more inspiration right now.";
 		List<String> features = shingleSentences.getFeatures(docSen);
 
@@ -103,7 +103,7 @@ public class FeatureShingleTest {
 
 	@Test
 	public void testShingleSentencesNotExist() throws FeatureException {
-		FeatureType shingleSentences = new FeatureShingles(2, FeatureShingles.SizeType.SENTENCES);
+		FeatureType shingleSentences = new FeatureShingles(2, FeatureShingles.ShingleType.SENTENCES);
 		String docSen = "This is a test. Yes. No more inspiration right now.";
 		List<String> features = shingleSentences.getFeatures(docSen);
 
@@ -116,7 +116,7 @@ public class FeatureShingleTest {
 	@Test
 	public void testFeatureSizeOnBoundary() throws FeatureException {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(7, FeatureShingles.SizeType.WORDS));
+		features.add(new FeatureShingles(7, FeatureShingles.ShingleType.WORDS));
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
@@ -127,7 +127,7 @@ public class FeatureShingleTest {
 	@Test(expected = FeatureException.class)
 	public void testFeatureSizeWordsOffBoundary() throws FeatureException {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(8, FeatureShingles.SizeType.WORDS));
+		features.add(new FeatureShingles(8, FeatureShingles.ShingleType.WORDS));
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
@@ -138,7 +138,7 @@ public class FeatureShingleTest {
 	@Test
 	public void testFeatureSizeCharsOnBoundary() throws FeatureException {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(14, FeatureShingles.SizeType.CHARS));
+		features.add(new FeatureShingles(14, FeatureShingles.ShingleType.CHARS));
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
@@ -149,7 +149,7 @@ public class FeatureShingleTest {
 	@Test(expected = FeatureException.class)
 	public void testFeatureSizeCharsOffBoundary() throws FeatureException {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(15, FeatureShingles.SizeType.CHARS));
+		features.add(new FeatureShingles(15, FeatureShingles.ShingleType.CHARS));
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
@@ -160,7 +160,7 @@ public class FeatureShingleTest {
 	@Test
 	public void testFeatureSizeSentencesOnBoundary() throws FeatureException {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(new FeatureShingles(2, FeatureShingles.SizeType.SENTENCES));
+		features.add(new FeatureShingles(2, FeatureShingles.ShingleType.SENTENCES));
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);
@@ -171,7 +171,7 @@ public class FeatureShingleTest {
 	@Test(expected = FeatureException.class)
 	public void testFeatureSizeSentencesOffBoundary() throws FeatureException {
 		ArrayList<FeatureType> features = new ArrayList<FeatureType>();
-		features.add(FeatureShingles.withSize(3, FeatureShingles.SizeType.SENTENCES));
+		features.add(FeatureShingles.withSize(3, FeatureShingles.ShingleType.SENTENCES));
 
 		HashGenerator hasher = new XxHashGenerator();
 		NearDuplicateDetection ndd = new NearDuplicateDetectionCrawlhash(3, ImmutableList.copyOf(features), hasher);

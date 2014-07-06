@@ -12,11 +12,11 @@ public class FeatureShingles implements FeatureType {
 	/**
 	 * Specifies the type of chunks used to be shingled.
 	 */
-	public enum SizeType {
+	public enum ShingleType {
 		CHARS, WORDS, SENTENCES, REGEX
 	}
 
-	private final SizeType type;
+	private final ShingleType type;
 	private final int size;
 	private String regex;
 
@@ -29,7 +29,7 @@ public class FeatureShingles implements FeatureType {
 	 *            a predefined type of shingle.
 	 * @return FeatureShingle with a given size and the provided type.
 	 */
-	public static FeatureShingles withSize(int size, SizeType type) {
+	public static FeatureShingles withSize(int size, ShingleType type) {
 		return new FeatureShingles(size, type);
 	}
 
@@ -51,9 +51,13 @@ public class FeatureShingles implements FeatureType {
 	 * @param size
 	 *            represents the size of a single shingle in the number of chunks.
 	 * @param type
-	 *            the SizeType to be used for the shingles.
+	 *            the ShingleType to be used for the shingles.
 	 */
-	FeatureShingles(int size, SizeType type) {
+	FeatureShingles(int size, ShingleType type) {
+		if(size < 0) 
+			throw new FeatureException("Feature-size cannot be negative, was " + size + ".");
+		if(type.equals(ShingleType.REGEX))
+			throw new FeatureException("Cannot define a REGEX-type without regular expression.");
 		this.type = type;
 		this.size = size;
 	}
@@ -66,13 +70,17 @@ public class FeatureShingles implements FeatureType {
 	 * @see java.util.regex.Pattern
 	 */
 	FeatureShingles(int size, String regex) {
-		this.type = SizeType.REGEX;
+		if(size < 0) 
+			throw new FeatureException("Feature-size cannot be negative, was " + size + ".");
+		if(regex == null)
+			throw new FeatureException("Regular Expression cannot be null, when the type is REGEX.");
+		this.type = ShingleType.REGEX;
 		this.size = size;
 		this.regex = regex;
 	}
 
 	/**
-	 * Given a doc, the relevant set of shingles is generated, using the predefined SizeType.
+	 * Given a doc, the relevant set of shingles is generated, using the predefined ShingleType.
 	 * 
 	 * @param doc
 	 *            the document of the shingles
@@ -96,7 +104,7 @@ public class FeatureShingles implements FeatureType {
 	 * @throws FeatureException
 	 *             Unknown feature-type or document to small for feature-generation.
 	 */
-	private String[] getFeatures(SizeType type, String doc) throws FeatureException {
+	private String[] getFeatures(ShingleType type, String doc) throws FeatureException {
 		switch (type) {
 			case CHARS:
 				return this.getChars(doc);
@@ -193,6 +201,7 @@ public class FeatureShingles implements FeatureType {
 	}
 
 	public String toString() {
-		return "FeatureShingles[" + size + ", " + type + ", " + regex + "]";
+		String regex = this.regex != null ? ", " + this.regex : "";
+		return "FeatureShingles[" + size + ", " + type + regex + "]";
 	}
 }
