@@ -1,0 +1,42 @@
+<form id="config_form" class="form-horizontal">
+	<fieldset>
+		<div class="well" ng-repeat="plugin in config.plugins">
+			<div class="row">
+				<div class="span4">
+					<legend>{{plugin.name}}</legend>
+				</div>
+				<div class="pull-right">
+					<select ng-model="plugin.id" ng-change="setPlugin(plugin, plugin.id)" ng-options="option.id as option.id for option in plugins" required="true">
+						<option value=''>Select Plugin</option>
+					</select>
+					<span class="hint">Please select a plugin.</span>
+				</div>
+			</div>
+			<div class="control-group" ng-repeat="parameter in plugin.parameters">
+				<div ng-if="parameter.type=='textbox'">
+					<label class="control-label">{{parameter.displayName}}</label>
+					<input type="text" ng-model="parameter.value" />
+				</div>
+				<div ng-if="parameter.type=='checkbox'" class="controls">
+					<label class="checkbox">
+						<input type="checkbox" ng-model="parameter.value" /> {{parameter.displayName}}
+					</label>
+				</div>
+				<div ng-if="parameter.type=='select'">
+					<label class="control-label">{{parameter.displayName}}</label>
+					<select ng-model="parameter.value" ng-options="key for (key, value) in parameter.options"></select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="pull-right">
+					<a ng-click="configAdd.deletePlugin(config, $index)" style="float: right">
+						<i class="icon-remove"></i> Remove Plugin
+					</a>
+				</div>
+			</div>
+		</div>
+		<a ng-click="configAdd.addPlugin(config)">
+			<i class="icon-plus"></i> Add Plugin
+		</a>
+	</fieldset>
+</form>

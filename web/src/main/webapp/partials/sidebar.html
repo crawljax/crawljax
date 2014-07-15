@@ -1,0 +1,29 @@
+<ol class="breadcrumb well" ng-controller="BreadcrumbController" id="breadcrumb">
+	<li ng-repeat="link in links" ng-class="{'active': $last}">
+		<a ui-sref="{{link.target}}" ng-if="!$last">{{link.text}}</a>
+		<span ng-if="$last">{{link.text}}</span>
+	</li>
+</ol>
+<div ng-controller="SideNavController" id="sideNav">
+	<div class="well sidebar-nav" ng-if="links.length > 0">
+		<ul class="nav nav-list">
+			<li ng-repeat="link in links">
+				<a ui-sref="{{link.target}}" ng-if="link.action != true"><i class="{{link.icon}}"></i> {{link.text}}</a>
+				<a ng-click="rest(link)" ng-if="link.action == true"><i class="{{link.icon}}"></i> {{link.text}}</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div ng-controller="CrawlQueueController" id="crawlQueue" class="well sidebar-nav">
+	<ul class="nav nav-list">
+		<li class="nav-header">CRAWL EXECUTION QUEUE</li>
+		<li ng-repeat="item in queue" ng-if="queue.length > 0">
+			<a ui-sref="crawl({crawlId: item.id})">#{{item.id}}</a>
+			{{item.configurationName}} - <i>{{item.crawlStatus}}</i>
+		</li>
+		<li ng-if="queue.length == 0">
+			<i>empty</i>
+		</li>
+	</ul>
+</div>
+<div id="notification" class="alert alert-mute">Notifications</div>

@@ -1,0 +1,60 @@
+<form id="config_form" class="form-horizontal">
+	<fieldset>
+		<legend>General Information</legend>
+		<div class="control-group">
+			<label class="control-label">Name:</label>
+			<input type="text" ng-model="config.name" ng-readonly="true" />
+		</div>
+		<div class="control-group">
+			<label class="control-label">Site:</label>
+			<input type="text" ng-model="config.url" required="true" pattern="(http|https)://.+" />
+			<span class="hint">Must provide a valid url. http://www.example.com</span>
+		</div>
+		<div class="control-group">
+			<label class="control-label">Browser:</label>
+			<select ng-model="config.browser" >
+				<option ng-repeat="browser in browsers" value="{{browser.value}}">{{browser.name}}</option>
+			</select>
+		</div>
+		<div class="control-group">
+			<label class="control-label">Number of Browsers:</label>
+			<input type="number" ng-model="config.numBrowsers" min="1" />
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label class="checkbox">
+					<input type="checkbox" ng-model="config.bootBrowser" checked="checked" />
+					Boot Browsers at Start
+				</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">Maximum Crawl Depth:</label>
+			<input type="number" ng-model="config.maxDepth" min="0" />
+		</div>
+		<div class="control-group">
+			<label class="control-label">Maximum Crawl States:</label>
+			<input type="number" ng-model="config.maxState" min="0" />
+		</div>
+		<div class="control-group">
+			<label class="control-label">Maximum Duration (min):</label>
+			<input type="number" ng-model="config.maxDuration" min="0" />
+		</div>
+		<div class="control-group">
+			<label class="control-label">Event Wait Time (ms):</label>
+			<input type="number" ng-model="config.eventWaitTime" min="0" />
+		</div>
+		<div class="control-group">
+			<label class="control-label">Reload Wait Time (ms):</label>
+			<input type="number" ng-model="config.reloadWaitTime" min="0" />
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<label class="checkbox">
+					<input type="checkbox" ng-model="config.clickOnce" checked="checked" />
+					Click Elements Once
+				</label>
+			</div>
+		</div>
+	</fieldset>
+</form>
