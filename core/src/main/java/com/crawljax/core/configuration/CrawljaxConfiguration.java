@@ -13,10 +13,12 @@ import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.state.NDDStateVertexFactory;
 import com.crawljax.core.state.StateVertexFactory;
-import com.crawljax.domcomparators.DomTextContentStripper;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetection;
 import com.crawljax.domcomparators.AttributesStripper;
 import com.crawljax.domcomparators.DomStripper;
+import com.crawljax.domcomparators.DomTextContentStripper;
 import com.crawljax.domcomparators.ValidDomStripper;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -28,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 public class CrawljaxConfiguration {
 
 	public static class CrawljaxConfigurationBuilder {
-
+		
 		private final ImmutableList.Builder<Plugin> pluginBuilder = ImmutableList.builder();
 		private final ImmutableList.Builder<ValidDomStripper> validStrippers = ImmutableList.builder();
 		private final ImmutableList.Builder<DomStripper> strippers = ImmutableList.builder();
@@ -115,7 +117,7 @@ public class CrawljaxConfiguration {
 			config.maximumDepth = 0;
 			return this;
 		}
-
+		
 		/**
 		 * Add plugins to Crawljax. Note that without plugins, Crawljax won't give any ouput. For basic output at least
 		 * enable the CrawlOverviewPlugin. <p> You can call this method several times to add multiple plugins </p>
@@ -166,6 +168,35 @@ public class CrawljaxConfiguration {
 		public CrawljaxConfigurationBuilder setStateVertexFactory(StateVertexFactory vertexFactory) {
 			Preconditions.checkNotNull(vertexFactory);
 			config.stateVertexFactory = vertexFactory;
+			return this;
+		}
+		
+		/**
+		 * <p>Set a custom {@link com.crawljax.core.state.duplicatedetection.NearDuplicateDetection}, which resembles a
+		 * particular type of near-duplicate detection algorithm.</p>
+		 * 
+		 * <p>To enable near-duplicate detection a {@link com.crawljax.core.state.NDDStateVertexFactory} needs to be set.
+		 * Therefore, if no stateVertexFactory has been set yet, the default NDDStateVertexFactory will be set.</p>
+		 * 
+		 * <p>Keep in mind that the near-duplicate detection process depends on the stripped DOM. So different 
+		 * DOM strippers will lead to different to different performances of the duplicate detection.</p>
+		 * 
+		 * Recommended set of DOM strippers to use with the default duplicate detection settings:
+		 * <ul>
+		 * <li>{@link com.crawljax.domcomparators.HeadStripper}</li>
+		 * <li>{@link com.crawljax.domcomparators.DomStructureStripper</li>
+		 * <li>{@link com.crawljax.domcomparators.AttributeStripper}</li>
+		 * <li>{@link com.crawljax.domcomparators.WhiteSpaceStripper}</li>
+		 * </ul>
+		 * 
+		 * @param factory a NearDuplicateDetection-factory.
+		 * @return The builder for method chaining.
+		 */
+		public CrawljaxConfigurationBuilder setNearDuplicateDetectionFactory(NearDuplicateDetection factory) {
+			Preconditions.checkNotNull(factory);
+			config.nearDuplicateDetectionFactory = factory;
+			if(config.stateVertexFactory == null)
+				this.setStateVertexFactory(new NDDStateVertexFactory());
 			return this;
 		}
 
@@ -299,11 +330,11 @@ public class CrawljaxConfiguration {
 	;
 	private int maximumDepth = 2;
 	private File output = new File("out");
-
 	private StateVertexFactory stateVertexFactory;
+	
+	private NearDuplicateDetection nearDuplicateDetectionFactory;
 
-	private CrawljaxConfiguration() {
-	}
+	private CrawljaxConfiguration() {}
 
 	public URI getUrl() {
 		return url;
@@ -340,7 +371,11 @@ public class CrawljaxConfiguration {
 	public File getOutputDir() {
 		return output;
 	}
-
+	
+	public NearDuplicateDetection getNearDuplicateDetectionFactory() {
+		return nearDuplicateDetectionFactory;
+	}
+	
 	public ImmutableList<DomStripper> getStrippers() {
 		return strippers;
 	}
@@ -356,7 +391,7 @@ public class CrawljaxConfiguration {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(url, browserConfig, plugins, proxyConfiguration, crawlRules,
-				maximumStates, maximumRuntime, maximumDepth, strippers, validStrippers);
+				maximumStates, maximumRuntime, maximumDepth, strippers, validStrippers, nearDuplicateDetectionFactory);
 	}
 
 	@Override

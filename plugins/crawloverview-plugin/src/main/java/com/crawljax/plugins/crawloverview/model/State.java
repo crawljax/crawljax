@@ -1,5 +1,8 @@
 package com.crawljax.plugins.crawloverview.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.concurrent.Immutable;
 
 import com.crawljax.core.state.StateVertex;
@@ -20,10 +23,11 @@ public class State {
 	private final int fanOut;
 	private final int id;
 	private final ImmutableList<String> failedEvents;
-
+	private final Map<String,Double> duplicateDistance;
+	
 	public State(StateVertex state, int fanIn, int fanOut,
 	        ImmutableList<CandidateElementPosition> candidates,
-	        ImmutableList<String> failedEvents) {
+	        ImmutableList<String> failedEvents, Map<String,Double> differenceDistance) {
 		this.fanIn = fanIn;
 		this.fanOut = fanOut;
 		candidateElements = candidates;
@@ -31,6 +35,7 @@ public class State {
 		this.name = state.getName();
 		this.url = state.getUrl();
 		this.id = state.getId();
+		this.duplicateDistance = differenceDistance;
 	}
 
 	@JsonCreator
@@ -40,7 +45,8 @@ public class State {
 	        @JsonProperty("candidateElements") ImmutableList<CandidateElementPosition> candidateElements,
 	        @JsonProperty("fanIn") int fanIn, @JsonProperty("fanOut") int fanOut,
 	        @JsonProperty("id") int id,
-	        @JsonProperty("failedEvents") ImmutableList<String> failedEvents) {
+	        @JsonProperty("failedEvents") ImmutableList<String> failedEvents,
+	        @JsonProperty("differenceDistance") HashMap<String,Double> duplicateDistance) {
 		super();
 		this.name = name;
 		this.url = url;
@@ -49,6 +55,7 @@ public class State {
 		this.fanOut = fanOut;
 		this.id = id;
 		this.failedEvents = failedEvents;
+		this.duplicateDistance = duplicateDistance;
 	}
 
 	public String getName() {
@@ -70,6 +77,7 @@ public class State {
 	public int getFanOut() {
 		return fanOut;
 	}
+	
 
 	public int getId() {
 		return id;
@@ -85,6 +93,9 @@ public class State {
 		        id, failedEvents);
 	}
 
+	public Map<String,Double> getDuplicateDistance() {
+		return duplicateDistance;
+	}
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof State) {

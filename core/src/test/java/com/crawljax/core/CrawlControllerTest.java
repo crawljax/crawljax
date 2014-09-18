@@ -142,6 +142,7 @@ public class CrawlControllerTest {
 		crawlSessionProvider = new CrawlSessionProvider(graph, config, new MetricRegistry());
 
 		Plugins plugins = new Plugins(config, new MetricRegistry());
+		
 		controller = new CrawlController(executor, consumerFactory, config, consumersDoneLatch,
 		        crawlSessionProvider, plugins);
 

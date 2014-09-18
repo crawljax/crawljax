@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,12 +41,13 @@ public class SerializeTest {
 		ImmutableList<CandidateElementPosition> candidateElements =
 		        ImmutableList.of(new CandidateElementPosition("a/b/c", new Point(1, 2),
 		                new Dimension(3, 4)));
+		
 		State state1 =
 		        new State("state1", "http://example.com/a", candidateElements, 1, 1, 1,
-		                ImmutableList.of("failedEvent1"));
+		        		ImmutableList.of("failedEvent1"), new HashMap<String,Double>());
 		State state2 =
 		        new State("state2", "http://example.com/b", candidateElements, 1, 1, 1,
-		                ImmutableList.of("failedEvent2"));
+		                ImmutableList.of("failedEvent2"), new HashMap<String,Double>());
 		ImmutableMap<String, State> states =
 		        ImmutableMap.of(state1.getName(), state1, state2.getName(), state2);
 		ImmutableList<Edge> edges =
@@ -57,7 +59,8 @@ public class SerializeTest {
 
 	private Statistics newStatistics(Collection<State> states) {
 		StateStatistics stateStats = new StateStatistics(states);
-		return new Statistics("1 hour", 1, "2KB", 1, new Date(), stateStats, 2);
+		DuplicateDetectionStatistics duplicateDetectionStats = new DuplicateDetectionStatistics(null);
+		return new Statistics("1 hour", 1, "2KB", 1, new Date(), stateStats, 2, duplicateDetectionStats);
 	}
 
 	@Test

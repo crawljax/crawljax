@@ -3,6 +3,7 @@ package com.crawljax.plugins.crawloverview;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,8 +17,10 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.StateVertexNDD;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.Edge;
+import com.crawljax.plugins.crawloverview.model.DuplicateDetectionStatistics;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
 import com.crawljax.plugins.crawloverview.model.StateStatistics;
@@ -42,8 +45,8 @@ class OutPutModelCache {
 
 	private final Date startDate = new Date();
 
-	StateBuilder addStateIfAbsent(StateVertex state) {
-		StateBuilder newState = new StateBuilder(state);
+	StateBuilder addStateIfAbsent(StateVertex state, Map<String,Double> distance) {
+		StateBuilder newState = new StateBuilder(state, distance);
 		StateBuilder found = states.putIfAbsent(state.getName(), newState);
 		if (found == null) {
 			return newState;
@@ -68,10 +71,14 @@ class OutPutModelCache {
 			        "Printing state difference. \nSession states: {} \nResult states: {}",
 			        statesCopy, session.getStateFlowGraph().getAllStates());
 		}
-
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
+		
+		// Add duplicate-detection stats, if specified.
+		DuplicateDetectionStatistics duplicateDetectionStats = null;
+		if(session.getInitialState() instanceof StateVertexNDD)
+			duplicateDetectionStats = new DuplicateDetectionStatistics(session);
 		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session,
-		        stateStats, startDate, failedEvents.get()), exitStatus);
+		        stateStats, startDate, failedEvents.get(), duplicateDetectionStats), exitStatus);
 	}
 
 	private ImmutableList<Edge> asEdges(Set<Eventable> allEdges) {

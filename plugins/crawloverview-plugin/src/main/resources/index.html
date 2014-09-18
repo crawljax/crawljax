@@ -108,6 +108,20 @@ footer small {
 				</div>
 			</div>
 		</div>
+		#if ($stats.duplicateDetectionStats) 
+		<div id="duplicate-detection-slider" style="width:35%; margin:auto; text-align:center;">
+			<script type="text/javascript">
+				
+			</script>
+			
+			
+			<span id="thresholdValue">Threshold: ${stats.duplicateDetectionStats.threshold}</span>
+			<br />
+			Remove duplicate states: 
+			<input id="thresholdSlider" type="range"  min=${stats.duplicateDetectionStats.threshold} 
+				max="${stats.duplicateDetectionStats.maxThreshold}" value=${stats.duplicateDetectionStats.threshold} step="${stats.duplicateDetectionStats.stepsize}" />
+		</div>
+		#end
 		<div class="container page" id="container-statistics" style="display: none;">
 			#parse( "statistics.html" )
 		</div>
@@ -133,8 +147,23 @@ footer small {
 	<script>
 		var edges = ${edges};
 		var states = ${states};
-		$(document).ready(
-				function() {
+		
+		function sortStates(states) {
+			var array = [];
+			$.each(states, function() {
+				array.push(this.name);
+			});
+			array.sort(function(a, b) {
+				return a.replace( /^\D+/g, '') - b.replace( /^\D+/g, '');
+			});			
+			return array;
+		}
+		var sortedStates = sortStates(states);
+		
+		$(document).ready(makeGraph);
+		
+		function makeGraph() {	
+				function buildGraph() {
 					$.each(states, function() {
 						graph.addNode(this.name, {
 							img : 'screenshots/' + this.name + '_small.jpg',
@@ -156,7 +185,49 @@ footer small {
 							});
 						}
 					});
-
+				}
+				buildGraph();
+				
+				$("#thresholdSlider").change(function() {
+					buildGraph();
+					var threshold = $("#thresholdSlider").val();
+					document.getElementById("thresholdValue").innerHTML = "Threshold: " + threshold;
+					
+					var statesInGraph = [];
+					for (var key in sortedStates) {
+						var state = states[sortedStates[key]];
+						if(canBeReachedFromIndex(state, statesInGraph)) {
+							removeIfDuplicate(state, statesInGraph);
+						} else {
+							graph.removeNode(state.name);
+						}
+					}
+					loadPage("graph");	
+					
+					function removeIfDuplicate(currentState, statesInGraph) {
+						var inGraph = true;
+						for (var otherState in currentState.duplicateDistance) {
+							if ($.inArray(otherState, statesInGraph) >= 0 && currentState.duplicateDistance[otherState] <= threshold) {
+								graph.removeNode(currentState.name);
+								inGraph = false;
+							}
+						}
+						if (inGraph) {
+							statesInGraph.push(currentState.name);
+						}
+					}
+					
+					function canBeReachedFromIndex(currentState, statesInGraph) {
+						if(currentState.name == "index") return true;
+						for(var key in edges) {
+							if(edges[key].to == currentState.name && $.inArray(edges[key].from, statesInGraph) >= 0) {
+								return true;								
+							}
+						}
+						return false;
+					}
+				});
+					
 					$("#hideButton").click(function() {
 						$(".panel-right").removeClass("in");
 						$('path[stroke="red"]').attr("stroke", "grey");
@@ -219,7 +290,7 @@ footer small {
 							});
 
 					$(window).trigger('hashchange');
-				});
+		}
 
 		function showInfo(link) {
 			$(".panel-right").addClass("in");

@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import org.apache.commons.math.stat.descriptive.moment.Mean;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.GraphPath;
@@ -113,8 +114,10 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	private StateVertex putIfAbsent(StateVertex stateVertix, boolean correctName) {
 		writeLock.lock();
 		try {
-			boolean added = sfg.addVertex(stateVertix);
-			if (added) {
+			boolean duplicate = this.hasNearDuplicate(stateVertix);
+
+			if (!duplicate) {
+				sfg.addVertex(stateVertix);
 				stateById.put(stateVertix.getId(), stateVertix);
 				int count = stateCounter.incrementAndGet();
 				exitNotifier.incrementNumberOfStates();
@@ -128,6 +131,15 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		} finally {
 			writeLock.unlock();
 		}
+	}
+
+	private boolean hasNearDuplicate(StateVertex vertex) {
+		for (StateVertex vertexOfGraph : sfg.vertexSet()) {
+			if (vertex.equals(vertexOfGraph)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

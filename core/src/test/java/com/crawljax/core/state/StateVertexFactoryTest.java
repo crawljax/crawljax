@@ -9,6 +9,7 @@ import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.test.RunWithWebServer;
+
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -27,7 +28,8 @@ public class StateVertexFactoryTest {
 	public void whenStateVertexFactoryDefinedItIsUsedToCompareStates() throws Exception {
 		CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
 		builder.setStateVertexFactory(new StateVertexFactory() {
-			@Override
+			@SuppressWarnings("serial")
+            @Override
 			public StateVertex newStateVertex(int id, String url, String name, String dom, String strippedDom) {
 				return new StateVertexImpl(id, url, name, dom, strippedDom) {
 

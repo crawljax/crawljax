@@ -1,10 +1,13 @@
 package com.crawljax.plugins.crawloverview;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import com.crawljax.core.plugin.*;
+
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriverException;
@@ -22,6 +25,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.StateVertexNDD;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
@@ -52,7 +56,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	private OutPutModel result;
 
 	private HostInterface hostInterface;
-
+	
 	public CrawlOverview() {
 		outModelCache = new OutPutModelCache();
 		visitedStates = Maps.newConcurrentMap();
@@ -83,7 +87,8 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	@Override
 	public void onNewState(CrawlerContext context, StateVertex vertex) {
 		LOG.debug("onNewState");
-		StateBuilder state = outModelCache.addStateIfAbsent(vertex);
+		Map<String,Double> differenceDistance = updateSimilarityDistance(vertex, context.getSession().getStateFlowGraph());
+		StateBuilder state = outModelCache.addStateIfAbsent(vertex, differenceDistance);
 		visitedStates.putIfAbsent(state.getName(), vertex);
 		saveScreenshot(context.getBrowser(), state.getName(), vertex);
 		outputBuilder.persistDom(state.getName(), context.getBrowser().getDom());
@@ -145,7 +150,7 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 			}
 		}
 
-		StateBuilder stateOut = outModelCache.addStateIfAbsent(state);
+		StateBuilder stateOut = outModelCache.addStateIfAbsent(state, new HashMap<String,Double>());
 		stateOut.addCandidates(newElements);
 		LOG.trace("preState finished, elements added to state");
 	}
@@ -219,6 +224,22 @@ public class CrawlOverview implements OnNewStatePlugin, PreStateCrawlingPlugin,
 	public void onFireEventFailed(CrawlerContext context, Eventable eventable,
 	        List<Eventable> pathToFailure) {
 		outModelCache.registerFailEvent(context.getCurrentState(), eventable);
+	}
+
+	private HashMap<String,Double> updateSimilarityDistance(StateVertex vertex, StateFlowGraph sfg) {
+		HashMap<String,Double> entry = new HashMap<>();
+		if(vertex instanceof StateVertexNDD) {
+			StateVertexNDD vertexNDD = (StateVertexNDD) vertex;
+			for (StateVertex v: sfg.getAllStates()) {
+				if (vertex.getId() != v.getId()) {
+					StateVertexNDD that = (StateVertexNDD) v;
+					double duplicateDistance = vertexNDD.getFingerprint().getDistance(that.getFingerprint());
+					entry.put(v.getName(), duplicateDistance);
+				}
+			}
+		}
+		
+		return entry;
 	}
 
 }

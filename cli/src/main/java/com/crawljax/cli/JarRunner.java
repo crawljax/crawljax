@@ -2,21 +2,36 @@ package com.crawljax.cli;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ch.qos.logback.classic.Level;
+
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.state.NDDStateVertexFactory;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles.ShingleType;
+import com.crawljax.core.state.duplicatedetection.FeatureType;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionBroder;
+import com.crawljax.core.state.duplicatedetection.NearDuplicateDetectionCrawlhash;
+import com.crawljax.domcomparators.AttributesStripper;
+import com.crawljax.domcomparators.DomStructureStripper;
+import com.crawljax.domcomparators.HeadStripper;
+import com.crawljax.domcomparators.RedundantWhiteSpaceStripper;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+
 import org.apache.commons.cli.ParseException;
 
 public class JarRunner {
@@ -133,6 +148,7 @@ public class JarRunner {
 			builder.crawlRules().crawlHiddenAnchors(true);
 		}
 
+		configureDuplicateDetection(builder);
 		configureTimers(builder);
 
 		builder.addPlugin(new CrawlOverview());
@@ -144,6 +160,45 @@ public class JarRunner {
 		}
 
 		return builder.build();
+	}
+
+	private void configureDuplicateDetection(CrawljaxConfigurationBuilder builder) {
+		if (!options.specifiesUseBroder() && !options.specifiesUseCrawlhash()) {
+			return;
+		}
+		// Use NDD-StateVertexFactory, if no ndd is provided a default will be used.
+		builder.setStateVertexFactory(new NDDStateVertexFactory());
+
+		// Build feature
+		int featureSize = options.specifiesFeatureSize() ? options.getSpecifiedFeatureSize() : 3;
+		ShingleType featureType =
+		        options.specifiesFeatureType() ? options.getSpecifiedFeatureType()
+		                : ShingleType.WORDS;
+		List<FeatureType> features = new ArrayList<FeatureType>(1);
+		if (featureType.equals(ShingleType.REGEX)) {
+			features.add(FeatureShingles.withSize(featureSize, options.getSpecifiedFeatureRegEx()));
+		} else {
+			features.add(FeatureShingles.withSize(featureSize, featureType));
+		}
+
+		// If custom settings are provided use those, otherwise use presets
+		if (options.specifiesUseBroder()) {
+			double threshold =
+			        options.specifiesThreshold() ? options.getSpecifiedThreshold() : 0.2D;
+			builder.setNearDuplicateDetectionFactory(
+			        new NearDuplicateDetectionBroder(threshold, ImmutableList.copyOf(features)));
+		} else if (options.specifiesUseCrawlhash()) {
+			double threshold =
+			        options.specifiesThreshold() ? options.getSpecifiedThreshold() : 3D;
+			builder.setNearDuplicateDetectionFactory(
+			        new NearDuplicateDetectionCrawlhash(threshold, ImmutableList.copyOf(features)));
+		}
+		
+		// Use default strippers of ndd		
+		builder.addDomStripper(new HeadStripper());
+		builder.addDomStripper(new DomStructureStripper());
+		builder.addDomStripper(new AttributesStripper());
+		builder.addDomStripper(new RedundantWhiteSpaceStripper());
 	}
 
 	private void configureTimers(CrawljaxConfigurationBuilder builder) {
