@@ -119,7 +119,7 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 	};
 	this.updateConfiguration = function(config, configId){
 		var request = $http({
-			url: '/rest/configurations/awefasefas',
+			url: '/rest/configurations/' + configId,
 		    method: 'PUT',
 		    data: JSON.stringify(config, this.cleanJSON)
 		});
@@ -127,6 +127,7 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 			notificationService.notify("Configuration Saved", 1);
 		}, function(error){
 			notificationService.notify("Error Saving Configuration", -1);
+			console.log(error);
 		})
 	};
 	this.deleteConfiguration = function(configId){
@@ -149,6 +150,18 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 }]);
 
 app.service('configAdd', [function(){
+	this.addClickRule = function(config){
+		config.clickRules.push({rule: 'click', elementTag: 'a', conditions: []});
+	}
+	this.addClickRuleCondition = function(config){
+		config.clickRules.conditions.push({condition: 'wAttribute', expression: ''});
+	}
+	this.deleteClickRuleCondition = function(config, index){
+		config.clickRules.conditions.splice(index, 1);
+	}
+	this.deleteClickRule = function(config, index){
+		config.clickRules.splice(index, 1);
+	}
 	this.addCondition = function(config){
 		config.pageConditions.push({condition: 'url', expression: ''});
 	};

@@ -144,7 +144,15 @@ app.run(['$rootScope', '$state', '$stateParams', 'configHttp', 'pluginHttp', 'hi
 		{name: "When element is visible with tag:", value:"visibleTag"},
 		{name: "When element is not visible with tag:", value:"notVisibleTag"},
 		{name: "When Javascript is true:", value:"javascript"}];
-		
+	
+	$rootScope.clickType = [{name: "Click", value: "click"}, {name: "Don't Click", value: "noClick"}];
+	
+	$rootScope.tags = ["a", "abbr", "address", "area", "article", "aside", "audio",
+	                      		"button", "canvas", "details", "div", "figure", "footer",
+	                    		"form", "header", "img", "input", "label", "li", "nav", "ol", 
+	                    		"section", "select", "span", "summary", "table", "td", "textarea", 
+	                    		"th", "tr", "ul", "video"];
+	
 	$rootScope.pageConditions = [
 		 {name: "When URL contains:", value:"url"},
 		 {name: "When URL does not contain:", value:"notUrl"},

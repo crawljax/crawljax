@@ -46,7 +46,7 @@ app.controller('ConfigPluginsController', ['$rootScope', 'plugins', function($ro
 	$rootScope.plugins = plugins;
 }]);
 
-app.controller('ConfigNewController', ['$scope', '$state', 'restService', 'config', function($scope, $state, restService, config){
+app.controller('ConfigNewController', ['$scope', '$rootScope', '$state', 'restService', 'configHttp', 'config', function($scope, $rootScope, $state, restService, configHttp, config){
 	$scope.config = config;
 	
 	restService.changeRest(function(link){
@@ -54,7 +54,8 @@ app.controller('ConfigNewController', ['$scope', '$state', 'restService', 'confi
 			case 'save':
 				if(validateForm('config_form')){
 					configHttp.postConfiguration($scope.config);
-					$state.go('configDetail.main', {configId: $scope.config.id})
+					$rootScope.configurations = configHttp.getConfigurations();
+					$state.go('config');
 				}
 				break;
 			default:
