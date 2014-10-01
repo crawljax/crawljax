@@ -16,6 +16,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -80,7 +81,7 @@ public class StandardFunctionsFlowTest {
 		        driver.findElements(By.linkText("New Configuration"));
 		assertFalse(newConfigurationLink.isEmpty());
 		followLink(newConfigurationLink.get(0));
-		List<WebElement> textBoxes = visibleElementsByCss(".ember-text-field");
+		List<WebElement> textBoxes = visibleElementsByTagName("input");
 		assertFalse(textBoxes.isEmpty());
 		textBoxes.get(0).sendKeys(CONFIG_NAME);
 		textBoxes.get(1).clear();
@@ -91,12 +92,12 @@ public class StandardFunctionsFlowTest {
 		followLink(saveConfigurationLink.get(0));
 
 		WebElement nameSpan = driver.findElements(By.xpath(
-		        "//label[contains(text(),'Name:')]/following-sibling::div/span")).get(0);
+		        "//td/child::a")).get(0);
 		assertTrue(nameSpan.getText().equals(CONFIG_NAME));
 
 		WebElement urlInput = driver.findElements(By.xpath(
-		        "//label[contains(text(),'Site:')]/following-sibling::div/input")).get(0);
-		assertTrue(urlInput.getAttribute("value").equals(CONFIG_URL));
+		        "//td/child::a")).get(1);
+		assertTrue(urlInput.getAttribute("href").equals(CONFIG_URL));
 	}
 
 	private void editConfiguration() {
@@ -106,7 +107,7 @@ public class StandardFunctionsFlowTest {
 		WebElement maxCrawlStates =
 		        driver.findElements(
 		                By.xpath(
-		                        "//label[contains(text(),'Maximum Crawl States:')]/following-sibling::div/input"))
+		                        "//label[contains(text(),'Maximum Crawl States:')]/following-sibling::input"))
 		                .get(0);
 		maxCrawlStates.clear();
 		maxCrawlStates.sendKeys("3");
@@ -114,7 +115,7 @@ public class StandardFunctionsFlowTest {
 		maxCrawlStates =
 		        driver.findElements(
 		                By.xpath(
-		                        "//label[contains(text(),'Maximum Crawl States:')]/following-sibling::div/input"))
+		                        "//label[contains(text(),'Maximum Crawl States:')]/following-sibling::input"))
 		                .get(0);
 		assertTrue(maxCrawlStates.getAttribute("value").equals("3"));
 
@@ -139,7 +140,7 @@ public class StandardFunctionsFlowTest {
 		                        "//legend[contains(text(),'Page Conditions')]/following-sibling::table//input[@type='text']"))
 		                .get(0);
 		pageConditionInput.clear();
-		pageConditionInput.sendKeys("crawljax");
+		pageConditionInput.sendKeys("ConditionInput");
 
 		WebElement addANewFilter = driver.findElements(By.linkText("Add a New Filter")).get(0);
 		followLink(addANewFilter);
@@ -149,7 +150,7 @@ public class StandardFunctionsFlowTest {
 		                        "//legend[contains(text(),'State Filters')]/following-sibling::table//input[@type='text']"))
 		                .get(0);
 		filterInput.clear();
-		filterInput.sendKeys(" ");
+		filterInput.sendKeys("FilterInput");
 
 		WebElement addANewField = driver.findElements(By.linkText("Add a New Field")).get(0);
 		followLink(addANewField);
@@ -159,16 +160,17 @@ public class StandardFunctionsFlowTest {
 		                        "//legend[contains(text(),'Form Field Input Values')]/following-sibling::table//input[@type='text']"))
 		                .get(0);
 		fieldIdInput.clear();
-		fieldIdInput.sendKeys(" ");
+		fieldIdInput.sendKeys("FieldID");
 		WebElement fieldValueInput =
 		        driver.findElements(
 		                By.xpath(
 		                        "//legend[contains(text(),'Form Field Input Values')]/following-sibling::table//input[@type='text']"))
-		                .get(0);
+		                .get(1);
 		fieldValueInput.clear();
-		fieldValueInput.sendKeys(" ");
-
-		WebElement assertionsLink = driver.findElements(By.linkText("Assertions")).get(0);
+		fieldValueInput.sendKeys("FieldValue");
+		
+		((JavascriptExecutor) driver).executeScript("scroll(250,0);");
+		WebElement assertionsLink = driver.findElements(By.partialLinkText("Assertions")).get(0);
 		followLink(assertionsLink);
 
 		addANewConditionLink = driver.findElements(By.linkText("Add a New Condition")).get(0);
@@ -466,8 +468,8 @@ public class StandardFunctionsFlowTest {
 		return cal.getTime();
 	}
 
-	private List<WebElement> visibleElementsByCss(String selector) {
-		List<WebElement> elements = driver.findElements(By.cssSelector(selector));
+	private List<WebElement> visibleElementsByTagName(String selector) {
+		List<WebElement> elements = driver.findElements(By.tagName(selector));
 		List<WebElement> visible = Lists.newArrayListWithExpectedSize(elements.size());
 		for (WebElement webElement : elements) {
 			if (webElement.isDisplayed()) {
