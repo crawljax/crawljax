@@ -24,11 +24,16 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
 					}
 				}
 			})
-		.state('configNew.copy',
+		.state('configCopy',
 			{
-				url: '/:copy',
-				controller: 'ConfigNewController',
-				templateUrl: 'partials/configNew.html'
+				url: '/configurations/new/:copyId',
+				controller: 'ConfigCopyController',
+				templateUrl: 'partials/configNew.html',
+				resolve: {
+					config: function($stateParams, configHttp){
+						return configHttp.getConfiguration($stateParams.copyId);
+					}
+				}
 			})	
 		.state('configDetail',
 			{
@@ -219,12 +224,12 @@ app.run(['$rootScope', '$state', '$stateParams', 'configHttp', 'pluginHttp', 'hi
 				sideNav.links = [{icon: 'icon-play', target: 'run', action: true, text: 'Run Configuration'},
 								{icon: 'icon-ok', target: 'save', action: true, text: 'Save Configuration'},
 								{icon: 'icon-book', target: 'history.filter({filter: $stateParams.configId})', action: false, text: 'Crawl History'},
-								{icon: 'icon-pencil', target: 'configNew.copy({copy: $stateParams.configId})', action: false, text: 'New Copy'},
+								{icon: 'icon-pencil', target: 'configCopy({copyId: $stateParams.configId})', action: false, text: 'New Copy'},
 								{icon: 'icon-remove', target: 'delete', action: true, text: 'Delete Configuration'}];
 				breadcrumb.links = [{text: 'Configurations', target: 'config'}, {text: $stateParams.configId}]
 				break;
 			case 'configNew':
-			case 'configNew.copy':
+			case 'configCopy':
 				sideNav.links = [{icon: 'icon-ok', target: 'save', action: true, text: 'Save Configuration'}];
 				breadcrumb.links = [{text: 'Configurations', target: 'config'}, {text: 'New'}];
 				break;

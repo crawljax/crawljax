@@ -109,10 +109,11 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 		var request = $http({
 			method: 'POST',
 			url: '/rest/configurations',
-			data: JSON.stringify(config, this.cleanJSON)
+			data: angular.toJson(config)
 		});
-		request.then(function(result){
+		return request.then(function(result){
 			notificationService.notify("Configuration Saved", 1);
+			return result;
 		}, function(error){
 			notificationService.notify("Error Saving Configuration", -1);
 		})
@@ -121,7 +122,7 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 		var request = $http({
 			url: '/rest/configurations/' + configId,
 		    method: 'PUT',
-		    data: JSON.stringify(config, this.cleanJSON)
+		    data: angular.toJson(config)
 		});
 		request.then(function(result){
 			notificationService.notify("Configuration Saved", 1);
@@ -141,23 +142,17 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 			notificationService.notify("Error Deleting Configuration", -1);
 		})
 	};
-	this.cleanJSON = function(key, value){
-		if(value == null){
-			return 0;
-		}
-		return value;
-	}
 }]);
 
 app.service('configAdd', [function(){
 	this.addClickRule = function(config){
 		config.clickRules.push({rule: 'click', elementTag: 'a', conditions: []});
 	}
-	this.addClickRuleCondition = function(config){
-		config.clickRules.conditions.push({condition: 'wAttribute', expression: ''});
+	this.addClickRuleCondition = function(config, index){
+		config.clickRules[index].conditions.push({condition: 'wAttribute', expression: ''});
 	}
-	this.deleteClickRuleCondition = function(config, index){
-		config.clickRules.conditions.splice(index, 1);
+	this.deleteClickRuleCondition = function(config, ruleIndex, conditionIndex){
+		config.clickRules[ruleIndex].conditions.splice(conditionIndex, 1);
 	}
 	this.deleteClickRule = function(config, index){
 		config.clickRules.splice(index, 1);

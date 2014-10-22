@@ -7,11 +7,11 @@
 		<table class="table table-striped table-condensed" ng-if="config.clickRules.length > 0  && !config.clickDefault">
 			<tbody>
 				<tr ng-repeat="rule in config.clickRules">
-					<td style="width: 30px;">
-						<select ng-model='rule.rule' ng-options="option.value as option.name for option in clickType"></select>
+					<td style="width: 100px;">
+						<select class="input-small" ng-model='rule.rule' ng-options="option.value as option.name for option in clickType"></select>
 					</td>
-					<td style="width: 30px;">
-						<select ng-model='rule.elementTag' ng-options="option for option in tags"></select>
+					<td style="width: 100px;">
+						<select class="input-small" ng-model='rule.elementTag' ng-options="option for option in tags"></select>
 					</td>
 					<td>
 						<table class="table table-striped table-condensed" ng-if="rule.conditions.length > 0" style="margin-bottom: 0px;">
@@ -25,12 +25,12 @@
 										<span class="hint">This field is required.</span>
 									</td>
 									<td>
-										<a ng-click="configAdd.deleteClickRuleCondition(config, $index)"><i class="icon-remove"></i></a>
+										<a ng-click="configAdd.deleteClickRuleCondition(config, $parent.$index, $index)"><i class="icon-remove"></i></a>
 									</td>
 								</tr>
 							</tbody>
 						</table>
-						<a ng-click="configAdd.addClickRuleCondition(config)"><i class="icon-plus"></i>Condition</a>
+						<a ng-click="configAdd.addClickRuleCondition(config, $index)"><i class="icon-plus"></i>Condition</a>
 					</td>
 					<td>
 						<a ng-click="configAdd.deleteClickRule(config, $index)">Remove</a>

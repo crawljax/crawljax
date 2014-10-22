@@ -53,9 +53,31 @@ app.controller('ConfigNewController', ['$scope', '$rootScope', '$state', 'restSe
 		switch(link.target){
 			case 'save':
 				if(validateForm('config_form')){
-					configHttp.postConfiguration($scope.config);
-					$rootScope.configurations = configHttp.getConfigurations();
-					$state.go('config');
+					var idSource = configHttp.postConfiguration($scope.config);
+					idSource.then(function(result){
+						$state.go('configDetail.main', {configId: result.data.id});
+					})
+					console.log($rootScope.$stateParams);
+				}
+				break;
+			default:
+				break;
+		}
+	});
+}]);
+
+app.controller('ConfigCopyController', ['$scope', '$rootScope', '$state', 'restService', 'configHttp', 'config', function($scope, $rootScope, $state, restService, configHttp, config){
+	$scope.config = config;
+	
+	restService.changeRest(function(link){
+		switch(link.target){
+			case 'save':
+				if(validateForm('config_form')){
+					var idSource = configHttp.postConfiguration($scope.config);
+					idSource.then(function(result){
+						$state.go('configDetail.main', {configId: result.data.id});
+					})
+					console.log($rootScope.$stateParams);
 				}
 				break;
 			default:
