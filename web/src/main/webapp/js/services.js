@@ -6,6 +6,7 @@ app.service('socket', ['$rootScope', 'notificationService', 'historyHttp', funct
 		});
 		if (element != null)
 			element.crawlStatus = status;
+		$rootScope.$broadcast('queue-update', {newQueue: this.executionQueue});
 	};
 	this.removeQueue = function(id) {
 		var element = this.executionQueue.find(function(item){
@@ -13,6 +14,7 @@ app.service('socket', ['$rootScope', 'notificationService', 'historyHttp', funct
 		});
 		if (element != null)
 			this.executionQueue.splice(this.executionQueue.indexOf(element), 1);
+		$rootScope.$broadcast('queue-update', {newQueue: this.executionQueue});
 	};
 	this.socket = null;
 	this.connectSocket = function(){
@@ -24,11 +26,9 @@ app.service('socket', ['$rootScope', 'notificationService', 'historyHttp', funct
 		}
 		host += "//" + loc.host;
 		host += loc.pathname + "socket";
-
 		try {
 			var service = this;
 			this.socket = new WebSocket(host);
-			
 			this.socket.onmessage = function(msg){
 				if (msg.data.indexOf('log-') == 0)
 					$('#logPanel').append('<p>'+msg.data.slice(4)+'</p>');
@@ -131,11 +131,17 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 			console.log(error);
 		})
 	};
-	this.deleteConfiguration = function(configId){
+	this.deleteConfiguration = function(config, configId){
 		var request = $http({
 			method: 'DELETE',
-			url: '/rest/configurations/' + configId
+			url: '/rest/configurations/' + configId,
+			headers: {
+				"Accept": "application/json, text/javascript, */*; q=0.01",
+				'Content-Type': "application/json; charset=UTF-8;"
+			},
+			data: angular.toJson(config)
 		});
+		console.log(request);
 		request.then(function(result){
 			notificationService.notify("Configuration Deleted", 1);
 		}, function(error){
@@ -219,7 +225,11 @@ app.service('pluginHttp', ['$http', 'notificationService', function($http, notif
 		return $http({
 			method: 'POST',
 			url: '/rest/plugins',
-			data: fd
+			data: fd,
+			headers: {
+				'Content-Type': undefined
+			},
+			transformRequest: angular.identity
 		});
 	};
 	this.deletePlugin = function(pluginId){
@@ -227,12 +237,54 @@ app.service('pluginHttp', ['$http', 'notificationService', function($http, notif
 		    url: '/rest/plugins/' + pluginId,
 		    method: 'DELETE'
 		});
-		request.then(function(result){
+		return request.then(function(result){
 			notificationService.notify("Plugin Deleted", 1);
 		}, function(error){
 			notificationService.notify("Error Deleting Plugin", -1);
 		})
 	};
+}]);
+
+app.service('pluginAdd', ['pluginHttp', 'notificationService', function(pluginHttp, notificationService){
+	this.addFile = function(callback){
+		var file = angular.element("#pluginFile").get(0).files[0];
+		if(!file){
+			alert("Please select a file");
+			return;
+		}
+		if(file.name.indexOf(".jar") === -1 || file.name.indexOf(".jar") !== file.name.length - 4) {
+			alert("Please select a .jar file");
+			return;
+		}
+		notificationService.notify("Uploading Plugin...", 0);
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			pluginHttp.addPlugin(file.name, e.target.result, undefined).then(function(result){
+				notificationService.notify('Plugin Uploaded', 1);
+				if(callback) callback();
+			}, function(error){
+				notificationService.notify('Error Uploading Plugin', -1);
+				console.log(error);
+			});
+		}
+		reader.readAsDataURL(file);
+	};
+	this.addURL = function(url, callback) {
+		console.log(url);
+		if(url.length == 0) {
+			alert("Please enter a url");
+			return;
+		}
+		var name =  url.split("/").pop();
+		notificationService.notify("Downloading Plugin...", 0);
+		var _this = this;
+		pluginHttp.addPlugin(name, undefined, url).then(function(result){
+			notificationService.notify('Plugin Downloaded', 1);
+			if(callback) callback();
+		}, function(error){
+			notificationService.notify('Error Downloading Plugin', -1);
+		});
+	}
 }]);
 
 app.service('historyHttp', ['$http', 'notificationService', function($http, notificationService){
@@ -261,50 +313,9 @@ app.service('historyHttp', ['$http', 'notificationService', function($http, noti
 		return $http({
 			method: 'POST',
 			url: '/rest/history',
-			data: {configurationId: config.id}
+			data: config.id
 		});
 	};
-}]);
-
-app.service('pluginAdd', ['pluginHttp', 'notificationService', function(pluginHttp, notificationService){
-	this.addFile = function(){
-		var file = angular.element("#pluginFile").get(0).files[0];
-		if(!file){
-			alert("Please select a file");
-			return;
-		}
-		if(file.name.indexOf(".jar") === -1 || file.name.indexOf(".jar") !== file.name.length - 4) {
-			alert("Please select a .jar file");
-			return;
-		}
-		notificationService.notify("Uploading Plugin...", 0);
-		var _this = this;
-		var reader = new FileReader();
-		reader.onload = function(e) {
-			pluginHttp.addPlugin(file.name, e.target.result, undefined).then(function(result){
-				notificationService.notify('Plugin Uploaded', 1);
-			}, function(error){
-				notificationService.notify('Error Uploading Plugin', -1);
-				console.log(error);
-			});
-		}
-		reader.readAsDataURL(file);
-	};
-	this.addURL = function(url) {
-		console.log(url);
-		if(url.length == 0) {
-			alert("Please enter a url");
-			return;
-		}
-		var name =  url.split("/").pop();
-		notificationService.notify("Downloading Plugin...", 0);
-		var _this = this;
-		pluginHttp.addPlugin(name, undefined, url).then(function(result){
-			notificationService.notify('Plugin Downloaded', 1);
-		}, function(error){
-			notificationService.notify('Error Downloading Plugin', -1);
-		});
-	}
 }]);
 
 app.service('restService', ['$rootScope', function($rootScope){

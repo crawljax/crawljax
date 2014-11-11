@@ -126,11 +126,15 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
 		.otherwise('/configurations');
 }]);
 
-app.run(['$rootScope', '$state', '$stateParams', 'configHttp', 'pluginHttp', 'historyHttp', 'socket', function($rootScope, $state, $stateParams, configHttp, pluginHttp, historyHttp, socket){
+app.run(['$rootScope', '$state', '$stateParams', '$http', 'configHttp', 'pluginHttp', 'historyHttp', 'socket', 
+         function($rootScope, $state, $stateParams, $http, configHttp, pluginHttp, historyHttp, socket){
 	$rootScope.$state = $state;
 	$rootScope.$stateParams = $stateParams;
 	
-	$rootScope.browsers = [{name: "Mozilla Firefox", value: "FIREFOX"}, {name: "Google Chrome", value: "CHROME"}, {name: "Internet Explorer", value: "INTERNET EXPLORER"}, {name: "PhantomJS", value:"PHANTOMJS"}];
+	$rootScope.browsers = [{name: "Mozilla Firefox", value: "FIREFOX"}, 
+	                       {name: "Google Chrome", value: "CHROME"}, 
+	                       {name: "Internet Explorer", value: "INTERNET EXPLORER"}, 
+	                       {name: "PhantomJS", value:"PHANTOMJS"}];
 	
 	$rootScope.clickConditions = [
 		{name: "With Attribute (name=value):", value:"wAttribute"},
@@ -153,10 +157,10 @@ app.run(['$rootScope', '$state', '$stateParams', 'configHttp', 'pluginHttp', 'hi
 	$rootScope.clickType = [{name: "Click", value: "click"}, {name: "Don't Click", value: "noClick"}];
 	
 	$rootScope.tags = ["a", "abbr", "address", "area", "article", "aside", "audio",
-	                      		"button", "canvas", "details", "div", "figure", "footer",
-	                    		"form", "header", "img", "input", "label", "li", "nav", "ol", 
-	                    		"section", "select", "span", "summary", "table", "td", "textarea", 
-	                    		"th", "tr", "ul", "video"];
+	                   "button", "canvas", "details", "div", "figure", "footer",
+	                   "form", "header", "img", "input", "label", "li", "nav", "ol", 
+	                   "section", "select", "span", "summary", "table", "td", "textarea", 
+	                   "th", "tr", "ul", "video"];
 	
 	$rootScope.pageConditions = [
 		 {name: "When URL contains:", value:"url"},
@@ -187,7 +191,10 @@ app.run(['$rootScope', '$state', '$stateParams', 'configHttp', 'pluginHttp', 'hi
 	$rootScope.plugins = [];
 	$rootScope.crawlRecords = [];
 	
-	socket.executionQueue = historyHttp.getHistory(true);
+	historyHttp.getHistory(true).then(function(data){
+		socket.executionQueue = data;
+	});
+	
 	if(!("WebSocket" in window)) {
 		alert('Need a browser that supports Sockets');
 	} else {

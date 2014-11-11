@@ -2,7 +2,8 @@ app.controller('ConfigIndexController', ['$rootScope', 'configs', function($root
 	$rootScope.configurations = configs;
 }]);
 
-app.controller('ConfigController', ['$scope', '$rootScope', '$state', 'configAdd', 'configHttp', 'pluginHttp', 'historyHttp', 'restService', 'config', function($scope, $rootScope, $state, configAdd, configHttp, pluginHttp, historyHttp, restService, config){
+app.controller('ConfigController', ['$scope', '$rootScope', '$state', 'configAdd', 'configHttp', 'pluginHttp', 'historyHttp', 'restService', 'config', 
+                                    function($scope, $rootScope, $state, configAdd, configHttp, pluginHttp, historyHttp, restService, config){
 	$scope.config = config;
 	
 	restService.changeRest(function(link){
@@ -15,8 +16,10 @@ app.controller('ConfigController', ['$scope', '$rootScope', '$state', 'configAdd
 				if(validateForm('config_form')) configHttp.updateConfiguration($scope.config, $rootScope.$stateParams.configId);
 				break;
 			case 'delete':
-				if(confirm('Are you sure you want to delete this configuration?')) configHttp.deleteConfiguration($rootScope.$stateParams.configId);
-				$state.go('config');
+				if(confirm('Are you sure you want to delete this configuration?')){
+					configHttp.deleteConfiguration(config, $rootScope.$stateParams.configId);
+					$state.go('config');
+				}
 				break;
 			default:
 				break;
@@ -46,7 +49,8 @@ app.controller('ConfigPluginsController', ['$rootScope', 'plugins', function($ro
 	$rootScope.plugins = plugins;
 }]);
 
-app.controller('ConfigNewController', ['$scope', '$rootScope', '$state', 'restService', 'configHttp', 'config', function($scope, $rootScope, $state, restService, configHttp, config){
+app.controller('ConfigNewController', ['$scope', '$rootScope', '$state', 'restService', 'configHttp', 'config', 
+                                       function($scope, $rootScope, $state, restService, configHttp, config){
 	$scope.config = config;
 	
 	restService.changeRest(function(link){
@@ -66,7 +70,8 @@ app.controller('ConfigNewController', ['$scope', '$rootScope', '$state', 'restSe
 	});
 }]);
 
-app.controller('ConfigCopyController', ['$scope', '$rootScope', '$state', 'restService', 'configHttp', 'config', function($scope, $rootScope, $state, restService, configHttp, config){
+app.controller('ConfigCopyController', ['$scope', '$rootScope', '$state', 'restService', 'configHttp', 'config', 
+                                        function($scope, $rootScope, $state, restService, configHttp, config){
 	$scope.config = config;
 	
 	restService.changeRest(function(link){
@@ -86,12 +91,19 @@ app.controller('ConfigCopyController', ['$scope', '$rootScope', '$state', 'restS
 	});
 }]);
 
-app.controller('PluginsController', ['$scope', '$rootScope', 'pluginHttp', 'pluginAdd', 'restService', 'notificationService', 'plugins', function($scope, $rootScope, pluginHttp, pluginAdd, restService, notificationService, plugins){
+app.controller('PluginsController', ['$scope', '$rootScope', 'pluginHttp', 'pluginAdd', 'restService', 'notificationService', 'plugins', 
+                                     function($scope, $rootScope, pluginHttp, pluginAdd, restService, notificationService, plugins){
 	$scope.newPluginURL = '';
 	$rootScope.plugins = plugins;
 	
 	if(!(window.File && window.FileReader && window.FileList && window.Blob)){
 		alert('The File APIs are not fully supported in this browser.');
+	}
+	
+	$scope.refreshPlugins = function(){
+		pluginHttp.getPlugins().then(function(data){
+			$rootScope.plugins = data;
+		});
 	}
 	
 	$scope.rest = function(link){
@@ -106,13 +118,21 @@ app.controller('PluginsController', ['$scope', '$rootScope', 'pluginHttp', 'plug
 				});
 				break;
 			case 'upload':
-				pluginAdd.addFile();
+				pluginAdd.addFile(function(){
+					$scope.refreshPlugins();
+				});
 				break;
 			case 'add':
-				pluginAdd.addURL($scope.newPluginURL);
+				pluginAdd.addURL($scope.newPluginURL, function(){
+					$scope.refreshPlugins();
+				});
 				break;
 			case 'delete':
-				pluginHttp.deletePlugin(link.pluginId);
+				if(confirm("Are you sure you want to remove " + link.pluginName + " ? (id: " + link.pluginId + ")")){
+					pluginHttp.deletePlugin(link.pluginId).then(function(){
+						$scope.refreshPlugins();
+					})
+				}
 				break;
 			default:
 				break;
@@ -146,5 +166,9 @@ app.controller('SideNavController', ['$scope', '$rootScope', 'restService', func
 }]);
 
 app.controller('CrawlQueueController', ['$scope', 'socket', function($scope, socket){
-	$scope.queue = socket.executionQueue;
+	$scope.queue = angular.copy(socket.executionQueue);
+	$scope.$on('queue-update', function(event, args){
+		$scope.queue = args.newQueue;
+		$scope.$apply();
+	})
 }]);
