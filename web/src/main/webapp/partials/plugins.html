@@ -13,7 +13,7 @@
 			<td>{{plugin.name}}</td>
 			<td>{{plugin.description}}</td>
 			<td>{{plugin.id}}</td>
-			<td><a ng-click="rest({target: 'delete', pluginId: plugin.id, pluginName: plugin.name})"><i class="icon-remove"></i> Delete</a></td>
+			<td><a ng-click="rest({target: 'delete', pluginId: plugin.id, pluginName: plugin.name, plugin: plugin})"><i class="icon-remove"></i> Delete</a></td>
 		</tr>
 		<tr ng-if="plugins.length == 0">
 			<td colspan="3">

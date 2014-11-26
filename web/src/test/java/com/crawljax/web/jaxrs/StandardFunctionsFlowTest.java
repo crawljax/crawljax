@@ -71,7 +71,7 @@ public class StandardFunctionsFlowTest {
 
 	@Test
 	public void canPerformStandardFunctions() {
-	/*	createNewConfiguration();
+		createNewConfiguration();
 		editConfiguration();
 		copyConfiguration();
 
@@ -82,11 +82,11 @@ public class StandardFunctionsFlowTest {
 		runConfigurationAndViewResults();
 
 		deleteConfiguration();
-		deletePlugins();*/
-		open("configurations");
-		try{
-			Thread.sleep(100000);
-		}catch(Exception e){assertTrue(false);}; //TODO change this back
+		deletePlugins();
+//		open("configurations");
+//		try{
+//			Thread.sleep(100000);
+//		}catch(Exception e){assertTrue(false);}; //TODO change this back
 	}
 
 	private void createNewConfiguration() {

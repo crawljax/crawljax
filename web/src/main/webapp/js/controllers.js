@@ -17,8 +17,9 @@ app.controller('ConfigController', ['$scope', '$rootScope', '$state', 'configAdd
 				break;
 			case 'delete':
 				if(confirm('Are you sure you want to delete this configuration?')){
-					configHttp.deleteConfiguration(config, $rootScope.$stateParams.configId);
-					$state.go('config');
+					configHttp.deleteConfiguration(config, $rootScope.$stateParams.configId).then(function(){
+						$state.go('config');
+					});
 				}
 				break;
 			default:
@@ -129,7 +130,7 @@ app.controller('PluginsController', ['$scope', '$rootScope', 'pluginHttp', 'plug
 				break;
 			case 'delete':
 				if(confirm("Are you sure you want to remove " + link.pluginName + " ? (id: " + link.pluginId + ")")){
-					pluginHttp.deletePlugin(link.pluginId).then(function(){
+					pluginHttp.deletePlugin(link.pluginId, link.plugin).then(function(){
 						$scope.refreshPlugins();
 					})
 				}
@@ -144,8 +145,21 @@ app.controller('HistoryIndexController', ['$rootScope', '$filter', 'crawlRecords
 	$rootScope.crawlRecords = crawlRecords;
 }]);
 
-app.controller('CrawlRecordController', ['$scope', '$rootScope', 'historyHttp', 'crawl', function($scope, $rootScope, historyHttp, crawl){
+app.controller('CrawlRecordController', ['$scope', '$rootScope', 'historyHttp', 'socket', 'crawl', function($scope, $rootScope, historyHttp, socket, crawl){
 	$scope.crawl = crawl;
+	
+	if ($scope.isLogging) {
+		socket.sendMsg('stoplog');
+	}
+	setTimeout(function(){ 
+		$('#logPanel').empty();
+		socket.sendMsg('startlog-' + $scope.crawl.id);
+		$scope.isLogging = true;
+	}, 0);
+	
+	$scope.$on('$destroy', function(){
+		$scope.isLogging = false;
+	})
 	
 	angular.element("#sideNav").scope().configId = crawl.configurationId;
 }]);

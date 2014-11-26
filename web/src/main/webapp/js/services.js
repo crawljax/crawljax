@@ -61,6 +61,8 @@ app.service('socket', ['$rootScope', 'notificationService', 'historyHttp', funct
 						notificationService.notify(msg.data.slice(8), positivity);
 					}
 				}
+				console.log(msg);
+				console.log(service.executionQueue);
 			};
 			this.socket.onclose = function(){
 				service.connectSocket();
@@ -69,6 +71,18 @@ app.service('socket', ['$rootScope', 'notificationService', 'historyHttp', funct
 			 alert('Error'+exception);
 		}
 	};
+	
+	this.sendMsg = function(text){
+		try{
+			var self = this;
+			if (self.socket.readyState != 1) {
+				setTimeout(function(){ self.socket.send(text); }, 500);
+			}
+			else self.socket.send(text);
+		} catch(exception){
+			alert("Socket Timed out. Refresh your browser.");
+		}
+   }
 }]);
 
 app.service('configHttp', ['$http', 'notificationService', function($http, notificationService){
@@ -124,7 +138,7 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 		    method: 'PUT',
 		    data: angular.toJson(config)
 		});
-		request.then(function(result){
+		return request.then(function(result){
 			notificationService.notify("Configuration Saved", 1);
 		}, function(error){
 			notificationService.notify("Error Saving Configuration", -1);
@@ -142,7 +156,7 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 			data: angular.toJson(config)
 		});
 		console.log(request);
-		request.then(function(result){
+		return request.then(function(result){
 			notificationService.notify("Configuration Deleted", 1);
 		}, function(error){
 			notificationService.notify("Error Deleting Configuration", -1);
@@ -232,10 +246,15 @@ app.service('pluginHttp', ['$http', 'notificationService', function($http, notif
 			transformRequest: angular.identity
 		});
 	};
-	this.deletePlugin = function(pluginId){
+	this.deletePlugin = function(pluginId, plugin){
 		var request = $http({
 		    url: '/rest/plugins/' + pluginId,
-		    method: 'DELETE'
+		    method: 'DELETE',
+		    headers: {
+				"Accept": "application/json, text/javascript, */*; q=0.01",
+				'Content-Type': "application/json; charset=UTF-8;"
+			},
+			data: angular.toJson(plugin)
 		});
 		return request.then(function(result){
 			notificationService.notify("Plugin Deleted", 1);
@@ -289,14 +308,23 @@ app.service('pluginAdd', ['pluginHttp', 'notificationService', function(pluginHt
 
 app.service('historyHttp', ['$http', 'notificationService', function($http, notificationService){
 	this.getHistory = function(active){
-		var data = '';
+		var data = ""
 		if(active) data = {active: true};
 		var request = $http({
 			method: 'GET',
 			url: '/rest/history',
-			data: data
+			params: data
 		});
 		return request.then(function(result){
+			result.data.forEach(function(record){
+				var pluginArray = [];
+				pluginArray.push({key: "0", name: "Crawl Overview"});
+				for(key in record.plugins){
+					record.plugins[key].key = key;
+					pluginArray.push(record.plugins[key]);
+				}
+				record.plugins = pluginArray;
+			})
 			return result.data;
 		});
 	};
@@ -306,14 +334,31 @@ app.service('historyHttp', ['$http', 'notificationService', function($http, noti
 			url: '/rest/history/' + crawlId
 		});
 		return request.then(function(result){
+			var pluginArray = [];
+			pluginArray.push({key: "0", name: "Crawl Overview"});
+			for(key in result.data.plugins){
+				result.data.plugins[key].key = key;
+				pluginArray.push(result.data.plugins[key]);
+			}
+			result.data.plugins = pluginArray;
 			return result.data;
 		});
 	};
 	this.addCrawl = function(config){
-		return $http({
+		var request = $http({
 			method: 'POST',
 			url: '/rest/history',
 			data: config.id
+		});
+		
+		return request.then(function(result){
+			var pluginArray = [];
+			pluginArray.push({key: "0", name: "Crawl Overview"});
+			for(key in result.data.plugins){
+				result.data.plugins[key].key = key;
+				pluginArray.push(result.data.plugins[key]);
+			}
+			result.data.plugins = pluginArray;
 		});
 	};
 }]);
