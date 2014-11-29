@@ -62,7 +62,6 @@ app.service('socket', ['$rootScope', 'notificationService', 'historyHttp', funct
 					}
 				}
 				console.log(msg);
-				console.log(service.executionQueue);
 			};
 			this.socket.onclose = function(){
 				service.connectSocket();
@@ -142,7 +141,6 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 			notificationService.notify("Configuration Saved", 1);
 		}, function(error){
 			notificationService.notify("Error Saving Configuration", -1);
-			console.log(error);
 		})
 	};
 	this.deleteConfiguration = function(config, configId){
@@ -155,7 +153,6 @@ app.service('configHttp', ['$http', 'notificationService', function($http, notif
 			},
 			data: angular.toJson(config)
 		});
-		console.log(request);
 		return request.then(function(result){
 			notificationService.notify("Configuration Deleted", 1);
 		}, function(error){
@@ -283,13 +280,11 @@ app.service('pluginAdd', ['pluginHttp', 'notificationService', function(pluginHt
 				if(callback) callback();
 			}, function(error){
 				notificationService.notify('Error Uploading Plugin', -1);
-				console.log(error);
 			});
 		}
 		reader.readAsDataURL(file);
 	};
 	this.addURL = function(url, callback) {
-		console.log(url);
 		if(url.length == 0) {
 			alert("Please enter a url");
 			return;

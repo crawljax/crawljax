@@ -10,7 +10,6 @@ app.controller('ConfigController', ['$scope', '$rootScope', '$state', 'configAdd
 		switch(link.target){
 			case 'run':
 				historyHttp.addCrawl(config);
-				console.log('run');
 				break;
 			case 'save':
 				if(validateForm('config_form')) configHttp.updateConfiguration($scope.config, $rootScope.$stateParams.configId);
@@ -62,7 +61,6 @@ app.controller('ConfigNewController', ['$scope', '$rootScope', '$state', 'restSe
 					idSource.then(function(result){
 						$state.go('configDetail.main', {configId: result.data.id});
 					})
-					console.log($rootScope.$stateParams);
 				}
 				break;
 			default:
@@ -82,8 +80,7 @@ app.controller('ConfigCopyController', ['$scope', '$rootScope', '$state', 'restS
 					var idSource = configHttp.postConfiguration($scope.config);
 					idSource.then(function(result){
 						$state.go('configDetail.main', {configId: result.data.id});
-					})
-					console.log($rootScope.$stateParams);
+					});
 				}
 				break;
 			default:

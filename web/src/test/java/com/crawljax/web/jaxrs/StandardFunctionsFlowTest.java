@@ -58,15 +58,10 @@ public class StandardFunctionsFlowTest {
 
 	@BeforeClass
 	public static void setup() throws Exception {
-		//TODO: remove this stuff afterward
-		final String firebugPath = "C:\\Users\\Gregory\\Downloads\\firebug-2.0.4-fx.xpi";
-		FirefoxProfile profile = new FirefoxProfile();       
-		profile.addExtension(new File(firebugPath));
-
 		driver = new FirefoxDriver(profile);
 		LOG.debug("Starting selenium");
 		selenium = new WebDriverBackedSelenium(driver, SERVER.getUrl());
-		driver.manage().timeouts().implicitlyWait(300, TimeUnit.SECONDS); //TODO change 300 back to 30
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 
 	@Test
@@ -83,10 +78,6 @@ public class StandardFunctionsFlowTest {
 
 		deleteConfiguration();
 		deletePlugins();
-//		open("configurations");
-//		try{
-//			Thread.sleep(100000);
-//		}catch(Exception e){assertTrue(false);}; //TODO change this back
 	}
 
 	private void createNewConfiguration() {
