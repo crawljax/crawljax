@@ -79,7 +79,7 @@ public class UrlUtils {
 	 * @return If the URL is part of the domain.
 	 */
 	public static boolean isSameDomain(String currentUrl, URI url) {
-		String current = URI.create(currentUrl).getHost().toLowerCase();
+		String current = URI.create(getBaseUrl(currentUrl)).getHost().toLowerCase();
 		String original = url.getHost().toLowerCase();
 		return current.endsWith(original);
 
