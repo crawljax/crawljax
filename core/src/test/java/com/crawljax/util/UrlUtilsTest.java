@@ -31,6 +31,21 @@ public class UrlUtilsTest {
 	public void getBaseUrl() {
 		assertEquals("http://crawljax.com", UrlUtils.getBaseUrl("http://crawljax.com/about/"));
 
+		assertEquals("https://crawljax.com", UrlUtils.getBaseUrl("https://crawljax.com/about/"));
+
+		assertEquals("http://crawljax.com",
+		        UrlUtils.getBaseUrl("http://crawljax.com/about/history/"));
+
+		assertEquals("http://crawljax.com", UrlUtils.getBaseUrl("http://crawljax.com/"));
+
+		assertEquals("http://crawljax.com", UrlUtils.getBaseUrl("http://crawljax.com"));
+
+		assertEquals("http://crawls.crawljax.com",
+		        UrlUtils.getBaseUrl("http://crawls.crawljax.com/demo"));
+
+		assertEquals("http://crawls.crawljax.com",
+		        UrlUtils.getBaseUrl("http://crawls.crawljax.com"));
+
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -48,7 +63,6 @@ public class UrlUtilsTest {
 		UrlUtils.extractNewUrl("http://example.com", "about:blank");
 	}
 
-
 	@Test
 	public void testExtractNewUrl() throws MalformedURLException {
 		final String base = "http://example.com";
@@ -60,13 +74,13 @@ public class UrlUtilsTest {
 
 		assertThat(UrlUtils.extractNewUrl(base + "/example/b", "/a"), is(baseWithA));
 
-		assertThat(UrlUtils.extractNewUrl(base + "/example/b", "a"), is(URI.create(base
-		        + "/example/a")));
+		assertThat(UrlUtils.extractNewUrl(base + "/example/b", "a"),
+		        is(URI.create(base + "/example/a")));
 
 		assertThat(UrlUtils.extractNewUrl(base + "/example/b", "../a"), is(baseWithA));
 
-		assertThat(UrlUtils.extractNewUrl(base, "http://test.example.com"), is(URI.create(
-		        "http://test.example.com")));
+		assertThat(UrlUtils.extractNewUrl(base, "http://test.example.com"),
+		        is(URI.create("http://test.example.com")));
 
 		assertThat(UrlUtils.extractNewUrl(base, "#someHash"), is(URI.create(base + "/#someHash")));
 
@@ -76,19 +90,26 @@ public class UrlUtilsTest {
 	public void testIsSameDomain() throws MalformedURLException {
 
 		// Same URL
-		assertThat(UrlUtils.isSameDomain("http://example.com",
-		  URI.create("http://example.com")), is(true));
+		assertThat(UrlUtils.isSameDomain("http://example.com", URI.create("http://example.com")),
+		        is(true));
 
 		// Different URL
-		assertThat(UrlUtils.isSameDomain("http://test.com",
-		  URI.create("http://example.com")), is(false));
+		assertThat(UrlUtils.isSameDomain("http://test.com", URI.create("http://example.com")),
+		        is(false));
 
 		// Same URL with subdomain
 		assertThat(UrlUtils.isSameDomain("http://test.example.com",
-		  URI.create("http://example.com")), is(true));
+		        URI.create("http://example.com")), is(true));
 
 		// Same URL but with HTTPS
-		assertThat(UrlUtils.isSameDomain("https://example.com",
-		  URI.create("http://example.com")), is(true));
+		assertThat(
+		        UrlUtils.isSameDomain("https://example.com", URI.create("http://example.com")),
+		        is(true));
+
+		// Same URL but with different fragment after #
+		assertThat(UrlUtils.isSameDomain(
+		        "https://example.com/#something=blah|somethingelse=blah1",
+		        URI.create("http://example.com")), is(true));
 	}
+
 }
