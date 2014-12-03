@@ -43,7 +43,7 @@ public class DOMComparerTest {
 		        "<html><body><header>Crawljax</header><p>There are differences</p></body></html>";
 		String testHTML =
 		        "<html><head><title>Crawljax</title></head><body><p>There are differences.</body></html>";
-		final int EXPECTED_DIFF = 5;
+		final int EXPECTED_DIFF = 7;
 
 		Document control = DomUtils.asDocument(controlHTML);
 		assertNotNull(control);
