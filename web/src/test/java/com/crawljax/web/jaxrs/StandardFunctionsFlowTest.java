@@ -58,7 +58,7 @@ public class StandardFunctionsFlowTest {
 
 	@BeforeClass
 	public static void setup() throws Exception {
-		driver = new FirefoxDriver(profile);
+		driver = new FirefoxDriver();
 		LOG.debug("Starting selenium");
 		selenium = new WebDriverBackedSelenium(driver, SERVER.getUrl());
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
