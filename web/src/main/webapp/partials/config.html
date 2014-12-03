@@ -7,7 +7,7 @@
 			<td><a ui-sref="configDetail.main({configId: config.id})">{{config.name}}</a></td>
 			<td><a href="{{config.url}}" target="_blank">{{config.url}}</a></td>
 			<td>
-				<span ng-if='config.lastCrawl != null'>{{config.lastCrawl | date: 'EEE MMM dd yyyy hh:mm:ss'}}</span>
+				<span ng-if='config.lastCrawl != null'>{{config.lastCrawl | date: 'EEE MMM dd yyyy hh:mm:ss'}} GMT{{config.lastCrawl | date: 'Z'}}</span>
 				<span ng-if="config.lastCrawl == null">never</span>
 			</td>
 			<td>

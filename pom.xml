@@ -79,6 +79,7 @@
 		<module>core</module>
 		<module>cli</module>
 		<module>examples</module>
+		<module>test-utils</module>
 		<module>plugins</module>
 		<module>plugin-archetype</module>
     	<module>web</module>
@@ -212,7 +213,7 @@
 					<configuration>
 						<dateFormat>yyyy-MM-dd HH:mm:ss z</dateFormat>
 						<verbose>false</verbose>
-						<generateGitPropertiesFile>false</generateGitPropertiesFile>
+						<generateGitPropertiesFile>true</generateGitPropertiesFile>
 						<gitDescribe>
 							<always>true</always>
 							<abbrev>7</abbrev>
