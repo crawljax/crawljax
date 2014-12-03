@@ -58,7 +58,7 @@ public class StandardFunctionsFlowTest {
 
 	@BeforeClass
 	public static void setup() throws Exception {
-		driver = new FirefoxDriver(profile);
+		driver = new FirefoxDriver();
 		LOG.debug("Starting selenium");
 		selenium = new WebDriverBackedSelenium(driver, SERVER.getUrl());
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -295,7 +295,7 @@ public class StandardFunctionsFlowTest {
 		        "//td[preceding-sibling::td[contains(a,'" + CONFIG_NAME + "')]]"));
 		assertNotNull(dateContainer);
 		String displayedDate = dateContainer.getText();
-		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM d yyyy HH:mm:ss");
+		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss");
 		Date date = null;
 		try {
 			date = dateParser.parse(displayedDate);
@@ -304,7 +304,7 @@ public class StandardFunctionsFlowTest {
 		}
 		assertNotNull(date);
 
-		assertTrue(date.after(timeNSecondsAgo(70)));
+		assertTrue(date.after(timeNSecondsAgo(150)));
 	}
 
 	private void addLocalPlugin() {
