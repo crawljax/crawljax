@@ -1,5 +1,6 @@
-app.service('socket', ['$rootScope', 'notificationService', 'historyHttp', function($rootScope, notificationService, historyHttp){
+app.service('socket', ['$rootScope',  '$timeout', 'notificationService', 'historyHttp', function($rootScope, $timeout, notificationService, historyHttp){
 	this.executionQueue = [];
+	this.log = '';
 	this.updateQueue = function(id, status){
 		var element = this.executionQueue.find(function(item){
 			return (item.id == id);
@@ -30,39 +31,43 @@ app.service('socket', ['$rootScope', 'notificationService', 'historyHttp', funct
 			var service = this;
 			this.socket = new WebSocket(host);
 			this.socket.onmessage = function(msg){
-				if (msg.data.indexOf('log-') == 0)
-					$('#logPanel').append('<p>'+msg.data.slice(4)+'</p>');
-				if (msg.data.indexOf('queue-') == 0) {
-					var record = JSON.parse(msg.data.slice(6));
-					record.plugins = [];
-					service.executionQueue.push(record);
-				}
-				if (msg.data.indexOf('init-') == 0)
-					service.updateQueue(msg.data.slice(5), "initializing");
-				if (msg.data.indexOf('run-') == 0)
-					service.updateQueue(msg.data.slice(4), "running");
-				if (msg.data.indexOf('fail-') == 0) {
-					service.updateQueue(msg.data.slice(5), "failure");
-					setTimeout(function(){service.removeQueue(msg.data.slice(5));}, 5000);
-				}
-				if (msg.data.indexOf('success-') == 0) {
-					service.updateQueue(msg.data.slice(8), "success");
-					setTimeout(function(){service.removeQueue(msg.data.slice(8));}, 5000);
-				}
-				if (msg.data.indexOf('message-') == 0) {
-					var positivity = 0;
-					if (msg.data.indexOf('success-') == 8) {
-						positivity = 1;
-						notificationService.notify(msg.data.slice(16), positivity);
-					} else if (msg.data.indexOf('error-') == 8) {
-						positivity = -1;
-						notificationService.notify(msg.data.slice(14), positivity);
-					} else {
-						notificationService.notify(msg.data.slice(8), positivity);
+				$timeout(function(){
+					if (msg.data.indexOf('log-') == 0){
+						service.log += '<p>' + (msg.data.slice(4)) + '</p>';
+						$rootScope.$broadcast('log-update', {newLog: service.log});
 					}
-				}
-				console.log(msg);
-			};
+					if (msg.data.indexOf('queue-') == 0) {
+						var record = JSON.parse(msg.data.slice(6));
+						record.plugins = [];
+						service.executionQueue.push(record);
+					}
+					if (msg.data.indexOf('init-') == 0)
+						service.updateQueue(msg.data.slice(5), "initializing");
+					if (msg.data.indexOf('run-') == 0)
+						service.updateQueue(msg.data.slice(4), "running");
+					if (msg.data.indexOf('fail-') == 0) {
+						service.updateQueue(msg.data.slice(5), "failure");
+						setTimeout(function(){service.removeQueue(msg.data.slice(5));}, 5000);
+					}
+					if (msg.data.indexOf('success-') == 0) {
+						service.updateQueue(msg.data.slice(8), "success");
+						setTimeout(function(){service.removeQueue(msg.data.slice(8));}, 5000);
+					}
+					if (msg.data.indexOf('message-') == 0) {
+						var positivity = 0;
+						if (msg.data.indexOf('success-') == 8) {
+							positivity = 1;
+							notificationService.notify(msg.data.slice(16), positivity);
+						} else if (msg.data.indexOf('error-') == 8) {
+							positivity = -1;
+							notificationService.notify(msg.data.slice(14), positivity);
+						} else {
+							notificationService.notify(msg.data.slice(8), positivity);
+						}
+					}
+					console.log(msg);
+				});
+			}
 			this.socket.onclose = function(){
 				service.connectSocket();
 			};

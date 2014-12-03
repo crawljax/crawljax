@@ -142,20 +142,30 @@ app.controller('HistoryIndexController', ['$rootScope', '$filter', 'crawlRecords
 	$rootScope.crawlRecords = crawlRecords;
 }]);
 
-app.controller('CrawlRecordController', ['$scope', '$rootScope', 'historyHttp', 'socket', 'crawl', function($scope, $rootScope, historyHttp, socket, crawl){
+app.controller('CrawlRecordController', ['$scope', '$rootScope', '$sce', 'historyHttp', 'socket', 'crawl', function($scope, $rootScope, $sce, historyHttp, socket, crawl){
 	$scope.crawl = crawl;
+	$scope.log = '';
+	
+	$scope.$on('log-update', function(event, args){
+		$scope.log = $sce.trustAsHtml(args.newLog);
+		console.log('log-update');
+		console.log(args.newLog);
+		console.log($scope.log);
+	});
 	
 	if ($scope.isLogging) {
 		socket.sendMsg('stoplog');
 	}
 	setTimeout(function(){ 
 		$('#logPanel').empty();
+		socket.log = '';
 		socket.sendMsg('startlog-' + $scope.crawl.id);
 		$scope.isLogging = true;
 	}, 0);
 	
 	$scope.$on('$destroy', function(){
 		$scope.isLogging = false;
+		socket.sendMsg('stoplog');
 	})
 	
 	angular.element("#sideNav").scope().configId = crawl.configurationId;
