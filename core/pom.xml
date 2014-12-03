@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
-			<version>1.9.19</version>
+			<version>1.9.21</version>
 		</dependency>
 
 		<dependency>
@@ -124,7 +124,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.3</version>
+			<version>3.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.codahale.metrics</groupId>
