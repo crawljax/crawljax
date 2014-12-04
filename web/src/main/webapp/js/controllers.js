@@ -138,11 +138,21 @@ app.controller('PluginsController', ['$scope', '$rootScope', 'pluginHttp', 'plug
 	};
 }]);
 
-app.controller('HistoryIndexController', ['$rootScope', '$filter', 'crawlRecords', function($rootScope, $filter, crawlRecords){
+app.controller('HistoryIndexController', ['$rootScope', '$scope', '$filter', '$state', 'crawlRecords', 
+                                          function($rootScope, $scope, $filter, $state, crawlRecords){
 	$rootScope.crawlRecords = crawlRecords;
+	
+	$scope.goToCrawl = function(status, id){
+		if(status == 'success'){
+			$state.go('crawl.pluginOutput', {crawlId: id, pluginId: 0});
+		} else{
+			$state.go('crawl.log', {crawlId: id});
+		}
+	};
 }]);
 
-app.controller('CrawlRecordController', ['$scope', '$rootScope', '$sce', 'historyHttp', 'socket', 'crawl', function($scope, $rootScope, $sce, historyHttp, socket, crawl){
+app.controller('CrawlRecordController', ['$scope', '$rootScope', '$sce', 'historyHttp', 'socket', 'crawl', 
+                                         function($scope, $rootScope, $sce, historyHttp, socket, crawl){
 	$scope.crawl = crawl;
 	$scope.log = '';
 	
@@ -166,7 +176,7 @@ app.controller('CrawlRecordController', ['$scope', '$rootScope', '$sce', 'histor
 	$scope.$on('$destroy', function(){
 		$scope.isLogging = false;
 		socket.sendMsg('stoplog');
-	})
+	});
 	
 	angular.element("#sideNav").scope().configId = crawl.configurationId;
 }]);
@@ -186,10 +196,18 @@ app.controller('SideNavController', ['$scope', '$rootScope', 'restService', func
 	})
 }]);
 
-app.controller('CrawlQueueController', ['$scope', 'socket', function($scope, socket){
+app.controller('CrawlQueueController', ['$scope', '$state', 'socket', function($scope, $state, socket){
 	$scope.queue = angular.copy(socket.executionQueue);
 	$scope.$on('queue-update', function(event, args){
 		$scope.queue = args.newQueue;
 		$scope.$apply();
-	})
+	});
+	
+	$scope.goToCrawl = function(status, id){
+		if(status == 'success'){
+			$state.go('crawl.pluginOutput', {crawlId: id, pluginId: 0});
+		} else{
+			$state.go('crawl.log', {crawlId: id});
+		}
+	};
 }]);

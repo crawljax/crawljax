@@ -59,7 +59,7 @@
 						<li class="nav-header">CRAWL EXECUTION QUEUE</li>
 						<li ng-repeat="item in queue" ng-if="queue.length > 0">
 							<span>
-								<a ui-sref="crawl.log({crawlId: item.id})">#{{item.id}}</a>	
+								<a ng-click="goToCrawl(item.crawlStatus, item.id)">#{{item.id}}</a>	
 								{{item.configurationName}} - <i>{{item.crawlStatus}}</i>
 							</span>
 						</li>
