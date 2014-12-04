@@ -1,4 +1,4 @@
-package com.crawljax.plugins.clickable_detector;
+package com.crawljax.plugins.clickabledetector;
 
 import java.util.LinkedList;
 import java.util.List;

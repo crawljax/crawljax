@@ -1,53 +1,58 @@
-package com.crawljax.plugins;
+package com.crawljax.plugins.clickabledetector;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
 
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
 import org.littleshoot.proxy.HttpFilters;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+
 /**
- * A proxy filter that is capable of inserting strings into the HEAD element of incoming HTML documents.
- * Only if the incoming HTML has a HEAD element the code is added.
+ * A proxy filter that is capable of inserting strings into the HEAD element of incoming HTML
+ * documents. Only if the incoming HTML has a HEAD element the code is added.
  */
 public class JavaScriptInjectorFilterSource implements HttpFiltersSource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JavaScriptInjectorFilterSource.class);
+	private static final Logger LOG = LoggerFactory
+	        .getLogger(JavaScriptInjectorFilterSource.class);
 
 	private final Pattern head = Pattern.compile("\\<HEAD\\>", Pattern.CASE_INSENSITIVE);
 	private final List<String> insertInHead;
 
-
 	/**
-	 * @param insertInHeadTop A list of strings you want to insert into the top of the HEAD of any incoming HTML.
-	 *                           The string can be any HTML and is not escaped or validated.
+	 * @param insertInHeadTop
+	 *            A list of strings you want to insert into the top of the HEAD of any incoming
+	 *            HTML. The string can be any HTML and is not escaped or validated.
 	 */
 	public JavaScriptInjectorFilterSource(List<String> insertInHeadTop) {
 		this.insertInHead = ImmutableList.copyOf(insertInHeadTop);
 	}
 
 	@Override
-	public HttpFilters filterRequest(HttpRequest originalRequest) {
+	public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext context) {
 
 		return new HttpFiltersAdapter(originalRequest) {
 
 			@Override
 			public HttpObject responsePre(HttpObject httpObject) {
-				if (httpObject instanceof FullHttpResponse && isHtmlResponse((FullHttpResponse)httpObject)) {
+				if (httpObject instanceof FullHttpResponse
+				        && isHtmlResponse((FullHttpResponse) httpObject)) {
 					LOG.info("Intercepting {}", originalRequest.getUri());
 					return intercept((FullHttpResponse) httpObject);
 				}
@@ -71,7 +76,9 @@ public class JavaScriptInjectorFilterSource implements HttpFiltersSource {
 		Charset charset = getCharSet(httpObject.headers().get("Content-Type"));
 		ByteBuf content = httpObject.content();
 		Preconditions.checkState(content.isReadable(), "Content not readable");
-		String replacement = head.matcher(content.toString(charset)).replaceFirst("<HEAD> \n" + replacements());
+		String replacement =
+		        head.matcher(content.toString(charset))
+		                .replaceFirst("<HEAD> \n" + replacements());
 		content.clear();
 		content.writeBytes(replacement.getBytes(Charsets.UTF_8));
 		HttpHeaders.setContentLength(httpObject, content.readableBytes());
@@ -95,7 +102,6 @@ public class JavaScriptInjectorFilterSource implements HttpFiltersSource {
 		}
 		return Charsets.UTF_8;
 	}
-
 
 	@Override
 	public int getMaximumRequestBufferSizeInBytes() {
