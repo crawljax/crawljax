@@ -375,7 +375,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		String htmlFormatted = m.replaceAll("");
 
 		p = Pattern.compile("<\\?xml:(.*?)>");
-		m = p.matcher(html);
+		m = p.matcher(htmlFormatted);
 		htmlFormatted = m.replaceAll("");
 
 		htmlFormatted = filterAttributes(htmlFormatted);

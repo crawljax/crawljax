@@ -1,18 +1,17 @@
 package com.crawljax.web;
 
-import java.io.File;
-import java.io.IOException;
-
 import javax.inject.Inject;
 
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.WebSocketAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.io.IOException;
 
 import com.crawljax.web.di.CrawljaxWebModule.OutputFolder;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.WebSocketAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggingSocket extends WebSocketAdapter {
 
@@ -27,7 +26,7 @@ public class LoggingSocket extends WebSocketAdapter {
 
 	@Override
 	public void onWebSocketConnect(Session session) {
-		LOG.info("Socket connected!");
+		LOG.debug("Socket connected!");
 		LogWebSocketServlet.sockets.add(this);
 		super.onWebSocketConnect(session);
 	}
@@ -56,14 +55,16 @@ public class LoggingSocket extends WebSocketAdapter {
 
 	@Override
 	public void onWebSocketClose(int statusCode, String reason) {
-		LOG.info("Socket disconnected with status code {} reason: {}", statusCode, reason);
+		LOG.debug("Socket disconnected with status code {} reason: {}", statusCode, reason);
 		LogWebSocketServlet.sockets.remove(this);
-		appender.stop();
+		if (appender != null) {
+			appender.stop();
+		}
 	}
 
 	@Override
 	public void onWebSocketText(String message) {
-		LOG.info("Received text: {}", message);
+		LOG.debug("Received text: {}", message);
 
 		if (message.startsWith("startlog")) {
 			String crawlId = message.split("-")[1];

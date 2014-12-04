@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.crawljax.plugins</groupId>
 		<artifactId>crawljax-plugins-parent</artifactId>
-		<version>3.5-SNAPSHOT</version>
+		<version>3.6-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>crawloverview-plugin</artifactId>
@@ -12,7 +12,7 @@
 	<name>Crawl Overview Plugin</name>
 	<description>
 		Generates an HTML report with a snapshot overview of what is crawled.
-  	</description>
+	</description>
 	<url>http://www.crawljax.com</url>
 
 	<scm>
@@ -35,6 +35,12 @@
 		<url>https://github.com/crawljax/crawloverview-plugin/issues</url>
 	</issueManagement>
 
+
+	<properties>
+		<test.browser>PHANTOMJS</test.browser>
+	</properties>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
@@ -49,12 +55,12 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.3.1</version>
+			<version>2.4.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-guava</artifactId>
-			<version>2.3.1</version>
+			<version>2.4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.crawljax</groupId>
@@ -106,6 +112,15 @@
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<test.browser>${test.browser}</test.browser>
+					</systemPropertyVariables>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

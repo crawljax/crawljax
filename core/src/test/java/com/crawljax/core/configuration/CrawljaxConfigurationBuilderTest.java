@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
@@ -47,6 +48,16 @@ public class CrawljaxConfigurationBuilderTest {
 	public void ifCannotCreateOutputFolderReject() throws Exception {
 		File file = new File("/this/should/not/be/writable");
 		testBuilder().setOutputDirectory(file).build();
+	}
+
+	@Test
+	public void whenSpecifyingBasicAuthTheUrlShouldBePreserved() {
+		String url = "https://example.com/test/?a=b#anchor";
+		CrawljaxConfiguration conf =
+		        CrawljaxConfiguration.builderFor(url).setBasicAuth("username", "password")
+		                .build();
+		assertThat(conf.getBasicAuthUrl().toString(),
+		        Is.is("https://username:password@example.com/test/?a=b#anchor"));
 	}
 
 }

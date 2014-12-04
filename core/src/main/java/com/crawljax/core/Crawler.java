@@ -1,8 +1,5 @@
 package com.crawljax.core;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import java.net.URI;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -10,6 +7,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoSuchElementException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
@@ -35,10 +40,6 @@ import com.crawljax.util.ElementResolver;
 import com.crawljax.util.UrlUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoSuchElementException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Crawler {
 
@@ -50,6 +51,7 @@ public class Crawler {
 	private final CrawlerContext context;
 	private final StateComparator stateComparator;
 	private final URI url;
+	private final URI basicAuthUrl;
 	private final Plugins plugins;
 	private final FormHandler formHandler;
 	private final CrawlRules crawlRules;
@@ -65,16 +67,16 @@ public class Crawler {
 	@Inject
 	Crawler(CrawlerContext context, CrawljaxConfiguration config,
 	        StateComparator stateComparator, UnfiredCandidateActions candidateActionCache,
-	        FormHandlerFactory formHandlerFactory,
-	        WaitConditionChecker waitConditionChecker,
+	        FormHandlerFactory formHandlerFactory, WaitConditionChecker waitConditionChecker,
 	        CandidateElementExtractorFactory elementExtractor,
-	        Provider<InMemoryStateFlowGraph> graphProvider,
-	        Plugins plugins, StateVertexFactory vertexFactory) {
+	        Provider<InMemoryStateFlowGraph> graphProvider, Plugins plugins,
+	        StateVertexFactory vertexFactory) {
 		this.context = context;
 		this.graphProvider = graphProvider;
 		this.vertexFactory = vertexFactory;
 		this.browser = context.getBrowser();
 		this.url = config.getUrl();
+		this.basicAuthUrl = config.getBasicAuthUrl();
 		this.plugins = plugins;
 		this.crawlRules = config.getCrawlRules();
 		this.maxDepth = config.getMaximumDepth();
@@ -101,8 +103,8 @@ public class Crawler {
 			sess.addCrawlPath(crawlpath);
 		}
 		stateMachine =
-		        new StateMachine(graphProvider.get(),
-		                crawlRules.getInvariants(), plugins, stateComparator);
+		        new StateMachine(graphProvider.get(), crawlRules.getInvariants(), plugins,
+		                stateComparator);
 		context.setStateMachine(stateMachine);
 		crawlpath = new CrawlPath();
 		context.setCrawlPath(crawlpath);
@@ -362,8 +364,7 @@ public class Crawler {
 	private void inspectNewDom(Eventable event, StateVertex newState) {
 		LOG.debug("The DOM has changed. Event added to the crawl path");
 		crawlpath.add(event);
-		boolean isNewState =
-		        stateMachine.swithToStateAndCheckIfClone(event, newState, context);
+		boolean isNewState = stateMachine.swithToStateAndCheckIfClone(event, newState, context);
 		if (isNewState) {
 			int depth = crawlDepth.incrementAndGet();
 			LOG.info("New DOM is a new state! crawl depth is now {}", depth);
@@ -382,7 +383,7 @@ public class Crawler {
 		StateVertex currentState = stateMachine.getCurrentState();
 		LOG.debug("Parsing DOM of state {} for candidate elements", currentState.getName());
 		ImmutableList<CandidateElement> extract = candidateExtractor.extract(currentState);
-		
+
 		plugins.runPreStateCrawlingPlugins(context, extract, currentState);
 		candidateActionCache.addActions(extract, currentState);
 	}
@@ -437,9 +438,15 @@ public class Crawler {
 	 */
 	public StateVertex crawlIndex() {
 		LOG.debug("Setting up vertex of the index page");
+
+		if (basicAuthUrl != null) {
+			browser.goToUrl(basicAuthUrl);
+		}
+
 		browser.goToUrl(url);
 		plugins.runOnUrlLoadPlugins(context);
-		StateVertex index = vertexFactory.createIndex(url.toString(), browser.getStrippedDom(),
+		StateVertex index =
+		        vertexFactory.createIndex(url.toString(), browser.getStrippedDom(),
 		                stateComparator.getStrippedDom(browser));
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 		        "It seems some the index state is crawled more than once.");

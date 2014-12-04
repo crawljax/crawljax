@@ -54,14 +54,14 @@ public class CrawljaxServer implements Callable<Void> {
 		LOG.info("Starting the server");
 		try {
 			server.start();
-			LOG.info("Server started");
+
 		} catch (Exception e) {
 			throw new RuntimeException("Could not start Crawljax web server", e);
 		}
 
 		int port = ((ServerConnector) server.getConnectors()[0]).getLocalPort(); //Value will change if originally set to 0
 		url = "http://localhost:" + port;
-
+		LOG.info("Server started at {}", url);
 		isRunningLatch.countDown();
 
 		if(join) {

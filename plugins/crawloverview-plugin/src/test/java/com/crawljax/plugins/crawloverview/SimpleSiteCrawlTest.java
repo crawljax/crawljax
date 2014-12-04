@@ -100,9 +100,4 @@ public class SimpleSiteCrawlTest {
 		assertThat(new File(outFolder, "config.json"), exists());
 		assertThat(new File(outFolder, "config.json"), isValidJson());
 	}
-
-	@Test
-	public void gitPropertiesIsWritten() {
-		assertThat(new File(outFolder, "git.properties"), exists());
-	}
 }
