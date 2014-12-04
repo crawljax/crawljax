@@ -1,9 +1,12 @@
 package com.crawljax.test;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.jetty.util.resource.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.core.CrawlSession;
@@ -15,9 +18,6 @@ import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurati
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.state.PostCrawlStateGraphChecker;
 import com.google.common.base.Strings;
-import org.eclipse.jetty.util.resource.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Base class for Crawler examples.
@@ -39,11 +39,9 @@ public class BaseCrawler {
 		this.siteExtension = siteExtension;
 		URL sampleSites = BaseCrawler.class.getResource("/site");
 		LOG.debug("Loading web server with from folder {}", sampleSites.toExternalForm());
-		try {
-			this.webServer = new WebServer(Resource.newResource(sampleSites));
-		} catch (IOException e) {
-			throw new CrawljaxException("Could not load resource", e);
-		}
+
+		this.webServer = new WebServer(Resource.newResource(sampleSites));
+
 	}
 
 	/**
