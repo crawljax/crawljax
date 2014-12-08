@@ -286,6 +286,9 @@ public class StandardFunctionsFlowTest {
 
 		List<WebElement> pluginLink = driver.findElements(By.linkText(LOCAL_PLUGIN_NAME));
 		assertFalse(pluginLink.isEmpty());
+		
+		followLink(logLink.get(0));
+		assertFalse(driver.findElement(By.id("logPanel")).getAttribute("innerHTML").equals(""));
 
 		List<WebElement> historyLink = driver.findElements(By.linkText("History"));
 		followLink(historyLink.get(0));
@@ -303,7 +306,7 @@ public class StandardFunctionsFlowTest {
 
 		}
 		assertNotNull(date);
-
+		
 		assertTrue(date.after(timeNSecondsAgo(70)));
 	}
 
@@ -320,7 +323,7 @@ public class StandardFunctionsFlowTest {
 		                .toExternalForm();
 		fileInput.sendKeys(fileName);
 
-		List<WebElement> uploadLink = driver.findElements(By.linkText("Upload"));
+		List<WebElement> uploadLink = driver.findElements(By.linkText("Upload Local Plugin"));
 		followLink(uploadLink.get(0));
 
 		WebElement uploaded =
@@ -343,7 +346,7 @@ public class StandardFunctionsFlowTest {
 		        "//label[contains(text(),'URL:')]/following-sibling::input[@type='text']"));
 		urlInput.sendKeys(REMOTE_PLUGIN_URL);
 
-		List<WebElement> downloadLink = driver.findElements(By.linkText("Add"));
+		List<WebElement> downloadLink = driver.findElements(By.linkText("Download Remote Plugin"));
 		followLink(downloadLink.get(0));
 
 		WebElement uploaded =
