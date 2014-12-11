@@ -1,0 +1,14 @@
+<table class="table table-striped restricted">
+	<thead>
+		<tr><th>Crawl</th><th>Configuration</th><th>Execution Time</th><th>Status</th></tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="crawl in crawlRecords | filter: $stateParams.filter" ng-if="crawlRecords.length > 0">
+			<td><a ng-click="goToCrawl(crawl.crawlStatus, crawl.id)">Crawl {{crawl.id}}</a></td>
+			<td><a ui-sref="configDetail.main({configId: crawl.configurationId})">{{crawl.configurationName}}</a></td>
+			<td>{{crawl.startTime | date: 'EEE MMM dd yyyy HH:mm:ss'}} GMT{{crawl.startTime | date: 'Z'}}</td>
+			<td>{{crawl.crawlStatus}}</td>
+		</tr>
+		<tr ng-if="(crawlRecords | filter: $stateParams.filter).length == 0"><td colspan="5">No crawls performed.</td></tr>
+	</tbody>
+</table>

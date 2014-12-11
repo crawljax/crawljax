@@ -1,0 +1,7 @@
+<ul class="nav nav-tabs">
+	<li ng-class="{active: $state.current.name=='configDetail.main'}"><a ui-sref="configDetail.main({configId: $stateParams.configId})" class="active">Overview</a></li>
+	<li ng-class="{active: $state.current.name=='configDetail.rules'}"><a ui-sref="configDetail.rules({configId: $stateParams.configId})">Crawl Rules</a></li>
+	<li ng-class="{active: $state.current.name=='configDetail.assertions'}"><a ui-sref="configDetail.assertions({configId: $stateParams.configId})">Assertions</a></li>
+	<li ng-class="{active: $state.current.name=='configDetail.plugins'}"><a ui-sref="configDetail.plugins({configId: $stateParams.configId})">Plugins</a></li>
+</ul>
+<ui-view></ui-view>

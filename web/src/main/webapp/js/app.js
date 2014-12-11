@@ -1,259 +1,265 @@
+var app = angular.module('crawljaxApp', ['ui.router']);
 
-App = Ember.Application.create({LOG_TRANSITIONS: true});
+app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+	$stateProvider
+		.state('config',
+			{
+				url: '/configurations',
+				controller: 'ConfigIndexController',
+				templateUrl: 'partials/config.html',
+				resolve: {
+					configs: function(configHttp){
+						return configHttp.getConfigurations();
+					}
+				}
+			})
+		.state('configNew',
+			{
+				url: '/configurations/new',
+				controller: 'ConfigNewController',
+				templateUrl: 'partials/configNew.html',
+				resolve: {
+					config: function(configHttp){
+						return configHttp.getNewConfiguration();
+					}
+				}
+			})
+		.state('configCopy',
+			{
+				url: '/configurations/new/:copyId',
+				controller: 'ConfigCopyController',
+				templateUrl: 'partials/configNew.html',
+				resolve: {
+					config: function($stateParams, configHttp){
+						return configHttp.getConfiguration($stateParams.copyId);
+					}
+				}
+			})	
+		.state('configDetail',
+			{
+				url: '/configurations/:configId',
+				templateUrl: 'partials/configView/configDetail.html',
+				controller: 'ConfigController',
+				resolve: {
+					config: function($stateParams, configHttp){
+						return configHttp.getConfiguration($stateParams.configId);
+					}
+				}
+			})
+		.state('configDetail.main',
+			{
+				url: '^/configurations/:configId/',
+				templateUrl: 'partials/configView/configDetail.main.html'
+			})
+		.state('configDetail.rules',
+			{
+				url: '^/configurations/:configId/rules',
+				templateUrl: 'partials/configView/configDetail.rules.html'
+			})
+		.state('configDetail.assertions',
+			{
+				url: '^/configurations/:configId/assertions',
+				templateUrl: 'partials/configView/configDetail.assertions.html'
+			})
+		.state('configDetail.plugins',
+			{
+				url: '^/configurations/:configId/plugins',
+				templateUrl: 'partials/configView/configDetail.plugins.html',
+				controller: 'ConfigPluginsController',
+				resolve: {
+					plugins: function(pluginHttp){
+						return pluginHttp.getPlugins();
+					}
+				}
+			})
+		.state('plugins',
+			{
+				url: '/plugins',
+				controller: 'PluginsController',
+				templateUrl: 'partials/plugins.html',
+				resolve: {
+					plugins: function(pluginHttp){
+						return pluginHttp.getPlugins();
+					}
+				}
+			})
+		.state('history',
+			{
+		    	url: '/history',
+				controller: 'HistoryIndexController',
+    			templateUrl: 'partials/history.html',
+				resolve: {
+					crawlRecords: function(historyHttp){
+						return historyHttp.getHistory();
+					}
+				}
+			})
+		.state('history.filter',
+			{
+				url: '/filter/:filter',
+				controller: 'HistoryIndexController',
+				templateUrl: 'partials/history.html'
+			})
+		.state('crawl', 
+			{
+				url: '/history/:crawlId',
+				templateUrl: 'partials/crawlView/crawl.html',
+				controller: 'CrawlRecordController',
+				resolve: {
+					crawl: function($stateParams, historyHttp){
+						return historyHttp.getCrawl($stateParams.crawlId);
+					}
+				}
+			})
+		.state('crawl.log',
+			{
+				url: '^/history/:crawlId/log',
+				templateUrl: 'partials/crawlView/crawl.log.html'
+			})
+		.state('crawl.pluginOutput',
+			{
+				url: '^/history/:crawlId/plugin/:pluginId',
+				templateUrl: 'partials/crawlView/crawl.pluginOutput.html',
+				controller: 'CrawlRecordPluginController'
+			});
+	$urlRouterProvider
+		.otherwise('/configurations');
+}]);
 
-Ember.Route.reopen({
-	getTargetRoute: function(){
-		var infos = this.router.router.targetHandlerInfos;
-		return infos[infos.length - 1].handler.routeName;
-	}
-});
-
-App.Router.map(function() {
-	this.resource("configurations", function() {
-		this.resource("configuration", {path: "/:configuration_id"}, function() {
-			this.route("rules");
-   			this.route("assertions");
-			this.route("plugins");
-		});
-		this.route("new");
-		this.resource("new", {path: "new/:configuration_id"});
+app.run(['$rootScope', '$state', '$stateParams', '$http', 'configHttp', 'pluginHttp', 'historyHttp', 'socket', 
+         function($rootScope, $state, $stateParams, $http, configHttp, pluginHttp, historyHttp, socket){
+	$rootScope.$state = $state;
+	$rootScope.$stateParams = $stateParams;
+	
+	$rootScope.browsers = [{name: "Mozilla Firefox", value: "FIREFOX"}, 
+	                       {name: "Google Chrome", value: "CHROME"}, 
+	                       {name: "Internet Explorer", value: "INTERNET EXPLORER"}, 
+	                       {name: "PhantomJS", value:"PHANTOMJS"}];
+	
+	$rootScope.clickConditions = [
+		{name: "With Attribute (name=value):", value:"wAttribute"},
+		{name: "With Text:", value:"wText"},
+		{name: "Under XPath:", value:"wXPath"},
+		{name: "When URL contains:", value:"url"},
+		{name: "When URL does not contain:", value:"notUrl"},
+		{name: "When Regex:", value:"regex"},
+		{name: "When not Regex:", value:"notRegex"},
+		{name: "When XPath:", value:"xPath"},
+		{name: "When not XPath:", value:"notXPath"},
+		{name: "When element is visible with id:", value:"visibleId"},
+		{name: "When element is not visible with id:", value:"notVisibleId"},
+		{name: "When element is visible with text:", value:"visibleText"},
+		{name: "When element is not visible with text:", value:"notVisibleText"},
+		{name: "When element is visible with tag:", value:"visibleTag"},
+		{name: "When element is not visible with tag:", value:"notVisibleTag"},
+		{name: "When Javascript is true:", value:"javascript"}];
+	
+	$rootScope.clickType = [{name: "Click", value: "click"}, {name: "Don't Click", value: "noClick"}];
+	
+	$rootScope.tags = ["a", "abbr", "address", "area", "article", "aside", "audio",
+	                   "button", "canvas", "details", "div", "figure", "footer",
+	                   "form", "header", "img", "input", "label", "li", "nav", "ol", 
+	                   "section", "select", "span", "summary", "table", "td", "textarea", 
+	                   "th", "tr", "ul", "video"];
+	
+	$rootScope.pageConditions = [
+		 {name: "When URL contains:", value:"url"},
+		 {name: "When URL does not contain:", value:"notUrl"},
+		 {name: "When Regex:", value:"regex"},
+		 {name: "When not Regex:", value:"notRegex"},
+		 {name: "When XPath:", value:"xPath"},
+		 {name: "When not XPath:", value:"notXPath"},
+		 {name: "When element is visible with id:", value:"visibleId"},
+		 {name: "When element is not visible with id:", value:"notVisibleId"},
+		 {name: "When element is visible with text:", value:"visibleText"},
+		 {name: "When element is not visible with text:", value:"notVisibleText"},
+		 {name: "When element is visible with tag:", value:"visibleTag"},
+		 {name: "When element is not visible with tag:", value:"notVisibleTag"},
+		 {name: "When Javascript is true:", value:"javascript"}];
+	
+	$rootScope.comparators = [
+		 {name: "Ignore Attribute:", value:"attribute"},
+		 {name: "Ignore White Space", value:"simple"},
+		 {name: "Ignore Dates", value:"date"},
+		 {name: "Ignore Scripts", value:"script"},
+		 {name: "Only observe plain DOM structure", value:"plain"},
+		 {name: "Ignore Regex:", value:"regex"},
+		 {name: "Ignore XPath:", value:"xPath"},
+		 {name: "Ignore within Distance Edit Threshold:", value:"distance"}];
+	
+	$rootScope.configurations = [];
+	$rootScope.plugins = [];
+	$rootScope.crawlRecords = [];
+	
+	historyHttp.getHistory(true).then(function(data){
+		socket.executionQueue = data;
 	});
 	
-	this.resource("plugin_management", {path: "plugins"});
+	if(!("WebSocket" in window)) {
+		alert('Need a browser that supports Sockets');
+	} else {
+		socket.connectSocket();
+	}
 	
-	this.resource("crawlrecords", function(){ 
-		this.resource("crawlrecord", {path: "/:crawlrecord_id"}, function() {
-			this.resource("log");
-			this.resource("plugin_output", {path: "plugin/:plugin_no"});
-		});
-		this.resource("config_filter", {path: "filter/:config_id"});
+	$rootScope.$on('$stateChangeStart', function(event, toState, fromState){
+		if(typeof angular.element("#config_form")[0] != "undefined"){
+			switch(fromState.name){
+				case 'configDetail.main':
+				case 'configDetail.rules':
+				case 'configDetail.assertions':
+				case 'configDetail.plugins':
+					if(!validateForm('config_form')) event.preventDefault();
+					break;
+				default:
+					break;
+			}
+		}
 	});
-});
-
-App.ApplicationRoute = Ember.Route.extend({
-	setupController: function(controller, model){
-		controller.set("executionQueue", App.CrawlRecords.findAll(undefined, true));
-		if(!("WebSocket" in window)) {
-			alert('Need a browser that supports Sockets');
-		} else {
-			controller.connectSocket();
+	
+	$rootScope.$on('$stateChangeSuccess', function(event, toState, fromState){
+		var sideNav = angular.element("#sideNav").scope();
+		var breadcrumb = angular.element("#breadcrumb").scope();
+		switch(toState.name){
+			case 'config':
+				sideNav.links = [{icon: 'icon-pencil', target: 'configNew', action: false, text: 'New Configuration'}];
+				breadcrumb.links = [{text: 'Configurations'}];
+				break;
+			case 'configDetail.main':
+			case 'configDetail.rules':
+			case 'configDetail.assertions':
+			case 'configDetail.plugins':
+				sideNav.links = [{icon: 'icon-play', target: 'run', action: true, text: 'Run Configuration'},
+								{icon: 'icon-ok', target: 'save', action: true, text: 'Save Configuration'},
+								{icon: 'icon-book', target: 'history.filter({filter: $stateParams.configId})', action: false, text: 'Crawl History'},
+								{icon: 'icon-pencil', target: 'configCopy({copyId: $stateParams.configId})', action: false, text: 'New Copy'},
+								{icon: 'icon-remove', target: 'delete', action: true, text: 'Delete Configuration'}];
+				breadcrumb.links = [{text: 'Configurations', target: 'config'}, {text: $stateParams.configId}]
+				break;
+			case 'configNew':
+			case 'configCopy':
+				sideNav.links = [{icon: 'icon-ok', target: 'save', action: true, text: 'Save Configuration'}];
+				breadcrumb.links = [{text: 'Configurations', target: 'config'}, {text: 'New'}];
+				break;
+			case 'plugins':
+				breadcrumb.links = [{text: 'Plugins'}];
+				sideNav.links = [];
+				break;
+			case 'history':
+				breadcrumb.links = [{text: 'History'}];
+				sideNav.links = [];
+				break;
+			case 'history.filter':
+				sideNav.links = [{icon: 'icon-book', target: 'history', action: false, text: 'All Crawl Records'}];
+				breadcrumb.links = [{text: 'History'}];
+				break;
+			case 'crawl.log':
+			case 'crawl.pluginOutput':
+				sideNav.links = [{icon: 'icon-wrench', target: 'configDetail.main({configId: configId})', action: false, text: 'Configuration'}]
+				breadcrumb.links = [{text: 'History', target: 'history'}, {text: 'Crawl ' + $stateParams.crawlId}];
+				break;
+			default:
+				sideNav.links = [];
+				break;
 		}
-	}
-});
-
-App.IndexRoute = Ember.Route.extend({
-	redirect: function() {
-		this.transitionTo('configurations');
-	}
-});
-
-App.ConfigurationsIndexRoute = Ember.Route.extend({
-	model: function (params) {
-		return App.Configurations.findAll();
-	},
-	setupController: function(controller, model) {
-		controller.set('content', model);
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav",
-			[App.Link.create({text:"New Configuration", target:"#/configurations/new", icon:"icon-pencil"})]);
-		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Configurations", target: "#/configurations"})]);
-	},
-	exit: function(router){
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav", []);
-	}
-});
-
-App.ConfigurationRoute = Ember.Route.extend({
-	model: function(params) {
-		return App.Configurations.find(params.configuration_id);
-	},
-	setupController: function(controller, model) {
-		controller.set("content", model);
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("rest", controller.rest);
-		sideNav.set("content", controller.get("content"));
-		sideNav.set("sidenav",
-				[App.Link.create({text:"Run Configuration", target:"run", action:true, icon:"icon-play"}),
-				App.Link.create({text:"Save Configuration", target:"save", action:true, icon:"icon-ok"}),
-				App.Link.create({text:"Crawl History", target:"#/crawlrecords/filter/" + model.id, icon:"icon-book"}),
-				App.Link.create({text:"New Copy", target:"#/configurations/new/" + model.id, icon:"icon-pencil"}),
-				App.Link.create({text:"Delete Configuration", target:"delete", action:true, icon:"icon-remove"})]);
-		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Configurations", target: "#/configurations"}),
-				App.Link.create({text: model.id, target: "#/configurations/" + model.id})]);
-	},
-	serialize: function(context) {
-		return { configuration_id: context.id };
-	},
-	exit: function(router){
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav", []);
-	}
-});
-
-App.ConfigurationIndexRoute = Ember.Route.extend({
-	renderTemplate: function(){ this.render({controller: 'configuration'}); }
-});
-
-App.ConfigurationRulesRoute = Ember.Route.extend({
-	renderTemplate: function(){ this.render({controller: 'configuration'}); }
-});
-
-App.ConfigurationAssertionsRoute = Ember.Route.extend({
-	renderTemplate: function(){ this.render({controller: 'configuration'}); }
-});
-
-App.ConfigurationPluginsRoute = Ember.Route.extend({
-	renderTemplate: function(){ this.render({controller: 'configuration'}); }
-});
-
-App.ConfigurationsNewRoute = Ember.Route.extend({
-	setupController: function(controller, model) {
-		var controller = this.controllerFor('configuration');
-		var model = App.Configurations.getNew();
-		controller.set('content', model);
-		
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("rest", controller.rest);
-		sideNav.set("content", model);
-		sideNav.set("sidenav",
-			[App.Link.create({text:"Save Configuration", target:"add", action:true, icon:"icon-ok"})]);
-		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Configurations", target: "#/configurations"}), App.Link.create({text: "New"})]);
-	},
-	renderTemplate: function() {
-		this.render({controller: 'configuration'});
-	},
-	exit: function(router){
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav", []);
-	}
-});
-
-App.NewRoute = Ember.Route.extend({
-	model: function(params) {
-		return {id: params.configuration_id};
-	},
-	setupController: function(controller, model) {
-		var controller = this.controllerFor('configuration');
-		var model = App.Configurations.getNew(model.id);
-		controller.set('content', model);
-		
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("rest", controller.rest);
-		sideNav.set("content", model);
-		sideNav.set("sidenav",
-			[App.Link.create({text:"Save Configuration", target:"add", action:true, icon:"icon-ok"})]);
-		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Configurations", target: "#/configurations"}), App.Link.create({text: "New"})]);
-	},
-	renderTemplate: function() {
-		this.render("configurations/new", {controller: 'configuration'});
-	},
-	exit: function(router){
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav", []);
-	}
-});
-
-App.PluginManagementRoute = Ember.Route.extend({
-	model: function(params) {
-		return App.Plugins.findAll();
-	},
-	setupController: function(controller, model) {
-		controller.set('content', model);
-		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "Plugins", target: "#/plugins"})]);
-		if(!(window.File && window.FileReader && window.FileList && window.Blob)){
-			alert('The File APIs are not fully supported in this browser.');
-		}
-	},
-	exit: function(router){
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav", []);
-	}
-});
-
-App.CrawlrecordsIndexRoute = Ember.Route.extend({
-	model: function(params) {
-		return App.CrawlRecords.findAll();
-	},
-	setupController: function(controller, model) {
-		controller.set('content', model);
-		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "History", target: "#/crawlrecords"})]);
-	}
-});
-
-App.CrawlrecordRoute = Ember.Route.extend({
-	model: function(params) {
-		return App.CrawlRecords.find(params.crawlrecord_id);
-	},
-	setupController: function(controller, model) {
-		controller.set('content', model);
-		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "History", target: "#/crawlrecords"}), App.Link.create({text: "Crawl " + model.id, target: "#/crawlrecords/" + model.id})]);
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav", [App.Link.create({text:"Configuration", target:"#/configurations/" + model.configurationId, icon:"icon-wrench"})]);
-	},
-	serialize: function(context) {
-		return { crawlrecord_id: context.get("id") };
-	},
-	exit: function(router){
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav", []);
-	}
-});
-
-App.CrawlrecordIndexRoute = Ember.Route.extend({
-	redirect: function(arg) {
-		if(this.getTargetRoute() === this.routeName)
-			this.transitionTo('log');
-	}
-});
-
-App.LogRoute = Ember.Route.extend({
-	setupController: function(controller, model) {
-		var controller = this.controllerFor('crawlrecord');
-		var appController = this.controllerFor('application');
-		if (controller.isLogging) {
-			appController.sendMsg('stoplog');
-		}
-		setTimeout(function(){ 
-			$('#logPanel').css({'height':(($(document).height())-162)+'px'});
-			$('#logPanel').empty();
-			appController.sendMsg('startlog-' + controller.get('content.id'));
-			controller.set("isLogging", true);
-			}, 0);
-	},
-	deactivate: function() {
-		this.controllerFor('application').sendMsg('stoplog');
-	},
-	renderTemplate: function() {
-		this.render({controller: 'crawlrecord'});
-	}
-});
-
-App.PluginOutputRoute = Ember.Route.extend({
-	model: function(params) {
-		return {key: params.plugin_no};
-	},
-	serialize: function(context) {
-		return { plugin_no: context.key };
-	}
-});
-
-App.ConfigFilterRoute = Ember.Route.extend({
-	model: function(params) {
-		return {config_id: params.config_id}
-	},
-	setupController: function(controller, model) {
-		var controller = this.controllerFor("crawlrecords.index");
-		var model = App.CrawlRecords.findAll(model.config_id);
-		controller.set('content', model);
-		
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav", [App.Link.create({text:"All Crawl Records", target:"#/crawlrecords", icon:"icon-book"})]);
-		this.controllerFor('breadcrumb').set("breadcrumb", [App.Link.create({text: "History", target: "#/crawlrecords"})]);
-	},
-	renderTemplate: function(){ this.render("crawlrecords/index", {controller: "crawlrecords.index"}); },
-	exit: function(router){
-		var sideNav = this.controllerFor("sidenav");
-		sideNav.set("sidenav", []);
-	}
-});
+	});
+}])

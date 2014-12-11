@@ -1,0 +1,5 @@
+<ul class="nav nav-tabs">
+	<li ng-class="{active: $state.current.name=='crawl.log'}"><a ui-sref="crawl.log({crawlId: $stateParams.crawlId})" class="active">Log</a></li>
+	<li ng-repeat="(key, plugin) in crawl.plugins" ng-class="{active: $stateParams.pluginId == key}" ng-if="crawl.crawlStatus == 'success'"><a ui-sref="crawl.pluginOutput({crawlId: $stateParams.crawlId, pluginId: key})">{{plugin.name}}</a></li>
+</ul>
+<ui-view></ui-view>

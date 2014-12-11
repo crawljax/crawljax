@@ -1,0 +1,20 @@
+<table class="table table-striped restricted">
+	<thead>
+		<tr><th>Name</th><th>Site</th><th>Last Crawl</th><th>Last Duration</th></tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="config in configurations | orderBy: name" ng-if="configurations.length > 0">
+			<td><a ui-sref="configDetail.main({configId: config.id})">{{config.name}}</a></td>
+			<td><a href="{{config.url}}" target="_blank">{{config.url}}</a></td>
+			<td>
+				<span ng-if='config.lastCrawl != null'>{{config.lastCrawl | date: 'EEE MMM dd yyyy HH:mm:ss'}} GMT{{config.lastCrawl | date: 'Z'}}</span>
+				<span ng-if="config.lastCrawl == null">never</span>
+			</td>
+			<td>
+				<span ng-if='config.lastDuration != 0'>{{config.lastDuration | date: 'm'}} min {{config.lastDuration | date: 's'}} sec</span>
+				<span ng-if='config.lastDuration == 0'>n/a</span>
+			</td>
+		</tr>
+		<tr ng-if="configurations.length == 0"><td colspan="5">No available configurations.</td></tr>
+	</tbody>
+</table>

@@ -1,0 +1,116 @@
+<form id="config_form" class="form-horizontal">
+	<fieldset>
+		<legend>Click Rules</legend>
+		<label class="checkbox">
+			<input type="checkbox" ng-model="config.clickDefault" /> Click Default Elements
+		</label>
+		<table class="table table-striped table-condensed" ng-if="config.clickRules.length > 0  && !config.clickDefault">
+			<tbody>
+				<tr ng-repeat="rule in config.clickRules">
+					<td style="width: 100px;">
+						<select class="input-small" ng-model='rule.rule' ng-options="option.value as option.name for option in clickType"></select>
+					</td>
+					<td style="width: 100px;">
+						<select class="input-small" ng-model='rule.elementTag' ng-options="option for option in tags"></select>
+					</td>
+					<td>
+						<table class="table table-striped table-condensed" ng-if="rule.conditions.length > 0" style="margin-bottom: 0px;">
+							<tbody>
+								<tr ng-repeat="condition in rule.conditions">
+									<td>
+										<select ng-model='condition.condition' ng-options="option.value as option.name for option in clickConditions"></select>
+									</td>
+									<td>
+										<input class="input-xlarge" type="text" ng-model="condition.expression" required="true" />
+										<span class="hint">This field is required.</span>
+									</td>
+									<td>
+										<a ng-click="configAdd.deleteClickRuleCondition(config, $parent.$index, $index)"><i class="icon-remove"></i></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<a ng-click="configAdd.addClickRuleCondition(config, $index)"><i class="icon-plus"></i>Condition</a>
+					</td>
+					<td>
+						<a ng-click="configAdd.deleteClickRule(config, $index)">Remove</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a ng-if="!config.clickDefault" ng-click="configAdd.addClickRule(config)">Add a New Click Rule</a>
+	</fieldset>
+	<br />
+	<fieldset>
+		<legend>Page Conditions</legend>
+		<table class="table table-striped table-condensed" ng-if="config.pageConditions.length > 0">
+			<tbody>
+				<tr ng-repeat="condition in config.pageConditions">
+					<td>
+						<select ng-model='condition.condition' ng-options="option.value as option.name for option in pageConditions"></select>
+					</td>
+					<td>
+						<input class="input-xlarge" type="text" ng-model="condition.expression" required="true" />
+						<span class="hint">This field is required.</span>
+					</td>
+					<td>
+						<a ng-click="configAdd.deleteCondition(config, $index)">Remove</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a ng-click="configAdd.addCondition(config)">Add a New Condition</a>
+	</fieldset>
+	<br />
+	<fieldset>
+		<legend>State Filters</legend>
+		<table class="table table-striped table-condensed" ng-if="config.comparators.length > 0">
+			<tbody>
+				<tr ng-repeat="comparator in config.comparators">
+					<td>
+						<select ng-model='comparator.type' ng-options="option.value as option.name for option in comparators"></select>
+					</td>
+					<td>
+						<input class="input-xlarge" type="text" ng-model="comparator.expression" required="true" />
+						<span class="hint">This field is required.</span>
+					</td>
+					<td>
+						<a ng-click="configAdd.deleteFilter(config, $index)">Remove</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a ng-click="configAdd.addFilter(config)">Add a New Filter</a>
+	</fieldset>
+	<br />
+	<fieldset>
+		<legend>Form Field Input Values</legend>
+		<label class="checkbox">
+			<input type="checkbox" ng-model="config.randomFormInput" /> Use Random Values in Form Fields
+		</label>
+		<table class="table table-striped table-condensed" ng-if="config.formInputValues.length > 0">
+			<thead>
+				<tr>
+					<th>Element Id/Name</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="formInput in config.formInputValues">
+					<td>
+						<input type="text" ng-model="formInput.name" required="true" />
+						<span class="hint">This field is required.</span>
+					</td>
+					<td>
+						<input type="text" ng-model="formInput.value" required="true" />
+						<span class="hint">This field is required.</span>
+					</td>
+					<td>
+						<a ng-click="configAdd.deleteFormField(config, $index)">Remove</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a ng-click="configAdd.addFormField(config)">Add a New Field</a>
+	</fieldset>
+</form>

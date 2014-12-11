@@ -44,3 +44,7 @@ table.restricted td {
 table.restricted {
 	white-space:nowrap;
 }
+
+a {
+	cursor: pointer;
+}

@@ -1,0 +1,49 @@
+<legend>Available Plugins</legend>
+<table class="table table-striped restricted">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>ID</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="plugin in plugins" ng-if="plugins.length > 0">
+			<td>{{plugin.name}}</td>
+			<td>{{plugin.description}}</td>
+			<td>{{plugin.id}}</td>
+			<td><a ng-click="rest({target: 'delete', pluginId: plugin.id, pluginName: plugin.name, plugin: plugin})"><i class="icon-remove"></i> Delete</a></td>
+		</tr>
+		<tr ng-if="plugins.length == 0">
+			<td colspan="3">
+				No available plugins.
+			</td>
+		</tr>
+	</tbody>
+</table>
+<a ng-click="rest({target: 'refresh'})">
+	<i class="icon-refresh"></i> Refresh List
+</a>
+
+<form id="plugin_upload_form" class="form-horizontal">
+	<fieldset>
+		<legend>Add Local Plugin</legend>
+		<div class="control-group">
+			<input type="file" id="pluginFile" />
+		</div>
+		<a ng-click="rest({target: 'upload'})">
+			<i class="icon-plus"></i> Upload Local Plugin
+		</a>
+	</fieldset>
+	<fieldset>
+		<legend>Add Remote Plugin</legend>
+		<div class="control-group">
+			<label class="control-label">URL:</label>
+			<input type="text" ng-model="newPluginURL" id="newPluginURL"/>
+		</div>
+		<a ng-click="rest({target: 'add'})">
+			<i class="icon-plus"></i> Download Remote Plugin
+		</a>
+	</fieldset>
+</form>
