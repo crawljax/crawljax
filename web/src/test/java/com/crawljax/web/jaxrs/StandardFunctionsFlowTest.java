@@ -95,7 +95,7 @@ public class StandardFunctionsFlowTest {
 		        driver.findElements(By.linkText("Save Configuration"));
 		assertFalse(saveConfigurationLink.isEmpty());
 		followLink(saveConfigurationLink.get(0));
-
+		
 		WebElement nameSpan = driver.findElements(By.xpath(
 		       "//label[contains(text(),'Name:')]/following-sibling::input")).get(0);
 		assertTrue(nameSpan.getAttribute("value").equals(CONFIG_NAME));
@@ -277,7 +277,7 @@ public class StandardFunctionsFlowTest {
 		WebElement crawlLink = driver.findElement(By.xpath(
 		        "//td[following-sibling::td[contains(a,'" + CONFIG_NAME + "')]]/a"));
 		followLink(crawlLink);
-
+     
 		List<WebElement> logLink = driver.findElements(By.linkText("Log"));
 		assertFalse(logLink.isEmpty());
 
@@ -449,7 +449,7 @@ public class StandardFunctionsFlowTest {
 	private void followLink(WebElement link) {
 		link.click();
 		try {
-			Thread.sleep(100);
+			Thread.sleep(400);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
