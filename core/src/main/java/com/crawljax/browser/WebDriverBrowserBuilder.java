@@ -102,6 +102,10 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			        .getHostname());
 			profile.setPreference("network.proxy.http_port", configuration
 			        .getProxyConfiguration().getPort());
+			profile.setPreference("network.proxy.ssl", configuration.getProxyConfiguration()
+					.getHostname());
+			profile.setPreference("network.proxy.ssl_port", configuration
+					.getProxyConfiguration().getPort());
 			profile.setPreference("network.proxy.type", configuration.getProxyConfiguration()
 			        .getType().toInt());
 			/* use proxy for everything, including localhost */
@@ -142,14 +146,14 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 		DesiredCapabilities caps = new DesiredCapabilities();
 		caps.setCapability("takesScreenshot", true);
-		caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--webdriver-loglevel=WARN"});
+		caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--webdriver-loglevel=WARN", "--ignore-ssl-errors=true", "--ssl-protocol=tlsv1"});
 		final ProxyConfiguration proxyConf = configuration
 				.getProxyConfiguration();
 		if (proxyConf != null && proxyConf.getType() != ProxyType.NOTHING) {
 			final String proxyAddrCap = "--proxy=" + proxyConf.getHostname()
 					+ ":" + proxyConf.getPort();
 			final String proxyTypeCap = "--proxy-type=http";
-			final String[] args = new String[] { proxyAddrCap, proxyTypeCap };
+			final String[] args = new String[] { proxyAddrCap, proxyTypeCap, "--ssl-protocol=tlsv1", "--ignore-ssl-errors=true"};
 			caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, args);
 		}
 		
