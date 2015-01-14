@@ -146,14 +146,14 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 		DesiredCapabilities caps = new DesiredCapabilities();
 		caps.setCapability("takesScreenshot", true);
-		caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--webdriver-loglevel=WARN", "--ignore-ssl-errors=true", "--ssl-protocol=tlsv1"});
+		caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--webdriver-loglevel=WARN", "--ignore-ssl-errors=true"});
 		final ProxyConfiguration proxyConf = configuration
 				.getProxyConfiguration();
 		if (proxyConf != null && proxyConf.getType() != ProxyType.NOTHING) {
 			final String proxyAddrCap = "--proxy=" + proxyConf.getHostname()
 					+ ":" + proxyConf.getPort();
 			final String proxyTypeCap = "--proxy-type=http";
-			final String[] args = new String[] { proxyAddrCap, proxyTypeCap, "--ssl-protocol=tlsv1", "--ignore-ssl-errors=true"};
+			final String[] args = new String[] { proxyAddrCap, proxyTypeCap, "--ignore-ssl-errors=true"};
 			caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, args);
 		}
 		
