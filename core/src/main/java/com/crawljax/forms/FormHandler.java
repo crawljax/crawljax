@@ -1,20 +1,5 @@
 package com.crawljax.forms;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
@@ -23,6 +8,20 @@ import com.crawljax.core.exception.BrowserConnectionException;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.inject.assistedinject.Assisted;
+import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.inject.Inject;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Handles form values and fills in the form input elements with random values of the defined
@@ -52,8 +51,7 @@ public class FormHandler {
 	{ "text", "radio", "checkbox", "password" };
 
 	/**
-	 * Fills in the element with the InputValues for input TODO: improve this by using WebDriver
-	 * options?
+	 * Fills in the element with the InputValues for input
 	 */
 	private void setInputElementValue(Node element, FormInput input) {
 
@@ -65,13 +63,13 @@ public class FormHandler {
 			if (input.getType().toLowerCase().startsWith("text")
 			        || input.getType().equalsIgnoreCase("password")
 			        || input.getType().equalsIgnoreCase("hidden")) {
-				handleText(element, input);
+				handleText(input);
 			} else if ("checkbox".equals(input.getType())) {
-				handleCheckBoxes(element, input);
+				handleCheckBoxes(input);
 			} else if (input.getType().equals("radio")) {
-				handleRadioSwitches(element, input);
+				handleRadioSwitches(input);
 			} else if (input.getType().startsWith("select")) {
-				handleSelectBoxes(element, input);
+				handleSelectBoxes(input);
 			}
 		} catch (BrowserConnectionException e) {
 			throw e;
@@ -80,66 +78,48 @@ public class FormHandler {
 		}
 	}
 
-	private void handleCheckBoxes(Node element, FormInput input) {
-		for (InputValue inputValue : input.getInputValues()) {
-			String js =
-			        DomUtils.getJSGetElement(XPathHelper.getXPathExpression(element));
-			boolean check;
-			if (!randomFieldValue) {
-				check = inputValue.isChecked();
-			} else {
+    private void handleCheckBoxes(FormInput input) {
+        for (InputValue inputValue : input.getInputValues()) {
+            boolean check;
+            if (!randomFieldValue) {
+                check = inputValue.isChecked();
+            } else {
 
-				check = Math.random() >= HALF;
-			}
-			String value;
-			if (check) {
-				value = "true";
-			} else {
-				value = "false";
-			}
-			js += "try{ATUSA_element.checked=" + value + ";}catch(e){}";
-			browser.executeJavaScript(js);
+                check = Math.random() >= HALF;
+            }
+            WebElement inputElement = browser.getWebElement(input.getIdentification());
+            if (check && !inputElement.isSelected()) {
+                inputElement.click();
+            } else if (!check && inputElement.isSelected()) {
+                inputElement.click();
+            }
+        }
+    }
 
-		}
-	}
+    private void handleRadioSwitches(FormInput input) {
+        for (InputValue inputValue : input.getInputValues()) {
+            if (inputValue.isChecked()) {
+                WebElement inputElement = browser.getWebElement(input.getIdentification());
+                inputElement.click();
+            }
+        }
+    }
 
-	private void handleRadioSwitches(Node element, FormInput input) {
-		for (InputValue inputValue : input.getInputValues()) {
-			if (inputValue.isChecked()) {
-				String js =
-				        DomUtils.getJSGetElement(XPathHelper
-				                .getXPathExpression(element));
-				js += "try{ATUSA_element.checked=true;}catch(e){}";
-				browser.executeJavaScript(js);
-			}
-		}
-	}
+    private void handleSelectBoxes(FormInput input) {
+        for (InputValue inputValue : input.getInputValues()) {
+            WebElement inputElement = browser.getWebElement(input.getIdentification());
+            inputElement.sendKeys(inputValue.getValue());
+        }
+    }
 
-	private void handleSelectBoxes(Node element, FormInput input) {
-		for (InputValue inputValue : input.getInputValues()) {
-			String js =
-			        DomUtils.getJSGetElement(XPathHelper.getXPathExpression(element));
-			js +=
-			        "try{" + "for(i=0; i<ATUSA_element.options.length; i++){"
-			                + "if(ATUSA_element.options[i].value=='"
-			                + inputValue.getValue()
-			                + "' || ATUSA_element.options[i].text=='"
-			                + inputValue.getValue() + "'){"
-			                + "ATUSA_element.options[i].selected=true;" + "break;"
-			                + "}" + "};" + "}catch(e){}";
-			browser.executeJavaScript(js);
-		}
-	}
-
-	private void handleText(Node element, FormInput input) {
-		String text = input.getInputValues().iterator().next().getValue();
-		if ("".equals(text)) {
-			return;
-		}
-		String js = DomUtils.getJSGetElement(XPathHelper.getXPathExpression(element));
-		js += "try{ATUSA_element.value='" + text + "';}catch(e){}";
-		browser.executeJavaScript(js);
-	}
+    private void handleText(FormInput input) {
+        String text = input.getInputValues().iterator().next().getValue();
+        if (null == text || text.length() == 0) {
+            return;
+        }
+        WebElement inputElement = browser.getWebElement(input.getIdentification());
+        inputElement.sendKeys(text);
+    }
 
 	/**
 	 * @return all input element in dom
