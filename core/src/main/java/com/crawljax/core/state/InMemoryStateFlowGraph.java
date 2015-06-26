@@ -4,10 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
@@ -50,7 +47,8 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 	 */
 	private final AtomicInteger stateCounter = new AtomicInteger();
 	private final AtomicInteger nextStateNameCounter = new AtomicInteger();
-	private final ConcurrentMap<Integer, StateVertex> stateById;
+	private final Map<Integer, StateVertex> stateById;
+
 	private final ExitNotifier exitNotifier;
 	private final StateVertexFactory vertexFactory;
 
@@ -65,7 +63,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		this.exitNotifier = exitNotifier;
 		this.vertexFactory = vertexFactory;
 		sfg = new DirectedMultigraph<>(Eventable.class);
-		stateById = Maps.newConcurrentMap();
+		stateById = Collections.synchronizedMap(new HashMap<Integer, StateVertex>());
 		LOG.debug("Initialized the stateflowgraph");
 		ReadWriteLock lock = new ReentrantReadWriteLock();
 		readLock = lock.readLock();
