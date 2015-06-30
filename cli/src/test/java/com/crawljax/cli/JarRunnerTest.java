@@ -174,7 +174,19 @@ public class JarRunnerTest {
 		                .getCrawlRules();
 		assertThat(crawlRules.getWaitAfterEvent(), is(123L));
 	}
-
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void whenInvalidTLDItFails() {
+		String[] args = { "http://test.invaliddomain", tmpFolder.getRoot().getPath() };
+		new JarRunner(args);
+	}
+	
+	@Test
+	public void testRecentTLD() {
+		String[] args = { "http://test.today", tmpFolder.getRoot().getPath() };
+		new JarRunner(args);
+	}
+	
 	@After
 	public void after() {
 		assertThat(streams.getErrorOutput(), isEmptyString());
