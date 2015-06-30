@@ -235,7 +235,7 @@ public class StateFlowGraphTest {
                 }
             }
         }
-        assertThat(uEvents.size(), is(8));
+        assertThat(uEvents.size(), is(7));
     }
 
 }
