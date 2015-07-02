@@ -81,21 +81,33 @@ public class StandardFunctionsFlowTest {
 	}
 
 	private void createNewConfiguration() {
+		// Go to the configuration page
 		open("configurations");
+		
+		// Click on New Configuration link
 		List<WebElement> newConfigurationLink =
 		        driver.findElements(By.linkText("New Configuration"));
 		assertFalse(newConfigurationLink.isEmpty());
 		followLink(newConfigurationLink.get(0));
+		
+		// Get input fields
 		List<WebElement> textBoxes = visibleElementsByTagName("input");
 		assertFalse(textBoxes.isEmpty());
+		
+		// Fill first input (Name:) with configuration name
 		textBoxes.get(0).sendKeys(CONFIG_NAME);
+		
+		// Fill second input (Site:) with configuration site
 		textBoxes.get(1).clear();
 		textBoxes.get(1).sendKeys(CONFIG_URL);
+		
+		// Click on Save Configuration link
 		List<WebElement> saveConfigurationLink =
 		        driver.findElements(By.linkText("Save Configuration"));
 		assertFalse(saveConfigurationLink.isEmpty());
 		followLink(saveConfigurationLink.get(0));
-		
+
+		// Check if configuration Name and Url are the same we entered 
 		WebElement nameSpan = driver.findElements(By.xpath(
 		       "//label[contains(text(),'Name:')]/following-sibling::input")).get(0);
 		assertTrue(nameSpan.getAttribute("value").equals(CONFIG_NAME));
