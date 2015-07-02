@@ -100,21 +100,23 @@ public class StandardFunctionsFlowTest {
 		// Fill second input (Site:) with configuration site
 		textBoxes.get(1).clear();
 		textBoxes.get(1).sendKeys(CONFIG_URL);
-		
+
 		// Click on Save Configuration link
 		List<WebElement> saveConfigurationLink =
 		        driver.findElements(By.linkText("Save Configuration"));
 		assertFalse(saveConfigurationLink.isEmpty());
 		followLink(saveConfigurationLink.get(0));
 
-		// Check if configuration Name and Url are the same we entered 
-		WebElement nameSpan = driver.findElements(By.xpath(
-		       "//label[contains(text(),'Name:')]/following-sibling::input")).get(0);
-		assertTrue(nameSpan.getAttribute("value").equals(CONFIG_NAME));
+		// Check if the configuration was saved successfully
+		ExpectedCondition<Boolean> isSaved = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				WebElement notification = driver.findElements(By.id("notification")).get(0);
+				return notification.getText().equals("Configuration Saved");
+			}
+		};
 
-		WebElement urlInput = driver.findElements(By.xpath(
-		       "//label[contains(text(),'Site:')]/following-sibling::input")).get(0);
-		assertTrue(urlInput.getAttribute("value").equals(CONFIG_URL));
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(isSaved);
 	}
 
 	private void editConfiguration() {
