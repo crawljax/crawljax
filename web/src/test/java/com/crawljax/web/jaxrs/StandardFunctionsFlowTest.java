@@ -81,31 +81,46 @@ public class StandardFunctionsFlowTest {
 	}
 
 	private void createNewConfiguration() {
+		// Go to the configuration page
 		open("configurations");
+		
+		// Click on New Configuration link
 		List<WebElement> newConfigurationLink =
 		        driver.findElements(By.linkText("New Configuration"));
 		assertFalse(newConfigurationLink.isEmpty());
 		followLink(newConfigurationLink.get(0));
+		
+		// Get input fields
 		List<WebElement> textBoxes = visibleElementsByTagName("input");
 		assertFalse(textBoxes.isEmpty());
+		
+		// Fill first input (Name:) with configuration name
 		textBoxes.get(0).sendKeys(CONFIG_NAME);
+		
+		// Fill second input (Site:) with configuration site
 		textBoxes.get(1).clear();
 		textBoxes.get(1).sendKeys(CONFIG_URL);
+
+		// Click on Save Configuration link
 		List<WebElement> saveConfigurationLink =
 		        driver.findElements(By.linkText("Save Configuration"));
 		assertFalse(saveConfigurationLink.isEmpty());
 		followLink(saveConfigurationLink.get(0));
-		
-		WebElement nameSpan = driver.findElements(By.xpath(
-		       "//label[contains(text(),'Name:')]/following-sibling::input")).get(0);
-		assertTrue(nameSpan.getAttribute("value").equals(CONFIG_NAME));
 
-		WebElement urlInput = driver.findElements(By.xpath(
-		       "//label[contains(text(),'Site:')]/following-sibling::input")).get(0);
-		assertTrue(urlInput.getAttribute("value").equals(CONFIG_URL));
+		// Check if the configuration was saved successfully
+		waitForNotification("Configuration Saved", 10);
 	}
 
 	private void editConfiguration() {
+		// Check if configuration Name and Url are the same we entered when creating configuration
+		WebElement nameSpan = driver
+				.findElements(By.xpath("//label[contains(text(),'Name:')]/following-sibling::input")).get(0);
+		assertTrue(nameSpan.getAttribute("value").equals(CONFIG_NAME));
+
+		WebElement urlInput = driver
+				.findElements(By.xpath("//label[contains(text(),'Site:')]/following-sibling::input")).get(0);
+		assertTrue(urlInput.getAttribute("value").equals(CONFIG_URL));
+
 		WebElement maxCrawlStates =
 		        driver.findElements(
 		                By.xpath(
@@ -189,14 +204,7 @@ public class StandardFunctionsFlowTest {
 		        driver.findElements(By.linkText("Save Configuration"));
 		followLink(saveConfigurationLink.get(0));
 
-		ExpectedCondition<Boolean> isSaved = new ExpectedCondition<Boolean>() {
-			public Boolean apply(WebDriver driver) {
-				WebElement notification = driver.findElements(By.id("notification")).get(0);
-				return notification.getText().equals("Configuration Saved");
-			}
-		};
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(isSaved);
+		waitForNotification("Configuration Saved", 10);
 	}
 
 	private void copyConfiguration() {
@@ -224,14 +232,7 @@ public class StandardFunctionsFlowTest {
 		Alert confirmDialog = driver.switchTo().alert();
 		confirmDialog.accept();
 
-		ExpectedCondition<Boolean> isDeleted = new ExpectedCondition<Boolean>() {
-			public Boolean apply(WebDriver driver) {
-				WebElement notification = driver.findElements(By.id("notification")).get(0);
-				return notification.getText().equals("Configuration Deleted");
-			}
-		};
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(isDeleted);
+		waitForNotification("Configuration Deleted", 10);
 	}
 
 	private void runConfigurationAndViewResults() {
@@ -395,14 +396,9 @@ public class StandardFunctionsFlowTest {
 			followLink(deleteLinks.get(0));
 			Alert confirmDialog = driver.switchTo().alert();
 			confirmDialog.accept();
-			ExpectedCondition<Boolean> isDeleted = new ExpectedCondition<Boolean>() {
-				public Boolean apply(WebDriver driver) {
-					WebElement notification = driver.findElements(By.id("notification")).get(0);
-					return notification.getText().equals("Plugin Deleted");
-				}
-			};
-			WebDriverWait wait = new WebDriverWait(driver, 10);
-			wait.until(isDeleted);
+			
+			waitForNotification("Plugin Deleted", 10);
+			
 			if (!isElementPresent(driver, By.linkText("Delete"))) {
 				break;
 			}
@@ -493,6 +489,18 @@ public class StandardFunctionsFlowTest {
 		} finally {
 			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		}
+	}
+
+	private void waitForNotification(final String expectedString, int timeOutInSeconds) {
+		ExpectedCondition<Boolean> isSaved = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				WebElement notification = driver.findElements(By.id("notification")).get(0);
+				return notification.getText().equals(expectedString);
+			}
+		};
+
+		WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
+		wait.until(isSaved);
 	}
 
 	@AfterClass
