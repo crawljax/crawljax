@@ -108,15 +108,7 @@ public class StandardFunctionsFlowTest {
 		followLink(saveConfigurationLink.get(0));
 
 		// Check if the configuration was saved successfully
-		ExpectedCondition<Boolean> isSaved = new ExpectedCondition<Boolean>() {
-			public Boolean apply(WebDriver driver) {
-				WebElement notification = driver.findElements(By.id("notification")).get(0);
-				return notification.getText().equals("Configuration Saved");
-			}
-		};
-
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(isSaved);
+		waitForNotification("Configuration Saved", 10);
 	}
 
 	private void editConfiguration() {
@@ -203,14 +195,7 @@ public class StandardFunctionsFlowTest {
 		        driver.findElements(By.linkText("Save Configuration"));
 		followLink(saveConfigurationLink.get(0));
 
-		ExpectedCondition<Boolean> isSaved = new ExpectedCondition<Boolean>() {
-			public Boolean apply(WebDriver driver) {
-				WebElement notification = driver.findElements(By.id("notification")).get(0);
-				return notification.getText().equals("Configuration Saved");
-			}
-		};
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(isSaved);
+		waitForNotification("Configuration Saved", 10);
 	}
 
 	private void copyConfiguration() {
@@ -238,14 +223,7 @@ public class StandardFunctionsFlowTest {
 		Alert confirmDialog = driver.switchTo().alert();
 		confirmDialog.accept();
 
-		ExpectedCondition<Boolean> isDeleted = new ExpectedCondition<Boolean>() {
-			public Boolean apply(WebDriver driver) {
-				WebElement notification = driver.findElements(By.id("notification")).get(0);
-				return notification.getText().equals("Configuration Deleted");
-			}
-		};
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(isDeleted);
+		waitForNotification("Configuration Deleted", 10);
 	}
 
 	private void runConfigurationAndViewResults() {
@@ -409,14 +387,9 @@ public class StandardFunctionsFlowTest {
 			followLink(deleteLinks.get(0));
 			Alert confirmDialog = driver.switchTo().alert();
 			confirmDialog.accept();
-			ExpectedCondition<Boolean> isDeleted = new ExpectedCondition<Boolean>() {
-				public Boolean apply(WebDriver driver) {
-					WebElement notification = driver.findElements(By.id("notification")).get(0);
-					return notification.getText().equals("Plugin Deleted");
-				}
-			};
-			WebDriverWait wait = new WebDriverWait(driver, 10);
-			wait.until(isDeleted);
+			
+			waitForNotification("Plugin Deleted", 10);
+			
 			if (!isElementPresent(driver, By.linkText("Delete"))) {
 				break;
 			}
@@ -507,6 +480,18 @@ public class StandardFunctionsFlowTest {
 		} finally {
 			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		}
+	}
+
+	private void waitForNotification(final String expectedString, int timeOutInSeconds) {
+		ExpectedCondition<Boolean> isSaved = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				WebElement notification = driver.findElements(By.id("notification")).get(0);
+				return notification.getText().equals(expectedString);
+			}
+		};
+
+		WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
+		wait.until(isSaved);
 	}
 
 	@AfterClass
