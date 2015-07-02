@@ -112,6 +112,15 @@ public class StandardFunctionsFlowTest {
 	}
 
 	private void editConfiguration() {
+		// Check if configuration Name and Url are the same we entered when creating configuration
+		WebElement nameSpan = driver
+				.findElements(By.xpath("//label[contains(text(),'Name:')]/following-sibling::input")).get(0);
+		assertTrue(nameSpan.getAttribute("value").equals(CONFIG_NAME));
+
+		WebElement urlInput = driver
+				.findElements(By.xpath("//label[contains(text(),'Site:')]/following-sibling::input")).get(0);
+		assertTrue(urlInput.getAttribute("value").equals(CONFIG_URL));
+
 		WebElement maxCrawlStates =
 		        driver.findElements(
 		                By.xpath(
