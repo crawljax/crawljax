@@ -298,7 +298,7 @@ public class StandardFunctionsFlowTest {
 		        "//td[preceding-sibling::td[contains(a,'" + CONFIG_NAME + "')]]"));
 		assertNotNull(dateContainer);
 		String displayedDate = dateContainer.getText();
-		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM d yyyy HH:mm:ss");
+		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
 		Date date = null;
 		try {
 			date = dateParser.parse(displayedDate);
