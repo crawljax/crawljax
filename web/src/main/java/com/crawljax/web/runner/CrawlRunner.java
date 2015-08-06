@@ -1,41 +1,7 @@
 package com.crawljax.web.runner;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import com.crawljax.core.plugin.HostInterface;
-import com.crawljax.core.plugin.HostInterfaceImpl;
-import com.crawljax.core.plugin.descriptor.Parameter;
-import com.crawljax.plugins.crawloverview.CrawlOverview;
-import com.crawljax.web.Main;
-import com.crawljax.web.model.ClickRule;
-import com.crawljax.web.model.Configuration;
-import com.crawljax.web.model.Configurations;
-import com.crawljax.web.model.CrawlRecord;
-import com.crawljax.web.model.CrawlRecords;
-import com.crawljax.web.model.NameValuePair;
-import com.crawljax.web.model.Plugin;
-import com.crawljax.web.model.Plugins;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.MDC;
-
 import com.crawljax.condition.Condition;
-import com.crawljax.condition.JavaScriptCondition;
-import com.crawljax.condition.NotRegexCondition;
-import com.crawljax.condition.NotUrlCondition;
-import com.crawljax.condition.NotVisibleCondition;
-import com.crawljax.condition.NotXPathCondition;
-import com.crawljax.condition.RegexCondition;
-import com.crawljax.condition.UrlCondition;
-import com.crawljax.condition.VisibleCondition;
-import com.crawljax.condition.XPathCondition;
+import com.crawljax.condition.*;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlElement;
@@ -43,23 +9,29 @@ import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.plugin.HostInterface;
+import com.crawljax.core.plugin.HostInterfaceImpl;
+import com.crawljax.core.plugin.descriptor.Parameter;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.oraclecomparator.OracleComparator;
-import com.crawljax.oraclecomparator.comparators.AttributeComparator;
-import com.crawljax.oraclecomparator.comparators.DateComparator;
-import com.crawljax.oraclecomparator.comparators.EditDistanceComparator;
-import com.crawljax.oraclecomparator.comparators.PlainStructureComparator;
-import com.crawljax.oraclecomparator.comparators.RegexComparator;
-import com.crawljax.oraclecomparator.comparators.ScriptComparator;
-import com.crawljax.oraclecomparator.comparators.SimpleComparator;
-import com.crawljax.oraclecomparator.comparators.StyleComparator;
-import com.crawljax.oraclecomparator.comparators.XPathExpressionComparator;
+import com.crawljax.oraclecomparator.comparators.*;
+import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.crawljax.web.LogWebSocketServlet;
+import com.crawljax.web.Main;
+import com.crawljax.web.model.*;
 import com.crawljax.web.model.ClickRule.RuleType;
 import com.crawljax.web.model.CrawlRecord.CrawlStatusType;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.MDC;
+
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class CrawlRunner {
@@ -133,7 +105,7 @@ public class CrawlRunner {
 					builder.setMaximumRunTime(config.getMaxDuration(), TimeUnit.MINUTES);
 				else
 					builder.setUnlimitedRuntime();
-
+				builder.setUserAgent(config.getUserAgent());
 				builder.crawlRules().clickOnce(config.isClickOnce());
 				builder.crawlRules().insertRandomDataInInputForms(config.isRandomFormInput());
 				builder.crawlRules().waitAfterEvent(config.getEventWaitTime(),

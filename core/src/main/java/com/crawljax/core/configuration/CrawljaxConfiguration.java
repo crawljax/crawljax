@@ -1,13 +1,5 @@
 package com.crawljax.core.configuration;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.util.concurrent.TimeUnit;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
@@ -17,6 +9,14 @@ import com.crawljax.core.state.StateVertexFactory;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.util.concurrent.TimeUnit;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Configures the {@link Crawler}. Set it up using the {@link #builderFor(String)} function.
@@ -160,6 +160,14 @@ public class CrawljaxConfiguration {
 			return this;
 		}
 
+        /**
+         * Set a custom user agent to override the default browser.
+         * @param userAgent the user agent to set
+         */
+        public CrawljaxConfigurationBuilder setUserAgent(String userAgent){
+            config.userAgent = userAgent;
+            return this;
+        }
 		/**
 		 * Set a custom {@link com.crawljax.core.state.StateVertexFactory} to be able to use your
 		 * own {@link com.crawljax.core.state.StateVertex} objects. This is useful when you want to
@@ -237,12 +245,13 @@ public class CrawljaxConfiguration {
 	private BrowserConfiguration browserConfig = new BrowserConfiguration(BrowserType.FIREFOX);
 	private ImmutableList<Plugin> plugins;
 	private ProxyConfiguration proxyConfiguration = ProxyConfiguration.noProxy();
+	private String userAgent;
 
 	private CrawlRules crawlRules;
 
 	private int maximumStates = 0;
-	private long maximumRuntime = TimeUnit.HOURS.toMillis(1);;
-	private int maximumDepth = 2;
+	private long maximumRuntime = TimeUnit.HOURS.toMillis(1);
+    private int maximumDepth = 2;
 	private File output = new File("out");
 
 	private StateVertexFactory stateVertexFactory;
@@ -262,6 +271,9 @@ public class CrawljaxConfiguration {
 		return browserConfig;
 	}
 
+    public String getUserAgent(){
+        return userAgent;
+    }
 	public ImmutableList<Plugin> getPlugins() {
 		return plugins;
 	}
@@ -311,18 +323,20 @@ public class CrawljaxConfiguration {
 			        && Objects.equal(this.crawlRules, that.crawlRules)
 			        && Objects.equal(this.maximumStates, that.maximumStates)
 			        && Objects.equal(this.maximumRuntime, that.maximumRuntime)
-			        && Objects.equal(this.maximumDepth, that.maximumDepth);
+			        && Objects.equal(this.maximumDepth, that.maximumDepth)
+                    && Objects.equal(this.userAgent, that.userAgent);
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("url", url).add("browserConfig", browserConfig)
-		        .add("plugins", plugins).add("proxyConfiguration", proxyConfiguration)
-		        .add("crawlRules", crawlRules).add("maximumStates", maximumStates)
-		        .add("maximumRuntime", maximumRuntime).add("maximumDepth", maximumDepth)
-		        .toString();
+        return Objects.toStringHelper(this).add("url", url).add("browserConfig", browserConfig)
+                .add("plugins", plugins).add("proxyConfiguration", proxyConfiguration)
+                .add("crawlRules", crawlRules).add("maximumStates", maximumStates)
+                .add("maximumRuntime", maximumRuntime).add("maximumDepth", maximumDepth)
+                .add("userAgent", userAgent)
+                .toString();
 	}
 
 }

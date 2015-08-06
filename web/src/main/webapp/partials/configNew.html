@@ -21,6 +21,10 @@
 			<input type="number" ng-model="config.numBrowsers" min="1" />
 		</div>
 		<div class="control-group">
+			<label class="control-label">User Agent:</label>
+			<input type="text" ng-model="config.userAgent" placeholder="Override"/>
+		</div>
+		<div class="control-group">
 			<div class="controls">
 				<label class="checkbox">
 					<input type="checkbox" ng-model="config.bootBrowser" checked="checked" />

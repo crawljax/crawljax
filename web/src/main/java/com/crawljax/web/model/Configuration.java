@@ -29,6 +29,7 @@ public class Configuration {
 	private Date lastCrawl = null;
 	private long lastDuration;
 	private Date lastModified = null;
+	private String userAgent = null;
 
 	private ArrayList<Plugin> plugins = new ArrayList<>();
 
@@ -368,5 +369,19 @@ public class Configuration {
 
 	public void setPlugins(ArrayList<Plugin> plugins) {
 		this.plugins = plugins;
+	}
+
+	/**
+	 * @return userAgent
+	 */
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	/**
+	 * @param userAgent the userAgent to set
+	 */
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
 	}
 }
