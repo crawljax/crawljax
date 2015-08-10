@@ -15,7 +15,7 @@ import org.w3c.dom.Document;
  * candidate elements every time a candidate is returned its removed from the list so it is a one
  * time only access to the candidates.
  */
-class StateVertexImpl implements StateVertex {
+public class StateVertexImpl implements StateVertex {
 
 	private static final long serialVersionUID = 123400017983488L;
 
