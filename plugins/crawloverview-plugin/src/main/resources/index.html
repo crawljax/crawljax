@@ -186,14 +186,28 @@ footer small {
 								}
 							});
 
-					$('.navbar li').click(function(e) {
-						$('.navbar li').removeClass('active');
-						var $this = $(this);
-						if (!$this.hasClass('active')) {
-							$this.addClass('active');
-						}
+					/* Makes nav links update the nav toolback with current page */
+					$('.nav-link').click(function(e) { 
+						/* Example: #url */
+						var target = e.target.hash;
 
+						updateNav(target);
 					});
+
+					/* page: a string with target page, like "#nav" */
+					function updateNav(page) {
+						/* Removes active class from previous active link */
+						$('.navbar li').removeClass('active');
+
+						/* Find correct link on nav-bar and add active class to it */
+						$('.navbar li').each(function(index, element) {
+							if ($(element).find('a').get(0).hash === page) {
+								$(element).addClass('active');
+
+								return false;
+							}
+						});
+					}
 
 					function loadPage(page) {
 						$('.page').hide();
