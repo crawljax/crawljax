@@ -1,13 +1,9 @@
 package com.crawljax.examples;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
-
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.condition.NotXPathCondition;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -48,9 +44,11 @@ public final class AdvancedExample {
 		builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
 		builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
 
-		
 		// We want to use two browsers simultaneously.
 		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, 1));
+
+		// CrawlOverview
+		builder.addPlugin(new CrawlOverview());
 
 		CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
 		crawljax.call();
