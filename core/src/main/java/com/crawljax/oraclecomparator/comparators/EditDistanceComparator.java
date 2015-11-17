@@ -5,8 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.crawljax.oraclecomparator.AbstractComparator;
 
 /**
- * Oracle Comparator that uses the Levenshtein Edit Distance to determince wheter two states are
- * equivalent.
+ * Oracle Comparator that uses the Levenshtein Edit Distance to determince
+ * wheter two states are equivalent.
  */
 public class EditDistanceComparator extends AbstractComparator {
 
@@ -21,14 +21,16 @@ public class EditDistanceComparator extends AbstractComparator {
 
 	/**
 	 * @param treshold
-	 *            the edit distance treshold. 1 is no difference, 0 is totally different
+	 *            the edit distance treshold. 1 is no difference, 0 is totally
+	 *            different
 	 */
 	public EditDistanceComparator(double treshold) {
 		this.treshold = treshold;
 	}
 
 	/**
-	 * @return true if and only if the edit distance threshold is >= the specified treshold
+	 * @return true if and only if the edit distance threshold is &gt;= the
+	 *         specified treshold
 	 */
 	@Override
 	public boolean isEquivalent(String oldDom, String newDom) {
@@ -57,14 +59,15 @@ public class EditDistanceComparator extends AbstractComparator {
 	 *            the second string.
 	 * @param thresholdCoef
 	 *            the threshold coefficient: must be between 0.0-1.0.
-	 * @return true if the Levenshtein distance is lower than or equal to the computed threshold.
+	 * @return true if the Levenshtein distance is lower than or equal to the
+	 *         computed threshold.
 	 */
 	boolean isClone(String str1, String str2, double thresholdCoef) {
 		if ((thresholdCoef < 0.0) || (thresholdCoef > 1.0)) {
 			throw new IllegalArgumentException(
-			        "Threshold Coefficient must be between 0.0 and 1.0!");
-		} else if (StringUtils.getLevenshteinDistance(str1, str2) <= getThreshold(str1, str2,
-		        thresholdCoef)) {
+					"Threshold Coefficient must be between 0.0 and 1.0!");
+		} else if (StringUtils.getLevenshteinDistance(str1, str2) <= getThreshold(
+				str1, str2, thresholdCoef)) {
 			return true;
 		} else {
 			return false;

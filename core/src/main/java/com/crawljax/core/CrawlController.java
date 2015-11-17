@@ -23,7 +23,8 @@ import com.crawljax.di.CrawlSessionProvider;
 @Singleton
 public class CrawlController implements Callable<CrawlSession> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CrawlController.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(CrawlController.class);
 
 	private final Provider<CrawlTaskConsumer> consumerFactory;
 	private final ExecutorService executor;
@@ -40,10 +41,10 @@ public class CrawlController implements Callable<CrawlSession> {
 	private ExitStatus exitReason;
 
 	@Inject
-	CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
-	        CrawljaxConfiguration config, ExitNotifier exitNotifier,
-	        CrawlSessionProvider crawlSessionProvider,
-	        Plugins plugins) {
+	CrawlController(ExecutorService executor,
+			Provider<CrawlTaskConsumer> consumerFactory,
+			CrawljaxConfiguration config, ExitNotifier exitNotifier,
+			CrawlSessionProvider crawlSessionProvider, Plugins plugins) {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
 		this.exitNotifier = exitNotifier;
@@ -72,15 +73,15 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	/**
 	 * @return Same as {@link #call()}
-	 * @see #call().
+	 * @see #call()
 	 */
 	public CrawlSession run() {
 		return call();
 	}
 
 	/**
-	 * @return The {@link ExitStatus} crawljax stopped or <code>null</code> when it hasn't stopped
-	 *         yet.
+	 * @return The {@link ExitStatus} crawljax stopped or <code>null</code> when
+	 *         it hasn't stopped yet.
 	 */
 	public ExitStatus getReason() {
 		return exitReason;
@@ -95,7 +96,8 @@ public class CrawlController implements Callable<CrawlSession> {
 			@Override
 			public void run() {
 				try {
-					LOG.debug("Waiting {} before killing the crawler", maximumCrawlTime);
+					LOG.debug("Waiting {} before killing the crawler",
+							maximumCrawlTime);
 					Thread.sleep(maximumCrawlTime);
 					LOG.info("Time is up! Shutting down...");
 					exitNotifier.signalTimeIsUp();
@@ -109,7 +111,8 @@ public class CrawlController implements Callable<CrawlSession> {
 	}
 
 	private void executeConsumers(CrawlTaskConsumer firstConsumer) {
-		LOG.debug("Starting {} consumers", config.getBrowserConfig().getNumberOfBrowsers());
+		LOG.debug("Starting {} consumers", config.getBrowserConfig()
+				.getNumberOfBrowsers());
 		executor.submit(firstConsumer);
 		for (int i = 1; i < config.getBrowserConfig().getNumberOfBrowsers(); i++) {
 			executor.submit(consumerFactory.get());
@@ -121,7 +124,8 @@ public class CrawlController implements Callable<CrawlSession> {
 			exitReason = ExitStatus.ERROR;
 		} finally {
 			shutDown();
-			plugins.runPostCrawlingPlugins(crawlSessionProvider.get(), exitReason);
+			plugins.runPostCrawlingPlugins(crawlSessionProvider.get(),
+					exitReason);
 			LOG.info("Shutdown process complete");
 		}
 	}
@@ -133,7 +137,9 @@ public class CrawlController implements Callable<CrawlSession> {
 			LOG.debug("Waiting for task consumers to stop...");
 			executor.awaitTermination(15, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			LOG.warn("Interrupted before being able to shut down executor pool", e);
+			LOG.warn(
+					"Interrupted before being able to shut down executor pool",
+					e);
 			exitReason = ExitStatus.ERROR;
 		}
 		LOG.debug("terminated");

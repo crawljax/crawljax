@@ -11,10 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.crawljax.plugins.crawloverview.model.Statistics;
-import com.google.common.collect.Lists;
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -29,12 +25,18 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.crawljax.plugins.crawloverview.model.Statistics;
+import com.google.common.collect.Lists;
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
+
 public class OverviewIntegrationTest {
 
 	@ClassRule
 	public static final RunHoverCrawl HOVER_CRAWL = new RunHoverCrawl();
 
-	private static final Logger LOG = LoggerFactory.getLogger(OverviewIntegrationTest.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(OverviewIntegrationTest.class);
 
 	private static Server server;
 	private static DefaultSelenium selenium;
@@ -73,7 +75,8 @@ public class OverviewIntegrationTest {
 
 		WebElement brand = driver.findElement(By.cssSelector("a.brand"));
 		assertThat(brand.getText(), is("Crawl overview"));
-		assertThat(driver.findElement(By.cssSelector("svg")), is(notNullValue()));
+		assertThat(driver.findElement(By.cssSelector("svg")),
+				is(notNullValue()));
 
 	}
 
@@ -117,8 +120,8 @@ public class OverviewIntegrationTest {
 	public void allUrlsAreShown() {
 		selenium.open("/#urls");
 		List<WebElement> tableRows = visibleElementsByCss("tr");
-		int urlsExpeted =
-		        HOVER_CRAWL.getResult().getStatistics().getStateStats().getUrls().size();
+		int urlsExpeted = HOVER_CRAWL.getResult().getStatistics()
+				.getStateStats().getUrls().size();
 		assertThat(tableRows, is(hasSize(urlsExpeted)));
 	}
 
@@ -128,14 +131,18 @@ public class OverviewIntegrationTest {
 		Statistics statistics = HOVER_CRAWL.getResult().getStatistics();
 		// drawnstate -1 because the outer state is also a group.
 		int drawnStates = driver.findElements(By.cssSelector("g")).size() - 1;
-		List<WebElement> drawnEdges = visibleElementsByCss("path");
-		assertThat(drawnStates, is(statistics.getStateStats().getTotalNumberOfStates()));
+		List<WebElement> drawnEdges = driver.findElements(By
+				.cssSelector("path[marker-end=\"url(#Triangle)\"]"));
+		assertThat(drawnStates, is(statistics.getStateStats()
+				.getTotalNumberOfStates()));
 		assertThat(drawnEdges, hasSize(statistics.getEdges()));
 	}
 
 	private List<WebElement> visibleElementsByCss(String selector) {
-		List<WebElement> elements = driver.findElements(By.cssSelector(selector));
-		List<WebElement> visible = Lists.newArrayListWithExpectedSize(elements.size());
+		List<WebElement> elements = driver.findElements(By
+				.cssSelector(selector));
+		List<WebElement> visible = Lists.newArrayListWithExpectedSize(elements
+				.size());
 		for (WebElement webElement : elements) {
 			if (webElement.isDisplayed()) {
 				visible.add(webElement);

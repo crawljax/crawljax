@@ -8,13 +8,15 @@ import java.util.concurrent.TimeUnit;
 import net.jcip.annotations.GuardedBy;
 
 /**
- * This class implements a BlockingQueue with Runnable as its Generic type and extends Stack with
- * also Runnable as generic type. This class is used in the ThreadPoolExecutor and its used to store
- * separate threads in a Queue like fashion (FILO).
+ * This class implements a BlockingQueue with Runnable as its Generic type and
+ * extends Stack with also Runnable as generic type. This class is used in the
+ * ThreadPoolExecutor and its used to store separate threads in a Queue like
+ * fashion (FILO).
  * 
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
+ * @author Stefan Lenselink &lt;S.R.Lenselink@student.tudelft.nl&gt;
  */
-public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnable> {
+public class CrawlQueue extends Stack<Runnable> implements
+		BlockingQueue<Runnable> {
 
 	/**
 	 * Auto generated serialVersionUID.
@@ -27,7 +29,8 @@ public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnabl
 	}
 
 	@Override
-	public synchronized int drainTo(Collection<? super Runnable> c, int maxRunnablelements) {
+	public synchronized int drainTo(Collection<? super Runnable> c,
+			int maxRunnablelements) {
 		int counter = 0;
 		for (Runnable object : this) {
 			counter++;

@@ -5,7 +5,6 @@
 // Generated on: 2013.09.16 at 12:27:14 AM PDT 
 //
 
-
 package com.crawljax.core.plugin.descriptor.jaxb.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,148 +12,134 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for parameter complex type.
+ * <p>
+ * Java class for parameter complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
- * &lt;complexType name="parameter">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="display-name" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="type">
- *           &lt;simpleType>
- *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *               &lt;enumeration value="textbox"/>
- *               &lt;enumeration value="checkbox"/>
- *               &lt;enumeration value="select"/>
- *             &lt;/restriction>
- *           &lt;/simpleType>
- *         &lt;/element>
- *         &lt;element name="options" type="{}option-list" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="parameter"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="display-name" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="type"&gt;
+ *           &lt;simpleType&gt;
+ *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string"&gt;
+ *               &lt;enumeration value="textbox"/&gt;
+ *               &lt;enumeration value="checkbox"/&gt;
+ *               &lt;enumeration value="select"/&gt;
+ *             &lt;/restriction&gt;
+ *           &lt;/simpleType&gt;
+ *         &lt;/element&gt;
+ *         &lt;element name="options" type="{}option-list" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "parameter", propOrder = {
-    "id",
-    "displayName",
-    "type",
-    "options"
-})
+@XmlType(name = "parameter", propOrder = { "id", "displayName", "type",
+		"options" })
 public class Parameter {
 
-    @XmlElement(required = true)
-    protected String id;
-    @XmlElement(name = "display-name", required = true)
-    protected String displayName;
-    @XmlElement(required = true)
-    protected String type;
-    protected OptionList options;
+	@XmlElement(required = true)
+	protected String id;
+	@XmlElement(name = "display-name", required = true)
+	protected String displayName;
+	@XmlElement(required = true)
+	protected String type;
+	protected OptionList options;
 
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * Gets the value of the id property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
+	/**
+	 * Sets the value of the id property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setId(String value) {
+		this.id = value;
+	}
 
-    /**
-     * Gets the value of the displayName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDisplayName() {
-        return displayName;
-    }
+	/**
+	 * Gets the value of the displayName property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
 
-    /**
-     * Sets the value of the displayName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDisplayName(String value) {
-        this.displayName = value;
-    }
+	/**
+	 * Sets the value of the displayName property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setDisplayName(String value) {
+		this.displayName = value;
+	}
 
-    /**
-     * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getType() {
-        return type;
-    }
+	/**
+	 * Gets the value of the type property.
+	 * 
+	 * @return possible object is {@link String }
+	 * 
+	 */
+	public String getType() {
+		return type;
+	}
 
-    /**
-     * Sets the value of the type property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+	/**
+	 * Sets the value of the type property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setType(String value) {
+		this.type = value;
+	}
 
-    /**
-     * Gets the value of the options property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link OptionList }
-     *     
-     */
-    public OptionList getOptions() {
-        return options;
-    }
+	/**
+	 * Gets the value of the options property.
+	 * 
+	 * @return possible object is {@link OptionList }
+	 * 
+	 */
+	public OptionList getOptions() {
+		return options;
+	}
 
-    /**
-     * Sets the value of the options property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link OptionList }
-     *     
-     */
-    public void setOptions(OptionList value) {
-        this.options = value;
-    }
+	/**
+	 * Sets the value of the options property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link OptionList }
+	 * 
+	 */
+	public void setOptions(OptionList value) {
+		this.options = value;
+	}
 
 }
