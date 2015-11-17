@@ -1,6 +1,9 @@
 package com.crawljax.web.jaxrs;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,18 +12,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-//TODO: delete the following imports
-import java.io.File;
-import org.openqa.selenium.firefox.FirefoxProfile;
-
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.rules.Timeout;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -38,7 +41,6 @@ public class StandardFunctionsFlowTest {
 	private static final Logger LOG = LoggerFactory.getLogger(StandardFunctionsFlowTest.class);
 	private static DefaultSelenium selenium;
 	private static WebDriver driver;
-	
 
 	private static String CONFIG_NAME = "TestConfiguration";
 	private static String CONFIG_URL = "http://demo.crawljax.com/";
@@ -95,30 +97,32 @@ public class StandardFunctionsFlowTest {
 		        driver.findElements(By.linkText("Save Configuration"));
 		assertFalse(saveConfigurationLink.isEmpty());
 		followLink(saveConfigurationLink.get(0));
-		
-		WebElement nameSpan = driver.findElements(By.xpath(
-		       "//label[contains(text(),'Name:')]/following-sibling::input")).get(0);
+
+		WebElement nameSpan = driver
+		        .findElements(
+		                By.xpath("//label[contains(text(),'Name:')]/following-sibling::input"))
+		        .get(0);
 		assertTrue(nameSpan.getAttribute("value").equals(CONFIG_NAME));
 
-		WebElement urlInput = driver.findElements(By.xpath(
-		       "//label[contains(text(),'Site:')]/following-sibling::input")).get(0);
+		WebElement urlInput = driver
+		        .findElements(
+		                By.xpath("//label[contains(text(),'Site:')]/following-sibling::input"))
+		        .get(0);
 		assertTrue(urlInput.getAttribute("value").equals(CONFIG_URL));
 	}
 
 	private void editConfiguration() {
-		WebElement maxCrawlStates =
-		        driver.findElements(
-		                By.xpath(
-		                        "//label[contains(text(),'Maximum Crawl States:')]/following-sibling::input"))
-		                .get(0);
+		WebElement maxCrawlStates = driver
+		        .findElements(By
+		                .xpath("//label[contains(text(),'Maximum Crawl States:')]/following-sibling::input"))
+		        .get(0);
 		maxCrawlStates.clear();
 		maxCrawlStates.sendKeys("3");
 
-		maxCrawlStates =
-		        driver.findElements(
-		                By.xpath(
-		                        "//label[contains(text(),'Maximum Crawl States:')]/following-sibling::input"))
-		                .get(0);
+		maxCrawlStates = driver
+		        .findElements(By
+		                .xpath("//label[contains(text(),'Maximum Crawl States:')]/following-sibling::input"))
+		        .get(0);
 		assertTrue(maxCrawlStates.getAttribute("value").equals("3"));
 
 		WebElement crawlRulesLink = driver.findElements(By.linkText("Crawl Rules")).get(0);
@@ -136,52 +140,47 @@ public class StandardFunctionsFlowTest {
 		        driver.findElements(By.linkText("Add a New Condition")).get(0);
 		followLink(addANewConditionLink);
 
-		WebElement pageConditionInput =
-		        driver.findElements(
-		                By.xpath(
-		                        "//legend[contains(text(),'Page Conditions')]/following-sibling::table//input[@type='text']"))
-		                .get(0);
+		WebElement pageConditionInput = driver
+		        .findElements(By
+		                .xpath("//legend[contains(text(),'Page Conditions')]/following-sibling::table//input[@type='text']"))
+		        .get(0);
 		pageConditionInput.clear();
 		pageConditionInput.sendKeys("ConditionInput");
 
 		WebElement addANewFilter = driver.findElements(By.linkText("Add a New Filter")).get(0);
 		followLink(addANewFilter);
-		WebElement filterInput =
-		        driver.findElements(
-		                By.xpath(
-		                        "//legend[contains(text(),'State Filters')]/following-sibling::table//input[@type='text']"))
-		                .get(0);
+		WebElement filterInput = driver
+		        .findElements(By
+		                .xpath("//legend[contains(text(),'State Filters')]/following-sibling::table//input[@type='text']"))
+		        .get(0);
 		filterInput.clear();
 		filterInput.sendKeys("FilterInput");
 
 		WebElement addANewField = driver.findElements(By.linkText("Add a New Field")).get(0);
 		followLink(addANewField);
-		WebElement fieldIdInput =
-		        driver.findElements(
-		                By.xpath(
-		                        "//legend[contains(text(),'Form Field Input Values')]/following-sibling::table//input[@type='text']"))
-		                .get(0);
+		WebElement fieldIdInput = driver
+		        .findElements(By
+		                .xpath("//legend[contains(text(),'Form Field Input Values')]/following-sibling::table//input[@type='text']"))
+		        .get(0);
 		fieldIdInput.clear();
 		fieldIdInput.sendKeys("FieldID");
-		WebElement fieldValueInput =
-		        driver.findElements(
-		                By.xpath(
-		                        "//legend[contains(text(),'Form Field Input Values')]/following-sibling::table//input[@type='text']"))
-		                .get(1);
+		WebElement fieldValueInput = driver
+		        .findElements(By
+		                .xpath("//legend[contains(text(),'Form Field Input Values')]/following-sibling::table//input[@type='text']"))
+		        .get(1);
 		fieldValueInput.clear();
 		fieldValueInput.sendKeys("FieldValue");
-		
+
 		((JavascriptExecutor) driver).executeScript("scroll(250,0);");
 		WebElement assertionsLink = driver.findElements(By.partialLinkText("Assertions")).get(0);
 		followLink(assertionsLink);
 
 		addANewConditionLink = driver.findElements(By.linkText("Add a New Condition")).get(0);
 		followLink(addANewConditionLink);
-		WebElement newConditionInput =
-		        driver.findElements(
-		                By.xpath(
-		                        "//legend[contains(text(),'Invariants')]/following-sibling::table//input[@type='text']"))
-		                .get(0);
+		WebElement newConditionInput = driver
+		        .findElements(By
+		                .xpath("//legend[contains(text(),'Invariants')]/following-sibling::table//input[@type='text']"))
+		        .get(0);
 		newConditionInput.clear();
 		newConditionInput.sendKeys("crawljax");
 
@@ -213,8 +212,8 @@ public class StandardFunctionsFlowTest {
 		        driver.findElements(By.linkText("Save Configuration")).get(0);
 		followLink(saveConfigurationLink);
 
-		WebElement siteInput = driver.findElement(By.xpath(
-		        "//label[contains(text(),'Site:')]/following-sibling::input"));
+		WebElement siteInput = driver.findElement(
+		        By.xpath("//label[contains(text(),'Site:')]/following-sibling::input"));
 		String asdf = siteInput.getAttribute("value");
 		assertEquals(CONFIG_URL, siteInput.getAttribute("value"));
 
@@ -237,10 +236,8 @@ public class StandardFunctionsFlowTest {
 	private void runConfigurationAndViewResults() {
 		openConfiguration();
 
-		WebElement empty =
-		        driver.findElement(By
-		                .xpath(
-		                "//li[contains(text(),'CRAWL EXECUTION QUEUE')]/following-sibling::li[contains(i,'empty')]"));
+		WebElement empty = driver.findElement(By.xpath(
+		        "//li[contains(text(),'CRAWL EXECUTION QUEUE')]/following-sibling::li[contains(i,'empty')]"));
 		assertNotNull(empty);
 
 		List<WebElement> runConfigurationLink =
@@ -249,10 +246,8 @@ public class StandardFunctionsFlowTest {
 
 		ExpectedCondition<Boolean> isRunning = new ExpectedCondition<Boolean>() {
 			public Boolean apply(WebDriver driver) {
-				WebElement running =
-				        driver.findElement(By
-				                .xpath(
-				                "//li[contains(text(),'CRAWL EXECUTION QUEUE')]/following-sibling::li//span[contains(i,'running')]"));
+				WebElement running = driver.findElement(By.xpath(
+		                "//li[contains(text(),'CRAWL EXECUTION QUEUE')]/following-sibling::li//span[contains(i,'running')]"));
 				return running != null;
 			}
 		};
@@ -261,10 +256,8 @@ public class StandardFunctionsFlowTest {
 
 		ExpectedCondition<Boolean> isComplete = new ExpectedCondition<Boolean>() {
 			public Boolean apply(WebDriver driver) {
-				WebElement success =
-				        driver.findElement(By
-				                .xpath(
-				                "//li[contains(text(),'CRAWL EXECUTION QUEUE')]/following-sibling::li//span[contains(i,'success')]"));
+				WebElement success = driver.findElement(By.xpath(
+		                "//li[contains(text(),'CRAWL EXECUTION QUEUE')]/following-sibling::li//span[contains(i,'success')]"));
 				return success != null;
 			}
 		};
@@ -274,10 +267,10 @@ public class StandardFunctionsFlowTest {
 		List<WebElement> crawlHistoryLink = driver.findElements(By.linkText("Crawl History"));
 		followLink(crawlHistoryLink.get(0));
 
-		WebElement crawlLink = driver.findElement(By.xpath(
-		        "//td[following-sibling::td[contains(a,'" + CONFIG_NAME + "')]]/a"));
+		WebElement crawlLink = driver.findElement(
+		        By.xpath("//td[following-sibling::td[contains(a,'" + CONFIG_NAME + "')]]/a"));
 		followLink(crawlLink);
-     
+
 		List<WebElement> logLink = driver.findElements(By.linkText("Log"));
 		assertFalse(logLink.isEmpty());
 
@@ -286,7 +279,7 @@ public class StandardFunctionsFlowTest {
 
 		List<WebElement> pluginLink = driver.findElements(By.linkText(LOCAL_PLUGIN_NAME));
 		assertFalse(pluginLink.isEmpty());
-		
+
 		followLink(logLink.get(0));
 		assertFalse(driver.findElement(By.id("logPanel")).getAttribute("innerHTML").equals(""));
 
@@ -294,8 +287,8 @@ public class StandardFunctionsFlowTest {
 		followLink(historyLink.get(0));
 		driver.navigate().refresh();
 
-		WebElement dateContainer = driver.findElement(By.xpath(
-		        "//td[preceding-sibling::td[contains(a,'" + CONFIG_NAME + "')]]"));
+		WebElement dateContainer = driver.findElement(
+		        By.xpath("//td[preceding-sibling::td[contains(a,'" + CONFIG_NAME + "')]]"));
 		assertNotNull(dateContainer);
 		String displayedDate = dateContainer.getText();
 		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM d yyyy HH:mm:ss");
@@ -306,7 +299,7 @@ public class StandardFunctionsFlowTest {
 
 		}
 		assertNotNull(date);
-		
+
 		assertTrue(date.after(timeNSecondsAgo(70)));
 	}
 
@@ -318,19 +311,16 @@ public class StandardFunctionsFlowTest {
 
 		WebElement fileInput = driver.findElement(By.xpath("//input[@type='file']"));
 
-		String fileName =
-		        getClass().getClassLoader().getResource(LOCAL_PLUGIN_ID + ".jar")
-		                .toExternalForm();
+		String fileName = getClass().getClassLoader().getResource(LOCAL_PLUGIN_ID + ".jar")
+		        .toExternalForm();
 		fileInput.sendKeys(fileName);
 
 		List<WebElement> uploadLink = driver.findElements(By.linkText("Upload Local Plugin"));
 		followLink(uploadLink.get(0));
 
-		WebElement uploaded =
-		        (new WebDriverWait(driver, 10))
-		                .until(ExpectedConditions.presenceOfElementLocated(By
-		                        .xpath(
-		                        "//legend[contains(text(),'Available Plugins')]/following-sibling::table//tbody//tr"
+		WebElement uploaded = (new WebDriverWait(driver, 10))
+		        .until(ExpectedConditions.presenceOfElementLocated(By
+		                .xpath("//legend[contains(text(),'Available Plugins')]/following-sibling::table//tbody//tr"
 		                        + "//td[contains(text(),'" + LOCAL_PLUGIN_NAME + "')]")));
 		assertNotNull(uploaded);
 
@@ -346,14 +336,13 @@ public class StandardFunctionsFlowTest {
 		        "//label[contains(text(),'URL:')]/following-sibling::input[@type='text']"));
 		urlInput.sendKeys(REMOTE_PLUGIN_URL);
 
-		List<WebElement> downloadLink = driver.findElements(By.linkText("Download Remote Plugin"));
+		List<WebElement> downloadLink =
+		        driver.findElements(By.linkText("Download Remote Plugin"));
 		followLink(downloadLink.get(0));
 
-		WebElement uploaded =
-		        (new WebDriverWait(driver, 10))
-		                .until(ExpectedConditions.presenceOfElementLocated(By
-		                        .xpath(
-		                        "//legend[contains(text(),'Available Plugins')]/following-sibling::table//tbody//tr"
+		WebElement uploaded = (new WebDriverWait(driver, 10))
+		        .until(ExpectedConditions.presenceOfElementLocated(By
+		                .xpath("//legend[contains(text(),'Available Plugins')]/following-sibling::table//tbody//tr"
 		                        + "//td[contains(text(),'" + REMOTE_PLUGIN_NAME + "')]")));
 		assertNotNull(uploaded);
 
@@ -362,10 +351,8 @@ public class StandardFunctionsFlowTest {
 	private void addPluginToConfiguration() {
 		openConfiguration();
 
-		WebElement pluginsLink =
-		        driver.findElement(By
-		                .xpath(
-		                "//li[preceding-sibling::li[contains(a,'Overview')]]/a[contains(text(),'Plugins')]"));
+		WebElement pluginsLink = driver.findElement(By.xpath(
+		        "//li[preceding-sibling::li[contains(a,'Overview')]]/a[contains(text(),'Plugins')]"));
 		assertNotNull(pluginsLink);
 		followLink(pluginsLink);
 
@@ -380,9 +367,8 @@ public class StandardFunctionsFlowTest {
 
 		driver.navigate().refresh();
 
-		WebElement pluginTitle =
-		        driver.findElement(By.xpath("//legend[contains(text(),'" + LOCAL_PLUGIN_NAME
-		                + "')]"));
+		WebElement pluginTitle = driver
+		        .findElement(By.xpath("//legend[contains(text(),'" + LOCAL_PLUGIN_NAME + "')]"));
 		assertNotNull(pluginTitle);
 	}
 
@@ -431,8 +417,7 @@ public class StandardFunctionsFlowTest {
 		if (isElementPresent(driver, By.linkText(CONFIG_NAME))) {
 			List<WebElement> configurationLinks = driver.findElements(By.linkText(CONFIG_NAME));
 			assertEquals(existingConfigurationLinks.size() - 1, configurationLinks.size());
-		}
-		else {
+		} else {
 			assertEquals(1, existingConfigurationLinks.size());
 		}
 	}
@@ -449,7 +434,7 @@ public class StandardFunctionsFlowTest {
 	private void followLink(WebElement link) {
 		link.click();
 		try {
-			Thread.sleep(400);
+			Thread.sleep(800);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
@@ -457,11 +442,8 @@ public class StandardFunctionsFlowTest {
 
 	private void openConfiguration() {
 		open("configurations");
-		WebElement configLink =
-		        driver.findElement(By.xpath(
-		                "//td[contains(a,'" + CONFIG_NAME
-		                        + "') and following-sibling::td[contains(a,'" + CONFIG_URL
-		                        + "')]]/a"));
+		WebElement configLink = driver.findElement(By.xpath("//td[contains(a,'" + CONFIG_NAME
+		        + "') and following-sibling::td[contains(a,'" + CONFIG_URL + "')]]/a"));
 		configLink.click();
 	}
 
