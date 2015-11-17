@@ -24,7 +24,8 @@ import com.google.common.base.Strings;
  */
 public class BaseCrawler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BaseCrawler.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(BaseCrawler.class);
 	private final WebServer webServer;
 	private final AtomicBoolean hasSetup = new AtomicBoolean(false);
 
@@ -38,7 +39,8 @@ public class BaseCrawler {
 	public BaseCrawler(String siteExtension) {
 		this.siteExtension = siteExtension;
 		URL sampleSites = BaseCrawler.class.getResource("/site");
-		LOG.debug("Loading web server with from folder {}", sampleSites.toExternalForm());
+		LOG.debug("Loading web server with from folder {}",
+				sampleSites.toExternalForm());
 
 		this.webServer = new WebServer(Resource.newResource(sampleSites));
 
@@ -48,11 +50,13 @@ public class BaseCrawler {
 	 * @param webfolder
 	 *            The folder the web site is stored in.
 	 * @param siteExtension
-	 *            The extention of the site. Leave blank or <code>null</code> for no extention.
+	 *            The extention of the site. Leave blank or <code>null</code>
+	 *            for no extention.
 	 */
 	public BaseCrawler(Resource webfolder, String siteExtension) {
 		this.siteExtension = Strings.nullToEmpty(siteExtension);
-		LOG.debug("Loading web server with from folder {}", webfolder.getURL().toExternalForm());
+		LOG.debug("Loading web server with from folder {}", webfolder.getURL()
+				.toExternalForm());
 		this.webServer = new WebServer(webfolder);
 	}
 
@@ -69,17 +73,16 @@ public class BaseCrawler {
 	}
 
 	/**
-	 * Starts the webserver, configures crawljax. Doesn't run the Crawler. For that you need to call
-	 * {@link #crawl()}. After this method completes, you can configure the
-	 * {@link CrawljaxConfiguration} and the {@link CrawljaxConfiguration} using
+	 * Starts the webserver, configures crawljax. Doesn't run the Crawler. For
+	 * that you need to call {@link #crawl()}. After this method completes, you
+	 * can configure the {@link CrawljaxConfiguration} and the
+	 * {@link CrawljaxConfiguration} using
 	 * {@link #newCrawlConfigurationBuilder()};
 	 * <p>
 	 * The {@link CrawljaxConfiguration} is configured with
-	 * {@link com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder}.
+	 * {@link com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder}
+	 * .
 	 * </p>
-	 * 
-	 * @throws Exception
-	 *             When the webserver fails to start.
 	 */
 	public void setup() {
 		try {
@@ -97,12 +100,14 @@ public class BaseCrawler {
 	 * @return a new {@link CrawljaxConfiguration} to crawl with.
 	 */
 	protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
-		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(getUrl());
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration
+				.builderFor(getUrl());
 		builder.crawlRules().clickDefaultElements();
 		builder.setUnlimitedRuntime();
 		builder.setUnlimitedCrawlDepth();
 		builder.addPlugin(new PostCrawlStateGraphChecker());
-		builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider
+				.getBrowserType()));
 		return builder;
 	}
 
@@ -111,19 +116,21 @@ public class BaseCrawler {
 	}
 
 	/**
-	 * @return the {@link CrawljaxConfiguration} or <code>null</code> if {@link #setup()} or
-	 *         {@link #crawl()} haven't been called yet.
+	 * @return the {@link CrawljaxConfiguration} or <code>null</code> if
+	 *         {@link #setup()} or {@link #crawl()} haven't been called yet.
 	 */
 	public CrawljaxConfiguration getConfig() {
 		return configBuilder.build();
 	}
 
 	/**
-	 * Runs the crawler. If you haven't run {@link #setup()} it will do that before it runs.
+	 * Runs the crawler. If you haven't run {@link #setup()} it will do that
+	 * before it runs.
 	 * 
 	 * @return {@link CrawlSession} for post-crawl inspection.
-	 * @throws Exception
-	 *             When crawljax isn't configured correctly or the webserver fails to stop.
+	 * @throws CrawljaxException
+	 *             When crawljax isn't configured correctly or the webserver
+	 *             fails to stop.
 	 */
 	public CrawlSession crawl() throws CrawljaxException {
 		if (!hasSetup.get()) {
@@ -139,7 +146,8 @@ public class BaseCrawler {
 	 * Runs a crawl with the given plugins.
 	 * 
 	 * @param plugins
-	 *            The plugins you want to run with the {@link CrawljaxConfiguration}.
+	 *            The plugins you want to run with the
+	 *            {@link CrawljaxConfiguration}.
 	 * @return The resulting {@link CrawlSession}.
 	 * @see #crawl()
 	 */
@@ -154,10 +162,12 @@ public class BaseCrawler {
 	}
 
 	/**
-	 * This starts the webserver and blocks the thread so you can inspect the site in your browser
-	 * manually. The URL to visit is printed to the console.
+	 * This starts the webserver and blocks the thread so you can inspect the
+	 * site in your browser manually. The URL to visit is printed to the
+	 * console.
 	 * <p>
-	 * This thread will block once started so you have to stop it manually, once you are done.
+	 * This thread will block once started so you have to stop it manually, once
+	 * you are done.
 	 * 
 	 * @throws Exception
 	 *             in case the webserver can't start

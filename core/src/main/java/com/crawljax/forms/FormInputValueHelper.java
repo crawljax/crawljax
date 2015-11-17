@@ -34,8 +34,8 @@ import com.google.common.collect.ImmutableMap;
  */
 public final class FormInputValueHelper {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FormInputValueHelper.class
-	        .getName());
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(FormInputValueHelper.class.getName());
 
 	private ImmutableMap<String, String> formFields;
 	private ImmutableListMultimap<String, String> formFieldNames;
@@ -51,7 +51,8 @@ public final class FormInputValueHelper {
 	 * @param randomInput
 	 *            if random data should be used on the input fields.
 	 */
-	public FormInputValueHelper(InputSpecification inputSpecification, boolean randomInput) {
+	public FormInputValueHelper(InputSpecification inputSpecification,
+			boolean randomInput) {
 
 		this.formFieldNames = inputSpecification.getFormFieldNames();
 		this.fieldValues = inputSpecification.getFormFieldValues();
@@ -69,7 +70,8 @@ public final class FormInputValueHelper {
 		List<String> names = getNamesForInputFieldId(fieldName);
 		if (names != null) {
 			for (String name : names) {
-				String xpath = "//*[@name='" + name + "' or @id='" + name + "']";
+				String xpath = "//*[@name='" + name + "' or @id='" + name
+						+ "']";
 				try {
 					Node node = DomUtils.getElementByXpath(dom, xpath);
 					if (node != null) {
@@ -105,20 +107,23 @@ public final class FormInputValueHelper {
 	 *            the belonging eventable condition for sourceElement
 	 * @return a list with Candidate elements for the inputs
 	 */
-	public List<CandidateElement> getCandidateElementsForInputs(EmbeddedBrowser browser,
-	        Element sourceElement, EventableCondition eventableCondition) {
+	public List<CandidateElement> getCandidateElementsForInputs(
+			EmbeddedBrowser browser, Element sourceElement,
+			EventableCondition eventableCondition) {
 		List<CandidateElement> candidateElements = new ArrayList<CandidateElement>();
-		int maxValues = getMaxNumberOfValues(eventableCondition.getLinkedInputFields());
+		int maxValues = getMaxNumberOfValues(eventableCondition
+				.getLinkedInputFields());
 
 		if (maxValues == EMPTY) {
 			LOGGER.warn("No input values found for element: "
-			        + DomUtils.getElementString(sourceElement));
+					+ DomUtils.getElementString(sourceElement));
 			return candidateElements;
 		}
 
 		Document dom;
 		try {
-			dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+			dom = DomUtils.asDocument(browser
+					.getStrippedDomWithoutIframeContent());
 		} catch (IOException e) {
 			LOGGER.error("Catched IOException while parsing dom", e);
 			return candidateElements;
@@ -130,11 +135,12 @@ public final class FormInputValueHelper {
 			for (String fieldName : eventableCondition.getLinkedInputFields()) {
 				Element element = getBelongingElement(dom, fieldName);
 				if (element != null) {
-					FormInput formInput =
-					        getFormInputWithIndexValue(browser, element, curValueIndex);
+					FormInput formInput = getFormInputWithIndexValue(browser,
+							element, curValueIndex);
 					formInputsForCurrentIndex.add(formInput);
 				} else {
-					LOGGER.warn("Could not find input element for: " + fieldName);
+					LOGGER.warn("Could not find input element for: "
+							+ fieldName);
 				}
 			}
 
@@ -145,10 +151,10 @@ public final class FormInputValueHelper {
 			Element cloneElement = (Element) sourceElement.cloneNode(false);
 			cloneElement.setTextContent(DomUtils.getTextValue(sourceElement));
 
-			CandidateElement candidateElement =
-			        new CandidateElement(cloneElement,
-			                XPathHelper.getXPathExpression(sourceElement),
-			                formInputsForCurrentIndex);
+			CandidateElement candidateElement = new CandidateElement(
+					cloneElement,
+					XPathHelper.getXPathExpression(sourceElement),
+					formInputsForCurrentIndex);
 			candidateElements.add(candidateElement);
 		}
 		return candidateElements;
@@ -163,36 +169,38 @@ public final class FormInputValueHelper {
 	 * @throws XPathExpressionException
 	 *             if a failure is occurred.
 	 */
-	public Node getBelongingNode(FormInput input, Document dom) throws XPathExpressionException {
+	public Node getBelongingNode(FormInput input, Document dom)
+			throws XPathExpressionException {
 
 		Node result = null;
 
 		switch (input.getIdentification().getHow()) {
-			case xpath:
-				result = DomUtils.getElementByXpath(dom, input.getIdentification().getValue());
-				break;
+		case xpath:
+			result = DomUtils.getElementByXpath(dom, input.getIdentification()
+					.getValue());
+			break;
 
-			case id:
-			case name:
-				String xpath = "";
-				String element = "";
+		case id:
+		case name:
+			String xpath = "";
+			String element = "";
 
-				if (input.getType().equalsIgnoreCase("select")
-				        || input.getType().equalsIgnoreCase("textarea")) {
-					element = input.getType().toUpperCase();
-				} else {
-					element = "INPUT";
-				}
-				xpath =
-				        "//" + element + "[@name='" + input.getIdentification().getValue()
-				                + "' or @id='" + input.getIdentification().getValue() + "']";
-				result = DomUtils.getElementByXpath(dom, xpath);
-				break;
+			if (input.getType().equalsIgnoreCase("select")
+					|| input.getType().equalsIgnoreCase("textarea")) {
+				element = input.getType().toUpperCase();
+			} else {
+				element = "INPUT";
+			}
+			xpath = "//" + element + "[@name='"
+					+ input.getIdentification().getValue() + "' or @id='"
+					+ input.getIdentification().getValue() + "']";
+			result = DomUtils.getElementByXpath(dom, xpath);
+			break;
 
-			default:
-				LOGGER.info("Identification " + input.getIdentification()
-				        + " not supported yet for form inputs.");
-				break;
+		default:
+			LOGGER.info("Identification " + input.getIdentification()
+					+ " not supported yet for form inputs.");
+			break;
 
 		}
 
@@ -201,17 +209,18 @@ public final class FormInputValueHelper {
 
 	/**
 	 * @param element
-	 * @return returns the id of the element if set, else the name. If none found, returns null
+	 * @return returns the id of the element if set, else the name. If none
+	 *         found, returns null
 	 * @throws Exception
 	 */
 	private Identification getIdentification(Node element) throws Exception {
 		NamedNodeMap attributes = element.getAttributes();
 		if (attributes.getNamedItem("id") != null) {
-			return new Identification(Identification.How.id, attributes.getNamedItem("id")
-			        .getNodeValue());
+			return new Identification(Identification.How.id, attributes
+					.getNamedItem("id").getNodeValue());
 		} else if (attributes.getNamedItem("name") != null) {
-			return new Identification(Identification.How.name, attributes.getNamedItem("name")
-			        .getNodeValue());
+			return new Identification(Identification.How.name, attributes
+					.getNamedItem("name").getNodeValue());
 		}
 
 		// try to find the xpath
@@ -230,7 +239,8 @@ public final class FormInputValueHelper {
 	 *            the element in the dom
 	 * @return the first related formInput belonging to element in the browser
 	 */
-	public FormInput getFormInputWithDefaultValue(EmbeddedBrowser browser, Node element) {
+	public FormInput getFormInputWithDefaultValue(EmbeddedBrowser browser,
+			Node element) {
 		return getFormInput(browser, element, 0);
 	}
 
@@ -240,15 +250,17 @@ public final class FormInputValueHelper {
 	 * @param element
 	 *            the element in the dom
 	 * @param indexValue
-	 *            the i-th specified value. if i>#values, first value is used
-	 * @return the specified value with index indexValue for the belonging elements
+	 *            the i-th specified value. if i&gt;#values, first value is used
+	 * @return the specified value with index indexValue for the belonging
+	 *         elements
 	 */
-	public FormInput getFormInputWithIndexValue(EmbeddedBrowser browser, Node element,
-	        int indexValue) {
+	public FormInput getFormInputWithIndexValue(EmbeddedBrowser browser,
+			Node element, int indexValue) {
 		return getFormInput(browser, element, indexValue);
 	}
 
-	private FormInput getFormInput(EmbeddedBrowser browser, Node element, int indexValue) {
+	private FormInput getFormInput(EmbeddedBrowser browser, Node element,
+			int indexValue) {
 		Identification identification;
 		try {
 			identification = getIdentification(element);
@@ -270,7 +282,7 @@ public final class FormInputValueHelper {
 			// add defined value to element
 			String value;
 			if (indexValue == 0 || fieldValues.get(id).size() == 1
-			        || indexValue + 1 > fieldValues.get(id).size()) {
+					|| indexValue + 1 > fieldValues.get(id).size()) {
 				// default value
 				value = fieldValues.get(id).get(0);
 			} else if (indexValue > 0) {
@@ -278,12 +290,12 @@ public final class FormInputValueHelper {
 				value = fieldValues.get(id).get(indexValue);
 			} else {
 				// random value
-				value =
-				        fieldValues.get(id).get(
-				                new Random().nextInt(fieldValues.get(id).size() - 1));
+				value = fieldValues.get(id).get(
+						new Random().nextInt(fieldValues.get(id).size() - 1));
 			}
 
-			if (input.getType().equals("checkbox") || input.getType().equals("radio")) {
+			if (input.getType().equals("checkbox")
+					|| input.getType().equals("radio")) {
 				// check element
 				values.add(new InputValue(value, value.equals("1")));
 			} else {
@@ -330,7 +342,8 @@ public final class FormInputValueHelper {
 
 	private String getElementType(Node node) {
 		if (node.getAttributes().getNamedItem("type") != null) {
-			return node.getAttributes().getNamedItem("type").getNodeValue().toLowerCase();
+			return node.getAttributes().getNamedItem("type").getNodeValue()
+					.toLowerCase();
 		} else if (node.getNodeName().equalsIgnoreCase("input")) {
 			return "text";
 		} else {

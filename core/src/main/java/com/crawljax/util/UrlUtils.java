@@ -18,8 +18,9 @@ public class UrlUtils {
 	 */
 	public static URI extractNewUrl(String currentUrl, String href) {
 		if (href == null || isJavascript(href) || href.startsWith("mailto:")
-		        || href.equals("about:blank")) {
-			throw new IllegalArgumentException(String.format("%s is not a HTTP url", href));
+				|| href.equals("about:blank")) {
+			throw new IllegalArgumentException(String.format(
+					"%s is not a HTTP url", href));
 		} else if (href.contains("://")) {
 			return URI.create(href);
 		} else {
@@ -56,7 +57,7 @@ public class UrlUtils {
 
 	/**
 	 * Retrieve the var value for varName from a HTTP query string (format is
-	 * "var1=val1&var2=val2").
+	 * "var1=val1&amp;var2=val2").
 	 *
 	 * @param varName
 	 *            the name.
@@ -86,8 +87,8 @@ public class UrlUtils {
 	}
 
 	/**
-	 * Checks if the given URL is part of the domain, or a subdomain of the given
-	 * {@link java.net.URI}.
+	 * Checks if the given URL is part of the domain, or a subdomain of the
+	 * given {@link java.net.URI}.
 	 *
 	 * @param currentUrl
 	 *            The url you want to check.
@@ -96,7 +97,8 @@ public class UrlUtils {
 	 * @return If the URL is part of the domain.
 	 */
 	public static boolean isSameDomain(String currentUrl, URI url) {
-		String current = URI.create(getBaseUrl(currentUrl)).getHost().toLowerCase();
+		String current = URI.create(getBaseUrl(currentUrl)).getHost()
+				.toLowerCase();
 		String original = url.getHost().toLowerCase();
 		return current.endsWith(original);
 
