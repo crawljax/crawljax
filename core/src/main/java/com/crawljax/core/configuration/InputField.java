@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a form input field NOTE: In general InputField is not designed to be instantiated
- * directly. For example: <input type="text" name="foo" /> <input type="checkbox" id="bar" />
- * FormInputSpecification input = new FormInputSpecification()
- * input.field("foo").setValue("Crawljax"); input.field("bar").setValue(true); Crawljax will set the
- * text value of the foo text field to "Crawljax" and checks the checkbox with id bar.
+ * Represents a form input field NOTE: In general InputField is not designed to
+ * be instantiated directly. For example: &lt;input type="text" name="foo" /&gt;
+ * &lt;input type="checkbox" id="bar" /&gt; FormInputSpecification input = new
+ * FormInputSpecification() input.field("foo").setValue("Crawljax");
+ * input.field("bar").setValue(true); Crawljax will set the text value of the
+ * foo text field to "Crawljax" and checks the checkbox with id bar.
  * 
  * @see InputSpecification#field(String)
  * @see InputSpecification#fields(String...)
@@ -28,8 +29,8 @@ public class InputField {
 	}
 
 	/**
-	 * Sets the value of this input field with a text input. Applicable to all form elements except
-	 * checkboxes and a radio buttons.
+	 * Sets the value of this input field with a text input. Applicable to all
+	 * form elements except checkboxes and a radio buttons.
 	 * 
 	 * @param value
 	 *            Value to set.
@@ -41,7 +42,8 @@ public class InputField {
 	}
 
 	/**
-	 * Sets the value of this input field. Only Applicable checkboxes and a radio buttons.
+	 * Sets the value of this input field. Only Applicable checkboxes and a
+	 * radio buttons.
 	 * 
 	 * @param value
 	 *            Value to set.

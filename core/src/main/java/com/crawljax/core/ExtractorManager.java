@@ -6,7 +6,7 @@ import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 /**
  * This interface denotes all the operations a CandidateExtractor can execute.
  * 
- * @author Stefan Lenselink <S.R.Lenselink@student.tudelft.nl>
+ * @author Stefan Lenselink &lt;S.R.Lenselink@student.tudelft.nl&gt;
  */
 public interface ExtractorManager {
 
@@ -20,8 +20,8 @@ public interface ExtractorManager {
 	boolean isChecked(String element);
 
 	/**
-	 * Mark a given element as checked to prevent duplicate work. A elements is only added when it
-	 * is not already in the set of checked elements.
+	 * Mark a given element as checked to prevent duplicate work. A elements is
+	 * only added when it is not already in the set of checked elements.
 	 * 
 	 * @param candidateElement
 	 *            the element that is checked
@@ -30,8 +30,8 @@ public interface ExtractorManager {
 	boolean markChecked(CandidateElement candidateElement);
 
 	/**
-	 * increase the number of checked elements, as a statistics measure to know how many elements
-	 * were actually examined.
+	 * increase the number of checked elements, as a statistics measure to know
+	 * how many elements were actually examined.
 	 */
 	void increaseElementsCounter();
 
@@ -45,16 +45,19 @@ public interface ExtractorManager {
 	/**
 	 * Retrieve the eventable condition checker.
 	 * 
-	 * @return the eventableConditionChecker that should be used during the candidate extraction.
+	 * @return the eventableConditionChecker that should be used during the
+	 *         candidate extraction.
 	 */
 	EventableConditionChecker getEventableConditionChecker();
 
 	/**
-	 * Check if one or more CrawlConditions matches the current state in the browser.
+	 * Check if one or more CrawlConditions matches the current state in the
+	 * browser.
 	 * 
 	 * @param browser
 	 *            the browser to execute in the CrawlConditions.
-	 * @return true if one or more CrawlConditions stratifies or non is specified.
+	 * @return true if one or more CrawlConditions stratifies or non is
+	 *         specified.
 	 */
 	boolean checkCrawlCondition(EmbeddedBrowser browser);
 

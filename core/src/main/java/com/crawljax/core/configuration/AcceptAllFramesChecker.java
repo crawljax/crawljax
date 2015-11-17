@@ -3,7 +3,7 @@ package com.crawljax.core.configuration;
 /**
  * This class accepts all frames.
  * 
- * @author Stefan Lenselink <slenselink@google.com>
+ * @author Stefan Lenselink &lt;slenselink@google.com&gt;
  */
 public class AcceptAllFramesChecker implements IgnoreFrameChecker {
 	@Override

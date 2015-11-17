@@ -28,8 +28,9 @@ public class CrawlerContext {
 
 	@Inject
 	public CrawlerContext(EmbeddedBrowser browser,
-	        CrawljaxConfiguration config, Provider<CrawlSession> sessionProvider,
-	        ExitNotifier exitNotifier, MetricRegistry registry) {
+			CrawljaxConfiguration config,
+			Provider<CrawlSession> sessionProvider, ExitNotifier exitNotifier,
+			MetricRegistry registry) {
 		this.browser = browser;
 		this.config = config;
 		this.sessionProvider = sessionProvider;
@@ -38,8 +39,9 @@ public class CrawlerContext {
 	}
 
 	/**
-	 * @return The browser of the current session. If you have configured multiple browsers this
-	 *         will return the {@link EmbeddedBrowser} that caused the given {@link Plugin} to fire.
+	 * @return The browser of the current session. If you have configured
+	 *         multiple browsers this will return the {@link EmbeddedBrowser}
+	 *         that caused the given {@link Plugin} to fire.
 	 */
 	public EmbeddedBrowser getBrowser() {
 		return browser;
@@ -64,16 +66,16 @@ public class CrawlerContext {
 	}
 
 	/**
-	 * Tells Crawljax to stop with Exit status {@link ExitStatus#STOPPED}. This is equivalent to
-	 * calling {@link CrawljaxRunner#stop()}.
+	 * Tells Crawljax to stop with Exit status {@link ExitStatus#STOPPED}. This
+	 * is equivalent to calling {@link CrawljaxRunner#stop()}.
 	 */
 	public void stop() {
 		exitNotifier.stop();
 	}
 
 	/**
-	 * @return The current {@link StateVertex} or <code>null</code> when the {@link Crawler} isn't
-	 *         initialized yet.
+	 * @return The current {@link StateVertex} or <code>null</code> when the
+	 *         {@link Crawler} isn't initialized yet.
 	 */
 	public StateVertex getCurrentState() {
 		if (stateMachine == null) {
@@ -88,8 +90,8 @@ public class CrawlerContext {
 	}
 
 	/**
-	 * @param The
-	 *            current {@link CrawlPath} in this context.
+	 * @param path
+	 *            The current {@link CrawlPath} in this context.
 	 */
 	protected void setCrawlPath(CrawlPath path) {
 		crawlpath = path;

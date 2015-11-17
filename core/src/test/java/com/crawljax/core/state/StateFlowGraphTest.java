@@ -33,14 +33,18 @@ public class StateFlowGraphTest {
 
 	@Before
 	public void setup() {
-		index =
-		        new StateVertexImpl(StateVertex.INDEX_ID, "index",
-		                "<table><div>index</div></table>");
-		state2 = new StateVertexImpl(2, "STATE_TWO", "<table><div>state2</div></table>");
-		state3 = new StateVertexImpl(3, "STATE_THREE", "<table><div>state3</div></table>");
-		state4 = new StateVertexImpl(4, "STATE_FOUR", "<table><div>state4</div></table>");
-		state5 = new StateVertexImpl(5, "STATE_FIVE", "<table><div>state5</div></table>");
-		graph = new InMemoryStateFlowGraph(new ExitNotifier(0), new DefaultStateVertexFactory());
+		index = new StateVertexImpl(StateVertex.INDEX_ID, "index",
+				"<table><div>index</div></table>");
+		state2 = new StateVertexImpl(2, "STATE_TWO",
+				"<table><div>state2</div></table>");
+		state3 = new StateVertexImpl(3, "STATE_THREE",
+				"<table><div>state3</div></table>");
+		state4 = new StateVertexImpl(4, "STATE_FOUR",
+				"<table><div>state4</div></table>");
+		state5 = new StateVertexImpl(5, "STATE_FIVE",
+				"<table><div>state5</div></table>");
+		graph = new InMemoryStateFlowGraph(new ExitNotifier(0),
+				new DefaultStateVertexFactory());
 		graph.putIndex(index);
 	}
 
@@ -52,13 +56,18 @@ public class StateFlowGraphTest {
 		assertThat(graph.putIfAbsent(state4), is(nullValue()));
 		assertThat(graph.putIfAbsent(state5), is(nullValue()));
 
-		assertTrue(graph.addEdge(index, state2, newXpathEventable("/body/div[4]")));
-		assertTrue(graph.addEdge(state2, index, newXpathEventable("/body/div[89]")));
+		assertTrue(graph.addEdge(index, state2,
+				newXpathEventable("/body/div[4]")));
+		assertTrue(graph.addEdge(state2, index,
+				newXpathEventable("/body/div[89]")));
 		assertTrue(graph.addEdge(state2, state3, newXpathEventable("/home/a")));
-		assertTrue(graph.addEdge(index, state4, newXpathEventable("/body/div[2]/div")));
-		assertTrue(graph.addEdge(state2, state5, newXpathEventable("/body/div[5]")));
+		assertTrue(graph.addEdge(index, state4,
+				newXpathEventable("/body/div[2]/div")));
+		assertTrue(graph.addEdge(state2, state5,
+				newXpathEventable("/body/div[5]")));
 
-		assertFalse(graph.addEdge(state2, state5, newXpathEventable("/body/div[5]")));
+		assertFalse(graph.addEdge(state2, state5,
+				newXpathEventable("/body/div[5]")));
 
 		Set<Eventable> clickables = graph.getOutgoingClickables(state2);
 		assertEquals(3, clickables.size());
@@ -70,8 +79,8 @@ public class StateFlowGraphTest {
 
 		assertEquals(state2.hashCode(), state2.hashCode());
 
-		assertTrue(state2
-		        .equals(new StateVertexImpl(2, "STATE_2", "<table><div>state2</div></table>")));
+		assertTrue(state2.equals(new StateVertexImpl(2, "STATE_2",
+				"<table><div>state2</div></table>")));
 
 		assertTrue(graph.canGoTo(state2, state3));
 		assertTrue(graph.canGoTo(state2, state5));
@@ -88,8 +97,8 @@ public class StateFlowGraphTest {
 		c = list.get(1);
 		assertEquals(c.getIdentification().getValue(), "/home/a");
 
-		StateVertex hold =
-		        new StateVertexImpl(StateVertex.INDEX_ID, index.getName(), index.getDom());
+		StateVertex hold = new StateVertexImpl(StateVertex.INDEX_ID,
+				index.getName(), index.getDom());
 
 		list = graph.getShortestPath(hold, state3);
 		assertEquals(list.size(), 2);
@@ -106,27 +115,28 @@ public class StateFlowGraphTest {
 	}
 
 	private Eventable newXpathEventable(String xPath) {
-		return new Eventable(new Identification(How.xpath, xPath), EventType.click);
+		return new Eventable(new Identification(How.xpath, xPath),
+				EventType.click);
 	}
 
 	@Test
 	public void testCloneStates() throws Exception {
-		StateVertex state3clone2 =
-		        new StateVertexImpl(3, "STATE_THREE", "<table><div>state2</div></table>");
+		StateVertex state3clone2 = new StateVertexImpl(3, "STATE_THREE",
+				"<table><div>state2</div></table>");
 
 		assertTrue(graph.putIfAbsent(state2) == null);
 		assertTrue(graph.putIfAbsent(state4) == null);
 		// assertFalse(graph.addState(state3));
-		assertTrue(graph.addEdge(index, state2, newXpathEventable("/body/div[4]")));
+		assertTrue(graph.addEdge(index, state2,
+				newXpathEventable("/body/div[4]")));
 
 		// if (graph.containsVertex(state3)) {
 		// StateVertix state_clone = graph.getStateInGraph(state3);
 		// assertEquals(state3, state_clone);
 		// }
 
-		assertTrue(graph.addEdge(state4, state3clone2, new Eventable(new Identification(
-		        How.xpath,
-		        "/home/a"), EventType.click)));
+		assertTrue(graph.addEdge(state4, state3clone2, new Eventable(
+				new Identification(How.xpath, "/home/a"), EventType.click)));
 		// System.out.println(graph.toString());
 		// assertNull(graph.getStateInGraph(new StateVertix("STATE_TEST",
 		// "<table><div>TEST</div></table>")));
@@ -134,18 +144,17 @@ public class StateFlowGraphTest {
 
 	@Test
 	public void testGetMeanStateStringSize() {
-		String HTML1 =
-		        "<SCRIPT src='js/jquery-1.2.1.js' type='text/javascript'></SCRIPT> "
-		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
-		                + "<body><div id='firstdiv' class='orange'></div><div><span id='thespan'>"
-		                + "<a id='thea'>test</a></span></div></body>";
+		String HTML1 = "<SCRIPT src='js/jquery-1.2.1.js' type='text/javascript'></SCRIPT> "
+				+ "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
+				+ "<body><div id='firstdiv' class='orange'></div><div><span id='thespan'>"
+				+ "<a id='thea'>test</a></span></div></body>";
 
-		String HTML2 =
-		        "<SCRIPT src='js/jquery-1.2.1.js' type='text/javascript'></SCRIPT> "
-		                + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
-		                + "<body><div id='firstdiv' class='orange'>";
+		String HTML2 = "<SCRIPT src='js/jquery-1.2.1.js' type='text/javascript'></SCRIPT> "
+				+ "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
+				+ "<body><div id='firstdiv' class='orange'>";
 
-		InMemoryStateFlowGraph g = new InMemoryStateFlowGraph(new ExitNotifier(0), new DefaultStateVertexFactory());
+		InMemoryStateFlowGraph g = new InMemoryStateFlowGraph(new ExitNotifier(
+				0), new DefaultStateVertexFactory());
 		g.putIndex(new StateVertexImpl(1, "", HTML1));
 		g.putIfAbsent(new StateVertexImpl(2, "", HTML2));
 
@@ -220,7 +229,8 @@ public class StateFlowGraphTest {
 
 		graph.addEdge(state3, state4, newXpathEventable("/3/4"));
 
-		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
+		List<List<GraphPath<StateVertex, Eventable>>> results = graph
+				.getAllPossiblePaths(index);
 
 		assertEquals(2, results.size());
 
@@ -255,7 +265,10 @@ public class StateFlowGraphTest {
 		graph.addEdge(state4, state2, newXpathEventable("/4/2"));
 		graph.addEdge(state3, state5, newXpathEventable("/3/5"));
 
-		List<List<GraphPath<StateVertex, Eventable>>> results = graph.getAllPossiblePaths(index);
+		graph.addEdge(state3, state4, newXpathEventable("/3/4"));
+
+		List<List<GraphPath<StateVertex, Eventable>>> results = graph
+				.getAllPossiblePaths(index);
 
 		assertThat(results, hasSize(2));
 

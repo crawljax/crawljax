@@ -1,11 +1,12 @@
 package com.crawljax.core.state;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import org.jgrapht.GraphPath;
-
 import java.util.List;
 import java.util.Set;
+
+import org.jgrapht.GraphPath;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * A graph of {@link StateVertex} as vertexes and {@link Eventable} as edges
@@ -45,18 +46,20 @@ public interface StateFlowGraph {
 	ImmutableSet<Eventable> getIncomingClickable(StateVertex stateVertix);
 
 	/**
-	 * Is it possible to go from s1 -> s2?
+	 * Is it possible to go from s1 -&gt; s2?
 	 * 
 	 * @param source
 	 *            the source state.
 	 * @param target
 	 *            the target state.
-	 * @return true if it is possible (edge exists in graph) to go from source to target.
+	 * @return true if it is possible (edge exists in graph) to go from source
+	 *         to target.
 	 */
 	boolean canGoTo(StateVertex source, StateVertex target);
 
 	/**
-	 * Convenience method to find the Dijkstra shortest path between two states on the graph.
+	 * Convenience method to find the Dijkstra shortest path between two states
+	 * on the graph.
 	 * 
 	 * @param start
 	 *            the start state.
@@ -91,19 +94,21 @@ public interface StateFlowGraph {
 	int getNumberOfStates();
 
 	/**
-	 * This method returns all possible paths from the index state using the Kshortest paths.
+	 * This method returns all possible paths from the index state using the
+	 * Kshortest paths.
 	 * 
 	 * @param index
 	 *            the initial state.
 	 * @return a list of GraphPath lists.
 	 */
-	List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(StateVertex index);
+	List<List<GraphPath<StateVertex, Eventable>>> getAllPossiblePaths(
+			StateVertex index);
 
 	/**
 	 * @param stateVertix
 	 *            The source {@link StateVertex}
-	 * @return a {@link Set} of {@link StateVertex} that are connected to the source
-	 *         {@link StateVertex} via one of the sources outgoing edges.
+	 * @return a {@link Set} of {@link StateVertex} that are connected to the
+	 *         source {@link StateVertex} via one of the sources outgoing edges.
 	 */
 	ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertix);
 
