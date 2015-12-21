@@ -1,8 +1,5 @@
 package com.crawljax.browser;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration;
 import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
@@ -19,6 +16,9 @@ import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Default implementation of the EmbeddedBrowserBuilder based on Selenium WebDriver API.
@@ -48,6 +48,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 		        configuration.getCrawlRules().getPreCrawlConfig().getFilterAttributeNames();
 		long crawlWaitReload = configuration.getCrawlRules().getWaitAfterReloadUrl();
 		long crawlWaitEvent = configuration.getCrawlRules().getWaitAfterEvent();
+		String userAgent = configuration.getUserAgent();
 
 		// Determine the requested browser type
 		EmbeddedBrowser browser = null;
@@ -56,7 +57,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			switch (browserType) {
 				case FIREFOX:
 					browser =
-					        newFireFoxBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
+					        newFireFoxBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent, userAgent);
 					break;
 				case INTERNET_EXPLORER:
 					browser =
@@ -65,7 +66,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 					                filterAttributes, crawlWaitEvent, crawlWaitReload);
 					break;
 				case CHROME:
-					browser = newChromeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent);
+					browser = newChromeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent, userAgent);
 					break;
 				case REMOTE:
 					browser =
@@ -75,7 +76,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 					break;
 				case PHANTOMJS:
 					browser =
-					        newPhantomJSDriver(filterAttributes, crawlWaitReload, crawlWaitEvent);
+					        newPhantomJSDriver(filterAttributes, crawlWaitReload, crawlWaitEvent, userAgent);
 					break;
 				default:
 					throw new IllegalStateException("Unrecognized browsertype "
@@ -90,9 +91,12 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	}
 
 	private EmbeddedBrowser newFireFoxBrowser(ImmutableSortedSet<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent) {
+	        long crawlWaitReload, long crawlWaitEvent, String userAgent) {
 		if (configuration.getProxyConfiguration() != null) {
 			FirefoxProfile profile = new FirefoxProfile();
+			if (!Strings.isNullOrEmpty(userAgent)){
+				profile.setPreference("general.useragent.override", userAgent);
+			}
 			String lang = configuration.getBrowserConfig().getLangOrNull();
 			if (!Strings.isNullOrEmpty(lang)) {
 				profile.setPreference("intl.accept_languages", lang);
@@ -116,11 +120,14 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	}
 
 	private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent) {
+	        long crawlWaitReload, long crawlWaitEvent, String userAgent) {
 		ChromeDriver driverChrome;
+		ChromeOptions optionsChrome = new ChromeOptions();
+		if (!Strings.isNullOrEmpty(userAgent)){
+			optionsChrome.addArguments("--user-agent=" + userAgent);
+		}
 		if (configuration.getProxyConfiguration() != null
 		        && configuration.getProxyConfiguration().getType() != ProxyType.NOTHING) {
-			ChromeOptions optionsChrome = new ChromeOptions();
 			String lang = configuration.getBrowserConfig().getLangOrNull();
 			if (!Strings.isNullOrEmpty(lang)) {
 				optionsChrome.addArguments("--lang=" + lang);
@@ -138,9 +145,12 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 	}
 
 	private EmbeddedBrowser newPhantomJSDriver(ImmutableSortedSet<String> filterAttributes,
-	        long crawlWaitReload, long crawlWaitEvent) {
+	        long crawlWaitReload, long crawlWaitEvent, String userAgent) {
 
 		DesiredCapabilities caps = new DesiredCapabilities();
+		if (!Strings.isNullOrEmpty(userAgent)){
+			caps.setCapability("phantomjs.page.settings.userAgent", userAgent);
+		}
 		caps.setCapability("takesScreenshot", true);
 		caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[]{"--webdriver-loglevel=WARN"});
 		final ProxyConfiguration proxyConf = configuration
