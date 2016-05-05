@@ -1,0 +1,29 @@
+package com.crawljax.core.state.duplicatedetection;
+
+import com.google.inject.Inject;
+
+import net.jpountz.xxhash.XXHash32;
+import net.jpountz.xxhash.XXHashFactory;
+
+/**
+ * A hashGenerator using the xxhash32-algorithm (https://code.google.com/p/xxhash/)
+ */
+public class XxHashGenerator implements HashGenerator {
+
+	private static final int SEED = 0x9747b28c;
+	private XXHash32 xxhash;
+
+	/**
+	 * Setup the xxHash-32 hash-generator
+	 */
+	@Inject
+	public XxHashGenerator() {
+		xxhash = XXHashFactory.fastestInstance().hash32();
+	}
+
+	@Override
+	public int generateHash(String input) {
+		return xxhash.hash(input.getBytes(), 0, input.length(), SEED);
+	}
+
+}

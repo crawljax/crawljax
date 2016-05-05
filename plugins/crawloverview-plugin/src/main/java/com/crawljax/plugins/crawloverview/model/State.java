@@ -3,6 +3,7 @@ package com.crawljax.plugins.crawloverview.model;
 import javax.annotation.concurrent.Immutable;
 
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.core.state.StateVertexNDD;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,6 +19,7 @@ public class State {
 	private final ImmutableList<CandidateElementPosition> candidateElements;
 	private final int fanIn;
 	private final int fanOut;
+	private final int[] hash;
 	private final int id;
 	private final ImmutableList<String> failedEvents;
 
@@ -31,6 +33,14 @@ public class State {
 		this.name = state.getName();
 		this.url = state.getUrl();
 		this.id = state.getId();
+		if (state instanceof StateVertexNDD) {
+			this.hash = new int[]{0}; // temporary fix
+		} else {
+			int[] hashCode = new int[1];
+			hashCode[0] = state.hashCode();
+			this.hash = hashCode;
+		}
+		
 	}
 
 	@JsonCreator
@@ -39,7 +49,7 @@ public class State {
 	        @JsonProperty("url") String url,
 	        @JsonProperty("candidateElements") ImmutableList<CandidateElementPosition> candidateElements,
 	        @JsonProperty("fanIn") int fanIn, @JsonProperty("fanOut") int fanOut,
-	        @JsonProperty("id") int id,
+	        @JsonProperty("hash") int[] hash, @JsonProperty("id") int id,
 	        @JsonProperty("failedEvents") ImmutableList<String> failedEvents) {
 		super();
 		this.name = name;
@@ -47,6 +57,7 @@ public class State {
 		this.candidateElements = candidateElements;
 		this.fanIn = fanIn;
 		this.fanOut = fanOut;
+		this.hash = hash;
 		this.id = id;
 		this.failedEvents = failedEvents;
 	}
@@ -69,6 +80,10 @@ public class State {
 
 	public int getFanOut() {
 		return fanOut;
+	}
+	
+	public int[] getHash() {
+		return hash;
 	}
 
 	public int getId() {
@@ -96,6 +111,7 @@ public class State {
 			                that.candidateElements)
 			        && Objects.equal(this.fanIn, that.fanIn)
 			        && Objects.equal(this.fanOut, that.fanOut)
+			        && Objects.equal(this.hash, that.hash)
 			        && Objects.equal(this.failedEvents,
 			                that.failedEvents);
 		}
@@ -107,6 +123,7 @@ public class State {
 		return Objects.toStringHelper(this).add("name", name).add("id", id)
 		        .add("url", url).add("candidateElements", candidateElements)
 		        .add("fanIn", fanIn).add("fanOut", fanOut)
+		        .add("hahs", hash)
 		        .add("failedEvents", failedEvents).toString();
 	}
 

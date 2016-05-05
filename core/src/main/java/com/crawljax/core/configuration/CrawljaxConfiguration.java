@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -14,9 +16,13 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.state.StateVertexFactory;
-import com.crawljax.domcomparators.DomTextContentStripper;
+import com.crawljax.core.state.duplicatedetection.FeatureShingles;
+import com.crawljax.core.state.duplicatedetection.FeatureType;
+import com.crawljax.domcomparators.DomStructureStripper;
 import com.crawljax.domcomparators.AttributesStripper;
 import com.crawljax.domcomparators.DomStripper;
+import com.crawljax.domcomparators.HeadStripper;
+import com.crawljax.domcomparators.RedundantWhiteSpaceStripper;
 import com.crawljax.domcomparators.ValidDomStripper;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -29,6 +35,8 @@ public class CrawljaxConfiguration {
 
 	public static class CrawljaxConfigurationBuilder {
 
+		private final int LENGTH_OF_DUPLICATE_DETECTION_HASH = 32;
+		
 		private final ImmutableList.Builder<Plugin> pluginBuilder = ImmutableList.builder();
 		private final ImmutableList.Builder<ValidDomStripper> validStrippers = ImmutableList.builder();
 		private final ImmutableList.Builder<DomStripper> strippers = ImmutableList.builder();
@@ -116,6 +124,30 @@ public class CrawljaxConfiguration {
 			return this;
 		}
 
+		/**
+		 * @param threshold The threshold that will be used for the Hamming distance comparison.
+		 * Two states are near-duplicates if the Hamming distance between the two hashes 
+		 * are less or equal than the threshold.
+		 */
+		public CrawljaxConfigurationBuilder setThresholdNearDuplicateDetection(double threshold) {
+			Preconditions.checkArgument(threshold >= 0,
+					"The theshold should be greater or equal to 0.");
+			Preconditions.checkArgument(threshold <= LENGTH_OF_DUPLICATE_DETECTION_HASH,
+					"The theshold should be smaller or equal to " + 32);
+			config.thresholdNearDuplicateDetection = threshold;
+			return this;
+		}
+		
+		/**
+		 * @param features The features that will be used to in the Near-Duplicate Detection algorithm.
+		 * Features determine how the relevant (stripped) content of a page is processed into a hash.  
+		 */
+		public CrawljaxConfigurationBuilder setFeaturesNearDuplicateDetection(List<FeatureType> features) {
+			Preconditions.checkArgument(!features.isEmpty(), "The feature-list has to contain at least 1 feature.");
+			config.featuresNearDuplicateDetection = features;
+			return this;
+		}
+		
 		/**
 		 * Add plugins to Crawljax. Note that without plugins, Crawljax won't give any ouput. For basic output at least
 		 * enable the CrawlOverviewPlugin. <p> You can call this method several times to add multiple plugins </p>
@@ -258,8 +290,10 @@ public class CrawljaxConfiguration {
 
 			if (config.strippers.isEmpty() && config.validStrippers.isEmpty()) {
 				config.strippers = ImmutableList.of(
-						new DomTextContentStripper(),
-						new AttributesStripper()
+						new HeadStripper(),
+						new DomStructureStripper(),
+						new AttributesStripper(),
+						new RedundantWhiteSpaceStripper()
 				);
 			}
 			return config;
@@ -299,10 +333,13 @@ public class CrawljaxConfiguration {
 	;
 	private int maximumDepth = 2;
 	private File output = new File("out");
+	private double thresholdNearDuplicateDetection = 3;
+	public List<FeatureType> featuresNearDuplicateDetection = new ArrayList<FeatureType>();
 
 	private StateVertexFactory stateVertexFactory;
 
 	private CrawljaxConfiguration() {
+		featuresNearDuplicateDetection.add(new FeatureShingles(2, FeatureShingles.SizeType.WORDS));
 	}
 
 	public URI getUrl() {
@@ -340,7 +377,15 @@ public class CrawljaxConfiguration {
 	public File getOutputDir() {
 		return output;
 	}
+	
+	public double getThresholdNearDuplicateDetection() {
+		return thresholdNearDuplicateDetection;
+	}
 
+	public List<FeatureType> getFeaturesNearDuplicateDetection() { 
+		return featuresNearDuplicateDetection;
+	}
+	
 	public ImmutableList<DomStripper> getStrippers() {
 		return strippers;
 	}
@@ -356,7 +401,7 @@ public class CrawljaxConfiguration {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(url, browserConfig, plugins, proxyConfiguration, crawlRules,
-				maximumStates, maximumRuntime, maximumDepth, strippers, validStrippers);
+				maximumStates, maximumRuntime, maximumDepth, thresholdNearDuplicateDetection, strippers, validStrippers);
 	}
 
 	@Override
@@ -371,6 +416,7 @@ public class CrawljaxConfiguration {
 					&& Objects.equal(this.maximumStates, that.maximumStates)
 					&& Objects.equal(this.maximumRuntime, that.maximumRuntime)
 					&& Objects.equal(this.maximumDepth, that.maximumDepth)
+					&& Objects.equal(this.thresholdNearDuplicateDetection, that.thresholdNearDuplicateDetection)
 					&& Objects.equal(this.strippers, that.strippers)
 					&& Objects.equal(this.validStrippers, that.validStrippers);
 		}
@@ -388,6 +434,7 @@ public class CrawljaxConfiguration {
 				.add("maximumStates", maximumStates)
 				.add("maximumRuntime", maximumRuntime)
 				.add("maximumDepth", maximumDepth)
+				.add("thresholdNearDuplicateDetection", thresholdNearDuplicateDetection)
 				.toString();
 	}
 
