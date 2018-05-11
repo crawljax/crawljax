@@ -5,6 +5,7 @@ import java.util.Arrays;
 import net.jcip.annotations.Immutable;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -66,7 +67,7 @@ public final class Logic {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this)
+			return MoreObjects.toStringHelper(this)
 			        .add("condition", condition)
 			        .toString();
 		}
@@ -105,7 +106,7 @@ public final class Logic {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this)
+			return MoreObjects.toStringHelper(this)
 			        .add("condition", Arrays.deepToString(conditions))
 			        .toString();
 		}
@@ -145,7 +146,7 @@ public final class Logic {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this)
+			return MoreObjects.toStringHelper(this)
 			        .add("condition", Arrays.deepToString(conditions))
 			        .toString();
 		}

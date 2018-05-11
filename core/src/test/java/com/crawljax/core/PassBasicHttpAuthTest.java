@@ -47,7 +47,7 @@ public class PassBasicHttpAuthTest {
 
 	private ConstraintSecurityHandler newSecurityHandler(ResourceHandler handler) {
 		HashLoginService login = new HashLoginService();
-		login.putUser(USERNAME, Credential.getCredential(PASSWORD), new String[] { "user" });
+//		login.putUser(USERNAME, Credential.getCredential(PASSWORD), new String[] { "user" });
 
 		Constraint constraint = new Constraint();
 		constraint.setName(Constraint.__BASIC_AUTH);

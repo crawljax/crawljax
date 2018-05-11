@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -56,7 +57,7 @@ public class RegexCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("expression", expression.toString())
 		        .add("pattern", pattern.toString())
 		        .toString();

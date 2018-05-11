@@ -14,6 +14,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.state.StateVertexFactory;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -318,7 +319,7 @@ public class CrawljaxConfiguration {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("url", url).add("browserConfig", browserConfig)
+		return MoreObjects.toStringHelper(this).add("url", url).add("browserConfig", browserConfig)
 		        .add("plugins", plugins).add("proxyConfiguration", proxyConfiguration)
 		        .add("crawlRules", crawlRules).add("maximumStates", maximumStates)
 		        .add("maximumRuntime", maximumRuntime).add("maximumDepth", maximumDepth)

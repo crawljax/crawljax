@@ -34,17 +34,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
+
+import io.github.bonigarcia.wdm.FirefoxDriverManager;
 
 public class StandardFunctionsFlowTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StandardFunctionsFlowTest.class);
-	private static DefaultSelenium selenium;
 	private static WebDriver driver;
 
 	private static String CONFIG_NAME = "TestConfiguration";
-	private static String CONFIG_URL = "http://demo.crawljax.com/";
+	private static String CONFIG_URL = "http://testcue.com/crawljax-demo/";
 
 	private static String LOCAL_PLUGIN_NAME = "Test Plugin";
 	private static String LOCAL_PLUGIN_ID = "test-plugin";
@@ -52,6 +51,8 @@ public class StandardFunctionsFlowTest {
 	private static String REMOTE_PLUGIN_NAME = "dummy-plugin";
 	private static String REMOTE_PLUGIN_URL =
 	        "https://raw.githubusercontent.com/crawljax/crawljax/master/web/src/test/resources/dummy-plugin.jar";
+
+	private static String url;
 
 	@Rule
 	public TestRule globalTimeout = new Timeout(120 * 1000);
@@ -61,9 +62,13 @@ public class StandardFunctionsFlowTest {
 
 	@BeforeClass
 	public static void setup() throws Exception {
+		url = SERVER.getUrl();
+
+		FirefoxDriverManager.getInstance().setup();
+
 		driver = new FirefoxDriver();
 		LOG.debug("Starting selenium");
-		selenium = new WebDriverBackedSelenium(driver, SERVER.getUrl());
+		// selenium = new WebDriverBackedSelenium(driver, SERVER.getUrl());
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 
@@ -215,7 +220,6 @@ public class StandardFunctionsFlowTest {
 
 		WebElement siteInput = driver.findElement(
 		        By.xpath("//label[contains(text(),'Site:')]/following-sibling::input"));
-		String asdf = siteInput.getAttribute("value");
 		assertEquals(CONFIG_URL, siteInput.getAttribute("value"));
 
 		List<WebElement> deleteLink = driver.findElements(By.linkText("Delete Configuration"));
@@ -292,7 +296,8 @@ public class StandardFunctionsFlowTest {
 		        By.xpath("//td[preceding-sibling::td[contains(a,'" + CONFIG_NAME + "')]]"));
 		assertNotNull(dateContainer);
 		String displayedDate = dateContainer.getText();
-		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM d yyyy HH:mm:ss", Locale.ENGLISH);
+		SimpleDateFormat dateParser =
+		        new SimpleDateFormat("EEE MMM d yyyy HH:mm:ss", Locale.ENGLISH);
 		Date date = null;
 		try {
 			date = dateParser.parse(displayedDate);
@@ -424,7 +429,7 @@ public class StandardFunctionsFlowTest {
 	}
 
 	private void open(String hashLocation) {
-		selenium.open("/#/" + hashLocation);
+		driver.navigate().to(url + "/#/" + hashLocation);
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
@@ -480,6 +485,6 @@ public class StandardFunctionsFlowTest {
 
 	@AfterClass
 	public static void tearDown() throws Exception {
-		selenium.stop();
+		driver.close();
 	}
 }

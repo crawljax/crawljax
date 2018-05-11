@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -66,7 +67,7 @@ public class XPathCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("expression", expression)
 		        .toString();
 	}

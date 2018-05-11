@@ -6,6 +6,7 @@ import com.crawljax.core.state.StateVertex;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -104,7 +105,7 @@ public class State {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("name", name).add("id", id)
+		return MoreObjects.toStringHelper(this).add("name", name).add("id", id)
 		        .add("url", url).add("candidateElements", candidateElements)
 		        .add("fanIn", fanIn).add("fanOut", fanOut)
 		        .add("failedEvents", failedEvents).toString();

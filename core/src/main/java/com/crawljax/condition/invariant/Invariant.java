@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.ConditionType;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -55,7 +56,7 @@ public class Invariant extends ConditionType {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("description", getDescription())
 		        .add("condition", getInvariantCondition())
 		        .toString();

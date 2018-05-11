@@ -11,6 +11,7 @@ import com.crawljax.core.CrawlSession;
 import com.crawljax.core.state.StateFlowGraph;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 @Immutable
@@ -109,7 +110,7 @@ public class Statistics {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("duration", duration)
 		        .add("failedEvents", failedEvents)
 		        .add("crawlPaths", crawlPaths)

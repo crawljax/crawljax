@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -70,7 +71,7 @@ public final class OutPutModel {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("exitStatus", exitStatus)
+		return MoreObjects.toStringHelper(this).add("exitStatus", exitStatus)
 		        .add("states", states).add("edges", edges)
 		        .add("statistics", statistics).toString();
 	}

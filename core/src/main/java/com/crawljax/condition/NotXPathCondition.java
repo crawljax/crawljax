@@ -3,6 +3,7 @@ package com.crawljax.condition;
 import net.jcip.annotations.Immutable;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -44,7 +45,7 @@ public class NotXPathCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("xpathCondition", xpathCondition)
 		        .toString();
 	}

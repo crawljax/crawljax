@@ -10,6 +10,7 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.DomUtils;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -154,7 +155,7 @@ public class CandidateElement {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("identification", identification)
 		        .add("element", element)
 		        .add("formInputs", formInputs)

@@ -15,6 +15,7 @@ import com.crawljax.core.CrawljaxException;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.XPathHelper;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -233,7 +234,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("eventType", eventType)
 		        .add("identification", identification)
 		        .add("element", element)

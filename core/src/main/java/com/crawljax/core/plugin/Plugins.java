@@ -23,6 +23,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.metrics.MetricsModule;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -421,7 +422,7 @@ public class Plugins {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("plugins", plugins).toString();
+		return MoreObjects.toStringHelper(this).add("plugins", plugins).toString();
 	}
 
 	/**
