@@ -159,10 +159,35 @@ public class CandidateElementExtractorTest {
 		assertThat(extract, hasSize(3));
 	}
 
+	@Test
+	public void testExtractShouldIgnoreDownloadFiles() throws Exception {
+		CrawljaxConfigurationBuilder builder =
+				CrawljaxConfiguration.builderFor("http://example.com");
+		builder.crawlRules().click("a");
+		CrawljaxConfiguration config = builder.build();
+
+		CandidateElementExtractor extractor = newElementExtractor(config);
+
+		String file = "/candidateElementExtractorTest/domWithFourTypeDownloadLink.html";
+		List<CandidateElement> candidates = extractFromTestFile(extractor, file);
+
+		for (CandidateElement e : candidates) {
+			LOG.debug("candidate: {}", e.getUniqueString());
+		}
+
+		assertNotNull(candidates);
+		assertEquals(12, candidates.size());
+	}
+
 	private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor)
 			throws URISyntaxException {
-		StateVertex currentState = Mockito.mock(StateVertex.class);
 		String file = "/candidateElementExtractorTest/domWithOneExternalAndTwoInternal.html";
+		return extractFromTestFile(extractor, file);
+	}
+
+	private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor, String file)
+			throws URISyntaxException {
+		StateVertex currentState = Mockito.mock(StateVertex.class);
 		URL dom = Resources.getResource(getClass(), file);
 		browser.goToUrl(dom.toURI());
 		return extractor.extract(currentState);
