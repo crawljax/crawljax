@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import com.crawljax.core.ExitNotifier.ExitStatus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -23,16 +24,19 @@ public final class OutPutModel {
 	private final Statistics statistics;
 
 	private final ExitStatus exitStatus;
+	private String[][] clusters;
 
 	@JsonCreator
 	public OutPutModel(@JsonProperty("states") ImmutableMap<String, State> states,
 	        @JsonProperty("edges") ImmutableList<Edge> edges,
 	        @JsonProperty("statistics") Statistics statistics,
-	        @JsonProperty("exitStatus") ExitStatus exitStatus) {
+	        @JsonProperty("exitStatus") ExitStatus exitStatus,
+	        @JsonProperty("clusters") String[][] clusters) {
 		this.states = states;
 		this.edges = edges;
 		this.statistics = statistics;
 		this.exitStatus = exitStatus;
+		this.clusters = clusters;
 	}
 
 	public ImmutableMap<String, State> getStates() {
@@ -70,7 +74,7 @@ public final class OutPutModel {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("exitStatus", exitStatus)
+		return MoreObjects.toStringHelper(this).add("exitStatus", exitStatus)
 		        .add("states", states).add("edges", edges)
 		        .add("statistics", statistics).toString();
 	}

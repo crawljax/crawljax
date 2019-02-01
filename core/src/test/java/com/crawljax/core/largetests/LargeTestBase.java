@@ -1,12 +1,34 @@
 package com.crawljax.core.largetests;
 
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.stateWithDomSubstring;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.everyItem;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import com.crawljax.condition.NotRegexCondition;
+import com.crawljax.condition.NotXPathCondition;
+import com.crawljax.condition.RegexCondition;
+import com.crawljax.condition.XPathCondition;
+import com.crawljax.condition.browserwaiter.ExpectedVisibleCondition;
+import com.crawljax.condition.browserwaiter.WaitCondition;
+import com.crawljax.condition.invariant.Invariant;
+import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawljaxRunner;
+import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
+import com.crawljax.core.configuration.CrawlRules.FormFillMode;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.configuration.Form;
+import com.crawljax.core.configuration.InputSpecification;
+import com.crawljax.core.plugin.OnInvariantViolationPlugin;
+import com.crawljax.core.state.*;
+import com.crawljax.core.state.Identification.How;
+import com.crawljax.forms.FormInput.InputType;
+import com.crawljax.forms.FormInputValueHelper;
+import com.crawljax.oraclecomparator.OracleComparator;
+import com.crawljax.oraclecomparator.comparators.DateComparator;
+import com.crawljax.oraclecomparator.comparators.StyleComparator;
+import com.crawljax.test.RunWithWebServer;
+import org.junit.*;
+import org.junit.rules.Timeout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,45 +39,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.crawljax.condition.NotRegexCondition;
-import com.crawljax.condition.NotXPathCondition;
-import com.crawljax.condition.RegexCondition;
-import com.crawljax.condition.XPathCondition;
-import com.crawljax.condition.browserwaiter.ExpectedVisibleCondition;
-import com.crawljax.condition.browserwaiter.WaitCondition;
-import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawlerContext;
-import com.crawljax.core.CrawljaxRunner;
-import com.crawljax.core.configuration.BrowserConfiguration;
-import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.configuration.Form;
-import com.crawljax.core.configuration.InputSpecification;
-import com.crawljax.core.plugin.OnInvariantViolationPlugin;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
-import com.crawljax.core.state.Identification.How;
-import com.crawljax.core.state.PostCrawlStateGraphChecker;
-import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateVertex;
-import com.crawljax.oraclecomparator.OracleComparator;
-import com.crawljax.oraclecomparator.comparators.DateComparator;
-import com.crawljax.oraclecomparator.comparators.StyleComparator;
-import com.crawljax.test.RunWithWebServer;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.Timeout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.stateWithDomSubstring;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.*;
 
 /**
  * This is the base abstract class for all different kind of largeTests. Sub classes tests specific
- * browser implementations like FireFox, Chrome, IE, etc.
+ * browser implementations like Firefox, Chrome, IE, etc.
  */
 public abstract class LargeTestBase {
 
@@ -73,7 +65,7 @@ public abstract class LargeTestBase {
 	private static final String DONT_CLICK_UNDER_XPATH_ID = "DONT_CLICK_IN_HERE";
 	private static final String ILLEGAL_STATE = "FORBIDDEN_PAGE";
 
-	private static List<Invariant> violatedInvariants = new ArrayList<Invariant>();
+	private static List<Invariant> violatedInvariants = new ArrayList<>();
 	private static final int VIOLATED_INVARIANTS = 1;
 	private static final String VIOLATED_INVARIANT_DESCRIPTION = "expectedInvariantViolation";
 	private static final String INVARIANT_TEXT = "TEST_INVARIANTS";
@@ -81,7 +73,7 @@ public abstract class LargeTestBase {
 
 	private static final String TITLE_RESULT_RANDOM_INPUT = "RESULT_RANDOM_INPUT";
 	private static final String REGEX_RESULT_RANDOM_INPUT = "[a-zA-Z]{8};" + "[a-zA-Z]{8};"
-	  + "(true|false);" + "(true|false);" + "OPTION[1234];" + "[a-zA-Z]{8}";
+			+ "(true|false);" + "(true|false);" + "OPTION[1234];" + "[a-zA-Z]{8}";
 
 	// manual values
 	private static final String TITLE_MANUAL_INPUT_RESULT = "RESULT_MANUAL_INPUT";
@@ -103,24 +95,27 @@ public abstract class LargeTestBase {
 
 	private static final String TITLE_MULTIPLE_INPUT_RESULT = "RESULT_MULTIPLE_INPUT";
 	private static final String[] MULTIPLE_INPUT_RESULTS = { "first;foo;true;false;OPTION1;same",
-	  "second;bar;false;true;OPTION2;same", ";foo;true;false;OPTION1;same" };
+			"second;bar;false;true;OPTION2;same", ";foo;true;false;OPTION1;same" };
 
 	@ClassRule
 	public static final RunWithWebServer WEB_SERVER = new RunWithWebServer("/site");
 
 	@Rule
-	public final Timeout timeout = new Timeout((int) TimeUnit.MINUTES.toMillis(15));
+	public final Timeout timeout = new Timeout(15, TimeUnit.MINUTES);
 
 	@Before
 	public void setup() throws Exception {
+
+		/* Reset the singleton instance between tests. */
+		FormInputValueHelper.reset();
+
 		if (!HAS_RUN.get()) {
 			HAS_RUN.set(true);
 			CrawljaxRunner crawljax = null;
 			crawljax = new CrawljaxRunner(getCrawljaxConfiguration());
 			session = crawljax.call();
 			HAS_FINISHED.set(true);
-		}
-		else {
+		} else {
 			while (!HAS_FINISHED.get()) {
 				LOG.debug("Waiting for crawl to finish...");
 				Thread.sleep(500);
@@ -134,10 +129,10 @@ public abstract class LargeTestBase {
 	protected CrawljaxConfiguration getCrawljaxConfiguration() {
 
 		CrawljaxConfigurationBuilder builder =
-		  CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl());
+				CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl());
 		builder.crawlRules().waitAfterEvent(getTimeOutAfterEvent(), TimeUnit.MILLISECONDS);
-		builder.crawlRules()
-			   .waitAfterReloadUrl(getTimeOutAfterReloadUrl(), TimeUnit.MILLISECONDS);
+		builder.crawlRules().waitAfterReloadUrl(getTimeOutAfterReloadUrl(),
+				TimeUnit.MILLISECONDS);
 		builder.setMaximumDepth(3);
 		builder.crawlRules().clickOnce(true);
 
@@ -146,6 +141,7 @@ public abstract class LargeTestBase {
 		addCrawlElements(builder);
 
 		builder.crawlRules().setInputSpec(getInputSpecification());
+		builder.crawlRules().setFormFillMode(FormFillMode.RANDOM);
 
 		addCrawlConditions(builder);
 		addOracleComparators(builder);
@@ -158,44 +154,78 @@ public abstract class LargeTestBase {
 
 	private static InputSpecification getInputSpecification() {
 		InputSpecification input = new InputSpecification();
-		input.field("textManual").setValue(MANUAL_INPUT_TEXT);
-		input.field("text2Manual").setValue(MANUAL_INPUT_TEXT2);
-		input.field("checkboxManual").setValue(MANUAL_INPUT_CHECKBOX);
-		input.field("radioManual").setValue(MANUAL_INPUT_RADIO);
-		input.field("selectManual").setValue(MANUAL_INPUT_SELECT);
-		input.field("textareaManual").setValue(MANUAL_INPUT_TEXTAREA);
+		input.inputField(InputType.TEXT, new Identification(How.id, "textManual"))
+				.inputValues(MANUAL_INPUT_TEXT);
+		input.inputField(InputType.TEXT, new Identification(How.id, "text2Manual"))
+				.inputValues(MANUAL_INPUT_TEXT2);
+
+		input.inputField(InputType.CHECKBOX, new Identification(How.id, "checkboxManual"))
+				.inputValues(MANUAL_INPUT_CHECKBOX);
+
+		input.inputField(InputType.RADIO, new Identification(How.id, "radioManual"))
+				.inputValues(MANUAL_INPUT_RADIO);
+
+		input.inputField(InputType.SELECT, new Identification(How.id, "selectManual"))
+				.inputValues(MANUAL_INPUT_SELECT);
+
+		input.inputField(InputType.TEXTAREA, new Identification(How.id, "textareaManual"))
+				.inputValues(MANUAL_INPUT_TEXTAREA);
+
+		// input.field("textManual").setValue(MANUAL_INPUT_TEXT);
+		// input.field("text2Manual").setValue(MANUAL_INPUT_TEXT2);
+		// input.field("checkboxManual").setValue(MANUAL_INPUT_CHECKBOX);
+
+		// input.field("radioManual").setValue(MANUAL_INPUT_RADIO);
+		// input.field("selectManual").setValue(MANUAL_INPUT_SELECT);
+		// input.field("textareaManual").setValue(MANUAL_INPUT_TEXTAREA);
 
 		Form form = new Form();
-		form.field("textMultiple").setValues(MULTIPLE_INPUT_TEXT);
-		form.field("text2Multiple").setValues(MULTIPLE_INPUT_TEXT2);
-		form.field("checkboxMultiple").setValues(MULTIPLE_INPUT_CHECKBOX);
-		form.field("radioMultiple").setValues(MULTIPLE_INPUT_RADIO);
-		form.field("selectMultiple").setValues(MULTIPLE_INPUT_SELECT);
-		form.field("textareaMultiple").setValues(MULTIPLE_INPUT_TEXTAREA);
+
+		form.inputField(InputType.TEXT, new Identification(How.id, "textMultiple"))
+				.inputValues(MULTIPLE_INPUT_TEXT);
+
+		form.inputField(InputType.TEXT, new Identification(How.id, "text2Multiple"))
+				.inputValues(MULTIPLE_INPUT_TEXT2);
+
+		form.inputField(InputType.CHECKBOX, new Identification(How.id, "checkboxMultiple"))
+				.inputValues(MULTIPLE_INPUT_CHECKBOX);
+
+		form.inputField(InputType.RADIO, new Identification(How.id, "radioMultiple"))
+				.inputValues(MULTIPLE_INPUT_RADIO);
+
+		form.inputField(InputType.SELECT, new Identification(How.id, "selectMultiple"))
+				.inputValues(MULTIPLE_INPUT_SELECT);
+
+		form.inputField(InputType.TEXTAREA, new Identification(How.id, "textareaMultiple"))
+				.inputValues(MULTIPLE_INPUT_TEXTAREA);
+		// form.field("textMultiple").setValues(MULTIPLE_INPUT_TEXT);
+		// form.field("text2Multiple").setValues(MULTIPLE_INPUT_TEXT2);
+		// form.field("checkboxMultiple").setValues(MULTIPLE_INPUT_CHECKBOX);
+		// form.field("radioMultiple").setValues(MULTIPLE_INPUT_RADIO);
+		// form.field("selectMultiple").setValues(MULTIPLE_INPUT_SELECT);
+		// form.field("textareaMultiple").setValues(MULTIPLE_INPUT_TEXTAREA);
 		input.setValuesInForm(form).beforeClickElement("a").withText("Submit Multiple");
 		return input;
 	}
 
 	private static void addWaitConditions(CrawljaxConfigurationBuilder crawler) {
-		crawler.crawlRules().addWaitCondition(
-		  new WaitCondition("testWaitCondition.html", 2000, new ExpectedVisibleCondition(
-			new Identification(How.id, "SLOW_WIDGET"))));
+		crawler.crawlRules().addWaitCondition(new WaitCondition("testWaitCondition.html", 2000,
+				new ExpectedVisibleCondition(new Identification(How.id, "SLOW_WIDGET"))));
 	}
 
 	private static void addInvariants(CrawljaxConfigurationBuilder builder) {
 		// should always fail on test invariant page
 		NotXPathCondition neverDivWithInvariantViolationId =
-		  new NotXPathCondition("//DIV[@id='INVARIANT_VIOLATION']");
+				new NotXPathCondition("//DIV[@id='INVARIANT_VIOLATION']");
 		builder.crawlRules().addInvariant(VIOLATED_INVARIANT_DESCRIPTION,
-		  neverDivWithInvariantViolationId);
+				neverDivWithInvariantViolationId);
 
 		// should never fail
 		RegexCondition onInvariantsPagePreCondition = new RegexCondition(INVARIANT_TEXT);
 		XPathCondition expectElement =
-		  new XPathCondition("//DIV[@id='SHOULD_ALWAYS_BE_ON_THIS_PAGE']");
-		builder.crawlRules().addInvariant(
-		  new Invariant("testInvariantWithPrecondiions", expectElement,
-			onInvariantsPagePreCondition));
+				new XPathCondition("//DIV[@id='SHOULD_ALWAYS_BE_ON_THIS_PAGE']");
+		builder.crawlRules().addInvariant(new Invariant("testInvariantWithPrecondiions",
+				expectElement, onInvariantsPagePreCondition));
 	}
 
 	private static void addCrawlElements(CrawljaxConfigurationBuilder builder) {
@@ -205,7 +235,7 @@ public abstract class LargeTestBase {
 		rules.click("div").underXPath("//SPAN[@id='" + CLICK_UNDER_XPATH_ID + "']");
 		rules.click("button").when(new NotRegexCondition("DONT_CLICK_BUTTONS_ON_THIS_PAGE"));
 		rules.click("div").withAttribute(ATTRIBUTE, "condition")
-			 .when(new RegexCondition("REGEX_CONDITION_TRUE"));
+				.when(new RegexCondition("REGEX_CONDITION_TRUE"));
 
 		rules.dontClick("a").withText(DONT_CLICK_TEXT);
 		rules.dontClick("a").withAttribute(ATTRIBUTE, DONT_CLICK_TEXT);
@@ -213,16 +243,16 @@ public abstract class LargeTestBase {
 	}
 
 	private static void addOracleComparators(CrawljaxConfigurationBuilder builder) {
-		builder.crawlRules().addOracleComparator(
-		  new OracleComparator("style", new StyleComparator()));
+		builder.crawlRules()
+				.addOracleComparator(new OracleComparator("style", new StyleComparator()));
 
-		builder.crawlRules().addOracleComparator(
-		  new OracleComparator("date", new DateComparator()));
+		builder.crawlRules()
+				.addOracleComparator(new OracleComparator("date", new DateComparator()));
 	}
 
 	private static void addCrawlConditions(CrawljaxConfigurationBuilder builder) {
 		builder.crawlRules().addCrawlCondition("DONT_CRAWL_ME",
-		  new NotRegexCondition("DONT_CRAWL_ME"));
+				new NotRegexCondition("DONT_CRAWL_ME"));
 	}
 
 	/**
@@ -233,17 +263,12 @@ public abstract class LargeTestBase {
 	protected static void addPlugins(CrawljaxConfigurationBuilder crawljaxConfiguration) {
 		crawljaxConfiguration.addPlugin(new PostCrawlStateGraphChecker());
 
-		crawljaxConfiguration.addPlugin(new OnInvariantViolationPlugin() {
-
-			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlerContext context) {
-				LargeTestBase.violatedInvariants.add(invariant);
-				if (context.getBrowser().getStrippedDom().contains(INVARIANT_TEXT)) {
-					violatedInvariantStateIsCorrect = true;
-					LOG.warn("Invariant violated: " + invariant.getDescription());
-				}
+		crawljaxConfiguration.addPlugin((OnInvariantViolationPlugin) (invariant, context) -> {
+			LargeTestBase.violatedInvariants.add(invariant);
+			if (context.getBrowser().getStrippedDom().contains(INVARIANT_TEXT)) {
+				violatedInvariantStateIsCorrect = true;
+				LOG.warn("Invariant violated: " + invariant.getDescription());
 			}
-
 		});
 	}
 
@@ -272,10 +297,15 @@ public abstract class LargeTestBase {
 	 */
 	@Test
 	public void testManualFormInput() {
+		String[] parts = MANUAL_INPUT_RESULT.split(";");
 		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains(TITLE_MANUAL_INPUT_RESULT)) {
-				assertTrue("Result contains the correct data",
-				  state.getDom().contains(MANUAL_INPUT_RESULT));
+				for (String part : parts) {
+					assertTrue("DOM must contain: " + part, state.getDom().contains(part));
+				}
+
+				// assertTrue("Result contains the correct data",
+				// state.getDom().contains(MANUAL_INPUT_RESULT));
 				return;
 			}
 		}
@@ -287,16 +317,21 @@ public abstract class LargeTestBase {
 	 */
 	@Test
 	public void testMultipleFormInput() {
+
 		Set<String> resultsFound = new HashSet<>();
 		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains(TITLE_MULTIPLE_INPUT_RESULT)) {
 				for (String result : MULTIPLE_INPUT_RESULTS) {
-					if (state.getDom().contains(result)) {
-						resultsFound.add(result);
+					String[] parts = result.split(";");
+					for (String part : parts) {
+						if (state.getDom().contains(part)) {
+							resultsFound.add(result);
+						}
 					}
 				}
 			}
 		}
+
 		assertThat(resultsFound, containsInAnyOrder(MULTIPLE_INPUT_RESULTS));
 
 	}
@@ -310,15 +345,14 @@ public abstract class LargeTestBase {
 		for (Eventable eventable : getStateFlowGraph().getAllEdges()) {
 
 			// elements with DONT_CLICK_TEXT should never be clicked
-			assertTrue("No illegal element is clicked: " + eventable, !eventable.getElement()
-																				.getText().startsWith
-				(DONT_CLICK_TEXT));
+			assertTrue("No illegal element is clicked: " + eventable,
+					!eventable.getElement().getText().startsWith(DONT_CLICK_TEXT));
 			if (eventable.getElement().getText().startsWith(CLICK_TEXT)) {
 				clickMeFound++;
 			}
 		}
 		assertTrue(CLICKED_CLICK_ME_ELEMENTS + " CLICK_TEXT elements are clicked ",
-		  clickMeFound == CLICKED_CLICK_ME_ELEMENTS);
+				clickMeFound == CLICKED_CLICK_ME_ELEMENTS);
 	}
 
 	/**
@@ -327,7 +361,7 @@ public abstract class LargeTestBase {
 	@Test
 	public void testForIllegalStates() {
 		assertThat(getStateFlowGraph().getAllStates(),
-		  everyItem(not(stateWithDomSubstring(ILLEGAL_STATE))));
+				everyItem(not(stateWithDomSubstring(ILLEGAL_STATE))));
 	}
 
 	/**
@@ -353,13 +387,11 @@ public abstract class LargeTestBase {
 	public void testInvariants() {
 		// two invariants were added, but only one should fail!
 		assertTrue(violatedInvariants.size() + " Invariants violated",
-		  violatedInvariants.size() == VIOLATED_INVARIANTS);
+				violatedInvariants.size() == VIOLATED_INVARIANTS);
 
 		// test whether the right invariant failed
 		assertTrue(VIOLATED_INVARIANT_DESCRIPTION + " failed", violatedInvariants.get(0)
-																				 .getDescription()
-																				 .equals(
-																				   VIOLATED_INVARIANT_DESCRIPTION));
+				.getDescription().equals(VIOLATED_INVARIANT_DESCRIPTION));
 	}
 
 	/**
@@ -369,7 +401,7 @@ public abstract class LargeTestBase {
 	@Ignore("This test is non-deterministic and will fail without cause.")
 	public void testCorrectStateOnViolatedInvariants() {
 		assertTrue("OnViolatedInvariantPlugin session object has the correct currentState",
-		  violatedInvariantStateIsCorrect);
+				violatedInvariantStateIsCorrect);
 	}
 
 	/**
@@ -380,7 +412,7 @@ public abstract class LargeTestBase {
 		boolean foundSlowWidget = false;
 		for (StateVertex state : getStateFlowGraph().getAllStates()) {
 			if (state.getDom().contains("TEST_WAITCONDITION")
-			  && state.getDom().contains("LOADED_SLOW_WIDGET")) {
+					&& state.getDom().contains("LOADED_SLOW_WIDGET")) {
 				foundSlowWidget = true;
 			}
 		}

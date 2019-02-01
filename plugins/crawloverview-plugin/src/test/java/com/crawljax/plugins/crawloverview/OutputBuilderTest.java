@@ -1,17 +1,18 @@
 package com.crawljax.plugins.crawloverview;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.text.IsEmptyString.isEmptyString;
-import static org.junit.Assert.assertThat;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.text.IsEmptyString.isEmptyString;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class OutputBuilderTest {
 
@@ -28,6 +29,8 @@ public class OutputBuilderTest {
 
 	@Test
 	public void testNewScreenShotFileIsWritable() throws IOException {
+		boolean dirCreated = builder.getScreenshotsFolder().mkdir();
+		assertTrue(dirCreated);
 		FileWriter fwriter = new FileWriter(builder.newScreenShotFile("test"));
 		fwriter.write("blabla");
 		fwriter.close();

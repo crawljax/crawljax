@@ -14,6 +14,6 @@ public class CrawlSessionNotSetupYetException extends CrawljaxException {
 
 	public CrawlSessionNotSetupYetException() {
 		super(
-				"The crawlsession is not yet availeble. Wait until the index state is crawled.");
+				"The crawl session is not yet available. Wait until the index state is crawled.");
 	}
 }

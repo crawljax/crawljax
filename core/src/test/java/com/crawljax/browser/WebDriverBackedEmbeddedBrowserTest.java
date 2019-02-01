@@ -1,11 +1,10 @@
 package com.crawljax.browser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
+import com.crawljax.util.DomUtils;
+import com.google.common.collect.ImmutableSortedSet;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,11 +12,11 @@ import org.junit.experimental.categories.Category;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.test.BrowserTest;
-import com.crawljax.test.RunWithWebServer;
-import com.crawljax.util.DomUtils;
-import com.google.common.collect.ImmutableSortedSet;
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Category(BrowserTest.class)
 public class WebDriverBackedEmbeddedBrowserTest {
@@ -31,10 +30,10 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 	@Test
 	public void testGetDocument() throws Exception {
-		// TODO Stefan; refactor out the direct use of the FirefoxDriver
+
 		WebDriverBackedEmbeddedBrowser browser = WebDriverBackedEmbeddedBrowser
 				.withDriver(provider.newBrowser(),
-						ImmutableSortedSet.<String> of(), 100, 100);
+						ImmutableSortedSet.<String>of(), 100, 100);
 
 		Document doc;
 		browser.goToUrl(SERVER.getSiteUrl());
@@ -51,10 +50,10 @@ public class WebDriverBackedEmbeddedBrowserTest {
 
 	@Test
 	public void saveScreenShot() throws CrawljaxException, IOException {
-		// TODO Stefan; refactor out the direct use of the FirefoxDriver
+
 		WebDriverBackedEmbeddedBrowser browser = WebDriverBackedEmbeddedBrowser
 				.withDriver(provider.newBrowser(),
-						ImmutableSortedSet.<String> of(), 500, 500);
+						ImmutableSortedSet.<String>of(), 500, 500);
 
 		File f = File
 				.createTempFile("webdriverfirefox-test-screenshot", ".png");

@@ -76,7 +76,7 @@ public class JarRunnerTest {
 		                + " -" + ParameterInterpeter.BROWSER_REMOTE_URL + " localhost:9000"));
 		assertThat(streams.getErrorOutput(), isEmptyString());
 		BrowserConfiguration config = runner.getConfig().getBrowserConfig();
-		assertThat(config.getBrowsertype(), is(BrowserType.REMOTE));
+		assertThat(config.getBrowserType(), is(BrowserType.REMOTE));
 		assertThat(config.getRemoteHubUrl(), is("localhost:9000"));
 
 	}
@@ -137,7 +137,7 @@ public class JarRunnerTest {
 		BrowserConfiguration config =
 		        configForArgs("-p 123 -b " + BrowserType.CHROME).getBrowserConfig();
 		assertThat(config.getNumberOfBrowsers(), is(123));
-		assertThat(config.getBrowsertype(), is(BrowserType.CHROME));
+		assertThat(config.getBrowserType(), is(BrowserType.CHROME));
 	}
 
 	@Test

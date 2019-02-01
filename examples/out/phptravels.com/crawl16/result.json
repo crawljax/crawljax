@@ -1,0 +1,586 @@
+{
+  "states" : {
+    "state6" : {
+      "name" : "state6",
+      "url" : "http://phptravels.com/order/",
+      "candidateElements" : [ {
+        "top" : 2593,
+        "left" : 52,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[5]/DIV[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 2961,
+        "left" : 59,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 128,
+        "height" : 132
+      }, {
+        "top" : 966,
+        "left" : 83,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/FORM[1]/BUTTON[1]",
+        "width" : 251,
+        "height" : 34
+      }, {
+        "top" : 1015,
+        "left" : 83,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/FORM[2]/BUTTON[1]",
+        "width" : 251,
+        "height" : 34
+      }, {
+        "top" : 1064,
+        "left" : 83,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/FORM[3]/BUTTON[1]",
+        "width" : 251,
+        "height" : 34
+      }, {
+        "top" : 976,
+        "left" : 396,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/FORM[1]/BUTTON[1]",
+        "width" : 251,
+        "height" : 34
+      }, {
+        "top" : 1025,
+        "left" : 396,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/FORM[2]/BUTTON[1]",
+        "width" : 251,
+        "height" : 34
+      }, {
+        "top" : 1074,
+        "left" : 396,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/FORM[3]/BUTTON[1]",
+        "width" : 251,
+        "height" : 34
+      }, {
+        "top" : 976,
+        "left" : 710,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/FORM[1]/BUTTON[1]",
+        "width" : 251,
+        "height" : 34
+      }, {
+        "top" : 1025,
+        "left" : 710,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/FORM[2]/BUTTON[1]",
+        "width" : 251,
+        "height" : 34
+      }, {
+        "top" : 1074,
+        "left" : 710,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/FORM[3]/BUTTON[1]",
+        "width" : 251,
+        "height" : 34
+      }, {
+        "top" : 1567,
+        "left" : 850,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[3]/DIV[1]/DIV[1]/DIV[5]/FORM[1]/BUTTON[1]",
+        "width" : 126,
+        "height" : 36
+      }, {
+        "top" : 2593,
+        "left" : 52,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[5]/DIV[1]/A[1]/BUTTON[1]",
+        "width" : 940,
+        "height" : 46
+      }, {
+        "top" : 2940,
+        "left" : 36,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[1]/BUTTON[1]",
+        "width" : 25,
+        "height" : 25
+      }, {
+        "top" : 3063,
+        "left" : 59,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]/BUTTON[1]",
+        "width" : 128,
+        "height" : 30
+      } ],
+      "fanIn" : 1,
+      "fanOut" : 1,
+      "id" : 6,
+      "failedEvents" : [ "xpath /HTML[1]/BODY[1]/SECTION[5]/DIV[1]/A[1]" ]
+    },
+    "index" : {
+      "name" : "index",
+      "url" : "http://phptravels.com/demo/",
+      "candidateElements" : [ {
+        "top" : 15,
+        "left" : 52,
+        "xpath" : "/HTML[1]/BODY[1]/HEADER[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 29,
+        "left" : 551,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[1]/SPAN[1]/SPAN[1]/A[1]",
+        "width" : 40,
+        "height" : 19
+      }, {
+        "top" : 29,
+        "left" : 611,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[2]/SPAN[1]/SPAN[1]/A[1]",
+        "width" : 39,
+        "height" : 19
+      }, {
+        "top" : 1331,
+        "left" : 0,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 32,
+        "height" : 25
+      }, {
+        "top" : 72,
+        "left" : -9318,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 95,
+        "height" : 25
+      }, {
+        "top" : 98,
+        "left" : -9318,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 54,
+        "height" : 25
+      }, {
+        "top" : 124,
+        "left" : -9318,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[4]/A[1]",
+        "width" : 72,
+        "height" : 25
+      }, {
+        "top" : 150,
+        "left" : -9318,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[5]/A[1]",
+        "width" : 87,
+        "height" : 25
+      }, {
+        "top" : 176,
+        "left" : -9318,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[6]/A[1]",
+        "width" : 69,
+        "height" : 25
+      }, {
+        "top" : 202,
+        "left" : -9318,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[7]/A[1]",
+        "width" : 54,
+        "height" : 25
+      }, {
+        "top" : 228,
+        "left" : -9318,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[8]/A[1]",
+        "width" : 82,
+        "height" : 25
+      }, {
+        "top" : 254,
+        "left" : -9318,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[9]/A[1]",
+        "width" : 72,
+        "height" : 25
+      }, {
+        "top" : 280,
+        "left" : -9318,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[10]/A[1]",
+        "width" : 76,
+        "height" : 25
+      }, {
+        "top" : 1331,
+        "left" : 0,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 32,
+        "height" : 25
+      }, {
+        "top" : 72,
+        "left" : -9247,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 106,
+        "height" : 25
+      }, {
+        "top" : 98,
+        "left" : -9247,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 74,
+        "height" : 25
+      }, {
+        "top" : 124,
+        "left" : -9247,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[4]/A[1]",
+        "width" : 96,
+        "height" : 25
+      }, {
+        "top" : 150,
+        "left" : -9247,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[5]/A[1]",
+        "width" : 124,
+        "height" : 25
+      }, {
+        "top" : 176,
+        "left" : -9247,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[6]/A[1]",
+        "width" : 59,
+        "height" : 25
+      }, {
+        "top" : 1331,
+        "left" : 0,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 32,
+        "height" : 25
+      }, {
+        "top" : 72,
+        "left" : -9174,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 58,
+        "height" : 25
+      }, {
+        "top" : 98,
+        "left" : -9174,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 70,
+        "height" : 25
+      }, {
+        "top" : 124,
+        "left" : -9174,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[4]/A[1]",
+        "width" : 61,
+        "height" : 25
+      }, {
+        "top" : 150,
+        "left" : -9174,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[5]/A[1]",
+        "width" : 59,
+        "height" : 25
+      }, {
+        "top" : 176,
+        "left" : -9174,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[6]/A[1]",
+        "width" : 92,
+        "height" : 25
+      }, {
+        "top" : 202,
+        "left" : -9174,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[7]/A[1]",
+        "width" : 80,
+        "height" : 25
+      }, {
+        "top" : 228,
+        "left" : -9174,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[8]/A[1]",
+        "width" : 87,
+        "height" : 25
+      }, {
+        "top" : 254,
+        "left" : -9174,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[9]/A[1]",
+        "width" : 122,
+        "height" : 25
+      }, {
+        "top" : 366,
+        "left" : 305,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 334,
+        "height" : 70
+      }, {
+        "top" : 562,
+        "left" : 305,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 334,
+        "height" : 70
+      }, {
+        "top" : 767,
+        "left" : 305,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 334,
+        "height" : 70
+      }, {
+        "top" : 1542,
+        "left" : 67,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 433,
+        "height" : 37
+      }, {
+        "top" : 1554,
+        "left" : 768,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 29,
+        "height" : 30
+      }, {
+        "top" : 1554,
+        "left" : 800,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+        "width" : 34,
+        "height" : 30
+      }, {
+        "top" : 1554,
+        "left" : 837,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]",
+        "width" : 33,
+        "height" : 30
+      }, {
+        "top" : 1554,
+        "left" : 874,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]",
+        "width" : 32,
+        "height" : 30
+      }, {
+        "top" : 1554,
+        "left" : 910,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[5]",
+        "width" : 32,
+        "height" : 30
+      }, {
+        "top" : 1554,
+        "left" : 945,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[6]",
+        "width" : 31,
+        "height" : 30
+      }, {
+        "top" : 1626,
+        "left" : 52,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 212,
+        "height" : 40
+      }, {
+        "top" : 1766,
+        "left" : 52,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 108,
+        "height" : 19
+      }, {
+        "top" : 1766,
+        "left" : 171,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+        "width" : 87,
+        "height" : 19
+      }, {
+        "top" : 1646,
+        "left" : 310,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 84,
+        "height" : 19
+      }, {
+        "top" : 1666,
+        "left" : 310,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 81,
+        "height" : 19
+      }, {
+        "top" : 1686,
+        "left" : 310,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 57,
+        "height" : 19
+      }, {
+        "top" : 1706,
+        "left" : 310,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[4]/A[1]",
+        "width" : 92,
+        "height" : 19
+      }, {
+        "top" : 1726,
+        "left" : 310,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[5]/A[1]",
+        "width" : 75,
+        "height" : 19
+      }, {
+        "top" : 1646,
+        "left" : 484,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[1]/A[1]",
+        "width" : 101,
+        "height" : 19
+      }, {
+        "top" : 1666,
+        "left" : 484,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]",
+        "width" : 69,
+        "height" : 19
+      }, {
+        "top" : 1686,
+        "left" : 484,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[3]/A[1]",
+        "width" : 55,
+        "height" : 19
+      }, {
+        "top" : 1706,
+        "left" : 484,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[4]/A[1]",
+        "width" : 62,
+        "height" : 19
+      }, {
+        "top" : 1726,
+        "left" : 484,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]",
+        "width" : 127,
+        "height" : 19
+      }, {
+        "top" : 1646,
+        "left" : 658,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[1]/A[1]",
+        "width" : 29,
+        "height" : 19
+      }, {
+        "top" : 1666,
+        "left" : 658,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[2]/A[1]",
+        "width" : 60,
+        "height" : 19
+      }, {
+        "top" : 1686,
+        "left" : 658,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[3]/A[1]",
+        "width" : 71,
+        "height" : 19
+      }, {
+        "top" : 1706,
+        "left" : 658,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[4]/A[1]",
+        "width" : 27,
+        "height" : 19
+      }, {
+        "top" : 1726,
+        "left" : 658,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[5]/A[1]",
+        "width" : 64,
+        "height" : 19
+      }, {
+        "top" : 1804,
+        "left" : 59,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/A[1]",
+        "width" : 128,
+        "height" : 132
+      }, {
+        "top" : 1915,
+        "left" : 1006,
+        "xpath" : "//A[@id = 'livechat-badge']",
+        "width" : 16,
+        "height" : 16
+      }, {
+        "top" : 1331,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/HEADER[1]/DIV[1]/DIV[1]/BUTTON[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 1554,
+        "left" : 515,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/FORM[1]/BUTTON[1]",
+        "width" : 88,
+        "height" : 34
+      }, {
+        "top" : 1783,
+        "left" : 36,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[2]/BUTTON[1]",
+        "width" : 25,
+        "height" : 25
+      }, {
+        "top" : 1906,
+        "left" : 59,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/A[1]/BUTTON[1]",
+        "width" : 128,
+        "height" : 30
+      }, {
+        "top" : 1921,
+        "left" : 380,
+        "xpath" : "//DIV[@id = 'email']/DIV[2]/INPUT[2]",
+        "width" : 283,
+        "height" : 34
+      } ],
+      "fanIn" : 0,
+      "fanOut" : 4,
+      "id" : 0,
+      "failedEvents" : [ "xpath //DIV[@id = 'u_0_0']/DIV[1]/BUTTON[1]", "xpath //INPUT[@id = 'leave-chat']", "xpath //TR[@id = 'survey-after-greeting']/TD[1]/P[1]/INPUT[1]", "xpath /HTML[1]/BODY[1]/HEADER[1]/DIV[1]/DIV[1]/A[1]" ]
+    },
+    "state7" : {
+      "name" : "state7",
+      "url" : "http://phptravels.com/order/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "id" : 7,
+      "failedEvents" : [ ]
+    },
+    "state1" : {
+      "name" : "state1",
+      "url" : "http://phptravels.com/demo/#",
+      "candidateElements" : [ ],
+      "fanIn" : 2,
+      "fanOut" : 0,
+      "id" : 1,
+      "failedEvents" : [ ]
+    },
+    "state3" : {
+      "name" : "state3",
+      "url" : "http://phptravels.com/demo/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "id" : 3,
+      "failedEvents" : [ ]
+    }
+  },
+  "edges" : [ {
+    "from" : "index",
+    "to" : "state1",
+    "text" : "Leave a message",
+    "id" : "xpath //A[@id = 'title']",
+    "element" : "Element{node=[A: null], tag=A, text=Leave a message, attributes={class=title title-bg title-font style-text-shadow, href=#, id=title}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state3",
+    "text" : "Send",
+    "id" : "xpath //SPAN[@id = 'message-wrapper']/A[1]",
+    "element" : "Element{node=[A: null], tag=A, text=Send, attributes={class=btn-send, href=}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state1",
+    "text" : "",
+    "id" : "xpath //A[@id = 'send-file-clip']",
+    "element" : "Element{node=[A: null], tag=A, text=, attributes={href=#, id=send-file-clip}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state6",
+    "text" : "Order",
+    "id" : "xpath //NAV[@id = 'main-menu']/UL[1]/LI[2]/SPAN[1]/SPAN[1]/A[1]",
+    "element" : "Element{node=[A: null], tag=A, text=Order, attributes={class=white, href=http://phptravels.com/order/}}",
+    "eventType" : "click"
+  }, {
+    "from" : "state6",
+    "to" : "state7",
+    "text" : "Order Now",
+    "id" : "xpath /HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]",
+    "element" : "Element{node=[A: null], tag=A, text=Order Now, attributes={href=http://phptravels.com/order/, target=blank}}",
+    "eventType" : "click"
+  } ],
+  "statistics" : {
+    "duration" : "1 minute 7 seconds",
+    "crawlPaths" : 5,
+    "averageDomSize" : "102.387 kB",
+    "edges" : 5,
+    "startDate" : "2017-07-24 21:15:10 PDT",
+    "stateStats" : {
+      "leastFanOut" : {
+        "id" : "state7",
+        "count" : 0
+      },
+      "leastFanIn" : {
+        "id" : "index",
+        "count" : 0
+      },
+      "mostFanOut" : {
+        "id" : "index",
+        "count" : 4
+      },
+      "mostFanIn" : {
+        "id" : "state1",
+        "count" : 2
+      },
+      "totalNumberOfStates" : 5,
+      "urls" : {
+        "http://phptravels.com/order/" : [ "state6", "state7" ],
+        "http://phptravels.com/demo/" : [ "index", "state3" ],
+        "http://phptravels.com/demo/#" : [ "state1" ]
+      }
+    },
+    "failedEvents" : 5
+  },
+  "exitStatus" : "MAX_STATES"
+}

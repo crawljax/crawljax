@@ -1,17 +1,16 @@
 package com.crawljax.condition;
 
-import java.util.regex.Pattern;
-
+import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import net.jcip.annotations.Immutable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.google.common.base.Objects;
+import java.util.regex.Pattern;
 
 /**
- * Condition that returns true iff experssion occurs in the dom.
+ * Condition that returns true iff expression occurs in the dom.
  */
 @Immutable
 public class RegexCondition implements Condition {
@@ -21,8 +20,7 @@ public class RegexCondition implements Condition {
 	private final Pattern pattern;
 
 	/**
-	 * @param expression
-	 *            the regular expression.
+	 * @param expression the regular expression.
 	 */
 	public RegexCondition(String expression) {
 		this.expression = expression;
@@ -49,17 +47,17 @@ public class RegexCondition implements Condition {
 		if (object instanceof RegexCondition) {
 			RegexCondition that = (RegexCondition) object;
 			return Objects.equal(this.expression, that.expression)
-			        && Objects.equal(this.pattern.toString(), that.pattern.toString());
+					&& Objects.equal(this.pattern.toString(), that.pattern.toString());
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("expression", expression.toString())
-		        .add("pattern", pattern.toString())
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("expression", expression)
+				.add("pattern", pattern.toString())
+				.toString();
 	}
 
 }

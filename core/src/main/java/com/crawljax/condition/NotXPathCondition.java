@@ -1,13 +1,13 @@
 package com.crawljax.condition;
 
-import net.jcip.annotations.Immutable;
-
 import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import net.jcip.annotations.Immutable;
 
 /**
  * Condition that returns true iff no elements are found with expression.
- * 
+ *
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
@@ -16,8 +16,7 @@ public class NotXPathCondition implements Condition {
 	private final XPathCondition xpathCondition;
 
 	/**
-	 * @param expression
-	 *            the XPath expression.
+	 * @param expression the XPath expression.
 	 */
 	public NotXPathCondition(String expression) {
 		this.xpathCondition = new XPathCondition(expression);
@@ -44,9 +43,9 @@ public class NotXPathCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("xpathCondition", xpathCondition)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("xpathCondition", xpathCondition)
+				.toString();
 	}
 
 }

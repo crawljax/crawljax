@@ -5,11 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.crawljax.core.CrawljaxRunner;
+import com.crawljax.core.configuration.CrawlRules.FormFillMode;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.plugin.HostInterfaceImpl;
 import com.crawljax.core.plugin.descriptor.Parameter;
 import com.crawljax.core.plugin.descriptor.PluginDescriptor;
+import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Identification.How;
+import com.crawljax.forms.FormInput.InputType;
 
 /**
  * Use the sample plugin in combination with Crawljax.
@@ -25,8 +29,9 @@ public class Runner {
 	 * Entry point
 	 */
 	public static void main(String[] args) {
-		CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
-		builder.crawlRules().insertRandomDataInInputForms(false);
+		CrawljaxConfiguration.CrawljaxConfigurationBuilder builder =
+		        CrawljaxConfiguration.builderFor(URL);
+		builder.crawlRules().setFormFillMode(FormFillMode.NORMAL);
 
 		builder.crawlRules().click("a");
 		builder.crawlRules().click("button");
@@ -41,7 +46,7 @@ public class Runner {
 
 		PluginDescriptor descriptor = PluginDescriptor.forPlugin(TestPlugin.class);
 		Map<String, String> parameters = new HashMap<>();
-		for(Parameter parameter : descriptor.getParameters()) {
+		for (Parameter parameter : descriptor.getParameters()) {
 			parameters.put(parameter.getId(), "value");
 		}
 		builder.addPlugin(new TestPlugin(new HostInterfaceImpl(new File("out"), parameters)));
@@ -54,7 +59,9 @@ public class Runner {
 
 	private static InputSpecification getInputSpecification() {
 		InputSpecification input = new InputSpecification();
-		input.field("gbqfq").setValue("Crawljax");
+		input.inputField(InputType.TEXT, new Identification(How.id, "lst-ib"))
+		        .inputValues("Crawljax");
+
 		return input;
 	}
 

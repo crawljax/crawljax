@@ -1,17 +1,14 @@
 package com.crawljax.condition.browserwaiter;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
-import net.jcip.annotations.ThreadSafe;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawlRules;
 import com.google.common.collect.ImmutableList;
+import net.jcip.annotations.ThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Checks the wait conditions.
@@ -20,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 public class WaitConditionChecker {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WaitConditionChecker.class
-	        .getName());
+			.getName());
 
 	private ImmutableList<WaitCondition> waitConditions;
 
@@ -37,8 +34,7 @@ public class WaitConditionChecker {
 	}
 
 	/**
-	 * @param browser
-	 *            The browser to use.
+	 * @param browser The browser to use.
 	 */
 	public void wait(EmbeddedBrowser browser) {
 		if (waitConditions == null) {

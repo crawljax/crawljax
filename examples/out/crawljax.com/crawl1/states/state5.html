@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crawl overview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="CrawlJax">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/bootstrap-responsive.min.css" rel="stylesheet">
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+<link href="../css/shCore.css" rel="stylesheet" type="text/css" />
+<link href="../css/shCoreDefault.css" rel="stylesheet" type="text/css" />
+<style>
+.tooltip-inner {
+	max-width: 300px;
+	word-wrap: break-word;
+}
+
+body {
+	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+							<a class="brand" href="../index.html#graph">Crawl overview</a>
+						<ul class="nav">
+									<li class="active"><a href="#">State inspector</a></li>
+							</ul>
+			<div class="nav pull-right">
+				<a href="#" class="btn graphBtn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
+				<a href="#" class="btn graphBtn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
+				<div style="display: none" id='popup-content'>
+					<p>You can double click a state to inspect it further.</p>
+					<p>Clicking an edge gives more details on the state transition.</p>
+					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
+				</div>
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</nav>	<div class='container' >
+		<h1>Summary of state5</h1>
+		<table class="table table-bordered table-striped">
+			<colgroup>
+				<col class="span1">
+				<col class="span7">
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>URL</th>
+					<td><a href='http://crawljax.com/'>http://crawljax.com/</a></td>
+				</tr>
+				<tr>
+					<th>Fan in</th>
+					<td>1</td>
+				</tr>
+				<tr>
+					<th>Fan out</th>
+					<td>0</td>
+				</tr>
+				<tr>
+					<th>Interaction elements</th>
+					<td>0</td>
+				</tr>
+				<tr>
+					<th>Failed events</th>
+					<td>-</td>
+			</tbody>
+		</table>
+		<ul id='tabs' class="nav nav-tabs">
+			<li class="active">
+				<a href="#screenshot">Screenshot</a>
+			</li>
+			<li>
+				<a href="#dom">Captured DOM</a>
+			</li>	
+			<li>
+				<a href="#interactions">Interactions</a>
+			</li>			
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" style="position: relative;" id='screenshot'>			
+				<img style='max-width: none;' border='0' src='../screenshots/state5.jpg' /> 
+							</div>
+			<div class="tab-pane" id='dom'>
+				<h2>Captured DOM</h2>
+				<pre class='brush: html'>&lt;html class=&quot;js video maskImage placeholder&quot; lang=&quot;en&quot;&gt;&lt;!--&lt;![endif]--&gt;&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;title&gt;Crawljax&lt;/title&gt;
+  &lt;meta name=&quot;author&quot; content=&quot;Crawljax&quot;&gt;
+
+  
+  &lt;meta name=&quot;description&quot; content=&quot;We just released Crawljax 3.5 and with it comes a web interface for Crawljax. It supports all the major functionality of crawljax such as adding/ &hellip;&quot;&gt;
+  
+
+  &lt;!-- http://t.co/dKP3o1e --&gt;
+  &lt;meta name=&quot;HandheldFriendly&quot; content=&quot;True&quot;&gt;
+  &lt;meta name=&quot;MobileOptimized&quot; content=&quot;320&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,minimum-scale=1,maximum-scale=1&quot;&gt;
+
+  
+  &lt;link rel=&quot;canonical&quot; href=&quot;http://crawljax.github.io/&quot;&gt;
+  &lt;link href=&quot;/images/crawljax-favico.png&quot; rel=&quot;icon&quot;&gt;
+  &lt;link href=&quot;/stylesheets/screen.css&quot; media=&quot;screen, projection&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;
+  &lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/libs/jXHR.js&quot;&gt;&lt;/script&gt;&lt;script id=&quot;twitter-wjs&quot; src=&quot;http://platform.twitter.com/widgets.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;http://www.google-analytics.com/ga.js&quot;&gt;&lt;/script&gt;&lt;script src=&quot;/javascripts/modernizr-2.0.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;/javascripts/ender.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;/javascripts/octopress.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+  &lt;link href=&quot;/atom.xml&quot; rel=&quot;alternate&quot; title=&quot;Crawljax&quot; type=&quot;application/atom+xml&quot;&gt;
+  &lt;!--Fonts from Google&quot;s Web font directory at http://google.com/webfonts --&gt;
+&lt;link href=&quot;http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;
+&lt;link href=&quot;http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;
+
+  
+  &lt;script type=&quot;text/javascript&quot;&gt;
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-12224196-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  &lt;/script&gt;
+
+
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;http://crawljax.disqus.com/count.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;http://platform.twitter.com/widgets.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; charset=&quot;utf-8&quot; async=&quot;&quot; src=&quot;https://platform.twitter.com/js/timeline.49f24b3ed4b1be2d087c97aca497c0d1.js&quot;&gt;&lt;/script&gt;&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;header role=&quot;banner&quot;&gt;&lt;hgroup&gt;
+  &lt;h1&gt;&lt;a href=&quot;/&quot;&gt;Crawljax&lt;/a&gt;&lt;/h1&gt;
+  
+    &lt;h2&gt;Crawling Ajax-based Web Applications&lt;/h2&gt;
+  
+&lt;/hgroup&gt;
+&lt;a href=&quot;https://github.com/crawljax/crawljax&quot;&gt;&lt;img style=&quot;position: absolute; top: 0; right: 0; border: 0;&quot; src=&quot;https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png&quot; alt=&quot;Fork me on GitHub&quot;&gt;&lt;/a&gt;
+
+&lt;/header&gt;
+  &lt;nav role=&quot;navigation&quot;&gt;&lt;ul class=&quot;subscription&quot; data-subscription=&quot;rss&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;/atom.xml&quot; rel=&quot;subscribe-rss&quot; title=&quot;subscribe via RSS&quot;&gt;RSS&lt;/a&gt;&lt;/li&gt;
+  
+&lt;/ul&gt;
+  
+&lt;form action=&quot;http://google.com/search&quot; method=&quot;get&quot;&gt;
+  &lt;fieldset role=&quot;search&quot;&gt;
+    &lt;input name=&quot;q&quot; value=&quot;site:crawljax.github.io&quot; type=&quot;hidden&quot;&gt;
+    &lt;input class=&quot;search&quot; name=&quot;q&quot; results=&quot;0&quot; placeholder=&quot;Search&quot; type=&quot;text&quot;&gt;
+  &lt;/fieldset&gt;&lt;fieldset class=&quot;mobile-nav&quot;&gt;&lt;select&gt;&lt;option value=&quot;&quot;&gt;Navigate&hellip;&lt;/option&gt;&lt;option value=&quot;http://crawljax.com/&quot;&gt;&raquo; Blog&lt;/option&gt;&lt;option value=&quot;http://crawljax.com/about&quot;&gt;&raquo; About&lt;/option&gt;&lt;option value=&quot;http://crawljax.com/publications&quot;&gt;&raquo; Publications&lt;/option&gt;&lt;option value=&quot;https://github.com/crawljax/crawljax/releases&quot;&gt;&raquo; Downloads&lt;/option&gt;&lt;option value=&quot;https://github.com/crawljax/crawljax/wiki&quot;&gt;&raquo; Documentation&lt;/option&gt;&lt;option value=&quot;http://crawljax.com/contributors&quot;&gt;&raquo; Contributors&lt;/option&gt;&lt;option value=&quot;http://crawljax.com/atom.xml&quot;&gt;&raquo; RSS&lt;/option&gt;&lt;/select&gt;&lt;/fieldset&gt;
+&lt;/form&gt;
+  
+&lt;ul class=&quot;main-navigation&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;/&quot;&gt;Blog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/about&quot;&gt;About&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/publications&quot;&gt;Publications&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/crawljax/crawljax/releases&quot;&gt;Downloads&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/crawljax/crawljax/wiki&quot;&gt;Documentation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;/contributors&quot;&gt;Contributors&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;/nav&gt;
+  &lt;div id=&quot;main&quot;&gt;
+    &lt;div id=&quot;content&quot;&gt;
+      &lt;div class=&quot;blog-index&quot;&gt;
+  
+  
+  
+    &lt;article&gt;
+      
+  &lt;header&gt;
+    
+      &lt;h1 class=&quot;entry-title&quot;&gt;&lt;a href=&quot;/blog/2014/03/07/crawljax-gets-a-face-lift-web-ui-in-crawljax-3-dot-5/&quot;&gt;Crawljax Gets a Face Lift. Web UI in 3.5&lt;/a&gt;&lt;/h1&gt;
+    
+    
+      &lt;p class=&quot;meta&quot;&gt;
+        
+
+
+
+
+
+
+
+
+  
+
+
+&lt;time datetime=&quot;2014-03-07T11:36:00+01:00&quot; pubdate=&quot;&quot; data-updated=&quot;true&quot;&gt;Mar 7&lt;span&gt;th&lt;/span&gt;, 2014&lt;/time&gt;
+        
+      &lt;/p&gt;
+    
+  &lt;/header&gt;
+
+
+  &lt;div class=&quot;entry-content&quot;&gt;&lt;p&gt;We just released Crawljax 3.5 and with it comes a web interface for Crawljax. It supports all the major functionality of crawljax such as adding/editing crawl configurations, installing plugins, viewing crawl logs in real time and displaying plugin output. Kudos to the developers, &lt;a href=&quot;https://github.com/jeremyhewett&quot;&gt;@jeremyhewett&lt;/a&gt; and &lt;a href=&quot;https://github.com/ryansolid&quot;&gt;@ryansolid&lt;/a&gt;.
+To run it, simply unzip the web distribution archive and run the command &lt;code&gt;java -jar crawljax-web-3.5-SNAPSHOT.jar&lt;/code&gt;. You can customize the port and output directory using &lt;code&gt;-p&lt;/code&gt; and &lt;code&gt;-o&lt;/code&gt; arguments. Here are some screen-shots of the web interface in action. More usage tutorials will follow.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/webui1.jpg&quot; title=&quot;&amp;quot;Crawljax Web UI Home&amp;quot;&quot; alt=&quot;&amp;quot;Crawljax Web UI Home&amp;quot;&quot;&gt;
+Crawljax Web UI Home &ndash; You can start by adding a &lsquo;New Configuration&rsquo; as shown&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/webui2.jpg&quot; title=&quot;&amp;quot;Edit Configuration Page&amp;quot;&quot; alt=&quot;&amp;quot;Edit Configuration Page&amp;quot;&quot;&gt;
+&lsquo;Edit Configuration&rsquo; Page&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/webui3.jpg&quot; title=&quot;&amp;quot;Add Plugin Page&amp;quot;&quot; alt=&quot;&amp;quot;Add Plugin Page&amp;quot;&quot;&gt;
+&lsquo;Add Plugin&rsquo; Page&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/webui4.jpg&quot; title=&quot;&amp;quot;Crawl Status Log&amp;quot;&quot; alt=&quot;&amp;quot;Crawl Status Log&amp;quot;&quot;&gt;
+Crawl status log with real-time updates&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/webui5.jpg&quot; title=&quot;&amp;quot;Crawl Overview Output&amp;quot;&quot; alt=&quot;&amp;quot;Crawl Overview Output&amp;quot;&quot;&gt;
+Output of the Crawl Overview plugin&lt;/p&gt;
+
+&lt;p&gt;Also in release 3.5:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Deprecated the malfunctioning DomChangeNotifierPlugin. Introuced StateVertexFactoryl. &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/347&quot;&gt;#347&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Better PhantomJS support. Tests run on PhantomJS by default.&lt;/li&gt;
+&lt;li&gt;Switched from URL&rsquo;s to URI&rsquo;s for better performance. &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/322&quot;&gt;#322&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/crawljax/crawljax/releases&quot;&gt;You can download the release from our GitHub project site.&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+  
+  
+
+
+    &lt;/article&gt;
+  
+  
+    &lt;article&gt;
+      
+  &lt;header&gt;
+    
+      &lt;h1 class=&quot;entry-title&quot;&gt;&lt;a href=&quot;/blog/2013/11/10/release-3-dot-4-is-out/&quot;&gt;Release 3.4 Is Out&lt;/a&gt;&lt;/h1&gt;
+    
+    
+      &lt;p class=&quot;meta&quot;&gt;
+        
+
+
+
+
+
+
+
+
+  
+
+
+&lt;time datetime=&quot;2013-11-10T09:40:00+01:00&quot; pubdate=&quot;&quot; data-updated=&quot;true&quot;&gt;Nov 10&lt;span&gt;th&lt;/span&gt;, 2013&lt;/time&gt;
+        
+      &lt;/p&gt;
+    
+  &lt;/header&gt;
+
+
+  &lt;div class=&quot;entry-content&quot;&gt;&lt;p&gt;In this release:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Crawljax doesn&rsquo;t accidentally go to other URLs anymore during a Crawl. &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/339&quot;&gt;#339&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;StateVertexImpl.getUsedEventables()&lt;/code&gt; Always returned an empty list &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/350&quot;&gt;#350&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Fixed some Findbugs errors (thanks to &lt;a href=&quot;https://github.com/keheliya&quot;&gt;@keheliya&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;All binaries are available at &lt;a href=&quot;http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.crawljax%22&quot;&gt;Maven Central&lt;/a&gt; and &lt;a href=&quot;https://github.com/crawljax/crawljax/releases&quot;&gt;GitHub&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+  
+  
+
+
+    &lt;/article&gt;
+  
+  
+    &lt;article&gt;
+      
+  &lt;header&gt;
+    
+      &lt;h1 class=&quot;entry-title&quot;&gt;&lt;a href=&quot;/blog/2013/09/05/release-3-dot-3-is-out/&quot;&gt;Release 3.3 Is Out&lt;/a&gt;&lt;/h1&gt;
+    
+    
+      &lt;p class=&quot;meta&quot;&gt;
+        
+
+
+
+
+
+
+
+
+  
+
+
+&lt;time datetime=&quot;2013-09-05T14:22:00+02:00&quot; pubdate=&quot;&quot; data-updated=&quot;true&quot;&gt;Sep 5&lt;span&gt;th&lt;/span&gt;, 2013&lt;/time&gt;
+        
+      &lt;/p&gt;
+    
+  &lt;/header&gt;
+
+
+  &lt;div class=&quot;entry-content&quot;&gt;&lt;p&gt;In this release Crawljax offers support for Phantom JS (if installed).&lt;/p&gt;
+
+&lt;p&gt;Other fixes include:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;External URLs are not opened by default #328&lt;/li&gt;
+&lt;li&gt;Updated Selenium&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;All binaries are available at &lt;a href=&quot;http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.crawljax%22&quot;&gt;Maven Central&lt;/a&gt; and &lt;a href=&quot;https://github.com/crawljax/crawljax/releases&quot;&gt;GitHub&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+  
+  
+
+
+    &lt;/article&gt;
+  
+  
+    &lt;article&gt;
+      
+  &lt;header&gt;
+    
+      &lt;h1 class=&quot;entry-title&quot;&gt;&lt;a href=&quot;/blog/2013/07/20/release-3-dot-2-is-out/&quot;&gt;Release 3.2 Is Out&lt;/a&gt;&lt;/h1&gt;
+    
+    
+      &lt;p class=&quot;meta&quot;&gt;
+        
+
+
+
+
+
+
+
+
+  
+
+
+&lt;time datetime=&quot;2013-07-20T13:35:00+02:00&quot; pubdate=&quot;&quot; data-updated=&quot;true&quot;&gt;Jul 20&lt;span&gt;th&lt;/span&gt;, 2013&lt;/time&gt;
+        
+      &lt;/p&gt;
+    
+  &lt;/header&gt;
+
+
+  &lt;div class=&quot;entry-content&quot;&gt;&lt;p&gt;Release 3.2 is out. It&rsquo;s a small update with one API change and several bug fixes:&lt;/p&gt;
+
+&lt;h3&gt;Metrics &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/314&quot;&gt;#314&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;Implements statistics for Crawljax using &lt;a href=&quot;http://metrics.codahale.com/manual/core/#man-core-reporters-slf4j&quot;&gt;Codehale&rsquo;s metrics&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We have pre-loaded some metrics in core and you can extend the functionality yourself. We have created &lt;a href=&quot;https://github.com/crawljax/crawljax/blob/master/examples/src/main/java/com/crawljax/examples/MetricPluginExample.java&quot;&gt;an example&lt;/a&gt; that shows how you can print the already inserted metrics and add one of your own.&lt;/p&gt;
+
+&lt;p&gt;The default counters that are included right now are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Crawler lost count&lt;/li&gt;
+&lt;li&gt;Unfired actions count&lt;/li&gt;
+&lt;li&gt;Invocations per plugin count.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;The output of the example is the standard counters plus a histogram of the DOM-size:&lt;/p&gt;
+
+&lt;figure class=&quot;code&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre class=&quot;line-numbers&quot;&gt;&lt;span class=&quot;line-number&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;3&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;4&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;6&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;7&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;8&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;9&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;10&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;11&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;12&lt;/span&gt;
+&lt;span class=&quot;line-number&quot;&gt;13&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;code class=&quot;&quot;&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlevents.crawler_lost, count=0
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlevents.unfired_actions, count=0
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.DomChangeNotifierPlugin.invocations, count=19
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.OnBrowserCreatedPlugin.invocations, count=1
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.OnFireEventFailedPlugin.invocations, count=0
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.OnInvariantViolationPlugin.invocations, count=0
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.OnNewStatePlugin.invocations, count=17
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.OnRevisitStatePlugin.invocations, count=1
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.OnUrlLoadPlugin.invocations, count=15
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.PostCrawlingPlugin.invocations, count=1
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.PreCrawlingPlugin.invocations, count=0
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=COUNTER, name=com.crawljax.crawlplugins.PreStateCrawlingPlugin.invocations, count=15
+&lt;/span&gt;&lt;span class=&quot;line&quot;&gt;[main] INFO  - type=HISTOGRAM, name=com.crawljax.examples.MetricPluginExample.domsize, count=17, min=2, max=5, mean=3.4705882352941178, stddev=0.7998161553463027, median=4.0, p75=4.0, p95=5.0, p98=5.0, p99=5.0, p999=5.0&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;
+
+
+&lt;h3&gt;Further more:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Crawl configuration now has an option to set the output folder &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/316&quot;&gt;#316&lt;/a&gt;. This is useful for plugins that require an output folder.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Browser.getDom()&lt;/code&gt; is deprecated. You can now choose between &lt;code&gt;getStrippedDom&lt;/code&gt; and &lt;code&gt;getUnstrippedDom()&lt;/code&gt; &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/305&quot;&gt;#305&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;API Change&lt;/strong&gt;: Proxy plugin has been removed. It didn&rsquo;t work in 3.1 and 3.0 and is now replaced by the &lt;code&gt;PreCrawlPlugin&lt;/code&gt;. &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/286&quot;&gt;#286&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;/div&gt;
+  
+  
+
+
+    &lt;/article&gt;
+  
+  
+    &lt;article&gt;
+      
+  &lt;header&gt;
+    
+      &lt;h1 class=&quot;entry-title&quot;&gt;&lt;a href=&quot;/blog/2013/06/12/release-3-dot-1-is-out/&quot;&gt;Release 3.1 Is Out&lt;/a&gt;&lt;/h1&gt;
+    
+    
+      &lt;p class=&quot;meta&quot;&gt;
+        
+
+
+
+
+
+
+
+
+  
+
+
+&lt;time datetime=&quot;2013-06-12T15:19:00+02:00&quot; pubdate=&quot;&quot; data-updated=&quot;true&quot;&gt;Jun 12&lt;span&gt;th&lt;/span&gt;, 2013&lt;/time&gt;
+        
+      &lt;/p&gt;
+    
+  &lt;/header&gt;
+
+
+  &lt;div class=&quot;entry-content&quot;&gt;&lt;p&gt;Release 3.1 is out. It&rsquo;s a small update with one API change and several bug fixes:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Added the possibility to stop Crawljax from using the runner or by calling stop from any plugin. &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/270&quot;&gt;#270&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Fixes bug positioning of elements in the crawloverview &lt;a href=&quot;https://github.com/crawljax/crawljax/pull/273&quot;&gt;#237&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Fixed HashCode/Equals bug in Conditions &lt;a href=&quot;https://github.com/crawljax/crawljax/pull/276&quot;&gt;#276&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Fixes bug where edges would disappear from the StateFlowGraph &lt;a href=&quot;https://github.com/crawljax/crawljax/pull/272&quot;&gt;#272&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Updated to the new version of Selenium&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;/div&gt;
+  
+  
+
+
+    &lt;/article&gt;
+  
+  
+    &lt;article&gt;
+      
+  &lt;header&gt;
+    
+      &lt;h1 class=&quot;entry-title&quot;&gt;&lt;a href=&quot;/blog/2013/05/05/release-3-dot-0-is-out/&quot;&gt;Release 3.0 Is Out&lt;/a&gt;&lt;/h1&gt;
+    
+    
+      &lt;p class=&quot;meta&quot;&gt;
+        
+
+
+
+
+
+
+
+
+  
+
+
+&lt;time datetime=&quot;2013-05-05T17:14:00+02:00&quot; pubdate=&quot;&quot; data-updated=&quot;true&quot;&gt;May 5&lt;span&gt;th&lt;/span&gt;, 2013&lt;/time&gt;
+        
+      &lt;/p&gt;
+    
+  &lt;/header&gt;
+
+
+  &lt;div class=&quot;entry-content&quot;&gt;&lt;p&gt;Release 3.0 is out. This is a major release, which contains many key updates and renovations. The release contains &lt;a href=&quot;https://github.com/crawljax/crawljax/issues?milestone=3&amp;amp;state=closed&quot;&gt;several bug fixes and loads of enhancements&lt;/a&gt;. The code base has been split up into modules, the API has changed a little, and the crawl overview plugin has been completely renovated.&lt;/p&gt;
+
+&lt;h3&gt;New overview plug-in&lt;/h3&gt;
+
+&lt;p&gt;Most notable in the new release is the new overview plugin. The plugin shows an interactive state graph of the crawl and some statistics. Make sure you check out &lt;a href=&quot;http://crawls.crawljax.com&quot;&gt;a demo&lt;/a&gt; or try one of our &lt;a href=&quot;https://github.com/crawljax/crawljax/tree/master/examples&quot;&gt;examples&lt;/a&gt; yourself.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/new-overview-plugin.png&quot; title=&quot;&amp;quot;The new overview plugin&amp;quot;&quot; alt=&quot;&amp;quot;The new overview plugin&amp;quot;&quot;&gt;&lt;/p&gt;
+
+&lt;h3&gt;New command line interface&lt;/h3&gt;
+
+&lt;p&gt;This release brings more support for command line configuration. Once you download the zip, running Crawljax can simply be done using the command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;java -jar crawljax-cli-version.jar http://your.site.com outputfolder
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Crawljax will Crawl that site with the new Crawl overview plugin enabled. You can run &lt;code&gt;java -jar crawljax-cli-version.jar&lt;/code&gt; to see a list of possible configurations for the crawl.&lt;/p&gt;
+
+&lt;p&gt;The zip is downloadable from &lt;a href=&quot;http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.crawljax%22%20AND%20a%3A%22crawljax-cli%22&quot;&gt;the central Maven repository&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3&gt;Other important updates&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Crawljax is now configured using a configuration builder. You start your configuration using &lt;code&gt;CrawljaxConfiguration.builderFor(&quot;http://your.website.com&quot;);&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The project has been split up in three versions: &lt;em&gt;core&lt;/em&gt;, &lt;em&gt;cli&lt;/em&gt; and &lt;em&gt;examples&lt;/em&gt;. The &lt;em&gt;cli&lt;/em&gt; modules contains the command line interface. The &lt;em&gt;core&lt;/em&gt; module can be included in any project as a jar to run Crawljax programmatically. The &lt;em&gt;examples&lt;/em&gt; module is the easiest way to try out several configurations of Crawljax in your favorite IDE. Check out our updated documentation for more details.&lt;/li&gt;
+&lt;li&gt;You can configure the crawler to crawl all found &lt;code&gt;href&lt;/code&gt; attributes. Even if the elements are not visible because they only show up when the crawler hovers on another element.&lt;/li&gt;
+&lt;li&gt;You can now configure the crawler so that it does not click any children of a certain element using a short syntax like &lt;code&gt;dontClickChildrenOf(&quot;LI&quot;).withId(&quot;dontClickMe&quot;);&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Major performance and stability improvements.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;You can &lt;a href=&quot;https://github.com/crawljax/crawljax/issues?milestone=3&amp;amp;page=1&amp;amp;state=closed&quot;&gt;view all closed issues&lt;/a&gt; or &lt;a href=&quot;https://github.com/crawljax/crawljax/compare/crawljax-2.2...crawljax-3.0&quot;&gt;the full diff&lt;/a&gt; on Github.&lt;/p&gt;
+&lt;/div&gt;
+  
+  
+
+
+    &lt;/article&gt;
+  
+  
+    &lt;article&gt;
+      
+  &lt;header&gt;
+    
+      &lt;h1 class=&quot;entry-title&quot;&gt;&lt;a href=&quot;/blog/2012/12/31/release-2-dot-2-is-out/&quot;&gt;Release 2.2 Is Out&lt;/a&gt;&lt;/h1&gt;
+    
+    
+      &lt;p class=&quot;meta&quot;&gt;
+        
+
+
+
+
+
+
+
+
+  
+
+
+&lt;time datetime=&quot;2012-12-31T12:43:00+01:00&quot; pubdate=&quot;&quot; data-updated=&quot;true&quot;&gt;Dec 31&lt;span&gt;st&lt;/span&gt;, 2012&lt;/time&gt;
+        
+      &lt;/p&gt;
+    
+  &lt;/header&gt;
+
+
+  &lt;div class=&quot;entry-content&quot;&gt;&lt;p&gt;Release 2.2 contains bug fixes and several improvements:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Switched to a new Logging framework for better log output. (&lt;a href=&quot;https://github.com/crawljax/crawljax/pull/73&quot;&gt;Issue #73&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;The StateFlowGraph and other elements are now serializable (&lt;a href=&quot;https://github.com/crawljax/crawljax/issues/52&quot;&gt;Issue #52&lt;/a&gt;, &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/53&quot;&gt;Issue #53&lt;/a&gt;, &lt;a href=&quot;https://github.com/crawljax/crawljax/issues/77&quot;&gt;Issue #77&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;More HTML elements are predefined for crawling. This can lead to a higher crawl coverage.(&lt;a href=&quot;https://github.com/crawljax/crawljax/issues/72&quot;&gt;Issue #72&lt;/a&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;You can find all closed issues &lt;a href=&quot;https://github.com/crawljax/crawljax/issues?milestone=2&amp;amp;state=closed&quot;&gt;here&lt;/a&gt; or look at the full diff &lt;a href=&quot;https://github.com/crawljax/crawljax/compare/crawljax-2.1...crawljax-2.2&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Crawljax 2.2 is avaiable through &lt;a href=&quot;http://search.maven.org/#browse%7C462108398&quot;&gt;Maven central&lt;/a&gt; and our &lt;a href=&quot;/downloads&quot;&gt;download section&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+  
+  
+
+
+    &lt;/article&gt;
+  
+  
+    &lt;article&gt;
+      
+  &lt;header&gt;
+    
+      &lt;h1 class=&quot;entry-title&quot;&gt;&lt;a href=&quot;/blog/2012/12/17/release-2-dot-1-is-out/&quot;&gt;Release 2.1 Is Out&lt;/a&gt;&lt;/h1&gt;
+    
+    
+      &lt;p class=&quot;meta&quot;&gt;
+        
+
+
+
+
+
+
+
+
+  
+
+
+&lt;time datetime=&quot;2012-12-17T13:05:00+01:00&quot; pubdate=&quot;&quot; data-updated=&quot;true&quot;&gt;Dec 17&lt;span&gt;th&lt;/span&gt;, 2012&lt;/time&gt;
+        
+      &lt;/p&gt;
+    
+  &lt;/header&gt;
+
+
+  &lt;div class=&quot;entry-content&quot;&gt;&lt;p&gt;Release 2.1 contains bug fixes and browser updates. You can find the solved issues &lt;a href=&quot;https://github.com/crawljax/crawljax/issues?milestone=1&amp;amp;state=closed&quot;&gt;here&lt;/a&gt; or look at the full diff &lt;a href=&quot;https://github.com/crawljax/crawljax/compare/crawljax-2.0...crawljax-2.1&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We&rsquo;re already working on &lt;a href=&quot;https://github.com/crawljax/crawljax/issues?milestone=2&quot;&gt;release 2.2&lt;/a&gt;. If you need anything fixed in Crawljax, make sure you &lt;a href=&quot;https://github.com/crawljax/crawljax/issues&quot;&gt;file your issue&lt;/a&gt;!&lt;/p&gt;
+&lt;/div&gt;
+  
+  
+
+
+    &lt;/article&gt;
+  
+  
+    &lt;article&gt;
+      
+  &lt;header&gt;
+    
+      &lt;h1 class=&quot;entry-title&quot;&gt;&lt;a href=&quot;/blog/2012/12/17/weve-moved-to-github/&quot;&gt;We&rsquo;ve Moved to GitHub!&lt;/a&gt;&lt;/h1&gt;
+    
+    
+      &lt;p class=&quot;meta&quot;&gt;
+        
+
+
+
+
+
+
+
+
+  
+
+
+&lt;time datetime=&quot;2012-12-17T12:23:00+01:00&quot; pubdate=&quot;&quot; data-updated=&quot;true&quot;&gt;Dec 17&lt;span&gt;th&lt;/span&gt;, 2012&lt;/time&gt;
+        
+      &lt;/p&gt;
+    
+  &lt;/header&gt;
+
+
+  &lt;div class=&quot;entry-content&quot;&gt;&lt;p&gt;Crawljax is alive and kicking again! We&rsquo;ve started off by moving the Crawljax project to Github. This makes contributing to the project much easier using Git&rsquo;s decentralized approach and Github&rsquo;s pull requests.&lt;/p&gt;
+
+&lt;p&gt;All issues from Goole Code have been imported into &lt;a href=&quot;https://github.com/crawljax/crawljax/issues&quot;&gt;Github&rsquo;s issue tracker&lt;/a&gt;, and &lt;a href=&quot;https://github.com/crawljax/crawljax/wiki&quot;&gt;the wiki has moved as well&lt;/a&gt;. With this new website we will keep everyone informed about Crawljax&rsquo;s development.&lt;/p&gt;
+
+&lt;p&gt;Feel free to &lt;a href=&quot;https://github.com/crawljax/crawljax/issues&quot;&gt;file an issue&lt;/a&gt; or &lt;a href=&quot;https://github.com/crawljax/crawljax/&quot;&gt;fork our repo&lt;/a&gt; and generate a pull request!&lt;/p&gt;
+
+&lt;p&gt;The Crawljax Team&lt;/p&gt;
+&lt;/div&gt;
+  
+  
+
+
+    &lt;/article&gt;
+  
+  &lt;div class=&quot;pagination&quot;&gt;
+    
+    &lt;a href=&quot;/blog/archives&quot;&gt;Blog Archives&lt;/a&gt;
+    
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;aside class=&quot;sidebar thirds&quot;&gt;
+  
+    &lt;section class=&quot;first odd&quot;&gt;
+  &lt;h1&gt;Recent Posts&lt;/h1&gt;
+  &lt;ul id=&quot;recent_posts&quot;&gt;
+    
+      &lt;li class=&quot;post&quot;&gt;
+        &lt;a href=&quot;/blog/2014/03/07/crawljax-gets-a-face-lift-web-ui-in-crawljax-3-dot-5/&quot;&gt;Crawljax gets a face lift. Web UI in 3.5&lt;/a&gt;
+      &lt;/li&gt;
+    
+      &lt;li class=&quot;post&quot;&gt;
+        &lt;a href=&quot;/blog/2013/11/10/release-3-dot-4-is-out/&quot;&gt;Release 3.4 is out&lt;/a&gt;
+      &lt;/li&gt;
+    
+      &lt;li class=&quot;post&quot;&gt;
+        &lt;a href=&quot;/blog/2013/09/05/release-3-dot-3-is-out/&quot;&gt;Release 3.3 is out&lt;/a&gt;
+      &lt;/li&gt;
+    
+      &lt;li class=&quot;post&quot;&gt;
+        &lt;a href=&quot;/blog/2013/07/20/release-3-dot-2-is-out/&quot;&gt;Release 3.2 is out&lt;/a&gt;
+      &lt;/li&gt;
+    
+      &lt;li class=&quot;post&quot;&gt;
+        &lt;a href=&quot;/blog/2013/06/12/release-3-dot-1-is-out/&quot;&gt;Release 3.1 is out&lt;/a&gt;
+      &lt;/li&gt;
+    
+  &lt;/ul&gt;
+&lt;/section&gt;
+&lt;section class=&quot;even&quot;&gt;
+  &lt;h1&gt;Contact&lt;/h1&gt;
+	&lt;p&gt;
+		&lt;a href=&quot;http://groups.google.com/group/crawljax&quot;&gt;Mailing list&lt;/a&gt;
+		&lt;br&gt;
+		&lt;a href=&quot;https://github.com/crawljax/crawljax/issues&quot;&gt;Issue tracker&lt;/a&gt;
+	&lt;/p&gt;
+&lt;/section&gt;
+
+&lt;section class=&quot;odd&quot;&gt;
+  &lt;h1&gt;GitHub Repos&lt;/h1&gt;
+  &lt;ul id=&quot;gh_repos&quot;&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/crawljax/crawljax&quot;&gt;crawljax&lt;/a&gt;&lt;p&gt;Crawljax: Crawling JavaScript-based Ajax Web Applications&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/crawljax/crawljax.github.com&quot;&gt;crawljax.github.com&lt;/a&gt;&lt;p&gt;Crawljax website&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://github.com/crawljax/crawljax-mvn-repo&quot;&gt;crawljax-mvn-repo&lt;/a&gt;&lt;p&gt;Maven repository for Crawljax artifacts that are not available in Central&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;
+  
+  &lt;a href=&quot;https://github.com/crawljax&quot;&gt;@crawljax&lt;/a&gt; on GitHub
+  
+  &lt;script type=&quot;text/javascript&quot;&gt;
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'crawljax',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  &lt;/script&gt;
+  &lt;script src=&quot;/javascripts/github.js&quot; type=&quot;text/javascript&quot;&gt; &lt;/script&gt;
+&lt;/section&gt;
+
+
+
+
+&lt;section class=&quot;first even&quot;&gt;
+	&lt;iframe id=&quot;twitter-widget-0&quot; scrolling=&quot;no&quot; allowtransparency=&quot;true&quot; allowfullscreen=&quot;true&quot; class=&quot;twitter-timeline twitter-timeline-rendered&quot; style=&quot;position: static; visibility: visible; display: inline-block; width: 520px; height: 600px; padding: 0px; border: medium none; max-width: 100%; min-width: 180px; margin-top: 0px; margin-bottom: 0px; min-height: 200px;&quot; data-widget-id=&quot;322427528092467200&quot; title=&quot;Twitter Timeline&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;
+	&lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&quot;://platform.twitter.com/widgets.js&quot;;fjs.parentNode.insertBefore(js,fjs);}}(document,&quot;script&quot;,&quot;twitter-wjs&quot;);&lt;/script&gt;
+&lt;/section&gt;
+  
+&lt;/aside&gt;
+
+
+    &lt;span class=&quot;toggle-sidebar&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;footer role=&quot;contentinfo&quot;&gt;&lt;p&gt;
+  Copyright &copy; 2014 - Crawljax -
+  &lt;span class=&quot;credit&quot;&gt;Powered by &lt;a href=&quot;http://octopress.org&quot;&gt;Octopress&lt;/a&gt;&lt;/span&gt;
+&lt;/p&gt;
+
+&lt;/footer&gt;
+  
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+      var disqus_shortname = 'crawljax';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+&lt;/script&gt;
+
+
+
+
+
+
+
+  &lt;script type=&quot;text/javascript&quot;&gt;
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  &lt;/script&gt;
+
+
+
+
+
+
+
+&lt;iframe id=&quot;rufous-sandbox&quot; scrolling=&quot;no&quot; allowtransparency=&quot;true&quot; allowfullscreen=&quot;true&quot; style=&quot;position: absolute; visibility: hidden; display: none; width: 0px; height: 0px; padding: 0px; border: medium none;&quot; title=&quot;Twitter analytics iframe&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&lt;/body&gt;&lt;/html&gt;</pre>
+			</div>
+			<div class="tab-pane" id='interactions'>
+				<h2>Interactions</h2>
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr>
+							<th>Xpath</th>
+							<th>Destination</tg>
+						</tr>
+											</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../lib/shCore.js"></script>
+	<script type="text/javascript" src="../lib/shBrushXml.js"></script>
+	<script type="text/javascript" src="../lib/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../lib/bootstrap.min.js"></script>
+	<script type="text/javascript">
+    	$(document).ready(function() {
+			SyntaxHighlighter.all()
+
+			$('#tabs a').click(function (e) {
+		  		e.preventDefault();
+		  		$(this).tab('show');
+			})
+		});
+    	
+    	$('.hovers').tooltip({
+    	    placement: function(a, element) {
+    	        var position = $(element).position();
+    	        if (position.left > 515) {
+    	            return "left";
+    	        }
+    	        if (position.left < 515) {
+    	            return "right";
+    	        }
+    	        if (position.top < 110){
+    	            return "bottom";
+    	        }
+    	        return "top";
+    	    }
+    	});
+	</script>
+</body>
+</html>

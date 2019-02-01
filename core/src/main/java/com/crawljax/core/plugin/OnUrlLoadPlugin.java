@@ -4,7 +4,7 @@ import com.crawljax.core.CrawlerContext;
 
 /**
  * Plugin type that is called after the initial URL is (re)loaded. Example: refreshing the page
- * (clear the browser cache). The OnURLloadPlugins are run just after the Browser has gone to the
+ * (clear the browser cache). The OnUrlLoadPlugins are run just after the Browser has gone to the
  * initial URL. Not only the first time but also every time the Core navigates back (back-tracking).
  */
 public interface OnUrlLoadPlugin extends Plugin {
@@ -15,9 +15,8 @@ public interface OnUrlLoadPlugin extends Plugin {
 	 * <p>
 	 * This method can be called from multiple threads with different {@link CrawlerContext}
 	 * </p>
-	 * 
-	 * @param context
-	 *            the current crawler context.
+	 *
+	 * @param context the current crawler context.
 	 */
 	void onUrlLoad(CrawlerContext context);
 

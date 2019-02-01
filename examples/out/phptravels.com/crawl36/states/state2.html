@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crawl overview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="CrawlJax">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/bootstrap-responsive.min.css" rel="stylesheet">
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+<link href="../css/shCore.css" rel="stylesheet" type="text/css" />
+<link href="../css/shCoreDefault.css" rel="stylesheet" type="text/css" />
+<style>
+.tooltip-inner {
+	max-width: 300px;
+	word-wrap: break-word;
+}
+
+body {
+	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+							<a class="brand" href="../index.html#graph">Crawl overview</a>
+						<ul class="nav">
+									<li class="active"><a href="#">State inspector</a></li>
+							</ul>
+			<div class="nav pull-right">
+				<a href="#" class="btn graphBtn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
+				<a href="#" class="btn graphBtn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
+				<div style="display: none" id='popup-content'>
+					<p>You can double click a state to inspect it further.</p>
+					<p>Clicking an edge gives more details on the state transition.</p>
+					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
+				</div>
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</nav>	<div class='container' >
+		<h1>Summary of state2</h1>
+		<table class="table table-bordered table-striped">
+			<colgroup>
+				<col class="span1">
+				<col class="span7">
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>URL</th>
+					<td><a href='http://phptravels.com/demo/'>http://phptravels.com/demo/</a></td>
+				</tr>
+				<tr>
+					<th>Fan in</th>
+					<td>1</td>
+				</tr>
+				<tr>
+					<th>Fan out</th>
+					<td>0</td>
+				</tr>
+				<tr>
+					<th>Interaction elements</th>
+					<td>0</td>
+				</tr>
+				<tr>
+					<th>Failed events</th>
+					<td>-</td>
+			</tbody>
+		</table>
+		<ul id='tabs' class="nav nav-tabs">
+			<li class="active">
+				<a href="#screenshot">Screenshot</a>
+			</li>
+			<li>
+				<a href="#dom">Captured DOM</a>
+			</li>	
+			<li>
+				<a href="#interactions">Interactions</a>
+			</li>			
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" style="position: relative;" id='screenshot'>			
+				<img style='max-width: none;' border='0' src='../screenshots/state2.jpg' /> 
+							</div>
+			<div class="tab-pane" id='dom'>
+				<h2>Captured DOM</h2>
+				<pre class='brush: html'>&lt;html ng-app=&quot;app&quot;&gt;&lt;head&gt;
+  &lt;!--
+
+   █▀▀█ █░░█ █▀▀█ ▀▀█▀▀ █▀▀█ █▀▀█ ▀█░█▀ █▀▀ █░░ █▀▀
+   █░░█ █▀▀█ █░░█ ░░█░░ █▄▄▀ █▄▄█ ░█▄█░ █▀▀ █░░ ▀▀█
+   █▀▀▀ ▀░░▀ █▀▀▀ ░░▀░░ ▀░▀▀ ▀░░▀ ░░▀░░ ▀▀▀ ▀▀▀ ▀▀▀
+
+  Welcome under the hood!
+  Want to make it better? We're looking for a front-end developer:
+
+  Not your cup of tea?
+  &gt; http://phptravels.com/jobs/
+
+  Better yet, check out the javascript console to take the developer challenge and show us your skills!
+
+  --&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;google-site-verification&quot; content=&quot;4XvSNg3eEiVju6YS2tXekY2Z7iggWX_aHRAWKQCLIwQ&quot;&gt;
+&lt;meta name=&quot;google-site-verification&quot; content=&quot;FEP0LjNSgGBG-Q9laEduU0PqF23dHqiXy6poGCY9-oE&quot;&gt;
+&lt;meta name=&quot;google-site-verification&quot; content=&quot;4XvSNg3eEiVju6YS2tXekY2Z7iggWX_aHRAWKQCLIwQ&quot;&gt;
+&lt;meta name=&quot;google-site-verification&quot; content=&quot;F0YzM9vdtw_fhbJHC4Y9D1zGol1BdrnifZCEAr_JgYg&quot;&gt;
+&lt;meta name=&quot;yandex-verification&quot; content=&quot;6d9953e53f646e96&quot;&gt;
+&lt;meta name=&quot;msvalidate.01&quot; content=&quot;0C312F1E2E203F1B104B546B6682F9ED&quot;&gt;
+&lt;link rel=&quot;shortcut icon&quot; type=&quot;image/x-icon&quot; href=&quot;http://phptravels.com/assets/img/favicon.ico&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;http://phptravels.com/assets/css/style.css&quot; type=&quot;text/css&quot;&gt;
+&lt;title&gt;PHPTRAVELS | Demo&lt;/title&gt;
+&lt;meta name=&quot;description&quot; content=&quot;php travels script demo is realtime Online php mysql Script for hotels booking, travel online, discount airfares, cheap hotel reservations,lowest fares,&quot;&gt;
+&lt;meta name=&quot;keywords&quot; content=&quot;php travels demo, php hotels booking engine, php booking engine, free travels booking script, travel software, hotel online, reservation system, booking engine, software, travel agent, marketing, travel, hotel xml, air travel, cheap air, flight deals, air flights, cheap airline, cheap airfare, cheap flights from, travel agents, air tickets, airline ticket, cheap flights from to, cheap ticket, cheap tickets airline&quot;&gt;
+&lt;meta name=&quot;copyright&quot; content=&quot;Copyright phptravels.com&quot;&gt;
+&lt;meta name=&quot;author&quot; content=&quot;PHPTRAVELS&quot;&gt;
+&lt;meta name=&quot;rating&quot; content=&quot;General&quot;&gt;
+&lt;meta name=&quot;owner&quot; content=&quot;phptravels hotels web portal script&quot;&gt;
+&lt;link href=&quot;https://plus.google.com/+phptravels/about&quot; rel=&quot;author&quot;&gt;
+&lt;link href=&quot;https://plus.google.com/+phptravels/&quot; rel=&quot;publisher&quot;&gt;
+&lt;meta property=&quot;og:title&quot; content=&quot;PHPTRAVELS&quot;&gt;
+&lt;meta property=&quot;og:publisher&quot; content=&quot;PHPTRAVELS&quot;&gt;
+&lt;meta property=&quot;og:site_name&quot; content=&quot;PHPTRAVELS | travel technology partner&quot;&gt;
+&lt;meta property=&quot;og:description&quot; content=&quot;php travels script demo is realtime Online php mysql Script for hotels booking, travel online, discount airfares, cheap hotel reservations,lowest fares,&quot;&gt;
+&lt;meta property=&quot;og:image&quot; content=&quot;http://phptravels.com/assets/img/fb.png&quot;&gt;
+&lt;meta property=&quot;og:url&quot; content=&quot;http://phptravels.com//&quot;&gt;
+&lt;meta property=&quot;og:publisher&quot; content=&quot;https://www.facebook.com/travelbusiness&quot;&gt;
+&lt;script async=&quot;&quot; src=&quot;//www.google-analytics.com/analytics.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;http://cdn.livechatinc.com/tracking.js&quot;&gt;&lt;/script&gt;&lt;script type=&quot;application/ld+json&quot;&gt;
+{&quot;@context&quot;:&quot;http://schema.org/&quot;,&quot;@type&quot;:&quot;Organization&quot;,&quot;name&quot;:&quot;PHPTRAVELS&quot;,&quot;url&quot;:&quot;http://phptravels.com/&quot;,&quot;logo&quot;:&quot;http://phptravels.com/assets/img/fb.png&quot;,&quot;sameAs&quot;:&quot;https://www.facebook.com/travelbusiness&quot;,&quot;sameAs&quot;:&quot;https://twitter.com/phptravels&quot;,&quot;sameAs&quot;:&quot;https://www.pinterest.com/phptravels/&quot;,&quot;sameAs&quot;:&quot;https://plus.google.com/u/0/+phptravels/posts&quot;,&quot;contactPoint&quot;:{&quot;@type&quot;:&quot;ContactPoint&quot;,&quot;telephone&quot;:&quot;+913311442244&quot;,&quot;contactType&quot;:&quot;Customer Service&quot;}}{&quot;@context&quot;:&quot;http://schema.org&quot;,&quot;@type&quot;:&quot;WebSite&quot;,&quot;name&quot;:&quot;PHPTRAVELS&quot;,&quot;url&quot;:&quot;http://phptravels.com/&quot;}
+&lt;/script&gt;
+&lt;script src=&quot;http://phptravels.com/assets/js/jquery-1.11.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;http://phptravels.com/assets/js/main.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;http://phptravels.com/assets/js/headline.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+/* Bootstrap */
+if(&quot;undefined&quot;==typeof jQuery)throw new Error(&quot;Bootstrap's JavaScript requires jQuery&quot;);+function(a){&quot;use strict&quot;;var b=a.fn.jquery.split(&quot; &quot;)[0].split(&quot;.&quot;);if(b[0]&lt;2&amp;&amp;b[1]&lt;9||1==b[0]&amp;&amp;9==b[1]&amp;&amp;b[2]&lt;1)throw new Error(&quot;Bootstrap's JavaScript requires jQuery version 1.9.1 or higher&quot;)}(jQuery),+function(a){&quot;use strict&quot;;function b(){var a=document.createElement(&quot;bootstrap&quot;),b={WebkitTransition:&quot;webkitTransitionEnd&quot;,MozTransition:&quot;transitionend&quot;,OTransition:&quot;oTransitionEnd otransitionend&quot;,transition:&quot;transitionend&quot;};for(var c in b)if(void 0!==a.style[c])return{end:b[c]};return!1}a.fn.emulateTransitionEnd=function(b){var c=!1,d=this;a(this).one(&quot;bsTransitionEnd&quot;,function(){c=!0});var e=function(){c||a(d).trigger(a.support.transition.end)};return setTimeout(e,b),this},a(function(){a.support.transition=b(),a.support.transition&amp;&amp;(a.event.special.bsTransitionEnd={bindType:a.support.transition.end,delegateType:a.support.transition.end,handle:function(b){return a(b.target).is(this)?b.handleObj.handler.apply(this,arguments):void 0}})})}(jQuery),+function(a){&quot;use strict&quot;;function b(b){return this.each(function(){var c=a(this),e=c.data(&quot;bs.alert&quot;);e||c.data(&quot;bs.alert&quot;,e=new d(this)),&quot;string&quot;==typeof b&amp;&amp;e[b].call(c)})}var c='[data-dismiss=&quot;alert&quot;]',d=function(b){a(b).on(&quot;click&quot;,c,this.close)};d.VERSION=&quot;3.3.4&quot;,d.TRANSITION_DURATION=150,d.prototype.close=function(b){function c(){g.detach().trigger(&quot;closed.bs.alert&quot;).remove()}var e=a(this),f=e.attr(&quot;data-target&quot;);f||(f=e.attr(&quot;href&quot;),f=f&amp;&amp;f.replace(/.*(?=#[^\s]*$)/,&quot;&quot;));var g=a(f);b&amp;&amp;b.preventDefault(),g.length||(g=e.closest(&quot;.alert&quot;)),g.trigger(b=a.Event(&quot;close.bs.alert&quot;)),b.isDefaultPrevented()||(g.removeClass(&quot;in&quot;),a.support.transition&amp;&amp;g.hasClass(&quot;fade&quot;)?g.one(&quot;bsTransitionEnd&quot;,c).emulateTransitionEnd(d.TRANSITION_DURATION):c())};var e=a.fn.alert;a.fn.alert=b,a.fn.alert.Constructor=d,a.fn.alert.noConflict=function(){return a.fn.alert=e,this},a(document).on(&quot;click.bs.alert.data-api&quot;,c,d.prototype.close)}(jQuery),+function(a){&quot;use strict&quot;;function b(b){return this.each(function(){var d=a(this),e=d.data(&quot;bs.button&quot;),f=&quot;object&quot;==typeof b&amp;&amp;b;e||d.data(&quot;bs.button&quot;,e=new c(this,f)),&quot;toggle&quot;==b?e.toggle():b&amp;&amp;e.setState(b)})}var c=function(b,d){this.$element=a(b),this.options=a.extend({},c.DEFAULTS,d),this.isLoading=!1};c.VERSION=&quot;3.3.4&quot;,c.DEFAULTS={loadingText:&quot;loading...&quot;},c.prototype.setState=function(b){var c=&quot;disabled&quot;,d=this.$element,e=d.is(&quot;input&quot;)?&quot;val&quot;:&quot;html&quot;,f=d.data();b+=&quot;Text&quot;,null==f.resetText&amp;&amp;d.data(&quot;resetText&quot;,d[e]()),setTimeout(a.proxy(function(){d[e](null==f[b]?this.options[b]:f[b]),&quot;loadingText&quot;==b?(this.isLoading=!0,d.addClass(c).attr(c,c)):this.isLoading&amp;&amp;(this.isLoading=!1,d.removeClass(c).removeAttr(c))},this),0)},c.prototype.toggle=function(){var a=!0,b=this.$element.closest('[data-toggle=&quot;buttons&quot;]');if(b.length){var c=this.$element.find(&quot;input&quot;);&quot;radio&quot;==c.prop(&quot;type&quot;)&amp;&amp;(c.prop(&quot;checked&quot;)&amp;&amp;this.$element.hasClass(&quot;active&quot;)?a=!1:b.find(&quot;.active&quot;).removeClass(&quot;active&quot;)),a&amp;&amp;c.prop(&quot;checked&quot;,!this.$element.hasClass(&quot;active&quot;)).trigger(&quot;change&quot;)}else this.$element.attr(&quot;aria-pressed&quot;,!this.$element.hasClass(&quot;active&quot;));a&amp;&amp;this.$element.toggleClass(&quot;active&quot;)};var d=a.fn.button;a.fn.button=b,a.fn.button.Constructor=c,a.fn.button.noConflict=function(){return a.fn.button=d,this},a(document).on(&quot;click.bs.button.data-api&quot;,'[data-toggle^=&quot;button&quot;]',function(c){var d=a(c.target);d.hasClass(&quot;btn&quot;)||(d=d.closest(&quot;.btn&quot;)),b.call(d,&quot;toggle&quot;),c.preventDefault()}).on(&quot;focus.bs.button.data-api blur.bs.button.data-api&quot;,'[data-toggle^=&quot;button&quot;]',function(b){a(b.target).closest(&quot;.btn&quot;).toggleClass(&quot;focus&quot;,/^focus(in)?$/.test(b.type))})}(jQuery),+function(a){&quot;use strict&quot;;function b(b){return this.each(function(){var d=a(this),e=d.data(&quot;bs.carousel&quot;),f=a.extend({},c.DEFAULTS,d.data(),&quot;object&quot;==typeof b&amp;&amp;b),g=&quot;string&quot;==typeof b?b:f.slide;e||d.data(&quot;bs.carousel&quot;,e=new c(this,f)),&quot;number&quot;==typeof b?e.to(b):g?e[g]():f.interval&amp;&amp;e.pause().cycle()})}var c=function(b,c){this.$element=a(b),this.$indicators=this.$element.find(&quot;.carousel-indicators&quot;),this.options=c,this.paused=null,this.sliding=null,this.interval=null,this.$active=null,this.$items=null,this.options.keyboard&amp;&amp;this.$element.on(&quot;keydown.bs.carousel&quot;,a.proxy(this.keydown,this)),&quot;hover&quot;==this.options.pause&amp;&amp;!(&quot;ontouchstart&quot;in document.documentElement)&amp;&amp;this.$element.on(&quot;mouseenter.bs.carousel&quot;,a.proxy(this.pause,this)).on(&quot;mouseleave.bs.carousel&quot;,a.proxy(this.cycle,this))};c.VERSION=&quot;3.3.4&quot;,c.TRANSITION_DURATION=600,c.DEFAULTS={interval:5e3,pause:&quot;hover&quot;,wrap:!0,keyboard:!0},c.prototype.keydown=function(a){if(!/input|textarea/i.test(a.target.tagName)){switch(a.which){case 37:this.prev();break;case 39:this.next();break;default:return}a.preventDefault()}},c.prototype.cycle=function(b){return b||(this.paused=!1),this.interval&amp;&amp;clearInterval(this.interval),this.options.interval&amp;&amp;!this.paused&amp;&amp;(this.interval=setInterval(a.proxy(this.next,this),this.options.interval)),this},c.prototype.getItemIndex=function(a){return this.$items=a.parent().children(&quot;.item&quot;),this.$items.index(a||this.$active)},c.prototype.getItemForDirection=function(a,b){var c=this.getItemIndex(b),d=&quot;prev&quot;==a&amp;&amp;0===c||&quot;next&quot;==a&amp;&amp;c==this.$items.length-1;if(d&amp;&amp;!this.options.wrap)return b;var e=&quot;prev&quot;==a?-1:1,f=(c+e)%this.$items.length;return this.$items.eq(f)},c.prototype.to=function(a){var b=this,c=this.getItemIndex(this.$active=this.$element.find(&quot;.item.active&quot;));return a&gt;this.$items.length-1||0&gt;a?void 0:this.sliding?this.$element.one(&quot;slid.bs.carousel&quot;,function(){b.to(a)}):c==a?this.pause().cycle():this.slide(a&gt;c?&quot;next&quot;:&quot;prev&quot;,this.$items.eq(a))},c.prototype.pause=function(b){return b||(this.paused=!0),this.$element.find(&quot;.next, .prev&quot;).length&amp;&amp;a.support.transition&amp;&amp;(this.$element.trigger(a.support.transition.end),this.cycle(!0)),this.interval=clearInterval(this.interval),this},c.prototype.next=function(){return this.sliding?void 0:this.slide(&quot;next&quot;)},c.prototype.prev=function(){return this.sliding?void 0:this.slide(&quot;prev&quot;)},c.prototype.slide=function(b,d){var e=this.$element.find(&quot;.item.active&quot;),f=d||this.getItemForDirection(b,e),g=this.interval,h=&quot;next&quot;==b?&quot;left&quot;:&quot;right&quot;,i=this;if(f.hasClass(&quot;active&quot;))return this.sliding=!1;var j=f[0],k=a.Event(&quot;slide.bs.carousel&quot;,{relatedTarget:j,direction:h});if(this.$element.trigger(k),!k.isDefaultPrevented()){if(this.sliding=!0,g&amp;&amp;this.pause(),this.$indicators.length){this.$indicators.find(&quot;.active&quot;).removeClass(&quot;active&quot;);var l=a(this.$indicators.children()[this.getItemIndex(f)]);l&amp;&amp;l.addClass(&quot;active&quot;)}var m=a.Event(&quot;slid.bs.carousel&quot;,{relatedTarget:j,direction:h});return a.support.transition&amp;&amp;this.$element.hasClass(&quot;slide&quot;)?(f.addClass(b),f[0].offsetWidth,e.addClass(h),f.addClass(h),e.one(&quot;bsTransitionEnd&quot;,function(){f.removeClass([b,h].join(&quot; &quot;)).addClass(&quot;active&quot;),e.removeClass([&quot;active&quot;,h].join(&quot; &quot;)),i.sliding=!1,setTimeout(function(){i.$element.trigger(m)},0)}).emulateTransitionEnd(c.TRANSITION_DURATION)):(e.removeClass(&quot;active&quot;),f.addClass(&quot;active&quot;),this.sliding=!1,this.$element.trigger(m)),g&amp;&amp;this.cycle(),this}};var d=a.fn.carousel;a.fn.carousel=b,a.fn.carousel.Constructor=c,a.fn.carousel.noConflict=function(){return a.fn.carousel=d,this};var e=function(c){var d,e=a(this),f=a(e.attr(&quot;data-target&quot;)||(d=e.attr(&quot;href&quot;))&amp;&amp;d.replace(/.*(?=#[^\s]+$)/,&quot;&quot;));if(f.hasClass(&quot;carousel&quot;)){var g=a.extend({},f.data(),e.data()),h=e.attr(&quot;data-slide-to&quot;);h&amp;&amp;(g.interval=!1),b.call(f,g),h&amp;&amp;f.data(&quot;bs.carousel&quot;).to(h),c.preventDefault()}};a(document).on(&quot;click.bs.carousel.data-api&quot;,&quot;[data-slide]&quot;,e).on(&quot;click.bs.carousel.data-api&quot;,&quot;[data-slide-to]&quot;,e),a(window).on(&quot;load&quot;,function(){a('[data-ride=&quot;carousel&quot;]').each(function(){var c=a(this);b.call(c,c.data())})})}(jQuery),+function(a){&quot;use strict&quot;;function b(b){var c,d=b.attr(&quot;data-target&quot;)||(c=b.attr(&quot;href&quot;))&amp;&amp;c.replace(/.*(?=#[^\s]+$)/,&quot;&quot;);return a(d)}function c(b){return this.each(function(){var c=a(this),e=c.data(&quot;bs.collapse&quot;),f=a.extend({},d.DEFAULTS,c.data(),&quot;object&quot;==typeof b&amp;&amp;b);!e&amp;&amp;f.toggle&amp;&amp;/show|hide/.test(b)&amp;&amp;(f.toggle=!1),e||c.data(&quot;bs.collapse&quot;,e=new d(this,f)),&quot;string&quot;==typeof b&amp;&amp;e[b]()})}var d=function(b,c){this.$element=a(b),this.options=a.extend({},d.DEFAULTS,c),this.$trigger=a('[data-toggle=&quot;collapse&quot;][href=&quot;#'+b.id+'&quot;],[data-toggle=&quot;collapse&quot;][data-target=&quot;#'+b.id+'&quot;]'),this.transitioning=null,this.options.parent?this.$parent=this.getParent():this.addAriaAndCollapsedClass(this.$element,this.$trigger),this.options.toggle&amp;&amp;this.toggle()};d.VERSION=&quot;3.3.4&quot;,d.TRANSITION_DURATION=350,d.DEFAULTS={toggle:!0},d.prototype.dimension=function(){var a=this.$element.hasClass(&quot;width&quot;);return a?&quot;width&quot;:&quot;height&quot;},d.prototype.show=function(){if(!this.transitioning&amp;&amp;!this.$element.hasClass(&quot;in&quot;)){var b,e=this.$parent&amp;&amp;this.$parent.children(&quot;.panel&quot;).children(&quot;.in, .collapsing&quot;);if(!(e&amp;&amp;e.length&amp;&amp;(b=e.data(&quot;bs.collapse&quot;),b&amp;&amp;b.transitioning))){var f=a.Event(&quot;show.bs.collapse&quot;);if(this.$element.trigger(f),!f.isDefaultPrevented()){e&amp;&amp;e.length&amp;&amp;(c.call(e,&quot;hide&quot;),b||e.data(&quot;bs.collapse&quot;,null));var g=this.dimension();this.$element.removeClass(&quot;collapse&quot;).addClass(&quot;collapsing&quot;)[g](0).attr(&quot;aria-expanded&quot;,!0),this.$trigger.removeClass(&quot;collapsed&quot;).attr(&quot;aria-expanded&quot;,!0),this.transitioning=1;var h=function(){this.$element.removeClass(&quot;collapsing&quot;).addClass(&quot;collapse in&quot;)[g](&quot;&quot;),this.transitioning=0,this.$element.trigger(&quot;shown.bs.collapse&quot;)};if(!a.support.transition)return h.call(this);var i=a.camelCase([&quot;scroll&quot;,g].join(&quot;-&quot;));this.$element.one(&quot;bsTransitionEnd&quot;,a.proxy(h,this)).emulateTransitionEnd(d.TRANSITION_DURATION)[g](this.$element[0][i])}}}},d.prototype.hide=function(){if(!this.transitioning&amp;&amp;this.$element.hasClass(&quot;in&quot;)){var b=a.Event(&quot;hide.bs.collapse&quot;);if(this.$element.trigger(b),!b.isDefaultPrevented()){var c=this.dimension();this.$element[c](this.$element[c]())[0].offsetHeight,this.$element.addClass(&quot;collapsing&quot;).removeClass(&quot;collapse in&quot;).attr(&quot;aria-expanded&quot;,!1),this.$trigger.addClass(&quot;collapsed&quot;).attr(&quot;aria-expanded&quot;,!1),this.transitioning=1;var e=function(){this.transitioning=0,this.$element.removeClass(&quot;collapsing&quot;).addClass(&quot;collapse&quot;).trigger(&quot;hidden.bs.collapse&quot;)};return a.support.transition?void this.$element[c](0).one(&quot;bsTransitionEnd&quot;,a.proxy(e,this)).emulateTransitionEnd(d.TRANSITION_DURATION):e.call(this)}}},d.prototype.toggle=function(){this[this.$element.hasClass(&quot;in&quot;)?&quot;hide&quot;:&quot;show&quot;]()},d.prototype.getParent=function(){return a(this.options.parent).find('[data-toggle=&quot;collapse&quot;][data-parent=&quot;'+this.options.parent+'&quot;]').each(a.proxy(function(c,d){var e=a(d);this.addAriaAndCollapsedClass(b(e),e)},this)).end()},d.prototype.addAriaAndCollapsedClass=function(a,b){var c=a.hasClass(&quot;in&quot;);a.attr(&quot;aria-expanded&quot;,c),b.toggleClass(&quot;collapsed&quot;,!c).attr(&quot;aria-expanded&quot;,c)};var e=a.fn.collapse;a.fn.collapse=c,a.fn.collapse.Constructor=d,a.fn.collapse.noConflict=function(){return a.fn.collapse=e,this},a(document).on(&quot;click.bs.collapse.data-api&quot;,'[data-toggle=&quot;collapse&quot;]',function(d){var e=a(this);e.attr(&quot;data-target&quot;)||d.preventDefault();var f=b(e),g=f.data(&quot;bs.collapse&quot;),h=g?&quot;toggle&quot;:e.data();c.call(f,h)})}(jQuery),+function(a){&quot;use strict&quot;;function b(b){b&amp;&amp;3===b.which||(a(e).remove(),a(f).each(function(){var d=a(this),e=c(d),f={relatedTarget:this};e.hasClass(&quot;open&quot;)&amp;&amp;(e.trigger(b=a.Event(&quot;hide.bs.dropdown&quot;,f)),b.isDefaultPrevented()||(d.attr(&quot;aria-expanded&quot;,&quot;false&quot;),e.removeClass(&quot;open&quot;).trigger(&quot;hidden.bs.dropdown&quot;,f)))}))}function c(b){var c=b.attr(&quot;data-target&quot;);c||(c=b.attr(&quot;href&quot;),c=c&amp;&amp;/#[A-Za-z]/.test(c)&amp;&amp;c.replace(/.*(?=#[^\s]*$)/,&quot;&quot;));var d=c&amp;&amp;a(c);return d&amp;&amp;d.length?d:b.parent()}function d(b){return this.each(function(){var c=a(this),d=c.data(&quot;bs.dropdown&quot;);d||c.data(&quot;bs.dropdown&quot;,d=new g(this)),&quot;string&quot;==typeof b&amp;&amp;d[b].call(c)})}var e=&quot;.dropdown-backdrop&quot;,f='[data-toggle=&quot;dropdown&quot;]',g=function(b){a(b).on(&quot;click.bs.dropdown&quot;,this.toggle)};g.VERSION=&quot;3.3.4&quot;,g.prototype.toggle=function(d){var e=a(this);if(!e.is(&quot;.disabled, :disabled&quot;)){var f=c(e),g=f.hasClass(&quot;open&quot;);if(b(),!g){&quot;ontouchstart&quot;in document.documentElement&amp;&amp;!f.closest(&quot;.navbar-nav&quot;).length&amp;&amp;a('&lt;div class=&quot;dropdown-backdrop&quot;/&gt;').insertAfter(a(this)).on(&quot;click&quot;,b);var h={relatedTarget:this};if(f.trigger(d=a.Event(&quot;show.bs.dropdown&quot;,h)),d.isDefaultPrevented())return;e.trigger(&quot;focus&quot;).attr(&quot;aria-expanded&quot;,&quot;true&quot;),f.toggleClass(&quot;open&quot;).trigger(&quot;shown.bs.dropdown&quot;,h)}return!1}},g.prototype.keydown=function(b){if(/(38|40|27|32)/.test(b.which)&amp;&amp;!/input|textarea/i.test(b.target.tagName)){var d=a(this);if(b.preventDefault(),b.stopPropagation(),!d.is(&quot;.disabled, :disabled&quot;)){var e=c(d),g=e.hasClass(&quot;open&quot;);if(!g&amp;&amp;27!=b.which||g&amp;&amp;27==b.which)return 27==b.which&amp;&amp;e.find(f).trigger(&quot;focus&quot;),d.trigger(&quot;click&quot;);var h=&quot; li:not(.disabled):visible a&quot;,i=e.find('[role=&quot;menu&quot;]'+h+', [role=&quot;listbox&quot;]'+h);if(i.length){var j=i.index(b.target);38==b.which&amp;&amp;j&gt;0&amp;&amp;j--,40==b.which&amp;&amp;j&lt;i.length-1&amp;&amp;j++,~j||(j=0),i.eq(j).trigger(&quot;focus&quot;)}}}};var h=a.fn.dropdown;a.fn.dropdown=d,a.fn.dropdown.Constructor=g,a.fn.dropdown.noConflict=function(){return a.fn.dropdown=h,this},a(document).on(&quot;click.bs.dropdown.data-api&quot;,b).on(&quot;click.bs.dropdown.data-api&quot;,&quot;.dropdown form&quot;,function(a){a.stopPropagation()}).on(&quot;click.bs.dropdown.data-api&quot;,f,g.prototype.toggle).on(&quot;keydown.bs.dropdown.data-api&quot;,f,g.prototype.keydown).on(&quot;keydown.bs.dropdown.data-api&quot;,'[role=&quot;menu&quot;]',g.prototype.keydown).on(&quot;keydown.bs.dropdown.data-api&quot;,'[role=&quot;listbox&quot;]',g.prototype.keydown)}(jQuery),+function(a){&quot;use strict&quot;;function b(b,d){return this.each(function(){var e=a(this),f=e.data(&quot;bs.modal&quot;),g=a.extend({},c.DEFAULTS,e.data(),&quot;object&quot;==typeof b&amp;&amp;b);f||e.data(&quot;bs.modal&quot;,f=new c(this,g)),&quot;string&quot;==typeof b?f[b](d):g.show&amp;&amp;f.show(d)})}var c=function(b,c){this.options=c,this.$body=a(document.body),this.$element=a(b),this.$dialog=this.$element.find(&quot;.modal-dialog&quot;),this.$backdrop=null,this.isShown=null,this.originalBodyPad=null,this.scrollbarWidth=0,this.ignoreBackdropClick=!1,this.options.remote&amp;&amp;this.$element.find(&quot;.modal-content&quot;).load(this.options.remote,a.proxy(function(){this.$element.trigger(&quot;loaded.bs.modal&quot;)},this))};c.VERSION=&quot;3.3.4&quot;,c.TRANSITION_DURATION=300,c.BACKDROP_TRANSITION_DURATION=150,c.DEFAULTS={backdrop:!0,keyboard:!0,show:!0},c.prototype.toggle=function(a){return this.isShown?this.hide():this.show(a)},c.prototype.show=function(b){var d=this,e=a.Event(&quot;show.bs.modal&quot;,{relatedTarget:b});this.$element.trigger(e),this.isShown||e.isDefaultPrevented()||(this.isShown=!0,this.checkScrollbar(),this.setScrollbar(),this.$body.addClass(&quot;modal-open&quot;),this.escape(),this.resize(),this.$element.on(&quot;click.dismiss.bs.modal&quot;,'[data-dismiss=&quot;modal&quot;]',a.proxy(this.hide,this)),this.$dialog.on(&quot;mousedown.dismiss.bs.modal&quot;,function(){d.$element.one(&quot;mouseup.dismiss.bs.modal&quot;,function(b){a(b.target).is(d.$element)&amp;&amp;(d.ignoreBackdropClick=!0)})}),this.backdrop(function(){var e=a.support.transition&amp;&amp;d.$element.hasClass(&quot;fade&quot;);d.$element.parent().length||d.$element.appendTo(d.$body),d.$element.show().scrollTop(0),d.adjustDialog(),e&amp;&amp;d.$element[0].offsetWidth,d.$element.addClass(&quot;in&quot;).attr(&quot;aria-hidden&quot;,!1),d.enforceFocus();var f=a.Event(&quot;shown.bs.modal&quot;,{relatedTarget:b});e?d.$dialog.one(&quot;bsTransitionEnd&quot;,function(){d.$element.trigger(&quot;focus&quot;).trigger(f)}).emulateTransitionEnd(c.TRANSITION_DURATION):d.$element.trigger(&quot;focus&quot;).trigger(f)}))},c.prototype.hide=function(b){b&amp;&amp;b.preventDefault(),b=a.Event(&quot;hide.bs.modal&quot;),this.$element.trigger(b),this.isShown&amp;&amp;!b.isDefaultPrevented()&amp;&amp;(this.isShown=!1,this.escape(),this.resize(),a(document).off(&quot;focusin.bs.modal&quot;),this.$element.removeClass(&quot;in&quot;).attr(&quot;aria-hidden&quot;,!0).off(&quot;click.dismiss.bs.modal&quot;).off(&quot;mouseup.dismiss.bs.modal&quot;),this.$dialog.off(&quot;mousedown.dismiss.bs.modal&quot;),a.support.transition&amp;&amp;this.$element.hasClass(&quot;fade&quot;)?this.$element.one(&quot;bsTransitionEnd&quot;,a.proxy(this.hideModal,this)).emulateTransitionEnd(c.TRANSITION_DURATION):this.hideModal())},c.prototype.enforceFocus=function(){a(document).off(&quot;focusin.bs.modal&quot;).on(&quot;focusin.bs.modal&quot;,a.proxy(function(a){this.$element[0]===a.target||this.$element.has(a.target).length||this.$element.trigger(&quot;focus&quot;)},this))},c.prototype.escape=function(){this.isShown&amp;&amp;this.options.keyboard?this.$element.on(&quot;keydown.dismiss.bs.modal&quot;,a.proxy(function(a){27==a.which&amp;&amp;this.hide()},this)):this.isShown||this.$element.off(&quot;keydown.dismiss.bs.modal&quot;)},c.prototype.resize=function(){this.isShown?a(window).on(&quot;resize.bs.modal&quot;,a.proxy(this.handleUpdate,this)):a(window).off(&quot;resize.bs.modal&quot;)},c.prototype.hideModal=function(){var a=this;this.$element.hide(),this.backdrop(function(){a.$body.removeClass(&quot;modal-open&quot;),a.resetAdjustments(),a.resetScrollbar(),a.$element.trigger(&quot;hidden.bs.modal&quot;)})},c.prototype.removeBackdrop=function(){this.$backdrop&amp;&amp;this.$backdrop.remove(),this.$backdrop=null},c.prototype.backdrop=function(b){var d=this,e=this.$element.hasClass(&quot;fade&quot;)?&quot;fade&quot;:&quot;&quot;;if(this.isShown&amp;&amp;this.options.backdrop){var f=a.support.transition&amp;&amp;e;if(this.$backdrop=a('&lt;div class=&quot;modal-backdrop '+e+'&quot; /&gt;').appendTo(this.$body),this.$element.on(&quot;click.dismiss.bs.modal&quot;,a.proxy(function(a){return this.ignoreBackdropClick?void(this.ignoreBackdropClick=!1):void(a.target===a.currentTarget&amp;&amp;(&quot;static&quot;==this.options.backdrop?this.$element[0].focus():this.hide()))},this)),f&amp;&amp;this.$backdrop[0].offsetWidth,this.$backdrop.addClass(&quot;in&quot;),!b)return;f?this.$backdrop.one(&quot;bsTransitionEnd&quot;,b).emulateTransitionEnd(c.BACKDROP_TRANSITION_DURATION):b()}else if(!this.isShown&amp;&amp;this.$backdrop){this.$backdrop.removeClass(&quot;in&quot;);var g=function(){d.removeBackdrop(),b&amp;&amp;b()};a.support.transition&amp;&amp;this.$element.hasClass(&quot;fade&quot;)?this.$backdrop.one(&quot;bsTransitionEnd&quot;,g).emulateTransitionEnd(c.BACKDROP_TRANSITION_DURATION):g()}else b&amp;&amp;b()},c.prototype.handleUpdate=function(){this.adjustDialog()},c.prototype.adjustDialog=function(){var a=this.$element[0].scrollHeight&gt;document.documentElement.clientHeight;this.$element.css({paddingLeft:!this.bodyIsOverflowing&amp;&amp;a?this.scrollbarWidth:&quot;&quot;,paddingRight:this.bodyIsOverflowing&amp;&amp;!a?this.scrollbarWidth:&quot;&quot;})},c.prototype.resetAdjustments=function(){this.$element.css({paddingLeft:&quot;&quot;,paddingRight:&quot;&quot;})},c.prototype.checkScrollbar=function(){var a=window.innerWidth;if(!a){var b=document.documentElement.getBoundingClientRect();a=b.right-Math.abs(b.left)}this.bodyIsOverflowing=document.body.clientWidth&lt;a,this.scrollbarWidth=this.measureScrollbar()},c.prototype.setScrollbar=function(){var a=parseInt(this.$body.css(&quot;padding-right&quot;)||0,10);this.originalBodyPad=document.body.style.paddingRight||&quot;&quot;,this.bodyIsOverflowing&amp;&amp;this.$body.css(&quot;padding-right&quot;,a+this.scrollbarWidth)},c.prototype.resetScrollbar=function(){this.$body.css(&quot;padding-right&quot;,this.originalBodyPad)},c.prototype.measureScrollbar=function(){var a=document.createElement(&quot;div&quot;);a.className=&quot;modal-scrollbar-measure&quot;,this.$body.append(a);var b=a.offsetWidth-a.clientWidth;return this.$body[0].removeChild(a),b};var d=a.fn.modal;a.fn.modal=b,a.fn.modal.Constructor=c,a.fn.modal.noConflict=function(){return a.fn.modal=d,this},a(document).on(&quot;click.bs.modal.data-api&quot;,'[data-toggle=&quot;modal&quot;]',function(c){var d=a(this),e=d.attr(&quot;href&quot;),f=a(d.attr(&quot;data-target&quot;)||e&amp;&amp;e.replace(/.*(?=#[^\s]+$)/,&quot;&quot;)),g=f.data(&quot;bs.modal&quot;)?&quot;toggle&quot;:a.extend({remote:!/#/.test(e)&amp;&amp;e},f.data(),d.data());d.is(&quot;a&quot;)&amp;&amp;c.preventDefault(),f.one(&quot;show.bs.modal&quot;,function(a){a.isDefaultPrevented()||f.one(&quot;hidden.bs.modal&quot;,function(){d.is(&quot;:visible&quot;)&amp;&amp;d.trigger(&quot;focus&quot;)})}),b.call(f,g,this)})}(jQuery),+function(a){&quot;use strict&quot;;function b(b){return this.each(function(){var d=a(this),e=d.data(&quot;bs.tooltip&quot;),f=&quot;object&quot;==typeof b&amp;&amp;b;(e||!/destroy|hide/.test(b))&amp;&amp;(e||d.data(&quot;bs.tooltip&quot;,e=new c(this,f)),&quot;string&quot;==typeof b&amp;&amp;e[b]())})}var c=function(a,b){this.type=null,this.options=null,this.enabled=null,this.timeout=null,this.hoverState=null,this.$element=null,this.init(&quot;tooltip&quot;,a,b)};c.VERSION=&quot;3.3.4&quot;,c.TRANSITION_DURATION=150,c.DEFAULTS={animation:!0,placement:&quot;top&quot;,selector:!1,template:'&lt;div class=&quot;tooltip&quot; role=&quot;tooltip&quot;&gt;&lt;div class=&quot;tooltip-arrow&quot;&gt;&lt;/div&gt;&lt;div class=&quot;tooltip-inner&quot;&gt;&lt;/div&gt;&lt;/div&gt;',trigger:&quot;hover focus&quot;,title:&quot;&quot;,delay:0,html:!1,container:!1,viewport:{selector:&quot;body&quot;,padding:0}},c.prototype.init=function(b,c,d){if(this.enabled=!0,this.type=b,this.$element=a(c),this.options=this.getOptions(d),this.$viewport=this.options.viewport&amp;&amp;a(this.options.viewport.selector||this.options.viewport),this.$element[0]instanceof document.constructor&amp;&amp;!this.options.selector)throw new Error(&quot;`selector` option must be specified when initializing &quot;+this.type+&quot; on the window.document object!&quot;);for(var e=this.options.trigger.split(&quot; &quot;),f=e.length;f--;){var g=e[f];if(&quot;click&quot;==g)this.$element.on(&quot;click.&quot;+this.type,this.options.selector,a.proxy(this.toggle,this));else if(&quot;manual&quot;!=g){var h=&quot;hover&quot;==g?&quot;mouseenter&quot;:&quot;focusin&quot;,i=&quot;hover&quot;==g?&quot;mouseleave&quot;:&quot;focusout&quot;;this.$element.on(h+&quot;.&quot;+this.type,this.options.selector,a.proxy(this.enter,this)),this.$element.on(i+&quot;.&quot;+this.type,this.options.selector,a.proxy(this.leave,this))}}this.options.selector?this._options=a.extend({},this.options,{trigger:&quot;manual&quot;,selector:&quot;&quot;}):this.fixTitle()},c.prototype.getDefaults=function(){return c.DEFAULTS},c.prototype.getOptions=function(b){return b=a.extend({},this.getDefaults(),this.$element.data(),b),b.delay&amp;&amp;&quot;number&quot;==typeof b.delay&amp;&amp;(b.delay={show:b.delay,hide:b.delay}),b},c.prototype.getDelegateOptions=function(){var b={},c=this.getDefaults();return this._options&amp;&amp;a.each(this._options,function(a,d){c[a]!=d&amp;&amp;(b[a]=d)}),b},c.prototype.enter=function(b){var c=b instanceof this.constructor?b:a(b.currentTarget).data(&quot;bs.&quot;+this.type);return c&amp;&amp;c.$tip&amp;&amp;c.$tip.is(&quot;:visible&quot;)?void(c.hoverState=&quot;in&quot;):(c||(c=new this.constructor(b.currentTarget,this.getDelegateOptions()),a(b.currentTarget).data(&quot;bs.&quot;+this.type,c)),clearTimeout(c.timeout),c.hoverState=&quot;in&quot;,c.options.delay&amp;&amp;c.options.delay.show?void(c.timeout=setTimeout(function(){&quot;in&quot;==c.hoverState&amp;&amp;c.show()},c.options.delay.show)):c.show())},c.prototype.leave=function(b){var c=b instanceof this.constructor?b:a(b.currentTarget).data(&quot;bs.&quot;+this.type);return c||(c=new this.constructor(b.currentTarget,this.getDelegateOptions()),a(b.currentTarget).data(&quot;bs.&quot;+this.type,c)),clearTimeout(c.timeout),c.hoverState=&quot;out&quot;,c.options.delay&amp;&amp;c.options.delay.hide?void(c.timeout=setTimeout(function(){&quot;out&quot;==c.hoverState&amp;&amp;c.hide()},c.options.delay.hide)):c.hide()},c.prototype.show=function(){var b=a.Event(&quot;show.bs.&quot;+this.type);if(this.hasContent()&amp;&amp;this.enabled){this.$element.trigger(b);var d=a.contains(this.$element[0].ownerDocument.documentElement,this.$element[0]);if(b.isDefaultPrevented()||!d)return;var e=this,f=this.tip(),g=this.getUID(this.type);this.setContent(),f.attr(&quot;id&quot;,g),this.$element.attr(&quot;aria-describedby&quot;,g),this.options.animation&amp;&amp;f.addClass(&quot;fade&quot;);var h=&quot;function&quot;==typeof this.options.placement?this.options.placement.call(this,f[0],this.$element[0]):this.options.placement,i=/\s?auto?\s?/i,j=i.test(h);j&amp;&amp;(h=h.replace(i,&quot;&quot;)||&quot;top&quot;),f.detach().css({top:0,left:0,display:&quot;block&quot;}).addClass(h).data(&quot;bs.&quot;+this.type,this),this.options.container?f.appendTo(this.options.container):f.insertAfter(this.$element);var k=this.getPosition(),l=f[0].offsetWidth,m=f[0].offsetHeight;if(j){var n=h,o=this.options.container?a(this.options.container):this.$element.parent(),p=this.getPosition(o);h=&quot;bottom&quot;==h&amp;&amp;k.bottom+m&gt;p.bottom?&quot;top&quot;:&quot;top&quot;==h&amp;&amp;k.top-m&lt;p.top?&quot;bottom&quot;:&quot;right&quot;==h&amp;&amp;k.right+l&gt;p.width?&quot;left&quot;:&quot;left&quot;==h&amp;&amp;k.left-l&lt;p.left?&quot;right&quot;:h,f.removeClass(n).addClass(h)}var q=this.getCalculatedOffset(h,k,l,m);this.applyPlacement(q,h);var r=function(){var a=e.hoverState;e.$element.trigger(&quot;shown.bs.&quot;+e.type),e.hoverState=null,&quot;out&quot;==a&amp;&amp;e.leave(e)};a.support.transition&amp;&amp;this.$tip.hasClass(&quot;fade&quot;)?f.one(&quot;bsTransitionEnd&quot;,r).emulateTransitionEnd(c.TRANSITION_DURATION):r()}},c.prototype.applyPlacement=function(b,c){var d=this.tip(),e=d[0].offsetWidth,f=d[0].offsetHeight,g=parseInt(d.css(&quot;margin-top&quot;),10),h=parseInt(d.css(&quot;margin-left&quot;),10);isNaN(g)&amp;&amp;(g=0),isNaN(h)&amp;&amp;(h=0),b.top=b.top+g,b.left=b.left+h,a.offset.setOffset(d[0],a.extend({using:function(a){d.css({top:Math.round(a.top),left:Math.round(a.left)})}},b),0),d.addClass(&quot;in&quot;);var i=d[0].offsetWidth,j=d[0].offsetHeight;&quot;top&quot;==c&amp;&amp;j!=f&amp;&amp;(b.top=b.top+f-j);var k=this.getViewportAdjustedDelta(c,b,i,j);k.left?b.left+=k.left:b.top+=k.top;var l=/top|bottom/.test(c),m=l?2*k.left-e+i:2*k.top-f+j,n=l?&quot;offsetWidth&quot;:&quot;offsetHeight&quot;;d.offset(b),this.replaceArrow(m,d[0][n],l)},c.prototype.replaceArrow=function(a,b,c){this.arrow().css(c?&quot;left&quot;:&quot;top&quot;,50*(1-a/b)+&quot;%&quot;).css(c?&quot;top&quot;:&quot;left&quot;,&quot;&quot;)},c.prototype.setContent=function(){var a=this.tip(),b=this.getTitle();a.find(&quot;.tooltip-inner&quot;)[this.options.html?&quot;html&quot;:&quot;text&quot;](b),a.removeClass(&quot;fade in top bottom left right&quot;)},c.prototype.hide=function(b){function d(){&quot;in&quot;!=e.hoverState&amp;&amp;f.detach(),e.$element.removeAttr(&quot;aria-describedby&quot;).trigger(&quot;hidden.bs.&quot;+e.type),b&amp;&amp;b()}var e=this,f=a(this.$tip),g=a.Event(&quot;hide.bs.&quot;+this.type);return this.$element.trigger(g),g.isDefaultPrevented()?void 0:(f.removeClass(&quot;in&quot;),a.support.transition&amp;&amp;f.hasClass(&quot;fade&quot;)?f.one(&quot;bsTransitionEnd&quot;,d).emulateTransitionEnd(c.TRANSITION_DURATION):d(),this.hoverState=null,this)},c.prototype.fixTitle=function(){var a=this.$element;(a.attr(&quot;title&quot;)||&quot;string&quot;!=typeof a.attr(&quot;data-original-title&quot;))&amp;&amp;a.attr(&quot;data-original-title&quot;,a.attr(&quot;title&quot;)||&quot;&quot;).attr(&quot;title&quot;,&quot;&quot;)},c.prototype.hasContent=function(){return this.getTitle()},c.prototype.getPosition=function(b){b=b||this.$element;var c=b[0],d=&quot;BODY&quot;==c.tagName,e=c.getBoundingClientRect();null==e.width&amp;&amp;(e=a.extend({},e,{width:e.right-e.left,height:e.bottom-e.top}));var f=d?{top:0,left:0}:b.offset(),g={scroll:d?document.documentElement.scrollTop||document.body.scrollTop:b.scrollTop()},h=d?{width:a(window).width(),height:a(window).height()}:null;return a.extend({},e,g,h,f)},c.prototype.getCalculatedOffset=function(a,b,c,d){return&quot;bottom&quot;==a?{top:b.top+b.height,left:b.left+b.width/2-c/2}:&quot;top&quot;==a?{top:b.top-d,left:b.left+b.width/2-c/2}:&quot;left&quot;==a?{top:b.top+b.height/2-d/2,left:b.left-c}:{top:b.top+b.height/2-d/2,left:b.left+b.width}},c.prototype.getViewportAdjustedDelta=function(a,b,c,d){var e={top:0,left:0};if(!this.$viewport)return e;var f=this.options.viewport&amp;&amp;this.options.viewport.padding||0,g=this.getPosition(this.$viewport);if(/right|left/.test(a)){var h=b.top-f-g.scroll,i=b.top+f-g.scroll+d;h&lt;g.top?e.top=g.top-h:i&gt;g.top+g.height&amp;&amp;(e.top=g.top+g.height-i)}else{var j=b.left-f,k=b.left+f+c;j&lt;g.left?e.left=g.left-j:k&gt;g.width&amp;&amp;(e.left=g.left+g.width-k)}return e},c.prototype.getTitle=function(){var a,b=this.$element,c=this.options;return a=b.attr(&quot;data-original-title&quot;)||(&quot;function&quot;==typeof c.title?c.title.call(b[0]):c.title)},c.prototype.getUID=function(a){do a+=~~(1e6*Math.random());while(document.getElementById(a));return a},c.prototype.tip=function(){return this.$tip=this.$tip||a(this.options.template)},c.prototype.arrow=function(){return this.$arrow=this.$arrow||this.tip().find(&quot;.tooltip-arrow&quot;)},c.prototype.enable=function(){this.enabled=!0},c.prototype.disable=function(){this.enabled=!1},c.prototype.toggleEnabled=function(){this.enabled=!this.enabled},c.prototype.toggle=function(b){var c=this;b&amp;&amp;(c=a(b.currentTarget).data(&quot;bs.&quot;+this.type),c||(c=new this.constructor(b.currentTarget,this.getDelegateOptions()),a(b.currentTarget).data(&quot;bs.&quot;+this.type,c))),c.tip().hasClass(&quot;in&quot;)?c.leave(c):c.enter(c)},c.prototype.destroy=function(){var a=this;clearTimeout(this.timeout),this.hide(function(){a.$element.off(&quot;.&quot;+a.type).removeData(&quot;bs.&quot;+a.type)})};var d=a.fn.tooltip;a.fn.tooltip=b,a.fn.tooltip.Constructor=c,a.fn.tooltip.noConflict=function(){return a.fn.tooltip=d,this}}(jQuery),+function(a){&quot;use strict&quot;;function b(b){return this.each(function(){var d=a(this),e=d.data(&quot;bs.popover&quot;),f=&quot;object&quot;==typeof b&amp;&amp;b;(e||!/destroy|hide/.test(b))&amp;&amp;(e||d.data(&quot;bs.popover&quot;,e=new c(this,f)),&quot;string&quot;==typeof b&amp;&amp;e[b]())})}var c=function(a,b){this.init(&quot;popover&quot;,a,b)};if(!a.fn.tooltip)throw new Error(&quot;Popover requires tooltip.js&quot;);c.VERSION=&quot;3.3.4&quot;,c.DEFAULTS=a.extend({},a.fn.tooltip.Constructor.DEFAULTS,{placement:&quot;right&quot;,trigger:&quot;click&quot;,content:&quot;&quot;,template:'&lt;div class=&quot;popover&quot; role=&quot;tooltip&quot;&gt;&lt;div class=&quot;arrow&quot;&gt;&lt;/div&gt;&lt;h3 class=&quot;popover-title&quot;&gt;&lt;/h3&gt;&lt;div class=&quot;popover-content&quot;&gt;&lt;/div&gt;&lt;/div&gt;'}),c.prototype=a.extend({},a.fn.tooltip.Constructor.prototype),c.prototype.constructor=c,c.prototype.getDefaults=function(){return c.DEFAULTS},c.prototype.setContent=function(){var a=this.tip(),b=this.getTitle(),c=this.getContent();a.find(&quot;.popover-title&quot;)[this.options.html?&quot;html&quot;:&quot;text&quot;](b),a.find(&quot;.popover-content&quot;).children().detach().end()[this.options.html?&quot;string&quot;==typeof c?&quot;html&quot;:&quot;append&quot;:&quot;text&quot;](c),a.removeClass(&quot;fade top bottom left right in&quot;),a.find(&quot;.popover-title&quot;).html()||a.find(&quot;.popover-title&quot;).hide()},c.prototype.hasContent=function(){return this.getTitle()||this.getContent()},c.prototype.getContent=function(){var a=this.$element,b=this.options;return a.attr(&quot;data-content&quot;)||(&quot;function&quot;==typeof b.content?b.content.call(a[0]):b.content)},c.prototype.arrow=function(){return this.$arrow=this.$arrow||this.tip().find(&quot;.arrow&quot;)};var d=a.fn.popover;a.fn.popover=b,a.fn.popover.Constructor=c,a.fn.popover.noConflict=function(){return a.fn.popover=d,this}}(jQuery),+function(a){&quot;use strict&quot;;function b(c,d){this.$body=a(document.body),this.$scrollElement=a(a(c).is(document.body)?window:c),this.options=a.extend({},b.DEFAULTS,d),this.selector=(this.options.target||&quot;&quot;)+&quot; .nav li &gt; a&quot;,this.offsets=[],this.targets=[],this.activeTarget=null,this.scrollHeight=0,this.$scrollElement.on(&quot;scroll.bs.scrollspy&quot;,a.proxy(this.process,this)),this.refresh(),this.process()}function c(c){return this.each(function(){var d=a(this),e=d.data(&quot;bs.scrollspy&quot;),f=&quot;object&quot;==typeof c&amp;&amp;c;e||d.data(&quot;bs.scrollspy&quot;,e=new b(this,f)),&quot;string&quot;==typeof c&amp;&amp;e[c]()})}b.VERSION=&quot;3.3.4&quot;,b.DEFAULTS={offset:10},b.prototype.getScrollHeight=function(){return this.$scrollElement[0].scrollHeight||Math.max(this.$body[0].scrollHeight,document.documentElement.scrollHeight)},b.prototype.refresh=function(){var b=this,c=&quot;offset&quot;,d=0;this.offsets=[],this.targets=[],this.scrollHeight=this.getScrollHeight(),a.isWindow(this.$scrollElement[0])||(c=&quot;position&quot;,d=this.$scrollElement.scrollTop()),this.$body.find(this.selector).map(function(){var b=a(this),e=b.data(&quot;target&quot;)||b.attr(&quot;href&quot;),f=/^#./.test(e)&amp;&amp;a(e);return f&amp;&amp;f.length&amp;&amp;f.is(&quot;:visible&quot;)&amp;&amp;[[f[c]().top+d,e]]||null}).sort(function(a,b){return a[0]-b[0]}).each(function(){b.offsets.push(this[0]),b.targets.push(this[1])})},b.prototype.process=function(){var a,b=this.$scrollElement.scrollTop()+this.options.offset,c=this.getScrollHeight(),d=this.options.offset+c-this.$scrollElement.height(),e=this.offsets,f=this.targets,g=this.activeTarget;if(this.scrollHeight!=c&amp;&amp;this.refresh(),b&gt;=d)return g!=(a=f[f.length-1])&amp;&amp;this.activate(a);if(g&amp;&amp;b&lt;e[0])return this.activeTarget=null,this.clear();for(a=e.length;a--;)g!=f[a]&amp;&amp;b&gt;=e[a]&amp;&amp;(void 0===e[a+1]||b&lt;e[a+1])&amp;&amp;this.activate(f[a])},b.prototype.activate=function(b){this.activeTarget=b,this.clear();var c=this.selector+'[data-target=&quot;'+b+'&quot;],'+this.selector+'[href=&quot;'+b+'&quot;]',d=a(c).parents(&quot;li&quot;).addClass(&quot;active&quot;);d.parent(&quot;.dropdown-menu&quot;).length&amp;&amp;(d=d.closest(&quot;li.dropdown&quot;).addClass(&quot;active&quot;)),d.trigger(&quot;activate.bs.scrollspy&quot;)},b.prototype.clear=function(){a(this.selector).parentsUntil(this.options.target,&quot;.active&quot;).removeClass(&quot;active&quot;)};var d=a.fn.scrollspy;a.fn.scrollspy=c,a.fn.scrollspy.Constructor=b,a.fn.scrollspy.noConflict=function(){return a.fn.scrollspy=d,this},a(window).on(&quot;load.bs.scrollspy.data-api&quot;,function(){a('[data-spy=&quot;scroll&quot;]').each(function(){var b=a(this);c.call(b,b.data())})})}(jQuery),+function(a){&quot;use strict&quot;;function b(b){return this.each(function(){var d=a(this),e=d.data(&quot;bs.tab&quot;);e||d.data(&quot;bs.tab&quot;,e=new c(this)),&quot;string&quot;==typeof b&amp;&amp;e[b]()})}var c=function(b){this.element=a(b)};c.VERSION=&quot;3.3.4&quot;,c.TRANSITION_DURATION=150,c.prototype.show=function(){var b=this.element,c=b.closest(&quot;ul:not(.dropdown-menu)&quot;),d=b.data(&quot;target&quot;);if(d||(d=b.attr(&quot;href&quot;),d=d&amp;&amp;d.replace(/.*(?=#[^\s]*$)/,&quot;&quot;)),!b.parent(&quot;li&quot;).hasClass(&quot;active&quot;)){var e=c.find(&quot;.active:last a&quot;),f=a.Event(&quot;hide.bs.tab&quot;,{relatedTarget:b[0]}),g=a.Event(&quot;show.bs.tab&quot;,{relatedTarget:e[0]});if(e.trigger(f),b.trigger(g),!g.isDefaultPrevented()&amp;&amp;!f.isDefaultPrevented()){var h=a(d);this.activate(b.closest(&quot;li&quot;),c),this.activate(h,h.parent(),function(){e.trigger({type:&quot;hidden.bs.tab&quot;,relatedTarget:b[0]}),b.trigger({type:&quot;shown.bs.tab&quot;,relatedTarget:e[0]})})}}},c.prototype.activate=function(b,d,e){function f(){g.removeClass(&quot;active&quot;).find(&quot;&gt; .dropdown-menu &gt; .active&quot;).removeClass(&quot;active&quot;).end().find('[data-toggle=&quot;tab&quot;]').attr(&quot;aria-expanded&quot;,!1),b.addClass(&quot;active&quot;).find('[data-toggle=&quot;tab&quot;]').attr(&quot;aria-expanded&quot;,!0),h?(b[0].offsetWidth,b.addClass(&quot;in&quot;)):b.removeClass(&quot;fade&quot;),b.parent(&quot;.dropdown-menu&quot;).length&amp;&amp;b.closest(&quot;li.dropdown&quot;).addClass(&quot;active&quot;).end().find('[data-toggle=&quot;tab&quot;]').attr(&quot;aria-expanded&quot;,!0),e&amp;&amp;e()}var g=d.find(&quot;&gt; .active&quot;),h=e&amp;&amp;a.support.transition&amp;&amp;(g.length&amp;&amp;g.hasClass(&quot;fade&quot;)||!!d.find(&quot;&gt; .fade&quot;).length);g.length&amp;&amp;h?g.one(&quot;bsTransitionEnd&quot;,f).emulateTransitionEnd(c.TRANSITION_DURATION):f(),g.removeClass(&quot;in&quot;)};var d=a.fn.tab;a.fn.tab=b,a.fn.tab.Constructor=c,a.fn.tab.noConflict=function(){return a.fn.tab=d,this};var e=function(c){c.preventDefault(),b.call(a(this),&quot;show&quot;)};a(document).on(&quot;click.bs.tab.data-api&quot;,'[data-toggle=&quot;tab&quot;]',e).on(&quot;click.bs.tab.data-api&quot;,'[data-toggle=&quot;pill&quot;]',e)}(jQuery),+function(a){&quot;use strict&quot;;function b(b){return this.each(function(){var d=a(this),e=d.data(&quot;bs.affix&quot;),f=&quot;object&quot;==typeof b&amp;&amp;b;e||d.data(&quot;bs.affix&quot;,e=new c(this,f)),&quot;string&quot;==typeof b&amp;&amp;e[b]()})}var c=function(b,d){this.options=a.extend({},c.DEFAULTS,d),this.$target=a(this.options.target).on(&quot;scroll.bs.affix.data-api&quot;,a.proxy(this.checkPosition,this)).on(&quot;click.bs.affix.data-api&quot;,a.proxy(this.checkPositionWithEventLoop,this)),this.$element=a(b),this.affixed=null,this.unpin=null,this.pinnedOffset=null,this.checkPosition()};c.VERSION=&quot;3.3.4&quot;,c.RESET=&quot;affix affix-top affix-bottom&quot;,c.DEFAULTS={offset:0,target:window},c.prototype.getState=function(a,b,c,d){var e=this.$target.scrollTop(),f=this.$element.offset(),g=this.$target.height();if(null!=c&amp;&amp;&quot;top&quot;==this.affixed)return c&gt;e?&quot;top&quot;:!1;if(&quot;bottom&quot;==this.affixed)return null!=c?e+this.unpin&lt;=f.top?!1:&quot;bottom&quot;:a-d&gt;=e+g?!1:&quot;bottom&quot;;var h=null==this.affixed,i=h?e:f.top,j=h?g:b;return null!=c&amp;&amp;c&gt;=e?&quot;top&quot;:null!=d&amp;&amp;i+j&gt;=a-d?&quot;bottom&quot;:!1},c.prototype.getPinnedOffset=function(){if(this.pinnedOffset)return this.pinnedOffset;this.$element.removeClass(c.RESET).addClass(&quot;affix&quot;);var a=this.$target.scrollTop(),b=this.$element.offset();return this.pinnedOffset=b.top-a},c.prototype.checkPositionWithEventLoop=function(){setTimeout(a.proxy(this.checkPosition,this),1)},c.prototype.checkPosition=function(){if(this.$element.is(&quot;:visible&quot;)){var b=this.$element.height(),d=this.options.offset,e=d.top,f=d.bottom,g=a(document.body).height();&quot;object&quot;!=typeof d&amp;&amp;(f=e=d),&quot;function&quot;==typeof e&amp;&amp;(e=d.top(this.$element)),&quot;function&quot;==typeof f&amp;&amp;(f=d.bottom(this.$element));var h=this.getState(g,b,e,f);if(this.affixed!=h){null!=this.unpin&amp;&amp;this.$element.css(&quot;top&quot;,&quot;&quot;);var i=&quot;affix&quot;+(h?&quot;-&quot;+h:&quot;&quot;),j=a.Event(i+&quot;.bs.affix&quot;);if(this.$element.trigger(j),j.isDefaultPrevented())return;this.affixed=h,this.unpin=&quot;bottom&quot;==h?this.getPinnedOffset():null,this.$element.removeClass(c.RESET).addClass(i).trigger(i.replace(&quot;affix&quot;,&quot;affixed&quot;)+&quot;.bs.affix&quot;)}&quot;bottom&quot;==h&amp;&amp;this.$element.offset({top:g-b-f})}};var d=a.fn.affix;a.fn.affix=b,a.fn.affix.Constructor=c,a.fn.affix.noConflict=function(){return a.fn.affix=d,this},a(window).on(&quot;load&quot;,function(){a('[data-spy=&quot;affix&quot;]').each(function(){var c=a(this),d=c.data();d.offset=d.offset||{},null!=d.offsetBottom&amp;&amp;(d.offset.bottom=d.offsetBottom),null!=d.offsetTop&amp;&amp;(d.offset.top=d.offsetTop),b.call(c,d)})})}(jQuery);
+
+/* Wow */
+(function(){var a,b,c,d,e,f=function(a,b){return function(){return a.apply(b,arguments)}},g=[].indexOf||function(a){for(var b=0,c=this.length;c&gt;b;b++)if(b in this&amp;&amp;this[b]===a)return b;return-1};b=function(){function a(){}return a.prototype.extend=function(a,b){var c,d;for(c in b)d=b[c],null==a[c]&amp;&amp;(a[c]=d);return a},a.prototype.isMobile=function(a){return/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(a)},a.prototype.addEvent=function(a,b,c){return null!=a.addEventListener?a.addEventListener(b,c,!1):null!=a.attachEvent?a.attachEvent(&quot;on&quot;+b,c):a[b]=c},a.prototype.removeEvent=function(a,b,c){return null!=a.removeEventListener?a.removeEventListener(b,c,!1):null!=a.detachEvent?a.detachEvent(&quot;on&quot;+b,c):delete a[b]},a.prototype.innerHeight=function(){return&quot;innerHeight&quot;in window?window.innerHeight:document.documentElement.clientHeight},a}(),c=this.WeakMap||this.MozWeakMap||(c=function(){function a(){this.keys=[],this.values=[]}return a.prototype.get=function(a){var b,c,d,e,f;for(f=this.keys,b=d=0,e=f.length;e&gt;d;b=++d)if(c=f[b],c===a)return this.values[b]},a.prototype.set=function(a,b){var c,d,e,f,g;for(g=this.keys,c=e=0,f=g.length;f&gt;e;c=++e)if(d=g[c],d===a)return void(this.values[c]=b);return this.keys.push(a),this.values.push(b)},a}()),a=this.MutationObserver||this.WebkitMutationObserver||this.MozMutationObserver||(a=function(){function a(){&quot;undefined&quot;!=typeof console&amp;&amp;null!==console&amp;&amp;console.warn(&quot;MutationObserver is not supported by your browser.&quot;),&quot;undefined&quot;!=typeof console&amp;&amp;null!==console&amp;&amp;console.warn(&quot;WOW.js cannot detect dom mutations, please call .sync() after loading new content.&quot;)}return a.notSupported=!0,a.prototype.observe=function(){},a}()),d=this.getComputedStyle||function(a){return this.getPropertyValue=function(b){var c;return&quot;float&quot;===b&amp;&amp;(b=&quot;styleFloat&quot;),e.test(b)&amp;&amp;b.replace(e,function(a,b){return b.toUpperCase()}),(null!=(c=a.currentStyle)?c[b]:void 0)||null},this},e=/(\-([a-z]){1})/g,this.WOW=function(){function e(a){null==a&amp;&amp;(a={}),this.scrollCallback=f(this.scrollCallback,this),this.scrollHandler=f(this.scrollHandler,this),this.start=f(this.start,this),this.scrolled=!0,this.config=this.util().extend(a,this.defaults),this.animationNameCache=new c}return e.prototype.defaults={boxClass:&quot;wow&quot;,animateClass:&quot;animated&quot;,offset:0,mobile:!0,live:!0,callback:null},e.prototype.init=function(){var a;return this.element=window.document.documentElement,&quot;interactive&quot;===(a=document.readyState)||&quot;complete&quot;===a?this.start():this.util().addEvent(document,&quot;DOMContentLoaded&quot;,this.start),this.finished=[]},e.prototype.start=function(){var b,c,d,e;if(this.stopped=!1,this.boxes=function(){var a,c,d,e;for(d=this.element.querySelectorAll(&quot;.&quot;+this.config.boxClass),e=[],a=0,c=d.length;c&gt;a;a++)b=d[a],e.push(b);return e}.call(this),this.all=function(){var a,c,d,e;for(d=this.boxes,e=[],a=0,c=d.length;c&gt;a;a++)b=d[a],e.push(b);return e}.call(this),this.boxes.length)if(this.disabled())this.resetStyle();else for(e=this.boxes,c=0,d=e.length;d&gt;c;c++)b=e[c],this.applyStyle(b,!0);return this.disabled()||(this.util().addEvent(window,&quot;scroll&quot;,this.scrollHandler),this.util().addEvent(window,&quot;resize&quot;,this.scrollHandler),this.interval=setInterval(this.scrollCallback,50)),this.config.live?new a(function(a){return function(b){var c,d,e,f,g;for(g=[],e=0,f=b.length;f&gt;e;e++)d=b[e],g.push(function(){var a,b,e,f;for(e=d.addedNodes||[],f=[],a=0,b=e.length;b&gt;a;a++)c=e[a],f.push(this.doSync(c));return f}.call(a));return g}}(this)).observe(document.body,{childList:!0,subtree:!0}):void 0},e.prototype.stop=function(){return this.stopped=!0,this.util().removeEvent(window,&quot;scroll&quot;,this.scrollHandler),this.util().removeEvent(window,&quot;resize&quot;,this.scrollHandler),null!=this.interval?clearInterval(this.interval):void 0},e.prototype.sync=function(){return a.notSupported?this.doSync(this.element):void 0},e.prototype.doSync=function(a){var b,c,d,e,f;if(null==a&amp;&amp;(a=this.element),1===a.nodeType){for(a=a.parentNode||a,e=a.querySelectorAll(&quot;.&quot;+this.config.boxClass),f=[],c=0,d=e.length;d&gt;c;c++)b=e[c],g.call(this.all,b)&lt;0?(this.boxes.push(b),this.all.push(b),this.stopped||this.disabled()?this.resetStyle():this.applyStyle(b,!0),f.push(this.scrolled=!0)):f.push(void 0);return f}},e.prototype.show=function(a){return this.applyStyle(a),a.className=&quot;&quot;+a.className+&quot; &quot;+this.config.animateClass,null!=this.config.callback?this.config.callback(a):void 0},e.prototype.applyStyle=function(a,b){var c,d,e;return d=a.getAttribute(&quot;data-wow-duration&quot;),c=a.getAttribute(&quot;data-wow-delay&quot;),e=a.getAttribute(&quot;data-wow-iteration&quot;),this.animate(function(f){return function(){return f.customStyle(a,b,d,c,e)}}(this))},e.prototype.animate=function(){return&quot;requestAnimationFrame&quot;in window?function(a){return window.requestAnimationFrame(a)}:function(a){return a()}}(),e.prototype.resetStyle=function(){var a,b,c,d,e;for(d=this.boxes,e=[],b=0,c=d.length;c&gt;b;b++)a=d[b],e.push(a.style.visibility=&quot;visible&quot;);return e},e.prototype.customStyle=function(a,b,c,d,e){return b&amp;&amp;this.cacheAnimationName(a),a.style.visibility=b?&quot;hidden&quot;:&quot;visible&quot;,c&amp;&amp;this.vendorSet(a.style,{animationDuration:c}),d&amp;&amp;this.vendorSet(a.style,{animationDelay:d}),e&amp;&amp;this.vendorSet(a.style,{animationIterationCount:e}),this.vendorSet(a.style,{animationName:b?&quot;none&quot;:this.cachedAnimationName(a)}),a},e.prototype.vendors=[&quot;moz&quot;,&quot;webkit&quot;],e.prototype.vendorSet=function(a,b){var c,d,e,f;f=[];for(c in b)d=b[c],a[&quot;&quot;+c]=d,f.push(function(){var b,f,g,h;for(g=this.vendors,h=[],b=0,f=g.length;f&gt;b;b++)e=g[b],h.push(a[&quot;&quot;+e+c.charAt(0).toUpperCase()+c.substr(1)]=d);return h}.call(this));return f},e.prototype.vendorCSS=function(a,b){var c,e,f,g,h,i;for(e=d(a),c=e.getPropertyCSSValue(b),i=this.vendors,g=0,h=i.length;h&gt;g;g++)f=i[g],c=c||e.getPropertyCSSValue(&quot;-&quot;+f+&quot;-&quot;+b);return c},e.prototype.animationName=function(a){var b;try{b=this.vendorCSS(a,&quot;animation-name&quot;).cssText}catch(c){b=d(a).getPropertyValue(&quot;animation-name&quot;)}return&quot;none&quot;===b?&quot;&quot;:b},e.prototype.cacheAnimationName=function(a){return this.animationNameCache.set(a,this.animationName(a))},e.prototype.cachedAnimationName=function(a){return this.animationNameCache.get(a)},e.prototype.scrollHandler=function(){return this.scrolled=!0},e.prototype.scrollCallback=function(){var a;return!this.scrolled||(this.scrolled=!1,this.boxes=function(){var b,c,d,e;for(d=this.boxes,e=[],b=0,c=d.length;c&gt;b;b++)a=d[b],a&amp;&amp;(this.isVisible(a)?this.show(a):e.push(a));return e}.call(this),this.boxes.length||this.config.live)?void 0:this.stop()},e.prototype.offsetTop=function(a){for(var b;void 0===a.offsetTop;)a=a.parentNode;for(b=a.offsetTop;a=a.offsetParent;)b+=a.offsetTop;return b},e.prototype.isVisible=function(a){var b,c,d,e,f;return c=a.getAttribute(&quot;data-wow-offset&quot;)||this.config.offset,f=window.pageYOffset,e=f+Math.min(this.element.clientHeight,this.util().innerHeight())-c,d=this.offsetTop(a),b=d+a.clientHeight,e&gt;=d&amp;&amp;b&gt;=f},e.prototype.util=function(){return null!=this._util?this._util:this._util=new b},e.prototype.disabled=function(){return!this.config.mobile&amp;&amp;this.util().isMobile(navigator.userAgent)},e}()}).call(this);
+new WOW().init();
+
+&lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;&lt;header&gt;
+  &lt;div class=&quot;main-nav-holder&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      &lt;a href=&quot;http://phptravels.com/&quot;&gt;
+        &lt;img class=&quot;brand&quot; src=&quot;http://phptravels.com//assets/img/logo-white.png&quot; alt=&quot;PHPTRAVELS&quot;&gt;
+      &lt;/a&gt;
+      &lt;button type=&quot;button&quot; class=&quot;navbar-toggle visible-xs&quot;&gt;
+        &lt;span class=&quot;sr-only&quot;&gt;Toggle navigation
+        &lt;/span&gt;
+        &lt;span class=&quot;icon-bar top-bar&quot;&gt;
+        &lt;/span&gt;
+        &lt;span class=&quot;icon-bar middle-bar&quot;&gt;
+        &lt;/span&gt;
+        &lt;span class=&quot;icon-bar bottom-bar&quot;&gt;
+        &lt;/span&gt;
+      &lt;/button&gt;
+      &lt;nav class=&quot;main-nav nav-up main-nav-holder&quot; id=&quot;main-menu&quot;&gt;
+        &lt;ul class=&quot;nav reset&quot;&gt;
+          &lt;li class=&quot;user-login&quot;&gt;
+            &lt;span class=&quot;lvl-1&quot;&gt;
+              &lt;span&gt;
+                &lt;a class=&quot;white&quot; href=&quot;http://phptravels.com/demo/&quot;&gt;Demo
+                &lt;/a&gt;
+              &lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/li&gt;
+          &lt;li class=&quot;user-login&quot;&gt;
+            &lt;span class=&quot;lvl-1&quot;&gt;
+              &lt;span&gt;
+                &lt;a class=&quot;white&quot; href=&quot;http://phptravels.com/order/&quot;&gt;Order
+                &lt;/a&gt;
+              &lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/li&gt;
+          &lt;!--&lt;li class=&quot;user-login&quot;&gt;
+            &lt;span class=&quot;lvl-1&quot;&gt;
+              &lt;span&gt;
+                &lt;a class=&quot;white&quot; href=&quot;http://phptravels.com/clients/&quot;&gt;Clients
+                &lt;/a&gt;
+              &lt;/span&gt;
+            &lt;/span&gt;
+          &lt;/li&gt;--&gt;
+          &lt;li class=&quot;has-drop&quot;&gt;
+            &lt;span class=&quot;lvl-1&quot;&gt;
+              &lt;span&gt;Product
+              &lt;/span&gt;
+            &lt;/span&gt;
+            &lt;div class=&quot;menu-dropdown&quot;&gt;
+              &lt;ul class=&quot;menu reset&quot;&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;#&quot; class=&quot;sub-menu-back&quot;&gt;Back
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/documentation/&quot;&gt;Documentation
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/features/&quot;&gt;Features
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/technology/&quot;&gt;Technology
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/requirements/&quot;&gt;Requirements
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/change-log/&quot;&gt;Changelog
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/updates/&quot;&gt;Updates
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/desktop-application/&quot;&gt;Desktop App
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/mobile-applications/&quot;&gt;Mobile App
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/how-to-get-started//&quot;&gt;How to Start
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/div&gt;
+          &lt;/li&gt;
+          &lt;li class=&quot;has-drop&quot;&gt;
+            &lt;span class=&quot;lvl-1&quot;&gt;
+              &lt;span&gt;Services
+              &lt;/span&gt;
+            &lt;/span&gt;
+            &lt;div class=&quot;menu-dropdown&quot;&gt;
+              &lt;ul class=&quot;menu reset&quot;&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;#&quot; class=&quot;sub-menu-back&quot;&gt;Back
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/services/&quot;&gt;Product Services
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/integrations/&quot;&gt;Integrations
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/customizations/&quot;&gt;Customizations
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/expedia-xml-api-integration/&quot;&gt;API XML Integration
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/providers/&quot;&gt;Providers
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/div&gt;
+          &lt;/li&gt;
+          &lt;!--&lt;li class=&quot;has-drop&quot;&gt;
+&lt;span class=&quot;lvl-1&quot;&gt;&lt;span&gt;Solutions&lt;/span&gt;&lt;/span&gt;
+&lt;div class=&quot;menu-dropdown&quot;&gt;
+&lt;ul class=&quot;menu reset&quot;&gt;
+&lt;li&gt;&lt;a href=&quot;#&quot; class=&quot;sub-menu-back&quot;&gt;Back&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://localhost/php/expedia-xml-api-integration/&quot;&gt;Expedia Integration&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/li&gt;--&gt;
+          &lt;li class=&quot;has-drop&quot;&gt;
+            &lt;span class=&quot;lvl-1&quot;&gt;
+              &lt;span&gt;Company
+              &lt;/span&gt;
+            &lt;/span&gt;
+            &lt;div class=&quot;menu-dropdown&quot;&gt;
+              &lt;ul class=&quot;menu reset&quot;&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;#&quot; class=&quot;sub-menu-back&quot;&gt;Back
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/about-us/&quot;&gt;About Us
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/contact-us/&quot;&gt;Contact Us
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/the-team/&quot;&gt;The Team
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/media-kit/&quot;&gt;Media Kit
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/jobs/&quot;&gt;Careers / Jobs
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/blog/&quot;&gt;Blog Articles
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/privacy-statement/&quot;&gt;Privacy Policy
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://phptravels.com/terms-and-conditions/&quot;&gt;Terms &amp;amp; Conditions
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a href=&quot;http://www.phptravels.info&quot; target=&quot;_blank&quot;&gt;Forums
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/div&gt;
+          &lt;/li&gt;
+          &lt;li class=&quot;user-login&quot;&gt;
+            &lt;a target=&quot;blank&quot; href=&quot;http://phptravels.org&quot; class=&quot;login&quot;&gt;
+              &lt;span&gt;Login
+              &lt;/span&gt;
+              &lt;i class=&quot;ico fa fa-lock&quot;&gt;
+              &lt;/i&gt;
+            &lt;/a&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/nav&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/header&gt;&lt;section class=&quot;styleblock&quot;&gt;
+  &lt;div class=&quot;cell light&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      &lt;div class=&quot;text&quot;&gt;
+        &lt;h1 data-wow-duration=&quot;0.3s&quot; data-wow-delay=&quot;0.5s&quot; class=&quot;wow fadeIn cw animated&quot; style=&quot;visibility: visible; animation-duration: 0.3s; animation-delay: 0.5s; animation-name: fadeIn;&quot;&gt;Application Test Drive.&lt;/h1&gt;
+        &lt;p data-wow-duration=&quot;0.3s&quot; data-wow-delay=&quot;0.6s&quot; class=&quot;wow fadeIn cw animated&quot; style=&quot;visibility: visible; animation-duration: 0.3s; animation-delay: 0.6s; animation-name: fadeIn;&quot;&gt;Go ahead and give it full test to checkout the amazing features behind our application&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ &lt;div class=&quot;overlay&quot; style=&quot;background-color: rgba(69, 108, 241, 0.92)&quot;&gt;&lt;/div&gt;
+&lt;/section&gt;
+&lt;style&gt;
+    .img-hover:hover{ opacity: 0.5; filter: alpha(opacity=50); /* For IE8 and earlier */ -webkit-transition: all 0.3s ease-out; -moz-transition: all 0.3s ease-out; transition: all 0.3s ease-out; }
+    .resource-box {color: #1f1f32;}
+    hr {
+    border-color: #E7EAEF;
+    margin: 1em 0;
+    }
+    .profile {
+    display: block;
+    max-width: 85%;
+    height: auto;
+    }
+    .btn-lg {
+    padding: 22px 20px;
+    }
+    .grey-box{
+    margin-top: -35px;
+    }
+&lt;/style&gt;
+&lt;section class=&quot;grey-box&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;div class=&quot;row&quot;&gt;
+            &lt;div data-wow-duration=&quot;0.3s&quot; data-wow-delay=&quot;0.5s&quot; class=&quot; wow fadeInUp col-md-12 animated&quot; style=&quot;visibility: visible; animation-duration: 0.3s; animation-delay: 0.5s; animation-name: fadeInUp;&quot;&gt;
+                &lt;div class=&quot;resource-box&quot;&gt;
+                    &lt;div class=&quot;row&quot;&gt;
+                        &lt;div class=&quot;col-md-3&quot;&gt;
+                            &lt;img src=&quot;http://phptravels.com/assets/img/front.png&quot; class=&quot;well-sm icon-resources img100&quot; alt=&quot;homepage&quot;&gt;
+                        &lt;/div&gt;
+                        &lt;div class=&quot;col-md-9&quot;&gt;
+                            &lt;div class=&quot;resource&quot;&gt;
+                                &lt;span class=&quot;resource-type&quot;&gt;&lt;/span&gt;
+                                &lt;div class=&quot;resource-info&quot;&gt;
+                                    &lt;span class=&quot;value&quot;&gt;Homepage&lt;/span&gt;
+                                    &lt;span class=&quot;name&quot;&gt;Front-End&lt;/span&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;hr&gt;
+                            &lt;div class=&quot;col-md-12&quot;&gt;
+                                &lt;div class=&quot;row&quot;&gt;
+                                    &lt;div class=&quot;col-md-6&quot;&gt;
+                                        &lt;div class=&quot;row&quot;&gt;
+                                            &lt;a target=&quot;_blank&quot; href=&quot;//www.phptravels.net&quot; class=&quot;btn btn-primary btn-lg btn-block&quot;&gt;
+                                            &lt;small&gt;http://www.phptravels.net&lt;/small&gt;
+                                            &lt;/a&gt;
+                                        &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class=&quot;visible-xs visible-sm&quot;&gt;
+                                        &lt;hr&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class=&quot;col-md-6&quot;&gt;
+                                        &lt;div class=&quot;col-md-3 col-sm-3 col-xs-3&quot;&gt;
+                                            &lt;img class=&quot;img-rounded img100&quot; src=&quot;http://phptravels.com/assets/img/pages/demo/customer.png&quot; alt=&quot;customer&quot;&gt;
+                                        &lt;/div&gt;
+                                        &lt;div class=&quot;col-md-8&quot;&gt;
+                                            &lt;div class=&quot;row&quot;&gt;
+                                                &lt;strong&gt;Email&lt;/strong&gt; user@phptravels.com&lt;br&gt;
+                                                &lt;strong&gt;Password&lt;/strong&gt; demouser
+                                            &lt;/div&gt;
+                                        &lt;/div&gt;
+                                    &lt;/div&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div data-wow-duration=&quot;0.3s&quot; data-wow-delay=&quot;0.6s&quot; class=&quot; wow fadeInUp col-md-12 animated&quot; style=&quot;visibility: visible; animation-duration: 0.3s; animation-delay: 0.6s; animation-name: fadeInUp;&quot;&gt;
+                &lt;div class=&quot;resource-box&quot;&gt;
+                    &lt;div class=&quot;row&quot;&gt;
+                        &lt;div class=&quot;col-md-3&quot;&gt;
+                            &lt;img src=&quot;http://phptravels.com/assets/img/back.png&quot; class=&quot;well-sm icon-resources img100&quot; alt=&quot;administrator&quot;&gt;
+                        &lt;/div&gt;
+                        &lt;div class=&quot;col-md-9&quot;&gt;
+                            &lt;div class=&quot;resource&quot;&gt;
+                                &lt;span class=&quot;resource-type&quot;&gt;&lt;/span&gt;
+                                &lt;div class=&quot;resource-info&quot;&gt;
+                                    &lt;span class=&quot;value&quot;&gt;Administrator&lt;/span&gt;
+                                    &lt;span class=&quot;name&quot;&gt;Back-End&lt;/span&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;hr&gt;
+                            &lt;div class=&quot;col-md-12&quot;&gt;
+                                &lt;div class=&quot;row&quot;&gt;
+                                    &lt;div class=&quot;col-md-6&quot;&gt;
+                                        &lt;div class=&quot;row&quot;&gt;
+                                            &lt;a target=&quot;_blank&quot; href=&quot;//www.phptravels.net/admin&quot; class=&quot;btn btn-primary btn-lg btn-block&quot;&gt;
+                                            &lt;small&gt;http://www.phptravels.net/admin&lt;/small&gt;
+                                            &lt;/a&gt;
+                                        &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class=&quot;visible-xs visible-sm&quot;&gt;
+                                        &lt;hr&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class=&quot;col-md-6&quot;&gt;
+                                        &lt;div class=&quot;col-md-3 col-sm-3 col-xs-3&quot;&gt;
+                                            &lt;img class=&quot;img-rounded img100&quot; src=&quot;http://phptravels.com/assets/img/pages/demo/admin.png&quot; alt=&quot;admin&quot;&gt;
+                                        &lt;/div&gt;
+                                        &lt;div class=&quot;col-md-8&quot;&gt;
+                                            &lt;div class=&quot;row&quot;&gt;
+                                                &lt;strong&gt;Email&lt;/strong&gt; admin@phptravels.com&lt;br&gt;
+                                                &lt;strong&gt;Password&lt;/strong&gt; demoadmin
+                                            &lt;/div&gt;
+                                        &lt;/div&gt;
+                                    &lt;/div&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div data-wow-duration=&quot;0.3s&quot; data-wow-delay=&quot;0.7s&quot; class=&quot; wow fadeInUp col-md-12 animated&quot; style=&quot;visibility: visible; animation-duration: 0.3s; animation-delay: 0.7s; animation-name: fadeInUp;&quot;&gt;
+                &lt;div class=&quot;resource-box&quot;&gt;
+                    &lt;div class=&quot;row&quot;&gt;
+                        &lt;div class=&quot;col-md-3&quot;&gt;
+                            &lt;img src=&quot;http://phptravels.com/assets/img/back.png&quot; class=&quot;well-sm icon-resources img100&quot; alt=&quot;supplier&quot;&gt;
+                        &lt;/div&gt;
+                        &lt;div class=&quot;col-md-9&quot;&gt;
+                            &lt;div class=&quot;resource&quot;&gt;
+                                &lt;span class=&quot;resource-type&quot;&gt;&lt;/span&gt;
+                                &lt;div class=&quot;resource-info&quot;&gt;
+                                    &lt;span class=&quot;value&quot;&gt;Supplier&lt;/span&gt;
+                                    &lt;span class=&quot;name&quot;&gt;back-End&lt;/span&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;hr&gt;
+                            &lt;div class=&quot;col-md-12&quot;&gt;
+                                &lt;div class=&quot;row&quot;&gt;
+                                    &lt;div class=&quot;col-md-6&quot;&gt;
+                                        &lt;div class=&quot;row&quot;&gt;
+                                            &lt;a target=&quot;_blank&quot; href=&quot;//www.phptravels.net/supplier&quot; class=&quot;btn btn-primary btn-lg btn-block&quot;&gt;
+                                            &lt;small&gt;http://www.phptravels.net/supplier&lt;/small&gt;
+                                            &lt;/a&gt;
+                                        &lt;/div&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class=&quot;visible-xs visible-sm&quot;&gt;
+                                        &lt;hr&gt;
+                                    &lt;/div&gt;
+                                    &lt;div class=&quot;col-md-6&quot;&gt;
+                                        &lt;div class=&quot;col-md-3 col-sm-3 col-xs-3&quot;&gt;
+                                            &lt;img class=&quot;img-rounded img100&quot; src=&quot;http://phptravels.com/assets/img/pages/demo/supplier.png&quot; alt=&quot;supplier&quot;&gt;
+                                        &lt;/div&gt;
+                                        &lt;div class=&quot;col-md-8&quot;&gt;
+                                            &lt;div class=&quot;row&quot;&gt;
+                                                &lt;strong&gt;Email&lt;/strong&gt; supplier@phptravels.com&lt;br&gt;
+                                                &lt;strong&gt;Password&lt;/strong&gt; demosupplier
+                                            &lt;/div&gt;
+                                        &lt;/div&gt;
+                                    &lt;/div&gt;
+                                &lt;/div&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/section&gt;
+&lt;section&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;br&gt;&lt;br&gt;
+        &lt;h3 class=&quot;wow fadeIn strong text-center animated&quot; style=&quot;visibility: visible; animation-name: fadeIn;&quot;&gt;&lt;strong&gt;F&amp;nbsp;A&amp;nbsp;Q&lt;/strong&gt;&lt;/h3&gt;
+        &lt;hr&gt;
+        &lt;div class=&quot;row form-group&quot;&gt;
+            &lt;div class=&quot;wow fadeIn col-md-6 animated&quot; style=&quot;visibility: visible; animation-name: fadeIn;&quot;&gt;
+                &lt;h4 class=&quot;strong&quot;&gt;How to test?&lt;/h4&gt;
+                &lt;p&gt;Please click on above provided details for homepage, administrator and supplier login in order to check the features of application on realtime.&lt;/p&gt;
+                &lt;hr&gt;
+                &lt;h4 class=&quot;strong&quot;&gt;Can I save contents?&lt;/h4&gt;
+                &lt;p&gt;Yes but all database contents will be reset after every few minutes to protect the software contents and show the demo material only.&amp;nbsp;&amp;nbsp;&lt;br&gt;&amp;nbsp;&lt;br&gt;&lt;/p&gt;
+                &lt;hr&gt;
+                &lt;h4 class=&quot;strong&quot;&gt;What's included in this?&lt;/h4&gt;
+                &lt;p&gt;We have added all features and you are free to test the entire application from back-end to front-end.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;wow fadeIn col-md-6 animated&quot; style=&quot;visibility: visible; animation-name: fadeIn;&quot;&gt;
+                &lt;h4 class=&quot;strong&quot;&gt;Do you charge for testing?&lt;/h4&gt;
+                &lt;p&gt;Not at all we offer free application testing there is no charges. you can test this booking application anytime by visiting this page&lt;/p&gt;
+                &lt;hr&gt;
+                &lt;h4 class=&quot;strong&quot;&gt;What if I want to test on my hosting?&lt;/h4&gt;
+                &lt;p&gt;Sorry we do not offer trial or testing versions. you may test the entire application on our server. once you satisfied you may purchase and install on your website.&lt;/p&gt;
+                &lt;hr&gt;
+                &lt;h4 class=&quot;strong&quot;&gt;Can I test on tablet or phone?&lt;/h4&gt;
+                &lt;p&gt;Yes our all themes and user-interface is 99% responsive. all you need to test is internet connection, Desktop PC, Laptop, Tablet or Phone Device.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/section&gt;
+&lt;div class=&quot;container&quot;&gt;
+    &lt;hr&gt;
+    &lt;p class=&quot;text-center text-danger&quot;&gt;Any change to demo script will reset to default settings. do not try to edit remove or change demo contents, these accounts are only for demo purpose.&lt;/p&gt;
+    &lt;div&gt;&lt;span style=&quot;color: #ffffff;&quot;&gt;hotels, script, php mysql,flights, flights, tickets, travel software, hotel online, reservation system, booking engine, search engine optimization, software, travel agent, marketing, travel, hotel, xml, air travel, cheap air, flight deals, air flights, cheap airline, cheap airfare, cheap flights from, travel agents, air tickets, airline ticket, cheap flights from to, cheap ticket, cheap tickets airline&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+    &lt;nav class=&quot;navbar navbar-default foot-nav-holder nav-up main-nav-holder&quot;&gt;
+        &lt;div class=&quot;container&quot;&gt;
+            &lt;div class=&quot;collapse navbar-collapse&quot;&gt;
+                &lt;ul class=&quot;nav navbar-nav&quot;&gt;
+                    &lt;li&gt;&lt;a style=&quot;padding-top: 17px;padding-bottom:0px&quot; href=&quot;javascript:void(0);&quot;&gt;Join the world's most popular &lt;strong&gt;Travel Agency&lt;/strong&gt; Software&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+                &lt;form class=&quot;navbar-form navbar-left&quot; action=&quot;//phptravels.org/register.php&quot; target=&quot;_blank&quot; method=&quot;post&quot;&gt;
+                    &lt;button type=&quot;submit&quot; class=&quot;btn btn-success&quot;&gt;Join Now!&lt;/button&gt;
+                &lt;/form&gt;
+                &lt;div class=&quot;navbar-form navbar-right&quot;&gt;
+                    &lt;a class=&quot;btn-sm btn btn-primary&quot; href=&quot;//www.facebook.com/travelbusiness&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-facebook&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+                    &lt;a class=&quot;btn-sm btn btn-danger&quot; href=&quot;//plus.google.com/+phptravels&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-google-plus&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+                    &lt;a class=&quot;btn-sm btn btn-info&quot; href=&quot;//www.twitter.com/phptravels&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-twitter&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+                    &lt;a class=&quot;btn-sm btn btn-primary&quot; href=&quot;//www.linkedin.com/company/phptravels&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-linkedin&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+                    &lt;a class=&quot;btn-sm btn btn-success&quot; href=&quot;//www.instagram.com/phptravels/&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-instagram&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+                    &lt;a class=&quot;btn-sm btn btn-warning&quot; href=&quot;//www.phptravels.com/sitemap.xml&quot; target=&quot;_blank&quot;&gt;&lt;i class=&quot;fa fa-rss&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/nav&gt;
+    &lt;footer&gt;
+        &lt;div class=&quot;container&quot;&gt;
+            &lt;div class=&quot;row&quot;&gt;
+                &lt;div class=&quot;col-md-3&quot;&gt;
+                    &lt;div class=&quot;row&quot;&gt;
+                        &lt;div data-wow-duration=&quot;0.5s&quot; data-wow-delay=&quot;0.3s&quot; class=&quot;wow fadeIn col-md-12 col-xs-8 animated&quot; style=&quot;visibility: visible; animation-duration: 0.5s; animation-delay: 0.3s; animation-name: fadeIn;&quot;&gt;
+                            &lt;a href=&quot;http://phptravels.com/&quot; class=&quot;foot-logo&quot;&gt;
+                            &lt;img src=&quot;http://phptravels.com/assets/img/logo-footer.png&quot; alt=&quot;PHPTRAVELS&quot; class=&quot;img-responsive&quot;&gt;
+                            &lt;/a&gt;
+                            &lt;div class=&quot;copyright&quot;&gt;
+                                &lt;p&gt;The World's Leading Best&lt;br&gt;Online Travel &amp;amp; Booking Platform&lt;/p&gt;
+                                &lt;p class=&quot;muted&quot;&gt;&copy; 2016 &lt;b&gt;PHPTRAVELS&lt;/b&gt;&lt;/p&gt;
+                                &lt;a href=&quot;http://phptravels.com/terms-and-conditions/&quot;&gt;Terms of Service&lt;/a&gt; &amp;nbsp;
+                                &lt;a href=&quot;http://phptravels.com/privacy-statement/&quot;&gt;Privacy Policy&lt;/a&gt;
+                            &lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;col-md-9&quot;&gt;
+                    &lt;div class=&quot;foot-menu&quot;&gt;
+                        &lt;div data-wow-duration=&quot;0.5s&quot; data-wow-delay=&quot;0.4s&quot; class=&quot;wow fadeIn col-md-3 animated&quot; style=&quot;visibility: visible; animation-duration: 0.5s; animation-delay: 0.4s; animation-name: fadeIn;&quot;&gt;
+                            &lt;strong class=&quot;head&quot;&gt;PRODUCT&lt;/strong&gt;
+                            &lt;ul class=&quot;reset&quot;&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/desktop-application/&quot;&gt;Desktop App&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/mobile-applications/&quot;&gt;Mobile Apps&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/features/&quot; title=&quot;Features&quot;&gt;Features&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/requirements/&quot; title=&quot;Requirements&quot;&gt;Requirements&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/technology/&quot; title=&quot;Technology&quot;&gt;Technology&lt;/a&gt;&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/div&gt;
+                        &lt;div data-wow-duration=&quot;0.5s&quot; data-wow-delay=&quot;0.5s&quot; class=&quot;wow fadeIn  col-md-3 animated&quot; style=&quot;visibility: visible; animation-duration: 0.5s; animation-delay: 0.5s; animation-name: fadeIn;&quot;&gt;
+                            &lt;strong class=&quot;head&quot;&gt;RESOURCES&lt;/strong&gt;
+                            &lt;ul class=&quot;reset&quot;&gt;
+                                &lt;!--&lt;li&gt;&lt;a href=&quot;http://phptravels.com/expedia-xml-api-integration/&quot;&gt;Expedia Integration&lt;/a&gt;&lt;/li&gt;--&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/customizations/&quot;&gt;Customizations&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/change-log/&quot;&gt;Changelog&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/updates/&quot;&gt;Updates&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/providers/&quot;&gt;Providers&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/expedia-xml-api-integration//&quot;&gt;Expedia Integration&lt;/a&gt;&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/div&gt;
+                        &lt;div class=&quot;clearfix visible-xs hidden-xm&quot;&gt;&lt;/div&gt;
+                        &lt;!--&lt;div data-wow-duration=&quot;0.5s&quot; data-wow-delay=&quot;0.6s&quot; class=&quot;wow fadeIn  col-md-3&quot;&gt;
+                            &lt;strong class=&quot;head&quot;&gt;SUPPORT&lt;/strong&gt;
+                            &lt;ul class=&quot;reset&quot;&gt;
+                                &lt;li&gt;&lt;a target=&quot;blank&quot; href=&quot;http://phptravels.com/documentation/&quot;&gt;Documentation&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;//phptravels.org/submitticket.php?step=2&amp;deptid=1&quot; target=&quot;_blank&quot;&gt;Technical Support&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;//phptravels.info&quot; target=&quot;_blank&quot;&gt;Community Forums&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/providers/&quot;&gt;Providers&lt;/a&gt;&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/div&gt;--&gt;
+                        &lt;div data-wow-duration=&quot;0.5s&quot; data-wow-delay=&quot;0.7s&quot; class=&quot;wow fadeIn  col-md-3 animated&quot; style=&quot;visibility: visible; animation-duration: 0.5s; animation-delay: 0.7s; animation-name: fadeIn;&quot;&gt;
+                            &lt;strong class=&quot;head&quot;&gt;COMPANY&lt;/strong&gt;
+                            &lt;ul class=&quot;reset&quot;&gt;
+                                &lt;li&gt;&lt;a target=&quot;blank&quot; href=&quot;http://phptravels.com/blog/&quot;&gt;Blog&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/about-us/&quot;&gt;About Us&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/contact-us/&quot;&gt;Contact Us&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/jobs/&quot;&gt;Jobs &lt;span class=&quot;jobs&quot;&gt;WE ARE HIRING!&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+                                &lt;li&gt;&lt;a href=&quot;http://phptravels.com/the-team/&quot;&gt;The Team&lt;/a&gt;&lt;/li&gt;
+                            &lt;/ul&gt;
+                        &lt;/div&gt;
+                        &lt;div data-wow-duration=&quot;0.5s&quot; data-wow-delay=&quot;0.6s&quot; class=&quot;wow fadeIn  col-md-3 animated&quot; style=&quot;visibility: visible; animation-duration: 0.5s; animation-delay: 0.6s; animation-name: fadeIn;&quot;&gt;
+                            &lt;strong class=&quot;head&quot;&gt;REVIEWS&lt;/strong&gt;
+                            &lt;div class=&quot;clearfix&quot;&gt;&lt;/div&gt;
+                            &lt;a target=&quot;_blank&quot; href=&quot;http://www.capterra.com/travel-agency-software/reviews/141791/PHPTRAVELS/PHPTRAVELS?utm_source=vendor&amp;amp;utm_medium=badge&amp;amp;utm_campaign=capterra_reviews_badge&quot;&gt;  &lt;img src=&quot;https://assets.capterra.com/badge/cbf91ded0de69049ef9083c38634a308.png?v=2100383&amp;amp;p=141791&quot; border=&quot;0&quot;&gt;&lt;/a&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div data-wow-duration=&quot;0.5s&quot; data-wow-delay=&quot;1s&quot; class=&quot;wow fadeIn form animated&quot; style=&quot;visibility: visible; animation-duration: 0.5s; animation-delay: 1s; animation-name: fadeIn;&quot;&gt;
+                &lt;h3 style=&quot;color:white&quot; class=&quot;text-center&quot;&gt;&lt;strong&gt;Newsletter&lt;/strong&gt;&lt;/h3&gt;
+                &lt;p class=&quot;text-center&quot;&gt;Subscribe Our Newseletter and stay updated!&lt;/p&gt;
+                    &lt;form class=&quot;newsletter-form subscribe-form&quot; id=&quot;invite&quot; method=&quot;POST&quot; onsubmit=&quot;return false;&quot;&gt;
+                        &lt;div id=&quot;email&quot; class=&quot;inp-holder&quot;&gt;
+                        &lt;div class=&quot;col-md-4&quot;&gt;&lt;/div&gt;
+                        &lt;div class=&quot;col-md-4&quot;&gt;
+                        &lt;input class=&quot;form-control form-group&quot; placeholder=&quot;your@email.com&quot; name=&quot;email&quot; id=&quot;address&quot; type=&quot;text&quot;&gt;
+                        &lt;input data-wow-duration=&quot;0.5s&quot; data-wow-delay=&quot;1.1s&quot; class=&quot;form-group wow flipInY btn btn-primary btnsignup btn-block animated&quot; value=&quot;SUBSCRIBE&quot; style=&quot;visibility: visible; animation-duration: 0.5s; animation-delay: 1.1s; animation-name: flipInY;&quot; type=&quot;submit&quot;&gt;
+                        &lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class=&quot;col-md-4&quot;&gt;&lt;/div&gt;
+                    &lt;/form&gt;
+                &lt;div class=&quot;clearfix form-group&quot;&gt;&lt;/div&gt;
+                &lt;div class=&quot;col-md-3&quot;&gt;&lt;/div&gt;
+                &lt;div class=&quot;col-md-6&quot;&gt;&lt;span id=&quot;result&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+                &lt;div class=&quot;col-md-3&quot;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/footer&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        $(document).ready(function() {
+        $(&quot;.btnsignup&quot;).on(&quot;click&quot;,function(){
+        var email = $(&quot;#address&quot;).val();
+        if(validateEmail(email)){
+        $.post(&quot;http://phptravels.com/subscribe.php&quot;,$(&quot;#invite&quot;).serialize(),function(resp){
+        // console.log(resp);
+        $(&quot;#result&quot;).html(&quot;&lt;div class='alert alert-success'&gt;&quot;+resp+&quot;&lt;/div&gt;&quot;).fadeIn(&quot;slow&quot;);
+        });
+        }else{
+        $(&quot;#result&quot;).html(&quot;&quot;);
+        $(&quot;#result&quot;).html(&quot;&lt;div class='alert alert-danger'&gt;Email Address is Invalid&lt;/div&gt;&quot;).fadeIn(&quot;slow&quot;);
+        }
+        setTimeout(function(){  $(&quot;#result&quot;).html(&quot;&quot;);  }, 15000);
+        });
+        });
+        function validateEmail(email) {
+        var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+        return re.test(email);
+        }
+    &lt;/script&gt;
+    &lt;script&gt;
+        // Hide Header on on scroll down
+        var didScroll;
+        var lastScrollTop = 0;
+        var delta = 5;
+        var navbarHeight = $('nav').outerHeight();
+        $(window).scroll(function(event){
+            didScroll = true;
+        });
+        setInterval(function() {
+            if (didScroll) {
+                hasScrolled();
+                didScroll = false;
+            }
+        }, 250);
+        function hasScrolled() {
+            var st = $(this).scrollTop();
+
+            // Make sure they scroll more than delta
+            if(Math.abs(lastScrollTop - st) &lt;= delta)
+            return;
+
+            // If they scrolled down and are past the navbar, add class .nav-up.
+            // This is necessary so you never see what is &quot;behind&quot; the navbar.
+            if (st &gt; lastScrollTop &amp;&amp; st &gt; navbarHeight){
+                // Scroll Down
+                $('nav').removeClass('main-nav-holder').addClass('main-nav-holder nav-up');
+            } else {
+                // Scroll Up
+                if(st + $(window).height() &lt; $(document).height()) {
+                    $('nav').removeClass('main-nav-holder nav-up').addClass('main-nav-holder');
+                }
+            }
+            lastScrollTop = st;
+        }
+    &lt;/script&gt;
+    &lt;!-- //Top Nav AutoHide --&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+var __lc = {};
+__lc.license = 4618001;
+
+(function() {
+	var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
+	lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
+})();
+&lt;/script&gt;
+
+&lt;script&gt;
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-50180186-1', 'auto');
+    ga('send', 'pageview');
+&lt;/script&gt;
+
+&lt;!-- Google Tag Manager --&gt;
+&lt;!--&lt;noscript&gt;&lt;iframe src=&quot;//www.googletagmanager.com/ns.html?id=GTM-KLVMCL&quot;
+height=&quot;0&quot; width=&quot;0&quot; style=&quot;display:none;visibility:hidden&quot;&gt;&lt;/iframe&gt;&lt;/noscript&gt;
+&lt;script&gt;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&amp;l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KLVMCL');&lt;/script&gt;--&gt;
+&lt;!-- End Google Tag Manager --&gt;
+
+&lt;!-- promo --&gt;
+&lt;!--&lt;script&gt;
+    (function (w,i,d,g,e,t,s) {w[d] = w[d]||[];t= i.createElement(g);
+        t.async=1;t.src=e;s=i.getElementsByTagName(g)[0];s.parentNode.insertBefore(t, s);
+    })(window, document, '_gscq','script','//widgets.getsitecontrol.com/53476/script.js');
+&lt;/script&gt;--&gt;
+&lt;!-- promo --&gt;
+
+&lt;div style=&quot;margin-top: -28px; width: 150px; position: fixed; visibility: visible; animation-duration: 0.5s; animation-delay: 9s; animation-name: fadeIn;&quot; data-wow-duration=&quot;0.5s&quot; data-wow-delay=&quot;9s&quot; class=&quot;wow fadeIn ad collapse in hidden-xs animated&quot;&gt;
+    &lt;button class=&quot;ad-btn-hide&quot; data-toggle=&quot;collapse&quot; data-target=&quot;.ad&quot;&gt;x&lt;/button&gt;
+    &lt;div class=&quot;well well-sm&quot;&gt;
+        &lt;a href=&quot;http://phptravels.com/order/&quot; target=&quot;blank&quot;&gt;
+        &lt;img src=&quot;http://phptravels.com/assets/img/offers/blackfriday.png&quot; class=&quot;img-responsive&quot;&gt;
+        &lt;button style=&quot;margin-top:4px;margin-bottom:0px;&quot; class=&quot;btn-sm btn btn-primary btn-block&quot; href=&quot;http://phptravels.com//order&quot; target=&quot;_blank&quot;&gt;Order Now&lt;/button&gt;&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+    
+    &lt;script src=&quot;http://secure.livechatinc.com/licence/4618001/get_dynamic_config.js?t=1501706930677&amp;amp;referrer=&amp;amp;url=http%3A%2F%2Fphptravels.com%2Fdemo%2F&amp;amp;params=&amp;amp;jsonp=__lc_data_707374&quot;&gt;&lt;/script&gt;&lt;script src=&quot;http://secure.livechatinc.com/licence/4618001/v2/get_static_config.0.1140.4.5.539.305.96.11.7.4.3.3.2.js?&amp;amp;jsonp=__lc_data_static_config&quot;&gt;&lt;/script&gt;&lt;script src=&quot;http://secure.livechatinc.com/licence/4618001/localization.en.0.06a3584c688737c3e35f4146584405cf.js?jsonp=__lc_lang&quot;&gt;&lt;/script&gt;&lt;script id=&quot;livechat-ping&quot; src=&quot;http://secure.livechatinc.com/licence/4618001/v2/ping?t=1501706930784&amp;amp;data=%7B%22visitor%22%3A%7B%22id%22%3A%22S1501706916.271c10999c%22%2C%22group%22%3A0%7D%2C%22page%22%3A%7B%22title%22%3A%22PHPTRAVELS%20%7C%20Demo%22%2C%22url%22%3A%22http%3A%5C%2F%5C%2Fphptravels.com%5C%2Fdemo%5C%2F%22%7D%2C%22script_version%22%3A%7B%22tracking_env%22%3A%22production%22%2C%22tracking_version%22%3A%2220170728150630%22%7D%7D&amp;amp;jsonp=__lc_ping_38629&quot;&gt;&lt;/script&gt;&lt;div id=&quot;livechat-compact-container&quot; style=&quot;position: fixed; bottom: 0px; right: 15px; width: 330px; height: 105px; overflow: hidden; visibility: visible; z-index: 2147483639; background: transparent none repeat scroll 0% 0%; border: 0px none; transition: transform 0.2s ease-in-out 0s; backface-visibility: hidden; transform: translateY(0%); opacity: 1;&quot;&gt;&lt;iframe src=&quot;about:blank&quot; id=&quot;livechat-compact-view&quot; style=&quot;position: relative;top: 20px;left: 0;width: 100%;border: 0;padding: 0;margin: 0;float: none;background: none&quot; scrolling=&quot;no&quot; allowtransparency=&quot;true&quot; title=&quot;LiveChat Minimized Widget&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&lt;a id=&quot;livechat-badge&quot; href=&quot;#&quot; onclick=&quot;LC_API.show_full_view({source:'minimized click'});return false&quot; style=&quot;position: absolute; display: block; visibility: hidden; height: 16px; line-height: 16px; background: rgb(255, 0, 0) none repeat scroll 0% 0%; color: rgb(255, 255, 255); font-size: 10px; text-decoration: none; width: 16px; border-radius: 50%; box-shadow: none; border-top: 0px none; padding: 0px; text-align: center; font-family: &amp;quot;Lato&amp;quot;,sans-serif; top: 23px; right: 8px; opacity: 0;&quot;&gt;&lt;/a&gt;&lt;/div&gt;&lt;div id=&quot;livechat-full&quot; style=&quot;position: fixed; bottom: 0px; right: 15px; width: 400px; height: 450px; overflow: hidden; visibility: hidden; z-index: -1; background: transparent none repeat scroll 0% 0%; border: 0px none; transition: transform 0.2s ease-in-out 0s; backface-visibility: hidden; opacity: 0; transform: translateY(100%);&quot;&gt;&lt;iframe src=&quot;http://secure.livechatinc.com/licence/4618001/open_chat.cgi?groups=0&amp;amp;embedded=1&amp;amp;newWebserv=undefined&amp;amp;__lc_vv=2&amp;amp;session_id=S1501706916.271c10999c&amp;amp;server=secure.livechatinc.com#http://phptravels.com/demo/&quot; id=&quot;livechat-full-view&quot; name=&quot;livechat-full-view&quot; title=&quot;LiveChat Widget&quot; scrolling=&quot;no&quot; allowtransparency=&quot;true&quot; style=&quot;position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px; width: 100%; height: 100%; border: 0px none; padding: 0px; margin: 0px; float: none; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%;&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;&lt;div id=&quot;lc_invite_layer&quot; style=&quot;text-align: left; display: none; z-index: 16777261;&quot;&gt;&lt;/div&gt;&lt;div id=&quot;lc_overlay_layer&quot; style=&quot;background-color: rgb(0, 0, 0); position: fixed; left: 0px; top: 0px; z-index: 16777260; display: none; width: 100%; height: 100%;&quot;&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</pre>
+			</div>
+			<div class="tab-pane" id='interactions'>
+				<h2>Interactions</h2>
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr>
+							<th>Xpath</th>
+							<th>Destination</tg>
+						</tr>
+											</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../lib/shCore.js"></script>
+	<script type="text/javascript" src="../lib/shBrushXml.js"></script>
+	<script type="text/javascript" src="../lib/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../lib/bootstrap.min.js"></script>
+	<script type="text/javascript">
+    	$(document).ready(function() {
+			SyntaxHighlighter.all()
+
+			$('#tabs a').click(function (e) {
+		  		e.preventDefault();
+		  		$(this).tab('show');
+			})
+		});
+    	
+    	$('.hovers').tooltip({
+    	    placement: function(a, element) {
+    	        var position = $(element).position();
+    	        if (position.left > 515) {
+    	            return "left";
+    	        }
+    	        if (position.left < 515) {
+    	            return "right";
+    	        }
+    	        if (position.top < 110){
+    	            return "bottom";
+    	        }
+    	        return "top";
+    	    }
+    	});
+	</script>
+</body>
+</html>

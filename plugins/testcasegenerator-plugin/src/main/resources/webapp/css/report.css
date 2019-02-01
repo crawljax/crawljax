@@ -1,0 +1,61 @@
+* {
+	font-family: Verdana, sans-serif;
+}
+
+#app {
+	text-align: center;
+}
+
+.center {
+	display: inline-block;
+}
+
+#stateDisplay {
+	width: 100%;
+}
+
+#navigation {
+	padding: 5px;
+}
+
+#stateNavigator {
+	padding: 5px;
+}
+
+.diff-display {
+	display: block;
+	float: left;
+	width: 47%;
+	height: 600px;
+}
+
+.button {
+	border: 1.5px solid black;
+	padding: 2px 6px;
+	margin: 3px;
+	border-radius: 3px;
+	background-color: #AAF;
+	color: #FFF;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.button.disabled {
+	background-color: #BBB;
+}
+
+.infoTable thead {
+	background: #DDD;
+}
+
+.infoTable {
+	margin: 0px 5px;
+}
+
+.failure {
+	background-color: #fdc6c6;
+}
+
+.success {
+	background-color: #ccffcc;
+}

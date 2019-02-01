@@ -1,22 +1,16 @@
 package com.crawljax.oraclecomparator.comparators;
 
-import java.io.IOException;
-import java.util.Collection;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.common.collect.ImmutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.*;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Oracle which can ignore element/attributes by xpath expression.
@@ -24,29 +18,26 @@ import com.google.common.collect.ImmutableList;
 public class XPathExpressionComparator extends AbstractComparator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(XPathExpressionComparator.class
-	        .getName());
+			.getName());
 
 	private final ImmutableList<String> expressions;
 
 	/**
-	 * @param expressions
-	 *            the xpath expressions to ignore
+	 * @param expressions the xpath expressions to ignore
 	 */
 	public XPathExpressionComparator(Collection<String> expressions) {
 		this.expressions = ImmutableList.copyOf(expressions);
 	}
 
 	/**
-	 * @param expressions
-	 *            the xpath expressions to ignore
+	 * @param expressions the xpath expressions to ignore
 	 */
 	public XPathExpressionComparator(String... expressions) {
 		this.expressions = ImmutableList.copyOf(expressions);
 	}
 
 	/**
-	 * @param dom
-	 *            the dom to ignore the xpath expressions from
+	 * @param dom the dom to ignore the xpath expressions from
 	 * @return the stripped dom with the elements found with the xpath expressions
 	 */
 	@Override

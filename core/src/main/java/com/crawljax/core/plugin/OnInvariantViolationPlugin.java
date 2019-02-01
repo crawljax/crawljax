@@ -14,11 +14,9 @@ public interface OnInvariantViolationPlugin extends Plugin {
 	 * <p>
 	 * This method can be called from multiple threads with different {@link CrawlerContext}
 	 * </p>
-	 * 
-	 * @param invariant
-	 *            the failed invariant.
-	 * @param context
-	 *            the browsers context
+	 *
+	 * @param invariant the failed invariant.
+	 * @param context   the browsers context
 	 */
 	void onInvariantViolation(Invariant invariant, CrawlerContext context);
 

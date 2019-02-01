@@ -48,18 +48,12 @@
 			<organizationUrl>http://salt.ece.ubc.ca</organizationUrl>
 			<timezone>-8</timezone>
 		</developer>
-		<developer>
-			<id>alexnederlof</id>
-			<name>Alex Nederlof</name>
-			<email>alex@nederlof.com</email>
-			<url>http://alex.nederlof.com</url>
-			<organization>TU Delft</organization>
-			<timezone>+1</timezone>
-		</developer>
 	</developers>
 
 	<modules>
 		<module>crawloverview-plugin</module>
 		<module>test-plugin</module>
+		<!-- <module>clickable-detector</module> -->
+		<module>testcasegenerator-plugin</module>
   </modules>
 </project>

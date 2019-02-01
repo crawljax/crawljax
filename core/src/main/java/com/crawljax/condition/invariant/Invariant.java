@@ -1,10 +1,10 @@
 package com.crawljax.condition.invariant;
 
-import java.util.List;
-
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.ConditionType;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
+
+import java.util.List;
 
 /**
  * An Invariant is an condition which should always hold when its preconditions are satisfied.
@@ -12,37 +12,30 @@ import com.google.common.base.Objects;
 public class Invariant extends ConditionType {
 
 	/**
-	 * @param description
-	 *            Description of the invariant.
-	 * @param invariantCondition
-	 *            Condition to check.
+	 * @param description        Description of the invariant.
+	 * @param invariantCondition Condition to check.
 	 */
 	public Invariant(String description, Condition invariantCondition) {
 		super(description, invariantCondition);
 	}
 
 	/**
-	 * @param description
-	 *            Description of the invariant.
-	 * @param invariantCondition
-	 *            Condition to check.
-	 * @param preConditions
-	 *            Only check if the preconditions are true.
+	 * @param description        Description of the invariant.
+	 * @param invariantCondition Condition to check.
+	 * @param preConditions      Only check if the preconditions are true.
 	 */
-	public Invariant(String description, Condition invariantCondition, Condition... preConditions) {
+	public Invariant(String description, Condition invariantCondition,
+			Condition... preConditions) {
 		super(description, invariantCondition, preConditions);
 	}
 
 	/**
-	 * @param description
-	 *            Description of the invariant.
-	 * @param invariantCondition
-	 *            Condition to check.
-	 * @param preConditions
-	 *            Only check if the preconditions are true.
+	 * @param description        Description of the invariant.
+	 * @param invariantCondition Condition to check.
+	 * @param preConditions      Only check if the preconditions are true.
 	 */
 	public Invariant(String description, Condition invariantCondition,
-	        List<Condition> preConditions) {
+			List<Condition> preConditions) {
 		super(description, invariantCondition, preConditions);
 	}
 
@@ -55,10 +48,10 @@ public class Invariant extends ConditionType {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("description", getDescription())
-		        .add("condition", getInvariantCondition())
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("description", getDescription())
+				.add("condition", getInvariantCondition())
+				.toString();
 	}
 
 }

@@ -1,19 +1,18 @@
 package com.crawljax.core.state;
 
-import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
-
-import java.util.Set;
-
+import com.crawljax.core.CrawlSession;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.test.BaseCrawler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.crawljax.core.CrawlSession;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.test.BaseCrawler;
+import java.util.Set;
+
+import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
 
 public class StatesContainElementsTest {
 
@@ -25,7 +24,7 @@ public class StatesContainElementsTest {
 			@Override
 			protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
 				return super.newCrawlConfigurationBuilder()
-				        .setMaximumStates(2);
+						.setMaximumStates(2);
 			}
 		}.crawl();
 	}

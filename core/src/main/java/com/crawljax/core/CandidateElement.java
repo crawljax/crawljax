@@ -1,18 +1,17 @@
 package com.crawljax.core;
 
-import java.util.List;
-
-import org.w3c.dom.Element;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.DomUtils;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import org.w3c.dom.Element;
+
+import java.util.List;
 
 /**
  * Candidate element for crawling. It is possible to link this {@link Eventable} to form inputs, so
@@ -31,16 +30,13 @@ public class CandidateElement {
 
 	/**
 	 * Constructor for a element a identification and a relatedFrame.
-	 * 
-	 * @param element
-	 *            the element.
-	 * @param identification
-	 *            the identification.
-	 * @param relatedFrame
-	 *            the frame this element belongs to.
+	 *
+	 * @param element        the element.
+	 * @param identification the identification.
+	 * @param relatedFrame   the frame this element belongs to.
 	 */
 	public CandidateElement(Element element, Identification identification, String relatedFrame,
-	        List<FormInput> formInputs) {
+			List<FormInput> formInputs) {
 		this.identification = identification;
 		this.element = element;
 		this.relatedFrame = relatedFrame;
@@ -49,19 +45,18 @@ public class CandidateElement {
 
 	/**
 	 * Constructor for a element a xpath-identification and no relatedFrame.
-	 * 
-	 * @param element
-	 *            the element
-	 * @param xpath
-	 *            the xpath expression of the element
+	 *
+	 * @param element    the element
+	 * @param xpath      the xpath expression of the element
+	 * @param formInputs the input data to be used for the form
 	 */
 	public CandidateElement(Element element, String xpath, List<FormInput> formInputs) {
 		this(element, new Identification(Identification.How.xpath, xpath), "", formInputs);
 	}
 
 	public CandidateElement(Element sourceElement, Identification identification,
-	        String relatedFrame) {
-		this(sourceElement, identification, relatedFrame, ImmutableList.<FormInput> of());
+			String relatedFrame) {
+		this(sourceElement, identification, relatedFrame, ImmutableList.of());
 	}
 
 	/**
@@ -76,7 +71,7 @@ public class CandidateElement {
 
 		}
 		result.append(DomUtils.getElementAttributes(this.element, exclude)).append(' ')
-		        .append(this.identification).append(' ').append(relatedFrame);
+				.append(this.identification).append(' ').append(relatedFrame);
 
 		return result.toString();
 	}
@@ -90,8 +85,8 @@ public class CandidateElement {
 
 		if (element != null) {
 			result +=
-			        this.element.getNodeName() + ": "
-			                + DomUtils.getAllElementAttributes(this.element) + " ";
+					this.element.getNodeName() + ": "
+							+ DomUtils.getAllElementAttributes(this.element) + " ";
 		}
 
 		result += this.identification + " " + relatedFrame;
@@ -114,8 +109,7 @@ public class CandidateElement {
 	}
 
 	/**
-	 * @param eventableCondition
-	 *            the EventableCondition
+	 * @param eventableCondition the EventableCondition
 	 */
 	public void setEventableCondition(EventableCondition eventableCondition) {
 		this.eventableCondition = eventableCondition;
@@ -137,12 +131,11 @@ public class CandidateElement {
 
 	/**
 	 * Check all eventable Condition for correctness.
-	 * 
+	 *
+	 * @param browser the current browser instance that contains the current dom
+	 * @return true if all conditions are satisfied or no conditions are specified
 	 * @see #eventableCondition
 	 * @see EventableCondition#checkAllConditionsSatisfied(EmbeddedBrowser)
-	 * @param browser
-	 *            the current browser instance that contains the current dom
-	 * @return true if all conditions are satisfied or no conditions are specified
 	 */
 	public boolean allConditionsSatisfied(EmbeddedBrowser browser) {
 		if (eventableCondition != null) {
@@ -154,12 +147,12 @@ public class CandidateElement {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("identification", identification)
-		        .add("element", element)
-		        .add("formInputs", formInputs)
-		        .add("eventableCondition", eventableCondition)
-		        .add("relatedFrame", relatedFrame)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("identification", identification)
+				.add("element", element)
+				.add("formInputs", formInputs)
+				.add("eventableCondition", eventableCondition)
+				.add("relatedFrame", relatedFrame)
+				.toString();
 	}
 }

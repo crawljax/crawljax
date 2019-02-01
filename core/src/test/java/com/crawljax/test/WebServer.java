@@ -1,12 +1,12 @@
 package com.crawljax.test;
 
-import java.net.URI;
-
 import com.google.common.base.Preconditions;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
+
+import java.net.URI;
 
 public class WebServer {
 	private final Resource resource;
@@ -17,8 +17,7 @@ public class WebServer {
 	private boolean started;
 
 	/**
-	 * @param classPathResource
-	 *            The name of the resource. This resource must be on the test or regular classpath.
+	 * @param classPathResource The name of the resource. This resource must be on the test or regular classpath.
 	 */
 	public WebServer(Resource classPathResource) {
 		resource = classPathResource;

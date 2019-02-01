@@ -1,0 +1,15 @@
+<html>
+	<body>
+		<p>
+		The product <b>should always be</b> given twice a week.
+		</p>
+		
+		<p>Second example</p>
+		<table>
+			<tr>
+				<td>The product </td><td width='30%'>should always be</td><td> given twice a week.</td>
+			</tr>
+		</table>
+
+	</body>
+</html>

@@ -1,26 +1,26 @@
-/**
+/*
  * Created Dec 18, 2007
  */
 package com.crawljax.core.state;
-
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.jgrapht.graph.DefaultEdge;
-import org.w3c.dom.Node;
 
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.XPathHelper;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import org.jgrapht.graph.DefaultEdge;
+import org.w3c.dom.Node;
+
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Eventable class: an element having an event attached to it (onclick, onmouseover, ...) so that it
  * can change the DOM state.
- * 
+ *
  * @author mesbah
  */
 public class Eventable extends DefaultEdge implements Serializable {
@@ -48,11 +48,9 @@ public class Eventable extends DefaultEdge implements Serializable {
 
 	/**
 	 * Create a new Eventable for a identification and eventType.
-	 * 
-	 * @param identification
-	 *            the identification object.
-	 * @param eventType
-	 *            the event type.
+	 *
+	 * @param identification the identification object.
+	 * @param eventType      the event type.
 	 */
 	public Eventable(Identification identification, EventType eventType) {
 		this.identification = identification;
@@ -61,13 +59,10 @@ public class Eventable extends DefaultEdge implements Serializable {
 
 	/**
 	 * Create a new Eventable for a identification and eventType.
-	 * 
-	 * @param identification
-	 *            the identification object.
-	 * @param eventType
-	 *            the event.
-	 * @param relatedFrame
-	 *            the frame containing this element.
+	 *
+	 * @param identification the identification object.
+	 * @param eventType      the event.
+	 * @param relatedFrame   the frame containing this element.
 	 */
 	public Eventable(Identification identification, EventType eventType, String relatedFrame) {
 		this(identification, eventType);
@@ -76,25 +71,21 @@ public class Eventable extends DefaultEdge implements Serializable {
 
 	/**
 	 * Create a new Eventable for a node and eventType.
-	 * 
-	 * @param node
-	 *            The DOM element.
-	 * @param eventType
-	 *            the event type.
+	 *
+	 * @param node      The DOM element.
+	 * @param eventType the event type.
 	 */
 	public Eventable(Node node, EventType eventType) {
 		this(new Identification(Identification.How.xpath, XPathHelper.getXPathExpression(node)),
-		        eventType);
+				eventType);
 		this.element = new Element(node);
 	}
 
 	/**
 	 * Create a new Eventable for a candidateElement and eventType.
-	 * 
-	 * @param candidateElement
-	 *            The CandidateElement element.
-	 * @param eventType
-	 *            the event type. TODO ali remove
+	 *
+	 * @param candidateElement The CandidateElement element.
+	 * @param eventType        the event type. TODO ali remove
 	 */
 	public Eventable(CandidateElement candidateElement, EventType eventType) {
 		this(candidateElement.getIdentification(), eventType);
@@ -120,8 +111,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 * @param id the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
@@ -135,16 +125,14 @@ public class Eventable extends DefaultEdge implements Serializable {
 	}
 
 	/**
-	 * @param identification
-	 *            the identification to set
+	 * @param identification the identification to set
 	 */
 	public void setIdentification(Identification identification) {
 		this.identification = identification;
 	}
 
 	/**
-	 * @param eventType
-	 *            the eventType to set
+	 * @param eventType the eventType to set
 	 */
 	public void setEventType(EventType eventType) {
 		this.eventType = eventType;
@@ -158,8 +146,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	}
 
 	/**
-	 * @param element
-	 *            the element to set
+	 * @param element the element to set
 	 */
 	public void setElement(Element element) {
 		this.element = element;
@@ -167,7 +154,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 
 	/**
 	 * Retrieve the related form inputs.
-	 * 
+	 *
 	 * @return the formInputs
 	 */
 	public CopyOnWriteArrayList<FormInput> getRelatedFormInputs() {
@@ -176,9 +163,8 @@ public class Eventable extends DefaultEdge implements Serializable {
 
 	/**
 	 * Set the list of formInputs.
-	 * 
-	 * @param relatedFormInputs
-	 *            the list of formInputs
+	 *
+	 * @param relatedFormInputs the list of formInputs
 	 */
 	public void setRelatedFormInputs(CopyOnWriteArrayList<FormInput> relatedFormInputs) {
 		this.relatedFormInputs = relatedFormInputs;
@@ -186,8 +172,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 
 	/**
 	 * @return the source state.
-	 * @throws CrawljaxException
-	 *             if the source cannot be found.
+	 * @throws CrawljaxException if the source cannot be found.
 	 */
 	public StateVertex getSourceStateVertex() {
 		return (StateVertex) getSource();
@@ -196,8 +181,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 
 	/**
 	 * @return the target state.
-	 * @throws CrawljaxException
-	 *             if the target cannot be found.
+	 * @throws CrawljaxException if the target cannot be found.
 	 */
 	public StateVertex getTargetStateVertex() {
 		return (StateVertex) getTarget();
@@ -211,7 +195,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	}
 
 	@VisibleForTesting
-	void setSource(StateVertex source) {
+	public void setSource(StateVertex source) {
 		setField("source", source);
 	}
 
@@ -227,25 +211,25 @@ public class Eventable extends DefaultEdge implements Serializable {
 	}
 
 	@VisibleForTesting
-	void setTarget(StateVertex target) {
+	public void setTarget(StateVertex target) {
 		setField("target", target);
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("eventType", eventType)
-		        .add("identification", identification)
-		        .add("element", element)
-		        .add("source", getSource())
-		        .add("target", getTarget())
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("eventType", eventType)
+				.add("identification", identification)
+				.add("element", element)
+				.add("source", getSource())
+				.add("target", getTarget())
+				.toString();
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(eventType, identification, element,
-		        this.getSource(), this.getTarget());
+				this.getSource(), this.getTarget());
 	}
 
 	@Override
@@ -253,10 +237,10 @@ public class Eventable extends DefaultEdge implements Serializable {
 		if (object instanceof Eventable) {
 			Eventable that = (Eventable) object;
 			return Objects.equal(this.eventType, that.eventType)
-			        && Objects.equal(this.identification, that.identification)
-			        && Objects.equal(this.element, that.element)
-			        && Objects.equal(this.getSource(), that.getSource())
-			        && Objects.equal(this.getTarget(), that.getTarget());
+					&& Objects.equal(this.identification, that.identification)
+					&& Objects.equal(this.element, that.element)
+					&& Objects.equal(this.getSource(), that.getSource())
+					&& Objects.equal(this.getTarget(), that.getTarget());
 		}
 		return false;
 	}

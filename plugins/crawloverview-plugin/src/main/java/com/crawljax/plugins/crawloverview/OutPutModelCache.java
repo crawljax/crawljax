@@ -55,23 +55,37 @@ class OutPutModelCache {
 	/**
 	 * @return Makes the final calculations and retuns the {@link OutPutModel}.
 	 */
-	public OutPutModel close(CrawlSession session, ExitStatus exitStatus) {
+	public OutPutModel close(CrawlSession session, ExitStatus exitStatus, String[][] clusters) {
 		ImmutableList<Edge> edgesCopy = asEdges(session.getStateFlowGraph()
 		        .getAllEdges());
 		checkEdgesAndCountFans(edgesCopy);
 		ImmutableMap<String, State> statesCopy = buildStates();
-
 		if (statesCopy.size() != session.getStateFlowGraph().getAllStates()
 		        .size()) {
-			LOG.error("Not all states from the session are in the result. This means there's a bug somewhere");
+			LOG.error(
+			        "Not all states from the session are in the result. This means there's a bug somewhere");
 			LOG.info(
 			        "Printing state difference. \nSession states: {} \nResult states: {}",
 			        statesCopy, session.getStateFlowGraph().getAllStates());
 		}
-
+		addClusterValuesToStates(statesCopy, clusters);
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
 		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session,
-		        stateStats, startDate, failedEvents.get()), exitStatus);
+		        stateStats, startDate, failedEvents.get()), exitStatus, clusters);
+	}
+
+	private void addClusterValuesToStates(ImmutableMap<String, State> statesCopy,
+	        String[][] clusters) {
+		if (clusters == null)
+			return;
+		for (int i = 0; i < clusters.length; i++) {
+			for (int j = 0; j < clusters[i].length; j++) {
+				State state = statesCopy.get(clusters[i][j]);
+				if (state != null)
+					state.setCluster(i);
+			}
+		}
+
 	}
 
 	private ImmutableList<Edge> asEdges(Set<Eventable> allEdges) {

@@ -1,17 +1,15 @@
 package com.crawljax.core;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.inject.Inject;
-
-import net.jcip.annotations.GuardedBy;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
+import net.jcip.annotations.GuardedBy;
+
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The class is a ExtractorManager for the CandidateElements. It basically implements the
@@ -27,10 +25,10 @@ public class CandidateElementManager implements ExtractorManager {
 	 * Use the ConcurrentLinkedQueue to prevent Thread problems when checking and storing
 	 * checkedElements.
 	 */
-	private final Collection<String> elements = new ConcurrentLinkedQueue<String>();
+	private final Collection<String> elements = new ConcurrentLinkedQueue<>();
 
 	/**
-	 * The eventableConditionChecker where to load the eventableconditions from into the new
+	 * The eventableConditionChecker where to load the EventableConditions from into the new
 	 * Candidates.
 	 */
 	private final EventableConditionChecker eventableConditionChecker;
@@ -48,15 +46,13 @@ public class CandidateElementManager implements ExtractorManager {
 
 	/**
 	 * Create a new CandidateElementManager.
-	 * 
-	 * @param eventableConditionChecker
-	 *            the EventableConditionChecker to use
-	 * @param crawlConditionChecker
-	 *            the CrawlConditionChecker to use
+	 *
+	 * @param eventableConditionChecker the EventableConditionChecker to use
+	 * @param crawlConditionChecker     the CrawlConditionChecker to use
 	 */
 	@Inject
 	public CandidateElementManager(EventableConditionChecker eventableConditionChecker,
-	        ConditionTypeChecker<CrawlCondition> crawlConditionChecker) {
+			ConditionTypeChecker<CrawlCondition> crawlConditionChecker) {
 		this.eventableConditionChecker = eventableConditionChecker;
 		this.crawlConditionChecker = crawlConditionChecker;
 	}
@@ -64,7 +60,7 @@ public class CandidateElementManager implements ExtractorManager {
 	/**
 	 * increase the number of checked elements, as a statistics measure to know how many elements
 	 * were actually examined. Its thread safe by using the AtomicInteger
-	 * 
+	 *
 	 * @see java.util.concurrent.atomic.AtomicInteger
 	 */
 	@Override
@@ -75,9 +71,8 @@ public class CandidateElementManager implements ExtractorManager {
 	/**
 	 * Check if a given element is already checked, preventing duplicate work. This is implemented
 	 * in a ConcurrentLinkedQueue to support thread-safety
-	 * 
-	 * @param element
-	 *            the to search for if its already checked
+	 *
+	 * @param element the to search for if its already checked
 	 * @return true if the element is already checked
 	 */
 	@Override
@@ -88,9 +83,8 @@ public class CandidateElementManager implements ExtractorManager {
 	/**
 	 * Mark a given element as checked to prevent duplicate work. A elements is only added when it
 	 * is not already in the set of checked elements.
-	 * 
-	 * @param element
-	 *            the element that is checked
+	 *
+	 * @param element the element that is checked
 	 * @return true if !contains(element.uniqueString)
 	 */
 	@GuardedBy("elementsLock")
@@ -111,8 +105,8 @@ public class CandidateElementManager implements ExtractorManager {
 
 	/**
 	 * Return internal counter for the examined elements.
-	 * 
-	 * @return the number of EximinedElements
+	 *
+	 * @return the number of ExaminedElements
 	 */
 	@Override
 	public int numberOfExaminedElements() {
@@ -129,9 +123,8 @@ public class CandidateElementManager implements ExtractorManager {
 
 	/**
 	 * Check if one or more CrawlConditions matches the current state in the browser.
-	 * 
-	 * @param browser
-	 *            the browser to execute in the CrawlConditions.
+	 *
+	 * @param browser the browser to execute in the CrawlConditions.
 	 * @return true if one or more CrawlConditions stratifies or non is specified.
 	 */
 	@Override

@@ -1,14 +1,14 @@
 package com.crawljax.core.configuration;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
+
 import static com.crawljax.core.configuration.CrawlElementMatcher.withXpath;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertThat;
-
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class CrawlActionsTest {
 
@@ -47,10 +47,10 @@ public class CrawlActionsTest {
 		List<CrawlElement> crawlElements = actions.build().getRight();
 		assertThat(crawlElements, hasSize(4));
 		assertThat(
-		        crawlElements,
-		        containsInAnyOrder(withXpath("//B[@id='someId']//*"),
-		                withXpath("//B[@id='someId']//*"),
-		                withXpath("//B[@class='someClass']//*"),
-		                withXpath("//B[@class='someClass']//*")));
+				crawlElements,
+				containsInAnyOrder(withXpath("//B[@id='someId']//*"),
+						withXpath("//B[@id='someId']//*"),
+						withXpath("//B[@class='someClass']//*"),
+						withXpath("//B[@class='someClass']//*")));
 	}
 }

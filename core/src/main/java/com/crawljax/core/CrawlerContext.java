@@ -1,8 +1,5 @@
 package com.crawljax.core;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.ExitNotifier.ExitStatus;
@@ -11,6 +8,9 @@ import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * A context for each {@link Crawler} that can be handed to a {@link Plugin}.
@@ -40,8 +40,8 @@ public class CrawlerContext {
 
 	/**
 	 * @return The browser of the current session. If you have configured
-	 *         multiple browsers this will return the {@link EmbeddedBrowser}
-	 *         that caused the given {@link Plugin} to fire.
+	 * multiple browsers this will return the {@link EmbeddedBrowser}
+	 * that caused the given {@link Plugin} to fire.
 	 */
 	public EmbeddedBrowser getBrowser() {
 		return browser;
@@ -75,7 +75,7 @@ public class CrawlerContext {
 
 	/**
 	 * @return The current {@link StateVertex} or <code>null</code> when the
-	 *         {@link Crawler} isn't initialized yet.
+	 * {@link Crawler} isn't initialized yet.
 	 */
 	public StateVertex getCurrentState() {
 		if (stateMachine == null) {
@@ -90,8 +90,7 @@ public class CrawlerContext {
 	}
 
 	/**
-	 * @param path
-	 *            The current {@link CrawlPath} in this context.
+	 * @param path The current {@link CrawlPath} in this context.
 	 */
 	protected void setCrawlPath(CrawlPath path) {
 		crawlpath = path;

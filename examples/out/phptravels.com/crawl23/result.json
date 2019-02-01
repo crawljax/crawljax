@@ -1,0 +1,598 @@
+{
+  "states" : {
+    "state9" : {
+      "name" : "state9",
+      "url" : "http://phptravels.com/order/",
+      "candidateElements" : [ {
+        "top" : 2507,
+        "left" : 1210,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[5]/DIV[1]/A[1]",
+        "width" : 0,
+        "height" : 19
+      }, {
+        "top" : 2875,
+        "left" : 59,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 128,
+        "height" : 132
+      }, {
+        "top" : 978,
+        "left" : 101,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/FORM[1]/BUTTON[1]",
+        "width" : 318,
+        "height" : 34
+      }, {
+        "top" : 1027,
+        "left" : 101,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/FORM[2]/BUTTON[1]",
+        "width" : 318,
+        "height" : 34
+      }, {
+        "top" : 1076,
+        "left" : 101,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[3]/FORM[3]/BUTTON[1]",
+        "width" : 318,
+        "height" : 34
+      }, {
+        "top" : 978,
+        "left" : 481,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/FORM[1]/BUTTON[1]",
+        "width" : 318,
+        "height" : 34
+      }, {
+        "top" : 1027,
+        "left" : 481,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/FORM[2]/BUTTON[1]",
+        "width" : 318,
+        "height" : 34
+      }, {
+        "top" : 1076,
+        "left" : 481,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[3]/FORM[3]/BUTTON[1]",
+        "width" : 318,
+        "height" : 34
+      }, {
+        "top" : 978,
+        "left" : 861,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/FORM[1]/BUTTON[1]",
+        "width" : 318,
+        "height" : 34
+      }, {
+        "top" : 1027,
+        "left" : 861,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/FORM[2]/BUTTON[1]",
+        "width" : 318,
+        "height" : 34
+      }, {
+        "top" : 1076,
+        "left" : 861,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/DIV[2]/DIV[3]/FORM[3]/BUTTON[1]",
+        "width" : 318,
+        "height" : 34
+      }, {
+        "top" : 1571,
+        "left" : 1034,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[3]/DIV[1]/DIV[1]/DIV[5]/FORM[1]/BUTTON[1]",
+        "width" : 159,
+        "height" : 36
+      }, {
+        "top" : 2522,
+        "left" : 70,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[5]/DIV[1]/A[1]/BUTTON[1]",
+        "width" : 1140,
+        "height" : 46
+      }, {
+        "top" : 2854,
+        "left" : 36,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[1]/BUTTON[1]",
+        "width" : 25,
+        "height" : 25
+      }, {
+        "top" : 2977,
+        "left" : 59,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]/BUTTON[1]",
+        "width" : 128,
+        "height" : 30
+      } ],
+      "fanIn" : 1,
+      "fanOut" : 1,
+      "id" : 9,
+      "failedEvents" : [ ]
+    },
+    "index" : {
+      "name" : "index",
+      "url" : "http://phptravels.com/demo/",
+      "candidateElements" : [ {
+        "top" : 0,
+        "left" : 225,
+        "xpath" : "/HTML[1]/BODY[1]/HEADER[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 0,
+        "height" : 19
+      }, {
+        "top" : 28,
+        "left" : 769,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[1]/SPAN[1]/SPAN[1]/A[1]",
+        "width" : 39,
+        "height" : 19
+      }, {
+        "top" : 28,
+        "left" : 829,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[2]/SPAN[1]/SPAN[1]/A[1]",
+        "width" : 38,
+        "height" : 19
+      }, {
+        "top" : 1375,
+        "left" : 0,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 72,
+        "left" : -9101,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 94,
+        "height" : 25
+      }, {
+        "top" : 98,
+        "left" : -9101,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 54,
+        "height" : 25
+      }, {
+        "top" : 124,
+        "left" : -9101,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[4]/A[1]",
+        "width" : 71,
+        "height" : 25
+      }, {
+        "top" : 150,
+        "left" : -9101,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[5]/A[1]",
+        "width" : 86,
+        "height" : 25
+      }, {
+        "top" : 176,
+        "left" : -9101,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[6]/A[1]",
+        "width" : 69,
+        "height" : 25
+      }, {
+        "top" : 202,
+        "left" : -9101,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[7]/A[1]",
+        "width" : 53,
+        "height" : 25
+      }, {
+        "top" : 228,
+        "left" : -9101,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[8]/A[1]",
+        "width" : 82,
+        "height" : 25
+      }, {
+        "top" : 254,
+        "left" : -9101,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[9]/A[1]",
+        "width" : 72,
+        "height" : 25
+      }, {
+        "top" : 280,
+        "left" : -9101,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[10]/A[1]",
+        "width" : 76,
+        "height" : 25
+      }, {
+        "top" : 1375,
+        "left" : 0,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 72,
+        "left" : -9029,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 106,
+        "height" : 25
+      }, {
+        "top" : 98,
+        "left" : -9029,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 73,
+        "height" : 25
+      }, {
+        "top" : 124,
+        "left" : -9029,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[4]/A[1]",
+        "width" : 95,
+        "height" : 25
+      }, {
+        "top" : 150,
+        "left" : -9029,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[5]/A[1]",
+        "width" : 124,
+        "height" : 25
+      }, {
+        "top" : 176,
+        "left" : -9029,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[6]/A[1]",
+        "width" : 58,
+        "height" : 25
+      }, {
+        "top" : 1375,
+        "left" : 0,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 72,
+        "left" : -8956,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 58,
+        "height" : 25
+      }, {
+        "top" : 98,
+        "left" : -8956,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 70,
+        "height" : 25
+      }, {
+        "top" : 124,
+        "left" : -8956,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[4]/A[1]",
+        "width" : 60,
+        "height" : 25
+      }, {
+        "top" : 150,
+        "left" : -8956,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[5]/A[1]",
+        "width" : 59,
+        "height" : 25
+      }, {
+        "top" : 176,
+        "left" : -8956,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[6]/A[1]",
+        "width" : 91,
+        "height" : 25
+      }, {
+        "top" : 202,
+        "left" : -8956,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[7]/A[1]",
+        "width" : 79,
+        "height" : 25
+      }, {
+        "top" : 228,
+        "left" : -8956,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[8]/A[1]",
+        "width" : 87,
+        "height" : 25
+      }, {
+        "top" : 254,
+        "left" : -8956,
+        "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[9]/A[1]",
+        "width" : 121,
+        "height" : 25
+      }, {
+        "top" : 366,
+        "left" : 372,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 408,
+        "height" : 70
+      }, {
+        "top" : 593,
+        "left" : 372,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 408,
+        "height" : 70
+      }, {
+        "top" : 831,
+        "left" : 372,
+        "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 408,
+        "height" : 70
+      }, {
+        "top" : 1602,
+        "left" : 85,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 448,
+        "height" : 37
+      }, {
+        "top" : 1614,
+        "left" : 985,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 28,
+        "height" : 30
+      }, {
+        "top" : 1614,
+        "left" : 1018,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+        "width" : 33,
+        "height" : 30
+      }, {
+        "top" : 1614,
+        "left" : 1054,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]",
+        "width" : 33,
+        "height" : 30
+      }, {
+        "top" : 1614,
+        "left" : 1091,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]",
+        "width" : 32,
+        "height" : 30
+      }, {
+        "top" : 1614,
+        "left" : 1127,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[5]",
+        "width" : 32,
+        "height" : 30
+      }, {
+        "top" : 1614,
+        "left" : 1163,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[6]",
+        "width" : 31,
+        "height" : 30
+      }, {
+        "top" : 1686,
+        "left" : 70,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 160,
+        "height" : 40
+      }, {
+        "top" : 1806,
+        "left" : 70,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+        "width" : 112,
+        "height" : 19
+      }, {
+        "top" : 1806,
+        "left" : 193,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+        "width" : 91,
+        "height" : 19
+      }, {
+        "top" : 1706,
+        "left" : 377,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+        "width" : 87,
+        "height" : 19
+      }, {
+        "top" : 1726,
+        "left" : 377,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[2]/A[1]",
+        "width" : 84,
+        "height" : 19
+      }, {
+        "top" : 1746,
+        "left" : 377,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[3]/A[1]",
+        "width" : 59,
+        "height" : 19
+      }, {
+        "top" : 1766,
+        "left" : 377,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[4]/A[1]",
+        "width" : 95,
+        "height" : 19
+      }, {
+        "top" : 1786,
+        "left" : 377,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[5]/A[1]",
+        "width" : 77,
+        "height" : 19
+      }, {
+        "top" : 1706,
+        "left" : 589,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[1]/A[1]",
+        "width" : 105,
+        "height" : 19
+      }, {
+        "top" : 1726,
+        "left" : 589,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]",
+        "width" : 71,
+        "height" : 19
+      }, {
+        "top" : 1746,
+        "left" : 589,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[3]/A[1]",
+        "width" : 56,
+        "height" : 19
+      }, {
+        "top" : 1766,
+        "left" : 589,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[4]/A[1]",
+        "width" : 64,
+        "height" : 19
+      }, {
+        "top" : 1786,
+        "left" : 589,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]",
+        "width" : 133,
+        "height" : 19
+      }, {
+        "top" : 1706,
+        "left" : 801,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[1]/A[1]",
+        "width" : 30,
+        "height" : 19
+      }, {
+        "top" : 1726,
+        "left" : 801,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[2]/A[1]",
+        "width" : 62,
+        "height" : 19
+      }, {
+        "top" : 1746,
+        "left" : 801,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[3]/A[1]",
+        "width" : 73,
+        "height" : 19
+      }, {
+        "top" : 1766,
+        "left" : 801,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[4]/A[1]",
+        "width" : 28,
+        "height" : 19
+      }, {
+        "top" : 1786,
+        "left" : 801,
+        "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[5]/A[1]",
+        "width" : 66,
+        "height" : 19
+      }, {
+        "top" : 1848,
+        "left" : 59,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/A[1]",
+        "width" : 128,
+        "height" : 132
+      }, {
+        "top" : 1955,
+        "left" : 1241,
+        "xpath" : "//A[@id = 'livechat-badge']",
+        "width" : 16,
+        "height" : 16
+      }, {
+        "top" : 1375,
+        "left" : 0,
+        "xpath" : "/HTML[1]/BODY[1]/HEADER[1]/DIV[1]/DIV[1]/BUTTON[1]",
+        "width" : 0,
+        "height" : 0
+      }, {
+        "top" : 1614,
+        "left" : 548,
+        "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/FORM[1]/BUTTON[1]",
+        "width" : 87,
+        "height" : 34
+      }, {
+        "top" : 1827,
+        "left" : 36,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[2]/BUTTON[1]",
+        "width" : 25,
+        "height" : 25
+      }, {
+        "top" : 1950,
+        "left" : 59,
+        "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/A[1]/BUTTON[1]",
+        "width" : 128,
+        "height" : 30
+      }, {
+        "top" : 1961,
+        "left" : 465,
+        "xpath" : "//DIV[@id = 'email']/DIV[2]/INPUT[2]",
+        "width" : 350,
+        "height" : 34
+      } ],
+      "fanIn" : 0,
+      "fanOut" : 5,
+      "id" : 0,
+      "failedEvents" : [ "xpath //A[@id = 'full-view-button']", "xpath //DIV[@id = 'rate_me_feedback_form']/FORM[1]/SPAN[1]/A[1]", "xpath //DIV[@id = 'email_transcript_form']/FORM[1]/SPAN[1]/A[1]", "xpath //A[@id = 'dont-leave-chat']", "xpath //SPAN[@id = 'message-wrapper']/A[1]", "xpath //A[@id = 'send-file-clip']", "xpath //DIV[@id = 'rate_me_feedback_form']/FORM[1]/INPUT[1]", "xpath //DIV[@id = 'email_transcript_form']/FORM[1]/INPUT[2]", "xpath //INPUT[@id = 'leave-chat']", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[1]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[2]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[3]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[4]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[5]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[6]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[7]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[8]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[9]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[10]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[1]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[2]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[3]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[4]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[5]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[6]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[1]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[2]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[3]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[4]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[5]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[6]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[7]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[8]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[9]/A[1]", "xpath /HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]", "xpath /HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]" ]
+    },
+    "state2" : {
+      "name" : "state2",
+      "url" : "http://phptravels.com/demo/",
+      "candidateElements" : [ {
+        "top" : 1955,
+        "left" : 1241,
+        "xpath" : "//A[@id = 'livechat-badge']",
+        "width" : 16,
+        "height" : 16
+      } ],
+      "fanIn" : 3,
+      "fanOut" : 0,
+      "id" : 2,
+      "failedEvents" : [ "xpath //A[@id = 'livechat-badge']" ]
+    },
+    "state12" : {
+      "name" : "state12",
+      "url" : "http://phptravels.com/demo/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "id" : 12,
+      "failedEvents" : [ ]
+    },
+    "state10" : {
+      "name" : "state10",
+      "url" : "http://phptravels.com/order/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "id" : 10,
+      "failedEvents" : [ ]
+    }
+  },
+  "edges" : [ {
+    "from" : "index",
+    "to" : "state2",
+    "text" : "Welcome to LiveChat",
+    "id" : "xpath //A[@id = 'title']",
+    "element" : "Element{node=[A: null], tag=A, text=Welcome to LiveChat, attributes={class=title title-bg title-font style-text-shadow, href=#, id=title}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state2",
+    "text" : "Good",
+    "id" : "xpath //DIV[@id = 'rating']/A[2]",
+    "element" : "Element{node=[A: null], tag=A, text=Good, attributes={class=rating-button rate-good, data-title=Rate as good, href=#}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state2",
+    "text" : "",
+    "id" : "xpath //TR[@id = 'survey-after-greeting']/TD[1]/P[1]/INPUT[1]",
+    "element" : "Element{node=[INPUT: null], tag=INPUT, text=, attributes={type=button, value=Chat now}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state9",
+    "text" : "Order",
+    "id" : "xpath //NAV[@id = 'main-menu']/UL[1]/LI[2]/SPAN[1]/SPAN[1]/A[1]",
+    "element" : "Element{node=[A: null], tag=A, text=Order, attributes={class=white, href=http://phptravels.com/order/}}",
+    "eventType" : "click"
+  }, {
+    "from" : "state9",
+    "to" : "state10",
+    "text" : "Contact Us",
+    "id" : "xpath /HTML[1]/BODY[1]/SECTION[5]/DIV[1]/A[1]",
+    "element" : "Element{node=[A: null], tag=A, text=Contact Us, attributes={class=, href=http://phptravels.com/contact-us/}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state12",
+    "text" : "Join the world's most popular Travel Agency Software",
+    "id" : "xpath /HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+    "element" : "Element{node=[A: null], tag=A, text=Join the world's most popular Travel Agency Software, attributes={href=javascript:void(0);, style=padding-top: 17px;padding-bottom:0px}}",
+    "eventType" : "click"
+  } ],
+  "statistics" : {
+    "duration" : "1 minute 35 seconds",
+    "crawlPaths" : 5,
+    "averageDomSize" : "100.518 kB",
+    "edges" : 6,
+    "startDate" : "2017-08-01 14:50:50 PDT",
+    "stateStats" : {
+      "leastFanOut" : {
+        "id" : "state2",
+        "count" : 0
+      },
+      "leastFanIn" : {
+        "id" : "index",
+        "count" : 0
+      },
+      "mostFanOut" : {
+        "id" : "index",
+        "count" : 5
+      },
+      "mostFanIn" : {
+        "id" : "state2",
+        "count" : 3
+      },
+      "totalNumberOfStates" : 5,
+      "urls" : {
+        "http://phptravels.com/order/" : [ "state9", "state10" ],
+        "http://phptravels.com/demo/" : [ "index", "state2", "state12" ]
+      }
+    },
+    "failedEvents" : 37
+  },
+  "exitStatus" : "MAX_STATES"
+}

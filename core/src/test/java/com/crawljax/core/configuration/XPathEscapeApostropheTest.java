@@ -1,11 +1,10 @@
 package com.crawljax.core.configuration;
 
-import static org.junit.Assert.assertEquals;
-
+import com.crawljax.core.state.Eventable.EventType;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.crawljax.core.state.Eventable.EventType;
+import static org.junit.Assert.assertEquals;
 
 public class XPathEscapeApostropheTest {
 

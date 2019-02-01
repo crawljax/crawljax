@@ -1,0 +1,193 @@
+package generated;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
+import org.junit.AfterClass;
+import org.junit.AssumptionViolatedException;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
+
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.BrowserOptions;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Identification.How;
+import com.crawljax.forms.FormInput;
+import com.crawljax.plugins.testcasegenerator.TestConfiguration.StateEquivalenceAssertionMode;
+import com.crawljax.plugins.testcasegenerator.TestSuiteHelper;
+
+
+/*
+ * Generated @ ${date}
+ */
+
+public class ${classname} {
+
+    private static final String URL = "${url}";
+	private static TestSuiteHelper testSuiteHelper;
+	
+	private static final String TEST_SUITE_PATH = "${testSuitePath}";
+
+	private static StateEquivalenceAssertionMode assertionMode = ${assertionMode};
+	
+	private static CrawljaxConfiguration getTestConfiguration() {
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+		builder.crawlRules().waitAfterEvent(${waitAfterEvent}, TimeUnit.MILLISECONDS);
+		builder.crawlRules().waitAfterReloadUrl(${waitAfterReloadUrl}, TimeUnit.MILLISECONDS);
+		builder.setBrowserConfig(${browserConfig});
+		return builder.build();
+	}	
+	
+		private static final Logger logger = Logger.getLogger("");
+
+    private static void logInfo(Description description, String status, long nanos) {
+        String testName = description.getMethodName();
+        logger.info(String.format("Test %s %s, spent %d seconds",
+                                  testName, status, TimeUnit.NANOSECONDS.toSeconds(nanos)));
+    }
+
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            logInfo(description, "succeeded", nanos);
+			testSuiteHelper.markLastMethodAsSucceeded(nanos);
+        }
+
+        @Override
+        protected void failed(long nanos, Throwable e, Description description) {
+            logInfo(description, "failed: " + e.getMessage(), nanos);
+			testSuiteHelper.markLastMethodAsFailed(e.getMessage(), nanos);
+        }
+
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            logInfo(description, "skipped", nanos);
+            testSuiteHelper.markLastMethodAsSkipped(nanos);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            logInfo(description, "finished", nanos);
+        }
+    };
+	
+	@BeforeClass
+	public static void oneTimeSetUp(){
+		try {
+#if(${database})
+			//use database for data
+			testSuiteHelper = new TestSuiteHelper(
+					getTestConfiguration(), TEST_SUITE_PATH);
+#else
+			//load needed data from json files
+			testSuiteHelper = new TestSuiteHelper(
+					getTestConfiguration(),
+					"${jsonstates}",
+					"${jsoneventables}",
+					"${crawlScreenshots}",
+					"${diffScreenshots}",
+					URL, TEST_SUITE_PATH);
+#end
+		}
+		catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@AfterClass
+	public static void oneTimeTearDown(){
+		try {
+			testSuiteHelper.tearDown();
+		}catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+
+	@Before
+	public void setUp(){
+		try {
+			testSuiteHelper.goToInitialUrl();		
+		}catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}	
+	
+	/*
+	 * Test Cases
+	 */
+	 
+#foreach( $method in $methodList )
+	@Test
+	public void method_${method.methodName}(){
+		testSuiteHelper.newCurrentTestMethod("method_${method.methodName}");
+		List<FormInput> formInputs;
+		
+		boolean allStatesIdentical = true;
+		
+#if(${method.methodName} != "0")
+
+		if (assertionMode == StateEquivalenceAssertionMode.DOM || assertionMode == StateEquivalenceAssertionMode.ALL) {
+			    allStatesIdentical = testSuiteHelper.compareCurrentDomWithState(0)
+									&& allStatesIdentical;
+		}
+
+		if (assertionMode == StateEquivalenceAssertionMode.VISUAL || assertionMode == StateEquivalenceAssertionMode.ALL) {
+		    allStatesIdentical = testSuiteHelper.compareCurrentScreenshotWithState(0)
+				&& allStatesIdentical;
+		}
+#end
+		try {
+#foreach( $event in $method.eventList )
+#if(${event.properties.how} == "index")
+			//initial state
+#else
+			/* ${event.properties.info} */
+#if($event.formInputs.size() > 0)
+			formInputs = new ArrayList<FormInput>();
+#foreach( $input in $event.formInputs )
+			formInputs.add(new FormInput(FormInput.InputType.${input.type}, new Identification(How.${input.how}, "${input.name}"), "${input.value}"));
+#end			
+			testSuiteHelper.handleFormInputs(formInputs);
+			Thread.sleep(100);
+#end
+			assertTrue("Event fired: ${event.properties.text}", testSuiteHelper.fireEvent(${event.properties.id}));
+#end
+			testSuiteHelper.runInCrawlingPlugins(${event.properties.targetid});
+			assertTrue("Invariants satisfied in state: ${event.properties.targetid}" , testSuiteHelper.checkInvariants());
+
+			if (assertionMode == StateEquivalenceAssertionMode.DOM || assertionMode == StateEquivalenceAssertionMode.ALL) {
+			    allStatesIdentical = testSuiteHelper.compareCurrentDomWithState(${event.properties.targetid})
+									&& allStatesIdentical;
+			}
+
+			if (assertionMode == StateEquivalenceAssertionMode.VISUAL || assertionMode == StateEquivalenceAssertionMode.ALL) {
+			    /* Perform a visual diff on the two states. */
+			    allStatesIdentical = testSuiteHelper.compareCurrentScreenshotWithState(${event.properties.targetid})
+					&& allStatesIdentical;
+			}
+			
+#end
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+		if(!allStatesIdentical) {
+			fail("At least one state is different.");
+		}
+	}
+
+#end
+
+}	 

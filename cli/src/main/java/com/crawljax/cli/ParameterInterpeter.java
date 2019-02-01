@@ -29,21 +29,21 @@ class ParameterInterpeter {
 	private static final int SPACES_BEFORE_OPTION = 5;
 	private static final int ROW_WIDTH = 80;
 
-	static final String VERSION = "version";
-	static final String VERBOSE = "verbose";
-	static final String HELP = "help";
-	static final String MAXSTATES = "maxstates";
-	static final String DEPTH = "depth";
-	static final String BROWSER = "browser";
+	private static final String VERSION = "version";
+	private static final String VERBOSE = "verbose";
+	private static final String HELP = "help";
+	private static final String MAXSTATES = "maxstates";
+	private static final String DEPTH = "depth";
+	private static final String BROWSER = "browser";
 	static final String BROWSER_REMOTE_URL = "browserRemoteUrl";
-	static final String PARALLEL = "parallel";
-	static final String OVERRIDE = "override";
-	static final String CRAWL_HIDDEN_ANCHORS = "crawlHiddenAnchors";
-	static final String TIME_OUT = "timeout";
+	private static final String PARALLEL = "parallel";
+	private static final String OVERRIDE = "override";
+	private static final String CRAWL_HIDDEN_ANCHORS = "crawlHiddenAnchors";
+	private static final String TIME_OUT = "timeout";
 	static final String WAIT_AFTER_RELOAD = "waitAfterReload";
 	static final String WAIT_AFTER_EVENT = "waitAfterEvent";
-	static final String LOG_FILE = "log";
-	static final String CLICK = "click";
+	private static final String LOG_FILE = "log";
+	private static final String CLICK = "click";
 
 	private final Options options;
 	private final CommandLine parameters;
@@ -228,10 +228,9 @@ class ParameterInterpeter {
 	}
 
 	void printHelp() {
-		String cmlSyntax = HELP_MESSAGE;
 		final PrintWriter writer = new PrintWriter(System.out);
 		final HelpFormatter helpFormatter = new HelpFormatter();
-		helpFormatter.printHelp(writer, ROW_WIDTH, cmlSyntax, "", options, SPACES_AFTER_OPTION,
+		helpFormatter.printHelp(writer, ROW_WIDTH, HELP_MESSAGE, "", options, SPACES_AFTER_OPTION,
 		        SPACES_BEFORE_OPTION, "");
 		writer.flush();
 	}

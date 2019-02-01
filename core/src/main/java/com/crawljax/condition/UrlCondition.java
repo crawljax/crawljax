@@ -1,13 +1,13 @@
 package com.crawljax.condition;
 
-import net.jcip.annotations.Immutable;
-
 import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import net.jcip.annotations.Immutable;
 
 /**
  * Conditions that returns true iff the browser's current url contains url. Note: Case insensitive
- * 
+ *
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
@@ -16,8 +16,7 @@ public class UrlCondition implements Condition {
 	private final String url;
 
 	/**
-	 * @param url
-	 *            the URL.
+	 * @param url the URL.
 	 */
 	public UrlCondition(String url) {
 		this.url = url;
@@ -44,9 +43,9 @@ public class UrlCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("url", url)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("url", url)
+				.toString();
 	}
 
 }

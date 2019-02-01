@@ -5,7 +5,7 @@ import com.crawljax.core.state.Eventable.EventType;
 /**
  * Represents a form action, e.g. a link that is clicked that handles the form NOTE: In general
  * FormAction is not designed to be instantiated directly.
- * 
+ *
  * @author DannyRoest@gmail.com (Danny Roest)
  */
 public class FormAction {
@@ -13,8 +13,7 @@ public class FormAction {
 	private CrawlElement crawlElement;
 
 	/**
-	 * @param tagName
-	 *            the tag name of the element
+	 * @param tagName the tag name of the element
 	 * @return this CrawlElement
 	 */
 	public CrawlElement beforeClickElement(String tagName) {

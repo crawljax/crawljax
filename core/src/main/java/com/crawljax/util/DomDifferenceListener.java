@@ -1,10 +1,10 @@
 package com.crawljax.util;
 
-import java.util.List;
-
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.DifferenceListener;
 import org.w3c.dom.Node;
+
+import java.util.List;
 
 final class DomDifferenceListener implements DifferenceListener {
 	private final List<String> ignoreAttributes;
@@ -20,15 +20,15 @@ final class DomDifferenceListener implements DifferenceListener {
 	@Override
 	public int differenceFound(Difference difference) {
 		if (difference.getControlNodeDetail() == null
-		        || difference.getControlNodeDetail().getNode() == null
-		        || difference.getTestNodeDetail() == null
-		        || difference.getTestNodeDetail().getNode() == null) {
+				|| difference.getControlNodeDetail().getNode() == null
+				|| difference.getTestNodeDetail() == null
+				|| difference.getTestNodeDetail().getNode() == null) {
 			return RETURN_ACCEPT_DIFFERENCE;
 		}
 		if (ignoreAttributes.contains(difference.getTestNodeDetail().getNode()
-		        .getNodeName())
-		        || ignoreAttributes.contains(difference.getControlNodeDetail()
-		                .getNode().getNodeName())) {
+				.getNodeName())
+				|| ignoreAttributes.contains(difference.getControlNodeDetail()
+				.getNode().getNodeName())) {
 			return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
 		}
 		return RETURN_ACCEPT_DIFFERENCE;

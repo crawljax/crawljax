@@ -1,23 +1,9 @@
 package com.crawljax.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.locks.Lock;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawlRules.CrawlPriorityMode;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
@@ -26,6 +12,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.Striped;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Contains all the {@link CandidateCrawlAction}s that still have to be fired to get a result.
@@ -42,9 +37,8 @@ public class UnfiredCandidateActions {
 	private final Counter crawlerLostCount;
 	private final Counter unfiredActionsCount;
 
-	@Inject
-	UnfiredCandidateActions(BrowserConfiguration config, Provider<StateFlowGraph> sfg,
-	        MetricRegistry registry) {
+	@Inject UnfiredCandidateActions(BrowserConfiguration config, Provider<StateFlowGraph> sfg,
+			MetricRegistry registry) {
 		this.sfg = sfg;
 		cache = Maps.newHashMap();
 		statesWithCandidates = Queues.newLinkedBlockingQueue();
@@ -52,14 +46,13 @@ public class UnfiredCandidateActions {
 		locks = Striped.lock(config.getNumberOfBrowsers());
 
 		crawlerLostCount =
-		        registry.register(MetricsModule.EVENTS_PREFIX + "crawler_lost", new Counter());
+				registry.register(MetricsModule.EVENTS_PREFIX + "crawler_lost", new Counter());
 		unfiredActionsCount =
-		        registry.register(MetricsModule.EVENTS_PREFIX + "unfired_actions", new Counter());
+				registry.register(MetricsModule.EVENTS_PREFIX + "unfired_actions", new Counter());
 	}
 
 	/**
-	 * @param state
-	 *            The state you want to poll an {@link CandidateCrawlAction} for.
+	 * @param state The state you want to poll an {@link CandidateCrawlAction} for.
 	 * @return The next to-be-crawled action or <code>null</code> if none available.
 	 */
 	CandidateCrawlAction pollActionOrNull(StateVertex state) {
@@ -93,10 +86,8 @@ public class UnfiredCandidateActions {
 	}
 
 	/**
-	 * @param extract
-	 *            The actions you want to add to a state.
-	 * @param currentState
-	 *            The state you are in.
+	 * @param extract      The actions you want to add to a state.
+	 * @param currentState The state you are in.
 	 */
 	public void addActions(ImmutableList<CandidateElement> extract, StateVertex currentState) {
 		List<CandidateCrawlAction> actions = new ArrayList<>(extract.size());
@@ -107,10 +98,8 @@ public class UnfiredCandidateActions {
 	}
 
 	/**
-	 * @param actions
-	 *            The actions you want to add to a state.
-	 * @param state
-	 *            The state name. This should be unique per state.
+	 * @param actions The actions you want to add to a state.
+	 * @param state   The state name. This should be unique per state.
 	 */
 	void addActions(Collection<CandidateCrawlAction> actions, StateVertex state) {
 		if (actions.isEmpty()) {
@@ -136,7 +125,7 @@ public class UnfiredCandidateActions {
 
 	/**
 	 * @return If there are any pending actions to be crawled. This method is not threadsafe and
-	 *         might return a stale value.
+	 * might return a stale value.
 	 */
 	public boolean isEmpty() {
 		return statesWithCandidates.isEmpty();
@@ -144,8 +133,7 @@ public class UnfiredCandidateActions {
 
 	/**
 	 * @return A new crawl task as soon as one is ready. Until then, it blocks.
-	 * @throws InterruptedException
-	 *             when taking from the queue is interrupted.
+	 * @throws InterruptedException when taking from the queue is interrupted.
 	 */
 	public StateVertex awaitNewTask() throws InterruptedException {
 		int id = statesWithCandidates.take();
@@ -154,6 +142,115 @@ public class UnfiredCandidateActions {
 		LOG.debug("New task polled for state {}", id);
 		LOG.info("There are {} states with unfired actions", statesWithCandidates.size());
 		return sfg.get().getById(id);
+	}
+
+	public StateVertex getOldest() {
+		StateVertex oldestVertex = null;
+		int oldest = -1;
+		for (int id : statesWithCandidates) {
+			if (oldest == -1) {
+				oldest = id;
+				oldestVertex = sfg.get().getById(id);
+			}
+			if (id < oldest) {
+				oldest = id;
+				oldestVertex = sfg.get().getById(id);
+			}
+		}
+
+		while (true) {
+			try {
+				int id = statesWithCandidates.take();
+				statesWithCandidates.put(id);
+				if (id == oldest)
+					break;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return oldestVertex;
+	}
+
+	public StateVertex getNextNonDuplicate() {
+		StateVertex nextUnique = null;
+		int nextUniqueId = -1;
+		for (int id : statesWithCandidates) {
+			StateVertex forId = sfg.get().getById(id);
+			if (!forId.hasNearDuplicate()) {
+				nextUnique = forId;
+				nextUniqueId = id;
+				break;
+			}
+		}
+
+		if (nextUnique == null)
+			return null;
+
+		while (true) {
+			try {
+				int id = statesWithCandidates.take();
+				statesWithCandidates.put(id);
+				if (id == nextUniqueId)
+					break;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return nextUnique;
+	}
+
+	/**
+	 * @param crawlPriorityMode          the crawling modality
+	 * @param crawlNearDuplicates        whether to consider near-duplicates
+	 * @param delayNearDuplicateCrawling whether to postpone the crawl of near-duplicates
+	 * @return A new crawl task as soon as one is ready. Until then, it blocks.
+	 * @throws InterruptedException when taking from the queue is interrupted.
+	 */
+	public StateVertex awaitNewTaskPriority(CrawlPriorityMode crawlPriorityMode,
+			boolean crawlNearDuplicates, boolean delayNearDuplicateCrawling)
+			throws InterruptedException {
+		/*
+		 * int id = statesWithCandidates.take(); // Put it back the end of the queue. It will be
+		 * removed later. statesWithCandidates.add(id); LOG.debug("New task polled for state {}",
+		 * id); LOG.info("There are {} states with unfired actions", statesWithCandidates.size());
+		 * StateVertex retVertex = sfg.get().getById(id);
+		 */
+
+		StateVertex retVertex = null;
+		switch (crawlPriorityMode) {
+			case NORMAL:
+			case RANDOM:
+			case SHALLOW_FIRST:
+				retVertex = awaitNewTask();
+				break;
+			case OLDEST_FIRST:
+				retVertex = getOldest();
+				break;
+		}
+
+		if (!crawlNearDuplicates) {
+			if (retVertex.hasNearDuplicate())
+				return getNextNonDuplicate();
+		}
+		// TODO: Still have to handle priorities here
+		if (delayNearDuplicateCrawling) {
+			if (retVertex.hasNearDuplicate()) {
+				StateVertex nextUnique = getNextNonDuplicate();
+				if (nextUnique != null) {
+					LOG.info("returning next unique state : {}", nextUnique.getName());
+					return nextUnique;
+				} else {
+					LOG.info("All remaining states are near duplicates. Returning : {}",
+							retVertex.getName());
+				}
+			}
+		}
+		return retVertex;
+
 	}
 
 	public void purgeActionsForState(StateVertex crawlTask) {

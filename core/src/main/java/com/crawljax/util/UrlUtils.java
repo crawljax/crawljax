@@ -2,18 +2,11 @@ package com.crawljax.util;
 
 import java.net.URI;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class UrlUtils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(UrlUtils.class);
-
 	/**
-	 * @param currentUrl
-	 *            The current url
-	 * @param href
-	 *            The target URL, relative or not
+	 * @param currentUrl The current url
+	 * @param href       The target URL, relative or not
 	 * @return The new URL.
 	 */
 	public static URI extractNewUrl(String currentUrl, String href) {
@@ -37,8 +30,7 @@ public class UrlUtils {
 	}
 
 	/**
-	 * @param url
-	 *            the URL string. It must contain with ":" e.g, http: or https:
+	 * @param url the URL string. It must contain with ":" e.g, http: or https:
 	 * @return the base part of the URL.
 	 */
 	public static String getBaseUrl(String url) {
@@ -59,10 +51,8 @@ public class UrlUtils {
 	 * Retrieve the var value for varName from a HTTP query string (format is
 	 * "var1=val1&amp;var2=val2").
 	 *
-	 * @param varName
-	 *            the name.
-	 * @param haystack
-	 *            the haystack.
+	 * @param varName  the name.
+	 * @param haystack the haystack.
 	 * @return variable value for varName
 	 */
 	public static String getVarFromQueryString(String varName, String haystack) {
@@ -87,13 +77,11 @@ public class UrlUtils {
 	}
 
 	/**
-	 * Checks if the given URL is part of the domain, or a subdomain of the
-	 * given {@link java.net.URI}.
+	 * Checks if the given URL is part of the domain, or a sub-domain of the given
+	 * {@link java.net.URI}.
 	 *
-	 * @param currentUrl
-	 *            The url you want to check.
-	 * @param url
-	 *            The URL acting as the base.
+	 * @param currentUrl The url you want to check.
+	 * @param url        The URL acting as the base.
 	 * @return If the URL is part of the domain.
 	 */
 	public static boolean isSameDomain(String currentUrl, URI url) {

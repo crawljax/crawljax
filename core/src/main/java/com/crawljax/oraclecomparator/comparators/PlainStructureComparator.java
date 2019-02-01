@@ -25,14 +25,13 @@ public class PlainStructureComparator extends AbstractComparator {
 
 	private String stripAttributes(String string) {
 		String regExAttributes = "<(.+?)(\\s.*?)?(/)?>";
-		String ret = string.replaceAll(regExAttributes, "<$1$3>");
-		return ret;
+		return string.replaceAll(regExAttributes, "<$1$3>");
 	}
 
 	private String stripContent(String string) {
 		String strippedStr;
 
-		// remove linebreaks
+		// remove line breaks
 		strippedStr = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
 
 		// remove content

@@ -1,0 +1,1092 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crawl overview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="CrawlJax">
+<link href="./css/bootstrap.min.css" rel="stylesheet">
+<link href="./css/bootstrap-responsive.min.css" rel="stylesheet">
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+<style>
+html,body {
+	height: 100%;
+}
+
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -40px;	
+}
+
+#push, footer {
+	height: 40px;
+}
+
+footer {
+	background-color: #f5f5f5;
+}
+
+footer small {
+	display: inline;
+	margin-top: 10px;
+}
+
+.url-table td {
+	word-wrap: break-word;
+	max-width: 700px;
+}
+
+@media (max-width: 979px) and (min-width: 768px) {
+	.url-table td {
+		max-width: 500px;
+	}
+}
+
+@media ( max-width : 767px) {
+	#footer {
+		margin-left: -20px;
+		margin-right: -20px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+	
+	.url-table td {
+		max-width: 450px;
+	}
+}
+
+
+#wrap>.container {
+	padding-top: 60px;
+}
+
+.panel-right {
+	position: absolute;
+	right: 10px;
+	top: 70px;
+	left: auto;
+	display: block;
+	background-color: rgb(255, 255, 255);
+	background-color: rgba(255, 255, 255, .9);
+	max-width: 300px;
+}
+
+.panel-right dd {
+	text-transform: capitalize;
+	word-wrap: break-word;
+}
+</style>
+</head>
+<body>
+<body>
+	<div id="wrap">
+		<nav class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+							<a class="brand" href="#">Crawl overview</a>
+						<ul class="nav">
+									<li class="active"><a href="#graph" class="nav-link">State graph</a></li>
+					<li><a href="#statistics" class="nav-link">Statistics</a></li>
+					<li><a href="#urls" class="nav-link">URL's</a></li>
+					<li><a href="#config" class="nav-link">Configuration</a></li>
+							</ul>
+			<div class="nav pull-right">
+				<a href="#" class="btn graphBtn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
+				<a href="#" class="btn graphBtn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
+				<div style="display: none" id='popup-content'>
+					<p>You can double click a state to inspect it further.</p>
+					<p>Clicking an edge gives more details on the state transition.</p>
+					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
+				</div>
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</nav>		<div class="container page" id="container-graph" style="width: 100%; padding-top: 40px;">
+			<div class="popover fade panel-right">
+				<div class="popover-inner">
+					<h3 class="popover-title">Edge info</h3>
+					<div class="popover-content">
+						<dl>
+							<dt>Element name</dt>
+							<dd name='elemName'></dd>
+						</dl>
+						<dl>
+							<dt>From</dt>
+							<dd name='from'></dd>
+						</dl>
+						<dl>
+							<dt>To</dt>
+							<dd name='to'></dd>
+						</dl>
+						<dl>
+							<dt>Identified by</dt>
+							<dd name='id'></dd>
+						</dl>
+						<dl>
+							<dt>Element</dt>
+							<dd name='element' style="text-transform: none;"></dd>
+						</dl>
+						<dl>
+							<dt>Event type</dt>
+							<dd name='eventType'></dd>
+						</dl>
+						<button class="btn btn-small" id='hideButton'>Hide</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="container page" id="container-statistics" style="display: none;">
+			
+<section id='crawlResults'>
+	<div class="page-header">
+		<h1>Crawl results</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+			<tr>
+				<th>Crawl time</th>
+				<td>3 minutes</td>
+			</tr>
+			<tr>
+				<th>Exit status</th>
+				<td>Maximum states passed</td>
+			<tr>
+				<th>Number of states</th>
+				<td>5</td>
+			</tr>
+			<tr>
+				<th><a href="#urls" class="nav-link">URL's visited</a></th>
+				<td>2</td>
+			</tr>
+			<tr>
+				<th>Number of edges</th>
+				<td>8</td>
+			</tr>
+			<tr>
+				<th>Number of crawl paths</th>
+				<td>8</td>
+			</tr>
+			<tr>
+				<th>Failed events</th>
+				<td>37</td>
+			<tr>
+				<th>Average DOM length</th>
+				<td>101.583 kB</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+
+<section id='highs-and-low'>
+	<div class="page-header">
+		<h1>Highs and lows</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+			<tr>
+				<th>Highest fan-out</th> 
+								<td><a href="states/index.html">index</a></td>
+				<td>8</td>
+			</tr>
+			<tr>
+				<th>Lowest fan-out</th> 				<td><a href="states/state2.html">state2</a></td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<th>Highest fan-in</th> 				<td><a href="states/state2.html">state2</a></td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<th>Lowest fan-in</th> 				<td><a href="states/index.html">index</a></td>
+				<td>0</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+		</div>
+		<div class="container page" id="container-urls" style="display: none;">
+			<div class="page-header">
+	<h1>URL's visited</h1>
+</div>
+<table class="table table-bordered table-striped url-table">
+	<tbody>
+				<tr>
+			<td><a href="http://phptravels.com/demo/">http://phptravels.com/demo/</a></td>
+			<td> <a
+				href="states/index.html">index</a>,  <a
+				href="states/state2.html">state2</a>,  <a
+				href="states/state3.html">state3</a>,  <a
+				href="states/state11.html">state11</a>, 			</td>
+		</tr>
+				<tr>
+			<td><a href="http://phptravels.com/">http://phptravels.com/</a></td>
+			<td> <a
+				href="states/state18.html">state18</a>, 			</td>
+		</tr>
+			</tbody>
+</table>
+		</div>
+		<div class="container page" id="container-config" style="display: none;">
+			<section id='crawlConfig'>
+	<div class="page-header">
+		<h1>Crawl configuration</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+						<tr>
+				<td>Url</td> 
+								<td>http://phptravels.com/demo/</td> 
+							</tr>
+						<tr>
+				<td>Basic Auth Url</td> 
+								<td>null</td> 
+							</tr>
+						<tr>
+				<td>Browser Config</td> 
+								<td>1 browsers of type FIREFOX using builder Default webdriver factory</td> 
+							</tr>
+						<tr>
+				<td>Plugins</td> 
+								<td><ul><li>CrawlOverview</li></ul></td> 
+							</tr>
+						<tr>
+				<td>Proxy Configuration</td> 
+								<td>NOTHING</td> 
+							</tr>
+						<tr>
+				<td>Crawl Rules</td> 
+								<td><pre><code>{
+  &quot;crawlEvents&quot; : [ &quot;click&quot; ],
+  &quot;invariants&quot; : [ ],
+  &quot;oracleComparators&quot; : [ {
+    &quot;preConditions&quot; : [ ],
+    &quot;id&quot; : &quot;SimpleComparator&quot;,
+    &quot;oracle&quot; : { }
+  } ],
+  &quot;ignoredFrameIdentifiers&quot; : [ ],
+  &quot;preCrawlConfig&quot; : {
+    &quot;waitConditions&quot; : [ ],
+    &quot;crawlConditions&quot; : [ ],
+    &quot;includedElements&quot; : [ {
+      &quot;tagName&quot; : &quot;A&quot;,
+      &quot;id&quot; : &quot;id1663411182&quot;,
+      &quot;eventType&quot; : &quot;click&quot;,
+      &quot;withXpathExpression&quot; : null,
+      &quot;eventableCondition&quot; : null
+    }, {
+      &quot;tagName&quot; : &quot;BUTTON&quot;,
+      &quot;id&quot; : &quot;id488044861&quot;,
+      &quot;eventType&quot; : &quot;click&quot;,
+      &quot;withXpathExpression&quot; : null,
+      &quot;eventableCondition&quot; : null
+    }, {
+      &quot;tagName&quot; : &quot;INPUT&quot;,
+      &quot;id&quot; : &quot;id1740189450&quot;,
+      &quot;eventType&quot; : &quot;click&quot;,
+      &quot;withXpathExpression&quot; : &quot;//INPUT[@type='submit']&quot;,
+      &quot;eventableCondition&quot; : {
+        &quot;id&quot; : &quot;id1740189450&quot;,
+        &quot;conditions&quot; : [ ],
+        &quot;inXPath&quot; : &quot;//INPUT[@type='submit']&quot;,
+        &quot;linkedInputFields&quot; : [ ]
+      }
+    }, {
+      &quot;tagName&quot; : &quot;INPUT&quot;,
+      &quot;id&quot; : &quot;id731260860&quot;,
+      &quot;eventType&quot; : &quot;click&quot;,
+      &quot;withXpathExpression&quot; : &quot;//INPUT[@type='button']&quot;,
+      &quot;eventableCondition&quot; : {
+        &quot;id&quot; : &quot;id731260860&quot;,
+        &quot;conditions&quot; : [ ],
+        &quot;inXPath&quot; : &quot;//INPUT[@type='button']&quot;,
+        &quot;linkedInputFields&quot; : [ ]
+      }
+    } ],
+    &quot;excludedElements&quot; : [ ],
+    &quot;filterAttributeNames&quot; : [ &quot;closure_hashcode_(\\w)*&quot;, &quot;jquery[0-9]+&quot; ]
+  },
+  &quot;formFillMode&quot; : &quot;NORMAL&quot;,
+  &quot;inputSpecification&quot; : {
+    &quot;formInputs&quot; : { },
+    &quot;forms&quot; : [ ],
+    &quot;crawlElements&quot; : [ ]
+  },
+  &quot;testInvariantsWhileCrawling&quot; : true,
+  &quot;clickOnce&quot; : true,
+  &quot;randomizeCandidateElements&quot; : false,
+  &quot;crawlHiddenAnchors&quot; : true,
+  &quot;waitAfterReloadUrl&quot; : 100,
+  &quot;waitAfterEvent&quot; : 200,
+  &quot;allCrawlElements&quot; : [ {
+    &quot;tagName&quot; : &quot;A&quot;,
+    &quot;id&quot; : &quot;id1663411182&quot;,
+    &quot;eventType&quot; : &quot;click&quot;,
+    &quot;withXpathExpression&quot; : null,
+    &quot;eventableCondition&quot; : null
+  }, {
+    &quot;tagName&quot; : &quot;BUTTON&quot;,
+    &quot;id&quot; : &quot;id488044861&quot;,
+    &quot;eventType&quot; : &quot;click&quot;,
+    &quot;withXpathExpression&quot; : null,
+    &quot;eventableCondition&quot; : null
+  }, {
+    &quot;tagName&quot; : &quot;INPUT&quot;,
+    &quot;id&quot; : &quot;id1740189450&quot;,
+    &quot;eventType&quot; : &quot;click&quot;,
+    &quot;withXpathExpression&quot; : &quot;//INPUT[@type='submit']&quot;,
+    &quot;eventableCondition&quot; : {
+      &quot;id&quot; : &quot;id1740189450&quot;,
+      &quot;conditions&quot; : [ ],
+      &quot;inXPath&quot; : &quot;//INPUT[@type='submit']&quot;,
+      &quot;linkedInputFields&quot; : [ ]
+    }
+  }, {
+    &quot;tagName&quot; : &quot;INPUT&quot;,
+    &quot;id&quot; : &quot;id731260860&quot;,
+    &quot;eventType&quot; : &quot;click&quot;,
+    &quot;withXpathExpression&quot; : &quot;//INPUT[@type='button']&quot;,
+    &quot;eventableCondition&quot; : {
+      &quot;id&quot; : &quot;id731260860&quot;,
+      &quot;conditions&quot; : [ ],
+      &quot;inXPath&quot; : &quot;//INPUT[@type='button']&quot;,
+      &quot;linkedInputFields&quot; : [ ]
+    }
+  } ]
+}</code></pre></td> 
+							</tr>
+						<tr>
+				<td>Maximum States</td> 
+								<td>5</td> 
+							</tr>
+						<tr>
+				<td>Maximum Runtime</td> 
+								<td>3600000</td> 
+							</tr>
+						<tr>
+				<td>Maximum Depth</td> 
+								<td>3</td> 
+							</tr>
+						<tr>
+				<td>Site Dir</td> 
+								<td>/Users/amesbah/repos/git/saltlab/art/crawljax/examples/out/phptravels.com</td> 
+							</tr>
+						<tr>
+				<td>Output Dir</td> 
+								<td>/Users/amesbah/repos/git/saltlab/art/crawljax/examples/out/phptravels.com/crawl25</td> 
+							</tr>
+						<tr>
+				<td>State Vertex Factory</td> 
+								<td>com.crawljax.visual.VisualStateVertexFactory@562c877a</td> 
+							</tr>
+					</tbody>
+	</table>
+</section>
+<section id='versionInfo'>
+	<div class="page-header">
+		<h1>Version info</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<tbody>
+			<tr>
+				<td>Crawljax version</td>
+				<td>3.7-SNAPSHOT</td>
+			</tr>
+		</tbody>
+	</table>
+</section>		</div>
+		<div id="push"></div>
+	</div>
+	<footer>
+		<div class="container">
+			<small class="pull-left muted">Crawl of <a href="http://phptravels.com/demo/">http://phptravels.com/demo/</a> at Tue Aug 01 15:04:10 PDT 2017</small>
+			<small class="pull-right muted">Crawled by <a href="http://crawljax.com">Crawljax</a> 3.7-SNAPSHOT</small>
+		</div>
+	</footer>
+	
+	<script src="lib/jquery-2.0.3.min.js"></script>
+	<script src="lib/bootstrap.min.js"></script>
+	<script src="lib/vivagraph.min.js"></script>
+	<script src="js/graphbuilder.js"></script>
+	<script>
+		var edges = [ {
+  "from" : "index",
+  "to" : "state2",
+  "text" : "Welcome to LiveChat",
+  "id" : "xpath //A[@id = 'title']",
+  "element" : "Element{node=[A: null], tag=A, text=Welcome to LiveChat, attributes={class=title title-bg title-font style-text-shadow, href=#, id=title}}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "state3",
+  "text" : "",
+  "id" : "xpath //DIV[@id = 'rating']/A[1]",
+  "element" : "Element{node=[A: null], tag=A, text=, attributes={class=rating-button rate-bad, data-title=Rate as bad, href=#}}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "state2",
+  "text" : "Demo",
+  "id" : "xpath //NAV[@id = 'main-menu']/UL[1]/LI[1]/SPAN[1]/SPAN[1]/A[1]",
+  "element" : "Element{node=[A: null], tag=A, text=Demo, attributes={class=white, href=http://phptravels.com/demo/}}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "state11",
+  "text" : "Join the world's most popular Travel Agency Software",
+  "id" : "xpath /HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+  "element" : "Element{node=[A: null], tag=A, text=Join the world's most popular Travel Agency Software, attributes={href=javascript:void(0);, style=padding-top: 17px;padding-bottom:0px}}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "state2",
+  "text" : "",
+  "id" : "xpath /HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+  "element" : "Element{node=[A: null], tag=A, text=, attributes={class=btn-sm btn btn-danger, href=//plus.google.com/+phptravels, target=_blank}}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "state2",
+  "text" : "",
+  "id" : "xpath /HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]",
+  "element" : "Element{node=[A: null], tag=A, text=, attributes={class=btn-sm btn btn-primary, href=//www.linkedin.com/company/phptravels, target=_blank}}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "state2",
+  "text" : "",
+  "id" : "xpath /HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[6]",
+  "element" : "Element{node=[A: null], tag=A, text=, attributes={class=btn-sm btn btn-warning, href=//www.phptravels.com/sitemap.xml, target=_blank}}",
+  "eventType" : "click"
+}, {
+  "from" : "index",
+  "to" : "state18",
+  "text" : "",
+  "id" : "xpath /HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+  "element" : "Element{node=[A: null], tag=A, text=, attributes={class=foot-logo, href=http://phptravels.com/}}",
+  "eventType" : "click"
+} ];
+		var states = {
+  "index" : {
+    "name" : "index",
+    "url" : "http://phptravels.com/demo/",
+    "candidateElements" : [ {
+      "top" : 0,
+      "left" : 225,
+      "xpath" : "/HTML[1]/BODY[1]/HEADER[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 0,
+      "height" : 19
+    }, {
+      "top" : 28,
+      "left" : 769,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[1]/SPAN[1]/SPAN[1]/A[1]",
+      "width" : 39,
+      "height" : 19
+    }, {
+      "top" : 28,
+      "left" : 829,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[2]/SPAN[1]/SPAN[1]/A[1]",
+      "width" : 38,
+      "height" : 19
+    }, {
+      "top" : 1375,
+      "left" : 0,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[1]/A[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 72,
+      "left" : -9101,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[2]/A[1]",
+      "width" : 94,
+      "height" : 25
+    }, {
+      "top" : 98,
+      "left" : -9101,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[3]/A[1]",
+      "width" : 54,
+      "height" : 25
+    }, {
+      "top" : 124,
+      "left" : -9101,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[4]/A[1]",
+      "width" : 71,
+      "height" : 25
+    }, {
+      "top" : 150,
+      "left" : -9101,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[5]/A[1]",
+      "width" : 86,
+      "height" : 25
+    }, {
+      "top" : 176,
+      "left" : -9101,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[6]/A[1]",
+      "width" : 69,
+      "height" : 25
+    }, {
+      "top" : 202,
+      "left" : -9101,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[7]/A[1]",
+      "width" : 53,
+      "height" : 25
+    }, {
+      "top" : 228,
+      "left" : -9101,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[8]/A[1]",
+      "width" : 82,
+      "height" : 25
+    }, {
+      "top" : 254,
+      "left" : -9101,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[9]/A[1]",
+      "width" : 72,
+      "height" : 25
+    }, {
+      "top" : 280,
+      "left" : -9101,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[10]/A[1]",
+      "width" : 76,
+      "height" : 25
+    }, {
+      "top" : 1375,
+      "left" : 0,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[1]/A[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 72,
+      "left" : -9029,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[2]/A[1]",
+      "width" : 106,
+      "height" : 25
+    }, {
+      "top" : 98,
+      "left" : -9029,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[3]/A[1]",
+      "width" : 73,
+      "height" : 25
+    }, {
+      "top" : 124,
+      "left" : -9029,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[4]/A[1]",
+      "width" : 95,
+      "height" : 25
+    }, {
+      "top" : 150,
+      "left" : -9029,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[5]/A[1]",
+      "width" : 124,
+      "height" : 25
+    }, {
+      "top" : 176,
+      "left" : -9029,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[6]/A[1]",
+      "width" : 58,
+      "height" : 25
+    }, {
+      "top" : 1375,
+      "left" : 0,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[1]/A[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 72,
+      "left" : -8956,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[2]/A[1]",
+      "width" : 58,
+      "height" : 25
+    }, {
+      "top" : 98,
+      "left" : -8956,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[3]/A[1]",
+      "width" : 70,
+      "height" : 25
+    }, {
+      "top" : 124,
+      "left" : -8956,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[4]/A[1]",
+      "width" : 60,
+      "height" : 25
+    }, {
+      "top" : 150,
+      "left" : -8956,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[5]/A[1]",
+      "width" : 59,
+      "height" : 25
+    }, {
+      "top" : 176,
+      "left" : -8956,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[6]/A[1]",
+      "width" : 91,
+      "height" : 25
+    }, {
+      "top" : 202,
+      "left" : -8956,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[7]/A[1]",
+      "width" : 79,
+      "height" : 25
+    }, {
+      "top" : 228,
+      "left" : -8956,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[8]/A[1]",
+      "width" : 87,
+      "height" : 25
+    }, {
+      "top" : 254,
+      "left" : -8956,
+      "xpath" : "//NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[9]/A[1]",
+      "width" : 121,
+      "height" : 25
+    }, {
+      "top" : 366,
+      "left" : 372,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 408,
+      "height" : 70
+    }, {
+      "top" : 593,
+      "left" : 372,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 408,
+      "height" : 70
+    }, {
+      "top" : 831,
+      "left" : 372,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 408,
+      "height" : 70
+    }, {
+      "top" : 1602,
+      "left" : 85,
+      "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+      "width" : 448,
+      "height" : 37
+    }, {
+      "top" : 1614,
+      "left" : 985,
+      "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 28,
+      "height" : 30
+    }, {
+      "top" : 1614,
+      "left" : 1018,
+      "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+      "width" : 33,
+      "height" : 30
+    }, {
+      "top" : 1614,
+      "left" : 1054,
+      "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[3]",
+      "width" : 33,
+      "height" : 30
+    }, {
+      "top" : 1614,
+      "left" : 1091,
+      "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[4]",
+      "width" : 32,
+      "height" : 30
+    }, {
+      "top" : 1614,
+      "left" : 1127,
+      "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[5]",
+      "width" : 32,
+      "height" : 30
+    }, {
+      "top" : 1614,
+      "left" : 1163,
+      "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/DIV[1]/A[6]",
+      "width" : 31,
+      "height" : 30
+    }, {
+      "top" : 1686,
+      "left" : 70,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 160,
+      "height" : 40
+    }, {
+      "top" : 1806,
+      "left" : 70,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 112,
+      "height" : 19
+    }, {
+      "top" : 1806,
+      "left" : 193,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/A[2]",
+      "width" : 91,
+      "height" : 19
+    }, {
+      "top" : 1706,
+      "left" : 377,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[1]/A[1]",
+      "width" : 87,
+      "height" : 19
+    }, {
+      "top" : 1726,
+      "left" : 377,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[2]/A[1]",
+      "width" : 84,
+      "height" : 19
+    }, {
+      "top" : 1746,
+      "left" : 377,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[3]/A[1]",
+      "width" : 59,
+      "height" : 19
+    }, {
+      "top" : 1766,
+      "left" : 377,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[4]/A[1]",
+      "width" : 95,
+      "height" : 19
+    }, {
+      "top" : 1786,
+      "left" : 377,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/UL[1]/LI[5]/A[1]",
+      "width" : 77,
+      "height" : 19
+    }, {
+      "top" : 1706,
+      "left" : 589,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[1]/A[1]",
+      "width" : 105,
+      "height" : 19
+    }, {
+      "top" : 1726,
+      "left" : 589,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[2]/A[1]",
+      "width" : 71,
+      "height" : 19
+    }, {
+      "top" : 1746,
+      "left" : 589,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[3]/A[1]",
+      "width" : 56,
+      "height" : 19
+    }, {
+      "top" : 1766,
+      "left" : 589,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[4]/A[1]",
+      "width" : 64,
+      "height" : 19
+    }, {
+      "top" : 1786,
+      "left" : 589,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/UL[1]/LI[5]/A[1]",
+      "width" : 133,
+      "height" : 19
+    }, {
+      "top" : 1706,
+      "left" : 801,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[1]/A[1]",
+      "width" : 30,
+      "height" : 19
+    }, {
+      "top" : 1726,
+      "left" : 801,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[2]/A[1]",
+      "width" : 62,
+      "height" : 19
+    }, {
+      "top" : 1746,
+      "left" : 801,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[3]/A[1]",
+      "width" : 73,
+      "height" : 19
+    }, {
+      "top" : 1766,
+      "left" : 801,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[4]/A[1]",
+      "width" : 28,
+      "height" : 19
+    }, {
+      "top" : 1786,
+      "left" : 801,
+      "xpath" : "/HTML[1]/BODY[1]/FOOTER[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[4]/UL[1]/LI[5]/A[1]",
+      "width" : 66,
+      "height" : 19
+    }, {
+      "top" : 1848,
+      "left" : 59,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/A[1]",
+      "width" : 128,
+      "height" : 132
+    }, {
+      "top" : 1955,
+      "left" : 1241,
+      "xpath" : "//A[@id = 'livechat-badge']",
+      "width" : 16,
+      "height" : 16
+    }, {
+      "top" : 1375,
+      "left" : 0,
+      "xpath" : "/HTML[1]/BODY[1]/HEADER[1]/DIV[1]/DIV[1]/BUTTON[1]",
+      "width" : 0,
+      "height" : 0
+    }, {
+      "top" : 1614,
+      "left" : 548,
+      "xpath" : "/HTML[1]/BODY[1]/NAV[1]/DIV[1]/DIV[1]/FORM[1]/BUTTON[1]",
+      "width" : 87,
+      "height" : 34
+    }, {
+      "top" : 1827,
+      "left" : 36,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/BUTTON[1]",
+      "width" : 25,
+      "height" : 25
+    }, {
+      "top" : 1950,
+      "left" : 59,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[2]/DIV[1]/A[1]/BUTTON[1]",
+      "width" : 128,
+      "height" : 30
+    }, {
+      "top" : 1961,
+      "left" : 465,
+      "xpath" : "//DIV[@id = 'email']/DIV[2]/INPUT[2]",
+      "width" : 350,
+      "height" : 34
+    } ],
+    "fanIn" : 0,
+    "fanOut" : 8,
+    "id" : 0,
+    "failedEvents" : [ "xpath //A[@id = 'full-view-button']", "xpath //DIV[@id = 'rate_me_feedback_form']/FORM[1]/SPAN[1]/A[1]", "xpath //DIV[@id = 'email_transcript_form']/FORM[1]/SPAN[1]/A[1]", "xpath //A[@id = 'dont-leave-chat']", "xpath //SPAN[@id = 'message-wrapper']/A[1]", "xpath //A[@id = 'send-file-clip']", "xpath //DIV[@id = 'rate_me_feedback_form']/FORM[1]/INPUT[1]", "xpath //DIV[@id = 'email_transcript_form']/FORM[1]/INPUT[2]", "xpath //INPUT[@id = 'leave-chat']", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[1]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[2]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[3]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[4]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[5]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[6]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[7]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[8]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[9]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[3]/DIV[1]/UL[1]/LI[10]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[1]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[2]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[3]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[4]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[5]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[4]/DIV[1]/UL[1]/LI[6]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[1]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[2]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[3]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[4]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[5]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[6]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[7]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[8]/A[1]", "xpath //NAV[@id = 'main-menu']/UL[1]/LI[5]/DIV[1]/UL[1]/LI[9]/A[1]", "xpath /HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]", "xpath /HTML[1]/BODY[1]/SECTION[2]/DIV[1]/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/A[1]" ]
+  },
+  "state2" : {
+    "name" : "state2",
+    "url" : "http://phptravels.com/demo/",
+    "candidateElements" : [ {
+      "top" : 1955,
+      "left" : 1241,
+      "xpath" : "//A[@id = 'livechat-badge']",
+      "width" : 16,
+      "height" : 16
+    } ],
+    "fanIn" : 5,
+    "fanOut" : 0,
+    "id" : 2,
+    "failedEvents" : [ "xpath //A[@id = 'livechat-badge']" ]
+  },
+  "state3" : {
+    "name" : "state3",
+    "url" : "http://phptravels.com/demo/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "id" : 3,
+    "failedEvents" : [ ]
+  },
+  "state18" : {
+    "name" : "state18",
+    "url" : "http://phptravels.com/",
+    "candidateElements" : [ {
+      "top" : 241,
+      "left" : 465,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[3]/A[1]",
+      "width" : 160,
+      "height" : 34
+    }, {
+      "top" : 241,
+      "left" : 655,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[1]/DIV[1]/DIV[1]/DIV[4]/A[1]",
+      "width" : 160,
+      "height" : 34
+    }, {
+      "top" : 2238,
+      "left" : 465,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[3]/SECTION[1]/DIV[1]/DIV[6]/A[1]",
+      "width" : 350,
+      "height" : 34
+    }, {
+      "top" : 2940,
+      "left" : 722,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[3]/SECTION[2]/DIV[1]/DIV[3]/A[1]",
+      "width" : 111,
+      "height" : 22
+    }, {
+      "top" : 3165,
+      "left" : 86,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[3]/SECTION[3]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/A[1]",
+      "width" : 328,
+      "height" : 217
+    }, {
+      "top" : 3165,
+      "left" : 476,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[3]/SECTION[3]/DIV[1]/DIV[2]/DIV[2]/DIV[1]/A[1]",
+      "width" : 328,
+      "height" : 217
+    }, {
+      "top" : 3165,
+      "left" : 866,
+      "xpath" : "/HTML[1]/BODY[1]/SECTION[3]/SECTION[3]/DIV[1]/DIV[2]/DIV[3]/DIV[1]/A[1]",
+      "width" : 328,
+      "height" : 217
+    }, {
+      "top" : 473,
+      "left" : 59,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]",
+      "width" : 128,
+      "height" : 132
+    }, {
+      "top" : 452,
+      "left" : 36,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[1]/BUTTON[1]",
+      "width" : 25,
+      "height" : 25
+    }, {
+      "top" : 575,
+      "left" : 59,
+      "xpath" : "/HTML[1]/BODY[1]/DIV[1]/DIV[1]/A[1]/BUTTON[1]",
+      "width" : 128,
+      "height" : 30
+    } ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "id" : 18,
+    "failedEvents" : [ ]
+  },
+  "state11" : {
+    "name" : "state11",
+    "url" : "http://phptravels.com/demo/",
+    "candidateElements" : [ ],
+    "fanIn" : 1,
+    "fanOut" : 0,
+    "id" : 11,
+    "failedEvents" : [ ]
+  }
+};
+		$(document).ready(
+				function() {
+					$.each(states, function() {
+						graph.addNode(this.name, {
+							img : 'screenshots/' + this.name + '_small.jpg',
+							url : "states/" + this.name + ".html"
+						});
+					});
+
+					var edgesSeen = {};
+					$.each(edges, function() {
+						var edgeKey = this.from + "-to-" + this.to;
+						if (!(edgeKey in edgesSeen)) {
+							edgesSeen[edgeKey] = true;
+							graph.addLink(this.from, this.to, {
+								text : this.text,
+								id : this.id,
+								eventType : this.eventType,
+								element : this.element
+
+							});
+						}
+					});
+
+					$("#hideButton").click(function() {
+						$(".panel-right").removeClass("in");
+						$('path[stroke="red"]').attr("stroke", "grey");
+					});
+
+					$("a[rel='popover']").popover({
+						content : $("#popup-content").html(),
+						html : true,
+						trigger : "hover"
+					});
+
+					$("a[data-toggle='tooltip']").tooltip();
+
+					var paused = false;
+					$("#pauseButton").click(
+							function() {
+								if (paused) {
+									renderer.resume();
+									paused = false;
+									$(this).children(":first").attr("class",
+											"icon-pause");
+								} else {
+									renderer.pause();
+									paused = true;
+									$(this).children(":first").attr("class",
+											"icon-play");
+								}
+							});
+
+					/* Makes nav links update the nav toolback with current page */
+					$('.nav-link').click(function(e) { 
+						/* Example: #url */
+						var target = e.target.hash;
+
+						updateNav(target);
+					});
+
+					/* page: a string with target page, like "#nav" */
+					function updateNav(page) {
+						/* Removes active class from previous active link */
+						$('.navbar li').removeClass('active');
+
+						/* Find correct link on nav-bar and add active class to it */
+						$('.navbar li').each(function(index, element) {
+							if ($(element).find('a').get(0).hash === page) {
+								$(element).addClass('active');
+
+								return false;
+							}
+						});
+					}
+
+					function loadPage(page) {
+						$('.page').hide();
+						$('#container-' + page).show();
+
+						if (page === "graph") {
+							$('.graphBtn').show();
+						} else {
+							$('.graphBtn').hide();
+						}
+					}
+
+					$(window).on(
+							'hashchange',
+							function(e) {
+								pageRef = window.location.hash.substring(1);
+								if ($("#container-" + pageRef).length == 0
+										&& pageRef !== "graph") {
+									window.location.hash = "graph";
+								} else {
+									loadPage(pageRef);
+								}
+							});
+
+					$(window).trigger('hashchange');
+				});
+
+		function showInfo(link) {
+			$(".panel-right").addClass("in");
+			$(".panel-right [name='elemName']").text(link.data.text);
+			$(".panel-right [name='from']").html(asStateLink(link.fromId));
+			$(".panel-right [name='to']").html(asStateLink(link.toId));
+			$(".panel-right [name='id']").text(link.data.id);
+			$(".panel-right [name='element']").text(link.data.element);
+			$(".panel-right [name='eventType']").text(link.data.eventType);
+		}
+
+		function asStateLink(name) {
+			return "<a href='states/" + name + ".html' target='_new'>" + name
+					+ "</a>";
+		}
+
+		$('#container-graph svg').css("width", "100%");
+		function resize() {
+			$('#container-graph').css("height", window.innerHeight - 80);
+			$('#container-graph svg').css("height", window.innerHeight - 80);
+		}
+		$(window).resize(resize);
+		resize();
+	</script>
+</body>
+</html>

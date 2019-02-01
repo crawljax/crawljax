@@ -1,18 +1,16 @@
 package com.crawljax.oraclecomparator.comparators;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
+
 /**
  * Test the edit distance algorithm.
- * 
+ *
  * @author mesbah
  */
 public class EditDistanceTest {
@@ -48,8 +46,8 @@ public class EditDistanceTest {
 		String x = "<form>BL</form>";
 		String y = "<form>blabla</form>";
 
-		LOG.debug(StringUtils.getLevenshteinDistance(x, y) + " Thesh: "
-		        + comparator.getThreshold(x, y, 0.7));
+		LOG.debug(new LevenshteinDistance().apply(x, y) + " Threshold: " + comparator
+				.getThreshold(x, y, 0.7));
 		assertTrue(comparator.isClone(x, y, 0.0));
 		assertTrue(comparator.isClone(x, y, 0.5));
 		assertTrue(comparator.isClone(x, y, 0.7));

@@ -1,15 +1,15 @@
 package com.crawljax.core.state;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openqa.selenium.By;
 
+import java.io.Serializable;
+
 /**
  * The Identification class, this class is used to denote a specific element. Specifying a method
  * and the value for that method.
- * 
+ *
  * @author mesbah
  */
 public class Identification implements Serializable {
@@ -22,7 +22,6 @@ public class Identification implements Serializable {
 		xpath, name, id, tag, text, partialText
 	}
 
-	private long id;
 	private How how;
 	private String value;
 
@@ -35,11 +34,9 @@ public class Identification implements Serializable {
 
 	/**
 	 * Create a new Identification.
-	 * 
-	 * @param how
-	 *            the method of identification (xpath, id, name, ...)
-	 * @param value
-	 *            the value of the identification method.
+	 *
+	 * @param how   the method of identification (xpath, id, name, ...)
+	 * @param value the value of the identification method.
 	 */
 	public Identification(How how, String value) {
 		this.how = how;
@@ -54,8 +51,7 @@ public class Identification implements Serializable {
 	}
 
 	/**
-	 * @param how
-	 *            the how to set
+	 * @param how the how to set
 	 */
 	public void setHow(How how) {
 		this.how = how;
@@ -69,8 +65,7 @@ public class Identification implements Serializable {
 	}
 
 	/**
-	 * @param value
-	 *            the value to set
+	 * @param value the value to set
 	 */
 	public void setValue(String value) {
 		this.value = value;
@@ -78,7 +73,7 @@ public class Identification implements Serializable {
 
 	/**
 	 * Convert a Identification to a String.
-	 * 
+	 *
 	 * @return the String representation of the Identification
 	 */
 	@Override
@@ -87,23 +82,8 @@ public class Identification implements Serializable {
 	}
 
 	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	/**
 	 * Convert a Identification to a By used in WebDriver Drivers.
-	 * 
+	 *
 	 * @return the correct By specification of the current Identification.
 	 */
 	public By getWebDriverBy() {
@@ -147,7 +127,7 @@ public class Identification implements Serializable {
 		final Identification rhs = (Identification) obj;
 
 		return new EqualsBuilder().append(this.how, rhs.getHow())
-		        .append(this.value, rhs.getValue()).isEquals();
+				.append(this.value, rhs.getValue()).isEquals();
 	}
 
 	@Override

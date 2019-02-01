@@ -1,16 +1,16 @@
 package com.crawljax.condition;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
+import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import net.jcip.annotations.ThreadSafe;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.google.common.base.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Condition that counts how many times a condition is specified and returns true iff the specified
  * condition is satisfied less than the specified number.
- * 
+ *
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @ThreadSafe
@@ -21,10 +21,8 @@ public class CountCondition implements Condition {
 	private final int maxCount;
 
 	/**
-	 * @param maxCount
-	 *            number of times the condition can be satisfied.
-	 * @param condition
-	 *            the condition.
+	 * @param maxCount  number of times the condition can be satisfied.
+	 * @param condition the condition.
 	 */
 	public CountCondition(int maxCount, Condition condition) {
 		this.maxCount = maxCount;
@@ -45,10 +43,10 @@ public class CountCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("condition", condition)
-		        .add("maxCount", maxCount)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("condition", condition)
+				.add("maxCount", maxCount)
+				.toString();
 	}
 
 	/**
@@ -69,7 +67,7 @@ public class CountCondition implements Condition {
 		if (object instanceof CountCondition) {
 			CountCondition that = (CountCondition) object;
 			return Objects.equal(this.condition, that.condition)
-			        && Objects.equal(this.maxCount, that.maxCount);
+					&& Objects.equal(this.maxCount, that.maxCount);
 		}
 		return false;
 	}

@@ -2,12 +2,9 @@ package com.crawljax.forms;
 
 /**
  * Value for a FormInput.
- * 
- * @author dannyroest@gmail.com (Danny Roest)
  */
 public class InputValue {
 
-	private long id;
 	private String value;
 	private boolean checked = false;
 
@@ -19,8 +16,7 @@ public class InputValue {
 	}
 
 	/**
-	 * @param value
-	 *            the text value
+	 * @param value the text value
 	 */
 	public InputValue(String value) {
 		this(value, true);
@@ -28,11 +24,9 @@ public class InputValue {
 
 	/**
 	 * Created a form input value.
-	 * 
-	 * @param value
-	 *            the text value
-	 * @param checked
-	 *            whether the element should be checked
+	 *
+	 * @param value   the text value
+	 * @param checked whether the element should be checked
 	 */
 	public InputValue(String value, boolean checked) {
 		this.value = value;
@@ -45,21 +39,6 @@ public class InputValue {
 	}
 
 	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	/**
 	 * @return the value
 	 */
 	public String getValue() {
@@ -67,8 +46,7 @@ public class InputValue {
 	}
 
 	/**
-	 * @param value
-	 *            the value to set
+	 * @param value the value to set
 	 */
 	public void setValue(String value) {
 		this.value = value;
@@ -82,8 +60,7 @@ public class InputValue {
 	}
 
 	/**
-	 * @param checked
-	 *            the checked to set
+	 * @param checked the checked to set
 	 */
 	public void setChecked(boolean checked) {
 		this.checked = checked;

@@ -1,0 +1,10 @@
+<html><body>
+<table border="1">
+	<col width="20%"/>
+	<col width="30%"/>
+	<col width="50%"/>
+	<tr><td>Cell 1</td><td>Cell 2</td><td>Cell 4</td></tr>
+	<tr><td>Cell 3</td><td>Cell 4</td><td>Cell 4</td></tr>
+	<tr><td>Cell 5</td><td>Cell 6</td><td>Cell 4</td></tr>
+</table>
+</body></html>

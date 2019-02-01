@@ -1,0 +1,238 @@
+.frame
+,.frameBuffer
+{
+	position: relative;
+	overflow: hidden;
+}
+/* all frame pieces */
+.frame .tl,
+.frame .t,
+.frame .t span,
+.frame .tr,
+.frame .r,
+.frame .r span,
+.frame .br,
+.frame .b,
+.frame .b span,
+.frame .bl,
+.frame .l,
+.frame .l span
+{
+	position: absolute;
+	display: block;
+	font-size: 0px;
+	line-height: 0px;
+	overflow: hidden;
+	background: transparent repeat left top;
+	text-align: left;
+}
+/* all horizontal */
+.frame .t,
+.frame .t span,
+.frame .b,
+.frame .b span
+{
+	width: 100%;
+	background-repeat: repeat;
+}
+/* all vertical */
+.frame .r,
+.frame .r span,
+.frame .l,
+.frame .l span
+{
+	height: 100%;
+	background-repeat: repeat;
+}
+.frame img
+{
+	position: relative;
+}
+
+/*** SHARP ***/
+.frameSharp
+{
+	margin: -3px -5px -5px -3px;
+}
+.frameSharp .frameBuffer
+{
+	padding: 3px 5px 5px 3px;
+}
+.frameSharp .tl
+{
+	top: 0;
+	left: 0;
+	width: 7px;
+	height: 7px;
+	background-image: url(../images/frame_sharp_tl.png);
+}
+.frameSharp .t
+{
+	top: 0;
+	left: 7px;
+	height: 3px;
+}
+.frameSharp .t span
+{
+	top: 0;
+	left: -13px;
+	height: 3px;
+	background-image: url(../images/frame_sharp_t.png);
+}
+.frameSharp .tr
+{
+	top: 0;
+	right: 0;
+	width: 6px;
+	height: 7px;
+	background-image: url(../images/frame_sharp_tr.png);
+}
+.frameSharp .r
+{
+	top: 7px;
+	right: 0;
+	width: 5px;
+}
+.frameSharp .r span
+{
+	top: -14px;
+	width: 5px;
+	background-image: url(../images/frame_sharp_r.png);
+}
+.frameSharp .br
+{
+	bottom: 0;
+	right: 0;
+	width: 6px;
+	height: 7px;
+	background-image: url(../images/frame_sharp_br.png);
+}
+.frameSharp .b
+{
+	bottom: 0;
+	left: 7px;
+	height: 7px;
+	width: 100%;
+}
+.frameSharp .b span
+{
+	left: -13px;
+	top: 0;
+	height: 7px;
+	width: 100%;
+	background-image: url(../images/frame_sharp_b.png);
+}
+.frameSharp .bl
+{
+	bottom: 0;
+	left: 0;
+	width: 7px;
+	height: 7px;
+	background-image: url(../images/frame_sharp_bl.png);
+}
+.frameSharp .l
+{
+	top: 7px;
+	left: 0;
+	width: 3px;
+}
+.frameSharp .l span
+{
+	top: -14px;
+	width: 3px;
+	background-image: url(../images/frame_sharp_l.png);
+}
+
+/*** SOFT ***/
+.frameSoft
+{
+	margin: -9px -10px -10px -10px;
+}
+.frameSoft .frameBuffer
+{
+	padding: 9px 10px 10px 10px;
+}
+.frameSoft .tl
+{
+	top: 0;
+	left: 0;
+	width: 16px;
+	height: 15px;
+	background-image: url(../images/frame_soft_tl.png);
+}
+.frameSoft .t
+{
+	top: 0;
+	left: 16px;
+	height: 9px;
+}
+.frameSoft .t span
+{
+	top: 0;
+	left: -32px;
+	height: 9px;
+	background-image: url(../images/frame_soft_t.png);
+}
+.frameSoft .tr
+{
+	top: 0;
+	right: 0;
+	width: 16px;
+	height: 16px;
+	background-image: url(../images/frame_soft_tr.png);
+}
+.frameSoft .r
+{
+	top: 15px;
+	right: 0;
+	width: 10px;
+}
+.frameSoft .r span
+{
+	top: -31px;
+	width: 10px;
+	background-image: url(../images/frame_soft_r.png);
+}
+.frameSoft .br
+{
+	bottom: 0;
+	right: 0;
+	width: 16px;
+	height: 16px;
+	background-image: url(../images/frame_soft_br.png);
+}
+.frameSoft .b
+{
+	bottom: 0;
+	left: 16px;
+	height: 10px;
+	width: 100%;
+}
+.frameSoft .b span
+{
+	left: -32px;
+	top: 0;
+	height: 10px;
+	width: 100%;
+	background-image: url(../images/frame_soft_b.png);
+}
+.frameSoft .bl
+{
+	bottom: 0;
+	left: 0;
+	width: 16px;
+	height: 16px;
+	background-image: url(../images/frame_soft_bl.png);
+}
+.frameSoft .l
+{
+	top: 15px;
+	left: 0;
+	width: 10px;
+}
+.frameSoft .l span
+{
+	top: -31px;
+	width: 10px;
+	background-image: url(../images/frame_soft_l.png);
+}

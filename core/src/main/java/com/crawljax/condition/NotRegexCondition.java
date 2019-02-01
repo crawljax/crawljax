@@ -1,13 +1,13 @@
 package com.crawljax.condition;
 
-import net.jcip.annotations.Immutable;
-
 import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import net.jcip.annotations.Immutable;
 
 /**
  * A condition which returns true iff the expression does NOT occur in the DOM.
- * 
+ *
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
@@ -16,8 +16,7 @@ public class NotRegexCondition implements Condition {
 	private final RegexCondition regexCondition;
 
 	/**
-	 * @param expression
-	 *            the regular expression.
+	 * @param expression the regular expression.
 	 */
 	public NotRegexCondition(String expression) {
 		this.regexCondition = new RegexCondition(expression);
@@ -44,9 +43,9 @@ public class NotRegexCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("regexCondition", regexCondition)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("regexCondition", regexCondition)
+				.toString();
 	}
 
 }

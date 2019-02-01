@@ -1,21 +1,21 @@
 package com.crawljax.core;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.crawljax.core.ExitNotifier.ExitStatus;
+import com.crawljax.core.configuration.CrawlRules.FormFillMode;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CrawlSessionProvider;
+import com.crawljax.forms.FormInputValueHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Starts and shuts down the crawl.
@@ -23,8 +23,11 @@ import com.crawljax.di.CrawlSessionProvider;
 @Singleton
 public class CrawlController implements Callable<CrawlSession> {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(CrawlController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CrawlController.class);
+
+	static {
+		System.setProperty("webdriver.http.factory", "apache");
+	}
 
 	private final Provider<CrawlTaskConsumer> consumerFactory;
 	private final ExecutorService executor;
@@ -40,11 +43,10 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	private ExitStatus exitReason;
 
-	@Inject
-	CrawlController(ExecutorService executor,
-			Provider<CrawlTaskConsumer> consumerFactory,
-			CrawljaxConfiguration config, ExitNotifier exitNotifier,
-			CrawlSessionProvider crawlSessionProvider, Plugins plugins) {
+	@Inject CrawlController(ExecutorService executor, Provider<CrawlTaskConsumer> consumerFactory,
+			CrawljaxConfiguration config,
+			ExitNotifier exitNotifier, CrawlSessionProvider crawlSessionProvider,
+			Plugins plugins) {
 		this.executor = executor;
 		this.consumerFactory = consumerFactory;
 		this.exitNotifier = exitNotifier;
@@ -56,7 +58,7 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	/**
 	 * Run the configured crawl. This method blocks until the crawl is done.
-	 * 
+	 *
 	 * @return the CrawlSession once the crawl is done.
 	 */
 	@Override
@@ -80,8 +82,8 @@ public class CrawlController implements Callable<CrawlSession> {
 	}
 
 	/**
-	 * @return The {@link ExitStatus} crawljax stopped or <code>null</code> when
-	 *         it hasn't stopped yet.
+	 * @return The {@link ExitStatus} crawljax stopped or <code>null</code> when it
+	 * hasn't stopped yet.
 	 */
 	public ExitStatus getReason() {
 		return exitReason;
@@ -91,28 +93,22 @@ public class CrawlController implements Callable<CrawlSession> {
 		if (maximumCrawlTime == 0) {
 			return;
 		}
-		executor.submit(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					LOG.debug("Waiting {} before killing the crawler",
-							maximumCrawlTime);
-					Thread.sleep(maximumCrawlTime);
-					LOG.info("Time is up! Shutting down...");
-					exitNotifier.signalTimeIsUp();
-				} catch (InterruptedException e) {
-					LOG.debug("Crawler finished before maximum crawltime exceeded");
-				}
-
+		executor.submit(() -> {
+			try {
+				LOG.debug("Waiting {} before killing the crawler", maximumCrawlTime);
+				Thread.sleep(maximumCrawlTime);
+				LOG.info("Time is up! Shutting down...");
+				exitNotifier.signalTimeIsUp();
+			} catch (InterruptedException e) {
+				LOG.debug("Crawler finished before maximum crawl time exceeded");
 			}
+
 		});
 
 	}
 
 	private void executeConsumers(CrawlTaskConsumer firstConsumer) {
-		LOG.debug("Starting {} consumers", config.getBrowserConfig()
-				.getNumberOfBrowsers());
+		LOG.debug("Starting {} consumers", config.getBrowserConfig().getNumberOfBrowsers());
 		executor.submit(firstConsumer);
 		for (int i = 1; i < config.getBrowserConfig().getNumberOfBrowsers(); i++) {
 			executor.submit(consumerFactory.get());
@@ -124,8 +120,7 @@ public class CrawlController implements Callable<CrawlSession> {
 			exitReason = ExitStatus.ERROR;
 		} finally {
 			shutDown();
-			plugins.runPostCrawlingPlugins(crawlSessionProvider.get(),
-					exitReason);
+			plugins.runPostCrawlingPlugins(crawlSessionProvider.get(), exitReason);
 			LOG.info("Shutdown process complete");
 		}
 	}
@@ -137,10 +132,17 @@ public class CrawlController implements Callable<CrawlSession> {
 			LOG.debug("Waiting for task consumers to stop...");
 			executor.awaitTermination(15, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			LOG.warn(
-					"Interrupted before being able to shut down executor pool",
-					e);
+			LOG.warn("Interrupted before being able to shut down executor pool", e);
 			exitReason = ExitStatus.ERROR;
+		} finally {
+			/*
+			 * If this was a training crawl, write the form inputs to the output directory.
+			 */
+			if (config.getCrawlRules().getFormFillMode().equals(FormFillMode.TRAINING)
+					|| config.getCrawlRules().getFormFillMode()
+					.equals(FormFillMode.XPATH_TRAINING)) {
+				FormInputValueHelper.serializeFormInputs(this.config.getSiteDir());
+			}
 		}
 		LOG.debug("terminated");
 	}

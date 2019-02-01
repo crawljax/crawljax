@@ -1,36 +1,35 @@
 package com.crawljax.core.plugin;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-import java.util.Map.Entry;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
+import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.ExitNotifier.ExitStatus;
+import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.metrics.MetricsModule;
 import com.crawljax.test.BrowserTest;
 import com.google.common.collect.ImmutableList;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
+import java.util.Map.Entry;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
@@ -40,9 +39,6 @@ import com.google.common.collect.ImmutableList;
 public class PluginsTest {
 
 	private Plugins plugins;
-
-	@Mock
-	private DomChangeNotifierPlugin domChange;
 
 	@Mock
 	private OnBrowserCreatedPlugin browserCreatedPlugin;
@@ -66,7 +62,7 @@ public class PluginsTest {
 	private PostCrawlingPlugin postCrawlingPlugin;
 
 	@Mock
-	private PreStateCrawlingPlugin prestatePlugin;
+	private PreStateCrawlingPlugin preStatePlugin;
 
 	@Mock
 	private CrawlerContext context;
@@ -83,10 +79,11 @@ public class PluginsTest {
 	public void setup() {
 		registry = new MetricRegistry();
 		CrawljaxConfiguration config = CrawljaxConfiguration.builderFor("http://localhost")
-		        .addPlugin(domChange, browserCreatedPlugin,
-		                fireEventFailedPlugin, invariantViolationPlugin, newStatePlugin,
-		                onRevisitStatePlugin,
-		                urlLoadPlugin, postCrawlingPlugin, prestatePlugin).build();
+				.addPlugin(browserCreatedPlugin, fireEventFailedPlugin,
+						invariantViolationPlugin, newStatePlugin, onRevisitStatePlugin,
+						urlLoadPlugin, postCrawlingPlugin, preStatePlugin)
+				.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()))
+				.build();
 		plugins = new Plugins(config, registry);
 	}
 
@@ -105,7 +102,7 @@ public class PluginsTest {
 	private int counterFor(Class<? extends Plugin> plugin) {
 		for (Entry<String, Counter> counter : registry.getCounters().entrySet()) {
 			if (counter.getKey().contains(plugin.getSimpleName())
-			        && counter.getKey().endsWith("invocations")) {
+					&& counter.getKey().endsWith("invocations")) {
 				return (int) counter.getValue().getCount();
 			}
 		}
@@ -115,14 +112,14 @@ public class PluginsTest {
 	}
 
 	@Test
-	public void urlLoadisCalled() throws Exception {
+	public void urlLoadIsCalled() {
 		plugins.runOnUrlLoadPlugins(context);
 		verify(urlLoadPlugin).onUrlLoad(context);
 		assertThat(counterFor(OnUrlLoadPlugin.class), is(1));
 	}
 
 	@Test
-	public void revisitStatePluginIsCalled() throws Exception {
+	public void revisitStatePluginIsCalled() {
 		StateVertex currentState = mock(StateVertex.class);
 		plugins.runOnRevisitStatePlugins(context, currentState);
 		verify(onRevisitStatePlugin).onRevisitState(context, currentState);
@@ -130,41 +127,18 @@ public class PluginsTest {
 	}
 
 	@Test
-	public void newStatePluginIsCalled() throws Exception {
+	public void newStatePluginIsCalled() {
 		plugins.runOnNewStatePlugins(context, vertex);
 		verify(newStatePlugin).onNewState(context, vertex);
 		assertThat(counterFor(OnNewStatePlugin.class), is(1));
 	}
 
 	@Test
-	public void invariantViolatedIsCalled() throws Exception {
+	public void invariantViolatedIsCalled() {
 		Invariant invariant = mock(Invariant.class);
 		plugins.runOnInvariantViolationPlugins(invariant, context);
 		verify(invariantViolationPlugin).onInvariantViolation(invariant, context);
 		assertThat(counterFor(OnInvariantViolationPlugin.class), is(1));
-	}
-
-	@Test
-	public void domChangeNotifierIsCalled() {
-		StateVertex stateBefore = mock(StateVertex.class);
-		Eventable eventable = mock(Eventable.class);
-		StateVertex stateAfter = mock(StateVertex.class);
-		String oldDom = "old";
-		String newDom = "new";
-		when(stateBefore.getDom()).thenReturn(oldDom);
-		when(stateAfter.getDom()).thenReturn(newDom);
-
-		plugins.runDomChangeNotifierPlugins(context, stateBefore, eventable, stateAfter);
-		verify(domChange).isDomChanged(context, oldDom, eventable, newDom);
-
-		assertThat(counterFor(DomChangeNotifierPlugin.class), is(1));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void onlyOneDomChangePluginCanBeAdded() {
-		new Plugins(CrawljaxConfiguration.builderFor("http://localhost")
-		        .addPlugin(domChange)
-		        .addPlugin(domChange).build(), new MetricRegistry());
 	}
 
 	@Test
@@ -180,7 +154,7 @@ public class PluginsTest {
 	public void verifyPreCrawlPluginIsCalled() {
 		ImmutableList<CandidateElement> candidateElements = ImmutableList.of();
 		plugins.runPreStateCrawlingPlugins(context, candidateElements, vertex);
-		verify(prestatePlugin).preStateCrawling(context, candidateElements, vertex);
+		verify(preStatePlugin).preStateCrawling(context, candidateElements, vertex);
 		assertThat(counterFor(PreStateCrawlingPlugin.class), is(1));
 	}
 
@@ -191,26 +165,5 @@ public class PluginsTest {
 		plugins.runOnFireEventFailedPlugins(context, eventable, path);
 		verify(fireEventFailedPlugin).onFireEventFailed(context, eventable, path);
 		assertThat(counterFor(OnFireEventFailedPlugin.class), is(1));
-	}
-
-	@Test
-	public void whenDomChangeErrorsTheDefaultIsUsed() {
-		StateVertex stateBefore = mock(StateVertex.class);
-		Eventable eventable = mock(Eventable.class);
-		StateVertex stateAfter = mock(StateVertex.class);
-		String oldDom = "old";
-		String newDom = "new";
-		when(stateBefore.getDom()).thenReturn(oldDom);
-		when(stateAfter.getDom()).thenReturn(newDom);
-		when(domChange.isDomChanged(context, oldDom, eventable, newDom)).thenThrow(
-		        new RuntimeException("This is an expected excpetion. ignore"));
-		assertThat(
-		        plugins.runDomChangeNotifierPlugins(context, stateBefore, eventable, stateAfter),
-		        is(true));
-
-		assertThat(counterFor(DomChangeNotifierPlugin.class), is(1));
-		String failName = MetricsModule.PLUGINS_PREFIX + domChange.getClass().getSimpleName()
-		        + ".fail_count";
-		assertThat(registry.counter(failName).getCount(), is(1L));
 	}
 }

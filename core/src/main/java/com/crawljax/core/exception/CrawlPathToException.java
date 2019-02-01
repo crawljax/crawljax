@@ -7,7 +7,7 @@ import com.crawljax.core.state.CrawlPath;
 /**
  * This exception wraps a CrawlPath into a Throwable. Basically providing a StackTrace of the Path
  * taken to reach an Exception point.
- * 
+ *
  * @author slenselink@google.com (Stefan Lenselink)
  */
 public class CrawlPathToException extends Exception {
@@ -19,13 +19,10 @@ public class CrawlPathToException extends Exception {
 
 	/**
 	 * Build a new {@link CrawlPathToException} given a path taken.
-	 * 
-	 * @param message
-	 *            the message to supply with this exception
-	 * @param path
-	 *            the CrawlPath taken that causes this exception.
-	 * @param cause
-	 *            the root cause of this exception.
+	 *
+	 * @param message the message to supply with this exception
+	 * @param path    the CrawlPath taken that causes this exception.
+	 * @param cause   the root cause of this exception.
 	 */
 	public CrawlPathToException(String message, CrawlPath path, Throwable cause) {
 		super(message, cause);
@@ -34,11 +31,9 @@ public class CrawlPathToException extends Exception {
 
 	/**
 	 * Build a new {@link CrawlPathToException} given a path taken.
-	 * 
-	 * @param message
-	 *            the message to supply with this exception
-	 * @param path
-	 *            the CrawlPath taken that causes this exception.
+	 *
+	 * @param message the message to supply with this exception
+	 * @param path    the CrawlPath taken that causes this exception.
 	 */
 	public CrawlPathToException(String message, CrawlPath path) {
 		this(message, path, null);
@@ -46,11 +41,9 @@ public class CrawlPathToException extends Exception {
 
 	/**
 	 * Build a new {@link CrawlPathToException} given a path taken.
-	 * 
-	 * @param path
-	 *            the CrawlPath taken that causes this exception.
-	 * @param cause
-	 *            the root cause of this exception.
+	 *
+	 * @param path  the CrawlPath taken that causes this exception.
+	 * @param cause the root cause of this exception.
 	 */
 	public CrawlPathToException(CrawlPath path, Throwable cause) {
 		this(null, path, cause);
@@ -58,9 +51,8 @@ public class CrawlPathToException extends Exception {
 
 	/**
 	 * Build a new {@link CrawlPathToException} given a path taken.
-	 * 
-	 * @param path
-	 *            the CrawlPath taken that causes this exception.
+	 *
+	 * @param path the CrawlPath taken that causes this exception.
 	 */
 	public CrawlPathToException(CrawlPath path) {
 		this(null, path, null);

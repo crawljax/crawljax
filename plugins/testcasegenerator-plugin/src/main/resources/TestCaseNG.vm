@@ -1,0 +1,173 @@
+package generated;
+
+import org.testng.Assert;
+import org.testng.ITestResult;
+import org.testng.annotations.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.BrowserOptions;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Identification.How;
+import com.crawljax.forms.FormInput;
+import com.crawljax.plugins.testcasegenerator.TestConfiguration.StateEquivalenceAssertionMode;
+import com.crawljax.plugins.testcasegenerator.TestSuiteHelper;
+
+/*
+ * Generated @ ${date}
+ */
+
+public class ${classname} {
+
+    private final String URL = "${url}";
+	private TestSuiteHelper testSuiteHelper;
+	
+	private final String TEST_SUITE_PATH = "${testSuitePath}";
+
+	private StateEquivalenceAssertionMode assertionMode = ${assertionMode};
+	
+	private CrawljaxConfiguration getTestConfiguration() {
+		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+		builder.crawlRules().waitAfterEvent(${waitAfterEvent}, TimeUnit.MILLISECONDS);
+		builder.crawlRules().waitAfterReloadUrl(${waitAfterReloadUrl}, TimeUnit.MILLISECONDS);
+		builder.setBrowserConfig(${browserConfig});
+		return builder.build();
+	}	
+	
+	@BeforeClass
+	public void oneTimeSetUp(){
+		try {
+#if(${database})
+			//use database for data
+			testSuiteHelper = new TestSuiteHelper(
+					getTestConfiguration(), TEST_SUITE_PATH);
+#else
+			//load needed data from json files
+			testSuiteHelper = new TestSuiteHelper(
+					getTestConfiguration(),
+					"${jsonstates}",
+					"${jsoneventables}",
+					"${crawlScreenshots}",
+					"${diffScreenshots}",
+					URL, TEST_SUITE_PATH);
+#end
+		}
+		catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+	
+	@AfterClass
+	public void oneTimeTearDown(){
+		try {
+			testSuiteHelper.tearDown();
+		}catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+
+	@BeforeMethod
+	public void setUp(){
+		try {
+			testSuiteHelper.goToInitialUrl();		
+		}catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+	}	
+	
+	@AfterMethod
+	public void getStatusAndDuration(ITestResult tr) {
+		long duration = tr.getEndMillis() - tr.getStartMillis();
+		long nanos = TimeUnit.MILLISECONDS.toNanos(duration);
+		String message = "none";
+		if (tr.getThrowable() != null) {
+			message = tr.getThrowable().getMessage();
+		}
+
+		switch (tr.getStatus()) {
+			case ITestResult.SUCCESS:
+				testSuiteHelper.markLastMethodAsSucceeded(nanos);
+				break;
+			case ITestResult.FAILURE:
+				testSuiteHelper.markLastMethodAsFailed(message, nanos);
+				break;
+			case ITestResult.SKIP:
+				testSuiteHelper.markLastMethodAsSkipped(nanos);
+				break;
+		}
+	}
+	
+	/*
+	 * Test Cases
+	 */
+	 
+#foreach( $method in $methodList )
+	@Test(priority=$velocityCount)
+	public void method_${method.methodName}(){
+		testSuiteHelper.newCurrentTestMethod("method_${method.methodName}");
+		List<FormInput> formInputs;
+		
+		boolean allStatesIdentical = true;
+		
+#if(${method.methodName} != "0")
+		testSuiteHelper.addStateToReportBuilder(${method.eventList.get(0).properties.sourceid});
+
+		if (assertionMode == StateEquivalenceAssertionMode.DOM || assertionMode == StateEquivalenceAssertionMode.ALL) {
+			    allStatesIdentical = testSuiteHelper.compareCurrentDomWithState(${method.eventList.get(0).properties.sourceid})
+									&& allStatesIdentical;
+		}
+
+		if (assertionMode == StateEquivalenceAssertionMode.VISUAL || assertionMode == StateEquivalenceAssertionMode.ALL) {
+		    allStatesIdentical = testSuiteHelper.compareCurrentScreenshotWithState(${method.eventList.get(0).properties.sourceid})
+				&& allStatesIdentical;
+		}
+#end
+		try {
+#foreach( $event in $method.eventList )
+#if(${event.properties.how} == "index")
+			//initial state
+#else
+			/* ${event.properties.info} */
+#if($event.formInputs.size() > 0)
+			formInputs = new ArrayList<FormInput>();
+#foreach( $input in $event.formInputs )
+			formInputs.add(new FormInput(FormInput.InputType.${input.type}, new Identification(How.${input.how}, "${input.name}"), "${input.value}"));
+#end			
+			testSuiteHelper.handleFormInputs(formInputs);
+			Thread.sleep(100);
+#end
+			Assert.assertTrue(testSuiteHelper.fireEvent(${event.properties.id}), "Event fired: ${event.properties.text}");
+#end
+			testSuiteHelper.runInCrawlingPlugins(${event.properties.targetid});
+			Assert.assertTrue(testSuiteHelper.checkInvariants(), "Invariants satisfied in state: ${event.properties.targetid}");
+
+			testSuiteHelper.addStateToReportBuilder(${event.properties.targetid});
+			
+			if (assertionMode == StateEquivalenceAssertionMode.DOM || assertionMode == StateEquivalenceAssertionMode.ALL) {
+			    allStatesIdentical = testSuiteHelper.compareCurrentDomWithState(${event.properties.targetid})
+									&& allStatesIdentical;
+			}
+
+			if (assertionMode == StateEquivalenceAssertionMode.VISUAL || assertionMode == StateEquivalenceAssertionMode.ALL) {
+			    /* Perform a visual diff on the two states. */
+			    allStatesIdentical = testSuiteHelper.compareCurrentScreenshotWithState(${event.properties.targetid})
+					&& allStatesIdentical;
+			}
+			
+#end
+		} catch (Exception e) {
+			Assert.fail(e.getMessage());
+		}
+		if(!allStatesIdentical) {
+			Assert.fail("At least one state is different.");
+		}
+	}
+
+#end
+
+}	 

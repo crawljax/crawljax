@@ -1,10 +1,10 @@
 package com.crawljax.condition;
 
-import net.jcip.annotations.Immutable;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.CrawljaxException;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import net.jcip.annotations.Immutable;
 
 /**
  * A condition in the form of a JavaScript expression which returns true if the expression return
@@ -17,9 +17,8 @@ public class JavaScriptCondition implements Condition {
 
 	/**
 	 * Construct a JavaScript condition check.
-	 * 
-	 * @param expression
-	 *            The actual Javascript to check.
+	 *
+	 * @param expression The actual Javascript to check.
 	 */
 	public JavaScriptCondition(String expression) {
 		this.expression = expression;
@@ -27,17 +26,16 @@ public class JavaScriptCondition implements Condition {
 
 	/**
 	 * Check invariant.
-	 * 
-	 * @param browser
-	 *            The browser.
+	 *
+	 * @param browser The browser.
 	 * @return Whether the condition is satisfied or <code>false</code> when it it isn't or a
-	 *         {@link CrawljaxException} occurs.
+	 * {@link CrawljaxException} occurs.
 	 */
 	@Override
 	public boolean check(EmbeddedBrowser browser) {
 		String js =
-		        "try{ if(" + expression + "){return '1';}else{" + "return '0';}}catch(e){"
-		                + " return '0';}";
+				"try{ if(" + expression + "){return '1';}else{" + "return '0';}}catch(e){"
+						+ " return '0';}";
 		try {
 			Object object = browser.executeJavaScript(js);
 			if (object == null) {
@@ -66,9 +64,9 @@ public class JavaScriptCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("expression", expression)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("expression", expression)
+				.toString();
 	}
 
 }

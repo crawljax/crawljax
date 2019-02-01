@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin-descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="https://raw.github.com/crawljax/crawljax/web-ui-plugin-support/core/src/main/resources/com/crawljax/core/plugin/jaxb/plugin-descriptor.xsd">
+	<name>Test Suite Generator Plugin</name>
+	<description>Generates a suite of Selenium test cases based on the stateflow graph.</description>
+	<crawljax-versions>
+		<version>3.7-SNAPSHOT</version>
+	</crawljax-versions>
+</plugin-descriptor>

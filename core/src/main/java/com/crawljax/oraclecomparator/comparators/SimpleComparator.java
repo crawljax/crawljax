@@ -3,7 +3,7 @@ package com.crawljax.oraclecomparator.comparators;
 import com.crawljax.oraclecomparator.AbstractComparator;
 
 /**
- * Simple oracle which can ignore whitespaces and linebreaks.
+ * Simple oracle which can ignore whitespaces and line breaks.
  */
 public class SimpleComparator extends AbstractComparator {
 
@@ -18,7 +18,7 @@ public class SimpleComparator extends AbstractComparator {
 	public String normalize(String string) {
 		String strippedStr;
 
-		// remove linebreaks
+		// remove line breaks
 		strippedStr = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
 
 		// remove just before and after elements spaces

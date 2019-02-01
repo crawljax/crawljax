@@ -16,9 +16,8 @@ public class CrawljaxException extends RuntimeException {
 
 	/**
 	 * Constructs a new <code>CrawljaxException</code> with the specified detail message.
-	 * 
-	 * @param message
-	 *            the detail message.
+	 *
+	 * @param message the detail message.
 	 */
 	public CrawljaxException(final String message) {
 		super(message);
@@ -26,12 +25,10 @@ public class CrawljaxException extends RuntimeException {
 
 	/**
 	 * Constructs a new <code>CrawljaxException</code> with the specified detail message and cause.
-	 * 
-	 * @param message
-	 *            the detail message.
-	 * @param cause
-	 *            the cause (A null value is permitted, and indicates that the cause is nonexistent
-	 *            or unknown).
+	 *
+	 * @param message the detail message.
+	 * @param cause   the cause (A null value is permitted, and indicates that the cause is nonexistent
+	 *                or unknown).
 	 */
 	public CrawljaxException(final String message, final Throwable cause) {
 		super(message, cause);
@@ -41,10 +38,9 @@ public class CrawljaxException extends RuntimeException {
 	 * Constructs a new <code>CrawljaxException</code> with the specified cause and a detail message
 	 * of <code>(cause==null ? null :
 	 * cause.toString())</code>
-	 * 
-	 * @param cause
-	 *            the cause (A null value is permitted, and indicates that the cause is nonexistent
-	 *            or unknown).
+	 *
+	 * @param cause the cause (A null value is permitted, and indicates that the cause is nonexistent
+	 *              or unknown).
 	 */
 	public CrawljaxException(final Throwable cause) {
 		super(cause);

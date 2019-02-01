@@ -1,18 +1,13 @@
 package com.crawljax.core.state;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
+import com.crawljax.core.state.Eventable.EventType;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.crawljax.core.state.Eventable.EventType;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 
 public class StateVertexTest {
 	private StateVertex s;
@@ -20,12 +15,12 @@ public class StateVertexTest {
 	private String dom;
 
 	String HTML = "<SCRIPT src='js/jquery-1.2.1.js' type='text/javascript'></SCRIPT> "
-	        + "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
-	        + "<body><div id='firstdiv' class='orange'></div><div><span id='thespan'>"
-	        + "<a id='thea'>test</a></span></div></body>";
+			+ "<SCRIPT src='js/jquery-1.2.3.js' type='text/javascript'></SCRIPT>"
+			+ "<body><div id='firstdiv' class='orange'></div><div><span id='thespan'>"
+			+ "<a id='thea'>test</a></span></div></body>";
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		name = "index";
 		dom = "<body></body>";
 		s = new StateVertexImpl(0, name, dom);
@@ -40,13 +35,13 @@ public class StateVertexTest {
 	}
 
 	@Test
-	public void testStateVertixString() {
+	public void testStateVertexString() {
 		StateVertex sv = new StateVertexImpl(2, name, "");
 		assertNotNull(sv);
 	}
 
 	@Test
-	public void testStateVertixStringString() {
+	public void testStateVertexStringString() {
 		assertNotNull(s);
 	}
 
@@ -72,7 +67,7 @@ public class StateVertexTest {
 
 		assertFalse(stateEqual.equals(null));
 		assertFalse(stateEqual.equals(new Eventable(new Identification(Identification.How.xpath,
-		        "/body/div[3]/a"), EventType.click)));
+				"/body/div[3]/a"), EventType.click)));
 
 	}
 

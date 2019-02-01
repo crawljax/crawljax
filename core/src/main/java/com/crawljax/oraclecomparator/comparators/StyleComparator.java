@@ -1,21 +1,14 @@
 package com.crawljax.oraclecomparator.comparators;
 
-import java.io.IOException;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.*;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
 
 /**
  * Oracle which can ignore style attributes.
@@ -25,9 +18,9 @@ public class StyleComparator extends AbstractComparator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StyleComparator.class.getName());
 
 	private static final String[] IGNORE_ATTRIBUTES = { "align", "bgcolor", "height", "valign",
-	        "width", "type", "dir" };
+			"width", "type", "dir" };
 	private static final String[] IGNORE_TAGS = { "em", "strong", "dfn", "code", "samp", "kdb",
-	        "var", "cite", "tt", "b", "i", "u", "big", "small", "pre", "font" };
+			"var", "cite", "tt", "b", "i", "u", "big", "small", "pre", "font" };
 	private static final String[] ALLOW_STYLE_TYPES = { "display", "visibility" };
 
 	@Override
@@ -56,13 +49,11 @@ public class StyleComparator extends AbstractComparator {
 					attribute.setNodeValue(stripStyleProperties(attribute.getNodeValue()));
 					if (attribute.getNodeValue().equals("")) {
 						((Attr) attribute).getOwnerElement().removeAttribute(
-						        attribute.getNodeName());
+								attribute.getNodeName());
 					}
 				}
 			}
-		} catch (XPathExpressionException e) {
-			LOGGER.warn("Error with StyleOracle: {}", e.getMessage(), e);
-		} catch (DOMException e) {
+		} catch (XPathExpressionException | DOMException e) {
 			LOGGER.warn("Error with StyleOracle: {}", e.getMessage(), e);
 		}
 		return dom;
@@ -87,10 +78,7 @@ public class StyleComparator extends AbstractComparator {
 					}
 					parent.removeChild(removeNode);
 				}
-			} catch (XPathExpressionException e) {
-				LOGGER.warn("Error with StyleOracle: " + e.getMessage());
-				LOGGER.error(e.getMessage(), e);
-			} catch (DOMException e) {
+			} catch (XPathExpressionException | DOMException e) {
 				LOGGER.warn("Error with StyleOracle: " + e.getMessage());
 				LOGGER.error(e.getMessage(), e);
 			}
@@ -107,9 +95,7 @@ public class StyleComparator extends AbstractComparator {
 					NamedNodeMap attributes = nl.item(i).getAttributes();
 					attributes.removeNamedItem(attribute);
 				}
-			} catch (XPathExpressionException e) {
-				LOGGER.warn("Error with StyleOracle: " + e.getMessage());
-			} catch (DOMException e) {
+			} catch (XPathExpressionException | DOMException e) {
 				LOGGER.warn("Error with StyleOracle: " + e.getMessage());
 			}
 		}
@@ -128,7 +114,7 @@ public class StyleComparator extends AbstractComparator {
 				for (int j = 0; j < ALLOW_STYLE_TYPES.length; j++) {
 					if (styleProperty[0].trim().equalsIgnoreCase(ALLOW_STYLE_TYPES[j])) {
 						badWayOfDoingThis +=
-						        styleProperty[0].trim() + ": " + styleProperty[1].trim() + ";";
+								styleProperty[0].trim() + ": " + styleProperty[1].trim() + ";";
 						buffer.append(styleProperty[0].trim());
 						buffer.append(": ");
 						buffer.append(styleProperty[1].trim());

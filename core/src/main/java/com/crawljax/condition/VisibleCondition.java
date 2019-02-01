@@ -1,10 +1,10 @@
 package com.crawljax.condition;
 
-import net.jcip.annotations.Immutable;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.state.Identification;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import net.jcip.annotations.Immutable;
 
 /**
  * Conditions that returns true iff element found by given identification is visible.
@@ -15,8 +15,7 @@ public class VisibleCondition implements Condition {
 	private final Identification identification;
 
 	/**
-	 * @param identification
-	 *            the identification.
+	 * @param identification the identification.
 	 */
 	public VisibleCondition(Identification identification) {
 		this.identification = identification;
@@ -29,9 +28,9 @@ public class VisibleCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("identification", identification)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("identification", identification)
+				.toString();
 	}
 
 	@Override

@@ -53,6 +53,18 @@ footer small {
 	padding-top: 60px;
 }
 
+.slider-panel {
+	position: absolute;
+	right: 10px;
+	top: 70px;
+	left: auto;
+	display: block;
+	background-color: rgb(255, 255, 255);
+	background-color: rgba(255, 255, 255, .9);
+	max-width: 300px;
+	z-index: 1000;
+}
+
 .panel-right {
 	position: absolute;
 	right: 10px;
@@ -68,13 +80,47 @@ footer small {
 	text-transform: capitalize;
 	word-wrap: break-word;
 }
+
+#container-graph>svg{
+	background:rgb(255, 255, 255);
+}
 </style>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/alchemyjs/0.2.0/alchemy.min.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/alchemyjs/0.2.0/scripts/vendor.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/alchemyjs/0.2.0/alchemy.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">	
+	<!--
+	<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+	-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	<script src="lib/vivagraph-0.9.0.min.js"></script>
+	 <script src="http://d3js.org/d3.v2.js"></script>
+
+	<!--
+	<link rel="stylesheet" href="http://cdn.graphalchemist.com/alchemy.0.2.min.css"> 
+	<script type="text/javascript" src="http://cdn.graphalchemist.com/alchemy.0.2.min.js"></script>
+	-->
+	
 </head>
 <body>
 <body>
 	<div id="wrap">
 		#parse( "nav.html")
 		<div class="container page" id="container-graph" style="width: 100%; padding-top: 40px;">
+
+			<div class="panel slider-panel">
+				<p>Adjust to view nodes based on distance</p>
+				<div id="slider"> </div>
+				<div id="selectedThresholdDiv"> </div>
+			</div>
+
 			<div class="popover fade panel-right">
 				<div class="popover-inner">
 					<h3 class="popover-title">Edge info</h3>
@@ -117,6 +163,9 @@ footer small {
 		<div class="container page" id="container-config" style="display: none;">
 			#parse( "config.html" )
 		</div>
+		<div class="container page" id="container-clusters" style="display: none;">
+			
+		</div>
 		<div id="push"></div>
 	</div>
 	<footer>
@@ -125,14 +174,16 @@ footer small {
 			<small class="pull-right muted">Crawled by <a href="http://crawljax.com">Crawljax</a> ${project.version}</small>
 		</div>
 	</footer>
-	
-	<script src="lib/jquery-2.0.3.min.js"></script>
-	<script src="lib/bootstrap.min.js"></script>
-	<script src="lib/vivagraph.min.js"></script>
+		
 	<script src="js/graphbuilder.js"></script>
 	<script>
 		var edges = ${edges};
 		var states = ${states};
+		var alchemyGraph = ${alchemyGraphModel};
+		var maxRaw = ${maxRaw};
+		var clusters = ${clusters};
+		var selectedThreshold = 0.0;
+		var selectedThresholdChanged = false;
 		$(document).ready(
 				function() {
 					$.each(states, function() {
@@ -186,6 +237,54 @@ footer small {
 								}
 							});
 
+					var hideNearDuplicates = true;
+					$("#toggleND").click(
+							function(){
+								if(hideNearDuplicates){
+									hideNearDuplicates = false;
+									hideNearDuplicatesFn();
+								}else{
+									hideNearDuplicates = true;
+									showAllNodes();
+								}
+							}
+						);
+
+					if(maxRaw == -1.0){
+						console.log("No slider");
+						$(".slider-panel").html("");
+					}
+
+					else{
+						$("#slider").slider(
+							{
+								orientation: "horizontal",
+								step:maxRaw/100,
+								max:maxRaw,
+								change:function( event, ui) {
+									currentValue = $("#slider").slider("option","value");
+									if(currentValue != selectedThreshold){
+										selectedThresholdChanged = true;
+										selectedThreshold = currentValue;
+										console.log(selectedThreshold)
+										$("#selectedThresholdDiv").html("selected threshold : " + selectedThreshold);
+										distanceBasedGraph();
+									}
+									
+								}
+							});
+					}
+
+					// Initializing Alchemy Graph
+					// alchemy.begin({
+			  //       	dataSource: alchemyGraph, 
+			  //       	divSelector: "#container-clusters",
+			  //       	nodeCaption: 'name', 
+			  //       	nodeMouseOver: 'name',
+			  //           cluster: true
+			  //           //clusterColours: ["#1B9E77","#D95F02","#7570B3","#E7298A","#66A61E","#E6AB02"]
+			  //       });
+
 					/* Makes nav links update the nav toolback with current page */
 					$('.nav-link').click(function(e) { 
 						/* Example: #url */
@@ -235,6 +334,57 @@ footer small {
 					$(window).trigger('hashchange');
 				});
 
+		function rebuildGraph(){
+			$.each(states, function() {
+						graph.addNode(this.name, {
+							img : 'screenshots/' + this.name + '_small.jpg',
+							url : "states/" + this.name + ".html"
+						});
+					});
+
+					var edgesSeen = {};
+					$.each(edges, function() {
+						var edgeKey = this.from + "-to-" + this.to;
+						if (!(edgeKey in edgesSeen)) {
+							edgesSeen[edgeKey] = true;
+							graph.addLink(this.from, this.to, {
+								text : this.text,
+								id : this.id,
+								eventType : this.eventType,
+								element : this.element
+
+							});
+						}
+					});
+		}
+
+		function hideNearDuplicatesFn(){
+			$.each(states, function() {
+				if(this.hasNearDuplicate){
+					graph.removeNode(this.name);
+				}
+			});
+		}
+
+		function distanceBasedGraph(){
+			selectedThresholdChanged = false;
+			graph.clear();
+			rebuildGraph();
+			$.each(states, function() {
+
+				if(this.distToNearestState < selectedThreshold && this.distToNearestState > 0){
+					graph.removeNode(this.name);
+				}
+			});
+		}
+
+		function showAllNodes(){
+			graph.clear();
+			rebuildGraph();
+		}
+
+
+
 		function showInfo(link) {
 			$(".panel-right").addClass("in");
 			$(".panel-right [name='elemName']").text(link.data.text);
@@ -258,5 +408,350 @@ footer small {
 		$(window).resize(resize);
 		resize();
 	</script>
+
+	<style type="text/css">
+		#container-clusters>svg {
+		  border: 1px solid #ccc;
+		}
+		
+		circle.node {
+		  fill: lightsteelblue;
+		  stroke: #555;
+		  stroke-width: 3px;
+		}
+		circle.leaf {
+		  stroke: #fff;
+		  stroke-width: 1.5px;
+		}
+		path.hull {
+		  fill: lightsteelblue;
+		  fill-opacity: 0.3;
+		}
+		line.link {
+		  stroke: #333;
+		  stroke-opacity: 0.5;
+		  pointer-events: none;
+		}
+    </style>
+
+	<script>
+var width = 960,     // svg width
+    height = 600,     // svg height
+    dr = 4,      // default point radius
+    off = 15,    // cluster hull offset
+    expand = {}, // expanded "clusters
+    data, net, force, hullg, hull, linkg, link, nodeg, node;
+
+var curve = d3.svg.line()
+    .interpolate("cardinal-closed")
+    .tension(.85);
+
+var fill = d3.scale.category20();
+
+function noop() { return false; }
+
+function nodeid(n) {
+  return n.size ? "_g_"+n.cluster : n.name;
+}
+
+function linkid(l) {
+  var u = nodeid(l.source),
+      v = nodeid(l.target);
+  return u<v ? u+"|"+v : v+"|"+u;
+}
+
+function getcluster(n) { 
+  return n.cluster; }
+
+// constructs the network to visualize
+function network(data, prev, index, expand) {
+  expand = expand || {};
+  var gm = {},    // cluster map
+      nm = {},    // node map
+      lm = {},    // link map
+      gn = {},    // previous cluster nodes
+      gc = {},    // previous cluster centroids
+      nodes = [], // output nodes
+      links = []; // output links
+
+  // process previous nodes for reuse or centroid calculation
+  if (prev) {
+    prev.nodes.forEach(function(n) {
+      var i = index(n), o;
+      if (n.size > 0) {
+        gn[i] = n;
+        n.size = 0;
+      } else {
+        o = gc[i] || (gc[i] = {x:0,y:0,count:0});
+        o.x += n.x;
+        o.y += n.y;
+        o.count += 1;
+      }
+    });
+  }
+
+  // determine nodes
+  for (var k=0; k<data.nodes.length; ++k) {
+    var n = data.nodes[k],
+        i = index(n),
+        l = gm[i] || (gm[i]=gn[i]) || (gm[i]={cluster:i, size:0, nodes:[]});
+
+    if (expand[i]) {
+      // the node should be directly visible
+      nm[n.name] = nodes.length;
+      nodes.push(n);
+      if (gn[i]) {
+        // place new nodes at cluster location (plus jitter)
+        n.x = gn[i].x + Math.random();
+        n.y = gn[i].y + Math.random();
+      }
+    } else {
+      // the node is part of a collapsed cluster
+      if (l.size == 0) {
+        // if new cluster, add to set and position at centroid of leaf nodes
+        nm[i] = nodes.length;
+        nodes.push(l);
+        if (gc[i]) {
+          l.x = gc[i].x / gc[i].count;
+          l.y = gc[i].y / gc[i].count;
+        }
+      }
+      l.nodes.push(n);
+    }
+  // always count cluster size as we also use it to tweak the force graph strengths/distances
+    l.size += 1;
+  n.cluster_data = l;
+  }
+
+  for (i in gm) { gm[i].link_count = 0; }
+
+  // determine links
+  for (k=0; k<data.links.length; ++k) {
+    
+    var e = data.links[k];
+    if((typeof e.source == "undefined") || (typeof e.target == "undefined")){
+      console.log("source " + e.source);
+      console.log("target " + e.target);
+      continue;
+    }
+      var u = index(e.source),
+        v = index(e.target);
+    if (u != v) {
+      gm[u].link_count++;
+      gm[v].link_count++;
+    }
+    u = expand[u] ? nm[e.source.name] : nm[u];
+    v = expand[v] ? nm[e.target.name] : nm[v];
+    var i = (u<v ? u+"|"+v : v+"|"+u),
+        l = lm[i] || (lm[i] = {source:u, target:v, size:0});
+    l.size += 1;
+  }
+  for (i in lm) { links.push(lm[i]); }
+
+  return {nodes: nodes, links: links};
+}
+
+function convexHulls(nodes, index, offset) {
+  var hulls = {};
+
+  // create point sets
+  for (var k=0; k<nodes.length; ++k) {
+    var n = nodes[k];
+    if (n.size) continue;
+    var i = index(n),
+        l = hulls[i] || (hulls[i] = []);
+    l.push([n.x-offset, n.y-offset]);
+    l.push([n.x-offset, n.y+offset]);
+    l.push([n.x+offset, n.y-offset]);
+    l.push([n.x+offset, n.y+offset]);
+  }
+
+  // create convex hulls
+  var hullset = [];
+  for (i in hulls) {
+    hullset.push({cluster: i, path: d3.geom.hull(hulls[i])});
+  }
+
+  return hullset;
+}
+
+function drawCluster(d) {
+  return curve(d.path); // 0.8
+}
+
+function getNodeFromId(id){
+  for(var i=0; i< data.nodes.length; i++){
+    node = data.nodes[i];
+    if(node.id == id)
+      return node;
+  }
+}
+
+// --------------------------------------------------------
+
+var body = d3.select('body>div.container-clusters');
+
+var vis = body.append("svg")
+   .attr("width", width)
+   .attr("height", height);
+
+
+  data = alchemyGraph;
+  for (var i=0; i<data.links.length; ++i) {
+    o = data.links[i];
+    o.source = getNodeFromId(o.source);
+    o.target = getNodeFromId(o.target);
+  }
+
+  hullg = vis.append("g");
+  linkg = vis.append("g");
+  nodeg = vis.append("g");
+
+  init();
+
+  vis.attr("opacity", 1e-6)
+    .transition()
+      .duration(1000)
+      .attr("opacity", 1);
+
+function init() {
+  if (force) force.stop();
+
+  net = network(data, net, getcluster, expand);
+
+  force = d3.layout.force()
+      .nodes(net.nodes)
+      .links(net.links)
+      .size([width, height])
+      .linkDistance(function(l, i) {
+      var n1 = l.source, n2 = l.target;
+    // larger distance for bigger clusters:
+    // both between single nodes and _other_ clusters (where size of own node cluster still counts),
+    // and between two cluster nodes.
+    //
+    // reduce distance for clusters with very few outer links,
+    // again both in expanded and clustered form, i.e. between individual nodes of a cluster and
+    // nodes of another cluster or other cluster node or between two cluster nodes.
+    //
+    // The latter was done to keep the single-link clusters ('blue', rose, ...) close.
+    return 30 +
+      Math.min(20 * Math.min((n1.size || (n1.cluster != n2.cluster ? n1.cluster_data.size : 0)),
+                             (n2.size || (n1.cluster != n2.cluster ? n2.cluster_data.size : 0))),
+           -30 +
+           30 * Math.min((n1.link_count || (n1.cluster != n2.cluster ? n1.cluster_data.link_count : 0)),
+                         (n2.link_count || (n1.cluster != n2.cluster ? n2.cluster_data.link_count : 0))),
+           100);
+      //return 150;
+    })
+    .linkStrength(function(l, i) {
+    return 1;
+    })
+    .gravity(0.02)   // gravity+charge tweaked to ensure good 'clustered' view (e.g. green cluster not smack between blue&orange, ...
+    .charge(-600)    // ... charge is important to turn single-linked clusters to the outside
+    .friction(0.5)   // friction adjusted to get dampened display: less bouncy bouncy ball [Swedish Chef, anyone?]
+      .start();
+
+  hullg.selectAll("path.hull").remove();
+  hull = hullg.selectAll("path.hull")
+      .data(convexHulls(net.nodes, getcluster, off))
+    .enter().append("path")
+      .attr("class", "hull")
+      .attr("d", drawCluster)
+      .style("fill", function(d) { return fill(d.cluster); })
+      .on("click", function(d) {
+console.log("hull click", d, arguments, this, expand[d.cluster]);
+      expand[d.cluster] = false; init();
+    });
+
+  link = linkg.selectAll("line.link").data(net.links, linkid);
+  link.exit().remove();
+  link.enter().append("line")
+      .attr("class", "link")
+      .attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; })
+      .style("stroke-width", function(d) { return d.size || 1; });
+
+  node = nodeg.selectAll("g").data(net.nodes, nodeid);
+  node.exit().remove();
+  var nodeEnter = node.enter().append("g")
+      .attr("class", function(d) { return "node" + (d.size?"":" leaf"); })
+      .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+      .on("dblclick", function(d) {
+      console.log("node click", d, arguments, this, expand[d.cluster]);
+              expand[d.cluster] = !expand[d.cluster];
+          init();
+            });
+  
+  
+  var images = nodeEnter.append("svg:image")
+    .attr("xlink:href",  function(d) { 
+      if(typeof d.name == "undefined")
+        return "screenshots/dummy.jpeg";
+      else
+        return "screenshots/" +d.name+"_small.jpg";
+    })
+    .style("opacity", function(d){ 
+      if(typeof d.name == "undefined")
+        return 0;
+      else
+        return 1;
+    })
+    .attr("x", function(d) { return -25;})
+    .attr("y", function(d) { return -25;})
+     .attr("height", 100)
+     .attr("width", 100)
+     .on("dblclick", function(d) {
+     	 if(typeof d.name == "undefined")
+     	 	console.log();
+	      else{
+	      	window.open("states/" +d.name+".html", '_blank');
+	      	d3.event.stopPropagation();
+
+	      }
+     		// $.get("states/" +d.name+".html", function (data) {
+       //              $('#statePopup').html("").append(data);
+       //          });
+
+            });
+
+  var circles = nodeEnter.append("circle")
+     
+    // // if (d.size) -- d.size > 0 when d is a cluster node.
+      .attr("r", function(d) { return d.size ? d.size + dr : dr+1; })
+      .style("fill", function(d) { return fill(d.cluster); })
+      
+
+	var text = nodeEnter.append("svg:text")
+      .html(nodeid);
+
+
+  node.call(force.drag);
+
+  force.on("tick", function() {
+    if (!hull.empty()) {
+      hull.data(convexHulls(net.nodes, getcluster, off))
+          .attr("d", drawCluster);
+    }
+
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    // node.attr("cx", function(d) { return d.x; })
+    //     .attr("cy", function(d) { return d.y; });
+    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+  });
+}
+$('#container-clusters svg').css("width", "100%");
+		function resize() {
+			$('#container-clusters').css("height", window.innerHeight - 80);
+			$('#container-clusters svg').css("height", window.innerHeight - 80);
+		}
+		$(window).resize(resize);
+		resize();
+    </script>
 </body>
 </html>

@@ -16,15 +16,12 @@ public interface PreStateCrawlingPlugin extends Plugin {
 	 * <p>
 	 * This method can be called from multiple threads with different {@link CrawlerContext}
 	 * </p>
-	 * 
-	 * @param context
-	 *            the current session data.
-	 * @param candidateElements
-	 *            the candidates for the current state.
-	 * @param state
-	 *            The state being crawled
+	 *
+	 * @param context           the current session data.
+	 * @param candidateElements the candidates for the current state.
+	 * @param state             The state being crawled
 	 */
 	void preStateCrawling(CrawlerContext context,
-	        ImmutableList<CandidateElement> candidateElements, StateVertex state);
+			ImmutableList<CandidateElement> candidateElements, StateVertex state);
 
 }
