@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crawl overview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="CrawlJax">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/bootstrap-responsive.min.css" rel="stylesheet">
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+<link href="../css/shCore.css" rel="stylesheet" type="text/css" />
+<link href="../css/shCoreDefault.css" rel="stylesheet" type="text/css" />
+<style>
+.tooltip-inner {
+	max-width: 300px;
+	word-wrap: break-word;
+}
+
+body {
+	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+							<a class="brand" href="../index.html#graph">Crawl overview</a>
+						<ul class="nav">
+									<li class="active"><a href="#">State inspector</a></li>
+							</ul>
+			<div class="nav pull-right">
+				<a href="#" class="btn graphBtn" id='pauseButton' data-toggle="tooltip" data-placement="bottom" title="Pause the graph movement"><i class="icon-pause"></i></a>
+				<a href="#" class="btn graphBtn" rel="popover" data-placement="bottom"  data-original-title="What to do"><i class='icon-question-sign'></i></a>
+				<div style="display: none" id='popup-content'>
+					<p>You can double click a state to inspect it further.</p>
+					<p>Clicking an edge gives more details on the state transition.</p>
+					<p>Use your mouse to zoom in and out by scrolling, or drag the states and view around.</p>
+				</div>
+				<a href="result.json" class="btn" data-toggle="tooltip" data-placement="bottom" title="Download result as JSON"><i class='icon-download'></i></a>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</div>
+</nav>	<div class='container' >
+		<h1>Summary of state5</h1>
+		<table class="table table-bordered table-striped">
+			<colgroup>
+				<col class="span1">
+				<col class="span7">
+			</colgroup>
+			<tbody>
+				<tr>
+					<th>URL</th>
+					<td><a href='http://testcue.com/crawljax-demo-full/'>http://testcue.com/crawljax-demo-full/</a></td>
+				</tr>
+				<tr>
+					<th>Fan in</th>
+					<td>1</td>
+				</tr>
+				<tr>
+					<th>Fan out</th>
+					<td>0</td>
+				</tr>
+				<tr>
+					<th>Interaction elements</th>
+					<td>0</td>
+				</tr>
+				<tr>
+					<th>Failed events</th>
+					<td>-</td>
+			</tbody>
+		</table>
+		<ul id='tabs' class="nav nav-tabs">
+			<li class="active">
+				<a href="#screenshot">Screenshot</a>
+			</li>
+			<li>
+				<a href="#dom">Captured DOM</a>
+			</li>	
+			<li>
+				<a href="#interactions">Interactions</a>
+			</li>			
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" style="position: relative;" id='screenshot'>			
+				<img style='max-width: none;' border='0' src='../screenshots/state5.jpg' /> 
+							</div>
+			<div class="tab-pane" id='dom'>
+				<h2>Captured DOM</h2>
+				<pre class='brush: html'>&lt;!DOCTYPE html&gt;&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;&lt;head&gt;
+	&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=iso-8859-1&quot; /&gt;
+	&lt;meta name=&quot;keywords&quot; content=&quot;crawljax, crawljax, ajax, test, testing, plugins, invariants, conditions, form&quot; /&gt;
+	&lt;meta name=&quot;robots&quot; content=&quot;index, follow&quot; /&gt;
+	&lt;meta name=&quot;description&quot; content=&quot;Demo and instruction site for Crawljax&quot; /&gt;
+	&lt;title&gt;Crawljax&lt;/title&gt;
+	&lt;link href=&quot;style.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
+
+	&lt;script language=&quot;javascript&quot; src=&quot;lib/jquery-2.0.3.min.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+	&lt;script language=&quot;javascript&quot; src=&quot;js/general.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+	&lt;script language=&quot;javascript&quot; src=&quot;js/forms.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body style=&quot;&quot;&gt;
+	&lt;div id=&quot;header&quot;&gt;
+	&lt;h1&gt;Crawljax Demo And Instruction Site&lt;/h1&gt;
+	&lt;/div&gt;
+	&lt;div id=&quot;menubar&quot;&gt;
+		&lt;ul&gt;
+			&lt;li&gt;&lt;a id=&quot;home&quot; href=&quot;javascript:void(0)&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a id=&quot;papers&quot; href=&quot;javascript:void(0)&quot;&gt;Papers&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a id=&quot;info&quot; href=&quot;javascript:void(0)&quot;&gt;Information&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a id=&quot;ignore&quot; class=&quot;ignore&quot; href=&quot;javascript:void(0)&quot;&gt;Ignore&lt;/a&gt;&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/div&gt;
+	&lt;table border=&quot;0&quot;&gt;
+	&lt;tbody&gt;&lt;tr&gt;&lt;td valign=&quot;top&quot;&gt;
+		&lt;div id=&quot;left&quot;&gt;
+			&lt;h2&gt;Crawling&lt;/h2&gt;
+			&lt;ul class=&quot;test&quot;&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('select.html')&quot;&gt;Select Elements To Crawl&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('crawlConditions.html')&quot;&gt;CrawlConditions&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('waitConditions.html')&quot;&gt;WaitConditions&lt;/a&gt;&lt;/li&gt;
+			&lt;/ul&gt;
+			&lt;h2&gt;Testing&lt;/h2&gt;
+			&lt;ul class=&quot;test&quot;&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('plugins.html')&quot;&gt;Plugins&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('oracleComparators.html')&quot;&gt;Oracle Comparators&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('invariants.html')&quot;&gt;Invariants&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('conditions.html')&quot;&gt;Conditions&lt;/a&gt;&lt;/li&gt;
+			&lt;/ul&gt;
+			&lt;h2&gt;Input&lt;/h2&gt;
+			&lt;ul class=&quot;test&quot;&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('randomInput.html')&quot;&gt;Random Form Input&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('popupInput.html')&quot;&gt;Popup Form Input&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('forms.html')&quot;&gt;Custom Forms&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href=&quot;javascript:void(0)&quot; onclick=&quot;openPage('customInput.html')&quot;&gt;Custom Input&lt;/a&gt;&lt;/li&gt;
+			&lt;/ul&gt;
+		&lt;/div&gt;
+	&lt;/td&gt;&lt;td valign=&quot;top&quot;&gt;
+		&lt;div id=&quot;content&quot;&gt;&lt;h1&gt;Include Elements to Crawl&lt;/h1&gt;
+&lt;h2&gt;Basic Specification&lt;/h2&gt;
+&lt;p&gt;To crawl the application, Crawljax needs to know which elements it should click.&lt;/p&gt;
+&lt;table&gt;
+&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;separator&quot;&gt;
+The properties for crawling the can be set with &lt;span class=&quot;java&quot;&gt;CrawlSpecification&lt;/span&gt;
+&lt;/td&gt;&lt;td class=&quot;separator&quot;&gt;&lt;pre&gt;CrawlSpecification crawler = 
+	new CrawlSpecification(&quot;http://www.google.com&quot;);
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr&gt;&lt;td class=&quot;separator&quot;&gt;
+The set HTML elements that Crawljax should click can be set with &lt;span class=&quot;java&quot;&gt;click()&lt;/span&gt;
+in which the user specifies which tags should be clicked.
+&lt;/td&gt;&lt;td class=&quot;separator&quot;&gt;&lt;pre&gt;crawler.click(&quot;a&quot;);
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr&gt;&lt;td class=&quot;separator&quot;&gt;
+The HTML elements that Crawljax should not click can be set with &lt;span class=&quot;java&quot;&gt;dontClick()&lt;/span&gt;.&lt;br /&gt;
+&lt;strong&gt;This set of HTML elements is excluded from the set inferred with&lt;/strong&gt; &lt;span class=&quot;java&quot;&gt;click()&lt;/span&gt;.
+&lt;/td&gt;&lt;td class=&quot;separator&quot;&gt;&lt;pre&gt;crawler.click(&quot;a&quot;).withAttribute(&quot;class&quot;, &quot;noclick&quot;);;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr&gt;&lt;td colspan=&quot;2&quot; class=&quot;separator&quot;&gt;
+&lt;br /&gt;
+&lt;h2&gt;Options&lt;/h2&gt;
+&lt;p&gt;The set of HTML elements that should be included/excluded while crawling can be specified in detail with options.
+The options specify which criteria the HTML element should satisfy.
+&lt;/p&gt;
+&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr&gt;&lt;td class=&quot;separator&quot;&gt;
+&lt;h3&gt;The textual content of the elements&lt;/h3&gt;
+&lt;span class=&quot;java&quot;&gt;withText(String text)&lt;/span&gt;&lt;br /&gt;
+Only one text can be specified.
+&lt;/td&gt;&lt;td class=&quot;separator&quot;&gt;&lt;pre&gt;crawler.click(&quot;span&quot;).withText(&quot;Foo&quot;);
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr&gt;&lt;td class=&quot;separator&quot;&gt;
+&lt;h3&gt;Attributes of the elements&lt;/h3&gt;
+&lt;span class=&quot;java&quot;&gt;withAttribute(String attributeName, String value)&lt;/span&gt;&lt;br /&gt;
+Multiple attributes can be specified
+&lt;/td&gt;&lt;td class=&quot;separator&quot;&gt;&lt;pre&gt;crawler.click(&quot;a&quot;).withAttribute(&quot;class&quot;, &quot;foo&quot;);
+crawler.click(&quot;div&quot;).withAttribute(&quot;id&quot;, &quot;bar&quot;)
+	.withAttribute(&quot;class&quot;, &quot;navigation&quot;);;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr&gt;&lt;td class=&quot;separator&quot;&gt;
+&lt;h3&gt;Location of elements.&lt;/h3&gt;
+&lt;span class=&quot;java&quot;&gt;underXpath(String xpathExpression)&lt;/span&gt;&lt;br /&gt;
+
+With this method one can specify that an element should always be under an
+other element. This is done via specifying the parent element with an xpath expression.
+If the xpath expression does not return a node, the HTML element is not included.&lt;br /&gt;
+Only one location can be specified.&lt;br /&gt;
+NOTE: specify the tagnames in uppercase and attributes in lowercase
+&lt;/td&gt;&lt;td class=&quot;separator&quot;&gt;&lt;pre&gt;crawler.click(&quot;div&quot;).underXPath(&quot;//DIV[id='footer']&quot;);
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr&gt;&lt;td class=&quot;separator&quot;&gt;
+&lt;h3&gt;Conditions&lt;/h3&gt;
+&lt;span class=&quot;java&quot;&gt;when(Condition...conditions)&lt;/span&gt;&lt;br /&gt;
+
+Conditions can be specified which should be satisfied at the moment Crawljax wants to click
+on the element.
+&lt;/td&gt;&lt;td class=&quot;separator&quot;&gt;&lt;pre&gt;UrlCondition onLoginPage = new UrlConditions(&quot;#login&quot;);
+crawler.when(onLoginPage).click(&quot;a&quot;).withText(&quot;Login&quot;);
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;tr&gt;&lt;td class=&quot;separator&quot;&gt;
+&lt;h3&gt;Combinations&lt;/h3&gt;
+Different combinations can be used.
+&lt;/td&gt;&lt;td class=&quot;separator&quot;&gt;&lt;pre&gt;crawler.click(&quot;div&quot;).underXPath(&quot;//DIV[id='footer']&quot;)
+	.withText(&quot;Info&quot;);
+crawler.click(&quot;button&quot;).withText(&quot;save&quot;)
+	.withAttribute(&quot;class&quot;, &quot;contactform&quot;);
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;
+
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/div&gt;
+	&lt;/td&gt;&lt;/tr&gt;
+	&lt;/tbody&gt;&lt;/table&gt;
+	&lt;div id=&quot;footer&quot;&gt;
+		&lt;a href=&quot;#&quot; onclick=&quot;addError('Dont click on elements in the footer')&quot;&gt;Do not click elements in the footer&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;div id=&quot;errors&quot; style=&quot;display: none;&quot;&gt;&lt;/div&gt;	
+	
+
+
+&lt;/body&gt;&lt;/html&gt;</pre>
+			</div>
+			<div class="tab-pane" id='interactions'>
+				<h2>Interactions</h2>
+				<table class="table table-bordered table-striped">
+					<tbody>
+						<tr>
+							<th>Xpath</th>
+							<th>Destination</tg>
+						</tr>
+											</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../lib/shCore.js"></script>
+	<script type="text/javascript" src="../lib/shBrushXml.js"></script>
+	<script type="text/javascript" src="../lib/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" src="../lib/bootstrap.min.js"></script>
+	<script type="text/javascript">
+    	$(document).ready(function() {
+			SyntaxHighlighter.all()
+
+			$('#tabs a').click(function (e) {
+		  		e.preventDefault();
+		  		$(this).tab('show');
+			})
+		});
+    	
+    	$('.hovers').tooltip({
+    	    placement: function(a, element) {
+    	        var position = $(element).position();
+    	        if (position.left > 515) {
+    	            return "left";
+    	        }
+    	        if (position.left < 515) {
+    	            return "right";
+    	        }
+    	        if (position.top < 110){
+    	            return "bottom";
+    	        }
+    	        return "top";
+    	    }
+    	});
+	</script>
+</body>
+</html>

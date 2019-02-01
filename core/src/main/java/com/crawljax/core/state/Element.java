@@ -1,17 +1,16 @@
 package com.crawljax.core.state;
 
-import java.io.Serializable;
-import java.util.Map.Entry;
-
-import javax.annotation.concurrent.Immutable;
-
-import org.w3c.dom.Node;
-
 import com.crawljax.util.DomUtils;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import org.w3c.dom.Node;
+
+import javax.annotation.concurrent.Immutable;
+import java.io.Serializable;
+import java.util.Map.Entry;
 
 /**
  * This class represents an element. It is built from the node name and node text contents.
@@ -21,17 +20,16 @@ public class Element implements Serializable {
 
 	private static final long serialVersionUID = -1608999189549530008L;
 
-	private final Node node;
+	private final transient Node node;
 	private final String tag;
 	private final String text;
 	private final ImmutableMap<String, String> attributes;
 
 	/**
 	 * Create a new Element.
-	 * 
-	 * @param node
-	 *            the node used to retrieve the name and the text content from. All {@link Node}
-	 *            keys are saved as lowercase.
+	 *
+	 * @param node the node used to retrieve the name and the text content from. All {@link Node}
+	 *             keys are saved as lowercase.
 	 */
 	public Element(Node node) {
 		Preconditions.checkNotNull(node);
@@ -52,9 +50,8 @@ public class Element implements Serializable {
 
 	/**
 	 * Are all the attributes the same?
-	 * 
-	 * @param otherElement
-	 *            the other element to compare
+	 *
+	 * @param otherElement the other element to compare
 	 * @return true if the other attributes are equal to this one.
 	 */
 	public boolean equalAttributes(Element otherElement) {
@@ -63,9 +60,8 @@ public class Element implements Serializable {
 
 	/**
 	 * Are both Id's the same?
-	 * 
-	 * @param otherElement
-	 *            the other element to compare
+	 *
+	 * @param otherElement the other element to compare
 	 * @return true if id == otherElement.id
 	 */
 	public boolean equalId(Element otherElement) {
@@ -77,9 +73,8 @@ public class Element implements Serializable {
 
 	/**
 	 * Are both the text equal?
-	 * 
-	 * @param otherElement
-	 *            the other element to compare
+	 *
+	 * @param otherElement the other element to compare
 	 * @return true if the text of both elements is the same
 	 */
 	public boolean equalText(Element otherElement) {
@@ -88,7 +83,7 @@ public class Element implements Serializable {
 
 	/**
 	 * Search for the attribute "id" and return the value.
-	 * 
+	 *
 	 * @return the id of this element or null when not found
 	 */
 	public String getElementId() {
@@ -115,8 +110,7 @@ public class Element implements Serializable {
 	}
 
 	/**
-	 * @param attribute
-	 *            the attribute name.
+	 * @param attribute the attribute name.
 	 * @return the attribute by its name or <code>null</code> if the attribute cannot be found.
 	 */
 	public String getAttributeOrNull(String attribute) {
@@ -136,12 +130,12 @@ public class Element implements Serializable {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("node", node)
-		        .add("tag", tag)
-		        .add("text", text)
-		        .add("attributes", attributes)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("node", node)
+				.add("tag", tag)
+				.add("text", text)
+				.add("attributes", attributes)
+				.toString();
 	}
 
 	@Override
@@ -153,10 +147,11 @@ public class Element implements Serializable {
 	public boolean equals(Object object) {
 		if (object instanceof Element) {
 			Element that = (Element) object;
-			return Objects.equal(this.node.toString(), that.node.toString())
-			        && Objects.equal(this.tag, that.tag)
-			        && Objects.equal(this.text, that.text)
-			        && Objects.equal(this.attributes, that.attributes);
+			return ((this.node == null || that.node == null)
+					|| Objects.equal(this.node.toString(), that.node.toString()))
+					&& Objects.equal(this.tag, that.tag)
+					&& Objects.equal(this.text, that.text)
+					&& Objects.equal(this.attributes, that.attributes);
 		}
 		return false;
 	}

@@ -1,0 +1,20 @@
+<h3>Software Tools</h3>
+<p>
+Tools resulting from our research include: 
+<ul class="niceList">
+ <li><a href="http://crawljax.com" target="_blank">Crawljax</a>: a tool for crawling and analyzing Ajax applications through dynamic analysis of user interface state changes (open source)</li>
+
+<li><a href="http://spci.st.ewi.tudelft.nl/chiron/" target="_blank">Chiron</a>: a Distributed Automated Performance Testing Framework for Push/Pull Web Applications (open source)</li>
+ 
+ 
+<li><a href="http://spci.st.ewi.tudelft.nl/atusa/" target="_blank">ATUSA</a>: Invariant-based Automatic Testing for Ajax Applications (open source)</li>
+
+<li><a href="http://crawljax.com/plugins/invarscope-plugins/">InvarScope</a>: a tool for automatically detecting JavaScript and DOM-level invariants in Web 2.0 applications. (open source)</li>
+
+<li><a href="http://spci.st.ewi.tudelft.nl/content/diva" target="_blank">DIVA</a>, a set of plugins for spotting security violations in Web Widget interactions. (open source)</li>
+
+<li>CrossT: a tool for automated cross-browser compatibility testing.</li>
+</ul>
+</p>
+
+

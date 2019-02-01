@@ -1,13 +1,13 @@
 package com.crawljax.core.state;
 
+import com.crawljax.core.CrawlSession;
+import com.crawljax.core.ExitNotifier.ExitStatus;
+import com.crawljax.core.plugin.PostCrawlingPlugin;
+
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
 import static org.junit.Assert.assertThat;
-
-import com.crawljax.core.CrawlSession;
-import com.crawljax.core.ExitNotifier.ExitStatus;
-import com.crawljax.core.plugin.PostCrawlingPlugin;
 
 /**
  * This {@link PostCrawlingPlugin} checks the {@link InMemoryStateFlowGraph} for consistency after
@@ -28,7 +28,7 @@ public class PostCrawlStateGraphChecker implements PostCrawlingPlugin {
 		for (StateVertex state : stateFlowGraph.getAllStates()) {
 			if (stateFlowGraph.getInitialState().getId() != state.getId()) {
 				assertThat(stateFlowGraph.getIncomingClickable(state).size(),
-				        is(greaterThanOrEqualTo(1)));
+						is(greaterThanOrEqualTo(1)));
 			}
 		}
 	}

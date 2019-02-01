@@ -1,13 +1,12 @@
 package com.crawljax.util;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.crawljax.core.state.Eventable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import com.crawljax.core.state.Eventable;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * DomHistoryElement contain a string representation of the DOM and the Document representation. The
@@ -31,13 +30,10 @@ public class DomHistoryElement {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param domStr
-	 *            The DOM string.
-	 * @param dom
-	 *            The DOM.
-	 * @param eventSeq
-	 *            The events sequence as a list.
+	 *
+	 * @param domStr   The DOM string.
+	 * @param dom      The DOM.
+	 * @param eventSeq The events sequence as a list.
 	 */
 	public DomHistoryElement(String domStr, Document dom, List<Eventable> eventSeq) {
 		this.domStr = domStr;
@@ -47,11 +43,9 @@ public class DomHistoryElement {
 
 	/**
 	 * Constructor. Parses domStr into a Document object.
-	 * 
-	 * @param domStr
-	 *            The DOM string.
-	 * @param eventSeq
-	 *            The events sequence as a list.
+	 *
+	 * @param domStr   The DOM string.
+	 * @param eventSeq The events sequence as a list.
 	 */
 	public DomHistoryElement(String domStr, List<Eventable> eventSeq) {
 		this.domStr = domStr;
@@ -72,8 +66,7 @@ public class DomHistoryElement {
 	}
 
 	/**
-	 * @param domStr
-	 *            the domStr to set
+	 * @param domStr the domStr to set
 	 */
 	public void setDomStr(String domStr) {
 		this.domStr = domStr;
@@ -87,8 +80,7 @@ public class DomHistoryElement {
 	}
 
 	/**
-	 * @param dom
-	 *            the dom to set
+	 * @param dom the dom to set
 	 */
 	public void setDom(Document dom) {
 		this.dom = dom;
@@ -102,8 +94,7 @@ public class DomHistoryElement {
 	}
 
 	/**
-	 * @param eventSequence
-	 *            The event sequence.
+	 * @param eventSequence The event sequence.
 	 */
 	public void setEventSequence(List<Eventable> eventSequence) {
 		this.eventSequence = eventSequence;

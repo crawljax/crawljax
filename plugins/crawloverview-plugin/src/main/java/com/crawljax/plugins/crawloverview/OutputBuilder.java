@@ -2,8 +2,6 @@ package com.crawljax.plugins.crawloverview;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import javax.annotation.Nullable;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,14 +14,8 @@ import java.net.URLDecoder;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.plugins.crawloverview.model.OutPutModel;
-import com.crawljax.plugins.crawloverview.model.Serializer;
-import com.google.common.base.Charsets;
-import com.google.common.base.Strings;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
+import javax.annotation.Nullable;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -32,6 +24,19 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.plugins.crawloverview.model.AlchemyEdge;
+import com.crawljax.plugins.crawloverview.model.AlchemyGraphModel;
+import com.crawljax.plugins.crawloverview.model.Edge;
+import com.crawljax.plugins.crawloverview.model.OutPutModel;
+import com.crawljax.plugins.crawloverview.model.Serializer;
+import com.crawljax.plugins.crawloverview.model.State;
+import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
 
 class OutputBuilder {
 
@@ -44,7 +49,7 @@ class OutputBuilder {
 
 	private final File outputDir;
 	private final File states;
-	private final File screenshots;
+	private final File screenshotsFolder;
 	private final File indexFile;
 	private final File doms;
 	private final VelocityEngine ve;
@@ -61,9 +66,7 @@ class OutputBuilder {
 		states = new File(outputDir, STATES_FOLDER_NAME);
 		boolean created = states.mkdir();
 		checkArgument(created, "Could not create states dir");
-		screenshots = new File(outputDir, SCREENSHOT_FOLDER_NAME);
-		created = screenshots.mkdir();
-		checkArgument(created, "Could not create screenshots dir");
+		screenshotsFolder = new File(outputDir, SCREENSHOT_FOLDER_NAME);
 		doms = new File(outputDir, DOMS_OUTPUT_NAME);
 		created = doms.mkdir();
 		checkArgument(created, "Could not create doms dir");
@@ -73,11 +76,16 @@ class OutputBuilder {
 		configureVelocity();
 	}
 
+	public File getScreenshotsFolder() {
+		return screenshotsFolder;
+	}
+
 	private void configureVelocity() {
 		ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
 		        "org.apache.velocity.runtime.log.NullLogChute");
 		ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-		ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+		ve.setProperty("classpath.resource.loader.class",
+		        ClasspathResourceLoader.class.getName());
 	}
 
 	private void checkPermissions() {
@@ -137,8 +145,8 @@ class OutputBuilder {
 		try {
 			path = URLDecoder.decode(skeleton.getPath(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			throw new CrawljaxException("Could not process the path of the Overview skeleton "
-			        + skeleton, e);
+			throw new CrawljaxException(
+			        "Could not process the path of the Overview skeleton " + skeleton, e);
 		}
 		String jarpath = path.substring("file:".length(), path.indexOf("jar!") + "jar".length());
 		File jar = new File(jarpath);
@@ -147,16 +155,16 @@ class OutputBuilder {
 	}
 
 	File newScreenShotFile(String name) {
-		return new File(screenshots, name + ".jpg");
+		return new File(screenshotsFolder, name + ".png");
 	}
 
 	public File newThumbNail(String name) {
-		return new File(screenshots, name + "_small.jpg");
+		return new File(screenshotsFolder, name + "_small.jpg");
 	}
 
-	public void write(OutPutModel result, CrawljaxConfiguration config) {
+	public void write(OutPutModel result, CrawljaxConfiguration config, String[][] clusters) {
 		try {
-			writeIndexFile(result, config);
+			writeIndexFile(result, config, clusters);
 			writeJsonToOutDir(Serializer.toPrettyJson(config), "config.json");
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
@@ -165,12 +173,48 @@ class OutputBuilder {
 		LOG.info("Overview report generated");
 	}
 
-	private void writeIndexFile(OutPutModel model, CrawljaxConfiguration config) {
+	private AlchemyGraphModel getAlchemyJson(OutPutModel model) {
+		State[] nodes = new State[model.getStates().size()];
+		AlchemyEdge[] edges = new AlchemyEdge[model.getEdges().size()];
+		int i = 0;
+		for (String stateName : model.getStates().keySet()) {
+			nodes[i] = model.getStates().get(stateName);
+			i++;
+		}
+		i = 0;
+		for (Edge edge : model.getEdges()) {
+			int from = model.getStates().get(edge.getFrom()).getId();
+			int to = model.getStates().get(edge.getTo()).getId();
+			edges[i] =
+			        new AlchemyEdge(from, to, edge.hashCode(), edge.getText(), edge.getElement(),
+			                edge.getEventType());
+			i++;
+		}
+		AlchemyGraphModel graphModel = new AlchemyGraphModel(nodes, edges);
+		writeJsonToOutDir(Serializer.toPrettyJson(graphModel), "alchemyGraph.json");
+		return graphModel;
+	}
+
+	private void writeIndexFile(OutPutModel model, CrawljaxConfiguration config,
+	        String[][] clusters) {
 		LOG.debug("Writing index file");
 		VelocityContext context = new VelocityContext();
 		writeJsonToOutDir(Serializer.toPrettyJson(model), JSON_OUTPUT_NAME);
+		AlchemyGraphModel alchemyGraphModel = getAlchemyJson(model);
 		context.put("states", Serializer.toPrettyJson(model.getStates()));
 		context.put("edges", Serializer.toPrettyJson(model.getEdges()));
+
+		context.put("clusters", Serializer.toPrettyJson(clusters));
+		context.put("alchemyGraphModel", Serializer.toPrettyJson(alchemyGraphModel));
+		// if(config.getStateVertexFactory() instanceof PHashStateVertexFactory) {
+		// PHashStateVertexFactory visHashStateVertexFactory = (PHashStateVertexFactory)
+		// config.getStateVertexFactory();
+		// context.put("maxRaw", visHashStateVertexFactory.getVisHashMaxRaw());
+		// }
+		// else {
+		context.put("maxRaw", -1.0);
+		// }
+
 		context.put("config", BeanToReadableMap.toMap(config));
 		context.put("crawledUrl", config.getUrl());
 		context.put("stats", model.getStatistics());

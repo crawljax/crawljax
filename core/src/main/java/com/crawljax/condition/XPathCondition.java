@@ -1,18 +1,16 @@
 package com.crawljax.condition;
 
-import java.io.IOException;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import net.jcip.annotations.Immutable;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import net.jcip.annotations.Immutable;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
 
 /**
  * A condition which returns true if the XPath expression returns one or more elements. NOTE:
@@ -25,9 +23,8 @@ public class XPathCondition implements Condition {
 
 	/**
 	 * Construct xpath condition.
-	 * 
-	 * @param expression
-	 *            The actual xpath expression.
+	 *
+	 * @param expression The actual xpath expression.
 	 */
 	public XPathCondition(String expression) {
 		this.expression = expression;
@@ -66,9 +63,9 @@ public class XPathCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("expression", expression)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("expression", expression)
+				.toString();
 	}
 
 }

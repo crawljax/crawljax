@@ -1,11 +1,10 @@
 package com.crawljax.oraclecomparator;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.crawljax.condition.Condition;
 import net.jcip.annotations.Immutable;
 
-import com.crawljax.condition.Condition;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class contains the oracle and its precondition(s).
@@ -13,15 +12,13 @@ import com.crawljax.condition.Condition;
 @Immutable
 public class OracleComparator {
 
-	private final List<Condition> preConditions = new ArrayList<Condition>();
+	private final List<Condition> preConditions = new ArrayList<>();
 	private final String id;
 	private final Comparator oracle;
 
 	/**
-	 * @param id
-	 *            an identifier for the oracle
-	 * @param oracle
-	 *            the Oracle
+	 * @param id     an identifier for the oracle
+	 * @param oracle the Oracle
 	 */
 	public OracleComparator(String id, Comparator oracle) {
 		this.id = id;
@@ -29,12 +26,9 @@ public class OracleComparator {
 	}
 
 	/**
-	 * @param id
-	 *            an identifier for the oracle
-	 * @param oracle
-	 *            the Oracle
-	 * @param preConditions
-	 *            the preconditions that must be satisfied before the oracle comparator is used
+	 * @param id            an identifier for the oracle
+	 * @param oracle        the Oracle
+	 * @param preConditions the preconditions that must be satisfied before the oracle comparator is used
 	 */
 	public OracleComparator(String id, Comparator oracle, List<Condition> preConditions) {
 		this(id, oracle);
@@ -42,12 +36,9 @@ public class OracleComparator {
 	}
 
 	/**
-	 * @param id
-	 *            an identifier for the oracle
-	 * @param oracle
-	 *            the Oracle
-	 * @param preConditions
-	 *            the preconditions that must be satisfied before the oracle comparator is used
+	 * @param id            an identifier for the oracle
+	 * @param oracle        the Oracle
+	 * @param preConditions the preconditions that must be satisfied before the oracle comparator is used
 	 */
 	public OracleComparator(String id, Comparator oracle, Condition... preConditions) {
 		this(id, oracle);

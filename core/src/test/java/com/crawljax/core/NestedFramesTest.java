@@ -17,14 +17,12 @@ public class NestedFramesTest {
 	@ClassRule
 	public static final RunWithWebServer SERVER = new RunWithWebServer("/site/iframe");
 
-	private WebDriver driver;
-
 	@Rule
 	public BrowserProvider provider = new BrowserProvider();
 
 	@Test
 	public void testNestedFramesIndex() {
-		driver = provider.newBrowser();
+		WebDriver driver = provider.newBrowser();
 		driver.get(SERVER.getSiteUrl().toString());
 
 		driver.switchTo().frame(0);
@@ -33,6 +31,5 @@ public class NestedFramesTest {
 		WebElement button002 = driver.findElement(By.id("button002"));
 		button002.click();
 	}
-
 
 }

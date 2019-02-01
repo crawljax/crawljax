@@ -1,20 +1,18 @@
-/**
+/*
  * Created Aug 7, 2008
  */
 package com.crawljax.util;
 
-import java.util.Iterator;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
+import java.util.Iterator;
 
 /**
  * @author mesbah
  */
 public class HtmlNamespace implements NamespaceContext {
 	/**
-	 * @param prefix
-	 *            The prefix of the URI.
+	 * @param prefix The prefix of the URI.
 	 * @return The namespace URI.
 	 */
 	@Override
@@ -33,8 +31,7 @@ public class HtmlNamespace implements NamespaceContext {
 	// This method isn't necessary for XPath processing.
 
 	/**
-	 * @param uri
-	 *            TODO: DOCUMENT ME!
+	 * @param uri TODO: DOCUMENT ME!
 	 * @return TODO: DOCUMENT ME!
 	 */
 	@Override
@@ -43,9 +40,9 @@ public class HtmlNamespace implements NamespaceContext {
 	}
 
 	// This method isn't necessary for XPath processing either.
+
 	/**
-	 * @param uri
-	 *            TODO: DOCUMENT ME!
+	 * @param uri TODO: DOCUMENT ME!
 	 * @return TODO: DOCUMENT ME!
 	 */
 	@Override

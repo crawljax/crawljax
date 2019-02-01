@@ -1,19 +1,18 @@
 package com.crawljax.core;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Contains all data concerned with this crawl. There is one {@link CrawlSession} per crawl. Even if
@@ -29,7 +28,7 @@ public class CrawlSession {
 	 * far.
 	 */
 	private final Collection<List<Eventable>> crawlPaths =
-	        new ConcurrentLinkedQueue<List<Eventable>>();
+			new ConcurrentLinkedQueue<>();
 
 	private final StateVertex initialState;
 
@@ -44,7 +43,7 @@ public class CrawlSession {
 
 	@Inject
 	public CrawlSession(CrawljaxConfiguration config, StateFlowGraph stateFlowGraph,
-	        StateVertex state, MetricRegistry registry) {
+			StateVertex state, MetricRegistry registry) {
 		this.stateFlowGraph = stateFlowGraph;
 		this.initialState = state;
 		this.config = config;
@@ -67,8 +66,7 @@ public class CrawlSession {
 	}
 
 	/**
-	 * @param crawlPath
-	 *            the eventable list
+	 * @param crawlPath the eventable list
 	 */
 	public void addCrawlPath(List<Eventable> crawlPath) {
 		this.crawlPaths.add(crawlPath);
@@ -90,6 +88,8 @@ public class CrawlSession {
 
 	/**
 	 * Remove the current path from the set of crawlPaths.
+	 *
+	 * @param path the path to be removed
 	 */
 	protected void removeCrawlPath(List<Eventable> path) {
 		this.crawlPaths.remove(path);

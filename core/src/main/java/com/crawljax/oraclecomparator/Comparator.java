@@ -1,10 +1,9 @@
 package com.crawljax.oraclecomparator;
 
-import java.util.List;
-
 import net.jcip.annotations.NotThreadSafe;
-
 import org.custommonkey.xmlunit.Difference;
+
+import java.util.List;
 
 /**
  * Interface for oracle comparators.

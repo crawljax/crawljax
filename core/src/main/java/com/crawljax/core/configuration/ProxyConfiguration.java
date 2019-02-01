@@ -1,9 +1,9 @@
 package com.crawljax.core.configuration;
 
-import javax.annotation.concurrent.Immutable;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Class for passing proxy settings to Crawljax' browser builder. It is returned by the
@@ -35,13 +35,13 @@ public class ProxyConfiguration {
 
 		private int value;
 
-		private ProxyType(int value) {
+		ProxyType(int value) {
 			this.value = value;
 		}
 
 		/**
 		 * Converts the enum to an int (used by Firefox internally).
-		 * 
+		 *
 		 * @return The int representation of the enum value.
 		 */
 		public int toInt() {
@@ -76,7 +76,7 @@ public class ProxyConfiguration {
 	public static ProxyConfiguration manualProxyOn(String host, int port) {
 		Preconditions.checkNotNull(host);
 		Preconditions.checkArgument(port > 0 && port <= 65535,
-		        "port number should be between 0 and 65535 but was " + port);
+				"port number should be between 0 and 65535 but was " + port);
 		return new ProxyConfiguration(port, host, ProxyType.MANUAL);
 	}
 
@@ -131,8 +131,8 @@ public class ProxyConfiguration {
 		if (object instanceof ProxyConfiguration) {
 			ProxyConfiguration that = (ProxyConfiguration) object;
 			return Objects.equal(this.port, that.port)
-			        && Objects.equal(this.hostname, that.hostname)
-			        && Objects.equal(this.type, that.type);
+					&& Objects.equal(this.hostname, that.hostname)
+					&& Objects.equal(this.type, that.type);
 		}
 		return false;
 	}

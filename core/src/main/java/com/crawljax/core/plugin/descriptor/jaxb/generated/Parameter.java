@@ -15,11 +15,9 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>
  * Java class for parameter complex type.
- * 
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
  * <pre>
  * &lt;complexType name="parameter"&gt;
  *   &lt;complexContent&gt;
@@ -42,8 +40,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "parameter", propOrder = { "id", "displayName", "type",
@@ -60,9 +56,8 @@ public class Parameter {
 
 	/**
 	 * Gets the value of the id property.
-	 * 
+	 *
 	 * @return possible object is {@link String }
-	 * 
 	 */
 	public String getId() {
 		return id;
@@ -70,10 +65,8 @@ public class Parameter {
 
 	/**
 	 * Sets the value of the id property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
+	 *
+	 * @param value allowed object is {@link String }
 	 */
 	public void setId(String value) {
 		this.id = value;
@@ -81,9 +74,8 @@ public class Parameter {
 
 	/**
 	 * Gets the value of the displayName property.
-	 * 
+	 *
 	 * @return possible object is {@link String }
-	 * 
 	 */
 	public String getDisplayName() {
 		return displayName;
@@ -91,10 +83,8 @@ public class Parameter {
 
 	/**
 	 * Sets the value of the displayName property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
+	 *
+	 * @param value allowed object is {@link String }
 	 */
 	public void setDisplayName(String value) {
 		this.displayName = value;
@@ -102,9 +92,8 @@ public class Parameter {
 
 	/**
 	 * Gets the value of the type property.
-	 * 
+	 *
 	 * @return possible object is {@link String }
-	 * 
 	 */
 	public String getType() {
 		return type;
@@ -112,10 +101,8 @@ public class Parameter {
 
 	/**
 	 * Sets the value of the type property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
+	 *
+	 * @param value allowed object is {@link String }
 	 */
 	public void setType(String value) {
 		this.type = value;
@@ -123,9 +110,8 @@ public class Parameter {
 
 	/**
 	 * Gets the value of the options property.
-	 * 
+	 *
 	 * @return possible object is {@link OptionList }
-	 * 
 	 */
 	public OptionList getOptions() {
 		return options;
@@ -133,10 +119,8 @@ public class Parameter {
 
 	/**
 	 * Sets the value of the options property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link OptionList }
-	 * 
+	 *
+	 * @param value allowed object is {@link OptionList }
 	 */
 	public void setOptions(OptionList value) {
 		this.options = value;

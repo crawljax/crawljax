@@ -1,15 +1,14 @@
 package com.crawljax.forms;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import com.google.common.collect.Lists;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.google.common.collect.Lists;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class RandomInputValueGeneratorTest {
 	private static final int NUM_RAND_CHECKS = 1000;

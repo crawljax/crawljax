@@ -1,16 +1,15 @@
 package com.crawljax.crawls;
 
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.test.BaseCrawler;
 import com.crawljax.test.BrowserTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
+import static org.junit.Assert.assertThat;
 
 @Category(BrowserTest.class)
 public class CrawlHiddenElementsTest {
@@ -19,12 +18,12 @@ public class CrawlHiddenElementsTest {
 	 * Shows <a href='https://github.com/crawljax/crawljax/issues/97'>Issue 97</a>
 	 */
 	@Test
-	public void testHiddenElementsSiteCrawl() throws Exception {
+	public void testHiddenElementsSiteCrawl() {
 		CrawlSession crawl = new BaseCrawler("hidden-elements-site") {
 			@Override
 			public CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
 				CrawljaxConfigurationBuilder builder =
-				        super.newCrawlConfigurationBuilder();
+						super.newCrawlConfigurationBuilder();
 				builder.crawlRules().crawlHiddenAnchors(true);
 				return builder;
 			}
@@ -43,7 +42,7 @@ public class CrawlHiddenElementsTest {
 	 * Shows <a href='https://github.com/crawljax/crawljax/issues/97'>Issue 97</a>
 	 */
 	@Test
-	public void whenHiddenElementsOfItShouldntCrawl() throws Exception {
+	public void whenHiddenElementsOfItShouldNotCrawl() {
 		CrawlSession crawl = new BaseCrawler("hidden-elements-site").crawl();
 		StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
 

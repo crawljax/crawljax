@@ -1,15 +1,15 @@
 package com.crawljax.util;
 
-import java.util.List;
-
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
 import org.w3c.dom.Document;
 
+import java.util.List;
+
 /**
  * This class allows to compare two Document objects and save the differences in a list.
- * 
+ *
  * @author beze232056
  */
 public class DOMComparer {
@@ -25,11 +25,9 @@ public class DOMComparer {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param controlDOM
-	 *            The control DOM.
-	 * @param testDOM
-	 *            The test DOM.
+	 *
+	 * @param controlDOM The control DOM.
+	 * @param testDOM    The test DOM.
 	 */
 	public DOMComparer(Document controlDOM, Document testDOM) {
 		this.controlDOM = controlDOM;
@@ -38,7 +36,7 @@ public class DOMComparer {
 
 	/**
 	 * Compare the controlDOM and testDOM and save and return the differences in a list.
-	 * 
+	 *
 	 * @return list with differences
 	 */
 	@SuppressWarnings("unchecked")

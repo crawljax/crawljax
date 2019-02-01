@@ -1,0 +1,13 @@
+<html>
+	<body>
+		<table border="1">
+			<tr><td>First</td><td>This will go away</td><td>Middle column</td></tr>
+			<tr><td>Sample cell</td><td>This will go away</td><td>Second</td></tr>
+			<tr><td>Cell 1</td><td>This will go away</td><td>Third</td></tr>
+			<tr><td>Cell 2</td><td>This will go away</td><td>Fourth</td></tr>
+			<tr><td>Cell 3</td><td>This will go away</td><td>Fifth</td></tr>
+			<tr><td>Last row </td><td>This will go away</td><td>Last cell</td></tr>
+		</table>
+
+	</body>
+</html>

@@ -1,0 +1,122 @@
+{
+  "url" : "http://phptravels.com/demo/",
+  "basicAuthUrl" : null,
+  "browserConfig" : {
+    "browsertype" : "CHROME",
+    "numberOfBrowsers" : 1,
+    "browserBuilder" : { },
+    "remoteHubUrl" : null,
+    "defaultBuilder" : true,
+    "langOrNull" : null
+  },
+  "plugins" : [ "CrawlOverview" ],
+  "proxyConfiguration" : {
+    "port" : -1,
+    "hostname" : "none",
+    "type" : "NOTHING"
+  },
+  "crawlRules" : {
+    "crawlEvents" : [ "click" ],
+    "invariants" : [ ],
+    "oracleComparators" : [ {
+      "preConditions" : [ ],
+      "id" : "SimpleComparator",
+      "oracle" : { }
+    } ],
+    "ignoredFrameIdentifiers" : [ ],
+    "preCrawlConfig" : {
+      "waitConditions" : [ ],
+      "crawlConditions" : [ ],
+      "includedElements" : [ {
+        "tagName" : "A",
+        "id" : "id1270855946",
+        "eventType" : "click",
+        "withXpathExpression" : null,
+        "eventableCondition" : null
+      }, {
+        "tagName" : "BUTTON",
+        "id" : "id2083117811",
+        "eventType" : "click",
+        "withXpathExpression" : null,
+        "eventableCondition" : null
+      }, {
+        "tagName" : "INPUT",
+        "id" : "id157683534",
+        "eventType" : "click",
+        "withXpathExpression" : "//INPUT[@type='submit']",
+        "eventableCondition" : {
+          "id" : "id157683534",
+          "conditions" : [ ],
+          "inXPath" : "//INPUT[@type='submit']",
+          "linkedInputFields" : [ ]
+        }
+      }, {
+        "tagName" : "INPUT",
+        "id" : "id1518864111",
+        "eventType" : "click",
+        "withXpathExpression" : "//INPUT[@type='button']",
+        "eventableCondition" : {
+          "id" : "id1518864111",
+          "conditions" : [ ],
+          "inXPath" : "//INPUT[@type='button']",
+          "linkedInputFields" : [ ]
+        }
+      } ],
+      "excludedElements" : [ ],
+      "filterAttributeNames" : [ "closure_hashcode_(\\w)*", "jquery[0-9]+" ]
+    },
+    "formFillMode" : "NORMAL",
+    "inputSpecification" : {
+      "formInputs" : { },
+      "forms" : [ ],
+      "crawlElements" : [ ]
+    },
+    "testInvariantsWhileCrawling" : true,
+    "clickOnce" : true,
+    "randomizeCandidateElements" : false,
+    "crawlHiddenAnchors" : true,
+    "waitAfterReloadUrl" : 20,
+    "waitAfterEvent" : 200,
+    "allCrawlElements" : [ {
+      "tagName" : "A",
+      "id" : "id1270855946",
+      "eventType" : "click",
+      "withXpathExpression" : null,
+      "eventableCondition" : null
+    }, {
+      "tagName" : "BUTTON",
+      "id" : "id2083117811",
+      "eventType" : "click",
+      "withXpathExpression" : null,
+      "eventableCondition" : null
+    }, {
+      "tagName" : "INPUT",
+      "id" : "id157683534",
+      "eventType" : "click",
+      "withXpathExpression" : "//INPUT[@type='submit']",
+      "eventableCondition" : {
+        "id" : "id157683534",
+        "conditions" : [ ],
+        "inXPath" : "//INPUT[@type='submit']",
+        "linkedInputFields" : [ ]
+      }
+    }, {
+      "tagName" : "INPUT",
+      "id" : "id1518864111",
+      "eventType" : "click",
+      "withXpathExpression" : "//INPUT[@type='button']",
+      "eventableCondition" : {
+        "id" : "id1518864111",
+        "conditions" : [ ],
+        "inXPath" : "//INPUT[@type='button']",
+        "linkedInputFields" : [ ]
+      }
+    } ]
+  },
+  "maximumStates" : 5,
+  "maximumRuntime" : 3600000,
+  "maximumDepth" : 3,
+  "stateVertexFactory" : { },
+  "siteDir" : "/Users/amesbah/repos/git/saltlab/art/crawljax/examples/out/phptravels.com",
+  "outputDir" : "/Users/amesbah/repos/git/saltlab/art/crawljax/examples/out/phptravels.com/crawl15"
+}

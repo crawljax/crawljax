@@ -22,11 +22,15 @@ public class PluginDescriptor {
 	private List<Parameter> parameters = new ArrayList<>();
 
 	public static PluginDescriptor fromXMLStream(InputStream xmlInputStream) {
-		com.crawljax.core.plugin.descriptor.jaxb.generated.PluginDescriptor pluginDescriptor = null;
+		com.crawljax.core.plugin.descriptor.jaxb.generated.PluginDescriptor pluginDescriptor =
+				null;
 		try {
-			JAXBContext jc = JAXBContext.newInstance("com.crawljax.core.plugin.descriptor.jaxb.generated");
+			JAXBContext jc =
+					JAXBContext.newInstance("com.crawljax.core.plugin.descriptor.jaxb.generated");
 			Unmarshaller u = jc.createUnmarshaller();
-			pluginDescriptor = (com.crawljax.core.plugin.descriptor.jaxb.generated.PluginDescriptor) u.unmarshal(xmlInputStream);
+			pluginDescriptor =
+					(com.crawljax.core.plugin.descriptor.jaxb.generated.PluginDescriptor) u
+							.unmarshal(xmlInputStream);
 		} catch (JAXBException e) {
 			LOG.info("Error reading plugin descriptor from xml stream");
 			LOG.debug("Error reading plugin descriptor from xml stream");
@@ -36,7 +40,7 @@ public class PluginDescriptor {
 
 	public static PluginDescriptor forPlugin(Class<? extends Plugin> pluginClass) {
 		PluginDescriptor pluginDescriptor = null;
-		try(InputStream is = pluginClass.getResourceAsStream("/plugin-descriptor.xml")) {
+		try (InputStream is = pluginClass.getResourceAsStream("/plugin-descriptor.xml")) {
 			pluginDescriptor = fromXMLStream(is);
 		} catch (IOException e) {
 			LOG.info("Error loading descriptor for plugin {}", pluginClass);
@@ -45,15 +49,17 @@ public class PluginDescriptor {
 		return pluginDescriptor;
 	}
 
-	private static PluginDescriptor fromJaxbPluginDescriptor(com.crawljax.core.plugin.descriptor.jaxb.generated.PluginDescriptor source) {
+	private static PluginDescriptor fromJaxbPluginDescriptor(
+			com.crawljax.core.plugin.descriptor.jaxb.generated.PluginDescriptor source) {
 		PluginDescriptor plugin = new PluginDescriptor();
 		plugin.name = source.getName();
 		plugin.description = source.getDescription();
-		for(String version : source.getCrawljaxVersions().getVersion()) {
+		for (String version : source.getCrawljaxVersions().getVersion()) {
 			plugin.getCrawljaxVersions().add(version);
 		}
-		if(source.getParameters() != null) {
-			for(com.crawljax.core.plugin.descriptor.jaxb.generated.Parameter parameter : source.getParameters().getParameter()) {
+		if (source.getParameters() != null) {
+			for (com.crawljax.core.plugin.descriptor.jaxb.generated.Parameter parameter : source
+					.getParameters().getParameter()) {
 				Parameter copy = Parameter.fromJaxbParameter(parameter);
 				plugin.getParameters().add(copy);
 			}

@@ -1,31 +1,5 @@
 package com.crawljax.core;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.inject.Provider;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
-
 import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.ExitNotifier.ExitStatus;
@@ -37,6 +11,26 @@ import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.di.CrawlSessionProvider;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
+
+import javax.inject.Provider;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CrawlControllerTest {
@@ -49,7 +43,6 @@ public class CrawlControllerTest {
 
 	private UnfiredCandidateActions candidateActions;
 
-	private ExecutorService executor;
 	private ExitNotifier consumersDoneLatch;
 
 	@Mock
@@ -76,25 +69,25 @@ public class CrawlControllerTest {
 	@Mock
 	private PostCrawlingPlugin postCrawlPlugin;
 
+	private CrawljaxConfiguration config;
+
 	@Before
 	public void setup() {
+		config = CrawljaxConfiguration.builderFor("http://example.com")
+				.build();
 		setupGraphAndStates();
 
 		polledActions = new AtomicInteger();
-		Mockito.doAnswer(new Answer<Void>() {
-
-			@Override
-			public Void answer(InvocationOnMock invocation) throws Throwable {
-				StateVertex task = (StateVertex) invocation.getArguments()[0];
-				CandidateCrawlAction action = candidateActions.pollActionOrNull(task);
-				while (action != null) {
-					// Slight delay to simulate the threading better
-					Thread.sleep(25);
-					polledActions.incrementAndGet();
-					action = candidateActions.pollActionOrNull(task);
-				}
-				return null;
+		Mockito.doAnswer((Answer<Void>) invocation -> {
+			StateVertex task = (StateVertex) invocation.getArguments()[0];
+			CandidateCrawlAction action = candidateActions.pollActionOrNull(task);
+			while (action != null) {
+				// Slight delay to simulate the threading better
+				Thread.sleep(25);
+				polledActions.incrementAndGet();
+				action = candidateActions.pollActionOrNull(task);
 			}
+			return null;
 		}).when(crawler).execute(any(StateVertex.class));
 	}
 
@@ -104,6 +97,7 @@ public class CrawlControllerTest {
 		when(index.getId()).thenReturn(1);
 		when(graph.getById(1)).thenReturn(index);
 		when(crawler.crawlIndex()).thenReturn(index);
+		when(crawler.getCrawlRules()).thenReturn(config.getCrawlRules());
 
 		when(state2.getId()).thenReturn(2);
 		when(state3.getId()).thenReturn(3);
@@ -121,29 +115,25 @@ public class CrawlControllerTest {
 	}
 
 	private void setupForConsumers(int consumers) {
-		executor = Executors.newFixedThreadPool(consumers + 2);
-		CrawljaxConfiguration config =
-		        CrawljaxConfiguration
-		                .builderFor("http://example.com")
-		                .addPlugin(postCrawlPlugin)
-		                .setBrowserConfig(
-		                        new BrowserConfiguration(BrowserType.FIREFOX, consumers))
-		                .build();
+		ExecutorService executor = Executors.newFixedThreadPool(consumers + 2);
+		config = CrawljaxConfiguration.builderFor("http://example.com")
+				.addPlugin(postCrawlPlugin)
+				.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, consumers))
+				.build();
 
-		candidateActions =
-		        new UnfiredCandidateActions(config.getBrowserConfig(), graphProvider,
-		                new MetricRegistry());
+		candidateActions = new UnfiredCandidateActions(config.getBrowserConfig(), graphProvider,
+				new MetricRegistry());
 
 		consumersDoneLatch = new ExitNotifier(config.getMaximumStates());
 
-		when(consumerFactory.get()).thenReturn(new CrawlTaskConsumer(candidateActions,
-		        consumersDoneLatch, crawler));
+		when(consumerFactory.get())
+				.thenReturn(new CrawlTaskConsumer(candidateActions, consumersDoneLatch, crawler));
 
 		crawlSessionProvider = new CrawlSessionProvider(graph, config, new MetricRegistry());
 
 		Plugins plugins = new Plugins(config, new MetricRegistry());
 		controller = new CrawlController(executor, consumerFactory, config, consumersDoneLatch,
-		        crawlSessionProvider, plugins);
+				crawlSessionProvider, plugins);
 
 	}
 

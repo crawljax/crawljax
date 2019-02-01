@@ -1,18 +1,17 @@
 package com.crawljax.oraclecomparator.comparators;
 
-import java.io.IOException;
-
+import com.crawljax.oraclecomparator.AbstractComparator;
+import com.crawljax.util.DomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import com.crawljax.oraclecomparator.AbstractComparator;
-import com.crawljax.util.DomUtils;
+import java.io.IOException;
 
 public class ScriptComparator extends AbstractComparator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComparator.class
-	        .getName());
+			.getName());
 
 	@Override
 	public String normalize(String dom) {

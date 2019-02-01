@@ -1,11 +1,11 @@
 package com.crawljax.condition;
 
-import java.util.Arrays;
-
+import com.crawljax.browser.EmbeddedBrowser;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import net.jcip.annotations.Immutable;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.google.common.base.Objects;
+import java.util.Arrays;
 
 /**
  * Logic operations for conditions.
@@ -14,8 +14,7 @@ import com.google.common.base.Objects;
 public final class Logic {
 
 	/**
-	 * @param condition
-	 *            the condition.
+	 * @param condition the condition.
 	 * @return the condition negated.
 	 */
 	public static Condition not(final Condition condition) {
@@ -23,8 +22,7 @@ public final class Logic {
 	}
 
 	/**
-	 * @param conditions
-	 *            the conditions.
+	 * @param conditions the conditions.
 	 * @return AND of conditions
 	 */
 	public static Condition and(final Condition... conditions) {
@@ -32,8 +30,7 @@ public final class Logic {
 	}
 
 	/**
-	 * @param conditions
-	 *            the conditions.
+	 * @param conditions the conditions.
 	 * @return OR conditions
 	 */
 	public static Condition or(final Condition... conditions) {
@@ -41,8 +38,7 @@ public final class Logic {
 	}
 
 	/**
-	 * @param conditions
-	 *            the conditions.
+	 * @param conditions the conditions.
 	 * @return NAND conditions
 	 */
 	public static Condition nand(final Condition... conditions) {
@@ -66,9 +62,9 @@ public final class Logic {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this)
-			        .add("condition", condition)
-			        .toString();
+			return MoreObjects.toStringHelper(this)
+					.add("condition", condition)
+					.toString();
 		}
 
 		@Override
@@ -105,9 +101,9 @@ public final class Logic {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this)
-			        .add("condition", Arrays.deepToString(conditions))
-			        .toString();
+			return MoreObjects.toStringHelper(this)
+					.add("condition", Arrays.deepToString(conditions))
+					.toString();
 		}
 
 		@Override
@@ -145,9 +141,9 @@ public final class Logic {
 
 		@Override
 		public String toString() {
-			return Objects.toStringHelper(this)
-			        .add("condition", Arrays.deepToString(conditions))
-			        .toString();
+			return MoreObjects.toStringHelper(this)
+					.add("condition", Arrays.deepToString(conditions))
+					.toString();
 		}
 
 		@Override

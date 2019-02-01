@@ -21,7 +21,7 @@ public class PluginExample {
 	public static void main(String[] args) {
 
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor("http://demo.crawljax.com/");
+		        CrawljaxConfiguration.builderFor("http://localhost/~qhanam/crawljax/crawljax-demo/");
 		builder.addPlugin(new OnNewStatePlugin() {
 
 			@Override

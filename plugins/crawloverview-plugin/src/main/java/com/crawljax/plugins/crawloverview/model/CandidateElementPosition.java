@@ -8,6 +8,7 @@ import org.openqa.selenium.Point;
 import com.crawljax.core.CandidateElement;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -77,7 +78,7 @@ public class CandidateElementPosition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("top", top)
 		        .add("left", left)
 		        .add("xpath", xpath)

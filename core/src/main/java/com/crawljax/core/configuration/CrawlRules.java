@@ -1,9 +1,5 @@
 package com.crawljax.core.configuration;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import java.util.concurrent.TimeUnit;
-
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
@@ -14,26 +10,31 @@ import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurati
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.oraclecomparator.OracleComparator;
 import com.crawljax.oraclecomparator.comparators.SimpleComparator;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSortedSet;
 
+import java.util.concurrent.TimeUnit;
+
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class CrawlRules {
 
 	public static final class CrawlRulesBuilder {
 
 		private final CrawlRules crawlRules;
-		private ImmutableSortedSet.Builder<EventType> crawlEvents = ImmutableSortedSet
-		        .naturalOrder();
+		private ImmutableSortedSet.Builder<EventType> crawlEvents =
+				ImmutableSortedSet.naturalOrder();
 		private ImmutableList.Builder<Invariant> invariants = ImmutableList.builder();
-		private ImmutableList.Builder<OracleComparator> oracleComparators = ImmutableList
-		        .builder();
+		private ImmutableList.Builder<OracleComparator> oracleComparators =
+				ImmutableList.builder();
 		private final CrawlActionsBuilder crawlActionsBuilder;
 		private final PreCrawlConfigurationBuilder preCrawlConfig;
 		private final ImmutableSortedSet.Builder<String> ignoredFrameIdentifiers =
-		        ImmutableSortedSet.naturalOrder();
+				ImmutableSortedSet.naturalOrder();
 		private final CrawljaxConfigurationBuilder crawljaxBuilder;
 
 		private CrawlRulesBuilder(CrawljaxConfigurationBuilder crawljaxBuilder) {
@@ -43,15 +44,30 @@ public class CrawlRules {
 			preCrawlConfig = PreCrawlConfiguration.builder();
 		}
 
-		public CrawlRulesBuilder insertRandomDataInInputForms(boolean insertRandomData) {
-			crawlRules.randomInputInForms = insertRandomData;
+		public CrawlRulesBuilder setFormFillMode(FormFillMode formFillMode) {
+			crawlRules.formFillMode = formFillMode;
+			return this;
+		}
+
+		public CrawlRulesBuilder setCrawlPriorityMode(CrawlPriorityMode crawlPriorityMode) {
+			crawlRules.crawlPriorityMode = crawlPriorityMode;
+			return this;
+		}
+
+		public CrawlRulesBuilder setCrawlNearDuplicates(boolean crawlNearDuplicates) {
+			crawlRules.crawlNearDuplicates = crawlNearDuplicates;
+			return this;
+		}
+
+		public CrawlRulesBuilder setDelayNearDuplicateCrawling(
+				boolean delayNearDuplicateCrawling) {
+			crawlRules.delayNearDuplicateCrawling = delayNearDuplicateCrawling;
 			return this;
 		}
 
 		/**
-		 * @param frame
-		 *            A frame that should be excluded from the DOM, before doing any other
-		 *            operations.
+		 * @param frame A frame that should be excluded from the DOM, before doing any other
+		 *              operations.
 		 */
 		public CrawlRulesBuilder dontCrawlFrame(String frame) {
 			Preconditions.checkNotNull(frame);
@@ -60,9 +76,8 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param eventTypes
-		 *            Add an {@link EventType} that should be triggered by Crawljax. If none are
-		 *            defined, it will only use {@link EventType#click}
+		 * @param eventTypes Add an {@link EventType} that should be triggered by Crawljax. If none are
+		 *                   defined, it will only use {@link EventType#click}
 		 */
 		public CrawlRulesBuilder addEventType(EventType... eventTypes) {
 			crawlEvents.add(eventTypes);
@@ -75,10 +90,8 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param description
-		 *            The invariants description.
-		 * @param condition
-		 *            The condition for the invariant.
+		 * @param description The invariants description.
+		 * @param condition   The condition for the invariant.
 		 * @see Invariant#Invariant(String, Condition)
 		 */
 		public CrawlRulesBuilder addInvariant(String description, Condition condition) {
@@ -94,16 +107,14 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param condition
-		 *            add a {@link WaitCondition}.
+		 * @param condition add a {@link WaitCondition}.
 		 */
 		public PreCrawlConfigurationBuilder addWaitCondition(WaitCondition... condition) {
 			return preCrawlConfig.addWaitCondition(condition);
 		}
 
 		/**
-		 * @param condition
-		 *            add a {@link CrawlCondition}
+		 * @param condition add a {@link CrawlCondition}
 		 */
 		public PreCrawlConfigurationBuilder addCrawlCondition(CrawlCondition... condition) {
 			return preCrawlConfig.addCrawlCondition(condition);
@@ -113,14 +124,13 @@ public class CrawlRules {
 		 * @see CrawlCondition#CrawlCondition(String, Condition)
 		 */
 		public PreCrawlConfigurationBuilder addCrawlCondition(String description,
-		        Condition crawlCondition) {
-			return preCrawlConfig.addCrawlCondition(new CrawlCondition(description,
-			        crawlCondition));
+				Condition crawlCondition) {
+			return preCrawlConfig
+					.addCrawlCondition(new CrawlCondition(description, crawlCondition));
 		}
 
 		/**
-		 * @param names
-		 *            add an attribute name you want to filter before parsing the dom.
+		 * @param names add an attribute name you want to filter before parsing the dom.
 		 */
 		public PreCrawlConfigurationBuilder filterAttributeNames(String names) {
 			return preCrawlConfig.filterAttributeNames(names);
@@ -128,13 +138,13 @@ public class CrawlRules {
 
 		public CrawlRulesBuilder setInputSpec(InputSpecification spec) {
 			Preconditions.checkNotNull(spec);
+			// TODO
 			crawlRules.inputSpecification = spec;
 			return this;
 		}
 
 		/**
-		 * @param test
-		 *            Test the invariants while crawling or not. Default is <code>true</code>.
+		 * @param test Test the invariants while crawling or not. Default is <code>true</code>.
 		 */
 		public CrawlRulesBuilder testInvariantsWhileCrawling(boolean test) {
 			crawlRules.testInvariantsWhileCrawling = test;
@@ -142,9 +152,8 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param once
-		 *            Set the crawler to interact with any element only once. Default is
-		 *            <code>true</code>
+		 * @param once Set the crawler to interact with any element only once. Default is
+		 *             <code>true</code>
 		 */
 		public CrawlRulesBuilder clickOnce(boolean once) {
 			crawlRules.clickOnce = once;
@@ -152,9 +161,8 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param randomize
-		 *            Click candidate elements derived from the DOM in random order in stead of in
-		 *            the order that they are found.
+		 * @param randomize Click candidate elements derived from the DOM in random order in stead of in
+		 *                  the order that they are found.
 		 */
 		public CrawlRulesBuilder clickElementsInRandomOrder(boolean randomize) {
 			crawlRules.randomizeCandidateElements = randomize;
@@ -162,8 +170,7 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param frames
-		 *            Crawl frames in a page. Default is <code>true</code>.
+		 * @param frames Crawl frames in a page. Default is <code>true</code>.
 		 */
 		public CrawlRulesBuilder crawlFrames(boolean frames) {
 			crawlRules.crawlFrames = frames;
@@ -171,25 +178,21 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param time
-		 *            The time to wait after a URL is loaded. Default is 500 milliseconds.
-		 * @param unit
-		 *            The time unit.
+		 * @param time The time to wait after a URL is loaded. Default is 500 milliseconds.
+		 * @param unit The time unit.
 		 */
 		public CrawlRulesBuilder waitAfterReloadUrl(long time, TimeUnit unit) {
-			checkArgument(time > 0, "Wait after reload time should be larget than 0");
+			checkArgument(time > 0, "Wait after reload time should be larger than 0");
 			crawlRules.waitAfterReloadUrl = unit.toMillis(time);
 			return this;
 		}
 
 		/**
-		 * @param time
-		 *            The time to wait after an event is fired. Default is 500 milliseconds.
-		 * @param unit
-		 *            The time unit.
+		 * @param time The time to wait after an event is fired. Default is 500 milliseconds.
+		 * @param unit The time unit.
 		 */
 		public CrawlRulesBuilder waitAfterEvent(long time, TimeUnit unit) {
-			checkArgument(time > 0, "Wait after event time should be larget than 0");
+			checkArgument(time > 0, "Wait after event time should be larger than 0");
 			crawlRules.waitAfterEvent = unit.toMillis(time);
 			return this;
 		}
@@ -247,11 +250,11 @@ public class CrawlRules {
 		}
 
 		/**
-		 * @param tagname
+		 * @param tagName
 		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#dontClickChildrenOf(java.lang.String)
 		 */
-		public ExcludeByParentBuilder dontClickChildrenOf(String tagname) {
-			return crawlActionsBuilder.dontClickChildrenOf(tagname);
+		public ExcludeByParentBuilder dontClickChildrenOf(String tagName) {
+			return crawlActionsBuilder.dontClickChildrenOf(tagName);
 		}
 
 		/**
@@ -261,9 +264,8 @@ public class CrawlRules {
 		 * Once the browser reaches an external URL it will <em>not</em> accept that URL as a new
 		 * state. Crawljax is not meant to crawl outside a website. This option exists so that you
 		 * can check all URLs for <code>404</code> errors.
-		 * 
-		 * @param follow
-		 *            Set to true to follow exteranl urls. Default is <code>false</code>.
+		 *
+		 * @param follow Set to true to follow external urls. Default is <code>false</code>.
 		 */
 		public CrawlRulesBuilder followExternalLinks(boolean follow) {
 			crawlRules.followExternalLinks = follow;
@@ -272,15 +274,11 @@ public class CrawlRules {
 
 		/**
 		 * Helper method for method chaining. Now you can do
-		 * 
 		 * <pre>
-		 * CrawljaxConfiguration.builderFor(&quot;http://example.com&quot;)
-		 *         .crawlRules()
-		 *         .followExternalLinks(true)
-		 *         .endRules()
-		 *         .build();
+		 * CrawljaxConfiguration.builderFor(&quot;http://example.com&quot;).crawlRules()
+		 *         .followExternalLinks(true).endRules().build();
 		 * </pre>
-		 * 
+		 *
 		 * @return The {@link CrawljaxConfigurationBuilder} to make method chaining easier.
 		 */
 		public CrawljaxConfigurationBuilder endRules() {
@@ -302,9 +300,8 @@ public class CrawlRules {
 		private void setupOracleComparatorsOrDefault() {
 			ImmutableList<OracleComparator> comparators = oracleComparators.build();
 			if (comparators.isEmpty()) {
-				crawlRules.oracleComparators =
-				        ImmutableList.of(new OracleComparator("SimpleComparator",
-				                new SimpleComparator()));
+				crawlRules.oracleComparators = ImmutableList
+						.of(new OracleComparator("SimpleComparator", new SimpleComparator()));
 			} else {
 				crawlRules.oracleComparators = comparators;
 			}
@@ -314,12 +311,12 @@ public class CrawlRules {
 	/**
 	 * Default wait after URL reload in {@link TimeUnit#MILLISECONDS}
 	 */
-	public static final long DEFAULT_WAIT_AFTER_RELOAD = 500;
+	public static final long DEFAULT_WAIT_AFTER_RELOAD = 200;
 
 	/**
 	 * Default wait after event in {@link TimeUnit#MILLISECONDS}
 	 */
-	public static final long DEFAULT_WAIT_AFTER_EVENT = 500;
+	public static final long DEFAULT_WAIT_AFTER_EVENT = 200;
 
 	public static CrawlRulesBuilder builder(CrawljaxConfigurationBuilder builder) {
 		return new CrawlRulesBuilder(builder);
@@ -333,7 +330,17 @@ public class CrawlRules {
 
 	private PreCrawlConfiguration preCrawlConfig;
 
-	private boolean randomInputInForms = true;
+	/*
+	 * @RANDOM: generates input values randomly for inputs that have no existing values.
+	 * @TRAINING: when a form input is detected, waits for user input to manually enter data.
+	 * @NORMAL: does not generate nor wait for user input. Uses previous input values (if any).
+	 */
+	public enum FormFillMode {
+		NORMAL, RANDOM, TRAINING, XPATH_TRAINING
+	}
+
+	private FormFillMode formFillMode = FormFillMode.NORMAL;
+
 	private InputSpecification inputSpecification = new InputSpecification();
 	private boolean testInvariantsWhileCrawling = true;
 	private boolean clickOnce = true;
@@ -363,8 +370,8 @@ public class CrawlRules {
 		return preCrawlConfig;
 	}
 
-	public boolean isRandomInputInForms() {
-		return randomInputInForms;
+	public FormFillMode getFormFillMode() {
+		return formFillMode;
 	}
 
 	public InputSpecification getInputSpecification() {
@@ -411,14 +418,13 @@ public class CrawlRules {
 
 	/**
 	 * @return All Crawl elements: {@link PreCrawlConfiguration#getIncludedElements()},
-	 *         {@link PreCrawlConfiguration#getExcludedElements()} and
-	 *         {@link InputSpecification#getCrawlElements()}.
+	 * {@link PreCrawlConfiguration#getExcludedElements()} and
+	 * {@link InputSpecification#getCrawlElements()}.
 	 */
 	public ImmutableList<CrawlElement> getAllCrawlElements() {
-		return new Builder<CrawlElement>()
-		        .addAll(getPreCrawlConfig().getIncludedElements())
-		        .addAll(getPreCrawlConfig().getExcludedElements())
-		        .addAll(getInputSpecification().getCrawlElements()).build();
+		return new Builder<CrawlElement>().addAll(getPreCrawlConfig().getIncludedElements())
+				.addAll(getPreCrawlConfig().getExcludedElements())
+				.addAll(getInputSpecification().getCrawlElements()).build();
 
 	}
 
@@ -426,12 +432,34 @@ public class CrawlRules {
 		return followExternalLinks;
 	}
 
+	public enum CrawlPriorityMode {
+		NORMAL, RANDOM, OLDEST_FIRST, SHALLOW_FIRST
+	}
+
+	private CrawlPriorityMode crawlPriorityMode = CrawlPriorityMode.NORMAL;
+
+	private boolean crawlNearDuplicates = true;
+
+	private boolean delayNearDuplicateCrawling = true;
+
+	public CrawlPriorityMode getCrawlPriorityMode() {
+		return crawlPriorityMode;
+	}
+
+	public boolean isCrawlNearDuplicates() {
+		return crawlNearDuplicates;
+	}
+
+	public boolean isDelayNearDuplicateCrawling() {
+		return delayNearDuplicateCrawling;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(crawlEvents, invariants, oracleComparators,
-		        ignoredFrameIdentifiers, preCrawlConfig, randomInputInForms, inputSpecification,
-		        testInvariantsWhileCrawling, clickOnce, crawlFrames, crawlHiddenAnchors,
-		        waitAfterReloadUrl, waitAfterEvent, followExternalLinks);
+				ignoredFrameIdentifiers, preCrawlConfig, formFillMode, inputSpecification,
+				testInvariantsWhileCrawling, clickOnce, crawlFrames, crawlHiddenAnchors,
+				waitAfterReloadUrl, waitAfterEvent, followExternalLinks);
 	}
 
 	@Override
@@ -439,47 +467,43 @@ public class CrawlRules {
 		if (object instanceof CrawlRules) {
 			CrawlRules that = (CrawlRules) object;
 			return Objects.equal(this.crawlEvents, that.crawlEvents)
-			        && Objects.equal(this.invariants, that.invariants)
-			        && Objects.equal(this.oracleComparators, that.oracleComparators)
-			        && Objects.equal(this.ignoredFrameIdentifiers, that.ignoredFrameIdentifiers)
-			        && Objects.equal(this.preCrawlConfig, that.preCrawlConfig)
-			        && Objects.equal(this.randomInputInForms, that.randomInputInForms)
-			        && Objects.equal(this.inputSpecification, that.inputSpecification)
-			        && Objects.equal(this.testInvariantsWhileCrawling,
-			                that.testInvariantsWhileCrawling)
-			        && Objects.equal(this.clickOnce, that.clickOnce)
-			        && Objects.equal(this.randomizeCandidateElements,
-			                that.randomizeCandidateElements)
-			        && Objects.equal(this.crawlFrames, that.crawlFrames)
-			        && Objects.equal(this.crawlHiddenAnchors, that.crawlHiddenAnchors)
-			        && Objects.equal(this.waitAfterReloadUrl, that.waitAfterReloadUrl)
-			        && Objects.equal(this.waitAfterEvent, that.waitAfterEvent)
-			        && Objects.equal(this.followExternalLinks, that.followExternalLinks);
+					&& Objects.equal(this.invariants, that.invariants)
+					&& Objects.equal(this.oracleComparators, that.oracleComparators)
+					&& Objects.equal(this.ignoredFrameIdentifiers, that.ignoredFrameIdentifiers)
+					&& Objects.equal(this.preCrawlConfig, that.preCrawlConfig)
+					&& Objects.equal(this.formFillMode, that.formFillMode)
+					&& Objects.equal(this.inputSpecification, that.inputSpecification)
+					&& Objects.equal(this.testInvariantsWhileCrawling,
+					that.testInvariantsWhileCrawling)
+					&& Objects.equal(this.clickOnce, that.clickOnce)
+					&& Objects.equal(this.randomizeCandidateElements,
+					that.randomizeCandidateElements)
+					&& Objects.equal(this.crawlFrames, that.crawlFrames)
+					&& Objects.equal(this.crawlHiddenAnchors, that.crawlHiddenAnchors)
+					&& Objects.equal(this.waitAfterReloadUrl, that.waitAfterReloadUrl)
+					&& Objects.equal(this.waitAfterEvent, that.waitAfterEvent)
+					&& Objects.equal(this.followExternalLinks, that.followExternalLinks);
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("DEFAULT_WAIT_AFTER_RELOAD", DEFAULT_WAIT_AFTER_RELOAD)
-		        .add("DEFAULT_WAIT_AFTER_EVENT", DEFAULT_WAIT_AFTER_EVENT)
-		        .add("crawlEvents", crawlEvents)
-		        .add("invariants", invariants)
-		        .add("oracleComparators", oracleComparators)
-		        .add("ignoredFrameIdentifiers", ignoredFrameIdentifiers)
-		        .add("preCrawlConfig", preCrawlConfig)
-		        .add("randomInputInForms", randomInputInForms)
-		        .add("inputSpecification", inputSpecification)
-		        .add("testInvariantsWhileCrawling", testInvariantsWhileCrawling)
-		        .add("clickOnce", clickOnce)
-		        .add("randomizeCandidateElements", randomizeCandidateElements)
-		        .add("crawlFrames", crawlFrames)
-		        .add("crawlHiddenAnchors", crawlHiddenAnchors)
-		        .add("waitAfterReloadUrl", waitAfterReloadUrl)
-		        .add("waitAfterEvent", waitAfterEvent)
-		        .add("followExternalLinks", followExternalLinks)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("DEFAULT_WAIT_AFTER_RELOAD", DEFAULT_WAIT_AFTER_RELOAD)
+				.add("DEFAULT_WAIT_AFTER_EVENT", DEFAULT_WAIT_AFTER_EVENT)
+				.add("crawlEvents", crawlEvents).add("invariants", invariants)
+				.add("oracleComparators", oracleComparators)
+				.add("ignoredFrameIdentifiers", ignoredFrameIdentifiers)
+				.add("preCrawlConfig", preCrawlConfig).add("randomInputInForms", formFillMode)
+				.add("inputSpecification", inputSpecification)
+				.add("testInvariantsWhileCrawling", testInvariantsWhileCrawling)
+				.add("clickOnce", clickOnce)
+				.add("randomizeCandidateElements", randomizeCandidateElements)
+				.add("crawlFrames", crawlFrames).add("crawlHiddenAnchors", crawlHiddenAnchors)
+				.add("waitAfterReloadUrl", waitAfterReloadUrl)
+				.add("waitAfterEvent", waitAfterEvent)
+				.add("followExternalLinks", followExternalLinks).toString();
 	}
 
 }

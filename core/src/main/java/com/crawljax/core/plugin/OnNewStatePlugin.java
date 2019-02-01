@@ -16,11 +16,9 @@ public interface OnNewStatePlugin extends Plugin {
 	 * <p>
 	 * This method can be called from multiple threads with different {@link CrawlerContext}
 	 * </p>
-	 * 
-	 * @param context
-	 *            the current context.
-	 * @param newState
-	 *            The new state. Equivalent to {@link CrawlerContext#getCurrentState()}.
+	 *
+	 * @param context  the current context.
+	 * @param newState The new state. Equivalent to {@link CrawlerContext#getCurrentState()}.
 	 */
 	void onNewState(CrawlerContext context, StateVertex newState);
 

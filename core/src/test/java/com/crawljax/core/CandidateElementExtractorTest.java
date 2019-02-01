@@ -1,16 +1,5 @@
 package com.crawljax.core;
 
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.List;
-
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
@@ -32,18 +21,26 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.List;
+
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
 
 @Category(BrowserTest.class)
 @RunWith(MockitoJUnitRunner.class)
 public class CandidateElementExtractorTest {
 
-	private static final Logger LOG = LoggerFactory
-	        .getLogger(CandidateElementExtractorTest.class);
-	private static final StateVertex DUMMY_STATE = new DefaultStateVertexFactory().createIndex("http://localhost",
-	        "", "");
+	private static final Logger LOG =
+			LoggerFactory.getLogger(CandidateElementExtractorTest.class);
+	private static final StateVertex DUMMY_STATE =
+			new DefaultStateVertexFactory().createIndex("http://localhost", "", "", null);
 
 	@Mock
 	private Plugins plugins;
@@ -56,13 +53,14 @@ public class CandidateElementExtractorTest {
 
 	private EmbeddedBrowser browser;
 
-
 	@Test
-	public void testExtract() throws InterruptedException, CrawljaxException {
+	public void testExtract() throws CrawljaxException {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(DEMO_SITE_SERVER.getSiteUrl());
+				CrawljaxConfiguration.builderFor(DEMO_SITE_SERVER.getSiteUrl());
+
 		builder.crawlRules().click("a");
 		builder.crawlRules().clickOnce(true);
+
 		CrawljaxConfiguration config = builder.build();
 
 		CandidateElementExtractor extractor = newElementExtractor(config);
@@ -79,22 +77,19 @@ public class CandidateElementExtractorTest {
 		FormHandler formHandler = new FormHandler(browser, config.getCrawlRules());
 
 		EventableConditionChecker eventableConditionChecker =
-		        new EventableConditionChecker(config.getCrawlRules());
-		ConditionTypeChecker<CrawlCondition> crawlConditionChecker =
-		        new ConditionTypeChecker<>(config.getCrawlRules().getPreCrawlConfig()
-		                .getCrawlConditions());
+				new EventableConditionChecker(config.getCrawlRules());
+		ConditionTypeChecker<CrawlCondition> crawlConditionChecker = new ConditionTypeChecker<>(
+				config.getCrawlRules().getPreCrawlConfig().getCrawlConditions());
 		ExtractorManager checker =
-		        new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
-		CandidateElementExtractor extractor =
-		        new CandidateElementExtractor(checker, browser, formHandler, config);
+				new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
 
-		return extractor;
+		return new CandidateElementExtractor(checker, browser, formHandler, config);
 	}
 
 	@Test
-	public void testExtractExclude() throws Exception {
+	public void testExtractExclude() {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(DEMO_SITE_SERVER.getSiteUrl());
+				CrawljaxConfiguration.builderFor(DEMO_SITE_SERVER.getSiteUrl());
 		builder.crawlRules().click("a");
 		builder.crawlRules().dontClick("div").withAttribute("id", "menubar");
 		builder.crawlRules().clickOnce(true);
@@ -114,8 +109,8 @@ public class CandidateElementExtractorTest {
 	public void testExtractIframeContents() throws Exception {
 		RunWithWebServer server = new RunWithWebServer("/site");
 		server.before();
-		CrawljaxConfigurationBuilder builder = CrawljaxConfiguration
-		        .builderFor(server.getSiteUrl().resolve("iframe/"));
+		CrawljaxConfigurationBuilder builder =
+				CrawljaxConfiguration.builderFor(server.getSiteUrl().resolve("iframe/"));
 		builder.crawlRules().click("a");
 		CrawljaxConfiguration config = builder.build();
 
@@ -136,9 +131,9 @@ public class CandidateElementExtractorTest {
 	}
 
 	@Test
-	public void whenNoFollowExternalUrlDoNotFollow() throws IOException, URISyntaxException {
+	public void whenNoFollowExternalUrlDoNotFollow() throws URISyntaxException {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor("http://example.com");
+				CrawljaxConfiguration.builderFor("http://example.com");
 		builder.crawlRules().click("a");
 		CrawljaxConfiguration config = builder.build();
 		CandidateElementExtractor extractor = newElementExtractor(config);
@@ -150,9 +145,9 @@ public class CandidateElementExtractorTest {
 	}
 
 	@Test
-	public void whenFollowExternalUrlDoFollow() throws IOException, URISyntaxException {
+	public void whenFollowExternalUrlDoFollow() throws URISyntaxException {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor("http://example.com");
+				CrawljaxConfiguration.builderFor("http://example.com");
 		builder.crawlRules().click("a");
 		builder.crawlRules().followExternalLinks(true);
 		CrawljaxConfiguration config = builder.build();
@@ -164,13 +159,13 @@ public class CandidateElementExtractorTest {
 		assertThat(extract, hasSize(3));
 	}
 
-	private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor) throws URISyntaxException {
+	private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor)
+			throws URISyntaxException {
 		StateVertex currentState = Mockito.mock(StateVertex.class);
 		String file = "/candidateElementExtractorTest/domWithOneExternalAndTwoInternal.html";
 		URL dom = Resources.getResource(getClass(), file);
 		browser.goToUrl(dom.toURI());
-		List<CandidateElement> extract = extractor.extract(currentState);
-		return extract;
+		return extractor.extract(currentState);
 	}
 
 }

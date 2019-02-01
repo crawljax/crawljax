@@ -1,0 +1,205 @@
+{
+  "states" : {
+    "index" : {
+      "name" : "index",
+      "url" : "http://testcue.com/crawljax-demo-full/",
+      "candidateElements" : [ {
+        "top" : 67,
+        "left" : 20,
+        "xpath" : "//A[@id = 'home']",
+        "width" : 43,
+        "height" : 18
+      }, {
+        "top" : 67,
+        "left" : 77,
+        "xpath" : "//A[@id = 'papers']",
+        "width" : 50,
+        "height" : 18
+      }, {
+        "top" : 67,
+        "left" : 141,
+        "xpath" : "//A[@id = 'info']",
+        "width" : 89,
+        "height" : 18
+      }, {
+        "top" : 67,
+        "left" : 245,
+        "xpath" : "//A[@id = 'ignore']",
+        "width" : 50,
+        "height" : 18
+      }, {
+        "top" : 137,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[1]/LI[1]/A[1]",
+        "width" : 147,
+        "height" : 16
+      }, {
+        "top" : 153,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[1]/LI[2]/A[1]",
+        "width" : 94,
+        "height" : 16
+      }, {
+        "top" : 169,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[1]/LI[3]/A[1]",
+        "width" : 87,
+        "height" : 16
+      }, {
+        "top" : 230,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[2]/LI[1]/A[1]",
+        "width" : 42,
+        "height" : 16
+      }, {
+        "top" : 246,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[2]/LI[2]/A[1]",
+        "width" : 116,
+        "height" : 16
+      }, {
+        "top" : 262,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[2]/LI[3]/A[1]",
+        "width" : 58,
+        "height" : 16
+      }, {
+        "top" : 278,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[2]/LI[4]/A[1]",
+        "width" : 61,
+        "height" : 16
+      }, {
+        "top" : 338,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[3]/LI[1]/A[1]",
+        "width" : 118,
+        "height" : 16
+      }, {
+        "top" : 354,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[3]/LI[2]/A[1]",
+        "width" : 106,
+        "height" : 16
+      }, {
+        "top" : 370,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[3]/LI[3]/A[1]",
+        "width" : 84,
+        "height" : 16
+      }, {
+        "top" : 386,
+        "left" : 63,
+        "xpath" : "//DIV[@id = 'left']/UL[3]/LI[4]/A[1]",
+        "width" : 80,
+        "height" : 16
+      }, {
+        "top" : 1196,
+        "left" : 20,
+        "xpath" : "//DIV[@id = 'footer']/A[1]",
+        "width" : 254,
+        "height" : 18
+      } ],
+      "fanIn" : 0,
+      "fanOut" : 4,
+      "id" : 0,
+      "failedEvents" : [ ]
+    },
+    "state5" : {
+      "name" : "state5",
+      "url" : "http://testcue.com/crawljax-demo-full/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "id" : 5,
+      "failedEvents" : [ ]
+    },
+    "state2" : {
+      "name" : "state2",
+      "url" : "http://testcue.com/crawljax-demo-full/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "id" : 2,
+      "failedEvents" : [ ]
+    },
+    "state4" : {
+      "name" : "state4",
+      "url" : "http://testcue.com/crawljax-demo-full/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "id" : 4,
+      "failedEvents" : [ ]
+    },
+    "state3" : {
+      "name" : "state3",
+      "url" : "http://testcue.com/crawljax-demo-full/",
+      "candidateElements" : [ ],
+      "fanIn" : 1,
+      "fanOut" : 0,
+      "id" : 3,
+      "failedEvents" : [ ]
+    }
+  },
+  "edges" : [ {
+    "from" : "index",
+    "to" : "state2",
+    "text" : "Papers",
+    "id" : "xpath //A[@id = 'papers']",
+    "element" : "Element{node=[A: null], tag=A, text=Papers, attributes={href=javascript:void(0), id=papers}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state3",
+    "text" : "Information",
+    "id" : "xpath //A[@id = 'info']",
+    "element" : "Element{node=[A: null], tag=A, text=Information, attributes={href=javascript:void(0), id=info}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state4",
+    "text" : "Ignore",
+    "id" : "xpath //A[@id = 'ignore']",
+    "element" : "Element{node=[A: null], tag=A, text=Ignore, attributes={class=ignore, href=javascript:void(0), id=ignore}}",
+    "eventType" : "click"
+  }, {
+    "from" : "index",
+    "to" : "state5",
+    "text" : "Select Elements To Crawl",
+    "id" : "xpath //DIV[@id = 'left']/UL[1]/LI[1]/A[1]",
+    "element" : "Element{node=[A: null], tag=A, text=Select Elements To Crawl, attributes={href=javascript:void(0), onclick=openPage('select.html')}}",
+    "eventType" : "click"
+  } ],
+  "statistics" : {
+    "duration" : "15 seconds",
+    "crawlPaths" : 4,
+    "averageDomSize" : "4.526 kB",
+    "edges" : 4,
+    "startDate" : "2017-09-01 13:18:28 PDT",
+    "stateStats" : {
+      "leastFanOut" : {
+        "id" : "state5",
+        "count" : 0
+      },
+      "leastFanIn" : {
+        "id" : "index",
+        "count" : 0
+      },
+      "mostFanOut" : {
+        "id" : "index",
+        "count" : 4
+      },
+      "mostFanIn" : {
+        "id" : "state5",
+        "count" : 1
+      },
+      "totalNumberOfStates" : 5,
+      "urls" : {
+        "http://testcue.com/crawljax-demo-full/" : [ "index", "state5", "state2", "state4", "state3" ]
+      }
+    },
+    "failedEvents" : 0
+  },
+  "exitStatus" : "MAX_STATES"
+}

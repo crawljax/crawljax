@@ -1,17 +1,16 @@
 package com.crawljax.condition.browserwaiter;
 
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-
+import com.crawljax.browser.EmbeddedBrowser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import com.crawljax.browser.EmbeddedBrowser;
+import java.util.ArrayList;
+
+import static org.mockito.Mockito.when;
 
 /**
  * This test case tests the WaitCondition class. Issue #30 was covered by this test case.
@@ -34,74 +33,64 @@ public class WaitConditionTest {
 	@Test
 	public void testWaitConditionNoIndexOutOfBounceAfterTwoTries() {
 		WaitCondition wc =
-		        new WaitCondition("tmp", WAIT_TIME_LONG, new TimeoutExpectedCondition());
+				new WaitCondition("tmp", WAIT_TIME_LONG, new TimeoutExpectedCondition());
 		Assert.assertEquals("Wait timed out", WAIT_TIMEOUT, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionSuccessZeroSpecified() {
 		WaitCondition wc =
-		        new WaitCondition("tmp", WAIT_TIME_LONG, new ArrayList<ExpectedCondition>());
+				new WaitCondition("tmp", WAIT_TIME_LONG, new ArrayList<>());
 		Assert.assertEquals("Wait success", WAIT_SUCCESS, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionSuccessZeroSpecifiedZeroTimeout() {
 		WaitCondition wc =
-		        new WaitCondition("tmp", WAIT_TIME_LONG, new ArrayList<ExpectedCondition>());
+				new WaitCondition("tmp", WAIT_TIME_LONG, new ArrayList<>());
 		Assert.assertEquals("Wait success", WAIT_SUCCESS, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionNoIndexOutOfBounceAfterFirstTry() {
-		WaitCondition wc = new WaitCondition("tmp", WAIT_TIME_LONG, new ExpectedCondition() {
-			@Override
-			public boolean isSatisfied(EmbeddedBrowser browser) {
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					Assert.fail(e.getMessage());
-					e.printStackTrace();
-				}
-				return true;
-			}
-		});
+		WaitCondition wc = new WaitCondition("tmp", WAIT_TIME_LONG,
+				(ExpectedCondition) browser -> {
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						Assert.fail(e.getMessage());
+						e.printStackTrace();
+					}
+					return true;
+				});
 		Assert.assertEquals("Wait timed out", WAIT_TIMEOUT, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionNotRunBecauseUrl() {
 		WaitCondition wc =
-		        new WaitCondition("tmp/foo", WAIT_TIME_LONG, new TimeoutExpectedCondition());
-		Assert.assertEquals("Wait not run because browser url missmatch", -1,
-		        wc.testAndWait(browser));
+				new WaitCondition("tmp/foo", WAIT_TIME_LONG, new TimeoutExpectedCondition());
+		Assert.assertEquals("Wait not run because browser url mismatch", -1,
+				wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionSuccessfulRun() {
-		WaitCondition wc = new WaitCondition("tmp", WAIT_TIME_LONG, new ExpectedCondition() {
-			@Override
-			public boolean isSatisfied(EmbeddedBrowser browser) {
-				return true;
-			}
-		});
-		Assert.assertEquals("Wait succeded", WAIT_SUCCESS, wc.testAndWait(browser));
+		WaitCondition wc = new WaitCondition("tmp", WAIT_TIME_LONG,
+				(ExpectedCondition) browser -> true);
+		Assert.assertEquals("Wait succeeded", WAIT_SUCCESS, wc.testAndWait(browser));
 	}
 
 	@Test
 	public void testWaitConditionTimeoutRun() {
-		WaitCondition wc = new WaitCondition("tmp", WAIT_TIME_NONE, new ExpectedCondition() {
-			@Override
-			public boolean isSatisfied(EmbeddedBrowser browser) {
-				return true;
-			}
-		});
-		Assert.assertEquals("Wait succeded", WAIT_TIMEOUT, wc.testAndWait(browser));
+		WaitCondition wc = new WaitCondition("tmp", WAIT_TIME_NONE,
+				(ExpectedCondition) browser -> true);
+		Assert.assertEquals("Wait succeeded", WAIT_TIMEOUT, wc.testAndWait(browser));
 	}
 
 	/**
 	 * Internal mock-class to represent a long-time WaitCondition exceeding the timeout limit.
-	 * 
+	 *
 	 * @author slenselink@google.com (Stefan Lenselink)
 	 */
 	private static class TimeoutExpectedCondition implements ExpectedCondition {

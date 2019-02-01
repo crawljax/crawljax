@@ -1,14 +1,12 @@
 package com.crawljax.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class XMLObjectTest {
 
@@ -17,7 +15,7 @@ public class XMLObjectTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void saveToFile() {
-		ArrayList<String> object = new ArrayList<String>();
+		ArrayList<String> object = new ArrayList<>();
 		object.add("Bla");
 		object.add("Something else");
 

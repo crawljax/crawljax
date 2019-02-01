@@ -1,20 +1,20 @@
 package com.crawljax.core.configuration;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import org.hamcrest.core.Is;
+import org.junit.Test;
+import org.junit.Ignore;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import org.hamcrest.core.Is;
-import org.junit.Test;
-
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class CrawljaxConfigurationBuilderTest {
 
 	@Test(expected = IllegalArgumentException.class)
-	public void negativeMaximumStatesIsNotAllowed() throws Exception {
+	public void negativeMaximumStatesIsNotAllowed() {
 		testBuilder().setMaximumStates(-1).build();
 	}
 
@@ -23,17 +23,17 @@ public class CrawljaxConfigurationBuilderTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void negativeDepthIsNotAllowed() throws Exception {
+	public void negativeDepthIsNotAllowed() {
 		testBuilder().setMaximumDepth(-1).build();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void negativeRuntimeIsNotAllowed() throws Exception {
+	public void negativeRuntimeIsNotAllowed() {
 		testBuilder().setMaximumRunTime(-1L, TimeUnit.SECONDS).build();
 	}
 
 	@Test
-	public void noArgsBuilderWorksFine() throws Exception {
+	public void noArgsBuilderWorksFine() {
 		testBuilder().build();
 	}
 
@@ -44,8 +44,9 @@ public class CrawljaxConfigurationBuilderTest {
 		testBuilder().setOutputDirectory(file).build();
 	}
 
+	@Ignore
 	@Test(expected = IllegalStateException.class)
-	public void ifCannotCreateOutputFolderReject() throws Exception {
+	public void ifCannotCreateOutputFolderReject() {
 		File file = new File("/this/should/not/be/writable");
 		testBuilder().setOutputDirectory(file).build();
 	}
@@ -54,10 +55,10 @@ public class CrawljaxConfigurationBuilderTest {
 	public void whenSpecifyingBasicAuthTheUrlShouldBePreserved() {
 		String url = "https://example.com/test/?a=b#anchor";
 		CrawljaxConfiguration conf =
-		        CrawljaxConfiguration.builderFor(url).setBasicAuth("username", "password")
-		                .build();
+				CrawljaxConfiguration.builderFor(url).setBasicAuth("username", "password")
+						.build();
 		assertThat(conf.getBasicAuthUrl().toString(),
-		        Is.is("https://username:password@example.com/test/?a=b#anchor"));
+				Is.is("https://username:password@example.com/test/?a=b#anchor"));
 	}
 
 }

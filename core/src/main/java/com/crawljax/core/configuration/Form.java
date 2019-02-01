@@ -1,6 +1,6 @@
 package com.crawljax.core.configuration;
 
-/**
+/*
  * Defines a form which is a collection of input fields A form is used to assign multiple values to
  * form input fields. A CrawlElement is linked to the form via
  * {@link InputSpecification#beforeClickTag()} The HTML element that matches the CrawlElement
@@ -22,42 +22,47 @@ package com.crawljax.core.configuration;
  * times with the values: 1) name=Bob; age=25 2) name=Alice; age=44 3) name=John; 25 and the submit
  * button is clicked three times. For every other HTML element that is clicked, the first defined
  * value is filled in e.g.: name=Bob; age=25.
- * 
+ *
  * @author DannyRoest@gmail.com (Danny Roest)
  */
+
+import com.crawljax.core.state.Identification;
+import com.crawljax.forms.FormInput;
+import com.crawljax.forms.FormInput.InputType;
+import com.google.common.collect.ImmutableList;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.collect.ImmutableList;
 
 /**
  * Form configuration.
  */
 public class Form {
 
-	private final List<FormInputField> inputFields = new ArrayList<FormInputField>();
+	private final List<FormInput> formInputs = new ArrayList<>();
 	private FormAction formAction;
 
 	/**
 	 * Specifies an input field to assign a value to. Crawljax first tries to match the found HTML
 	 * input element's id and then the name attribute.
-	 * 
-	 * @param fieldName
-	 *            the id or name attribute of the input field
+	 *
+	 * @param type
+	 *            the type of input field
+	 * @param identification
+	 *            the locator of the input field
 	 * @return an InputField
 	 */
-	public FormInputField field(String fieldName) {
-		FormInputField inputField = new FormInputField();
-		inputField.setFieldName(fieldName);
-		this.inputFields.add(inputField);
-		return inputField;
+	public FormInput inputField(InputType type, Identification identification) {
+		FormInput input = new FormInput(type, identification);
+		this.formInputs.add(input);
+		return input;
 	}
 
 	/**
-	 * @return the inputFields
+	 * @return the formInputs
 	 */
-	protected ImmutableList<FormInputField> getInputFields() {
-		return ImmutableList.copyOf(inputFields);
+	public ImmutableList<FormInput> getFormInputs() {
+		return ImmutableList.copyOf(formInputs);
 	}
 
 	/**
@@ -80,25 +85,21 @@ public class Form {
 	 */
 	protected CrawlElement getCrawlElement() {
 		CrawlElement crawlTag = formAction.getCrawlElement();
-		List<String> inputFieldIds = new ArrayList<String>();
-		for (FormInputField inputField : this.inputFields) {
-			inputFieldIds.add(inputField.getId());
-		}
-		crawlTag.addInputFieldIds(inputFieldIds);
+		crawlTag.addInputFieldIds(this.formInputs);
 		return crawlTag;
 	}
 
 	/**
 	 * @param inputField
-	 *            The inputfield.
+	 *            The input field.
 	 */
-	protected void addInputField(FormInputField inputField) {
-		this.inputFields.add(inputField);
+	protected void addInputField(FormInput inputField) {
+		this.formInputs.add(inputField);
 	}
 
 	@Override
 	public String toString() {
-		return formAction.getCrawlElement().toString() + " sets " + inputFields.toString();
+		return formAction.getCrawlElement().toString() + " sets " + formInputs.toString();
 	}
 
 }

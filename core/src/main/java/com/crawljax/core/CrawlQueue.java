@@ -1,18 +1,18 @@
 package com.crawljax.core;
 
+import net.jcip.annotations.GuardedBy;
+
 import java.util.Collection;
 import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
-
-import net.jcip.annotations.GuardedBy;
 
 /**
  * This class implements a BlockingQueue with Runnable as its Generic type and
  * extends Stack with also Runnable as generic type. This class is used in the
  * ThreadPoolExecutor and its used to store separate threads in a Queue like
  * fashion (FILO).
- * 
+ *
  * @author Stefan Lenselink &lt;S.R.Lenselink@student.tudelft.nl&gt;
  */
 public class CrawlQueue extends Stack<Runnable> implements
@@ -30,11 +30,11 @@ public class CrawlQueue extends Stack<Runnable> implements
 
 	@Override
 	public synchronized int drainTo(Collection<? super Runnable> c,
-			int maxRunnablelements) {
+			int maxRunnableElements) {
 		int counter = 0;
 		for (Runnable object : this) {
 			counter++;
-			if (counter < maxRunnablelements) {
+			if (counter < maxRunnableElements) {
 				c.add(object);
 			} else {
 				break;

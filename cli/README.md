@@ -5,11 +5,11 @@ This is the Command-line distribution of Crawljax. The project is assembled in a
 Unzip the zip and in the resulting folder you can run Crawljax as follows:
 
 ```
-usage: java -jar crawljax-cli-version.jar theUrl theOutputDir
+usage: java -jar crawljax-cli-version.jar theUrl theOutputDir [OPTIONS]
    -a,--crawlHiddenAnchors     Crawl anchors even if they are not visible in the
                                browser.
-   -b,--browser <arg>          browser type: firefox, ie, chrome, remote,
-                               htmlunit, android, iphone. Default is Firefox
+   -b,--browser <arg>          browser type: chrome (default), chrome_headless, firefox, firefox_headless,
+                               phantomjs
    -click <arg>                a comma separated list of HTML tags that should
                                be clicked. Default is A and BUTTON
    -d,--depth <arg>            crawl depth level. Default is 2
@@ -29,4 +29,4 @@ usage: java -jar crawljax-cli-version.jar theUrl theOutputDir
                                milliseconds. Default is 500
 ```
 
-The output folder will containt the output of the Crawl overview plugin.
+The output folder will contain the output of the Crawl overview plugin.

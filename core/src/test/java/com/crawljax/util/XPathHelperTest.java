@@ -1,16 +1,13 @@
 package com.crawljax.util;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+
+import java.io.IOException;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
 
 /**
  * Test class for the XPathHelper class.
@@ -18,43 +15,64 @@ import org.xml.sax.SAXException;
 public class XPathHelperTest {
 	/**
 	 * Check if XPath building works correctly.
-	 * 
+	 *
 	 * @throws IOException
-	 * @throws SAXException
 	 */
 	@Test
-	public void testGetXpathExpression() throws SAXException, IOException {
-		final String html =
-		        "<body><div id='firstdiv'></div><div><span id='thespan'>"
-		                + "<a id='thea'>test</a></span></div></body>";
+	public void testGetXpathExpression() throws IOException {
+		String html =
+				"<body><div id='firstdiv'></div><div><span id='thespan'>"
+						+ "<a id='thea'>test</a></span></div></body>";
 
 		Document dom = DomUtils.asDocument(html);
 		assertNotNull(dom);
 
 		// first div
-		String expectedXpath = "/HTML[1]/BODY[1]/DIV[1]";
+		String expectedXpath = "//DIV[@id = 'firstdiv']";
 		String xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("firstdiv"));
 		assertEquals(expectedXpath, xpathExpr);
 
 		// span
-		expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]";
+		expectedXpath = "//SPAN[@id = 'thespan']";
 		xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("thespan"));
 		assertEquals(expectedXpath, xpathExpr);
 
 		// a
-		expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[1]/A[1]";
+		expectedXpath = "//A[@id = 'thea']";
 		xpathExpr = XPathHelper.getXPathExpression(dom.getElementById("thea"));
+		assertEquals(expectedXpath, xpathExpr);
+
+		//test anchoring to parent id
+		html = "<body><div id='firstdiv'><span><div></div></span></div>"
+				+ "<div><span id='thespan'><div></div></span><span></span></div></body>";
+
+		dom = DomUtils.asDocument(html);
+
+		expectedXpath = "//DIV[@id = 'firstdiv']/SPAN[1]/DIV[1]";
+		xpathExpr = XPathHelper.getXPathExpression(
+				dom.getElementById("firstdiv").getFirstChild().getFirstChild());
+		assertEquals(expectedXpath, xpathExpr);
+
+		expectedXpath = "//SPAN[@id = 'thespan']/DIV[1]";
+		xpathExpr = XPathHelper.getXPathExpression(
+				dom.getElementById("thespan").getFirstChild());
+		assertEquals(expectedXpath, xpathExpr);
+
+		//un-anchored: xpath should go to root
+		expectedXpath = "/HTML[1]/BODY[1]/DIV[2]/SPAN[2]";
+		xpathExpr = XPathHelper.getXPathExpression(
+				dom.getFirstChild().getLastChild().getLastChild().getLastChild());
 		assertEquals(expectedXpath, xpathExpr);
 	}
 
 	@Test
 	public void whenWildcardsUsedXpathShouldFindTheElements() throws Exception {
 		String html =
-		        "<body>" + "<DIV><P>Bla</P><P>Bla2</P></DIV>"
-		                + "<DIV id='exclude'><P>Ex</P><P>Ex2</P></DIV>" + "</body>";
-		String xpathAllp = "//DIV//P";
+				"<body>" + "<DIV><P>Bla</P><P>Bla2</P></DIV>"
+						+ "<DIV id='exclude'><P>Ex</P><P>Ex2</P></DIV>" + "</body>";
+		String xpathAllP = "//DIV//P";
 		String xpathOnlyExcludedP = "//DIV[@id='exclude']//P";
-		NodeList nodes = XPathHelper.evaluateXpathExpression(html, xpathAllp);
+		NodeList nodes = XPathHelper.evaluateXpathExpression(html, xpathAllP);
 		assertThat(nodes.getLength(), is(4));
 
 		nodes = XPathHelper.evaluateXpathExpression(html, xpathOnlyExcludedP);
@@ -78,7 +96,7 @@ public class XPathHelperTest {
 		assertThat(XPathHelper.formatXPath("/div//span"), is("/DIV//SPAN"));
 		assertThat(XPathHelper.formatXPath("//ul[@CLASS=\"Test\"]"), is("//UL[@class=\"Test\"]"));
 		assertThat(XPathHelper.formatXPath("//ul[@CLASS=\"Test\"]/a"),
-		        is("//UL[@class=\"Test\"]/A"));
+				is("//UL[@class=\"Test\"]/A"));
 
 	}
 

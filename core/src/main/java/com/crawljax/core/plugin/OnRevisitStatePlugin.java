@@ -16,11 +16,9 @@ public interface OnRevisitStatePlugin extends Plugin {
 	 * <p>
 	 * This method can be called from multiple threads with different {@link CrawlerContext}
 	 * </p>
-	 * 
-	 * @param context
-	 *            the crawlSession
-	 * @param currentState
-	 *            the state revisited
+	 *
+	 * @param context      the crawlSession
+	 * @param currentState the state revisited
 	 */
 	void onRevisitState(CrawlerContext context, StateVertex currentState);
 

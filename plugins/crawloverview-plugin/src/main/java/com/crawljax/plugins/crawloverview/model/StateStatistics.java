@@ -6,6 +6,7 @@ import javax.annotation.concurrent.Immutable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSetMultimap;
 
@@ -112,7 +113,7 @@ public class StateStatistics {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("leastFanOut", leastFanOut)
 		        .add("leastFanIn", leastFanIn)
 		        .add("mostFanOut", mostFanOut)

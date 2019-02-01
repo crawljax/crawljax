@@ -18,15 +18,17 @@ public class Parameter {
 	private Map<String, String> options = new HashMap<>();
 	private String value;
 
-	public Parameter() {}
+	public Parameter() {
+	}
 
-	public static Parameter fromJaxbParameter(com.crawljax.core.plugin.descriptor.jaxb.generated.Parameter parameter) {
+	public static Parameter fromJaxbParameter(
+			com.crawljax.core.plugin.descriptor.jaxb.generated.Parameter parameter) {
 		Parameter copy = new Parameter();
 		copy.id = parameter.getId();
 		copy.displayName = parameter.getDisplayName();
 		copy.type = Parameter.ParameterType.valueOf(parameter.getType());
-		if(parameter.getOptions() != null) {
-			for(OptionList.Option option : parameter.getOptions().getOption()) {
+		if (parameter.getOptions() != null) {
+			for (OptionList.Option option : parameter.getOptions().getOption()) {
 				copy.getOptions().put(option.getName(), option.getValue());
 			}
 		}

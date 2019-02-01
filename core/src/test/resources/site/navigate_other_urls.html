@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Simple page</title>
+    <title>Simple page</title>
 </head>
 <body>
-	<h1>Simple page</h1>
-	<ul>
-		<li><button onclick='showText("this is a state")'>Open
-				another state</button></li>
-		<li>
-			<button id='showButton'>Show button to leave the site</button>
-		</li>
-		<li>
-			<button id='popUpExternal'>This opens a pop-up to a
-				different URL</button>
-		</li>
-		<li><button onclick='showText("this is even another state")'>Open
-				another state 22</button></li>
-	</ul>
-	<div id='resultDiv'></div>
-	<p></p>
-	<script src='lib/jquery-2.0.3.min.js'></script>
-	<script>
+<h1>Simple page</h1>
+<ul>
+    <li>
+        <button onclick='showText("this is a state")'>Open
+            another state
+        </button>
+    </li>
+    <li>
+        <button id='showButton'>Show button to leave the site</button>
+    </li>
+    <li>
+        <button id='popUpExternal'>This opens a pop-up to a
+            different URL
+        </button>
+    </li>
+    <li>
+        <button onclick='showText("this is even another state")'>Open
+            another state 22
+        </button>
+    </li>
+</ul>
+<div id='resultDiv'></div>
+<p></p>
+<script src='lib/jquery-2.0.3.min.js'></script>
+<script>
 		$('#popUpExternal').click(
 				function() {
 					window.open("http://wikipedia.org", "name",
@@ -42,6 +49,7 @@
 		function showText(text) {
 			$("p").text(text);
 		}
-	</script>
+
+</script>
 </body>
 </html>

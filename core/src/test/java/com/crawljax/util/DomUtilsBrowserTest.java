@@ -1,11 +1,5 @@
 package com.crawljax.util;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.test.BrowserTest;
@@ -14,14 +8,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test for the Helper class.
  */
 @Category(BrowserTest.class)
 public class DomUtilsBrowserTest {
-
 
 	@Rule
 	public BrowserProvider provider = new BrowserProvider();
@@ -39,7 +37,7 @@ public class DomUtilsBrowserTest {
 	 * Test get document from browser function.
 	 */
 	@Test
-	public void testGetDocumentFromBrowser() throws SAXException, IOException {
+	public void testGetDocumentFromBrowser() throws IOException {
 
 		String html = browser.getStrippedDom();
 		assertNotNull(html);

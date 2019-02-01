@@ -1,26 +1,21 @@
 package com.crawljax.core.state;
 
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import com.crawljax.core.ExitNotifier;
+import com.crawljax.core.state.Eventable.EventType;
+import com.crawljax.core.state.Identification.How;
+import org.jgrapht.GraphPath;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jgrapht.GraphPath;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.crawljax.core.ExitNotifier;
-import com.crawljax.core.state.Eventable.EventType;
-import com.crawljax.core.state.Identification.How;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.*;
 
 public class StateFlowGraphTest {
 
@@ -49,7 +44,7 @@ public class StateFlowGraphTest {
 	}
 
 	@Test
-	public void testDuplicationAdding() throws Exception {
+	public void testDuplicationAdding() {
 		assertThat(graph.putIfAbsent(index), is(not(nullValue())));
 		assertThat(graph.putIfAbsent(state2), is(nullValue()));
 		assertThat(graph.putIfAbsent(state3), is(nullValue()));
@@ -120,7 +115,7 @@ public class StateFlowGraphTest {
 	}
 
 	@Test
-	public void testCloneStates() throws Exception {
+	public void testCloneStates() {
 		StateVertex state3clone2 = new StateVertexImpl(3, "STATE_THREE",
 				"<table><div>state2</div></table>");
 
@@ -131,14 +126,14 @@ public class StateFlowGraphTest {
 				newXpathEventable("/body/div[4]")));
 
 		// if (graph.containsVertex(state3)) {
-		// StateVertix state_clone = graph.getStateInGraph(state3);
+		// StateVertex state_clone = graph.getStateInGraph(state3);
 		// assertEquals(state3, state_clone);
 		// }
 
 		assertTrue(graph.addEdge(state4, state3clone2, new Eventable(
 				new Identification(How.xpath, "/home/a"), EventType.click)));
 		// System.out.println(graph.toString());
-		// assertNull(graph.getStateInGraph(new StateVertix("STATE_TEST",
+		// assertNull(graph.getStateInGraph(new StateVertex("STATE_TEST",
 		// "<table><div>TEST</div></table>")));
 	}
 
@@ -174,7 +169,7 @@ public class StateFlowGraphTest {
 	}
 
 	@Test
-	public void testEdges() throws Exception {
+	public void testEdges() {
 		assertTrue(graph.putIfAbsent(state2) == null);
 		assertTrue(graph.putIfAbsent(state3) == null);
 		assertTrue(graph.putIfAbsent(state4) == null);
@@ -204,7 +199,7 @@ public class StateFlowGraphTest {
 	}
 
 	@Test
-	public void whenStateAddedTheGraphCouterIsIncremented() {
+	public void whenStateAddedTheGraphCounterIsIncremented() {
 		assertThat(graph.getNumberOfStates(), is(1));
 		graph.putIfAbsent(state2);
 		assertThat(graph.getNumberOfStates(), is(2));
@@ -249,7 +244,7 @@ public class StateFlowGraphTest {
 	}
 
 	@Test
-	public void largetTest() {
+	public void largestTest() {
 		graph.putIfAbsent(state2);
 		graph.putIfAbsent(state3);
 		graph.putIfAbsent(state4);

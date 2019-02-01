@@ -105,7 +105,7 @@ public class JarRunner {
 
 		builder.setOutputDirectory(new File(outputDir));
 
-		BrowserType browser = BrowserType.FIREFOX;
+		BrowserType browser = BrowserType.CHROME;
 		if (options.specifiesBrowser()) {
 			browser = options.getSpecifiedBrowser();
 		}

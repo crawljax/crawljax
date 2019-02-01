@@ -1,7 +1,5 @@
 package com.crawljax.test;
 
-import java.net.URI;
-
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -12,6 +10,8 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.junit.rules.ExternalResource;
+
+import java.net.URI;
 
 public class RunWithWebServer extends ExternalResource {
 
@@ -57,8 +57,7 @@ public class RunWithWebServer extends ExternalResource {
 			if (server != null) {
 				server.stop();
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Could not stop the server", e);
 		}
 	}
@@ -75,12 +74,12 @@ public class RunWithWebServer extends ExternalResource {
 
 	public CrawljaxConfigurationBuilder newConfigBuilder() {
 		return CrawljaxConfiguration.builderFor(getSiteUrl())
-		                            .setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
+				.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
 	}
 
 	public CrawljaxConfigurationBuilder newConfigBuilder(String context) {
 		return CrawljaxConfiguration.builderFor(getSiteUrl() + context)
-		                            .setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
+				.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
 	}
 
 	public void stop() throws Exception {

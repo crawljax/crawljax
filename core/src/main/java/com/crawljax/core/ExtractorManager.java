@@ -5,16 +5,15 @@ import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 
 /**
  * This interface denotes all the operations a CandidateExtractor can execute.
- * 
+ *
  * @author Stefan Lenselink &lt;S.R.Lenselink@student.tudelft.nl&gt;
  */
 public interface ExtractorManager {
 
 	/**
 	 * Check if a given element is already checked, preventing duplicate work.
-	 * 
-	 * @param element
-	 *            the to search for if its already checked
+	 *
+	 * @param element the to search for if its already checked
 	 * @return true if the element is already checked
 	 */
 	boolean isChecked(String element);
@@ -22,9 +21,8 @@ public interface ExtractorManager {
 	/**
 	 * Mark a given element as checked to prevent duplicate work. A elements is
 	 * only added when it is not already in the set of checked elements.
-	 * 
-	 * @param candidateElement
-	 *            the element that is checked
+	 *
+	 * @param candidateElement the element that is checked
 	 * @return true if !contains(candidateElement.uniqueString)
 	 */
 	boolean markChecked(CandidateElement candidateElement);
@@ -37,27 +35,26 @@ public interface ExtractorManager {
 
 	/**
 	 * Return internal counter for the examined elements.
-	 * 
-	 * @return the number of EximinedElements
+	 *
+	 * @return the number of ExaminedElements
 	 */
 	int numberOfExaminedElements();
 
 	/**
 	 * Retrieve the eventable condition checker.
-	 * 
+	 *
 	 * @return the eventableConditionChecker that should be used during the
-	 *         candidate extraction.
+	 * candidate extraction.
 	 */
 	EventableConditionChecker getEventableConditionChecker();
 
 	/**
 	 * Check if one or more CrawlConditions matches the current state in the
 	 * browser.
-	 * 
-	 * @param browser
-	 *            the browser to execute in the CrawlConditions.
+	 *
+	 * @param browser the browser to execute in the CrawlConditions.
 	 * @return true if one or more CrawlConditions stratifies or non is
-	 *         specified.
+	 * specified.
 	 */
 	boolean checkCrawlCondition(EmbeddedBrowser browser);
 

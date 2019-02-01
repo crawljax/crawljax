@@ -1,13 +1,12 @@
 package com.crawljax.condition.browserwaiter;
 
-import net.jcip.annotations.ThreadSafe;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.state.Identification;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * Checks whether an elements exists.
- * 
+ *
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @ThreadSafe
@@ -17,9 +16,8 @@ public class ExpectedElementCondition implements ExpectedCondition {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param identification
-	 *            the identification to use.
+	 *
+	 * @param identification the identification to use.
 	 */
 	public ExpectedElementCondition(Identification identification) {
 		this.identification = identification;

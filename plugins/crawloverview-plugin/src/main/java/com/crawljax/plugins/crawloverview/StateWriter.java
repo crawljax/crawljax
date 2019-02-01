@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +40,12 @@ class StateWriter {
 		LOG.debug("Writing state file for state {}", state.getName());
 		VelocityContext context = new VelocityContext();
 		context.put("name", state.getName());
-		context.put("screenshot", state.getName() + ".jpg");
+		context.put("screenshot", state.getName() + ".png");
 		context.put("elements", getElements(sfg, state));
 		context.put("fanIn", state.getFanIn());
 		context.put("fanOut", state.getFanOut());
 		context.put("url", state.getUrl());
+		context.put("cluster", state.getCluster());
 
 		String failedEvents = "-";
 		if (!state.getFailedEvents().isEmpty()) {
@@ -54,6 +55,11 @@ class StateWriter {
 		String dom = outBuilder.getDom(state.getName());
 		dom = StringEscapeUtils.escapeHtml4(dom);
 		context.put("dom", dom);
+
+		// For threshold
+		context.put("hasNearDuplicate", state.isHasNearDuplicate());
+		context.put("nearestState", state.getNearestState());
+		context.put("distToNearestState", state.getDistToNearestState());
 
 		// writing
 		String name = state.getName();

@@ -1,0 +1,92 @@
+.frameRoundedTL
+{
+	margin: -3px -5px -5px -3px;
+}
+.frameRoundedTL .frameBuffer
+{
+	padding: 11px 13px 13px 11px;
+}
+.frameRoundedTL .tl
+{
+	top: 0;
+	left: 0;
+	width: 29px;
+	height: 26px;
+	background-image: url(../images/frame_rounded_tl_tl.png);
+}
+.frameRoundedTL .t
+{
+	top: 0;
+	left: 29px;
+	height: 11px;
+}
+.frameRoundedTL .t span
+{
+	top: 0;
+	left: -13px;
+	height: 11px;
+	background-image: url(../images/frame_rounded_tl_t.png);
+}
+.frameRoundedTL .tr
+{
+	top: 0;
+	right: 0;
+	width: 13px;
+	height: 11px;
+	background-image: url(../images/frame_rounded_tl_tr.png);
+}
+.frameRoundedTL .r
+{
+	top: 11px;
+	right: 0;
+	width: 13px;
+}
+.frameRoundedTL .r span
+{
+	top: -11px;
+	width: 13px;
+	background-image: url(../images/frame_rounded_tl_r.png);
+}
+.frameRoundedTL .br
+{
+	bottom: 0;
+	right: 0;
+	width: 13px;
+	height: 13px;
+	background-image: url(../images/frame_rounded_tl_br.png);
+}
+.frameRoundedTL .b
+{
+	bottom: 0;
+	left: 11px;
+	height: 13px;
+	width: 100%;
+}
+.frameRoundedTL .b span
+{
+	left: -16px;
+	top: 0;
+	height: 13px;
+	width: 100%;
+	background-image: url(../images/frame_rounded_tl_b.png);
+}
+.frameRoundedTL .bl
+{
+	bottom: 0;
+	left: 0;
+	width: 11px;
+	height: 13px;
+	background-image: url(../images/frame_rounded_tl_bl.png);
+}
+.frameRoundedTL .l
+{
+	top: 26px;
+	left: 0;
+	width: 11px;
+}
+.frameRoundedTL .l span
+{
+	top: -31px;
+	width: 11px;
+	background-image: url(../images/frame_rounded_tl_l.png);
+}

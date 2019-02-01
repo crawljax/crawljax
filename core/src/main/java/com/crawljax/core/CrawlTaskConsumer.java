@@ -1,13 +1,12 @@
 package com.crawljax.core;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import com.crawljax.core.state.StateVertex;
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.state.StateVertex;
-import com.google.inject.Inject;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Consumes {@link StateVertex}s it gets from the {@link UnfiredCandidateActions}. It delegates the
@@ -25,9 +24,8 @@ public class CrawlTaskConsumer implements Callable<Void> {
 
 	private final ExitNotifier exitNotifier;
 
-	@Inject
-	CrawlTaskConsumer(UnfiredCandidateActions candidates,
-	        ExitNotifier exitNotifier, Crawler crawler) {
+	@Inject CrawlTaskConsumer(UnfiredCandidateActions candidates,
+			ExitNotifier exitNotifier, Crawler crawler) {
 		this.candidates = candidates;
 		this.exitNotifier = exitNotifier;
 		this.crawler = crawler;
@@ -40,7 +38,8 @@ public class CrawlTaskConsumer implements Callable<Void> {
 		try {
 			while (!Thread.interrupted()) {
 				if (runningConsumers.get() == 0 && candidates.isEmpty()) {
-					LOG.debug("No consumers active and the cache is empty. Crawl is done. Shutting down...");
+					LOG.debug(
+							"No consumers active and the cache is empty. Crawl is done. Shutting down...");
 					exitNotifier.signalCrawlExhausted();
 					break;
 				}
@@ -61,12 +60,16 @@ public class CrawlTaskConsumer implements Callable<Void> {
 	private void pollAndHandleCrawlTasks() throws InterruptedException {
 		try {
 			LOG.debug("Awaiting task");
-			StateVertex crawlTask = candidates.awaitNewTask();
+			//StateVertex crawlTask = candidates.awaitNewTask();
+			StateVertex crawlTask = candidates
+					.awaitNewTaskPriority(crawler.getCrawlRules().getCrawlPriorityMode(),
+							crawler.getCrawlRules().isCrawlNearDuplicates(),
+							crawler.getCrawlRules().isDelayNearDuplicateCrawling());
 			int activeConsumers = runningConsumers.incrementAndGet();
 			LOG.debug("There are {} active consumers", activeConsumers);
 			handleTask(crawlTask);
 		} catch (RuntimeException e) {
-			LOG.error("Cound not complete state crawl: " + e.getMessage(), e);
+			LOG.error("Could not complete state crawl: " + e.getMessage(), e);
 		}
 	}
 
@@ -78,7 +81,7 @@ public class CrawlTaskConsumer implements Callable<Void> {
 
 	/**
 	 * This method calls the index state. It should be called once in order to setup the crawl.
-	 * 
+	 *
 	 * @return The initial state.
 	 */
 	public StateVertex crawlIndex() {

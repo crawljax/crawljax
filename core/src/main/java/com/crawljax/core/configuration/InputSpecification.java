@@ -1,20 +1,22 @@
 package com.crawljax.core.configuration;
 
-import java.util.List;
-
+import com.crawljax.core.state.Identification;
+import com.crawljax.forms.FormInput;
+import com.crawljax.forms.FormInput.InputType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
-import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * Specifies values for form input fields The user specifies the ids or names of
- * the input fields. When Crawljax enters a new state it scans the DOM for input
- * fields and tries to match the field ids/names to the specified input fields.
- * When there is a match, Crawljax enters the specified value EXAMPLE:
- * 
+ * Specifies values for form input fields The user specifies the ids or names of the input fields.
+ * When Crawljax enters a new state it scans the DOM for input fields and tries to match the field
+ * ids/names to the specified input fields. When there is a match, Crawljax enters the specified
+ * value EXAMPLE:
  * HTML:
- * 
  * <pre>
  * <code>
  * Name: &lt;input type="text" id="name" /&gt;&lt;br /&gt;
@@ -24,9 +26,7 @@ import com.google.common.collect.Lists;
  * Other:content
  * </code>
  * </pre>
- * 
  * JAVA:
- * 
  * <pre>
  * <code>
  * InputSpecification input = new InputSpecification();
@@ -37,52 +37,38 @@ import com.google.common.collect.Lists;
  * input.field("agreelicence").setValue(true);
  * </code>
  * </pre>
- * 
- * Crawljax will set Name, Phone, Mobile, and Agree values. It will enter a
- * random string in the Other field if enabled in {@link CrawljaxConfiguration}
+ * Crawljax will set Name, Phone, Mobile, and Agree values. It will enter a random string in the
+ * Other field if enabled in {@link CrawljaxConfiguration}
  */
 public final class InputSpecification {
 
-	private final List<InputField> inputFields = Lists.newLinkedList();
+	private final Map<Identification, FormInput> formInputs =
+			new HashMap<>();
+
+	// private final List<InputField> inputFields = Lists.newLinkedList();
 	private final List<Form> forms = Lists.newLinkedList();
 
-	/**
-	 * Specifies an input field to assign a value to. Crawljax first tries to
-	 * match the found HTML input element's id and then the name attribute.
-	 * 
-	 * @param fieldName
-	 *            the id or name attribute of the input field
-	 * @return an InputField
-	 */
-	public InputField field(String fieldName) {
-		InputField inputField = new InputField();
-		inputField.setFieldName(fieldName);
-		this.inputFields.add(inputField);
-		return inputField;
+	public FormInput inputField(InputType type, Identification identification) {
+		FormInput input = new FormInput(type, identification);
+		this.formInputs.put(input.getIdentification(), input);
+		return input;
 	}
 
-	/**
-	 * Specifies input fields to assign one value to. Crawljax first tries to
-	 * match the found HTML input element's id and then the name attribute.
-	 * 
-	 * @param fieldNames
-	 *            the ids or names of the input fields
-	 * @return an InputField
-	 */
-	public InputField fields(String... fieldNames) {
-		InputField inputField = new InputField();
-		inputField.setFieldNames(fieldNames);
-		this.inputFields.add(inputField);
-		return inputField;
+	public FormInput inputField(FormInput input) {
+		this.formInputs.put(input.getIdentification(), input);
+		return input;
+	}
+
+	public Map<Identification, FormInput> getFormInputs() {
+		return formInputs;
 	}
 
 	/**
 	 * Links the form with an HTML element which can be clicked.
-	 * 
-	 * @see Form
-	 * @param form
-	 *            the collection of the input fields
+	 *
+	 * @param form the collection of the input fields
 	 * @return a FormAction
+	 * @see Form
 	 */
 	public FormAction setValuesInForm(Form form) {
 		FormAction formAction = new FormAction();
@@ -91,38 +77,8 @@ public final class InputSpecification {
 		return formAction;
 	}
 
-	// hidden
-
-	public ImmutableListMultimap<String, String> getFormFieldNames() {
-		ImmutableListMultimap.Builder<String, String> formFieldNames = ImmutableListMultimap
-				.builder();
-		for (Form form : this.forms) {
-			for (FormInputField inputField : form.getInputFields()) {
-				formFieldNames.putAll(inputField.getId(),
-						inputField.getFieldNames());
-			}
-		}
-		for (InputField inputField : inputFields) {
-			formFieldNames.putAll(inputField.getId(),
-					inputField.getFieldNames());
-		}
-		return formFieldNames.build();
-	}
-
-	public ImmutableListMultimap<String, String> getFormFieldValues() {
-		ImmutableListMultimap.Builder<String, String> formFieldNames = ImmutableListMultimap
-				.builder();
-		for (Form form : this.forms) {
-			for (FormInputField inputField : form.getInputFields()) {
-				formFieldNames.putAll(inputField.getId(),
-						inputField.getFieldValues());
-			}
-		}
-		for (InputField inputField : inputFields) {
-			formFieldNames.putAll(inputField.getId(),
-					inputField.getFieldValues());
-		}
-		return formFieldNames.build();
+	public ImmutableList<Form> getForms() {
+		return ImmutableList.copyOf(this.forms);
 	}
 
 	/**

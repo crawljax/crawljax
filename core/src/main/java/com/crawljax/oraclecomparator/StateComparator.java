@@ -1,16 +1,14 @@
 package com.crawljax.oraclecomparator;
 
-import javax.inject.Inject;
-
-import net.jcip.annotations.ThreadSafe;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.Condition;
 import com.crawljax.core.configuration.CrawlRules;
 import com.google.common.collect.ImmutableList;
+import net.jcip.annotations.ThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 /**
  * Defines an Oracle Comparator which used multiple Oracles to decide whether two states are
@@ -35,8 +33,7 @@ public class StateComparator {
 	}
 
 	/**
-	 * @param browser
-	 *            the current browser instance
+	 * @param browser the current browser instance
 	 * @return the stripped dom using {@link OracleComparator}s.
 	 */
 	public String getStrippedDom(EmbeddedBrowser browser) {
@@ -47,7 +44,7 @@ public class StateComparator {
 
 				Comparator oracle = oraclePreCondition.getOracle();
 				LOGGER.debug("Using {} : {}", oracle.getClass().getSimpleName(),
-				        oraclePreCondition.getId());
+						oraclePreCondition.getId());
 
 				// TODO dodgy code. Is the equivalence check necessary?
 				boolean equivalent = oracle.isEquivalent("", newDom);
@@ -62,7 +59,7 @@ public class StateComparator {
 	}
 
 	private boolean allPreConditionsSucceed(OracleComparator oraclePreCondition,
-	        EmbeddedBrowser browser) {
+			EmbeddedBrowser browser) {
 		for (Condition preCondition : oraclePreCondition.getPreConditions()) {
 			LOGGER.debug("Check precondition: " + preCondition.toString());
 			if (!preCondition.check(browser)) {

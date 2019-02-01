@@ -1,18 +1,16 @@
 package com.crawljax.util;
 
-import java.io.IOException;
-
-import javax.xml.xpath.XPathExpressionException;
-
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.state.Element;
+import com.crawljax.core.state.Eventable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.state.Element;
-import com.crawljax.core.state.Eventable;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
 
 /**
  * Finds and checks elements.
@@ -25,11 +23,9 @@ public class ElementResolver {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param eventable
-	 *            Eventable.
-	 * @param browser
-	 *            The browser.
+	 *
+	 * @param eventable Eventable.
+	 * @param browser   The browser.
 	 */
 	public ElementResolver(Eventable eventable, EmbeddedBrowser browser) {
 		this.browser = browser;
@@ -44,15 +40,18 @@ public class ElementResolver {
 	}
 
 	/**
-	 * @param logging
-	 *            Whether to do logging.
+	 * @param logging Whether to do logging.
 	 * @return equivalent xpath of element equivalent to Eventable or an empty string if the DOM
-	 *         cannot be read.
+	 * cannot be read.
 	 */
 	public String resolve(boolean logging) {
 		Document dom = null;
 		try {
-			dom = DomUtils.asDocument(browser.getStrippedDom());
+			if (eventable.getRelatedFrame() != null && !eventable.getRelatedFrame().equals("")) {
+				dom = DomUtils.asDocument(browser.getFrameDom(eventable.getRelatedFrame()));
+			} else {
+				dom = DomUtils.asDocument(browser.getStrippedDom());
+			}
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return "";
@@ -75,8 +74,8 @@ public class ElementResolver {
 				LOGGER.info("Search other candidate elements");
 			}
 			NodeList candidateElements =
-			        XPathHelper.evaluateXpathExpression(dom, "//"
-			                + eventable.getElement().getTag().toUpperCase());
+					XPathHelper.evaluateXpathExpression(dom, "//"
+							+ eventable.getElement().getTag().toUpperCase());
 			if (logging) {
 				LOGGER.info("Candidates: " + candidateElements.getLength());
 			}
@@ -98,11 +97,9 @@ public class ElementResolver {
 
 	/**
 	 * Comparator against other element.
-	 * 
-	 * @param otherElement
-	 *            The other element.
-	 * @param logging
-	 *            Whether to do logging.
+	 *
+	 * @param otherElement The other element.
+	 * @param logging      Whether to do logging.
 	 * @return Whether the elements are equal.
 	 */
 	public boolean equivalent(Element otherElement, boolean logging) {
@@ -128,7 +125,7 @@ public class ElementResolver {
 		}
 
 		if (!eventable.getElement().getText().equals("")
-		        && eventable.getElement().equalText(otherElement)) {
+				&& eventable.getElement().equalText(otherElement)) {
 
 			if (logging) {
 				LOGGER.info("Element text equal");

@@ -2,6 +2,7 @@ package com.crawljax.plugins.crawloverview.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class StateCounter {
@@ -25,7 +26,7 @@ public class StateCounter {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
+		return MoreObjects.toStringHelper(this)
 		        .add("id", id)
 		        .add("count", count)
 		        .toString();

@@ -1,11 +1,11 @@
 package com.crawljax.test.matchers;
 
-import java.io.File;
-
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import java.io.File;
 
 public class FileMatcher extends TypeSafeMatcher<File> {
 

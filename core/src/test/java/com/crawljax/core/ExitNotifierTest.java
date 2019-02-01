@@ -1,11 +1,10 @@
 package com.crawljax.core;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
+import com.crawljax.core.ExitNotifier.ExitStatus;
 import org.junit.Test;
 
-import com.crawljax.core.ExitNotifier.ExitStatus;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class ExitNotifierTest {
 
@@ -22,7 +21,7 @@ public class ExitNotifierTest {
 	}
 
 	@Test(timeout = 2000)
-	public void whenNoStateLimitItDoesntTerminate() throws InterruptedException {
+	public void whenNoStateLimitItDoesntTerminate() {
 		notifier = new ExitNotifier(0);
 		notifier.incrementNumberOfStates();
 		notifier.incrementNumberOfStates();

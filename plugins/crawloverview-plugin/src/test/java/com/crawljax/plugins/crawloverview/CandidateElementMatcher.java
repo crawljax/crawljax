@@ -30,7 +30,8 @@ class CandidateElementMatcher extends CustomMatcher<CandidateElementPosition> {
 
 	@Factory
 	public static CandidateElementMatcher element(Point point, Dimension size) {
-		return new CandidateElementMatcher(new CandidateElementPosition(null, point, size));
+		CandidateElementPosition position = new CandidateElementPosition(null, point, size);
+		return new CandidateElementMatcher(position);
 	}
 
 }

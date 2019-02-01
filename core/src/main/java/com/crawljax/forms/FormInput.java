@@ -1,82 +1,60 @@
-/**
+/*
  * Created Aug 14, 2008
  */
 package com.crawljax.forms;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Identification;
+import com.google.common.base.Enums;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author mesbah
  */
 public class FormInput {
 
-	private long id;
-	private String type = "text";
+	public enum InputType {
+		TEXT, RADIO, CHECKBOX, PASSWORD, HIDDEN, SELECT, TEXTAREA
+	}
+
+	private InputType type = InputType.TEXT;
 
 	private Identification identification;
 
-	private Set<InputValue> inputValues = new HashSet<InputValue>();
+	private Set<InputValue> inputValues = new HashSet<>();
 	private Eventable eventable;
 
-	private boolean multiple;
-
-	public FormInput() {
-		super();
+	public FormInput(InputType type, Identification identification) {
+		this.type = type;
+		this.identification = identification;
 	}
 
 	/**
-	 * @param type
-	 *            the type of the input elements (e.g. text, checkbox)
-	 * @param identification
-	 *            the identification.
-	 * @param value
-	 *            the value of the elements. 1 for checked
+	 * @param type           the type of the input elements (e.g. text, checkbox)
+	 * @param identification the identification.
+	 * @param value          the value of the elements. 1 for checked
 	 */
-	public FormInput(String type, Identification identification, String value) {
+	public FormInput(InputType type, Identification identification, String value) {
 		this.type = type;
 		this.identification = identification;
 		inputValues.add(new InputValue(value, value.equals("1")));
 	}
 
 	/**
-	 * @return the id.
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id.
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	/**
 	 * @return the input type.
 	 */
-	public String getType() {
+	public InputType getType() {
 		return type;
 	}
 
-	/**
-	 * @param type
-	 *            the input type.
-	 */
-	public void setType(String type) {
-		if (!"".equals(type)) {
-			this.type = type;
-		}
+	public static InputType getTypeFromStr(String type) {
+		return Enums.getIfPresent(InputType.class, type.toUpperCase()).or(InputType.TEXT);
 	}
 
 	@Override
@@ -91,27 +69,12 @@ public class FormInput {
 		final FormInput rhs = (FormInput) obj;
 
 		return new EqualsBuilder().append(this.identification, rhs.getIdentification())
-		        .append(this.type, rhs.getType()).isEquals();
+				.append(this.type, rhs.getType()).isEquals();
 	}
 
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder().append(this.identification).append(this.type).toHashCode();
-	}
-
-	/**
-	 * @return whether the element can have multiple values
-	 */
-	public boolean isMultiple() {
-		return multiple;
-	}
-
-	/**
-	 * @param multiple
-	 *            set whether the elements ca have multiple values
-	 */
-	public void setMultiple(boolean multiple) {
-		this.multiple = multiple;
 	}
 
 	@Override
@@ -120,10 +83,8 @@ public class FormInput {
 	}
 
 	/**
-	 * @param inputs
-	 *            form input set.
-	 * @param identification
-	 *            the identification to check.
+	 * @param inputs         form input set.
+	 * @param identification the identification to check.
 	 * @return true if set contains a FormInput that has the same identification.
 	 */
 	public static boolean containsInput(Set<FormInput> inputs, Identification identification) {
@@ -137,10 +98,8 @@ public class FormInput {
 	}
 
 	/**
-	 * @param inputs
-	 *            form input set.
-	 * @param identification
-	 *            the identification to check.
+	 * @param inputs         form input set.
+	 * @param identification the identification to check.
 	 * @return a FormInput object that has the same identification.
 	 */
 	public static FormInput getInput(Set<FormInput> inputs, Identification identification) {
@@ -161,11 +120,31 @@ public class FormInput {
 	}
 
 	/**
-	 * @param inputValues
-	 *            the inputValues to set
+	 * @param inputValues the inputValues to set
 	 */
-	public void setInputValues(Set<InputValue> inputValues) {
+	public void inputValues(Set<InputValue> inputValues) {
 		this.inputValues = inputValues;
+	}
+
+	public void inputValues(String... values) {
+		for (String value : values) {
+			InputValue inputValue = new InputValue(value);
+			this.inputValues.add(inputValue);
+		}
+	}
+
+	/**
+	 * Sets the values of this input field. Only Applicable check-boxes and a radio buttons.
+	 *
+	 * @param values Values to set.
+	 */
+	public void inputValues(boolean... values) {
+		for (boolean value : values) {
+			InputValue inputValue = new InputValue();
+			inputValue.setChecked(value);
+
+			this.inputValues.add(inputValue);
+		}
 	}
 
 	/**
@@ -176,8 +155,7 @@ public class FormInput {
 	}
 
 	/**
-	 * @param eventable
-	 *            the eventable by which this FormInput is submitted by
+	 * @param eventable the eventable by which this FormInput is submitted by
 	 */
 	public void setEventable(Eventable eventable) {
 		this.eventable = eventable;
@@ -190,11 +168,4 @@ public class FormInput {
 		return identification;
 	}
 
-	/**
-	 * @param identification
-	 *            the identification to set
-	 */
-	public void setIdentification(Identification identification) {
-		this.identification = identification;
-	}
 }

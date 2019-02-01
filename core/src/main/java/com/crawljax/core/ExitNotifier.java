@@ -1,13 +1,12 @@
 package com.crawljax.core;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.google.common.annotations.VisibleForTesting;
 
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Singleton;
-
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.google.common.annotations.VisibleForTesting;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
 @ThreadSafe
@@ -33,7 +32,7 @@ public class ExitNotifier {
 		/**
 		 * The crawl is done.
 		 */
-		EXHAUSTED("Exausted"),
+		EXHAUSTED("Exhausted"),
 
 		/**
 		 * The crawler quite because of an error.
@@ -47,7 +46,7 @@ public class ExitNotifier {
 
 		private final String readableName;
 
-		private ExitStatus(String readableName) {
+		ExitStatus(String readableName) {
 			this.readableName = readableName;
 
 		}
@@ -70,9 +69,9 @@ public class ExitNotifier {
 
 	/**
 	 * Waits until the crawl has to stop.
-	 * 
-	 * @throws InterruptedException
-	 *             When the wait is interrupted.
+	 *
+	 * @return the termination condition
+	 * @throws InterruptedException When the wait is interrupted.
 	 */
 	public ExitStatus awaitTermination() throws InterruptedException {
 		latch.await();

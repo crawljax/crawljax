@@ -1,14 +1,16 @@
 package com.crawljax.core.plugin;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.object.IsCompatibleType.typeCompatibleWith;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.crawljax.browser.BrowserProvider;
+import com.crawljax.condition.NotRegexCondition;
+import com.crawljax.core.CandidateElement;
+import com.crawljax.core.CrawlSession;
+import com.crawljax.core.CrawljaxRunner;
+import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.test.BrowserTest;
+import com.crawljax.test.RunWithWebServer;
+import com.google.common.collect.ImmutableSet;
 import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.eclipse.jetty.util.BlockingArrayQueue;
 import org.hamcrest.core.IsCollectionContaining;
@@ -18,22 +20,12 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.condition.NotRegexCondition;
-import com.crawljax.condition.invariant.Invariant;
-import com.crawljax.core.CandidateElement;
-import com.crawljax.core.CrawlSession;
-import com.crawljax.core.CrawlerContext;
-import com.crawljax.core.CrawljaxRunner;
-import com.crawljax.core.ExitNotifier.ExitStatus;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateVertex;
-import com.crawljax.test.BrowserTest;
-import com.crawljax.test.RunWithWebServer;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.object.IsCompatibleType.typeCompatibleWith;
+import static org.junit.Assert.*;
 
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
@@ -41,8 +33,6 @@ import com.google.common.collect.ImmutableSet;
 @Category(BrowserTest.class)
 public class PluginsWithCrawlerTest {
 
-	private static CrawljaxRunner controller;
-	private static CrawljaxConfiguration config;
 	private static String listAsString;
 
 	private static List<Class<? extends Plugin>> plugins = new BlockingArrayQueue<>();
@@ -61,126 +51,78 @@ public class PluginsWithCrawlerTest {
 
 		builder.crawlRules().clickDefaultElements();
 
-		/**
+		/*
 		 * Add a sample Invariant for testing the OnInvariantViolation plugin
 		 */
 		builder.crawlRules().addInvariant("Never contain Final state S8",
-		        new NotRegexCondition("Final state S2"));
+				new NotRegexCondition("Final state S2"));
 
-		builder.addPlugin(new PreCrawlingPlugin() {
+		builder.addPlugin((PreCrawlingPlugin) config -> plugins.add(PreCrawlingPlugin.class));
 
-			@Override
-			public void preCrawling(CrawljaxConfiguration config) {
-				plugins.add(PreCrawlingPlugin.class);
+		builder.addPlugin((OnNewStatePlugin) (context, state) -> {
+			plugins.add(OnNewStatePlugin.class);
 
+			if (!state.getName().equals("index")) {
+				assertTrue("currentState and indexState are never the same",
+						!state.equals(context.getSession().getInitialState()));
 			}
 		});
 
-		builder.addPlugin(new OnNewStatePlugin() {
-			@Override
-			public void onNewState(CrawlerContext context, StateVertex state) {
-				plugins.add(OnNewStatePlugin.class);
-
-				if (!state.getName().equals("index")) {
-					assertTrue("currentState and indexState are never the same",
-					        !state.equals(context.getSession().getInitialState()));
-				}
-			}
+		builder.addPlugin((OnBrowserCreatedPlugin) newBrowser -> {
+			plugins.add(OnBrowserCreatedPlugin.class);
+			assertNotNull(newBrowser);
 		});
 
-		builder.addPlugin(new DomChangeNotifierPlugin() {
+		builder.addPlugin((OnInvariantViolationPlugin) (invariant, context) -> {
+			plugins.add(OnInvariantViolationPlugin.class);
 
-			@Override
-			public boolean isDomChanged(CrawlerContext context, String domBefore, Eventable e,
-			        String domAfter) {
-
-				plugins.add(DomChangeNotifierPlugin.class);
-				return !domAfter.equals(domBefore);
-
-			}
+			assertNotNull(invariant);
 
 		});
 
-		builder.addPlugin(new OnBrowserCreatedPlugin() {
+		builder.addPlugin((OnUrlLoadPlugin) browser -> {
+			plugins.add(OnUrlLoadPlugin.class);
+			assertNotNull(browser);
+		});
 
-			@Override
-			public void onBrowserCreated(EmbeddedBrowser newBrowser) {
-				plugins.add(OnBrowserCreatedPlugin.class);
-				assertNotNull(newBrowser);
+		builder.addPlugin(
+				(PostCrawlingPlugin) (session, status) -> plugins.add(PostCrawlingPlugin.class));
+
+		builder.addPlugin((PreStateCrawlingPlugin) (session, candidateElements, state) -> {
+			plugins.add(PreStateCrawlingPlugin.class);
+			try {
+				assertNotNull(candidateElements);
+
+			} catch (AssertionError e) {
+				ERRORS.addError(e);
+			}
+
+			if (state.getName().equals("state8")) {
+				/*
+				 * Add to miss invocation for the OnFireEventFailed plugin.
+				 */
+				// This is a bit ugly; but hey it works, and is checked above..
+				CandidateElement candidate = candidateElements.get(0);
+				HTMLAnchorElementImpl impl = (HTMLAnchorElementImpl) candidate.getElement();
+				impl.setName("fail");
+				impl.setId("eventually");
+				impl.setHref("will");
+				impl.setTextContent("This");
+				candidate.getIdentification().setValue("/HTML[1]/BODY[1]/FAILED[1]/A[1]");
 			}
 		});
 
-		builder.addPlugin(new OnInvariantViolationPlugin() {
+		builder.addPlugin((OnRevisitStatePlugin) (session, currentState) -> {
+			plugins.add(OnRevisitStatePlugin.class);
 
-			@Override
-			public void onInvariantViolation(Invariant invariant, CrawlerContext context) {
-				plugins.add(OnInvariantViolationPlugin.class);
-
-				assertNotNull(invariant);
-
-			}
+			assertNotNull(currentState);
 		});
 
-		builder.addPlugin(new OnUrlLoadPlugin() {
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
 
-			@Override
-			public void onUrlLoad(CrawlerContext browser) {
-				plugins.add(OnUrlLoadPlugin.class);
-				assertNotNull(browser);
-			}
-		});
+		CrawljaxConfiguration config = builder.build();
 
-		builder.addPlugin(new PostCrawlingPlugin() {
-
-			@Override
-			public void postCrawling(CrawlSession session, ExitStatus status) {
-				plugins.add(PostCrawlingPlugin.class);
-
-			}
-		});
-
-		builder.addPlugin(new PreStateCrawlingPlugin() {
-
-			@Override
-			public void preStateCrawling(CrawlerContext session,
-			        ImmutableList<CandidateElement> candidateElements, StateVertex state) {
-				plugins.add(PreStateCrawlingPlugin.class);
-				try {
-					assertNotNull(candidateElements);
-
-				} catch (AssertionError e) {
-					ERRORS.addError(e);
-				}
-
-				if (state.getName().equals("state8")) {
-					/**
-					 * Add to miss invocation for the OnFireEventFaild plugin.
-					 */
-					// This is a bit ugly; but hey it works, and is checked above..
-					CandidateElement candidate = candidateElements.get(0);
-					HTMLAnchorElementImpl impl = (HTMLAnchorElementImpl) candidate.getElement();
-					impl.setName("fail");
-					impl.setId("eventually");
-					impl.setHref("will");
-					impl.setTextContent("This");
-					candidate.getIdentification().setValue("/HTML[1]/BODY[1]/FAILED[1]/A[1]");
-				}
-			}
-
-		});
-
-		builder.addPlugin(new OnRevisitStatePlugin() {
-
-			@Override
-			public void onRevisitState(CrawlerContext session, StateVertex currentState) {
-				plugins.add(OnRevisitStatePlugin.class);
-
-				assertNotNull(currentState);
-			}
-		});
-
-		config = builder.build();
-		controller = new CrawljaxRunner(config);
+		CrawljaxRunner controller = new CrawljaxRunner(config);
 		session = controller.call();
 
 		StringBuilder sb = new StringBuilder();
@@ -206,13 +148,12 @@ public class PluginsWithCrawlerTest {
 	@Test
 	public void verifyOnUrlLoadFollowers() {
 		afterFirstPluginsIsFollowedBy(OnUrlLoadPlugin.class, ImmutableSet.of(
-		        OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
-		        DomChangeNotifierPlugin.class, OnRevisitStatePlugin.class,
-		        PostCrawlingPlugin.class));
+				OnInvariantViolationPlugin.class, OnNewStatePlugin.class, OnRevisitStatePlugin.class,
+				PostCrawlingPlugin.class));
 	}
 
 	private void afterFirstPluginsIsFollowedBy(Class<OnUrlLoadPlugin> suspect,
-	        Iterable<Class<? extends Plugin>> followedBy) {
+			Iterable<Class<? extends Plugin>> followedBy) {
 		List<Integer> indexes = indexesOf(suspect);
 		if (indexes.size() > 0) {
 			indexes.remove(0);
@@ -220,23 +161,23 @@ public class PluginsWithCrawlerTest {
 		for (int index : indexes) {
 			Class<? extends Plugin> follower = plugins.get(index + 1);
 			assertThat(suspect + " @index=" + index + " was followed by " + follower
-			        + listAsString, followedBy, IsCollectionContaining.hasItem(follower));
+					+ listAsString, followedBy, IsCollectionContaining.hasItem(follower));
 		}
 	}
 
 	public void pluginsIsFollowedBy(Class<? extends Plugin> suspect,
-	        Iterable<Class<? extends Plugin>> followedBy) {
+			Iterable<Class<? extends Plugin>> followedBy) {
 		for (int index : indexesOf(suspect)) {
 			Class<? extends Plugin> follower = plugins.get(index + 1);
 			assertThat(suspect + " @index=" + index + " was followed by " + follower
-			        + listAsString, followedBy, IsCollectionContaining.hasItem(follower));
+					+ listAsString, followedBy, IsCollectionContaining.hasItem(follower));
 		}
 	}
 
-	private List<Integer> indexesOf(Class<? extends Plugin> clasz) {
+	private List<Integer> indexesOf(Class<? extends Plugin> clazz) {
 		List<Integer> indexes = new ArrayList<>();
 		for (int i = 0; i < plugins.size(); i++) {
-			if (plugins.get(i).isAssignableFrom(clasz)) {
+			if (plugins.get(i).isAssignableFrom(clazz)) {
 				indexes.add(i);
 			}
 		}
@@ -246,57 +187,42 @@ public class PluginsWithCrawlerTest {
 	@Test
 	public void verifyOnNewStateFollowers() {
 		pluginsIsFollowedBy(OnNewStatePlugin.class,
-		        ImmutableSet.of(PreStateCrawlingPlugin.class, OnUrlLoadPlugin.class,
-		                PostCrawlingPlugin.class));
+				ImmutableSet.of(PreStateCrawlingPlugin.class, OnUrlLoadPlugin.class,
+						PostCrawlingPlugin.class));
 	}
 
 	@Test
 	public void verifyPreStateCrawlingFollowers() {
 		pluginsIsFollowedBy(PreStateCrawlingPlugin.class,
-		        ImmutableSet.of(DomChangeNotifierPlugin.class, OnFireEventFailedPlugin.class,
-		                OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
-		                OnUrlLoadPlugin.class));
+				ImmutableSet.of(OnFireEventFailedPlugin.class,
+						OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
+						OnUrlLoadPlugin.class));
 	}
 
 	@Test
 	public void onRevisitStatesFollowers() {
 		pluginsIsFollowedBy(OnRevisitStatePlugin.class, ImmutableSet.of(
-		        OnFireEventFailedPlugin.class, DomChangeNotifierPlugin.class,
-		        OnInvariantViolationPlugin.class, OnNewStatePlugin.class));
-	}
-
-	@Test
-	public void verifyOnDomChangedFollowers() {
-		pluginsIsFollowedBy(DomChangeNotifierPlugin.class, ImmutableSet.of(
-		        OnFireEventFailedPlugin.class, DomChangeNotifierPlugin.class,
-		        OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
-		        PostCrawlingPlugin.class));
+				OnFireEventFailedPlugin.class,
+				OnInvariantViolationPlugin.class, OnNewStatePlugin.class));
 	}
 
 	@Test
 	public void startAndEndPluginsAreOnlyRunOnce() {
-		// assertThat(orrurencesOf(ProxyServerPlugin.class), is(1));
-		assertThat(orrurencesOf(PreCrawlingPlugin.class), is(1));
-		assertThat(orrurencesOf(PostCrawlingPlugin.class), is(1));
-	}
-
-	@Test
-	public void domStatesChangesAreEqualToNumberOfStatesAfterIndex() {
-		int numberOfStates = session.getStateFlowGraph().getAllStates().size();
-		int newStatesAfterIndexPage = numberOfStates - 1;
-		assertThat(orrurencesOf(DomChangeNotifierPlugin.class), is(newStatesAfterIndexPage));
+		// assertThat(occurrencesOf(ProxyServerPlugin.class), is(1));
+		assertThat(occurrencesOf(PreCrawlingPlugin.class), is(1));
+		assertThat(occurrencesOf(PostCrawlingPlugin.class), is(1));
 	}
 
 	@Test
 	public void newStatePluginCallsAreEqualToNumberOfStates() {
 		int numberOfStates = session.getStateFlowGraph().getAllStates().size();
-		assertThat(orrurencesOf(OnNewStatePlugin.class), is(numberOfStates));
+		assertThat(occurrencesOf(OnNewStatePlugin.class), is(numberOfStates));
 	}
 
-	private int orrurencesOf(Class<? extends Plugin> clasz) {
+	private int occurrencesOf(Class<? extends Plugin> clazz) {
 		int count = 0;
 		for (Class<? extends Plugin> plugin : plugins) {
-			if (plugin.isAssignableFrom(clasz)) {
+			if (plugin.isAssignableFrom(clazz)) {
 				count++;
 			}
 		}

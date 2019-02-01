@@ -21,25 +21,25 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.google.common.collect.Lists;
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class OverviewIntegrationTest {
 
 	@ClassRule
 	public static final RunHoverCrawl HOVER_CRAWL = new RunHoverCrawl();
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(OverviewIntegrationTest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OverviewIntegrationTest.class);
 
+	private static String url;
 	private static Server server;
-	private static DefaultSelenium selenium;
 
 	private static WebDriver driver;
 
@@ -48,11 +48,15 @@ public class OverviewIntegrationTest {
 		LOG.debug("Starting Jetty");
 		server = new Server(0);
 
-		String url = setupJetty();
+		url = setupJetty() + "/localhost/crawl0";
+
 		LOG.info("Jetty started on {}", url);
-		driver = new FirefoxDriver();
 		LOG.debug("Starting selenium");
-		selenium = new WebDriverBackedSelenium(driver, url);
+		
+		WebDriverManager.chromedriver().setup();
+		ChromeOptions optionsChrome = new ChromeOptions();
+		optionsChrome.addArguments("--headless", "--disable-gpu", "--window-size=1200x600");
+		driver =  new ChromeDriver(optionsChrome);
 
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
@@ -69,14 +73,13 @@ public class OverviewIntegrationTest {
 
 	@Test
 	public void whenOpenedGraphIsShownAndBrandIsPresent() {
-		selenium.open("/");
+		driver.navigate().to(url);
 
 		sourceHasNoVelocitySymbols();
 
 		WebElement brand = driver.findElement(By.cssSelector("a.brand"));
 		assertThat(brand.getText(), is("Crawl overview"));
-		assertThat(driver.findElement(By.cssSelector("svg")),
-				is(notNullValue()));
+		assertThat(driver.findElement(By.cssSelector("svg")), is(notNullValue()));
 
 	}
 
@@ -89,14 +92,14 @@ public class OverviewIntegrationTest {
 
 	@Test
 	public void whenClickStatisticsHeadersArePresent() {
-		selenium.open("/");
+		driver.navigate().to(url);
 		driver.findElement(By.linkText("Statistics")).click();
 		assertElementsText("H1", "Crawl results", "Highs and lows");
 	}
 
 	@Test
 	public void whenClickConfigHeadersArePresent() {
-		selenium.open("/");
+		driver.navigate().to(url);
 		driver.findElement(By.linkText("Configuration")).click();
 		assertElementsText("H1", "Crawl configuration", "Version info");
 	}
@@ -118,31 +121,30 @@ public class OverviewIntegrationTest {
 
 	@Test
 	public void allUrlsAreShown() {
-		selenium.open("/#urls");
+		driver.navigate().to(url + "/#urls");
+		// selenium.open("/#urls");
 		List<WebElement> tableRows = visibleElementsByCss("tr");
-		int urlsExpeted = HOVER_CRAWL.getResult().getStatistics()
-				.getStateStats().getUrls().size();
+		int urlsExpeted =
+		        HOVER_CRAWL.getResult().getStatistics().getStateStats().getUrls().size();
 		assertThat(tableRows, is(hasSize(urlsExpeted)));
 	}
 
 	@Test
 	public void allStatesAreShown() {
-		selenium.open("/#graph");
+		driver.navigate().to(url + "/#graph");
+		// selenium.open("/#graph");
 		Statistics statistics = HOVER_CRAWL.getResult().getStatistics();
 		// drawnstate -1 because the outer state is also a group.
 		int drawnStates = driver.findElements(By.cssSelector("g")).size() - 1;
-		List<WebElement> drawnEdges = driver.findElements(By
-				.cssSelector("path[marker-end=\"url(#Triangle)\"]"));
-		assertThat(drawnStates, is(statistics.getStateStats()
-				.getTotalNumberOfStates()));
+		List<WebElement> drawnEdges =
+		        driver.findElements(By.cssSelector("path[marker-end=\"url(#Triangle)\"]"));
+		assertThat(drawnStates, is(statistics.getStateStats().getTotalNumberOfStates()));
 		assertThat(drawnEdges, hasSize(statistics.getEdges()));
 	}
 
 	private List<WebElement> visibleElementsByCss(String selector) {
-		List<WebElement> elements = driver.findElements(By
-				.cssSelector(selector));
-		List<WebElement> visible = Lists.newArrayListWithExpectedSize(elements
-				.size());
+		List<WebElement> elements = driver.findElements(By.cssSelector(selector));
+		List<WebElement> visible = Lists.newArrayListWithExpectedSize(elements.size());
 		for (WebElement webElement : elements) {
 			if (webElement.isDisplayed()) {
 				visible.add(webElement);
@@ -154,6 +156,6 @@ public class OverviewIntegrationTest {
 	@AfterClass
 	public static void tearDown() throws Exception {
 		server.stop();
-		selenium.stop();
+		driver.close();
 	}
 }

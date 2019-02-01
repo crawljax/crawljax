@@ -2,21 +2,22 @@
 
 package com.crawljax.core;
 
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import java.util.concurrent.TimeUnit;
-
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * This abstract class is used a specification of all the iframe related tests.
@@ -31,7 +32,10 @@ public class IFrameTest {
 
 	protected CrawljaxConfigurationBuilder setupConfig() {
 		CrawljaxConfigurationBuilder builder =
-		        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().resolve("iframe"));
+				CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().resolve("iframe"));
+		builder.setBrowserConfig(
+				new BrowserConfiguration(EmbeddedBrowser.BrowserType.FIREFOX_HEADLESS));
+
 		builder.crawlRules().waitAfterEvent(100, TimeUnit.MILLISECONDS);
 		builder.crawlRules().waitAfterReloadUrl(100, TimeUnit.MILLISECONDS);
 		builder.setMaximumDepth(3);
@@ -91,8 +95,8 @@ public class IFrameTest {
 		crawljax = new CrawljaxRunner(builder.build());
 		CrawlSession session = crawljax.call();
 		assertEquals("Clickables", 12, session.getStateFlowGraph()
-		        .getAllEdges().size());
+				.getAllEdges().size());
 		assertEquals("States", 12, session.getStateFlowGraph().getAllStates()
-		        .size());
+				.size());
 	}
 }

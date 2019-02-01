@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ali Mesbah</title>
+   <link href="style/imageFrame.css" rel="stylesheet" type="text/css" />
+<!--[if lt IE 7]>
+<link type="text/css" href="style/imageFrame_ie6.css" rel="stylesheet" />
+<![endif]-->
+<link href="style/imageFrame_rounded_tl.css" rel="stylesheet" type="text/css" />
+
+   <link href="style/jquery-ui-1.8.6.custom.css" rel="stylesheet" type="text/css"/>
+   
+  <script src="js/jquery.min-1.4.3.js"></script>
+  <script src="js/jquery-ui.min-1.8.6.js"></script>
+  <script type="text/javascript" src="js/jquery.ifixpng.js"></script>
+  <script type="text/javascript" src="js/jquery.imageFrame.js"></script>
+  <script>
+    $(function() {
+    
+    var ranTime = new Date().getTime();
+	  
+	  
+	  $("#pubs").attr('href', $("#pubs").attr('href') + '?ran=' + ranTime);
+	  $("#teaching").attr('href', $("#teaching").attr('href') + '?ran=' + ranTime);
+    $("#students").attr('href', $("#students").attr('href') + '?ran=' + ranTime);
+    $("#highlights").attr('href', $("#highlights").attr('href') + '?ran=' + ranTime);
+    $("#activities").attr('href', $("#activities").attr('href') + '?ran=' + ranTime);
+    $("#software").attr('href', $("#software").attr('href') + '?ran=' + ranTime);
+    
+		$( "#tabs" ).tabs({
+			ajaxOptions: {
+				error: function( xhr, status, index, anchor ) {
+					$( anchor.hash ).html(
+						"Couldn't load the content!");
+				}
+			}
+		});
+		
+	$.ifixpng.pixel = 'images/pixel.gif';
+  	$.imageFrame.defaultFrameStyle = 'soft';
+		$( "#mypic" ).imageFrame();
+	});  
+  </script>
+  <script type="text/javascript">
+	
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1798257-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+ </script>
+</head>
+<body style="font-size:62.5%;">
+
+<div id="container">
+  
+   <div class="tabbed_area"> 
+    <div class="pane-north">
+    <div class='head'>
+	 <a href='http://www.ece.ubc.ca'><img width='160px' border='0' style="vertical-align:middle;" src='images/ubcblack_basic.png'/></a>
+	 <div class='name' id='myname'>Ali Mesbah</div>
+	 <div class='aff'>Electrical and Computer Engineering University of British Columbia</div>
+	 </div>
+   </div>
+  </div>
+
+		<div class="tabbed_area">  
+     <div id="tabs">
+    <ul>
+        <li><a href="#home"><span>Home</span></a></li>
+        <li><a href="content/pubs.html" id='pubs'><span>Publications</span></a></li>
+        <li><a href="content/students.html" id='students'><span>Students</span></a></li>
+				<li><a href="content/teaching.html" id='teaching'><span>Teaching</span></a></li>
+				<li><a href="content/activities.html" id='activities'><span>Activities</span></a></li>
+				<li><a href="content/highlights.html" id='highlights'><span>Highlights</span></a></li>
+				<li><a href="content/software.html" id='software'><span>Software</span></a></li>
+    </ul>
+    
+    <div id="home">
+       <table>
+       <tr>
+       <td valign="top">
+       <p>I am an assistant professor in the department of Electrical and Computer Engineering (<a href="http://www.ece.ubc.ca">ECE</a>) at the University of British Columbia (<a href="http://www.ubc.ca">UBC</a>).</p>
+       <p>I received the PhD degree <i>cum laude</i> (with honors) in Computer Science (2009) from <a href="http://www.tudelft.nl">Delft University of Technology</a> and was a post-doctoral researcher in the <a href="http://swerl.tudelft.nl/bin/view/Main/WebHome">Software Engineering Research Group</a> (2009-2010).</p>
+       <p>
+       <h4>Research Interests</h4>    
+       <p>	 
+My main area of research is software engineering with an emphasis on software analysis and testing of modern web-based systems. I am also interested in software evolution, Web 2.0 and social software engineering, and empirical software engineering.
+	</p>
+
+	<p>
+    <div class="ticker-wrapper">
+    <div id="ticker-title"><span style="display: inline; ">Latest</span></div><br/>
+    <div class='ticker'>
+    <ul class='niceList'>
+    <li>Our paper "Automated Cross-Browser Compatibility Testing" is accepted at the 33rd ACM/IEEE International Conference on Software Engineering (<a href='http://2011.icse-conferences.org/'>ICSE'11</a>)</li>
+    <ul>
+	  </div>
+	  </div>
+  </p>
+
+
+       </td>
+       <td width="20%" align="center" valign='top'>
+         <img  id='mypic' width='100px' src='images/mesbah-photo.jpg'/>
+	 <img src="images/email-mesbah.png"/>
+	 <div class="contactinfo">
+	 Phone: 604-827-4249<br/>
+	 Fred Kaiser Building, Room 4044,<br/>
+	 UBC Electrical and Computer Engineering,<br/>
+	 2332 Main Mall, Vancouver, BC Canada V6T1Z4
+	 </div>
+	<br/></br/>
+ <a href='http://twitter.com/#!/amesbah'><img border='0' width='22px' src='images/social/twitter_64.png'/></a>
+ <a href='https://www.linkedin.com/e/fpf/7486348'><img border='0' width='22px' src='images/social/linkedin_64.png'/></a>
+ 	<p>
+	<a href="http://2011.icse-conferences.org"><img width="90px" src="http://2011.icse-conferences.org/sites/icse2011/files/publicity/ICSE2011-Surfer-Logo-smaller.png" border="0"  alt="ICSE 2011" title="ICSE 2011" /></a>
+	</p>
+
+
+       </td>
+       </tr>	
+       </table>
+	
+         
+    </div>
+    
+    <div id="publications">
+              
+    </div>
+    
+</div>
+</div>
+
+	</div>
+
+	 
+
+
+
+
+
+
+
+
+</body>
+</html>

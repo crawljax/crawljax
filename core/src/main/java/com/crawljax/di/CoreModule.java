@@ -1,24 +1,16 @@
 package com.crawljax.di;
 
-import javax.inject.Singleton;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
-import com.crawljax.core.CandidateElementExtractor;
-import com.crawljax.core.CandidateElementManager;
-import com.crawljax.core.CrawlSession;
-import com.crawljax.core.ExitNotifier;
-import com.crawljax.core.ExtractorManager;
+import com.crawljax.core.*;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.DefaultStateVertexFactory;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateVertexFactory;
 import com.crawljax.forms.FormHandler;
+import com.crawljax.forms.TrainingFormHandler;
 import com.crawljax.metrics.MetricsModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -26,6 +18,10 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import javax.inject.Singleton;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CoreModule extends AbstractModule {
 
@@ -55,6 +51,7 @@ public class CoreModule extends AbstractModule {
 		bind(InMemoryStateFlowGraph.class).in(Singleton.class);
 
 		install(new FactoryModuleBuilder().build(FormHandlerFactory.class));
+		install(new FactoryModuleBuilder().build(TrainingFormHandlerFactory.class)); // qhanam
 		install(new FactoryModuleBuilder().build(CandidateElementExtractorFactory.class));
 
 		if (configuration.getStateVertexFactory() == null) {
@@ -73,11 +70,18 @@ public class CoreModule extends AbstractModule {
 	@Provides
 	ConditionTypeChecker<CrawlCondition> crawlConditionChecker() {
 		return new ConditionTypeChecker<>(configuration.getCrawlRules().getPreCrawlConfig()
-		        .getCrawlConditions());
+				.getCrawlConditions());
 	}
 
 	public interface FormHandlerFactory {
 		FormHandler newFormHandler(EmbeddedBrowser browser);
+	}
+
+	/**
+	 * @author qhanam
+	 */
+	public interface TrainingFormHandlerFactory {
+		TrainingFormHandler newTrainingFormHandler(EmbeddedBrowser browser);
 	}
 
 	public interface CandidateElementExtractorFactory {

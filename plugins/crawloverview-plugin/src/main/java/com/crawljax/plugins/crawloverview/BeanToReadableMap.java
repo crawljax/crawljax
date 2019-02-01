@@ -75,7 +75,7 @@ class BeanToReadableMap {
 			StringBuilder configAsString =
 			        new StringBuilder().append(config.getNumberOfBrowsers())
 			                .append(" browsers of type ")
-			                .append(config.getBrowsertype());
+			                .append(config.getBrowserType());
 			if (!(config.getBrowserBuilder() instanceof WebDriverBrowserBuilder)) {
 				configAsString.append(" using builder ").append(config.getBrowserBuilder());
 			}

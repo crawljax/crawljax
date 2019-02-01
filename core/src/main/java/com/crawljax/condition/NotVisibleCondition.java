@@ -1,14 +1,14 @@
 package com.crawljax.condition;
 
-import net.jcip.annotations.Immutable;
-
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.state.Identification;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import net.jcip.annotations.Immutable;
 
 /**
  * Conditions that returns true iff element found with By is visible.
- * 
+ *
  * @author dannyroest@gmail.com (Danny Roest)
  */
 @Immutable
@@ -17,8 +17,7 @@ public class NotVisibleCondition implements Condition {
 	private final VisibleCondition visibleCondition;
 
 	/**
-	 * @param identification
-	 *            the identification.
+	 * @param identification the identification.
 	 */
 	public NotVisibleCondition(Identification identification) {
 		this.visibleCondition = new VisibleCondition(identification);
@@ -45,9 +44,9 @@ public class NotVisibleCondition implements Condition {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-		        .add("visibleCondition", visibleCondition)
-		        .toString();
+		return MoreObjects.toStringHelper(this)
+				.add("visibleCondition", visibleCondition)
+				.toString();
 	}
 
 }

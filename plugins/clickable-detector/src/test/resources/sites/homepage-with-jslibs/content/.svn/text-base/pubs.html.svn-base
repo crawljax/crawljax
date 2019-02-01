@@ -1,0 +1,87 @@
+<h3>Publications</h3>
+
+<p>
+<a href="http://www.informatik.uni-trier.de/~ley/db/indices/a-tree/m/Mesbah:Ali.html">DBLP</a>,
+<a href="http://scholar.google.com/scholar?hl=en&amp;lr=&amp;q=author%3Aali-mesbah&amp;btnG=Search">Google Scholar</a>,
+<a href="http://academic.research.microsoft.com/Author/3526901.aspx?query=ali%20mesbah">MS Academic</a>
+</p>
+
+<table style="width:100%">
+<tbody>
+
+<tr><td class="year">2011</td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and Mukul Prasad (2011). <b>Automated Cross-Browser Compatibility Testing</b>. In <i>Proceedings of the 33rd ACM/IEEE International Conference on Software Engineering (ICSE'11)</i>. Honolulu, Hawaii. ACM.
+</li></ul></td></tr>
+
+<tr><td class="year">2010</td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> and <a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> (2010). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2009-032.pdf">Research Issues in the Automated Testing of Ajax Applications</a></b>. In <i>Proceedings 36th International Conference on Current Trends in Theory and Practice of Computer Science (SOFSEM'10)</i>, pp. 16-28. Lecture Notes in Computer Science 5901, Springer-Verlag.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=1373&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+<tr><td class="pub"><ul><li class="pub">
+Danny Roest and <a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2010). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2009-028.pdf">Regression Testing Ajax Applications: Coping with Dynamism</a></b>. In <i>Proceedings of the 3rd International Conference on Software Testing, Verification and Validation (ICST'10)</i>, pp. 128-136, Paris, France. IEEE Computer Society.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=1377&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> and <a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and Bas Cornelissen and <a class="author" href="http://www.st.ewi.tudelft.nl/~zaidman">Andy Zaidman</a> and <a class="author" href="http://www.pds.twi.tudelft.nl/people/pinzger">Martin Pinzger</a> and Anja Guzzi (2010). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2010-005.pdf">Adinda: A knowledgeable, Browser-Based IDE</a></b>. In <i>Companion Proceedings of the 32nd International Conference on Software Engineering (ICSE NIER)</i>, pp. 203-206, Cape Town, South Africa. ACM.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=1385&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+
+<tr><td class="year">2009</td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2009). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2009-005.pdf">Invariant-Based Automatic Testing of Ajax User Interfaces</a></b>. In <i>Proceedings of the 31st International Conference on Software Engineering (ICSE'09), Research Papers</i>, pp. 210-220, Vancouver, Canada. IEEE Computer Society.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=1102&amp;noheader=1">BibTeX</a>&nbsp;]
+ <div class="award">ACM SIGSOFT Distinguished Paper Award</div></li></ul></td></tr>
+
+<tr><td class="pub"><ul><li class="pub">
+Engin Bozdag and <a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2009). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2008-009.pdf">Performance Testing of Data Delivery Techniques for Ajax Applications</a></b>. <i>Journal of Web Engineering (JWE)</i> 8(4):287-315.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=988&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://swerl.tudelft.nl/bin/view/Main/CorPaulBezemer">Cor-Paul Bezemer</a> and <a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2009). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2009-011.pdf">Automated Security Testing of Web Widget Interactions</a></b>. In <i>Proceedings of the 7th joint meeting of the European Software Engineering Conference and the ACM SIGSOFT Symposium on the Foundations of Software Engineering (ESEC/FSE'09)</i>, pp. 81-91, Amsterdam, The Netherlands. ACM.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=1145&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> (2009). <i><b><a href="http://ece.ubc.ca/~amesbah/docs/mesbah-dissertation.pdf">Analysis and Testing of Ajax-based Single-Page Web Applications</a></b></i>. PhD Thesis, Delft University of Technology.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=1143&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+
+<tr><td class="year">2008</td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2008). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2008-013.pdf">A Component- and Push-based Architectural Style for Ajax Applications</a></b>. <i>Journal of Systems and Software (JSS)</i> 81(12):2194-2209.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=950&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and Engin Bozdag and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2008). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2008-022.pdf">Crawling Ajax by Inferring User Interface State Changes</a></b>. In D. Schwabe and F. Curbera and P. Dantzig (Eds.), <i>Proceedings of the 8th International Conference on Web Engineering (ICWE'08)</i>, pp. 122-134, Yorktown Heights, NY, USA. IEEE Computer Society.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=951&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+<tr><td class="pub"><ul><li class="pub">
+Vahid Gharavi and <a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2008). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2008-024.pdf">Modelling and Generating Ajax Applications: A Model-Driven Approach</a></b>. In <i>Proceedings of ICWE'08 Workshops, 7th International Workshop on Web-Oriented Software Technologies (IWWOST'08)</i>, pp. 38-43, Yorktown Heights, NY, USA. STU.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=960&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+
+<tr><td class="year">2007</td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2007). <b><a href="http://arxiv.org/pdf/cs.SE/0608111">An Architectural Style for Ajax</a></b>. In D. Paulish and I. Gorton and J. Tyree and D. Soni (Eds.), <i>Proceedings of the 6th Working IEEE/IFIP Conference on Software Architecture (WICSA'07)</i>, pp. 44-53, Mumbai, India. IEEE Computer Society.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=522&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2007). <b><a href="http://arxiv.org/pdf/cs.SE/0610094">Migrating Multi-page Web Applications to Single-page Ajax Interfaces</a></b>. In <i>Proceedings of the 11th European Conference on Software Maintenance and Reengineering (CSMR)</i>, pp. 181-190, Amsterdam, The Netherlands. IEEE Computer Society.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=555&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> (2007). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/SpciProject/icse-published.pdf">Ajaxifying Classic Web Applications</a></b>. In <i>Proceedings of the 29th International Conference on Software Engineering (ICSE'07 Companion), Doctoral Symposium</i>, pp. 81-82, Minneapolis, MN, USA. IEEE Computer Society.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=688&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+<tr><td class="pub"><ul><li class="pub">
+Engin Bozdag and <a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2007). <b><a href="http://swerl.tudelft.nl/twiki/pub/Main/TechnicalReports/TUD-SERG-2007-016.pdf">A Comparison of Push and Pull Techniques for Ajax</a></b>. In S. uang and M. Di Penta (Eds.), <i>Proceedings of the 9th IEEE International Symposium on Web Site Evolution (WSE)</i>, pp. 15-22, Paris, France. IEEE Computer Society.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=734&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+
+<tr><td class="year">2005</td></tr>
+<tr><td class="pub"><ul><li class="pub">
+<a class="author" href="http://ece.ubc.ca/~amesbah/">Ali Mesbah</a> and <a class="author" href="http://www.st.ewi.tudelft.nl/~arie/">Arie van Deursen</a> (2005). <b><a href="http://homepages.cwi.nl/~arie/papers/aopetstore/wse05.pdf">Crosscutting Concerns in J2EE Applications</a></b>. In D. Distante (Eds.), <i>Proceedings of the 7th IEEE International Symposium on Web Site Evolution (WSE)</i>, pp. 14-21, Budapest, Hungary. IEEE Computer Society.
+[&nbsp;<a class="bibtex button" href="http://publications.st.ewi.tudelft.nl/index.php?selectedPageId=list&amp;selectedBibtexId=523&amp;noheader=1">BibTeX</a>&nbsp;]
+</li></ul></td></tr>
+</tbody></table>

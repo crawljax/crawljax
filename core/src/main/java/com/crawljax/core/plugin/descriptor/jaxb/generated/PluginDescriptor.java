@@ -7,20 +7,14 @@
 
 package com.crawljax.core.plugin.descriptor.jaxb.generated;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 /**
  * <p>
  * Java class for anonymous complex type.
- * 
  * <p>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
  * <pre>
  * &lt;complexType&gt;
  *   &lt;complexContent&gt;
@@ -35,8 +29,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "name", "description", "crawljaxVersions",
@@ -54,9 +46,8 @@ public class PluginDescriptor {
 
 	/**
 	 * Gets the value of the name property.
-	 * 
+	 *
 	 * @return possible object is {@link String }
-	 * 
 	 */
 	public String getName() {
 		return name;
@@ -64,10 +55,8 @@ public class PluginDescriptor {
 
 	/**
 	 * Sets the value of the name property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
+	 *
+	 * @param value allowed object is {@link String }
 	 */
 	public void setName(String value) {
 		this.name = value;
@@ -75,9 +64,8 @@ public class PluginDescriptor {
 
 	/**
 	 * Gets the value of the description property.
-	 * 
+	 *
 	 * @return possible object is {@link String }
-	 * 
 	 */
 	public String getDescription() {
 		return description;
@@ -85,10 +73,8 @@ public class PluginDescriptor {
 
 	/**
 	 * Sets the value of the description property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link String }
-	 * 
+	 *
+	 * @param value allowed object is {@link String }
 	 */
 	public void setDescription(String value) {
 		this.description = value;
@@ -96,9 +82,8 @@ public class PluginDescriptor {
 
 	/**
 	 * Gets the value of the crawljaxVersions property.
-	 * 
+	 *
 	 * @return possible object is {@link VersionList }
-	 * 
 	 */
 	public VersionList getCrawljaxVersions() {
 		return crawljaxVersions;
@@ -106,10 +91,8 @@ public class PluginDescriptor {
 
 	/**
 	 * Sets the value of the crawljaxVersions property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link VersionList }
-	 * 
+	 *
+	 * @param value allowed object is {@link VersionList }
 	 */
 	public void setCrawljaxVersions(VersionList value) {
 		this.crawljaxVersions = value;
@@ -117,9 +100,8 @@ public class PluginDescriptor {
 
 	/**
 	 * Gets the value of the parameters property.
-	 * 
+	 *
 	 * @return possible object is {@link ParameterList }
-	 * 
 	 */
 	public ParameterList getParameters() {
 		return parameters;
@@ -127,10 +109,8 @@ public class PluginDescriptor {
 
 	/**
 	 * Sets the value of the parameters property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link ParameterList }
-	 * 
+	 *
+	 * @param value allowed object is {@link ParameterList }
 	 */
 	public void setParameters(ParameterList value) {
 		this.parameters = value;

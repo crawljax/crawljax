@@ -2,23 +2,22 @@
 
 package com.crawljax.util;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.custommonkey.xmlunit.Difference;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 /**
- * Test the useage of the Helper.getDifferences.
- * 
+ * Test the usage of the Helper.getDifferences.
+ *
  * @author slenselink@google.com (Stefan Lenselink)
  */
-public class XmlunitDifferenceTest {
+public class XmlUnitDifferenceTest {
 
 	@Test
-	public void testEmptyDoms() {
+	public void testEmptyDOMs() {
 		String left = "";
 		String right = "";
 		List<Difference> l = DomUtils.getDifferences(left, right);
@@ -26,7 +25,7 @@ public class XmlunitDifferenceTest {
 	}
 
 	@Test
-	public void testSameIdenticalDoms() {
+	public void testSameIdenticalDOMs() {
 		String left = "<abc></abc>";
 		String right = "<abc></abc>";
 		List<Difference> l = DomUtils.getDifferences(left, right);
@@ -34,7 +33,7 @@ public class XmlunitDifferenceTest {
 	}
 
 	@Test
-	public void testSameDomsArrtibutesSame() {
+	public void testSameDOMsAttributesSame() {
 		String left = "<abc><def value='bla'/></abc>";
 		String right = "<abc><def value='bla'/></abc>";
 		List<Difference> l = DomUtils.getDifferences(left, right);
@@ -42,7 +41,7 @@ public class XmlunitDifferenceTest {
 	}
 
 	@Test
-	public void testSameDomsArrtibutesFiltered() {
+	public void testSameDOMsAttributesFiltered() {
 		String left = "<abc><def value='bla123'/></abc>";
 		String right = "<abc><def value='bla'/></abc>";
 		List<Difference> l = DomUtils.getDifferences(left, right, Lists.newArrayList("value"));

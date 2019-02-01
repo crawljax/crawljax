@@ -1,4 +1,14 @@
-## [Version 3.5.1]
+## Version 4.0
+* Changed core to increase state coverage
+* Updated Selenium to 3.141.5
+* Updated dependencies
+* Fixed various bugs
+* Cleaned code
+* Removed deprecated APIs (e.g., DomChangeNotifierPlugin)
+* Docker support for running tests. Tests run in headless mode by default
+* Added image hash-based StateVertexes
+
+## Version 3.5.1
 * Updated Selenium to 2.41.0
 * Fixed stripped DOM method
 * Updated dependencies

@@ -2,8 +2,9 @@
 <html>
 <title>Nested IFrame</title>
 <head>
-<script language="javascript" src="../lib/jquery-2.0.3.min.js" type="text/javascript"></script>
-	<script type="text/javascript" >
+    <script language="javascript" src="../lib/jquery-2.0.3.min.js"
+            type="text/javascript"></script>
+    <script type="text/javascript">
 	
 	function toggle1() {
 		if(document.getElementById("button001").value == "Click Me !")
@@ -24,16 +25,17 @@ function doLoad(textf){
 	
 }
 	
-	</script>
+
+    </script>
 </head>
 
-<body>                            
-	<a href="javascript:void(0)" id="click-in-iframe-1" onclick="doLoad('some text from iframe')">load-c11</a>
-	<input id="button001" style="display:block" class="btn" type="button" 
-        name="firstButton" onclick="toggle1();" value="Click Me (c4)!" /> 
-	<input id="button002" style="display:block" class="btn" type="button" 
-        name="secondButton" onclick="toggle2();" value="Click Me Too (c5)!" />
-    <div id="content"></div>
+<body>
+<a href="javascript:void(0)" id="click-in-iframe-1" onclick="doLoad('some text from iframe')">load-c11</a>
+<input id="button001" style="display:block" class="btn" type="button"
+       name="firstButton" onclick="toggle1();" value="Click Me (c4)!"/>
+<input id="button002" style="display:block" class="btn" type="button"
+       name="secondButton" onclick="toggle2();" value="Click Me Too (c5)!"/>
+<div id="content"></div>
 </body>
 
 </html>
