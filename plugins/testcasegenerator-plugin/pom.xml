@@ -15,6 +15,13 @@
 	<description>Generates test cases from the crawl session.</description>
 	<url>http://crawljax.com</url>
 
+	<licenses>
+		<license>
+			<name>GNU General Public License v3</name>
+			<url>LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<properties>
 		<test.browser>CHROME_HEADLESS</test.browser>
