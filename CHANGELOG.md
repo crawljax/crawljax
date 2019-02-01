@@ -7,6 +7,7 @@
 * Removed deprecated APIs (e.g., DomChangeNotifierPlugin)
 * Docker support for running tests. Tests run in headless mode by default
 * Added image hash-based StateVertexes
+* The web interface (web module) is removed
 
 ## Version 3.5.1
 * Updated Selenium to 2.41.0
