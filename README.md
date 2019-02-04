@@ -8,6 +8,14 @@ Crawljax can easily be extended through its easy-to-use [plugin architecture](ht
 
 For more project info visit the [Crawljax website](http://crawljax.com).
 
+Maven
+-----
+
+	<dependency>
+	    <groupId>com.crawljax</groupId>
+	    <artifactId>crawljax-core</artifactId>
+	    <version>4.1</version>
+	</dependency>
 
 Documentation
 -------------
@@ -25,23 +33,16 @@ Keep track of development and community news.
 * Need a new feature or bug report? [Use the issue tracker](https://github.com/crawljax/crawljax/issues).
 * Have a question that's not a feature request or bug report? Ask on the [mailing list](https://groups.google.com/group/crawljax).
 
-License
--------
-
-This project is licensed under the ["Apache License, Version 2.0"](https://github.com/crawljax/crawljax/blob/master/LICENSE).
 
 Changelog
 ---------
 
 Detailed change history is avaialbe in our [changelog](https://github.com/crawljax/crawljax/blob/master/CHANGELOG.md).
 
-
-[![Analytics](https://ga-beacon.appspot.com/UA-12224196-2/crawljax/crawljax?pixel)](https://github.com/igrigorik/ga-beacon)
-
 Testing inside a Docker container
 ---------------------------------
 	
-Install [Docker](https://www.docker.com/) and run the "run-tests-in-docker.sh" script.
+Install [Docker](https://www.docker.com/) and run the "run-tests-in-docker.sh" script. It's recommended to increse your Docker memory to at least 4.0 GiB to avoid OOMs during testing. 
 
 Testing on your machine
 -----------------------
