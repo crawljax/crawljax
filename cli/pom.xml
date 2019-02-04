@@ -11,13 +11,13 @@
 	<description>The Crawljax command line interface</description>
 	<packaging>jar</packaging>
 
-	<repositories>
-		<repository>
-			<id>sonatype-nexus-snapshots</id>
-			<name>Sonatype Nexus Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-		</repository>
-	</repositories>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
 	<dependencies>
 		<dependency>
@@ -37,7 +37,6 @@
 			<artifactId>commons-validator</artifactId>
 			<version>1.6</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>com.crawljax.plugins</groupId>
