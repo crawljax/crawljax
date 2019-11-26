@@ -5,7 +5,7 @@ import com.crawljax.core.configuration.PreCrawlConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
-import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -39,7 +39,7 @@ public interface EmbeddedBrowser {
 	 * @return if fails.
 	 */
 	boolean fireEventAndWait(Eventable event)
-			throws ElementNotVisibleException, InterruptedException;
+			throws ElementNotInteractableException, InterruptedException;
 
 	/**
 	 * Removes the stripped items from {@link PreCrawlConfiguration#getFilterAttributeNames()}.

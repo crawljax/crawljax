@@ -17,7 +17,7 @@ import com.crawljax.util.ElementResolver;
 import com.crawljax.util.UrlUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -358,15 +358,16 @@ public class Crawler {
 		boolean isFired = false;
 		try {
 			isFired = browser.fireEventAndWait(eventToFire);
-
+			
+		} catch (ElementNotInteractableException | NoSuchElementException e) {
 			// Handle hidden anchor tags
-			if (!isFired && crawlRules.isCrawlHiddenAnchors() && eventToFire.getElement() != null
+			if (crawlRules.isCrawlHiddenAnchors() && eventToFire.getElement() != null
 					&& "A".equals(eventToFire.getElement().getTag())) {
 				isFired = visitAnchorHrefIfPossible(eventToFire);
+			} else {
+				LOG.debug("Ignoring invisible element {}", eventToFire.getElement());
 			}
-		} catch (ElementNotVisibleException | NoSuchElementException e) {
-			LOG.debug("Ignoring invisible element {}", eventToFire.getElement());
-			isFired = false;
+			
 		} catch (InterruptedException e) {
 			LOG.debug("Interrupted during fire event");
 			interruptThread();
