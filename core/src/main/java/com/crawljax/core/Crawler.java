@@ -363,10 +363,9 @@ public class Crawler {
 			if (!isFired && crawlRules.isCrawlHiddenAnchors() && eventToFire.getElement() != null
 					&& "A".equals(eventToFire.getElement().getTag())) {
 				isFired = visitAnchorHrefIfPossible(eventToFire);
-			} else {
-				LOG.debug("Ignoring invisible element {}", eventToFire.getElement());
 			}
 		} catch (ElementNotVisibleException | NoSuchElementException e) {
+			LOG.debug("Ignoring invisible element {}", eventToFire.getElement());
 			isFired = false;
 		} catch (InterruptedException e) {
 			LOG.debug("Interrupted during fire event");
