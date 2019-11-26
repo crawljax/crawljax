@@ -286,12 +286,12 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @throws InterruptedException when interrupted during the wait.
 	 */
 	private boolean fireEventWait(WebElement webElement, Eventable eventable)
-			throws ElementNotVisibleException, InterruptedException {
+			throws ElementNotInteractableException, InterruptedException {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
 					webElement.click();
-				} catch (ElementNotVisibleException e) {
+				} catch (ElementNotInteractableException e) {
 					throw e;
 				} catch (WebDriverException e) {
 					throwIfConnectionException(e);
@@ -429,7 +429,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	@Override
 	public synchronized boolean fireEventAndWait(Eventable eventable)
-			throws ElementNotVisibleException, NoSuchElementException, InterruptedException {
+			throws ElementNotInteractableException, NoSuchElementException, InterruptedException {
 		try {
 
 			boolean handleChanged = false;
@@ -462,7 +462,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				browser.switchTo().defaultContent();
 			}
 			return result;
-		} catch (ElementNotVisibleException | NoSuchElementException e) {
+		} catch (ElementNotInteractableException | NoSuchElementException e) {
 			throw e;
 		} catch (WebDriverException e) {
 			throwIfConnectionException(e);
