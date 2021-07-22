@@ -55,6 +55,7 @@ public class LogUtilTest {
 
 	@Test
 	public void noChangePrintsWarnLogLevel() {
+		LogUtil.setCrawljaxLogLevel(Level.WARN);
 		LoggerFactory.getLogger(CrawljaxRunner.class).warn("Test123");
 		LoggerFactory.getLogger(CrawljaxRunner.class).info("IAmNotPrinted");
 		assertThat(system.getConsoleOutput(), containsString("Test123"));
