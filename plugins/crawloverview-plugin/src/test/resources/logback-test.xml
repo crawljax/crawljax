@@ -8,10 +8,10 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.crawljax.plugins.crawloverview" level="DEBUG" />
-	<logger name="com.crawljax.test" level="DEBUG" />
+	<logger name="com.crawljax.plugins.crawloverview" level="INFO" />
+	<logger name="com.crawljax.test" level="INFO" />
 
-	<root level="WARN">
+	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 	</root>
 

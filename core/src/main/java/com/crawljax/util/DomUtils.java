@@ -1,9 +1,37 @@
 package com.crawljax.util;
 
-import com.crawljax.core.CrawljaxException;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.commons.lang3.StringUtils;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.Diff;
@@ -11,19 +39,19 @@ import org.custommonkey.xmlunit.Difference;
 import org.cyberneko.html.parsers.DOMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.crawljax.core.CrawljaxException;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 
 /**
  * Utility class that contains a number of helper functions used by Crawljax and some plugins.
@@ -159,6 +187,48 @@ public final class DomUtils {
      */
     public static Document removeScriptTags(Document dom) {
         return removeTags(dom, "SCRIPT");
+    }
+    
+    
+    public static Document removeHiddenInputs(Document dom) {
+    	return removeElementsUnderXpath(dom, "//INPUT[@type=\"hidden\"]");
+    }
+    
+    
+    /**
+     * Removes all the given tags from the document.
+     *
+     * @param dom     the document object.
+     * @param xpath the tag name, examples: script, style, meta
+     * @return the changed dom.
+     */
+    public static Document removeElementsUnderXpath(Document dom, String xpath) {
+        NodeList list;
+        try {
+            list = XPathHelper.evaluateXpathExpression(dom,
+                     xpath);
+
+            if(list.getLength() == 0) {
+            	list =  XPathHelper.evaluateXpathExpression(dom,
+                        xpath.toUpperCase());
+            }
+            
+            while (list.getLength() > 0) {
+                Node sc = list.item(0);
+
+                if (sc != null) {
+                    sc.getParentNode().removeChild(sc);
+                }
+
+                list = XPathHelper.evaluateXpathExpression(dom,
+                         xpath);
+            }
+        } catch (XPathExpressionException e) {
+            LOGGER.error("Error while removing tag " + xpath, e);
+        }
+
+        return dom;
+
     }
 
     /**
@@ -460,7 +530,8 @@ public final class DomUtils {
     public static NodeList getAllLeafNodes(Document document) throws XPathExpressionException {
         XPathExpression xpath =
                 XPathFactory.newInstance().newXPath().compile("//*[count(./*) = 0]");
-        return (NodeList) xpath.evaluate(document, XPathConstants.NODESET);
+        NodeList nodes = (NodeList) xpath.evaluate(document, XPathConstants.NODESET);
+        return nodes;
     }
 
     public static String getAttributeFromElement(Node element, String attribute) {
@@ -586,5 +657,206 @@ public final class DomUtils {
         }
         return null;
     }
+    
+    public static String getDomWithoutHead(String html) {
+    	Pattern p = Pattern.compile("<BODY(.*?)</BODY>",
+				Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(html);
+		String htmlFormatted = "";
+		if(m.find()) {
+			htmlFormatted= m.group();
+		}
+		else {
+			p = Pattern.compile("<HEAD(.*?)</HEAD>",
+					Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+			m = p.matcher(html);
+			htmlFormatted = m.replaceAll("");
+		}
+		
+		htmlFormatted = htmlFormatted.replaceAll("\\s+","");
+		p = Pattern.compile("<\\?xml:(.*?)>");
+		m = p.matcher(htmlFormatted);
+		htmlFormatted = m.replaceAll("");
+		
+		p = Pattern.compile("jsessionid=[a-zA-Z0-9]*");
+		m = p.matcher(htmlFormatted);
+		htmlFormatted = m.replaceAll("");
+		//htmlFormatted = filterAttributes(htmlFormatted);
+		return htmlFormatted;
+    }
+
+	public static Document removeHead(Document document) {
+		String title = document.getElementsByTagName("TITLE").item(0).getTextContent();
+		
+		Node head = document.getElementsByTagName("HEAD").item(0);
+		Node sibling = head.getNextSibling();
+		
+		Node parent = head.getParentNode();
+		
+		head.getParentNode().removeChild(head);
+		
+		parent.insertBefore(document.createElement("HEAD"), sibling);
+		
+		head = document.getElementsByTagName("HEAD").item(0);
+		Node newTitleElement = document.createElement("TITLE");
+		newTitleElement.setTextContent(title);
+		head.appendChild(newTitleElement);
+
+		
+		return document;
+	}
+
+	public static Document removeComments(Document document) {
+		XPathFactory xpathFactory = XPathFactory.newInstance();
+		XPathExpression xpathExp;
+        try {
+            xpathExp = xpathFactory.newXPath().compile(
+                    "//comment()");
+            NodeList comments = (NodeList) xpathExp.evaluate(document, XPathConstants.NODESET);
+            for (int i = 0; i < comments.getLength(); i++) {
+                Node comment = comments.item(i);
+                if(comment.getParentNode()!=null)
+                	comment.getParentNode().removeChild(comment);
+                
+            }
+        } catch (XPathExpressionException e) {
+
+        }
+        return document;
+	}
+    
+
+    public static int getNumLeafNodes(Node node) throws XPathExpressionException {
+    	String startingxpath = XPathHelper.getXPathExpression(node);
+        XPathExpression xpath =
+                XPathFactory.newInstance().newXPath().compile(startingxpath + "//*[count(./*) = 0]");
+        NodeList leafNodes = (NodeList) xpath.evaluate(node, XPathConstants.NODESET);
+//        System.out.println(leafNodes.item(0));
+		return leafNodes.getLength();
+    }
+
+    
+    public static NodeList getAllSubtreeNodes(Node node) throws XPathExpressionException{
+    	String startingxpath = XPathHelper.getXPathExpression(node);
+        XPathExpression xpath =
+                XPathFactory.newInstance().newXPath().compile(startingxpath + "//*");
+        NodeList leafNodes = (NodeList) xpath.evaluate(node, XPathConstants.NODESET);
+//        System.out.println(leafNodes.item(0));
+		return leafNodes;
+    }
+    
+    public static String getStrippedDom(String fullDom) {
+
+		try {
+//			String dom = toUniformDOM(DomUtils.getDocumentToString(getDomTreeWithFrames_GoldStandards()));
+			String dom = toUniformDOM(fullDom);
+			LOGGER.trace(dom);
+			return dom;
+		} catch (Exception e) {
+			LOGGER.warn("Could not get the dom", e);
+			return "";
+		}
+	}
+    
+    
+    /**
+	 * @param html The html string.
+	 * @return uniform version of dom with predefined attributes stripped
+	 */
+	private static String toUniformDOM(String html) {
+
+		Pattern p = Pattern.compile("<SCRIPT(.*?)</SCRIPT>",
+				Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(html);
+		String htmlFormatted = m.replaceAll("");
+
+		p = Pattern.compile("<\\?xml:(.*?)>");
+		m = p.matcher(htmlFormatted);
+		htmlFormatted = m.replaceAll("");
+
+		htmlFormatted = filterAttributes(htmlFormatted);
+		return htmlFormatted;
+	}
+
+	/**
+	 * Filters attributes from the HTML string.
+	 *
+	 * @param html The HTML to filter.
+	 * @return The filtered HTML string.
+	 */
+	private static String filterAttributes(String html) {
+		String filteredHtml = html;
+		List<String> filterAttributes = new ArrayList<String>();
+		for (String attribute : filterAttributes ) {
+			String regex = "\\s" + attribute + "=\"[^\"]*\"";
+			Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(html);
+			filteredHtml = m.replaceAll("");
+		}
+		return filteredHtml;
+	}
+
+	/**
+	 * returns true if parent and child are the same node
+	 * @param parent
+	 * @param child
+	 * @return
+	 */
+	public static boolean contains(Node parent, Node child) {
+		if(parent == null || child==null) {
+			return false;
+		}
+		
+		if((parent.compareDocumentPosition(child) & Document.DOCUMENT_POSITION_CONTAINED_BY)  == 0) {
+			if(!parent.isSameNode(child)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static Map<String, Set<String>> getAllAttributes(Document dom, Map<String, Set<String>> map, Set<String> filterSet){
+		
+		 XPathExpression xpath;
+		
+        try {
+			xpath = XPathFactory.newInstance().newXPath().compile( "//@*");
+
+			NodeList leafNodes = (NodeList) xpath.evaluate(dom.getDocumentElement(), XPathConstants.NODESET);
+//			System.out.println(leafNodes.getLength());
+			for(int i=0; i<leafNodes.getLength(); i++) {
+//				System.out.println(leafNodes.item(i).getNodeName() + " : " + leafNodes.item(i).getNodeValue() );
+				String key =  leafNodes.item(i).getNodeName();
+				
+				if(filterSet==null) {
+					filterSet = new HashSet<String>();
+				}
+
+				if(filterSet.isEmpty()){ // Add common attributes
+					filterSet.add("id");
+					filterSet.add("class");
+					filterSet.add("name");
+					filterSet.add("href");
+					filterSet.add("action");
+					filterSet.add("formaction");
+				}
+				
+				if(!filterSet.contains(key)) {
+					continue;
+				}
+				
+				
+				String value = leafNodes.item(i).getNodeValue().trim();
+				if(!map.containsKey(key)) {
+					map.put(key, new HashSet<String>());
+				}
+				map.get(key).add(value);
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return map;
+	}
 
 }

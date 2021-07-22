@@ -1,5 +1,9 @@
 package com.crawljax.core.configuration;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.util.concurrent.TimeUnit;
+
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
@@ -8,18 +12,15 @@ import com.crawljax.core.configuration.CrawlActionsBuilder.ExcludeByParentBuilde
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.configuration.PreCrawlConfiguration.PreCrawlConfigurationBuilder;
 import com.crawljax.core.state.Eventable.EventType;
+import com.crawljax.fragmentation.FragmentRules;
 import com.crawljax.oraclecomparator.OracleComparator;
-import com.crawljax.oraclecomparator.comparators.SimpleComparator;
+import com.crawljax.oraclecomparator.comparators.DummyComparator;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSortedSet;
-
-import java.util.concurrent.TimeUnit;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 public class CrawlRules {
 
@@ -48,6 +49,13 @@ public class CrawlRules {
 			crawlRules.formFillMode = formFillMode;
 			return this;
 		}
+		
+		public CrawlRulesBuilder setFormFillOrder(FormFillOrder formFillOrder) {
+			crawlRules.formFillOrder = formFillOrder;
+			return this;
+		}
+		
+		
 
 		public CrawlRulesBuilder setCrawlPriorityMode(CrawlPriorityMode crawlPriorityMode) {
 			crawlRules.crawlPriorityMode = crawlPriorityMode;
@@ -62,6 +70,64 @@ public class CrawlRules {
 		public CrawlRulesBuilder setDelayNearDuplicateCrawling(
 				boolean delayNearDuplicateCrawling) {
 			crawlRules.delayNearDuplicateCrawling = delayNearDuplicateCrawling;
+			return this;
+		}
+		
+		public CrawlRulesBuilder applyNonSelAdvantage(boolean applyNonSelAdv) {
+			crawlRules.applyNonSelAdvantage = applyNonSelAdv;
+			return this;
+		}
+		
+		public CrawlRulesBuilder avoidUnrelatedBacktracking(boolean avoidUnrelatedBacktracking) {
+			crawlRules.avoidUnrelatedBacktracking = avoidUnrelatedBacktracking;
+			return this;
+		}
+		
+		public CrawlRulesBuilder avoidDifferentBacktracking(boolean avoidDifferentBacktracking) {
+			crawlRules.avoidDifferentBacktracking = avoidDifferentBacktracking;
+			return this;
+		}
+		
+		public CrawlRulesBuilder useEquivalentReset(boolean useEquivalentReset) {
+			crawlRules.useEquivalentReset = useEquivalentReset;
+			return this;
+		}
+		
+		/**
+		 * maxRepeat default value is 2
+		 * @param skipExploredActions
+		 * @param maxRepeatExploredActions
+		 * @return
+		 */
+		public CrawlRulesBuilder skipExploredActions(boolean skipExploredActions, int maxRepeatExploredActions) {
+			crawlRules.skipExploredActions = skipExploredActions;
+			crawlRules.maxRepeatExploredActions = maxRepeatExploredActions;
+			return this;
+		}
+		
+		
+		/**
+		 * avoiding differentbacktracking automatically stops unrelatedbacktracking
+		 * @param avoidUnrelatedBacktracking
+		 * @param avoidDifferentBacktracking
+		 * @param useEquivalentReset
+		 * @return
+		 */
+		public CrawlRulesBuilder setBacktrackingRules(boolean avoidUnrelatedBacktracking, boolean avoidDifferentBacktracking, boolean useEquivalentReset) {
+			avoidUnrelatedBacktracking(avoidUnrelatedBacktracking);
+			avoidDifferentBacktracking(avoidDifferentBacktracking);
+			useEquivalentReset(useEquivalentReset);
+			return this;
+		}
+		
+		
+		public CrawlRulesBuilder setUsefulFragmentRules(FragmentRules fragmentRules) {
+			crawlRules.usefulFragmentRules = fragmentRules;
+			return this;
+		}
+		
+		public CrawlRulesBuilder setRestoreConnectedStates(boolean b) {
+			crawlRules.restoreConnectedEdges = b;
 			return this;
 		}
 
@@ -222,6 +288,10 @@ public class CrawlRules {
 		public CrawlElement click(String tagName) {
 			return crawlActionsBuilder.click(tagName);
 		}
+		
+		public CrawlElement enter(String tagName) {
+			return crawlActionsBuilder.enter(tagName);
+		}
 
 		/**
 		 * @param tagNames
@@ -300,12 +370,17 @@ public class CrawlRules {
 		private void setupOracleComparatorsOrDefault() {
 			ImmutableList<OracleComparator> comparators = oracleComparators.build();
 			if (comparators.isEmpty()) {
+//				crawlRules.oracleComparators = ImmutableList
+//						.of(new OracleComparator("SimpleComparator", new SimpleComparator()));
 				crawlRules.oracleComparators = ImmutableList
-						.of(new OracleComparator("SimpleComparator", new SimpleComparator()));
+						.of(new OracleComparator("DummyComparator", new DummyComparator()));
+
 			} else {
 				crawlRules.oracleComparators = comparators;
 			}
 		}
+
+		
 	}
 
 	/**
@@ -338,8 +413,16 @@ public class CrawlRules {
 	public enum FormFillMode {
 		NORMAL, RANDOM, TRAINING, XPATH_TRAINING
 	}
+	public enum FormFillOrder {
+		NORMAL, DOM, VISUAL
+	}
 
 	private FormFillMode formFillMode = FormFillMode.NORMAL;
+	private FormFillOrder formFillOrder = FormFillOrder.NORMAL;
+	
+	public FormFillOrder getFormFillOrder() {
+		return formFillOrder;
+	}
 
 	private InputSpecification inputSpecification = new InputSpecification();
 	private boolean testInvariantsWhileCrawling = true;
@@ -442,6 +525,38 @@ public class CrawlRules {
 
 	private boolean delayNearDuplicateCrawling = true;
 
+	private boolean applyNonSelAdvantage = false;
+	
+	private boolean avoidUnrelatedBacktracking = false;
+
+	private boolean useEquivalentReset = false;
+
+	private boolean avoidDifferentBacktracking = false;
+
+	private boolean skipExploredActions = true;
+
+	public static long getDefaultWaitAfterReload() {
+		return DEFAULT_WAIT_AFTER_RELOAD;
+	}
+
+	public static long getDefaultWaitAfterEvent() {
+		return DEFAULT_WAIT_AFTER_EVENT;
+	}
+
+	public boolean isCrawlFrames() {
+		return crawlFrames;
+	}
+
+	public boolean isFollowExternalLinks() {
+		return followExternalLinks;
+	}
+
+	private int maxRepeatExploredActions = 2;
+
+	private FragmentRules usefulFragmentRules = new FragmentRules();
+
+	private boolean restoreConnectedEdges = false;
+
 	public CrawlPriorityMode getCrawlPriorityMode() {
 		return crawlPriorityMode;
 	}
@@ -452,6 +567,37 @@ public class CrawlRules {
 
 	public boolean isDelayNearDuplicateCrawling() {
 		return delayNearDuplicateCrawling;
+	}
+	
+
+	public boolean isApplyNonSelAdvantage() {
+		return applyNonSelAdvantage ;
+	}
+	
+	public boolean isAvoidUnrelatedBacktracking() {
+		return avoidUnrelatedBacktracking;
+	}
+	
+
+	public boolean isAvoidDifferentBacktracking() {		
+		return avoidDifferentBacktracking;
+	}
+
+	public boolean isUseEquivalentReset() {
+		return useEquivalentReset;
+	}
+
+
+	public boolean isSkipExploredActions() {
+		return skipExploredActions;
+	}
+
+	public int getMaxRepeatExploredActions() {
+		return maxRepeatExploredActions;
+	}
+	
+	public FragmentRules getUsefulFragmentRules() {
+		return usefulFragmentRules ;
 	}
 
 	@Override
@@ -506,4 +652,10 @@ public class CrawlRules {
 				.add("followExternalLinks", followExternalLinks).toString();
 	}
 
+	public boolean isRestoreConnectedEdges() {
+		return restoreConnectedEdges ;
+	}
+
+
+	
 }

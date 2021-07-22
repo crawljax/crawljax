@@ -3,6 +3,8 @@ package com.crawljax.di;
 import com.codahale.metrics.MetricRegistry;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.CrawlSessionNotSetupYetException;
+import com.crawljax.core.CrawlTaskConsumer;
+import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateVertex;
@@ -40,14 +42,31 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 
 	/**
 	 * @param indexState the root of the SFG
+	 * @param firstConsumer 
 	 * @throws IllegalStateException when the method is invoked more than once.
 	 */
-	public void setup(StateVertex indexState) {
+	public void setup(StateVertex indexState, CrawlTaskConsumer firstConsumer) {
 		if (!isSet.getAndSet(true)) {
 			LOG.debug("Setting up the crawl session");
 			StateVertex added = stateFlowGraph.putIndex(indexState);
 			Preconditions.checkArgument(added == null, "Could not set the initial state");
-			session = new CrawlSession(config, stateFlowGraph, indexState, registry);
+			session = new CrawlSession(config, firstConsumer.getContext().getFragmentManager(), stateFlowGraph, indexState, registry);
+		} else {
+			throw new IllegalStateException("Session is already set");
+		}
+	}
+	
+	/**
+	 * Alternate for consumer 
+	 * @param indexState
+	 * @param context
+	 */
+	public void setup(StateVertex indexState, CrawlerContext context) {
+		if (!isSet.getAndSet(true)) {
+			LOG.debug("Setting up the crawl session");
+			StateVertex added = stateFlowGraph.putIndex(indexState);
+			Preconditions.checkArgument(added == null, "Could not set the initial state");
+			session = new CrawlSession(config, context.getFragmentManager(), stateFlowGraph, indexState, registry);
 		} else {
 			throw new IllegalStateException("Session is already set");
 		}

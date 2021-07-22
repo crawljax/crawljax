@@ -2,6 +2,7 @@ package com.crawljax.core.state;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.ExitNotifier;
+import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -49,6 +50,18 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 
 	private final ExitNotifier exitNotifier;
 	private final StateVertexFactory vertexFactory;
+
+	private List<Eventable> expiredEdges = new ArrayList<Eventable>();
+
+	private List<StateVertex> expiredStates = new ArrayList<StateVertex>();
+
+	public List<Eventable> getExpiredEdges() {
+		return expiredEdges;
+	}
+	
+	public List<StateVertex> getExpiredStates() {
+		return expiredStates;
+	}
 
 	/**
 	 * The constructor.
@@ -159,10 +172,16 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 		}
 	}
 
+	/**
+	 * Adding assignment to dynamic fragments in case the vertex is hybridstate vertex
+	 */
 	@Override
 	public boolean hasClone(StateVertex vertex) {
 		for (StateVertex vertexOfGraph : sfg.vertexSet()) {
 			if (vertex.equals(vertexOfGraph)) {
+				if(vertexOfGraph instanceof HybridStateVertexImpl) {
+					((HybridStateVertexImpl) vertexOfGraph).assignDynamicFragments(vertex);
+				}
 				return true;
 			}
 		}
@@ -407,5 +426,59 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
 
 		return ImmutableSet.copyOf(result);
 	}
+	
+	@Override
+	public boolean removeEdge(Eventable event) {
+		this.expiredEdges.add(event);
+		sfg.removeEdge(event);
+		return true;
+	}
 
+	@Override
+	public boolean restoreEdge(Eventable event) {
+		if(expiredEdges.contains(event)) {
+			expiredEdges.remove(event);
+			return addEdge(event.getSourceStateVertex(), event.getTargetStateVertex(), event);
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean removeState(StateVertex state) {
+		if(this.expiredStates.contains(state)){
+			LOG.warn("Trying to remove already expired state {} ", state.getId());
+		}
+		else {
+			expiredStates.add(state);
+			LOG.info("Removing {} and all its incoming edges ", state.getName());
+		}
+		ImmutableSet<Eventable> incomingEdges = getIncomingClickable(state);
+		for(Eventable incomingEdge: incomingEdges) {
+			removeEdge(incomingEdge);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean restoreState(StateVertex state) {
+		if(expiredStates.contains(state)) {
+			expiredStates.remove(state);
+			LOG.info("Restoring {} and all its incoming edges ", state.getName());
+		}
+		else {
+			LOG.debug("No need to restore unexpired state {}", state.getName());
+			return false;
+		}
+		for(Eventable expired: expiredEdges) {
+			if(expired.getTargetStateVertex().equals(state)) {
+				long id = expired.getId();
+				boolean added = addEdge(expired.getSourceStateVertex(), expired.getTargetStateVertex(), expired);
+				if(!added) {
+					LOG.debug("Retaining the id for consistency in tests");
+					expired.setId(id);
+				}
+			}
+		}
+		return true;
+	}
 }

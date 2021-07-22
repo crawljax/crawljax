@@ -87,6 +87,15 @@ public class CrawlActionsBuilder {
 		crawlElements.add(crawlTag);
 		return crawlTag;
 	}
+	
+	public CrawlElement enter(String tagName) {
+		checkNotRead();
+		Preconditions.checkNotNull(tagName, "Tag name cannot be null");
+		CrawlElement crawlTag = new CrawlElement(EventType.enter,
+				tagName.toUpperCase());
+		crawlElements.add(crawlTag);
+		return crawlTag;
+	}
 
 	/**
 	 * Set of HTML elements Crawljax will click during crawling For example 1)

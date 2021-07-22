@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_java;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -22,11 +20,15 @@ import org.opencv.imgproc.Imgproc;
 import com.crawljax.plugins.testcasegenerator.visualdiff.pageobjects.IPageObjectFactory;
 import com.crawljax.plugins.testcasegenerator.visualdiff.pageobjects.Page;
 import com.crawljax.plugins.testcasegenerator.visualdiff.pageobjects.PageObject;
+import com.crawljax.stateabstractions.visual.OpenCVLoad;
 
 /**
  * Detects objects on web pages with image processing.
  */
 public class ObjectDetection {
+	static {
+		OpenCVLoad.load();
+	}
 
 	private Mat image;
 	private Mat adjusted;
@@ -36,9 +38,6 @@ public class ObjectDetection {
 
 	private List<PageObject> pageObjects;
 
-	static {
-		Loader.load(opencv_java.class);
-	}
 
 	public static void directoryCheck(String dir) throws IOException {
 		final File file = new File(dir);

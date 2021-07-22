@@ -1,14 +1,20 @@
 package com.crawljax.plugins.testcasegenerator.util;
 
-import com.crawljax.plugins.testcasegenerator.report.TestRecord;
-import com.crawljax.util.DomUtils;
-import com.crawljax.util.FSUtils;
-import com.google.gson.Gson;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.inject.Singleton;
@@ -18,25 +24,30 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.crawljax.plugins.testcasegenerator.report.TestRecord;
+import com.crawljax.util.DomUtils;
+import com.crawljax.util.FSUtils;
+import com.google.gson.Gson;
 
 @Singleton
 public class WorkDirManager {
 
+//	public static String TEST_RESULTS_HTML_VM = "TestResults2.html.vm";
 	private static final Logger LOG = LoggerFactory.getLogger(WorkDirManager.class);
 
 	public WorkDirManager() {
 	}
 
-	public void saveTestRecordMap(List<TestRecord> records, int testRunIndex, String url, String testRunFolder) {
-		File runFile = new File(testRunFolder, "testRun.json");
+	public void saveTestRecordMap(List<TestRecord> records, int testRunIndex, String url, String testRunFolder,
+			String jsonFileName, String reportFileName, String templateFile) {
+		File runFile = new File(testRunFolder, jsonFileName);
 
 		HashMap<String, TestRecord> recordMap = new HashMap<String, TestRecord>();
 
@@ -55,13 +66,14 @@ public class WorkDirManager {
 			String json = new Gson().toJson(recordMap);
 			file.write(json.getBytes());
 			file.close();
-			copyHTMLReport(testRunFolder, testRunIndex, url, recordMap);
+			copyHTMLReport(testRunFolder, testRunIndex, url, recordMap, reportFileName, templateFile);
 		} catch (IOException e) {
 			LOG.error("Could not save test run record {}", recordMap);
 		}
 	}
 
-	private void copyHTMLReport(String testRunFolder, int testExecutionNumber, String url, HashMap<String, TestRecord> recordMap) throws IOException {
+	private void copyHTMLReport(String testRunFolder, int testExecutionNumber, String url,
+			HashMap<String, TestRecord> recordMap, String fileName, String templateFile) throws IOException {
 		VelocityEngine engine = new VelocityEngine();
 		engine.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogChute");
 		engine.setProperty("resource.loader", "file");
@@ -87,9 +99,9 @@ public class WorkDirManager {
 		context.put("diff_json", json.replace("\\", "\\\\").replace("`", "\\`"));
 		context.put("url", url);
 		context.put("execution", testExecutionNumber);
-		Template template = engine.getTemplate("TestResults.html.vm");
+		Template template = engine.getTemplate(templateFile);
 		FSUtils.directoryCheck(testRunFolder);
-		File f = new File(testRunFolder + File.separator + "TestResults.html");
+		File f = new File(testRunFolder + File.separator + fileName);
 		FileWriter writer = new FileWriter(f);
 		template.merge(context, writer);
 		writer.flush();
@@ -112,8 +124,7 @@ public class WorkDirManager {
 	}
 
 	public void saveTestRecord(TestRecord record, String testFolder) {
-		File recordFile =
-		        new File(testFolder, "test.json");
+		File recordFile = new File(testFolder, "test.json");
 		try {
 			if (!recordFile.exists()) {
 				recordFile.getParentFile().mkdirs();
@@ -129,22 +140,24 @@ public class WorkDirManager {
 		}
 	}
 	/*
-	 * public List<TestRecord> loadTestRecords(File testFolder) { List<TestRecord> testRecords = new
-	 * ArrayList<TestRecord>(); File[] testFiles = testFolder.listFiles(); for (File f : testFiles)
-	 * { if (f.isDirectory()) { File record = new File(f, "test.json"); if (record.exists()) {
-	 * TestRecord testRecord = loadTestRecord(record); // clean up records that crashed unexpectedly
-	 * if (testRecord.getTestStatus() != TestStatusType.success && testRecord.getTestStatus() !=
-	 * TestStatusType.failure) testRecord.setTestStatus(TestStatusType.failure); int length =
+	 * public List<TestRecord> loadTestRecords(File testFolder) { List<TestRecord>
+	 * testRecords = new ArrayList<TestRecord>(); File[] testFiles =
+	 * testFolder.listFiles(); for (File f : testFiles) { if (f.isDirectory()) {
+	 * File record = new File(f, "test.json"); if (record.exists()) { TestRecord
+	 * testRecord = loadTestRecord(record); // clean up records that crashed
+	 * unexpectedly if (testRecord.getTestStatus() != TestStatusType.success &&
+	 * testRecord.getTestStatus() != TestStatusType.failure)
+	 * testRecord.setTestStatus(TestStatusType.failure); int length =
 	 * testRecords.size(); if (length > 0) { for (int i = 0; i < length; i++) { if
-	 * (testRecords.get(i).getMethodName() < testRecord.getMethodName()) { testRecords.add(i,
-	 * testRecord); break; } } } else testRecords.add(testRecord); } } } return testRecords; }
+	 * (testRecords.get(i).getMethodName() < testRecord.getMethodName()) {
+	 * testRecords.add(i, testRecord); break; } } } else
+	 * testRecords.add(testRecord); } } } return testRecords; }
 	 */
 
 	private static void writeThumbNail(File target, BufferedImage screenshot) throws IOException {
 		int THUMBNAIL_WIDTH = 100;
 		int THUMBNAIL_HEIGHT = 100;
-		BufferedImage resizedImage =
-		        new BufferedImage(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		BufferedImage resizedImage = new BufferedImage(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = resizedImage.createGraphics();
 		g.drawImage(screenshot, 0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Color.WHITE, null);
 		g.dispose();
@@ -152,9 +165,10 @@ public class WorkDirManager {
 	}
 
 	/*
-	 * public TestRecord loadTestRecord(File testFile) { TestRecord testRecord = null; try {
-	 * testRecord = mapper.readValue(testFile, TestRecord.class); } catch (IOException e) {
-	 * LOG.error("Could not load test {}", testFile.getName()); } return testRecord; }
+	 * public TestRecord loadTestRecord(File testFile) { TestRecord testRecord =
+	 * null; try { testRecord = mapper.readValue(testFile, TestRecord.class); }
+	 * catch (IOException e) { LOG.error("Could not load test {}",
+	 * testFile.getName()); } return testRecord; }
 	 */
 
 	public int getNumTestRecords(File testRecordsFolder) {
@@ -195,8 +209,7 @@ public class WorkDirManager {
 	 * @return the current output folder for the diff.
 	 */
 	public File getDiffsFolder(String testRunFolderPath, TestRecord testRecord) {
-		File methodFolder =
-		        new File(testRunFolderPath + File.separator + testRecord.getMethodName());
+		File methodFolder = new File(testRunFolderPath + File.separator + testRecord.getMethodName());
 		if (!methodFolder.exists()) {
 			methodFolder.mkdir();
 		}

@@ -4,6 +4,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.core.state.StateVertexFactory;
+import com.crawljax.stateabstractions.visual.OpenCVLoad;
 import com.crawljax.util.FSUtils;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
@@ -20,6 +21,9 @@ import java.io.IOException;
  * {@link Object#equals(Object)} function based on the visual hash of the web page's screenshot.
  */
 public class BlockMeanImageHashStateVertexFactory extends StateVertexFactory {
+	static {
+		OpenCVLoad.load();
+	}
 
 	private static final Logger LOG =
 			LoggerFactory.getLogger(BlockMeanImageHashStateVertexFactory.class.getName());
@@ -28,6 +32,11 @@ public class BlockMeanImageHashStateVertexFactory extends StateVertexFactory {
 	
 	private static final int THUMBNAIL_WIDTH = 200;
 	private static final int THUMBNAIL_HEIGHT = 200;
+	private static double threshold = 0.0;
+	
+	public BlockMeanImageHashStateVertexFactory(double treshold) {
+		threshold = treshold;
+	}
 
 	@Override
 	public StateVertex newStateVertex(int id, String url, String name, String dom,
@@ -38,7 +47,7 @@ public class BlockMeanImageHashStateVertexFactory extends StateVertexFactory {
 		String imageFile = saveImage(image, name);
 		Mat hashMat = visHash.getHash(imageFile);
 
-		return new BlockMeanImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat);
+		return new BlockMeanImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat, threshold);
 	}
 
 	private static String saveImage(BufferedImage image, String name) {
@@ -67,7 +76,7 @@ public class BlockMeanImageHashStateVertexFactory extends StateVertexFactory {
 
 	@Override
 	public String toString() {
-		return this.visHash.getHashName();
+		return this.visHash.getHashName() +"_"+ threshold;
 	}
 
 	public double getBlockMeanImageHashMaxRaw() {

@@ -4,6 +4,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.core.state.StateVertexFactory;
+import com.crawljax.stateabstractions.visual.OpenCVLoad;
 import com.crawljax.util.FSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,9 @@ import java.io.IOException;
  * {@link Object#equals(Object)} function based on the Stripped dom.
  */
 public class DHashStateVertexFactory extends StateVertexFactory {
+	static {
+		OpenCVLoad.load();
+	}
 
 	private static final Logger LOG =
 			LoggerFactory.getLogger(DHashStateVertexFactory.class.getName());

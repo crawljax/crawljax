@@ -57,7 +57,8 @@ public class PluginsWithCrawlerTest {
 		builder.crawlRules().addInvariant("Never contain Final state S8",
 				new NotRegexCondition("Final state S2"));
 
-		builder.addPlugin((PreCrawlingPlugin) config -> plugins.add(PreCrawlingPlugin.class));
+		builder.addPlugin((PreCrawlingPlugin) config -> 
+		plugins.add(PreCrawlingPlugin.class));
 
 		builder.addPlugin((OnNewStatePlugin) (context, state) -> {
 			plugins.add(OnNewStatePlugin.class);
@@ -72,6 +73,7 @@ public class PluginsWithCrawlerTest {
 			plugins.add(OnBrowserCreatedPlugin.class);
 			assertNotNull(newBrowser);
 		});
+		
 
 		builder.addPlugin((OnInvariantViolationPlugin) (invariant, context) -> {
 			plugins.add(OnInvariantViolationPlugin.class);
@@ -122,6 +124,10 @@ public class PluginsWithCrawlerTest {
 
 		CrawljaxConfiguration config = builder.build();
 
+		try {
+		System.out.println(plugins.get(1).getName());
+		}catch(Exception ex) {}
+		
 		CrawljaxRunner controller = new CrawljaxRunner(config);
 		session = controller.call();
 

@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.crawljax.plugins.testcasegenerator.TestSuiteHelper;
+import com.crawljax.plugins.testcasegenerator.fragDiff.FragDiff;
+
 public class TestRecord {
+	private int methodNumber;
 	private String methodName;
 	private Date createTime;
 	private Date startTime;
@@ -154,6 +158,18 @@ public class TestRecord {
 		setFailureMessage(message);
 	}
 
+	public int getMethodNumber() {
+		return methodNumber;
+	}
+
+	public void setMethodNumber(int methodNumber) {
+		this.methodNumber = methodNumber;
+	}
+
+	public String getFailureMessage() {
+		return failureMessage;
+	}
+	
 	/**
 	 * @param vertexName
 	 *            The name of the state vertex to which this diff corresponds to
@@ -161,12 +177,23 @@ public class TestRecord {
 	 *            old state
 	 * @param newState
 	 *            new state
+	 * @param compResult TODO
 	 */
-	public void writeDiffToTestRecord(String vertexName, String oldState, String newState) {
+	public void writeDiffToTestRecord(String vertexName, String oldState, String newState, String compResult) {
 		TestStateDiff diff = new TestStateDiff();
 		diff.setState(vertexName);
 		diff.setOldState(oldState);
 		diff.setNewState(newState);
+		diff.setCompResult(compResult);
+		addDiff(diff);
+	}
+
+	public void writeDiffToTestRecord(String vertexName, FragDiff fragDiff) {
+		TestStateDiff diff = new TestStateDiff();
+		diff.setState(vertexName);
+		diff.setOldState(fragDiff.getOldFile());
+		diff.setNewState(fragDiff.getNewFile());
+		diff.setCompResult(fragDiff.getComp());
 		addDiff(diff);
 	}
 }

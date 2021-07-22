@@ -55,6 +55,8 @@ public class StateMachine {
 	public StateVertex newStateFor(EmbeddedBrowser browser) {
 		return stateFlowGraph.newStateFor(browser.getCurrentUrl(), browser.getStrippedDom(),
 				stateComparator.getStrippedDom(browser), browser);
+//		return stateFlowGraph.newStateFor(browser.getCurrentUrl(), browser.getStrippedDom(),
+//				browser.getStrippedDomWithoutIframeContent(), browser);
 	}
 
 	/**

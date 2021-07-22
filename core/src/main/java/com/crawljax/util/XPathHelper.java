@@ -1,13 +1,5 @@
 package com.crawljax.util;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.xml.xpath.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,11 +7,30 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.crawljax.forms.FormInput;
+import com.crawljax.forms.FormInput.InputType;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+
 /**
  * Utility class that contains methods used by Crawljax and some plugin to deal with XPath
  * resolving, constructing etc.
  */
 public final class XPathHelper {
+	protected static final Logger LOG = LoggerFactory.getLogger(XPathHelper.class);
 
 	private static final Pattern TAG_PATTERN = Pattern
 			.compile("(?<=[/|::])[a-zA-z]+(?=([/|\\[]|$))");
@@ -27,15 +38,119 @@ public final class XPathHelper {
 	private static final Pattern ID_PATTERN = Pattern.compile("(@[a-zA-Z]+)");
 
 	private static final String FULL_XPATH_CACHE = "FULL_XPATH_CACHE";
-	private static final int MAX_SEARCH_LOOPS = 10000;
+	private static final String SKEL_XPATH_CACHE = "SKEL_XPATH_CACHE";
 
+	
+	private static final int MAX_SEARCH_LOOPS = 10000;
+	
+	/**
+	 * get relative xpath from specific parent
+	 * @param child
+	 * @param parent
+	 * @return
+	 */
+	public static String getXPathFromSpecificParent(Node child, Node parent) {
+		if(child==null || parent==null) {
+			return null;
+		}
+		if(!DomUtils.contains(parent, child)) {
+			return null;
+		}
+		String childXpath = getSkeletonXpath(child);
+		String parentXpath = getSkeletonXpath(parent);
+		if(childXpath.indexOf(parentXpath) < 0) {
+//			System.out.println(childXpath);
+//			System.out.println(parentXpath);
+			return null;
+		}
+		if(childXpath.equalsIgnoreCase(parentXpath))
+			return "";
+		String relative =  childXpath.substring(parentXpath.length()+1);
+		return relative;
+	}
+	
+	public static Node getNodeFromSpecificParent(Node fragmentParentNode, String relativeXpath) {
+		
+		if(fragmentParentNode ==null) {
+			return null;
+		}
+		if(relativeXpath.trim().isEmpty())
+			return fragmentParentNode;
+		String parentXpath = getXPathExpression(fragmentParentNode);
+		Node returnNode= null;
+		try {
+			returnNode = evaluateXpathExpression(fragmentParentNode.getOwnerDocument(), parentXpath + "/" + relativeXpath).item(0);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return returnNode;
+	}
+
+	
+	public static String getSkeletonXpath(Node node) {
+		if(node == null) {
+			return null;
+		}
+		
+		Object xpathCache = node.getUserData(SKEL_XPATH_CACHE);
+		if (xpathCache != null) {
+			return xpathCache.toString();
+		}
+		Node parent = node.getParentNode();
+
+		if ((parent == null) || parent.getNodeName().contains("#document")) {
+			String xPath = "/" + node.getNodeName() + "[1]";
+			node.setUserData(SKEL_XPATH_CACHE, xPath, null);
+			return xPath;
+		}
+
+//		if (node.hasAttributes() && node.getAttributes().getNamedItem("id") != null) {
+//			String xPath = "//" + node.getNodeName() + "[@id = '"
+//					+ node.getAttributes().getNamedItem("id").getNodeValue() + "']";
+//			node.setUserData(FULL_XPATH_CACHE, xPath, null);
+//			return xPath;
+//		}
+
+		StringBuffer buffer = new StringBuffer();
+
+		if (parent != node) {
+			buffer.append(getSkeletonXpath(parent));
+			buffer.append("/");
+		}
+
+		buffer.append(node.getNodeName());
+
+		List<Node> mySiblings = getSiblings(parent, node);
+
+		for (int i = 0; i < mySiblings.size(); i++) {
+			Node el = mySiblings.get(i);
+
+			if (el.equals(node)) {
+				buffer.append('[').append(Integer.toString(i + 1)).append(']');
+				// Found so break;
+				break;
+			}
+		}
+		String xPath = buffer.toString();
+		node.setUserData(SKEL_XPATH_CACHE, xPath, null);
+		return xPath;
+	}
+	
+	public static String getXPathExpression(Node node) {
+		return getSkeletonXpath(node);
+	}
+	
 	/**
 	 * Reverse Engineers an XPath Expression of a given Node in the DOM.
 	 *
 	 * @param node the given node.
 	 * @return string xpath expression (e.g., "/html[1]/body[1]/div[3]").
 	 */
-	public static String getXPathExpression(Node node) {
+	public static String getXPathExpression_other(Node node) {
+		if(node == null) {
+			return null;
+		}
 		Object xpathCache = node.getUserData(FULL_XPATH_CACHE);
 		if (xpathCache != null) {
 			return xpathCache.toString();
@@ -58,7 +173,7 @@ public final class XPathHelper {
 		StringBuffer buffer = new StringBuffer();
 
 		if (parent != node) {
-			buffer.append(getXPathExpression(parent));
+			buffer.append(getXPathExpression_other(parent));
 			buffer.append("/");
 		}
 
@@ -345,4 +460,41 @@ public final class XPathHelper {
 	private XPathHelper() {
 	}
 
+	public static Node getBelongingNode(FormInput input, Document dom) throws XPathExpressionException {
+
+		Node result = null;
+
+		switch (input.getIdentification().getHow()) {
+			case xpath:
+				result = DomUtils.getElementByXpath(dom, input.getIdentification().getValue());
+				break;
+
+			case id: // id and name are handled the same
+			case name:
+				String xpath = "";
+				String element = "";
+
+				if (input.getType().equals(InputType.SELECT)
+						|| input.getType().equals(InputType.TEXTAREA)) {
+					element = input.getType().toString().toUpperCase();
+				} else {
+					element = "INPUT";
+				}
+				xpath = "//" + element + "[@name='" + input.getIdentification().getValue()
+						+ "' or @id='" + input.getIdentification().getValue() + "']";
+				result = DomUtils.getElementByXpath(dom, xpath);
+				break;
+
+			default:
+				LOG.info("Identification " + input.getIdentification()
+						+ " not supported yet for form inputs.");
+				break;
+
+		}
+
+		return result;
+	}
+
+
+	
 }

@@ -20,7 +20,7 @@ import java.util.Set;
 public class FormInput {
 
 	public enum InputType {
-		TEXT, RADIO, CHECKBOX, PASSWORD, HIDDEN, SELECT, TEXTAREA
+		TEXT, RADIO, CHECKBOX, PASSWORD, HIDDEN, SELECT, TEXTAREA, EMAIL, INPUT, NUMBER
 	}
 
 	private InputType type = InputType.TEXT;

@@ -42,7 +42,8 @@ public class Plugins {
 					OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
 					OnRevisitStatePlugin.class, OnUrlLoadPlugin.class,
 					PostCrawlingPlugin.class, PreStateCrawlingPlugin.class,
-					PreCrawlingPlugin.class, OnUrlFirstLoadPlugin.class);
+					PreCrawlingPlugin.class, OnUrlFirstLoadPlugin.class,
+					OnBrowserClosePlugin.class);
 
 	private final ImmutableListMultimap<Class<? extends Plugin>, Plugin> plugins;
 
@@ -381,6 +382,22 @@ public class Plugins {
 			}
 		}
 
+	}
+
+	public void runOnBrowserClosingPlugins(CrawlerContext context) {
+		LOGGER.debug("Running OnBrowserCreatedPlugins...");
+		counters.get(OnBrowserClosePlugin.class).inc();
+		for (Plugin plugin : plugins.get(OnBrowserClosePlugin.class)) {
+			if (plugin instanceof OnBrowserClosePlugin) {
+				LOGGER.debug("Calling plugin {}", plugin);
+				try {
+					((OnBrowserClosePlugin) plugin)
+							.onBrowserClose(context);
+				} catch (RuntimeException e) {
+					reportFailingPlugin(plugin, e);
+				}
+			}
+		}
 	}
 
 }

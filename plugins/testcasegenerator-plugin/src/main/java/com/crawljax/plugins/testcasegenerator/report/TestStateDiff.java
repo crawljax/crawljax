@@ -4,6 +4,7 @@ public class TestStateDiff {
 	private String state;
 	private String oldState;
 	private String newState;
+	private String compResult;
 
 	public String getOldState() {
 		return oldState;
@@ -27,6 +28,14 @@ public class TestStateDiff {
 
 	public void setState(String vertexName) {
 		this.state = vertexName;
+	}
+
+	public void setCompResult(String compResult) {
+		this.compResult = compResult;
+	}
+	
+	public String getCompResult() {
+		return compResult;
 	}
 
 }

@@ -20,6 +20,11 @@ public class FormAction {
 		this.crawlElement = new CrawlElement(EventType.click, tagName);
 		return crawlElement;
 	}
+	
+	public CrawlElement beforeEnterElement(String tagName) {
+		this.crawlElement = new CrawlElement(EventType.enter, tagName);
+		return crawlElement;
+	}
 
 	/**
 	 * @return the crawlTag

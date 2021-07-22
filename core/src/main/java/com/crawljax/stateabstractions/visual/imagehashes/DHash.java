@@ -1,8 +1,14 @@
 package com.crawljax.stateabstractions.visual.imagehashes;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.imageio.ImageIO;
+
 import org.apache.commons.text.similarity.HammingDistance;
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_java;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -10,21 +16,26 @@ import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 /*
  * DHash-like image hash. Author: Andrea Stocco (astocco@ece.ubc.ca) Based On:
  * https://www.pyimagesearch.com/2017/11/27/image-hashing-opencv-python/
  */
 public class DHash {
 
-	static {
-		Loader.load(opencv_java.class);
-	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(DHash.class);
 
+	public String getDHash(BufferedImage image) {
+		File f = new File("tempElementScreenshot.png");
+		try {
+			ImageIO.write(image, "png", f);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return getDHash(f.getAbsolutePath());
+	}
+	
 	/* Returns the difference hashing (DHash for short) of the image. */
 	public String getDHash(String object) {
 

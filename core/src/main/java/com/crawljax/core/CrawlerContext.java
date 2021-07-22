@@ -8,6 +8,7 @@ import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.state.CrawlPath;
 import com.crawljax.core.state.StateMachine;
 import com.crawljax.core.state.StateVertex;
+import com.crawljax.fragmentation.FragmentManager;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -17,7 +18,7 @@ import javax.inject.Provider;
  */
 public class CrawlerContext {
 
-	private final EmbeddedBrowser browser;
+	private EmbeddedBrowser browser;
 	private final Provider<CrawlSession> sessionProvider;
 	private final CrawljaxConfiguration config;
 	private final ExitNotifier exitNotifier;
@@ -25,6 +26,11 @@ public class CrawlerContext {
 
 	private StateMachine stateMachine;
 	private CrawlPath crawlpath;
+	private FragmentManager fragmentManager;
+
+	public void setFragmentManager(FragmentManager fragmentManager) {
+		this.fragmentManager = fragmentManager;
+	}
 
 	@Inject
 	public CrawlerContext(EmbeddedBrowser browser,
@@ -36,6 +42,7 @@ public class CrawlerContext {
 		this.sessionProvider = sessionProvider;
 		this.exitNotifier = exitNotifier;
 		this.registry = registry;
+		this.fragmentManager  = null;
 	}
 
 	/**
@@ -44,6 +51,11 @@ public class CrawlerContext {
 	 * that caused the given {@link Plugin} to fire.
 	 */
 	public EmbeddedBrowser getBrowser() {
+		return browser;
+	}
+	
+	public EmbeddedBrowser updateBrowser(EmbeddedBrowser browser) {
+		this.browser = browser;
 		return browser;
 	}
 
@@ -73,6 +85,10 @@ public class CrawlerContext {
 		exitNotifier.stop();
 	}
 
+	StateMachine getStateMachine() {
+		return stateMachine;
+	}
+	
 	/**
 	 * @return The current {@link StateVertex} or <code>null</code> when the
 	 * {@link Crawler} isn't initialized yet.
@@ -101,6 +117,10 @@ public class CrawlerContext {
 	 */
 	public CrawlPath getCrawlPath() {
 		return crawlpath.immutableCopy();
+	}
+
+	public FragmentManager getFragmentManager() {
+		return this.fragmentManager;
 	}
 
 }

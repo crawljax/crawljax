@@ -99,4 +99,12 @@ public interface StateFlowGraph {
 
 	boolean hasClone(StateVertex vertex);
 
+	boolean removeEdge(Eventable event);
+
+	boolean restoreEdge(Eventable event);
+
+	boolean removeState(StateVertex state);
+
+	boolean restoreState(StateVertex state);
+
 }

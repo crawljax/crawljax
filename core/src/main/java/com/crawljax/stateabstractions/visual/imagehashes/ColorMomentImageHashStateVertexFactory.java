@@ -4,6 +4,7 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.Crawler;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.core.state.StateVertexFactory;
+import com.crawljax.stateabstractions.visual.OpenCVLoad;
 import com.crawljax.util.FSUtils;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
@@ -20,6 +21,9 @@ import java.io.IOException;
  * {@link Object#equals(Object)} function based on the visual hash of the web page's screenshot.
  */
 public class ColorMomentImageHashStateVertexFactory extends StateVertexFactory {
+	static {
+		OpenCVLoad.load();
+	}
 
 	private static final Logger LOG =
 			LoggerFactory.getLogger(ColorMomentImageHashStateVertexFactory.class.getName());

@@ -75,8 +75,11 @@ public class CrawlerTest {
 	@Mock
 	private CandidateElementExtractor extractor;
 
+//	@Mock
+//	private UnfiredCandidateActions candidateActionCache;
+	
 	@Mock
-	private UnfiredCandidateActions candidateActionCache;
+	private UnfiredFragmentCandidates candidateActionCache;
 
 	@Mock
 	private StateVertex index;
@@ -136,6 +139,7 @@ public class CrawlerTest {
 				plugins, new DefaultStateVertexFactory());
 
 		when(candidateActionCache.pollActionOrNull(index)).thenReturn(null);
+		when(candidateActionCache.getInput(Mockito.any())).thenReturn(null);
 		setupStateFlowGraph();
 		setStateMachineForConfig(config);
 
@@ -159,7 +163,7 @@ public class CrawlerTest {
 		when(eventToTransferToTarget.getSourceStateVertex()).thenReturn(index);
 		when(eventToTransferToTarget.getTargetStateVertex()).thenReturn(target);
 		when(eventToTransferToTarget.getRelatedFormInputs())
-				.thenReturn(new CopyOnWriteArrayList<>());
+				.thenReturn(ImmutableList.copyOf( new CopyOnWriteArrayList<>()));
 		when(graph.getShortestPath(index, target))
 				.thenReturn(ImmutableList.of(eventToTransferToTarget));
 		when(graph.getInitialState()).thenReturn(index);
@@ -190,7 +194,7 @@ public class CrawlerTest {
 
 	@Test
 	public void whenResetTheStateIsBackToIndex() {
-		crawler.reset();
+		crawler.reset(0);
 		verifyCrawlerReset(inOrder(plugins, browser));
 	}
 
@@ -207,6 +211,8 @@ public class CrawlerTest {
 		crawler.execute(target);
 		InOrder order = inOrder(extractor, browser, formHandler, plugins, waitConditionChecker,
 				candidateActionCache);
+//		InOrder order = inOrder(extractor, plugins, browser, formHandler, waitConditionChecker);
+//				, formHandler, plugins, waitConditionChecker,candidateActionCache);
 		verifyPathIsFollowed(order);
 	}
 

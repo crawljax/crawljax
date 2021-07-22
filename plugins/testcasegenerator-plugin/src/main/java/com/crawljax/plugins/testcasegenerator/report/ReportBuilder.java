@@ -1,27 +1,18 @@
 package com.crawljax.plugins.testcasegenerator.report;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
 
 import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
-import com.google.gson.Gson;
+import com.crawljax.plugins.testcasegenerator.report.MethodResult.WarnLevel;
 
 public class ReportBuilder {
-	private String outputPath;
 	private List<MethodResult> methodRuns;
 	private MethodResult currMethod;
 
-	public ReportBuilder(String outputPath) {
-		this.outputPath = outputPath;
+	public ReportBuilder() {
 		this.methodRuns = new LinkedList<MethodResult>();
 		this.currMethod = null;
 	}
@@ -58,6 +49,10 @@ public class ReportBuilder {
 	public void addState(StateVertex state) {
 		currMethod.addState(state);
 	}
+	
+	public StateVertexResult getLastState() {
+		return currMethod.getLastState();
+	}
 
 	public void markLastEventableFailed() {
 		currMethod.markLastEventableFailed();
@@ -72,24 +67,37 @@ public class ReportBuilder {
 	public void markLastStateDifferent() {
 		currMethod.markLastStateDifferent();
 	}
-
-	public void build() throws Exception {
-		generateJson();
-		copyResources();
+	
+	public void setLastStateComparison(String compResult) {
+		currMethod.setLastStateComparison(compResult);
+	}
+	
+	
+	public void setWarnLevel(WarnLevel level) {
+		currMethod.setWarnLevel(level);
+	}
+	
+	public void setLocatorWarning(boolean broken) {
+		currMethod.setLocatorWarning(broken);
 	}
 
-	public void generateJson() throws IOException {
-		FileOutputStream file = new FileOutputStream(outputPath + "report.json");
-		file.write((new Gson().toJson(methodRuns).getBytes()));
-		file.close();
-	}
+//	public void build() throws Exception {
+//		generateJson();
+//		copyResources();
+//	}
 
-	public void copyResources() throws IOException, URISyntaxException {
-		URL skeleton = ReportBuilder.class.getResource("/webapp");
-		FileUtils.copyDirectory(new File(skeleton.toURI()), new File(outputPath + "../"));
-		skeleton = ReportBuilder.class.getResource("/daisydiff");
-		FileUtils.copyDirectory(new File(skeleton.toURI()), new File(outputPath));
-	}
+//	public void generateJson() throws IOException {
+//		FileOutputStream file = new FileOutputStream(outputPath + "report.json");
+//		file.write((new Gson().toJson(methodRuns).getBytes()));
+//		file.close();
+//	}
+
+//	public void copyResources() throws IOException, URISyntaxException {
+//		URL skeleton = ReportBuilder.class.getResource("/webapp");
+//		FileUtils.copyDirectory(new File(skeleton.toURI()), new File(outputPath + "../"));
+//		skeleton = ReportBuilder.class.getResource("/daisydiff");
+//		FileUtils.copyDirectory(new File(skeleton.toURI()), new File(outputPath));
+//	}
 
 	public List<MethodResult> getMethodRuns() {
 		return this.methodRuns;

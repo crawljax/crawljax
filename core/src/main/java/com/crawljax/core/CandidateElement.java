@@ -1,17 +1,23 @@
 package com.crawljax.core;
 
+import java.util.List;
+
+import org.w3c.dom.Element;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.forms.FormInput;
+import com.crawljax.fragmentation.Fragment;
 import com.crawljax.util.DomUtils;
+import com.crawljax.vips_selenium.VipsUtils;
+import com.crawljax.vips_selenium.VipsUtils.AccessType;
+import com.crawljax.vips_selenium.VipsUtils.Coverage;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import org.w3c.dom.Element;
-
-import java.util.List;
 
 /**
  * Candidate element for crawling. It is possible to link this {@link Eventable} to form inputs, so
@@ -23,10 +29,72 @@ public class CandidateElement {
 
 	private final Element element;
 
+	public Fragment getClosestFragment() {
+		return closestFragment;
+	}
+
+	public void setClosestFragment(Fragment closestFragment) {
+		this.closestFragment = closestFragment;
+	}
+
 	private final ImmutableList<FormInput> formInputs;
 	private final String relatedFrame;
 
 	private EventableCondition eventableCondition;
+	
+	transient Fragment closestFragment = null;
+	transient Fragment closestDomFragment = null;
+
+	
+	private int duplicateAccess = 0;
+	
+	public int getDuplicateAccess() {
+		return duplicateAccess;
+	}
+
+	public void setDuplicateAccess(int duplicateAccess) {
+//		VipsUtils.setAccessType(element, AccessType.equivalent);
+		VipsUtils.setCoverage(element, AccessType.equivalent, Coverage.action);
+		this.duplicateAccess = duplicateAccess;
+	}
+
+	public int getEquivalentAccess() {
+		return equivalentAccess;
+	}
+
+	public void setEquivalentAccess(int equivalentAccess) {
+//		VipsUtils.setAccessType(element, AccessType.equivalent);
+		VipsUtils.setCoverage(element, AccessType.equivalent, Coverage.action);
+
+		this.equivalentAccess = equivalentAccess;
+	}
+
+	private int equivalentAccess = 0;
+	
+	private boolean directAccess = false;
+
+	public boolean isDirectAccess() {
+		return directAccess;
+	}
+
+	public void setDirectAccess(boolean directAccess) {
+//		VipsUtils.setAccessType(element, AccessType.direct);
+		VipsUtils.setCoverage(element, AccessType.direct, Coverage.action);
+
+		this.directAccess = directAccess;
+		incrementDuplicateAccess();		
+//		incrementEquivalentAccess();
+	}
+	
+	private EventType eventType = EventType.click;
+
+	public EventType getEventType() {
+		return eventType;
+	}
+
+	public void setEventType(EventType eventType) {
+		this.eventType = eventType;
+	}
 
 	/**
 	 * Constructor for a element a identification and a relatedFrame.
@@ -153,6 +221,32 @@ public class CandidateElement {
 				.add("formInputs", formInputs)
 				.add("eventableCondition", eventableCondition)
 				.add("relatedFrame", relatedFrame)
+				.add("duplicateAccess", duplicateAccess)
+				.add("equivalentAccess", equivalentAccess)
 				.toString();
 	}
+
+	public boolean wasExplored() {
+		if((isDirectAccess()) || (duplicateAccess>0) || equivalentAccess >0)
+			return true;
+		
+		return false;
+	}
+
+	public void setClosestDomFragment(Fragment closestDom) {
+		this.closestDomFragment = closestDom;
+	}
+
+	public Fragment getClosestDomFragment() {
+		return closestDomFragment;
+	}
+
+	public void incrementDuplicateAccess() {
+		duplicateAccess = duplicateAccess +1;
+		equivalentAccess = equivalentAccess +1;
+	}
+	public void incrementEquivalentAccess() {
+		equivalentAccess = equivalentAccess +1;
+	}
+	
 }

@@ -20,7 +20,11 @@ public class CandidateElementPosition {
 
 	private final int top;
 	private final int left;
-	private final String xpath;
+	private String xpath;
+	public void setXpath(String xpath) {
+		this.xpath = xpath;
+	}
+
 	private final int width;
 	private final int height;
 

@@ -4,7 +4,7 @@
 
     <groupId>com.crawljax</groupId>
     <artifactId>crawljax-parent-pom</artifactId>
-    <version>4.2-SNAPSHOT</version>
+    <version>5.0-beta</version>
     <packaging>pom</packaging>
 
     <name>Crawljax parent POM</name>

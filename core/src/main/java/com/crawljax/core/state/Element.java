@@ -1,16 +1,21 @@
 package com.crawljax.core.state;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map.Entry;
+
+import javax.annotation.concurrent.Immutable;
+
+import org.w3c.dom.Node;
+
 import com.crawljax.util.DomUtils;
+import com.crawljax.vips_selenium.VipsUtils;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import org.w3c.dom.Node;
-
-import javax.annotation.concurrent.Immutable;
-import java.io.Serializable;
-import java.util.Map.Entry;
 
 /**
  * This class represents an element. It is built from the node name and node text contents.
@@ -40,12 +45,25 @@ public class Element implements Serializable {
 		} else {
 			this.text = DomUtils.removeNewLines(node.getTextContent()).trim();
 		}
+		
+		// Ignore vips attributes
+		List<String> ignoreAttrs = Arrays.asList(VipsUtils.getVipsAttributes());
 		Builder<String, String> builder = ImmutableMap.builder();
 		for (int i = 0; i < node.getAttributes().getLength(); i++) {
 			Node attr = node.getAttributes().item(i);
+			if(ignoreAttrs.contains(attr.getNodeName().toLowerCase())) {
+				continue;
+			}
 			builder.put(attr.getNodeName().toLowerCase(), attr.getNodeValue());
 		}
 		attributes = builder.build();
+	}
+	
+	public Element(String tag, String text, ImmutableMap<String, String> attributes) {
+		this.node = null;
+		this.tag=tag;
+		this.text=text;
+		this.attributes=attributes;
 	}
 
 	/**

@@ -13,6 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class RandomInputValueGenerator {
 
 	public static final double PROBABILITY_CHECK = 0.5;
+	private static final int MAX_INT = 12345;
 	private final Random random = new Random();
 
 	/**
@@ -36,6 +37,10 @@ public class RandomInputValueGenerator {
 	public String getRandomString(int length) {
 		return generate(length);
 	}
+	
+	public String getRandomNumber() {
+		return Integer.toString(Math.abs(random.nextInt())%MAX_INT);
+	}
 
 	/**
 	 * @return whether to check with p=0.5
@@ -53,7 +58,7 @@ public class RandomInputValueGenerator {
 		if (options.size() == 1) {
 			return options.get(0);
 		} else {
-			return options.get(random.nextInt(options.size() - 1));
+			return options.get(random.nextInt(options.size()));
 		}
 	}
 }

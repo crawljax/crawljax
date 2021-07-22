@@ -2,6 +2,8 @@ package com.crawljax.core;
 
 import com.crawljax.core.state.StateVertex;
 import com.google.inject.Inject;
+
+import org.openqa.selenium.NoSuchWindowException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +22,11 @@ public class CrawlTaskConsumer implements Callable<Void> {
 
 	private final Crawler crawler;
 
-	private final UnfiredCandidateActions candidates;
+	private final UnfiredFragmentCandidates candidates;
 
 	private final ExitNotifier exitNotifier;
 
-	@Inject CrawlTaskConsumer(UnfiredCandidateActions candidates,
+	@Inject CrawlTaskConsumer(UnfiredFragmentCandidates candidates,
 			ExitNotifier exitNotifier, Crawler crawler) {
 		this.candidates = candidates;
 		this.exitNotifier = exitNotifier;
@@ -60,22 +62,44 @@ public class CrawlTaskConsumer implements Callable<Void> {
 	private void pollAndHandleCrawlTasks() throws InterruptedException {
 		try {
 			LOG.debug("Awaiting task");
-			//StateVertex crawlTask = candidates.awaitNewTask();
-			StateVertex crawlTask = candidates
-					.awaitNewTaskPriority(crawler.getCrawlRules().getCrawlPriorityMode(),
-							crawler.getCrawlRules().isCrawlNearDuplicates(),
-							crawler.getCrawlRules().isDelayNearDuplicateCrawling());
+			StateVertex crawlTask = null;
+			
+			if(crawler.getCrawlRules().isDelayNearDuplicateCrawling()) {
+				crawlTask = candidates.awaitNewTask(crawler.getContext().getCurrentState(), crawler.getOnUrlSet(), crawler.getContext().getFragmentManager());
+				if(crawlTask == null) {
+					LOG.info("Interrupting thread");
+					Thread.currentThread().interrupt();
+				}
+			}
+			else {
+//				crawlTask = candidates
+//					.awaitNewTaskPriority(crawler.getCrawlRules().getCrawlPriorityMode(),
+//							crawler.getCrawlRules().isCrawlNearDuplicates(),
+//							crawler.getCrawlRules().isDelayNearDuplicateCrawling(),
+//							crawler.getContext().getCurrentState());
+				LOG.error("Set NearDuplicateCrawling flag in crawl rules");
+				System.exit(-1);
+			}
 			int activeConsumers = runningConsumers.incrementAndGet();
-			LOG.debug("There are {} active consumers", activeConsumers);
+			LOG.info("There are {} active consumers", activeConsumers);
 			handleTask(crawlTask);
 		} catch (RuntimeException e) {
 			LOG.error("Could not complete state crawl: " + e.getMessage(), e);
 		}
 	}
 
-	private void handleTask(StateVertex state) {
+	private void handleTask(StateVertex state) throws InterruptedException {
 		LOG.debug("Going to handle tasks in {}", state);
-		crawler.execute(state);
+		try {
+			crawler.execute(state);
+		}catch(Exception ex) {
+			if(ex instanceof NoSuchWindowException) {
+				LOG.info("Window closed!! Stopping Crawl");
+				Thread.currentThread().interrupt();
+				this.exitNotifier.signalCrawlExhausted();
+
+			}
+		}
 		LOG.debug("Task executed. Returning to queue polling");
 	}
 

@@ -5,12 +5,15 @@ import com.crawljax.condition.eventablecondition.EventableCondition;
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.core.exception.BrowserConnectionException;
+import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Identification.How;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.common.base.Enums;
 import com.google.inject.assistedinject.Assisted;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +66,9 @@ public class FormHandler {
 				case TEXT:
 				case TEXTAREA:
 				case PASSWORD:
+				case INPUT:
+				case EMAIL:
+				case NUMBER:
 					handleText(input);
 					break;
 				case HIDDEN:
@@ -83,7 +89,8 @@ public class FormHandler {
 		} catch (BrowserConnectionException e) {
 			throw e;
 		} catch (RuntimeException e) {
-			LOGGER.error("Could not input element values", e);
+			LOGGER.error("Could not input element values");
+			throw e;
 		}
 	}
 
@@ -101,6 +108,16 @@ public class FormHandler {
 		}
 	}
 
+	private void resetRadioSwitches(FormInput input) {
+		for (InputValue inputValue : input.getInputValues()) {
+			if (inputValue.isChecked()) {
+				WebElement inputElement = browser.getWebElement(input.getIdentification());
+				if(inputElement!=null)
+					((JavascriptExecutor)browser.getWebDriver()).executeScript("arguments[0].checked=false", inputElement);
+			}
+		}
+	}
+	
 	private void handleRadioSwitches(FormInput input) {
 		for (InputValue inputValue : input.getInputValues()) {
 			if (inputValue.isChecked()) {
@@ -110,11 +127,33 @@ public class FormHandler {
 		}
 	}
 
+	private void resetSelectBoxes(FormInput input) {
+		for (InputValue inputValue : input.getInputValues()) {
+			WebElement inputElement = browser.getWebElement(input.getIdentification());
+			inputElement.sendKeys(inputValue.getValue());
+		}
+	}
+	
 	private void handleSelectBoxes(FormInput input) {
 		for (InputValue inputValue : input.getInputValues()) {
 			WebElement inputElement = browser.getWebElement(input.getIdentification());
 			inputElement.sendKeys(inputValue.getValue());
 		}
+	}
+	
+	/**
+	 * Clear the input for given input text
+	 * @param input
+	 */
+	private void resetText(FormInput input) {
+		String text = input.getInputValues().iterator().next().getValue();
+		if (null == text || text.length() == 0) {
+			return;
+		}
+		WebElement inputElement = browser.getWebElement(input.getIdentification());
+		inputElement.clear();
+		inputElement.sendKeys(Keys.BACK_SPACE);
+//		inputElement.sendKeys(text);
 	}
 
 	private void handleText(FormInput input) {
@@ -200,23 +239,131 @@ public class FormHandler {
 		}
 		return formInputs;
 	}
+	
+	public List<FormInput> resetFormInputs(List<FormInput> formInputs) {
+		ArrayList<FormInput> handled = new ArrayList<>();
+		FormInput failing = null;
+		try {
+			Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+			for (FormInput input : formInputs) {
+				failing = input;
+				LOGGER.info("resetting : " + input.getIdentification().getValue());
+				resetInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
+				handled.add(input);
+				failing = null;
+			}
+		} catch (Exception e) {
+			LOGGER.error("Could not reset form elements");
+			LOGGER.error(e.getMessage());
+		}
+		if(failing==null) {
+			handled.add(new FormInput(null, null));
+		}
+		else {
+			handled.add(failing);
+		}
+		return handled;
+	}
+
+	protected void resetInputElementValue(Node element, FormInput input) {
+
+		LOGGER.debug("INPUTFIELD: {} ({})", input.getIdentification(), input.getType());
+		if (element == null || input.getInputValues().isEmpty()) {
+			return;
+		}
+		try {
+
+			switch (input.getType()) {
+				case TEXT:
+				case TEXTAREA:
+				case PASSWORD:
+				case INPUT:
+				case EMAIL:
+					resetText(input);
+					break;
+//				case HIDDEN:
+//					resetHidden(input);
+//					break;
+				case CHECKBOX:
+					LOGGER.info("Resetting checkbox{}", input);
+					resetCheckBoxes(input);
+					break;
+				case RADIO:
+					resetRadioSwitches(input);
+					break;
+//				case SELECT:
+//					handleSelectBoxes(input);
+			default:
+				break;
+			}
+
+		} catch (ElementNotVisibleException e) {
+			LOGGER.warn("Element not visible, input not completed.");
+		} catch (BrowserConnectionException e) {
+			throw e;
+		} catch (RuntimeException e) {
+			LOGGER.error("Could not input element values");
+			throw e;
+		}
+	}
+
+
+	private void resetCheckBoxes(FormInput input) {
+		for (InputValue inputValue : input.getInputValues()) {
+			boolean check = inputValue.isChecked();
+
+			WebElement inputElement = browser.getWebElement(input.getIdentification());
+
+			if (check && inputElement.isSelected()) {
+				inputElement.click();
+			}
+//				else if (!check && !inputElement.isSelected()) {
+//				inputElement.click();
+//			}
+		}
+	}
 
 	/**
 	 * Fills in form/input elements.
 	 *
 	 * @param formInputs form input list.
+	 * @return 
 	 */
-	public void handleFormElements(List<FormInput> formInputs) {
+	public List<FormInput> handleFormElements(List<FormInput> formInputs) {
+		ArrayList<FormInput> handled = new ArrayList<>();
+		FormInput failing = null;
 		try {
 			Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
 			for (FormInput input : formInputs) {
-				LOGGER.debug("Filling in: " + input);
-				setInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
+				failing = input;
+				LOGGER.info("Filling in: " + input.getIdentification().getValue());
+				Node belongingNode = formInputValueHelper.getBelongingNode(input, dom);
+				setInputElementValue(belongingNode, input);
+				if(belongingNode!=null) {
+					String xpath = XPathHelper.getSkeletonXpath(belongingNode);
+					Identification xpathId = new Identification(How.xpath, xpath);
+					FormInput handledInput = new FormInput(input.getType(), xpathId);
+					handledInput.inputValues(input.getInputValues());
+					handled.add(handledInput);
+				}
+				else {
+					handled.add(input);
+				}
+//				input.getIdentification().setHow(How.xpath);
+//				input.getIdentification().setValue(XPathHelper.getSkeletonXpath(belongingNode));
+				failing = null;
 			}
-		} catch (IOException | XPathExpressionException e) {
-			LOGGER.error(e.getMessage(), e);
+		} catch (Exception e) {
+			LOGGER.error("Could not handle form elements");
+			LOGGER.error(e.getMessage());
 		}
-
+		if(failing==null) {
+			handled.add(new FormInput(null, null));
+		}
+		else {
+			handled.add(failing);
+		}
+		return handled;
 	}
 
 	/**

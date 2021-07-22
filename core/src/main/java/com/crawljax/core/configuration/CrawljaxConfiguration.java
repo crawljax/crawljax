@@ -5,7 +5,10 @@ import com.crawljax.core.Crawler;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules.CrawlRulesBuilder;
 import com.crawljax.core.plugin.Plugin;
+import com.crawljax.core.state.DefaultStateVertexFactory;
 import com.crawljax.core.state.StateVertexFactory;
+import com.crawljax.oraclecomparator.OracleComparator;
+import com.crawljax.oraclecomparator.comparators.SimpleComparator;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -211,6 +214,11 @@ public class CrawljaxConfiguration {
 		}
 
 		public CrawljaxConfiguration build() {
+			if(config.getStateVertexFactory()==null) {
+				config.stateVertexFactory = new DefaultStateVertexFactory();
+				crawlRules.addOracleComparator(new OracleComparator("SimpleComparator", new SimpleComparator()));
+			}
+
 			config.plugins = pluginBuilder.build();
 			config.crawlRules = crawlRules.build();
 			return config;

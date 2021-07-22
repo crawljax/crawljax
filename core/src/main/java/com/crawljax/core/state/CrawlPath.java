@@ -12,16 +12,21 @@ import java.util.List;
 public class CrawlPath extends ForwardingList<Eventable> {
 
 	private final List<Eventable> eventablePath;
+	
+	private int backtrackTarget;
+	private boolean backtrackSuccess;
+	private int reachedNearDup;
+	
 
-	public static CrawlPath copyOf(List<Eventable> eventable) {
-		return new CrawlPath(Lists.newLinkedList(eventable));
+	public static CrawlPath copyOf(List<Eventable> eventable, int backtrackTarget) {
+		return new CrawlPath(Lists.newLinkedList(eventable), backtrackTarget);
 	}
 
 	/**
 	 * Start a new empty CrawlPath.
 	 */
-	public CrawlPath() {
-		this(Lists.newLinkedList());
+	public CrawlPath(int backtrackTarget) {
+		this(Lists.newLinkedList(), backtrackTarget);
 	}
 
 	/**
@@ -29,8 +34,11 @@ public class CrawlPath extends ForwardingList<Eventable> {
 	 *
 	 * @param delegate the List implementation where this CrawlPath is based on.
 	 */
-	public CrawlPath(List<Eventable> delegate) {
+	public CrawlPath(List<Eventable> delegate, int backtrackTarget) {
 		this.eventablePath = delegate;
+		this.backtrackTarget = backtrackTarget;
+		this.backtrackSuccess = false;
+		this.reachedNearDup = -1;
 	}
 
 	@Override
@@ -66,7 +74,7 @@ public class CrawlPath extends ForwardingList<Eventable> {
 
 	private CrawlPath immutableCopy(boolean removeLast) {
 		if (isEmpty()) {
-			return new CrawlPath();
+			return new CrawlPath(backtrackTarget);
 		}
 
 		// Build copy
@@ -76,7 +84,31 @@ public class CrawlPath extends ForwardingList<Eventable> {
 		if (removeLast) {
 			path.remove(path.size() - 1);
 		}
-		return new CrawlPath(ImmutableList.copyOf(path));
+		return new CrawlPath(ImmutableList.copyOf(path), this.backtrackTarget);
+	}
+
+	public int getBacktrackTarget() {
+		return backtrackTarget;
+	}
+
+	public void setBacktrackTarget(int backtrackTarget) {
+		this.backtrackTarget = backtrackTarget;
+	}
+
+	public boolean isBacktrackSuccess() {
+		return backtrackSuccess;
+	}
+
+	public void setBacktrackSuccess(boolean backtrackSuccess) {
+		this.backtrackSuccess = backtrackSuccess;
+	}
+
+	public int isReachedNearDup() {
+		return reachedNearDup;
+	}
+
+	public void setReachedNearDup(int reachedNearDup) {
+		this.reachedNearDup = reachedNearDup;
 	}
 
 	/**

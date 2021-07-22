@@ -1,18 +1,26 @@
 package com.crawljax.core;
 
-import com.codahale.metrics.MetricRegistry;
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.StateFlowGraph;
-import com.crawljax.core.state.StateVertex;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.codahale.metrics.MetricRegistry;
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.state.CrawlPath;
+import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.StateFlowGraph;
+import com.crawljax.core.state.StateVertex;
+import com.crawljax.fragmentation.FragmentManager;
 
 /**
  * Contains all data concerned with this crawl. There is one {@link CrawlSession} per crawl. Even if
@@ -20,6 +28,18 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 @Singleton
 public class CrawlSession {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CrawlSession.class
+	        .getName());
+
+//	private Map<List<Eventable>, CrawlPathInfo> pathInfoMap = new HashMap<>();
+//
+//	public Map<List<Eventable>, CrawlPathInfo> getPathInfoMap() {
+//		return pathInfoMap;
+//	}
+//
+//	public void setPathInfoMap(Map<List<Eventable>, CrawlPathInfo> pathInfoMap) {
+//		this.pathInfoMap = pathInfoMap;
+//	}
 
 	private final StateFlowGraph stateFlowGraph;
 
@@ -41,14 +61,25 @@ public class CrawlSession {
 
 	private final MetricRegistry registry;
 
+	private FragmentManager fragmentManager;
+
 	@Inject
-	public CrawlSession(CrawljaxConfiguration config, StateFlowGraph stateFlowGraph,
+	public CrawlSession(CrawljaxConfiguration config, FragmentManager fragmentManager, StateFlowGraph stateFlowGraph,
 			StateVertex state, MetricRegistry registry) {
+		this.fragmentManager = fragmentManager;
 		this.stateFlowGraph = stateFlowGraph;
 		this.initialState = state;
 		this.config = config;
 		this.registry = registry;
 		this.startTime = new Date().getTime();
+	}
+
+	public FragmentManager getFragmentManager() {
+		return fragmentManager;
+	}
+
+	public void setFragmentManager(FragmentManager fragmentManager) {
+		this.fragmentManager = fragmentManager;
 	}
 
 	/**
@@ -68,8 +99,19 @@ public class CrawlSession {
 	/**
 	 * @param crawlPath the eventable list
 	 */
-	public void addCrawlPath(List<Eventable> crawlPath) {
+	public void addCrawlPath(CrawlPath crawlPath) {
+		if(crawlPath.isEmpty()) {
+			return;
+		}
+		
+		LOGGER.info("Adding CrawlPath to session !!");
+		String pathString = Crawler.printCrawlPath(crawlPath, true);
+
 		this.crawlPaths.add(crawlPath);
+//		int pathId = this.crawlPaths.size();
+//		CrawlPathInfo pathInfo = new CrawlPathInfo(pathId, crawlPath.getBacktrackTarget(), crawlPath.isBacktrackSuccess(), crawlPath.isReachedNearDup());
+//		pathInfo.setPathString(pathString);
+//		pathInfoMap.put(crawlPath, pathInfo);
 	}
 
 	/**

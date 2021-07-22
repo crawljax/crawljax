@@ -3,6 +3,15 @@
  */
 package com.crawljax.core.state;
 
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.jgrapht.graph.DefaultEdge;
+import org.w3c.dom.Node;
+
 import com.crawljax.core.CandidateElement;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.forms.FormInput;
@@ -10,12 +19,7 @@ import com.crawljax.util.XPathHelper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import org.jgrapht.graph.DefaultEdge;
-import org.w3c.dom.Node;
-
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.concurrent.CopyOnWriteArrayList;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Eventable class: an element having an event attached to it (onclick, onmouseover, ...) so that it
@@ -29,14 +33,14 @@ public class Eventable extends DefaultEdge implements Serializable {
 	private EventType eventType;
 	private Identification identification;
 	private Element element;
-	private CopyOnWriteArrayList<FormInput> relatedFormInputs = new CopyOnWriteArrayList<>();
+	private ImmutableList<FormInput> relatedFormInputs = ImmutableList.copyOf(new ArrayList<FormInput>());
 	private String relatedFrame = "";
 
 	/**
 	 * The event type.
 	 */
 	public enum EventType {
-		click, hover
+		click, hover, enter
 	}
 
 	/**
@@ -87,12 +91,14 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 * @param candidateElement The CandidateElement element.
 	 * @param eventType        the event type. TODO ali remove
 	 */
-	public Eventable(CandidateElement candidateElement, EventType eventType) {
+	public Eventable(CandidateElement candidateElement, EventType eventType, long id) {
+		// Constructor to create new crawl action. Giving an ID
 		this(candidateElement.getIdentification(), eventType);
 		if (candidateElement.getElement() != null) {
 			this.element = new Element(candidateElement.getElement());
 		}
-		this.relatedFormInputs = new CopyOnWriteArrayList<>(candidateElement.getFormInputs());
+		this.id=id;
+		this.relatedFormInputs = ImmutableList.copyOf(candidateElement.getFormInputs());
 		this.relatedFrame = candidateElement.getRelatedFrame();
 	}
 
@@ -157,7 +163,7 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 *
 	 * @return the formInputs
 	 */
-	public CopyOnWriteArrayList<FormInput> getRelatedFormInputs() {
+	public ImmutableList<FormInput> getRelatedFormInputs() {
 		return relatedFormInputs;
 	}
 
@@ -166,8 +172,8 @@ public class Eventable extends DefaultEdge implements Serializable {
 	 *
 	 * @param relatedFormInputs the list of formInputs
 	 */
-	public void setRelatedFormInputs(CopyOnWriteArrayList<FormInput> relatedFormInputs) {
-		this.relatedFormInputs = relatedFormInputs;
+	public void setRelatedFormInputs(List<FormInput> relatedFormInputs) {
+		this.relatedFormInputs = ImmutableList.copyOf(relatedFormInputs);;
 	}
 
 	/**
@@ -243,5 +249,13 @@ public class Eventable extends DefaultEdge implements Serializable {
 					&& Objects.equal(this.getTarget(), that.getTarget());
 		}
 		return false;
+	}
+	
+	public Object getEdgeSource() {
+		return getSource();
+	}
+	
+	public Object getEdgeTarget() {
+		return getTarget();
 	}
 }

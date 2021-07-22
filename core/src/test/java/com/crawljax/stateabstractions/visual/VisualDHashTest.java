@@ -1,20 +1,20 @@
 package com.crawljax.stateabstractions.visual;
 
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_java;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import com.crawljax.stateabstractions.visual.imagehashes.DHash;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
 
 public class VisualDHashTest {
 
 	final static DHash DHASH = new DHash();
 
 	static {
-		Loader.load(opencv_java.class);
+		OpenCVLoad.load();
 	}
 
 	@Test

@@ -1,14 +1,14 @@
 package com.crawljax.stateabstractions.visual.imagehashes;
 
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_java;
 import org.opencv.core.Mat;
 
-public abstract class VisHash {
+import com.crawljax.stateabstractions.visual.OpenCVLoad;
 
+public abstract class VisHash {
 	static {
-		Loader.load(opencv_java.class);
+		OpenCVLoad.load();
 	}
+
 
 	/* threshold values range between [0..1]. */
 	public double thresholdCoefficient;

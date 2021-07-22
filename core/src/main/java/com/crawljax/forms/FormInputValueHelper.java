@@ -152,7 +152,10 @@ public final class FormInputValueHelper {
 				Element cloneElement = (Element) sourceElement.cloneNode(false);
 				cloneElement.setTextContent(DomUtils.getTextValue(sourceElement));
 
-				CandidateElement candidateElement = new CandidateElement(cloneElement,
+				//TODO: Why is this cloning done?
+				
+//				CandidateElement candidateElement = new CandidateElement(cloneElement,
+				CandidateElement candidateElement = new CandidateElement(sourceElement,
 						XPathHelper.getXPathExpression(sourceElement), formInputsForCurrentIndex);
 				candidateElements.add(candidateElement);
 			}

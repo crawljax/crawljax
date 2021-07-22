@@ -1,5 +1,5 @@
 @echo off
 echo Compiling generated tests source files...
-javac -cp "%~dp0\\${libsClassPath}\*" "%~dp0\\${generatedTestsJavaFilePath}"
+javac -cp "%~dp0\\${libsClassPath}" "%~dp0\\${generatedTestsJavaFilePath}"
 echo Running generated tests...
-java -cp "%~dp0\\${libsClassPath}\*";"%~dp0\\${generatedTestsSourceFolder}" org.testng.TestNG ${testngXMLFile}
+java -cp "%~dp0\\${libsClassPath}";"%~dp0\\${generatedTestsSourceFolder}" org.testng.TestNG ${testngXMLFile}

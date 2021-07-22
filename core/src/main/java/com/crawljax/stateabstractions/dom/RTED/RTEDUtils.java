@@ -20,6 +20,7 @@ public class RTEDUtils {
 	public static double getRobustTreeEditDistance(String dom1, String dom2) {
 
 		LblTree domTree1 = null, domTree2 = null;
+		
 		try {
 			domTree1 = getDomTree(dom1);
 			domTree2 = getDomTree(dom2);
@@ -53,7 +54,7 @@ public class RTEDUtils {
 		LblTree domTree = null;
 
 		DocumentTraversal traversal = (DocumentTraversal) doc1;
-		TreeWalker walker = traversal.createTreeWalker(doc1.getDocumentElement(),
+		TreeWalker walker = traversal.createTreeWalker(doc1.getElementsByTagName("body").item(0),
 				NodeFilter.SHOW_ELEMENT, null, true);
 		domTree = createTree(walker);
 

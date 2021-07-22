@@ -14,6 +14,7 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.crawloverview.model.CandidateElementPosition;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
 import com.crawljax.plugins.crawloverview.model.State;
+import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
 import com.crawljax.stateabstractions.visual.ColorHistogramStateVertexImpl;
 import com.crawljax.stateabstractions.visual.imagehashes.DHashStateVertexImpl;
 import com.google.common.base.Preconditions;
@@ -114,7 +115,7 @@ public class CrawlOverview
             }
         }
 
-        if (shouldTakeScreenshots) {
+        if (shouldTakeScreenshots || vertex instanceof HybridStateVertexImpl) {
             LOG.debug("Saving screenshot for state {}", name);
             File jpg = outputBuilder.newScreenShotFile(name);
             File thumb = outputBuilder.newThumbNail(name);

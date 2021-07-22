@@ -41,7 +41,7 @@ public class CrawlControllerTest {
 	@Mock
 	private Provider<StateFlowGraph> graphProvider;
 
-	private UnfiredCandidateActions candidateActions;
+	private UnfiredFragmentCandidates candidateActions;
 
 	private ExitNotifier consumersDoneLatch;
 
@@ -68,6 +68,9 @@ public class CrawlControllerTest {
 
 	@Mock
 	private PostCrawlingPlugin postCrawlPlugin;
+	
+	@Mock 
+	private CrawlerContext crawlerContext;
 
 	private CrawljaxConfiguration config;
 
@@ -89,6 +92,7 @@ public class CrawlControllerTest {
 			}
 			return null;
 		}).when(crawler).execute(any(StateVertex.class));
+		Mockito.doReturn(crawlerContext).when(crawler).getContext();
 	}
 
 	private void setupGraphAndStates() {
@@ -121,8 +125,8 @@ public class CrawlControllerTest {
 				.setBrowserConfig(new BrowserConfiguration(BrowserType.FIREFOX, consumers))
 				.build();
 
-		candidateActions = new UnfiredCandidateActions(config.getBrowserConfig(), graphProvider,
-				new MetricRegistry());
+		candidateActions = new UnfiredFragmentCandidates(config.getBrowserConfig(), graphProvider,
+				new MetricRegistry(), config.getCrawlRules());
 
 		consumersDoneLatch = new ExitNotifier(config.getMaximumStates());
 

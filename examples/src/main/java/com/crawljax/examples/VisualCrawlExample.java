@@ -59,7 +59,7 @@ public final class VisualCrawlExample {
 
         /* plugins. */
         builder.addPlugin(new CrawlOverview());
-        builder.addPlugin(new TestSuiteGenerator(new TestConfiguration(StateEquivalenceAssertionMode.ALL)));
+        builder.addPlugin(new TestSuiteGenerator(new TestConfiguration(StateEquivalenceAssertionMode.BOTH)));
 
         CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
         crawljax.call();

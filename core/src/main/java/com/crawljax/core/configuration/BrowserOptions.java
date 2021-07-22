@@ -1,10 +1,13 @@
 package com.crawljax.core.configuration;
 
+import org.openqa.selenium.firefox.FirefoxProfile;
+
 public class BrowserOptions {
 
 	public static final int MACBOOK_PRO_RETINA_PIXEL_DENSITY = 2;
 	private boolean headless;
 	private int pixelDensity;
+	private FirefoxProfile profile = null;
 
 	public BrowserOptions() {
 		this.headless = false;
@@ -15,8 +18,9 @@ public class BrowserOptions {
 	 * @param headless Set true for Chrome and Firefox browsers to run them in headless mode
 	 */
 	public BrowserOptions(boolean headless) {
-		super();
+//		super();
 		this.headless = headless;
+		this.pixelDensity = 1;
 	}
 
 	/**
@@ -24,7 +28,7 @@ public class BrowserOptions {
 	 *                     the MACBOOK_PRO_RETINA_PIXEL_DENSITY constant
 	 */
 	public BrowserOptions(int pixelDensity) {
-		super();
+//		super();
 		this.pixelDensity = pixelDensity;
 	}
 
@@ -36,6 +40,10 @@ public class BrowserOptions {
 	public BrowserOptions(boolean headless, int pixelDensity) {
 		this.headless = headless;
 		this.pixelDensity = pixelDensity;
+	}
+	
+	public void setProfile(FirefoxProfile profile) {
+		this.profile = profile;
 	}
 
 	public boolean isHeadless() {
@@ -51,6 +59,10 @@ public class BrowserOptions {
 		return this.getClass().getSimpleName() + "(" + this.headless + ", " + this.pixelDensity
 				+ ")";
 
+	}
+
+	public FirefoxProfile getProfile() {
+		return this.profile;
 	}
 
 }

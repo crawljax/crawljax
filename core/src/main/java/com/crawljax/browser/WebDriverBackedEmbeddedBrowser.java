@@ -286,15 +286,27 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @throws InterruptedException when interrupted during the wait.
 	 */
 	private boolean fireEventWait(WebElement webElement, Eventable eventable)
-			throws ElementNotInteractableException, InterruptedException {
+			throws ElementNotVisibleException, InterruptedException {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
 					webElement.click();
-				} catch (ElementNotInteractableException e) {
+				} catch (ElementNotVisibleException e) {
 					throw e;
 				} catch (WebDriverException e) {
 					throwIfConnectionException(e);
+					throwIfNotInteractableException(e);
+					return false;
+				}
+				break;
+			case enter:
+				try {
+					webElement.sendKeys(Keys.RETURN);
+				} catch (ElementNotVisibleException e) {
+					throw e;
+				} catch (WebDriverException e) {
+					throwIfConnectionException(e);
+					throwIfNotInteractableException(e);
 					return false;
 				}
 				break;
@@ -339,6 +351,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	public String getStrippedDom() {
 
 		try {
+//			String dom = toUniformDOM(DomUtils.getDocumentToString(getDomTreeWithFrames_GoldStandards()));
 			String dom = toUniformDOM(DomUtils.getDocumentToString(getDomTreeWithFrames()));
 			LOGGER.trace(dom);
 			return dom;
@@ -429,7 +442,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	@Override
 	public synchronized boolean fireEventAndWait(Eventable eventable)
-			throws ElementNotInteractableException, NoSuchElementException, InterruptedException {
+			throws ElementNotVisibleException, NoSuchElementException, InterruptedException {
 		try {
 
 			boolean handleChanged = false;
@@ -462,10 +475,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				browser.switchTo().defaultContent();
 			}
 			return result;
-		} catch (ElementNotInteractableException | NoSuchElementException e) {
+		} catch (ElementNotVisibleException | NoSuchElementException e) {
 			throw e;
 		} catch (WebDriverException e) {
 			throwIfConnectionException(e);
+			throwIfNotInteractableException(e);
 			return false;
 		}
 	}
@@ -548,6 +562,40 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 		try {
 			Document document = DomUtils.asDocument(browser.getPageSource());
+			appendFrameContent(document.getDocumentElement(), document, "");
+			return document;
+		} catch (IOException e) {
+			throw new CrawljaxException(e.getMessage(), e);
+		}
+
+	}
+	
+	
+	/**
+	 * @return a Document object containing the contents of iframes as well.
+	 * @throws CrawljaxException if an exception is thrown.
+	 */
+	private Document getDomTreeWithFrames_GoldStandards() throws CrawljaxException {
+
+		try {
+			Document document = DomUtils.asDocument(browser.getPageSource());
+			if(document.getElementsByTagName("title").item(0).getTextContent().equalsIgnoreCase("Meeting Room Booking System")) {
+				document = DomUtils.removeHiddenInputs(document);
+			}
+			if(document.getElementsByTagName("title").item(0).getTextContent().contains("MantisBT")) {
+				document = DomUtils.removeHiddenInputs(document);
+				document = DomUtils.removeHead(document);
+				try {
+				document = DomUtils.removeElementsUnderXpath(document, "/html[1]/body[1]/table[1]/tbody[1]/tr[1]");
+				}catch(Exception ex) {
+					LOGGER.warn("Could not remove time element for Mantisbt");
+				}
+			}
+			
+			if(document.getElementsByTagName("title").item(0).getTextContent().contains("retrospect")) {
+				document = DomUtils.removeHead(document);
+				document = DomUtils.removeComments(document);
+			}
 			appendFrameContent(document.getDocumentElement(), document, "");
 			return document;
 		} catch (IOException e) {
@@ -697,6 +745,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	private void setRandomValues(FormInput input, WebElement webElement, Set<InputValue> values) {
 		switch (input.getType()) {
 			case TEXT:
+			case INPUT:
 			case TEXTAREA:
 				values.add(new InputValue(
 						new RandomInputValueGenerator()
@@ -712,6 +761,16 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 						values.add(new InputValue("0", false));
 					}
 				}
+				else {
+					values.add(new InputValue("1", true));
+				}
+				break;
+			case NUMBER:
+				LOGGER.info("Adding number to form {}", webElement.getTagName());
+				values.add(new InputValue(
+						new RandomInputValueGenerator()
+								.getRandomNumber(),
+						true));
 				break;
 			case SELECT:
 				Select select = new Select(webElement);
@@ -923,6 +982,18 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		if (exceptionIsConnectionException(exception)) {
 			throw wrapWebDriverExceptionIfConnectionException(exception);
 		}
+	}
+	
+	private void throwIfNotInteractableException(WebDriverException exception) {
+		boolean b = (exception.getCause() instanceof ElementNotInteractableException);
+		if(exceptionIsInteractableException(exception)) {
+			throw new ElementNotInteractableException("not interactable");
+		}
+	}
+
+	private boolean exceptionIsInteractableException(WebDriverException exception) {
+		return exception != null
+				&& exception instanceof ElementNotInteractableException;
 	}
 
 	public void setPixelDensity(int pixelDensity) {

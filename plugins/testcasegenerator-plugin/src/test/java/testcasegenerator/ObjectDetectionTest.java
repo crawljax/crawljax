@@ -17,6 +17,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import com.crawljax.plugins.testcasegenerator.visualdiff.ObjectDetection;
 import com.crawljax.plugins.testcasegenerator.visualdiff.pageobjects.IPageObjectFactory;
 import com.crawljax.plugins.testcasegenerator.visualdiff.pageobjects.MD5PageObjectFactory;
+import com.crawljax.stateabstractions.visual.OpenCVLoad;
 
 public class ObjectDetectionTest {
 
@@ -25,7 +26,7 @@ public class ObjectDetectionTest {
 	@Before
 	public void setUp() {
 		pageObjectFactory = new MD5PageObjectFactory();
-		Loader.load(opencv_java.class);
+		OpenCVLoad.load();
 	}
 
 	@Test

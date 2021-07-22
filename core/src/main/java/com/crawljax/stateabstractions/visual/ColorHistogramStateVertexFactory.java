@@ -20,12 +20,20 @@ import java.io.IOException;
  * {@link Object#equals(Object)} function based on the Stripped dom.
  */
 public class ColorHistogramStateVertexFactory extends StateVertexFactory {
+	static {
+		OpenCVLoad.load();
+	}
 	private static final Logger LOG =
 			LoggerFactory.getLogger(ColorHistogramStateVertexFactory.class.getName());
 
 	private final ColorHistogram colorHist = new ColorHistogram();
 	private static final int THUMBNAIL_WIDTH = 200;
 	private static final int THUMBNAIL_HEIGHT = 200;
+	private static double threshold = 0.0;
+	
+	public ColorHistogramStateVertexFactory(double treshold) {
+		threshold = treshold;
+	}
 
 	@Override
 	public StateVertex newStateVertex(int id, String url, String name, String dom,
@@ -37,7 +45,7 @@ public class ColorHistogramStateVertexFactory extends StateVertexFactory {
 
 		Mat hist = colorHist.getHistogram(Crawler.outputDir + "/screenshots/" + name + ".png");
 
-		return new ColorHistogramStateVertexImpl(id, url, name, dom, strippedDom, hist);
+		return new ColorHistogramStateVertexImpl(id, url, name, dom, strippedDom, hist, threshold);
 	}
 
 	private static void saveImage(BufferedImage image, String name) {
@@ -61,5 +69,9 @@ public class ColorHistogramStateVertexFactory extends StateVertexFactory {
 		g.dispose();
 		ImageIO.write(resizedImage, "JPEG", target);
 	}
-
+	
+	@Override
+	public String toString() {
+		return "VISUAL_HYST_" + threshold;
+	}
 }

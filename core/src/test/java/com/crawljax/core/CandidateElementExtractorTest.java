@@ -2,9 +2,11 @@ package com.crawljax.core;
 
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
+import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.Plugins;
@@ -39,7 +41,7 @@ public class CandidateElementExtractorTest {
 
 	private static final Logger LOG =
 			LoggerFactory.getLogger(CandidateElementExtractorTest.class);
-	private static final StateVertex DUMMY_STATE =
+	private static StateVertex DUMMY_STATE =
 			new DefaultStateVertexFactory().createIndex("http://localhost", "", "", null);
 
 	@Mock
@@ -65,6 +67,8 @@ public class CandidateElementExtractorTest {
 
 		CandidateElementExtractor extractor = newElementExtractor(config);
 		browser.goToUrl(DEMO_SITE_SERVER.getSiteUrl());
+		DUMMY_STATE= new DefaultStateVertexFactory().createIndex(browser.getCurrentUrl(), browser.getStrippedDom(),
+				browser.getStrippedDom(), browser);
 		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
 		assertNotNull(candidates);
@@ -97,7 +101,8 @@ public class CandidateElementExtractorTest {
 
 		CandidateElementExtractor extractor = newElementExtractor(config);
 		browser.goToUrl(DEMO_SITE_SERVER.getSiteUrl());
-
+		DUMMY_STATE= new DefaultStateVertexFactory().createIndex(browser.getCurrentUrl(), browser.getStrippedDom(),
+				browser.getStrippedDom(), browser);
 		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
 		assertNotNull(candidates);
@@ -111,11 +116,14 @@ public class CandidateElementExtractorTest {
 		server.before();
 		CrawljaxConfigurationBuilder builder =
 				CrawljaxConfiguration.builderFor(server.getSiteUrl().resolve("iframe/"));
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.CHROME));
 		builder.crawlRules().click("a");
 		CrawljaxConfiguration config = builder.build();
 
 		CandidateElementExtractor extractor = newElementExtractor(config);
 		browser.goToUrl(server.getSiteUrl().resolve("iframe/"));
+		DUMMY_STATE= new DefaultStateVertexFactory().createIndex(browser.getCurrentUrl(), browser.getStrippedDom(),
+				browser.getStrippedDom(), browser);
 		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
 		for (CandidateElement e : candidates) {
@@ -165,6 +173,8 @@ public class CandidateElementExtractorTest {
 		String file = "/candidateElementExtractorTest/domWithOneExternalAndTwoInternal.html";
 		URL dom = Resources.getResource(getClass(), file);
 		browser.goToUrl(dom.toURI());
+		currentState= new DefaultStateVertexFactory().createIndex(browser.getCurrentUrl(), browser.getStrippedDom(),
+				browser.getStrippedDom(), browser);
 		return extractor.extract(currentState);
 	}
 

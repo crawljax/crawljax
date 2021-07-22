@@ -28,7 +28,7 @@ public class PerceptualImageHashStateVertexImpl extends StateVertexImpl {
 	 */
 	@VisibleForTesting PerceptualImageHashStateVertexImpl(int id, String name, String dom, PerceptualImageHash visHash,
 			Mat hashMat) {
-		this(id, null, name, dom, dom, visHash, hashMat);
+		this(id, null, name, dom, dom, visHash, hashMat, -1);
 	}
 
 	/**
@@ -38,13 +38,17 @@ public class PerceptualImageHashStateVertexImpl extends StateVertexImpl {
 	 * @param name        the name of the state
 	 * @param dom         the current DOM tree of the browser
 	 * @param strippedDom the stripped dom by the OracleComparators
+	 * @param threshold 
 	 */
 	public PerceptualImageHashStateVertexImpl(int id, String url, String name, String dom, String strippedDom,
 			PerceptualImageHash visHash,
-			Mat hashMat) {
+			Mat hashMat, double threshold) {
 		super(id, url, name, dom, strippedDom);
 		this.hash = visHash;
 		this.hashMat = hashMat;
+		if(threshold != -1) {
+			this.hash.maxThreshold = threshold;
+		}
 	}
 
 	@Override

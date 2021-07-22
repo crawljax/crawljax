@@ -17,6 +17,8 @@ public class ColorHistogramStateVertexImpl extends StateVertexImpl {
 
 	Mat hist;
 
+	private double threshold = 0.0;
+
 	/**
 	 * Creates a current state without an url and the stripped dom equals the dom.
 	 *
@@ -24,7 +26,7 @@ public class ColorHistogramStateVertexImpl extends StateVertexImpl {
 	 * @param dom  the current DOM tree of the browser
 	 */
 	@VisibleForTesting ColorHistogramStateVertexImpl(int id, String name, String dom, Mat hist) {
-		this(id, null, name, dom, dom, hist);
+		this(id, null, name, dom, dom, hist, -1);
 	}
 
 	/**
@@ -34,12 +36,16 @@ public class ColorHistogramStateVertexImpl extends StateVertexImpl {
 	 * @param name        the name of the state
 	 * @param dom         the current DOM tree of the browser
 	 * @param strippedDom the stripped dom by the OracleComparators
+	 * @param threshold 
 	 */
 	public ColorHistogramStateVertexImpl(int id, String url, String name, String dom,
 			String strippedDom,
-			Mat hist) {
+			Mat hist, double threshold) {
 		super(id, url, name, dom, strippedDom);
 		this.hist = hist;
+		if(threshold!=-1) {
+			this.threshold  = threshold;
+		}
 	}
 
 	@Override
@@ -51,7 +57,8 @@ public class ColorHistogramStateVertexImpl extends StateVertexImpl {
 	public boolean equals(Object object) {
 		if (object instanceof ColorHistogramStateVertexImpl) {
 			ColorHistogramStateVertexImpl that = (ColorHistogramStateVertexImpl) object;
-			return ColorHistogram.compare(this.hist, that.getColorHistogram()) < 1.0;
+			double distance = ColorHistogram.compare(this.hist, that.getColorHistogram());
+			return  ((distance >=0) &&(distance <= this.threshold));
 		}
 		return false;
 	}

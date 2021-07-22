@@ -1,18 +1,21 @@
 package com.crawljax.plugins.testcasegenerator;
 
-import com.crawljax.core.configuration.BrowserConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.util.FSUtils;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.plugin.Plugin;
+import com.crawljax.util.FSUtils;
 
 /**
  * @author mesbah
@@ -36,9 +39,59 @@ public class JavaTestGenerator {
 	 * @param url
 	 * @throws Exception
 	 */
-	public JavaTestGenerator(String className, String url, List<TestMethod> testMethods,
-	        CrawljaxConfiguration config, String testSuitePath, String screenshotPath,
-	        String diffPath, TestConfiguration testConfiguration) throws Exception {
+//	public JavaTestGenerator(String className, String url, List<TestMethod> testMethods,
+//	        CrawljaxConfiguration config, String testSuitePath, String screenshotPath,
+//	        String diffPath, TestConfiguration testConfiguration) throws Exception {
+//		engine = new VelocityEngine();
+//		/* disable logging */
+//		engine.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
+//		        "org.apache.velocity.runtime.log.NullLogChute");
+//		// tell Velocity to look in classpath for template file
+//		engine.setProperty("resource.loader", "file");
+//		engine.setProperty("file.resource.loader.class",
+//		        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+//
+//		engine.init();
+//		context = new VelocityContext();
+//		this.className = className;
+//		context.put("date", new Date().toString());
+//		context.put("classname", className);
+//		context.put("url", url);
+//		context.put("browserConfig",
+//		        getBrowserConfigString(testConfiguration.getBrowserConfig()));
+//
+//		context.put("waitAfterEvent", config.getCrawlRules().getWaitAfterEvent());
+//		context.put("waitAfterReloadUrl", config.getCrawlRules().getWaitAfterReloadUrl());
+//
+//		/*
+//		 * boolean usePropertiesFile = PropertyHelper.getPropertiesFileName() != null &&
+//		 * !PropertyHelper.getPropertiesFileName().equals(""); context.put("usePropertiesFile",
+//		 * usePropertiesFile); context.put("propertiesfile",
+//		 * PropertyHelper.getPropertiesFileName());
+//		 */
+//		context.put("methodList", testMethods);
+//		context.put("database", true);
+//		context.put("testSuitePath", escapePath(testSuitePath));
+//
+//		context.put("crawl", escapePath(screenshotPath));
+//		context.put("diffScreenshots", escapePath(diffPath));
+//		context.put("assertionMode", testConfiguration.getAssertionMode());
+//		
+//		List<String> plugins = new ArrayList<String>();
+//		if(!config.getPlugins().isEmpty()) {
+//			for(Plugin plugin: config.getPlugins()) {
+//				if(plugin.getClass().getSimpleName().contains("Cleanup")){
+//					plugins.add(plugin.getClass().getSimpleName());
+//				}
+//			}
+//		}
+//		if(!plugins.isEmpty()) {
+//			context.put("plugins", plugins);
+//		}
+//	}
+
+	public JavaTestGenerator(String className, String url, List<TestMethod> testMethods, CrawljaxConfiguration config,
+			String absPath, TestConfiguration testConfiguration) {
 		engine = new VelocityEngine();
 		/* disable logging */
 		engine.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
@@ -68,11 +121,23 @@ public class JavaTestGenerator {
 		 */
 		context.put("methodList", testMethods);
 		context.put("database", true);
-		context.put("testSuitePath", escapePath(testSuitePath));
+//		context.put("testSuitePath", escapePath(testSuitePath));
 
-		context.put("crawlScreenshots", escapePath(screenshotPath + File.separator + "screenshots"));
-		context.put("diffScreenshots", escapePath(diffPath));
+		context.put("crawlPath", escapePath(absPath));
+//		context.put("diffScreenshots", escapePath(diffPath));
 		context.put("assertionMode", testConfiguration.getAssertionMode());
+		
+		List<String> plugins = new ArrayList<String>();
+		if(!config.getPlugins().isEmpty()) {
+			for(Plugin plugin: config.getPlugins()) {
+				if(plugin.getClass().getSimpleName().contains("Cleanup")){
+					plugins.add(plugin.getClass().getSimpleName());
+				}
+			}
+		}
+		if(!plugins.isEmpty()) {
+			context.put("plugins", plugins);
+		}
 	}
 
 	private Object getBrowserConfigString(BrowserConfiguration browserConfig) {
@@ -129,7 +194,8 @@ public class JavaTestGenerator {
 									 String testSuiteClassName) throws IOException {
 		FSUtils.directoryCheck(outputFolder);
 		VelocityContext runnerScriptContext = new VelocityContext();
-		runnerScriptContext.put("libsClassPath", "../../../libs");
+//		runnerScriptContext.put("libsClassPath", "../../../libs");
+		runnerScriptContext.put("libsClassPath", "../../../target/crawljax-examples-5.0-beta-jar-with-dependencies.jar");
 		runnerScriptContext.put("generatedTestsJavaFilePath",
 				testSuiteSrcFolder + File.separator +
 						testSuitePackageName.replace(".", File.separator) + File.separator +

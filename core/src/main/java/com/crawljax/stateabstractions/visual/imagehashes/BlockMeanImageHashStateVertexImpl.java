@@ -28,7 +28,7 @@ public class BlockMeanImageHashStateVertexImpl extends StateVertexImpl {
 	 */
 	@VisibleForTesting BlockMeanImageHashStateVertexImpl(int id, String name, String dom, BlockMeanImageHash visHash,
 			Mat hashMat) {
-		this(id, null, name, dom, dom, visHash, hashMat);
+		this(id, null, name, dom, dom, visHash, hashMat,-1);
 	}
 
 	/**
@@ -38,13 +38,17 @@ public class BlockMeanImageHashStateVertexImpl extends StateVertexImpl {
 	 * @param name        the name of the state
 	 * @param dom         the current DOM tree of the browser
 	 * @param strippedDom the stripped dom by the OracleComparators
+	 * @param threshold 
 	 */
 	public BlockMeanImageHashStateVertexImpl(int id, String url, String name, String dom, String strippedDom,
 			BlockMeanImageHash visHash,
-			Mat hashMat) {
+			Mat hashMat, double threshold) {
 		super(id, url, name, dom, strippedDom);
 		this.visHash = visHash;
 		this.hashMat = hashMat;
+		if(threshold != -1) {
+			this.visHash.maxThreshold = threshold;
+		}
 	}
 
 	@Override

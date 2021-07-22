@@ -114,7 +114,8 @@ public class EventableTest {
 		assertNotNull(clickable);
 
 		assertThat(clickable.getIdentification().getHow(), is(xpath));
-		assertThat(clickable.getIdentification().getValue(), is("//DIV[@id = 'firstdiv']"));
+//		assertThat(clickable.getIdentification().getValue(), is("//DIV[@id = 'firstdiv']"));
+		assertThat(clickable.getIdentification().getValue(), is("/HTML[1]/BODY[1]/DIV[1]"));
 		assertThat(clickable.getElement().getAttributeOrNull("id"), is("firstdiv"));
 	}
 

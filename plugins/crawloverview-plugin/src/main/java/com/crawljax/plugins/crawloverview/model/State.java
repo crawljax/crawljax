@@ -127,6 +127,7 @@ public class State {
 		this.nearestState = nearestState;
 		this.distToNearestState = distToNearestState;
 		this.timeAdded = timeAdded;
+		this.cluster = state.getCluster();
 	}
 
 	public boolean isHasNearDuplicate() {

@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,12 +53,14 @@ public class TrainingFormHandler extends FormHandler {
 	 * threads.
 	 *
 	 * @param formInputs form input list.
+	 * @return 
 	 */
-	public synchronized void handleFormElements(List<FormInput> formInputs) {
+	public synchronized List<FormInput> handleFormElements(List<FormInput> formInputs) {
 
 		/* If there are no form elements, there is nothing to do. */
 		if (formInputs.isEmpty())
-			return;
+//			return true;
+			return new ArrayList<>();
 
 		/* First fill in the data from previous sessions through
 		 * InputSpecification or forms.json */
@@ -68,6 +71,8 @@ public class TrainingFormHandler extends FormHandler {
 		if (incomplete(formInputs))
 			pauseAndTrainModal(formInputs);
 
+//		return true;
+		return formInputs;
 	}
 
 	/**

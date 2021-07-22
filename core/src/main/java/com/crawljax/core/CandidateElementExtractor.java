@@ -118,7 +118,8 @@ public class CandidateElementExtractor {
 		LOG.debug("Looking in state: {} for candidate elements", currentState.getName());
 
 		try {
-			Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+//			Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+			Document dom = currentState.getDocument();
 			extractElements(dom, results, "");
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
@@ -362,6 +363,8 @@ public class CandidateElementExtractor {
 				LOG.debug("Found new candidate element: {} with eventableCondition {}",
 						candidateElement.getUniqueString(), eventableCondition);
 				candidateElement.setEventableCondition(eventableCondition);
+				// Setting eventType so that correct event can be set for crawlAction
+				candidateElement.setEventType(crawl.getEventType());
 				results.add(candidateElement);
 				/*
 				 * TODO add element to checkedElements after the event is fired! also add string

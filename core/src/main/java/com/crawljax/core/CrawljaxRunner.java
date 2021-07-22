@@ -27,7 +27,6 @@ public class CrawljaxRunner implements Callable<CrawlSession> {
 
 	public CrawljaxRunner(CrawljaxConfiguration config) {
 		this.config = config;
-
 		readFormDataFromFile();
 	}
 

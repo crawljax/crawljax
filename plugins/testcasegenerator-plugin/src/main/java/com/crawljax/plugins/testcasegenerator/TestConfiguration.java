@@ -5,7 +5,7 @@ import com.crawljax.core.configuration.BrowserConfiguration;
 public class TestConfiguration {
 
 	public enum StateEquivalenceAssertionMode {
-		DOM, VISUAL, ALL;
+		DOM, VISUAL, BOTH, HYBRID;
 
 		@Override
 		public String toString() {
@@ -17,7 +17,7 @@ public class TestConfiguration {
 	private BrowserConfiguration browserConfig;
 
 	public TestConfiguration(BrowserConfiguration browserConfig) {
-		this.setAssertionMode(StateEquivalenceAssertionMode.ALL);
+		this.setAssertionMode(StateEquivalenceAssertionMode.BOTH);
 		this.setBrowserConfig(browserConfig);
 	}
 

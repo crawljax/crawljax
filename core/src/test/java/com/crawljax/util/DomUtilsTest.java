@@ -1,17 +1,30 @@
 package com.crawljax.util;
 
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
-import java.io.File;
-import java.io.IOException;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class DomUtilsTest {
 
@@ -220,6 +233,30 @@ public class DomUtilsTest {
 		String html = "<html><body><p>bla</p></body></html>";
 		Document doc = DomUtils.asDocument(html);
 		assertThat(DomUtils.getDocumentToString(doc).contains("<P>"), is(true));
+	}
+	
+	@Test
+	public void testLeafNodeSize() throws IOException {
+		String html = "<html><body><p>bla</p></body></html>";
+		Document doc = DomUtils.asDocument(html);
+		try {
+			assertThat(DomUtils.getAllLeafNodes(doc).getLength(), is(2));
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testLeafNodeSize2() throws IOException {
+		String html = "<html><body><p>bla</p></body></html>";
+		Document doc = DomUtils.asDocument(html);
+		try {
+			assertThat(DomUtils.getNumLeafNodes(doc.getElementsByTagName("body").item(0)), is(1));
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Test
@@ -514,4 +551,40 @@ public class DomUtilsTest {
 		}
 	}
 
+	
+	@Test
+	public void getAllSubtreeNodesTest() throws IOException, XPathExpressionException {
+		String html =
+				"<body><div id='firstdiv'></div><div><span id='thespan'>"
+						+ "<a id='thea'>test</a></span></div></body>";
+		String xpath = "/HTML[1]/BODY[1]";
+		Document dom = DomUtils.asDocument(html);
+		Node parent = DomUtils.getElementByXpath(dom, xpath);
+		NodeList childNodes = DomUtils.getAllSubtreeNodes(parent);
+		System.out.println(childNodes.getLength());
+		for(int i =0; i<childNodes.getLength(); i++) {
+			Node childNode = childNodes.item(i);
+			System.out.println(childNode.getNodeName());
+		}
+		
+		assertTrue(childNodes.getLength() == 4);
+		
+	}
+	
+	@Test
+	public void getAllAttributesTest() throws IOException, XPathExpressionException {
+		String html =
+				"<body><div id='firstdiv'></div><div><span id='thespan' xyz='xyz'>"
+						+ "<a href='#' id='thea'>test</a></span></div></body>";
+		Document dom = DomUtils.asDocument(html);
+		
+		Map<String, Set<String>> attributeMap = new HashMap<String, Set<String>>();
+		DomUtils.getAllAttributes(dom, attributeMap, null);
+		System.out.println(attributeMap);
+		String[] array = {"firstdiv", "thespan", "thea"};
+		List<String> expecteds = Arrays.asList(array);
+		String[] actuals = attributeMap.get("id").toArray(new String[0]);
+		assertTrue("Wrong return attributes", attributeMap.get("id").containsAll(expecteds));
+//		assertArrayEquals("wrong return attribute values", expecteds, actuals);
+	}
 }

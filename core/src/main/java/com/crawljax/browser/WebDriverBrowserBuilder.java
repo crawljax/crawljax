@@ -1,12 +1,10 @@
 package com.crawljax.browser;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.ProxyConfiguration;
-import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
-import com.crawljax.core.plugin.Plugins;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSortedSet;
-import io.github.bonigarcia.wdm.WebDriverManager;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import org.openqa.selenium.Dimension;
+
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -18,8 +16,14 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.ProxyConfiguration;
+import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
+import com.crawljax.core.plugin.Plugins;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSortedSet;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
  * Default implementation of the EmbeddedBrowserBuilder based on Selenium WebDriver API.
@@ -27,6 +31,7 @@ import javax.inject.Provider;
 public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverBrowserBuilder.class);
+	private static final boolean SYSTEM_OFFLINE = false;
 	private final CrawljaxConfiguration configuration;
 	private final Plugins plugins;
 
@@ -106,16 +111,24 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			long crawlWaitReload, long crawlWaitEvent, boolean headless) {
 
 		WebDriverManager.firefoxdriver().setup();
-
-		FirefoxProfile profile = new FirefoxProfile();
-
-		// disable download dialog (downloads directly without the need for a confirmation)
-		profile.setPreference("browser.download.folderList", 2);
-		profile.setPreference("browser.download.manager.showWhenStarting", false);
-		// profile.setPreference("browser.download.dir","downloads");
-		profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
-				"text/csv, application/octet-stream");
-
+		
+		FirefoxProfile profile = null;
+		
+		if(configuration.getBrowserConfig().getBrowserOptions().getProfile() !=null) {
+			profile = configuration.getBrowserConfig().getBrowserOptions().getProfile();
+		}
+		else {
+			profile = new FirefoxProfile();
+			
+			// disable download dialog (downloads directly without the need for a confirmation)
+			profile.setPreference("browser.contentblocking.category", "strict");
+			profile.setPreference("browser.download.folderList", 2);
+			profile.setPreference("browser.download.manager.showWhenStarting", false);
+			// profile.setPreference("browser.download.dir","downloads");
+			profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
+					"text/csv, application/octet-stream");
+		}
+		
 		if (configuration.getProxyConfiguration() != null) {
 			String lang = configuration.getBrowserConfig().getLangOrNull();
 			if (!Strings.isNullOrEmpty(lang)) {
@@ -148,7 +161,11 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 	private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
 			long crawlWaitReload, long crawlWaitEvent, boolean headless) {
-
+		
+		if(SYSTEM_OFFLINE)
+			System.setProperty("webdriver.chrome.driver", "/Users/rahulkrishna/.m2/repository/webdriver/chromedriver/mac64/76.0.3809.68/chromedriver");
+//		
+		else
 		WebDriverManager.chromedriver().setup();
 
 		ChromeOptions optionsChrome = new ChromeOptions();
@@ -172,6 +189,9 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 		}
 
 		ChromeDriver driverChrome = new ChromeDriver(optionsChrome);
+		Dimension d = new Dimension(1200,890);
+		//Resize current window to the set dimension
+		driverChrome.manage().window().setSize(d);
 		return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, filterAttributes,
 				crawlWaitEvent, crawlWaitReload);
 	}

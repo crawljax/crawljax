@@ -1,18 +1,17 @@
 package com.crawljax.stateabstractions.visual;
 
-import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_java;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.opencv.core.Mat;
 
-import static org.junit.Assert.assertEquals;
 
 public class OpenCVTest {
 
 	@Before
 	public void setUp() {
-		Loader.load(opencv_java.class);
+		OpenCVLoad.load();
 	}
 
 	@Test

@@ -8,9 +8,9 @@
         </encoder>
     </appender>
 
-    <logger name="com.crawljax" level="WARN"/>
+    <logger name="com.crawljax" level="INFO"/>
 
-    <root level="WARN">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
 
