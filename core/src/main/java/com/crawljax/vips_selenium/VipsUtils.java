@@ -925,7 +925,7 @@ public class VipsUtils {
 			LOG.info("SKipping populate dom because already populated {}", isPopulated(dom));
 			return;
 		}
-		File scriptFile = null;
+		/*File scriptFile = null;
 		if(USE_CDP) {
 			Path cdp = Paths.get("src", "main", "resources", "cdpScript.js");
 			scriptFile = new File(cdp.toString());
@@ -948,10 +948,20 @@ public class VipsUtils {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}*/
+		
+		String script = null;
+		
+		if(USE_CDP) {
+			script = Scripts.CDP_SCRIPT;
+		}
+		else {
+			script = Scripts.VIPS_SCIRPT;
 		}
 		
 		List<String> xpaths = getXpathList(dom.getElementsByTagName("body").item(0));
 		LOG.info("Sending {} xpaths", xpaths.size());
+		LOG.info("{}", xpaths);
 		Object attributeString = null;
 		if(USE_CDP) {
 			Gson gson = new Gson();
