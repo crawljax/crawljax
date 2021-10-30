@@ -54,7 +54,7 @@ public final class CrawlExample {
 		builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
 		builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
 
-		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.PHANTOMJS, 1));
+		builder.setBrowserConfig(new BrowserConfiguration(BrowserType.CHROME_HEADLESS, 1));
 
 		// CrawlOverview
 		builder.addPlugin(new CrawlOverview());
