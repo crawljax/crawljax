@@ -82,10 +82,10 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 							configuration.getBrowserConfig().getRemoteHubUrl(), filterAttributes,
 							crawlWaitEvent, crawlWaitReload);
 					break;
-				case PHANTOMJS:
+				/*case PHANTOMJS:
 					browser =
 							newPhantomJSDriver(filterAttributes, crawlWaitReload, crawlWaitEvent);
-					break;
+					break;*/
 				default:
 					throw new IllegalStateException("Unrecognized browser type "
 							+ configuration.getBrowserConfig().getBrowserType());
@@ -166,7 +166,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 			System.setProperty("webdriver.chrome.driver", "/Users/rahulkrishna/.m2/repository/webdriver/chromedriver/mac64/76.0.3809.68/chromedriver");
 //		
 		else
-		WebDriverManager.chromedriver().setup();
+			WebDriverManager.chromedriver().setup();
 
 		ChromeOptions optionsChrome = new ChromeOptions();
 
@@ -196,6 +196,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 				crawlWaitEvent, crawlWaitReload);
 	}
 
+	/*@Deprecated
 	private EmbeddedBrowser newPhantomJSDriver(ImmutableSortedSet<String> filterAttributes,
 			long crawlWaitReload, long crawlWaitEvent) {
 
@@ -219,6 +220,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 		return WebDriverBackedEmbeddedBrowser.withDriver(phantomJsDriver, filterAttributes,
 				crawlWaitEvent, crawlWaitReload);
-	}
+	}*/
 
 }

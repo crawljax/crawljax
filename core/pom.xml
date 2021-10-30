@@ -109,6 +109,14 @@
             <artifactId>selenium-remote-driver</artifactId>
             <version>${selenium.version}</version>
         </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-devtools-v93 -->
+		<dependency>
+		    <groupId>org.seleniumhq.selenium</groupId>
+		    <artifactId>selenium-devtools-v93</artifactId>
+		    <version>${selenium.version}</version>
+		</dependency>
+        
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>

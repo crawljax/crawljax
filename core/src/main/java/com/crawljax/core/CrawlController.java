@@ -25,9 +25,22 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CrawlController.class);
 
-	static {
+	/* Why is this property being set? 
+	 * Creates a problem with selenium latest versions. 
+	 
+	  java.lang.ExceptionInInitializerError
+	Caused by: java.lang.IllegalArgumentException: Unknown HttpClient factory apache
+	at org.openqa.selenium.remote.http.HttpClient$Factory.create(HttpClient.java:57)
+	at org.openqa.selenium.remote.http.HttpClient$Factory.createDefault(HttpClient.java:73)
+	at org.openqa.selenium.remote.HttpCommandExecutor$DefaultClientFactoryHolder.<clinit>(HttpCommandExecutor.java:58)
+	... 60 more
+
+	
+	 * */
+	
+	/*static {
 		System.setProperty("webdriver.http.factory", "apache");
-	}
+	}*/
 
 	private final Provider<CrawlTaskConsumer> consumerFactory;
 	private final ExecutorService executor;

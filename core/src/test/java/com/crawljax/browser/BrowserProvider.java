@@ -68,10 +68,10 @@ public class BrowserProvider extends ExternalResource {
 				firefoxOptions.setHeadless(true);
 				driver = new FirefoxDriver(firefoxOptions);
 				break;
-			case PHANTOMJS:
+			/*case PHANTOMJS:
 				WebDriverManager.phantomjs().setup();
 				driver = new PhantomJSDriver();
-				break;
+				break;*/
 			default:
 				throw new IllegalStateException("Unsupported browser type " + getBrowserType());
 		}
@@ -94,12 +94,12 @@ public class BrowserProvider extends ExternalResource {
 
 				/* Make sure we clean up properly. */
 				if (!browser.toString().contains("(null)")) {
-					if (getBrowserType() == BrowserType.PHANTOMJS) {
+					/*if (getBrowserType() == BrowserType.PHANTOMJS) {
 						// PhantomJS only quits the process on quit command
 						browser.quit();
-					} else {
+					} else {*/
 						browser.close();
-					}
+//					}
 				}
 
 			} catch (RuntimeException e) {
