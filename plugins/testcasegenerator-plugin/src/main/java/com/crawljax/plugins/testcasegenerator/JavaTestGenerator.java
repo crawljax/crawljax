@@ -33,6 +33,8 @@ public class JavaTestGenerator {
 	private static final String WINDOWS_RUNNER_SCRIPT_GENERATED_FILE_NAME = "run.bat";
 	private static final String TESTNG_XML_TEMPLATE_NAME = "testng.xml.vm";
 	private static final String TESTNG_XML_GENERATED_FILE_NAME = "testng.xml";
+	private static final String POM_TEMPLATE = "pom_template.vm";
+	private static final String POM_FILE_NAME = "pom.xml";
 
 	/**
 	 * @param className
@@ -229,6 +231,14 @@ public class JavaTestGenerator {
 		testngTemplate.merge(testngContext, testngFileWriter);
 		testngFileWriter.flush();
 		testngFileWriter.close();
+		
+		// Generate pom.xml
+		Template pomTemplate = engine.getTemplate(POM_TEMPLATE);
+		File pomFile = new File(outputFolder + File.separator + POM_FILE_NAME);
+		FileWriter pomWriter = new FileWriter(pomFile);
+		pomTemplate.merge(runnerScriptContext, pomWriter);
+		pomWriter.flush();
+		pomWriter.close();
 
 	}
 }

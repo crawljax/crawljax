@@ -128,18 +128,20 @@ public class ${classname} {
 #if(${method.methodName} != "0")
 		testSuiteHelper.addStateToReportBuilder(${method.eventList.get(0).properties.sourceid});
 
-		if (assertionMode == StateEquivalenceAssertionMode.DOM || assertionMode == StateEquivalenceAssertionMode.BOTH) {
-			    allStatesIdentical = testSuiteHelper.compareCurrentDomWithState(${method.eventList.get(0).properties.sourceid})
-									&& allStatesIdentical;
-		}
-
-		if (assertionMode == StateEquivalenceAssertionMode.VISUAL || assertionMode == StateEquivalenceAssertionMode.BOTH) {
-		    allStatesIdentical = testSuiteHelper.compareCurrentScreenshotWithState(${method.eventList.get(0).properties.sourceid})
-				&& allStatesIdentical;
-		}
-		if (assertionMode == StateEquivalenceAssertionMode.HYBRID) {
-			allStatesIdentical = testSuiteHelper.fragDiffBool(${method.eventList.get(0).properties.sourceid})
-				&& allStatesIdentical;				
+		if (assertionMode != StateEquivalenceAssertionMode.NONE){
+			if (assertionMode == StateEquivalenceAssertionMode.DOM || assertionMode == StateEquivalenceAssertionMode.BOTH) {
+				    allStatesIdentical = testSuiteHelper.compareCurrentDomWithState(${method.eventList.get(0).properties.sourceid})
+										&& allStatesIdentical;
+			}
+	
+			if (assertionMode == StateEquivalenceAssertionMode.VISUAL || assertionMode == StateEquivalenceAssertionMode.BOTH) {
+			    allStatesIdentical = testSuiteHelper.compareCurrentScreenshotWithState(${method.eventList.get(0).properties.sourceid})
+					&& allStatesIdentical;
+			}
+			if (assertionMode == StateEquivalenceAssertionMode.HYBRID) {
+				allStatesIdentical = testSuiteHelper.fragDiffBool(${method.eventList.get(0).properties.sourceid})
+					&& allStatesIdentical;				
+			}
 		}
 #end
 		try {
@@ -163,19 +165,22 @@ public class ${classname} {
 
 			testSuiteHelper.addStateToReportBuilder(${event.properties.targetid});
 			
-			if (assertionMode == StateEquivalenceAssertionMode.DOM || assertionMode == StateEquivalenceAssertionMode.BOTH) {
-			    allStatesIdentical = testSuiteHelper.compareCurrentDomWithState(${event.properties.targetid})
-									&& allStatesIdentical;
-			}
-
-			if (assertionMode == StateEquivalenceAssertionMode.VISUAL || assertionMode == StateEquivalenceAssertionMode.BOTH) {
-			    /* Perform a visual diff on the two states. */
-			    allStatesIdentical = testSuiteHelper.compareCurrentScreenshotWithState(${event.properties.targetid})
-					&& allStatesIdentical;
-			}
-			if (assertionMode == StateEquivalenceAssertionMode.HYBRID) {
-				allStatesIdentical = testSuiteHelper.fragDiffBool(${event.properties.targetid})
-					&& allStatesIdentical;	
+			if (assertionMode != StateEquivalenceAssertionMode.NONE){
+				
+				if (assertionMode == StateEquivalenceAssertionMode.DOM || assertionMode == StateEquivalenceAssertionMode.BOTH) {
+				    allStatesIdentical = testSuiteHelper.compareCurrentDomWithState(${event.properties.targetid})
+										&& allStatesIdentical;
+				}
+	
+				if (assertionMode == StateEquivalenceAssertionMode.VISUAL || assertionMode == StateEquivalenceAssertionMode.BOTH) {
+				    /* Perform a visual diff on the two states. */
+				    allStatesIdentical = testSuiteHelper.compareCurrentScreenshotWithState(${event.properties.targetid})
+						&& allStatesIdentical;
+				}
+				if (assertionMode == StateEquivalenceAssertionMode.HYBRID) {
+					allStatesIdentical = testSuiteHelper.fragDiffBool(${event.properties.targetid})
+						&& allStatesIdentical;	
+				}
 			}
 			
 #end
