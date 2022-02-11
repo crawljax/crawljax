@@ -971,7 +971,6 @@ public class FragmentManager {
 	
 	
 	public StateComparision cacheStateComparision(StateVertex newState, StateVertex expectedState, boolean assignDynamic) {
-	LOG.debug(" ");
 		if(getCachedComparision(newState, expectedState)==null) {
 			
 			StateComparision comp = null;

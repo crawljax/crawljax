@@ -293,9 +293,11 @@ public class Crawler {
 
 			parseCurrentPageForCandidateElements();
 			
-			for(StateVertex existing: stateMachine.getOnURLSet()) {
-				boolean assignDynamic = true;
-				fragmentManager.cacheStateComparision(newState, existing, assignDynamic);
+			if(newState instanceof HybridStateVertexImpl) {
+				for(StateVertex existing: stateMachine.getOnURLSet()) {
+					boolean assignDynamic = true;
+					fragmentManager.cacheStateComparision(newState, existing, assignDynamic);
+				}
 			}
 			stateMachine.getOnURLSet().add(newState);
 			
