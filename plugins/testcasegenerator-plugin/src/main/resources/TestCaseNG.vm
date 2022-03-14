@@ -32,7 +32,6 @@ import com.crawljax.plugins.testcasegenerator.crawlPlugins.*;
  */
 
 public class ${classname} {
-	private final boolean mutate = true;
     private final String URL = "${url}";
 	private TestSuiteHelper testSuiteHelper;
 	
@@ -64,11 +63,12 @@ public class ${classname} {
 			//load needed data from json files
 			testSuiteHelper = new TestSuiteHelper(
 					getTestConfiguration(),
-					CRAWL_PATH, URL, mutate);
+					CRAWL_PATH, URL, false);
 					
 #end
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			Assert.fail(e.getMessage());
 		}
 	}

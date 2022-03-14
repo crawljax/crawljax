@@ -14,7 +14,7 @@
 
 	<name>Generated Tests</name>
 	<description>Generated test cases from the crawl session.</description>
-	<url>http://crawljax.com</url>
+	<url>https://github.com/crawljax/crawljax</url>
 
 
 	<build>
