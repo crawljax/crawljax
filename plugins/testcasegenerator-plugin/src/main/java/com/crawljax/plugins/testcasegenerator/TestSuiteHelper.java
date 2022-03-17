@@ -400,7 +400,10 @@ public class TestSuiteHelper {
 		String domString = FileUtils.readFileToString(fragDom, Charset.defaultCharset());
 
 		File screenshotFile = getOldScreenshotFile(state.getName());
-
+		if (Files.notExists(screenshotFile.toPath(), LinkOption.NOFOLLOW_LINKS)) {
+			System.err.println("No screenshotFile found for Hybrid State : " + screenshotFile.toPath());
+			return;
+		}
 		BufferedImage screenshot = ImageIO.read(screenshotFile);
 		FragmentationPlugin.loadFragmentState(state, fragmentManager, DomUtils.asDocument(domString), screenshot);
 		LOGGER.info("Loaded {} offline", state.getName());
