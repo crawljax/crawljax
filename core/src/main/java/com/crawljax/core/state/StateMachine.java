@@ -155,6 +155,7 @@ public class StateMachine {
 			return true;
 		} else {
 			changeState(cloneState);
+			plugins.runOnRevisitStatePlugins(context, cloneState);
 			return false;
 		}
 	}

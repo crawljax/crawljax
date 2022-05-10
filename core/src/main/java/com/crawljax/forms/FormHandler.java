@@ -11,6 +11,8 @@ import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.common.base.Enums;
 import com.google.inject.assistedinject.Assisted;
+
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -86,7 +88,11 @@ public class FormHandler {
 
 		} catch (ElementNotVisibleException e) {
 			LOGGER.warn("Element not visible, input not completed.");
-		} catch (BrowserConnectionException e) {
+			throw e;
+		}catch (ElementNotInteractableException e) {
+			LOGGER.warn("Element not interactable, input not completed.");
+			throw e;
+		}catch (BrowserConnectionException e) {
 			throw e;
 		} catch (RuntimeException e) {
 			LOGGER.error("Could not input element values");

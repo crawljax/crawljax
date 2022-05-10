@@ -4,6 +4,7 @@
 package com.crawljax.plugins.testcasegenerator;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +26,8 @@ import com.crawljax.plugins.testcasegenerator.TestConfiguration.StateEquivalence
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.FSUtils;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Test suite generator for crawljax. IMPORTANT: only works with CrawljaxConfiguration TODO: Danny,
@@ -78,6 +81,22 @@ public class TestSuiteGenerator implements PostCrawlingPlugin {
 
 	@Override
 	public void postCrawling(CrawlSession session, ExitStatus exitReason) {
+		
+		File outputDir = session.getConfig().getOutputDir();
+
+		GsonBuilder builder = new GsonBuilder();
+		Gson gson = builder.setPrettyPrinting().create();
+
+		File CrawlPathsJson = new File(outputDir, "CrawlPaths.json");
+		try {
+			FileWriter writer = new FileWriter(CrawlPathsJson);
+			gson.toJson(session.getCrawlPaths(), writer);
+			writer.flush();
+			writer.close();
+			LOGGER.info("Wrote crawlpaths to CrawlPaths.json");
+		}catch(Exception ex) {
+			LOGGER.error("Error exporting Crawlpaths");
+		}
 
 		/*
 		 * Set up the input and output directories for the test suite, if not specified.
