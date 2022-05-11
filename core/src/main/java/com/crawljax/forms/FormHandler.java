@@ -13,7 +13,6 @@ import com.google.common.base.Enums;
 import com.google.inject.assistedinject.Assisted;
 
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -85,10 +84,6 @@ public class FormHandler {
 				case SELECT:
 					handleSelectBoxes(input);
 			}
-
-		} catch (ElementNotVisibleException e) {
-			LOGGER.warn("Element not visible, input not completed.");
-			throw e;
 		}catch (ElementNotInteractableException e) {
 			LOGGER.warn("Element not interactable, input not completed.");
 			throw e;
@@ -303,7 +298,7 @@ public class FormHandler {
 				break;
 			}
 
-		} catch (ElementNotVisibleException e) {
+		} catch (ElementNotInteractableException e) {
 			LOGGER.warn("Element not visible, input not completed.");
 		} catch (BrowserConnectionException e) {
 			throw e;

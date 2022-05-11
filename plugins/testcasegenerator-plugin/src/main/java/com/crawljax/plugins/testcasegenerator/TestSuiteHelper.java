@@ -28,7 +28,6 @@ import org.apache.commons.io.FileUtils;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -566,13 +565,7 @@ public class TestSuiteHelper {
 		boolean isFired = false;
 		try {
 			isFired = browser.fireEventAndWait(eventToFire);
-		} catch (ElementNotVisibleException | NoSuchElementException e) {
-			if (eventToFire.getElement() != null && "A".equals(eventToFire.getElement().getTag())) {
-				isFired = visitAnchorHrefIfPossible(eventToFire);
-			} else {
-				LOGGER.debug("Ignoring invisible element {}", eventToFire.getElement());
-			}
-		} catch (ElementNotInteractableException e) {
+		} catch (ElementNotInteractableException | NoSuchElementException e) {
 			if (eventToFire.getElement() != null && "A".equals(eventToFire.getElement().getTag())) {
 				isFired = visitAnchorHrefIfPossible(eventToFire);
 			} else {

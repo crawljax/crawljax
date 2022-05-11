@@ -1,5 +1,49 @@
 package com.crawljax.browser;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.ErrorHandler.UnknownServerException;
+import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import com.assertthat.selenium_shutterbug.utils.web.ScrollStrategy;
 import com.crawljax.core.CrawljaxException;
@@ -16,38 +60,10 @@ import com.crawljax.util.DomUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.io.Files;
-import org.openqa.selenium.*;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.remote.Augmenter;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.ErrorHandler.UnknownServerException;
-import org.openqa.selenium.remote.HttpCommandExecutor;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+
 import ru.yandex.qatools.ashot.shooting.ShootingStrategy;
 import ru.yandex.qatools.ashot.shooting.SimpleShootingStrategy;
 import ru.yandex.qatools.ashot.shooting.ViewportPastingDecorator;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
@@ -286,12 +302,12 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 * @throws InterruptedException when interrupted during the wait.
 	 */
 	private boolean fireEventWait(WebElement webElement, Eventable eventable)
-			throws ElementNotVisibleException, InterruptedException {
+			throws ElementNotInteractableException, InterruptedException {
 		switch (eventable.getEventType()) {
 			case click:
 				try {
 					webElement.click();
-				} catch (ElementNotVisibleException e) {
+				} catch (ElementNotInteractableException e) {
 					throw e;
 				} catch (WebDriverException e) {
 					throwIfConnectionException(e);
@@ -302,7 +318,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 			case enter:
 				try {
 					webElement.sendKeys(Keys.RETURN);
-				} catch (ElementNotVisibleException e) {
+				} catch (ElementNotInteractableException e) {
 					throw e;
 				} catch (WebDriverException e) {
 					throwIfConnectionException(e);
@@ -442,7 +458,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 	 */
 	@Override
 	public synchronized boolean fireEventAndWait(Eventable eventable)
-			throws ElementNotVisibleException, NoSuchElementException, InterruptedException {
+			throws ElementNotInteractableException, NoSuchElementException, InterruptedException {
 		try {
 
 			boolean handleChanged = false;
@@ -475,7 +491,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 				browser.switchTo().defaultContent();
 			}
 			return result;
-		} catch (ElementNotVisibleException | NoSuchElementException e) {
+		} catch (ElementNotInteractableException | NoSuchElementException e) {
 			throw e;
 		} catch (WebDriverException e) {
 			throwIfConnectionException(e);
