@@ -106,7 +106,7 @@ public class StyleComparator extends AbstractComparator {
 		String[] styleProperties = styleAttribute.split(";");
 		String[] styleProperty;
 		String badWayOfDoingThis = "";
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder strBuilder = new StringBuilder();
 
 		for (int i = 0; i < styleProperties.length; i++) {
 			styleProperty = styleProperties[i].split(":");
@@ -115,10 +115,10 @@ public class StyleComparator extends AbstractComparator {
 					if (styleProperty[0].trim().equalsIgnoreCase(ALLOW_STYLE_TYPES[j])) {
 						badWayOfDoingThis +=
 								styleProperty[0].trim() + ": " + styleProperty[1].trim() + ";";
-						buffer.append(styleProperty[0].trim());
-						buffer.append(": ");
-						buffer.append(styleProperty[1].trim());
-						buffer.append(";");
+						strBuilder.append(styleProperty[0].trim());
+						strBuilder.append(": ");
+						strBuilder.append(styleProperty[1].trim());
+						strBuilder.append(";");
 					}
 				}
 			}

@@ -55,14 +55,14 @@ public final class XPathHelper {
 			return xPath;
 		}
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder strBuilder = new StringBuilder();
 
 		if (parent != node) {
-			buffer.append(getXPathExpression(parent));
-			buffer.append("/");
+			strBuilder.append(getXPathExpression(parent));
+			strBuilder.append("/");
 		}
 
-		buffer.append(node.getNodeName());
+		strBuilder.append(node.getNodeName());
 
 		List<Node> mySiblings = getSiblings(parent, node);
 
@@ -70,12 +70,12 @@ public final class XPathHelper {
 			Node el = mySiblings.get(i);
 
 			if (el.equals(node)) {
-				buffer.append('[').append(Integer.toString(i + 1)).append(']');
+				strBuilder.append('[').append(Integer.toString(i + 1)).append(']');
 				// Found so break;
 				break;
 			}
 		}
-		String xPath = buffer.toString();
+		String xPath = strBuilder.toString();
 		node.setUserData(FULL_XPATH_CACHE, xPath, null);
 		return xPath;
 	}

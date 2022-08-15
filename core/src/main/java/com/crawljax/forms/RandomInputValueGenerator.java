@@ -20,13 +20,13 @@ public class RandomInputValueGenerator {
 	 * @return a random string
 	 */
 	private String generate(int length) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder str = new StringBuilder();
 		for (int i = 0; i < length; i++) {
 			int index = new Random().nextInt(
 					"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".length());
-			buf.append("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", index, index + 1);
+			str.append("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", index, index + 1);
 		}
-		return buf.toString();
+		return str.toString();
 	}
 
 	/**
