@@ -7,14 +7,17 @@ import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.ExitNotifier;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+@Category(BrowserTest.class)
 public class StateVertexFactoryTest {
 
 	@ClassRule

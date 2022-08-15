@@ -3,9 +3,11 @@ package com.crawljax.core.state;
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BaseCrawler;
+import com.crawljax.test.BrowserTest;
 import org.eclipse.jetty.util.resource.Resource;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.Set;
 
@@ -14,6 +16,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 
+@Category(BrowserTest.class)
 public class StatesContainElementsTest {
 
 	private CrawlSession crawl;

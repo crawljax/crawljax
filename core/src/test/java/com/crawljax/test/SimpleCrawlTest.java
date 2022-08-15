@@ -5,11 +5,13 @@ import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.forms.FormInputValueHelper;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.junit.Assert.assertThat;
 
+@Category(BrowserTest.class)
 public abstract class SimpleCrawlTest {
 
 	private CrawlSession crawl;

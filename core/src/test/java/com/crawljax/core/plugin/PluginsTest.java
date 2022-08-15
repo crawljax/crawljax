@@ -14,12 +14,10 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.metrics.MetricsModule;
-import com.crawljax.test.BrowserTest;
 import com.google.common.collect.ImmutableList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -34,7 +32,6 @@ import static org.mockito.Mockito.*;
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
  */
-@Category(BrowserTest.class)
 @RunWith(MockitoJUnitRunner.class)
 public class PluginsTest {
 
