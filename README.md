@@ -33,7 +33,7 @@ Keep track of development and community news.
 Changelog
 ---------
 
-Detailed change history is avaialbe in our [changelog](https://github.com/crawljax/crawljax/blob/master/CHANGELOG.md).
+Detailed change history is available in our [changelog](https://github.com/crawljax/crawljax/blob/master/CHANGELOG.md).
 
 Testing inside a Docker container
 ---------------------------------
