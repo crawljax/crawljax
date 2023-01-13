@@ -112,6 +112,7 @@ public class CrawlActionsBuilder {
 	}
 
 	/**
+	 * Includes HTML elements with Tags - Anchor, Button, Input.Submit, Input.Button
 	 * Specifies that Crawljax should click all the default clickable elements.
 	 * These include: All anchor tags All buttons
 	 */
@@ -120,6 +121,15 @@ public class CrawlActionsBuilder {
 		click("button");
 		click("input").withAttribute("type", "submit");
 		click("input").withAttribute("type", "button");
+	}
+
+	/**
+	 * Adds all HTML elements with a "click" event handler.
+	 * Includes all default elements. see {@link #clickDefaultElements()}
+	 */
+	public void clickElementsWithClickEventHandler(){
+		clickDefaultElements();
+		click(CrawlElement.CLICKABLE_ELEMENT_TAG);
 	}
 
 	private void checkNotRead() {

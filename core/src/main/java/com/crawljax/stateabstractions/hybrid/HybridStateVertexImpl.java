@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import com.crawljax.browser.EmbeddedBrowser;
 import org.openqa.selenium.WebDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -114,14 +115,14 @@ public class HybridStateVertexImpl extends StateVertexImpl{
 		return fragmentedDom;
 	}
 	
-	public Document fragmentDom(WebDriver driver, BufferedImage screenshot, File screenshotFile) {
+	public Document fragmentDom(EmbeddedBrowser browser, BufferedImage screenshot, File screenshotFile) {
 		if(!fragmented) {
-			VipsSelenium vips = new VipsSelenium(driver,this.fragmentedDom, screenshot, 10, screenshotFile, this.getName(), true);
+			VipsSelenium vips = new VipsSelenium(browser,this.fragmentedDom, screenshot, 10, screenshotFile, this.getName(), true);
 //			VipsSeleniumParser parser = new VipsSeleniumParser(vips);
 			List<VipsRectangle> rectangles = vips.startSegmentation();
 			fragmented = true;
 			this.image = screenshot;
-			this.addFragments(rectangles, driver);
+			this.addFragments(rectangles, browser.getWebDriver());
 		}
 		
 		return fragmentedDom;

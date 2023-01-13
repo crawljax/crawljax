@@ -240,7 +240,18 @@ public class CandidateElementExtractor {
 		// performance problems.
 		ImmutableList<String> expressions = getFullXpathForGivenXpath(dom, eventableCondition);
 
-		NodeList nodeList = dom.getElementsByTagName(crawlElement.getTagName());
+		NodeList nodeList;
+		if(crawlElement.getTagName().equalsIgnoreCase(CrawlElement.CLICKABLE_ELEMENT_TAG)){
+			try {
+				nodeList = XPathHelper.evaluateXpathExpression(dom, "//*[@evlistval]");
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+				return result.build();
+			}
+		}
+		else {
+			nodeList = dom.getElementsByTagName(crawlElement.getTagName());
+		}
 
 		for (int k = 0; k < nodeList.getLength(); k++) {
 

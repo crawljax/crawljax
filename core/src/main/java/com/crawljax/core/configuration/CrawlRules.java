@@ -313,6 +313,15 @@ public class CrawlRules {
 		}
 
 		/**
+		 * @return
+		 * @see CrawlActionsBuilder#clickElementsWithClickEventHandler()
+		 */
+		public CrawlRulesBuilder clickElementsWithClickEventHandler() {
+			crawlActionsBuilder.clickElementsWithClickEventHandler();
+			return this;
+		}
+
+		/**
 		 * @see com.crawljax.core.configuration.CrawlActionsBuilder#dontClick(java.lang.String)
 		 */
 		public CrawlElement dontClick(String tagName) {

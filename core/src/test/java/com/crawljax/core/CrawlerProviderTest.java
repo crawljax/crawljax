@@ -181,7 +181,7 @@ public class CrawlerProviderTest {
 
 		BufferedImage screenshot = browser.getScreenShotAsBufferedImage(100);
 		File screenshotFile = new File("testScreenshot.png");
-		((HybridStateVertexImpl) index).fragmentDom(browser.getWebDriver(), screenshot, screenshotFile);
+		((HybridStateVertexImpl) index).fragmentDom(browser, screenshot, screenshotFile);
 		sfg.putIndex(index);
 		crawler.reset(0);
 		sm = crawler.getContext().getStateMachine();

@@ -3,16 +3,19 @@ package com.crawljax.core;
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.BrowserOptions;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.DefaultStateVertexFactory;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
+import com.crawljax.stateabstractions.hybrid.HybridStateVertexFactory;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
 import com.google.common.io.Resources;
@@ -27,6 +30,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -73,6 +77,29 @@ public class CandidateElementExtractorTest {
 
 		assertNotNull(candidates);
 		assertEquals(15, candidates.size());
+
+	}
+
+	@Test
+	public void testExtractClickables() throws CrawljaxException, URISyntaxException {
+		System.setProperty("test.browser", "CHROME");
+		String url = DEMO_SITE_SERVER.getSiteUrl().toString()+"clickable/";
+		CrawljaxConfigurationBuilder builder =
+				CrawljaxConfiguration.builderFor(url);
+		builder.crawlRules().clickElementsWithClickEventHandler();
+		builder.crawlRules().clickOnce(true);
+		CrawljaxConfiguration config = builder.build();
+		CandidateElementExtractor extractor = newElementExtractor(config);
+
+		// Set USE CDP argument
+		((WebDriverBackedEmbeddedBrowser)browser).setUSE_CDP(true);
+		browser.goToUrl(new URI(url));
+		DUMMY_STATE= new HybridStateVertexFactory(0, builder, true).createIndex(browser.getCurrentUrl(), browser.getStrippedDom(),
+				browser.getStrippedDom(), browser);
+		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
+
+		assertNotNull(candidates);
+		assertEquals(1, candidates.size());
 
 	}
 

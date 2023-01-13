@@ -270,4 +270,15 @@ public class XPathHelperTest {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	public void testXpathForClickables() throws XPathExpressionException, IOException {
+		String html = "<html>" +
+				"<body><div evlist=true></div><a></a></body>" +
+				"</html>";
+
+		NodeList nodes = XPathHelper.evaluateXpathExpression(html, "//*[@evlist]");
+		System.out.println(nodes.getLength()
+		);
+	}
 }

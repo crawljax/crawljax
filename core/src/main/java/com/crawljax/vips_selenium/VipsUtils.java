@@ -920,7 +920,7 @@ public class VipsUtils {
 	}
 	
 	
-	public static void populateStyle(Document dom, WebDriver driver) {
+	public static void populateStyle(Document dom, WebDriver driver, boolean USE_CDP) {
 		if(!useScript  || isPopulated(dom)) {
 			LOG.info("SKipping populate dom because already populated {}", isPopulated(dom));
 			return;
@@ -1074,6 +1074,12 @@ public class VipsUtils {
 		setEventListeners(vipsBlock, browserAttributes.eventListeners);
 	}
 
+	/**
+	 * Currently only has support for "click" events. JavaScript code for fetching eventhandlers is available in {@see #com.crawljax.core.vips_selenium.Scripts}
+	 * @param vipsBlock
+	 * @param hasEvent
+	 * @param event
+	 */
 	public static void setEventListenerAttributes(Node vipsBlock, boolean hasEvent, String event) {
 		if(!hasEvent) {
 			Node newAttr = vipsBlock.getOwnerDocument().createAttribute(EVLIST);

@@ -94,7 +94,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 		else {
 			screenshot = browser.getScreenShotAsBufferedImage(500);
 		}
-		Document fragmentedDom = ((HybridStateVertexImpl)newState).fragmentDom(browser.getWebDriver(), screenshot, screenshotsFolder);
+		Document fragmentedDom = ((HybridStateVertexImpl)newState).fragmentDom(browser, screenshot, screenshotsFolder);
 	
 		long end = System.currentTimeMillis();
 		LOG.info("Took {} ms to fragment dom ", end-start);

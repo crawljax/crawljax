@@ -3,6 +3,7 @@ package com.crawljax.stateabstractions.hybrid;
 import java.awt.image.BufferedImage;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.core.state.StateVertexFactory;
@@ -31,7 +32,7 @@ public class HybridStateVertexFactory extends StateVertexFactory {
 		if(visualData && browser!=null) {
 			BufferedImage screenshot = browser.getScreenShotAsBufferedImage(500);
 			newVertex.setImage(screenshot);
-			VipsUtils.populateStyle(newVertex.getDocument(), browser.getWebDriver());
+			VipsUtils.populateStyle(newVertex.getDocument(), browser.getWebDriver(), ((WebDriverBackedEmbeddedBrowser)browser).isUSE_CDP());
 		}
 		return newVertex;
 	}

@@ -187,6 +187,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
 	private int pixelDensity = -1;
 
+	/**
+	 * ChromeDeveloperTools are used to fetch event handler information
+	 */
+	private boolean USE_CDP = false;
+
 	private final ImmutableSortedSet<String> filterAttributes;
 	private final WebDriver browser;
 
@@ -1016,4 +1021,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 		this.pixelDensity = pixelDensity;
 	}
 
+	public boolean isUSE_CDP() {
+		return USE_CDP;
+	}
+
+	public void setUSE_CDP(boolean USE_CDP) {
+		this.USE_CDP = USE_CDP;
+	}
 }

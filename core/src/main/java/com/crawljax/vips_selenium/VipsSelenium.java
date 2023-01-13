@@ -15,6 +15,9 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.codahale.metrics.MetricRegistry;
+import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
+import com.crawljax.core.plugin.Plugins;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
@@ -67,30 +70,33 @@ public class VipsSelenium {
 	/**
 	 * Default constructor
 	 */
-	public VipsSelenium(String url)
+	public VipsSelenium(String url, WebDriver driver)
 	{
 		this.url = url;
+		this.driver = driver;
+		/*
 		CrawljaxConfigurationBuilder configBuilder = CrawljaxConfiguration.builderFor(url);
 		BrowserConfiguration browserConfiguration = new BrowserConfiguration(BrowserType.CHROME, 1,
              //   new BrowserOptions(BrowserOptions.MACBOOK_PRO_RETINA_PIXEL_DENSITY));
 				new BrowserOptions());
 		configBuilder.setBrowserConfig(browserConfiguration);
-		WebDriverBrowserBuilder builder = new WebDriverBrowserBuilder(configBuilder.build(), null);
-	
+		WebDriverBrowserBuilder builder = new WebDriverBrowserBuilder(configBuilder.build(), new Plugins(configBuilder.build(), new MetricRegistry()));
+
 		browser = builder.get();
 		driver = browser.getWebDriver();
+
 		driver.navigate().to(url);
-		
+		*/
 		// phoenix
-		
-		driver.findElement(By.xpath("//*[@id=\"sign_in_form\"]/button")).click();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		driver.findElement(By.id("add_new_board")).click();
+//
+//		driver.findElement(By.xpath("//*[@id=\"sign_in_form\"]/button")).click();
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		driver.findElement(By.id("add_new_board")).click();
 		
 		// addressbook
 //		driver.findElement(By.name("user")).sendKeys("admin");
@@ -126,12 +132,12 @@ public class VipsSelenium {
 			this.outputFolder.mkdirs();
 		}
 		if(driver!=null) {
-			VipsUtils.populateStyle(dom, driver);
+			VipsUtils.populateStyle(dom, driver, false);
 		}
 	}
 	
-	public VipsSelenium(WebDriver driver, Document dom, BufferedImage screenshot, int numberOfIterations, File folder, String filename, boolean fragOutput) {
-		this.driver = driver;
+	public VipsSelenium(EmbeddedBrowser browser, Document dom, BufferedImage screenshot, int numberOfIterations, File folder, String filename, boolean fragOutput) {
+		this.driver = browser.getWebDriver();
 		this.dom = dom;
 		this.viewport = screenshot;
 		this.fragOutput  = fragOutput;
@@ -147,7 +153,7 @@ public class VipsSelenium {
 		}
 		this.filename =  filename;
 		if(driver!=null) {
-			VipsUtils.populateStyle(dom, driver);
+			VipsUtils.populateStyle(dom, driver, ((WebDriverBackedEmbeddedBrowser)browser).isUSE_CDP());
 		}
 	}
 

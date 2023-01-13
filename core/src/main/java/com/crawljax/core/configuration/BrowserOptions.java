@@ -9,9 +9,27 @@ public class BrowserOptions {
 	private int pixelDensity;
 	private FirefoxProfile profile = null;
 
+	public boolean isUSE_CDP() {
+		return USE_CDP;
+	}
+
+	/**
+	 * Enables/Disables usage of Chrome Developer Protocol (CDP)
+	 * @param USE_CDP
+	 */
+	public void setUSE_CDP(boolean USE_CDP) {
+		this.USE_CDP = USE_CDP;
+	}
+
+	/**
+	 * a flag available for chrome (use chrome developer tools)
+	 */
+	private boolean USE_CDP;
+
 	public BrowserOptions() {
 		this.headless = false;
 		this.pixelDensity = -1;
+		this.USE_CDP = false;
 	}
 
 	/**
@@ -21,6 +39,7 @@ public class BrowserOptions {
 //		super();
 		this.headless = headless;
 		this.pixelDensity = 1;
+		this.USE_CDP = false;
 	}
 
 	/**
@@ -30,6 +49,8 @@ public class BrowserOptions {
 	public BrowserOptions(int pixelDensity) {
 //		super();
 		this.pixelDensity = pixelDensity;
+		this.headless = false;
+		this.USE_CDP = false;
 	}
 
 	/**
@@ -40,6 +61,19 @@ public class BrowserOptions {
 	public BrowserOptions(boolean headless, int pixelDensity) {
 		this.headless = headless;
 		this.pixelDensity = pixelDensity;
+		this.USE_CDP = false;
+	}
+
+	/**
+	 * @param headless     Set true for Chrome and Firefox browsers to run them in headless mode
+	 * @param pixelDensity Specify the device scale factor or pixel density : For MacBook Pro, it is 2: use
+	 *                     the MACBOOK_PRO_RETINA_PIXEL_DENSITY constant
+	 * @param USE_CDP       Set true if you want to enable chrome developer tools (Used in clickable detection)
+	 */
+	public BrowserOptions(boolean headless, int pixelDensity, boolean USE_CDP) {
+		this.headless = headless;
+		this.pixelDensity = pixelDensity;
+		this.USE_CDP = USE_CDP;
 	}
 	
 	public void setProfile(FirefoxProfile profile) {
@@ -56,9 +90,8 @@ public class BrowserOptions {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(" + this.headless + ", " + this.pixelDensity
+		return this.getClass().getSimpleName() + "( headless: " + this.headless + ", pixelDensity: " + this.pixelDensity + ", USE_CDP : " + this.USE_CDP
 				+ ")";
-
 	}
 
 	public FirefoxProfile getProfile() {

@@ -42,6 +42,8 @@ public final class CrawlElement {
 
 	private String underXpath;
 
+	public static final String CLICKABLE_ELEMENT_TAG = "clickable";
+
 	/**
 	 * To create a CrawlElement representing an HTML element &lt;a&gt;MyLink&lt;/a&gt; the tag name
 	 * would be "a".
