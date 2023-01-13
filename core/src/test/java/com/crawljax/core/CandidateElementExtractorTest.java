@@ -82,7 +82,7 @@ public class CandidateElementExtractorTest {
 
 	@Test
 	public void testExtractClickables() throws CrawljaxException, URISyntaxException {
-		System.setProperty("test.browser", "CHROME");
+//		System.setProperty("test.browser", "CHROME");
 		String url = DEMO_SITE_SERVER.getSiteUrl().toString()+"clickable/";
 		CrawljaxConfigurationBuilder builder =
 				CrawljaxConfiguration.builderFor(url);

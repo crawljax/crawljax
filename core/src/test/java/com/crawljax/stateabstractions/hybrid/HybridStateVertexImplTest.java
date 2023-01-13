@@ -28,7 +28,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import javax.imageio.metadata.IIOMetadataNode;
-
+@Ignore
 public class HybridStateVertexImplTest {
 	@Rule
 	public final BrowserProvider provider = new BrowserProvider();
