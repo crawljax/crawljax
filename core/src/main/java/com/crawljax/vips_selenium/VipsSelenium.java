@@ -137,7 +137,9 @@ public class VipsSelenium {
 	}
 	
 	public VipsSelenium(EmbeddedBrowser browser, Document dom, BufferedImage screenshot, int numberOfIterations, File folder, String filename, boolean fragOutput) {
-		this.driver = browser.getWebDriver();
+		if(browser!=null){
+			this.driver = browser.getWebDriver();
+		}
 		this.dom = dom;
 		this.viewport = screenshot;
 		this.fragOutput  = fragOutput;
