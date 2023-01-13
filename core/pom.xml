@@ -110,13 +110,6 @@
             <version>${selenium.version}</version>
         </dependency>
         
-        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-devtools-v93 -->
-		<dependency>
-		    <groupId>org.seleniumhq.selenium</groupId>
-		    <artifactId>selenium-devtools-v101</artifactId>
-		    <version>${selenium.version}</version>
-		</dependency>
-        
         <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-devtools-v108 -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
@@ -164,22 +157,6 @@
                 <exclusion>
                     <groupId>org.seleniumhq.selenium</groupId>
                     <artifactId>selenium-java</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codeborne</groupId>
-            <artifactId>phantomjsdriver</artifactId>
-            <version>1.4.4</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>servlet-api-2.5</artifactId>
-                    <groupId>org.mortbay.jetty</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>selenium-htmlunit-driver</artifactId>
-                    <groupId>org.seleniumhq.selenium</groupId>
                 </exclusion>
             </exclusions>
         </dependency>

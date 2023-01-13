@@ -1,29 +1,22 @@
 package com.crawljax.browser;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
+import com.crawljax.core.configuration.CrawljaxConfiguration;
+import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
+import com.crawljax.core.plugin.Plugins;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSortedSet;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.Dimension;
-
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.ProxyConfiguration;
-import com.crawljax.core.configuration.ProxyConfiguration.ProxyType;
-import com.crawljax.core.plugin.Plugins;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSortedSet;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * Default implementation of the EmbeddedBrowserBuilder based on Selenium WebDriver API.
@@ -82,10 +75,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 							configuration.getBrowserConfig().getRemoteHubUrl(), filterAttributes,
 							crawlWaitEvent, crawlWaitReload);
 					break;
-				/*case PHANTOMJS:
-					browser =
-							newPhantomJSDriver(filterAttributes, crawlWaitReload, crawlWaitEvent);
-					break;*/
 				default:
 					throw new IllegalStateException("Unrecognized browser type "
 							+ configuration.getBrowserConfig().getBrowserType());
@@ -161,12 +150,8 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
 	private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
 			long crawlWaitReload, long crawlWaitEvent, boolean headless) {
-		
-		if(SYSTEM_OFFLINE)
-			System.setProperty("webdriver.chrome.driver", "/Users/rahulkrishna/.m2/repository/webdriver/chromedriver/mac64/76.0.3809.68/chromedriver");
-//		
-		else
-			WebDriverManager.chromedriver().setup();
+
+		WebDriverManager.chromedriver().setup();
 
 		ChromeOptions optionsChrome = new ChromeOptions();
 
@@ -195,31 +180,5 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 		return WebDriverBackedEmbeddedBrowser.withDriver(driverChrome, filterAttributes,
 				crawlWaitEvent, crawlWaitReload);
 	}
-
-	/*@Deprecated
-	private EmbeddedBrowser newPhantomJSDriver(ImmutableSortedSet<String> filterAttributes,
-			long crawlWaitReload, long crawlWaitEvent) {
-
-		WebDriverManager.phantomjs().setup();
-
-		DesiredCapabilities caps = new DesiredCapabilities();
-		caps.setCapability("takesScreenshot", true);
-		caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,
-				new String[] { "--webdriver-loglevel=WARN" });
-		final ProxyConfiguration proxyConf = configuration.getProxyConfiguration();
-		if (proxyConf != null && proxyConf.getType() != ProxyType.NOTHING) {
-			final String proxyAddressCap =
-					"--proxy=" + proxyConf.getHostname() + ":" + proxyConf.getPort();
-			final String proxyTypeCap = "--proxy-type=http";
-			final String[] args = new String[] { proxyAddressCap, proxyTypeCap };
-			caps.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, args);
-		}
-
-		PhantomJSDriver phantomJsDriver = new PhantomJSDriver(caps);
-		phantomJsDriver.manage().window().maximize();
-
-		return WebDriverBackedEmbeddedBrowser.withDriver(phantomJsDriver, filterAttributes,
-				crawlWaitEvent, crawlWaitReload);
-	}*/
 
 }
