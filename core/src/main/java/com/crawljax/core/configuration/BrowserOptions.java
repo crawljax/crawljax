@@ -98,4 +98,7 @@ public class BrowserOptions {
 		return this.profile;
 	}
 
+	public void setPixelDensity(int pixelDensity) {
+		this.pixelDensity = pixelDensity;
+	}
 }
