@@ -45,6 +45,8 @@
     </profiles>
 
     <dependencies>
+
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
@@ -204,7 +206,49 @@
 			<artifactId>xmlunit-core</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-
+        <dependency>
+            <groupId>com.crawljax</groupId>
+            <artifactId>vips_selenium</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-java</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.sourceforge.nekohtml</groupId>
+                    <artifactId>nekohtml</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xmlunit</groupId>
+                    <artifactId>xmlunit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.assertthat</groupId>
+                    <artifactId>selenium-shutterbug</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-remote-driver</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-support</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-chrome-driver</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-firefox-driver</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.assertthat</groupId>
+                    <artifactId>selenium-shutterbug</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>

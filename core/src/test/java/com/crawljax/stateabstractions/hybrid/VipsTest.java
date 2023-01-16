@@ -1,4 +1,4 @@
-package com.crawljax.vips_selenium;
+package com.crawljax.stateabstractions.hybrid;
 
 import java.io.File;
 
@@ -19,7 +19,7 @@ import com.crawljax.fragmentation.FragmentManager;
 import com.crawljax.fragmentation.FragmentationPlugin;
 import com.crawljax.stateabstractions.hybrid.HybridStateVertexFactory;
 
-public class Test {
+public class VipsTest {
 	
 	public static void navigate(WebDriver driver, String url) {
 		

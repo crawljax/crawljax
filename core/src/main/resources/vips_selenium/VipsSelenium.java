@@ -39,7 +39,7 @@ import com.google.gson.JsonIOException;
 
 /**
  * Vision-based Page Segmentation algorithm
- * @author Tomas Popela
+ * @author Tomas PopelaTomas Popela
  *
  */
 public class VipsSelenium {

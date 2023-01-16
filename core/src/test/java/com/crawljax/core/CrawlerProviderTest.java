@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.inject.Provider;
 
+import com.crawljax.stateabstractions.hybrid.VipsTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -173,7 +174,7 @@ public class CrawlerProviderTest {
 		browser.goToUrl(URI.create(url));
 
 		// com.crawljax.vips_selenium.Test.login_addressbook(browser.getWebDriver());
-		com.crawljax.vips_selenium.Test.phoenix_login(browser.getWebDriver());
+		VipsTest.phoenix_login(browser.getWebDriver());
 
 		Crawler crawler = getCrawler(configBuilder, browser);
 

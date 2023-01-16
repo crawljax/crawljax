@@ -61,6 +61,7 @@
         <module>examples</module>
         <module>plugins</module>
         <module>cli</module>
+        <module>vips_selenium</module>
         <!-- <module>web</module> -->
     </modules>
 

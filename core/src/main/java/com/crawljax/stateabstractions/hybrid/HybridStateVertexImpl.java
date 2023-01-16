@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.xml.xpath.XPathExpressionException;
 
 import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
 import org.openqa.selenium.WebDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -106,7 +107,7 @@ public class HybridStateVertexImpl extends StateVertexImpl{
 		this.fragmentedDom = dom;
 		boolean offline = true;
 		VipsUtils.cleanDom(fragmentedDom, offline);
-		VipsSelenium vips = new VipsSelenium(null, this.fragmentedDom, screenshot, 10, null, this.getName(), false);
+		VipsSelenium vips = new VipsSelenium(null, this.fragmentedDom, screenshot, 10, null, this.getName(), false, false);
 //		VipsSeleniumParser parser = new VipsSeleniumParser(vips);
 		List<VipsRectangle> rectangles = vips.startSegmentation();
 		fragmented = true;
@@ -117,7 +118,7 @@ public class HybridStateVertexImpl extends StateVertexImpl{
 	
 	public Document fragmentDom(EmbeddedBrowser browser, BufferedImage screenshot, File screenshotFile) {
 		if(!fragmented) {
-			VipsSelenium vips = new VipsSelenium(browser,this.fragmentedDom, screenshot, 10, screenshotFile, this.getName(), true);
+			VipsSelenium vips = new VipsSelenium(browser.getWebDriver(),this.fragmentedDom, screenshot, 10, screenshotFile, this.getName(), true, ((WebDriverBackedEmbeddedBrowser)browser).isUSE_CDP());
 //			VipsSeleniumParser parser = new VipsSeleniumParser(vips);
 			List<VipsRectangle> rectangles = vips.startSegmentation();
 			fragmented = true;
