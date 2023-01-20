@@ -55,7 +55,7 @@ class OutPutModelCache {
 	/**
 	 * @return Makes the final calculations and retuns the {@link OutPutModel}.
 	 */
-	public OutPutModel close(CrawlSession session, ExitStatus exitStatus, String[][] clusters) {
+	public OutPutModel close(CrawlSession session, ExitStatus exitStatus) {
 		ImmutableList<Edge> edgesCopy = asEdges(session.getStateFlowGraph()
 		        .getAllEdges());
 		checkEdgesAndCountFans(edgesCopy);
@@ -68,24 +68,10 @@ class OutPutModelCache {
 			        "Printing state difference. \nSession states: {} \nResult states: {}",
 			        statesCopy, session.getStateFlowGraph().getAllStates());
 		}
-		addClusterValuesToStates(statesCopy, clusters);
+//		addClusterValuesToStates(statesCopy, clusters);
 		StateStatistics stateStats = new StateStatistics(statesCopy.values());
 		return new OutPutModel(statesCopy, edgesCopy, new Statistics(session,
-		        stateStats, startDate, failedEvents.get()), exitStatus, clusters);
-	}
-
-	private void addClusterValuesToStates(ImmutableMap<String, State> statesCopy,
-	        String[][] clusters) {
-		if (clusters == null)
-			return;
-		for (int i = 0; i < clusters.length; i++) {
-			for (int j = 0; j < clusters[i].length; j++) {
-				State state = statesCopy.get(clusters[i][j]);
-				if (state != null)
-					state.setCluster(i);
-			}
-		}
-
+		        stateStats, startDate, failedEvents.get()), exitStatus);
 	}
 
 	private ImmutableList<Edge> asEdges(Set<Eventable> allEdges) {

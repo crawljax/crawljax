@@ -204,12 +204,10 @@ public class CrawlOverview
         checkSFG(sfg);
         // TODO: call state abstraction function to get distance matrix and run rscript on it to
         // create clusters
-        String[][] clusters = null;
-        // generateClusters(session);
 
-        result = outModelCache.close(session, exitStatus, clusters);
+        result = outModelCache.close(session, exitStatus);
 
-        outputBuilder.write(result, session.getConfig(), clusters);
+        outputBuilder.write(result, session.getConfig());
         StateWriter writer =
                 new StateWriter(outputBuilder, sfg, ImmutableMap.copyOf(visitedStates));
         for (State state : result.getStates().values()) {

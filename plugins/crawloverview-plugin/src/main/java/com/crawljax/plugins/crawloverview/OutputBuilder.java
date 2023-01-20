@@ -162,9 +162,9 @@ class OutputBuilder {
 		return new File(screenshotsFolder, name + "_small.jpg");
 	}
 
-	public void write(OutPutModel result, CrawljaxConfiguration config, String[][] clusters) {
+	public void write(OutPutModel result, CrawljaxConfiguration config) {
 		try {
-			writeIndexFile(result, config, clusters);
+			writeIndexFile(result, config);
 			writeJsonToOutDir(Serializer.toPrettyJson(config), "config.json");
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
@@ -195,8 +195,7 @@ class OutputBuilder {
 		return graphModel;
 	}
 
-	private void writeIndexFile(OutPutModel model, CrawljaxConfiguration config,
-	        String[][] clusters) {
+	private void writeIndexFile(OutPutModel model, CrawljaxConfiguration config) {
 		LOG.debug("Writing index file");
 		VelocityContext context = new VelocityContext();
 		writeJsonToOutDir(Serializer.toPrettyJson(model), JSON_OUTPUT_NAME);
@@ -204,7 +203,7 @@ class OutputBuilder {
 		context.put("states", Serializer.toPrettyJson(model.getStates()));
 		context.put("edges", Serializer.toPrettyJson(model.getEdges()));
 
-		context.put("clusters", Serializer.toPrettyJson(clusters));
+//		context.put("clusters", Serializer.toPrettyJson(clusters));
 		context.put("alchemyGraphModel", Serializer.toPrettyJson(alchemyGraphModel));
 		// if(config.getStateVertexFactory() instanceof PHashStateVertexFactory) {
 		// PHashStateVertexFactory visHashStateVertexFactory = (PHashStateVertexFactory)

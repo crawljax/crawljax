@@ -191,10 +191,10 @@ public class Crawler {
 		
 		return null;
 	}
+
 	/**
-	 * Reset the crawler to its initial state.
-	 * @param backtrackSuccess 
-	 * @param reachedNearDuplicate 
+	 * Resets crawljax by navigating to home url
+	 * @param nextTarget
 	 */
 	public void reset(int nextTarget) {
 		
@@ -216,7 +216,6 @@ public class Crawler {
 					}
 					else {
 						LOG.info("Action didn't result in index state. Disabling equivalent reset from next time");
-//						UseEquivalentReset = false;
 					}
 				}
 			}
@@ -225,7 +224,6 @@ public class Crawler {
 		CrawlSession session = context.getSession();
 		if (crawlpath != null) {
 			session.addCrawlPath(crawlpath);
-			plugins.runOnBrowserClosingPlugins(context);
 		}
 		List<StateVertex> onURLSetTemp = new ArrayList<>();
 		StateVertex previousState = null;
@@ -249,39 +247,10 @@ public class Crawler {
 		crawlDepth.set(0);
 	}
 
-//	private void checkOnURLState() {
-//		StateVertex newState = stateMachine.newStateFor(browser);
-//		StateVertex clone = stateMachine.getStateFlowGraph().putIfAbsent(newState);
-//		if (clone == null) {
-//			stateMachine.setCurrentState(newState);
-//			stateMachine.runOnInvariantViolationPlugins(context);
-//
-//			plugins.runOnNewStatePlugins(context, newState);
-//
-//			parseCurrentPageForCandidateElements();
-//			
-//			for(StateVertex existing: stateMachine.getOnURLSet()) {
-//				boolean assignDynamic = true;
-//				fragmentManager.cacheStateComparision(newState, existing, assignDynamic);
-//			}
-//			stateMachine.getOnURLSet().add(newState);
-//		} else {
-//			if (!clone.getName().equalsIgnoreCase("index")) {
-//				LOG.info("index has changed to: {}", clone.getName());
-//				if (!stateMachine.getOnURLSet().contains(clone))
-//					stateMachine.getOnURLSet().add(clone);
-//			}
-//			stateMachine.setCurrentState(clone);
-//		}
-//	}
 	
 	
 	private void checkOnURLState(StateVertex previousState) {
-//		Identification identification = new Identification(Identification.How.goTo, url.toString());
-//		CandidateElement element = new CandidateElement(null, identification, null);
-//		Eventable event = new Eventable(element, EventType.goToURL);
-////		event.setSource(previousState);
-//		inspectNewState(event);
+
 		StateVertex newState = stateMachine.newStateFor(browser);
 		StateVertex clone = stateMachine.getStateFlowGraph().putIfAbsent(newState);
 		if (clone == null) {
@@ -299,6 +268,7 @@ public class Crawler {
 				}
 			}
 			stateMachine.getOnURLSet().add(newState);
+			newState.setOnURL(true);
 			
 		} else {
 			if (!clone.getName().equalsIgnoreCase("index")) {
@@ -330,13 +300,11 @@ public class Crawler {
 		try {
 			reset(crawlTask.getId());
 
-			// follow(CrawlPath.copyOf(eventables), crawlTask);
 			boolean reachable = reachFromHome(crawlTask);
 			if (!reachable) {
 				LOG.info("state unreachable: Removing from candidate actions {}",
 						crawlTask.getName());
 				candidateActionCache.purgeActionsForState(crawlTask);
-//				crawlpath = null; // don't insert duplicate crawlpaths
 				return;
 			}
 			crawlThroughActions();
@@ -344,100 +312,11 @@ public class Crawler {
 			LOG.info(ex.getMessage());
 			LOG.debug(ex.getMessage(), ex);
 			candidateActionCache.purgeActionsForState(ex.getTarget());
-//			crawlpath = null; // don't insert duplicate crawlpaths
 		} catch (CrawlerLeftDomainException e) {
 			LOG.info("The crawler left the domain. No biggy, we'll just go somewhere else.");
 			LOG.debug("Domain escape was {}", e.getMessage());
 		}
 	}
-//
-//	private boolean reachFromCurrentState(StateVertex crawlTask) {
-//		StateVertex currentState = stateMachine.getCurrentState();
-//		if(currentState.getId() == crawlTask.getId()) {
-//			return true;
-//		}
-//		ImmutableList<Eventable> currentPath = null;
-//		try {
-//			currentPath = this.graphProvider.get().getShortestPath(currentState, crawlTask);
-//		}catch(Exception ex) {
-//			LOG.info("Target state unreachable from current state. Resetting!!");
-//		}
-//		
-//		if(currentPath!=null) {
-//			
-//			if(stateMachine.getOnURLSet().contains(currentState)){
-//				try {
-//					follow(CrawlPath.copyOf(currentPath), crawlTask);
-//					return true;
-//				} catch (Exception Ex) {
-//					LOG.info("Not a valid path anymore" + stateMachine.getCurrentState().getName()
-//							+ " : " + crawlTask.getName());
-////					crawlpath = null;
-////					currentPath = null;
-////					reset();
-//					return false;
-//				}
-//			}
-//			else {
-//				for(Eventable event: currentPath) {
-//					if(stateMachine.getOnURLSet().contains(event.getTargetStateVertex())){
-//						LOG.info("Path to the target from current contains onURLState. So resetting and returning false");
-////						currentPath = null;
-//						return false;
-//					}
-//				}
-//				
-//				if(currentPath!= null) {
-//
-//					// The current state is not a onURL state 
-//					// The path from current State to the target state does not contain any onURL states
-//					
-//					
-//					// So we now check if onURL paths to the target state go through our current state
-//					boolean contains = true;
-//					for (int i = 0; i < stateMachine.getOnURLSet().size(); i++) {
-//						StateVertex urlState = stateMachine.getOnURLSet().get(i);
-//						try {
-//							ImmutableList<Eventable> tempPath =  this.graphProvider.get().getShortestPath(urlState, crawlTask);
-//							for(Eventable event: tempPath){
-//								if(event.getTargetStateVertex().getId() == currentState.getId()) {
-//									contains = true;
-//									break;
-//								}
-//								else {
-//									contains = false;
-//								}
-//							}
-//							if(!contains) {
-//								break;
-//							}
-//						}catch(Exception ex) {
-//							
-//						}
-//					}
-//					
-//					if(contains) {
-//						// All the valid onurl paths contain the current state anyways.. 
-//						// So reach the target state from current state instead of resetting!!
-//						try {
-//							follow(CrawlPath.copyOf(currentPath), crawlTask);
-//							return true;
-//						} catch (Exception Ex) {
-//							LOG.info("Not a valid path anymore" + stateMachine.getCurrentState().getName()
-//									+ " : " + crawlTask.getName());
-//							crawlpath = null;
-//							currentPath = null;
-//							reset();
-//						}
-//					}
-//				}
-//			}
-//		
-//		
-//		}
-//		
-//		return false;
-//	}
 
 	private void setBTStatus(boolean success, int reachedNd) {
 		LOG.info("backtrack status: {}, reached NearDuplicate : {} ", success, reachedNd);
@@ -517,9 +396,7 @@ public class Crawler {
 			}
 			if (path != null) {
 				try {
-					// Why did I use currentOnURLState here :(
-//					stateMachine.setCurrentState(currentOnURLState);
-					
+
 					ImmutableList<Eventable> followedPath = ImmutableList.copyOf(follow(CrawlPath.copyOf(path, crawlTask.getId()), crawlTask));
 					
 					
@@ -612,19 +489,14 @@ public class Crawler {
 
 			if(!candidateActionCache.shouldDisableInput(clickable)) {
 				if(candidateActionCache.getInput(clickable)!=null) {
-//						formHandler.handleFormElements(candidateActionCache.getInput(clickable));
 					availableInputs = candidateActionCache.getInput(clickable);
 					LOG.info("Used a form input combination for backtracking {}", clickable.getId());
 				}
 				else {
 					LOG.info("No Input Combination Found for {}", clickable.getId());
-//						handleInputElements(clickable);
 					availableInputs = getInputElements(clickable);
 				}
 			}
-//			else {
-//				handleInputElements(clickable);
-//			}
 			
 			formHandler.handleFormElements(availableInputs);
 			
@@ -679,8 +551,7 @@ public class Crawler {
 				LOG.info("Backtracking exploration {}:  {} {}", clone.getId(), clone.getEventType(),
 						clone);
 
-//					LOG.info("BackTracking exploration {}", clone.getId());
-				//TODO: formElements are added again. So empty existing elements. 
+				//TODO: formElements are added again. So empty existing elements.
 				clone.setRelatedFormInputs(ImmutableList.copyOf(new ArrayList<FormInput>()));
 				CandidateElement oldCandidate = clickable.getSourceStateVertex().getCandidateElement(clickable);
 				
@@ -742,7 +613,6 @@ public class Crawler {
 					}
 				}
 				
-//					tryToFireEvent(targetState, currState, clickable);
 				LOG.info("Backtracking event {} :  {} {}", clone.getId(), clone.getEventType(),
 						clone);
 				//TODO: If the form handling changed, and its a clone edge (removed) it will cause errors.
@@ -763,13 +633,7 @@ public class Crawler {
 			Eventable added = graphProvider.get().getShortestPath(clone.getSourceStateVertex(), clone.getTargetStateVertex()).get(0);
 			LOG.info("Added to Path {}", added.getId());
 			followedPath.add(added);
-			
-//			// Commented because replaced trytoFire with fireEventWithInputs which already does this
-//			if(added.getId() == clone.getId()) {
-//				//TODO: If its a backtracking exploration. There is no need to do this. 
-//				candidateActionCache.mapInput(clone, clone.getRelatedFormInputs());
-//				LOG.info("BackTracking Event {} is added to graph. Adding to formInput cache", clone.getId());
-//			}
+
 
 			LOG.info("Checking if event {} reached intended target {}", added.getId(), clickable.getTargetStateVertex().getName());
 			if(!clickable.getTargetStateVertex().equals(stateMachine.getCurrentState())) {
@@ -1078,12 +942,6 @@ public class Crawler {
 	private List<FormInput> handleInputs_pairwise(Eventable event, List<FormInput> available){
 		
 		boolean isValid = isValid(event);
-//
-//		if(!isValid)
-//			return null;
-		
-//		event.setIdentification(new Identification(How.xpath, newXPath));
-
 		
 		Map<FormInput, Boolean> tries = new HashMap<FormInput, Boolean>();
 		for(FormInput input: available) {
@@ -1104,10 +962,6 @@ public class Crawler {
 				LOG.info("Trying again!!");
 			}
 			else {
-//				if(!afterFormHandling.equalsIgnoreCase(newXPath)) {
-//					event.setIdentification(new Identification(How.xpath, afterFormHandling));
-//					LOG.info("Xpath changed after form handling {}  to  {}", newXPath, afterFormHandling);
-//				}
 				return handled;
 			}
 		}
@@ -1315,7 +1169,6 @@ public class Crawler {
 	 * previous state.
 	 * <p>
 	 * The methods stops when {@link Thread#interrupted()}
-	 * @param afterBacktrack 
 	 */
 	private void crawlThroughActionsNew() {
 		boolean afterBacktrack = true;
@@ -1597,7 +1450,6 @@ public class Crawler {
 
 		LOG.info("Going back one state to {}", stateMachine.getCurrentState().getId());
 		reset(stateMachine.getCurrentState().getId());
-		reset(stateMachine.getCurrentState().getId());
 		setBTStatus(true, -1);
 	}
 
@@ -1622,8 +1474,9 @@ public class Crawler {
 		plugins.runOnUrlLoadPlugins(context);
 		StateVertex index = vertexFactory.createIndex(url.toString(), browser.getStrippedDom(),
 				stateComparator.getStrippedDom(browser), browser);
-//		StateVertex index = vertexFactory.createIndex(url.toString(), browser.getStrippedDom(),
-//				browser.getStrippedDomWithoutIframeContent(), browser);
+
+		index.setOnURL(true);
+
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 				"It seems some the index state is crawled more than once.");
 

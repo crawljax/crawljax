@@ -71,6 +71,7 @@ public class StateVertexImpl implements StateVertex {
 
 
 	private boolean unexploredActions = true;
+	private boolean onURL;
 
 
 	/**
@@ -920,6 +921,16 @@ public class StateVertexImpl implements StateVertex {
 		for(CandidateElement candidate: nodeCandidateMapping.get(element.getElement())) {
 			candidate.setDirectAccess(true);
 		}
+	}
+
+	@Override
+	public boolean isOnURL() {
+		return this.onURL;
+	}
+
+	@Override
+	public void setOnURL(boolean onURL) {
+		this.onURL = onURL;
 	}
 
 }

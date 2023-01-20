@@ -118,4 +118,7 @@ public interface StateVertex extends Serializable {
 
 	void setDirectAccess(CandidateElement element);
 
+	boolean isOnURL();
+
+	void setOnURL(boolean onURL);
 }

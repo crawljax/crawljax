@@ -48,15 +48,14 @@ public class StateMachine {
 		if (onURLSet != null)
 			this.onURLSet = onURLSet;
 		// Rahul : creating a set of initial states
-		if (onURLSet.isEmpty())
+		if (onURLSet.isEmpty()){
 			onURLSet.add(initialState);
+		}
 	}
 
 	public StateVertex newStateFor(EmbeddedBrowser browser) {
 		return stateFlowGraph.newStateFor(browser.getCurrentUrl(), browser.getStrippedDom(),
 				stateComparator.getStrippedDom(browser), browser);
-//		return stateFlowGraph.newStateFor(browser.getCurrentUrl(), browser.getStrippedDom(),
-//				browser.getStrippedDomWithoutIframeContent(), browser);
 	}
 
 	/**

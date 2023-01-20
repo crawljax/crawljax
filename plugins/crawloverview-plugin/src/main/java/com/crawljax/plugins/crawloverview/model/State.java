@@ -24,8 +24,10 @@ public class State {
 	private final boolean hasNearDuplicate;
 	private final String nearestState;
 	private final double distToNearestState;
-	private int cluster = -1;
+	private final int cluster;
 	private long timeAdded;
+
+	private boolean onURL;
 
 	/*
 	 * public State(StateVertex state, int fanIn, int fanOut,
@@ -37,10 +39,6 @@ public class State {
 
 	public int getCluster() {
 		return cluster;
-	}
-
-	public void setCluster(int cluster) {
-		this.cluster = cluster;
 	}
 
 	public double getDistToNearestState() {
@@ -61,6 +59,7 @@ public class State {
 		this.hasNearDuplicate = hasNearDuplicate;
 		this.nearestState = nearestState;
 		this.distToNearestState = distToNearestState;
+		this.cluster = state.getCluster();
 	}
 
 	/*

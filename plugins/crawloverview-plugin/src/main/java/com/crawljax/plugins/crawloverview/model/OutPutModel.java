@@ -30,13 +30,11 @@ public final class OutPutModel {
 	public OutPutModel(@JsonProperty("states") ImmutableMap<String, State> states,
 	        @JsonProperty("edges") ImmutableList<Edge> edges,
 	        @JsonProperty("statistics") Statistics statistics,
-	        @JsonProperty("exitStatus") ExitStatus exitStatus,
-	        @JsonProperty("clusters") String[][] clusters) {
+	        @JsonProperty("exitStatus") ExitStatus exitStatus){
 		this.states = states;
 		this.edges = edges;
 		this.statistics = statistics;
 		this.exitStatus = exitStatus;
-		this.clusters = clusters;
 	}
 
 	public ImmutableMap<String, State> getStates() {
