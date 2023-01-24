@@ -54,7 +54,7 @@ public class SerializeTest {
 		        ImmutableList.of(new Edge(state1.getName(), state2.getName(), 1, "the link",
 		                "id1", "A", "click"));
 		return new OutPutModel(states, edges, newStatistics(states.values()),
-		        ExitStatus.EXHAUSTED, null);
+		        ExitStatus.EXHAUSTED);
 	}
 
 	private Statistics newStatistics(Collection<State> states) {

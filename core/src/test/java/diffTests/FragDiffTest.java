@@ -1,6 +1,7 @@
 package diffTests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.awt.Color;
@@ -80,7 +81,7 @@ public class FragDiffTest {
 
 
 	@Test
-	public void test() throws IOException {
+	public void testTreeDiffSimpleDOM() throws IOException {
 		String docString = "<HTML><HEAD><META http-equiv=\"Content-Type\"" +
 				" content=\"text/html; charset=UTF-8\"></HEAD><BODY><SPAN id=\"testdiv\"> <a></a>" +
 				"</SPAN><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
@@ -97,14 +98,12 @@ public class FragDiffTest {
 		assertEquals(distance, 1.0, 0.0);
 		
 		List<List<Node>> differentNodes = HybridStateVertexImpl.getChangedNodes(doc1, doc2, false);
-		
-		System.out.println(differentNodes);
+
 		List<Node> addedNodes = differentNodes.get(0);
 		List<Node> removedNodes = differentNodes.get(1);
-		
-		System.out.println(addedNodes);
-		System.out.println(removedNodes);
-		
+
+		assertTrue(addedNodes.get(0).getNodeName().equalsIgnoreCase("span"));
+		assertTrue(removedNodes.get(0).getNodeName().equalsIgnoreCase("div"));
 	}
 	
 	@Test

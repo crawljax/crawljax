@@ -111,7 +111,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 		
 		
 		try {
-		((StateVertexImpl)newState).exportFragments(screenshotsFolder, screenshot);
+		((HybridStateVertexImpl)newState).exportFragments(screenshotsFolder, screenshot);
 		}catch(Exception ex) {
 			LOG.error("Could not export Fragments for {}", newState.getName());
 			LOG.error(ex.getMessage());
