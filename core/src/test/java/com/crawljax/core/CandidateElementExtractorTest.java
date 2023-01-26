@@ -4,6 +4,7 @@ import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
+import com.crawljax.clickabledetection.ClickableDetectorPlugin;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
@@ -15,6 +16,9 @@ import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.DefaultStateVertexFactory;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.forms.FormHandler;
+import com.crawljax.fragmentation.FragmentationPlugin;
+import com.crawljax.stateabstractions.dom.RTEDStateVertexFactory;
+import com.crawljax.stateabstractions.dom.RTEDStateVertexImpl;
 import com.crawljax.stateabstractions.hybrid.HybridStateVertexFactory;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
@@ -30,6 +34,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -81,21 +86,28 @@ public class CandidateElementExtractorTest {
 	}
 
 	@Test
-	public void testExtractClickables() throws CrawljaxException, URISyntaxException {
-//		System.setProperty("test.browser", "CHROME");
+	public void testExtractClickables() throws CrawljaxException, URISyntaxException,
+			IOException {
 		String url = DEMO_SITE_SERVER.getSiteUrl().toString()+"clickable/";
 		CrawljaxConfigurationBuilder builder =
 				CrawljaxConfiguration.builderFor(url);
 		builder.crawlRules().clickElementsWithClickEventHandler();
 		builder.crawlRules().clickOnce(true);
+		BrowserOptions options = new BrowserOptions();
+		options.setUSE_CDP(true);
+		BrowserConfiguration browserConfiguration = new BrowserConfiguration(BrowserType.CHROME, 1, options);
+		builder.setBrowserConfig(browserConfiguration);
 		CrawljaxConfiguration config = builder.build();
 		CandidateElementExtractor extractor = newElementExtractor(config);
 
 		// Set USE CDP argument
 		((WebDriverBackedEmbeddedBrowser)browser).setUSE_CDP(true);
 		browser.goToUrl(new URI(url));
-		DUMMY_STATE= new HybridStateVertexFactory(0, builder, true).createIndex(browser.getCurrentUrl(), browser.getStrippedDom(),
+
+		DUMMY_STATE= new RTEDStateVertexFactory(0).createIndex(browser.getCurrentUrl(), browser.getStrippedDom(),
 				browser.getStrippedDom(), browser);
+
+		new ClickableDetectorPlugin().findClickables(browser, DUMMY_STATE);
 		List<CandidateElement> candidates = extractor.extract(DUMMY_STATE);
 
 		assertNotNull(candidates);

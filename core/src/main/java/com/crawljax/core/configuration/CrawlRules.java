@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.concurrent.TimeUnit;
 
+import com.crawljax.clickabledetection.ClickableDetectorPlugin;
 import com.crawljax.condition.Condition;
 import com.crawljax.condition.browserwaiter.WaitCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
@@ -318,6 +319,7 @@ public class CrawlRules {
 		 */
 		public CrawlRulesBuilder clickElementsWithClickEventHandler() {
 			crawlActionsBuilder.clickElementsWithClickEventHandler();
+			this.crawljaxBuilder.addPlugin(new ClickableDetectorPlugin());
 			return this;
 		}
 

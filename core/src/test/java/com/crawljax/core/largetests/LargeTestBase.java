@@ -58,11 +58,11 @@ public abstract class LargeTestBase {
 
 	private static final int CLICKED_CLICK_ME_ELEMENTS = 6;
 
-	private static final String CLICK_TEXT = "CLICK_ME";
-	private static final String DONT_CLICK_TEXT = "DONT_CLICK_ME";
-	private static final String ATTRIBUTE = "class";
-	private static final String CLICK_UNDER_XPATH_ID = "CLICK_IN_HERE";
-	private static final String DONT_CLICK_UNDER_XPATH_ID = "DONT_CLICK_IN_HERE";
+	static final String CLICK_TEXT = "CLICK_ME";
+	static final String DONT_CLICK_TEXT = "DONT_CLICK_ME";
+	static final String ATTRIBUTE = "class";
+	static final String CLICK_UNDER_XPATH_ID = "CLICK_IN_HERE";
+	static final String DONT_CLICK_UNDER_XPATH_ID = "DONT_CLICK_IN_HERE";
 	private static final String ILLEGAL_STATE = "FORBIDDEN_PAGE";
 
 	private static List<Invariant> violatedInvariants = new ArrayList<>();
@@ -152,7 +152,7 @@ public abstract class LargeTestBase {
 		return builder.build();
 	}
 
-	private static InputSpecification getInputSpecification() {
+	static InputSpecification getInputSpecification() {
 		InputSpecification input = new InputSpecification();
 		input.inputField(InputType.TEXT, new Identification(How.id, "textManual"))
 				.inputValues(MANUAL_INPUT_TEXT);
@@ -208,12 +208,12 @@ public abstract class LargeTestBase {
 		return input;
 	}
 
-	private static void addWaitConditions(CrawljaxConfigurationBuilder crawler) {
+	static void addWaitConditions(CrawljaxConfigurationBuilder crawler) {
 		crawler.crawlRules().addWaitCondition(new WaitCondition("testWaitCondition.html", 2000,
 				new ExpectedVisibleCondition(new Identification(How.id, "SLOW_WIDGET"))));
 	}
 
-	private static void addInvariants(CrawljaxConfigurationBuilder builder) {
+	static void addInvariants(CrawljaxConfigurationBuilder builder) {
 		// should always fail on test invariant page
 		NotXPathCondition neverDivWithInvariantViolationId =
 				new NotXPathCondition("//DIV[@id='INVARIANT_VIOLATION']");
@@ -228,7 +228,7 @@ public abstract class LargeTestBase {
 				expectElement, onInvariantsPagePreCondition));
 	}
 
-	private static void addCrawlElements(CrawljaxConfigurationBuilder builder) {
+	static void addCrawlElements(CrawljaxConfigurationBuilder builder) {
 		CrawlRulesBuilder rules = builder.crawlRules();
 		rules.click("a");
 		rules.click("div").withText(CLICK_TEXT);
@@ -242,7 +242,7 @@ public abstract class LargeTestBase {
 		rules.dontClick("a").underXPath("//DIV[@id='" + DONT_CLICK_UNDER_XPATH_ID + "']");
 	}
 
-	private static void addOracleComparators(CrawljaxConfigurationBuilder builder) {
+	static void addOracleComparators(CrawljaxConfigurationBuilder builder) {
 		builder.crawlRules()
 				.addOracleComparator(new OracleComparator("style", new StyleComparator()));
 
@@ -250,7 +250,7 @@ public abstract class LargeTestBase {
 				.addOracleComparator(new OracleComparator("date", new DateComparator()));
 	}
 
-	private static void addCrawlConditions(CrawljaxConfigurationBuilder builder) {
+	static void addCrawlConditions(CrawljaxConfigurationBuilder builder) {
 		builder.crawlRules().addCrawlCondition("DONT_CRAWL_ME",
 				new NotRegexCondition("DONT_CRAWL_ME"));
 	}

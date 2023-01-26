@@ -47,7 +47,7 @@ public class PluginsWithCrawlerTest {
 
 	@BeforeClass
 	public static void setup() {
-		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("/crawler/");
+		CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("crawler/");
 
 		builder.crawlRules().clickDefaultElements();
 
@@ -202,7 +202,7 @@ public class PluginsWithCrawlerTest {
 		pluginsIsFollowedBy(PreStateCrawlingPlugin.class,
 				ImmutableSet.of(OnFireEventFailedPlugin.class,
 						OnInvariantViolationPlugin.class, OnNewStatePlugin.class,
-						OnUrlLoadPlugin.class));
+						OnUrlLoadPlugin.class, PostCrawlingPlugin.class));
 	}
 
 	@Test

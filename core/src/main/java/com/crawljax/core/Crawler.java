@@ -1480,6 +1480,8 @@ public class Crawler {
 		Preconditions.checkArgument(index.getId() == StateVertex.INDEX_ID,
 				"It seems some the index state is crawled more than once.");
 
+		plugins.runOnNewStatePlugins(context, index);
+
 		LOG.debug("Parsing the index for candidate elements");
 		ImmutableList<CandidateElement> extract = candidateExtractor.extract(index);
 

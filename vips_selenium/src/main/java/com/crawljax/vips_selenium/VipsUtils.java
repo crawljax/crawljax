@@ -858,13 +858,19 @@ public class VipsUtils {
 	 */
 	public static List<String> getXpathList(Node node){
 		List<String> returnList = new ArrayList<String>();
-		if(node.getNodeName().equalsIgnoreCase("#text")) {
+//		if(node.getNodeName().equalsIgnoreCase("#text")) {
+//			return returnList;
+//		}
+		if(node.getNodeName().startsWith("#")){
 			return returnList;
 		}
 		returnList.add(XPathHelper.getXPathExpression(node));
 		List<Node> children = getChildren(node);
 		for(Node child: children) {
-			if(child.getNodeName().equalsIgnoreCase("#text")) {
+//			if(child.getNodeName().equalsIgnoreCase("#text")) {
+//				continue;
+//			}
+			if(child.getNodeName().startsWith("#")){
 				continue;
 			}
 			returnList.addAll(getXpathList(child));

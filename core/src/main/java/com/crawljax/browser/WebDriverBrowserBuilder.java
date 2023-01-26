@@ -98,7 +98,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 					((WebDriverBackedEmbeddedBrowser)browser).setUSE_CDP(true);
 				}
 				else{
-					throw new IllegalStateException("Chrome Developer Protocol (CDP) is compatible only with Chrome Browser. It cannot be used with"
+					throw new IllegalArgumentException("Chrome Developer Protocol (CDP) is compatible only with Chrome Browser. It cannot be used with"
 							+ configuration.getBrowserConfig().getBrowserType());
 				}
 			}

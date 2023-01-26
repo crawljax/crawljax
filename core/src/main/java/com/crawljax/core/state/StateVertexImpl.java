@@ -35,6 +35,9 @@ public class StateVertexImpl implements StateVertex {
 	private final int id;
 	private final String dom;
 	private final String strippedDom;
+
+	private Document document;
+
 	private final String url;
 	private String name;
 
@@ -81,6 +84,7 @@ public class StateVertexImpl implements StateVertex {
 		this.strippedDom = strippedDom;
 		this.distToNearestState = -1;
 		this.cluster = id;
+		this.document = null;
 	}
 
 	@Override
@@ -132,6 +136,9 @@ public class StateVertexImpl implements StateVertex {
 
 	@Override
 	public Document getDocument() throws IOException {
+		if(document!=null){
+			return this.document;
+		}
 		return DomUtils.asDocument(this.strippedDom);
 	}
 
@@ -238,7 +245,7 @@ public class StateVertexImpl implements StateVertex {
 
 	@Override
 	public void setDocument(Document dom) {
-		
+		this.document = dom;
 	}
 
 	@Override
