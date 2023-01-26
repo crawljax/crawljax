@@ -26,65 +26,66 @@ import java.util.Map;
  * http://www.inf.unibz.it/~augsten/src/
  */
 public class LabelDictionary {
-	public static final int KEY_DUMMY_LABEL = -1;
-	private int count;
-	private Map<String, Integer> StrInt;
-	private Map<Integer, String> IntStr;
-	private boolean newLabelsAllowed = true;
 
-	/**
-	 * Creates a new blank dictionary.
-	 */
-	public LabelDictionary() {
-		count = 0;
-		StrInt = new Hashtable<>();
-		IntStr = new Hashtable<>();
-	}
+  public static final int KEY_DUMMY_LABEL = -1;
+  private int count;
+  private Map<String, Integer> StrInt;
+  private Map<Integer, String> IntStr;
+  private boolean newLabelsAllowed = true;
 
-	/**
-	 * Adds a new label to the dictionary if it has not been added yet. Returns the ID of the new
-	 * label in the dictionary.
-	 *
-	 * @param label add this label to the dictionary if it does not exist yet
-	 * @return ID of label in the dictionary
-	 */
-	public int store(String label) {
-		if (StrInt.containsKey(label)) {
-			return (StrInt.get(label).intValue());
-		} else if (!newLabelsAllowed) {
-			return KEY_DUMMY_LABEL;
-		} else { // store label
-			Integer intKey = new Integer(count++);
-			StrInt.put(label, intKey);
-			IntStr.put(intKey, label);
+  /**
+   * Creates a new blank dictionary.
+   */
+  public LabelDictionary() {
+    count = 0;
+    StrInt = new Hashtable<>();
+    IntStr = new Hashtable<>();
+  }
 
-			return intKey.intValue();
-		}
-	}
+  /**
+   * Adds a new label to the dictionary if it has not been added yet. Returns the ID of the new
+   * label in the dictionary.
+   *
+   * @param label add this label to the dictionary if it does not exist yet
+   * @return ID of label in the dictionary
+   */
+  public int store(String label) {
+    if (StrInt.containsKey(label)) {
+      return (StrInt.get(label).intValue());
+    } else if (!newLabelsAllowed) {
+      return KEY_DUMMY_LABEL;
+    } else { // store label
+      Integer intKey = new Integer(count++);
+      StrInt.put(label, intKey);
+      IntStr.put(intKey, label);
 
-	/**
-	 * Returns the label with a given ID in the dictionary.
-	 *
-	 * @param labelID
-	 * @return the label with the specified labelID, or null if this dictionary contains no label
-	 * for labelID
-	 */
-	public String read(int labelID) {
-		return IntStr.get(new Integer(labelID));
-	}
+      return intKey.intValue();
+    }
+  }
 
-	/**
-	 * @return true iff new labels can be stored into this label dictionary
-	 */
-	public boolean isNewLabelsAllowed() {
-		return newLabelsAllowed;
-	}
+  /**
+   * Returns the label with a given ID in the dictionary.
+   *
+   * @param labelID
+   * @return the label with the specified labelID, or null if this dictionary contains no label for
+   * labelID
+   */
+  public String read(int labelID) {
+    return IntStr.get(new Integer(labelID));
+  }
 
-	/**
-	 * @param newLabelsAllowed the newLabelsAllowed to set
-	 */
-	public void setNewLabelsAllowed(boolean newLabelsAllowed) {
-		this.newLabelsAllowed = newLabelsAllowed;
-	}
+  /**
+   * @return true iff new labels can be stored into this label dictionary
+   */
+  public boolean isNewLabelsAllowed() {
+    return newLabelsAllowed;
+  }
+
+  /**
+   * @param newLabelsAllowed the newLabelsAllowed to set
+   */
+  public void setNewLabelsAllowed(boolean newLabelsAllowed) {
+    this.newLabelsAllowed = newLabelsAllowed;
+  }
 
 }

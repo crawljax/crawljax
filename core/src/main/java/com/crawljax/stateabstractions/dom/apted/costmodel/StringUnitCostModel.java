@@ -32,8 +32,8 @@ import com.crawljax.stateabstractions.dom.apted.node.StringNodeData;
  * @see CostModel
  * @see StringNodeData
  */
- // TODO: Use a label dictionary to encode string labels with integers for
- //       faster rename cost computation.
+// TODO: Use a label dictionary to encode string labels with integers for
+//       faster rename cost computation.
 public class StringUnitCostModel implements CostModel<StringNodeData> {
 
   /**
@@ -57,8 +57,8 @@ public class StringUnitCostModel implements CostModel<StringNodeData> {
   }
 
   /**
-   * Calculates the cost of renaming the label of the source node to the label
-   * of the destination node.
+   * Calculates the cost of renaming the label of the source node to the label of the destination
+   * node.
    *
    * @param n1 a source node for rename.
    * @param n2 a destination node for rename.

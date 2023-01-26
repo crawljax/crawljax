@@ -2,117 +2,115 @@ package com.crawljax.core;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.google.common.annotations.VisibleForTesting;
-
-import javax.annotation.concurrent.ThreadSafe;
-import javax.inject.Singleton;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.concurrent.ThreadSafe;
+import javax.inject.Singleton;
 
 @Singleton
 @ThreadSafe
 public class ExitNotifier {
 
-	/**
-	 * Represents the reason Crawljax stopped.
-	 */
-	public enum ExitStatus {
+  private final CountDownLatch latch = new CountDownLatch(1);
+  private final AtomicInteger states = new AtomicInteger();
+  private final int maxStates;
+  private ExitStatus reason = ExitStatus.ERROR;
 
-		/**
-		 * The maximum number of states is reached as defined in
-		 * {@link CrawljaxConfiguration#getMaximumStates()}.
-		 */
-		MAX_STATES("Maximum states passed"),
+  public ExitNotifier(int maxStates) {
+    this.maxStates = maxStates;
+  }
 
-		/**
-		 * The maximum crawl time is reached as defined in
-		 * {@link CrawljaxConfiguration#getMaximumRuntime()}.
-		 */
-		MAX_TIME("Maximum time passed"),
+  /**
+   * Waits until the crawl has to stop.
+   *
+   * @return the termination condition
+   * @throws InterruptedException When the wait is interrupted.
+   */
+  public ExitStatus awaitTermination() throws InterruptedException {
+    latch.await();
+    return reason;
+  }
 
-		/**
-		 * The crawl is done.
-		 */
-		EXHAUSTED("Exhausted"),
+  /**
+   * @return The new number of states.
+   */
+  public int incrementNumberOfStates() {
+    int count = states.incrementAndGet();
+    if (count == maxStates) {
+      reason = ExitStatus.MAX_STATES;
+      latch.countDown();
+    }
+    return count;
+  }
 
-		/**
-		 * The crawler quite because of an error.
-		 */
-		ERROR("Errored"),
+  public void signalTimeIsUp() {
+    reason = ExitStatus.MAX_TIME;
+    latch.countDown();
+  }
 
-		/**
-		 * When {@link CrawljaxRunner#stop()} has been called.
-		 */
-		STOPPED("Stopped manually");
+  /**
+   * Signal that all {@link CrawlTaskConsumer}s are done.
+   */
+  public void signalCrawlExhausted() {
+    reason = ExitStatus.EXHAUSTED;
+    latch.countDown();
+  }
 
-		private final String readableName;
+  /**
+   * Manually stop the crawl.
+   */
+  public void stop() {
+    reason = ExitStatus.STOPPED;
+    latch.countDown();
+  }
 
-		ExitStatus(String readableName) {
-			this.readableName = readableName;
+  @VisibleForTesting
+  boolean isExitCalled() {
+    return latch.getCount() == 0;
+  }
 
-		}
+  /**
+   * Represents the reason Crawljax stopped.
+   */
+  public enum ExitStatus {
 
-		@Override
-		public String toString() {
-			return readableName;
-		}
-	}
+    /**
+     * The maximum number of states is reached as defined in
+     * {@link CrawljaxConfiguration#getMaximumStates()}.
+     */
+    MAX_STATES("Maximum states passed"),
 
-	private final CountDownLatch latch = new CountDownLatch(1);
-	private final AtomicInteger states = new AtomicInteger();
-	private final int maxStates;
+    /**
+     * The maximum crawl time is reached as defined in
+     * {@link CrawljaxConfiguration#getMaximumRuntime()}.
+     */
+    MAX_TIME("Maximum time passed"),
 
-	private ExitStatus reason = ExitStatus.ERROR;
+    /**
+     * The crawl is done.
+     */
+    EXHAUSTED("Exhausted"),
 
-	public ExitNotifier(int maxStates) {
-		this.maxStates = maxStates;
-	}
+    /**
+     * The crawler quite because of an error.
+     */
+    ERROR("Errored"),
 
-	/**
-	 * Waits until the crawl has to stop.
-	 *
-	 * @return the termination condition
-	 * @throws InterruptedException When the wait is interrupted.
-	 */
-	public ExitStatus awaitTermination() throws InterruptedException {
-		latch.await();
-		return reason;
-	}
+    /**
+     * When {@link CrawljaxRunner#stop()} has been called.
+     */
+    STOPPED("Stopped manually");
 
-	/**
-	 * @return The new number of states.
-	 */
-	public int incrementNumberOfStates() {
-		int count = states.incrementAndGet();
-		if (count == maxStates) {
-			reason = ExitStatus.MAX_STATES;
-			latch.countDown();
-		}
-		return count;
-	}
+    private final String readableName;
 
-	public void signalTimeIsUp() {
-		reason = ExitStatus.MAX_TIME;
-		latch.countDown();
-	}
+    ExitStatus(String readableName) {
+      this.readableName = readableName;
 
-	/**
-	 * Signal that all {@link CrawlTaskConsumer}s are done.
-	 */
-	public void signalCrawlExhausted() {
-		reason = ExitStatus.EXHAUSTED;
-		latch.countDown();
-	}
+    }
 
-	/**
-	 * Manually stop the crawl.
-	 */
-	public void stop() {
-		reason = ExitStatus.STOPPED;
-		latch.countDown();
-	}
-
-	@VisibleForTesting
-	boolean isExitCalled() {
-		return latch.getCount() == 0;
-	}
+    @Override
+    public String toString() {
+      return readableName;
+    }
+  }
 }

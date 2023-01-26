@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface HostInterface {
 
-	File getOutputDirectory();
+  File getOutputDirectory();
 
-	Map<String, String> getParameters();
+  Map<String, String> getParameters();
 }

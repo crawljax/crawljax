@@ -7,17 +7,17 @@ package com.crawljax.core.plugin;
  */
 public interface GeneratesOutput {
 
-	/**
-	 * Sets the absolute output directory that should be used by this plugin.
-	 *
-	 * @param absolutePath The path to the output directory to use.
-	 */
-	void setOutputFolder(String absolutePath);
+  /**
+   * Get the absolute path of the output directory that was specified by the user.
+   *
+   * @return The path to use for writing files to.
+   */
+  String getOutputFolder();
 
-	/**
-	 * Get the absolute path of the output directory that was specified by the user.
-	 *
-	 * @return The path to use for writing files to.
-	 */
-	String getOutputFolder();
+  /**
+   * Sets the absolute output directory that should be used by this plugin.
+   *
+   * @param absolutePath The path to the output directory to use.
+   */
+  void setOutputFolder(String absolutePath);
 }

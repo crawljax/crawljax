@@ -1,6 +1,5 @@
 package com.crawljax.core.plugin;
 
-import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.CrawlerContext;
 
 /**
@@ -12,15 +11,15 @@ import com.crawljax.core.CrawlerContext;
  */
 public interface OnBrowserClosePlugin extends Plugin {
 
-	/**
-	 * This method is executed when a new browser has been created and ready to be used by the
-	 * Crawler. The PreCrawling plugins are executed before these plugins are executed except that
-	 * the pre-crawling plugins are only executed on the first created browser. while this plugin is
-	 * executed on every new browser.
-	 *
-	 * @param newBrowser the new created browser object
-	 */
+  /**
+   * This method is executed when a new browser has been created and ready to be used by the
+   * Crawler. The PreCrawling plugins are executed before these plugins are executed except that the
+   * pre-crawling plugins are only executed on the first created browser. while this plugin is
+   * executed on every new browser.
+   *
+   * @param newBrowser the new created browser object
+   */
 
-	void onBrowserClose(CrawlerContext context);
+  void onBrowserClose(CrawlerContext context);
 
 }

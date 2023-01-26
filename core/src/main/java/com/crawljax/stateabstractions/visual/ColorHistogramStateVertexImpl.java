@@ -13,64 +13,65 @@ import org.opencv.core.Mat;
  */
 public class ColorHistogramStateVertexImpl extends StateVertexImpl {
 
-	private static final long serialVersionUID = 123400017983489L;
+  private static final long serialVersionUID = 123400017983489L;
 
-	Mat hist;
+  Mat hist;
 
-	private double threshold = 0.0;
+  private double threshold = 0.0;
 
-	/**
-	 * Creates a current state without an url and the stripped dom equals the dom.
-	 *
-	 * @param name the name of the state
-	 * @param dom  the current DOM tree of the browser
-	 */
-	@VisibleForTesting ColorHistogramStateVertexImpl(int id, String name, String dom, Mat hist) {
-		this(id, null, name, dom, dom, hist, -1);
-	}
+  /**
+   * Creates a current state without an url and the stripped dom equals the dom.
+   *
+   * @param name the name of the state
+   * @param dom  the current DOM tree of the browser
+   */
+  @VisibleForTesting
+  ColorHistogramStateVertexImpl(int id, String name, String dom, Mat hist) {
+    this(id, null, name, dom, dom, hist, -1);
+  }
 
-	/**
-	 * Defines a State.
-	 *
-	 * @param url         the current url of the state
-	 * @param name        the name of the state
-	 * @param dom         the current DOM tree of the browser
-	 * @param strippedDom the stripped dom by the OracleComparators
-	 * @param threshold 
-	 */
-	public ColorHistogramStateVertexImpl(int id, String url, String name, String dom,
-			String strippedDom,
-			Mat hist, double threshold) {
-		super(id, url, name, dom, strippedDom);
-		this.hist = hist;
-		if(threshold!=-1) {
-			this.threshold  = threshold;
-		}
-	}
+  /**
+   * Defines a State.
+   *
+   * @param url         the current url of the state
+   * @param name        the name of the state
+   * @param dom         the current DOM tree of the browser
+   * @param strippedDom the stripped dom by the OracleComparators
+   * @param threshold
+   */
+  public ColorHistogramStateVertexImpl(int id, String url, String name, String dom,
+      String strippedDom,
+      Mat hist, double threshold) {
+    super(id, url, name, dom, strippedDom);
+    this.hist = hist;
+    if (threshold != -1) {
+      this.threshold = threshold;
+    }
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(hist);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(hist);
+  }
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof ColorHistogramStateVertexImpl) {
-			ColorHistogramStateVertexImpl that = (ColorHistogramStateVertexImpl) object;
-			double distance = ColorHistogram.compare(this.hist, that.getColorHistogram());
-			return  ((distance >=0) &&(distance <= this.threshold));
-		}
-		return false;
-	}
+  @Override
+  public boolean equals(Object object) {
+    if (object instanceof ColorHistogramStateVertexImpl) {
+      ColorHistogramStateVertexImpl that = (ColorHistogramStateVertexImpl) object;
+      double distance = ColorHistogram.compare(this.hist, that.getColorHistogram());
+      return ((distance >= 0) && (distance <= this.threshold));
+    }
+    return false;
+  }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this).add("id", super.getId())
-				.add("name", super.getName()).add("Hist", hist).toString();
-	}
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("id", super.getId())
+        .add("name", super.getName()).add("Hist", hist).toString();
+  }
 
-	public Mat getColorHistogram() {
-		return hist;
-	}
+  public Mat getColorHistogram() {
+    return hist;
+  }
 
 }

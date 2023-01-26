@@ -3,7 +3,6 @@ package com.crawljax.core.state;
 import com.google.common.collect.ForwardingList;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
 import java.util.List;
 
 /**
@@ -11,123 +10,123 @@ import java.util.List;
  */
 public class CrawlPath extends ForwardingList<Eventable> {
 
-	private final List<Eventable> eventablePath;
-	
-	private int backtrackTarget;
-	private boolean backtrackSuccess;
-	private int reachedNearDup;
-	
+  private final List<Eventable> eventablePath;
 
-	public static CrawlPath copyOf(List<Eventable> eventable, int backtrackTarget) {
-		return new CrawlPath(Lists.newLinkedList(eventable), backtrackTarget);
-	}
+  private int backtrackTarget;
+  private boolean backtrackSuccess;
+  private int reachedNearDup;
 
-	/**
-	 * Start a new empty CrawlPath.
-	 */
-	public CrawlPath(int backtrackTarget) {
-		this(Lists.newLinkedList(), backtrackTarget);
-	}
 
-	/**
-	 * Create a new CrawlPath based on a delegate.
-	 *
-	 * @param delegate the List implementation where this CrawlPath is based on.
-	 */
-	public CrawlPath(List<Eventable> delegate, int backtrackTarget) {
-		this.eventablePath = delegate;
-		this.backtrackTarget = backtrackTarget;
-		this.backtrackSuccess = false;
-		this.reachedNearDup = -1;
-	}
+  /**
+   * Start a new empty CrawlPath.
+   */
+  public CrawlPath(int backtrackTarget) {
+    this(Lists.newLinkedList(), backtrackTarget);
+  }
 
-	@Override
-	protected List<Eventable> delegate() {
-		return eventablePath;
-	}
+  /**
+   * Create a new CrawlPath based on a delegate.
+   *
+   * @param delegate the List implementation where this CrawlPath is based on.
+   */
+  public CrawlPath(List<Eventable> delegate, int backtrackTarget) {
+    this.eventablePath = delegate;
+    this.backtrackTarget = backtrackTarget;
+    this.backtrackSuccess = false;
+    this.reachedNearDup = -1;
+  }
 
-	/**
-	 * Get the last Eventable in the path.
-	 *
-	 * @return the last Eventable in the path
-	 */
-	public Eventable last() {
-		if (eventablePath.isEmpty()) {
-			return null;
-		}
-		return eventablePath.get(eventablePath.size() - 1);
-	}
+  public static CrawlPath copyOf(List<Eventable> eventable, int backtrackTarget) {
+    return new CrawlPath(Lists.newLinkedList(eventable), backtrackTarget);
+  }
 
-	/**
-	 * Create an immutableCopy of the current CrawlPath, used for backtracking for giving them to
-	 * plugins.
-	 *
-	 * @return the CrawlPath based on an immutable list.
-	 */
-	public CrawlPath immutableCopy() {
-		return immutableCopy(false);
-	}
+  @Override
+  protected List<Eventable> delegate() {
+    return eventablePath;
+  }
 
-	public CrawlPath immutableCopyWithoutLast() {
-		return immutableCopy(true);
-	}
+  /**
+   * Get the last Eventable in the path.
+   *
+   * @return the last Eventable in the path
+   */
+  public Eventable last() {
+    if (eventablePath.isEmpty()) {
+      return null;
+    }
+    return eventablePath.get(eventablePath.size() - 1);
+  }
 
-	private CrawlPath immutableCopy(boolean removeLast) {
-		if (isEmpty()) {
-			return new CrawlPath(backtrackTarget);
-		}
+  /**
+   * Create an immutableCopy of the current CrawlPath, used for backtracking for giving them to
+   * plugins.
+   *
+   * @return the CrawlPath based on an immutable list.
+   */
+  public CrawlPath immutableCopy() {
+    return immutableCopy(false);
+  }
 
-		// Build copy
-		List<Eventable> path = Lists.newArrayList(this);
+  public CrawlPath immutableCopyWithoutLast() {
+    return immutableCopy(true);
+  }
 
-		// This is safe because checked above
-		if (removeLast) {
-			path.remove(path.size() - 1);
-		}
-		return new CrawlPath(ImmutableList.copyOf(path), this.backtrackTarget);
-	}
+  private CrawlPath immutableCopy(boolean removeLast) {
+    if (isEmpty()) {
+      return new CrawlPath(backtrackTarget);
+    }
 
-	public int getBacktrackTarget() {
-		return backtrackTarget;
-	}
+    // Build copy
+    List<Eventable> path = Lists.newArrayList(this);
 
-	public void setBacktrackTarget(int backtrackTarget) {
-		this.backtrackTarget = backtrackTarget;
-	}
+    // This is safe because checked above
+    if (removeLast) {
+      path.remove(path.size() - 1);
+    }
+    return new CrawlPath(ImmutableList.copyOf(path), this.backtrackTarget);
+  }
 
-	public boolean isBacktrackSuccess() {
-		return backtrackSuccess;
-	}
+  public int getBacktrackTarget() {
+    return backtrackTarget;
+  }
 
-	public void setBacktrackSuccess(boolean backtrackSuccess) {
-		this.backtrackSuccess = backtrackSuccess;
-	}
+  public void setBacktrackTarget(int backtrackTarget) {
+    this.backtrackTarget = backtrackTarget;
+  }
 
-	public int isReachedNearDup() {
-		return reachedNearDup;
-	}
+  public boolean isBacktrackSuccess() {
+    return backtrackSuccess;
+  }
 
-	public void setReachedNearDup(int reachedNearDup) {
-		this.reachedNearDup = reachedNearDup;
-	}
+  public void setBacktrackSuccess(boolean backtrackSuccess) {
+    this.backtrackSuccess = backtrackSuccess;
+  }
 
-	/**
-	 * Build a stack trace for this path. This can be used in generating more meaningful exceptions
-	 * while using Crawljax in conjunction with JUnit for example.
-	 *
-	 * @return a array of StackTraceElements denoting the steps taken by this path. The first
-	 * element [0] denotes the last {@link Eventable} on this path while the last item
-	 * denotes the first {@link Eventable} executed.
-	 */
-	public StackTraceElement[] asStackTrace() {
-		int i = 1;
-		StackTraceElement[] list = new StackTraceElement[this.size()];
-		for (Eventable e : this) {
-			list[this.size() - i] =
-					new StackTraceElement(e.getEventType().toString(), e.getIdentification()
-							.toString(), e.getElement().toString(), i);
-			i++;
-		}
-		return list;
-	}
+  public int isReachedNearDup() {
+    return reachedNearDup;
+  }
+
+  public void setReachedNearDup(int reachedNearDup) {
+    this.reachedNearDup = reachedNearDup;
+  }
+
+  /**
+   * Build a stack trace for this path. This can be used in generating more meaningful exceptions
+   * while using Crawljax in conjunction with JUnit for example.
+   *
+   * @return a array of StackTraceElements denoting the steps taken by this path. The first element
+   * [0] denotes the last {@link Eventable} on this path while the last item denotes the first
+   * {@link Eventable} executed.
+   */
+  public StackTraceElement[] asStackTrace() {
+    int i = 1;
+    StackTraceElement[] list = new StackTraceElement[this.size()];
+    for (Eventable e : this) {
+      list[this.size() - i] =
+          new StackTraceElement(e.getEventType().toString(), e.getIdentification()
+              .toString(), e.getElement().toString(), i);
+      i++;
+    }
+    return list;
+  }
 }

@@ -26,8 +26,8 @@ package com.crawljax.stateabstractions.dom.apted.costmodel;
 import com.crawljax.stateabstractions.dom.apted.node.AptedNode;
 
 /**
- * This interface specifies the methods to implement for a custom cost model.
- * The methods represent the costs of edit operations (delete, insert, rename).
+ * This interface specifies the methods to implement for a custom cost model. The methods represent
+ * the costs of edit operations (delete, insert, rename).
  *
  * <p>If the cost function is a metric, the tree edit distance is a metric too.
  *

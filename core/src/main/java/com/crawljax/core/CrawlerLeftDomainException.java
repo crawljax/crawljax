@@ -6,8 +6,8 @@ package com.crawljax.core;
 @SuppressWarnings("serial")
 public class CrawlerLeftDomainException extends CrawljaxException {
 
-	public CrawlerLeftDomainException(String currentUrl) {
-		super("Somehow we left the domain to " + currentUrl);
-	}
+  public CrawlerLeftDomainException(String currentUrl) {
+    super("Somehow we left the domain to " + currentUrl);
+  }
 
 }

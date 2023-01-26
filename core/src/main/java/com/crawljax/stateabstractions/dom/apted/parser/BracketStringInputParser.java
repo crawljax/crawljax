@@ -23,21 +23,20 @@
 
 package com.crawljax.stateabstractions.dom.apted.parser;
 
-import java.util.List;
-
 import com.crawljax.stateabstractions.dom.apted.node.AptedNode;
 import com.crawljax.stateabstractions.dom.apted.node.StringNodeData;
 import com.crawljax.stateabstractions.dom.apted.util.FormatUtilities;
+import java.util.List;
 
 // [TODO] Make this parser independent from FormatUtilities - move here relevant elements.
 
 /**
- * Parser for the input trees in the bracket notation with a single string-value
- * label of type {@link StringNodeData}.
+ * Parser for the input trees in the bracket notation with a single string-value label of type
+ * {@link StringNodeData}.
  *
  * <p>Bracket notation encodes the trees with nested parentheses, for example,
- * in tree {A{B{X}{Y}{F}}{C}} the root node has label A and two children with
- * labels B and C. AptedNode with label B has three children with labels X, Y, F.
+ * in tree {A{B{X}{Y}{F}}{C}} the root node has label A and two children with labels B and C.
+ * AptedNode with label B has three children with labels X, Y, F.
  *
  * @see AptedNode
  * @see StringNodeData
@@ -45,8 +44,8 @@ import com.crawljax.stateabstractions.dom.apted.util.FormatUtilities;
 public class BracketStringInputParser implements InputParser<StringNodeData> {
 
   /**
-   * Parses the input tree as a string and converts it to our tree
-   * representation using the {@link AptedNode} class.
+   * Parses the input tree as a string and converts it to our tree representation using the
+   * {@link AptedNode} class.
    *
    * @param s input tree as string in bracket notation.
    * @return tree representation of the bracket notation input.
@@ -54,10 +53,12 @@ public class BracketStringInputParser implements InputParser<StringNodeData> {
    */
   public AptedNode<StringNodeData> fromString(String s) {
     s = s.substring(s.indexOf("{"), s.lastIndexOf("}") + 1);
-    AptedNode<StringNodeData> node = new AptedNode<StringNodeData>(new StringNodeData(FormatUtilities.getRoot(s)));
+    AptedNode<StringNodeData> node = new AptedNode<StringNodeData>(
+        new StringNodeData(FormatUtilities.getRoot(s)));
     List<String> c = FormatUtilities.getChildren(s);
-    for(int i = 0; i < c.size(); i++)
-        node.addChild(fromString(c.get(i)));
+    for (int i = 0; i < c.size(); i++) {
+      node.addChild(fromString(c.get(i)));
+    }
     return node;
   }
 }

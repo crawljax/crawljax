@@ -11,12 +11,12 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public interface ExpectedCondition {
 
-	/**
-	 * Is the expected condition satisfied.
-	 *
-	 * @param browser the browser to execute the check on
-	 * @return Whether the condition is satisfied.
-	 */
-	boolean isSatisfied(EmbeddedBrowser browser);
+  /**
+   * Is the expected condition satisfied.
+   *
+   * @param browser the browser to execute the check on
+   * @return Whether the condition is satisfied.
+   */
+  boolean isSatisfied(EmbeddedBrowser browser);
 
 }

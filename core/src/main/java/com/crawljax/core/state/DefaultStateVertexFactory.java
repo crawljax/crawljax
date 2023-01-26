@@ -8,9 +8,9 @@ import com.crawljax.browser.EmbeddedBrowser;
  */
 public class DefaultStateVertexFactory extends StateVertexFactory {
 
-	@Override
-	public StateVertex newStateVertex(int id, String url, String name, String dom,
-			String strippedDom, EmbeddedBrowser browser) {
-		return new StateVertexImpl(id, url, name, dom, strippedDom);
-	}
+  @Override
+  public StateVertex newStateVertex(int id, String url, String name, String dom,
+      String strippedDom, EmbeddedBrowser browser) {
+    return new StateVertexImpl(id, url, name, dom, strippedDom);
+  }
 }

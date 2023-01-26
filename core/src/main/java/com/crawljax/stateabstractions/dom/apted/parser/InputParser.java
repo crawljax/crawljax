@@ -26,16 +26,16 @@ package com.crawljax.stateabstractions.dom.apted.parser;
 import com.crawljax.stateabstractions.dom.apted.node.AptedNode;
 
 /**
- * This interface specifies methods (currently only one) that must be
- * implemented for a custom input parser.
+ * This interface specifies methods (currently only one) that must be implemented for a custom input
+ * parser.
  *
  * @param <D> the type of node data.
  */
 public interface InputParser<D> {
 
   /**
-   * Converst the input tree passed as string (e.g., bracket notation, XML)
-   * into the tree structure.
+   * Converst the input tree passed as string (e.g., bracket notation, XML) into the tree
+   * structure.
    *
    * @param s input tree as string.
    * @return tree structure.

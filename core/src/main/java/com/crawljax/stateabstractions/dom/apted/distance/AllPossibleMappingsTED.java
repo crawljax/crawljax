@@ -23,18 +23,16 @@
 
 package com.crawljax.stateabstractions.dom.apted.distance;
 
+import com.crawljax.stateabstractions.dom.apted.costmodel.CostModel;
+import com.crawljax.stateabstractions.dom.apted.node.AptedNode;
+import com.crawljax.stateabstractions.dom.apted.node.NodeIndexer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import com.crawljax.stateabstractions.dom.apted.costmodel.CostModel;
-import com.crawljax.stateabstractions.dom.apted.node.AptedNode;
-import com.crawljax.stateabstractions.dom.apted.node.NodeIndexer;
-
 /**
- * Implements an exponential algorithm for the tree edit distance. It computes
- * all possible TED mappings between two trees and calculated their minimal
- * cost.
+ * Implements an exponential algorithm for the tree edit distance. It computes all possible TED
+ * mappings between two trees and calculated their minimal cost.
  *
  * @param <C> type of cost model.
  * @param <D> type of node data.
@@ -80,8 +78,8 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
   }
 
   /**
-   * Computes the tree edit distance between two trees by trying all possible
-   * TED mappings. It uses the specified cost model.
+   * Computes the tree edit distance between two trees by trying all possible TED mappings. It uses
+   * the specified cost model.
    *
    * @param t1 source tree.
    * @param t2 destination tree.
@@ -172,15 +170,15 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
   }
 
   /**
-   * Given all 1-1 mappings, discard these that violate TED conditions
-   * (ancestor-descendant and sibling order).
+   * Given all 1-1 mappings, discard these that violate TED conditions (ancestor-descendant and
+   * sibling order).
    *
    * @param mappings set of all 1-1 mappings.
    */
   private void removeNonTEDMappings(ArrayList<ArrayList<int[]>> mappings) {
     // Validate each mapping separately.
     // Iterator safely removes mappings while iterating.
-    for (Iterator<ArrayList<int[]>> mit = mappings.iterator(); mit.hasNext();) {
+    for (Iterator<ArrayList<int[]>> mit = mappings.iterator(); mit.hasNext(); ) {
       ArrayList<int[]> m = mit.next();
       if (!isTEDMapping(m)) {
         mit.remove();
@@ -192,8 +190,7 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
    * Test if a 1-1 mapping is a TED mapping.
    *
    * @param m a 1-1 mapping.
-   * @return {@code true} if {@code m} is a TED mapping, and {@code false}
-   *         otherwise.
+   * @return {@code true} if {@code m} is a TED mapping, and {@code false} otherwise.
    */
   boolean isTEDMapping(ArrayList<int[]> m) {
     // Validate each pair of pairs of mapped nodes in the mapping.
@@ -231,8 +228,7 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
   }
 
   /**
-   * Given list of all TED mappings, calculate the cost of the minimal-cost
-   * mapping.
+   * Given list of all TED mappings, calculate the cost of the minimal-cost mapping.
    *
    * @param tedMappings set of all TED mappings.
    * @return the minimal cost among all TED mappings.
@@ -248,7 +244,8 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
       for (int[] e : m) {
         // Add edit operation cost.
         if (e[0] > -1 && e[1] > -1) {
-          m_cost += costModel.ren(it1.preL_to_node[e[0]], it2.preL_to_node[e[1]]); // USE COST MODEL - rename e[0] to e[1].
+          m_cost += costModel.ren(it1.preL_to_node[e[0]],
+              it2.preL_to_node[e[1]]); // USE COST MODEL - rename e[0] to e[1].
         } else if (e[0] > -1) {
           m_cost += costModel.del(it1.preL_to_node[e[0]]); // USE COST MODEL - insert e[1].
         } else {
@@ -320,13 +317,12 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
   }
 
   /**
-   * Removes an element (edit operation) from a mapping by its value. In our
-   * case the element to remove can be always found in the mapping.
+   * Removes an element (edit operation) from a mapping by its value. In our case the element to
+   * remove can be always found in the mapping.
    *
    * @param m an edit mapping.
    * @param e element to remove from {@code m}.
-   * @return {@code true} if {@code e} has been removed, and {@code false}
-   *         otherwise.
+   * @return {@code true} if {@code e} has been removed, and {@code false} otherwise.
    */
   private boolean removeMappingElement(ArrayList<int[]> m, int[] e) {
     for (int[] me : m) {

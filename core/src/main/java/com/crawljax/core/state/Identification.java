@@ -1,10 +1,9 @@
 package com.crawljax.core.state;
 
+import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.openqa.selenium.By;
-
-import java.io.Serializable;
 
 /**
  * The Identification class, this class is used to denote a specific element. Specifying a method
@@ -13,125 +12,124 @@ import java.io.Serializable;
  * @author mesbah
  */
 public class Identification implements Serializable {
-	private static final long serialVersionUID = -1608879189549535808L;
 
-	/**
-	 * The method used for identifying elements on the DOM tree.
-	 */
-	public enum How {
-		xpath, name, id, tag, text, partialText
-	}
+  private static final long serialVersionUID = -1608879189549535808L;
+  private How how;
+  private String value;
+  /**
+   * Default constructor to support saving instances of this class as an XML.
+   */
+  public Identification() {
 
-	private How how;
-	private String value;
+  }
 
-	/**
-	 * Default constructor to support saving instances of this class as an XML.
-	 */
-	public Identification() {
+  /**
+   * Create a new Identification.
+   *
+   * @param how   the method of identification (xpath, id, name, ...)
+   * @param value the value of the identification method.
+   */
+  public Identification(How how, String value) {
+    this.how = how;
+    this.value = value;
+  }
 
-	}
+  /**
+   * @return the how
+   */
+  public How getHow() {
+    return how;
+  }
 
-	/**
-	 * Create a new Identification.
-	 *
-	 * @param how   the method of identification (xpath, id, name, ...)
-	 * @param value the value of the identification method.
-	 */
-	public Identification(How how, String value) {
-		this.how = how;
-		this.value = value;
-	}
+  /**
+   * @param how the how to set
+   */
+  public void setHow(How how) {
+    this.how = how;
+  }
 
-	/**
-	 * @return the how
-	 */
-	public How getHow() {
-		return how;
-	}
+  /**
+   * @return the value
+   */
+  public String getValue() {
+    return value;
+  }
 
-	/**
-	 * @param how the how to set
-	 */
-	public void setHow(How how) {
-		this.how = how;
-	}
+  /**
+   * @param value the value to set
+   */
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-	/**
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
-	}
+  /**
+   * Convert a Identification to a String.
+   *
+   * @return the String representation of the Identification
+   */
+  @Override
+  public String toString() {
+    return this.how + " " + this.value;
+  }
 
-	/**
-	 * @param value the value to set
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
+  /**
+   * Convert a Identification to a By used in WebDriver Drivers.
+   *
+   * @return the correct By specification of the current Identification.
+   */
+  public By getWebDriverBy() {
 
-	/**
-	 * Convert a Identification to a String.
-	 *
-	 * @return the String representation of the Identification
-	 */
-	@Override
-	public String toString() {
-		return this.how + " " + this.value;
-	}
+    switch (how) {
+      case name:
+        return By.name(this.value);
 
-	/**
-	 * Convert a Identification to a By used in WebDriver Drivers.
-	 *
-	 * @return the correct By specification of the current Identification.
-	 */
-	public By getWebDriverBy() {
+      case xpath:
+        // Work around HLWK driver bug
+        return By.xpath(this.value.replaceAll("/BODY\\[1\\]/", "/BODY/"));
 
-		switch (how) {
-			case name:
-				return By.name(this.value);
+      case id:
+        return By.id(this.value);
 
-			case xpath:
-				// Work around HLWK driver bug
-				return By.xpath(this.value.replaceAll("/BODY\\[1\\]/", "/BODY/"));
+      case tag:
+        return By.tagName(this.value);
 
-			case id:
-				return By.id(this.value);
+      case text:
+        return By.linkText(this.value);
 
-			case tag:
-				return By.tagName(this.value);
+      case partialText:
+        return By.partialLinkText(this.value);
 
-			case text:
-				return By.linkText(this.value);
+      default:
+        return null;
 
-			case partialText:
-				return By.partialLinkText(this.value);
+    }
 
-			default:
-				return null;
+  }
 
-		}
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Identification)) {
+      return false;
+    }
 
-	}
+    if (this == obj) {
+      return true;
+    }
+    final Identification rhs = (Identification) obj;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Identification)) {
-			return false;
-		}
+    return new EqualsBuilder().append(this.how, rhs.getHow())
+        .append(this.value, rhs.getValue()).isEquals();
+  }
 
-		if (this == obj) {
-			return true;
-		}
-		final Identification rhs = (Identification) obj;
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder().append(this.how).append(this.value).toHashCode();
+  }
 
-		return new EqualsBuilder().append(this.how, rhs.getHow())
-				.append(this.value, rhs.getValue()).isEquals();
-	}
-
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(this.how).append(this.value).toHashCode();
-	}
+  /**
+   * The method used for identifying elements on the DOM tree.
+   */
+  public enum How {
+    xpath, name, id, tag, text, partialText
+  }
 }

@@ -27,30 +27,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is a recursive representation of an ordered tree. Each node stores a
- * list of pointers to its children. The order of children is significant and
- * must be observed while implmeneting a custom input parser.
+ * This is a recursive representation of an ordered tree. Each node stores a list of pointers to its
+ * children. The order of children is significant and must be observed while implmeneting a custom
+ * input parser.
  *
  * @param <D> the type of node data (node label).
  */
 public class AptedNode<D> {
 
   /**
-   * Information associated to and stored at each node. This can be anything
-   * and depends on the application, for example, string label, key-value pair,
-   * list of values, etc.
+   * Information associated to and stored at each node. This can be anything and depends on the
+   * application, for example, string label, key-value pair, list of values, etc.
    */
   private D nodeData;
 
   /**
-   * Array of pointers to this node's children. The order of children is
-   * significant due to the definition of ordered trees.
+   * Array of pointers to this node's children. The order of children is significant due to the
+   * definition of ordered trees.
    */
   private List<AptedNode<D>> children;
 
   /**
-   * Constructs a new node with the passed node data and an empty list of
-   * children.
+   * Constructs a new node with the passed node data and an empty list of children.
    *
    * @param nodeData instance of node data (node label).
    */
@@ -67,16 +65,16 @@ public class AptedNode<D> {
    * @return number of nodes in the tree rooted at this node.
    */
   public int getNodeCount() {
-      int sum = 1;
-      for(AptedNode<D> child : getChildren()) {
-        sum += child.getNodeCount();
-      }
-      return sum;
+    int sum = 1;
+    for (AptedNode<D> child : getChildren()) {
+      sum += child.getNodeCount();
+    }
+    return sum;
   }
 
   /**
-   * Adds a new child at the end of children list. The added child will be
-   * the last child of this node.
+   * Adds a new child at the end of children list. The added child will be the last child of this
+   * node.
    *
    * @param c child node to add.
    */
@@ -93,8 +91,9 @@ public class AptedNode<D> {
    * @return tree in bracket notation.
    */
   public String toString() {
-    String res = (new StringBuilder("{")).append(((StringNodeData)getNodeData()).getLabel()).toString();
-    for(AptedNode<D> child : getChildren()) {
+    String res = (new StringBuilder("{")).append(((StringNodeData) getNodeData()).getLabel())
+        .toString();
+    for (AptedNode<D> child : getChildren()) {
       res = (new StringBuilder(String.valueOf(res))).append(child.toString()).toString();
     }
     res = (new StringBuilder(String.valueOf(res))).append("}").toString();

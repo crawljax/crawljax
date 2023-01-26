@@ -1,124 +1,121 @@
 package com.crawljax.core.state;
 
+import com.crawljax.core.CandidateElement;
+import com.crawljax.fragmentation.Fragment;
+import com.crawljax.vips_selenium.VipsRectangle;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.openqa.selenium.WebDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
-import com.crawljax.core.CandidateElement;
-import com.crawljax.fragmentation.Fragment;
-import com.crawljax.vips_selenium.VipsRectangle;
-import com.google.common.collect.ImmutableList;
 
 /**
  * A vertex in the {@link StateFlowGraph} representing a state in the web application.
  */
 public interface StateVertex extends Serializable {
 
-	/**
-	 * The {@link #getId()} of the Index state.
-	 */
-	int INDEX_ID = 0;
+  /**
+   * The {@link #getId()} of the Index state.
+   */
+  int INDEX_ID = 0;
 
-	/**
-	 * Retrieve the name of the StateVertex.
-	 *
-	 * @return the name of the StateVertex
-	 */
-	String getName();
+  /**
+   * Retrieve the name of the StateVertex.
+   *
+   * @return the name of the StateVertex
+   */
+  String getName();
 
-	/**
-	 * Retrieve the DOM String.
-	 *
-	 * @return the dom for this state
-	 */
-	String getDom();
+  /**
+   * Retrieve the DOM String.
+   *
+   * @return the dom for this state
+   */
+  String getDom();
 
-	/**
-	 * @return the stripped dom by the oracle comparators
-	 */
-	String getStrippedDom();
+  /**
+   * @return the stripped dom by the oracle comparators
+   */
+  String getStrippedDom();
 
-	/**
-	 * @return the url
-	 */
-	String getUrl();
+  /**
+   * @return the url
+   */
+  String getUrl();
 
-	/**
-	 * @return the id. This is guaranteed to be unique per state.
-	 */
-	int getId();
+  /**
+   * @return the id. This is guaranteed to be unique per state.
+   */
+  int getId();
 
-	/**
-	 * @return a Document instance of the dom string.
-	 * @throws IOException if an exception is thrown.
-	 */
-	Document getDocument() throws IOException;
+  /**
+   * @return a Document instance of the dom string.
+   * @throws IOException if an exception is thrown.
+   */
+  Document getDocument() throws IOException;
 
-	/**
-	 * @param elements Set the candidate elements for this state vertex that might be fired.
-	 */
-	void setElementsFound(LinkedList<CandidateElement> elements);
+  void setDocument(Document dom);
 
-	/**
-	 * @return A list of {@link CandidateElement} that might have been fired during the crawl. If an
-	 * event was fired it is registered as an {@link Eventable} an can be retrieved from
-	 * {@link StateFlowGraph#getAllEdges()}. If the candidates were not set because of an
-	 * error it returns <code>null</code>.
-	 */
-	ImmutableList<CandidateElement> getCandidateElements();
+  /**
+   * @param elements Set the candidate elements for this state vertex that might be fired.
+   */
+  void setElementsFound(LinkedList<CandidateElement> elements);
 
-	boolean hasNearDuplicate();
+  /**
+   * @return A list of {@link CandidateElement} that might have been fired during the crawl. If an
+   * event was fired it is registered as an {@link Eventable} an can be retrieved from
+   * {@link StateFlowGraph#getAllEdges()}. If the candidates were not set because of an error it
+   * returns <code>null</code>.
+   */
+  ImmutableList<CandidateElement> getCandidateElements();
 
-	void setHasNearDuplicate(boolean b);
+  boolean hasNearDuplicate();
 
-	int getNearestState();
+  void setHasNearDuplicate(boolean b);
 
-	boolean inThreshold(StateVertex vertexOfGraph);
+  int getNearestState();
 
-	double getDistToNearestState();
+  void setNearestState(int vertex);
 
-	void setDistToNearestState(double distToNearestState);
+  boolean inThreshold(StateVertex vertexOfGraph);
 
-	double getDist(StateVertex vertexOfGraph);
+  double getDistToNearestState();
 
-	void setNearestState(int vertex);
+  void setDistToNearestState(double distToNearestState);
 
-	ArrayList<Fragment> getFragments();
+  double getDist(StateVertex vertexOfGraph);
 
-	void setFragments(ArrayList<Fragment> fragments);
-	
+  ArrayList<Fragment> getFragments();
 
-	Fragment getRootFragment();
+  void setFragments(ArrayList<Fragment> fragments);
 
-	void setDocument(Document dom);
+  Fragment getRootFragment();
 
-	Fragment getClosestFragment(Node node);
+  Fragment getClosestFragment(Node node);
 
-	Fragment getClosestFragment(CandidateElement element) throws Exception;
+  Fragment getClosestFragment(CandidateElement element) throws Exception;
 
-	boolean hasUnexploredActions();
+  boolean hasUnexploredActions();
 
-	void addFragments(List<VipsRectangle> rectangles, WebDriver driver);
+  void addFragments(List<VipsRectangle> rectangles, WebDriver driver);
 
-	CandidateElement getCandidateElement(Eventable clone);
-	
-	int getCluster();
-	
-	void setCluster(int cluster);
+  CandidateElement getCandidateElement(Eventable clone);
 
-	Fragment getClosestDomFragment(CandidateElement element);
+  int getCluster();
 
-	List<CandidateElement> getCandidateElement(Node equivalentNode);
+  void setCluster(int cluster);
 
-	void setDirectAccess(CandidateElement element);
+  Fragment getClosestDomFragment(CandidateElement element);
 
-	boolean isOnURL();
+  List<CandidateElement> getCandidateElement(Node equivalentNode);
 
-	void setOnURL(boolean onURL);
+  void setDirectAccess(CandidateElement element);
+
+  boolean isOnURL();
+
+  void setOnURL(boolean onURL);
 }

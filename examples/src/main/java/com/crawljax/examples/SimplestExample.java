@@ -9,13 +9,13 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
  */
 public class SimplestExample {
 
-	/**
-	 * Run this method to start the crawl.
-	 */
-	public static void main(String[] args) {
-		CrawljaxRunner crawljax =
-		        new CrawljaxRunner(CrawljaxConfiguration.builderFor("http://demo.crawljax.com/")
-		                .build());
-		crawljax.call();
-	}
+  /**
+   * Run this method to start the crawl.
+   */
+  public static void main(String[] args) {
+    CrawljaxRunner crawljax =
+        new CrawljaxRunner(CrawljaxConfiguration.builderFor("http://demo.crawljax.com/")
+            .build());
+    crawljax.call();
+  }
 }

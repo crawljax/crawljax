@@ -3,21 +3,6 @@ package com.crawljax.core;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Provider;
-
-import com.crawljax.stateabstractions.hybrid.VipsTest;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import com.codahale.metrics.MetricRegistry;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
@@ -55,218 +40,239 @@ import com.crawljax.fragmentation.FragmentationPlugin;
 import com.crawljax.oraclecomparator.StateComparator;
 import com.crawljax.stateabstractions.hybrid.FragGenStateVertexFactory;
 import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
+import com.crawljax.stateabstractions.hybrid.VipsTest;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Provider;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 
 public class CrawlerProviderTest {
 
-	@Mock
-	private Provider<InMemoryStateFlowGraph> graphProvider;
+  StateMachine sm;
+  StateVertex index;
+  @Mock
+  private Provider<InMemoryStateFlowGraph> graphProvider;
+  @Mock
+  private Provider<StateFlowGraph> sfgProvider;
+  @Mock
+  private CrawlSession session;
+  private UnfiredFragmentCandidates candidateActionCache;
+  private InMemoryStateFlowGraph sfg;
+  private FormHandler formHandler;
 
-	@Mock
-	private Provider<StateFlowGraph> sfgProvider;
+  private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config,
+      EmbeddedBrowser browser) {
+    FormHandler formHandler = new FormHandler(browser, config.getCrawlRules());
 
-	@Mock
-	private CrawlSession session;
+    EventableConditionChecker eventableConditionChecker = new EventableConditionChecker(
+        config.getCrawlRules());
+    ConditionTypeChecker<CrawlCondition> crawlConditionChecker = new ConditionTypeChecker<>(
+        config.getCrawlRules().getPreCrawlConfig().getCrawlConditions());
+    ExtractorManager checker = new CandidateElementManager(eventableConditionChecker,
+        crawlConditionChecker);
 
-	private UnfiredFragmentCandidates candidateActionCache;
+    return new CandidateElementExtractor(checker, browser, formHandler, config);
+  }
 
-	private InMemoryStateFlowGraph sfg;
+  private InMemoryStateFlowGraph newStateFlowGraph() {
+    InMemoryStateFlowGraph sfg = new InMemoryStateFlowGraph(new ExitNotifier(0),
+        new DefaultStateVertexFactory());
+    return sfg;
+  }
 
-	StateMachine sm;
-	StateVertex index;
+  private void setStateMachineForConfig(CrawljaxConfiguration config, InMemoryStateFlowGraph sfg) {
+    sm = new StateMachine(sfg, config.getCrawlRules().getInvariants(),
+        new Plugins(config, new MetricRegistry()),
+        null, new ArrayList<>());
+  }
 
-	private FormHandler formHandler;
+  public Crawler getCrawler(CrawljaxConfigurationBuilder configBuilder, EmbeddedBrowser browser) {
+    CrawljaxRunner crawljax = new CrawljaxRunner(configBuilder.build());
 
-	private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config, EmbeddedBrowser browser) {
-		FormHandler formHandler = new FormHandler(browser, config.getCrawlRules());
+    CrawljaxConfiguration config = configBuilder.build();
 
-		EventableConditionChecker eventableConditionChecker = new EventableConditionChecker(config.getCrawlRules());
-		ConditionTypeChecker<CrawlCondition> crawlConditionChecker = new ConditionTypeChecker<>(
-				config.getCrawlRules().getPreCrawlConfig().getCrawlConditions());
-		ExtractorManager checker = new CandidateElementManager(eventableConditionChecker, crawlConditionChecker);
+    CrawlSessionProvider sessionProvider = mock(CrawlSessionProvider.class);
+    when(sessionProvider.get()).thenReturn(session);
 
-		return new CandidateElementExtractor(checker, browser, formHandler, config);
-	}
+    CrawlerContext context = new CrawlerContext(browser, config, sessionProvider, null,
+        new MetricRegistry());
+    StateComparator stateComparator = new StateComparator(config.getCrawlRules());
 
-	private InMemoryStateFlowGraph newStateFlowGraph() {
-		InMemoryStateFlowGraph sfg = new InMemoryStateFlowGraph(new ExitNotifier(0), new DefaultStateVertexFactory());
-		return sfg;
-	}
+    formHandler = new FormHandler(browser, config.getCrawlRules());
+    FormHandlerFactory formHandlerFactory = mock(FormHandlerFactory.class);
+    when(formHandlerFactory.newFormHandler(browser)).thenReturn(formHandler);
 
-	private void setStateMachineForConfig(CrawljaxConfiguration config, InMemoryStateFlowGraph sfg) {
-		sm = new StateMachine(sfg, config.getCrawlRules().getInvariants(), new Plugins(config, new MetricRegistry()),
-				null, new ArrayList<>());
-	}
+    WaitConditionChecker waitConditionChecker = mock(WaitConditionChecker.class);
 
-	public Crawler getCrawler(CrawljaxConfigurationBuilder configBuilder, EmbeddedBrowser browser) {
-		CrawljaxRunner crawljax = new CrawljaxRunner(configBuilder.build());
+    CandidateElementExtractor elementExtractor = newElementExtractor(config, browser);
+    CandidateElementExtractorFactory elementExtractorFactory = mock(
+        CandidateElementExtractorFactory.class);
+    when(elementExtractorFactory.newExtractor(browser)).thenReturn(elementExtractor);
 
-		CrawljaxConfiguration config = configBuilder.build();
+    sfg = new InMemoryStateFlowGraph(new ExitNotifier(0),
+        new FragGenStateVertexFactory(0, configBuilder, false));
 
-		CrawlSessionProvider sessionProvider = mock(CrawlSessionProvider.class);
-		when(sessionProvider.get()).thenReturn(session);
+    when(graphProvider.get()).thenReturn(sfg);
 
-		CrawlerContext context = new CrawlerContext(browser, config, sessionProvider, null, new MetricRegistry());
-		StateComparator stateComparator = new StateComparator(config.getCrawlRules());
+    when(sfgProvider.get()).thenReturn(sfg);
 
-		formHandler = new FormHandler(browser, config.getCrawlRules());
-		FormHandlerFactory formHandlerFactory = mock(FormHandlerFactory.class);
-		when(formHandlerFactory.newFormHandler(browser)).thenReturn(formHandler);
+    candidateActionCache = new UnfiredFragmentCandidates(config.getBrowserConfig(), sfgProvider,
+        new MetricRegistry(), null);
 
-		WaitConditionChecker waitConditionChecker = mock(WaitConditionChecker.class);
+    Plugins plugins = mock(Plugins.class);
+    TrainingFormHandlerFactory trainingFormHandlerFactory = mock(TrainingFormHandlerFactory.class);
 
-		CandidateElementExtractor elementExtractor = newElementExtractor(config, browser);
-		CandidateElementExtractorFactory elementExtractorFactory = mock(CandidateElementExtractorFactory.class);
-		when(elementExtractorFactory.newExtractor(browser)).thenReturn(elementExtractor);
+    Crawler crawler = new Crawler(context, config, stateComparator, candidateActionCache,
+        formHandlerFactory,
+        trainingFormHandlerFactory, waitConditionChecker, elementExtractorFactory, graphProvider,
+        plugins,
+        new FragGenStateVertexFactory(0, configBuilder, false));
 
-		sfg = new InMemoryStateFlowGraph(new ExitNotifier(0), new FragGenStateVertexFactory(0, configBuilder, false));
+    return crawler;
+  }
 
-		when(graphProvider.get()).thenReturn(sfg);
+  @Ignore
+  @Test
+  public void test() {
+    // String url =
+    // "http://localhost:8888/addressbook/addressbook-mod/addressbook/index.php";
+    String url = "http://localhost:4000";
+    CrawljaxConfigurationBuilder configBuilder = CrawljaxConfiguration.builderFor(url);
+    configBuilder.crawlRules().setFormFillMode(FormFillMode.RANDOM);
+    configBuilder.crawlRules().setInputSpec(getInputSpec());
+    configBuilder.crawlRules().setFormFillOrder(FormFillOrder.VISUAL);
 
-		when(sfgProvider.get()).thenReturn(sfg);
+    configBuilder.crawlRules().click("div").withAttribute("class", "board");
+    // list
+    configBuilder.crawlRules().click("div").withAttribute("class", "list add-new");
+    // created boards and lists
+    configBuilder.crawlRules().click("div").withAttribute("class", "list");
+    // created card
+    configBuilder.crawlRules().click("div").withAttribute("class", "card-content");
 
-		candidateActionCache = new UnfiredFragmentCandidates(config.getBrowserConfig(), sfgProvider,
-				new MetricRegistry(), null);
+    configBuilder.setStateVertexFactory(new FragGenStateVertexFactory(0.0, configBuilder, false));
 
-		Plugins plugins = mock(Plugins.class);
-		TrainingFormHandlerFactory trainingFormHandlerFactory = mock(TrainingFormHandlerFactory.class);
+    BrowserConfiguration browserConfiguration = new BrowserConfiguration(BrowserType.CHROME, 1,
+        // new BrowserOptions(BrowserOptions.MACBOOK_PRO_RETINA_PIXEL_DENSITY));
+        new BrowserOptions());
+    configBuilder.setBrowserConfig(browserConfiguration);
+    WebDriverBrowserBuilder builder = new WebDriverBrowserBuilder(configBuilder.build(), null);
 
-		Crawler crawler = new Crawler(context, config, stateComparator, candidateActionCache, formHandlerFactory,
-				trainingFormHandlerFactory, waitConditionChecker, elementExtractorFactory, graphProvider, plugins,
-				new FragGenStateVertexFactory(0, configBuilder, false));
+    FragmentManager manager = new FragmentManager(null);
 
-		return crawler;
-	}
+    // EmbeddedBrowser browser = null;
+    EmbeddedBrowser browser = builder.get();
 
-	@Ignore
-	@Test
-	public void test() {
-		// String url =
-		// "http://localhost:8888/addressbook/addressbook-mod/addressbook/index.php";
-		String url = "http://localhost:4000";
-		CrawljaxConfigurationBuilder configBuilder = CrawljaxConfiguration.builderFor(url);
-		configBuilder.crawlRules().setFormFillMode(FormFillMode.RANDOM);
-		configBuilder.crawlRules().setInputSpec(getInputSpec());
-		configBuilder.crawlRules().setFormFillOrder(FormFillOrder.VISUAL);
+    browser.goToUrl(URI.create(url));
 
-		configBuilder.crawlRules().click("div").withAttribute("class", "board");
-		// list
-		configBuilder.crawlRules().click("div").withAttribute("class", "list add-new");
-		// created boards and lists
-		configBuilder.crawlRules().click("div").withAttribute("class", "list");
-		// created card
-		configBuilder.crawlRules().click("div").withAttribute("class", "card-content");
+    // com.crawljax.vips_selenium.Test.login_addressbook(browser.getWebDriver());
+    VipsTest.phoenix_login(browser.getWebDriver());
 
-		configBuilder.setStateVertexFactory(new FragGenStateVertexFactory(0.0, configBuilder, false));
+    Crawler crawler = getCrawler(configBuilder, browser);
 
-		BrowserConfiguration browserConfiguration = new BrowserConfiguration(BrowserType.CHROME, 1,
-				// new BrowserOptions(BrowserOptions.MACBOOK_PRO_RETINA_PIXEL_DENSITY));
-				new BrowserOptions());
-		configBuilder.setBrowserConfig(browserConfiguration);
-		WebDriverBrowserBuilder builder = new WebDriverBrowserBuilder(configBuilder.build(), null);
+    index = crawler.crawlIndex();
 
-		FragmentManager manager = new FragmentManager(null);
+    BufferedImage screenshot = browser.getScreenShotAsBufferedImage(100);
+    File screenshotFile = new File("testScreenshot.png");
+    ((HybridStateVertexImpl) index).fragmentDom(browser, screenshot, screenshotFile);
+    sfg.putIndex(index);
+    crawler.reset(0);
+    sm = crawler.getContext().getStateMachine();
 
-		// EmbeddedBrowser browser = null;
-		EmbeddedBrowser browser = builder.get();
+    int eventNum = 1;
+    String xpath = "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/section[1]/div[1]/div[1]";
+    performEvent(manager, browser, crawler, eventNum, xpath);
 
-		browser.goToUrl(URI.create(url));
+    // com.crawljax.vips_selenium.Test.phoenix_opencard(browser.getWebDriver());
+    // com.crawljax.vips_selenium.Test.phoenix_addComment(browser.getWebDriver());
 
-		// com.crawljax.vips_selenium.Test.login_addressbook(browser.getWebDriver());
-		VipsTest.phoenix_login(browser.getWebDriver());
+    eventNum = 2;
+    xpath = "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]";
+    performEvent(manager, browser, crawler, eventNum, xpath);
 
-		Crawler crawler = getCrawler(configBuilder, browser);
+    xpath = "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/form[1]/div[2]/button[1]";
+    eventNum = 3;
+    performEvent(manager, browser, crawler, eventNum, xpath);
 
-		index = crawler.crawlIndex();
+    crawler.close();
+    browser.close();
 
-		BufferedImage screenshot = browser.getScreenShotAsBufferedImage(100);
-		File screenshotFile = new File("testScreenshot.png");
-		((HybridStateVertexImpl) index).fragmentDom(browser, screenshot, screenshotFile);
-		sfg.putIndex(index);
-		crawler.reset(0);
-		sm = crawler.getContext().getStateMachine();
+  }
 
-		int eventNum = 1;
-		String xpath = "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/section[1]/div[1]/div[1]";
-		performEvent(manager, browser, crawler, eventNum, xpath);
+  private void performEvent(FragmentManager manager, EmbeddedBrowser browser, Crawler crawler,
+      int eventNum,
+      String xpath) {
 
-		// com.crawljax.vips_selenium.Test.phoenix_opencard(browser.getWebDriver());
-		// com.crawljax.vips_selenium.Test.phoenix_addComment(browser.getWebDriver());
+    List<CandidateElement> elements = sm.getCurrentState().getCandidateElements();
+    Eventable event = null;
+    CandidateElement element = null;
 
-		eventNum = 2;
-		xpath = "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]";
-		performEvent(manager, browser, crawler, eventNum, xpath);
+    element = getMatchingCandidate(elements, element, xpath);
 
-		xpath = "/html[1]/body[1]/main[1]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/form[1]/div[2]/button[1]";
-		eventNum = 3;
-		performEvent(manager, browser, crawler, eventNum, xpath);
+    event = new Eventable(element, EventType.click, eventNum);
 
-		crawler.close();
-		browser.close();
+    // click board
+    boolean fired = crawler.fireEventWithInputs(event);
+    if (fired) {
+      recordEvent(manager, crawler, event, element);
+    }
 
-	}
+    FragmentationPlugin.fragmentState(sm.getCurrentState(), manager, browser, new File("test"),
+        false);
+    // ((HybridStateVertexImpl)
+    // sm.getCurrentState()).fragmentDom(browser.getWebDriver(), screenshot,
+    // screenshotFile);
+  }
 
-	private void performEvent(FragmentManager manager, EmbeddedBrowser browser, Crawler crawler, int eventNum,
-			String xpath) {
+  private CandidateElement getMatchingCandidate(List<CandidateElement> elements,
+      CandidateElement element,
+      String xpath) {
+    for (CandidateElement elem : elements) {
+      System.out.println(elem.getIdentification().getValue());
 
-		List<CandidateElement> elements = sm.getCurrentState().getCandidateElements();
-		Eventable event = null;
-		CandidateElement element = null;
+      if (elem.getIdentification().getValue().equalsIgnoreCase(xpath)) {
+        element = elem;
+      }
+    }
+    return element;
+  }
 
-		element = getMatchingCandidate(elements, element, xpath);
+  private void recordEvent(FragmentManager manager, Crawler crawler, Eventable event,
+      CandidateElement element) {
+    try {
+      manager.recordAccess(element, sm.getCurrentState());
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
+    StateVertex previous = sm.getCurrentState();
+    boolean newStateFound = crawler.inspectNewState(event);
+    StateVertex now = sm.getCurrentState();
+    System.out.println(now);
+  }
 
-		event = new Eventable(element, EventType.click, eventNum);
+  private InputSpecification getInputSpec() {
 
-		// click board
-		boolean fired = crawler.fireEventWithInputs(event);
-		if (fired)
-			recordEvent(manager, crawler, event, element);
+    InputSpecification inputAddressBook = new InputSpecification();
 
-		FragmentationPlugin.fragmentState(sm.getCurrentState(), manager, browser, new File("test"), false);
-		// ((HybridStateVertexImpl)
-		// sm.getCurrentState()).fragmentDom(browser.getWebDriver(), screenshot,
-		// screenshotFile);
-	}
+    FormInput search = new FormInput(InputType.TEXT, new Identification(How.name, "searchstring"));
+    search.inputValues("andrea");
+    inputAddressBook.inputField(search);
 
-	private CandidateElement getMatchingCandidate(List<CandidateElement> elements, CandidateElement element,
-			String xpath) {
-		for (CandidateElement elem : elements) {
-			System.out.println(elem.getIdentification().getValue());
+    // FormInput selectBox = new FormInput(InputType.SELECT, new
+    // Identification(How.name, "group" ));
+    // selectBox.inputValues("all");
+    // inputAddressBook.inputField(selectBox);
 
-			if (elem.getIdentification().getValue().equalsIgnoreCase(xpath)) {
-				element = elem;
-			}
-		}
-		return element;
-	}
-
-	private void recordEvent(FragmentManager manager, Crawler crawler, Eventable event, CandidateElement element) {
-		try {
-			manager.recordAccess(element, sm.getCurrentState());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		StateVertex previous = sm.getCurrentState();
-		boolean newStateFound = crawler.inspectNewState(event);
-		StateVertex now = sm.getCurrentState();
-		System.out.println(now);
-	}
-
-	private InputSpecification getInputSpec() {
-
-		InputSpecification inputAddressBook = new InputSpecification();
-
-		FormInput search = new FormInput(InputType.TEXT, new Identification(How.name, "searchstring"));
-		search.inputValues("andrea");
-		inputAddressBook.inputField(search);
-
-		// FormInput selectBox = new FormInput(InputType.SELECT, new
-		// Identification(How.name, "group" ));
-		// selectBox.inputValues("all");
-		// inputAddressBook.inputField(selectBox);
-
-		return inputAddressBook;
-	}
+    return inputAddressBook;
+  }
 
 }

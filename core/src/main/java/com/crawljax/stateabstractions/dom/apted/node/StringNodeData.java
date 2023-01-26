@@ -24,8 +24,7 @@
 package com.crawljax.stateabstractions.dom.apted.node;
 
 /**
- * Represents a node label that consists of a single string value. Such label
- * belongs to a node.
+ * Represents a node label that consists of a single string value. Such label belongs to a node.
  *
  * @see AptedNode
  */

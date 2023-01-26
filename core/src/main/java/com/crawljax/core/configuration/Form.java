@@ -30,7 +30,6 @@ import com.crawljax.core.state.Identification;
 import com.crawljax.forms.FormInput;
 import com.crawljax.forms.FormInput.InputType;
 import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,67 +38,63 @@ import java.util.List;
  */
 public class Form {
 
-	private final List<FormInput> formInputs = new ArrayList<>();
-	private FormAction formAction;
+  private final List<FormInput> formInputs = new ArrayList<>();
+  private FormAction formAction;
 
-	/**
-	 * Specifies an input field to assign a value to. Crawljax first tries to match the found HTML
-	 * input element's id and then the name attribute.
-	 *
-	 * @param type
-	 *            the type of input field
-	 * @param identification
-	 *            the locator of the input field
-	 * @return an InputField
-	 */
-	public FormInput inputField(InputType type, Identification identification) {
-		FormInput input = new FormInput(type, identification);
-		this.formInputs.add(input);
-		return input;
-	}
+  /**
+   * Specifies an input field to assign a value to. Crawljax first tries to match the found HTML
+   * input element's id and then the name attribute.
+   *
+   * @param type           the type of input field
+   * @param identification the locator of the input field
+   * @return an InputField
+   */
+  public FormInput inputField(InputType type, Identification identification) {
+    FormInput input = new FormInput(type, identification);
+    this.formInputs.add(input);
+    return input;
+  }
 
-	/**
-	 * @return the formInputs
-	 */
-	public ImmutableList<FormInput> getFormInputs() {
-		return ImmutableList.copyOf(formInputs);
-	}
+  /**
+   * @return the formInputs
+   */
+  public ImmutableList<FormInput> getFormInputs() {
+    return ImmutableList.copyOf(formInputs);
+  }
 
-	/**
-	 * @param formAction
-	 *            The form action.
-	 */
-	protected void setFormAction(FormAction formAction) {
-		this.formAction = formAction;
-	}
+  /**
+   * @return the formAction
+   */
+  protected FormAction getFormAction() {
+    return formAction;
+  }
 
-	/**
-	 * @return the formAction
-	 */
-	protected FormAction getFormAction() {
-		return formAction;
-	}
+  /**
+   * @param formAction The form action.
+   */
+  protected void setFormAction(FormAction formAction) {
+    this.formAction = formAction;
+  }
 
-	/**
-	 * @return the crawlTag
-	 */
-	protected CrawlElement getCrawlElement() {
-		CrawlElement crawlTag = formAction.getCrawlElement();
-		crawlTag.addInputFieldIds(this.formInputs);
-		return crawlTag;
-	}
+  /**
+   * @return the crawlTag
+   */
+  protected CrawlElement getCrawlElement() {
+    CrawlElement crawlTag = formAction.getCrawlElement();
+    crawlTag.addInputFieldIds(this.formInputs);
+    return crawlTag;
+  }
 
-	/**
-	 * @param inputField
-	 *            The input field.
-	 */
-	protected void addInputField(FormInput inputField) {
-		this.formInputs.add(inputField);
-	}
+  /**
+   * @param inputField The input field.
+   */
+  protected void addInputField(FormInput inputField) {
+    this.formInputs.add(inputField);
+  }
 
-	@Override
-	public String toString() {
-		return formAction.getCrawlElement().toString() + " sets " + formInputs.toString();
-	}
+  @Override
+  public String toString() {
+    return formAction.getCrawlElement().toString() + " sets " + formInputs.toString();
+  }
 
 }

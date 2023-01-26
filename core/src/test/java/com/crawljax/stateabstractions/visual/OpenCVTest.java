@@ -9,15 +9,15 @@ import org.opencv.core.Mat;
 
 public class OpenCVTest {
 
-	@Before
-	public void setUp() {
-		OpenCVLoad.load();
-	}
+  @Before
+  public void setUp() {
+    OpenCVLoad.load();
+  }
 
-	@Test
-	public void simpleTest() {
-		Mat mat = Mat.zeros(3, 3, 0);
-		assertEquals(mat.cols(), 3);
-	}
+  @Test
+  public void simpleTest() {
+    Mat mat = Mat.zeros(3, 3, 0);
+    assertEquals(mat.cols(), 3);
+  }
 
 }

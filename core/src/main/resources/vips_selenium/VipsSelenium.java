@@ -1,6 +1,12 @@
 package com.crawljax.vips_selenium;
 
 
+import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
+import com.crawljax.util.DomUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -12,68 +18,47 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-
 import javax.imageio.ImageIO;
-
-import com.codahale.metrics.MetricRegistry;
-import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
-import com.crawljax.core.plugin.Plugins;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.browser.WebDriverBrowserBuilder;
-import com.crawljax.core.configuration.BrowserConfiguration;
-import com.crawljax.core.configuration.BrowserOptions;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
-import com.crawljax.util.DomUtils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
-
 /**
  * Vision-based Page Segmentation algorithm
- * @author Tomas PopelaTomas Popela
  *
+ * @author Tomas PopelaTomas Popela
  */
 public class VipsSelenium {
-	private static final Logger LOG = LoggerFactory.getLogger(VipsSelenium.class);
 
-	private String url = null;
-	public WebDriver driver  = null;
-	private EmbeddedBrowser browser = null;
-	public Document dom = null;
-	public BufferedImage viewport = null;
+  private static final Logger LOG = LoggerFactory.getLogger(VipsSelenium.class);
+  public WebDriver driver = null;
+  public Document dom = null;
+  public BufferedImage viewport = null;
+  long startTime = 0;
+  long endTime = 0;
+  private String url = null;
+  private EmbeddedBrowser browser = null;
+  private boolean graphicsOutput = false;
+  private boolean outputToFolder = false;
+  private boolean outputEscaping = true;
+  private int pDoC = 11;
+  private String filename = "test";
+  private int sizeTresholdWidth = 850;
+  private int sizeTresholdHeight = 900;
+  private PrintStream originalOut = null;
+  private int numberOfIterations = 2;
+  private File outputFolder = new File("testOutput");
 
-	private boolean graphicsOutput = false;
-	private boolean outputToFolder = false;
-	private boolean outputEscaping = true;
-	private int pDoC = 11;
-	private String filename = "test";
-	private	int sizeTresholdWidth = 850;
-	private	int sizeTresholdHeight = 900;
+  private boolean fragOutput = true;
 
-	private PrintStream originalOut = null;
-	long startTime = 0;
-	long endTime = 0;
-	private int numberOfIterations = 2;
-	private File outputFolder = new File("testOutput");
-
-	private boolean fragOutput = true;
-
-	/**
-	 * Default constructor
-	 */
-	public VipsSelenium(String url, WebDriver driver)
-	{
-		this.url = url;
-		this.driver = driver;
+  /**
+   * Default constructor
+   */
+  public VipsSelenium(String url, WebDriver driver) {
+    this.url = url;
+    this.driver = driver;
 		/*
 		CrawljaxConfigurationBuilder configBuilder = CrawljaxConfiguration.builderFor(url);
 		BrowserConfiguration browserConfiguration = new BrowserConfiguration(BrowserType.CHROME, 1,
@@ -87,7 +72,7 @@ public class VipsSelenium {
 
 		driver.navigate().to(url);
 		*/
-		// phoenix
+    // phoenix
 //
 //		driver.findElement(By.xpath("//*[@id=\"sign_in_form\"]/button")).click();
 //		try {
@@ -97,8 +82,8 @@ public class VipsSelenium {
 //			e.printStackTrace();
 //		}
 //		driver.findElement(By.id("add_new_board")).click();
-		
-		// addressbook
+
+    // addressbook
 //		driver.findElement(By.name("user")).sendKeys("admin");
 //		driver.findElement(By.name("pass")).sendKeys("admin");
 //		driver.findElement(By.xpath("//*[@id=\"LoginForm\"]/input[3]")).click();
@@ -108,395 +93,365 @@ public class VipsSelenium {
 //		driver.findElement(By.id("password")).sendKeys("password");
 //		driver.findElement(By.xpath("//*[@id=\"loginBox\"]/form/fieldset/button")).click();
 //		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//driver.findElement(By.xpath("//*[@id='nav']/ul/li[2]/a")).click();
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
-		//		driver.findElement(By.xpath("//*[@id='userBannerRight']/ul/li[2]/span/a")).click();;
+    //driver.findElement(By.xpath("//*[@id='nav']/ul/li[2]/a")).click();
+
+    //		driver.findElement(By.xpath("//*[@id='userBannerRight']/ul/li[2]/span/a")).click();;
 //		try {
 //			Thread.sleep(1000);
 //		} catch (InterruptedException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		exportPageToImage();
+    exportPageToImage();
 
-		getDomTree();
-		
-		if(!this.outputFolder.exists()) {
-			this.outputFolder.mkdirs();
-		}
-		if(driver!=null) {
-			VipsUtils.populateStyle(dom, driver, false);
-		}
-	}
-	
-	public VipsSelenium(EmbeddedBrowser browser, Document dom, BufferedImage screenshot, int numberOfIterations, File folder, String filename, boolean fragOutput) {
-		if(browser!=null){
-			this.driver = browser.getWebDriver();
-		}
-		this.dom = dom;
-		this.viewport = screenshot;
-		this.fragOutput  = fragOutput;
-		this.numberOfIterations = numberOfIterations;
-		this.sizeTresholdHeight = this.sizeTresholdWidth = ((numberOfIterations-5)*50 + 100);
-		if(folder != null) {
-			this.outputFolder  = folder;
-		}
-		else {
-			if(!this.outputFolder.exists()) {
-				this.outputFolder.mkdirs();
-			}
-		}
-		this.filename =  filename;
-		if(driver!=null) {
-			VipsUtils.populateStyle(dom, driver, ((WebDriverBackedEmbeddedBrowser)browser).isUSE_CDP());
-		}
-	}
+    getDomTree();
 
-	/**
-	 * Enables or disables graphics output of VIPS algorithm.
-	 * @param enable True for enable, otherwise false.
-	 */
-	public void enableGraphicsOutput(boolean enable)
-	{
-		graphicsOutput = enable;
-	}
+    if (!this.outputFolder.exists()) {
+      this.outputFolder.mkdirs();
+    }
+    if (driver != null) {
+      VipsUtils.populateStyle(dom, driver, false);
+    }
+  }
 
-	/**
-	 * Enables or disables creation of new directory for every algorithm run.
-	 * @param enable True for enable, otherwise false.
-	 */
-	public void enableOutputToFolder(boolean enable)
-	{
-		outputToFolder = enable;
-	}
+  public VipsSelenium(EmbeddedBrowser browser, Document dom, BufferedImage screenshot,
+      int numberOfIterations, File folder, String filename, boolean fragOutput) {
+    if (browser != null) {
+      this.driver = browser.getWebDriver();
+    }
+    this.dom = dom;
+    this.viewport = screenshot;
+    this.fragOutput = fragOutput;
+    this.numberOfIterations = numberOfIterations;
+    this.sizeTresholdHeight = this.sizeTresholdWidth = ((numberOfIterations - 5) * 50 + 100);
+    if (folder != null) {
+      this.outputFolder = folder;
+    } else {
+      if (!this.outputFolder.exists()) {
+        this.outputFolder.mkdirs();
+      }
+    }
+    this.filename = filename;
+    if (driver != null) {
+      VipsUtils.populateStyle(dom, driver, ((WebDriverBackedEmbeddedBrowser) browser).isUSE_CDP());
+    }
+  }
 
-	/**
-	 * Enables or disables output XML character escaping.
-	 * @param enable True for enable, otherwise false.
-	 */
-	public void enableOutputEscaping(boolean enable)
-	{
-		outputEscaping = enable;
-	}
+  /**
+   * Enables or disables graphics output of VIPS algorithm.
+   *
+   * @param enable True for enable, otherwise false.
+   */
+  public void enableGraphicsOutput(boolean enable) {
+    graphicsOutput = enable;
+  }
 
-	/**
-	 * Sets permitted degree of coherence (pDoC) value.
-	 * @param value pDoC value.
-	 */
-	public void setPredefinedDoC(int value)
-	{
-		if (value <= 0 || value > 11)
-		{
-			System.err.println("pDoC value must be between 1 and 11! Not " + value + "!");
-			return;
-		}
-		else
-		{
-			pDoC = value;
-		}
-	}
+  /**
+   * Enables or disables creation of new directory for every algorithm run.
+   *
+   * @param enable True for enable, otherwise false.
+   */
+  public void enableOutputToFolder(boolean enable) {
+    outputToFolder = enable;
+  }
 
-	/**
-	 * Parses a builds DOM tree from page source.
-	 * @param urlStream Input stream with page source.
-	 */
-	private void getDomTree()
-	{
-		try {
-			dom = DomUtils.asDocument(driver.getPageSource());
-			boolean offline = false;
-			com.crawljax.vips_selenium.VipsUtils.cleanDom(dom, offline);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+  /**
+   * Enables or disables output XML character escaping.
+   *
+   * @param enable True for enable, otherwise false.
+   */
+  public void enableOutputEscaping(boolean enable) {
+    outputEscaping = enable;
+  }
 
-	/**
-	 * Exports rendered page to image.
-	 */
-	private void exportPageToImage()
-	{
-		try
-		{
-			viewport = browser.getScreenShotAsBufferedImage(1000);
-			String filename = System.getProperty("user.dir") + "/page.png";
-			ImageIO.write(viewport, "png", new File(filename));
-		} catch (Exception e)
-		{
-			System.err.println("Error: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
+  /**
+   * Sets permitted degree of coherence (pDoC) value.
+   *
+   * @param value pDoC value.
+   */
+  public void setPredefinedDoC(int value) {
+    if (value <= 0 || value > 11) {
+      System.err.println("pDoC value must be between 1 and 11! Not " + value + "!");
+      return;
+    } else {
+      pDoC = value;
+    }
+  }
 
-	/**
-	 * Generates folder filename
-	 * @return Folder filename
-	 */
-	private String generateFolderName()
-	{
-		
-		String outputFolder = "";
+  /**
+   * Parses a builds DOM tree from page source.
+   *
+   * @param urlStream Input stream with page source.
+   */
+  private void getDomTree() {
+    try {
+      dom = DomUtils.asDocument(driver.getPageSource());
+      boolean offline = false;
+      com.crawljax.vips_selenium.VipsUtils.cleanDom(dom, offline);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
-		outputFolder += sdf.format(cal.getTime());
-		outputFolder += "_";
-		try {
-			outputFolder += (new URL(url)).getHost().replaceAll("\\.", "_").replaceAll("/", "_");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+  }
 
-		return outputFolder;
-	}
+  /**
+   * Exports rendered page to image.
+   */
+  private void exportPageToImage() {
+    try {
+      viewport = browser.getScreenShotAsBufferedImage(1000);
+      String filename = System.getProperty("user.dir") + "/page.png";
+      ImageIO.write(viewport, "png", new File(filename));
+    } catch (Exception e) {
+      System.err.println("Error: " + e.getMessage());
+      e.printStackTrace();
+    }
+  }
 
-	/**
-	 * Performs page segmentation.
-	 * @return 
-	 */
-	private List<VipsRectangle> performSegmentation()
-	{
+  /**
+   * Generates folder filename
+   *
+   * @return Folder filename
+   */
+  private String generateFolderName() {
 
-		startTime = System.nanoTime();
-		int pageWidth = viewport.getWidth();
-		int pageHeight = viewport.getHeight();
+    String outputFolder = "";
 
-		
-		VipsSeparatorGraphicsDetector detector;
-		VipsSeleniumParser vipsParser = new VipsSeleniumParser(this);
-		VisualStructureConstructor constructor = new VisualStructureConstructor(pDoC, viewport, driver);
-		constructor.setGraphicsOutput(graphicsOutput);
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
+    outputFolder += sdf.format(cal.getTime());
+    outputFolder += "_";
+    try {
+      outputFolder += (new URL(url)).getHost().replaceAll("\\.", "_").replaceAll("/", "_");
+    } catch (MalformedURLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    return outputFolder;
+  }
+
+  /**
+   * Performs page segmentation.
+   *
+   * @return
+   */
+  private List<VipsRectangle> performSegmentation() {
+
+    startTime = System.nanoTime();
+    int pageWidth = viewport.getWidth();
+    int pageHeight = viewport.getHeight();
+
+    VipsSeparatorGraphicsDetector detector;
+    VipsSeleniumParser vipsParser = new VipsSeleniumParser(this);
+    VisualStructureConstructor constructor = new VisualStructureConstructor(pDoC, viewport, driver);
+    constructor.setGraphicsOutput(graphicsOutput);
 //		constructor.setGraphicsOutput(false);
 
-		for (int iterationNumber = 1; iterationNumber < numberOfIterations+1; iterationNumber++)
-		{
+    for (int iterationNumber = 1; iterationNumber < numberOfIterations + 1; iterationNumber++) {
 //			System.out.println("Iteration " + iterationNumber);
-			detector = new VipsSeparatorGraphicsDetector(viewport, driver);
+      detector = new VipsSeparatorGraphicsDetector(viewport, driver);
 
-			//visual blocks detection
-			vipsParser.setSizeTresholdHeight(sizeTresholdHeight);
-			vipsParser.setSizeTresholdWidth(sizeTresholdWidth);
+      //visual blocks detection
+      vipsParser.setSizeTresholdHeight(sizeTresholdHeight);
+      vipsParser.setSizeTresholdWidth(sizeTresholdWidth);
 
-			vipsParser.parse();
+      vipsParser.parse();
 
-			Node vipsBlocks = vipsParser.getVipsBlocks();
+      Node vipsBlocks = vipsParser.getVipsBlocks();
 
-			if (iterationNumber == 1)
-			{
-				if (graphicsOutput)
-				{
-					// in first round we'll export global separators
-					detector.setVipsBlock(vipsBlocks);
-					detector.fillPool();
-					detector.saveToImage("blocks" + iterationNumber);
-					detector.setCleanUpSeparators(0);
-					detector.detectHorizontalSeparators();
-					detector.detectVerticalSeparators();
-					detector.exportHorizontalSeparatorsToImage();
-					detector.exportVerticalSeparatorsToImage();
-					detector.exportAllToImage();
-				}
+      if (iterationNumber == 1) {
+        if (graphicsOutput) {
+          // in first round we'll export global separators
+          detector.setVipsBlock(vipsBlocks);
+          detector.fillPool();
+          detector.saveToImage("blocks" + iterationNumber);
+          detector.setCleanUpSeparators(0);
+          detector.detectHorizontalSeparators();
+          detector.detectVerticalSeparators();
+          detector.exportHorizontalSeparatorsToImage();
+          detector.exportVerticalSeparatorsToImage();
+          detector.exportAllToImage();
+        }
 
-				// visual structure construction
-				constructor.setVipsBlocks(vipsBlocks);
-				constructor.setPageSize(pageWidth, pageHeight);
-			}
-			else
-			{
-				vipsBlocks = vipsParser.getVipsBlocks();
-				constructor.updateVipsBlocks(vipsBlocks);
+        // visual structure construction
+        constructor.setVipsBlocks(vipsBlocks);
+        constructor.setPageSize(pageWidth, pageHeight);
+      } else {
+        vipsBlocks = vipsParser.getVipsBlocks();
+        constructor.updateVipsBlocks(vipsBlocks);
 
-				if (graphicsOutput)
-				{
-					detector.setVisualBlocks(constructor.getVisualBlocks());
-					detector.fillPool();
-					detector.saveToImage("blocks" + iterationNumber);
-				}
-			}
+        if (graphicsOutput) {
+          detector.setVisualBlocks(constructor.getVisualBlocks());
+          detector.fillPool();
+          detector.saveToImage("blocks" + iterationNumber);
+        }
+      }
 
-			// visual structure construction
-			constructor.constructVisualStructure();
+      // visual structure construction
+      constructor.constructVisualStructure();
 
-			// prepare tresholds for next iteration
-			if (iterationNumber <= numberOfIterations-5)
-			{
-				sizeTresholdHeight -= 50;
-				sizeTresholdWidth -= 50;
+      // prepare tresholds for next iteration
+      if (iterationNumber <= numberOfIterations - 5) {
+        sizeTresholdHeight -= 50;
+        sizeTresholdWidth -= 50;
 
-			}
-			if (iterationNumber == numberOfIterations-4)
-			{
-				sizeTresholdHeight = 100;
-				sizeTresholdWidth = 100;
-			}
-			if (iterationNumber == numberOfIterations-3)
-			{
-				sizeTresholdHeight = 80;
-				sizeTresholdWidth = 80;
-			}
-			if (iterationNumber == numberOfIterations-2)
-			{
-				sizeTresholdHeight = 50;
-				sizeTresholdWidth = 50;
-			}
-			if (iterationNumber == numberOfIterations-1)
-			{
-				sizeTresholdHeight = 1;
-				sizeTresholdWidth = 1;
-			}
+      }
+      if (iterationNumber == numberOfIterations - 4) {
+        sizeTresholdHeight = 100;
+        sizeTresholdWidth = 100;
+      }
+      if (iterationNumber == numberOfIterations - 3) {
+        sizeTresholdHeight = 80;
+        sizeTresholdWidth = 80;
+      }
+      if (iterationNumber == numberOfIterations - 2) {
+        sizeTresholdHeight = 50;
+        sizeTresholdWidth = 50;
+      }
+      if (iterationNumber == numberOfIterations - 1) {
+        sizeTresholdHeight = 1;
+        sizeTresholdWidth = 1;
+      }
 
-		}
+    }
 
-		constructor.normalizeSeparatorsSoftMax();
-		constructor.normalizeSeparatorsMinMax();
+    constructor.normalizeSeparatorsSoftMax();
+    constructor.normalizeSeparatorsMinMax();
 
-		File xmlTarget = new File(this.outputFolder, "vipsOutput_" + this.filename + ".xml");
-		File screenshotFile = new File(this.outputFolder, "frag_" + this.filename +  ".png");
-		VipsOutput vipsOutput = new VipsOutput(pDoC, xmlTarget, fragOutput);
-		vipsOutput.setEscapeOutput(outputEscaping);
+    File xmlTarget = new File(this.outputFolder, "vipsOutput_" + this.filename + ".xml");
+    File screenshotFile = new File(this.outputFolder, "frag_" + this.filename + ".png");
+    VipsOutput vipsOutput = new VipsOutput(pDoC, xmlTarget, fragOutput);
+    vipsOutput.setEscapeOutput(outputEscaping);
 //		vipsOutput.setOutputFileName(filename);
-		
-		if(graphicsOutput)
-			vipsOutput.writeXML(constructor.getVisualStructure(), viewport, url, driver.getTitle());
-		
-		List<VipsRectangle> rectangles = vipsOutput.exportVisualStructureToImage(constructor.getVisualStructure(), viewport, screenshotFile, fragOutput, driver);
-		
-		if(fragOutput) {
-			File jsonTarget = new File(this.outputFolder,   "vipsOutput_" + this.filename + ".json");
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			try {
-				FileWriter fileWriter = new FileWriter(jsonTarget);
-				gson.toJson(rectangles, fileWriter);
-				fileWriter.flush();
-				fileWriter.close();
-	//			System.out.println(gson.toJson(rectangles));
-			} catch (JsonIOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		endTime = System.nanoTime();
 
-		long diff = endTime - startTime;
+    if (graphicsOutput) {
+      vipsOutput.writeXML(constructor.getVisualStructure(), viewport, url, driver.getTitle());
+    }
 
-		LOG.info("Execution time of VIPS: " + diff + " ns; " +
-				(diff / 1000000.0) + " ms; " +
-				(diff / 1000000000.0) + " sec");
-		
-		return rectangles;
-	}
+    List<VipsRectangle> rectangles = vipsOutput.exportVisualStructureToImage(
+        constructor.getVisualStructure(), viewport, screenshotFile, fragOutput, driver);
 
-	/**
-	 * Restores stdout
-	 */
-	private void restoreOut()
-	{
-		if (originalOut != null)
-		{
-			System.setOut(originalOut);
-		}
-	}
+    if (fragOutput) {
+      File jsonTarget = new File(this.outputFolder, "vipsOutput_" + this.filename + ".json");
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+      try {
+        FileWriter fileWriter = new FileWriter(jsonTarget);
+        gson.toJson(rectangles, fileWriter);
+        fileWriter.flush();
+        fileWriter.close();
+        //			System.out.println(gson.toJson(rectangles));
+      } catch (JsonIOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    endTime = System.nanoTime();
 
-	/**
-	 * Redirects stdout to nowhere
-	 */
-	private void redirectOut()
-	{
-		originalOut = System.out;
-		System.setOut(new PrintStream(new OutputStream() {
-			@Override
-			public void write(int b) throws IOException
-			{
+    long diff = endTime - startTime;
 
-			}
-		}));
-	}
+    LOG.info("Execution time of VIPS: " + diff + " ns; " +
+        (diff / 1000000.0) + " ms; " +
+        (diff / 1000000000.0) + " sec");
 
-	/**
-	 * Starts visual segmentation of page
-	 * @return 
-	 * @throws Exception
-	 */
-	public List<VipsRectangle> startSegmentation()
-	{
-		try
-		{
+    return rectangles;
+  }
+
+  /**
+   * Restores stdout
+   */
+  private void restoreOut() {
+    if (originalOut != null) {
+      System.setOut(originalOut);
+    }
+  }
+
+  /**
+   * Redirects stdout to nowhere
+   */
+  private void redirectOut() {
+    originalOut = System.out;
+    System.setOut(new PrintStream(new OutputStream() {
+      @Override
+      public void write(int b) throws IOException {
+
+      }
+    }));
+  }
+
+  /**
+   * Starts visual segmentation of page
+   *
+   * @return
+   * @throws Exception
+   */
+  public List<VipsRectangle> startSegmentation() {
+    try {
 
 //			redirectOut();
 
-			startTime = System.nanoTime();
+      startTime = System.nanoTime();
 //			getViewport();
 //			restoreOut();
 
-			String outputFolder = "";
-			String oldWorkingDirectory = "";
-			String newWorkingDirectory = "";
+      String outputFolder = "";
+      String oldWorkingDirectory = "";
+      String newWorkingDirectory = "";
 
-			if (outputToFolder)
-			{
-				outputFolder = generateFolderName();
+      if (outputToFolder) {
+        outputFolder = generateFolderName();
 
-				if (!new File(outputFolder).mkdir())
-				{
-					System.err.println("Something goes wrong during directory creation!");
-				}
-				else
-				{
-					oldWorkingDirectory = System.getProperty("user.dir");
-					newWorkingDirectory += oldWorkingDirectory + "/" + outputFolder + "/";
-					System.setProperty("user.dir", newWorkingDirectory);
-				}
-			}
+        if (!new File(outputFolder).mkdir()) {
+          System.err.println("Something goes wrong during directory creation!");
+        } else {
+          oldWorkingDirectory = System.getProperty("user.dir");
+          newWorkingDirectory += oldWorkingDirectory + "/" + outputFolder + "/";
+          System.setProperty("user.dir", newWorkingDirectory);
+        }
+      }
 
-			List<VipsRectangle> rectangles = performSegmentation();
+      List<VipsRectangle> rectangles = performSegmentation();
 
-			if (outputToFolder)
-				System.setProperty("user.dir", oldWorkingDirectory);
-			
-			return rectangles;
-		}
-		catch (Exception e)
-		{
-			System.err.println("Something's wrong!");
-			e.printStackTrace();
-		}
-		return null;
-	}
+      if (outputToFolder) {
+        System.setProperty("user.dir", oldWorkingDirectory);
+      }
 
-	public void setOutputFileName(String filenameStr)
-	{
-		if (!filenameStr.equals(""))
-		{
-			filename = filenameStr;
-		}
-		else
-		{
-			LOG.info("Invalid filename!");
-		}
-	}
+      return rectangles;
+    } catch (Exception e) {
+      System.err.println("Something's wrong!");
+      e.printStackTrace();
+    }
+    return null;
+  }
 
-	public BufferedImage getViewport() {
-		if(this.viewport != null) {
-			return this.viewport;
-		}
-		exportPageToImage();
-		return this.viewport;
-	}
+  public void setOutputFileName(String filenameStr) {
+    if (!filenameStr.equals("")) {
+      filename = filenameStr;
+    } else {
+      LOG.info("Invalid filename!");
+    }
+  }
 
-	public void cleanup() {
-		this.driver.close();
-	}
+  public BufferedImage getViewport() {
+    if (this.viewport != null) {
+      return this.viewport;
+    }
+    exportPageToImage();
+    return this.viewport;
+  }
+
+  public void cleanup() {
+    this.driver.close();
+  }
 }

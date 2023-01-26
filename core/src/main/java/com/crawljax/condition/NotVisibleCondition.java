@@ -14,39 +14,39 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class NotVisibleCondition implements Condition {
 
-	private final VisibleCondition visibleCondition;
+  private final VisibleCondition visibleCondition;
 
-	/**
-	 * @param identification the identification.
-	 */
-	public NotVisibleCondition(Identification identification) {
-		this.visibleCondition = new VisibleCondition(identification);
-	}
+  /**
+   * @param identification the identification.
+   */
+  public NotVisibleCondition(Identification identification) {
+    this.visibleCondition = new VisibleCondition(identification);
+  }
 
-	@Override
-	public boolean check(EmbeddedBrowser browser) {
-		return Logic.not(visibleCondition).check(browser);
-	}
+  @Override
+  public boolean check(EmbeddedBrowser browser) {
+    return Logic.not(visibleCondition).check(browser);
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(getClass(), visibleCondition);
-	}
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(getClass(), visibleCondition);
+  }
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof NotVisibleCondition) {
-			NotVisibleCondition that = (NotVisibleCondition) object;
-			return Objects.equal(this.visibleCondition, that.visibleCondition);
-		}
-		return false;
-	}
+  @Override
+  public boolean equals(Object object) {
+    if (object instanceof NotVisibleCondition) {
+      NotVisibleCondition that = (NotVisibleCondition) object;
+      return Objects.equal(this.visibleCondition, that.visibleCondition);
+    }
+    return false;
+  }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("visibleCondition", visibleCondition)
-				.toString();
-	}
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("visibleCondition", visibleCondition)
+        .toString();
+  }
 
 }

@@ -4,47 +4,46 @@ import com.crawljax.core.configuration.BrowserConfiguration;
 
 public class TestConfiguration {
 
-	public enum StateEquivalenceAssertionMode {
-		DOM, VISUAL, BOTH, FRAG, NONE;
+  private StateEquivalenceAssertionMode assertionMode;
+  private BrowserConfiguration browserConfig;
+  public TestConfiguration(BrowserConfiguration browserConfig) {
+    this.setAssertionMode(StateEquivalenceAssertionMode.BOTH);
+    this.setBrowserConfig(browserConfig);
+  }
 
-		@Override
-		public String toString() {
-			return this.getClass().getSimpleName() + "." + this.name();
-		}
-	}
+  public TestConfiguration(StateEquivalenceAssertionMode assertionMode) {
+    this.browserConfig = null;
+    this.assertionMode = assertionMode;
+  }
 
-	private StateEquivalenceAssertionMode assertionMode;
-	private BrowserConfiguration browserConfig;
+  public TestConfiguration(StateEquivalenceAssertionMode assertionMode,
+      BrowserConfiguration browserConfiguration) {
+    this.browserConfig = browserConfiguration;
+    this.assertionMode = assertionMode;
+  }
 
-	public TestConfiguration(BrowserConfiguration browserConfig) {
-		this.setAssertionMode(StateEquivalenceAssertionMode.BOTH);
-		this.setBrowserConfig(browserConfig);
-	}
+  public BrowserConfiguration getBrowserConfig() {
+    return browserConfig;
+  }
 
-	public TestConfiguration(StateEquivalenceAssertionMode assertionMode) {
-		this.browserConfig = null;
-		this.assertionMode = assertionMode;
-	}
+  public void setBrowserConfig(BrowserConfiguration browserConfig) {
+    this.browserConfig = browserConfig;
+  }
 
-	public TestConfiguration(StateEquivalenceAssertionMode assertionMode,
-	        BrowserConfiguration browserConfiguration) {
-		this.browserConfig = browserConfiguration;
-		this.assertionMode = assertionMode;
-	}
+  public StateEquivalenceAssertionMode getAssertionMode() {
+    return assertionMode;
+  }
 
-	public BrowserConfiguration getBrowserConfig() {
-		return browserConfig;
-	}
+  public void setAssertionMode(StateEquivalenceAssertionMode assertionMode) {
+    this.assertionMode = assertionMode;
+  }
 
-	public void setBrowserConfig(BrowserConfiguration browserConfig) {
-		this.browserConfig = browserConfig;
-	}
+  public enum StateEquivalenceAssertionMode {
+    DOM, VISUAL, BOTH, FRAG, NONE;
 
-	public StateEquivalenceAssertionMode getAssertionMode() {
-		return assertionMode;
-	}
-
-	public void setAssertionMode(StateEquivalenceAssertionMode assertionMode) {
-		this.assertionMode = assertionMode;
-	}
+    @Override
+    public String toString() {
+      return this.getClass().getSimpleName() + "." + this.name();
+    }
+  }
 }

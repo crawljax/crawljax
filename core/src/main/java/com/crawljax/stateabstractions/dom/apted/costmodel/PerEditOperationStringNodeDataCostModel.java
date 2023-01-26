@@ -27,8 +27,8 @@ import com.crawljax.stateabstractions.dom.apted.node.AptedNode;
 import com.crawljax.stateabstractions.dom.apted.node.StringNodeData;
 
 /**
- * This is a cost model defined on {@link node.StringNodeData} with a fixed cost
- * per edit operation.
+ * This is a cost model defined on {@link node.StringNodeData} with a fixed cost per edit
+ * operation.
  */
 public class PerEditOperationStringNodeDataCostModel implements CostModel<StringNodeData> {
 

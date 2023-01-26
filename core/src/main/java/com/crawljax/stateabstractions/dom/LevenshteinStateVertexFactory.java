@@ -11,31 +11,31 @@ import com.crawljax.oraclecomparator.comparators.EditDistanceComparator;
  */
 public class LevenshteinStateVertexFactory extends StateVertexFactory {
 
-	private EditDistanceComparator editDistanceComparator;
-	private static double threshold = 1.0;
+  private static double threshold = 1.0;
+  private EditDistanceComparator editDistanceComparator;
 
-	public LevenshteinStateVertexFactory() {
-		this.editDistanceComparator = new EditDistanceComparator(threshold);
-	}
+  public LevenshteinStateVertexFactory() {
+    this.editDistanceComparator = new EditDistanceComparator(threshold);
+  }
 
-	public LevenshteinStateVertexFactory(double threshold) {
-		LevenshteinStateVertexFactory.threshold = threshold;
-		this.editDistanceComparator =
-				new EditDistanceComparator(LevenshteinStateVertexFactory.threshold);
-	}
+  public LevenshteinStateVertexFactory(double threshold) {
+    LevenshteinStateVertexFactory.threshold = threshold;
+    this.editDistanceComparator =
+        new EditDistanceComparator(LevenshteinStateVertexFactory.threshold);
+  }
 
-	@Override
-	public StateVertex newStateVertex(int id, String url, String name, String dom,
-			String strippedDom,
-			EmbeddedBrowser browser) {
+  @Override
+  public StateVertex newStateVertex(int id, String url, String name, String dom,
+      String strippedDom,
+      EmbeddedBrowser browser) {
 
-		return new LevenshteinStateVertexImpl(id, url, name, dom, strippedDom,
-				editDistanceComparator);
-	}
+    return new LevenshteinStateVertexImpl(id, url, name, dom, strippedDom,
+        editDistanceComparator);
+  }
 
-	@Override
-	public String toString() {
-		return "DOMLevenshtein_" + threshold;
-	}
+  @Override
+  public String toString() {
+    return "DOMLevenshtein_" + threshold;
+  }
 
 }
