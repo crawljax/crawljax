@@ -105,41 +105,7 @@ public class FragDiffTest {
 		assertTrue(addedNodes.get(0).getNodeName().equalsIgnoreCase("span"));
 		assertTrue(removedNodes.get(0).getNodeName().equalsIgnoreCase("div"));
 	}
-	
-	@Test
-	public void test1() throws IOException {
-//		File state6 = new File("src/test/resources/crawls/frag_state6.html");
-		
-		File state487 = new File("src/test/resources/crawls/frag_state487.html");
-		File state408 = new File("src/test/resources/crawls/frag_state408.html");
-		File state503 = new File("src/test/resources/crawls/frag_state503.html");
-		File state729 = new File("src/test/resources/crawls/frag_state729.html");
-		File state802 = new File("src/test/resources/crawls/frag_state802.html");
-		String docString = FileUtils.readFileToString(state487);
-		Document doc1 = DomUtils.asDocument(docString);
-		
-		
-//		File state40 = new File("src/test/resources/crawls/frag_state40.html");
 
-		String docString2  = FileUtils.readFileToString(state408);
-//		System.out.println(docString2);
-		
-		Document doc2 = DomUtils.asDocument(docString2);
-		
-		double distance = HybridStateVertexImpl.computeDistance(doc1, doc2, false);
-		System.out.println("Distance : " + distance);
-		assertEquals(distance, 5.0, 0.0);
-		
-		
-		List<List<Node>> differentNodes = HybridStateVertexImpl.getChangedNodes(doc1, doc2, false);
-		
-		System.out.println(differentNodes);
-		List<Node> addedNodes = differentNodes.get(0);
-		List<Node> removedNodes = differentNodes.get(1);
-		
-		System.out.println(addedNodes);
-		System.out.println(removedNodes);
-	}
 
 	private void loadHybridState(String domString, StateVertex state, FragmentManager fragmentManager, File screenshotFile) throws IOException {
 				
@@ -175,9 +141,7 @@ public class FragDiffTest {
 	public void testCandidateAddition() throws IOException {
 		CrawljaxConfigurationBuilder configBuilder = CrawljaxConfiguration.builderFor("http://locahost/dummy.html");
 		configBuilder.crawlRules().clickOnce(false);
-//		configBuilder.crawlRules().dontClickChildrenOf(tagName)
-//		manage_user_page.php?sort=username&dir=ASC&save=1&hide=0&filter=%
-		
+
 		File state729 = new File("src/test/resources/crawls/frag_state610.html");
 		File state802 = new File("src/test/resources/crawls/frag_state628.html");
 		String docString1 = FileUtils.readFileToString(state729);
@@ -186,10 +150,7 @@ public class FragDiffTest {
 		HybridStateVertexImpl state1= new HybridStateVertexImpl(0, "", "index", docString1, docString1, 0.0, false);
 		
 		sfg =  new InMemoryStateFlowGraph(new ExitNotifier(0), new HybridStateVertexFactory(0, configBuilder, false));
-		
-//		when(graphProvider.get()).thenReturn(sfg);
-		
-//		when(sfgProvider.get()).thenReturn(sfg);
+
 
 		FragmentManager manager = new FragmentManager(graphProvider);
 
@@ -197,8 +158,7 @@ public class FragDiffTest {
 		loadHybridState(docString1, state1, manager, screenshot1);
 
 		File screenshot2 = new File("src/test/resources/crawls/state653.png");
-		
-//		when(browser.getStrippedDomWithoutIframeContent()).thenReturn(docString1);
+
 		
 		when(checker.checkCrawlCondition(browser)).thenReturn(true);
 		
@@ -225,8 +185,7 @@ public class FragDiffTest {
 		
 		CandidateElement element = getMatchingCandidate(results,"/HTML[1]/BODY[1]/TABLE[2]/TBODY[1]/TR[1]/TD[2]/FORM[1]/INPUT[2]" + 
 				"");
-//		state2.printFragments();
-//				
+
 		manager.recordAccess(element, state1);
 		
 		HybridStateVertexImpl state2= new HybridStateVertexImpl(1, "", "state1", docString2, docString2, 0.0, false);
@@ -261,25 +220,6 @@ public class FragDiffTest {
 		treeDiff(state1, state2, manager);
 //		System.out.println("leaf frags " + comp2);
 		System.out.println("using diff nodes " + comp);
-
-
-		
-//		
-//		state1.printFragments();
-//		
-//		BufferedImage state1Annotated = annotatePage(state1, false);
-//		BufferedImage state1Annotated2 = annotatePage(state2, false);
-////
-////		
-//        try {
-//			showPicture(state1Annotated, state1Annotated2);
-////			showPicture(state1Annotated2);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-       
 		
 	}
 	
@@ -310,39 +250,15 @@ public class FragDiffTest {
 		loadHybridState(docString2, state2, manager, screenshot2);
 		
 		state1.equals(state2);
-		
-		
-		 
-//		state2.printFragments();
-//		
+
 		StateComparision comp= manager.cacheStateComparision(state2, state1, true);
 		
 		System.out.println(DomUtils.getDocumentToString(state2.getDocument()));
-//		StateComparision comp2=  manager.areND2(state2, state1);
-//
 		treeDiff(state1, state2, manager);
-//		System.out.println("leaf frags " + comp2);
-		System.out.println("using diff nodes " + comp);
 
-
-		
-//		
-//		state1.printFragments();
-		
 		BufferedImage state1Annotated = annotatePage(state1, false);
 		BufferedImage state1Annotated2 = annotatePage(state2, false);
-//
-//		
-      /*  try {
-			showPicture(state1Annotated, state1Annotated2);
-//			showPicture(state1Annotated2);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
-       
-		
+
 	}
 	
 	public boolean uniqueMapping(List<Fragment> newFragments, List<Fragment> expectedFragments, FragmentManager manager) {
@@ -362,14 +278,8 @@ public class FragDiffTest {
 			boolean mappingFound = false;
 			boolean unique = true;
 			for(Fragment oldFragment: expectedFragments) {
-//				FragmentComparision comp = oldFragment.compare(newFragment);
-//				System.out.println(" old " + oldFragment.getId());
-//				System.out.println("compared " + comp);
-//				List<Fragment> related = getRelatedFragments(newFragment);
-//				List<Fragment> related2 = getRelatedFragments(expected);
 				if(manager.getRelatedFragments(newFragment).contains(oldFragment)) {
 					if(mapping.containsValue(oldFragment.getId())) {
-//						System.out.println("Repeat of mapping");
 						mappingFound = true;
 						unique = false;
 						mapping.put(newFragment.getId(), oldFragment.getId());
@@ -385,9 +295,6 @@ public class FragDiffTest {
 						break;
 					}
 				}
-			}
-			if(!mappingFound) {
-//				System.out.println("No mapping found for {}" +  newFragment.getId());
 			}
 			allMappingFound = mappingFound && allMappingFound;
 			uniqueMap = unique && uniqueMap;
@@ -406,11 +313,6 @@ public class FragDiffTest {
 		List<Fragment> newFragments = frag1.getChildren();
 		
 		List<Fragment> expectedFragments = frag2.getChildren();
-		
-		if (newFragments.size() == expectedFragments.size()) {
-//			System.out.println("May be near duplicates of type 1");
-		}
-		
 		HashMap<Integer, Integer> mapping = new HashMap<>();
 		
 		
@@ -456,9 +358,6 @@ public class FragDiffTest {
 					}
 				}
 			}
-			if(!mappingFound) {
-//				System.out.println("No mapping found for {}" +  newFragment.getId());
-			}
 			allMappingFound = mappingFound && allMappingFound;
 			uniqueMap = unique && uniqueMap;
 		}
@@ -468,7 +367,6 @@ public class FragDiffTest {
 		if(!allMappingFound) {
 			for(Fragment newFragment: newFragments) {
 				if(!mapping.containsKey(newFragment.getId()) && FragmentManager.usefulFragment(newFragment)){
-//					System.out.println("Trying ND2  : " + newFragment.getId() );
 					for(Fragment oldFragment: expectedFragments) {
 						boolean areND2 =  areND2(newFragment, oldFragment, manager);
 						if(areND2) {
@@ -481,8 +379,7 @@ public class FragDiffTest {
 			}
 			
 		}
-//			return false;
-		
+
 		if(mapping.isEmpty()) {
 			return false;
 		}
@@ -510,9 +407,6 @@ public class FragDiffTest {
 		
 		
 		for(Fragment fragment: stateVertex.getFragments()) {
-//			if(!FragmentManager.usefulFragment(fragment)) {
-//				continue;
-//			}
 			Rectangle rect = fragment.getRect();
 
 

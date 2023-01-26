@@ -19,7 +19,7 @@ public class LargeClickableTest extends LargeTestBase {
 	BrowserConfiguration getBrowserConfiguration() {
 		BrowserOptions browserOptions = new BrowserOptions();
 		browserOptions.setUSE_CDP(true);
-		return new BrowserConfiguration(BrowserType.CHROME, 1, browserOptions);
+		return new BrowserConfiguration(BrowserType.CHROME_HEADLESS, 1, browserOptions);
 	}
 
 	@Override

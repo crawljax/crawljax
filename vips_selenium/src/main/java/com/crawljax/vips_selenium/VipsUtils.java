@@ -1240,8 +1240,6 @@ public class VipsUtils {
 			default:
 				return Coverage.none;
 		}
-//		return getCoverage(vipsBlock, DIRACCESS);
-//		return Coverage.none;
 	}
 	
 	

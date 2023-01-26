@@ -32,7 +32,7 @@ public class CrawlClickablesTest {
 				BrowserOptions options = new BrowserOptions();
 				options.setUSE_CDP(true);
 				BrowserConfiguration
-						browserConfiguration = new BrowserConfiguration(EmbeddedBrowser.BrowserType.CHROME, 1, options);
+						browserConfiguration = new BrowserConfiguration(EmbeddedBrowser.BrowserType.CHROME_HEADLESS, 1, options);
 				builder.setBrowserConfig(browserConfiguration);
 				return builder;
 			}

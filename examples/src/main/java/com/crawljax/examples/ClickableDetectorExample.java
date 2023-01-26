@@ -40,9 +40,6 @@ public class ClickableDetectorExample {
         builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
 
 
-        // Clickable detection only works in FragGen mode currently
-        builder.setStateVertexFactory(new HybridStateVertexFactory(0, builder, true));
-
         // configuration to activate clickable detection
         builder.crawlRules().clickElementsWithClickEventHandler();
 
