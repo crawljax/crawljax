@@ -46,25 +46,27 @@ public class BrowserProvider extends ExternalResource {
     RemoteWebDriver driver;
     switch (getBrowserType()) {
       case CHROME:
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        WebDriverManager wdm = WebDriverManager.chromedriver();
+        driver = (RemoteWebDriver) wdm.create();
         break;
       case CHROME_HEADLESS:
-        WebDriverManager.chromedriver().setup();
         ChromeOptions optionsChrome = new ChromeOptions();
         optionsChrome.addArguments("--headless");
-        driver = new ChromeDriver(optionsChrome);
+        wdm = WebDriverManager.chromedriver();
+        wdm.capabilities(optionsChrome);
+        driver = (RemoteWebDriver) wdm.create();
         break;
       case FIREFOX:
-        WebDriverManager.firefoxdriver().setup();
-        driver = new FirefoxDriver();
+        wdm = WebDriverManager.firefoxdriver();
+        driver = (RemoteWebDriver) wdm.create();
         break;
       case FIREFOX_HEADLESS:
-        WebDriverManager.firefoxdriver().setup();
         FirefoxOptions firefoxOptions = new FirefoxOptions();
         firefoxOptions.setCapability("marionette", true);
         firefoxOptions.setHeadless(true);
-        driver = new FirefoxDriver(firefoxOptions);
+        wdm = WebDriverManager.firefoxdriver();
+        wdm.capabilities(firefoxOptions);
+        driver = (RemoteWebDriver) wdm.create();
         break;
       default:
         throw new IllegalStateException("Unsupported browser type " + getBrowserType());
@@ -87,7 +89,7 @@ public class BrowserProvider extends ExternalResource {
       try {
         /* Make sure we clean up properly. */
         if (!browser.toString().contains("(null)")) {
-          browser.close();
+          WebDriverManager.getInstance().quit();
         }
 
       } catch (RuntimeException e) {

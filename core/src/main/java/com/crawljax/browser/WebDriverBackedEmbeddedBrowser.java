@@ -336,7 +336,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     LOGGER.info("Closing the browser...");
     try {
       // close browser and close every associated window.
-      WebDriverManager.chromedriver().quit();
+      WebDriverManager.getInstance().quit();
     } catch (WebDriverException e) {
       if (e.getCause() instanceof InterruptedException
           || e.getCause().getCause() instanceof InterruptedException) {

@@ -6,6 +6,7 @@ import com.crawljax.core.plugin.Plugins;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSortedSet;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.github.bonigarcia.wdm.config.DriverManagerType;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -114,7 +115,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
   private EmbeddedBrowser newFirefoxBrowser(ImmutableSortedSet<String> filterAttributes,
       long crawlWaitReload, long crawlWaitEvent, boolean headless) {
 
-    WebDriverManager.firefoxdriver().setup();
+//    WebDriverManager.firefoxdriver().setup();
 
     FirefoxProfile profile = null;
 
@@ -158,14 +159,17 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
       firefoxOptions.setHeadless(true);
     }
 
-    return WebDriverBackedEmbeddedBrowser.withDriver(new FirefoxDriver(firefoxOptions),
+    WebDriverManager manager = WebDriverManager.firefoxdriver();
+    manager.capabilities(firefoxOptions);
+    FirefoxDriver driver = (FirefoxDriver) manager.create();
+
+    return WebDriverBackedEmbeddedBrowser.withDriver(driver,
         filterAttributes, crawlWaitReload, crawlWaitEvent);
   }
 
   private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
       long crawlWaitReload, long crawlWaitEvent, boolean headless) {
 
-    WebDriverManager manager = WebDriverManager.getInstance();
 
 //    WebDriverManager.chromedriver().create();
     ChromeOptions optionsChrome = new ChromeOptions();
@@ -189,8 +193,9 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
     }
 
+    WebDriverManager manager = WebDriverManager.getInstance(DriverManagerType.CHROME);
     manager.capabilities(optionsChrome);
-    manager.setup();
+//    manager.setup();
 //    ChromeDriver driverChrome = new ChromeDriver(optionsChrome);
     ChromeDriver driverChrome = (ChromeDriver) manager.create();
 
