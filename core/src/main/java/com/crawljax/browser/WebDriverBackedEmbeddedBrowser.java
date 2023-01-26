@@ -16,6 +16,7 @@ import com.crawljax.util.DomUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.io.Files;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -44,6 +45,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.ErrorHandler.UnknownServerException;
@@ -334,7 +336,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     LOGGER.info("Closing the browser...");
     try {
       // close browser and close every associated window.
-      browser.quit();
+      WebDriverManager.chromedriver().quit();
     } catch (WebDriverException e) {
       if (e.getCause() instanceof InterruptedException
           || e.getCause().getCause() instanceof InterruptedException) {

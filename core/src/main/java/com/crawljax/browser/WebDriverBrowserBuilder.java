@@ -6,8 +6,10 @@ import com.crawljax.core.plugin.Plugins;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSortedSet;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -163,14 +165,16 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
   private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
       long crawlWaitReload, long crawlWaitEvent, boolean headless) {
 
-    WebDriverManager.chromedriver().setup();
+    WebDriverManager manager = WebDriverManager.getInstance();
 
+//    WebDriverManager.chromedriver().create();
     ChromeOptions optionsChrome = new ChromeOptions();
 
     /* enables headless Chrome. */
     if (headless) {
       optionsChrome.addArguments("--headless");
     }
+
 
     if (configuration.getProxyConfiguration() != null
         && configuration.getProxyConfiguration().getType() != ProxyType.NOTHING) {
@@ -185,7 +189,11 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
     }
 
-    ChromeDriver driverChrome = new ChromeDriver(optionsChrome);
+    manager.capabilities(optionsChrome);
+    manager.setup();
+//    ChromeDriver driverChrome = new ChromeDriver(optionsChrome);
+    ChromeDriver driverChrome = (ChromeDriver) manager.create();
+
     Dimension d = new Dimension(1200, 890);
     //Resize current window to the set dimension
     driverChrome.manage().window().setSize(d);

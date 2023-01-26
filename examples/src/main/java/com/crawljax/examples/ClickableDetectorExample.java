@@ -38,16 +38,12 @@ public class ClickableDetectorExample {
     // configuration to activate clickable detection
     builder.crawlRules().clickElementsWithClickEventHandler();
 
-    BrowserOptions browserOptions = new BrowserOptions();
-
-    // Required to fetch event handler information from browser
-    browserOptions.setUSE_CDP(true);
-
     // browserOptions.setPixelDensity(pixelDensity);
+    // BrowserOptions.USE_CDP should be set to true
 
     BrowserConfiguration browserConfiguration = new BrowserConfiguration(
         EmbeddedBrowser.BrowserType.CHROME_HEADLESS, 1,
-        browserOptions);
+        new BrowserOptions(true));
 
     builder.setBrowserConfig(browserConfiguration);
 

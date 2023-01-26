@@ -50,7 +50,7 @@ public final class VisualCrawlExample {
     BrowserConfiguration browserConfiguration;
     if (args.length == 2 && "retina".equalsIgnoreCase(args[1])) {
       browserConfiguration = new BrowserConfiguration(BrowserType.CHROME, 1,
-          new BrowserOptions(false, BrowserOptions.MACBOOK_PRO_RETINA_PIXEL_DENSITY));
+          new BrowserOptions(BrowserOptions.MACBOOK_PRO_RETINA_PIXEL_DENSITY));
     } else {
       browserConfiguration = new BrowserConfiguration(BrowserType.CHROME, 1);
     }
