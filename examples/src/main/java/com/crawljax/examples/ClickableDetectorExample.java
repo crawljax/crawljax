@@ -53,7 +53,7 @@ public class ClickableDetectorExample {
 
         /* plugins. */
         builder.addPlugin(new CrawlOverview());
-        builder.addPlugin(new TestSuiteGenerator(new TestConfiguration(TestConfiguration.StateEquivalenceAssertionMode.HYBRID)));
+        builder.addPlugin(new TestSuiteGenerator(new TestConfiguration(TestConfiguration.StateEquivalenceAssertionMode.FRAG)));
 
         CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
         crawljax.call();

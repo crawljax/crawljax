@@ -59,7 +59,7 @@ public final class FragCrawlExample {
 
         /* plugins. */
         builder.addPlugin(new CrawlOverview());
-        builder.addPlugin(new TestSuiteGenerator(new TestConfiguration(StateEquivalenceAssertionMode.HYBRID)));
+        builder.addPlugin(new TestSuiteGenerator(new TestConfiguration(StateEquivalenceAssertionMode.FRAG)));
 
         CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
         crawljax.call();

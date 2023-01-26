@@ -123,14 +123,14 @@ public class TestSuiteGenerator implements PostCrawlingPlugin {
 		 * constructor
 		 */
 		if (testConfiguration == null) {
-			this.testConfiguration = new TestConfiguration(StateEquivalenceAssertionMode.HYBRID,
+			this.testConfiguration = new TestConfiguration(StateEquivalenceAssertionMode.FRAG,
 			        session.getConfig().getBrowserConfig());
 		} else {
 			if (testConfiguration.getBrowserConfig() == null) {
 				testConfiguration.setBrowserConfig(session.getConfig().getBrowserConfig());
 			}
 			if (testConfiguration.getAssertionMode() == null) {
-				testConfiguration.setAssertionMode(StateEquivalenceAssertionMode.HYBRID);
+				testConfiguration.setAssertionMode(StateEquivalenceAssertionMode.FRAG);
 			}
 		}
 
