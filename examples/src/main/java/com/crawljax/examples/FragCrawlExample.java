@@ -10,8 +10,7 @@ import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurati
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.crawljax.plugins.testcasegenerator.TestConfiguration;
 import com.crawljax.plugins.testcasegenerator.TestConfiguration.StateEquivalenceAssertionMode;
-import com.crawljax.stateabstractions.hybrid.HybridStateVertexFactory;
-import com.crawljax.stateabstractions.visual.imagehashes.DHashStateVertexFactory;
+import com.crawljax.stateabstractions.hybrid.FragGenStateVertexFactory;
 import com.crawljax.plugins.testcasegenerator.TestSuiteGenerator;
 
 import java.util.concurrent.TimeUnit;
@@ -35,7 +34,7 @@ public final class FragCrawlExample {
 
         CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(appURL);
         builder.crawlRules().setFormFillMode(FormFillMode.NORMAL);
-        builder.setStateVertexFactory(new HybridStateVertexFactory(0, builder, true));
+        builder.setStateVertexFactory(new FragGenStateVertexFactory(0, builder, true));
 
         builder.crawlRules().clickDefaultElements();
 

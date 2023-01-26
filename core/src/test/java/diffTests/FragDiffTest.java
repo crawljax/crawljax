@@ -49,7 +49,7 @@ import com.crawljax.forms.FormHandler;
 import com.crawljax.fragmentation.Fragment;
 import com.crawljax.fragmentation.FragmentManager;
 import com.crawljax.fragmentation.FragmentationPlugin;
-import com.crawljax.stateabstractions.hybrid.HybridStateVertexFactory;
+import com.crawljax.stateabstractions.hybrid.FragGenStateVertexFactory;
 import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
@@ -149,7 +149,7 @@ public class FragDiffTest {
 
 		HybridStateVertexImpl state1= new HybridStateVertexImpl(0, "", "index", docString1, docString1, 0.0, false);
 		
-		sfg =  new InMemoryStateFlowGraph(new ExitNotifier(0), new HybridStateVertexFactory(0, configBuilder, false));
+		sfg =  new InMemoryStateFlowGraph(new ExitNotifier(0), new FragGenStateVertexFactory(0, configBuilder, false));
 
 
 		FragmentManager manager = new FragmentManager(graphProvider);
@@ -235,7 +235,7 @@ public class FragDiffTest {
 		HybridStateVertexImpl state1= new HybridStateVertexImpl(0, "", "index", docString1, docString1, 0.0, false);
 		HybridStateVertexImpl state2= new HybridStateVertexImpl(1, "", "state1", docString2, docString2, 0.0, false);
 		
-		sfg =  new InMemoryStateFlowGraph(new ExitNotifier(0), new HybridStateVertexFactory(0, configBuilder, false));
+		sfg =  new InMemoryStateFlowGraph(new ExitNotifier(0), new FragGenStateVertexFactory(0, configBuilder, false));
 		
 //		when(graphProvider.get()).thenReturn(sfg);
 		

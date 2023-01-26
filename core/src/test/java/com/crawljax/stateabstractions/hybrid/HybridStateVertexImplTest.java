@@ -1,13 +1,10 @@
 package com.crawljax.stateabstractions.hybrid;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.state.Eventable;
-import com.crawljax.core.state.Identification;
 import com.crawljax.fragmentation.FragmentationPlugin;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -27,19 +24,18 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import javax.imageio.metadata.IIOMetadataNode;
 @Ignore
 public class HybridStateVertexImplTest {
 	@Rule
 	public final BrowserProvider provider = new BrowserProvider();
-	private HybridStateVertexFactory factory;
+	private FragGenStateVertexFactory factory;
 
 	public StateVertex getState(int id, String url, WebDriver driver, FragmentManager manager) {
 		VipsSelenium vips = new VipsSelenium(url, driver);
 		// VipsSeleniumParser parser = new VipsSeleniumParser(vips);
 		List<VipsRectangle> rectangles = vips.startSegmentation();
 		String domString = DomUtils.getDocumentToString(vips.dom);
-		factory = new HybridStateVertexFactory(0, CrawljaxConfiguration.builderFor(url),
+		factory = new FragGenStateVertexFactory(0, CrawljaxConfiguration.builderFor(url),
 				false);
 		StateVertex state = factory.newStateVertex(id, url, "test" + id, domString, domString, null);
 		// StateVertexImpl state = new StateVertexImpl(0,url, "test", domString,
@@ -58,7 +54,7 @@ public class HybridStateVertexImplTest {
 	}
 
 	public StateVertex getStateNew(int id, String url, EmbeddedBrowser browser, FragmentManager manager){
-		factory = new HybridStateVertexFactory(0, CrawljaxConfiguration.builderFor(url),
+		factory = new FragGenStateVertexFactory(0, CrawljaxConfiguration.builderFor(url),
 				false);
 		StateVertex state = factory.newStateVertex(0, browser.getCurrentUrl(), "state" + id,
 				browser.getStrippedDom(), browser.getStrippedDomWithoutIframeContent(), browser);

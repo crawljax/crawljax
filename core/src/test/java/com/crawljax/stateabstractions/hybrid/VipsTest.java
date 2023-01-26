@@ -17,7 +17,6 @@ import com.crawljax.core.state.StateVertex;
 import com.crawljax.fragmentation.Fragment;
 import com.crawljax.fragmentation.FragmentManager;
 import com.crawljax.fragmentation.FragmentationPlugin;
-import com.crawljax.stateabstractions.hybrid.HybridStateVertexFactory;
 
 public class VipsTest {
 	
@@ -56,7 +55,7 @@ public class VipsTest {
 	
 	
 	public static StateVertex getState(int id , String url, FragmentManager manager, EmbeddedBrowser browser) throws InterruptedException {
-		HybridStateVertexFactory factory = new HybridStateVertexFactory(0, CrawljaxConfiguration.builderFor(url), false);
+		FragGenStateVertexFactory factory = new FragGenStateVertexFactory(0, CrawljaxConfiguration.builderFor(url), false);
 
 		String domString = browser.getStrippedDom();
 		StateVertex state = factory.newStateVertex(id, url, "test" + id, domString, domString, null);

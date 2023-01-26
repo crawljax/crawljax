@@ -9,7 +9,6 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
 import com.crawljax.plugins.testcasegenerator.TestConfiguration;
 import com.crawljax.plugins.testcasegenerator.TestSuiteGenerator;
-import com.crawljax.stateabstractions.hybrid.HybridStateVertexFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,13 +20,10 @@ public class ClickableDetectorExample {
     public static void main(String[] args) {
 
         String appURL = "http://dictionary.com";
-        if (!appURL.startsWith("http://") && !appURL.startsWith("https://")) {
-            appURL = "http://" + appURL;
-        }
 
         // Pixel density for your screen can be found by using
         // the command "devicePixelRatio" in Chrome browser console.
-        int pixelDensity = BrowserOptions.MACBOOK_PRO_RETINA_PIXEL_DENSITY;
+        // int pixelDensity = BrowserOptions.MACBOOK_PRO_RETINA_PIXEL_DENSITY;
 
         CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(appURL);
         builder.crawlRules().setFormFillMode(CrawlRules.FormFillMode.RANDOM);
@@ -48,7 +44,7 @@ public class ClickableDetectorExample {
         // Required to fetch event handler information from browser
         browserOptions.setUSE_CDP(true);
 
-        browserOptions.setPixelDensity(pixelDensity);
+        // browserOptions.setPixelDensity(pixelDensity);
 
         BrowserConfiguration browserConfiguration = new BrowserConfiguration(EmbeddedBrowser.BrowserType.CHROME_HEADLESS, 1,
                 browserOptions);

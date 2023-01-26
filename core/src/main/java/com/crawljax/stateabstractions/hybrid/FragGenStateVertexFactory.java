@@ -14,14 +14,14 @@ import com.crawljax.vips_selenium.VipsUtils;
  * The default factory that creates State vertexes with a {@link Object#hashCode()} and
  * {@link Object#equals(Object)} function based on the Stripped dom.
  */
-public class HybridStateVertexFactory extends StateVertexFactory {
+public class FragGenStateVertexFactory extends StateVertexFactory {
 
 	private static double threshold = 0.0;
 	private boolean visualData = false;
 
-	public HybridStateVertexFactory(double threshold, CrawljaxConfigurationBuilder builder, boolean visualData) {
+	public FragGenStateVertexFactory(double threshold, CrawljaxConfigurationBuilder builder, boolean visualData) {
 		builder.addPlugin(new FragmentationPlugin());
-		HybridStateVertexFactory.threshold = threshold;
+		FragGenStateVertexFactory.threshold = threshold;
 		this.visualData = visualData;
 	}
 

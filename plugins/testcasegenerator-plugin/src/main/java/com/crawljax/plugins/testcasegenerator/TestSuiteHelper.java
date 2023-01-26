@@ -77,7 +77,7 @@ import com.crawljax.plugins.testcasegenerator.visualdiff.ObjectDetection;
 import com.crawljax.plugins.testcasegenerator.visualdiff.ObjectDiff;
 import com.crawljax.plugins.testcasegenerator.visualdiff.pageobjects.AveragePageObjectFactory;
 import com.crawljax.plugins.testcasegenerator.visualdiff.pageobjects.IPageObjectFactory;
-import com.crawljax.stateabstractions.hybrid.HybridStateVertexFactory;
+import com.crawljax.stateabstractions.hybrid.FragGenStateVertexFactory;
 import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.ElementResolver;
@@ -178,7 +178,7 @@ public class TestSuiteHelper {
 
 	private final AtomicInteger nextStateNameCounter = new AtomicInteger();
 
-	private HybridStateVertexFactory stateVertexFactory;
+	private FragGenStateVertexFactory stateVertexFactory;
 
 	private String crawlPath;
 
@@ -302,7 +302,7 @@ public class TestSuiteHelper {
 
 		if (isHybridState) {
 			cleanEventables();
-			stateVertexFactory = new HybridStateVertexFactory(0, CrawljaxConfiguration.builderFor(url),
+			stateVertexFactory = new FragGenStateVertexFactory(0, CrawljaxConfiguration.builderFor(url),
 					APTED_VISUAL_DATA);
 
 			if (!deferOracleComparison) {

@@ -53,7 +53,7 @@ import com.crawljax.forms.FormInput.InputType;
 import com.crawljax.fragmentation.FragmentManager;
 import com.crawljax.fragmentation.FragmentationPlugin;
 import com.crawljax.oraclecomparator.StateComparator;
-import com.crawljax.stateabstractions.hybrid.HybridStateVertexFactory;
+import com.crawljax.stateabstractions.hybrid.FragGenStateVertexFactory;
 import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -120,7 +120,7 @@ public class CrawlerProviderTest {
 		CandidateElementExtractorFactory elementExtractorFactory = mock(CandidateElementExtractorFactory.class);
 		when(elementExtractorFactory.newExtractor(browser)).thenReturn(elementExtractor);
 
-		sfg = new InMemoryStateFlowGraph(new ExitNotifier(0), new HybridStateVertexFactory(0, configBuilder, false));
+		sfg = new InMemoryStateFlowGraph(new ExitNotifier(0), new FragGenStateVertexFactory(0, configBuilder, false));
 
 		when(graphProvider.get()).thenReturn(sfg);
 
@@ -134,7 +134,7 @@ public class CrawlerProviderTest {
 
 		Crawler crawler = new Crawler(context, config, stateComparator, candidateActionCache, formHandlerFactory,
 				trainingFormHandlerFactory, waitConditionChecker, elementExtractorFactory, graphProvider, plugins,
-				new HybridStateVertexFactory(0, configBuilder, false));
+				new FragGenStateVertexFactory(0, configBuilder, false));
 
 		return crawler;
 	}
@@ -158,7 +158,7 @@ public class CrawlerProviderTest {
 		// created card
 		configBuilder.crawlRules().click("div").withAttribute("class", "card-content");
 
-		configBuilder.setStateVertexFactory(new HybridStateVertexFactory(0.0, configBuilder, false));
+		configBuilder.setStateVertexFactory(new FragGenStateVertexFactory(0.0, configBuilder, false));
 
 		BrowserConfiguration browserConfiguration = new BrowserConfiguration(BrowserType.CHROME, 1,
 				// new BrowserOptions(BrowserOptions.MACBOOK_PRO_RETINA_PIXEL_DENSITY));
