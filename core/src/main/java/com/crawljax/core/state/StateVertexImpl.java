@@ -36,7 +36,7 @@ public class StateVertexImpl implements StateVertex {
   private final String dom;
   private final String strippedDom;
   private final String url;
-  private Document document;
+  private transient Document document;
   private String name;
 
   private transient HashMap<Node, List<CandidateElement>> nodeCandidateMapping = new HashMap<>();

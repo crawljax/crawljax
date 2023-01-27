@@ -44,6 +44,7 @@ public class BrowserOptions {
       *                     detection)
    */
   public BrowserOptions(boolean USE_CDP) {
+    this.pixelDensity = -1;
     this.USE_CDP = USE_CDP;
   }
   public boolean isUSE_CDP() {
