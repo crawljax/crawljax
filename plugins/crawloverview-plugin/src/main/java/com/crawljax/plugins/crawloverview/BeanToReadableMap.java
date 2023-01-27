@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map.Entry;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,8 @@ class BeanToReadableMap {
     try {
       Object[] noArgs = null;
       Object result = method.invoke(o, noArgs);
-      return ImmutablePair.of(asName(method), toString(result));
+      String name = asName(method);
+      return ImmutablePair.of(name, toString(name, result));
 
     } catch (Exception e) {
       LOG.error("Could not parse bean {} because {}", o, e.getMessage(), e);
@@ -63,7 +65,7 @@ class BeanToReadableMap {
     }
   }
 
-  private static String toString(Object result) {
+  private static String toString(String name, Object result) {
     if (result == null) {
       return "null";
     } else if (result instanceof Collection<?>) {
@@ -83,10 +85,13 @@ class BeanToReadableMap {
       }
       return configAsString.toString();
     } else if (result instanceof Plugins) {
-      return toString(((Plugins) result).pluginNames());
+      return toString(name, ((Plugins) result).pluginNames());
+    } else if (name!=null && name.toLowerCase().contains("runtime")){
+      return escapeHtml(DurationFormatUtils.formatDurationWords((Long) result, true, true));
     } else if (result instanceof Number && ((Number) result).intValue() == 0) {
       return "&infin;";
-    } else {
+    }
+    else {
       return escapeHtml(result.toString());
     }
   }
@@ -103,7 +108,7 @@ class BeanToReadableMap {
     }
     StringBuilder sb = new StringBuilder("<ul>");
     for (Object object : result) {
-      sb.append("<li>").append(toString(object)).append("</li>");
+      sb.append("<li>").append(toString(null, object)).append("</li>");
     }
     return sb.append("</ul>").toString();
   }
