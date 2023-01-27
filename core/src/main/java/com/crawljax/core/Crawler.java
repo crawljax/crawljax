@@ -85,9 +85,8 @@ public class Crawler {
   private boolean avoidUnrelatedBacktracking = false;
   private boolean UseEquivalentReset = false;
   private boolean avoidDifferentBacktracking = false;
-  private int MAX_TRIES = 3;
   private boolean pairwiseFormHandling = false;
-  private long BACKTRACKING_SEED = 1000000;
+  private static final long BACKTRACKING_SEED = 1000000;
   private long nextBackTrackingId = BACKTRACKING_SEED;
 
 
@@ -119,7 +118,6 @@ public class Crawler {
 
     switch (crawlRules.getFormFillMode()) {
       case RANDOM:
-        // RANDOM TRUE
         this.formHandler = formHandlerFactory.newFormHandler(browser);
         break;
       case XPATH_TRAINING:
@@ -183,7 +181,7 @@ public class Crawler {
   }
 
   private static void addPathInfo(CrawlPath path, StringBuilder builder) {
-    builder.append("BT-state" + path.getBacktrackTarget());
+    builder.append("BT-state").append(path.getBacktrackTarget());
     builder.append(path.isBacktrackSuccess() ? ":" : ":failed:");
     builder.append(path.isReachedNearDup());
   }
@@ -1000,6 +998,7 @@ public class Crawler {
       tries.put(input, false);
     }
 
+    int MAX_TRIES = 3;
     for (int i = 0; i < MAX_TRIES; i++) {
       List<FormInput> newTry = getNextPair(tries);
       if (newTry == null || newTry.isEmpty()) {
