@@ -34,6 +34,9 @@ public class Fragment {
   // ID is local to the state this fragment belongs to.
   private int id;
   private Node fragmentParentNode = null;
+
+  //Highest differentiator node. Makes sure no DOM nodes are excluded in fragment hierarchy.
+  private Node hdn = null;
   private Rectangle rect;
   private StateVertex referenceState;
   private ArrayList<Fragment> equivalentFragments;
@@ -617,7 +620,7 @@ public class Fragment {
 
   public boolean containsNode(Node node) {
     if (fragmentParentNode != null) {
-      return DomUtils.contains(fragmentParentNode, node);
+      return DomUtils.contains(fragmentParentNode, node) || DomUtils.contains(hdn, node);
     } else {
 
       Rectangle rect = VipsUtils.getRectangle(node, null);
@@ -768,6 +771,14 @@ public class Fragment {
       }
     }
     return returnList;
+  }
+
+  public Node getHdn() {
+    return hdn;
+  }
+
+  public void setHdn(Node hdn) {
+    this.hdn = hdn;
   }
 
 

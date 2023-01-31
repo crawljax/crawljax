@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.FilenameUtils;
+import org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi.EC;
 import org.openqa.selenium.WebDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -516,6 +517,14 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       LOG.error("Could not generate dom fragments {}", getName());
       ex.printStackTrace();
     }
+
+    try{
+      setFragmentHdn();
+    }
+    catch(Exception ex){
+      LOG.error("Error setting hdn for fragments");
+      ex.printStackTrace();
+    }
     //		cleanFragments(driver);
 
     //		exportFragments();
@@ -578,6 +587,28 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     fragments.add(newFragment);
 
     return newFragment;
+  }
+
+  private void setFragmentHdn(){
+    Node rootNode = DomUtils.getElementsByTagName(getDocument(), "body").get(0);
+    Node fragParentNode = rootFragment.getFragmentParentNode();
+    rootFragment.setHdn(rootNode);
+    for(Fragment fragment: fragments){
+      if(fragment.getId()<=0){
+        // skip root fragment
+        continue;
+      }
+      if(fragment.getFragmentParentNode()==null){
+        continue;
+      }
+      Node hdn = fragment.getFragmentParentNode();
+
+      while(getContainedNodes(hdn, rootFragment.getNestedBlocks()).size() == fragment.getNestedBlocks().size()){
+        fragment.setHdn(hdn);
+        hdn = hdn.getParentNode();
+      }
+
+    }
   }
 
   private List<Fragment> getDomFragments(Node rootNode, List<Node> nestedBlocks,
