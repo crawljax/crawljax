@@ -64,22 +64,15 @@ public class StructuralVisualStateVertexFactory extends StateVertexFactory {
   @Override
   public StateVertex newStateVertex(int id, String url, String name, String dom, String strippedDom,
       EmbeddedBrowser browser) {
-    File screenshotFile = new File(
-        Crawler.outputDir.getAbsoluteFile() + "/screenshots/" + name + ".png");
-    return newStateVertex(id, url, name, dom, strippedDom, browser, screenshotFile);
+    return newStateVertex(id, url, name, dom, strippedDom, browser, new DHash());
   }
 
   public StateVertexForElementsWithVisualInfo newStateVertex(int id, String url, String name,
-      String dom, String strippedDom, EmbeddedBrowser browser, File screenShotFile) {
-    return newStateVertex(id, url, name, dom, strippedDom, browser, screenShotFile, new DHash());
-  }
-
-  public StateVertexForElementsWithVisualInfo newStateVertex(int id, String url, String name,
-      String dom, String strippedDom, EmbeddedBrowser browser, File screenShotFile,
+      String dom, String strippedDom, EmbeddedBrowser browser,
       DHash visualHashCalculator) {
     this.visualHashCalculator = visualHashCalculator;
     this.screenshot = browser.getScreenShotAsBufferedImage(1000);
-    saveImage(screenshot, screenShotFile, true);
+//    saveImage(screenshot, screenShotFile, true);
     List<DOMElementWithVisualInfo> elementsVisualInfo = getElementsVisualInfo(browser, strippedDom);
     return new StateVertexForElementsWithVisualInfo(id, url, name, dom, strippedDom,
         elementsVisualInfo);
@@ -121,7 +114,11 @@ public class StructuralVisualStateVertexFactory extends StateVertexFactory {
           LOGGER.info("Taking screenshot from {}", xpath);
           BufferedImage elementScreenshot = getElementScreenshot(boundingBox);
           LOGGER.info("Took screenshot, now computing Visual Hash for {}", xpath);
-          visualHash = visualHashCalculator.getDHash(elementScreenshot);
+          try {
+            visualHash = visualHashCalculator.getDHash(elementScreenshot);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
           LOGGER.info("Computed Visual Hash for {}", xpath);
           //File screenshotFile = new File(this.screenshotFile.getParentFile().getAbsolutePath() + "/" + xpath.replaceAll("[:/\\\\]", "_"));
           //LOGGER.info("Saving element's screensthot to {}", screenshotFile.getAbsolutePath());

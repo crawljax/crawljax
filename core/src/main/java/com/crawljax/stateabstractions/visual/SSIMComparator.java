@@ -1,9 +1,10 @@
 package com.crawljax.stateabstractions.visual;
 
+import com.crawljax.util.ImageUtils;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
-import org.opencv.imgcodecs.Imgcodecs;
 
 public class SSIMComparator {
 
@@ -19,10 +20,10 @@ public class SSIMComparator {
     return -1;
   }
 
-  public static double computeDistance(String image, String image2) {
-    Mat img1 = Imgcodecs.imread(image);
-    Mat img2 = Imgcodecs.imread(image2);
-
+  public static double computeDistance(BufferedImage image, BufferedImage image2)
+      throws IOException {
+    Mat img1 = ImageUtils.BufferedImage2Mat(image);
+    Mat img2 = ImageUtils.BufferedImage2Mat(image2);
     return computeDistance(img1, img2);
   }
 

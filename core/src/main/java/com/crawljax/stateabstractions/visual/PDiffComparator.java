@@ -35,7 +35,6 @@ public class PDiffComparator {
 
   public static double computeDistance(String page1, String page2) {
 
-    List<Point> differencePixels = new ArrayList<Point>();
 
     BufferedImage imgA = null, imgB = null;
     try {
@@ -44,6 +43,15 @@ public class PDiffComparator {
     } catch (IOException e) {
       e.printStackTrace();
     }
+
+    double differentPixels = computeDistance(imgA, imgB);
+    return differentPixels;
+  }
+
+  public  static double computeDistance(BufferedImage imgA,
+      BufferedImage imgB) {
+
+    List<Point> differencePixels = new ArrayList<Point>();
 
     int width = Math.max(imgA.getWidth(), imgB.getWidth());
     int height = Math.max(imgA.getHeight(), imgB.getHeight());
@@ -78,7 +86,6 @@ public class PDiffComparator {
     double differentPixels = (double) differencePixels.size();
     differentPixels /= (width * height);
     return differentPixels;
-
   }
 
 

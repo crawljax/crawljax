@@ -1,6 +1,7 @@
 package com.crawljax.stateabstractions.visual.imagehashes;
 
 import com.crawljax.stateabstractions.visual.OpenCVLoad;
+import java.awt.image.BufferedImage;
 import org.opencv.core.Mat;
 
 public abstract class VisHash {
@@ -16,7 +17,7 @@ public abstract class VisHash {
   public double maxThreshold;
   public double maxRaw;
 
-  public abstract Mat getHash(String img);
+  public abstract Mat getHash(BufferedImage img);
 
   public abstract double compare(Mat hashMat1, Mat hashMat2);
 

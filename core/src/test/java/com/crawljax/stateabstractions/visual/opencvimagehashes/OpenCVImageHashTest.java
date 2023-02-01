@@ -9,8 +9,12 @@ import com.crawljax.stateabstractions.visual.imagehashes.MarrHildrethImageHash;
 import com.crawljax.stateabstractions.visual.imagehashes.PerceptualImageHash;
 import com.crawljax.stateabstractions.visual.imagehashes.RadialVarianceImageHash;
 import com.crawljax.stateabstractions.visual.imagehashes.VisHash;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import javax.imageio.ImageIO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,63 +39,72 @@ public class OpenCVImageHashTest {
   }
 
   @Test
-  public void testOpenCVImageHashIdenticalImages() {
+  public void testOpenCVImageHashIdenticalImages() throws IOException {
 
     String file =
         OpenCVImageHashTest.class.getResource("/screenshots/bookobject.jpg").getPath();
     String file2 =
         OpenCVImageHashTest.class.getResource("/screenshots/bookobject.jpg").getPath();
-    Mat hash1 = visHash.getHash(file);
-    Mat hash2 = visHash.getHash(file2);
+
+    BufferedImage img1 = ImageIO.read(new File(file));
+    BufferedImage img2 = ImageIO.read(new File(file2));
+    Mat hash1 = visHash.getHash(img1);
+    Mat hash2 = visHash.getHash(img2);
     double diff = visHash.compare(hash1, hash2);
     assertTrue(diff == 0.0);
 
     file = OpenCVImageHashTest.class.getResource("/screenshots/bookscene.jpg").getPath();
     file2 = OpenCVImageHashTest.class.getResource("/screenshots/bookscene.jpg").getPath();
-    hash1 = visHash.getHash(file);
-    hash2 = visHash.getHash(file2);
+    img1 = ImageIO.read(new File(file));
+    img2 = ImageIO.read(new File(file2));
+    hash1 = visHash.getHash(img1);
+    hash2 = visHash.getHash(img2);
     diff = visHash.compare(hash1, hash2);
     assertTrue(diff == 0.0);
 
     file = OpenCVImageHashTest.class.getResource("/screenshots/oracle.png").getPath();
     file2 = OpenCVImageHashTest.class.getResource("/screenshots/oracle.png").getPath();
-    hash1 = visHash.getHash(file);
-    hash2 = visHash.getHash(file2);
+    img1 = ImageIO.read(new File(file));
+    img2 = ImageIO.read(new File(file2));
+    hash1 = visHash.getHash(img1);
+    hash2 = visHash.getHash(img2);
     diff = visHash.compare(hash1, hash2);
     assertTrue(diff == 0.0);
 
     file = OpenCVImageHashTest.class.getResource("/screenshots/test.png").getPath();
     file2 = OpenCVImageHashTest.class.getResource("/screenshots/test.png").getPath();
-    hash1 = visHash.getHash(file);
-    hash2 = visHash.getHash(file2);
+    img1 = ImageIO.read(new File(file));
+    img2 = ImageIO.read(new File(file2));
+    hash1 = visHash.getHash(img1);
+    hash2 = visHash.getHash(img2);
     diff = visHash.compare(hash1, hash2);
     assertTrue(diff == 0.0);
 
   }
 
   @Test
-  public void testOpenCVImageHashSimilarImages() {
+  public void testOpenCVImageHashSimilarImages() throws IOException {
 
     String file =
         OpenCVImageHashTest.class.getResource("/screenshots/PetClinicND1.png").getPath();
     String file2 =
         OpenCVImageHashTest.class.getResource("/screenshots/PetClinicND2.png").getPath();
 
-    Mat hash1 = visHash.getHash(file);
-    Mat hash2 = visHash.getHash(file2);
+    Mat hash1 = visHash.getHash(ImageIO.read(new File(file)));
+    Mat hash2 = visHash.getHash(ImageIO.read(new File(file2)));
     double diff = visHash.compare(hash1, hash2);
     assertTrue(diff < visHash.maxThreshold);
   }
 
   @Test
-  public void testOpenCVImageHashDifferentImages() {
+  public void testOpenCVImageHashDifferentImages() throws IOException {
 
     String file =
         OpenCVImageHashTest.class.getResource("/screenshots/bookscene.jpg").getPath();
     String file2 =
         OpenCVImageHashTest.class.getResource("/screenshots/bookobject.jpg").getPath();
-    Mat hash1 = visHash.getHash(file);
-    Mat hash2 = visHash.getHash(file2);
+    Mat hash1 = visHash.getHash(ImageIO.read(new File(file)));
+    Mat hash2 = visHash.getHash(ImageIO.read(new File(file2)));
     double diff = visHash.compare(hash1, hash2);
     assertTrue(diff > 0.0);
   }

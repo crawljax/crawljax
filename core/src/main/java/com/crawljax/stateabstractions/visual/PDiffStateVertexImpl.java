@@ -4,6 +4,7 @@ import com.crawljax.core.state.StateVertexImpl;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import java.awt.image.BufferedImage;
 
 /**
  * The state vertex class which represents a state in the browser. When iterating over the possible
@@ -16,7 +17,7 @@ public class PDiffStateVertexImpl extends StateVertexImpl {
 
   double threshold = 0.0;
 
-  String page;
+  BufferedImage page;
 
   /**
    * Creates a current state without an url and the stripped dom equals the dom.
@@ -25,7 +26,7 @@ public class PDiffStateVertexImpl extends StateVertexImpl {
    * @param dom  the current DOM tree of the browser
    */
   @VisibleForTesting
-  PDiffStateVertexImpl(int id, String name, String dom, String hist) {
+  PDiffStateVertexImpl(int id, String name, String dom, BufferedImage hist) {
     this(id, null, name, dom, dom, hist, -1);
   }
 
@@ -39,7 +40,7 @@ public class PDiffStateVertexImpl extends StateVertexImpl {
    * @param threshold
    */
   public PDiffStateVertexImpl(int id, String url, String name, String dom, String strippedDom,
-      String page,
+      BufferedImage page,
       double threshold) {
     super(id, url, name, dom, strippedDom);
     this.page = page;
@@ -70,7 +71,7 @@ public class PDiffStateVertexImpl extends StateVertexImpl {
         .toString();
   }
 
-  public String getPage() {
+  public BufferedImage getPage() {
     return page;
   }
 

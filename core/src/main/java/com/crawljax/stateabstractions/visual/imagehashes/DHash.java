@@ -1,5 +1,6 @@
 package com.crawljax.stateabstractions.visual.imagehashes;
 
+import com.crawljax.util.ImageUtils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.text.similarity.HammingDistance;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
+import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
@@ -35,51 +37,7 @@ public class DHash {
     return distance.apply(h1, h2);
   }
 
-  public String getDHash(BufferedImage image) {
-    File f = new File("tempElementScreenshot.png");
-    try {
-      ImageIO.write(image, "png", f);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return getDHash(f.getAbsolutePath());
-  }
-
-  /* Returns the difference hashing (DHash for short) of the image. */
-  public String getDHash(String object) {
-
-    /* OpenCV does not work if you have encoded URLs (e.g., %20 instead of space in the path)
-     * This fixes the following error:
-     * CvException [org.opencv.core.CvException: cv::Exception: OpenCV(3.4.3) ...
-     * error: (-215:Assertion failed) !ssize.empty() in function 'resize'
-     */
-    try {
-      object = new URI(object).getPath();
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
-    }
-
-    /*
-     * 1. Convert to grayscale. The first step is to convert the input image to grayscale and
-     * discard any color information. Discarding color enables us to: (1) Hash the image faster
-     * since we only have to examine one channel (2) Match images that are identical but have
-     * slightly altered color spaces (since color information has been removed). If, for
-     * whatever reason, one is interested in keeping the color information, he can run the
-     * hashing algorithm on each channel independently and then combine at the end (although
-     * this will result in a 3x larger hash).
-     */
-    Mat objectImage = Imgcodecs.imread(object, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
-
-    /*
-     * 2. Resize image. We squash the image down to 9×8 and ignore aspect ratio to ensure that
-     * the resulting image hash will match similar photos regardless of their initial spatial
-     * dimensions. Why 9×8? We are implementing difference hash. The difference hash algorithm
-     * works by computing the difference (i.e., relative gradients) between adjacent pixels. If
-     * we take an input image with 9 pixels per row and compute the difference between adjacent
-     * column pixels, we end up with 8 differences. Eight rows of eight differences (i.e., 8×8)
-     * is 64 which will become our 64-bit hash.
-     */
+  public String getDHash(Mat objectImage){
     Mat resized = new Mat();
     int size = 8;
     Imgproc.resize(objectImage, resized, new Size(size + 1, size));
@@ -108,6 +66,40 @@ public class DHash {
     return hash;
   }
 
+  public String getDHash(BufferedImage image) throws IOException {
+
+
+    /*
+     * 1. Convert to grayscale. The first step is to convert the input image to grayscale and
+     * discard any color information. Discarding color enables us to: (1) Hash the image faster
+     * since we only have to examine one channel (2) Match images that are identical but have
+     * slightly altered color spaces (since color information has been removed). If, for
+     * whatever reason, one is interested in keeping the color information, he can run the
+     * hashing algorithm on each channel independently and then combine at the end (although
+     * this will result in a 3x larger hash).
+     */
+    Mat objectImage = ImageUtils.BufferedImage2MatGS(image);
+
+
+    /*
+     * 2. Resize image. We squash the image down to 9×8 and ignore aspect ratio to ensure that
+     * the resulting image hash will match similar photos regardless of their initial spatial
+     * dimensions. Why 9×8? We are implementing difference hash. The difference hash algorithm
+     * works by computing the difference (i.e., relative gradients) between adjacent pixels. If
+     * we take an input image with 9 pixels per row and compute the difference between adjacent
+     * column pixels, we end up with 8 differences. Eight rows of eight differences (i.e., 8×8)
+     * is 64 which will become our 64-bit hash.
+     */
+
+    return getDHash(objectImage);
+
+  }
+
+  public String getDHash(String imgPath){
+    Mat objectImage = Imgcodecs.imread(imgPath, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
+    return getDHash(objectImage);
+  }
+
   /**
    * compares the DHash of two images and return whether they are perceptually similar (max 10
    * different pixels allowed)
@@ -117,6 +109,11 @@ public class DHash {
    * @return true/false
    */
   public boolean imagesPerceptuallySimilar(String img1, String img2) {
+    return distance(getDHash(img1), getDHash(img2)) <= 10;
+  }
+
+  public boolean imagesPerceptuallySimilar(BufferedImage img1, BufferedImage img2)
+      throws IOException {
     return distance(getDHash(img1), getDHash(img2)) <= 10;
   }
 

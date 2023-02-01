@@ -61,7 +61,6 @@ public class Crawler {
 
   private static final Logger LOG = LoggerFactory.getLogger(Crawler.class);
   private static final int DUPLICATE_EVENT_SEED = 100000;
-  public static File outputDir;
   private final AtomicInteger crawlDepth = new AtomicInteger();
   private final int maxDepth;
   private final EmbeddedBrowser browser;
@@ -114,8 +113,6 @@ public class Crawler {
     this.candidateActionCache = candidateActionCache;
     this.waitConditionChecker = waitConditionChecker;
     this.candidateExtractor = elementExtractor.newExtractor(browser);
-    outputDir = config.getOutputDir();
-
     switch (crawlRules.getFormFillMode()) {
       case RANDOM:
         this.formHandler = formHandlerFactory.newFormHandler(browser);

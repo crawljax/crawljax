@@ -1,5 +1,8 @@
 package com.crawljax.stateabstractions.visual;
 
+import com.crawljax.util.ImageUtils;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.opencv.core.DMatch;
@@ -27,6 +30,20 @@ public class SIFTComparator {
   public static double computeDistance(String page1, String page2) {
     Mat mat1 = Imgcodecs.imread(page1);
     Mat mat2 = Imgcodecs.imread(page2);
+    try {
+      return computeDistance(mat1, mat2);
+    } catch (Exception ex) {
+      LOGGER.error("Error computing distance between {} and {}", page1, page2);
+      return 0;
+    }
+
+
+  }
+
+  public static double computeDistance(BufferedImage page1, BufferedImage page2)
+      throws IOException {
+    Mat mat1 = ImageUtils.BufferedImage2Mat(page1);
+    Mat mat2 = ImageUtils.BufferedImage2Mat(page2);
     try {
       return computeDistance(mat1, mat2);
     } catch (Exception ex) {

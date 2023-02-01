@@ -1,5 +1,8 @@
 package com.crawljax.stateabstractions.visual.imagehashes;
 
+import com.crawljax.util.ImageUtils;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import org.opencv.core.Mat;
 import org.opencv.img_hash.MarrHildrethHash;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -21,9 +24,13 @@ public class MarrHildrethImageHash extends VisHash {
   }
 
   @Override
-  public Mat getHash(String img) {
-    Mat mat = Imgcodecs.imread(img);
-    Mat hash = new Mat();
+  public Mat getHash(BufferedImage img) {
+    Mat mat = null;
+    try {
+      mat = ImageUtils.BufferedImage2Mat(img);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }    Mat hash = new Mat();
     MarrHildrethHash.create().compute(mat, hash);
     return hash;
   }

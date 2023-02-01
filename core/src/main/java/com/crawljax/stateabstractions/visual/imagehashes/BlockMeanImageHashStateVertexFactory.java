@@ -38,38 +38,13 @@ public class BlockMeanImageHashStateVertexFactory extends StateVertexFactory {
     threshold = treshold;
   }
 
-  private static String saveImage(BufferedImage image, String name) {
-    String ret = null;
-    LOG.debug("Saving screenshot for state {}", name);
-    try {
-      String folderName = Crawler.outputDir + "/screenshots/";
-      FSUtils.directoryCheck(folderName);
-      ImageIO.write(image, "PNG", new File(folderName + name + ".png"));
-      writeThumbNail(new File(folderName + name + "_small.jpg"), image);
-      ret = folderName + name + ".png";
-    } catch (IOException e) {
-      LOG.error(e.getMessage());
-    }
-    return ret;
-  }
-
-  private static void writeThumbNail(File target, BufferedImage screenshot) throws IOException {
-    BufferedImage resizedImage =
-        new BufferedImage(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, BufferedImage.TYPE_INT_RGB);
-    Graphics2D g = resizedImage.createGraphics();
-    g.drawImage(screenshot, 0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Color.WHITE, null);
-    g.dispose();
-    ImageIO.write(resizedImage, "JPEG", target);
-  }
-
   @Override
   public StateVertex newStateVertex(int id, String url, String name, String dom,
       String strippedDom,
       EmbeddedBrowser browser) {
 
     BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
-    String imageFile = saveImage(image, name);
-    Mat hashMat = visHash.getHash(imageFile);
+    Mat hashMat = visHash.getHash(image);
 
     return new BlockMeanImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat,
         threshold);

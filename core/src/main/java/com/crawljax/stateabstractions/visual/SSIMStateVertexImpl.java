@@ -4,6 +4,8 @@ import com.crawljax.core.state.StateVertexImpl;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * The state vertex class which represents a state in the browser. When iterating over the possible
@@ -15,7 +17,7 @@ public class SSIMStateVertexImpl extends StateVertexImpl {
   private static final long serialVersionUID = 123400017983489L;
   double threshold = 1.0; // 1.0 is perfect match and 0 is no match at all
 
-  String image;
+  BufferedImage image;
 
   /**
    * Creates a current state without an url and the stripped dom equals the dom.
@@ -24,8 +26,8 @@ public class SSIMStateVertexImpl extends StateVertexImpl {
    * @param dom  the current DOM tree of the browser
    */
   @VisibleForTesting
-  SSIMStateVertexImpl(int id, String name, String dom, String hist) {
-    this(id, null, name, dom, dom, hist, -1);
+  SSIMStateVertexImpl(int id, String name, String dom, BufferedImage image) {
+    this(id, null, name, dom, dom, image, -1);
   }
 
   /**
@@ -35,13 +37,12 @@ public class SSIMStateVertexImpl extends StateVertexImpl {
    * @param name        the name of the state
    * @param dom         the current DOM tree of the browser
    * @param strippedDom the stripped dom by the OracleComparators
-   * @param threshold2
    */
   public SSIMStateVertexImpl(int id, String url, String name, String dom,
       String strippedDom,
-      String hist, double threshold) {
+      BufferedImage image, double threshold) {
     super(id, url, name, dom, strippedDom);
-    this.image = hist;
+    this.image = image;
     if (threshold != -1) {
       this.threshold = threshold;
     }
@@ -60,7 +61,12 @@ public class SSIMStateVertexImpl extends StateVertexImpl {
       if (this.getId() == that.getId()) {
         return true;
       }
-      return SSIMComparator.computeDistance(this.image, that.getImage()) >= threshold;
+      try {
+        return SSIMComparator.computeDistance(this.image, that.getImage()) >= threshold;
+      } catch (IOException e) {
+        e.printStackTrace();
+        return false;
+      }
     }
     return false;
   }
@@ -71,7 +77,7 @@ public class SSIMStateVertexImpl extends StateVertexImpl {
         .add("name", super.getName()).add("Hist", image).toString();
   }
 
-  public String getImage() {
+  public BufferedImage getImage() {
     return image;
   }
 

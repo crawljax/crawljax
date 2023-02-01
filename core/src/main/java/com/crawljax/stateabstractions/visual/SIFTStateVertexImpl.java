@@ -4,6 +4,8 @@ import com.crawljax.core.state.StateVertexImpl;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * The state vertex class which represents a state in the browser. When iterating over the possible
@@ -14,7 +16,7 @@ public class SIFTStateVertexImpl extends StateVertexImpl {
 
   private static final long serialVersionUID = 123400017983489L;
   double threshold = 95.0;
-  String image;
+  BufferedImage image;
 //	Mat image;
 
   /**
@@ -24,7 +26,7 @@ public class SIFTStateVertexImpl extends StateVertexImpl {
    * @param dom  the current DOM tree of the browser
    */
   @VisibleForTesting
-  SIFTStateVertexImpl(int id, String name, String dom, String image) {
+  SIFTStateVertexImpl(int id, String name, String dom, BufferedImage image) {
     this(id, null, name, dom, dom, image, -1);
   }
 
@@ -35,11 +37,11 @@ public class SIFTStateVertexImpl extends StateVertexImpl {
    * @param name        the name of the state
    * @param dom         the current DOM tree of the browser
    * @param strippedDom the stripped dom by the OracleComparators
-   * @param threshold2
+   * @param threshold
    */
   public SIFTStateVertexImpl(int id, String url, String name, String dom,
       String strippedDom,
-      String image, double threshold) {
+      BufferedImage image, double threshold) {
     super(id, url, name, dom, strippedDom);
     this.image = image;
     if (threshold != -1) {
@@ -60,7 +62,12 @@ public class SIFTStateVertexImpl extends StateVertexImpl {
       if (this.getId() == that.getId()) {
         return true;
       }
-      return SIFTComparator.computeDistance(this.image, that.getPage()) >= threshold;
+      try {
+        return SIFTComparator.computeDistance(this.image, that.getPage()) >= threshold;
+      } catch (IOException e) {
+        e.printStackTrace();
+        return false;
+      }
     }
     return false;
   }
@@ -71,7 +78,7 @@ public class SIFTStateVertexImpl extends StateVertexImpl {
         .add("name", super.getName()).add("Hist", image).toString();
   }
 
-  public String getPage() {
+  public BufferedImage getPage() {
     return image;
   }
 

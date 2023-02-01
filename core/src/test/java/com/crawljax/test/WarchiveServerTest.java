@@ -13,7 +13,7 @@ public class WarchiveServerTest {
     server = new WarchiveServer("src/test/resources/warchives/petclinic", 8080);
     new Thread(server).start();
     try {
-      Thread.sleep(60000);
+      Thread.sleep(2000);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
