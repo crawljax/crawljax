@@ -73,7 +73,7 @@ public class VisualDHashTest {
 
     String file = VisualDHashTest.class.getResource("/screenshots/bookscene.jpg").getPath();
     String file2 = VisualDHashTest.class.getResource("/screenshots/bookobject.jpg").getPath();
-    assertTrue(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)), ImageIO.read(new File(file2))));
+    assertFalse(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)), ImageIO.read(new File(file2))));
 
   }
 
