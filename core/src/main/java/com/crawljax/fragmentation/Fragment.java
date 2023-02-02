@@ -1,7 +1,6 @@
 package com.crawljax.fragmentation;
 
 import com.crawljax.core.CandidateElement;
-import com.crawljax.core.FragmentTransition;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.stateabstractions.dom.apted.costmodel.StringUnitCostModel;
 import com.crawljax.stateabstractions.dom.apted.distance.APTED;
@@ -23,7 +22,6 @@ import javax.xml.xpath.XPathExpressionException;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -38,7 +36,7 @@ public class Fragment {
   //Highest differentiator node. Makes sure no DOM nodes are excluded in fragment hierarchy.
   private Node hdn = null;
   private Rectangle rect;
-  private StateVertex referenceState;
+  private final StateVertex referenceState;
   private ArrayList<Fragment> equivalentFragments;
   private ArrayList<Fragment> duplicateFragments;
   private ArrayList<Fragment> nd2Fragments;
@@ -47,8 +45,6 @@ public class Fragment {
   private int size = -1; // -2 if getting size is not possible the first time
   private boolean isGlobal;
   private ArrayList<CandidateElement> candidates;
-  private ArrayList<StateVertex> allStates;
-  private ArrayList<FragmentTransition> transitions;
   private Mat chist = null;
   private Fragment parent;
   private Fragment domParent;
@@ -196,6 +192,11 @@ public class Fragment {
     this.chist = chist;
   }
 
+  /**
+   * Makes use of DOM tree size instead of invoking APTED differencing
+   * @param other
+   * @return
+   */
   public FragmentComparision compareFast(Fragment other) {
 
     if (this.getSize() < 0 || other.getSize() < 0) {
@@ -206,6 +207,15 @@ public class Fragment {
     return compare(other);
   }
 
+  /**
+   * Uses APTED for DOM Tree comparison and Histogram for Visual Comparison
+   * Does not check if the other fragment being compared is Near-duplicate of category ND_struct
+   * Returns EQUAL if both DOM and Histogram are exactly the same
+   * Return EQUIVALENT if DOM is the same but Histogram is not.
+   * Returns DIFFERENT if DOM is different
+   * @param other
+   * @return
+   */
   public FragmentComparision compare(Fragment other) {
     boolean visualData = ((HybridStateVertexImpl) this.referenceState).isVisualData()
         && ((HybridStateVertexImpl) other.referenceState).isVisualData();
@@ -227,90 +237,6 @@ public class Fragment {
     }
     return FragmentComparision.EQUIVALENT;
   }
-
-  private List<Fragment> getUniqueFragments(List<Fragment> fragments, FragmentManager manager) {
-    List<Fragment> uniqueOtherChildren = new ArrayList<>();
-    for (Fragment fragment : fragments) {
-      if (fragment.isGlobal()) {
-        uniqueOtherChildren.add(fragment);
-      } else {
-        List<Fragment> duplicates = manager.getDuplicateFragments(fragment);
-        boolean contains = false;
-        for (Fragment duplicate : duplicates) {
-          if (uniqueOtherChildren.contains(duplicate)) {
-            contains = true;
-            break;
-          }
-        }
-
-        if (!contains) {
-          uniqueOtherChildren.add(fragment);
-        }
-      }
-    }
-    return uniqueOtherChildren;
-  }
-
-  public boolean isND2Fragment(Fragment other, FragmentManager manager) {
-    if (this.nd2Fragments.contains(other)) {
-      return true;
-    }
-
-    if (manager.getRelatedFragments(this).contains(other)) {
-      LOG.info("Fragments related without even checking ND2");
-      return false;
-    }
-
-    List<Fragment> otherChildren = getUniqueFragments(other.getChildren(), manager);
-
-    boolean allcovered = true;
-    for (Fragment otherChild : otherChildren) {
-      if (!FragmentManager.usefulFragment(otherChild)) {
-        LOG.error("Cannot divide this fragment because it has very small child fragments");
-        return false;
-      }
-      boolean covered = false;
-      for (Fragment child : children) {
-        if (manager.getRelatedFragments(otherChild).contains(child)) {
-          covered = true;
-          break;
-        }
-      }
-      if (!covered) {
-        for (Fragment child : children) {
-          if (!FragmentManager.usefulFragment(child)) {
-            LOG.error("Cannot use the children of this framgne to check for near-duplicate");
-//						return false;
-          }
-          if (child.isND2Fragment(otherChild, manager)) {
-            covered = true;
-            break;
-          }
-        }
-      }
-
-      allcovered = allcovered && covered;
-      if (!allcovered) {
-        LOG.info(
-            "different fragment : " + otherChild.getId() + " in " + otherChild.getReferenceState()
-                .getName());
-        break;
-      }
-    }
-
-    if (!allcovered) {
-      LOG.info(
-          "different fragment : " + other.getId() + " in " + other.getReferenceState().getName());
-    }
-
-    if (allcovered) {
-      this.addND2Fragment(other);
-      other.addND2Fragment(this);
-    }
-
-    return allcovered;
-  }
-
 
   public Node getFragmentParentNode() {
     return fragmentParentNode;
@@ -344,12 +270,6 @@ public class Fragment {
     return referenceState;
   }
 
-
-  public void setReferenceState(StateVertex referenceState) {
-    this.referenceState = referenceState;
-  }
-
-
   public ArrayList<CandidateElement> getCandidates() {
     return candidates;
   }
@@ -360,27 +280,6 @@ public class Fragment {
       addCandidateElement(candidate);
     }
   }
-
-
-  public ArrayList<StateVertex> getAllStates() {
-    return allStates;
-  }
-
-
-  public void setAllStates(ArrayList<StateVertex> allStates) {
-    this.allStates = allStates;
-  }
-
-
-  public ArrayList<FragmentTransition> getTransitions() {
-    return transitions;
-  }
-
-
-  public void setTransitions(ArrayList<FragmentTransition> transitions) {
-    this.transitions = transitions;
-  }
-
 
   public void addDuplicateFragment(Fragment fragment) {
     if (!this.duplicateFragments.contains(fragment)) {
@@ -404,44 +303,6 @@ public class Fragment {
 
   public void setIsGlobal(boolean isGlobal) {
     this.isGlobal = isGlobal;
-  }
-
-  public boolean includesCandidateNode(Element element) {
-    if (fragmentParentNode == null) {
-      return nestedBlockIncludesCandidateNode(element);
-    }
-
-    if (DomUtils.contains(fragmentParentNode, element) || DomUtils.contains(element,
-        fragmentParentNode)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private boolean nestedBlockIncludesCandidateNode(Element element) {
-    for (Node nestedBlock : nestedBlocks) {
-//			System.out.println(XPathHelper.getSkeletonXpath(nestedBlock));
-      if (DomUtils.contains(nestedBlock, element) || DomUtils.contains(element, nestedBlock)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-
-  public boolean includesNode(Element element) {
-    if (fragmentParentNode == null) {
-//			System.out.println(XPathHelper.getSkeletonXpath(element));
-      return nestedBlockIncludesNode(element);
-    }
-
-    if ((this.fragmentParentNode.compareDocumentPosition(element)
-        & Document.DOCUMENT_POSITION_CONTAINED_BY) == 0) {
-      return false;
-    }
-
-    return true;
   }
 
 
@@ -635,8 +496,6 @@ public class Fragment {
 
 
   private boolean containsRectangle(Rectangle rect2) {
-//		System.out.println(rect2 + " : " + rect);
-
     int x2 = rect2.x + rect2.width;
     int y2 = rect2.y + rect2.height;
 
@@ -650,26 +509,6 @@ public class Fragment {
     return false;
   }
 
-  public void adjustRectangle() {
-    // TODO Auto-generated method stub
-    if (this.getChildren() == null || this.getChildren().isEmpty()) {
-      return;
-    }
-
-    for (Fragment fragment : children) {
-      if (!containsRectangle(fragment.getRect())) {
-        Rectangle unionRect = VipsUtils.getUnionRectangle(rect, fragment.getRect());
-
-        if (VipsUtils.isValidRectangle(unionRect)) {
-          LOG.info("Adjusting rectangle from {} to {} using fragment {} ", this.rect, unionRect,
-              fragment.getId());
-          this.rect = unionRect;
-        }
-
-
-      }
-    }
-  }
 
   public Fragment getDomParent() {
     return domParent;
@@ -696,6 +535,12 @@ public class Fragment {
     setCoverage(node, indirect, coverage);
   }
 
+  /**
+   * Uses relative Xpath to fetch node that is similar in the current fragment to the one provided as argument
+   * @param element
+   * @param duplicateFragment
+   * @return
+   */
   public Node getEquivalentNode(Node element, Fragment duplicateFragment) {
     try {
       if (duplicateFragment.fragmentParentNode == null) {
@@ -785,27 +630,4 @@ public class Fragment {
   public static enum FragmentComparision {
     EQUAL, EQUIVALENT, DIFFERENT, ND2
   }
-
-//	@Override
-//	public int hashCode() {
-//		return this.getReferenceState().getId()*1000000 + this.getId();
-//	}
-//	
-//	@Override
-//	public boolean equals(Object other) {
-//		if(!(other instanceof Fragment)) {
-//			return false;
-//		}
-//		Fragment that = (Fragment)other;
-//		if(this.getReferenceState().getId() == that.getReferenceState().getId()) {
-//			if(this.getId() == that.getId()) {
-//				return true;
-//			}
-//		}
-//		
-//		
-//		
-//		return false;
-//	}
-
 }

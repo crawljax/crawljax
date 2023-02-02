@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Node;
 
+/**
+ * To enable JSON export of fragment object
+ */
 public class FragmentOutput {
 
   int stateId;

@@ -589,6 +589,9 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     return newFragment;
   }
 
+  /**
+   * HDN or highest differentiating node is the DOM node closest to the DOM root (body) that contains all Vips-blocks in the fragment but
+   */
   private void setFragmentHdn(){
     Node rootNode = DomUtils.getElementsByTagName(getDocument(), "body").get(0);
     Node fragParentNode = rootFragment.getFragmentParentNode();
@@ -611,6 +614,17 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     }
   }
 
+  /**
+   * VIPS uses a 2-Dim view of the page to draw horizontal and vertical separators that create content-rectangles
+   * Sometimes, this method does not yield the best fragments. For example, when there is an overlay element.
+   * DOM fragments use the detected VIPS-visual blocks (not fragments but just DOM elements that are considered important by VIPS) but use the DOM structure to divide these visual blocks.
+   * @param rootNode
+   * @param nestedBlocks
+   * @param fragmentMap
+   * @param parent
+   * @param driver
+   * @return
+   */
   private List<Fragment> getDomFragments(Node rootNode, List<Node> nestedBlocks,
       HashMap<Integer, Fragment> fragmentMap, Fragment parent, WebDriver driver) {
     // TODO: If not useful then return
@@ -698,6 +712,12 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     return returnList;
   }
 
+  /**
+   * {@see getDomFragments}
+   * @param fragmentMap
+   * @param driver
+   * @return
+   */
   public List<Fragment> generateDomFragments(HashMap<Integer, Fragment> fragmentMap,
       WebDriver driver) {
     List<Fragment> added = new ArrayList<>();
@@ -717,111 +737,6 @@ public class HybridStateVertexImpl extends StateVertexImpl {
             driver));
 
     return added;
-  }
-
-
-  public List<Fragment> cleanFragments(WebDriver driver) {
-    // TO divide fragments by DOM
-    List<Fragment> added = new ArrayList<>();
-    CopyOnWriteArrayList<Fragment> copyFragments = new CopyOnWriteArrayList<>(fragments);
-    for (Fragment fragment : copyFragments) {
-      if (!fragment.getChildren().isEmpty()) {
-        boolean shouldIgnoreFragment = false;
-        for (Fragment child : fragment.getChildren()) {
-          // If there is a useful DOM_FRAGMENT child, then ignore the fragment.
-          if (child.getFragmentParentNode() != null && FragmentManager.usefulFragment(child)) {
-            shouldIgnoreFragment = true;
-            break;
-          }
-        }
-        if (shouldIgnoreFragment) {
-          continue;
-        }
-      }
-
-      if (fragment.getFragmentParentNode() == null && FragmentManager.usefulFragment(fragment)) {
-        List<Fragment> addedChildren = divideFragmentByDom(fragment, driver);
-        if (addedChildren != null) {
-          added.addAll(addedChildren);
-        }
-      }
-
-    }
-
-    return added;
-  }
-
-
-  private List<Fragment> divideFragmentByDom(Fragment fragment, WebDriver driver) {
-    if (fragment.getFragmentParentNode() != null) {
-      LOG.warn("Cannot divide a fragment with parent node");
-      return null;
-    }
-
-    Node parentBox = VipsUtils.getParentBox(fragment.getNestedBlocks());
-
-    if (fragment.getParent() != null) {
-      List<Fragment> siblings = fragment.getParent().getChildren();
-      List<Node> siblingLcas = getSiblingLca(siblings, fragment);
-      List<Fragment> toBeAdded = getDifferentiatingNodes(fragment.getNestedBlocks(), siblingLcas,
-          parentBox, driver);
-      if (toBeAdded == null) {
-        return null;
-      }
-
-      for (Fragment toAdd : toBeAdded) {
-        int id = getNextFragmentId();
-        toAdd.setId(id);
-        toAdd.setParent(fragment);
-        fragment.addChild(toAdd);
-        toAdd.setUseful(true);
-        fragments.add(toAdd);
-        LOG.info("Added Fragment {} to {} using DOM division", toAdd.getId(), fragment.getId());
-      }
-
-      fragment.adjustRectangle();
-      return toBeAdded;
-    }
-    return null;
-  }
-
-  private List<Fragment> getDifferentiatingNodes(List<Node> blocks, List<Node> siblingLcas,
-      Node parentBox, WebDriver driver) {
-    List<Fragment> fragmentsToAdd = new ArrayList<>();
-    for (Node child : VipsUtils.getChildren(parentBox)) {
-
-      if (child.getNodeName().equalsIgnoreCase("#text")) {
-        continue;
-      }
-
-      Fragment newFragment = new Fragment(-1, null, VipsUtils.getRectangle(child, driver), this);
-      newFragment.setFragmentParentNode(child);
-      if (!FragmentManager.usefulFragment(newFragment)) {
-        continue;
-      }
-
-      List<Node> contains = new ArrayList<>();
-      for (Node block : blocks) {
-        if (DomUtils.contains(child, block)) {
-          contains.add(block);
-        }
-      }
-      if (contains.isEmpty()) {
-        continue;
-      }
-
-      if (isADifferentiator(siblingLcas, child)) {
-        newFragment.setNestedBlocks(contains);
-        newFragment.setFragmentParentNode(child);
-        fragmentsToAdd.add(newFragment);
-      } else {
-        List<Fragment> childDiffNodes = getDifferentiatingNodes(blocks, siblingLcas, child, driver);
-        fragmentsToAdd.addAll(childDiffNodes);
-      }
-
-    }
-
-    return fragmentsToAdd;
   }
 
 
@@ -918,31 +833,6 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     return rootFragment;
   }
 
-  private void printFragment(Fragment frag, StringBuilder buffer, String prefix,
-      String childrenPrefix, boolean domOnly) {
-    buffer.append(prefix);
-    buffer.append(frag.getId());
-    buffer.append('\n');
-
-    for (Iterator<Fragment> it =
-        domOnly ? frag.getDomChildren().iterator() : frag.getChildren().iterator();
-        it.hasNext(); ) {
-      Fragment next = it.next();
-      if (it.hasNext()) {
-        printFragment(next, buffer, childrenPrefix + "├── ", childrenPrefix + "│   ", domOnly);
-      } else {
-        printFragment(next, buffer, childrenPrefix + "└── ", childrenPrefix + "    ", domOnly);
-      }
-    }
-
-  }
-
-  public void printFragments(boolean domOnly) {
-    StringBuilder buffer = new StringBuilder(1000);
-    printFragment(rootFragment, buffer, "", "", domOnly);
-    System.out.println(buffer.toString());
-  }
-
   public Fragment getClosestDomFragment(Node node) {
     Node parent = node;
     while (parent != null) {
@@ -968,6 +858,11 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     return null;
   }
 
+  /**
+   * Uses DOM hierarchy to determine the smallest fragment (still "useful") in the fragment hierarchy that contains the node
+   * @param node
+   * @return
+   */
   @Override
   public Fragment getClosestFragment(Node node) {
     Fragment root = this.getRootFragment();
@@ -978,6 +873,12 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     return getClosestFragment(node, root);
   }
 
+  /**
+   * {@see getClosestFragment}
+   * @param node
+   * @param root
+   * @return
+   */
   private Fragment getClosestFragment(Node node, Fragment root) {
     //		System.out.println("Node to check :" + XPathHelper.getSkeletonXpath(node));
     if (root.getChildren().isEmpty()) {
@@ -985,7 +886,6 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     }
     boolean foundChild = false;
     for (Fragment child : root.getChildren()) {
-      //			System.out.println("Fragment " + child.getId() + ":" + XPathHelper.getSkeletonXpath(child.getFragmentParentNode()));
       if (child.containsNode(node)) {
         if (FragmentManager.usefulFragment(child)) {
           root = child;
@@ -995,9 +895,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
           return root;
         }
       }
-      //			else {
-      //				LOG.info("Child {} does not contain the node ", child.getId());
-      //			}
+
     }
     if (foundChild) {
       LOG.debug("Child {} is closer and useful", root.getId());
@@ -1006,28 +904,6 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     }
 
     return foundChild ? getClosestFragment(node, root) : root;
-
-  }
-
-  public Fragment getClosestFragment(CandidateElement element, Fragment root) {
-
-    if (root.getChildren().isEmpty()) {
-      return root;
-    }
-    boolean foundChild = false;
-    for (Fragment child : root.getChildren()) {
-      if (child.containsCandidate(element)) {
-        if (FragmentManager.usefulFragment(child)) {
-          root = child;
-          foundChild = true;
-          break;
-        } else {
-          return root;
-        }
-      }
-    }
-
-    return foundChild ? getClosestFragment(element, root) : root;
 
   }
 
@@ -1050,6 +926,12 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   }
 
 
+  /**
+   * {@see getClosestFragment} gets closest fragment for the node for which the candidate element is created
+   * @param element
+   * @return
+   * @throws Exception
+   */
   @Override
   public Fragment getClosestFragment(CandidateElement element) throws Exception {
     if (element.getClosestFragment() != null) {
@@ -1064,7 +946,6 @@ public class HybridStateVertexImpl extends StateVertexImpl {
         return closestFragment;
       }
     }
-    //		return getClosestFragment(element, root);
     return null;
   }
 

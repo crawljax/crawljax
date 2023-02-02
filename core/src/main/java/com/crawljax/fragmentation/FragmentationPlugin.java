@@ -45,6 +45,14 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
   public static boolean DISABLE_STATE_COMP = false;
   private static boolean exportFragments = true;
 
+  /**
+   * Loads a statevertex in an offline setting using a previously fragmented and recorded DOM.
+   * This is useful to determine the similarity between a previously recorded state and the current browser state in a regression test scenario.
+   * @param fragState
+   * @param manager
+   * @param dom
+   * @param screenshot
+   */
   public static void loadFragmentState(StateVertex fragState, FragmentManager manager, Document dom,
       BufferedImage screenshot) {
 
@@ -66,6 +74,15 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
   }
 
+  /**
+   * Main function that gets called everytime a new state is discovered.
+   * Uses VIPS to perform fragmentation and calls fragment manager to analyze fragments
+   * @param newState
+   * @param manager
+   * @param browser
+   * @param outputDir
+   * @param exportDom
+   */
   public static void fragmentState(StateVertex newState, FragmentManager manager,
       EmbeddedBrowser browser, File outputDir, boolean exportDom) {
     long start = System.currentTimeMillis();
@@ -203,6 +220,11 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
   }
 
+  /**
+   * Exports the comparison results during crawling. Also preserves the information regarding extracted fragments from states.
+   * @param session    the crawl session.
+   * @param exitReason The {@link ExitStatus} Crawljax stopped.
+   */
   @Override
   public void postCrawling(CrawlSession session, ExitStatus exitReason) {
     File outputDir = session.getConfig().getOutputDir();

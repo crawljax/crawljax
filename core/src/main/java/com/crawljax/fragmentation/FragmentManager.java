@@ -14,7 +14,6 @@ import com.crawljax.vips_selenium.VipsUtils;
 import com.crawljax.vips_selenium.VipsUtils.AccessType;
 import com.crawljax.vips_selenium.VipsUtils.Coverage;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,21 +26,23 @@ import javax.xml.xpath.XPathExpressionException;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.xmlunit.builder.DiffBuilder;
-import org.xmlunit.diff.ComparisonResult;
-import org.xmlunit.diff.ComparisonType;
-import org.xmlunit.diff.Diff;
-import org.xmlunit.diff.Difference;
 
 public class FragmentManager {
 
   public static FragmentRules USEFUL_FRAGMENT_RULES = new FragmentRules();
   private static Logger LOG = LoggerFactory.getLogger(FragmentManager.class);
+
+  /**
+   * Global list of unique fragments
+   */
   ArrayList<Fragment> fragments = new ArrayList<>();
+
+  /**
+   * Global map that maintains clusters of states. Each entry in the list is a set of states that are near-duplicates to each other
+   */
   List<Set<StateVertex>> nearDuplicates = new ArrayList<Set<StateVertex>>();
+
   HashMap<StatePair, StatePair> stateComparisionCache = new HashMap<>();
   HashMap<Integer, Double> hops = new HashMap<>();
   private Provider<InMemoryStateFlowGraph> sfg;
@@ -68,8 +69,8 @@ public class FragmentManager {
   }
 
   /**
-   * To decide if the fragment is big enough to be used for record equivalent accesses
-   *
+   * To decide if the fragment is large enough to be a functional entity
+   * This is an approximation and can be configured using {@link FragmentRules}
    * @param fragment
    * @return
    */
@@ -97,6 +98,11 @@ public class FragmentManager {
     return false;
   }
 
+  /**
+   * Leaf fragments are fragments that do not have any useful child fragments
+   * @param fragments
+   * @return
+   */
   public static List<Fragment> getLeafFragments(List<Fragment> fragments) {
     List<Fragment> returnFrags = new ArrayList<>();
     for (Fragment fragment : fragments) {
@@ -126,128 +132,6 @@ public class FragmentManager {
     return returnFrags;
   }
 
-  /**
-   * Uses xmlunit diffing Returns list of dom differences that are visible
-   *
-   * @param doc1
-   * @param doc2
-   * @param vips
-   * @return
-   */
-  public static List<Difference> domDifferences(Document doc1, Document doc2, boolean vips) {
-    try {
-      doc1 = DomUtils.asDocument(DomUtils.getDocumentToString(doc1));
-      doc2 = DomUtils.asDocument(DomUtils.getDocumentToString(doc2));
-      boolean offline = false;
-      VipsUtils.cleanDom(doc1, offline);
-      VipsUtils.cleanDom(doc2, offline);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    Node head1 = doc1.getElementsByTagName("head").item(0);
-    Node head2 = doc2.getElementsByTagName("head").item(0);
-
-    head1.getParentNode().removeChild(head1);
-    head2.getParentNode().removeChild(head2);
-//		doc2.getElementsByTagName("head").item(0);
-    List<Difference> returnList = new ArrayList<Difference>();
-//		Predicate<Node> predicate = new ;
-    Diff diffBuilder = DiffBuilder
-        .compare(doc1)
-        .withTest(doc2)
-        .ignoreComments()
-//		        .withNodeFilter( predicate )
-        .ignoreWhitespace()
-        .build();
-    Iterable<Difference> diffs = diffBuilder.getDifferences();
-    for (Difference diff : diffs) {
-      Node node = diff.getComparison().getControlDetails().getTarget();
-      Node other = diff.getComparison().getTestDetails().getTarget();
-      ComparisonType type = diff.getComparison().getType();
-      ComparisonResult result = diff.getResult();
-//			LOG.info("this {}", node);
-//			LOG.info("other {}", other);
-//			LOG.info("compType {}", type);
-//			LOG.info("{}",result);
-      if (node == null || other == null) {
-        continue;
-      }
-      if (vips) {
-        if (node instanceof Attr) {
-          try {
-            if (VipsUtils.isDisplayed(((Attr) node).getOwnerElement(), null)) {
-              returnList.add(diff);
-            }
-          } catch (Exception ex) {
-            LOG.error("Could not check visibility of {}", node);
-            LOG.error(ex.getMessage());
-          }
-        } else {
-          if (VipsUtils.isDisplayed(node, null)) {
-            returnList.add(diff);
-          }
-        }
-
-
-      }
-    }
-
-    return returnList;
-  }
-
-  public static List<Node> getDomDiffNodes(HybridStateVertexImpl stateVertex,
-      HybridStateVertexImpl toCompare) {
-    List<Node> domDiffNodes = new ArrayList<>();
-
-    List<Difference> diffs = domDifferences(toCompare.getDocument(), stateVertex.getDocument(),
-        true);
-
-    for (Difference diff : diffs) {
-      ComparisonType type = diff.getComparison().getType();
-      boolean proceed = false;
-      switch (type) {
-        case ATTR_VALUE:
-        case ELEMENT_NUM_ATTRIBUTES:
-        case ATTR_NAME_LOOKUP:
-          break;
-        case TEXT_VALUE:
-          proceed = true;
-          break;
-        default:
-          proceed = true;
-          break;
-      }
-      if (!proceed) {
-//				LOG.info("Ignoring diff {}", diff);
-        continue;
-      }
-//			if(diff.getComparison().getType().equals(ComparisonType.ELEMENT_NUM_ATTRIBUTES)) {
-//				LOGGER.info("Ignoring diff of num attributes {}", diff);
-//				continue;
-//			}
-
-      LOG.info("Diff type {}", diff.getComparison().getType());
-      Node node = diff.getComparison().getControlDetails().getTarget();
-      if (node != null) {
-        if (node.getNodeName().equalsIgnoreCase("#text")) {
-          node = node.getParentNode();
-        }
-      }
-      try {
-        node = DomUtils.getElementByXpath(stateVertex.getDocument(),
-            XPathHelper.getXPathExpression(node));
-        domDiffNodes.add(node);
-      } catch (XPathExpressionException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-//			Node node = diff.getComparison().getControlDetails().getTarget();
-    }
-
-    return domDiffNodes;
-  }
-
   public static void setThresholds(FragmentRules fragRules) {
     USEFUL_FRAGMENT_RULES = fragRules;
   }
@@ -266,12 +150,8 @@ public class FragmentManager {
       return stateComparisionCache.get(temp);
     } catch (Exception ex) {
       return null;
-//			ex.printStackTrace();
     }
-//		if(stateComparisionCache.containsKey(temp)){
-//			return stateComparisionCache.get(temp);
-//		}
-//		return null;
+
   }
 
   public boolean cacheStateComparision(StatePair statePair, boolean assignDynamic) {
@@ -333,6 +213,11 @@ public class FragmentManager {
     return true;
   }
 
+  /**
+   * Used to transfer information regarding already performed actions that can have duplicates in this newfragment
+   * @param newFragment
+   * @return
+   */
   public boolean setAccess(Fragment newFragment) {
     LOG.info("Setting access for {} {}", newFragment.getId(),
         newFragment.getReferenceState().getName());
@@ -369,6 +254,12 @@ public class FragmentManager {
     return true;
   }
 
+  /**
+   * Every fragment that is discovered during the crawl will be compared with the global map of unique fragments
+   * @param fragment
+   * @param fast
+   * @return
+   */
   public boolean addFragment(Fragment fragment, boolean fast) {
     ArrayList<Fragment> equivalentFragments = new ArrayList<Fragment>();
     ArrayList<Fragment> nd2Fragments = new ArrayList<Fragment>();
@@ -426,6 +317,12 @@ public class FragmentManager {
     return true;
   }
 
+  /**
+   * After every action is performed, the priority score or influence is adjusted
+   * @param fragment
+   * @param access
+   * @return
+   */
   public boolean updateInfluence(Fragment fragment, ACCESS access) {
     if (fragment.getParent() != null) {
       updateInfluence(fragment.getParent(), access);
@@ -455,6 +352,13 @@ public class FragmentManager {
     return true;
   }
 
+  /**
+   * Can be invoked from a coverage plugin to determine how much of the state DOM is covered by test suites
+   * @param node
+   * @param state
+   * @param coverage
+   * @return
+   */
   public boolean recordCoverage(Node node, StateVertex state, Coverage coverage) {
     Fragment closest = state.getClosestFragment(node);
     if (closest == null) {
@@ -467,11 +371,16 @@ public class FragmentManager {
         continue;
       }
       related.setEquivalentCoverage(node, closest, AccessType.equivalent, coverage);
-//			(node, AccessType.equivalent, coverage);
     }
     return true;
   }
 
+  /**
+   * Called after a crawl action is performed. Priority of the remaining candidate elements is updated based on their relationship with the action perfomed.
+   * @param element
+   * @param state
+   * @return
+   */
   public boolean recordAccess(CandidateElement element, StateVertex state) {
     if (state.getRootFragment() != null && !state.getRootFragment().isAccessTransferred()) {
       setAccess(state);
@@ -522,13 +431,6 @@ public class FragmentManager {
     }
 
     recordNearDuplicateAccess(element, state);
-
-//		for (CandidateElement candidate : coveredCandidates) {
-//			if (candidate == element)
-//				continue;
-//
-//			candidate.incrementAccess();
-//		}
 
     return true;
   }
@@ -716,6 +618,15 @@ public class FragmentManager {
     return relatedFragments;
   }
 
+  /**
+   * Computes the influences of the states based on the influence of candidates and returns the state that has the highest priority
+   * Also takes into consideration the back-tracking effort required to reach the state
+   * @param currentState
+   * @param onURLSet
+   * @param statesWithCandidates
+   * @param applyNonSelAdvantage
+   * @return
+   */
   public StateVertex getClosestUnexploredState(StateVertex currentState, List<StateVertex> onURLSet,
       BlockingQueue<Integer> statesWithCandidates, boolean applyNonSelAdvantage) {
     // Selector = Influence - Hops
@@ -764,8 +675,6 @@ public class FragmentManager {
         double hopInfluence = calculateHops(state.getRootFragment(), currentState, onURLSet);
         // Remove this assigning non seelctions: already done in unfiredCandidates.seenState()
         if (numNonSelections.containsKey(state.getId())) {
-//					double current = numNonSelections.get(state.getId());
-//					numNonSelections.replace(state.getId(), current+1);
         } else {
           numNonSelections.put(state.getId(), 1.0);
         }
@@ -786,83 +695,15 @@ public class FragmentManager {
           maxState = state;
         }
       } catch (Exception ex) {
-//				ex.printStackTrace();
         LOG.error("Error Calculating influence of state : " + state.getName());
       }
     }
 
     long end = System.currentTimeMillis();
     LOG.info("Time taken to find next best state : " + (end - start) + " millis");
-
-//		numNonSelections.replace(maxState.getId(), 0.0);
     return maxState;
   }
 
-  public StateVertex getClosestUnexploredFragment(StateVertex currentState,
-      List<StateVertex> onURLSet, BlockingQueue<Integer> statesWithCandidates) {
-    // Selector = Influence - Hops
-    long start = System.currentTimeMillis();
-    HashMap<StateVertex, Double> hops = new HashMap<>();
-
-    double maxInfluence = -100;
-    Fragment maxFragment = null;
-    try {
-      for (Fragment fragment : fragments) {
-
-        if (fragment == null) {
-          continue;
-        }
-        if (fragment.getCandidates().isEmpty()) {
-          continue;
-        }
-
-        if (!statesWithCandidates.contains(fragment.getReferenceState().getId())) {
-          continue;
-        }
-
-        int duplication = fragment.getDuplicateFragments().size();
-        int equivalence = fragment.getEquivalentFragments().size();
-
-        int duplicationFactor = 2 * duplication + equivalence;
-
-        double fragmentCandidateInfluence = calculateFragmentCandidateInfluence(fragment);
-        double hopInfluence = 0.0;
-        if (hops.containsKey(fragment.getReferenceState())) {
-          hopInfluence = hops.get(fragment.getReferenceState());
-        } else {
-          hopInfluence = calculateHops(fragment, currentState, onURLSet);
-          hops.put(fragment.getReferenceState(), hopInfluence);
-        }
-
-        double influence = fragmentCandidateInfluence * duplicationFactor - hopInfluence;
-        if (influence > maxInfluence) {
-          maxInfluence = influence;
-          maxFragment = fragment;
-        }
-
-        ArrayList<Fragment> duplicates = fragment.getDuplicateFragments();
-        for (Fragment duplicate : duplicates) {
-          double fragmentCandidateInfluence2 = calculateFragmentCandidateInfluence(duplicate);
-          double influence2 =
-              fragmentCandidateInfluence2 - calculateHops(duplicate, currentState, onURLSet);
-          if (influence2 > maxInfluence) {
-            maxInfluence = influence2;
-            maxFragment = duplicate;
-          }
-        }
-      }
-    } catch (Exception ex) {
-      LOG.error("Error getting the closest unexplored fragment");
-      LOG.error(ex.getMessage());
-//			ex.printStackTrace();
-    } finally {
-      long end = System.currentTimeMillis();
-      LOG.info("Time taken to Find the best FRAGMENT : " + (end - start) + " millis");
-    }
-
-    return maxFragment == null ? null : maxFragment.getReferenceState();
-
-  }
 
   private double calculateHops(Fragment fragment, StateVertex currentState,
       List<StateVertex> onURLSet) {
@@ -879,7 +720,6 @@ public class FragmentManager {
     int size = onURLSet.size();
 
     for (StateVertex onURL : onURLSet) {
-//			if(sfg.get().canGoTo(onURL, fragment.getReferenceState())) {
       try {
         averageHopsFromURLLoad += sfg.get().getShortestPath(onURL, fragment.getReferenceState())
             .size();
@@ -887,7 +727,6 @@ public class FragmentManager {
         size = size - 1;
       }
 
-//			}
     }
 
     if (size <= 0) {
@@ -897,16 +736,6 @@ public class FragmentManager {
 
     // 1 Hop to load the URL
     averageHopsFromURLLoad = averageHopsFromURLLoad / size + 1;
-
-//		if(sfg.get().canGoTo(currentState, fragment.getReferenceState())) {
-//		try {
-//			if(sfg.get().getOutgoingStates(currentState).size() != 0) {
-//				double hopsFromCurrent = sfg.get().getShortestPath(currentState, fragment.getReferenceState()).size();
-//				return Math.min(hopsFromCurrent, averageHopsFromURLLoad);
-//			}
-//		}catch(Exception ex) {
-//			LOG.info("Unreachable from current state");
-//		}
 
     if (!hops.containsKey(currentState.getId())) {
       hops.put(currentState.getId(), averageHopsFromURLLoad);
@@ -1022,6 +851,12 @@ public class FragmentManager {
     return mapping;
   }
 
+  /**
+   * Uses mapping of leaf fragments to determine if given two states are near-duplicates
+   * @param newState
+   * @param expectedState
+   * @return
+   */
   public StateComparision areND2(StateVertex newState, StateVertex expectedState) {
     List<Fragment> newFragments = getLeafFragments(newState.getFragments());
 
@@ -1047,8 +882,6 @@ public class FragmentManager {
         FragmentComparision comp = expected.compare(newFragment);
         LOG.debug(" old " + expected.getId());
         LOG.debug("compared " + comp);
-//				List<Fragment> related = getRelatedFragments(newFragment);
-//				List<Fragment> related2 = getRelatedFragments(expected);
         if (getRelatedFragments(newFragment).contains(expected)) {
           if (mapping.containsValue(oldF)) {
             LOG.debug("Repeat of mapping");
@@ -1108,6 +941,13 @@ public class FragmentManager {
     return false;
   }
 
+  /**
+   * The main function that compares two given states and outputs a classification [clone, near-duplicates (ND-data ND-struct), different]
+   * @param newState
+   * @param expectedState
+   * @param assignDynamic
+   * @return
+   */
   public StateComparision cacheStateComparision(StateVertex newState, StateVertex expectedState,
       boolean assignDynamic) {
     if (getCachedComparision(newState, expectedState) == null) {
@@ -1202,7 +1042,6 @@ public class FragmentManager {
         allCovered = allCovered && covered;
       }
 
-//			boolean allCovered = true;
       for (Fragment affectedFragment : affectedOldFragments) {
         List<Fragment> relatedFragments = getRelatedFragments(affectedFragment);
         boolean covered = false;
@@ -1218,7 +1057,6 @@ public class FragmentManager {
         allCovered = allCovered && covered;
       }
 
-//			if(newState.getRootFragment().isND2Fragment(expectedState.getRootFragment(), this)) {
       if (allCovered) {
         LOG.info("NEARDUPLICATE2 {} , {}", newState.getName(), expectedState.getName());
         comp = StateComparision.NEARDUPLICATE2;
@@ -1229,41 +1067,6 @@ public class FragmentManager {
         addToNearDuplicates(expectedState);
       }
 
-//
-//			LOG.debug("**************************************************************");
-//
-//			LOG.debug("*************************   ADDED   ***************************************");
-//			LOG.debug(newState.getName());
-//			for(Node node: addedNodes) {
-//				if(node.getNodeName().equalsIgnoreCase("#text"))
-//					continue;
-//				LOG.debug("Added           :     "+  XPathHelper.getSkeletonXpath(node));
-//				try {
-//					Fragment closestFragment= getClosestFragment(node, newState);
-//					LOG.debug("Affected Fragment : " + closestFragment.getId() );
-//				}catch(Exception ex) {
-//					ex.printStackTrace();
-//				}
-//				// Set the fragment closest to the node as dynamic ?
-//			}
-//			LOG.debug("*************************  REMOVED  *************************************");
-//
-//			LOG.debug(expectedState.getName());
-//			for(Node node: removedNodes) {
-//				if(node.getNodeName().equalsIgnoreCase("#text"))
-//					continue;
-//				LOG.debug("Removed         :      "+  XPathHelper.getSkeletonXpath(node));
-//				// Set the fragment closest to the node as dynamic ?
-//				try {
-//					Fragment closestFragment= getClosestFragment(node, expectedState);
-//					LOG.debug("Affected Fragment : " + closestFragment.getId() );
-//				}catch(Exception ex) {
-//					ex.printStackTrace();
-//				}
-//			}
-////					LOG.debug(removedNodes);
-//			LOG.debug("**************************************************************");
-
       StatePair statePair = new StatePair(newState, expectedState, addedNodes, removedNodes, comp);
       cacheStateComparision(statePair, assignDynamic);
       return comp;
@@ -1273,12 +1076,17 @@ public class FragmentManager {
     }
   }
 
+  /**
+   * Computes which fragments contain the changed nodes. Changed nodes are the result of DOM differencing between two states being compared.
+   * @param changedNodes
+   * @param state
+   * @return
+   */
   private List<Fragment> getAffectedFragments(List<Node> changedNodes, StateVertex state) {
 
     List<Fragment> affectedFragments = new ArrayList<Fragment>();
 
     Node lca = VipsUtils.getParentBox(changedNodes);
-//		LOG.debug("Lca : " + XPathHelper.getSkeletonXpath(lca));
     if (changedNodes.contains(lca)) {
       LOG.debug("All Changed Nodes are a single subtree {}", XPathHelper.getSkeletonXpath(lca));
       Fragment closestFragment = state.getClosestFragment(lca);
@@ -1291,7 +1099,6 @@ public class FragmentManager {
       return affectedFragments;
     }
 
-//		LOG.debug("State : " + state.getName());
     for (Node node : changedNodes) {
       if (node.getNodeName().equalsIgnoreCase("#text")) {
         continue;
@@ -1305,10 +1112,6 @@ public class FragmentManager {
             LOG.debug(XPathHelper.getSkeletonXpath(node) + "Affected Fragment : "
                 + closestFragment.getId());
 
-          }
-          if (closestFragment.getParent() == null) {
-            // The root node is affected which we know is not the same as the other .. So return to optimize
-//						return affectedFragments;
           }
         }
       } catch (Exception ex) {
@@ -1397,8 +1200,6 @@ public class FragmentManager {
       if (!newState.getRootFragment().isAccessTransferred()) {
         LOG.info("Transferring ND2 Access");
         newState.getRootFragment().addND2Fragment(expectedState.getRootFragment());
-//				newState.getRootFragment().transferEquivalentAccess(expectedState.getRootFragment());
-//				newState.getRootFragment().setAccessTransferred(true);
       }
     }
   }

@@ -1030,12 +1030,12 @@ public class VipsUtils {
     newAttr.setNodeValue("true");
     vipsBlock.getAttributes().setNamedItem(newAttr);
     newAttr = vipsBlock.getOwnerDocument().createAttribute(EVLISTVAL);
-		/*if(event!=null) {
+		if(event!=null) {
 			event = event.replace("\n", "");
 			event = event.replace("\r", "");
 			event = event.replace("\"", "'");
 		}
-		System.out.println(event);*/
+//		System.out.println(event);
     newAttr.setNodeValue(event);
     vipsBlock.getAttributes().setNamedItem(newAttr);
   }

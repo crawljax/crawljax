@@ -1,5 +1,8 @@
 package com.crawljax.fragmentation;
 
+/**
+ * Provides configuration options for rules determine if a fragment is useful
+ */
 public class FragmentRules {
 
   double thresholdWidth = 50;
