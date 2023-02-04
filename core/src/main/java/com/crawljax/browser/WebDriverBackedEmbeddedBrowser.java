@@ -20,17 +20,24 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.imageio.ImageIO;
+import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
@@ -912,8 +919,50 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     }
   }
 
+  public BufferedImage getCDPScreenshot(){
+    if(!this.USE_CDP){
+      LOGGER.error("CDP screesnhot only available for CHROME");
+      throw new IllegalStateException("CDP is not enabled but CDP screenshot called");
+    }
+    ChromeDriver chromeDriver = (ChromeDriver) browser;
+    long width = (long) chromeDriver.executeScript("return document.body.scrollWidth");
+    long height = (long) chromeDriver.executeScript("return document.body.scrollHeight");
+    long scale = (long) chromeDriver.executeScript("return window.devicePixelRatio");
+    int intscale = (int)scale;
+
+    HashMap<String, Object> setDeviceMetricsOverride = new HashMap<>();
+    setDeviceMetricsOverride.put("deviceScaleFactor", scale);
+    setDeviceMetricsOverride.put("mobile", false);
+    setDeviceMetricsOverride.put("width", width);
+    setDeviceMetricsOverride.put("height", height);
+    chromeDriver.executeCdpCommand(
+        "Emulation.setDeviceMetricsOverride", setDeviceMetricsOverride);
+
+    Map<String, Object> result =
+        chromeDriver.executeCdpCommand("Page.captureScreenshot", new HashMap<>());
+    String data = (String) result.get("data");
+    byte[] image = Base64.getDecoder().decode((data));
+    InputStream is = new ByteArrayInputStream(image);
+    try {
+      BufferedImage img = ImageIO.read(is);
+      BufferedImage resizedImage = new BufferedImage(img.getWidth() / intscale,
+          img.getHeight() / intscale, BufferedImage.TYPE_INT_RGB);
+      Graphics2D g = resizedImage.createGraphics();
+      g.drawImage(img, 0, 0, img.getWidth() / intscale,
+          img.getHeight() / intscale,
+          Color.WHITE, null);
+      g.dispose();
+      return resizedImage;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @Override
   public BufferedImage getScreenShotAsBufferedImage(int scrollTime) {
+    if(USE_CDP){
+      return getCDPScreenshot();
+    }
 
     if (this.pixelDensity != -1) {
       // BufferedImage img = Shutterbug.shootPage(getWebDriver(),

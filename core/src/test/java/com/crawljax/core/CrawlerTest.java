@@ -153,7 +153,7 @@ public class CrawlerTest {
     when(candidateActionCache.getInput(Mockito.any())).thenReturn(null);
     setupStateFlowGraph();
     setStateMachineForConfig(config);
-
+    crawler.setStateMachine(sm);
   }
 
   private void setupStateFlowGraph() {
@@ -195,7 +195,7 @@ public class CrawlerTest {
           .thenReturn(sm);
 
       when(sm.getStateFlowGraph()).thenReturn(graph);
-      when(sm.getCurrentState()).thenReturn(index, index, target);
+      when(sm.getCurrentState()).thenReturn(index, index, index, index, target);
       when(sm.changeState(Mockito.any())).thenReturn(true);
       when(sm.newStateFor(Mockito.any())).thenReturn(index);
     } catch (Exception e) {

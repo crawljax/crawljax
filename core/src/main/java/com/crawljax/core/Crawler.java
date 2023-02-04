@@ -50,6 +50,7 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.xml.xpath.XPathExpressionException;
+import org.jheaps.annotations.VisibleForTesting;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -79,6 +80,12 @@ public class Crawler {
   private final StateVertexFactory vertexFactory;
   private final FragmentManager fragmentManager;
   private CrawlPath crawlpath;
+
+  @VisibleForTesting
+  void setStateMachine( StateMachine sm) {
+    stateMachine = sm;
+  }
+
   private StateMachine stateMachine;
   private long nextEventableId = 0;
   private boolean avoidUnrelatedBacktracking = false;
@@ -333,6 +340,15 @@ public class Crawler {
   public void execute(StateVertex crawlTask) {
     LOG.debug("Going to state {}", crawlTask.getName());
     //boolean reached = false;
+    if(stateMachine == null){
+      stateMachine = new StateMachine(graphProvider.get(), crawlRules.getInvariants(), plugins,
+          stateComparator, new ArrayList<>());
+
+      context.setStateMachine(stateMachine);
+      if(crawlpath == null){
+        crawlpath = new CrawlPath(stateMachine.getCurrentState().getId());
+      }
+    }
     try {
       if (crawlTask.getId() == stateMachine.getCurrentState().getId()) {
         setBTStatus(true, -1);
@@ -1395,7 +1411,7 @@ public class Crawler {
 
   private void parseCurrentPageForCandidateElements() {
     StateVertex currentState = stateMachine.getCurrentState();
-    LOG.debug("Parsing DOM of state {} for candidate elements", currentState.getName());
+    LOG.info("Parsing DOM of state {} for candidate elements", currentState.getName());
     ImmutableList<CandidateElement> extract = candidateExtractor.extract(currentState);
 
     plugins.runPreStateCrawlingPlugins(context, extract, currentState);
