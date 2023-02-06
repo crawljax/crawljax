@@ -96,7 +96,7 @@ public class DHash {
   }
 
   public String getDHash(String imgPath){
-    Mat objectImage = Imgcodecs.imread(imgPath, Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
+    Mat objectImage = Imgcodecs.imread(imgPath, Imgcodecs.IMREAD_GRAYSCALE);
     return getDHash(objectImage);
   }
 

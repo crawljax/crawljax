@@ -17,7 +17,7 @@ public class ImageUtils {
     ImageIO.write(image, "png", byteArrayOutputStream);
     byteArrayOutputStream.flush();
     return Imgcodecs.imdecode(new MatOfByte(byteArrayOutputStream.toByteArray()),
-        Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
+        Imgcodecs.IMREAD_UNCHANGED);
   }
 
   public static Mat BufferedImage2MatGS2(BufferedImage image) throws IOException {
@@ -25,7 +25,7 @@ public class ImageUtils {
     ImageIO.write(image, "jpg", byteArrayOutputStream);
     byteArrayOutputStream.flush();
     Mat colorMat = Imgcodecs.imdecode(new MatOfByte(byteArrayOutputStream.toByteArray()),
-        Imgcodecs.CV_LOAD_IMAGE_UNCHANGED);
+        Imgcodecs.IMREAD_UNCHANGED);
 
     Mat grayscaleMat = new Mat();
 
@@ -38,7 +38,7 @@ public class ImageUtils {
     ImageIO.write(image, "png", byteArrayOutputStream);
     byteArrayOutputStream.flush();
     Mat grayscaleMat =  Imgcodecs.imdecode(new MatOfByte(byteArrayOutputStream.toByteArray()),
-        Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
+        Imgcodecs.IMREAD_GRAYSCALE);
     return grayscaleMat;
   }
 

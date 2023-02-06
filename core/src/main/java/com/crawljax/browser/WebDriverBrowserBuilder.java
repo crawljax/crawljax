@@ -115,8 +115,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
   private EmbeddedBrowser newFirefoxBrowser(ImmutableSortedSet<String> filterAttributes,
       long crawlWaitReload, long crawlWaitEvent, boolean headless) {
 
-//    WebDriverManager.firefoxdriver().setup();
-
     FirefoxProfile profile = null;
 
     if (configuration.getBrowserConfig().getBrowserOptions().getProfile() != null) {
@@ -151,12 +149,12 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
     }
 
     FirefoxOptions firefoxOptions = new FirefoxOptions();
-    firefoxOptions.setCapability("marionette", true);
+    //firefoxOptions.setCapability("marionette", true);
     firefoxOptions.setProfile(profile);
 
     /* for headless Firefox. */
     if (headless) {
-      firefoxOptions.setHeadless(true);
+      firefoxOptions.addArguments("--headless");
     }
 
     WebDriverManager manager = WebDriverManager.firefoxdriver();
