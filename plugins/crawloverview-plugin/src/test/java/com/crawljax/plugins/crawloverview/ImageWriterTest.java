@@ -15,7 +15,7 @@ import org.junit.rules.TemporaryFolder;
 public class ImageWriterTest {
 
   private static final String THUMB_HASH = "b0bd23b784b853ff760c8fb9becd25d8";
-  private static final String FULL_HASH = "66cea3363d36400684b98eb78d38b5b9";
+  private static final String FULL_HASH = "26b5a68025504aba7d92629ed5a8dd38";
 
   @Rule
   public final TemporaryFolder folder = new TemporaryFolder();

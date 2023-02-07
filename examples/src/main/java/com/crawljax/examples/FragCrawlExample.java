@@ -21,15 +21,7 @@ public final class FragCrawlExample {
 
   public static void main(String[] args) {
 
-    if (args.length == 0) {
-      System.err.println("Provide the URL of the web app as the first CLI argument.");
-      return;
-    }
-
-    String appURL = args[0];
-    if (!appURL.startsWith("http://") && !appURL.startsWith("https://")) {
-      appURL = "http://" + appURL;
-    }
+    String appURL = "https://www.dictionary.com/";
 
     CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(appURL);
     builder.crawlRules().setFormFillMode(FormFillMode.NORMAL);
@@ -38,8 +30,8 @@ public final class FragCrawlExample {
     builder.crawlRules().clickDefaultElements();
 
     //builder.setMaximumStates(10);
-    builder.setMaximumDepth(3);
-    builder.setMaximumRunTime(10, TimeUnit.MINUTES);
+    //builder.setMaximumDepth(3);
+    builder.setMaximumRunTime(5, TimeUnit.MINUTES);
 
     builder.crawlRules().clickElementsInRandomOrder(false);
     builder.crawlRules().crawlHiddenAnchors(true);
