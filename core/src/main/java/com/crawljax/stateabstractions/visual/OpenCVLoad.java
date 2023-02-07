@@ -1,7 +1,7 @@
 package com.crawljax.stateabstractions.visual;
 
 import org.bytedeco.javacpp.Loader;
-import org.bytedeco.javacpp.opencv_java;
+import org.bytedeco.opencv.opencv_java;
 
 public class OpenCVLoad {
 
