@@ -36,14 +36,11 @@ public class LogUtilTest {
   public void beforeResetLogging() {
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-    ContextInitializer ci = new ContextInitializer(loggerContext);
-    URL url = ci.findURLOfDefaultConfigurationFile(true);
-
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(loggerContext);
       loggerContext.reset();
-      configurator.doConfigure(url);
+      configurator.doConfigure(getClass().getResource("/logback-test.xml"));
     } catch (JoranException je) {
       // StatusPrinter will handle this
     }
