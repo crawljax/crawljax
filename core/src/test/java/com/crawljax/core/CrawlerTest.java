@@ -1,6 +1,6 @@
 package com.crawljax.core;
 
-import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.inject.Provider;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -40,19 +39,12 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Test class for the Crawler testing.
  */
-// @RunWith(MockitoJUnitRunner.Silent.class)
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({StateMachine.class, Crawler.class})
-@PowerMockIgnore({"org.xml.*", "javax.xml.*"})
-
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CrawlerTest {
 
   private URI url;
@@ -167,10 +159,6 @@ public class CrawlerTest {
     when(target.getId()).thenReturn(2);
     when(target.getName()).thenReturn("State 2");
     when(target.toString()).thenReturn("target");
-    when(target.equals(target)).thenReturn(true);
-    when(target.equals(index)).thenReturn(false);
-    when(index.equals(index)).thenReturn(true);
-    when(index.equals(target)).thenReturn(false);
 
     when(eventToTransferToTarget.getIdentification())
         .thenReturn(new Identification(How.name, "//DIV[@id='click]"));
@@ -187,27 +175,17 @@ public class CrawlerTest {
 
     when(graph.canGoTo(index, target)).thenReturn(true);
     when(graph.putIfAbsent(index)).thenReturn(index);
+
+    when(graph.newStateFor(Mockito.any(), anyString(), anyString(), Mockito.any())).thenReturn(
+        index, index, index, index, target);
   }
 
   private void setStateMachineForConfig(CrawljaxConfiguration config) {
-    sm = PowerMockito.mock(StateMachine.class);
     List<StateVertex> onURLSet = new ArrayList<>();
     onURLSet.add(index);
-    try {
-      PowerMockito.whenNew(StateMachine.class)
-          .withAnyArguments()
-          .thenReturn(sm);
-
-      when(sm.getStateFlowGraph()).thenReturn(graph);
-      when(sm.getCurrentState()).thenReturn(index, index, index, index, target);
-      when(sm.changeState(Mockito.any())).thenReturn(true);
-      when(sm.newStateFor(Mockito.any())).thenReturn(index);
-    } catch (Exception e) {
-      fail(e.getMessage());
-    }
+    sm = new StateMachine(graph, config.getCrawlRules().getInvariants(), plugins, null, onURLSet);
   }
 
-  @Ignore
   @Test
   public void whenResetTheStateIsBackToIndex() {
     crawler.reset(0);
@@ -219,7 +197,6 @@ public class CrawlerTest {
     order.verify(plugins).runOnUrlLoadPlugins(context);
   }
 
-  @Ignore
   @Test
   public void whenExecuteTaskTheCrawlIsCompletedCorrectly() throws Exception {
     when(extractor.checkCrawlCondition()).thenReturn(true);

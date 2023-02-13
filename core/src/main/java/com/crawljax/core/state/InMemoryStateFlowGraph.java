@@ -350,7 +350,8 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
     return stateCounter.get();
   }
 
-  StateVertex newStateFor(String url, String dom, String strippedDom, EmbeddedBrowser browser) {
+
+  public StateVertex newStateFor(String url, String dom, String strippedDom, EmbeddedBrowser browser) {
     int id = nextStateNameCounter.incrementAndGet();
     return vertexFactory.newStateVertex(id, url, getNewStateName(id), dom, strippedDom,
         browser);
