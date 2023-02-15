@@ -333,6 +333,8 @@ public class CandidateElementExtractor {
         return !(uri.getHost().toLowerCase().contains(siteHostName.toLowerCase()) || siteHostName.toLowerCase().contains(uri.getHost().toLowerCase()));
       } catch (IllegalArgumentException e) {
         LOG.info("Unreadable external link {}", href);
+      } catch (Exception ex){
+        LOG.info("Unreadable external link {} for {}", href, siteHostName);
       }
     }
     return false;

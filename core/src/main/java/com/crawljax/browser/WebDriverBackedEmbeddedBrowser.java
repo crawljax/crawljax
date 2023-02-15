@@ -476,6 +476,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
           // This was the case on the Gmail case; find out if not switching
           // (catching)
           // Results in good performance...
+        }catch(Exception e){
+          LOGGER.error("Unable to switch to frame to fire eventable {}", eventable);
         }
         handleChanged = true;
       }
@@ -673,6 +675,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
             e);
         browser.switchTo().defaultContent();
         return;
+      }catch (Exception e) {
+        LOGGER.error("Exception {} switching to frame {}",
+            e, frameIdentification);
+        browser.switchTo().defaultContent();
+        return;
       }
 
       String toAppend = browser.getPageSource();
@@ -819,17 +826,23 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     try {
 
       switchToFrame(iframeIdentification);
-
+    }catch (InvalidSelectorException e) {
+      LOGGER.info("Invalid frame selector: " + iframeIdentification + ", continuing...",
+          e);
+      browser.switchTo().defaultContent();
+      return "";
+    }catch (Exception e) {
+      LOGGER.error("Exception {} switching to frame {}",
+          e, iframeIdentification);
+      browser.switchTo().defaultContent();
+      return "";
+    }
       // make a copy of the dom before changing into the top page
       String frameDom = browser.getPageSource();
 
       browser.switchTo().defaultContent();
 
       return frameDom;
-    } catch (WebDriverException e) {
-      throwIfConnectionException(e);
-      return "";
-    }
   }
 
   /**
