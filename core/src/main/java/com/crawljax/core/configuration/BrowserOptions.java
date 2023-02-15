@@ -10,11 +10,10 @@ public class BrowserOptions {
   /**
    * a flag available for chrome (use chrome developer tools)
    */
-  private boolean USE_CDP;
+  private boolean USE_CDP = true;
 
   public BrowserOptions() {
     this.pixelDensity = -1;
-    this.USE_CDP = false;
   }
 
   /**
@@ -24,7 +23,6 @@ public class BrowserOptions {
   public BrowserOptions(int pixelDensity) {
 //		super();
     this.pixelDensity = pixelDensity;
-    this.USE_CDP = false;
   }
 
 

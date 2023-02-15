@@ -96,16 +96,11 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
       boolean USE_CDP = this.configuration.getBrowserConfig().getBrowserOptions().isUSE_CDP();
 
-      if (USE_CDP) {
-        if (browserType == EmbeddedBrowser.BrowserType.CHROME_HEADLESS
-            || browserType == EmbeddedBrowser.BrowserType.CHROME) {
+
+        if ((browserType == EmbeddedBrowser.BrowserType.CHROME_HEADLESS
+            || browserType == EmbeddedBrowser.BrowserType.CHROME) && USE_CDP) {
           ((WebDriverBackedEmbeddedBrowser) browser).setUSE_CDP(true);
-        } else {
-          throw new IllegalArgumentException(
-              "Chrome Developer Protocol (CDP) is compatible only with Chrome Browser. It cannot be used with"
-                  + configuration.getBrowserConfig().getBrowserType());
         }
-      }
     }
 
     plugins.runOnBrowserCreatedPlugins(browser);

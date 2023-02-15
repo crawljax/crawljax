@@ -39,7 +39,7 @@ public class CrawljaxConfiguration {
   private CrawlRules crawlRules;
   private int maximumStates = 0;
   private long maximumRuntime = TimeUnit.HOURS.toMillis(1);
-  private int maximumDepth = 2;
+  private int maximumDepth = 0;
   private File output = new File("out");
   /**
    * Output folder for data that is static to one site (ie. form data)
