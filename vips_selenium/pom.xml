@@ -5,7 +5,7 @@
     <parent>
         <artifactId>crawljax-parent-pom</artifactId>
         <groupId>com.crawljax</groupId>
-        <version>5.0-beta</version>
+        <version>5.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
