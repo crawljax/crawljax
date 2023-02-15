@@ -21,7 +21,7 @@ public final class FragCrawlExample {
 
   public static void main(String[] args) {
 
-    String appURL = "https://www.dictionary.com/";
+    String appURL = "https://www.dictionary.com";
 
     CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(appURL);
     builder.crawlRules().setFormFillMode(FormFillMode.NORMAL);
