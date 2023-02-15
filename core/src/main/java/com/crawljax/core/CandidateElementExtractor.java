@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.xml.xpath.XPathExpressionException;
+import org.jheaps.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -132,7 +133,7 @@ public class CandidateElementExtractor {
     return ImmutableList.copyOf(results);
   }
 
-  private void extractElements(Document dom, List<CandidateElement> results,
+  void extractElements(Document dom, List<CandidateElement> results,
       String relatedFrame) {
     LOG.debug("Extracting elements for related frame '{}'", relatedFrame);
     for (CrawlElement tag : includedCrawlElements) {
@@ -317,7 +318,8 @@ public class CandidateElementExtractor {
     checkedElements.increaseElementsCounter();
   }
 
-  private boolean hrefShouldBeIgnored(Element element) {
+  @VisibleForTesting
+  boolean hrefShouldBeIgnored(Element element) {
     String href = Strings.nullToEmpty(element.getAttribute("href"));
     return isFileForDownloading(href)
         || href.startsWith("mailto:")
@@ -328,7 +330,7 @@ public class CandidateElementExtractor {
     if (href.startsWith("http")) {
       try {
         URI uri = URI.create(href);
-        return !uri.getHost().equalsIgnoreCase(siteHostName);
+        return !(uri.getHost().toLowerCase().contains(siteHostName.toLowerCase()) || siteHostName.toLowerCase().contains(uri.getHost().toLowerCase()));
       } catch (IllegalArgumentException e) {
         LOG.info("Unreadable external link {}", href);
       }

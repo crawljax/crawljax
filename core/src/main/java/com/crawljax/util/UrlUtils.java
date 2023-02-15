@@ -92,7 +92,7 @@ public class UrlUtils {
     String current = URI.create(getBaseUrl(currentUrl)).getHost()
         .toLowerCase();
     String original = url.getHost().toLowerCase();
-    return current.endsWith(original);
+    return current.endsWith(original) || original.endsWith(current);
 
   }
 
