@@ -19,8 +19,10 @@
     <inceptionYear>2012</inceptionYear>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>11</java.version>
+        <maven.min.version>3.5.0</maven.min.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <slf4j.version>2.0.6</slf4j.version>
@@ -28,7 +30,6 @@
         <selenium.version>4.8.0</selenium.version>
         <jetty.version>11.0.13</jetty.version>
         <guice.version>5.1.0</guice.version>
-        <maven.min.version>3.5.0</maven.min.version>
     </properties>
 
     <prerequisites>
@@ -239,6 +240,20 @@
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.2.1</version>
                 <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[${java.version},)</version>
+                                    <message>Project requires Java ${java.version}</message>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>enforce-maven</id>
                         <goals>
