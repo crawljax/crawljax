@@ -15,7 +15,7 @@
         the various navigation paths and states within an Ajax
         application.
     </description>
-    <url>http://crawljax.com</url>
+    <url>https://github.com/crawljax</url>
     <inceptionYear>2012</inceptionYear>
 
     <properties>
@@ -129,7 +129,6 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -141,6 +140,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
