@@ -26,6 +26,7 @@ import com.crawljax.core.configuration.Form;
 import com.crawljax.core.configuration.InputSpecification;
 import com.crawljax.core.plugin.OnInvariantViolationPlugin;
 import com.crawljax.core.state.Eventable;
+import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
 import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.PostCrawlStateGraphChecker;
@@ -343,7 +344,9 @@ public abstract class LargeTestBase {
   public void testCrawledElements() {
     int clickMeFound = 0;
     for (Eventable eventable : getStateFlowGraph().getAllEdges()) {
-
+      if(eventable.getEventType() == EventType.reload){
+        continue;
+      }
       // elements with DONT_CLICK_TEXT should never be clicked
       assertTrue("No illegal element is clicked: " + eventable,
           !eventable.getElement().getText().startsWith(DONT_CLICK_TEXT));
@@ -419,7 +422,7 @@ public abstract class LargeTestBase {
     assertTrue("SLOW_WIDGET is found", foundSlowWidget);
     boolean foundLinkInSlowWidget = false;
     for (Eventable eventable : getStateFlowGraph().getAllEdges()) {
-      if (eventable.getElement().getText().equals("SLOW_WIDGET_HOME")) {
+      if (eventable.getEventType()!= EventType.reload && eventable.getElement().getText().equals("SLOW_WIDGET_HOME")) {
         foundLinkInSlowWidget = true;
       }
     }

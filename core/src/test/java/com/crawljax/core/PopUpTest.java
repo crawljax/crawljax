@@ -33,7 +33,7 @@ public class PopUpTest {
 
     CrawljaxRunner runner = new CrawljaxRunner(builder.build());
     CrawlSession session = runner.call();
-    assertThat(session.getStateFlowGraph(), hasEdges(2));
+    assertThat(session.getStateFlowGraph(), hasEdges(3));
     assertThat(session.getStateFlowGraph(), hasStates(3));
   }
 

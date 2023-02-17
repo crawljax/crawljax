@@ -25,12 +25,15 @@ import com.crawljax.forms.FormHandler;
 import com.crawljax.stateabstractions.dom.RTEDStateVertexFactory;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;
+import com.crawljax.util.DomUtils;
 import com.google.common.io.Resources;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,6 +44,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 @Category(BrowserTest.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -68,7 +73,7 @@ public class CandidateElementExtractorTest {
 
     CrawljaxConfiguration config = builder.build();
 
-    CandidateElementExtractor extractor = newElementExtractor(config);
+    CandidateElementExtractor extractor = newElementExtractor(config, true);
     browser.goToUrl(DEMO_SITE_SERVER.getSiteUrl());
     DUMMY_STATE = new DefaultStateVertexFactory().createIndex(browser.getCurrentUrl(),
         browser.getStrippedDom(),
@@ -94,7 +99,7 @@ public class CandidateElementExtractorTest {
         options);
     builder.setBrowserConfig(browserConfiguration);
     CrawljaxConfiguration config = builder.build();
-    CandidateElementExtractor extractor = newElementExtractor(config);
+    CandidateElementExtractor extractor = newElementExtractor(config, true);
 
     // Set USE CDP argument
     ((WebDriverBackedEmbeddedBrowser) browser).setUSE_CDP(true);
@@ -112,8 +117,12 @@ public class CandidateElementExtractorTest {
 
   }
 
-  private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config) {
-    browser = provider.newEmbeddedBrowser();
+  private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config, boolean startBrowser) {
+    if(startBrowser)
+      browser = provider.newEmbeddedBrowser();
+    else
+      browser = null;
+
     FormHandler formHandler = new FormHandler(browser, config.getCrawlRules());
 
     EventableConditionChecker eventableConditionChecker =
@@ -135,7 +144,7 @@ public class CandidateElementExtractorTest {
     builder.crawlRules().clickOnce(true);
     CrawljaxConfiguration config = builder.build();
 
-    CandidateElementExtractor extractor = newElementExtractor(config);
+    CandidateElementExtractor extractor = newElementExtractor(config, true);
     browser.goToUrl(DEMO_SITE_SERVER.getSiteUrl());
     DUMMY_STATE = new DefaultStateVertexFactory().createIndex(browser.getCurrentUrl(),
         browser.getStrippedDom(),
@@ -157,7 +166,7 @@ public class CandidateElementExtractorTest {
     builder.crawlRules().click("a");
     CrawljaxConfiguration config = builder.build();
 
-    CandidateElementExtractor extractor = newElementExtractor(config);
+    CandidateElementExtractor extractor = newElementExtractor(config, true);
     browser.goToUrl(server.getSiteUrl().resolve("iframe/"));
     DUMMY_STATE = new DefaultStateVertexFactory().createIndex(browser.getCurrentUrl(),
         browser.getStrippedDom(),
@@ -182,7 +191,7 @@ public class CandidateElementExtractorTest {
         CrawljaxConfiguration.builderFor("http://example.com");
     builder.crawlRules().click("a");
     CrawljaxConfiguration config = builder.build();
-    CandidateElementExtractor extractor = newElementExtractor(config);
+    CandidateElementExtractor extractor = newElementExtractor(config, true);
 
     List<CandidateElement> extract = extractFromTestFile(extractor);
 
@@ -197,7 +206,7 @@ public class CandidateElementExtractorTest {
     builder.crawlRules().click("a");
     builder.crawlRules().followExternalLinks(true);
     CrawljaxConfiguration config = builder.build();
-    CandidateElementExtractor extractor = newElementExtractor(config);
+    CandidateElementExtractor extractor = newElementExtractor(config, true);
 
     List<CandidateElement> extract = extractFromTestFile(extractor);
 
@@ -215,6 +224,25 @@ public class CandidateElementExtractorTest {
         browser.getStrippedDom(),
         browser.getStrippedDom(), browser);
     return extractor.extract(currentState);
+  }
+
+  @Test
+  public void testElementAddition() throws URISyntaxException, IOException {
+    CrawljaxConfigurationBuilder builder =
+        CrawljaxConfiguration.builderFor("http://example.com");
+    builder.crawlRules().click("a");
+    builder.crawlRules().followExternalLinks(false);
+    CrawljaxConfiguration config = builder.build();
+    CandidateElementExtractor extractor = newElementExtractor(config, false);
+    Document document = DomUtils.asDocument("");
+    Element e = document.createElement("A");
+//    e.setAttribute("href", "http://www.example.com");
+    document.getElementsByTagName("body").item(0).appendChild(e);
+    List<CandidateElement> results = new ArrayList<>();
+    extractor.extractElements(document, results, "");
+
+    Assert.assertFalse(extractor.hrefShouldBeIgnored(e));
+    Assert.assertEquals(1, results.size());
   }
 
 }
