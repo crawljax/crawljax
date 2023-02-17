@@ -3,7 +3,7 @@ package com.crawljax.cli;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;

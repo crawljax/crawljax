@@ -3,7 +3,7 @@ package com.crawljax.core.plugin;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.object.IsCompatibleType.typeCompatibleWith;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import com.crawljax.browser.BrowserProvider;

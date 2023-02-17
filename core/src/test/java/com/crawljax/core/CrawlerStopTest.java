@@ -2,7 +2,7 @@ package com.crawljax.core;
 
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.core.ExitNotifier.ExitStatus;

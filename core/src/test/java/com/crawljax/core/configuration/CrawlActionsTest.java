@@ -3,7 +3,7 @@ package com.crawljax.core.configuration;
 import static com.crawljax.core.configuration.CrawlElementMatcher.withXpath;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 import org.junit.Before;

@@ -1,7 +1,7 @@
 package com.crawljax.plugins.crawloverview.model;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.crawljax.condition.RegexCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
