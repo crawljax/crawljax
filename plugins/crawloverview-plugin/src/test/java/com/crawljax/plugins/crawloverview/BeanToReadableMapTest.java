@@ -2,7 +2,7 @@ package com.crawljax.plugins.crawloverview;
 
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.crawljax.condition.RegexCondition;
 import com.crawljax.condition.crawlcondition.CrawlCondition;

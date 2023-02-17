@@ -5,7 +5,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.google.common.collect.Lists;
@@ -64,8 +64,7 @@ public class OverviewIntegrationTest {
     server.setHandler(webAppContext);
     server.start();
     int port = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
-    String url = "http://localhost:" + port;
-    return url;
+    return "http://localhost:" + port;
   }
 
   @AfterClass

@@ -4,10 +4,10 @@ import static com.crawljax.matchers.IsValidJson.isValidJson;
 import static com.crawljax.test.SimpleSiteCrawl.NUMBER_OF_EDGES;
 import static com.crawljax.test.SimpleSiteCrawl.NUMBER_OF_STATES;
 import static com.crawljax.test.matchers.FileMatcher.exists;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsArrayWithSize.arrayWithSize;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.plugins.crawloverview.model.OutPutModel;
@@ -33,7 +33,7 @@ public class SimpleSiteCrawlTest {
   private final String generatedFilesFolder = "localhost/crawl0/";
 
   @BeforeClass
-  public static void runCrawl() throws Exception {
+  public static void runCrawl() {
     outFolder = TMP_FOLDER.getTempDir();
     SimpleSiteCrawl simpleCrawl = new SimpleSiteCrawl() {
       @Override

@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  */
 public final class XPathHelper {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(XPathHelper.class);
+  private static final Logger LOG = LoggerFactory.getLogger(XPathHelper.class);
 
   private static final Pattern TAG_PATTERN = Pattern
       .compile("(?<=[/|::])[a-zA-z]+(?=([/|\\[]|$))");
@@ -60,16 +60,13 @@ public final class XPathHelper {
     }
     String childXpath = getSkeletonXpath(child);
     String parentXpath = getSkeletonXpath(parent);
-    if (childXpath.indexOf(parentXpath) < 0) {
-//			System.out.println(childXpath);
-//			System.out.println(parentXpath);
+    if (!childXpath.contains(parentXpath)) {
       return null;
     }
     if (childXpath.equalsIgnoreCase(parentXpath)) {
       return "";
     }
-    String relative = childXpath.substring(parentXpath.length() + 1);
-    return relative;
+    return childXpath.substring(parentXpath.length() + 1);
   }
 
   public static Node getNodeFromSpecificParent(Node fragmentParentNode, String relativeXpath) {
@@ -109,13 +106,6 @@ public final class XPathHelper {
       return xPath;
     }
 
-//		if (node.hasAttributes() && node.getAttributes().getNamedItem("id") != null) {
-//			String xPath = "//" + node.getNodeName() + "[@id = '"
-//					+ node.getAttributes().getNamedItem("id").getNodeValue() + "']";
-//			node.setUserData(FULL_XPATH_CACHE, xPath, null);
-//			return xPath;
-//		}
-
     StringBuilder buffer = new StringBuilder();
 
     if (parent != node) {
@@ -131,7 +121,7 @@ public final class XPathHelper {
       Node el = mySiblings.get(i);
 
       if (el.equals(node)) {
-        buffer.append('[').append(Integer.toString(i + 1)).append(']');
+        buffer.append('[').append(i + 1).append(']');
         // Found so break;
         break;
       }
@@ -174,7 +164,7 @@ public final class XPathHelper {
       return xPath;
     }
 
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
     if (parent != node) {
       buffer.append(getXPathExpression_other(parent));
@@ -189,7 +179,7 @@ public final class XPathHelper {
       Node el = mySiblings.get(i);
 
       if (el.equals(node)) {
-        buffer.append('[').append(Integer.toString(i + 1)).append(']');
+        buffer.append('[').append(i + 1).append(']');
         // Found so break;
         break;
       }
@@ -285,7 +275,7 @@ public final class XPathHelper {
 
   private static String lowerCaseAttributes(String formatted) {
     Matcher m = ID_PATTERN.matcher(formatted);
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     while (m.find()) {
       String text = m.group();
       m.appendReplacement(sb, Matcher.quoteReplacement(text.toLowerCase()));
@@ -296,7 +286,7 @@ public final class XPathHelper {
 
   private static String capitalizeTagNames(String xpath) {
     Matcher m = TAG_PATTERN.matcher(xpath);
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     while (m.find()) {
       String text = m.group();
       m.appendReplacement(sb, Matcher.quoteReplacement(text.toUpperCase()));
@@ -473,8 +463,8 @@ public final class XPathHelper {
 
       case id: // id and name are handled the same
       case name:
-        String xpath = "";
-        String element = "";
+        String xpath;
+        String element;
 
         if (input.getType().equals(InputType.SELECT)
             || input.getType().equals(InputType.TEXTAREA)) {

@@ -1,7 +1,7 @@
 package com.crawljax.plugins.crawloverview;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
