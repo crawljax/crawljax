@@ -130,6 +130,6 @@ public class Identification implements Serializable {
    * The method used for identifying elements on the DOM tree.
    */
   public enum How {
-    xpath, name, id, tag, text, partialText
+    xpath, name, id, tag, text, partialText, url
   }
 }

@@ -89,10 +89,10 @@ public class FragmentManager {
         return true;
       }
     } catch (XPathExpressionException e) {
-      LOG.error("XPATH Error checking if the fragment is useful");
+      LOG.warn("XPATH Error checking if the fragment is useful");
     } catch (Exception ex) {
-      LOG.error(" Error checking if the fragment is useful");
-      LOG.error(ex.getMessage());
+      LOG.warn(" Error checking if the fragment is useful");
+      LOG.warn(ex.getMessage());
     }
     fragment.setUseful(false);
     return false;
@@ -193,7 +193,7 @@ public class FragmentManager {
             continue;
           }
           newFragment.transferCoverage(oldFragment);
-          LOG.info("equivalent coverage transfer {} {} ", oldFragment.getId(),
+          LOG.debug("equivalent coverage transfer {} {} ", oldFragment.getId(),
               oldFragment.getReferenceState().getName());
         }
       }
@@ -204,7 +204,7 @@ public class FragmentManager {
             continue;
           }
           newFragment.transferCoverage(oldFragment);
-          LOG.info("duplicate coverage transfer {} {} ", oldFragment.getId(),
+          LOG.debug("duplicate coverage transfer {} {} ", oldFragment.getId(),
               oldFragment.getReferenceState().getName());
         }
 
@@ -219,13 +219,13 @@ public class FragmentManager {
    * @return
    */
   public boolean setAccess(Fragment newFragment) {
-    LOG.info("Setting access for {} {}", newFragment.getId(),
+    LOG.debug("Setting access for {} {}", newFragment.getId(),
         newFragment.getReferenceState().getName());
     if (newFragment.isGlobal()) {
       if (!newFragment.getEquivalentFragments().isEmpty()) {
         for (Fragment oldFragment : newFragment.getEquivalentFragments()) {
           newFragment.transferEquivalentAccess(oldFragment);
-          LOG.info("equivalent transfer access {} {} ", oldFragment.getId(),
+          LOG.debug("equivalent transfer access {} {} ", oldFragment.getId(),
               oldFragment.getReferenceState().getName());
         }
       }
@@ -233,12 +233,12 @@ public class FragmentManager {
       if (!newFragment.getDuplicateFragments().isEmpty()) {
         for (Fragment oldFragment : getDuplicateFragments(newFragment)) {
           newFragment.transferDuplicateAccess(oldFragment);
-          LOG.info("duplicate transfer access {} {} ", oldFragment.getId(),
+          LOG.debug("duplicate transfer access {} {} ", oldFragment.getId(),
               oldFragment.getReferenceState().getName());
         }
         for (Fragment oldFragment : getEquivalentFragments(newFragment)) {
           newFragment.transferEquivalentAccess(oldFragment);
-          LOG.info("equivalent transfer access {} {} ", oldFragment.getId(),
+          LOG.debug("equivalent transfer access {} {} ", oldFragment.getId(),
               oldFragment.getReferenceState().getName());
         }
       }
@@ -247,7 +247,7 @@ public class FragmentManager {
     if (!newFragment.getNd2Fragments().isEmpty()) {
       for (Fragment oldFragment : newFragment.getNd2Fragments()) {
         newFragment.transferEquivalentAccess(oldFragment);
-        LOG.info("nd2 transfer access {} {} ", oldFragment.getId(),
+        LOG.debug("nd2 transfer access {} {} ", oldFragment.getId(),
             oldFragment.getReferenceState().getName());
       }
     }
@@ -284,7 +284,7 @@ public class FragmentManager {
           default:
         }
       } catch (Exception ex) {
-        LOG.error("Error comparing Fragments {} in  {} and {} in {}", fragment.getId(),
+        LOG.warn("Error comparing Fragments {} in  {} and {} in {}", fragment.getId(),
             fragment.getReferenceState(), existingFragment.getId(),
             existingFragment.getReferenceState());
         ex.printStackTrace();
@@ -307,7 +307,7 @@ public class FragmentManager {
     if (fragment.getReferenceState().getCandidateElements() != null && usefulFragment(fragment)) {
       setAccess(fragment);
       setCoverage(fragment);
-      LOG.info("Access Transferred");
+      LOG.debug("Access Transferred");
       fragment.setAccessTransferred(true);
     }
 
@@ -362,7 +362,7 @@ public class FragmentManager {
   public boolean recordCoverage(Node node, StateVertex state, Coverage coverage) {
     Fragment closest = state.getClosestFragment(node);
     if (closest == null) {
-      LOG.error("Could not find closest fragment for given node {}", node);
+      LOG.warn("Could not find closest fragment for given node {}", node);
       return false;
     }
     closest.setCoverage(node, AccessType.direct, coverage);
@@ -394,15 +394,15 @@ public class FragmentManager {
     try {
       closestFragment = state.getClosestFragment(element);
     } catch (Exception e) {
-      LOG.error("Error getting closest Fragment for {}", element);
+      LOG.warn("Error getting closest Fragment for {}", element);
     }
 
     if (closestFragment == null) {
-      LOG.error("No fragment contains the candidate element");
+      LOG.warn("No fragment contains the candidate element");
       return false;
     }
 
-    LOG.info("direct access for closest fragment {} in {} {}", closestFragment.getId(),
+    LOG.debug("direct access for closest fragment {} in {} {}", closestFragment.getId(),
         state.getName(), XPathHelper.getXPathExpression(element.getElement()));
 
     updateInfluence(closestFragment, ACCESS.DIRECT);
@@ -419,11 +419,11 @@ public class FragmentManager {
           || state.getClosestDomFragment(element).getId() != state.getClosestFragment(element)
           .getId();
     } catch (Exception ex) {
-      LOG.error("Error getting closest Fragment for {}", element);
+      LOG.warn("Error getting closest Fragment for {}", element);
     }
 
     if (domAccessNeed) {
-      LOG.info("Recording access DOM fragments in {} {}", state.getName(),
+      LOG.debug("Recording access DOM fragments in {} {}", state.getName(),
           XPathHelper.getXPathExpression(element.getElement()));
       closestFragment = state.getClosestDomFragment(element);
       recordDuplicateAccess(element, coveredCandidates, closestFragment);
@@ -438,7 +438,7 @@ public class FragmentManager {
   private void recordNearDuplicateAccess(CandidateElement element, StateVertex state) {
     ArrayList<CandidateElement> coveredCandidates;
     if (state.hasNearDuplicate() && state.getRootFragment() == null) {
-      LOG.info("Ignored a near-duplicate with no root {}", state.getName());
+      LOG.debug("Ignored a near-duplicate with no root {}", state.getName());
     }
 
     if (state.hasNearDuplicate() && state.getRootFragment() != null) {
@@ -463,7 +463,7 @@ public class FragmentManager {
             if (!coveredCandidates.contains(equivalentCandidate)) {
               coveredCandidates.add(equivalentCandidate);
               updateInfluence(equivalentFragment, ACCESS.EQUIVALENT);
-              LOG.info("nd access {} {}", equivalentFragment.getId(),
+              LOG.debug("nd access {} {}", equivalentFragment.getId(),
                   equivalentFragment.getReferenceState().getName());
             } else {
               LOG.warn("Something Wrong : candidate reappearing : " + equivalentCandidate);
@@ -495,7 +495,7 @@ public class FragmentManager {
             if (!coveredCandidates.contains(equivalentCandidate)) {
               coveredCandidates.add(equivalentCandidate);
               updateInfluence(equivalentFragment, ACCESS.EQUIVALENT);
-              LOG.info("equivalent access {} {}", equivalentFragment.getId(),
+              LOG.debug("equivalent access {} {}", equivalentFragment.getId(),
                   equivalentFragment.getReferenceState().getName());
             }
           }
@@ -528,10 +528,10 @@ public class FragmentManager {
           if (!coveredCandidates.contains(duplicateCandidate)) {
             coveredCandidates.add(duplicateCandidate);
             updateInfluence(duplicateFragment, ACCESS.DUPLICATE);
-            LOG.info("duplicate access {} {}", duplicateFragment.getId(),
+            LOG.debug("duplicate access {} {}", duplicateFragment.getId(),
                 duplicateFragment.getReferenceState().getName());
           } else {
-            LOG.error("Something Wrong : candidate reappearing : " + duplicateCandidate);
+            LOG.warn("Something Wrong : candidate reappearing : " + duplicateCandidate);
           }
         }
       } else {
@@ -561,7 +561,7 @@ public class FragmentManager {
       setCoverage(fragment);
       fragment.setAccessTransferred(true);
     }
-    LOG.info("Access transferred for {}", state.getName());
+    LOG.debug("Access transferred for {}", state.getName());
   }
 
   public ArrayList<Fragment> getDuplicateFragments(Fragment fragment) {
@@ -1262,13 +1262,13 @@ public class FragmentManager {
 
   public boolean areRelated(Fragment frag, Fragment frag2) {
     if (getRelatedFragments(frag).contains(frag2)) {
-      LOG.info("Fragments {} {} and {} {} related", frag.getId(),
+      LOG.debug("Fragments {} {} and {} {} related", frag.getId(),
           frag.getReferenceState().getName(),
           frag2.getId(), frag2.getReferenceState().getName());
       return true;
     }
     if (frag.getNd2Fragments().contains(frag2)) {
-      LOG.info("Fragments {} {} and {} {} ND2", frag.getId(), frag.getReferenceState().getName(),
+      LOG.debug("Fragments {} {} and {} {} ND2", frag.getId(), frag.getReferenceState().getName(),
           frag2.getId(), frag2.getReferenceState().getName());
       return true;
     }

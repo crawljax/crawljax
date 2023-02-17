@@ -59,17 +59,26 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     Document fragmentedDom = ((HybridStateVertexImpl) fragState).loadFragmentDom(dom, screenshot);
 
     if (manager != null) {
+      int unique =0;
+      int useful =0;
       for (Fragment fragment : fragState.getFragments()) {
         try {
           manager.addFragment(fragment, COMPARE_FAST);
           if (!fragment.isGlobal() && fragment.getDuplicateFragments().isEmpty()) {
             LOG.error("Fragment disconnected in :" + fragState.getName());
           }
+          if(fragment.isUseful()){
+            useful += 1;
+          }
+          if(fragment.isGlobal()){
+            unique += 1;
+          }
         } catch (Exception ex) {
           LOG.error("Error adding fragment to fragment manager !!");
-          manager.addFragment(fragment, COMPARE_FAST);
+//          manager.addFragment(fragment, COMPARE_FAST);
         }
       }
+      LOG.info("Found {} total, {} useful and {} unique fragments for state {}", fragState.getFragments().size(), useful, unique);
     }
 
   }
@@ -146,6 +155,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     }
 
     if (manager != null) {
+      int useful =0, unique=0;
       for (Fragment fragment : newState.getFragments()) {
         try {
           if (!FragmentManager.usefulFragment(fragment)) {
@@ -155,11 +165,18 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
           if (!fragment.isGlobal() && fragment.getDuplicateFragments().isEmpty()) {
             LOG.error("Fragment disconnected in :" + newState.getName());
           }
+          if(fragment.isUseful()){
+            useful += 1;
+          }
+          if(fragment.isGlobal()){
+            unique += 1;
+          }
         } catch (Exception ex) {
           LOG.error("Error adding fragment to fragment manager !!");
 //					manager.addFragment(fragment);
         }
       }
+      LOG.info("Found {} total, {} useful and {} unique fragments for state {}", newState.getFragments().size(), useful, unique);
     }
   }
 

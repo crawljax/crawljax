@@ -83,10 +83,20 @@ class OutPutModelCache {
     for (Edge e : edges) {
       StateBuilder from = states.get(e.getFrom());
       StateBuilder to = states.get(e.getTo());
-      checkNotNull(from, "From state %s is unkown", e.getFrom());
-      checkNotNull(to, "To state %s is unkown", e.getTo());
-      from.incrementFanOut();
-      to.incrementFanIn();
+
+      try {
+        checkNotNull(from, "From state %s is unkown", e.getFrom());
+        from.incrementFanOut();
+      }catch(Exception ex){
+        LOG.error(ex.getMessage());
+      }
+
+      try{
+        checkNotNull(to, "To state %s is unkown", e.getTo());
+        to.incrementFanIn();
+      }catch(Exception ex){
+        LOG.error(ex.getMessage());
+      }
     }
   }
 

@@ -30,14 +30,15 @@ public class Edge {
     } catch (CrawljaxException e) {
       throw new CrawlOverviewException("Could not get state vertex", e);
     }
-    this.text = eventable.getElement().getText();
     this.hash = buildHash();
     this.id = eventable.getIdentification().toString();
     Element el = eventable.getElement();
     if (el == null) {
       element = "unkown";
+      this.text = eventable.getIdentification().getValue();
     } else {
-      element = eventable.getElement().toString();
+      element = el.toString();
+      this.text = el.getText();
     }
     eventType = eventable.getEventType().toString();
   }

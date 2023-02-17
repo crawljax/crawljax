@@ -26,7 +26,12 @@ public class State {
   private final int cluster;
   private long timeAdded;
 
-  private boolean onURL;
+  public boolean isOnURL() {
+    return onURL;
+  }
+
+
+  private final boolean onURL;
 
   /*
    * public State(StateVertex state, int fanIn, int fanOut,
@@ -51,6 +56,7 @@ public class State {
     this.nearestState = nearestState;
     this.distToNearestState = distToNearestState;
     this.cluster = state.getCluster();
+    this.onURL = state.isOnURL();
   }
 
   @JsonCreator
@@ -65,7 +71,8 @@ public class State {
       @JsonProperty("nearDuplicate") String nearestState,
       @JsonProperty("distToNearestState") double distToNearestState,
       @JsonProperty("cluster") int cluster,
-      @JsonProperty("timeAdded") long timeAdded) {
+      @JsonProperty("timeAdded") long timeAdded,
+      @JsonProperty("onURL") boolean onURL) {
     super();
     this.name = name;
     this.url = url;
@@ -79,6 +86,7 @@ public class State {
     this.distToNearestState = distToNearestState;
     this.cluster = cluster;
     this.timeAdded = timeAdded;
+    this.onURL = onURL;
   }
 
   public State(StateVertex state, int fanIn, int fanOut,
@@ -98,6 +106,7 @@ public class State {
     this.distToNearestState = distToNearestState;
     this.timeAdded = timeAdded;
     this.cluster = state.getCluster();
+    this.onURL = state.isOnURL();
   }
 
   /*

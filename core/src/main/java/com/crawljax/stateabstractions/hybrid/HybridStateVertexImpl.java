@@ -658,7 +658,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       if (lca.isSameNode(rootNode)) {
         created = createDomFragment(rootNode, nestedBlocks, parent, driver);
         if (created != null) {
-          LOG.info("Created Dom fragment {}, child of {}, for {} ", created.getId(), parent.getId(),
+          LOG.debug("Created Dom fragment {}, child of {}, for {} ", created.getId(), parent.getId(),
               XPathHelper.getSkeletonXpath(rootNode));
           fragmentMap.put(created.getId(), created);
           returnList.add(created);
@@ -732,9 +732,12 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       ;
     }
 
-    added.addAll(
-        getDomFragments(rootNode, rootFragment.getNestedBlocks(), fragmentMap, rootFragment,
-            driver));
+    List<Fragment> domFragments = getDomFragments(rootNode, rootFragment.getNestedBlocks(), fragmentMap, rootFragment,
+            driver);
+
+    LOG.info("Added {} DOM fragments", domFragments.size());
+
+    added.addAll(domFragments);
 
     return added;
   }

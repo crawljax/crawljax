@@ -898,7 +898,7 @@ public class VipsUtils {
 
     List<String> xpaths = getXpathList(dom.getElementsByTagName("body").item(0));
     LOG.info("Sending {} xpaths", xpaths.size());
-    LOG.info("{}", xpaths);
+    LOG.debug("{}", xpaths);
     Object attributeString = null;
     if (USE_CDP) {
       Gson gson = new Gson();
@@ -915,13 +915,13 @@ public class VipsUtils {
           attributeString = ((Map) attributeString).get("value");
         }
       }
-      LOG.info("{}", attributeString);
+      LOG.debug("{}", attributeString);
     } else {
       Gson gson = new Gson();
       String xpathString = gson.toJson(xpaths);
       String executeScript = script + String.format(COMPUTEDSTYLESHEET_ALL, xpathString);
       attributeString = ((JavascriptExecutor) driver).executeScript(executeScript);
-      LOG.info(attributeString.toString());
+      LOG.debug(attributeString.toString());
     }
 
 //		Gson gson = new Gson();

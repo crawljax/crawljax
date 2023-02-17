@@ -10,6 +10,7 @@ import com.crawljax.core.state.Element;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.Eventable.EventType;
 import com.crawljax.core.state.Identification;
+import com.crawljax.core.state.Identification.How;
 import com.crawljax.core.state.InMemoryStateFlowGraph;
 import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.core.state.StateMachine;
@@ -331,6 +332,15 @@ public class Crawler {
         }
       }
       stateMachine.setCurrentState(clone);
+    }
+
+    // Adding a reload edge whenever a URL reload happens. The Crawlpaths would not have this edge
+    boolean added = stateMachine.getStateFlowGraph().addEdge(previousState, stateMachine.getCurrentState(), new Eventable(new Identification(
+        How.url, context.getConfig().getUrl().toString()), EventType.reload));
+    if(!added) {
+      LOG.info("Did not add reload edge from {} to {}", previousState.getName(), stateMachine.getCurrentState().getName());
+    }else{
+      LOG.info("Added a reload edge from {} to {}", previousState.getName(), stateMachine.getCurrentState().getName());
     }
   }
 
