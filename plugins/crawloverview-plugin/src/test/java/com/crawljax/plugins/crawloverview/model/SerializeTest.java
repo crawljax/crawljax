@@ -42,10 +42,10 @@ public class SerializeTest {
             new Dimension(3, 4)));
     State state1 =
         new State("state1", "http://example.com/a", candidateElements, 1, 1, 1,
-            ImmutableList.of("failedEvent1"), false, null, 0, 0, 0);
+            ImmutableList.of("failedEvent1"), false, null, 0, 0, 0, false);
     State state2 =
         new State("state2", "http://example.com/b", candidateElements, 1, 1, 1,
-            ImmutableList.of("failedEvent2"), false, null, 0, 0, 0);
+            ImmutableList.of("failedEvent2"), false, null, 0, 0, 0, false);
     ImmutableMap<String, State> states =
         ImmutableMap.of(state1.getName(), state1, state2.getName(), state2);
     ImmutableList<Edge> edges =

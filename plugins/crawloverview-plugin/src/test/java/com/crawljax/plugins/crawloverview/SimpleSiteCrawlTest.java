@@ -80,8 +80,8 @@ public class SimpleSiteCrawlTest {
   public void verifyFanStatistics() {
     StateStatistics stats = result.getStatistics().getStateStats();
     assertThat("Least fan in", stats.getLeastFanIn().getCount(), is(1));
-    assertThat("Most fan in", stats.getMostFanIn().getCount(), is(2));
-    assertThat("Least fan out", stats.getLeastFanOut().getCount(), is(0));
+    assertThat("Most fan in", stats.getMostFanIn().getCount(), is(3));
+    assertThat("Least fan out", stats.getLeastFanOut().getCount(), is(1));
     assertThat("Most fan out", stats.getMostFanOut().getCount(), is(2));
   }
 
