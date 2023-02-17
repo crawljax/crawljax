@@ -73,7 +73,7 @@ public class StyleComparator extends AbstractComparator {
           Node nextSibling = removeNode.getNextSibling();
 
           NodeList children = removeNode.getChildNodes();
-          if (children != null && children.getLength() > 0) {
+          if (children.getLength() > 0) {
             if (nextSibling == null) {
               parent.appendChild(children.item(0));
             } else {
@@ -110,10 +110,10 @@ public class StyleComparator extends AbstractComparator {
     String[] styleProperties = styleAttribute.split(";");
     String[] styleProperty;
     String badWayOfDoingThis = "";
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
-    for (int i = 0; i < styleProperties.length; i++) {
-      styleProperty = styleProperties[i].split(":");
+    for (String property : styleProperties) {
+      styleProperty = property.split(":");
       if (styleProperty.length == 2) {
         for (int j = 0; j < ALLOW_STYLE_TYPES.length; j++) {
           if (styleProperty[0].trim().equalsIgnoreCase(ALLOW_STYLE_TYPES[j])) {

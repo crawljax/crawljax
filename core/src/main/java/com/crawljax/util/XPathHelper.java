@@ -116,7 +116,7 @@ public final class XPathHelper {
 //			return xPath;
 //		}
 
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
     if (parent != node) {
       buffer.append(getSkeletonXpath(parent));

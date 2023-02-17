@@ -65,13 +65,13 @@ public class FormatUtilities {
 
   public static String[] getFields(String line, char separator) {
     if (line != null && !line.equals("")) {
-      StringBuffer field = new StringBuffer();
+      StringBuilder field = new StringBuilder();
       LinkedList fieldArr = new LinkedList();
       for (int i = 0; i < line.length(); i++) {
         char ch = line.charAt(i);
         if (ch == separator) {
           fieldArr.add(field.toString().trim());
-          field = new StringBuffer();
+          field = new StringBuilder();
         } else {
           field.append(ch);
         }
@@ -85,7 +85,7 @@ public class FormatUtilities {
   }
 
   public static String[] getFields(String line, char separator, char quote) {
-    String parse[] = getFields(line, separator);
+    String[] parse = getFields(line, separator);
     for (int i = 0; i < parse.length; i++) {
       parse[i] = stripQuotes(parse[i], quote);
     }
@@ -110,7 +110,7 @@ public class FormatUtilities {
     Random r = new Random(d.getTime());
     String str = "";
     for (int i = 0; i < length; i++) {
-      str = (new StringBuilder(String.valueOf(str))).append((char) (65 + r.nextInt(26))).toString();
+      str = (new StringBuilder(str)).append((char) (65 + r.nextInt(26))).toString();
     }
 
     return str;
@@ -123,7 +123,7 @@ public class FormatUtilities {
     } catch (IndexOutOfBoundsException e) {
       res = s;
       for (int i = s.length(); i < size; i++) {
-        res = (new StringBuilder(String.valueOf(res))).append(fillChar).toString();
+        res = (new StringBuilder(res)).append(fillChar).toString();
       }
 
     }
@@ -205,7 +205,7 @@ public class FormatUtilities {
   }
 
   public static String getRoot(String s) {
-    if (s != null && s.length() > 0 && s.startsWith("{") && s.endsWith("}")) {
+    if (s != null && s.startsWith("{") && s.endsWith("}")) {
       int end = s.indexOf('{', 1);
       if (end == -1) {
         end = s.indexOf('}', 1);
@@ -217,7 +217,7 @@ public class FormatUtilities {
   }
 
   public static List<String> getChildren(String s) {
-    if (s != null && s.length() > 0 && s.startsWith("{") && s.endsWith("}")) {
+    if (s != null && s.startsWith("{") && s.endsWith("}")) {
       List<String> children = new ArrayList<>();
       int end = s.indexOf('{', 1);
       if (end == -1) {
@@ -241,7 +241,7 @@ public class FormatUtilities {
 
   public static String parseTree(String s, List<String> children) {
     children.clear();
-    if (s != null && s.length() > 0 && s.startsWith("{") && s.endsWith("}")) {
+    if (s != null && s.startsWith("{") && s.endsWith("}")) {
       int end = s.indexOf('{', 1);
       if (end == -1) {
         end = s.indexOf('}', 1);
@@ -264,8 +264,8 @@ public class FormatUtilities {
     }
   }
 
-  public static String commaSeparatedList(String list[]) {
-    StringBuffer s = new StringBuffer();
+  public static String commaSeparatedList(String[] list) {
+    StringBuilder s = new StringBuilder();
     for (int i = 0; i < list.length; i++) {
       s.append(list[i]);
       if (i != list.length - 1) {
@@ -277,9 +277,9 @@ public class FormatUtilities {
   }
 
   public static String commaSeparatedList(String list[], char quote) {
-    StringBuffer s = new StringBuffer();
+    StringBuilder s = new StringBuilder();
     for (int i = 0; i < list.length; i++) {
-      s.append((new StringBuilder(String.valueOf(quote))).append(list[i]).append(quote).toString());
+      s.append(quote).append(list[i]).append(quote);
       if (i != list.length - 1) {
         s.append(",");
       }
@@ -289,7 +289,7 @@ public class FormatUtilities {
   }
 
   public static String spellOutNumber(String num) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int i = 0; i < num.length(); i++) {
       char ch = num.charAt(i);
       switch (ch) {
@@ -343,7 +343,7 @@ public class FormatUtilities {
   }
 
   public static String substituteBlanks(String s, String subst) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int i = 0; i < s.length(); i++) {
       if (s.charAt(i) != ' ') {
         sb.append(s.charAt(i));
@@ -356,9 +356,9 @@ public class FormatUtilities {
   }
 
   public static String escapeLatex(String s) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int i = 0; i < s.length(); i++) {
-      String c = (new StringBuilder(String.valueOf(s.charAt(i)))).toString();
+      String c = String.valueOf(s.charAt(i));
       if (c.equals("#")) {
         c = "\\#";
       }

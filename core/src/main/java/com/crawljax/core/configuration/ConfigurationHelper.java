@@ -17,7 +17,7 @@ public final class ConfigurationHelper {
    * @return string representation of list. format: a, b, , c. Empty String allowed
    */
   public static String listToStringEmptyStringAllowed(List<String> items) {
-    StringBuffer str = new StringBuffer();
+    StringBuilder str = new StringBuilder();
     int i = 0;
     for (String item : items) {
       if (i > 0) {
@@ -34,7 +34,7 @@ public final class ConfigurationHelper {
    * @return string representation of list. format: a, b, c
    */
   public static String listToString(List<?> items) {
-    StringBuffer str = new StringBuffer();
+    StringBuilder str = new StringBuilder();
     for (Object item : items) {
       if (!str.toString().equals("")) {
         str.append(", ");

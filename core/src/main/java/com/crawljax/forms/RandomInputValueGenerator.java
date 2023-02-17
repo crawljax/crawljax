@@ -21,7 +21,7 @@ public class RandomInputValueGenerator {
    * @return a random string
    */
   private String generate(int length) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (int i = 0; i < length; i++) {
       int index = new Random().nextInt(
           "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".length());
