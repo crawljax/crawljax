@@ -203,6 +203,7 @@ public class DomUtilsTest {
   @Test
   public void writeAndGetContents() throws IOException, TransformerException {
     File f = File.createTempFile("HelperTest.writeAndGetContents", ".tmp");
+    f.deleteOnExit();
     DomUtils.writeDocumentToFile(
         DomUtils.asDocument("<html><body><p>Test</p></body></html>"),
         f.getAbsolutePath(), "html", 2);

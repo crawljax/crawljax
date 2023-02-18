@@ -39,6 +39,7 @@ public class CrawljaxConfigurationBuilderTest {
   @Test(expected = IllegalArgumentException.class)
   public void ifOutputIsFileNotFolderReject() throws Exception {
     File file = File.createTempFile(getClass().getSimpleName(), "tmp");
+    file.deleteOnExit();
     assertThat(file.exists(), is(true));
     testBuilder().setOutputDirectory(file).build();
   }
