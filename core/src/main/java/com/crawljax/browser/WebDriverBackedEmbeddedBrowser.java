@@ -477,7 +477,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
           // (catching)
           // Results in good performance...
         }catch(Exception e){
-          LOGGER.error("Unable to switch to frame to fire eventable {}", eventable);
+          LOGGER.warn("Unable to switch to frame to fire eventable {}", eventable);
         }
         handleChanged = true;
       }
@@ -671,13 +671,14 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
       try {
         switchToFrame(frameIdentification);
       } catch (InvalidSelectorException e) {
-        LOGGER.info("Invalid frame selector: " + frameIdentification + ", continuing...",
-            e);
+        LOGGER.info("Invalid frame selector: " + frameIdentification + ", continuing...");
+        LOGGER.debug(e.getMessage());
         browser.switchTo().defaultContent();
         return;
       }catch (Exception e) {
-        LOGGER.error("Exception {} switching to frame {}",
-            e, frameIdentification);
+        LOGGER.error("Exception switching to frame {}",
+            frameIdentification);
+        LOGGER.debug(e.getMessage());
         browser.switchTo().defaultContent();
         return;
       }
@@ -824,16 +825,15 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
   @Override
   public String getFrameDom(String iframeIdentification) {
     try {
-
       switchToFrame(iframeIdentification);
     }catch (InvalidSelectorException e) {
-      LOGGER.info("Invalid frame selector: " + iframeIdentification + ", continuing...",
-          e);
+      LOGGER.warn("Invalid frame selector: " + iframeIdentification + ", continuing...");
+      LOGGER.debug(e.getMessage());
       browser.switchTo().defaultContent();
       return "";
     }catch (Exception e) {
-      LOGGER.error("Exception {} switching to frame {}",
-          e, iframeIdentification);
+      LOGGER.warn("Exception switching to frame {}", iframeIdentification);
+      LOGGER.debug(e.getMessage());
       browser.switchTo().defaultContent();
       return "";
     }
