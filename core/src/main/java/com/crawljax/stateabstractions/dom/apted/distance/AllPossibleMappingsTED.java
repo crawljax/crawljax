@@ -28,7 +28,6 @@ import com.crawljax.stateabstractions.dom.apted.node.AptedNode;
 import com.crawljax.stateabstractions.dom.apted.node.NodeIndexer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 
 /**
  * Implements an exponential algorithm for the tree edit distance. It computes all possible TED
@@ -39,17 +38,10 @@ import java.util.Iterator;
  */
 public class AllPossibleMappingsTED<C extends CostModel, D> {
 
-  /**
-   * Indexer of the source tree.
-   *
-   * @see node.NodeIndexer
-   */
   private NodeIndexer it1;
 
   /**
    * Indexer of the destination tree.
-   *
-   * @see node.NodeIndexer
    */
   private NodeIndexer it2;
 
@@ -66,7 +58,7 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
   /**
    * Cost model to be used for calculating costs of edit operations.
    */
-  private C costModel;
+  private final C costModel;
 
   /**
    * Constructs the AllPossibleMappingsTED algorithm with a specific cost model.
@@ -119,8 +111,8 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
    */
   private ArrayList<ArrayList<int[]>> generateAllOneToOneMappings() {
     // Start with an empty mapping - all nodes are deleted or inserted.
-    ArrayList<ArrayList<int[]>> mappings = new ArrayList<ArrayList<int[]>>(1);
-    mappings.add(new ArrayList<int[]>(size1 + size2));
+    ArrayList<ArrayList<int[]>> mappings = new ArrayList<>(1);
+    mappings.add(new ArrayList<>(size1 + size2));
     // Add all deleted nodes.
     for (int n1 = 0; n1 < size1; n1++) {
       mappings.get(0).add(new int[]{n1, -1});
@@ -178,12 +170,7 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
   private void removeNonTEDMappings(ArrayList<ArrayList<int[]>> mappings) {
     // Validate each mapping separately.
     // Iterator safely removes mappings while iterating.
-    for (Iterator<ArrayList<int[]>> mit = mappings.iterator(); mit.hasNext(); ) {
-      ArrayList<int[]> m = mit.next();
-      if (!isTEDMapping(m)) {
-        mit.remove();
-      }
-    }
+    mappings.removeIf(m -> !isTEDMapping(m));
   }
 
   /**
@@ -273,7 +260,7 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
    * @return a mapping.
    */
   private ArrayList<int[]> deepMappingCopy(ArrayList<int[]> mapping) {
-    ArrayList<int[]> mapping_copy = new ArrayList<int[]>(mapping.size());
+    ArrayList<int[]> mapping_copy = new ArrayList<>(mapping.size());
     for (int[] me : mapping) { // for each mapping element in a mapping
       mapping_copy.add(Arrays.copyOf(me, me.length));
     }
@@ -287,9 +274,9 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
    * @return set of mappings.
    */
   private ArrayList<ArrayList<int[]>> deepMappingsCopy(ArrayList<ArrayList<int[]>> mappings) {
-    ArrayList<ArrayList<int[]>> mappings_copy = new ArrayList<ArrayList<int[]>>(mappings.size());
+    ArrayList<ArrayList<int[]>> mappings_copy = new ArrayList<>(mappings.size());
     for (ArrayList<int[]> m : mappings) { // for each mapping in mappings
-      ArrayList<int[]> m_copy = new ArrayList<int[]>(m.size());
+      ArrayList<int[]> m_copy = new ArrayList<>(m.size());
       for (int[] me : m) { // for each mapping element in a mapping
         m_copy.add(Arrays.copyOf(me, me.length));
       }
@@ -322,15 +309,13 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
    *
    * @param m an edit mapping.
    * @param e element to remove from {@code m}.
-   * @return {@code true} if {@code e} has been removed, and {@code false} otherwise.
    */
-  private boolean removeMappingElement(ArrayList<int[]> m, int[] e) {
+  private void removeMappingElement(ArrayList<int[]> m, int[] e) {
     for (int[] me : m) {
       if (me[0] == e[0] && me[1] == e[1]) {
         m.remove(me);
-        return true;
+        return;
       }
     }
-    return false;
   }
 }

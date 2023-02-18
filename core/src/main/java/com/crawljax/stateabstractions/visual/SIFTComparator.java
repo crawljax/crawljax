@@ -21,7 +21,7 @@ public class SIFTComparator {
   private static final Logger LOGGER = LoggerFactory.getLogger(SIFTComparator.class);
 
   /* The threshold ratio used for the distance (Lowe's ratio test). */
-  static float nndrRatio = 0.7f;
+  static final float nndrRatio = 0.7f;
 
   /* The similarity threshold to decide whether two images are the same. */
   static float treshold = 0.05f;
@@ -87,9 +87,9 @@ public class SIFTComparator {
 //		System.out.println("knnMatches: " + knnMatches.size());
 
     List<DMatch> listOfGoodMatches = new ArrayList<>();
-    for (int i = 0; i < knnMatches.size(); i++) {
-      if (knnMatches.get(i).rows() > 1) {
-        DMatch[] matches = knnMatches.get(i).toArray();
+    for (MatOfDMatch knnMatch : knnMatches) {
+      if (knnMatch.rows() > 1) {
+        DMatch[] matches = knnMatch.toArray();
         if (matches[0].distance < nndrRatio * matches[1].distance) {
           listOfGoodMatches.add(matches[0]);
         }
@@ -97,16 +97,6 @@ public class SIFTComparator {
     }
     MatOfDMatch goodMatches = new MatOfDMatch();
     goodMatches.fromList(listOfGoodMatches);
-
-//		System.out.println("goodMatches: " + listOfGoodMatches.size());
-
-//		/* Draw matches. */
-//		Mat imgMatches = new Mat();
-//		Features2d.drawMatches(img1, keypoints1, img2, keypoints2, goodMatches, imgMatches, Scalar.all(-1), Scalar.all(-1), new MatOfByte(),
-//				Features2d.NOT_DRAW_SINGLE_POINTS);
-//		/* Show detected matches. */
-//		HighGui.imshow("Good Matches", imgMatches);
-//		HighGui.waitKey(0);
 
     img1.release();
     img2.release();

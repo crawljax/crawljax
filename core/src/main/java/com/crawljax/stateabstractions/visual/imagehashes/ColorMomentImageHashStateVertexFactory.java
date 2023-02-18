@@ -24,7 +24,7 @@ public class ColorMomentImageHashStateVertexFactory extends StateVertexFactory {
     OpenCVLoad.load();
   }
 
-  private ColorMomentImageHash visHash = new ColorMomentImageHash();
+  private final ColorMomentImageHash visHash = new ColorMomentImageHash();
 
 
   @Override

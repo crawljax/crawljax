@@ -31,7 +31,7 @@ import org.w3c.dom.Node;
 public class FragmentManager {
 
   public static FragmentRules USEFUL_FRAGMENT_RULES = new FragmentRules();
-  private static Logger LOG = LoggerFactory.getLogger(FragmentManager.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FragmentManager.class);
 
   /**
    * Global list of unique fragments
@@ -41,12 +41,12 @@ public class FragmentManager {
   /**
    * Global map that maintains clusters of states. Each entry in the list is a set of states that are near-duplicates to each other
    */
-  List<Set<StateVertex>> nearDuplicates = new ArrayList<Set<StateVertex>>();
+  List<Set<StateVertex>> nearDuplicates = new ArrayList<>();
 
   HashMap<StatePair, StatePair> stateComparisionCache = new HashMap<>();
   HashMap<Integer, Double> hops = new HashMap<>();
   private Provider<InMemoryStateFlowGraph> sfg;
-  private HashMap<Integer, Double> numNonSelections = new HashMap<>();
+  private final HashMap<Integer, Double> numNonSelections = new HashMap<>();
   public FragmentManager(Provider<InMemoryStateFlowGraph> graphProvider) {
     this.sfg = graphProvider;
   }
@@ -154,7 +154,7 @@ public class FragmentManager {
 
   }
 
-  public boolean cacheStateComparision(StatePair statePair, boolean assignDynamic) {
+  public void cacheStateComparision(StatePair statePair, boolean assignDynamic) {
     if (!stateComparisionCache.containsKey(statePair)) {
       stateComparisionCache.put(statePair, statePair);
       StateComparision comp = statePair.getStateComparision();
@@ -167,9 +167,7 @@ public class FragmentManager {
         }
       }
     } else {
-      return false;
     }
-    return true;
   }
 
   private void setDynamic(Fragment dyn) {
@@ -179,11 +177,9 @@ public class FragmentManager {
     }
   }
 
-  public boolean setCoverage(Fragment newFragment) {
-    if (newFragment.isAccessTransferred())
-    // Already access transferred
-    {
-      return true;
+  public void setCoverage(Fragment newFragment) {
+    if (newFragment.isAccessTransferred()) {
+      return;
     }
 
     if (newFragment.isGlobal()) {
@@ -207,18 +203,17 @@ public class FragmentManager {
           LOG.debug("duplicate coverage transfer {} {} ", oldFragment.getId(),
               oldFragment.getReferenceState().getName());
         }
-
       }
     }
-    return true;
   }
 
   /**
-   * Used to transfer information regarding already performed actions that can have duplicates in this newfragment
-   * @param newFragment
-   * @return
+   * Used to transfer information regarding already performed actions that can have duplicates in
+   * this new-fragment
+   *
+   * @param newFragment a fragment that is being added to the graph
    */
-  public boolean setAccess(Fragment newFragment) {
+  public void setAccess(Fragment newFragment) {
     LOG.debug("Setting access for {} {}", newFragment.getId(),
         newFragment.getReferenceState().getName());
     if (newFragment.isGlobal()) {
@@ -251,18 +246,18 @@ public class FragmentManager {
             oldFragment.getReferenceState().getName());
       }
     }
-    return true;
   }
 
   /**
-   * Every fragment that is discovered during the crawl will be compared with the global map of unique fragments
-   * @param fragment
-   * @param fast
-   * @return
+   * Every fragment that is discovered during the crawl will be compared with the global map of
+   * unique fragments
+   *
+   * @param fragment the fragment to be added
+   * @param fast     if true, the comparison will be done using the fast comparison algorithm
    */
-  public boolean addFragment(Fragment fragment, boolean fast) {
-    ArrayList<Fragment> equivalentFragments = new ArrayList<Fragment>();
-    ArrayList<Fragment> nd2Fragments = new ArrayList<Fragment>();
+  public void addFragment(Fragment fragment, boolean fast) {
+    ArrayList<Fragment> equivalentFragments = new ArrayList<>();
+    ArrayList<Fragment> nd2Fragments = new ArrayList<>();
     for (Fragment existingFragment : fragments) {
       try {
 
@@ -273,7 +268,7 @@ public class FragmentManager {
             existingFragment.addDuplicateFragment(fragment);
             fragment.addDuplicateFragment(existingFragment);
             fragment.setIsGlobal(false);
-            return false;
+            return;
           case EQUIVALENT:
             equivalentFragments.add(existingFragment);
             break;
@@ -314,22 +309,21 @@ public class FragmentManager {
     LOG.debug("Added framgnet {}",
         XPathHelper.getXPathExpression(fragment.getFragmentParentNode()));
 
-    return true;
   }
 
   /**
    * After every action is performed, the priority score or influence is adjusted
-   * @param fragment
-   * @param access
-   * @return
+   *
+   * @param fragment the fragment that was just visited
+   * @param access   the type of access that was performed
    */
-  public boolean updateInfluence(Fragment fragment, ACCESS access) {
+  public void updateInfluence(Fragment fragment, ACCESS access) {
     if (fragment.getParent() != null) {
       updateInfluence(fragment.getParent(), access);
     }
 
     if (fragment.getCandidateInfluence() == null) {
-      return false;
+      return;
     }
 
     double influence = fragment.getCandidateInfluence();
@@ -344,20 +338,17 @@ public class FragmentManager {
       case EQUIVALENT:
         fragment.setCandidateInfluence(influence - 0.25);
         break;
-      case ND2:
-        break;
       default:
         break;
     }
-    return true;
   }
 
   /**
    * Can be invoked from a coverage plugin to determine how much of the state DOM is covered by test suites
-   * @param node
-   * @param state
-   * @param coverage
-   * @return
+   * @param node the node to be checked
+   * @param state the state to be checked
+   * @param coverage the coverage type
+   * @return true if the coverage was recorded, false otherwise
    */
   public boolean recordCoverage(Node node, StateVertex state, Coverage coverage) {
     Fragment closest = state.getClosestFragment(node);
@@ -389,7 +380,7 @@ public class FragmentManager {
     state.setDirectAccess(element);
 //		element.setDirectAccess(true);
 
-    ArrayList<CandidateElement> coveredCandidates = new ArrayList<CandidateElement>();
+    ArrayList<CandidateElement> coveredCandidates = new ArrayList<>();
     Fragment closestFragment = null;
     try {
       closestFragment = state.getClosestFragment(element);
@@ -443,7 +434,7 @@ public class FragmentManager {
 
     if (state.hasNearDuplicate() && state.getRootFragment() != null) {
       // Record equivalent access for near-duplicate states
-      coveredCandidates = new ArrayList<CandidateElement>();
+      coveredCandidates = new ArrayList<>();
 
       Set<StateVertex> nearDuplicateStates = getNearDuplicates(state);
       for (StateVertex nearDuplicate : nearDuplicateStates) {
@@ -542,7 +533,7 @@ public class FragmentManager {
   }
 
   private Set<StateVertex> getNearDuplicates(StateVertex state) {
-    Set<StateVertex> returnSet = new HashSet<StateVertex>();
+    Set<StateVertex> returnSet = new HashSet<>();
     for (Set<StateVertex> nearduplicateSet : nearDuplicates) {
       if (nearduplicateSet.contains(state)) {
         returnSet.addAll(nearduplicateSet);
@@ -565,7 +556,7 @@ public class FragmentManager {
   }
 
   public ArrayList<Fragment> getDuplicateFragments(Fragment fragment) {
-    ArrayList<Fragment> duplicateFragments = new ArrayList<Fragment>();
+    ArrayList<Fragment> duplicateFragments = new ArrayList<>();
     if (fragment == null) {
       return duplicateFragments;
     }
@@ -590,7 +581,7 @@ public class FragmentManager {
   }
 
   public ArrayList<Fragment> getEquivalentFragments(Fragment fragment) {
-    ArrayList<Fragment> equivalentFragments = new ArrayList<Fragment>();
+    ArrayList<Fragment> equivalentFragments = new ArrayList<>();
     if (fragment == null) {
       return equivalentFragments;
     }
@@ -601,7 +592,7 @@ public class FragmentManager {
       equivalentFragments = fragment.getEquivalentFragments();
     }
 
-    Set<Fragment> dupOfEquivalent = new HashSet<Fragment>();
+    Set<Fragment> dupOfEquivalent = new HashSet<>();
     dupOfEquivalent.addAll(equivalentFragments);
     for (Fragment equivalent : equivalentFragments) {
       dupOfEquivalent.addAll(equivalent.getDuplicateFragments());
@@ -612,7 +603,7 @@ public class FragmentManager {
   }
 
   public ArrayList<Fragment> getRelatedFragments(Fragment fragment) {
-    ArrayList<Fragment> relatedFragments = new ArrayList<Fragment>();
+    ArrayList<Fragment> relatedFragments = new ArrayList<>();
     relatedFragments.addAll(getDuplicateFragments(fragment));
     relatedFragments.addAll(getEquivalentFragments(fragment));
     return relatedFragments;
@@ -935,10 +926,7 @@ public class FragmentManager {
     Mat chist2 = colorHistogram.getHistogram(image2);
     double comp = ColorHistogram.compare(chist1, chist2);
 
-    if (comp == 0) {
-      return true;
-    }
-    return false;
+    return comp == 0;
   }
 
   /**
@@ -1084,7 +1072,7 @@ public class FragmentManager {
    */
   private List<Fragment> getAffectedFragments(List<Node> changedNodes, StateVertex state) {
 
-    List<Fragment> affectedFragments = new ArrayList<Fragment>();
+    List<Fragment> affectedFragments = new ArrayList<>();
 
     Node lca = VipsUtils.getParentBox(changedNodes);
     if (changedNodes.contains(lca)) {
@@ -1248,7 +1236,7 @@ public class FragmentManager {
     if (!numNonSelections.containsKey(currentState.getId())) {
       numNonSelections.put(currentState.getId(), 0.0);
     }
-    List<Integer> selectionStates = new ArrayList<Integer>();
+    List<Integer> selectionStates = new ArrayList<>();
     selectionStates.addAll(numNonSelections.keySet());
     for (int key : selectionStates) {
       if (key == currentState.getId()) {

@@ -94,7 +94,7 @@ public class Form {
 
   @Override
   public String toString() {
-    return formAction.getCrawlElement().toString() + " sets " + formInputs.toString();
+    return formAction.getCrawlElement().toString() + " sets " + formInputs;
   }
 
 }

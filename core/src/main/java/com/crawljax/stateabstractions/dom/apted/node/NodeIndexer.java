@@ -67,65 +67,65 @@ public class NodeIndexer<D, C extends CostModel> {
    *
    * @see node.Node
    */
-  public AptedNode<D> preL_to_node[];
+  public final AptedNode<D>[] preL_to_node;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the size of n's
    * subtree (node n and all its descendants).
    */
-  public int sizes[];
+  public final int[] sizes;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the left-to-right
    * preorder id of n's parent.
    */
-  public int parents[];
+  public final int[] parents;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the array of n's
    * children. Size of children array at node n equals the number of n's children.
    */
-  public int children[][];
+  public final int[][] children;
 
   /**
    * Index from left-to-right postorder id of node n (starting with {@code 0}) to the left-to-right
    * postorder id of n's leftmost leaf descendant.
    */
-  public int postL_to_lld[];
+  public final int[] postL_to_lld;
 
   /**
    * Index from right-to-left postorder id of node n (starting with {@code 0}) to the right-to-left
    * postorder id of n's rightmost leaf descendant.
    */
-  public int postR_to_rld[];
+  public final int[] postR_to_rld;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the left-to-right
    * preorder id of the first leaf node to the left of n. If there is no leaf node to the left of n,
    * it is represented with the value {@code -1} [1, Section 8.4].
    */
-  public int preL_to_ln[];
+  public final int[] preL_to_ln;
 
   /**
    * Index from right-to-left preorder id of node n (starting with {@code 0}) to the right-to-left
    * preorder id of the first leaf node to the right of n. If there is no leaf node to the right of
    * n, it is represented with the value {@code -1} [1, Section 8.4].
    */
-  public int preR_to_ln[];
+  public final int[] preR_to_ln;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to a boolean value
    * that states if node n lies on the leftmost path starting at n's parent [2, Algorithm 1, Lines
    * 26,36].
    */
-  public boolean nodeType_L[];
+  public final boolean[] nodeType_L;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to a boolean value
    * that states if node n lies on the rightmost path starting at n's parent input tree [2, Section
    * 5.3, Algorithm 1, Lines 26,36].
    */
-  public boolean nodeType_R[];
+  public final boolean[] nodeType_R;
 
   // Traversal translation indices.
 
@@ -133,37 +133,37 @@ public class NodeIndexer<D, C extends CostModel> {
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the right-to-left
    * preorder id of n.
    */
-  public int preL_to_preR[];
+  public final int[] preL_to_preR;
 
   /**
    * Index from right-to-left preorder id of node n (starting with {@code 0}) to the left-to-right
    * preorder id of n.
    */
-  public int preR_to_preL[];
+  public final int[] preR_to_preL;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the left-to-right
    * postorder id of n.
    */
-  public int preL_to_postL[];
+  public final int[] preL_to_postL;
 
   /**
    * Index from left-to-right postorder id of node n (starting with {@code 0}) to the left-to-right
    * preorder id of n.
    */
-  public int postL_to_preL[];
+  public final int[] postL_to_preL;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the right-to-left
    * postorder id of n.
    */
-  public int preL_to_postR[];
+  public final int[] preL_to_postR;
 
   /**
    * Index from right-to-left postorder id of node n (starting with {@code 0}) to the left-to-right
    * preorder id of n.
    */
-  public int postR_to_preL[];
+  public final int[] postR_to_preL;
 
   // Cost indices.
 
@@ -171,31 +171,31 @@ public class NodeIndexer<D, C extends CostModel> {
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the cost of spf_L
    * (single path function using the leftmost path) for the subtree rooted at n [1, Section 5.2].
    */
-  public int preL_to_kr_sum[];
+  public final int[] preL_to_kr_sum;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the cost of spf_R
    * (single path function using the rightmost path) for the subtree rooted at n [1, Section 5.2].
    */
-  public int preL_to_rev_kr_sum[];
+  public final int[] preL_to_rev_kr_sum;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the cost of spf_A
    * (single path function using an inner path) for the subtree rooted at n [1, Section 5.2].
    */
-  public int preL_to_desc_sum[];
+  public final int[] preL_to_desc_sum;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the cost of
    * deleting all nodes in the subtree rooted at n.
    */
-  public float preL_to_sumDelCost[];
+  public final float[] preL_to_sumDelCost;
 
   /**
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to the cost of
    * inserting all nodes in the subtree rooted at n.
    */
-  public float preL_to_sumInsCost[];
+  public final float[] preL_to_sumInsCost;
 
   // Variables holding values modified at runtime while the algorithm executes.
   /**
@@ -216,7 +216,7 @@ public class NodeIndexer<D, C extends CostModel> {
   /**
    * Stores the size of the input tree.
    */
-  private int treeSize;
+  private final int treeSize;
 
   // Variables used temporarily while indexing.
   /**
@@ -245,7 +245,7 @@ public class NodeIndexer<D, C extends CostModel> {
    */
   private int preorderTmp;
 
-  private C costModel;
+  private final C costModel;
 
   /**
    * Indexes the nodes of input trees and stores the indices for quick access from APTED algorithm.
@@ -337,7 +337,7 @@ public class NodeIndexer<D, C extends CostModel> {
       // Execute method recursively for next child.
       postorder = indexNodes(childrenIt.next(), postorder);
 
-      childrenPreorders.add(Integer.valueOf(currentPreorder));
+      childrenPreorders.add(currentPreorder);
 
       currentSize += 1 + sizeTmp;
       descSizes += descSizesTmp;
@@ -535,10 +535,10 @@ public class NodeIndexer<D, C extends CostModel> {
    * @return array with values from input ArrayList.
    */
   private int[] toIntArray(ArrayList<Integer> integers) {
-    int ints[] = new int[integers.size()];
+    int[] ints = new int[integers.size()];
     int i = 0;
     for (Integer n : integers) {
-      ints[i++] = n.intValue();
+      ints[i++] = n;
     }
     return ints;
   }

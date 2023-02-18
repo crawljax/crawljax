@@ -1,7 +1,6 @@
 package com.crawljax.stateabstractions.hybrid;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.Crawler;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.core.state.StateVertexFactory;
 import com.crawljax.stateabstractions.visual.imagehashes.DHash;
@@ -120,10 +119,6 @@ public class StructuralVisualStateVertexFactory extends StateVertexFactory {
             throw new RuntimeException(e);
           }
           LOGGER.info("Computed Visual Hash for {}", xpath);
-          //File screenshotFile = new File(this.screenshotFile.getParentFile().getAbsolutePath() + "/" + xpath.replaceAll("[:/\\\\]", "_"));
-          //LOGGER.info("Saving element's screensthot to {}", screenshotFile.getAbsolutePath());
-          //saveImage(elementScreenshot, screenshotFile, false);
-          //LOGGER.info("Saved screenshot");
         }
       }
       domElementWithWisualInfo = new DOMElementWithVisualInfo(xpath, boundingBox, visualHash);
@@ -185,7 +180,7 @@ public class StructuralVisualStateVertexFactory extends StateVertexFactory {
     javascript = "return document.evaluate(\"%s\", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.getBoundingClientRect();";
     javascript = String.format(javascript, xpath);
     executedJavaScript = browser.executeJavaScript(javascript);
-    if (null != executedJavaScript && executedJavaScript instanceof Map) {
+    if (executedJavaScript instanceof Map) {
       @SuppressWarnings("unchecked")
       Map<String, Object> map = (Map<String, Object>) executedJavaScript;
       int x = getIntValue(map.get("left")) + windowScrollX;

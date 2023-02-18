@@ -2,6 +2,7 @@ package com.crawljax.oraclecomparator.comparators;
 
 import com.crawljax.oraclecomparator.AbstractComparator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,9 +16,7 @@ public class AttributeComparator extends AbstractComparator {
    * @param attributes the attributes to ignore
    */
   public AttributeComparator(String... attributes) {
-    for (String attribute : attributes) {
-      ignoreAttributes.add(attribute);
-    }
+    Collections.addAll(ignoreAttributes, attributes);
   }
 
   @Override

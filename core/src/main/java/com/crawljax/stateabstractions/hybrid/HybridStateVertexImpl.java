@@ -27,14 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.FilenameUtils;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi.EC;
 import org.openqa.selenium.WebDriver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -47,7 +44,7 @@ import org.w3c.dom.Node;
 public class HybridStateVertexImpl extends StateVertexImpl {
 
   private static final long serialVersionUID = 123400017983489L;
-  public static boolean FAST_COMPARE = false;
+  public static final boolean FAST_COMPARE = false;
 
   static {
     OpenCVLoad.load();
@@ -173,7 +170,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     }
 //	    String[] a = {"",""};
 
-    List<List<Node>> changedNodes = new ArrayList<List<Node>>();
+    List<List<Node>> changedNodes = new ArrayList<>();
     changedNodes.add(doc1Nodes);
     changedNodes.add(doc2Nodes);
 
@@ -366,7 +363,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     if (!(ndState instanceof HybridStateVertexImpl)) {
       return new ArrayList<>();
     }
-    List<Fragment> dynamicFragments = new ArrayList<Fragment>();
+    List<Fragment> dynamicFragments = new ArrayList<>();
     try {
       List<Node> diffNodes = getDiffNodes(this.getDocument(),
           ((HybridStateVertexImpl) ndState).getDocument(), visualData);
@@ -427,9 +424,6 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       }
     }
     try {
-//			if(visualData) {
-//				return computeDistanceUsingChangedNodes(this.getDocument(), that.getDocument(), visualData);
-//			}
       double distance = computeDistance(this.getDocument(), that.getDocument(), visualData);
 //			LOG.info("Distance  between {} {} is {}", this.getName(), that.getName(), distance);
       return distance <= threshold;
@@ -525,9 +519,6 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       LOG.error("Error setting hdn for fragments");
       ex.printStackTrace();
     }
-    //		cleanFragments(driver);
-
-    //		exportFragments();
 
     if (super.getCandidateElements() != null) {
       addCandidatesToFragments();
@@ -632,7 +623,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     Node lca = VipsUtils.getParentBox(nestedBlocks);
 
     Fragment created = null;
-    List<Fragment> returnList = new ArrayList<Fragment>();
+    List<Fragment> returnList = new ArrayList<>();
     int fragmentId = VipsUtils.getFragParent(rootNode);
     if (fragmentId >= 0) {
       Fragment parentFragment = fragmentMap.get(fragmentId);
@@ -647,11 +638,11 @@ public class HybridStateVertexImpl extends StateVertexImpl {
           fragmentId);
       if (nestedBlocks.size() <= 1) {
         LOG.debug("No DOM division needed for {}", fragmentId);
-        return new ArrayList<Fragment>();
+        return new ArrayList<>();
       }
       if (!FragmentManager.usefulFragment(parentFragment)) {
         // No need to divide small fragments
-        return new ArrayList<Fragment>();
+        return new ArrayList<>();
       }
 
     } else {
@@ -703,7 +694,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
 
 
   private List<Node> getContainedNodes(Node node, List<Node> nestedBlocks) {
-    List<Node> returnList = new ArrayList<Node>();
+    List<Node> returnList = new ArrayList<>();
     for (Node block : nestedBlocks) {
       if (DomUtils.contains(node, block)) {
         returnList.add(block);
@@ -714,11 +705,11 @@ public class HybridStateVertexImpl extends StateVertexImpl {
 
   /**
    * {@see getDomFragments}
+   *
    * @param fragmentMap
    * @param driver
-   * @return
    */
-  public List<Fragment> generateDomFragments(HashMap<Integer, Fragment> fragmentMap,
+  public void generateDomFragments(HashMap<Integer, Fragment> fragmentMap,
       WebDriver driver) {
     List<Fragment> added = new ArrayList<>();
     Node rootNode = rootFragment.getFragmentParentNode();
@@ -727,9 +718,8 @@ public class HybridStateVertexImpl extends StateVertexImpl {
         rootNode = getDocument().getFirstChild();
       } catch (Exception e) {
         LOG.error("Could not find root node for the state {}", this.getName());
-        return added;
+        return;
       }
-      ;
     }
 
     List<Fragment> domFragments = getDomFragments(rootNode, rootFragment.getNestedBlocks(), fragmentMap, rootFragment,
@@ -739,7 +729,6 @@ public class HybridStateVertexImpl extends StateVertexImpl {
 
     added.addAll(domFragments);
 
-    return added;
   }
 
 
@@ -933,10 +922,9 @@ public class HybridStateVertexImpl extends StateVertexImpl {
    * {@see getClosestFragment} gets closest fragment for the node for which the candidate element is created
    * @param element
    * @return
-   * @throws Exception
    */
   @Override
-  public Fragment getClosestFragment(CandidateElement element) throws Exception {
+  public Fragment getClosestFragment(CandidateElement element) {
     if (element.getClosestFragment() != null) {
       return element.getClosestFragment();
     }

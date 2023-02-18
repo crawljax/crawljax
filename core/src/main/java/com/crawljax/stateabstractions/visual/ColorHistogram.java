@@ -1,8 +1,5 @@
 package com.crawljax.stateabstractions.visual;
 
-//import org.bytedeco.javacpp.Loader;
-//import org.bytedeco.javacpp.opencv_java;
-
 import com.crawljax.util.ImageUtils;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -17,7 +14,7 @@ import org.opencv.imgproc.Imgproc;
 public class ColorHistogram {
 
   private static final String NAME = "VISUAL-ColorHistogram";
-  public double thresholdCoefficient = 0.0;
+  public final double thresholdCoefficient = 0.0;
 
   public ColorHistogram() {
   }

@@ -27,16 +27,6 @@ public class CrawlSession {
   private static final Logger LOGGER = LoggerFactory.getLogger(CrawlSession.class
       .getName());
 
-//	private Map<List<Eventable>, CrawlPathInfo> pathInfoMap = new HashMap<>();
-//
-//	public Map<List<Eventable>, CrawlPathInfo> getPathInfoMap() {
-//		return pathInfoMap;
-//	}
-//
-//	public void setPathInfoMap(Map<List<Eventable>, CrawlPathInfo> pathInfoMap) {
-//		this.pathInfoMap = pathInfoMap;
-//	}
-
   private final StateFlowGraph stateFlowGraph;
 
   /**
@@ -105,10 +95,6 @@ public class CrawlSession {
     String pathString = Crawler.printCrawlPath(crawlPath, true);
 
     this.crawlPaths.add(crawlPath);
-//		int pathId = this.crawlPaths.size();
-//		CrawlPathInfo pathInfo = new CrawlPathInfo(pathId, crawlPath.getBacktrackTarget(), crawlPath.isBacktrackSuccess(), crawlPath.isReachedNearDup());
-//		pathInfo.setPathString(pathString);
-//		pathInfoMap.put(crawlPath, pathInfo);
   }
 
   /**

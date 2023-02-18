@@ -53,11 +53,11 @@ public class BracketStringInputParser implements InputParser<StringNodeData> {
    */
   public AptedNode<StringNodeData> fromString(String s) {
     s = s.substring(s.indexOf("{"), s.lastIndexOf("}") + 1);
-    AptedNode<StringNodeData> node = new AptedNode<StringNodeData>(
+    AptedNode<StringNodeData> node = new AptedNode<>(
         new StringNodeData(FormatUtilities.getRoot(s)));
     List<String> c = FormatUtilities.getChildren(s);
-    for (int i = 0; i < c.size(); i++) {
-      node.addChild(fromString(c.get(i)));
+    for (String value : c) {
+      node.addChild(fromString(value));
     }
     return node;
   }

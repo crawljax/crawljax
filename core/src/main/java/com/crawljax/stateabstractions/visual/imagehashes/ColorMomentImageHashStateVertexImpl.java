@@ -15,8 +15,8 @@ import org.opencv.core.Mat;
 public class ColorMomentImageHashStateVertexImpl extends StateVertexImpl {
 
   private static final long serialVersionUID = 123400017983489L;
-  public Mat hashMat;
-  ColorMomentImageHash hash;
+  public final Mat hashMat;
+  final ColorMomentImageHash hash;
 
   /**
    * Creates a current state without an url and the @strippedDom same as the @dom.

@@ -24,7 +24,7 @@ public class BrowserConfiguration {
   public static final long BROWSER_SLEEP_FAILURE = TimeUnit.SECONDS.toMillis(10);
 
   private static final Provider<EmbeddedBrowser> DEFAULT_BROWSER_BUILDER =
-      new Provider<EmbeddedBrowser>() {
+      new Provider<>() {
 
         @Override
         public EmbeddedBrowser get() {

@@ -246,7 +246,7 @@ public class StructuralVisualDiff {
             }
             if (allChildsMoved) {
               // Keep the parent
-              movedNodes.removeAll(childNodesXPaths);
+              childNodesXPaths.forEach(movedNodes::remove);
             }
           }
         } catch (XPathExpressionException e) {
@@ -262,7 +262,7 @@ public class StructuralVisualDiff {
   }
 
   private AptedNode<StringNodeData> getAPTEDTreeFromDocument(Node node) {
-    AptedNode<StringNodeData> root = new AptedNode<StringNodeData>(
+    AptedNode<StringNodeData> root = new AptedNode<>(
         new StringNodeData(getNodeStringRepresentation(node)));
 
     NodeList childNodes = node.getChildNodes();
@@ -350,13 +350,12 @@ public class StructuralVisualDiff {
 
   @Override
   public String toString() {
-    StringBuilder toReturn = new StringBuilder();
-    toReturn.append("Added nodes: ").append(getAddedNodes()).append(System.lineSeparator());
-    toReturn.append("Removed nodes: ").append(getRemovedNodes()).append(System.lineSeparator());
-    toReturn.append("Modified nodes: ").append(modifiedNodes).append(System.lineSeparator());
-    toReturn.append("Moved nodes: ").append(getMovedNodes()).append(System.lineSeparator());
-    toReturn.append("Mappings: ").append(getMappedNodes());
-    return toReturn.toString();
+    String toReturn = "Added nodes: " + getAddedNodes() + System.lineSeparator()
+        + "Removed nodes: " + getRemovedNodes() + System.lineSeparator()
+        + "Modified nodes: " + modifiedNodes + System.lineSeparator()
+        + "Moved nodes: " + getMovedNodes() + System.lineSeparator()
+        + "Mappings: " + getMappedNodes();
+    return toReturn;
   }
 
   /**

@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
 public class ClickableDetectorPlugin implements OnNewStatePlugin {
 
   private static final Logger LOG = LoggerFactory.getLogger(ClickableDetectorPlugin.class);
-  public static String CDP_SCRIPT =
+  public static final String CDP_SCRIPT =
       "function getEventHandlers(xpath){\n" +
           "	// a= $x(xpath)[0];\n" +
           "	result = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);\n"
@@ -53,7 +53,7 @@ public class ClickableDetectorPlugin implements OnNewStatePlugin {
           "\n" +
           "	return returnMap;\n" +
           "}";
-  static String CDP_COMPUTEDSTYLESHEET_ALL = "Array.from(%s).map(element => {return {xpath: element, attributes: getEventHandlers(element)}});";
+  static final String CDP_COMPUTEDSTYLESHEET_ALL = "Array.from(%s).map(element => {return {xpath: element, attributes: getEventHandlers(element)}});";
 
   @Override
   public void onNewState(CrawlerContext context, StateVertex newState) {
@@ -100,31 +100,31 @@ public class ClickableDetectorPlugin implements OnNewStatePlugin {
     parameters.put("returnByValue", Boolean.TRUE);
     attributeString = ((ChromeDriver) driver).executeCdpCommand("Runtime.evaluate", parameters);
     if (attributeString instanceof Map) {
-      attributeString = ((Map) attributeString).get("result");
+      attributeString = ((Map<?, ?>) attributeString).get("result");
       if (attributeString instanceof Map) {
-        attributeString = ((Map) attributeString).get("value");
+        attributeString = ((Map<?, ?>) attributeString).get("value");
       }
     }
     LOG.info("{}", attributeString);
 
-    Map<String, String> attributeMap = new HashMap<String, String>();
+    Map<String, String> attributeMap = new HashMap<>();
 
     if (attributeString instanceof Collection) {
-      LOG.info("Found {} attribute objects", ((Collection) attributeString).size());
+      LOG.info("Found {} attribute objects", ((Collection<?>) attributeString).size());
       for (Object elementSheet : (Collection) attributeString) {
         if (elementSheet instanceof Map) {
-          String xpath = (String) ((Map) elementSheet).get("xpath");
+          String xpath = (String) ((Map<?, ?>) elementSheet).get("xpath");
           LOG.debug(xpath);
 
-          Object attributes = ((Map) elementSheet).get("attributes");
+          Object attributes = ((Map<?, ?>) elementSheet).get("attributes");
           LOG.debug("attributes{}", attributes);
           if (attributes instanceof Map) {
-            if (((Map) attributes).isEmpty()) {
+            if (((Map<?, ?>) attributes).isEmpty()) {
               LOG.debug("Empty attributes found for {}", xpath);
               continue;
             }
 
-            String eventListeners = (String) ((Map) attributes).get("eventListeners");
+            String eventListeners = (String) ((Map<?, ?>) attributes).get("eventListeners");
 
             attributeMap.put(xpath, eventListeners);
           }

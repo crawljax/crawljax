@@ -6,6 +6,7 @@ import com.crawljax.core.state.Eventable;
 import com.crawljax.forms.FormInput;
 import com.crawljax.util.XPathHelper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,9 +43,7 @@ public class EventableCondition {
    */
   public EventableCondition(String id, Condition... conditions) {
     this.id = id;
-    for (Condition condition : conditions) {
-      this.conditions.add(condition);
-    }
+    this.conditions.addAll(Arrays.asList(conditions));
   }
 
   /**

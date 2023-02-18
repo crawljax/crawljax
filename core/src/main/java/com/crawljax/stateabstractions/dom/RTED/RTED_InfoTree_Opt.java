@@ -52,7 +52,7 @@ public class RTED_InfoTree_Opt {
   // node)
   private static final byte PRE2_POST = 15; // preorder to postorder
   public long counter = 0; // stores the number of relevant subproblems
-  public int[] strStat = new int[5]; // statistics for strategies LEFT,RIGHT,HEAVY,SUM
+  public final int[] strStat = new int[5]; // statistics for strategies LEFT,RIGHT,HEAVY,SUM
   // trees
   private InfoTree it1;
   private InfoTree it2;
@@ -739,8 +739,8 @@ public class RTED_InfoTree_Opt {
 
       // when strategy==BOTH first LEFT then RIGHT is done
 
-      counter += realStrategy == BOTH && aStrategy == LEFT ? (k - 1) * (jOfI + 1)
-          : k * (jOfI + 1);
+      counter += realStrategy == BOTH && aStrategy == LEFT ? (long) (k - 1) * (jOfI + 1)
+          : (long) k * (jOfI + 1);
 
       // compute table S - visible for actual i
 

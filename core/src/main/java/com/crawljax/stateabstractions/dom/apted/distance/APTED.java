@@ -77,14 +77,12 @@ public class APTED<C extends CostModel, D> {
   /**
    * Indexer of the source tree.
    *
-   * @see node.NodeIndexer
    */
   private NodeIndexer it1;
 
   /**
    * Indexer of the destination tree.
    *
-   * @see node.NodeIndexer
    */
   private NodeIndexer it2;
 
@@ -102,28 +100,28 @@ public class APTED<C extends CostModel, D> {
    * The distance matrix [1, Sections 3.4,8.2,8.3]. Used to store intermediate distances between
    * pairs of subtrees.
    */
-  private float delta[][];
+  private float[][] delta;
 
   /**
    * One of distance arrays to store intermediate distances in spfA.
    */
   // TODO: Verify if other spf-local arrays are initialised within spf. If yes,
   //       move q to spf to - then, an offset has to be used to access it.
-  private float q[];
+  private float[] q;
 
   /**
    * Array used in the algorithm before [1]. Using it does not change the complexity.
    *
    * <p>TODO: Do not use it [1, Section 8.4].
    */
-  private int fn[];
+  private int[] fn;
 
   /**
    * Array used in the algorithm before [1]. Using it does not change the complexity.
    *
    * <p>TODO: Do not use it [1, Section 8.4].
    */
-  private int ft[];
+  private int[] ft;
 
   /**
    * Stores the number of subproblems encountered while computing the distance [1, Section 10].
@@ -133,7 +131,7 @@ public class APTED<C extends CostModel, D> {
   /**
    * Cost model to be used for calculating costs of edit operations.
    */
-  private C costModel;
+  private final C costModel;
 
   /**
    * Constructs the APTED algorithm object with the specified cost model.
@@ -268,15 +266,15 @@ public class APTED<C extends CostModel, D> {
 
     int size1 = it1.getSize();
     int size2 = it2.getSize();
-    float strategy[][] = new float[size1][size2];
-    float cost1_L[][] = new float[size1][];
-    float cost1_R[][] = new float[size1][];
-    float cost1_I[][] = new float[size1][];
-    float cost2_L[] = new float[size2];
-    float cost2_R[] = new float[size2];
-    float cost2_I[] = new float[size2];
-    int cost2_path[] = new int[size2];
-    float leafRow[] = new float[size2];
+    float[][] strategy = new float[size1][size2];
+    float[][] cost1_L = new float[size1][];
+    float[][] cost1_R = new float[size1][];
+    float[][] cost1_I = new float[size1][];
+    float[] cost2_L = new float[size2];
+    float[] cost2_R = new float[size2];
+    float[] cost2_I = new float[size2];
+    int[] cost2_path = new int[size2];
+    float[] leafRow = new float[size2];
     int pathIDOffset = size1;
     float minCost = 0x7fffffffffffffffL;
     int strategyPath = -1;
@@ -318,9 +316,9 @@ public class APTED<C extends CostModel, D> {
     int v_in_preL;
     int w_in_preL;
 
-    Stack<float[]> rowsToReuse_L = new Stack<float[]>();
-    Stack<float[]> rowsToReuse_R = new Stack<float[]>();
-    Stack<float[]> rowsToReuse_I = new Stack<float[]>();
+    Stack<float[]> rowsToReuse_L = new Stack<>();
+    Stack<float[]> rowsToReuse_R = new Stack<>();
+    Stack<float[]> rowsToReuse_I = new Stack<>();
 
     for (int v = 0; v < size1; v++) {
       v_in_preL = postL_to_preL_1[v];
@@ -498,15 +496,15 @@ public class APTED<C extends CostModel, D> {
   public float[][] computeOptStrategy_postR(NodeIndexer it1, NodeIndexer it2) {
     int size1 = it1.getSize();
     int size2 = it2.getSize();
-    float strategy[][] = new float[size1][size2];
-    float cost1_L[][] = new float[size1][];
-    float cost1_R[][] = new float[size1][];
-    float cost1_I[][] = new float[size1][];
-    float cost2_L[] = new float[size2];
-    float cost2_R[] = new float[size2];
-    float cost2_I[] = new float[size2];
-    int cost2_path[] = new int[size2];
-    float leafRow[] = new float[size2];
+    float[][] strategy = new float[size1][size2];
+    float[][] cost1_L = new float[size1][];
+    float[][] cost1_R = new float[size1][];
+    float[][] cost1_I = new float[size1][];
+    float[] cost2_L = new float[size2];
+    float[] cost2_R = new float[size2];
+    float[] cost2_I = new float[size2];
+    int[] cost2_path = new int[size2];
+    float[] leafRow = new float[size2];
     int pathIDOffset = size1;
     float minCost = 0x7fffffffffffffffL;
     int strategyPath = -1;
@@ -539,9 +537,9 @@ public class APTED<C extends CostModel, D> {
     int krSum_v, revkrSum_v, descSum_v;
     boolean is_v_leaf;
 
-    Stack<float[]> rowsToReuse_L = new Stack<float[]>();
-    Stack<float[]> rowsToReuse_R = new Stack<float[]>();
-    Stack<float[]> rowsToReuse_I = new Stack<float[]>();
+    Stack<float[]> rowsToReuse_L = new Stack<>();
+    Stack<float[]> rowsToReuse_R = new Stack<>();
+    Stack<float[]> rowsToReuse_I = new Stack<>();
 
     for (int v = size1 - 1; v >= 0; v--) {
       is_v_leaf = it1.isLeaf(v);
@@ -720,7 +718,7 @@ public class APTED<C extends CostModel, D> {
       AptedNode<D> n2 = ni2.preL_to_node[subtreeRootNode2];
       float maxCost = costModel.del(n1) + costModel.ins(n2);
       float renCost = costModel.ren(n1, n2);
-      return renCost < maxCost ? renCost : maxCost;
+      return Math.min(renCost, maxCost);
     }
     if (subtreeSize1 == 1) {
       AptedNode<D> n1 = ni1.preL_to_node[subtreeRootNode1];
@@ -737,7 +735,7 @@ public class APTED<C extends CostModel, D> {
         }
       }
       cost += minRenMinusIns;
-      return cost < maxCost ? cost : maxCost;
+      return Math.min(cost, maxCost);
     }
     if (subtreeSize2 == 1) {
       AptedNode<D> n1 = null;
@@ -754,7 +752,7 @@ public class APTED<C extends CostModel, D> {
         }
       }
       cost += minRenMinusDel;
-      return cost < maxCost ? cost : maxCost;
+      return Math.min(cost, maxCost);
     }
     return -1;
   }
@@ -789,7 +787,7 @@ public class APTED<C extends CostModel, D> {
       strategyPathType = getStrategyPathType(strategyPathID, pathIDOffset, it1, currentSubtree1,
           subtreeSize1);
       while ((parent = it1.parents[currentPathNode]) >= currentSubtree1) {
-        int ai[];
+        int[] ai;
         int k = (ai = it1.children[parent]).length;
         for (int i = 0; i < k; i++) {
           int child = ai[i];
@@ -820,7 +818,7 @@ public class APTED<C extends CostModel, D> {
     strategyPathType = getStrategyPathType(strategyPathID, pathIDOffset, it2, currentSubtree2,
         subtreeSize2);
     while ((parent = it2.parents[currentPathNode]) >= currentSubtree2) {
-      int ai1[];
+      int[] ai1;
       int l = (ai1 = it2.children[parent]).length;
       for (int j = 0; j < l; j++) {
         int child = ai1[j];
@@ -927,16 +925,8 @@ public class APTED<C extends CostModel, D> {
       parent_of_endPathNode = it1parents[endPathNode];
       parent_of_endPathNode_in_preR =
           parent_of_endPathNode == -1 ? 0x7fffffff : it1preL_to_preR[parent_of_endPathNode];
-      if (startPathNode - endPathNode > 1) {
-        leftPart = true;
-      } else {
-        leftPart = false;
-      }
-      if (startPathNode >= 0 && startPathNode_in_preR - endPathNode_in_preR > 1) {
-        rightPart = true;
-      } else {
-        rightPart = false;
-      }
+      leftPart = startPathNode - endPathNode > 1;
+      rightPart = startPathNode >= 0 && startPathNode_in_preR - endPathNode_in_preR > 1;
       // Deal with nodes to the left of the path.
       if (pathType == 1 || pathType == 2 && leftPart) {
         if (startPathNode == -1) {
@@ -1803,10 +1793,10 @@ public class APTED<C extends CostModel, D> {
     forestDist(it1, it2, size1, size2, forestdist);
 
     // empty edit mapping
-    LinkedList<int[]> editMapping = new LinkedList<int[]>();
+    LinkedList<int[]> editMapping = new LinkedList<>();
 
     // empty stack of tree Pairs
-    LinkedList<int[]> treePairs = new LinkedList<int[]>();
+    LinkedList<int[]> treePairs = new LinkedList<>();
 
     // push the pair of trees (ted1,ted2) to stack
     treePairs.push(new int[]{size1, size2});
@@ -1931,14 +1921,14 @@ public class APTED<C extends CostModel, D> {
    */
   public float mappingCost(List<int[]> mapping) {
     float cost = 0.0f;
-    for (int i = 0; i < mapping.size(); i++) {
-      if (mapping.get(i)[0] == 0) { // Insertion.
-        cost += costModel.ins(it2.postL_to_node(mapping.get(i)[1] - 1));
-      } else if (mapping.get(i)[1] == 0) { // Deletion.
-        cost += costModel.del(it1.postL_to_node(mapping.get(i)[0] - 1));
+    for (int[] ints : mapping) {
+      if (ints[0] == 0) { // Insertion.
+        cost += costModel.ins(it2.postL_to_node(ints[1] - 1));
+      } else if (ints[1] == 0) { // Deletion.
+        cost += costModel.del(it1.postL_to_node(ints[0] - 1));
       } else { // Rename.
-        cost += costModel.ren(it1.postL_to_node(mapping.get(i)[0] - 1),
-            it2.postL_to_node(mapping.get(i)[1] - 1));
+        cost += costModel.ren(it1.postL_to_node(ints[0] - 1),
+            it2.postL_to_node(ints[1] - 1));
       }
     }
     return cost;

@@ -56,9 +56,9 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
   private final ExitNotifier exitNotifier;
   private final StateVertexFactory vertexFactory;
 
-  private List<Eventable> expiredEdges = new ArrayList<Eventable>();
+  private final List<Eventable> expiredEdges = new ArrayList<>();
 
-  private List<StateVertex> expiredStates = new ArrayList<StateVertex>();
+  private final List<StateVertex> expiredStates = new ArrayList<>();
 
   /**
    * The constructor.
@@ -163,18 +163,13 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
       vertex.setDistToNearestState(minDistance);
       vertex.setNearestState(closestVertex.getId());
 
-      if (vertex.inThreshold(closestVertex)) {
-        vertex.setHasNearDuplicate(true);
-
-        // TODO: recognize clusters and calculate min distance to the cluster
-        /*
-         * if(closestVertex.hasNearDuplicate())
-         * vertex.setNearestState(closestVertex.getNearestState()); else
-         * vertex.setNearestState(closestVertex);
-         */
-      } else {
-        vertex.setHasNearDuplicate(false);
-      }
+      // TODO: recognize clusters and calculate min distance to the cluster
+      /*
+       * if(closestVertex.hasNearDuplicate())
+       * vertex.setNearestState(closestVertex.getNearestState()); else
+       * vertex.setNearestState(closestVertex);
+       */
+      vertex.setHasNearDuplicate(vertex.inThreshold(closestVertex));
     }
   }
 

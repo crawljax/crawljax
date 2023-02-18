@@ -18,7 +18,7 @@ public class WaitConditionChecker {
   private static final Logger LOGGER = LoggerFactory.getLogger(WaitConditionChecker.class
       .getName());
 
-  private ImmutableList<WaitCondition> waitConditions;
+  private final ImmutableList<WaitCondition> waitConditions;
 
   @Inject
   public WaitConditionChecker(CrawlRules rules) {

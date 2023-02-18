@@ -37,22 +37,22 @@ public class Fragment {
   private Node hdn = null;
   private Rectangle rect;
   private final StateVertex referenceState;
-  private ArrayList<Fragment> equivalentFragments;
-  private ArrayList<Fragment> duplicateFragments;
-  private ArrayList<Fragment> nd2Fragments;
+  private final ArrayList<Fragment> equivalentFragments;
+  private final ArrayList<Fragment> duplicateFragments;
+  private final ArrayList<Fragment> nd2Fragments;
   private Boolean isUseful = null;
   private boolean accessTransferred = false;
   private int size = -1; // -2 if getting size is not possible the first time
   private boolean isGlobal;
-  private ArrayList<CandidateElement> candidates;
+  private final ArrayList<CandidateElement> candidates;
   private Mat chist = null;
   private Fragment parent;
   private Fragment domParent;
-  private ArrayList<Fragment> children;
+  private final ArrayList<Fragment> children;
   private List<Node> nestedBlocks;
   private boolean isDynamic;
   private Double candidateInfluence = null;
-  private List<Fragment> domChildren = new ArrayList<Fragment>();
+  private final List<Fragment> domChildren = new ArrayList<>();
   public Fragment(int id, List<Node> nestedBlocks, Rectangle rect, StateVertex referenceState) {
     this.id = id;
     this.nestedBlocks = nestedBlocks;
@@ -64,7 +64,7 @@ public class Fragment {
 
     this.isGlobal = false;
     this.parent = null;
-    this.children = new ArrayList<Fragment>();
+    this.children = new ArrayList<>();
     this.candidates = new ArrayList<>();
     this.isDynamic = false;
     this.domParent = null;
@@ -169,11 +169,7 @@ public class Fragment {
 
   public boolean compareImage(Fragment other) {
     double comp = ColorHistogram.compare(this.getChist(), other.getChist());
-    if (comp == 0.0) {
-      return true;
-    }
-
-    return false;
+    return comp == 0.0;
   }
 
 
@@ -388,7 +384,6 @@ public class Fragment {
             continue;
           }
           equivalent.incrementEquivalentAccess();
-          ;
           returnList.add(equivalent);
         }
       }
@@ -502,11 +497,7 @@ public class Fragment {
     int oldx2 = rect.x + rect.width;
     int oldy2 = rect.y + rect.height;
 
-    if ((rect2.x >= rect.x) && (rect2.y >= rect.y) && (x2 <= oldx2) && (y2 <= oldy2)) {
-      return true;
-    }
-
-    return false;
+    return (rect2.x >= rect.x) && (rect2.y >= rect.y) && (x2 <= oldx2) && (y2 <= oldy2);
   }
 
 
@@ -627,7 +618,7 @@ public class Fragment {
   }
 
 
-  public static enum FragmentComparision {
+  public enum FragmentComparision {
     EQUAL, EQUIVALENT, DIFFERENT, ND2
   }
 }

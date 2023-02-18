@@ -13,14 +13,6 @@ public class AptedUtils {
 
   public static AptedNode<StringNodeData> getAptedTree(Document doc, boolean visualData) {
 
-//		AptedNode<StringNodeData> domTree = null;
-//
-//		DocumentTraversal traversal = (DocumentTraversal) doc;
-//		TreeWalker walker = traversal.createTreeWalker(doc.getDocumentElement(),
-//				NodeFilter.SHOW_ELEMENT, null, true);
-//		domTree = createTree(walker);
-//
-//		return domTree;
     return getAptedTree(doc.getElementsByTagName("body").item(0), visualData);
   }
 
@@ -32,7 +24,7 @@ public class AptedUtils {
    */
   private static AptedNode<StringNodeData> createTree(TreeWalker walker) {
     Node parent = walker.getCurrentNode();
-    AptedNode<StringNodeData> node = new AptedNode<StringNodeData>(
+    AptedNode<StringNodeData> node = new AptedNode<>(
         new StringNodeData(getNodeStringRepresentation(parent, false)));
     for (Node n = walker.firstChild(); n != null; n = walker.nextSibling()) {
       node.addChild(createTree(walker));
@@ -63,19 +55,8 @@ public class AptedUtils {
     /*}*/
   }
 
-//	public static AptedNode getAptedTree(Node fragmentParentNode) {
-//		AptedNode<StringNodeData> domTree = null;
-//
-//		DocumentTraversal traversal = (DocumentTraversal) fragmentParentNode;
-//		TreeWalker walker = traversal.createTreeWalker(fragmentParentNode,
-//				NodeFilter.SHOW_ELEMENT, null, true);
-//		domTree = createTree(walker);
-//
-//		return domTree;
-//	}
-
   public static AptedNode<StringNodeData> getTextNode() {
-    AptedNode<StringNodeData> text = new AptedNode<StringNodeData>(new StringNodeData("#text"));
+    AptedNode<StringNodeData> text = new AptedNode<>(new StringNodeData("#text"));
     return text;
   }
 
@@ -89,14 +70,14 @@ public class AptedUtils {
       System.out.println("string is null for : " + node);
       return null;
     }
-    AptedNode<StringNodeData> root = new AptedNode<StringNodeData>(
+    AptedNode<StringNodeData> root = new AptedNode<>(
         new StringNodeData(getNodeStringRepresentation(node, visualData)));
 
     if (node.getNodeName().equalsIgnoreCase("select")) {
       // Do not add multiple options for select
       for (Node child : VipsUtils.getChildren(node)) {
         if (child.getNodeName().equalsIgnoreCase("option")) {
-          AptedNode<StringNodeData> option = new AptedNode<StringNodeData>(
+          AptedNode<StringNodeData> option = new AptedNode<>(
               new StringNodeData(getNodeStringRepresentation(child, visualData)));
           root.addChild(option);
           break;
@@ -122,7 +103,7 @@ public class AptedUtils {
       return getAptedTree(fragment.getFragmentParentNode(), visualData);
     }
 
-    AptedNode<StringNodeData> root = new AptedNode<StringNodeData>(new StringNodeData("dummy"));
+    AptedNode<StringNodeData> root = new AptedNode<>(new StringNodeData("dummy"));
     for (Node nestedBlock : fragment.getNestedBlocks()) {
       root.addChild(getAptedTree(nestedBlock, visualData));
     }

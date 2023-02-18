@@ -50,10 +50,10 @@ public class UnfiredFragmentCandidates {
 
 //	private StateVertex nextBestState = null;
   private boolean skipExploredActions = true;
-  private List<CandidateCrawlAction> skipInputs;
-  private List<Eventable> skipInputsForPath;
-  private Map<Long, List<FormInput>> inputMap = new HashMap<Long, List<FormInput>>();
-  private boolean applyNonSelAdvantage;
+  private final List<CandidateCrawlAction> skipInputs;
+  private final List<Eventable> skipInputsForPath;
+  private final Map<Long, List<FormInput>> inputMap = new HashMap<>();
+  private final boolean applyNonSelAdvantage;
 
   private boolean unexploredStates = true;
 
@@ -65,8 +65,8 @@ public class UnfiredFragmentCandidates {
     this.sfg = sfg;
     cache = Maps.newHashMap();
     unreachableCache = Maps.newHashMap();
-    skipInputs = new ArrayList<CandidateCrawlAction>();
-    skipInputsForPath = new ArrayList<Eventable>();
+    skipInputs = new ArrayList<>();
+    skipInputsForPath = new ArrayList<>();
     statesWithCandidates = Queues.newLinkedBlockingQueue();
     // Every browser gets a lock.
     locks = Striped.lock(config.getNumberOfBrowsers());
@@ -136,13 +136,6 @@ public class UnfiredFragmentCandidates {
     return null;
   }
 
-
-  /**
-   * @param fragmentManager
-   * @param afterBacktrack
-   * @param state           The state you want to poll an {@link CandidateCrawlAction} for.
-   * @return The next to-be-crawled action or <code>null</code> if none available.
-   */
   CandidateCrawlAction pollActionOrNull(StateMachine stateMachine, FragmentManager fragmentManager,
       boolean afterBacktrack) {
     StateVertex state = stateMachine.getCurrentState();
@@ -168,7 +161,7 @@ public class UnfiredFragmentCandidates {
 
       try {
         bestAction = getBestAction(queue, state, fragmentManager);
-      } catch (Exception ex) {
+      } catch (Exception ignored) {
 
       }
       if (bestAction != null) {
@@ -213,8 +206,6 @@ public class UnfiredFragmentCandidates {
         // FIFO order when best action not given by prioritization
         LOG.info("No actions available. So purging {} ", state.getName());
 
-        //				if(queue.size()>0)
-//					bestAction = queue.get(queue.size()-1);
         queue.clear();
       }
 
@@ -356,7 +347,7 @@ public class UnfiredFragmentCandidates {
     try {
       next = fragmentManager.getClosestUnexploredState(currentState, onURLSet, statesWithCandidates,
           applyNonSelAdvantage);
-    } catch (Exception ex) {
+    } catch (Exception ignored) {
 
     }
 
@@ -450,26 +441,19 @@ public class UnfiredFragmentCandidates {
   }
 
   public boolean shouldDisableInput(CandidateCrawlAction action) {
-    if (this.skipInputs.contains(action)) {
-      return true;
-    }
-    return false;
+    return this.skipInputs.contains(action);
   }
 
 
   public boolean shouldDisableInput(Eventable event) {
-    if (this.skipInputsForPath.contains(event)) {
-      return true;
-    }
-
-    return false;
+    return this.skipInputsForPath.contains(event);
   }
 
   public void disableInputsForPath(Eventable event) {
     if (!this.skipInputsForPath.contains(event)) {
       LOG.info("Disabling related inputs for {} ", event.getId());
       LOG.info("event {} - Before {}", event.getId(), event.getRelatedFormInputs().size());
-      event.setRelatedFormInputs(new ArrayList<FormInput>());
+      event.setRelatedFormInputs(new ArrayList<>());
       LOG.info("event {} - After {}", event.getId(), event.getRelatedFormInputs().size());
       this.skipInputsForPath.add(event);
     }

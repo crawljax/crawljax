@@ -20,9 +20,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -219,16 +219,12 @@ public class CrawljaxConfiguration {
      * @return {@link CrawljaxConfigurationBuilder} for method chaining.
      */
     public CrawljaxConfigurationBuilder setBasicAuth(String username, String password) {
-      try {
-        String encodedUsername = URLEncoder.encode(username, "UTF-8");
-        String encodedPassword = URLEncoder.encode(password, "UTF-8");
-        String hostPrefix = encodedUsername + ":" + encodedPassword + "@";
-        config.basicAuthUrl =
-            URI.create(config.url.toString().replaceFirst("://", "://" + hostPrefix));
+      String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
+      String encodedPassword = URLEncoder.encode(password, StandardCharsets.UTF_8);
+      String hostPrefix = encodedUsername + ":" + encodedPassword + "@";
+      config.basicAuthUrl =
+          URI.create(config.url.toString().replaceFirst("://", "://" + hostPrefix));
 
-      } catch (UnsupportedEncodingException e) {
-        throw new CrawljaxException("Could not parse the username/password to a URL", e);
-      }
       return this;
     }
 

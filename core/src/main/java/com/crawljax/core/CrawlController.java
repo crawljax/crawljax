@@ -36,10 +36,6 @@ public class CrawlController implements Callable<CrawlSession> {
 
 	
 	 * */
-	
-	/*static {
-		System.setProperty("webdriver.http.factory", "apache");
-	}*/
 
   private final Provider<CrawlTaskConsumer> consumerFactory;
   private final ExecutorService executor;

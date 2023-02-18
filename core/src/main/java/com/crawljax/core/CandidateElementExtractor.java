@@ -168,9 +168,7 @@ public class CandidateElementExtractor {
       }
       // TODO Stefan; Here the IgnoreFrameChecker is used, also in
       // WebDriverBackedEmbeddedBrowser. We must get this in 1 place.
-      if (nameId == null || isFrameIgnored(frameIdentification + nameId)) {
-        continue;
-      } else {
+      if (nameId != null && !isFrameIgnored(frameIdentification + nameId)) {
         frameIdentification += nameId;
 
         LOG.debug("frame Identification: {}", frameIdentification);

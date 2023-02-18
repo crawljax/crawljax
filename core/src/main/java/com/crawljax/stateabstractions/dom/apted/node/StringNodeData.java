@@ -33,7 +33,7 @@ public class StringNodeData {
   /**
    * The label of a node.
    */
-  private String label;
+  private final String label;
 
   /**
    * Constructs node data with a specified label.

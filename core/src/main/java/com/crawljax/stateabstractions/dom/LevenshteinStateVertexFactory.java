@@ -12,7 +12,7 @@ import com.crawljax.oraclecomparator.comparators.EditDistanceComparator;
 public class LevenshteinStateVertexFactory extends StateVertexFactory {
 
   private static double threshold = 1.0;
-  private EditDistanceComparator editDistanceComparator;
+  private final EditDistanceComparator editDistanceComparator;
 
   public LevenshteinStateVertexFactory() {
     this.editDistanceComparator = new EditDistanceComparator(threshold);

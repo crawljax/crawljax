@@ -71,11 +71,6 @@ public class CrawlTaskConsumer implements Callable<Void> {
           Thread.currentThread().interrupt();
         }
       } else {
-//				crawlTask = candidates
-//					.awaitNewTaskPriority(crawler.getCrawlRules().getCrawlPriorityMode(),
-//							crawler.getCrawlRules().isCrawlNearDuplicates(),
-//							crawler.getCrawlRules().isDelayNearDuplicateCrawling(),
-//							crawler.getContext().getCurrentState());
         LOG.error("Set NearDuplicateCrawling flag in crawl rules");
         System.exit(-1);
       }
@@ -87,7 +82,7 @@ public class CrawlTaskConsumer implements Callable<Void> {
     }
   }
 
-  private void handleTask(StateVertex state) throws InterruptedException {
+  private void handleTask(StateVertex state) {
     LOG.debug("Going to handle tasks in {}", state);
     try {
       crawler.execute(state);
@@ -96,8 +91,8 @@ public class CrawlTaskConsumer implements Callable<Void> {
         LOG.info("Window closed!! Stopping Crawl");
         Thread.currentThread().interrupt();
         this.exitNotifier.signalCrawlExhausted();
-
       }
+      LOG.error("Could not complete state crawl task: " + ex.getMessage(), ex);
     }
     LOG.debug("Task executed. Returning to queue polling");
   }

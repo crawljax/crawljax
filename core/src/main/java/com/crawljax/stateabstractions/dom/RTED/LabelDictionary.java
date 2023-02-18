@@ -29,8 +29,8 @@ public class LabelDictionary {
 
   public static final int KEY_DUMMY_LABEL = -1;
   private int count;
-  private Map<String, Integer> StrInt;
-  private Map<Integer, String> IntStr;
+  private final Map<String, Integer> StrInt;
+  private final Map<Integer, String> IntStr;
   private boolean newLabelsAllowed = true;
 
   /**
@@ -51,15 +51,15 @@ public class LabelDictionary {
    */
   public int store(String label) {
     if (StrInt.containsKey(label)) {
-      return (StrInt.get(label).intValue());
+      return (StrInt.get(label));
     } else if (!newLabelsAllowed) {
       return KEY_DUMMY_LABEL;
     } else { // store label
-      Integer intKey = new Integer(count++);
+      Integer intKey = count++;
       StrInt.put(label, intKey);
       IntStr.put(intKey, label);
 
-      return intKey.intValue();
+      return intKey;
     }
   }
 
@@ -71,7 +71,7 @@ public class LabelDictionary {
    * labelID
    */
   public String read(int labelID) {
-    return IntStr.get(new Integer(labelID));
+    return IntStr.get(labelID);
   }
 
   /**

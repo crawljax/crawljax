@@ -8,7 +8,7 @@ import com.crawljax.core.state.StateVertex;
 @SuppressWarnings("serial")
 public class StateUnreachableException extends CrawljaxException {
 
-  private StateVertex target;
+  private final StateVertex target;
 
   public StateUnreachableException(StateVertex state, String reason) {
     super("Cannot reach state " + state.getName() + " because " + reason);

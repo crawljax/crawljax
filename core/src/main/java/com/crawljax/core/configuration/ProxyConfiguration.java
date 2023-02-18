@@ -75,12 +75,10 @@ public class ProxyConfiguration {
 
   @Override
   public String toString() {
-    switch (type) {
-      case MANUAL:
-        return "Manual host: " + hostname + ":" + port;
-      default:
-        return type.toString();
+    if (java.util.Objects.requireNonNull(type) == ProxyType.MANUAL) {
+      return "Manual host: " + hostname + ":" + port;
     }
+    return type.toString();
   }
 
   @Override
@@ -120,7 +118,7 @@ public class ProxyConfiguration {
      */
     SYSTEM_DEFAULT(5);
 
-    private int value;
+    private final int value;
 
     ProxyType(int value) {
       this.value = value;

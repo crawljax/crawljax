@@ -40,5 +40,5 @@ public interface InputParser<D> {
    * @param s input tree as string.
    * @return tree structure.
    */
-  public AptedNode<D> fromString(String s);
+  AptedNode<D> fromString(String s);
 }

@@ -37,7 +37,7 @@ public class TrainingFormHandler extends FormHandler {
   /**
    * Keeps track of the form data manually entered during training.
    **/
-  private static Set<Identification> visited = new HashSet<>();
+  private static final Set<Identification> visited = new HashSet<>();
 
   @Inject
   public TrainingFormHandler(@Assisted EmbeddedBrowser browser, CrawlRules config) {

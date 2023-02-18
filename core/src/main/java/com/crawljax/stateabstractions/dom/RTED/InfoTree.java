@@ -50,15 +50,15 @@ public class InfoTree {
   private static final byte RIGHT = 1;
   private static final byte HEAVY = 2;
   private static final byte BOTH = 3;
-  public int[][] info; // an array with all the indeces
-  public boolean[][] nodeType; // store the type of a node: for every node stores three boolean
-  private LabelDictionary ld; // dictionary with labels - common for two input trees
+  public final int[][] info; // an array with all the indeces
+  public final boolean[][] nodeType; // store the type of a node: for every node stores three boolean
+  private final LabelDictionary ld; // dictionary with labels - common for two input trees
   // values (L, R,
   // H)
   // paths and rel subtrees are inside 2D arrays to be able to get them by
   // paths/relsubtrees[L/R/H][node]
-  private int[][] paths;
-  private int[][][] relSubtrees;
+  private final int[][] paths;
+  private final int[][][] relSubtrees;
 
   // temporal variables
   private int sizeTmp = 0; // temporal value of size of a subtree

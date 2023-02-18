@@ -32,7 +32,7 @@ public class Eventable extends DefaultEdge implements Serializable {
   private Identification identification;
   private Element element;
   private ImmutableList<FormInput> relatedFormInputs = ImmutableList.copyOf(
-      new ArrayList<FormInput>());
+      new ArrayList<>());
   private String relatedFrame = "";
 
   /**
@@ -166,7 +166,6 @@ public class Eventable extends DefaultEdge implements Serializable {
    */
   public void setRelatedFormInputs(List<FormInput> relatedFormInputs) {
     this.relatedFormInputs = ImmutableList.copyOf(relatedFormInputs);
-    ;
   }
 
   /**

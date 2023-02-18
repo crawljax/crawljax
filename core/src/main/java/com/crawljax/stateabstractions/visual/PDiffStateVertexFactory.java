@@ -1,16 +1,9 @@
 package com.crawljax.stateabstractions.visual;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.Crawler;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.core.state.StateVertexFactory;
-import com.crawljax.util.FSUtils;
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

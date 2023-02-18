@@ -29,7 +29,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 public class CoreModule extends AbstractModule {
 
   private static final Logger LOG = LoggerFactory.getLogger(CoreModule.class);
-  private CrawljaxConfiguration configuration;
+  private final CrawljaxConfiguration configuration;
 
   public CoreModule(CrawljaxConfiguration config) {
     this.configuration = config;

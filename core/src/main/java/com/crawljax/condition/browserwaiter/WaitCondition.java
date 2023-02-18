@@ -2,6 +2,7 @@ package com.crawljax.condition.browserwaiter;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
@@ -42,9 +43,7 @@ public class WaitCondition {
       ExpectedCondition... expectedConditions) {
     this.url = url;
     this.timeOut = timeoutMilliseconds;
-    for (ExpectedCondition condition : expectedConditions) {
-      this.expectedConditions.add(condition);
-    }
+    this.expectedConditions.addAll(Arrays.asList(expectedConditions));
   }
 
   /**

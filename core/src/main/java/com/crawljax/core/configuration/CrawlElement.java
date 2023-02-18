@@ -188,9 +188,7 @@ public final class CrawlElement {
    * @param conditions The conditions
    */
   protected void setConditions(Condition... conditions) {
-    for (Condition condition : conditions) {
-      this.conditions.add(condition);
-    }
+    this.conditions.addAll(Arrays.asList(conditions));
   }
 
   /**
@@ -223,11 +221,10 @@ public final class CrawlElement {
   protected String escapeApostrophes(String text) {
     String resultString;
     if (text.contains("'")) {
-      StringBuilder stringBuilder = new StringBuilder();
-      stringBuilder.append("concat('");
-      stringBuilder.append(text.replace("'", "',\"'\",'"));
-      stringBuilder.append("')");
-      resultString = stringBuilder.toString();
+      String stringBuilder = "concat('"
+          + text.replace("'", "',\"'\",'")
+          + "')";
+      resultString = stringBuilder;
     } else {
       resultString = "'" + text + "'";
     }

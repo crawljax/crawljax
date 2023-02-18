@@ -14,14 +14,14 @@ public class PDiffComparator {
 
   private static final ForkJoinPool pool = new ForkJoinPool();
   /* getting correct perceptible differences only. */
-  private static double COLOR_FACTOR = 0.0;
-  private static double FOV = 27;
-  private static double GAMMA = 4.2;
-  private static double LUMINANCE = 20.0;
-  private static boolean LUMINANCE_ONLY = false;
+  private static final double COLOR_FACTOR = 0.0;
+  private static final double FOV = 27;
+  private static final double GAMMA = 4.2;
+  private static final double LUMINANCE = 20.0;
+  private static final boolean LUMINANCE_ONLY = false;
   private static int THRESHOLD_PIXELS = 100;
-  private static int PERCENTAGE_OF_TOTAL_IMAGE_SIZE = 0;
-  private static String differenceColor = getHexFromDecimal(PerceptualImageDifferencing.COLOR_FAIL);
+  private static final int PERCENTAGE_OF_TOTAL_IMAGE_SIZE = 0;
+  private static final String differenceColor = getHexFromDecimal(PerceptualImageDifferencing.COLOR_FAIL);
 
   public static String getHexFromDecimal(int dec) {
     // return "#" + Integer.toHexString(dec);
@@ -51,15 +51,13 @@ public class PDiffComparator {
   public  static double computeDistance(BufferedImage imgA,
       BufferedImage imgB) {
 
-    List<Point> differencePixels = new ArrayList<Point>();
+    List<Point> differencePixels = new ArrayList<>();
 
     int width = Math.max(imgA.getWidth(), imgB.getWidth());
     int height = Math.max(imgA.getHeight(), imgB.getHeight());
 
     THRESHOLD_PIXELS = (int) (width * height * ((double) PERCENTAGE_OF_TOTAL_IMAGE_SIZE / 100));
 
-    // BufferedImage imgDiff = (differenceImageFullPath != null) ? new
-    // BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB) : null;
     BufferedImage imgDiff = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
     PerceptualImageDifferencing.Builder builder = new PerceptualImageDifferencing.Builder();

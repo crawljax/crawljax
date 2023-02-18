@@ -15,8 +15,8 @@ import org.opencv.core.Mat;
 public class AverageImageHashStateVertexImpl extends StateVertexImpl {
 
   private static final long serialVersionUID = 123400017983489L;
-  public Mat hashMat;
-  AverageImageHash visHash;
+  public final Mat hashMat;
+  final AverageImageHash visHash;
 
   /**
    * Creates a current state without an url and the @strippedDom same as the @dom.

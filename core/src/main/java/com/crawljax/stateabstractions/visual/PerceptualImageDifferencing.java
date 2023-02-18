@@ -252,14 +252,11 @@ public class PerceptualImageDifferencing {
    * @param imgA    first of two images to compare
    * @param imgB    second of two images to compare
    * @param imgDiff accumulates differences (optional)
-   * @return whether images are perceptually indistinguishable
    */
-  public boolean compare(ForkJoinPool pool, BufferedImage imgA, BufferedImage imgB,
+  public void compare(ForkJoinPool pool, BufferedImage imgA, BufferedImage imgB,
       BufferedImage imgDiff) {
 
     if (imgA.getWidth() != imgB.getWidth() || imgA.getHeight() != imgB.getHeight()) {
-      // System.err.println("Image dimensions do not match");
-      // return false;
       for (int r = 0; r < imgDiff.getWidth(); r++) {
         for (int c = 0; c < imgDiff.getHeight(); c++) {
           imgDiff.setRGB(r, c, COLOR_FAIL);
@@ -277,7 +274,7 @@ public class PerceptualImageDifferencing {
     // accept if all pixels are identical
     if (Arrays.equals(aRGB, bRGB)) {
       // System.out.println("Images are binary identical");
-      return true;
+      return;
     }
 
     int dim = aRGB.length;
@@ -287,7 +284,7 @@ public class PerceptualImageDifferencing {
       for (int index = 0; index < dim; index++) {
         if ((aRGB[index] & ALPHA_MASK) != (bRGB[index] & ALPHA_MASK)) {
           // System.out.println("Images have different alpha values");
-          return false;
+          return;
         }
       }
     }
@@ -347,12 +344,8 @@ public class PerceptualImageDifferencing {
         difference = "At least " + difference;
       }
       // System.out.println(difference);
-      return false;
     }
 
-    // System.out.println("Images are perceptually indistinguishable");
-    // System.out.println("pixel differences = " + difference);
-    return true;
   }
 
   /**
@@ -414,9 +407,8 @@ public class PerceptualImageDifferencing {
     private boolean luminanceOnly = false;
     private int thresholdPixels = 100;
 
-    public Builder setColorFactor(double colorFactor) {
+    public void setColorFactor(double colorFactor) {
       this.colorFactor = colorFactor;
-      return this;
     }
 
     public Builder setFailFast(boolean failFast) {
@@ -424,29 +416,24 @@ public class PerceptualImageDifferencing {
       return this;
     }
 
-    public Builder setFieldOfView(double fieldOfView) {
+    public void setFieldOfView(double fieldOfView) {
       this.fieldOfView = fieldOfView;
-      return this;
     }
 
-    public Builder setGamma(double gamma) {
+    public void setGamma(double gamma) {
       this.gamma = gamma;
-      return this;
     }
 
-    public Builder setLuminance(double luminance) {
+    public void setLuminance(double luminance) {
       this.luminance = luminance;
-      return this;
     }
 
-    public Builder setLuminanceOnly(boolean luminanceOnly) {
+    public void setLuminanceOnly(boolean luminanceOnly) {
       this.luminanceOnly = luminanceOnly;
-      return this;
     }
 
-    public Builder setThresholdPixels(int thresholdPixels) {
+    public void setThresholdPixels(int thresholdPixels) {
       this.thresholdPixels = thresholdPixels;
-      return this;
     }
 
     public PerceptualImageDifferencing build() {

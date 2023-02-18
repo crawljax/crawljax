@@ -32,16 +32,6 @@ public class Parameter {
     return id;
   }
 
-	/*public Parameter(Parameter parameter) { //Copy constructor
-		this.id = parameter.getId();
-		this.displayName = parameter.getDisplayName();
-		this.type = parameter.getType();
-		for(Map.Entry<String, String> entry : parameter.getOptions().entrySet()) {
-			this.options.put(entry.getKey(), entry.getValue());
-		}
-		this.value = parameter.getValue();
-	}*/
-
   public void setId(String id) {
     this.id = id;
   }

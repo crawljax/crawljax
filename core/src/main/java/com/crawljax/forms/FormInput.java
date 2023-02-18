@@ -19,7 +19,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class FormInput {
 
   private InputType type = InputType.TEXT;
-  private Identification identification;
+  private final Identification identification;
   private Set<InputValue> inputValues = new HashSet<>();
   private Eventable eventable;
   public FormInput(InputType type, Identification identification) {
