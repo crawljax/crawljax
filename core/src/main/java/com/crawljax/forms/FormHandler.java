@@ -14,6 +14,7 @@ import com.google.inject.assistedinject.Assisted;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.xml.xpath.XPathExpressionException;
 import org.openqa.selenium.ElementNotInteractableException;
@@ -240,7 +241,7 @@ public class FormHandler {
     return formInputs;
   }
 
-  public List<FormInput> resetFormInputs(List<FormInput> formInputs) {
+  public void resetFormInputs(List<FormInput> formInputs) {
     ArrayList<FormInput> handled = new ArrayList<>();
     FormInput failing = null;
     try {
@@ -256,12 +257,7 @@ public class FormHandler {
       LOGGER.error("Could not reset form elements");
       LOGGER.error(e.getMessage());
     }
-    if (failing == null) {
-      handled.add(new FormInput(null, null));
-    } else {
-      handled.add(failing);
-    }
-    return handled;
+    handled.add(Objects.requireNonNullElseGet(failing, () -> new FormInput(null, null)));
   }
 
   protected void resetInputElementValue(Node element, FormInput input) {
@@ -280,9 +276,6 @@ public class FormHandler {
         case EMAIL:
           resetText(input);
           break;
-//				case HIDDEN:
-//					resetHidden(input);
-//					break;
         case CHECKBOX:
           LOGGER.info("Resetting checkbox{}", input);
           resetCheckBoxes(input);
@@ -290,8 +283,6 @@ public class FormHandler {
         case RADIO:
           resetRadioSwitches(input);
           break;
-//				case SELECT:
-//					handleSelectBoxes(input);
         default:
           break;
       }
@@ -316,9 +307,6 @@ public class FormHandler {
       if (check && inputElement.isSelected()) {
         inputElement.click();
       }
-//				else if (!check && !inputElement.isSelected()) {
-//				inputElement.click();
-//			}
     }
   }
 
@@ -347,19 +335,13 @@ public class FormHandler {
         } else {
           handled.add(input);
         }
-//				input.getIdentification().setHow(How.xpath);
-//				input.getIdentification().setValue(XPathHelper.getSkeletonXpath(belongingNode));
         failing = null;
       }
     } catch (Exception e) {
       LOGGER.error("Could not handle form elements");
       LOGGER.error(e.getMessage());
     }
-    if (failing == null) {
-      handled.add(new FormInput(null, null));
-    } else {
-      handled.add(failing);
-    }
+    handled.add(Objects.requireNonNullElseGet(failing, () -> new FormInput(null, null)));
     return handled;
   }
 

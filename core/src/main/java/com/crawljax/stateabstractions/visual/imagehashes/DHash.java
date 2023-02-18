@@ -2,15 +2,10 @@ package com.crawljax.stateabstractions.visual.imagehashes;
 
 import com.crawljax.util.ImageUtils;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import javax.imageio.ImageIO;
 import org.apache.commons.text.similarity.HammingDistance;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
-import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;

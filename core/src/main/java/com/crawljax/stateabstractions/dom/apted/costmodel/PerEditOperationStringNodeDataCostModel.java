@@ -35,17 +35,17 @@ public class PerEditOperationStringNodeDataCostModel implements CostModel<String
   /**
    * Stores the cost of deleting a node.
    */
-  private float delCost;
+  private final float delCost;
 
   /**
    * Stores the cost of inserting a node.
    */
-  private float insCost;
+  private final float insCost;
 
   /**
    * Stores the cost of mapping two nodes (renaming their labels).
    */
-  private float renCost;
+  private final float renCost;
 
   /**
    * Initialises the cost model with the passed edit operation costs.

@@ -45,7 +45,7 @@ public class AptedNode<D> {
    * Array of pointers to this node's children. The order of children is significant due to the
    * definition of ordered trees.
    */
-  private List<AptedNode<D>> children;
+  private final List<AptedNode<D>> children;
 
   /**
    * Constructs a new node with the passed node data and an empty list of children.
@@ -86,17 +86,16 @@ public class AptedNode<D> {
    * Returns a string representation of the tree in bracket notation.
    *
    * <p>IMPORTANT: Works only for nodes storing {@link node.StringNodeData}
-   * due to using {@link node.StringNodeData#getLabel()}.
+   * due to using .
    *
    * @return tree in bracket notation.
    */
   public String toString() {
-    String res = (new StringBuilder("{")).append(((StringNodeData) getNodeData()).getLabel())
-        .toString();
+    String res = "{" + ((StringNodeData) getNodeData()).getLabel();
     for (AptedNode<D> child : getChildren()) {
-      res = (new StringBuilder(String.valueOf(res))).append(child.toString()).toString();
+      res = res + child.toString();
     }
-    res = (new StringBuilder(String.valueOf(res))).append("}").toString();
+    res = res + "}";
     return res;
   }
 

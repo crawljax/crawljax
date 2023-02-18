@@ -24,7 +24,7 @@ public class MarrHildrethImageHashStateVertexFactory extends StateVertexFactory 
     OpenCVLoad.load();
   }
 
-  private MarrHildrethImageHash visHash = new MarrHildrethImageHash();
+  private final MarrHildrethImageHash visHash = new MarrHildrethImageHash();
 
   @Override
   public StateVertex newStateVertex(int id, String url, String name, String dom,

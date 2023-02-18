@@ -115,8 +115,8 @@ public class StyleComparator extends AbstractComparator {
     for (String property : styleProperties) {
       styleProperty = property.split(":");
       if (styleProperty.length == 2) {
-        for (int j = 0; j < ALLOW_STYLE_TYPES.length; j++) {
-          if (styleProperty[0].trim().equalsIgnoreCase(ALLOW_STYLE_TYPES[j])) {
+        for (String allowStyleType : ALLOW_STYLE_TYPES) {
+          if (styleProperty[0].trim().equalsIgnoreCase(allowStyleType)) {
             badWayOfDoingThis +=
                 styleProperty[0].trim() + ": " + styleProperty[1].trim() + ";";
             buffer.append(styleProperty[0].trim());

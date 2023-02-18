@@ -34,7 +34,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.awt.Rectangle;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -92,7 +91,7 @@ public class Crawler {
   private boolean avoidUnrelatedBacktracking = false;
   private boolean UseEquivalentReset = false;
   private boolean avoidDifferentBacktracking = false;
-  private boolean pairwiseFormHandling = false;
+  private final boolean pairwiseFormHandling = false;
   private static final long BACKTRACKING_SEED = 1000000;
   private long nextBackTrackingId = BACKTRACKING_SEED;
 
@@ -122,9 +121,6 @@ public class Crawler {
     this.waitConditionChecker = waitConditionChecker;
     this.candidateExtractor = elementExtractor.newExtractor(browser);
     switch (crawlRules.getFormFillMode()) {
-      case RANDOM:
-        this.formHandler = formHandlerFactory.newFormHandler(browser);
-        break;
       case XPATH_TRAINING:
       case TRAINING:
         this.formHandler = trainingFormHandlerFactory.newTrainingFormHandler(browser);
@@ -624,7 +620,7 @@ public class Crawler {
             clone);
 
         //TODO: formElements are added again. So empty existing elements.
-        clone.setRelatedFormInputs(ImmutableList.copyOf(new ArrayList<FormInput>()));
+        clone.setRelatedFormInputs(ImmutableList.copyOf(new ArrayList<>()));
         CandidateElement oldCandidate = clickable.getSourceStateVertex()
             .getCandidateElement(clickable);
 
@@ -867,7 +863,7 @@ public class Crawler {
   private List<FormInput> getInputElements(Eventable eventable) {
     ImmutableList<FormInput> formInputsExisting = eventable.getRelatedFormInputs();
 
-    List<FormInput> formInputs = new ArrayList<FormInput>();
+    List<FormInput> formInputs = new ArrayList<>();
     formInputs.addAll(formInputsExisting);
 
     for (FormInput formInput : formHandler.getFormInputs()) {
@@ -904,7 +900,7 @@ public class Crawler {
     LOG.info("Ordering form inputs visually");
 
     List<FormInput> returnList = new ArrayList<>();
-    Map<Rectangle, FormInput> rectangleMap = new HashMap<Rectangle, FormInput>();
+    Map<Rectangle, FormInput> rectangleMap = new HashMap<>();
 
     for (FormInput input : formInputs) {
       try {
@@ -926,27 +922,16 @@ public class Crawler {
       }
     }
 
-    Comparator<Rectangle> visualOrder = new Comparator<Rectangle>() {
-
-      @Override
-      public int compare(Rectangle o1, Rectangle o2) {
-        if (o1.getY() < o2.getY()) {
-          return -1;
-        } else if (o1.getY() > o2.getY()) {
-          return 1;
-        } else {
-          if (o1.getX() < o2.getX()) {
-            return -1;
-          } else if (o1.getX() > o2.getX()) {
-            return 1;
-          } else {
-            return 0;
-          }
-        }
+    Comparator<Rectangle> visualOrder = (o1, o2) -> {
+      if (o1.getY() < o2.getY()) {
+        return -1;
+      } else if (o1.getY() > o2.getY()) {
+        return 1;
+      } else {
+        return Double.compare(o1.getX(), o2.getX());
       }
     };
-    List<Rectangle> rectangles = new ArrayList<Rectangle>();
-    rectangles.addAll(rectangleMap.keySet());
+    List<Rectangle> rectangles = new ArrayList<>(rectangleMap.keySet());
     rectangles.sort(visualOrder);
 
     for (Rectangle rect : rectangles) {
@@ -977,8 +962,8 @@ public class Crawler {
   }
 
   private List<FormInput> getNextPair(Map<FormInput, Boolean> tries) {
-    List<FormInput> returnList = new ArrayList<FormInput>();
-    List<FormInput> available = new ArrayList<FormInput>();
+    List<FormInput> returnList = new ArrayList<>();
+    List<FormInput> available = new ArrayList<>();
 
     for (FormInput input : tries.keySet()) {
       if (!tries.get(input)) {
@@ -1016,7 +1001,7 @@ public class Crawler {
 
     boolean isValid = isValid(event);
 
-    Map<FormInput, Boolean> tries = new HashMap<FormInput, Boolean>();
+    Map<FormInput, Boolean> tries = new HashMap<>();
     for (FormInput input : available) {
       tries.put(input, false);
     }
@@ -1251,7 +1236,7 @@ public class Crawler {
         // set eventable id (based on access)
         long eventableId = getEventableId();
         if (element.wasExplored()) {
-          eventableId = (element.getEquivalentAccess()) * DUPLICATE_EVENT_SEED + eventableId;
+          eventableId = (long) (element.getEquivalentAccess()) * DUPLICATE_EVENT_SEED + eventableId;
           LOG.info("Duplicate access for {} \n seed {}", element.getIdentification().getValue(),
               eventableId);
         }
@@ -1382,11 +1367,10 @@ public class Crawler {
       LOG.info("New DOM is a new state! crawl depth is now {}", depth);
       if (maxDepth == depth) {
         LOG.debug("Maximum depth achieved. Not crawling this state any further");
-        return true;
       } else {
         parseCurrentPageForCandidateElements();
-        return true;
       }
+      return true;
     } else {
       if (event.getId() == -1) {
         // Removing the clone Edge and adding the SFG edge to the crawlpath
@@ -1453,7 +1437,7 @@ public class Crawler {
     if (m.find()) {
       LOG.debug("URL: {}", m.group(2));
       try {
-        waitTime = Integer.parseInt(m.group(1)) * 1000;
+        waitTime = Integer.parseInt(m.group(1)) * 1000L;
       } catch (NumberFormatException ex) {
         LOG.info(
             "Could parse the amount of time to wait for a META tag refresh. Waiting 10 seconds...");

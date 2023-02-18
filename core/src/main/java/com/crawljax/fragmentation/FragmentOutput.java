@@ -27,7 +27,7 @@ public class FragmentOutput {
       return;
     }
 
-    List<String> visualBlockXpaths = new ArrayList<String>();
+    List<String> visualBlockXpaths = new ArrayList<>();
     for (Node vipsBlock : fragment.getNestedBlocks()) {
       visualBlockXpaths.add(XPathHelper.getSkeletonXpath(vipsBlock));
     }
@@ -40,7 +40,7 @@ public class FragmentOutput {
     this.isDynamic = fragment.isDynamic();
     this.isGlobal = fragment.isGlobal();
 
-    List<String> duplicates = new ArrayList<String>();
+    List<String> duplicates = new ArrayList<>();
 
     for (Fragment duplicate : fragment.getDuplicateFragments()) {
       if (duplicate == null) {
@@ -52,7 +52,7 @@ public class FragmentOutput {
 
     this.duplicates = duplicates;
 
-    List<String> equivalents = new ArrayList<String>();
+    List<String> equivalents = new ArrayList<>();
 
     for (Fragment duplicate : fragment.getEquivalentFragments()) {
       if (duplicate == null) {
@@ -64,7 +64,7 @@ public class FragmentOutput {
 
     this.equivalents = equivalents;
 
-    List<String> nd2 = new ArrayList<String>();
+    List<String> nd2 = new ArrayList<>();
 
     for (Fragment duplicate : fragment.getNd2Fragments()) {
       if (duplicate == null) {
@@ -164,9 +164,7 @@ public class FragmentOutput {
     if (obj instanceof FragmentOutput) {
       FragmentOutput that = (FragmentOutput) obj;
       if (this.stateId == that.stateId) {
-        if (this.fragmentId == that.fragmentId) {
-          return true;
-        }
+        return this.fragmentId == that.fragmentId;
       }
     }
     return false;

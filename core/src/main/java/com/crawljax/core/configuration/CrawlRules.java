@@ -67,14 +67,6 @@ public class CrawlRules {
     return new CrawlRulesBuilder(builder);
   }
 
-  public static long getDefaultWaitAfterReload() {
-    return DEFAULT_WAIT_AFTER_RELOAD;
-  }
-
-  public static long getDefaultWaitAfterEvent() {
-    return DEFAULT_WAIT_AFTER_EVENT;
-  }
-
   public FormFillOrder getFormFillOrder() {
     return formFillOrder;
   }
@@ -286,10 +278,10 @@ public class CrawlRules {
     private final ImmutableSortedSet.Builder<String> ignoredFrameIdentifiers =
         ImmutableSortedSet.naturalOrder();
     private final CrawljaxConfigurationBuilder crawljaxBuilder;
-    private ImmutableSortedSet.Builder<EventType> crawlEvents =
+    private final ImmutableSortedSet.Builder<EventType> crawlEvents =
         ImmutableSortedSet.naturalOrder();
-    private ImmutableList.Builder<Invariant> invariants = ImmutableList.builder();
-    private ImmutableList.Builder<OracleComparator> oracleComparators =
+    private final ImmutableList.Builder<Invariant> invariants = ImmutableList.builder();
+    private final ImmutableList.Builder<OracleComparator> oracleComparators =
         ImmutableList.builder();
 
     private CrawlRulesBuilder(CrawljaxConfigurationBuilder crawljaxBuilder) {
@@ -331,19 +323,16 @@ public class CrawlRules {
       return this;
     }
 
-    public CrawlRulesBuilder avoidUnrelatedBacktracking(boolean avoidUnrelatedBacktracking) {
+    public void avoidUnrelatedBacktracking(boolean avoidUnrelatedBacktracking) {
       crawlRules.avoidUnrelatedBacktracking = avoidUnrelatedBacktracking;
-      return this;
     }
 
-    public CrawlRulesBuilder avoidDifferentBacktracking(boolean avoidDifferentBacktracking) {
+    public void avoidDifferentBacktracking(boolean avoidDifferentBacktracking) {
       crawlRules.avoidDifferentBacktracking = avoidDifferentBacktracking;
-      return this;
     }
 
-    public CrawlRulesBuilder useEquivalentReset(boolean useEquivalentReset) {
+    public void useEquivalentReset(boolean useEquivalentReset) {
       crawlRules.useEquivalentReset = useEquivalentReset;
-      return this;
     }
 
     /**
@@ -637,8 +626,6 @@ public class CrawlRules {
     private void setupOracleComparatorsOrDefault() {
       ImmutableList<OracleComparator> comparators = oracleComparators.build();
       if (comparators.isEmpty()) {
-//				crawlRules.oracleComparators = ImmutableList
-//						.of(new OracleComparator("SimpleComparator", new SimpleComparator()));
         crawlRules.oracleComparators = ImmutableList
             .of(new OracleComparator("DummyComparator", new DummyComparator()));
 

@@ -17,7 +17,7 @@ public class SSIMStateVertexImpl extends StateVertexImpl {
   private static final long serialVersionUID = 123400017983489L;
   double threshold = 1.0; // 1.0 is perfect match and 0 is no match at all
 
-  BufferedImage image;
+  final BufferedImage image;
 
   /**
    * Creates a current state without an url and the stripped dom equals the dom.

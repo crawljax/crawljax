@@ -37,9 +37,9 @@ public class StateVertexImpl implements StateVertex {
   private final String strippedDom;
   private final String url;
   private transient Document document;
-  private String name;
+  private final String name;
 
-  private transient HashMap<Node, List<CandidateElement>> nodeCandidateMapping = new HashMap<>();
+  private final transient HashMap<Node, List<CandidateElement>> nodeCandidateMapping = new HashMap<>();
 
   private transient ImmutableList<CandidateElement> candidateElements;
 
@@ -249,13 +249,13 @@ public class StateVertexImpl implements StateVertex {
   }
 
   @Override
-  public Fragment getClosestFragment(CandidateElement element) throws Exception {
+  public Fragment getClosestFragment(CandidateElement element) {
     return null;
   }
 
   @Override
   public boolean hasUnexploredActions() {
-    if (this.unexploredActions == false) {
+    if (!this.unexploredActions) {
       return false;
     }
     for (CandidateElement element : candidateElements) {

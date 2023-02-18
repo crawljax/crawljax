@@ -602,7 +602,7 @@ public final class DomUtils {
         }
         tokens.add(textNode.getNodeValue().trim());
       }
-    } catch (XPathExpressionException e) {
+    } catch (XPathExpressionException ignored) {
 
     }
     return tokens;
@@ -714,7 +714,7 @@ public final class DomUtils {
         }
 
       }
-    } catch (XPathExpressionException e) {
+    } catch (XPathExpressionException ignored) {
 
     }
     return document;
@@ -781,7 +781,7 @@ public final class DomUtils {
    */
   private static String filterAttributes(String html) {
     String filteredHtml = html;
-    List<String> filterAttributes = new ArrayList<String>();
+    List<String> filterAttributes = new ArrayList<>();
     for (String attribute : filterAttributes) {
       String regex = "\\s" + attribute + "=\"[^\"]*\"";
       Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
@@ -804,9 +804,7 @@ public final class DomUtils {
     }
 
     if ((parent.compareDocumentPosition(child) & Document.DOCUMENT_POSITION_CONTAINED_BY) == 0) {
-      if (!parent.isSameNode(child)) {
-        return false;
-      }
+      return parent.isSameNode(child);
     }
     return true;
   }
@@ -827,7 +825,7 @@ public final class DomUtils {
         String key = leafNodes.item(i).getNodeName();
 
         if (filterSet == null) {
-          filterSet = new HashSet<String>();
+          filterSet = new HashSet<>();
         }
 
         if (filterSet.isEmpty()) { // Add common attributes
@@ -845,7 +843,7 @@ public final class DomUtils {
 
         String value = leafNodes.item(i).getNodeValue().trim();
         if (!map.containsKey(key)) {
-          map.put(key, new HashSet<String>());
+          map.put(key, new HashSet<>());
         }
         map.get(key).add(value);
       }

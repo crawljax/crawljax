@@ -89,13 +89,10 @@ public class StatePair {
   public boolean equals(Object obj) {
     if (obj instanceof StatePair) {
       StatePair other = (StatePair) obj;
-      if (((this.state1.getId() == other.state1.getId()) && (this.state2.getId()
+      return ((this.state1.getId() == other.state1.getId()) && (this.state2.getId()
           == other.getState2().getId()))
           || ((this.state2.getId() == other.state1.getId()) && (this.state1.getId()
-          == other.getState2().getId()))
-      ) {
-        return true;
-      }
+          == other.getState2().getId()));
 
     }
     return false;
@@ -106,7 +103,7 @@ public class StatePair {
     return state1.getName() + " and " + state2.getName() + " are " + stateComparision;
   }
 
-  public static enum StateComparision {
+  public enum StateComparision {
     DIFFERENT, DUPLICATE, NEARDUPLICATE1, NEARDUPLICATE2, ERRORCOMPARING
   }
 

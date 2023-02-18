@@ -97,7 +97,7 @@ public interface StateVertex extends Serializable {
 
   Fragment getClosestFragment(Node node);
 
-  Fragment getClosestFragment(CandidateElement element) throws Exception;
+  Fragment getClosestFragment(CandidateElement element);
 
   boolean hasUnexploredActions();
 

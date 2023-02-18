@@ -41,9 +41,9 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     PostCrawlingPlugin {
 
   private static final Logger LOG = LoggerFactory.getLogger(FragmentationPlugin.class);
-  public static boolean COMPARE_FAST = false;
-  public static boolean DISABLE_STATE_COMP = false;
-  private static boolean exportFragments = true;
+  public static final boolean COMPARE_FAST = false;
+  public static final boolean DISABLE_STATE_COMP = false;
+  private static final boolean exportFragments = true;
 
   /**
    * Loads a statevertex in an offline setting using a previously fragmented and recorded DOM.
@@ -194,10 +194,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     }
     try {
       DomUtils.writeDocumentToFile(fragmentedDom, domFile.getAbsolutePath(), "html", 2);
-    } catch (TransformerException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (IOException e) {
+    } catch (TransformerException | IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
@@ -287,9 +284,9 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
       List<Set<StateVertex>> nearDuplicates = session.getFragmentManager().getNearDuplicates();
 
-      List<List<String>> nearDuplicatesString = new ArrayList<List<String>>();
+      List<List<String>> nearDuplicatesString = new ArrayList<>();
       for (Set<StateVertex> set : nearDuplicates) {
-        List<String> newSet = new ArrayList<String>();
+        List<String> newSet = new ArrayList<>();
         for (StateVertex vertex : set) {
           newSet.add(vertex.getName());
         }
@@ -306,10 +303,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
         writer.flush();
         writer.close();
 
-      } catch (JsonIOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (IOException e) {
+      } catch (JsonIOException | IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
@@ -329,7 +323,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
     List<Fragment> fragments = session.getFragmentManager().getAllFragments();
 
-    List<FragmentOutput> fragmentOutputs = new ArrayList<FragmentOutput>();
+    List<FragmentOutput> fragmentOutputs = new ArrayList<>();
 
 
     /* Disabled for Mutation Analysis
@@ -337,7 +331,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
      * */
     //session.getFragmentManager().stopCrawling();
 
-    List<FragmentPair> output = new ArrayList<FragmentPair>();
+    List<FragmentPair> output = new ArrayList<>();
 
     HashMap<Fragment, FragmentOutput> fragMap = new HashMap<>();
     for (Fragment fragment : fragments) {
@@ -370,7 +364,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     } catch (Exception ex) {
       LOG.error("Error exporting all Fragments");
     }
-    List<CrawlPathInfo> crawlPathsInfo = new ArrayList<CrawlPathInfo>();
+    List<CrawlPathInfo> crawlPathsInfo = new ArrayList<>();
     Iterator<List<Eventable>> paths = session.getCrawlPaths().iterator();
 
     for (int i = 0; i < session.getCrawlPaths().size(); i++) {

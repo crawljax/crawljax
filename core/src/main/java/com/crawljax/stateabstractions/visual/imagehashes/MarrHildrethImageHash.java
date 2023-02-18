@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import org.opencv.core.Mat;
 import org.opencv.img_hash.MarrHildrethHash;
-import org.opencv.imgcodecs.Imgcodecs;
 
 public class MarrHildrethImageHash extends VisHash {
 

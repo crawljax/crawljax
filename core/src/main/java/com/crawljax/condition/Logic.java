@@ -49,7 +49,7 @@ public final class Logic {
 
   private static class Not implements Condition {
 
-    private Condition condition;
+    private final Condition condition;
 
     public Not(Condition c) {
       condition = c;
@@ -84,7 +84,7 @@ public final class Logic {
 
   private static class And implements Condition {
 
-    private Condition[] conditions;
+    private final Condition[] conditions;
 
     public And(Condition... cs) {
       conditions = cs;
@@ -125,7 +125,7 @@ public final class Logic {
 
   private static class Or implements Condition {
 
-    private Condition[] conditions;
+    private final Condition[] conditions;
 
     public Or(Condition... cs) {
       conditions = cs;

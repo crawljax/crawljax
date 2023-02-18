@@ -217,11 +217,7 @@ public class CandidateElement {
   }
 
   public boolean wasExplored() {
-    if ((isDirectAccess()) || (duplicateAccess > 0) || equivalentAccess > 0) {
-      return true;
-    }
-
-    return false;
+    return (isDirectAccess()) || (duplicateAccess > 0) || equivalentAccess > 0;
   }
 
   public Fragment getClosestDomFragment() {

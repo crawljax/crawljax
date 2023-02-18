@@ -179,10 +179,10 @@ public class CrawlActionsBuilder {
     }
 
     private String asExcludeXpath(String identifier, String value) {
-      return new StringBuilder().append("//")
-          .append(tagName.toUpperCase()).append("[@")
-          .append(identifier).append("='").append(value)
-          .append("']//*").toString();
+      return "//"
+          + tagName.toUpperCase() + "[@"
+          + identifier + "='" + value
+          + "']//*";
     }
 
     private ImmutableList<CrawlElement> asExcludeList(

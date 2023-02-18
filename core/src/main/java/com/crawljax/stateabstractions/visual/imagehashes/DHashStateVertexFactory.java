@@ -31,9 +31,6 @@ public class DHashStateVertexFactory extends StateVertexFactory {
       EmbeddedBrowser browser) {
 
     BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
-//    saveImage(image, name);
-//
-//    String path = Crawler.outputDir + "/screenshots/" + name + ".png";
 
     DHash visualDHash = new DHash();
     String dHash = null;

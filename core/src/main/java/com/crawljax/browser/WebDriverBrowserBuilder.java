@@ -7,10 +7,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSortedSet;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.bonigarcia.wdm.config.DriverManagerType;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -82,7 +80,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
               + configuration.getBrowserConfig().getBrowserType());
       }
     } catch (IllegalStateException e) {
-      LOGGER.error("Crawling with {} failed: " + e.getMessage(), browserType.toString());
+      LOGGER.error("Crawling with {} failed: " + e.getMessage(), browserType);
       throw e;
     }
 
@@ -188,8 +186,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
     WebDriverManager manager = WebDriverManager.getInstance(DriverManagerType.CHROME);
     manager.capabilities(optionsChrome);
-//    manager.setup();
-//    ChromeDriver driverChrome = new ChromeDriver(optionsChrome);
     ChromeDriver driverChrome = (ChromeDriver) manager.create();
 
     Dimension d = new Dimension(1200, 890);

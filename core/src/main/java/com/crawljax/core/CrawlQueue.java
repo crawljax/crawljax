@@ -89,7 +89,7 @@ public class CrawlQueue extends Stack<Runnable> implements
   @Override
   @GuardedBy("this")
   public synchronized Runnable remove() {
-    if (this.size() <= 0) {
+    if (this.size() == 0) {
       return null;
     }
     return this.remove(this.size() - 1);

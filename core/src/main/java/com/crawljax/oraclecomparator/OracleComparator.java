@@ -2,6 +2,7 @@ package com.crawljax.oraclecomparator;
 
 import com.crawljax.condition.Condition;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.jcip.annotations.Immutable;
 
@@ -43,9 +44,7 @@ public class OracleComparator {
    */
   public OracleComparator(String id, Comparator oracle, Condition... preConditions) {
     this(id, oracle);
-    for (Condition condition : preConditions) {
-      this.preConditions.add(condition);
-    }
+    this.preConditions.addAll(Arrays.asList(preConditions));
   }
 
   /**

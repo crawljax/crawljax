@@ -14,7 +14,7 @@ public class DHashStateVertexImpl extends StateVertexImpl {
 
   private static final long serialVersionUID = 123400017983489L;
 
-  String dHash;
+  final String dHash;
 
   /**
    * Creates a current state without an url and the stripped dom equals the dom.

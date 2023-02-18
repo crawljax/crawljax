@@ -37,7 +37,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
-import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
@@ -263,11 +262,9 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
       handlePopups();
     } catch (WebDriverException e) {
       throwIfConnectionException(e);
-      return;
     } catch (InterruptedException e) {
       LOGGER.debug("goToUrl got interrupted while waiting for the page to be loaded", e);
       Thread.currentThread().interrupt();
-      return;
     }
   }
 
@@ -642,11 +639,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
       nodeList.add(frameElement);
     }
 
-    for (int i = 0; i < nodeList.size(); i++) {
+    for (Element element : nodeList) {
       try {
-        locateFrameAndGetSource(document, topFrame, nodeList.get(i));
+        locateFrameAndGetSource(document, topFrame, element);
       } catch (UnknownServerException | NoSuchFrameException e) {
-        LOGGER.warn("Could not add frame contents for element {}", nodeList.get(i));
+        LOGGER.warn("Could not add frame contents for element {}", element);
         LOGGER.debug("Could not load frame because of {}", e.getMessage(), e);
       }
     }
@@ -978,8 +975,6 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     }
 
     if (this.pixelDensity != -1) {
-      // BufferedImage img = Shutterbug.shootPage(getWebDriver(),
-      // ScrollStrategy.WHOLE_PAGE_CHROME,true).getImage();
       BufferedImage img = Shutterbug
           .shootPage(getWebDriver(), ScrollStrategy.BOTH_DIRECTIONS, scrollTime, true)
           .getImage();
@@ -1064,8 +1059,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
   }
 
   private boolean exceptionIsInteractableException(WebDriverException exception) {
-    return exception != null
-        && exception instanceof ElementNotInteractableException;
+    return exception instanceof ElementNotInteractableException;
   }
 
   public void setPixelDensity(int pixelDensity) {

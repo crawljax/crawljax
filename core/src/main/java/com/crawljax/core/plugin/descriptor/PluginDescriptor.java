@@ -17,8 +17,8 @@ public class PluginDescriptor {
 
   private String name;
   private String description;
-  private List<String> crawljaxVersions = new ArrayList<>();
-  private List<Parameter> parameters = new ArrayList<>();
+  private final List<String> crawljaxVersions = new ArrayList<>();
+  private final List<Parameter> parameters = new ArrayList<>();
 
   public static PluginDescriptor fromXMLStream(InputStream xmlInputStream) {
     com.crawljax.core.plugin.descriptor.jaxb.generated.PluginDescriptor pluginDescriptor =

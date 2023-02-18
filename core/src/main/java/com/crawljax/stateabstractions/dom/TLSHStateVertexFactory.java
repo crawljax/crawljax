@@ -20,7 +20,7 @@ public class TLSHStateVertexFactory extends StateVertexFactory {
   private static final Logger LOG = LoggerFactory.getLogger(TLSHStateVertexFactory.class.getName());
   private static double threshold = 0.0;
   private static Mode mode;
-  private static double insufficientComplexityDistance = 200;
+  private static final double insufficientComplexityDistance = 200;
   private static EditDistanceComparator editDistanceComparator;
 
   public TLSHStateVertexFactory(double treshold, Mode mode1) {

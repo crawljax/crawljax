@@ -17,7 +17,7 @@ public class PDiffStateVertexImpl extends StateVertexImpl {
 
   double threshold = 0.0;
 
-  BufferedImage page;
+  final BufferedImage page;
 
   /**
    * Creates a current state without an url and the stripped dom equals the dom.

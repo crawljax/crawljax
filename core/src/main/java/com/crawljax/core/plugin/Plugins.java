@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class Plugins {
 
-  @SuppressWarnings("unchecked")
   static final ImmutableSet<Class<? extends Plugin>> KNOWN_PLUGINS = ImmutableSet
       .of(OnBrowserCreatedPlugin.class,
           OnFireEventFailedPlugin.class,

@@ -16,7 +16,7 @@ public class LevenshteinStateVertexImpl extends StateVertexImpl {
 
   private static final long serialVersionUID = 123400017983489L;
 
-  private EditDistanceComparator editDistanceComparator;
+  private final EditDistanceComparator editDistanceComparator;
 
   /**
    * Defines a State.

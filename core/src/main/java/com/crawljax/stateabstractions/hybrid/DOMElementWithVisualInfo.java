@@ -5,9 +5,9 @@ import org.openqa.selenium.Rectangle;
 
 public class DOMElementWithVisualInfo {
 
-  private String xpath;
-  private String visualHash;
-  private Rectangle boundingBox;
+  private final String xpath;
+  private final String visualHash;
+  private final Rectangle boundingBox;
 
   public DOMElementWithVisualInfo(String xpath, Rectangle boundingBox) {
     this(xpath, boundingBox, null);
@@ -84,13 +84,9 @@ public class DOMElementWithVisualInfo {
       return false;
     }
     if (xpath == null) {
-      if (other.xpath != null) {
-        return false;
-      }
-    } else if (!xpath.equals(other.xpath)) {
-      return false;
-    }
-    return true;
+      return other.xpath == null;
+    } else
+      return xpath.equals(other.xpath);
   }
 
   private String getBoundingBoxString() {

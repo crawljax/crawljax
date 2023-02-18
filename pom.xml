@@ -9,10 +9,10 @@
 
     <name>Crawljax parent POM</name>
     <description>
-        Crawling Ajax applications through dynamic analysis and
+        Crawling web applications through even-driven, dynamic analysis, and
         reconstruction of the UI state changes. Crawljax is based on a
         method which dynamically builds a `state-flow graph' modeling
-        the various navigation paths and states within an Ajax
+        the various navigation paths and states within a web
         application.
     </description>
     <url>https://github.com/crawljax</url>
@@ -27,14 +27,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <slf4j.version>2.0.6</slf4j.version>
         <logback.version>1.4.5</logback.version>
-        <selenium.version>4.8.0</selenium.version>
+        <selenium.version>4.8.1</selenium.version>
         <jetty.version>11.0.13</jetty.version>
         <guice.version>5.1.0</guice.version>
     </properties>
-
-    <prerequisites>
-        <maven>${maven.min.version}</maven>
-    </prerequisites>
 
     <scm>
         <connection>scm:git:git@github.com:crawljax/crawljax.git</connection>

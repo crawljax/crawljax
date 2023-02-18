@@ -16,7 +16,7 @@ public class SIFTStateVertexImpl extends StateVertexImpl {
 
   private static final long serialVersionUID = 123400017983489L;
   double threshold = 95.0;
-  BufferedImage image;
+  final BufferedImage image;
 //	Mat image;
 
   /**

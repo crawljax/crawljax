@@ -21,15 +21,15 @@ public class TLSHStateVertexImpl extends StateVertexImpl {
 
   private static final long serialVersionUID = 123400017983489L;
 
-  private double threshold;
+  private final double threshold;
 
-  private double maxRaw = 633;
+  private final double maxRaw = 633;
 
-  private Mode mode;
+  private final Mode mode;
 
-  private String usedDom;
+  private final String usedDom;
 
-  private EditDistanceComparator editDistanceComparator;
+  private final EditDistanceComparator editDistanceComparator;
 
   /**
    * Creates a current state without an url and the stripped dom equals the dom.
@@ -76,11 +76,7 @@ public class TLSHStateVertexImpl extends StateVertexImpl {
     try {
       double distance = TLSHStateVertexFactory.computeTLSHDistance(this.getUsedDom(),
           that.getUsedDom());
-      if (distance <= threshold * maxRaw) {
-        return true;
-      } else {
-        return false;
-      }
+      return distance <= threshold * maxRaw;
     } catch (IllegalArgumentException Ex) {
       LOG.info("DOM not complex enough for TLSH. Falling back on Levenshtein");
       return editDistanceComparator.isEquivalent(this.getUsedDom(), that.getUsedDom());
@@ -98,14 +94,12 @@ public class TLSHStateVertexImpl extends StateVertexImpl {
     if (vertexOfGraph instanceof TLSHStateVertexImpl) {
       TLSHStateVertexImpl vertex = (TLSHStateVertexImpl) vertexOfGraph;
       try {
-        double distance = TLSHStateVertexFactory.computeTLSHDistance(this.getUsedDom(),
+        return TLSHStateVertexFactory.computeTLSHDistance(this.getUsedDom(),
             vertex.getUsedDom());
-        return distance;
       } catch (IllegalArgumentException IAEx) {
         LOG.info("DOM not complex enough for TLSH. Falling back on Levenshtein");
-        double distance = StringUtils.getLevenshteinDistance(this.getUsedDom(),
+        return StringUtils.getLevenshteinDistance(this.getUsedDom(),
             vertex.getUsedDom());
-        return distance;
       }
     }
     return -1;

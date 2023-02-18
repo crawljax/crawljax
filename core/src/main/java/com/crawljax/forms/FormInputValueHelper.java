@@ -42,7 +42,7 @@ public final class FormInputValueHelper {
   private static final int EMPTY = 0;
   private static FormInputValueHelper instance = null;
   private final Map<Identification, FormInput> formInputs;
-  private FormFillMode formFillMode;
+  private final FormFillMode formFillMode;
 
   /**
    * @param inputSpecification the input specification.
@@ -107,7 +107,7 @@ public final class FormInputValueHelper {
     String serialized = json.toJson(instance.formInputs.values());
 
     try {
-      LOGGER.info("Writing training form inputs to " + out.toString());
+      LOGGER.info("Writing training form inputs to " + out);
       FileUtils.writeStringToFile(out, serialized, Charset.defaultCharset());
     } catch (IOException e) {
       LOGGER.error(e.getMessage(), e);
@@ -381,9 +381,7 @@ public final class FormInputValueHelper {
     if (xpathExpr != null && !xpathExpr.equals("")) {
       id = new Identification(Identification.How.xpath, xpathExpr);
       FormInput input = this.formInputs.get(id);
-      if (input != null) {
-        return input;
-      }
+      return input;
     }
 
     return null;

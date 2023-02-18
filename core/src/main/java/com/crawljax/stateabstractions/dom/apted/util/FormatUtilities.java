@@ -110,7 +110,7 @@ public class FormatUtilities {
     Random r = new Random(d.getTime());
     String str = "";
     for (int i = 0; i < length; i++) {
-      str = (new StringBuilder(str)).append((char) (65 + r.nextInt(26))).toString();
+      str = str + (char) (65 + r.nextInt(26));
     }
 
     return str;
@@ -123,7 +123,7 @@ public class FormatUtilities {
     } catch (IndexOutOfBoundsException e) {
       res = s;
       for (int i = s.length(); i < size; i++) {
-        res = (new StringBuilder(res)).append(fillChar).toString();
+        res = res + fillChar;
       }
 
     }
@@ -141,7 +141,7 @@ public class FormatUtilities {
     } catch (IndexOutOfBoundsException e) {
       res = s;
       for (int i = s.length(); i < size; i++) {
-        res = (new StringBuilder(String.valueOf(fillChar))).append(res).toString();
+        res = fillChar + res;
       }
 
     }
@@ -276,7 +276,7 @@ public class FormatUtilities {
     return s.toString();
   }
 
-  public static String commaSeparatedList(String list[], char quote) {
+  public static String commaSeparatedList(String[] list, char quote) {
     StringBuilder s = new StringBuilder();
     for (int i = 0; i < list.length; i++) {
       s.append(quote).append(list[i]).append(quote);

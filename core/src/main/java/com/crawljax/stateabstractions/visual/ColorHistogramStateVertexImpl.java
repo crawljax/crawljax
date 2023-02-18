@@ -15,7 +15,7 @@ public class ColorHistogramStateVertexImpl extends StateVertexImpl {
 
   private static final long serialVersionUID = 123400017983489L;
 
-  Mat hist;
+  final Mat hist;
 
   private double threshold = 0.0;
 

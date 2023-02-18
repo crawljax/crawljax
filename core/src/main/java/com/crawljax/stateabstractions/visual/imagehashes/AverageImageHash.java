@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import org.opencv.core.Mat;
 import org.opencv.img_hash.AverageHash;
-import org.opencv.imgcodecs.Imgcodecs;
 
 public class AverageImageHash extends VisHash {
 
