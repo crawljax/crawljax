@@ -86,8 +86,7 @@ public class Fragment {
       try {
         size = getAllNodes().size();
       } catch (XPathExpressionException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.error("Cannot find size of fragment {} - {}", referenceState.getName(), id);
         size = -2;
       }
     }
@@ -429,7 +428,7 @@ public class Fragment {
     } catch (Exception ex) {
       LOG.error("Could not find equivalent candidate for : " + element + " in "
           + this.getReferenceState());
-      ex.printStackTrace();
+      LOG.debug(ex.getMessage());
     }
     return null;
   }
@@ -566,7 +565,7 @@ public class Fragment {
       LOG.error(
           "Could not find equivalent node for : " + XPathHelper.getSkeletonXpath(element) + " in "
               + this.getReferenceState());
-      ex.printStackTrace();
+      LOG.debug(ex.getMessage());
     }
     return null;
   }

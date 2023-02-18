@@ -67,7 +67,8 @@ public class ClickableDetectorPlugin implements OnNewStatePlugin {
       try {
         findClickables(context.getBrowser(), newState);
       } catch (IOException e) {
-        e.printStackTrace();
+        LOG.error("Error extracting clickables from {}", newState.getName());
+        LOG.debug(e.getMessage());
       }
     } else {
       throw new IllegalStateException(

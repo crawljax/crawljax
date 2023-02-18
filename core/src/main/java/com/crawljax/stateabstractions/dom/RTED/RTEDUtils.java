@@ -1,13 +1,17 @@
 package com.crawljax.stateabstractions.dom.RTED;
 
+import com.crawljax.fragmentation.Fragment;
 import com.crawljax.util.DomUtils;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
 
 public class RTEDUtils {
+  private static final Logger LOG = LoggerFactory.getLogger(RTEDUtils.class);
 
   /**
    * Get a scalar value for the DOM diversity using the Robust Tree Edit Distance
@@ -24,7 +28,7 @@ public class RTEDUtils {
       domTree1 = getDomTree(dom1);
       domTree2 = getDomTree(dom2);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error("IO Exception comparing the given two doms");
     }
 
     double DD = 0.0;

@@ -328,11 +328,9 @@ public class VipsSelenium {
         fileWriter.close();
         //			System.out.println(gson.toJson(rectangles));
       } catch (JsonIOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.error("Error exporting to json {}", jsonTarget.getAbsolutePath());
       } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.error("Error exporting to json {}", jsonTarget.getAbsolutePath());
       }
     }
     endTime = System.nanoTime();
@@ -407,8 +405,8 @@ public class VipsSelenium {
 
       return rectangles;
     } catch (Exception e) {
-      System.err.println("Something's wrong!");
-      e.printStackTrace();
+      LOG.error("Error during fragmentation. Returning null...");
+      LOG.debug(e.getMessage());
     }
     return null;
   }

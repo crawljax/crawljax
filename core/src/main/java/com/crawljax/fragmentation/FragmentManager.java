@@ -282,7 +282,7 @@ public class FragmentManager {
         LOG.warn("Error comparing Fragments {} in  {} and {} in {}", fragment.getId(),
             fragment.getReferenceState(), existingFragment.getId(),
             existingFragment.getReferenceState());
-        ex.printStackTrace();
+        LOG.debug(ex.getMessage());
       }
     }
 
@@ -1103,7 +1103,8 @@ public class FragmentManager {
           }
         }
       } catch (Exception ex) {
-        ex.printStackTrace();
+        LOG.warn("Error finding affected fragments for changed node {} in {}", node, state.getName());
+        LOG.debug(ex.getMessage());
       }
     }
 

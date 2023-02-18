@@ -170,8 +170,8 @@ public class UnfiredCandidateActions {
           break;
         }
       } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.error("Interrupted exception while getting oldest ");
+        LOG.debug(e.getMessage());
       }
     }
 
@@ -202,8 +202,8 @@ public class UnfiredCandidateActions {
           break;
         }
       } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.error("Interrupted exception while getting next non-duplicate ");
+        LOG.debug(e.getMessage());
       }
     }
 

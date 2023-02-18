@@ -86,7 +86,8 @@ public class StructuralVisualStateVertexFactory extends StateVertexFactory {
       populateDOMNodesWithVisualInfo(browser, domElements,
           document.getDocumentElement().getElementsByTagName("body").item(0));
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.error("Error populating DOM nodes with visual info");
+      LOGGER.debug(e.getMessage());
     }
     return domElements;
   }

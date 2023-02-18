@@ -243,7 +243,8 @@ public class CandidateElementExtractor {
       try {
         nodeList = XPathHelper.evaluateXpathExpression(dom, "//*[@evlistval]");
       } catch (XPathExpressionException e) {
-        e.printStackTrace();
+        LOG.debug(e.getMessage());
+        LOG.warn("Error extracting canddiates for {}", crawlElement);
         return result.build();
       }
     } else {

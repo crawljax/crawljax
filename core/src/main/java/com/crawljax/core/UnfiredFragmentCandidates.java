@@ -128,7 +128,8 @@ public class UnfiredFragmentCandidates {
       }
       return (bestAction != null) ? bestAction : bestExploredAction;
     } catch (Exception ex) {
-      ex.printStackTrace();
+      LOG.error("Error retrieving best action. Returning null...");
+      LOG.debug(ex.getMessage());
     } finally {
       long end = System.currentTimeMillis();
       LOG.info("Time taken to find Best Action : " + (end - start) + " millis");
@@ -405,8 +406,8 @@ public class UnfiredFragmentCandidates {
           break;
         }
       } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.error("Interruped while finding next unique state");
+        LOG.debug(e.getMessage());
       }
     }
 

@@ -66,7 +66,8 @@ public final class VipsOutput {
       transformer.transform(new DOMSource(elementBox), new StreamResult(buffer));
       content = buffer.toString().replaceAll("\n", "");
     } catch (TransformerException e) {
-      e.printStackTrace();
+      LOG.error("Error getting source for node {}", elementBox);
+      LOG.debug(e.getMessage());
     }
 
     return content;
@@ -315,8 +316,7 @@ public final class VipsOutput {
         }
       }
     } catch (Exception e) {
-      System.err.println("Error: " + e.getMessage());
-      e.printStackTrace();
+      LOG.error("Error: " + e.getMessage());
     }
   }
 

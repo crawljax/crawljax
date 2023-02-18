@@ -455,7 +455,6 @@ public class Crawler {
         stateMachine.setCurrentState(onURL);
         path = shortestPathTo(crawlTask, onURL);
       } catch (Exception Ex) {
-//				Ex.printStackTrace();
         LOG.info("{} no path from {}", crawlTask.getName(), onURL.getName());
         path = null;
       } finally {
@@ -915,7 +914,6 @@ public class Crawler {
           rectangleMap.put(inputRectangle, input);
         }
       } catch (XPathExpressionException | IOException e) {
-//				e.printStackTrace();
         LOG.warn("Error finding rectangle for formInput {}", input.getIdentification().getValue());
         Rectangle inputRectangle = new Rectangle(10000, 10000, 1, 1);
         rectangleMap.put(inputRectangle, input);

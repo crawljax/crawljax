@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import javax.imageio.ImageIO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class PDiffComparator {
+  private static final Logger LOGGER = LoggerFactory.getLogger(PDiffComparator.class);
 
   private static final ForkJoinPool pool = new ForkJoinPool();
   /* getting correct perceptible differences only. */
@@ -41,7 +44,8 @@ public class PDiffComparator {
       imgA = ImageIO.read(new File(page1));
       imgB = ImageIO.read(new File(page2));
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.debug(e.getMessage());
+      LOGGER.error("Error computing distance between {} and {}", page1, page2);
     }
 
     double differentPixels = computeDistance(imgA, imgB);

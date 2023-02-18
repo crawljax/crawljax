@@ -522,7 +522,6 @@ public class VipsUtils {
       setRectangle(vipsBlock, rect);
       return rect;
     } catch (Exception ex) {
-//			ex.printStackTrace();
       Rectangle rect = new Rectangle(-1, -1, -1, -1);
       setRectangle(vipsBlock, rect);
       LOG.debug("Problem getting rectangle for element with xpath : " + xpath);

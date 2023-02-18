@@ -6,6 +6,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The state vertex class which represents a state in the browser. When iterating over the possible
@@ -13,6 +15,7 @@ import java.io.IOException;
  * time only access to the candidates.
  */
 public class SIFTStateVertexImpl extends StateVertexImpl {
+  private static final Logger LOGGER = LoggerFactory.getLogger(SIFTStateVertexImpl.class);
 
   private static final long serialVersionUID = 123400017983489L;
   double threshold = 95.0;
@@ -65,7 +68,8 @@ public class SIFTStateVertexImpl extends StateVertexImpl {
       try {
         return SIFTComparator.computeDistance(this.image, that.getPage()) >= threshold;
       } catch (IOException e) {
-        e.printStackTrace();
+        LOGGER.debug(e.getMessage());
+        LOGGER.error("Error computing distance between {} and {}", getName(), that.getName());
         return false;
       }
     }

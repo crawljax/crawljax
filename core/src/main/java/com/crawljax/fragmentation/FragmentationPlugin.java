@@ -195,8 +195,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     try {
       DomUtils.writeDocumentToFile(fragmentedDom, domFile.getAbsolutePath(), "html", 2);
     } catch (TransformerException | IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error("Cannot export state DOM {}", state.getName());
     }
   }
 
@@ -304,8 +303,8 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
         writer.close();
 
       } catch (JsonIOException | IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.error("Cannot export Comparison cache json");
+        LOG.debug(e.getMessage());
       }
 
       File nearDuplicatesJson = new File(outputDir, "nearDuplicates.json");

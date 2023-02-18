@@ -83,8 +83,8 @@ public final class XPathHelper {
       returnNode = evaluateXpathExpression(fragmentParentNode.getOwnerDocument(),
           parentXpath + "/" + relativeXpath).item(0);
     } catch (XPathExpressionException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error("XpathException finding node with xpath {} from {}", relativeXpath, fragmentParentNode);
+      LOG.debug(e.getMessage());
     }
     return returnNode;
   }

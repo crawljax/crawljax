@@ -263,7 +263,8 @@ public class TestSuiteHelper {
     try {
       loadCrawljaxCore(config, url);
     } catch (Exception ex) {
-      ex.printStackTrace();
+      LOGGER.error("Error loading crawljax core");
+      LOGGER.debug(ex.getMessage());
       System.exit(-1);
     }
 

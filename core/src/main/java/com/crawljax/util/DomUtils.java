@@ -819,9 +819,7 @@ public final class DomUtils {
 
       NodeList leafNodes = (NodeList) xpath.evaluate(dom.getDocumentElement(),
           XPathConstants.NODESET);
-//			System.out.println(leafNodes.getLength());
       for (int i = 0; i < leafNodes.getLength(); i++) {
-//				System.out.println(leafNodes.item(i).getNodeName() + " : " + leafNodes.item(i).getNodeValue() );
         String key = leafNodes.item(i).getNodeName();
 
         if (filterSet == null) {
@@ -848,7 +846,6 @@ public final class DomUtils {
         map.get(key).add(value);
       }
     } catch (XPathExpressionException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return map;

@@ -1,5 +1,6 @@
 package com.crawljax.stateabstractions.visual;
 
+import com.crawljax.stateabstractions.hybrid.structuralvisualdiff.StructuralVisualDiff;
 import com.crawljax.util.ImageUtils;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -10,8 +11,11 @@ import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ColorHistogram {
+  private static final Logger LOGGER = LoggerFactory.getLogger(ColorHistogram.class);
 
   private static final String NAME = "VISUAL-ColorHistogram";
   public final double thresholdCoefficient = 0.0;
@@ -49,8 +53,8 @@ public class ColorHistogram {
       Mat img = ImageUtils.BufferedImage2Mat(thisImage);
       return getHistogram(img);
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOGGER.debug(e.getMessage());
+      LOGGER.error("Error computing Histogram. Returning null.. ");
     }
     return null;
 

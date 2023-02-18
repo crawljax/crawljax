@@ -87,8 +87,8 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       boolean offline = false;
       VipsUtils.cleanDom(fragmentedDom, offline);
     } catch (IOException e) {
-      System.out.println("Error creating document : state " + id);
-      e.printStackTrace();
+      LOG.error("Error creating document : state " + id);
+      LOG.debug(e.getMessage());
     }
     long end = System.currentTimeMillis();
     LOG.info("Took {} ms to parse DOM", end - start);
@@ -347,8 +347,8 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     try {
       return getChangedNodes(this.fragmentedDom, other.getDocument(), visualData);
     } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      LOG.error("Error getting changed nodes between {} and {}", getName(), other.getName());
+      LOG.debug(e.getMessage());
     }
     return null;
   }
@@ -402,8 +402,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
         size = DomUtils.getAllSubtreeNodes(getDocument().getElementsByTagName("body").item(0))
             .getLength();
       } catch (XPathExpressionException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        LOG.error("Error finding DOM size for {}", getName());
         size = -2;
       }
     }
@@ -429,7 +428,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       return distance <= threshold;
     } catch (Exception ex) {
       LOG.error("Error calculating distance between {} and {}", this.getName(), that.getName());
-      ex.printStackTrace();
+      LOG.debug(ex.getMessage());
       return false;
     }
   }
@@ -501,15 +500,15 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     try {
       setParentNode(rootFragment);
     } catch (Exception ex) {
-      //			ex.printStackTrace();
       LOG.error("Could not set parent node for root fragment in : " + this.getName());
+      LOG.debug(ex.getMessage());
     }
 
     try {
       generateDomFragments(fragmentMap, driver);
     } catch (Exception ex) {
       LOG.error("Could not generate dom fragments {}", getName());
-      ex.printStackTrace();
+      LOG.debug(ex.getMessage());
     }
 
     try{
@@ -517,7 +516,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     }
     catch(Exception ex){
       LOG.error("Error setting hdn for fragments");
-      ex.printStackTrace();
+      LOG.debug(ex.getMessage());
     }
 
     if (super.getCandidateElements() != null) {

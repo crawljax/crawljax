@@ -199,8 +199,7 @@ public class TestSuiteGenerator implements PostCrawlingPlugin {
       return generatedFileName;
 
     } catch (Exception e) {
-      System.out.println("Error generating testsuite: " + e.getMessage());
-      e.printStackTrace();
+      LOGGER.error("Error generating testsuite: " + e.getMessage());
     }
     return null;
   }

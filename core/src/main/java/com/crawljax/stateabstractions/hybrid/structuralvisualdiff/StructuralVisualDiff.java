@@ -62,8 +62,8 @@ public class StructuralVisualDiff {
       computeDiff();
     } catch (IOException e) {
       // IOException might happen from DomUtils#asDocument
-      e.printStackTrace();
-    }
+      LOGGER.debug(e.getMessage());
+      }
   }
 
   /**
@@ -250,8 +250,7 @@ public class StructuralVisualDiff {
             }
           }
         } catch (XPathExpressionException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+          LOGGER.debug(e.getMessage());
         }
       }
     }
