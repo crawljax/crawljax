@@ -344,7 +344,8 @@ public class CandidateElementExtractor {
    * @return true if href has the pdf or ps pattern.
    */
   private boolean isFileForDownloading(String href) {
-    final Pattern p = Pattern.compile(".+.pdf|.+.ps|.+.zip|.+.mp3");
+//    final Pattern p = Pattern.compile(".+.pdf|.+.ps|.+.zip|.+.mp3");
+    final Pattern p = Pattern.compile(".+\\.(?:pdf|ps|zip|mp3)(?:$|\\?.+)");
     return p.matcher(href).matches();
   }
 

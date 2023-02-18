@@ -192,8 +192,9 @@ public class CandidateElementExtractorTest {
     builder.crawlRules().click("a");
     CrawljaxConfiguration config = builder.build();
     CandidateElementExtractor extractor = newElementExtractor(config, true);
+    String file = "/candidateElementExtractorTest/domWithOneExternalAndTwoInternal.html";
 
-    List<CandidateElement> extract = extractFromTestFile(extractor);
+    List<CandidateElement> extract = extractFromTestFile(extractor, file);
 
     assertThat(config.getCrawlRules().followExternalLinks(), is(false));
     assertThat(extract, hasSize(2));
@@ -207,17 +208,17 @@ public class CandidateElementExtractorTest {
     builder.crawlRules().followExternalLinks(true);
     CrawljaxConfiguration config = builder.build();
     CandidateElementExtractor extractor = newElementExtractor(config, true);
+    String file = "/candidateElementExtractorTest/domWithOneExternalAndTwoInternal.html";
 
-    List<CandidateElement> extract = extractFromTestFile(extractor);
+    List<CandidateElement> extract = extractFromTestFile(extractor, file);
 
     assertThat(config.getCrawlRules().followExternalLinks(), is(true));
     assertThat(extract, hasSize(3));
   }
 
-  private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor)
+  private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor, String file)
       throws URISyntaxException {
     StateVertex currentState = Mockito.mock(StateVertex.class);
-    String file = "/candidateElementExtractorTest/domWithOneExternalAndTwoInternal.html";
     URL dom = Resources.getResource(getClass(), file);
     browser.goToUrl(dom.toURI());
     currentState = new DefaultStateVertexFactory().createIndex(browser.getCurrentUrl(),
@@ -244,5 +245,26 @@ public class CandidateElementExtractorTest {
     Assert.assertFalse(extractor.hrefShouldBeIgnored(e));
     Assert.assertEquals(1, results.size());
   }
+
+  @Test
+  public void testExtractShouldIgnoreDownloadFiles() throws Exception {
+
+    CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor("http://example.com");
+    builder.crawlRules().click("a");
+    CrawljaxConfiguration config = builder.build();
+
+    CandidateElementExtractor extractor = newElementExtractor(config, true);
+
+    String file = "/candidateElementExtractorTest/domWithFourTypeDownloadLink.html";
+    List<CandidateElement> candidates = extractFromTestFile(extractor, file);
+
+    for (CandidateElement e : candidates) {
+      LOG.debug("candidate: " + e.getUniqueString());
+    }
+
+    assertNotNull(candidates);
+    assertEquals(12, candidates.size());
+  }
+
 
 }
