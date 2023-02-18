@@ -33,7 +33,7 @@ public final class FragCrawlExample {
     //builder.setMaximumDepth(3);
     builder.setMaximumRunTime(3, TimeUnit.MINUTES);
 
-    builder.crawlRules().clickElementsInRandomOrder(false);
+    builder.crawlRules().clickElementsInRandomOrder(true);
     builder.crawlRules().crawlHiddenAnchors(true);
     builder.crawlRules().crawlFrames(false);
 

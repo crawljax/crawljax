@@ -44,7 +44,6 @@ public class CrawljaxConfigurationBuilderTest {
     testBuilder().setOutputDirectory(file).build();
   }
 
-  @Ignore
   @Test(expected = IllegalStateException.class)
   public void ifCannotCreateOutputFolderReject() {
     File file = new File("/this/should/not/be/writable");

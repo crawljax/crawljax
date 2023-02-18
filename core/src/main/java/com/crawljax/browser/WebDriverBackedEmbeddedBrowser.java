@@ -110,6 +110,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     this.crawlWaitEvent = crawlWaitEvent;
     this.crawlWaitReload = crawlWaitReload;
   }
+
   /**
    * Constructor.
    *
@@ -473,7 +474,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
           // This was the case on the Gmail case; find out if not switching
           // (catching)
           // Results in good performance...
-        }catch(Exception e){
+        } catch (Exception e) {
           LOGGER.warn("Unable to switch to frame to fire eventable {}", eventable);
         }
         handleChanged = true;
@@ -669,13 +670,13 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
         switchToFrame(frameIdentification);
       } catch (InvalidSelectorException e) {
         LOGGER.info("Invalid frame selector: " + frameIdentification + ", continuing...");
-        LOGGER.debug(e.getMessage());
+        LOGGER.debug(e.getMessage(), e);
         browser.switchTo().defaultContent();
         return;
-      }catch (Exception e) {
-        LOGGER.error("Exception switching to frame {}",
+      } catch (Exception e) {
+        LOGGER.error("Cannot switch to frame {}",
             frameIdentification);
-        LOGGER.debug(e.getMessage());
+        LOGGER.debug(e.getMessage(), e);
         browser.switchTo().defaultContent();
         return;
       }
@@ -806,40 +807,29 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
         break;
     }
 
-    /*
-     * if (type.equals(InputType.TEXT) || type.equals(InputType.TEXTAREA)) { values.add(new
-     * InputValue(new RandomInputValueGenerator()
-     * .getRandomString(FormHandler.RANDOM_STRING_LENGTH), true)); } else if
-     * (type.equals("checkbox") || type.equals("radio") && !webElement.isSelected()) { if (new
-     * RandomInputValueGenerator().getCheck()) { values.add(new InputValue("1", true)); } else {
-     * values.add(new InputValue("0", false)); } } else if (type.equals("select")) { Select
-     * select = new Select(webElement); if (!select.getOptions().isEmpty()) { WebElement option
-     * = new RandomInputValueGenerator().getRandomItem(select.getOptions()); values.add(new
-     * InputValue(option.getText(), true)); } }
-     **/
   }
 
   @Override
   public String getFrameDom(String iframeIdentification) {
     try {
       switchToFrame(iframeIdentification);
-    }catch (InvalidSelectorException e) {
+    } catch (InvalidSelectorException e) {
       LOGGER.warn("Invalid frame selector: " + iframeIdentification + ", continuing...");
-      LOGGER.debug(e.getMessage());
+      LOGGER.debug(e.getMessage(), e);
       browser.switchTo().defaultContent();
       return "";
-    }catch (Exception e) {
-      LOGGER.warn("Exception switching to frame {}", iframeIdentification);
-      LOGGER.debug(e.getMessage());
+    } catch (Exception e) {
+      LOGGER.warn("Cannot switch to frame {}", iframeIdentification);
+      LOGGER.debug(e.getMessage(), e);
       browser.switchTo().defaultContent();
       return "";
     }
-      // make a copy of the dom before changing into the top page
-      String frameDom = browser.getPageSource();
+    // make a copy of the dom before changing into the top page
+    String frameDom = browser.getPageSource();
 
-      browser.switchTo().defaultContent();
+    browser.switchTo().defaultContent();
 
-      return frameDom;
+    return frameDom;
   }
 
   /**
@@ -881,21 +871,21 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
   /**
    * @return the period to wait after an event.
    */
-  protected long getCrawlWaitEvent() {
+  private long getCrawlWaitEvent() {
     return crawlWaitEvent;
   }
 
   /**
    * @return the list of attributes to be filtered from DOM.
    */
-  protected ImmutableSortedSet<String> getFilterAttributes() {
+  private ImmutableSortedSet<String> getFilterAttributes() {
     return filterAttributes;
   }
 
   /**
    * @return the period to wait after a reload.
    */
-  protected long getCrawlWaitReload() {
+  private long getCrawlWaitReload() {
     return crawlWaitReload;
   }
 
@@ -929,8 +919,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     }
   }
 
-  public BufferedImage getCDPScreenshot(){
-    if(!this.USE_CDP){
+  public BufferedImage getCDPScreenshot() {
+    if (!this.USE_CDP) {
       LOGGER.error("CDP screesnhot only available for CHROME");
       throw new IllegalStateException("CDP is not enabled but CDP screenshot called");
     }
@@ -938,7 +928,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     long width = (long) chromeDriver.executeScript("return document.body.scrollWidth");
     long height = (long) chromeDriver.executeScript("return document.body.scrollHeight");
     long scale = (long) chromeDriver.executeScript("return window.devicePixelRatio");
-    int intscale = (int)scale;
+    int intscale = (int) scale;
 
     HashMap<String, Object> setDeviceMetricsOverride = new HashMap<>();
     setDeviceMetricsOverride.put("deviceScaleFactor", scale);
@@ -970,7 +960,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
   @Override
   public BufferedImage getScreenShotAsBufferedImage(int scrollTime) {
-    if(USE_CDP){
+    if (USE_CDP) {
       return getCDPScreenshot();
     }
 
