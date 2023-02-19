@@ -413,6 +413,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
       Matcher m = p.matcher(html);
       filteredHtml = m.replaceAll("");
     }
+    // XXX Stop removing empty style attributes once Marionette issue is fixed:
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1448340
+    // In new Firefox versions (>= 59) Marionette adds an empty style attribute to clicked
+    // elements which incorrectly causes new crawling states.
+    filteredHtml = filteredHtml.replaceAll("(?i)\\sstyle=\"\"", "");
     return filteredHtml;
   }
 
