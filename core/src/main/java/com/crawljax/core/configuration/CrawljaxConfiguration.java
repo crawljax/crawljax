@@ -32,6 +32,7 @@ public class CrawljaxConfiguration {
 
   private URI url;
   private URI basicAuthUrl;
+  private CrawlScope crawlScope;
   private BrowserConfiguration browserConfig =
       new BrowserConfiguration(BrowserType.CHROME, 1, new BrowserOptions(true));
   private ImmutableList<Plugin> plugins;
@@ -78,6 +79,10 @@ public class CrawljaxConfiguration {
 
   public URI getBasicAuthUrl() {
     return basicAuthUrl;
+  }
+
+  public CrawlScope getCrawlScope() {
+    return crawlScope;
   }
 
   public BrowserConfiguration getBrowserConfig() {
@@ -168,7 +173,7 @@ public class CrawljaxConfiguration {
   @Override
   public int hashCode() {
     return Objects.hashCode(url, browserConfig, plugins, proxyConfiguration, crawlRules,
-        maximumStates, maximumRuntime, maximumDepth);
+        crawlScope, maximumStates, maximumRuntime, maximumDepth);
   }
 
   @Override
@@ -180,6 +185,7 @@ public class CrawljaxConfiguration {
           && Objects.equal(this.plugins, that.plugins)
           && Objects.equal(this.proxyConfiguration, that.proxyConfiguration)
           && Objects.equal(this.crawlRules, that.crawlRules)
+          && Objects.equal(this.crawlScope, that.crawlScope)
           && Objects.equal(this.maximumStates, that.maximumStates)
           && Objects.equal(this.maximumRuntime, that.maximumRuntime)
           && Objects.equal(this.maximumDepth, that.maximumDepth);
@@ -193,7 +199,7 @@ public class CrawljaxConfiguration {
         .add("browserConfig", browserConfig).add("plugins", plugins)
         .add("proxyConfiguration", proxyConfiguration).add("crawlRules", crawlRules)
         .add("maximumStates", maximumStates).add("maximumRuntime", maximumRuntime)
-        .add("maximumDepth", maximumDepth).toString();
+        .add("maximumDepth", maximumDepth).add("crawlScope", crawlScope).toString();
   }
 
   public static class CrawljaxConfigurationBuilder {
@@ -226,6 +232,20 @@ public class CrawljaxConfiguration {
           URI.create(config.url.toString().replaceFirst("://", "://" + hostPrefix));
 
       return this;
+    }
+
+    /**
+     * Sets the crawl scope.
+     *
+     * <p>If {@code null}, then a {@link DefaultCrawlScope} is used.
+     *
+     * @param crawlScope the crawl scope
+     * @return this {@code CrawljaxConfigurationBuilder} for method chaining.
+     * @since 5.0
+     */
+    public CrawljaxConfigurationBuilder setCrawlScope(CrawlScope crawlScope) {
+       config.crawlScope = crawlScope;
+       return this;
     }
 
     /**
@@ -386,6 +406,10 @@ public class CrawljaxConfiguration {
 
       config.plugins = pluginBuilder.build();
       config.crawlRules = crawlRules.build();
+
+      if (config.crawlScope == null) {
+        config.crawlScope = new DefaultCrawlScope(config.getUrl());
+      }
 
       // If Clickable detection is enabled, make sure CDP is enabled.
       for (Plugin plugin : config.plugins) {

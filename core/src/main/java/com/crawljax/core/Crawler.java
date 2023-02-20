@@ -3,6 +3,7 @@ package com.crawljax.core;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.browserwaiter.WaitConditionChecker;
 import com.crawljax.core.configuration.CrawlRules;
+import com.crawljax.core.configuration.CrawlScope;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.core.state.CrawlPath;
@@ -69,6 +70,7 @@ public class Crawler {
   private final StateComparator stateComparator;
   private final URI url;
   private final URI basicAuthUrl;
+  private final CrawlScope crawlScope;
   private final Plugins plugins;
   private final FormHandler formHandler;
   private final CrawlRules crawlRules;
@@ -113,6 +115,7 @@ public class Crawler {
     this.browser = context.getBrowser();
     this.url = config.getUrl();
     this.basicAuthUrl = config.getBasicAuthUrl();
+    this.crawlScope = config.getCrawlScope();
     this.plugins = plugins;
     this.crawlRules = config.getCrawlRules();
     this.maxDepth = config.getMaximumDepth();
@@ -833,9 +836,9 @@ public class Crawler {
       Eventable clickable) {
     browser.handlePopups();
     if (fireEvent(clickable, true)) {
-      if (crawlerLeftDomain()) {
+      if (crawlerNotInScope()) {
         throw new StateUnreachableException(targetState,
-            "Domain left while following path");
+            "Domain/scope left while following path");
       }
       int depth = crawlDepth.incrementAndGet();
       LOG.info("Crawl depth is now {}", depth);
@@ -1183,7 +1186,7 @@ public class Crawler {
         action = candidateActionCache.pollActionOrNull(stateMachine.getCurrentState());
       }
       interrupted = Thread.interrupted();
-      if (!interrupted && crawlerLeftDomain()) {
+      if (!interrupted && crawlerNotInScope()) {
         /*
          * It's okay to have left the domain because the action didn't complete due to an
          * interruption.
@@ -1277,7 +1280,7 @@ public class Crawler {
           afterBacktrack);
 //			}
       interrupted = Thread.interrupted();
-      if (!interrupted && crawlerLeftDomain()) {
+      if (!interrupted && crawlerNotInScope()) {
         /*
          * It's okay to have left the domain because the action didn't complete due to an
          * interruption.
@@ -1323,8 +1326,8 @@ public class Crawler {
 
   boolean inspectNewState(Eventable event) {
     browser.handlePopups();
-    if (crawlerLeftDomain()) {
-      LOG.debug("The browser left the domain. Going back one state...");
+    if (crawlerNotInScope()) {
+      LOG.debug("The browser left the domain/scope. Going back one state...");
       goBackOneState();
       return false;
     } else {
@@ -1426,8 +1429,8 @@ public class Crawler {
     }
   }
 
-  private boolean crawlerLeftDomain() {
-    return !UrlUtils.isSameDomain(browser.getCurrentUrl(), url);
+  private boolean crawlerNotInScope() {
+    return !crawlScope.isInScope(browser.getCurrentUrl());
   }
 
   private long parseWaitTimeOrReturnDefault(Matcher m) {
