@@ -1,7 +1,7 @@
 package com.crawljax.core.plugin;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -18,14 +18,12 @@ import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
-import com.crawljax.test.BrowserTest;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Map.Entry;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -33,7 +31,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 /**
  * Test cases to test the running and correct functioning of the plugins. Used to address issue #26
  */
-@Category(BrowserTest.class)
 @RunWith(MockitoJUnitRunner.class)
 public class PluginsTest {
 

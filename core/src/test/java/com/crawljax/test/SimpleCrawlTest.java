@@ -9,7 +9,9 @@ import com.crawljax.core.state.StateFlowGraph;
 import com.crawljax.forms.FormInputValueHelper;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(BrowserTest.class)
 public abstract class SimpleCrawlTest {
 
   private final int NUMBER_OF_STATES;

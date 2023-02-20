@@ -246,6 +246,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- <parallel>methods</parallel> <threadCount>4</threadCount> -->
+          <excludedGroups>${tests.exclude}</excludedGroups>
           <systemPropertyVariables>
             <test.browser>${test.browser}</test.browser>
           </systemPropertyVariables>
