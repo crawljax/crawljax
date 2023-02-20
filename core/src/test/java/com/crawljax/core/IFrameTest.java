@@ -29,8 +29,8 @@ public class IFrameTest {
   protected CrawljaxRunner crawljax;
 
   protected CrawljaxConfigurationBuilder setupConfig() {
-    CrawljaxConfigurationBuilder builder =
-        CrawljaxConfiguration.builderFor(WEB_SERVER.getSiteUrl().resolve("iframe"));
+    CrawljaxConfigurationBuilder builder = WEB_SERVER.newConfigBuilder("iframe");
+    // Note: Tests fail with Chrome, use Firefox always.
     builder.setBrowserConfig(
         new BrowserConfiguration(EmbeddedBrowser.BrowserType.FIREFOX_HEADLESS));
 
