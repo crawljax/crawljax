@@ -18,7 +18,7 @@ Properties
 ----------
 
 The pom includes properties that allow various build configurations to be customized. 
-For example, to override the default version of crawljax, just set a property:
+For example, to override the default version of Crawljax, just set a property:
 
     <properties>
       <crawljax.version>VERSION</crawljax.version>
