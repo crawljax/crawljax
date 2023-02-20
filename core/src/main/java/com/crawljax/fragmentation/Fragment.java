@@ -53,6 +53,7 @@ public class Fragment {
   private boolean isDynamic;
   private Double candidateInfluence = null;
   private final List<Fragment> domChildren = new ArrayList<>();
+
   public Fragment(int id, List<Node> nestedBlocks, Rectangle rect, StateVertex referenceState) {
     this.id = id;
     this.nestedBlocks = nestedBlocks;
@@ -189,6 +190,7 @@ public class Fragment {
 
   /**
    * Makes use of DOM tree size instead of invoking APTED differencing
+   *
    * @param other
    * @return
    */
@@ -203,11 +205,11 @@ public class Fragment {
   }
 
   /**
-   * Uses APTED for DOM Tree comparison and Histogram for Visual Comparison
-   * Does not check if the other fragment being compared is Near-duplicate of category ND_struct
-   * Returns EQUAL if both DOM and Histogram are exactly the same
-   * Return EQUIVALENT if DOM is the same but Histogram is not.
+   * Uses APTED for DOM Tree comparison and Histogram for Visual Comparison Does not check if the
+   * other fragment being compared is Near-duplicate of category ND_struct Returns EQUAL if both DOM
+   * and Histogram are exactly the same Return EQUIVALENT if DOM is the same but Histogram is not.
    * Returns DIFFERENT if DOM is different
+   *
    * @param other
    * @return
    */
@@ -526,7 +528,9 @@ public class Fragment {
   }
 
   /**
-   * Uses relative Xpath to fetch node that is similar in the current fragment to the one provided as argument
+   * Uses relative Xpath to fetch node that is similar in the current fragment to the one provided
+   * as argument
+   *
    * @param element
    * @param duplicateFragment
    * @return

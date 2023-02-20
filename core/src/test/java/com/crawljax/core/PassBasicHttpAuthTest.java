@@ -53,7 +53,7 @@ public class PassBasicHttpAuthTest {
 
     Constraint constraint = new Constraint();
     constraint.setName(Constraint.__BASIC_AUTH);
-    constraint.setRoles(new String[] { USER_ROLE });
+    constraint.setRoles(new String[]{USER_ROLE});
     constraint.setAuthenticate(true);
 
     ConstraintMapping cm = new ConstraintMapping();

@@ -85,8 +85,9 @@ public class DOMElementWithVisualInfo {
     }
     if (xpath == null) {
       return other.xpath == null;
-    } else
+    } else {
       return xpath.equals(other.xpath);
+    }
   }
 
   private String getBoundingBoxString() {

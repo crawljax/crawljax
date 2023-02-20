@@ -76,13 +76,11 @@ public class APTED<C extends CostModel, D> {
 
   /**
    * Indexer of the source tree.
-   *
    */
   private NodeIndexer it1;
 
   /**
    * Indexer of the destination tree.
-   *
    */
   private NodeIndexer it2;
 

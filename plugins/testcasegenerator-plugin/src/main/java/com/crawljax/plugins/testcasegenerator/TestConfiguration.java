@@ -6,6 +6,7 @@ public class TestConfiguration {
 
   private StateEquivalenceAssertionMode assertionMode;
   private BrowserConfiguration browserConfig;
+
   public TestConfiguration(BrowserConfiguration browserConfig) {
     this.setAssertionMode(StateEquivalenceAssertionMode.BOTH);
     this.setBrowserConfig(browserConfig);

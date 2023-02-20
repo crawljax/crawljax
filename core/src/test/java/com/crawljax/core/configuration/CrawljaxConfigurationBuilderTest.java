@@ -1,14 +1,13 @@
 package com.crawljax.core.configuration;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.core.Is;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CrawljaxConfigurationBuilderTest {

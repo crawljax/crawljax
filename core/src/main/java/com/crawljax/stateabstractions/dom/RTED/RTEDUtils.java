@@ -1,6 +1,5 @@
 package com.crawljax.stateabstractions.dom.RTED;
 
-import com.crawljax.fragmentation.Fragment;
 import com.crawljax.util.DomUtils;
 import java.io.IOException;
 import org.slf4j.Logger;
@@ -11,6 +10,7 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.TreeWalker;
 
 public class RTEDUtils {
+
   private static final Logger LOG = LoggerFactory.getLogger(RTEDUtils.class);
 
   /**

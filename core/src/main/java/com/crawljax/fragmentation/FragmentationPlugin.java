@@ -18,7 +18,6 @@ import com.crawljax.core.state.StatePair.StateComparision;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
 import com.crawljax.util.DomUtils;
-import com.crawljax.util.XPathHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
@@ -47,8 +46,10 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
   private static final boolean exportFragments = true;
 
   /**
-   * Loads a statevertex in an offline setting using a previously fragmented and recorded DOM.
-   * This is useful to determine the similarity between a previously recorded state and the current browser state in a regression test scenario.
+   * Loads a statevertex in an offline setting using a previously fragmented and recorded DOM. This
+   * is useful to determine the similarity between a previously recorded state and the current
+   * browser state in a regression test scenario.
+   *
    * @param fragState
    * @param manager
    * @param dom
@@ -60,33 +61,36 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     Document fragmentedDom = ((HybridStateVertexImpl) fragState).loadFragmentDom(dom, screenshot);
 
     if (manager != null) {
-      int unique =0;
-      int useful =0;
+      int unique = 0;
+      int useful = 0;
       for (Fragment fragment : fragState.getFragments()) {
         try {
           manager.addFragment(fragment, COMPARE_FAST);
           if (!fragment.isGlobal() && fragment.getDuplicateFragments().isEmpty()) {
             LOG.error("Fragment disconnected in :" + fragState.getName());
           }
-          if(fragment.isUseful()){
+          if (fragment.isUseful()) {
             useful += 1;
           }
-          if(fragment.isGlobal()){
+          if (fragment.isGlobal()) {
             unique += 1;
           }
         } catch (Exception ex) {
-          LOG.error("Error adding fragment {} - {} to fragment manager !!", fragment.getId(), fragment.getReferenceState().getName());
+          LOG.error("Error adding fragment {} - {} to fragment manager !!", fragment.getId(),
+              fragment.getReferenceState().getName());
           LOG.debug(ex.getMessage());
         }
       }
-      LOG.info("Found {} total, {} useful and {} unique fragments for state {}", fragState.getFragments().size(), useful, unique);
+      LOG.info("Found {} total, {} useful and {} unique fragments for state {}",
+          fragState.getFragments().size(), useful, unique);
     }
 
   }
 
   /**
-   * Main function that gets called everytime a new state is discovered.
-   * Uses VIPS to perform fragmentation and calls fragment manager to analyze fragments
+   * Main function that gets called everytime a new state is discovered. Uses VIPS to perform
+   * fragmentation and calls fragment manager to analyze fragments
+   *
    * @param newState
    * @param manager
    * @param browser
@@ -156,7 +160,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     }
 
     if (manager != null) {
-      int useful =0, unique=0;
+      int useful = 0, unique = 0;
       for (Fragment fragment : newState.getFragments()) {
         try {
           if (!FragmentManager.usefulFragment(fragment)) {
@@ -166,10 +170,10 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
           if (!fragment.isGlobal() && fragment.getDuplicateFragments().isEmpty()) {
             LOG.error("Fragment disconnected in :" + newState.getName());
           }
-          if(fragment.isUseful()){
+          if (fragment.isUseful()) {
             useful += 1;
           }
-          if(fragment.isGlobal()){
+          if (fragment.isGlobal()) {
             unique += 1;
           }
         } catch (Exception ex) {
@@ -177,7 +181,8 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 //					manager.addFragment(fragment);
         }
       }
-      LOG.info("Found {} total, {} useful and {} unique fragments for state {}", newState.getFragments().size(), useful, unique);
+      LOG.info("Found {} total, {} useful and {} unique fragments for state {}",
+          newState.getFragments().size(), useful, unique);
     }
   }
 
@@ -235,7 +240,9 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
   }
 
   /**
-   * Exports the comparison results during crawling. Also preserves the information regarding extracted fragments from states.
+   * Exports the comparison results during crawling. Also preserves the information regarding
+   * extracted fragments from states.
+   *
    * @param session    the crawl session.
    * @param exitReason The {@link ExitStatus} Crawljax stopped.
    */

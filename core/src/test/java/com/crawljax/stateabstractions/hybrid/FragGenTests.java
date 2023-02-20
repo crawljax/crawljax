@@ -20,7 +20,6 @@ import com.crawljax.forms.FormHandler;
 import com.crawljax.fragmentation.FragmentManager;
 import com.crawljax.fragmentation.FragmentationPlugin;
 import com.crawljax.util.DomUtils;
-import com.crawljax.util.XPathHelper;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.inject.Provider;
-import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,7 +35,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 @RunWith(MockitoJUnitRunner.class)
 
@@ -143,7 +140,6 @@ public class FragGenTests {
     eventableChecker = new EventableConditionChecker(configBuilder.build().getCrawlRules());
     when(checker.getEventableConditionChecker()).thenReturn(eventableChecker);
 
-
     CandidateElementExtractor extractor = new CandidateElementExtractor(checker, browser, handler,
         configBuilder.build());
 
@@ -154,14 +150,16 @@ public class FragGenTests {
 
     Assert.assertEquals("Wrong number of candidates found", 70, elements.size());
 
-
     CandidateElement element = getMatchingCandidate(results,
         "/HTML[1]/BODY[1]/TABLE[2]/TBODY[1]/TR[1]/TD[2]/FORM[1]/INPUT[2]" +
             "");
 
-    Assert.assertNotEquals("A matching candidate should be found for '/HTML[1]/BODY[1]/TABLE[2]/TBODY[1]/TR[1]/TD[2]/FORM[1]/INPUT[2]'", null, element);
+    Assert.assertNotEquals(
+        "A matching candidate should be found for '/HTML[1]/BODY[1]/TABLE[2]/TBODY[1]/TR[1]/TD[2]/FORM[1]/INPUT[2]'",
+        null, element);
 
-    Assert.assertTrue("Element access should be recorded by fragment manager", manager.recordAccess(element, state1));
+    Assert.assertTrue("Element access should be recorded by fragment manager",
+        manager.recordAccess(element, state1));
 
     HybridStateVertexImpl state2 = new HybridStateVertexImpl(1, "", "state1", docString2,
         docString2, 0.0, false);
@@ -182,7 +180,8 @@ public class FragGenTests {
 
     manager.setAccess(state2);
 
-    Assert.assertTrue("Access transfer should be done for new state", state2.getRootFragment().isAccessTransferred());
+    Assert.assertTrue("Access transfer should be done for new state",
+        state2.getRootFragment().isAccessTransferred());
 
     manager.recordAccess(element2, state2);
     Assert.assertTrue("element should be set to explored", element2.wasExplored());

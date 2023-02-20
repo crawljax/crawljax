@@ -1,7 +1,7 @@
 package com.crawljax.core.configuration;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 import java.net.URI;
 import org.junit.Test;

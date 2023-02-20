@@ -329,10 +329,11 @@ public class CandidateElementExtractor {
     if (href.startsWith("http")) {
       try {
         URI uri = URI.create(href);
-        return !(uri.getHost().toLowerCase().contains(siteHostName.toLowerCase()) || siteHostName.toLowerCase().contains(uri.getHost().toLowerCase()));
+        return !(uri.getHost().toLowerCase().contains(siteHostName.toLowerCase())
+            || siteHostName.toLowerCase().contains(uri.getHost().toLowerCase()));
       } catch (IllegalArgumentException e) {
         LOG.info("Unreadable external link {}", href);
-      } catch (Exception ex){
+      } catch (Exception ex) {
         LOG.info("Unreadable external link {} for {}", href, siteHostName);
       }
     }

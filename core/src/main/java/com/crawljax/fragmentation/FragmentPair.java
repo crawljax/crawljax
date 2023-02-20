@@ -7,6 +7,7 @@ public class FragmentPair {
   private FragmentOutput fragment1;
   private FragmentOutput fragment2;
   private FragmentComparision comparision;
+
   public FragmentPair(FragmentOutput fragment1, FragmentOutput fragment2,
       FragmentComparision comparision) {
     this.fragment1 = fragment1;

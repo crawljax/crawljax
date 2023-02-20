@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class PDiffComparator {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(PDiffComparator.class);
 
   private static final ForkJoinPool pool = new ForkJoinPool();
@@ -24,7 +25,8 @@ public class PDiffComparator {
   private static final boolean LUMINANCE_ONLY = false;
   private static int THRESHOLD_PIXELS = 100;
   private static final int PERCENTAGE_OF_TOTAL_IMAGE_SIZE = 0;
-  private static final String differenceColor = getHexFromDecimal(PerceptualImageDifferencing.COLOR_FAIL);
+  private static final String differenceColor = getHexFromDecimal(
+      PerceptualImageDifferencing.COLOR_FAIL);
 
   public static String getHexFromDecimal(int dec) {
     // return "#" + Integer.toHexString(dec);
@@ -37,7 +39,6 @@ public class PDiffComparator {
 
 
   public static double computeDistance(String page1, String page2) {
-
 
     BufferedImage imgA = null, imgB = null;
     try {
@@ -52,7 +53,7 @@ public class PDiffComparator {
     return differentPixels;
   }
 
-  public  static double computeDistance(BufferedImage imgA,
+  public static double computeDistance(BufferedImage imgA,
       BufferedImage imgB) {
 
     List<Point> differencePixels = new ArrayList<>();

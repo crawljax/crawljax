@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.lang3.reflect.TypeUtils;
 
 
-
 public class GsonUtils {
 
   public final static class ImmutableMapDeserializer
@@ -22,8 +21,8 @@ public class GsonUtils {
     public ImmutableMap<?, ?> deserialize(final JsonElement json, final Type type,
         final JsonDeserializationContext context) throws JsonParseException {
       final Type type2 =
-          TypeUtils.parameterize(ImmutableMap.class,  type, null);
-         // ParameterizedTypeImpl.make(Map.class, ((ParameterizedType) type).getActualTypeArguments(), null);
+          TypeUtils.parameterize(ImmutableMap.class, type, null);
+      // ParameterizedTypeImpl.make(Map.class, ((ParameterizedType) type).getActualTypeArguments(), null);
       final Map<?, ?> map = context.deserialize(json, type2);
       return ImmutableMap.copyOf(map);
     }
@@ -36,7 +35,7 @@ public class GsonUtils {
     public ImmutableList<?> deserialize(final JsonElement json, final Type type,
         final JsonDeserializationContext context) throws JsonParseException {
       final Type type2 =
-          TypeUtils.parameterize(ImmutableMap.class,  type, null);
+          TypeUtils.parameterize(ImmutableMap.class, type, null);
       // ParameterizedTypeImpl.make(List.class,       ((ParameterizedType) type).getActualTypeArguments(), null);
       final List<?> list = context.deserialize(json, type2);
       return ImmutableList.copyOf(list);

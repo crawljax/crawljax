@@ -86,12 +86,11 @@ class BeanToReadableMap {
       return configAsString.toString();
     } else if (result instanceof Plugins) {
       return toString(name, ((Plugins) result).pluginNames());
-    } else if (name!=null && name.toLowerCase().contains("runtime")){
+    } else if (name != null && name.toLowerCase().contains("runtime")) {
       return escapeHtml(DurationFormatUtils.formatDurationWords((Long) result, true, true));
     } else if (result instanceof Number && ((Number) result).intValue() == 0) {
       return "&infin;";
-    }
-    else {
+    } else {
       return escapeHtml(result.toString());
     }
   }

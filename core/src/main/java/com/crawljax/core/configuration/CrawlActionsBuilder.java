@@ -19,6 +19,7 @@ public class CrawlActionsBuilder {
   private final List<ExcludeByParentBuilder> crawlParentsExcluded = Lists
       .newLinkedList();
   private ImmutableList<CrawlElement> resultingElementsExcluded = null;
+
   CrawlActionsBuilder() {
   }
 

@@ -1,7 +1,7 @@
 package com.crawljax.core.plugin;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.core.CandidateElement;

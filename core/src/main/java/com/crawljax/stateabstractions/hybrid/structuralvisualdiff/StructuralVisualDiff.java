@@ -63,7 +63,7 @@ public class StructuralVisualDiff {
     } catch (IOException e) {
       // IOException might happen from DomUtils#asDocument
       LOGGER.debug(e.getMessage());
-      }
+    }
   }
 
   /**

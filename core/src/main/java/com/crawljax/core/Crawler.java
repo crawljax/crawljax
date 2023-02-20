@@ -84,7 +84,7 @@ public class Crawler {
   private CrawlPath crawlpath;
 
   @VisibleForTesting
-  void setStateMachine( StateMachine sm) {
+  void setStateMachine(StateMachine sm) {
     stateMachine = sm;
   }
 
@@ -334,12 +334,15 @@ public class Crawler {
     }
 
     // Adding a reload edge whenever a URL reload happens. The Crawlpaths would not have this edge
-    boolean added = stateMachine.getStateFlowGraph().addEdge(previousState, stateMachine.getCurrentState(), new Eventable(new Identification(
-        How.url, context.getConfig().getUrl().toString()), EventType.reload));
-    if(!added) {
-      LOG.info("Did not add reload edge from {} to {}", previousState.getName(), stateMachine.getCurrentState().getName());
-    }else{
-      LOG.info("Added a reload edge from {} to {}", previousState.getName(), stateMachine.getCurrentState().getName());
+    boolean added = stateMachine.getStateFlowGraph()
+        .addEdge(previousState, stateMachine.getCurrentState(), new Eventable(new Identification(
+            How.url, context.getConfig().getUrl().toString()), EventType.reload));
+    if (!added) {
+      LOG.info("Did not add reload edge from {} to {}", previousState.getName(),
+          stateMachine.getCurrentState().getName());
+    } else {
+      LOG.info("Added a reload edge from {} to {}", previousState.getName(),
+          stateMachine.getCurrentState().getName());
     }
   }
 
@@ -349,12 +352,12 @@ public class Crawler {
   public void execute(StateVertex crawlTask) {
     LOG.debug("Going to state {}", crawlTask.getName());
     //boolean reached = false;
-    if(stateMachine == null){
+    if (stateMachine == null) {
       stateMachine = new StateMachine(graphProvider.get(), crawlRules.getInvariants(), plugins,
           stateComparator, new ArrayList<>());
 
       context.setStateMachine(stateMachine);
-      if(crawlpath == null){
+      if (crawlpath == null) {
         crawlpath = new CrawlPath(stateMachine.getCurrentState().getId());
       }
     }

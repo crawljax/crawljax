@@ -32,7 +32,7 @@ public class DHash {
     return distance.apply(h1, h2);
   }
 
-  public String getDHash(Mat objectImage){
+  public String getDHash(Mat objectImage) {
     Mat resized = new Mat();
     int size = 8;
     Imgproc.resize(objectImage, resized, new Size(size + 1, size));
@@ -90,7 +90,7 @@ public class DHash {
 
   }
 
-  public String getDHash(String imgPath){
+  public String getDHash(String imgPath) {
     Mat objectImage = Imgcodecs.imread(imgPath, Imgcodecs.IMREAD_GRAYSCALE);
     return getDHash(objectImage);
   }
@@ -114,12 +114,12 @@ public class DHash {
 
   /**
    * compares the DHash of two images and return whether they are perceptually similar (max
-   * @threshold different pixels allowed)
    *
    * @param img1
    * @param img2
    * @param threshold
    * @return true/false
+   * @threshold different pixels allowed)
    */
   public boolean imagesPerceptuallySimilar(String img1, String img2, int threshold) {
     return distance(getDHash(img1), getDHash(img2)) <= threshold;

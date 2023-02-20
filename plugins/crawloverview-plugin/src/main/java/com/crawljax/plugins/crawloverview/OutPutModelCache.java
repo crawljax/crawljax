@@ -87,14 +87,14 @@ class OutPutModelCache {
       try {
         checkNotNull(from, "From state %s is unkown", e.getFrom());
         from.incrementFanOut();
-      }catch(Exception ex){
+      } catch (Exception ex) {
         LOG.error(ex.getMessage());
       }
 
-      try{
+      try {
         checkNotNull(to, "To state %s is unkown", e.getTo());
         to.incrementFanIn();
-      }catch(Exception ex){
+      } catch (Exception ex) {
         LOG.error(ex.getMessage());
       }
     }

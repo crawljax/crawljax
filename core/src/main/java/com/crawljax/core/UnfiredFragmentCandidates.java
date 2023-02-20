@@ -48,7 +48,7 @@ public class UnfiredFragmentCandidates {
   private final Counter unfiredActionsCount;
   private final Map<Integer, List<CandidateCrawlAction>> unreachableCache;
 
-//	private StateVertex nextBestState = null;
+  //	private StateVertex nextBestState = null;
   private boolean skipExploredActions = true;
   private final List<CandidateCrawlAction> skipInputs;
   private final List<Eventable> skipInputsForPath;

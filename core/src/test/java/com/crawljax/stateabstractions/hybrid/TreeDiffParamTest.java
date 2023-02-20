@@ -3,7 +3,6 @@ package com.crawljax.stateabstractions.hybrid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
 import com.crawljax.util.DomUtils;
 import java.io.File;
 import java.io.IOException;

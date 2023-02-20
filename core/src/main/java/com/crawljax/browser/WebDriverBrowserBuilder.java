@@ -94,11 +94,10 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
       boolean USE_CDP = this.configuration.getBrowserConfig().getBrowserOptions().isUSE_CDP();
 
-
-        if ((browserType == EmbeddedBrowser.BrowserType.CHROME_HEADLESS
-            || browserType == EmbeddedBrowser.BrowserType.CHROME) && USE_CDP) {
-          ((WebDriverBackedEmbeddedBrowser) browser).setUSE_CDP(true);
-        }
+      if ((browserType == EmbeddedBrowser.BrowserType.CHROME_HEADLESS
+          || browserType == EmbeddedBrowser.BrowserType.CHROME) && USE_CDP) {
+        ((WebDriverBackedEmbeddedBrowser) browser).setUSE_CDP(true);
+      }
     }
 
     plugins.runOnBrowserCreatedPlugins(browser);
@@ -161,7 +160,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
   private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
       long crawlWaitReload, long crawlWaitEvent, boolean headless) {
 
-
 //    WebDriverManager.chromedriver().create();
     ChromeOptions optionsChrome = new ChromeOptions();
 
@@ -169,7 +167,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
     if (headless) {
       optionsChrome.addArguments("--headless");
     }
-
 
     if (configuration.getProxyConfiguration() != null
         && configuration.getProxyConfiguration().getType() != ProxyType.NOTHING) {

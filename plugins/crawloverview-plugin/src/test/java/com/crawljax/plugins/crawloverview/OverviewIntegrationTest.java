@@ -1,11 +1,11 @@
 package com.crawljax.plugins.crawloverview;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.google.common.collect.Lists;

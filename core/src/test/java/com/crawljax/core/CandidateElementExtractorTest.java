@@ -1,10 +1,10 @@
 package com.crawljax.core;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
@@ -117,11 +117,13 @@ public class CandidateElementExtractorTest {
 
   }
 
-  private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config, boolean startBrowser) {
-    if(startBrowser)
+  private CandidateElementExtractor newElementExtractor(CrawljaxConfiguration config,
+      boolean startBrowser) {
+    if (startBrowser) {
       browser = provider.newEmbeddedBrowser();
-    else
+    } else {
       browser = null;
+    }
 
     FormHandler formHandler = new FormHandler(browser, config.getCrawlRules());
 
@@ -216,7 +218,8 @@ public class CandidateElementExtractorTest {
     assertThat(extract, hasSize(3));
   }
 
-  private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor, String file)
+  private List<CandidateElement> extractFromTestFile(CandidateElementExtractor extractor,
+      String file)
       throws URISyntaxException {
     StateVertex currentState = Mockito.mock(StateVertex.class);
     URL dom = Resources.getResource(getClass(), file);

@@ -4,9 +4,6 @@ import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasEdges;
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import com.crawljax.browser.BrowserProvider;
-import com.crawljax.core.configuration.BrowserConfiguration;
-import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.test.BrowserTest;
 import com.crawljax.test.RunWithWebServer;

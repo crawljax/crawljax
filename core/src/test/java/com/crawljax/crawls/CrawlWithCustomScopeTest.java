@@ -1,8 +1,8 @@
 package com.crawljax.crawls;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.configuration.CrawlScope;
@@ -22,7 +22,7 @@ public class CrawlWithCustomScopeTest {
   @Test
   public void crawlsPagesOnlyInCustomScope() throws Exception {
     CrawlScope crawlScope =
-            url -> url.contains("in_scope") || url.endsWith("crawlscope/index.html");
+        url -> url.contains("in_scope") || url.endsWith("crawlscope/index.html");
     BaseCrawler baseCrawler =
         new BaseCrawler("crawlscope") {
           @Override

@@ -22,6 +22,7 @@ public class FormInput {
   private final Identification identification;
   private Set<InputValue> inputValues = new HashSet<>();
   private Eventable eventable;
+
   public FormInput(InputType type, Identification identification) {
     this.type = type;
     this.identification = identification;

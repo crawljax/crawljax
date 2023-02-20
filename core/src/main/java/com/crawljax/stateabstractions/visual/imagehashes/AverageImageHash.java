@@ -29,7 +29,8 @@ public class AverageImageHash extends VisHash {
       mat = ImageUtils.BufferedImage2Mat(img);
     } catch (IOException e) {
       throw new RuntimeException(e);
-    }    Mat hash = new Mat();
+    }
+    Mat hash = new Mat();
     AverageHash.create().compute(mat, hash);
     return hash;
   }

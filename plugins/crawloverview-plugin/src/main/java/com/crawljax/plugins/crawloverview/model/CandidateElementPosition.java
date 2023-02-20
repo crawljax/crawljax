@@ -21,6 +21,7 @@ public class CandidateElementPosition {
   private final int width;
   private final int height;
   private String xpath;
+
   /**
    * @param xpath
    * @param location The element's offset.

@@ -29,7 +29,7 @@ public class ImageUtils {
 
     Mat grayscaleMat = new Mat();
 
-    Imgproc.cvtColor(colorMat,grayscaleMat,Imgproc.COLOR_RGB2GRAY);
+    Imgproc.cvtColor(colorMat, grayscaleMat, Imgproc.COLOR_RGB2GRAY);
     return grayscaleMat;
   }
 
@@ -37,7 +37,7 @@ public class ImageUtils {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     ImageIO.write(image, "png", byteArrayOutputStream);
     byteArrayOutputStream.flush();
-    Mat grayscaleMat =  Imgcodecs.imdecode(new MatOfByte(byteArrayOutputStream.toByteArray()),
+    Mat grayscaleMat = Imgcodecs.imdecode(new MatOfByte(byteArrayOutputStream.toByteArray()),
         Imgcodecs.IMREAD_GRAYSCALE);
     return grayscaleMat;
   }

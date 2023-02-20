@@ -16,6 +16,7 @@ public class Identification implements Serializable {
   private static final long serialVersionUID = -1608879189549535808L;
   private How how;
   private String value;
+
   /**
    * Default constructor to support saving instances of this class as an XML.
    */

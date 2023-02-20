@@ -1,6 +1,5 @@
 package com.crawljax.stateabstractions.visual;
 
-import com.crawljax.stateabstractions.hybrid.structuralvisualdiff.StructuralVisualDiff;
 import com.crawljax.util.ImageUtils;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -15,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ColorHistogram {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ColorHistogram.class);
 
   private static final String NAME = "VISUAL-ColorHistogram";

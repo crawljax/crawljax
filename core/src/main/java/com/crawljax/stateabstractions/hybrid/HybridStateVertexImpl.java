@@ -511,10 +511,9 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       LOG.debug(ex.getMessage());
     }
 
-    try{
+    try {
       setFragmentHdn();
-    }
-    catch(Exception ex){
+    } catch (Exception ex) {
       LOG.error("Error setting hdn for fragments");
       LOG.debug(ex.getMessage());
     }
@@ -580,23 +579,25 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   }
 
   /**
-   * HDN or highest differentiating node is the DOM node closest to the DOM root (body) that contains all Vips-blocks in the fragment but
+   * HDN or highest differentiating node is the DOM node closest to the DOM root (body) that
+   * contains all Vips-blocks in the fragment but
    */
-  private void setFragmentHdn(){
+  private void setFragmentHdn() {
     Node rootNode = DomUtils.getElementsByTagName(getDocument(), "body").get(0);
     Node fragParentNode = rootFragment.getFragmentParentNode();
     rootFragment.setHdn(rootNode);
-    for(Fragment fragment: fragments){
-      if(fragment.getId()<=0){
+    for (Fragment fragment : fragments) {
+      if (fragment.getId() <= 0) {
         // skip root fragment
         continue;
       }
-      if(fragment.getFragmentParentNode()==null){
+      if (fragment.getFragmentParentNode() == null) {
         continue;
       }
       Node hdn = fragment.getFragmentParentNode();
 
-      while(getContainedNodes(hdn, rootFragment.getNestedBlocks()).size() == fragment.getNestedBlocks().size()){
+      while (getContainedNodes(hdn, rootFragment.getNestedBlocks()).size()
+          == fragment.getNestedBlocks().size()) {
         fragment.setHdn(hdn);
         hdn = hdn.getParentNode();
       }
@@ -605,9 +606,12 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   }
 
   /**
-   * VIPS uses a 2-Dim view of the page to draw horizontal and vertical separators that create content-rectangles
-   * Sometimes, this method does not yield the best fragments. For example, when there is an overlay element.
-   * DOM fragments use the detected VIPS-visual blocks (not fragments but just DOM elements that are considered important by VIPS) but use the DOM structure to divide these visual blocks.
+   * VIPS uses a 2-Dim view of the page to draw horizontal and vertical separators that create
+   * content-rectangles Sometimes, this method does not yield the best fragments. For example, when
+   * there is an overlay element. DOM fragments use the detected VIPS-visual blocks (not fragments
+   * but just DOM elements that are considered important by VIPS) but use the DOM structure to
+   * divide these visual blocks.
+   *
    * @param rootNode
    * @param nestedBlocks
    * @param fragmentMap
@@ -648,7 +652,8 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       if (lca.isSameNode(rootNode)) {
         created = createDomFragment(rootNode, nestedBlocks, parent, driver);
         if (created != null) {
-          LOG.debug("Created Dom fragment {}, child of {}, for {} ", created.getId(), parent.getId(),
+          LOG.debug("Created Dom fragment {}, child of {}, for {} ", created.getId(),
+              parent.getId(),
               XPathHelper.getSkeletonXpath(rootNode));
           fragmentMap.put(created.getId(), created);
           returnList.add(created);
@@ -721,8 +726,9 @@ public class HybridStateVertexImpl extends StateVertexImpl {
       }
     }
 
-    List<Fragment> domFragments = getDomFragments(rootNode, rootFragment.getNestedBlocks(), fragmentMap, rootFragment,
-            driver);
+    List<Fragment> domFragments = getDomFragments(rootNode, rootFragment.getNestedBlocks(),
+        fragmentMap, rootFragment,
+        driver);
 
     LOG.info("Added {} DOM fragments", domFragments.size());
 
@@ -850,7 +856,9 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   }
 
   /**
-   * Uses DOM hierarchy to determine the smallest fragment (still "useful") in the fragment hierarchy that contains the node
+   * Uses DOM hierarchy to determine the smallest fragment (still "useful") in the fragment
+   * hierarchy that contains the node
+   *
    * @param node
    * @return
    */
@@ -866,6 +874,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
 
   /**
    * {@see getClosestFragment}
+   *
    * @param node
    * @param root
    * @return
@@ -918,7 +927,9 @@ public class HybridStateVertexImpl extends StateVertexImpl {
 
 
   /**
-   * {@see getClosestFragment} gets closest fragment for the node for which the candidate element is created
+   * {@see getClosestFragment} gets closest fragment for the node for which the candidate element is
+   * created
+   *
    * @param element
    * @return
    */

@@ -12,6 +12,7 @@ public class StatePair {
   StateComparision stateComparision;
   private String state1Name;
   private String state2Name;
+
   public StatePair(StateVertex state1, StateVertex state2, List<Node> state1Nodes,
       List<Node> state2Nodes, StateComparision stateComparision) {
     this.state1 = state1;

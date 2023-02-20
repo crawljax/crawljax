@@ -38,13 +38,14 @@ public class BrowserOptions {
   }
 
   /**
-  * @param USE_CDP      Set true if you want to enable chrome developer tools (Used in clickable
-      *                     detection)
+   * @param USE_CDP Set true if you want to enable chrome developer tools (Used in clickable
+   *                detection)
    */
   public BrowserOptions(boolean USE_CDP) {
     this.pixelDensity = -1;
     this.USE_CDP = USE_CDP;
   }
+
   public boolean isUSE_CDP() {
     return USE_CDP;
   }

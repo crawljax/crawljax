@@ -1,11 +1,10 @@
 package com.crawljax.core.configuration;
 
-import java.net.URI;
-
 import com.crawljax.util.UrlUtils;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import java.net.URI;
 
 /**
  * A {@link CrawlScope} that allows to crawl only under a given domain.

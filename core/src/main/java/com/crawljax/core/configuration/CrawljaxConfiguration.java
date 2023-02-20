@@ -119,9 +119,9 @@ public class CrawljaxConfiguration {
   public File getSiteDir() {
 
     // If we've already created the folder, return it.
-		if (siteOutput != null) {
-			return siteOutput;
-		}
+    if (siteOutput != null) {
+      return siteOutput;
+    }
 
     siteOutput = new File(output.getAbsolutePath() + File.separator + url.getHost());
 
@@ -143,9 +143,9 @@ public class CrawljaxConfiguration {
   public File getOutputDir() {
 
     // If we've already created the folder, return it.
-		if (pluginOutput != null) {
-			return pluginOutput;
-		}
+    if (pluginOutput != null) {
+      return pluginOutput;
+    }
 
     // Find a unique folder name
     int i = 0;
@@ -244,8 +244,8 @@ public class CrawljaxConfiguration {
      * @since 5.0
      */
     public CrawljaxConfigurationBuilder setCrawlScope(CrawlScope crawlScope) {
-       config.crawlScope = crawlScope;
-       return this;
+      config.crawlScope = crawlScope;
+      return this;
     }
 
     /**

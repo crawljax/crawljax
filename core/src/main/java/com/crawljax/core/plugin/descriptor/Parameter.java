@@ -11,6 +11,7 @@ public class Parameter {
   private ParameterType type;
   private Map<String, String> options = new HashMap<>();
   private String value;
+
   public Parameter() {
   }
 

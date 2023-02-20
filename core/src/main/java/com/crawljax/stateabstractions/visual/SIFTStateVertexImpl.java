@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
  * time only access to the candidates.
  */
 public class SIFTStateVertexImpl extends StateVertexImpl {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(SIFTStateVertexImpl.class);
 
   private static final long serialVersionUID = 123400017983489L;

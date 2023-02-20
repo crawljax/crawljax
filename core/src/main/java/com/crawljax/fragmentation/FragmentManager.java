@@ -39,7 +39,8 @@ public class FragmentManager {
   ArrayList<Fragment> fragments = new ArrayList<>();
 
   /**
-   * Global map that maintains clusters of states. Each entry in the list is a set of states that are near-duplicates to each other
+   * Global map that maintains clusters of states. Each entry in the list is a set of states that
+   * are near-duplicates to each other
    */
   List<Set<StateVertex>> nearDuplicates = new ArrayList<>();
 
@@ -47,6 +48,7 @@ public class FragmentManager {
   HashMap<Integer, Double> hops = new HashMap<>();
   private Provider<InMemoryStateFlowGraph> sfg;
   private final HashMap<Integer, Double> numNonSelections = new HashMap<>();
+
   public FragmentManager(Provider<InMemoryStateFlowGraph> graphProvider) {
     this.sfg = graphProvider;
   }
@@ -69,8 +71,9 @@ public class FragmentManager {
   }
 
   /**
-   * To decide if the fragment is large enough to be a functional entity
-   * This is an approximation and can be configured using {@link FragmentRules}
+   * To decide if the fragment is large enough to be a functional entity This is an approximation
+   * and can be configured using {@link FragmentRules}
+   *
    * @param fragment
    * @return
    */
@@ -100,6 +103,7 @@ public class FragmentManager {
 
   /**
    * Leaf fragments are fragments that do not have any useful child fragments
+   *
    * @param fragments
    * @return
    */
@@ -345,9 +349,11 @@ public class FragmentManager {
   }
 
   /**
-   * Can be invoked from a coverage plugin to determine how much of the state DOM is covered by test suites
-   * @param node the node to be checked
-   * @param state the state to be checked
+   * Can be invoked from a coverage plugin to determine how much of the state DOM is covered by test
+   * suites
+   *
+   * @param node     the node to be checked
+   * @param state    the state to be checked
    * @param coverage the coverage type
    * @return true if the coverage was recorded, false otherwise
    */
@@ -368,7 +374,9 @@ public class FragmentManager {
   }
 
   /**
-   * Called after a crawl action is performed. Priority of the remaining candidate elements is updated based on their relationship with the action perfomed.
+   * Called after a crawl action is performed. Priority of the remaining candidate elements is
+   * updated based on their relationship with the action perfomed.
+   *
    * @param element
    * @param state
    * @return
@@ -611,8 +619,10 @@ public class FragmentManager {
   }
 
   /**
-   * Computes the influences of the states based on the influence of candidates and returns the state that has the highest priority
-   * Also takes into consideration the back-tracking effort required to reach the state
+   * Computes the influences of the states based on the influence of candidates and returns the
+   * state that has the highest priority Also takes into consideration the back-tracking effort
+   * required to reach the state
+   *
    * @param currentState
    * @param onURLSet
    * @param statesWithCandidates
@@ -845,6 +855,7 @@ public class FragmentManager {
 
   /**
    * Uses mapping of leaf fragments to determine if given two states are near-duplicates
+   *
    * @param newState
    * @param expectedState
    * @return
@@ -931,7 +942,9 @@ public class FragmentManager {
   }
 
   /**
-   * The main function that compares two given states and outputs a classification [clone, near-duplicates (ND-data ND-struct), different]
+   * The main function that compares two given states and outputs a classification [clone,
+   * near-duplicates (ND-data ND-struct), different]
+   *
    * @param newState
    * @param expectedState
    * @param assignDynamic
@@ -1066,7 +1079,9 @@ public class FragmentManager {
   }
 
   /**
-   * Computes which fragments contain the changed nodes. Changed nodes are the result of DOM differencing between two states being compared.
+   * Computes which fragments contain the changed nodes. Changed nodes are the result of DOM
+   * differencing between two states being compared.
+   *
    * @param changedNodes
    * @param state
    * @return
@@ -1104,7 +1119,8 @@ public class FragmentManager {
           }
         }
       } catch (Exception ex) {
-        LOG.warn("Error finding affected fragments for changed node {} in {}", node, state.getName());
+        LOG.warn("Error finding affected fragments for changed node {} in {}", node,
+            state.getName());
         LOG.debug(ex.getMessage());
       }
     }

@@ -1,10 +1,10 @@
 package com.crawljax.core.largetests;
 
 import static com.crawljax.browser.matchers.StateFlowGraphMatchers.stateWithDomSubstring;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -344,7 +344,7 @@ public abstract class LargeTestBase {
   public void testCrawledElements() {
     int clickMeFound = 0;
     for (Eventable eventable : getStateFlowGraph().getAllEdges()) {
-      if(eventable.getEventType() == EventType.reload){
+      if (eventable.getEventType() == EventType.reload) {
         continue;
       }
       // elements with DONT_CLICK_TEXT should never be clicked
@@ -422,7 +422,8 @@ public abstract class LargeTestBase {
     assertTrue("SLOW_WIDGET is found", foundSlowWidget);
     boolean foundLinkInSlowWidget = false;
     for (Eventable eventable : getStateFlowGraph().getAllEdges()) {
-      if (eventable.getEventType()!= EventType.reload && eventable.getElement().getText().equals("SLOW_WIDGET_HOME")) {
+      if (eventable.getEventType() != EventType.reload && eventable.getElement().getText()
+          .equals("SLOW_WIDGET_HOME")) {
         foundLinkInSlowWidget = true;
       }
     }

@@ -2,7 +2,6 @@ package com.crawljax.browser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.test.BrowserTest;

@@ -64,6 +64,7 @@ public class PerceptualImageDifferencing {
   private final double numOneDegreePixels;
   private final int adaptationLevel;
   private final double[] lut = new double[256];
+
   /**
    * Creates PerceptualDiff instance with specified parameters.
    *

@@ -15,6 +15,7 @@ public class PreCrawlConfiguration {
   private ImmutableList<CrawlElement> includedElements;
   private ImmutableList<CrawlElement> excludedElements;
   private ImmutableSortedSet<String> filterAttributeNames;
+
   private PreCrawlConfiguration() {
 
   }

@@ -1,8 +1,8 @@
 package com.crawljax.stateabstractions.visual;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import com.crawljax.stateabstractions.visual.imagehashes.DHash;
@@ -44,7 +44,8 @@ public class VisualDHashTest {
 
     String file = VisualDHashTest.class.getResource("/screenshots/bookobject.jpg").getPath();
     String file2 = VisualDHashTest.class.getResource("/screenshots/bookobject.jpg").getPath();
-    assertTrue(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)), ImageIO.read(new File(file2))));
+    assertTrue(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)),
+        ImageIO.read(new File(file2))));
 
     file = VisualDHashTest.class.getResource("/screenshots/bookscene.jpg").getPath();
     file2 = VisualDHashTest.class.getResource("/screenshots/bookscene.jpg").getPath();
@@ -64,7 +65,8 @@ public class VisualDHashTest {
 
     String file = VisualDHashTest.class.getResource("/screenshots/oracle.png").getPath();
     String file2 = VisualDHashTest.class.getResource("/screenshots/test.png").getPath();
-    assertTrue(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)), ImageIO.read(new File(file2))));
+    assertTrue(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)),
+        ImageIO.read(new File(file2))));
 
   }
 
@@ -73,7 +75,8 @@ public class VisualDHashTest {
 
     String file = VisualDHashTest.class.getResource("/screenshots/bookscene.jpg").getPath();
     String file2 = VisualDHashTest.class.getResource("/screenshots/bookobject.jpg").getPath();
-    assertFalse(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)), ImageIO.read(new File(file2))));
+    assertFalse(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)),
+        ImageIO.read(new File(file2))));
 
   }
 

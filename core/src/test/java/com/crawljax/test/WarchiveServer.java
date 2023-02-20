@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.netpreserve.jwarc.net.WarcServer;
 
-public class WarchiveServer implements Runnable{
+public class WarchiveServer implements Runnable {
 
   private final String resource;
 
@@ -22,7 +22,6 @@ public class WarchiveServer implements Runnable{
 
   /**
    * @param directory The directory containing web archives
-   *
    */
   public WarchiveServer(String directory, int port) {
     resource = directory;

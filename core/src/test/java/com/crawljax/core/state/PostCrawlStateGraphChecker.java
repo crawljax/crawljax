@@ -1,9 +1,9 @@
 package com.crawljax.core.state;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.crawljax.core.CrawlSession;
 import com.crawljax.core.ExitNotifier.ExitStatus;

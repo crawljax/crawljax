@@ -11,6 +11,7 @@ public class VipsRectangle {
   int id;
   int parentId;
   Rectangle rect;
+
   public VipsRectangle(List<Node> list, int id, int parentId, String xpath, Rectangle rect2) {
     this.nestedBlocks = list;
     this.id = id;
