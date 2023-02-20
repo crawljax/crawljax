@@ -33,7 +33,7 @@ public class CrawljaxConfiguration {
   private URI url;
   private URI basicAuthUrl;
   private BrowserConfiguration browserConfig =
-      new BrowserConfiguration(BrowserType.FIREFOX, 1, new BrowserOptions(true));
+      new BrowserConfiguration(BrowserType.CHROME, 1, new BrowserOptions(true));
   private ImmutableList<Plugin> plugins;
   private ProxyConfiguration proxyConfiguration = ProxyConfiguration.noProxy();
   private CrawlRules crawlRules;
