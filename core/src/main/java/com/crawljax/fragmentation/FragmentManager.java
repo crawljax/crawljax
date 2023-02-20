@@ -268,6 +268,7 @@ public class FragmentManager {
             existingFragment.addDuplicateFragment(fragment);
             fragment.addDuplicateFragment(existingFragment);
             fragment.setIsGlobal(false);
+            usefulFragment(fragment);
             return;
           case EQUIVALENT:
             equivalentFragments.add(existingFragment);
@@ -299,7 +300,7 @@ public class FragmentManager {
       fragment.addND2Fragment(existingFragment);
     }
 
-    if (fragment.getReferenceState().getCandidateElements() != null && usefulFragment(fragment)) {
+    if (usefulFragment(fragment) && fragment.getReferenceState().getCandidateElements() != null) {
       setAccess(fragment);
       setCoverage(fragment);
       LOG.debug("Access Transferred");

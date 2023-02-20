@@ -18,6 +18,7 @@ import com.crawljax.core.state.StatePair.StateComparision;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
 import com.crawljax.util.DomUtils;
+import com.crawljax.util.XPathHelper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
@@ -74,8 +75,8 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
             unique += 1;
           }
         } catch (Exception ex) {
-          LOG.error("Error adding fragment to fragment manager !!");
-//          manager.addFragment(fragment, COMPARE_FAST);
+          LOG.error("Error adding fragment {} - {} to fragment manager !!", fragment.getId(), fragment.getReferenceState().getName());
+          LOG.debug(ex.getMessage());
         }
       }
       LOG.info("Found {} total, {} useful and {} unique fragments for state {}", fragState.getFragments().size(), useful, unique);

@@ -107,8 +107,6 @@ public class FragGenTests {
       String xpath) {
     CandidateElement element = null;
     for (CandidateElement elem : elements) {
-      System.out.println(elem.getIdentification().getValue());
-
       if (elem.getIdentification().getValue().equalsIgnoreCase(xpath)) {
         element = elem;
       }
@@ -145,14 +143,6 @@ public class FragGenTests {
     eventableChecker = new EventableConditionChecker(configBuilder.build().getCrawlRules());
     when(checker.getEventableConditionChecker()).thenReturn(eventableChecker);
 
-    try {
-      NodeList returnList = XPathHelper.evaluateXpathExpression(state1.getDocument(),
-          "//A[text()='\\[A\\-Z\\]']");
-      System.out.println(returnList.getLength());
-    } catch (XPathExpressionException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
 
     CandidateElementExtractor extractor = new CandidateElementExtractor(checker, browser, handler,
         configBuilder.build());
