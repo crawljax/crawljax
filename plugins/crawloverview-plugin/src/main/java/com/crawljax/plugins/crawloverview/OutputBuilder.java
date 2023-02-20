@@ -193,19 +193,19 @@ class OutputBuilder {
     LOG.debug("Writing index file");
     VelocityContext context = new VelocityContext();
     writeJsonToOutDir(Serializer.toPrettyJson(model), JSON_OUTPUT_NAME);
-    AlchemyGraphModel alchemyGraphModel = getAlchemyJson(model);
+//    AlchemyGraphModel alchemyGraphModel = getAlchemyJson(model);
     context.put("states", Serializer.toPrettyJson(model.getStates()));
     context.put("edges", Serializer.toPrettyJson(model.getEdges()));
 
 //		context.put("clusters", Serializer.toPrettyJson(clusters));
-    context.put("alchemyGraphModel", Serializer.toPrettyJson(alchemyGraphModel));
+//    context.put("alchemyGraphModel", Serializer.toPrettyJson(alchemyGraphModel));
     // if(config.getStateVertexFactory() instanceof PHashStateVertexFactory) {
     // PHashStateVertexFactory visHashStateVertexFactory = (PHashStateVertexFactory)
     // config.getStateVertexFactory();
     // context.put("maxRaw", visHashStateVertexFactory.getVisHashMaxRaw());
     // }
     // else {
-    context.put("maxRaw", -1.0);
+//    context.put("maxRaw", -1.0);
     // }
 
     context.put("config", BeanToReadableMap.toMap(config));

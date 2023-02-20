@@ -8,7 +8,7 @@ var layout = Viva.Graph.Layout.forceDirected(graph, {
 });
 
 var graphics = Viva.Graph.View.svgGraphics(),
-nodeSize = 200;
+		nodeSize = 200;
 fontSize = 3;
 
 var graphics = Viva.Graph.View.svgGraphics();
