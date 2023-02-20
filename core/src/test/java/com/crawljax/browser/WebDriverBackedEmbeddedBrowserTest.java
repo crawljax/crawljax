@@ -1,6 +1,7 @@
 package com.crawljax.browser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.crawljax.core.CrawljaxException;
@@ -10,6 +11,7 @@ import com.crawljax.util.DomUtils;
 import com.google.common.collect.ImmutableSortedSet;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,14 +56,13 @@ public class WebDriverBackedEmbeddedBrowserTest {
         .withDriver(provider.newBrowser(),
             ImmutableSortedSet.<String>of(), 500, 500);
 
-    File f = File
-        .createTempFile("webdriverfirefox-test-screenshot", ".png");
-    if (!f.exists()) {
-      browser.goToUrl(SERVER.getSiteUrl());
-      browser.saveScreenShot(f);
-      assertTrue(f.exists());
-      assertTrue(f.delete());
-    }
+    File f = File.createTempFile("test-screenshot", ".png");
+    f.deleteOnExit();
+
+    browser.goToUrl(SERVER.getSiteUrl());
+    browser.saveScreenShot(f);
+
+    assertNotEquals(Files.size(f.toPath()), 0);
 
   }
 }
