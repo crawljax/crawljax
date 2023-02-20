@@ -17,7 +17,6 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Constraint;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -26,6 +25,8 @@ public class PassBasicHttpAuthTest {
 
   private static final String USERNAME = "test";
   private static final String PASSWORD = "test#&";
+  private static final String USER_ROLE = "user";
+
   private Server server;
   private int port;
 
@@ -46,11 +47,11 @@ public class PassBasicHttpAuthTest {
 
   private ConstraintSecurityHandler newSecurityHandler(ResourceHandler handler) {
     HashLoginService login = new HashLoginService();
-    // login.putUser(USERNAME, Credential.getCredential(PASSWORD), new String[] { "user" });
+    login.setConfig(PassBasicHttpAuthTest.class.getResource("/realm.properties").getPath());
 
     Constraint constraint = new Constraint();
     constraint.setName(Constraint.__BASIC_AUTH);
-    constraint.setRoles(new String[]{"user"});
+    constraint.setRoles(new String[] { USER_ROLE });
     constraint.setAuthenticate(true);
 
     ConstraintMapping cm = new ConstraintMapping();
@@ -66,8 +67,7 @@ public class PassBasicHttpAuthTest {
   }
 
   @Test
-  @Ignore
-  public void testDontClickUnderXPath() {
+  public void testProvidedCredentialsAreUsedInBasicAuth() {
     String url = "http://localhost:" + port + "/infinite.html";
     CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(url);
     builder.setMaximumStates(3);
