@@ -119,7 +119,7 @@ public class DHash {
    * @param img2
    * @param threshold
    * @return true/false
-   * @threshold different pixels allowed)
+   * for threshold different pixels allowed)
    */
   public boolean imagesPerceptuallySimilar(String img1, String img2, int threshold) {
     return distance(getDHash(img1), getDHash(img2)) <= threshold;

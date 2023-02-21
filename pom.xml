@@ -348,6 +348,12 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <show>private</show>
+                            <nohelp>true</nohelp>
+                            <additionalOptions>-html5</additionalOptions>
+                            <additionalJOptions>--allow-script-in-comments</additionalJOptions>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

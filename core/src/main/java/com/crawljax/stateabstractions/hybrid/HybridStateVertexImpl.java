@@ -708,7 +708,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   }
 
   /**
-   * {@see getDomFragments}
+   * {@link HybridStateVertexImpl#getDomFragments}
    *
    * @param fragmentMap
    * @param driver
@@ -873,7 +873,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   }
 
   /**
-   * {@see getClosestFragment}
+   * {@link  HybridStateVertexImpl#getClosestFragment}
    *
    * @param node
    * @param root
@@ -927,7 +927,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
 
 
   /**
-   * {@see getClosestFragment} gets closest fragment for the node for which the candidate element is
+   * {@link HybridStateVertexImpl#getClosestFragment} gets closest fragment for the node for which the candidate element is
    * created
    *
    * @param element

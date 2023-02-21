@@ -809,7 +809,7 @@ public class TestSuiteHelper {
   }
 
   /**
-   * @param StateVertexId The id of the state vertex.
+   * @param vertex The state vertex.
    * @return return where the current DOM in the browser is equivalent with the state with
    * StateVertexId
    */
@@ -1263,7 +1263,7 @@ public class TestSuiteHelper {
   }
 
   /**
-   * @param StateVertexId The id of the state vertex.
+   * @param vertex The state vertex.
    * @return return where the current DOM in the browser is equivalent with the state with
    * StateVertexId
    */

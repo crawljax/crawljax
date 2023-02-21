@@ -65,7 +65,7 @@ public class TLSHStateVertexImpl extends StateVertexImpl {
 
 
   /**
-   * @TODO in the equals, we could also measure the distance between two pHashes
+   * TODO in the equals, we could also measure the distance between two pHashes
    */
   @Override
   public boolean equals(Object object) {

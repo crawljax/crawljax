@@ -36,7 +36,6 @@ public class JavaTestGenerator {
   /**
    * @param className
    * @param url
-   * @throws Exception
    */
 //	public JavaTestGenerator(String className, String url, List<TestMethod> testMethods,
 //	        CrawljaxConfiguration config, String testSuitePath, String screenshotPath,
