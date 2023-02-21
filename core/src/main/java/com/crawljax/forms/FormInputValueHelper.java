@@ -107,7 +107,7 @@ public final class FormInputValueHelper {
     String serialized = json.toJson(instance.formInputs.values());
 
     try {
-      LOGGER.info("Writing training form inputs to " + out);
+      LOGGER.info("Writing training form inputs to {}", out);
       FileUtils.writeStringToFile(out, serialized, Charset.defaultCharset());
     } catch (IOException e) {
       LOGGER.error(e.getMessage(), e);
@@ -128,7 +128,7 @@ public final class FormInputValueHelper {
     final File in = new File(dir, FORMS_JSON_FILE);
 
     if (in.exists()) {
-      LOGGER.info("Reading trained form inputs from " + in.getAbsolutePath());
+      LOGGER.info("Reading trained form inputs from {}", in.getAbsolutePath());
       Gson gson = new GsonBuilder().create();
 
       try {
@@ -170,8 +170,8 @@ public final class FormInputValueHelper {
     int maxValues = getMaxNumberOfValues(eventableCondition.getLinkedInputFields());
 
     if (maxValues == EMPTY) {
-      LOGGER.warn("No input values found for element: "
-          + DomUtils.getElementString(sourceElement));
+      LOGGER.warn(
+          "No input values found for element: {}", DomUtils.getElementString(sourceElement));
       return candidateElements;
     }
 
@@ -190,10 +190,10 @@ public final class FormInputValueHelper {
                   getFormInputWithIndexValue(browser, element, curValueIndex);
               formInputsForCurrentIndex.add(formInput);
             } else {
-              LOGGER.warn("Could not find input element for: " + input);
+              LOGGER.warn("Could not find input element for: {}", input);
             }
           } catch (XPathExpressionException e) {
-            LOGGER.warn("Could not find input element for: " + input);
+            LOGGER.warn("Could not find input element for: {}", input);
             LOGGER.error(e.getMessage(), e);
           }
         }
@@ -251,8 +251,8 @@ public final class FormInputValueHelper {
         break;
 
       default:
-        LOGGER.info("Identification " + input.getIdentification()
-            + " not supported yet for form inputs.");
+        LOGGER.info(
+            "Identification {} not supported yet for form inputs.", input.getIdentification());
         break;
 
     }

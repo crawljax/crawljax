@@ -248,7 +248,7 @@ public class FormHandler {
       Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
       for (FormInput input : formInputs) {
         failing = input;
-        LOGGER.info("resetting : " + input.getIdentification().getValue());
+        LOGGER.info("resetting : {}", input.getIdentification().getValue());
         resetInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
         handled.add(input);
         failing = null;
@@ -323,7 +323,7 @@ public class FormHandler {
       Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
       for (FormInput input : formInputs) {
         failing = input;
-        LOGGER.info("Filling in: " + input.getIdentification().getValue());
+        LOGGER.info("Filling in: {}", input.getIdentification().getValue());
         Node belongingNode = formInputValueHelper.getBelongingNode(input, dom);
         setInputElementValue(belongingNode, input);
         if (belongingNode != null) {

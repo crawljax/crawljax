@@ -76,12 +76,12 @@ public class WaitCondition {
     List<ExpectedCondition> toCheckWaitConditions = new ArrayList<>(expectedConditions);
     long currentTime = System.currentTimeMillis();
     long maxTime = currentTime + this.timeOut;
-    LOGGER.info("Waiting for " + toCheckWaitConditions.size() + " conditions");
+    LOGGER.info("Waiting for {} conditions", toCheckWaitConditions.size());
     int index = 0;
     while (index < toCheckWaitConditions.size() && currentTime <= maxTime) {
       ExpectedCondition checkCondition = toCheckWaitConditions.get(index);
       lastCheckCondition = checkCondition;
-      LOGGER.debug("Waiting for: " + checkCondition);
+      LOGGER.debug("Waiting for: {}", checkCondition);
       if (checkCondition.isSatisfied(browser)) {
         index++;
       } else {
@@ -95,8 +95,10 @@ public class WaitCondition {
       currentTime = System.currentTimeMillis();
     }
     if (currentTime >= maxTime) {
-      LOGGER.info("TIMEOUT WaitCondition url " + getUrl() + "; Timeout while waiting for "
-          + lastCheckCondition);
+      LOGGER.info(
+          "TIMEOUT WaitCondition url {}; Timeout while waiting for {}",
+          getUrl(),
+          lastCheckCondition);
       return 0;
     } else {
       return 1;
