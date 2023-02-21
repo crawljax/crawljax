@@ -43,11 +43,11 @@ You can run the tests using maven with the command
 
 	mvn clean package
 	
-If you want to run all the test, including browser tests, run 
+If you want to run all tests, including slower browser tests, run 
 
 	mvn clean test -P integrationtests
 
-The default driver used for testing uses Chrome so make sure you have Chrome installed on your machine. You can also specify which browser you'd like to use with the `test.browser` variable. For example, if you want to test with Firefox, use:
+The default driver used for testing uses Chrome so make sure you have Chrome installed on your machine). You can also specify which browser you'd like to use with the `test.browser` variable. For example, if you want to test with Firefox, use:
 
 	mvn clean test -P integrationtests -Dtest.browser=FIREFOX
 
