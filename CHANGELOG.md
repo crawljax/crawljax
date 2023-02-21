@@ -1,3 +1,10 @@
+## Version 5.0
+* [Fragmentation-based crawling](https://github.com/crawljax/crawljax/issues/541) added
+* [CrawlScope](https://github.com/crawljax/crawljax/pull/548) added
+* Upgraded to Java 11 
+* Updated dependencies
+* [Various bug fixes and enhancements](https://github.com/crawljax/crawljax/issues?q=is%3Aclosed+milestone%3A5.0)
+
 ## Version 4.0
 * Changed core to increase state coverage
 * Updated Selenium to 3.141.5
