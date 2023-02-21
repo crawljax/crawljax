@@ -45,8 +45,8 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
   /**
    * Defaults constructor.
    *
-   * @param width  Pools width
-   * @param height Pools height
+   * @param screenshot  page screenshot
+   * @param driver browser
    */
   public VipsSeparatorGraphicsDetector(BufferedImage screenshot, WebDriver driver) {
     this.originalImage = screenshot;
@@ -574,6 +574,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
    * tag), its weight is set to be higher.
    *
    * @param separator Separator
+   * @param horizontal
    */
   private void ruleTwo(Separator separator, boolean horizontal) {
     List<Node> overlappedElements = new ArrayList<Node>();
@@ -599,7 +600,6 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
    * Finds elements that are overlapped with horizontal separator.
    *
    * @param separator Separator, that we look at
-   * @param vipsBlock Visual block corresponding to element
    * @param result    Elements, that we found
    */
   private void findHorizontalOverlappedElements(Separator separator, List<Node> result) {
@@ -632,7 +632,6 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
    * Finds elements that are overlapped with vertical separator.
    *
    * @param separator Separator, that we look at
-   * @param vipsBlock Visual block corresponding to element
    * @param result    Elements, that we found
    */
   private void findVerticalOverlappedElements(Separator separator, List<Node> result) {
@@ -665,6 +664,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
    * be increased.
    *
    * @param separator Separator
+   * @param horizontal
    */
   private void ruleThree(Separator separator, boolean horizontal) {
     // for vertical is represents elements on left side
@@ -703,7 +703,6 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
    * Finds elements that are adjacent to horizontal separator.
    *
    * @param separator    Separator, that we look at
-   * @param vipsBlock    Visual block corresponding to element
    * @param resultTop    Elements, that we found on top side of separator
    * @param resultBottom Elements, that we found on bottom side side of separator
    */
@@ -730,7 +729,6 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
    * Finds elements that are adjacent to vertical separator.
    *
    * @param separator   Separator, that we look at
-   * @param vipsBlock   Visual block corresponding to element
    * @param resultLeft  Elements, that we found on left side of separator
    * @param resultRight Elements, that we found on right side side of separator
    */
@@ -855,6 +853,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 
   /**
    * Saves everything (separators + block) to image with given suffix.
+   * @param suffix
    */
   public void exportAllToImage(int suffix) {
     createPool();
@@ -898,6 +897,8 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 
   /**
    * Saves vertical separators to image.
+   *
+   * @param suffix
    */
   public void exportVerticalSeparatorsToImage(int suffix) {
     createPool();
@@ -938,6 +939,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 
   /**
    * Saves horizontal separators to image.
+   * @param suffix
    */
   public void exportHorizontalSeparatorsToImage(int suffix) {
     createPool();
@@ -947,6 +949,8 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 
   /**
    * Saves pool to image
+   *
+   * @param filename
    */
   public void saveToImage(String filename) {
     filename = System.getProperty("user.dir") + "/" + filename + ".png";

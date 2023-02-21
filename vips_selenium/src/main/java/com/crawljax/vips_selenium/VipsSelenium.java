@@ -370,7 +370,6 @@ public class VipsSelenium {
    * Starts visual segmentation of page
    *
    * @return
-   * @throws Exception
    */
   public List<VipsRectangle> startSegmentation() {
     try {
