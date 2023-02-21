@@ -33,8 +33,7 @@
     </properties>
 
     <scm>
-        <connection>scm:git:git@github.com:crawljax/crawljax.git</connection>
-        <developerConnection>scm:git:git@github.com:crawljax/crawljax.git</developerConnection>
+        <connection>scm:git:https://github.com/crawljax/crawljax.git</connection>
         <url>https://github.com/crawljax/crawljax</url>
         <tag>HEAD</tag>
     </scm>
