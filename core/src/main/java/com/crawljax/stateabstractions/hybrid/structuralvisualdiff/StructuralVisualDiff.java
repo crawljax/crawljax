@@ -71,7 +71,7 @@ public class StructuralVisualDiff {
    * states
    *
    * @param oldVertex Old state. Should be of type
-   *                  {@link com.crawljax.visual.StateVertexForElementsWithVisualInfo} since it
+   *                  {@link com.crawljax.stateabstractions.hybrid.StateVertexForElementsWithVisualInfo} since it
    *                  relies on the visual information recorded in the previous run of the crawler
    * @param newVertex New state to which we are comparing the old state
    * @return
@@ -375,7 +375,7 @@ public class StructuralVisualDiff {
    * Given an XPath for a node, this method returns {@code DOMElementWithVisualInfo} of the node in
    * the old document. The XPath should be from the old document.
    *
-   * @param XPath of the node
+   * @param xpath of the node
    * @return The node of type {@code DOMElementWithVisualInfo}. {@code null} if the node does not
    * exist.
    */
@@ -387,7 +387,7 @@ public class StructuralVisualDiff {
    * Given an XPath for a node, this method returns {@code DOMElementWithVisualInfo} of the node in
    * the new document. The XPath should be from the new document.
    *
-   * @param XPath of the node
+   * @param xpath of the node
    * @return The node of type {@code DOMElementWithVisualInfo}. {@code null} if the node does not
    * exist.
    */

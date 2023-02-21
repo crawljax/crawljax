@@ -653,7 +653,7 @@ public class VisualStructureConstructor {
   /**
    * Generates element's id's for elements that are on path
    *
-   * @param Path (Start visual strucure id)
+   * @param path (Start visual strucure id)
    * @return List of id's
    */
   private List<String> generatePathStructures(String path) {
@@ -999,7 +999,7 @@ public class VisualStructureConstructor {
   /**
    * Converts normalized weight of separator to DoC
    *
-   * @param Normalized weight of separator
+   * @param value weight of separator
    * @return DoC
    */
   private int getDoCValue(int value) {

@@ -19,9 +19,12 @@ import org.xml.sax.SAXException;
 
 public final class DomUtils {
 
+
   /**
+   *
    * @param dom the DOM document.
    * @return a string representation of the DOM.
+   * @throws IOException exception if error transforming dom
    */
   public static String getDocumentToString(Document dom) throws IOException {
     try {

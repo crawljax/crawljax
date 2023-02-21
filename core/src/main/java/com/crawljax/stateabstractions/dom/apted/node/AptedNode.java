@@ -85,7 +85,7 @@ public class AptedNode<D> {
   /**
    * Returns a string representation of the tree in bracket notation.
    *
-   * <p>IMPORTANT: Works only for nodes storing {@link node.StringNodeData}
+   * <p>IMPORTANT: Works only for nodes storing {@link com.crawljax.stateabstractions.dom.apted.node.StringNodeData}
    * due to using .
    *
    * @return tree in bracket notation.

@@ -33,7 +33,7 @@ public class VipsSeleniumParser {
   /**
    * Default constructor
    *
-   * @param viewport Rendered's page viewport
+   * @param vips
    */
   public VipsSeleniumParser(VipsSelenium vips) {
     this.vips = vips;
@@ -51,7 +51,7 @@ public class VipsSeleniumParser {
   /**
    * Constructor, where we can define element's size treshold
    *
-   * @param viewport           Rendered's page viewport
+   * @param vips
    * @param sizeTresholdWidth  Element's width treshold
    * @param sizeTresholdHeight Element's height treshold
    */
@@ -329,7 +329,7 @@ public class VipsSeleniumParser {
 
   /**
    * Checks, if node is a valid node.
-   * <p>
+   * {@code <p> }
    * Node is valid, if it's visible in browser. This means, that the node's width and height are not
    * zero.
    *
@@ -356,13 +356,14 @@ public class VipsSeleniumParser {
   }
 
   /**
+   * {@code
    * <a><abbr><acronym>
    * <b><bdo><big><br><button>
    * <cite><code><dfn><em><i><img><input>
    * <kbd><label><map><object><output>
    * <q><samp><script><select><small><span>
    * <strong><sub><sup><textarea><time><tt><var>
-   *
+   *}
    * @param node
    * @return
    */
@@ -414,7 +415,8 @@ public class VipsSeleniumParser {
 
   /**
    * Checks, if node is a virtual text node.
-   * <p>
+   * {@code <p>}
+   *
    * Inline node with only text node children is a virtual text node.
    *
    * @param node Input node
@@ -446,7 +448,7 @@ public class VipsSeleniumParser {
 
   /**
    * Checks, if node is virtual text node.
-   * <p>
+   * {@code <p>}
    * Inline node with only text node and virtual text node children is a virtual text node.
    *
    * @param node Input node
@@ -793,7 +795,7 @@ public class VipsSeleniumParser {
   }
 
   /**
-   * Applies VIPS rules on &TR;&gt; node.
+   * Applies VIPS rules on {@code TR;&gt;} node.
    *
    * @param node Node
    * @return Returns true if one of rules success and node is dividable.
@@ -841,7 +843,7 @@ public class VipsSeleniumParser {
   }
 
   /**
-   * Applies VIPS rules on &lt;TABLE&gt; node.
+   * Applies VIPS rules on {@code <TABLE>} node.
    *
    * @param node Node
    * @return Returns true if one of rules success and node is dividable.
@@ -955,7 +957,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule One
-   * <p>
+   * {@code <p>}
    * If the DOM node is not a text node and it has no valid children, then this node cannot be
    * divided and will be cut.
    *
@@ -978,7 +980,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Two
-   * <p>
+   * {@code <p>}
    * If the DOM node has only one valid child and the child is not a text node, then divide this
    * node
    *
@@ -1013,7 +1015,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Three
-   * <p>
+   * {@code <p>}
    * If the DOM node is the root node of the sub-DOM tree (corresponding to the block), and there is
    * only one sub DOM tree corresponding to this block, divide this node.
    *
@@ -1075,7 +1077,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Four
-   * <p>
+   * {@code <p>}
    * If all of the child nodes of the DOM node are text nodes or virtual text nodes, do not divide
    * the node. <br> If the font size and font weight of all these child nodes are same, set the DoC
    * of the extracted block to 10. Otherwise, set the DoC of this extracted block to 9.
@@ -1188,7 +1190,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Five
-   * <p>
+   * {@code <p>}
    * If one of the child nodes of the DOM node is line-break node, then divide this DOM node.
    *
    * @param node Input node
@@ -1214,7 +1216,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Six
-   * <p>
+   * {@code <p>}
    * If one of the child nodes of the DOM node has HTML tag &lt;hr&gt;, then divide this DOM node
    *
    * @param node Input node
@@ -1241,7 +1243,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Seven
-   * <p>
+   * {@code <p>}
    * If the background color of this node is different from one of its children’s, divide this node
    * and at the same time, the child node with different background color will not be divided in
    * this round. Set the DoC value (6-8) for the child node based on the &lt;html&gt; tag of the
@@ -1298,7 +1300,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Eight
-   * <p>
+   * {@code <p>}
    * If the node has at least one text node child or at least one virtual text node child, and the
    * node's relative size is smaller than a threshold, then the node cannot be divided. Set the DoC
    * value (from 5-8) based on the html tag of the node.
@@ -1362,7 +1364,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Nine
-   * <p>
+   * {@code <p>}
    * If the child of the node with maximum size are small than a threshold (relative size), do not
    * divide this node. <br> Set the DoC based on the html tag and size of this node.
    *
@@ -1415,7 +1417,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Ten
-   * <p>
+   * {@code <p>}
    * If previous sibling node has not been divided, do not divide this node
    *
    * @param node Input node
@@ -1444,7 +1446,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Eleven
-   * <p>
+   * {@code <p>}
    * Divide this node.
    *
    * @param node Input node
@@ -1458,7 +1460,7 @@ public class VipsSeleniumParser {
 
   /**
    * VIPS Rule Twelve
-   * <p>
+   * {@code <p>}
    * Do not divide this node <br> Set the DoC value based on the html tag and size of this node.
    *
    * @param node Input node
@@ -1515,16 +1517,18 @@ public class VipsSeleniumParser {
     this._sizeTresholdHeight = sizeTresholdHeight;
   }
 
+  /**
+   *
+   * @return _vipsBlocks
+   */
   public Node getVipsBlocks() {
     return _vipsBlocks;
   }
 
   /**
    * Finds previous sibling node's VIPS block.
-   *
    * @param node       Node
    * @param vipsBlock  Actual VIPS block
-   * @param foundBlock VIPS block for given node
    */
   private void findPreviousSiblingNodeVipsBlock(Node node, Node vipsBlock) {
     Rectangle rect = VipsUtils.getRectangle(vipsBlock, vips.driver);

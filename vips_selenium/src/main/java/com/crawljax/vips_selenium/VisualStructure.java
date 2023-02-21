@@ -57,7 +57,7 @@ public class VisualStructure {
   /**
    * Sets blocks as nested blocks
    *
-   * @param Nodes
+   * @param vipsBlocks
    */
   public void setNestedBlocks(List<Node> vipsBlocks) {
     this._nestedBlocks = vipsBlocks;

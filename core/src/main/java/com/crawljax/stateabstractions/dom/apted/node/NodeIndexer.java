@@ -29,7 +29,7 @@ import java.util.Iterator;
 
 /**
  * Indexes nodes of the input tree to the algorithm that is already parsed to tree structure using
- * {@link node.AptedNode} class. Stores various indices on nodes required for efficient computation
+ * {@link com.crawljax.stateabstractions.dom.apted.node.AptedNode} class. Stores various indices on nodes required for efficient computation
  * of APTED [1,2]. Additionally, it stores single-value properties of the tree.
  *
  * <p>For indexing we use four tree traversals that assign ids to the nodes:
@@ -52,8 +52,8 @@ import java.util.Iterator;
  *
  * @param <D> type of node data.
  * @param <C> type of cost model.
- * @see node.AptedNode
- * @see parser.InputParser
+ * @see com.crawljax.stateabstractions.dom.apted.node.AptedNode
+ * @see com.crawljax.stateabstractions.dom.apted.parser.InputParser
  */
 public class NodeIndexer<D, C extends CostModel> {
 
@@ -65,7 +65,7 @@ public class NodeIndexer<D, C extends CostModel> {
    * Index from left-to-right preorder id of node n (starting with {@code 0}) to AptedNode object
    * corresponding to n. Used for cost of edit operations.
    *
-   * @see node.Node
+   * @see com.crawljax.stateabstractions.dom.apted.node.AptedNode
    */
   public final AptedNode<D>[] preL_to_node;
 
@@ -486,22 +486,22 @@ public class NodeIndexer<D, C extends CostModel> {
   }
 
   /**
-   * An abbreviation that uses indices to retrieve pointer to {@link node.AptedNode} of the given
+   * An abbreviation that uses indices to retrieve pointer to {@link com.crawljax.stateabstractions.dom.apted.node.AptedNode} of the given
    * node.
    *
    * @param postL left-to-right postorder id of a node.
-   * @return {@link node.AptedNode} corresponding to postL.
+   * @return {@link com.crawljax.stateabstractions.dom.apted.node.AptedNode} corresponding to postL.
    */
   public AptedNode<D> postL_to_node(int postL) {
     return preL_to_node[postL_to_preL[postL]];
   }
 
   /**
-   * An abbreviation that uses indices to retrieve pointer to {@link node.AptedNode} of the given
+   * An abbreviation that uses indices to retrieve pointer to {@link com.crawljax.stateabstractions.dom.apted.node.AptedNode} of the given
    * node.
    *
    * @param postR right-to-left postorder id of a node.
-   * @return {@link node.AptedNode} corresponding to postR.
+   * @return {@link com.crawljax.stateabstractions.dom.apted.node.AptedNode} corresponding to postR.
    */
   public AptedNode<D> postR_to_node(int postR) {
     return preL_to_node[postR_to_preL[postR]];

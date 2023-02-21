@@ -60,7 +60,7 @@ public class FragDiff {
   }
 
   /**
-   * @return the old page with change labels.
+   * return the old page with change labels.
    * @throws IOException
    */
   public void annotateOldPage(boolean drawRectangles, File oldFile) throws IOException {
@@ -74,7 +74,7 @@ public class FragDiff {
   }
 
   /**
-   * @return the new page with change labels.
+   * return the new page with change labels.
    * @throws IOException
    */
   public void annotateNewPage(boolean drawRectangles, File newFile) throws IOException {

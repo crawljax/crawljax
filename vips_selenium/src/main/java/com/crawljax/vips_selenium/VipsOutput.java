@@ -261,9 +261,10 @@ public final class VipsOutput {
 
   /**
    * Writes visual structure to output XML
-   *
    * @param visualStructure Given visual structure
-   * @param pageViewport    Page's viewport
+   * @param pageViewport Page's viewport
+   * @param url
+   * @param title
    */
   public void writeXML(VisualStructure visualStructure, BufferedImage pageViewport, String url,
       String title) {

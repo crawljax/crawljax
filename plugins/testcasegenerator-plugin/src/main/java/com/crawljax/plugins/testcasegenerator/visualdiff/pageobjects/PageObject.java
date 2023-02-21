@@ -31,7 +31,7 @@ public abstract class PageObject {
    * @param y      The y co-ordinate of the top left of the object's bounding box.
    * @param width  The width of the object's bounding box.
    * @param height The height of the object's bounding box.
-   * @return a new instance of the {@code PageObject}.
+   * returns a new instance of the {@code PageObject}.
    */
   PageObject(Mat image, int x, int y, int width, int height) {
     this.image = image;

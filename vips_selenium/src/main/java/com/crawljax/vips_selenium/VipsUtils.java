@@ -1012,7 +1012,7 @@ public class VipsUtils {
 
   /**
    * Currently only has support for "click" events. JavaScript code for fetching eventhandlers is
-   * available in {@see #com.crawljax.core.vips_selenium.Scripts}
+   * available in {@link com.crawljax.vips_selenium.Scripts}
    *
    * @param vipsBlock
    * @param hasEvent

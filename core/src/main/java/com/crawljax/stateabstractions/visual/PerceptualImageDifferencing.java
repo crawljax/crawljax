@@ -395,7 +395,7 @@ public class PerceptualImageDifferencing {
 
   /**
    * Builds parameter list for the PerceptualDiff
-   * {@linkplain PerceptualImageDifferencing#PerceptualDiff(double, int, boolean, double, double,
+   * {@linkplain PerceptualImageDifferencing#PerceptualImageDifferencing(double, int, boolean, double, double,
    * boolean, double) constructor}.
    */
   public static class Builder {
