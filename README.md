@@ -8,6 +8,7 @@ Crawljax can easily be extended through its easy-to-use [plugin architecture](ht
 
 Maven
 -----
+Crawljax artifacts are available on [Maven central repository](https://repo.maven.apache.org/maven2/com/crawljax/).
 
 	<dependency>
 	    <groupId>com.crawljax</groupId>
