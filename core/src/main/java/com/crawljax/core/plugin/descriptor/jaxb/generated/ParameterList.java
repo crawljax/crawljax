@@ -7,19 +7,18 @@
 
 package com.crawljax.core.plugin.descriptor.jaxb.generated;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
  * Java class for parameter-list complex type.
  * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * The following schema fragment specifies the expected content contained within this class.
  * <pre>
  * &lt;complexType name="parameter-list"&gt;
  *   &lt;complexContent&gt;
@@ -33,33 +32,32 @@ import java.util.List;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "parameter-list", propOrder = { "parameter" })
+@XmlType(name = "parameter-list", propOrder = {"parameter"})
 public class ParameterList {
 
-	@XmlElement(required = true)
-	protected List<Parameter> parameter;
+  @XmlElement(required = true)
+  protected List<Parameter> parameter;
 
-	/**
-	 * Gets the value of the parameter property.
-	 * <p>
-	 * This accessor method returns a reference to the live list, not a
-	 * snapshot. Therefore any modification you make to the returned list will
-	 * be present inside the JAXB object. This is why there is not a
-	 * <CODE>set</CODE> method for the parameter property.
-	 * <p>
-	 * For example, to add a new item, do as follows:
-	 * <pre>
-	 * getParameter().add(newItem);
-	 * </pre>
-	 * <p>
-	 * Objects of the following type(s) are allowed in the list
-	 * {@link Parameter }
-	 */
-	public List<Parameter> getParameter() {
-		if (parameter == null) {
-			parameter = new ArrayList<>();
-		}
-		return this.parameter;
-	}
+  /**
+   * Gets the value of the parameter property.
+   * <p>
+   * This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a
+   * <CODE>set</CODE> method for the parameter property.
+   * <p>
+   * For example, to add a new item, do as follows:
+   * <pre>
+   * getParameter().add(newItem);
+   * </pre>
+   * <p>
+   * Objects of the following type(s) are allowed in the list {@link Parameter }
+   */
+  public List<Parameter> getParameter() {
+    if (parameter == null) {
+      parameter = new ArrayList<>();
+    }
+    return this.parameter;
+  }
 
 }

@@ -1,0 +1,379 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="Description" content="PHP-Addressbook">
+	<meta name="Keywords" content="">
+
+	<style type="text/css">
+		
+    body {background-image:url('./skins/header-red.jpg');background-repeat:repeat-x;background-position:top left;}
+    table#maintable th {text-align:center;border:1px solid #ccc;font-size:12px;background:#b63a3a;color:#fff;}
+    table#birthdays th {color:#fff;background:#b63a3a;margin:25px;border:1px solid #ccc;}
+		table#maintable th a {color:#fff;}
+body,#footer,ul {margin:0;padding:0;}
+body,p,td,h1,h2,a,a:hover {font-family:Verdana,Helvetica,sans-serif;font-size:12px}
+h1 {font-size:18px}
+h2 {font-size:14px}
+a {color:#036}
+a:hover {color:#06C;text-decoration:none}
+img {border:0;}
+textarea {font-family:Arial,Helvetica,sans-serif;font-size:10pt}
+
+#container {margin:0 auto;width:780px;border:0}
+#top{color:#fff;margin:5px 0 0;height:20px;text-align:right;}
+#header {height:80px;}
+#header h1 {display:none;}
+
+#nav {margin:0 0 20px;height:25px;width:770px;float:left;border:0;display:inline;}
+#nav ul li a {color:#fff;padding:0 4px;}
+#nav ul li img {display:none;}
+
+#content {margin:20px 0 0;width:780px;}
+#footer {margin:45px 0 0;padding:20px 0;clear:both;}
+
+ul {list-style:none;}
+ul li {display:inline;}
+#footer ul li {display:block;}
+
+label {margin-right:0.5em;width:10em;float:left;text-align:left;display:block;}
+
+#search-az {text-align:center;padding:2px;}
+#a-z a {font-size:75%;} 
+
+.odd {background:#e5e5e5;}
+.even {background:#f3f3f3;}
+
+#right,.right {float:right;}
+#left,.left {float:left;}
+.clear {clear:both;}
+
+.msgbox {padding:16px;border:1px solid #ccc;background:#fff4b4;width:60%;font-weight:700;}
+.msgbox i {font-weight:400;}
+
+table {width:100%;border:1px solid #ccc;border-collapse:collapse;}
+table tr td {border:1px solid #ccc;padding:2px 1px}
+table img,.center {text-align:center;}
+table th {text-align:left;font-size:14px;padding:8px 4px;}
+
+table#birthdays {border:0;}
+.tablespace td {border:0;}
+
+/* View.php */
+table#view,table#view td {border:1px solid #000;border-collapse:collapse;}
+table#view td {padding:5px;}
+
+/* Edit.php */
+#content input[type=text],#content textarea {width:220px; margin-bottom:3px;}
+#content input[type=text] {height:1,1em}
+// #content textarea {height:8em}
+input.byear{width:4em !important;}
+
+/* Source Forge */
+#download {margin:0;width:180px;background:#63A624;color:#fff;border:1px solid #000;text-align:center;}
+#download a,#top a {color:#fff;}
+
+/* Login */
+#content input[name=user],input[name=pass] {width:150px; margin-bottom:3px;}	</style>
+	<!--[if !IE]>-->
+	<link media="only screen and (max-device-width: 480px)" rel="stylesheet" type="text/css" href="iphone.css">
+	<!--<![endif]-->
+	<meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+
+
+	<link rel="icon" type="image/png" href="icons/font.png">
+	<title>Address book ([none])</title>
+	</head>
+	<body class="">
+		<div id="container">
+			<div id="top">
+
+<form name="logout" method="post" class="header">
+<input type="hidden" name="logout" value="yes">
+<b>(admin)</b> <a href="#" onclick="document.logout.submit();">Logout</a>
+</form>
+			</div>
+			<div id="header">
+				<h1><a href=".">Address Book</a></h1>
+				<a href="."><img src="title_x2.png" width="340" height="75" title="Addressbook" alt="Addressbook" id="logo"></a>
+			</div>
+			<div id="nav">
+      			<!--
+* http://www.dynamicdrive.com/dynamicindex1/ddlevelsmenu/index.htm
+* http://www.dynamicdrive.com/dynamicindex1/popupmenu.htm
+* http://www.alistapart.com/articles/horizdropdowns/
+-->
+<ul>
+<li>
+	<a href="./">home</a>
+</li>
+
+<li class="all">
+	<a href="edit.php?group=[none]">add new</a>
+</li>
+	
+
+<li class="admin">
+		<a href="group.php?group=[none]">groups</a>
+	</li>
+
+
+	<li class="all">
+		<a href="birthdays.php?group=[none]">next birthdays</a>
+	</li>
+	<li class="export">
+    	<a href="view.php?group=[none]&amp;all&amp;print">print all</a>
+  </li>
+	<li class="export">
+      <a href="view.php?group=[none]&amp;all&amp;print&amp;phones">print phones</a>
+  </li>
+	<!--
+	<li class="export">
+    	<a href="export.php?group=[none]">export</a>
+  </li> 
+  	-->
+	<!--
+	<li class="export">
+    	<a href="import.php?group=[none]">import</a>
+  </li> 
+	-->
+	
+
+</ul>
+			</div>
+			<div id="content">
+
+
+<br><br>
+<div id="search-az">
+
+
+	<form accept-charset="utf-8" method="get" name="searchform" onsubmit="return false">
+		<input type="text" value="" name="searchstring" title="Search for any text" size="45" tabindex="0" onkeyup="filterResults(this)">
+	</form>
+<script type="text/javascript">
+	document.searchform.searchstring.focus();
+</script>
+</div><br>
+<hr>
+<label style="width:24em;"><strong>Number of results: <span id="search_count">2</span></strong></label>
+<form id="right" method="get">
+	<select name="group" onchange="this.parentNode.submit()">
+		<option>[none]</option>
+		<option value="">[all]</option>
+		<option value="[none]">[none]</option>
+		<option>ZGmFaAEK</option>
+<option>ZGmFaAEK</option>
+<option>ZGmFaAEK</option>
+	</select>
+</form>
+<br><br class="clear">
+
+<form accept-charset="utf-8" name="MainForm" method="post" action="group.php?group=[none]">
+	<input type="hidden" name="group" value="[none]">
+	<table id="maintable" class="sortcompletecallback-applyZebra">
+		<tbody><tr>
+<th class=""></th><th class="sortable fd-column-1"><a href="#" class="fdTableSortTrigger" title="Sort on “Photo”">Photo</a><span></span></th><th class="fd-column-2 sortable-text forwardSort"><a href="#" class="fdTableSortTrigger" title="Sort on “Name”">Name</a><span> ↓</span></th><th class="fd-column-3 sortable-text"><a href="#" class="fdTableSortTrigger" title="Sort on “Address”">Address</a><span></span></th><th class="fd-column-4 sortable-text"><a href="#" class="fdTableSortTrigger" title="Sort on “All e-mail”">All e-mail</a><span></span></th><th class="fd-column-5 sortable-text"><a href="#" class="fdTableSortTrigger" title="Sort on “All phones”">All phones</a><span></span></th><th class=""></th><th class=""></th><th class=""></th><th class=""></th><th class=""></th>      
+	</tr>
+<tr class="" name="entry"><td class="center"><input type="checkbox" id="1934" name="selected[]" value="1934" title="Select (Andrea Stocco)" alt="Select (Andrea Stocco)" accept="tsigalko18@gmail.com%3BUUXLHLXf%3BHZKTItKy"></td><td></td><td>mdqKJJVr Stocco Andrea</td><td>1200 Hastings</td><td><a href="mailto:tsigalko18@gmail.com">tsigalko18@gmail.com</a><br><a href="mailto:UUXLHLXf">UUXLHLXf</a><br><a href="mailto:HZKTItKy">HZKTItKy</a></td><td>KylhUDVK<br>EUFiBhjW<br>fNuyGxyS<br>FqXJDXjR</td><td class="center"><a href="view.php?group=[none]&amp;id=1934"><img src="icons/status_online.png" title="Details" alt="Details"></a></td><td class="center"><a href="edit.php?group=[none]&amp;id=1934"><img src="icons/pencil.png" title="Edit" alt="Edit"></a></td><td class="center"><a href="vcard.php?group=[none]&amp;id=1934"><img src="icons/vcard.png" title="vCard" alt="vCard"></a></td><td class="center"><a href="http://maps.google.com/maps?q=1200+Hastings&amp;t=h" target="_blank">
+                                <img src="icons/car.png" title="Google Maps" alt="vCard"></a></td><td class="center"><a href="http://FNbBLqFM"><img src="icons/house.png" title="http://FNbBLqFM" alt="http://FNbBLqFM"></a></td></tr>
+<tr class="odd" name="entry"><td class="center"><input type="checkbox" id="1937" name="selected[]" value="1937" title="Select (Andrea Stocco)" alt="Select (Andrea Stocco)" accept="tsigalko18@gmail.com%3BUUXLHLXf%3BHZKTItKy"></td><td></td><td>mdqKJJVr Stocco Andrea</td><td>1200 Hastings</td><td><a href="mailto:tsigalko18@gmail.com">tsigalko18@gmail.com</a><br><a href="mailto:UUXLHLXf">UUXLHLXf</a><br><a href="mailto:HZKTItKy">HZKTItKy</a></td><td>KylhUDVK<br>EUFiBhjW<br>fNuyGxyS<br>FqXJDXjR</td><td class="center"><a href="view.php?group=[none]&amp;id=1937"><img src="icons/status_online.png" title="Details" alt="Details"></a></td><td class="center"><a href="edit.php?group=[none]&amp;id=1937"><img src="icons/pencil.png" title="Edit" alt="Edit"></a></td><td class="center"><a href="vcard.php?group=[none]&amp;id=1937"><img src="icons/vcard.png" title="vCard" alt="vCard"></a></td><td class="center"><a href="http://maps.google.com/maps?q=1200+Hastings&amp;t=h" target="_blank">
+                                <img src="icons/car.png" title="Google Maps" alt="vCard"></a></td><td class="center"><a href="http://FNbBLqFM"><img src="icons/house.png" title="http://FNbBLqFM" alt="http://FNbBLqFM"></a></td></tr>
+</tbody></table>&nbsp;<input type="checkbox" id="MassCB" onclick="MassSelection()"> <em><strong>Select all</strong></em><br><br><div class="left"><input type="button" value="Send e-Mail" onclick="MailSelection()"></div><div class="left"><input type="button" value="Delete" onclick="DeleteSel()"></div><div></div><div class="right"><input type="submit" name="add" value="Add to">-<select name="to_group"><option>ZGmFaAEK</option>
+<option>ZGmFaAEK</option>
+<option>ZGmFaAEK</option>
+</select></div><br></form><script type="text/javascript">
+<!--
+
+//
+// Select All/None items
+//
+function MassSelection() {
+  
+  select_count = document.getElementsByName("selected[]").length;
+  all_checked  = document.getElementById("MassCB").checked;
+  
+	for (i = 0; i < select_count; i++) {
+	  // select only visible items
+	  if( document.getElementsByName("selected[]")[i].parentNode.parentNode.style.display != "none") {
+		  document.getElementsByName("selected[]")[i].checked = all_checked;
+		}
+	}
+}
+
+//
+// Send Mail to selected persons
+//
+function MailSelection() {
+	var addresses = "";
+	var dst_count = 0;
+
+  select_count = document.getElementsByName("selected[]").length;
+	for (i = 0; i < select_count; i++) {
+		selected_i = document.getElementsByName("selected[]")[i];
+		if( selected_i.checked == true) {
+			if( selected_i.accept != "" && selected_i.accept != null) {
+				if(dst_count > 0) {
+					addresses = addresses + "%3B";
+				}
+				addresses = addresses + selected_i.accept;
+				dst_count++;
+			}
+		}
+	}
+
+	if(dst_count == 0)
+		alert("No address selected.");
+	else
+		location.href = "mailto:"+addresses;
+}
+
+function Doodle() {
+	
+	var participants = "";
+	var dst_count = 0;
+
+  select_count = document.getElementsByName("selected[]").length;
+	for (i = 0; i < select_count; i++) {
+		selected_i = document.getElementsByName("selected[]")[i];
+		if( selected_i.checked == true) {
+			participants += selected_i.id+";";
+			dst_count++;
+		}
+	}
+	alert(participants);
+	if(dst_count == 0)
+		alert("No paticipants selected.");
+	else
+	  location.href = "./doodle.php?part="+participants;
+}
+
+function DeleteSel() {
+	
+	var participants = "";
+	var dst_count = 0;
+
+  select_count = document.getElementsByName("selected[]").length;
+	for (i = 0; i < select_count; i++) {
+		selected_i = document.getElementsByName("selected[]")[i];
+		if( selected_i.checked == true) {
+			participants += selected_i.id+";";
+			dst_count++;
+		}
+	}
+
+	if(dst_count == 0)
+		alert("No paticipants selected.");
+	else
+		if(confirm('Delete '+dst_count+' addresses?')) {
+	    location.href = "./delete.php?part="+participants;
+	  }
+}
+
+function applyZebra() {
+	
+  	// loop over all lines
+  	var maintable = document.getElementById("maintable")
+  	var tbody     = maintable.getElementsByTagName("tbody");
+  	var entries   = tbody[0].children;
+  	var zebraCnt  = 0;
+
+	  // Skip header(0) + selection row(length-1)
+  	for(i = 1; i < entries.length; i++) {
+  		if(entries[i].style.display != "none") {
+      	if((zebraCnt % 2) == 0) {
+      	  entries[i].className = "";
+      	} else {
+      	  entries[i].className = "odd";
+      	}
+     	  zebraCnt++;
+  		}
+    }
+}
+
+//
+// Filter the items in the fields
+//
+function filterResults(field) {
+
+  	var query = field.value;
+  	 	
+  	// split lowercase on white spaces
+  	var words = query.toLowerCase().split(" ");
+
+  	// loop over all lines
+  	var maintable = document.getElementById("maintable")
+  	var tbody     = maintable.getElementsByTagName("tbody");
+  	var entries   = tbody[0].children;
+  	var foundCnt  = 0;
+	
+	  // Skip header(0) + selection row(length-1)
+  	for(i = 1; i < entries.length; i++) {
+  		
+      // Use all columns that don't have the css class "center"
+      var content = entries[i].childNodes[0].childNodes[0].accept;
+      for(var j=0;j<entries[i].childNodes.length;j++) {
+          if(entries[i].childNodes[j].className == "center") continue;
+          content += " "+entries[i].childNodes[j].innerHTML;
+      }
+  		            
+      // Don't be case sensitive
+  		content = content.toLowerCase();
+
+      // check if all words are present  		            
+      var foundAll = true;
+  		for(j = 0; j < words.length; j++) {
+  			foundAll = foundAll && (content.search(words[j]) != -1);
+  		}
+  		
+  		// Keep selected entries
+      foundAll = foundAll || entries[i].childNodes[0].childNodes[0].checked;
+  		
+      // ^Hide entry
+      if(foundAll) {
+      	entries[i].style.display = "";
+     	  foundCnt++;  			
+      } else {
+      	entries[i].style.display = "none";
+      }
+  	}  	
+  	document.getElementById("search_count").innerHTML = foundCnt;
+  	
+  	applyZebra();
+}
+
+filterResults(document.getElementsByName("searchstring")[0]);
+
+//-->
+</script>
+
+
+<br>
+<br>
+	</div>
+	<div id="footer">
+
+			<ul>
+				<li><a href="http://sourceforge.net/projects/php-addressbook/">php-addressbook</a> <a href="notes.htm">v8.2.5</a></li>
+			</ul>
+	</div>
+</div>
+	
+
+<!-- 
+Copyright Notice:
+This script was written by Rob Minto, and is free to use and distribute under GPL. 
+Any improvements, please email rob(at)widgetmonkey.com. 
+Keep software free. 
+And please leave this copyright notice. Thanks.
+
+Major update 2007-2009 by Olivier Chatelain, feel free to use and distribute under GPL. 
+Any improvements, please email chatelao(at)users.sourceforge.net. 
+
+Updated 2009 - Complete theme redesign by Leighton West. Any theme problems,
+please email retrorobot(at)users.sourceforge.net.
+
+Major contribution Mark James ("famfamfam"-icons, cc-by-2.5)
+For more details see: http://www.famfamfam.com/lab/icons/silk/
+
+Major contribution "frequency decoder" ("Unobtrusive Table Sort Script", cc-by-sa-2.5)
+For more details see: http://www.frequency-decoder.com/2006/09/16/unobtrusive-table-sort-script-revisited/
+--><script type="text/javascript" src="js/tablesort.min.js"></script></body></html>

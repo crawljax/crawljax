@@ -3,7 +3,6 @@ package com.crawljax.oraclecomparator.comparators;
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.DomUtils;
 import com.google.common.collect.ImmutableList;
-
 import java.util.Collection;
 
 /**
@@ -14,24 +13,24 @@ import java.util.Collection;
  */
 public class RegexComparator extends AbstractComparator {
 
-	// NOTE: the ordering can be important
-	private final ImmutableList<String> regexs;
+  // NOTE: the ordering can be important
+  private final ImmutableList<String> regexs;
 
-	public RegexComparator(Collection<String> regexs) {
-		this.regexs = ImmutableList.copyOf(regexs);
-	}
+  public RegexComparator(Collection<String> regexs) {
+    this.regexs = ImmutableList.copyOf(regexs);
+  }
 
-	public RegexComparator(String... regexs) {
-		this.regexs = ImmutableList.copyOf(regexs);
-	}
+  public RegexComparator(String... regexs) {
+    this.regexs = ImmutableList.copyOf(regexs);
+  }
 
-	@Override
-	public String normalize(String dom) {
-		String normalized = dom;
-		for (String regex : regexs) {
-			normalized = DomUtils.replaceString(normalized, regex, "");
-		}
-		return normalized;
-	}
+  @Override
+  public String normalize(String dom) {
+    String normalized = dom;
+    for (String regex : regexs) {
+      normalized = DomUtils.replaceString(normalized, regex, "");
+    }
+    return normalized;
+  }
 
 }

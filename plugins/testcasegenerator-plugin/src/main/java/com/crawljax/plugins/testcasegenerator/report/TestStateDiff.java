@@ -1,32 +1,42 @@
 package com.crawljax.plugins.testcasegenerator.report;
 
 public class TestStateDiff {
-	private String state;
-	private String oldState;
-	private String newState;
 
-	public String getOldState() {
-		return oldState;
-	}
+  private String state;
+  private String oldState;
+  private String newState;
+  private String compResult;
 
-	public void setOldState(String oldState) {
-		this.oldState = oldState;
-	}
+  public String getOldState() {
+    return oldState;
+  }
 
-	public String getNewState() {
-		return newState;
-	}
+  public void setOldState(String oldState) {
+    this.oldState = oldState;
+  }
 
-	public void setNewState(String newState) {
-		this.newState = newState;
-	}
+  public String getNewState() {
+    return newState;
+  }
 
-	public String getState() {
-		return state;
-	}
+  public void setNewState(String newState) {
+    this.newState = newState;
+  }
 
-	public void setState(String vertexName) {
-		this.state = vertexName;
-	}
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String vertexName) {
+    this.state = vertexName;
+  }
+
+  public String getCompResult() {
+    return compResult;
+  }
+
+  public void setCompResult(String compResult) {
+    this.compResult = compResult;
+  }
 
 }

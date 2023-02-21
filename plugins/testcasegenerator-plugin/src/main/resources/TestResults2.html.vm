@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+    <style type="text/css">
+      body {
+        padding: 80px 0 10px;
+      }
+      .crawl-path {
+        padding: 20px 0;
+      }
+      .crawl-path .edge {
+        display: inline-block;
+        line-height: 100%;
+        vertical-align: super;
+      }
+      .crawl-path .edge .edge-text {
+        border-bottom: solid 2px black;
+        padding: 0 7px 2px 0;
+        color: #555;
+        font: bold 70% Monaco, Consolas, Menlo, Courier
+      }
+      .crawl-path .edge .edge-arrow {
+        width: 0; 
+        height: 0; 
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 10px solid currentColor;
+        display: inline-block;
+        vertical-align: -100%;
+      }
+
+      .HoverDiv h1, .HoverDiv img {
+      max-width: 100%;
+      text-align:center;
+      -moz-transition: all 0.3s;
+      -webkit-transition: all 0.3s;
+      transition: all 0.3s;
+      /* z-index: 9999; */
+    }
+
+    .HoverDiv:hover h1, .HoverDiv:hover img {
+      -moz-transform: scale(2);
+      -webkit-transform: scale(2);
+      transform: scale(2);
+       z-index:555555 !important;
+
+    }
+    </style>
+
+  </head>
+
+<body>
+    <div class="container">
+       
+      <h5><a href="localhost:8080" target="_blank">${url}</a> <span class="badge badge-light">Execution #${execution}</span></h5>
+
+      <div class="container container-sm">
+
+            <div class="pb-2 mt-4 mb-2 border-bottom">
+             <h2>Test results summary</h2>
+            </div>
+
+            <div class="container p-4 my-2 border" id="overallResult">
+
+            </div>
+       </div>
+       
+       <div class="pb-2 mt-4 mb-2 border-bottom">
+         <h2> Method Results</h2>
+        </div>
+
+    
+       <div id="test-results-table">
+        <div class="row">
+          <div class="col-2"> <h4>Method Priority</h4></div>
+          <div class="col-6"><h4>Method Name</h4></div>
+          <div class="col-2"><h4>Results</h4></div>
+          <div class="col-2" align="right"><h4>Duration (s)</h4></div>
+        </div>
+        </div>
+
+        <!--
+        <table class="table table-bordered table-striped mb-5" id="test-results-table">
+          <thead>
+            <th onclick="sortTable()"> Method Priority </th>
+            <th>Method Name</th>
+            <th>Results</th>
+            <th width="120">Duration (s)</th>
+          </thead>
+          <tbody></tbody>
+        </table>
+        -->
+
+<!--         <h1>Test methods</h1> -->
+<!--         <div id="test-method-results-list"></div>     -->
+    </div>
+
+
+    <script type="text/javascript">
+
+      var successImageBase64 = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCA0MjYuNjY3IDQyNi42NjciIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQyNi42NjcgNDI2LjY2NzsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTJweCIgaGVpZ2h0PSI1MTJweCI+CjxwYXRoIHN0eWxlPSJmaWxsOiM2QUMyNTk7IiBkPSJNMjEzLjMzMywwQzk1LjUxOCwwLDAsOTUuNTE0LDAsMjEzLjMzM3M5NS41MTgsMjEzLjMzMywyMTMuMzMzLDIxMy4zMzMgIGMxMTcuODI4LDAsMjEzLjMzMy05NS41MTQsMjEzLjMzMy0yMTMuMzMzUzMzMS4xNTcsMCwyMTMuMzMzLDB6IE0xNzQuMTk5LDMyMi45MThsLTkzLjkzNS05My45MzFsMzEuMzA5LTMxLjMwOWw2Mi42MjYsNjIuNjIyICBsMTQwLjg5NC0xNDAuODk4bDMxLjMwOSwzMS4zMDlMMTc0LjE5OSwzMjIuOTE4eiIvPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K";
+      var failureImageBase64 = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDUwIDUwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MCA1MDsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTJweCIgaGVpZ2h0PSI1MTJweCI+CjxjaXJjbGUgc3R5bGU9ImZpbGw6I0Q3NUE0QTsiIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIvPgo8cG9seWxpbmUgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6MjtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxMDsiIHBvaW50cz0iMTYsMzQgMjUsMjUgMzQsMTYgICAiLz4KPHBvbHlsaW5lIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7IiBwb2ludHM9IjE2LDE2IDI1LDI1IDM0LDM0ICAgIi8+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=";
+
+      var getMethodInfo = function(methodInfo){
+        var methodName = methodInfo.methodName;
+
+        var testMethodInfoTemplate = `
+         <div class="row">
+           <div class="col-1 sm bg-info" data-toggle="collapse" href="#method-test-results-${methodName}" aria-expanded="true" aria-controls="method-test-results-${methodName}"> </div>
+           <div id="method-test-results-${methodName}" class="collapse col-10 mt-5">
+            <h2>Method: ${methodName}</h2>
+        `;
+        // Get the crawl path graph
+        testMethodInfoTemplate += getCrawlPathMarkup(methodInfo);
+        
+        // Show diffs per method
+        if (methodInfo.testStatus != "success" || methodInfo.testStatus == "success") {
+          var diffs = methodInfo.diffs;
+//           var stateDiffs = {};
+//           for (var diffIndex = 0; diffIndex < diffs.length; diffIndex++) {
+//             var diff = diffs[diffIndex];
+//             if (!stateDiffs[diff.state]) {
+//               stateDiffs[diff.state] = [];
+//             }
+//             stateDiffs[diff.state].push(diff);
+//           }
+          testMethodInfoTemplate += `<h4>Differences</h4>`;
+
+         var states = methodInfo.methodResult.crawlStates;
+        var crawlPath = methodInfo.methodResult.crawlPath;
+        for (var stateIndex = 0; stateIndex < states.length; stateIndex++) {
+
+
+//           var stateNames = Object.keys(stateDiffs);
+//           for (var stateIndex = 0; stateIndex < stateNames.length; stateIndex++) {
+            var stateInfo = states[stateIndex];
+            var stateName = stateInfo.name;
+
+//             testMethodInfoTemplate += ``;
+            
+//             var diffsForThisState = stateDiffs[stateName];
+//             for (var diffForThisStateIndex = 0; diffForThisStateIndex < diffsForThisState.length; diffForThisStateIndex++) {
+            if(diffs[stateIndex]){
+              var diffForThisState = diffs[stateIndex];
+              if (diffForThisState.oldState.endsWith(".png")) { 
+               	var imgOldSrc =  diffForThisState.oldState;
+                var imgNewSrc =  diffForThisState.newState;
+                var compResult = "";
+                var warnLevel = "";
+                var locatorString = "";
+                
+                if(diffForThisState['compResult']){
+                    compResult = diffForThisState['compResult'];
+                }
+                 if(stateInfo['warnLevel']){
+                    warnLevel = stateInfo['warnLevel'];
+                }
+                if(stateInfo['locatorWarning']){
+                	var locatorWarning = stateInfo['locatorWarning'];
+                	locatorString = `<span class="badge badge-danger"> ${locatorWarning}</span>`;
+                }
+                
+                
+                testMethodInfoTemplate += `
+                <div class="container">
+                  <div class="row">
+                    <div class = "col-sm">
+                       <h5 class="mt-3">State: ${stateName}</h5>
+                    </div>
+                    <div class = "col-sm">
+                       <h5 class="mt-3"> Result: ${compResult}  <span class="badge badge-warning"> ${warnLevel}</span> ${locatorString}</h5>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm HoverDiv">
+                      <a href="${imgOldSrc}" target="_blank">
+                        <img  src="${imgOldSrc}" width="100%" />
+                      </a>
+                    </div>
+                    <div class="col-sm HoverDiv">
+                      <a href="${imgNewSrc}" target="_blank">
+                        <img src="${imgNewSrc}" width="100%" />
+                      </a>
+                    </div>
+                  </div>
+                </div>`;
+              } else {
+                testMethodInfoTemplate += `<div id="dom-diff-${methodName}-${stateName}"></div>`;
+                codeDiffElements.push({ "methodName": methodName, "state": stateName, "old": diffForThisState.oldState, "new" : diffForThisState.newState });
+              }
+            }
+            if (crawlPath[stateIndex]) {
+            var crawlPathInfo = crawlPath[stateIndex];
+            var eventable = crawlPathInfo.eventable;
+            var edgeLabel = eventable.id + " " + eventable.eventType + " " + eventable.identification.value;
+            var edgeColor = crawlPathInfo.success ? "green" : "red";
+            testMethodInfoTemplate += `
+            <div class="edge">
+              <span class="edge-text" style="border-color: ${edgeColor}">${edgeLabel}</span><div class="edge-arrow" style="color: ${edgeColor}"></div>
+            </div>
+            `
+          }
+         }
+
+//           }
+        }
+        testMethodInfoTemplate += `
+        </div>
+        </div>`; // Twp div ( row and column)
+        return testMethodInfoTemplate;
+     }
+
+      var getRowTemplate = function(methodInfo) {
+        var statusIconImgBase64 = methodInfo.testStatus == "success" ? successImageBase64 : failureImageBase64;
+        var statusMessage = methodInfo.failureMessage == "none" ? "" :
+          `<br /><span class="badge badge-pill badge-danger text-wrap">${methodInfo.failureMessage}</span>`;
+        var methodInfoString = getMethodInfo(methodInfo);
+        var rowTemplate = `
+          <div class="row collapse all ${methodInfo.testStatus}">
+          <div class="col-2">${methodInfo.methodNumber} </div>
+          <div class="col-6" data-toggle="collapse" href="#method-test-results-${methodInfo.methodName}" aria-expanded="false" aria-controls="method-test-results-${methodInfo.methodName}"> 
+             <button class="text-break" >${methodInfo.methodName}</button>
+          </div>
+          <div class="col-2 "><img src="data:image/svg+xml;utf8;base64,${statusIconImgBase64}" width="16" height="16" alt="${methodInfo.testStatus}" title="${methodInfo.testStatus}" />
+            ${methodInfo.testStatus} ${statusMessage}</div>
+          <div class="col-2" align="right">${methodInfo.duration}</div>
+          ${methodInfoString}
+          </div>
+        `;
+        /*
+
+        <tr>
+          <td>${methodInfo.methodNumber} </td>
+
+          <td><a class="btn btn-primary" data-toggle="collapse" href="#method-test-results-${methodInfo.methodName}" aria-expanded="false" aria-controls="method-test-results-${methodInfo.methodName}">${methodInfo.methodName}</a></td>
+          <td>
+            <img src="data:image/svg+xml;utf8;base64,${statusIconImgBase64}" width="16" height="16" alt="${methodInfo.testStatus}" title="${methodInfo.testStatus}" />
+            ${methodInfo.testStatus} ${statusMessage}
+          </td>
+          <td align="right">${methodInfo.duration}</td>
+        </tr>
+        */
+        return rowTemplate;
+      }
+
+      var getCrawlPathMarkup = function(methodInfo) {
+        template = `<div class="crawl-path">`;
+        var states = methodInfo.methodResult.crawlStates;
+        var crawlPath = methodInfo.methodResult.crawlPath;
+        for (var stateIndex = 0; stateIndex < states.length; stateIndex++) {
+          var stateInfo = states[stateIndex];
+          var imagClass = stateInfo.success == true && stateInfo.identical == true ? "border-success" : "border-danger";
+          var stateImgSrc = "../../screenshots/" + stateInfo.name + ".png";
+          template += `
+            <a href="${stateImgSrc}" target="_blank">
+              <img class="rounded-circle border ${imagClass}" style="border-width: 2px!important" src="${stateImgSrc}"
+                alt="${stateInfo.name}" title="${stateInfo.name}" width="45" height="45" />
+            </a>`;
+          if (crawlPath[stateIndex]) {
+            var crawlPathInfo = crawlPath[stateIndex];
+            var eventable = crawlPathInfo.eventable;
+            var edgeLabel = eventable.eventType + " " + eventable.identification.value;
+            var edgeColor = crawlPathInfo.success ? "green" : "red";
+            template += `
+            <div class="edge">
+              <span class="edge-text" style="border-color: ${edgeColor}">${edgeLabel}</span><div class="edge-arrow" style="color: ${edgeColor}"></div>
+            </div>
+            `
+          }
+        }
+        template += "</div>";
+        return template;
+      }
+
+      var getOverallResult = function(methods){
+        methodResults = methods.map(function(method){return {name: method.methodName, status: method.testStatus, duration: method.duration};});
+
+        totalDuration = methodResults.reduce(function(totalTime, result){return totalTime+result.duration;}, 0)
+
+        failed = methodResults.filter(function(result){return result.status.toUpperCase()==="FAILURE"});
+        passed = methodResults.filter(function(result){return result.status.toUpperCase()==="SUCCESS"});
+        skipped = methodResults.filter(function(result){return result.status.toUpperCase()==="SKIPPED"});     
+        
+        var testMethodInfoTemplate = `
+         <div class="row">
+           <div class="col "> <div class="btn btn-info" data-toggle="collapse" href=".all" aria-expanded="true" aria-controls=".all"> Total </div> <span class="badge badge-pill badge-info"> ${methodResults.length}</span> </div>
+           <div class="col "> <div class="btn btn-primary" data-toggle="collapse" href=".success" aria-expanded="true" aria-controls=".success"> Passed </div> <span class="badge badge-pill badge-primary">${passed.length} </span> </div>
+           <div class="col "> <div class="btn btn-danger" data-toggle="collapse" href=".failure" aria-expanded="true" aria-controls=".failure"> Failed </div> <span class="badge badge-pill badge-danger">${failed.length}</span>  </div>
+           <div class="col "> <div class="btn btn-warning" data-toggle="collapse" href=".skipped" aria-expanded="true" aria-controls=".skipped"> Skipped </div> <span class="badge badge-pill badge-warning"> ${skipped.length} </span> </div>
+           <div class="col "> Duration(s) : ${totalDuration} </div>
+        </div>
+        `;
+        return testMethodInfoTemplate;
+      }
+
+      var jsonContents = `${diff_json}`;
+
+      var parsedJson = JSON.parse(jsonContents);
+//       var methodNames = Object.keys(parsedJson);
+      var codeDiffElements = [];
+      var methods = Object.values(parsedJson);
+      methods.sort(
+        function (a, b) {
+            if (a.methodNumber < b.methodNumber) {
+                return -1;
+            }
+            if (b.methodNumber < a.methodNumber) {
+                return 1;
+            }
+        return 0
+        }
+      );
+
+      var overall = document.querySelector("#overallResult");
+      overall.innerHTML = getOverallResult(methods);
+//       var overallResult = 
+
+
+      for (var i = 0; i < methods.length; i++) {
+        var methodInfo = methods[i];
+
+        
+        // Populate the rows of the table for summary
+        var tbody = document.querySelector("#test-results-table");
+        tbody.innerHTML += getRowTemplate(methodInfo);
+
+       
+        // Populate the method info
+//         var testMethodInfoParent = document.querySelector("#test-method-results-list");
+//         tbody.innerHTML += getMethodInfo(methodInfo);
+
+      }
+      // Get the textual DOM diff
+      for (var diffElementIndex = 0; diffElementIndex < codeDiffElements.length; diffElementIndex++) {
+        var codeDiffElement = codeDiffElements[diffElementIndex];
+        var target = document.querySelector(`#dom-diff-${codeDiffElement.methodName}-${codeDiffElement.state}`);
+        dv = CodeMirror.MergeView(target, {
+          value: codeDiffElement.old,
+          origLeft: null,
+          orig: codeDiffElement.new,
+          lineNumbers: true,
+          mode: "text/html",
+          highlightDifferences: true,
+          connect: true,
+          collapseIdentical: true,
+          readOnly: true
+        });
+      }
+    </script>
+
+  </body>
+
+</html>

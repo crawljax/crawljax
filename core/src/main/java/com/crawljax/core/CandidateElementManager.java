@@ -4,132 +4,132 @@ import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.condition.ConditionTypeChecker;
 import com.crawljax.condition.crawlcondition.CrawlCondition;
 import com.crawljax.condition.eventablecondition.EventableConditionChecker;
-import net.jcip.annotations.GuardedBy;
-
-import javax.inject.Inject;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.inject.Inject;
+import net.jcip.annotations.GuardedBy;
 
 /**
  * The class is a ExtractorManager for the CandidateElements. It basically implements the
  * ExtractorManager.
  */
 public class CandidateElementManager implements ExtractorManager {
-	/**
-	 * Use the AtomicInteger to prevent Problems when increasing.
-	 */
-	private final AtomicInteger counter = new AtomicInteger();
 
-	/**
-	 * Use the ConcurrentLinkedQueue to prevent Thread problems when checking and storing
-	 * checkedElements.
-	 */
-	private final Collection<String> elements = new ConcurrentLinkedQueue<>();
+  /**
+   * Use the AtomicInteger to prevent Problems when increasing.
+   */
+  private final AtomicInteger counter = new AtomicInteger();
 
-	/**
-	 * The eventableConditionChecker where to load the EventableConditions from into the new
-	 * Candidates.
-	 */
-	private final EventableConditionChecker eventableConditionChecker;
+  /**
+   * Use the ConcurrentLinkedQueue to prevent Thread problems when checking and storing
+   * checkedElements.
+   */
+  private final Collection<String> elements = new ConcurrentLinkedQueue<>();
 
-	/**
-	 * The CrawlConditionChecker to use in the {@link #checkCrawlCondition(EmbeddedBrowser)}
-	 * operation.
-	 */
-	private final ConditionTypeChecker<CrawlCondition> crawlConditionChecker;
+  /**
+   * The eventableConditionChecker where to load the EventableConditions from into the new
+   * Candidates.
+   */
+  private final EventableConditionChecker eventableConditionChecker;
 
-	/**
-	 * Used to lock the elements when adding multiple elements.
-	 */
-	private final Object elementsLock = new Object();
+  /**
+   * The CrawlConditionChecker to use in the {@link #checkCrawlCondition(EmbeddedBrowser)}
+   * operation.
+   */
+  private final ConditionTypeChecker<CrawlCondition> crawlConditionChecker;
 
-	/**
-	 * Create a new CandidateElementManager.
-	 *
-	 * @param eventableConditionChecker the EventableConditionChecker to use
-	 * @param crawlConditionChecker     the CrawlConditionChecker to use
-	 */
-	@Inject
-	public CandidateElementManager(EventableConditionChecker eventableConditionChecker,
-			ConditionTypeChecker<CrawlCondition> crawlConditionChecker) {
-		this.eventableConditionChecker = eventableConditionChecker;
-		this.crawlConditionChecker = crawlConditionChecker;
-	}
+  /**
+   * Used to lock the elements when adding multiple elements.
+   */
+  private final Object elementsLock = new Object();
 
-	/**
-	 * increase the number of checked elements, as a statistics measure to know how many elements
-	 * were actually examined. Its thread safe by using the AtomicInteger
-	 *
-	 * @see java.util.concurrent.atomic.AtomicInteger
-	 */
-	@Override
-	public void increaseElementsCounter() {
-		counter.getAndIncrement();
-	}
+  /**
+   * Create a new CandidateElementManager.
+   *
+   * @param eventableConditionChecker the EventableConditionChecker to use
+   * @param crawlConditionChecker     the CrawlConditionChecker to use
+   */
+  @Inject
+  public CandidateElementManager(EventableConditionChecker eventableConditionChecker,
+      ConditionTypeChecker<CrawlCondition> crawlConditionChecker) {
+    this.eventableConditionChecker = eventableConditionChecker;
+    this.crawlConditionChecker = crawlConditionChecker;
+  }
 
-	/**
-	 * Check if a given element is already checked, preventing duplicate work. This is implemented
-	 * in a ConcurrentLinkedQueue to support thread-safety
-	 *
-	 * @param element the to search for if its already checked
-	 * @return true if the element is already checked
-	 */
-	@Override
-	public boolean isChecked(String element) {
-		return elements.contains(element);
-	}
+  /**
+   * increase the number of checked elements, as a statistics measure to know how many elements were
+   * actually examined. Its thread safe by using the AtomicInteger
+   *
+   * @see java.util.concurrent.atomic.AtomicInteger
+   */
+  @Override
+  public void increaseElementsCounter() {
+    counter.getAndIncrement();
+  }
 
-	/**
-	 * Mark a given element as checked to prevent duplicate work. A elements is only added when it
-	 * is not already in the set of checked elements.
-	 *
-	 * @param element the element that is checked
-	 * @return true if !contains(element.uniqueString)
-	 */
-	@GuardedBy("elementsLock")
-	@Override
-	public boolean markChecked(CandidateElement element) {
-		String generalString = element.getGeneralString();
-		String uniqueString = element.getUniqueString();
-		synchronized (elementsLock) {
-			if (elements.contains(uniqueString)) {
-				return false;
-			} else {
-				elements.add(generalString);
-				elements.add(uniqueString);
-				return true;
-			}
-		}
-	}
+  /**
+   * Check if a given element is already checked, preventing duplicate work. This is implemented in
+   * a ConcurrentLinkedQueue to support thread-safety
+   *
+   * @param element the to search for if its already checked
+   * @return true if the element is already checked
+   */
+  @Override
+  public boolean isChecked(String element) {
+    return elements.contains(element);
+  }
 
-	/**
-	 * Return internal counter for the examined elements.
-	 *
-	 * @return the number of ExaminedElements
-	 */
-	@Override
-	public int numberOfExaminedElements() {
-		return counter.get();
-	}
+  /**
+   * Mark a given element as checked to prevent duplicate work. A elements is only added when it is
+   * not already in the set of checked elements.
+   *
+   * @param element the element that is checked
+   * @return true if !contains(element.uniqueString)
+   */
+  @GuardedBy("elementsLock")
+  @Override
+  public boolean markChecked(CandidateElement element) {
+    String generalString = element.getGeneralString();
+    String uniqueString = element.getUniqueString();
+    synchronized (elementsLock) {
+      if (elements.contains(uniqueString)) {
+        return false;
+      } else {
+        elements.add(generalString);
+        elements.add(uniqueString);
+        return true;
+      }
+    }
+  }
 
-	/**
-	 * @return the eventableConditionChecker
-	 */
-	@Override
-	public EventableConditionChecker getEventableConditionChecker() {
-		return eventableConditionChecker;
-	}
+  /**
+   * Return internal counter for the examined elements.
+   *
+   * @return the number of ExaminedElements
+   */
+  @Override
+  public int numberOfExaminedElements() {
+    return counter.get();
+  }
 
-	/**
-	 * Check if one or more CrawlConditions matches the current state in the browser.
-	 *
-	 * @param browser the browser to execute in the CrawlConditions.
-	 * @return true if one or more CrawlConditions stratifies or non is specified.
-	 */
-	@Override
-	public boolean checkCrawlCondition(EmbeddedBrowser browser) {
-		return crawlConditionChecker.getFailedConditions(browser).isEmpty();
-	}
+  /**
+   * @return the eventableConditionChecker
+   */
+  @Override
+  public EventableConditionChecker getEventableConditionChecker() {
+    return eventableConditionChecker;
+  }
+
+  /**
+   * Check if one or more CrawlConditions matches the current state in the browser.
+   *
+   * @param browser the browser to execute in the CrawlConditions.
+   * @return true if one or more CrawlConditions stratifies or non is specified.
+   */
+  @Override
+  public boolean checkCrawlCondition(EmbeddedBrowser browser) {
+    return crawlConditionChecker.getFailedConditions(browser).isEmpty();
+  }
 
 }

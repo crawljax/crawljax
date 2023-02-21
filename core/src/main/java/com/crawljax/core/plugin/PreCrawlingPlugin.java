@@ -1,7 +1,6 @@
 package com.crawljax.core.plugin;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration;
-
 import java.net.URL;
 
 /**
@@ -11,11 +10,11 @@ import java.net.URL;
  */
 public interface PreCrawlingPlugin extends Plugin {
 
-	/**
-	 * Method that is called before Crawljax loads the initial {@link URL} and before the core
-	 * starts crawling.
-	 *
-	 * @param config The {@link CrawljaxConfiguration} for the coming crawl.
-	 */
-	void preCrawling(CrawljaxConfiguration config) throws RuntimeException;
+  /**
+   * Method that is called before Crawljax loads the initial {@link URL} and before the core starts
+   * crawling.
+   *
+   * @param config The {@link CrawljaxConfiguration} for the coming crawl.
+   */
+  void preCrawling(CrawljaxConfiguration config) throws RuntimeException;
 }

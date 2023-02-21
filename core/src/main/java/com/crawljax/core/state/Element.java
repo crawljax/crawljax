@@ -1,16 +1,18 @@
 package com.crawljax.core.state;
 
 import com.crawljax.util.DomUtils;
+import com.crawljax.vips_selenium.VipsUtils;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import org.w3c.dom.Node;
-
-import javax.annotation.concurrent.Immutable;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map.Entry;
+import javax.annotation.concurrent.Immutable;
+import org.w3c.dom.Node;
 
 /**
  * This class represents an element. It is built from the node name and node text contents.
@@ -18,142 +20,155 @@ import java.util.Map.Entry;
 @Immutable
 public class Element implements Serializable {
 
-	private static final long serialVersionUID = -1608999189549530008L;
+  private static final long serialVersionUID = -1608999189549530008L;
 
-	private final transient Node node;
-	private final String tag;
-	private final String text;
-	private final ImmutableMap<String, String> attributes;
+  private final transient Node node;
+  private final String tag;
+  private final String text;
+  private final ImmutableMap<String, String> attributes;
 
-	/**
-	 * Create a new Element.
-	 *
-	 * @param node the node used to retrieve the name and the text content from. All {@link Node}
-	 *             keys are saved as lowercase.
-	 */
-	public Element(Node node) {
-		Preconditions.checkNotNull(node);
-		this.node = node;
-		this.tag = node.getNodeName();
-		if (node.getTextContent() == null) {
-			this.text = "";
-		} else {
-			this.text = DomUtils.removeNewLines(node.getTextContent()).trim();
-		}
-		Builder<String, String> builder = ImmutableMap.builder();
-		for (int i = 0; i < node.getAttributes().getLength(); i++) {
-			Node attr = node.getAttributes().item(i);
-			builder.put(attr.getNodeName().toLowerCase(), attr.getNodeValue());
-		}
-		attributes = builder.build();
-	}
+  /**
+   * Create a new Element.
+   *
+   * @param node the node used to retrieve the name and the text content from. All {@link Node} keys
+   *             are saved as lowercase.
+   */
+  public Element(Node node) {
+    Preconditions.checkNotNull(node);
+    this.node = node;
+    this.tag = node.getNodeName();
+    if (node.getTextContent() == null) {
+      this.text = "";
+    } else {
+      this.text = DomUtils.removeNewLines(node.getTextContent()).trim();
+    }
 
-	/**
-	 * Are all the attributes the same?
-	 *
-	 * @param otherElement the other element to compare
-	 * @return true if the other attributes are equal to this one.
-	 */
-	public boolean equalAttributes(Element otherElement) {
-		return getAttributes().equals(otherElement.getAttributes());
-	}
+    // Ignore vips attributes
+    List<String> ignoreAttrs = Arrays.asList(VipsUtils.getVipsAttributes());
+    Builder<String, String> builder = ImmutableMap.builder();
+    for (int i = 0; i < node.getAttributes().getLength(); i++) {
+      Node attr = node.getAttributes().item(i);
+      if (ignoreAttrs.contains(attr.getNodeName().toLowerCase())) {
+        continue;
+      }
+      builder.put(attr.getNodeName().toLowerCase(), attr.getNodeValue());
+    }
+    attributes = builder.build();
+  }
 
-	/**
-	 * Are both Id's the same?
-	 *
-	 * @param otherElement the other element to compare
-	 * @return true if id == otherElement.id
-	 */
-	public boolean equalId(Element otherElement) {
-		if (getElementId() == null || otherElement.getElementId() == null) {
-			return false;
-		}
-		return getElementId().equalsIgnoreCase(otherElement.getElementId());
-	}
+  public Element(String tag, String text, ImmutableMap<String, String> attributes) {
+    this.node = null;
+    this.tag = tag;
+    this.text = text;
+    this.attributes = attributes;
+  }
 
-	/**
-	 * Are both the text equal?
-	 *
-	 * @param otherElement the other element to compare
-	 * @return true if the text of both elements is the same
-	 */
-	public boolean equalText(Element otherElement) {
-		return getText().equalsIgnoreCase(otherElement.getText());
-	}
+  /**
+   * Are all the attributes the same?
+   *
+   * @param otherElement the other element to compare
+   * @return true if the other attributes are equal to this one.
+   */
+  public boolean equalAttributes(Element otherElement) {
+    return getAttributes().equals(otherElement.getAttributes());
+  }
 
-	/**
-	 * Search for the attribute "id" and return the value.
-	 *
-	 * @return the id of this element or null when not found
-	 */
-	public String getElementId() {
-		for (Entry<String, String> attribute : attributes.entrySet()) {
-			if (attribute.getKey().equalsIgnoreCase("id")) {
-				return attribute.getValue();
-			}
-		}
-		return null;
-	}
+  /**
+   * Are both Id's the same?
+   *
+   * @param otherElement the other element to compare
+   * @return true if id == otherElement.id
+   */
+  public boolean equalId(Element otherElement) {
+    if (getElementId() == null || otherElement.getElementId() == null) {
+      return false;
+    }
+    return getElementId().equalsIgnoreCase(otherElement.getElementId());
+  }
 
-	/**
-	 * @return the tag
-	 */
-	public String getTag() {
-		return tag;
-	}
+  /**
+   * Are both the text equal?
+   *
+   * @param otherElement the other element to compare
+   * @return true if the text of both elements is the same
+   */
+  public boolean equalText(Element otherElement) {
+    return getText().equalsIgnoreCase(otherElement.getText());
+  }
 
-	/**
-	 * @return the text
-	 */
-	public String getText() {
-		return text;
-	}
+  /**
+   * Search for the attribute "id" and return the value.
+   *
+   * @return the id of this element or null when not found
+   */
+  public String getElementId() {
+    for (Entry<String, String> attribute : attributes.entrySet()) {
+      if (attribute.getKey().equalsIgnoreCase("id")) {
+        return attribute.getValue();
+      }
+    }
+    return null;
+  }
 
-	/**
-	 * @param attribute the attribute name.
-	 * @return the attribute by its name or <code>null</code> if the attribute cannot be found.
-	 */
-	public String getAttributeOrNull(String attribute) {
-		return attributes.get(attribute.toLowerCase());
-	}
+  /**
+   * @return the tag
+   */
+  public String getTag() {
+    return tag;
+  }
 
-	/**
-	 * @return The node.
-	 */
-	public Node getNode() {
-		return node;
-	}
+  /**
+   * @return the text
+   */
+  public String getText() {
+    return text;
+  }
 
-	public ImmutableMap<String, String> getAttributes() {
-		return attributes;
-	}
+  /**
+   * @param attribute the attribute name.
+   * @return the attribute by its name or <code>null</code> if the attribute cannot be found.
+   */
+  public String getAttributeOrNull(String attribute) {
+    return attributes.get(attribute.toLowerCase());
+  }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("node", node)
-				.add("tag", tag)
-				.add("text", text)
-				.add("attributes", attributes)
-				.toString();
-	}
+  /**
+   * @return The node.
+   */
+  public Node getNode() {
+    return node;
+  }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(node.toString(), tag, text, attributes);
-	}
+  public ImmutableMap<String, String> getAttributes() {
+    return attributes;
+  }
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof Element) {
-			Element that = (Element) object;
-			return ((this.node == null || that.node == null)
-					|| Objects.equal(this.node.toString(), that.node.toString()))
-					&& Objects.equal(this.tag, that.tag)
-					&& Objects.equal(this.text, that.text)
-					&& Objects.equal(this.attributes, that.attributes);
-		}
-		return false;
-	}
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("node", node)
+        .add("tag", tag)
+        .add("text", text)
+        .add("attributes", attributes)
+        .toString();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(node.toString(), tag, text, attributes);
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (object instanceof Element) {
+      Element that = (Element) object;
+      return ((this.node == null || that.node == null)
+          || Objects.equal(this.node.toString(), that.node.toString()))
+          && Objects.equal(this.tag, that.tag)
+          && Objects.equal(this.text, that.text)
+          && Objects.equal(this.attributes, that.attributes);
+    }
+    return false;
+  }
 
 }

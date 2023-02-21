@@ -3,10 +3,13 @@ package com.crawljax.cli;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
+import com.crawljax.core.CrawljaxException;
+import com.crawljax.core.configuration.CrawlRules;
+import com.google.common.base.Joiner;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -15,251 +18,244 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
-import com.crawljax.browser.EmbeddedBrowser.BrowserType;
-import com.crawljax.core.CrawljaxException;
-import com.crawljax.core.configuration.CrawlRules;
-import com.google.common.base.Joiner;
-
 class ParameterInterpeter {
 
-	static final String HELP_MESSAGE =
-	        "java -jar crawljax-cli-version.jar theUrl theOutputDir";
+  static final String HELP_MESSAGE =
+      "java -jar crawljax-cli-version.jar theUrl theOutputDir";
+  static final String BROWSER_REMOTE_URL = "browserRemoteUrl";
+  static final String WAIT_AFTER_RELOAD = "waitAfterReload";
+  static final String WAIT_AFTER_EVENT = "waitAfterEvent";
+  private static final int SPACES_AFTER_OPTION = 3;
+  private static final int SPACES_BEFORE_OPTION = 5;
+  private static final int ROW_WIDTH = 80;
+  private static final String VERSION = "version";
+  private static final String VERBOSE = "verbose";
+  private static final String HELP = "help";
+  private static final String MAXSTATES = "maxstates";
+  private static final String DEPTH = "depth";
+  private static final String BROWSER = "browser";
+  private static final String PARALLEL = "parallel";
+  private static final String OVERRIDE = "override";
+  private static final String CRAWL_HIDDEN_ANCHORS = "crawlHiddenAnchors";
+  private static final String TIME_OUT = "timeout";
+  private static final String LOG_FILE = "log";
+  private static final String CLICK = "click";
 
-	private static final int SPACES_AFTER_OPTION = 3;
-	private static final int SPACES_BEFORE_OPTION = 5;
-	private static final int ROW_WIDTH = 80;
+  private final Options options;
+  private final CommandLine parameters;
 
-	private static final String VERSION = "version";
-	private static final String VERBOSE = "verbose";
-	private static final String HELP = "help";
-	private static final String MAXSTATES = "maxstates";
-	private static final String DEPTH = "depth";
-	private static final String BROWSER = "browser";
-	static final String BROWSER_REMOTE_URL = "browserRemoteUrl";
-	private static final String PARALLEL = "parallel";
-	private static final String OVERRIDE = "override";
-	private static final String CRAWL_HIDDEN_ANCHORS = "crawlHiddenAnchors";
-	private static final String TIME_OUT = "timeout";
-	static final String WAIT_AFTER_RELOAD = "waitAfterReload";
-	static final String WAIT_AFTER_EVENT = "waitAfterEvent";
-	private static final String LOG_FILE = "log";
-	private static final String CLICK = "click";
+  ParameterInterpeter(String args[]) throws ParseException {
+    this.options = getOptions();
+    this.parameters = new GnuParser().parse(options, args);
+  }
 
-	private final Options options;
-	private final CommandLine parameters;
+  /**
+   * Create the CML Options.
+   *
+   * @return Options expected from command-line.
+   */
+  private Options getOptions() {
+    Options options = new Options();
+    options.addOption("h", HELP, false, "print this message");
+    options.addOption(VERSION, false, "print the version information and exit");
 
-	ParameterInterpeter(String args[]) throws ParseException {
-		this.options = getOptions();
-		this.parameters = new GnuParser().parse(options, args);
-	}
+    options.addOption("b", BROWSER, true,
+        "browser type: " + availableBrowsers() + ". Default is Firefox");
 
-	/**
-	 * Create the CML Options.
-	 * 
-	 * @return Options expected from command-line.
-	 */
-	private Options getOptions() {
-		Options options = new Options();
-		options.addOption("h", HELP, false, "print this message");
-		options.addOption(VERSION, false, "print the version information and exit");
+    options.addOption(BROWSER_REMOTE_URL, true,
+        "The remote url if you have configured a remote browser");
 
-		options.addOption("b", BROWSER, true,
-		        "browser type: " + availableBrowsers() + ". Default is Firefox");
+    options.addOption("d", DEPTH, true, "crawl depth level. Default is 2");
 
-		options.addOption(BROWSER_REMOTE_URL, true,
-		        "The remote url if you have configured a remote browser");
+    options.addOption("s", MAXSTATES, true,
+        "max number of states to crawl. Default is 0 (unlimited)");
 
-		options.addOption("d", DEPTH, true, "crawl depth level. Default is 2");
+    options.addOption("p", PARALLEL, true,
+        "Number of browsers to use for crawling. Default is 1");
+    options.addOption("o", OVERRIDE, false, "Override the output directory if non-empty");
 
-		options.addOption("s", MAXSTATES, true,
-		        "max number of states to crawl. Default is 0 (unlimited)");
+    options.addOption("a", CRAWL_HIDDEN_ANCHORS, false,
+        "Crawl anchors even if they are not visible in the browser.");
 
-		options.addOption("p", PARALLEL, true,
-		        "Number of browsers to use for crawling. Default is 1");
-		options.addOption("o", OVERRIDE, false, "Override the output directory if non-empty");
+    options.addOption("t", TIME_OUT, true,
+        "Specify the maximum crawl time in minutes");
 
-		options.addOption("a", CRAWL_HIDDEN_ANCHORS, false,
-		        "Crawl anchors even if they are not visible in the browser.");
+    options.addOption(CLICK, true,
+        "a comma separated list of HTML tags that should be clicked. Default is A and BUTTON");
 
-		options.addOption("t", TIME_OUT, true,
-		        "Specify the maximum crawl time in minutes");
+    options.addOption(WAIT_AFTER_EVENT, true,
+        "the time to wait after an event has been fired in milliseconds. Default is "
+            + CrawlRules.DEFAULT_WAIT_AFTER_EVENT);
 
-		options.addOption(CLICK, true,
-		        "a comma separated list of HTML tags that should be clicked. Default is A and BUTTON");
+    options.addOption(WAIT_AFTER_RELOAD, true,
+        "the time to wait after an URL has been loaded in milliseconds. Default is "
+            + CrawlRules.DEFAULT_WAIT_AFTER_RELOAD);
 
-		options.addOption(WAIT_AFTER_EVENT, true,
-		        "the time to wait after an event has been fired in milliseconds. Default is "
-		                + CrawlRules.DEFAULT_WAIT_AFTER_EVENT);
+    options.addOption("v", VERBOSE, false, "Be extra verbose");
+    options.addOption(LOG_FILE, true, "Log to this file instead of the console");
 
-		options.addOption(WAIT_AFTER_RELOAD, true,
-		        "the time to wait after an URL has been loaded in milliseconds. Default is "
-		                + CrawlRules.DEFAULT_WAIT_AFTER_RELOAD);
+    return options;
+  }
 
-		options.addOption("v", VERBOSE, false, "Be extra verbose");
-		options.addOption(LOG_FILE, true, "Log to this file instead of the console");
+  private String availableBrowsers() {
+    return Joiner.on(", ").join(BrowserType.values());
+  }
 
-		return options;
-	}
+  boolean requestsVersion() {
+    return parameters.hasOption(VERSION);
+  }
 
-	private String availableBrowsers() {
-		return Joiner.on(", ").join(BrowserType.values());
-	}
+  boolean necessaryArgsProvided() {
+    if (parameters.getArgs().length == 2) {
+      checkUrlValidity(getUrl());
+      checkOutDir(getOutputDir());
+      whenRemoteBrowserNeedsUrl();
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-	boolean requestsVersion() {
-		return parameters.hasOption(VERSION);
-	}
+  private void whenRemoteBrowserNeedsUrl() {
+    if (specifiesBrowser() && getSpecifiedBrowser() == BrowserType.REMOTE) {
+      checkArgument(!isNullOrEmpty(getSpecifiedRemoteBrowser()),
+          "When using remote browser the URL cannot be null");
+    }
 
-	boolean necessaryArgsProvided() {
-		if (parameters.getArgs().length == 2) {
-			checkUrlValidity(getUrl());
-			checkOutDir(getOutputDir());
-			whenRemoteBrowserNeedsUrl();
-			return true;
-		} else {
-			return false;
-		}
-	}
+  }
 
-	private void whenRemoteBrowserNeedsUrl() {
-		if (specifiesBrowser() && getSpecifiedBrowser() == BrowserType.REMOTE) {
-			checkArgument(!isNullOrEmpty(getSpecifiedRemoteBrowser()),
-			        "When using remote browser the URL cannot be null");
-		}
+  private void checkUrlValidity(String urlValue) {
+    String[] schemes = {"http", "https"};
+    if (urlValue == null || !new UrlValidator(schemes).isValid(urlValue)) {
+      throw new IllegalArgumentException("provide a valid URL like http://example.com");
+    }
+  }
 
-	}
+  String getUrl() {
+    return parameters.getArgs()[0];
+  }
 
-	private void checkUrlValidity(String urlValue) {
-		String[] schemes = { "http", "https" };
-		if (urlValue == null || !new UrlValidator(schemes).isValid(urlValue)) {
-			throw new IllegalArgumentException("provide a valid URL like http://example.com");
-		}
-	}
+  String getOutputDir() {
+    return parameters.getArgs()[1];
+  }
 
-	String getUrl() {
-		return parameters.getArgs()[0];
-	}
+  private void checkOutDir(String outputDir) {
+    File out = new File(outputDir);
+    if (out.exists() && out.list().length > 0) {
+      if (parameters.hasOption(OVERRIDE)) {
+        System.out.println("Overriding output directory...");
+        try {
+          FileUtils.deleteDirectory(out);
+        } catch (IOException e) {
+          throw new CrawljaxException(e.getMessage(), e);
+        }
+      } else {
+        throw new IllegalStateException(
+            "Output directory is not empty. If you want to override, use the -override option");
+      }
+    }
+  }
 
-	String getOutputDir() {
-		return parameters.getArgs()[1];
-	}
+  boolean requestsHelp() {
+    return parameters.hasOption(HELP);
+  }
 
-	private void checkOutDir(String outputDir) {
-		File out = new File(outputDir);
-		if (out.exists() && out.list().length > 0) {
-			if (parameters.hasOption(OVERRIDE)) {
-				System.out.println("Overriding output directory...");
-				try {
-					FileUtils.deleteDirectory(out);
-				} catch (IOException e) {
-					throw new CrawljaxException(e.getMessage(), e);
-				}
-			} else {
-				throw new IllegalStateException(
-				        "Output directory is not empty. If you want to override, use the -override option");
-			}
-		}
-	}
+  boolean requestsVerbosity() {
+    return parameters.hasOption(VERBOSE);
+  }
 
-	boolean requestsHelp() {
-		return parameters.hasOption(HELP);
-	}
+  boolean specifiesLogFile() {
+    return parameters.hasOption(LOG_FILE);
+  }
 
-	boolean requestsVerbosity() {
-		return parameters.hasOption(VERBOSE);
-	}
+  String getSpecifiedLogFile() {
+    return parameters.getOptionValue(LOG_FILE);
+  }
 
-	boolean specifiesLogFile() {
-		return parameters.hasOption(LOG_FILE);
-	}
+  boolean specifiesBrowser() {
+    return parameters.hasOption(BROWSER);
+  }
 
-	String getSpecifiedLogFile() {
-		return parameters.getOptionValue(LOG_FILE);
-	}
+  BrowserType getSpecifiedBrowser() {
+    String browser = parameters.getOptionValue(BROWSER);
+    for (BrowserType b : BrowserType.values()) {
+      if (b.name().equalsIgnoreCase(browser)) {
+        return b;
+      }
+    }
+    throw new IllegalArgumentException("Unrecognized browser: '" + browser
+        + "'. Available browsers are: " + availableBrowsers());
+  }
 
-	boolean specifiesBrowser() {
-		return parameters.hasOption(BROWSER);
-	}
+  boolean specifiesParallelBrowsers() {
+    return parameters.hasOption(PARALLEL);
+  }
 
-	BrowserType getSpecifiedBrowser() {
-		String browser = parameters.getOptionValue(BROWSER);
-		for (BrowserType b : BrowserType.values()) {
-			if (b.name().equalsIgnoreCase(browser)) {
-				return b;
-			}
-		}
-		throw new IllegalArgumentException("Unrecognized browser: '" + browser
-		        + "'. Available browsers are: " + availableBrowsers());
-	}
+  int getSpecifiedNumberOfBrowsers() {
+    return Integer.parseInt(parameters.getOptionValue(PARALLEL));
+  }
 
-	boolean specifiesParallelBrowsers() {
-		return parameters.hasOption(PARALLEL);
-	}
+  boolean specifiesDepth() {
+    return parameters.hasOption(DEPTH);
+  }
 
-	int getSpecifiedNumberOfBrowsers() {
-		return Integer.parseInt(parameters.getOptionValue(PARALLEL));
-	}
+  int getSpecifiedDepth() {
+    return Integer.parseInt(parameters.getOptionValue(DEPTH));
+  }
 
-	boolean specifiesDepth() {
-		return parameters.hasOption(DEPTH);
-	}
+  boolean specifiesMaxStates() {
+    return parameters.hasOption(MAXSTATES);
+  }
 
-	int getSpecifiedDepth() {
-		return Integer.parseInt(parameters.getOptionValue(DEPTH));
-	}
+  int getMaxStates() {
+    return Integer.parseInt(parameters.getOptionValue(MAXSTATES));
+  }
 
-	boolean specifiesMaxStates() {
-		return parameters.hasOption(MAXSTATES);
-	}
+  boolean requestsCrawlHiddenAnchors() {
+    return parameters.hasOption(CRAWL_HIDDEN_ANCHORS);
+  }
 
-	int getMaxStates() {
-		return Integer.parseInt(parameters.getOptionValue(MAXSTATES));
-	}
+  boolean specifiesClickElements() {
+    return parameters.hasOption(CLICK);
+  }
 
-	boolean requestsCrawlHiddenAnchors() {
-		return parameters.hasOption(CRAWL_HIDDEN_ANCHORS);
-	}
+  String[] getSpecifiedClickElements() {
+    return parameters.getOptionValue(CLICK).split(",");
+  }
 
-	boolean specifiesClickElements() {
-		return parameters.hasOption(CLICK);
-	}
+  void printHelp() {
+    final PrintWriter writer = new PrintWriter(System.out);
+    final HelpFormatter helpFormatter = new HelpFormatter();
+    helpFormatter.printHelp(writer, ROW_WIDTH, HELP_MESSAGE, "", options, SPACES_AFTER_OPTION,
+        SPACES_BEFORE_OPTION, "");
+    writer.flush();
+  }
 
-	String[] getSpecifiedClickElements() {
-		return parameters.getOptionValue(CLICK).split(",");
-	}
+  boolean specifiesTimeOut() {
+    return parameters.hasOption(TIME_OUT);
+  }
 
-	void printHelp() {
-		final PrintWriter writer = new PrintWriter(System.out);
-		final HelpFormatter helpFormatter = new HelpFormatter();
-		helpFormatter.printHelp(writer, ROW_WIDTH, HELP_MESSAGE, "", options, SPACES_AFTER_OPTION,
-		        SPACES_BEFORE_OPTION, "");
-		writer.flush();
-	}
+  long getSpecifiedTimeOut() {
+    return Long.parseLong(parameters.getOptionValue(TIME_OUT));
+  }
 
-	boolean specifiesTimeOut() {
-		return parameters.hasOption(TIME_OUT);
-	}
+  boolean specifiesWaitAfterEvent() {
+    return parameters.hasOption(WAIT_AFTER_EVENT);
+  }
 
-	long getSpecifiedTimeOut() {
-		return Long.parseLong(parameters.getOptionValue(TIME_OUT));
-	}
+  long getSpecifiedWaitAfterEvent() {
+    return Long.parseLong(parameters.getOptionValue(WAIT_AFTER_EVENT));
+  }
 
-	boolean specifiesWaitAfterEvent() {
-		return parameters.hasOption(WAIT_AFTER_EVENT);
-	}
+  boolean specifiesWaitAfterReload() {
+    return parameters.hasOption(WAIT_AFTER_RELOAD);
+  }
 
-	long getSpecifiedWaitAfterEvent() {
-		return Long.parseLong(parameters.getOptionValue(WAIT_AFTER_EVENT));
-	}
+  long getSpecifiedWaitAfterReload() {
+    return Long.parseLong(parameters.getOptionValue(WAIT_AFTER_RELOAD));
+  }
 
-	boolean specifiesWaitAfterReload() {
-		return parameters.hasOption(WAIT_AFTER_RELOAD);
-	}
-
-	long getSpecifiedWaitAfterReload() {
-		return Long.parseLong(parameters.getOptionValue(WAIT_AFTER_RELOAD));
-	}
-
-	public String getSpecifiedRemoteBrowser() {
-		return parameters.getOptionValue(BROWSER_REMOTE_URL);
-	}
+  public String getSpecifiedRemoteBrowser() {
+    return parameters.getOptionValue(BROWSER_REMOTE_URL);
+  }
 }

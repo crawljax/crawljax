@@ -12,25 +12,25 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public class ExpectedVisibleCondition implements ExpectedCondition {
 
-	private final Identification identification;
+  private final Identification identification;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param identification identification to use.
-	 */
-	public ExpectedVisibleCondition(Identification identification) {
-		this.identification = identification;
-	}
+  /**
+   * Constructor.
+   *
+   * @param identification identification to use.
+   */
+  public ExpectedVisibleCondition(Identification identification) {
+    this.identification = identification;
+  }
 
-	@Override
-	public boolean isSatisfied(EmbeddedBrowser browser) {
-		return browser.isVisible(identification);
-	}
+  @Override
+  public boolean isSatisfied(EmbeddedBrowser browser) {
+    return browser.isVisible(identification);
+  }
 
-	@Override
-	public String toString() {
-		return this.getClass().getSimpleName() + ": " + this.identification;
-	}
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName() + ": " + this.identification;
+  }
 
 }

@@ -10,126 +10,126 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class PreCrawlConfiguration {
 
-	public static class PreCrawlConfigurationBuilder {
+  private ImmutableList<WaitCondition> waitConditions;
+  private ImmutableList<CrawlCondition> crawlConditions;
+  private ImmutableList<CrawlElement> includedElements;
+  private ImmutableList<CrawlElement> excludedElements;
+  private ImmutableSortedSet<String> filterAttributeNames;
 
-		private final PreCrawlConfiguration preCrawlConfiguration;
+  private PreCrawlConfiguration() {
 
-		private final ImmutableList.Builder<WaitCondition> waitConditions = ImmutableList
-				.builder();
-		private final ImmutableList.Builder<CrawlCondition> crawlConditions = ImmutableList
-				.builder();
-		private final ImmutableSortedSet.Builder<String> filterAttributeNames =
-				ImmutableSortedSet.naturalOrder();
+  }
 
-		private PreCrawlConfigurationBuilder() {
-			preCrawlConfiguration = new PreCrawlConfiguration();
-		}
+  public static PreCrawlConfigurationBuilder builder() {
+    return new PreCrawlConfigurationBuilder();
+  }
 
-		/**
-		 * @param condition add a {@link WaitCondition}.
-		 */
-		public PreCrawlConfigurationBuilder addWaitCondition(WaitCondition... condition) {
-			waitConditions.add(condition);
-			return this;
-		}
+  public ImmutableList<WaitCondition> getWaitConditions() {
+    return waitConditions;
+  }
 
-		/**
-		 * @param condition Add a {@link CrawlCondition}.
-		 */
-		public PreCrawlConfigurationBuilder addCrawlCondition(CrawlCondition... condition) {
-			crawlConditions.add(condition);
-			return this;
-		}
+  public ImmutableList<CrawlCondition> getCrawlConditions() {
+    return crawlConditions;
+  }
 
-		/**
-		 * @param names Names of attributes that should be ignored. Default is
-		 *              <code>"closure_hashcode_(\\w)*"</code> and <code>"jquery[0-9]+"</code> if none
-		 *              are specified.
-		 */
-		public PreCrawlConfigurationBuilder filterAttributeNames(String names) {
-			filterAttributeNames.add(names);
-			return this;
-		}
+  public ImmutableList<CrawlElement> getIncludedElements() {
+    return includedElements;
+  }
 
-		PreCrawlConfiguration build(CrawlActionsBuilder crawlActionsBuilder) {
-			Pair<ImmutableList<CrawlElement>, ImmutableList<CrawlElement>> elements =
-					crawlActionsBuilder.build();
-			preCrawlConfiguration.includedElements = elements.getLeft();
-			preCrawlConfiguration.excludedElements = elements.getRight();
+  public ImmutableList<CrawlElement> getExcludedElements() {
+    return excludedElements;
+  }
 
-			preCrawlConfiguration.waitConditions = waitConditions.build();
-			preCrawlConfiguration.crawlConditions = crawlConditions.build();
-			preCrawlConfiguration.filterAttributeNames = filterAttributeNames.build();
-			if (preCrawlConfiguration.filterAttributeNames.isEmpty()) {
-				preCrawlConfiguration.filterAttributeNames =
-						ImmutableSortedSet.of("closure_hashcode_(\\w)*", "jquery[0-9]+");
-			}
-			return preCrawlConfiguration;
-		}
-	}
+  public ImmutableSortedSet<String> getFilterAttributeNames() {
+    return filterAttributeNames;
+  }
 
-	public static PreCrawlConfigurationBuilder builder() {
-		return new PreCrawlConfigurationBuilder();
-	}
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("waitConditions", waitConditions)
+        .add("crawlConditions", crawlConditions)
+        .add("includedElements", includedElements)
+        .add("excludedElements", excludedElements)
+        .add("filterAttributeNames", filterAttributeNames)
+        .toString();
+  }
 
-	private ImmutableList<WaitCondition> waitConditions;
-	private ImmutableList<CrawlCondition> crawlConditions;
-	private ImmutableList<CrawlElement> includedElements;
-	private ImmutableList<CrawlElement> excludedElements;
-	private ImmutableSortedSet<String> filterAttributeNames;
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(waitConditions, crawlConditions, includedElements,
+        excludedElements, filterAttributeNames);
+  }
 
-	private PreCrawlConfiguration() {
+  @Override
+  public boolean equals(Object object) {
+    if (object instanceof PreCrawlConfiguration) {
+      PreCrawlConfiguration that = (PreCrawlConfiguration) object;
+      return Objects.equal(this.waitConditions, that.waitConditions)
+          && Objects.equal(this.crawlConditions, that.crawlConditions)
+          && Objects.equal(this.includedElements, that.includedElements)
+          && Objects.equal(this.excludedElements, that.excludedElements)
+          && Objects.equal(this.filterAttributeNames, that.filterAttributeNames);
+    }
+    return false;
+  }
 
-	}
+  public static class PreCrawlConfigurationBuilder {
 
-	public ImmutableList<WaitCondition> getWaitConditions() {
-		return waitConditions;
-	}
+    private final PreCrawlConfiguration preCrawlConfiguration;
 
-	public ImmutableList<CrawlCondition> getCrawlConditions() {
-		return crawlConditions;
-	}
+    private final ImmutableList.Builder<WaitCondition> waitConditions = ImmutableList
+        .builder();
+    private final ImmutableList.Builder<CrawlCondition> crawlConditions = ImmutableList
+        .builder();
+    private final ImmutableSortedSet.Builder<String> filterAttributeNames =
+        ImmutableSortedSet.naturalOrder();
 
-	public ImmutableList<CrawlElement> getIncludedElements() {
-		return includedElements;
-	}
+    private PreCrawlConfigurationBuilder() {
+      preCrawlConfiguration = new PreCrawlConfiguration();
+    }
 
-	public ImmutableList<CrawlElement> getExcludedElements() {
-		return excludedElements;
-	}
+    /**
+     * @param condition add a {@link WaitCondition}.
+     */
+    public PreCrawlConfigurationBuilder addWaitCondition(WaitCondition... condition) {
+      waitConditions.add(condition);
+      return this;
+    }
 
-	public ImmutableSortedSet<String> getFilterAttributeNames() {
-		return filterAttributeNames;
-	}
+    /**
+     * @param condition Add a {@link CrawlCondition}.
+     */
+    public PreCrawlConfigurationBuilder addCrawlCondition(CrawlCondition... condition) {
+      crawlConditions.add(condition);
+      return this;
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("waitConditions", waitConditions)
-				.add("crawlConditions", crawlConditions)
-				.add("includedElements", includedElements)
-				.add("excludedElements", excludedElements)
-				.add("filterAttributeNames", filterAttributeNames)
-				.toString();
-	}
+    /**
+     * @param names Names of attributes that should be ignored. Default is
+     *              <code>"closure_hashcode_(\\w)*"</code> and <code>"jquery[0-9]+"</code> if none
+     *              are specified.
+     */
+    public PreCrawlConfigurationBuilder filterAttributeNames(String names) {
+      filterAttributeNames.add(names);
+      return this;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(waitConditions, crawlConditions, includedElements,
-				excludedElements, filterAttributeNames);
-	}
+    PreCrawlConfiguration build(CrawlActionsBuilder crawlActionsBuilder) {
+      Pair<ImmutableList<CrawlElement>, ImmutableList<CrawlElement>> elements =
+          crawlActionsBuilder.build();
+      preCrawlConfiguration.includedElements = elements.getLeft();
+      preCrawlConfiguration.excludedElements = elements.getRight();
 
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof PreCrawlConfiguration) {
-			PreCrawlConfiguration that = (PreCrawlConfiguration) object;
-			return Objects.equal(this.waitConditions, that.waitConditions)
-					&& Objects.equal(this.crawlConditions, that.crawlConditions)
-					&& Objects.equal(this.includedElements, that.includedElements)
-					&& Objects.equal(this.excludedElements, that.excludedElements)
-					&& Objects.equal(this.filterAttributeNames, that.filterAttributeNames);
-		}
-		return false;
-	}
+      preCrawlConfiguration.waitConditions = waitConditions.build();
+      preCrawlConfiguration.crawlConditions = crawlConditions.build();
+      preCrawlConfiguration.filterAttributeNames = filterAttributeNames.build();
+      if (preCrawlConfiguration.filterAttributeNames.isEmpty()) {
+        preCrawlConfiguration.filterAttributeNames =
+            ImmutableSortedSet.of("closure_hashcode_(\\w)*", "jquery[0-9]+");
+      }
+      return preCrawlConfiguration;
+    }
+  }
 
 }

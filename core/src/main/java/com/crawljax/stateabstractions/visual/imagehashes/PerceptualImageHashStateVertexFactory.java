@@ -1,19 +1,13 @@
 package com.crawljax.stateabstractions.visual.imagehashes;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.core.Crawler;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.core.state.StateVertexFactory;
-import com.crawljax.util.FSUtils;
+import com.crawljax.stateabstractions.visual.OpenCVLoad;
+import java.awt.image.BufferedImage;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * The default factory that creates State vertexes with a {@link Object#hashCode()} and
@@ -21,68 +15,50 @@ import java.io.IOException;
  */
 public class PerceptualImageHashStateVertexFactory extends StateVertexFactory {
 
-	private static final Logger LOG =
-			LoggerFactory.getLogger(PerceptualImageHashStateVertexFactory.class.getName());
+  private static final Logger LOG =
+      LoggerFactory.getLogger(PerceptualImageHashStateVertexFactory.class.getName());
+  private static final int THUMBNAIL_WIDTH = 200;
+  private static final int THUMBNAIL_HEIGHT = 200;
+  private static double threshold = 0;
 
-	private PerceptualImageHash visHash = new PerceptualImageHash();
-	
-	private static final int THUMBNAIL_WIDTH = 200;
-	private static final int THUMBNAIL_HEIGHT = 200;
+  static {
+    OpenCVLoad.load();
+  }
 
-	public PerceptualImageHashStateVertexFactory() {
-		setPerceptualImageHash(new PerceptualImageHash());
-	}
+  private PerceptualImageHash visHash = new PerceptualImageHash();
 
-	@Override
-	public StateVertex newStateVertex(int id, String url, String name, String dom,
-			String strippedDom,
-			EmbeddedBrowser browser) {
+  public PerceptualImageHashStateVertexFactory(double treshold) {
+    setPerceptualImageHash(new PerceptualImageHash());
+    threshold = treshold;
+  }
 
-		BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
-		String imageFile = saveImage(image, name);
-		Mat hashMat = visHash.getHash(imageFile);
+  @Override
+  public StateVertex newStateVertex(int id, String url, String name, String dom,
+      String strippedDom,
+      EmbeddedBrowser browser) {
 
-		return new PerceptualImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat);
-	}
+    BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
+//    String imageFile = saveImage(image, name);
+    Mat hashMat = visHash.getHash(image);
 
-	public void setPerceptualImageHash(PerceptualImageHash visHash) {
-		this.visHash = visHash;
-	}
+    return new PerceptualImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat,
+        threshold);
+  }
 
-	private static String saveImage(BufferedImage image, String name) {
-		String ret = null;
-		LOG.debug("Saving screenshot for state {}", name);
-		try {
-			String folderName = Crawler.outputDir + "/screenshots/";
-			FSUtils.directoryCheck(folderName);
-			ImageIO.write(image, "PNG", new File(folderName + name + ".png"));
-			writeThumbNail(new File(folderName + name + "_small.jpg"), image);
-			ret = folderName + name + ".png";
-		} catch (IOException e) {
-			LOG.error(e.getMessage());
-		}
-		return ret;
-	}
+  @Override
+  public String toString() {
+    return this.visHash.getHashName() + "_" + threshold;
+  }
 
-	private static void writeThumbNail(File target, BufferedImage screenshot) throws IOException {
-		BufferedImage resizedImage =
-				new BufferedImage(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = resizedImage.createGraphics();
-		g.drawImage(screenshot, 0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Color.WHITE, null);
-		g.dispose();
-		ImageIO.write(resizedImage, "JPEG", target);
-	}
+  public double getPerceptualImageHashMaxRaw() {
+    return this.visHash.maxRaw;
+  }
 
-	@Override
-	public String toString() {
-		return this.visHash.getHashName();
-	}
+  public PerceptualImageHash getPerceptualImageHash() {
+    return this.visHash;
+  }
 
-	public double getPerceptualImageHashMaxRaw() {
-		return this.visHash.maxRaw;
-	}
-
-	public PerceptualImageHash getPerceptualImageHash() {
-		return this.visHash;
-	}
+  public void setPerceptualImageHash(PerceptualImageHash visHash) {
+    this.visHash = visHash;
+  }
 }
