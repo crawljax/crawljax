@@ -66,7 +66,7 @@ public class XPathExpressionComparator extends AbstractComparator {
         }
       }
     } catch (XPathExpressionException | DOMException | IOException e) {
-      LOGGER.error("Exception with stripping XPath expression: " + curExpression, e);
+      LOGGER.error("Exception with stripping XPath expression: {}", curExpression, e);
     } finally {
       if (doc != null) {
         domRet = DomUtils.getDocumentToString(doc);

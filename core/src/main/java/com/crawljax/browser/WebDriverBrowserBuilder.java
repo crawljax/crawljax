@@ -80,7 +80,7 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
               + configuration.getBrowserConfig().getBrowserType());
       }
     } catch (IllegalStateException e) {
-      LOGGER.error("Crawling with {} failed: " + e.getMessage(), browserType);
+      LOGGER.error("Crawling with {} failed: {}", browserType, e.getMessage());
       throw e;
     }
 

@@ -220,7 +220,7 @@ public final class DomUtils {
             xpath);
       }
     } catch (XPathExpressionException e) {
-      LOGGER.error("Error while removing tag " + xpath, e);
+      LOGGER.error("Error while removing tag {}", xpath, e);
     }
 
     return dom;
@@ -251,7 +251,7 @@ public final class DomUtils {
             "//" + tagName.toUpperCase());
       }
     } catch (XPathExpressionException e) {
-      LOGGER.error("Error while removing tag " + tagName, e);
+      LOGGER.error("Error while removing tag {}", tagName, e);
     }
 
     return dom;
@@ -375,7 +375,7 @@ public final class DomUtils {
 
       return dd.getAllDifferences();
     } catch (IOException e) {
-      LOGGER.error("Error with getDifferences: " + e.getMessage(), e);
+      LOGGER.error("Error with getDifferences: {}", e.getMessage(), e);
     }
     return null;
   }

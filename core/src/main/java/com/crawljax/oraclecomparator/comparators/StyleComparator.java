@@ -83,7 +83,7 @@ public class StyleComparator extends AbstractComparator {
           parent.removeChild(removeNode);
         }
       } catch (XPathExpressionException | DOMException e) {
-        LOGGER.warn("Error with StyleOracle: " + e.getMessage());
+        LOGGER.warn("Error with StyleOracle: {}", e.getMessage());
         LOGGER.error(e.getMessage(), e);
       }
     }
@@ -100,7 +100,7 @@ public class StyleComparator extends AbstractComparator {
           attributes.removeNamedItem(attribute);
         }
       } catch (XPathExpressionException | DOMException e) {
-        LOGGER.warn("Error with StyleOracle: " + e.getMessage());
+        LOGGER.warn("Error with StyleOracle: {}", e.getMessage());
       }
     }
     return dom;

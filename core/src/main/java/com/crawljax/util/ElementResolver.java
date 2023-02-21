@@ -77,7 +77,7 @@ public class ElementResolver {
           XPathHelper.evaluateXpathExpression(dom, "//"
               + eventable.getElement().getTag().toUpperCase());
       if (logging) {
-        LOGGER.info("Candidates: " + candidateElements.getLength());
+        LOGGER.info("Candidates: {}", candidateElements.getLength());
       }
       for (int i = 0; i < candidateElements.getLength(); i++) {
         Element candidateElement = new Element(candidateElements.item(i));
