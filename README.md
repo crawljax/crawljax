@@ -2,7 +2,7 @@ Crawljax
 ========
 
 Crawljax is a tool for automatically crawling and testing modern web applications. 
-Crawljax can explore any JavaScript-based Ajax web application through an event-driven dynamic crawling engine.
+Crawljax can explore any ((even single-page dynamic JavaScript-based) web application through an event-driven dynamic crawling engine.
 It produces as output a state-flow graph of the dynamic DOM states and the event-based transitions between them.
 Crawljax can easily be extended through its easy-to-use [plugin architecture](https://github.com/crawljax/crawljax/wiki/Writing-a-plugin).
 
@@ -12,7 +12,7 @@ Maven
 	<dependency>
 	    <groupId>com.crawljax</groupId>
 	    <artifactId>crawljax-core</artifactId>
-	    <version>4.1</version>
+	    <version>5.0</version>
 	</dependency>
 
 Documentation
@@ -35,10 +35,6 @@ Changelog
 
 Detailed change history is available in our [changelog](https://github.com/crawljax/crawljax/blob/master/CHANGELOG.md).
 
-Testing inside a Docker container
----------------------------------
-	
-Install [Docker](https://www.docker.com/) and run the "run-tests-in-docker.sh" script. It's recommended to increse your Docker memory to at least 4.0 GiB to avoid OOMs during testing. 
 
 Testing on your machine
 -----------------------
