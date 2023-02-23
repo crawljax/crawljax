@@ -131,15 +131,9 @@ public class VipsSeleniumTests {
         "/replay/20230128041350/http://host.docker.internal:9966/petclinic/owners/2.html");
 
     driver.navigate().to(url1.toURL());
-    Thread.sleep(2000);
+    Thread.sleep(10000);
+
     Document dom = getDomTree(driver);
-
-
-    driver.navigate().to(url1.toURL());
-    Thread.sleep(2000);
-    dom = getDomTree(driver);
-
-
 
     BufferedImage screenshot = getScreenShotAsBufferedImage();
 
