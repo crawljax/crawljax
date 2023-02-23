@@ -1,4 +1,4 @@
-Crawloverview plugin [![Build Status](https://travis-ci.org/crawljax/crawloverview-plugin.png?branch=master)](https://travis-ci.org/crawljax/crawloverview-plugin)
+Crawloverview plugin
 ====================
 
 Generates an HTML report with a snapshot overview of what is crawled by Crawljax.
