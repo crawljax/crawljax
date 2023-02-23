@@ -58,6 +58,7 @@ public class VipsSeleniumTests {
 
   private Document getDomTree(WebDriver driver) {
     try {
+      System.out.println(driver.getPageSource());
       Document dom = DomUtils.asDocument(driver.getPageSource());
       boolean offline = false;
       VipsUtils.cleanDom(dom, offline);
