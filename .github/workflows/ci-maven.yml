@@ -16,7 +16,7 @@ jobs:
     # - run: chrome --version
     - uses: actions/checkout@v3
 
-    - name: Install prerequisites (chromedriver)
+    - name: Install prerequisites (libgtk)
       run: |
         sudo apt-get update
         sudo apt-get install -y libgtk2.0-0 
