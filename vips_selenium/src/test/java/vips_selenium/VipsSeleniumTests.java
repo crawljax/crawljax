@@ -12,18 +12,25 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.imageio.ImageIO;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.w3c.dom.Document;
 
@@ -62,22 +69,38 @@ public class VipsSeleniumTests {
     }
   }
 
-  public BufferedImage getScreenShotAsBufferedImage(int scrollTime, int pixelDensity) {
+  public BufferedImage getScreenShotAsBufferedImage() {
+    ChromeDriver chromeDriver = (ChromeDriver) driver;
+    long width = (long) chromeDriver.executeScript("return document.body.scrollWidth");
+    long height = (long) chromeDriver.executeScript("return document.body.scrollHeight");
+    long scale = (long) chromeDriver.executeScript("return window.devicePixelRatio");
+    int intscale = (int) scale;
 
+    HashMap<String, Object> setDeviceMetricsOverride = new HashMap<>();
+    setDeviceMetricsOverride.put("deviceScaleFactor", scale);
+    setDeviceMetricsOverride.put("mobile", false);
+    setDeviceMetricsOverride.put("width", width);
+    setDeviceMetricsOverride.put("height", height);
+    chromeDriver.executeCdpCommand(
+        "Emulation.setDeviceMetricsOverride", setDeviceMetricsOverride);
+
+    Map<String, Object> result =
+        chromeDriver.executeCdpCommand("Page.captureScreenshot", new HashMap<>());
+    String data = (String) result.get("data");
+    byte[] image = Base64.getDecoder().decode((data));
+    InputStream is = new ByteArrayInputStream(image);
     try {
-      BufferedImage img = Shutterbug
-          .shootPage(driver, ScrollStrategy.BOTH_DIRECTIONS, scrollTime, true)
-          .getImage();
-      BufferedImage resizedImage = new BufferedImage(img.getWidth() / pixelDensity,
-          img.getHeight() / pixelDensity, BufferedImage.TYPE_INT_RGB);
+      BufferedImage img = ImageIO.read(is);
+      BufferedImage resizedImage = new BufferedImage(img.getWidth() / intscale,
+          img.getHeight() / intscale, BufferedImage.TYPE_INT_RGB);
       Graphics2D g = resizedImage.createGraphics();
-      g.drawImage(img, 0, 0, img.getWidth() / pixelDensity,
-          img.getHeight() / pixelDensity,
+      g.drawImage(img, 0, 0, img.getWidth() / intscale,
+          img.getHeight() / intscale,
           Color.WHITE, null);
       g.dispose();
       return resizedImage;
-    } catch (Exception ex) {
-      return null;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -111,7 +134,7 @@ public class VipsSeleniumTests {
 
     Document dom = getDomTree(driver);
 
-    BufferedImage screenshot = getScreenShotAsBufferedImage(1000, 2);
+    BufferedImage screenshot = getScreenShotAsBufferedImage();
 
     VipsSelenium vips = new VipsSelenium(driver, dom, screenshot,
         10, TEST_OUTPUT_DIR, "state1", true,
