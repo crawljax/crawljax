@@ -23,4 +23,4 @@ jobs:
         cache: maven
     - name: Build with Maven
       # Skip VipsSeleniumTests for now because it is failing on GitHub Actions
-      run: mvn -B package -Dsurefire.failIfNoSpecifiedTests=false -P integrationtests --file pom.xml
+      run: mvn -B package -P integrationtests --file pom.xml
