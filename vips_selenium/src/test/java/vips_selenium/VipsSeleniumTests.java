@@ -132,8 +132,14 @@ public class VipsSeleniumTests {
 
     driver.navigate().to(url1.toURL());
     Thread.sleep(2000);
-
     Document dom = getDomTree(driver);
+
+
+    driver.navigate().to(url1.toURL());
+    Thread.sleep(2000);
+    dom = getDomTree(driver);
+
+
 
     BufferedImage screenshot = getScreenShotAsBufferedImage();
 
