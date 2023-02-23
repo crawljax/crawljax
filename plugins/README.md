@@ -10,7 +10,6 @@ Start out by adding the parent configuration to your pom:
     <parent>
       <groupId>com.crawljax.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>2.2</version>
     </parent>
 
 
