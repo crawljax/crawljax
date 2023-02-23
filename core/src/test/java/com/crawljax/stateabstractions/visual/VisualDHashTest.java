@@ -49,15 +49,18 @@ public class VisualDHashTest {
 
     file = VisualDHashTest.class.getResource("/screenshots/bookscene.jpg").getPath();
     file2 = VisualDHashTest.class.getResource("/screenshots/bookscene.jpg").getPath();
-    assertTrue(DHASH.imagesPerceptuallySimilar(file, file2));
+    assertTrue(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)),
+        ImageIO.read(new File(file2))));
 
     file = VisualDHashTest.class.getResource("/screenshots/oracle.png").getPath();
     file2 = VisualDHashTest.class.getResource("/screenshots/oracle.png").getPath();
-    assertTrue(DHASH.imagesPerceptuallySimilar(file, file2));
+    assertTrue(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)),
+        ImageIO.read(new File(file2))));
 
     file = VisualDHashTest.class.getResource("/screenshots/test.png").getPath();
     file2 = VisualDHashTest.class.getResource("/screenshots/test.png").getPath();
-    assertTrue(DHASH.imagesPerceptuallySimilar(file, file2));
+    assertTrue(DHASH.imagesPerceptuallySimilar(ImageIO.read(new File(file)),
+        ImageIO.read(new File(file2))));
   }
 
   @Test
