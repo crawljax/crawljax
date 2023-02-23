@@ -80,6 +80,8 @@
                     </archive>
 
                 </configuration>
+                <!--enable if you want to build a jar with all dependencies -->
+								<!--
                 <executions>
                     <execution>
                         <id>make-assembly</id>
@@ -89,6 +91,7 @@
                         </goals>
                     </execution>
                 </executions>
+                -->
             </plugin>
 			
 		</plugins>
