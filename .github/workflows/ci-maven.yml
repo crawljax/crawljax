@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
     # - uses: browser-actions/setup-chrome@v1
@@ -23,4 +23,4 @@ jobs:
         cache: maven
     - name: Build with Maven
       # Skip VipsSeleniumTests for now because it is failing on GitHub Actions
-      run: mvn -B package -P integrationtests --file pom.xml
+      run: mvn -Djavacpp.platform.linux-x86_64 -B package -P integrationtests --file pom.xml
