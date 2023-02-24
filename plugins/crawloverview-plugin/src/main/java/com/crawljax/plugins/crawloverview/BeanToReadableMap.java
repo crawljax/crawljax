@@ -1,7 +1,5 @@
 package com.crawljax.plugins.crawloverview;
 
-import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
-
 import com.crawljax.browser.WebDriverBrowserBuilder;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawlRules;
@@ -15,6 +13,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,9 +70,10 @@ class BeanToReadableMap {
     } else if (result instanceof Collection<?>) {
       return asHtmlList((Collection<?>) result);
     } else if (result instanceof Plugin) {
-      return escapeHtml(result.getClass().getSimpleName());
+      return StringEscapeUtils.escapeHtml4(result.getClass().getSimpleName());
     } else if (result instanceof CrawlRules) {
-      return "<pre><code>" + escapeHtml(Serializer.toPrettyJson(result)) + "</code></pre>";
+      return "<pre><code>" + StringEscapeUtils.escapeHtml4(Serializer.toPrettyJson(result))
+          + "</code></pre>";
     } else if (result instanceof BrowserConfiguration) {
       BrowserConfiguration config = (BrowserConfiguration) result;
       StringBuilder configAsString =
@@ -87,11 +87,12 @@ class BeanToReadableMap {
     } else if (result instanceof Plugins) {
       return toString(name, ((Plugins) result).pluginNames());
     } else if (name != null && name.toLowerCase().contains("runtime")) {
-      return escapeHtml(DurationFormatUtils.formatDurationWords((Long) result, true, true));
+      return StringEscapeUtils.escapeHtml4(
+          DurationFormatUtils.formatDurationWords((Long) result, true, true));
     } else if (result instanceof Number && ((Number) result).intValue() == 0) {
       return "&infin;";
     } else {
-      return escapeHtml(result.toString());
+      return StringEscapeUtils.escapeHtml4(result.toString());
     }
   }
 
