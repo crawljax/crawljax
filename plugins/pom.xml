@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.crawljax</groupId>
 		<artifactId>crawljax-parent-pom</artifactId>
-		<version>5.1-SNAPSHOT</version>
+		<version>5.1.2</version>
 	</parent>
 
 	<groupId>com.crawljax.plugins</groupId>
@@ -19,7 +19,7 @@
 		<connection>scm:git:git@github.com:crawljax/plugins-parent-pom.git</connection>
 		<developerConnection>scm:git:git@github.com:crawljax/plugins-parent-pom.git</developerConnection>
 		<url>https://github.com/crawljax/plugins-parent-pom</url>
-		<tag>HEAD</tag>
+		<tag>crawljax-5.1.2</tag>
 	</scm>
 
 	<licenses>
