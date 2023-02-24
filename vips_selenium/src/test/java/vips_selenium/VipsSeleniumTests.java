@@ -136,11 +136,11 @@ public class VipsSeleniumTests {
     URI url1 = getUrl(
         "/replay/20230128041350/http://host.docker.internal:9966/petclinic/owners/2.html");
 
-    driver.navigate().to(url1.toURL());
-
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-    wait.until(webDriver -> webDriver.getPageSource().contains("Owner Information"));
-    
+//    driver.navigate().to(url1.toURL());
+    driver.get(url1.toURL().toString());
+//    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+//    wait.until(webDriver -> webDriver.getPageSource().contains("Owner Information"));
+    Thread.sleep(10000);
     Document dom = getDomTree(driver);
 
     BufferedImage screenshot = getScreenShotAsBufferedImage();
