@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.w3c.dom.Document;
 
 public class VipsSeleniumTests {
@@ -131,8 +133,10 @@ public class VipsSeleniumTests {
         "/replay/20230128041350/http://host.docker.internal:9966/petclinic/owners/2.html");
 
     driver.navigate().to(url1.toURL());
-    Thread.sleep(10000);
 
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    wait.until(webDriver -> webDriver.getPageSource().contains("Owner Information"));
+    
     Document dom = getDomTree(driver);
 
     BufferedImage screenshot = getScreenShotAsBufferedImage();
