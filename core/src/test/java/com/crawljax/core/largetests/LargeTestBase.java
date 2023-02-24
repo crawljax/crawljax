@@ -410,7 +410,6 @@ public abstract class LargeTestBase {
   /**
    * Tests waitconditions with a slow widget.
    */
-  @Ignore("This test is non-deterministic and will fail without clear cause.")
   @Test
   public void testWaitCondition() {
     boolean foundSlowWidget = false;
