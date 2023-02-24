@@ -75,8 +75,6 @@ class OutputBuilder {
   }
 
   private void configureVelocity() {
-    ve.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-        "org.apache.velocity.runtime.log.NullLogChute");
     ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
     ve.setProperty("classpath.resource.loader.class",
         ClasspathResourceLoader.class.getName());

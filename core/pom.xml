@@ -100,6 +100,12 @@
 
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-edge-driver</artifactId>
+      <version>${selenium.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-support</artifactId>
       <version>${selenium.version}</version>
     </dependency>
@@ -218,6 +224,10 @@
         <exclusion>
           <groupId>org.seleniumhq.selenium</groupId>
           <artifactId>selenium-firefox-driver</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-edge-driver</artifactId>
         </exclusion>
         <exclusion>
           <groupId>com.assertthat</groupId>
