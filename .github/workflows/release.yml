@@ -1,0 +1,67 @@
+name: Release to Maven Central Repository
+
+on:
+  pull_request:
+    types: [closed]
+    paths:
+      - '.github/project.yml'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: macos-latest
+    name: release
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: radcortez/project-metadata-action@1.0
+        name: Retrieve project metadata
+        id: metadata
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          metadata-file-path: '.github/project.yml'
+          local-file: true
+
+      - name: Install JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 11
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Configure Git author
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Maven release ${{steps.metadata.outputs.current-version}}
+        run: |
+          git checkout -b release
+          mvn -X -Prelease -B release:clean release:prepare -DreleaseVersion=${{steps.metadata.outputs.current-version}} -DdevelopmentVersion=${{steps.metadata.outputs.next-version}}
+          git checkout ${{github.base_ref}}
+          git rebase release
+          mvn -X -Prelease -B release:perform -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSS_SONATYPE_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.OSS_SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Push changes to ${{github.base_ref}}
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{github.base_ref}}
+          force: true
+
+      - name: Push tags
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          branch: ${{github.base_ref}}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tags: true
+          force_with_lease: true
