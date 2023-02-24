@@ -4,7 +4,7 @@
 
     <groupId>com.crawljax</groupId>
     <artifactId>crawljax-parent-pom</artifactId>
-    <version>5.1-SNAPSHOT</version>
+    <version>5.1.2</version>
     <packaging>pom</packaging>
 
     <name>Crawljax parent POM</name>
@@ -36,7 +36,7 @@
         <connection>scm:git:https://github.com/crawljax/crawljax.git</connection>
         <developerConnection>scm:git:https://github.com/crawljax/crawljax.git</developerConnection>
         <url>https://github.com/crawljax/crawljax</url>
-        <tag>HEAD</tag>
+        <tag>crawljax-5.1.2</tag>
     </scm>
 
     <issueManagement>
