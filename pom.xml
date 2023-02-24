@@ -34,6 +34,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/crawljax/crawljax.git</connection>
+        <developerConnection>scm:git:https://github.com/crawljax/crawljax.git</developerConnection>
         <url>https://github.com/crawljax/crawljax</url>
         <tag>HEAD</tag>
     </scm>
@@ -269,11 +270,14 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>3.0.0-M7</version>
                 <configuration>
-                    <tagNameFormat>crawljax-@{project.version}</tagNameFormat>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
-                    <goals>deploy</goals>
+                    <tagNameFormat>crawljax-@{project.version}</tagNameFormat>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                    <remoteTagging>false</remoteTagging>
+                    <arguments>-DskipTests=true</arguments>
                 </configuration>
             </plugin>
             <plugin>
@@ -318,6 +322,12 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
