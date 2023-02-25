@@ -7,7 +7,6 @@ import com.crawljax.core.plugin.Plugin;
 import com.crawljax.core.plugin.Plugins;
 import com.crawljax.plugins.crawloverview.model.Serializer;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -37,7 +36,7 @@ class BeanToReadableMap {
   }
 
   public static ImmutableMap<String, String> toMap(Object o) {
-    Builder<String, String> builder = ImmutableMap.builder();
+    ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
     for (Method method : o.getClass().getMethods()) {
       if (isGetter(method)) {
         builder.put(addMethodToMap(o, method));
@@ -48,7 +47,7 @@ class BeanToReadableMap {
 
   private static boolean isGetter(Method method) {
     return method.getName().startsWith("get") && method.getParameterTypes().length == 0
-        && !"getClass".equals(method.getName());
+        && !method.getName().equals("getClass");
   }
 
   private static Entry<String, String> addMethodToMap(Object o, Method method) {

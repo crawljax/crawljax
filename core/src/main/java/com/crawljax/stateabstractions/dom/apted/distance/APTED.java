@@ -121,10 +121,7 @@ public class APTED<C extends CostModel, D> {
    */
   private int[] ft;
 
-  /**
-   * Stores the number of subproblems encountered while computing the distance [1, Section 10].
-   */
-  private long counter;
+  
 
   /**
    * Cost model to be used for calculating costs of edit operations.
@@ -213,7 +210,7 @@ public class APTED<C extends CostModel, D> {
    */
   private void tedInit() {
     // Reset the subproblems counter.
-    counter = 0L;
+    
     // Initialize arrays.
     int maxSize = Math.max(size1, size2) + 1;
     // TODO: Move q initialisation to spfA.
@@ -225,15 +222,15 @@ public class APTED<C extends CostModel, D> {
     // is a single node.
     int sizeX = -1;
     int sizeY = -1;
-    int parentX = -1;
-    int parentY = -1;
+    
+    
     // Loop over the nodes in reversed left-to-right preorder.
     for (int x = 0; x < size1; x++) {
       sizeX = it1.sizes[x];
-      parentX = it1.parents[x];
+      
       for (int y = 0; y < size2; y++) {
         sizeY = it2.sizes[y];
-        parentY = it2.parents[y];
+        
         // Set values in delta based on the sums of deletion and insertion
         // costs. Substract the costs for root nodes.
         // In this method we don't have to verify the order of the input trees
@@ -782,7 +779,7 @@ public class APTED<C extends CostModel, D> {
 
     int parent = -1;
     if (currentPathNode < pathIDOffset) {
-      strategyPathType = getStrategyPathType(strategyPathID, pathIDOffset, it1, currentSubtree1,
+      strategyPathType = getStrategyPathType(strategyPathID, pathIDOffset, currentSubtree1,
           subtreeSize1);
       while ((parent = it1.parents[currentPathNode]) >= currentSubtree1) {
         int[] ai;
@@ -813,7 +810,7 @@ public class APTED<C extends CostModel, D> {
     }
 
     currentPathNode -= pathIDOffset;
-    strategyPathType = getStrategyPathType(strategyPathID, pathIDOffset, it2, currentSubtree2,
+    strategyPathType = getStrategyPathType(strategyPathID, pathIDOffset, currentSubtree2,
         subtreeSize2);
     while ((parent = it2.parents[currentPathNode]) >= currentSubtree2) {
       int[] ai1;
@@ -926,7 +923,7 @@ public class APTED<C extends CostModel, D> {
       leftPart = startPathNode - endPathNode > 1;
       rightPart = startPathNode >= 0 && startPathNode_in_preR - endPathNode_in_preR > 1;
       // Deal with nodes to the left of the path.
-      if (pathType == 1 || pathType == 2 && leftPart) {
+      if (pathType == 1 || (pathType == 2 && leftPart)) {
         if (startPathNode == -1) {
           rFfirst = endPathNode_in_preR;
           lFfirst = endPathNode;
@@ -1066,7 +1063,7 @@ public class APTED<C extends CostModel, D> {
             swritepointer[lG - it2PreLoff] = minCost;
             // Go to next lG.
             lG = ft[lG];
-            counter++;
+            
             // Loop D [1, Algorithm 3] - for all nodes to the left of rG.
             while (lG >= lGlast) {
               // Increment size and cost of G forest by node lG.
@@ -1118,7 +1115,7 @@ public class APTED<C extends CostModel, D> {
               }
               swritepointer[lG - it2PreLoff] = minCost;
               lG = ft[lG];
-              counter++;
+              
             }
           }
           if (rGminus1_in_preL == parent_of_rG_in_preL) {
@@ -1154,7 +1151,7 @@ public class APTED<C extends CostModel, D> {
         }
       }
       // Deal with nodes to the right of the path.
-      if (pathType == 0 || pathType == 2 && rightPart || pathType == 2 && !leftPart && !rightPart) {
+      if (pathType == 0 || (pathType == 2 && rightPart) || (pathType == 2 && !leftPart && !rightPart)) {
         if (startPathNode == -1) {
           lFfirst = endPathNode;
           rFfirst = it1preL_to_preR[endPathNode];
@@ -1293,7 +1290,7 @@ public class APTED<C extends CostModel, D> {
             }
             swritepointer[rG - it2PreRoff] = minCost;
             rG = ft[rG];
-            counter++;
+            
             // Loop D' [1, Algorithm 3] - for all nodes to the right of lG;
             while (rG >= rGlast) {
               rG_in_preL = it2preR_to_preL[rG];
@@ -1347,7 +1344,7 @@ public class APTED<C extends CostModel, D> {
               }
               swritepointer[rG - it2PreRoff] = minCost;
               rG = ft[rG];
-              counter++;
+              
             }
           }
           if (lG > currentSubtreePreL2 && lG - 1 == parent_of_lG) {
@@ -1511,7 +1508,7 @@ public class APTED<C extends CostModel, D> {
     for (int i1 = 1; i1 <= i - ioff; i1++) {
       for (int j1 = 1; j1 <= j - joff; j1++) {
         // Increment the number of subproblems.
-        counter++;
+        
         // Calculate partial distance values for this subproblem.
         float u = (treesSwapped ? costModel.ren(it2.postL_to_node(j1 + joff),
             it1.postL_to_node(i1 + ioff)) : costModel.ren(it1.postL_to_node(i1 + ioff),
@@ -1669,7 +1666,7 @@ public class APTED<C extends CostModel, D> {
     for (int i1 = 1; i1 <= i - ioff; i1++) {
       for (int j1 = 1; j1 <= j - joff; j1++) {
         // Increment the number of subproblems.
-        counter++;
+        
         // Calculate partial distance values for this subproblem.
         float u = (treesSwapped ? costModel.ren(it2.postR_to_node(j1 + joff),
             it1.postR_to_node(i1 + ioff)) : costModel.ren(it1.postR_to_node(i1 + ioff),
@@ -1716,7 +1713,7 @@ public class APTED<C extends CostModel, D> {
    *                               phase.
    * @return type of the strategy path (LEFT, RIGHT, INNER).
    */
-  private byte getStrategyPathType(int pathIDWithPathIDOffset, int pathIDOffset, NodeIndexer it,
+  private byte getStrategyPathType(int pathIDWithPathIDOffset, int pathIDOffset,
       int currentRootNodePreL, int currentSubtreeSize) {
     if (Integer.signum(pathIDWithPathIDOffset) == -1) {
       return LEFT;

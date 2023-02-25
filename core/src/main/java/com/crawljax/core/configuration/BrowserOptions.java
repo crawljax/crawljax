@@ -53,7 +53,7 @@ public class BrowserOptions {
   /**
    * Enables/Disables usage of Chrome Developer Protocol (CDP)
    *
-   * @param USE_CDP
+   * 
    */
   public void setUSE_CDP(boolean USE_CDP) {
     this.USE_CDP = USE_CDP;

@@ -1,5 +1,7 @@
 package com.crawljax.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.crawljax.core.CrawljaxException;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
@@ -106,17 +108,19 @@ public final class DomUtils {
   }
 
   /**
-   * @param element The DOM Element.
-   * @return A string representation of all the element's attributes.
+   *Returns a string representation of all the element's attributes.
+ @param element The DOM Element.
+   * 
    */
   public static String getAllElementAttributes(Element element) {
     return getElementAttributes(element, ImmutableSet.of());
   }
 
   /**
-   * @param element The DOM Element.
+   *Returns a string representation of the element's attributes excluding exclude.
+ @param element The DOM Element.
    * @param exclude the list of exclude strings.
-   * @return A string representation of the element's attributes excluding exclude.
+   * 
    */
   public static String getElementAttributes(Element element,
       ImmutableSet<String> exclude) {
@@ -143,8 +147,9 @@ public final class DomUtils {
   }
 
   /**
-   * @param element the element.
-   * @return a string representation of the element including its attributes.
+   *Returns a string representation of the element including its attributes.
+ @param element the element.
+   * 
    */
   public static String getElementString(Element element) {
     String text = DomUtils.removeNewLines(DomUtils.getTextValue(element))
@@ -259,8 +264,9 @@ public final class DomUtils {
   }
 
   /**
-   * @param dom the DOM document.
-   * @return a string representation of the DOM.
+   *Returns a string representation of the DOM.
+ @param dom the DOM document.
+   * 
    */
   public static String getDocumentToString(Document dom) {
     try {
@@ -391,10 +397,11 @@ public final class DomUtils {
   }
 
   /**
-   * @param string  The original string.
+   *Returns replaces regex in str by replace where the dot sign also supports newlines.
+ @param string  The original string.
    * @param regex   The regular expression.
    * @param replace What to replace it with.
-   * @return replaces regex in str by replace where the dot sign also supports newlines
+   * 
    */
   public static String replaceString(String string, String regex,
       String replace) {
@@ -413,7 +420,7 @@ public final class DomUtils {
    * @return The new, correct path.
    */
   public static String addFolderSlashIfNeeded(String folderName) {
-    if (!"".equals(folderName) && !folderName.endsWith("/")) {
+    if (!folderName.equals("") && !folderName.endsWith("/")) {
       return folderName + "/";
     } else {
       return folderName;
@@ -424,7 +431,7 @@ public final class DomUtils {
    * Returns the filename in a path. For example with path = "foo/bar/crawljax.txt" returns
    * "crawljax.txt"
    *
-   * @param path
+   * 
    * @return the filename from the path
    */
   private static String getFileNameInPath(String path) {
@@ -462,7 +469,7 @@ public final class DomUtils {
     }
 
     BufferedReader bufferedReader = new BufferedReader(
-        new InputStreamReader(inStream));
+        new InputStreamReader(inStream, UTF_8));
     String line;
     StringBuilder stringBuilder = new StringBuilder();
 
@@ -475,8 +482,9 @@ public final class DomUtils {
   }
 
   /**
-   * @param frame the frame element.
-   * @return the name or id of this element if they are present, otherwise null.
+   *Returns the name or id of this element if they are present, otherwise null.
+ @param frame the frame element.
+   * 
    */
   public static String getFrameIdentification(Element frame) {
 
@@ -568,11 +576,11 @@ public final class DomUtils {
   /**
    * To get all the textual content in the dom
    *
-   * @param document
+   * 
    * @param individualTokens : default True : when set to true, each text node from dom is used to
    *                         build the text content : when set to false, the text content of whole
    *                         is obtained at once.
-   * @return
+   * 
    */
   public static String getTextContent(Document document, boolean individualTokens) {
     String textContent = null;
@@ -610,9 +618,9 @@ public final class DomUtils {
 
   public static String getDOMContent(Document document) {
     String textContent = getTextContent(document, true);
-    String content = textContent;
+    
     String imageContent = StringUtils.join(getAllImageURLs(document), ",");
-    content = textContent + "," + imageContent;
+    String content = textContent + "," + imageContent;
     return content;
   }
 
@@ -794,9 +802,9 @@ public final class DomUtils {
   /**
    * returns true if parent and child are the same node
    *
-   * @param parent
-   * @param child
-   * @return
+   * 
+   * 
+   * 
    */
   public static boolean contains(Node parent, Node child) {
     if (parent == null || child == null) {

@@ -33,7 +33,7 @@ public class State {
 
   private final boolean onURL;
 
-  /*
+  /**
    * public State(StateVertex state, int fanIn, int fanOut,
    * ImmutableList<CandidateElementPosition> candidates, ImmutableList<String> failedEvents) {
    * this.fanIn = fanIn; this.fanOut = fanOut; candidateElements = candidates; this.failedEvents =
@@ -109,7 +109,7 @@ public class State {
     this.onURL = state.isOnURL();
   }
 
-  /*
+  /**
    * @JsonCreator public State(
    * @JsonProperty("name") String name,
    * @JsonProperty("url") String url,
@@ -183,13 +183,13 @@ public class State {
   public boolean equals(Object object) {
     if (object instanceof State) {
       State that = (State) object;
-      return Objects.equal(this.id, that.id)
+      return (this.id == that.id)
           && Objects.equal(this.name, that.name)
           && Objects.equal(this.url, that.url)
           && Objects.equal(this.candidateElements,
           that.candidateElements)
-          && Objects.equal(this.fanIn, that.fanIn)
-          && Objects.equal(this.fanOut, that.fanOut)
+          && (this.fanIn == that.fanIn)
+          && (this.fanOut == that.fanOut)
           && Objects.equal(this.failedEvents,
           that.failedEvents);
     }

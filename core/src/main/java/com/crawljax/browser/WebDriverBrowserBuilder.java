@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverBrowserBuilder.class);
-  private static final boolean SYSTEM_OFFLINE = false;
+  
   private final CrawljaxConfiguration configuration;
   private final Plugins plugins;
 

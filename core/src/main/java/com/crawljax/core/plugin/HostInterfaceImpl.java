@@ -13,7 +13,7 @@ public class HostInterfaceImpl implements HostInterface {
     this.parameters = parameters;
   }
 
-  public File getOutputDirectory() {
+  @Override public File getOutputDirectory() {
     return outputDirectory;
   }
 
@@ -21,7 +21,7 @@ public class HostInterfaceImpl implements HostInterface {
     this.outputDirectory = outputDirectory;
   }
 
-  public Map<String, String> getParameters() {
+  @Override public Map<String, String> getParameters() {
     return parameters;
   }
 

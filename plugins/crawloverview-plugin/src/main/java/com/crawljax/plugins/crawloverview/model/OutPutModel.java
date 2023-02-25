@@ -23,7 +23,7 @@ public final class OutPutModel {
   private final Statistics statistics;
 
   private final ExitStatus exitStatus;
-  private String[][] clusters;
+  
 
   @JsonCreator
   public OutPutModel(@JsonProperty("states") ImmutableMap<String, State> states,

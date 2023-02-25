@@ -2,13 +2,16 @@ package com.crawljax.cli;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawlRules;
 import com.google.common.base.Joiner;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
@@ -224,7 +227,7 @@ class ParameterInterpeter {
   }
 
   void printHelp() {
-    final PrintWriter writer = new PrintWriter(System.out);
+    final PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out, UTF_8)));
     final HelpFormatter helpFormatter = new HelpFormatter();
     helpFormatter.printHelp(writer, ROW_WIDTH, HELP_MESSAGE, "", options, SPACES_AFTER_OPTION,
         SPACES_BEFORE_OPTION, "");

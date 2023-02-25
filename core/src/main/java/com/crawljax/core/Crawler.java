@@ -247,7 +247,7 @@ public class Crawler {
   /**
    * Resets crawljax by navigating to home url
    *
-   * @param nextTarget
+   * 
    */
   public void reset(int nextTarget) {
 
@@ -469,8 +469,7 @@ public class Crawler {
       if (path != null) {
         try {
 
-          ImmutableList<Eventable> followedPath = ImmutableList.copyOf(
-              follow(CrawlPath.copyOf(path, crawlTask.getId()), crawlTask));
+          
 
           LOG.info("Tried to follow v");
           printCrawlPath(path, true);
@@ -853,17 +852,7 @@ public class Crawler {
     }
   }
 
-  /**
-   * Enters the form data. First, the related input elements (if any) to the eventable are filled in
-   * and then it tries to fill in the remaining input elements.
-   *
-   * @param eventable the eventable element.
-   * @return
-   */
-  private List<FormInput> handleInputElements(Eventable eventable) {
-    List<FormInput> formInputs = getInputElements(eventable);
-    return formHandler.handleFormElements(formInputs);
-  }
+  
 
   private List<FormInput> getInputElements(Eventable eventable) {
     ImmutableList<FormInput> formInputsExisting = eventable.getRelatedFormInputs();
@@ -893,8 +882,8 @@ public class Crawler {
   /**
    * Computes visual order
    *
-   * @param formInputs
-   * @return
+   * 
+   * 
    */
   private List<FormInput> orderFormInputs(List<FormInput> formInputs) {
     if (stateMachine == null
@@ -1096,7 +1085,7 @@ public class Crawler {
       isFired = browser.fireEventAndWait(eventToFire);
     } catch (ElementNotInteractableException | NoSuchElementException e) {
       if (crawlRules.isCrawlHiddenAnchors() && eventToFire.getElement() != null
-          && "A".equals(eventToFire.getElement().getTag())) {
+          && eventToFire.getElement().getTag().equals("A")) {
         isFired = visitAnchorHrefIfPossible(eventToFire);
       } else {
         LOG.debug("Ignoring invisible element {}", eventToFire.getElement());
@@ -1234,13 +1223,13 @@ public class Crawler {
             afterBacktrack);
 
     while (action != null && !interrupted) {
-      boolean newStateFound = false;
+      
       CandidateElement element = action.getCandidateElement();
       if (element.allConditionsSatisfied(browser)) {
         // set eventable id (based on access)
         long eventableId = getEventableId();
         if (element.wasExplored()) {
-          eventableId = (long) (element.getEquivalentAccess()) * DUPLICATE_EVENT_SEED + eventableId;
+          eventableId = (long)  element.getEquivalentAccess() * DUPLICATE_EVENT_SEED + eventableId;
           LOG.info("Duplicate access for {} \n seed {}", element.getIdentification().getValue(),
               eventableId);
         }
@@ -1253,9 +1242,9 @@ public class Crawler {
           } catch (Exception ex) {
             LOG.error("Could not record access to candidate : " + action.getCandidateElement());
           }
-          StateVertex previous = stateMachine.getCurrentState();
-          newStateFound = inspectNewState(event);
-          StateVertex now = stateMachine.getCurrentState();
+          
+          
+          
         } else {
           LOG.info(
               "Could not fire event. Putting back the actions on the todo list and disabling input next time");
@@ -1335,7 +1324,7 @@ public class Crawler {
       return false;
     } else {
       StateVertex newState = stateMachine.newStateFor(browser);
-      if (domChanged(event, newState)) {
+      if (domChanged(newState)) {
         return inspectNewDom(event, newState);
       } else {
         LOG.debug("Dom unchanged");
@@ -1344,7 +1333,7 @@ public class Crawler {
     }
   }
 
-  private boolean domChanged(final Eventable eventable, StateVertex newState) {
+  private boolean domChanged(StateVertex newState) {
     //  DOM comparison behavior of StateVertex
     StateVertex stateBefore = stateMachine.getCurrentState();
     boolean isChanged = !newState.equals(stateBefore);

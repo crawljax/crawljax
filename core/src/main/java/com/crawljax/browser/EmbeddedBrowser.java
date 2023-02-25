@@ -56,7 +56,8 @@ public interface EmbeddedBrowser {
   String getDom();
 
   /**
-   * @return the DOM string WITHOUT the iframe content.
+   *Returns the DOM string WITHOUT the iframe content.
+ 
    */
   String getStrippedDomWithoutIframeContent();
 
@@ -101,31 +102,36 @@ public interface EmbeddedBrowser {
   boolean isVisible(Identification identification);
 
   /**
-   * @return The current browser url.
+   *Returns the current browser url.
+ 
    */
   String getCurrentUrl();
 
   /**
-   * @param inputForm the input form.
-   * @return a FormInput filled with random data.
+   *Returns a FormInput filled with random data.
+ @param inputForm the input form.
+   * 
    */
   FormInput getInputWithRandomValue(FormInput inputForm);
 
   /**
-   * @param iframeIdentification the iframe's name or id.
-   * @return the DOM string of the corresponding iframe.
+   *Returns the DOM string of the corresponding iframe.
+ @param iframeIdentification the iframe's name or id.
+   * 
    */
   String getFrameDom(String iframeIdentification);
 
   /**
-   * @param identification the identification of the element to be checked.
-   * @return true if the element can be found in the browser's DOM tree.
+   *Returns true if the element can be found in the browser's DOM tree.
+ @param identification the identification of the element to be checked.
+   * 
    */
   boolean elementExists(Identification identification);
 
   /**
-   * @param identification the identification of the element to be found.
-   * @return the corresponding WebElement from the browser.
+   *Returns the corresponding WebElement from the browser.
+ @param identification the identification of the element to be found.
+   * 
    */
   WebElement getWebElement(Identification identification);
 

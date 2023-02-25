@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import java.util.Arrays;
 
 public class AlchemyGraphModel {
 
@@ -28,15 +29,15 @@ public class AlchemyGraphModel {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(nodes, links);
+    return Objects.hashCode(Arrays.hashCode(nodes), Arrays.hashCode(links));
   }
 
   @Override
   public boolean equals(Object object) {
     if (object instanceof AlchemyGraphModel) {
       AlchemyGraphModel that = (AlchemyGraphModel) object;
-      return Objects.equal(this.nodes, that.nodes)
-          && Objects.equal(this.links, that.links);
+      return Arrays.equals(this.nodes, that.nodes)
+          && Arrays.equals(this.links, that.links);
 
     }
     return false;

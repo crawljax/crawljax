@@ -23,7 +23,7 @@ public class PageObjectMD5 extends PageObject {
 
     try {
       MessageDigest digest = MessageDigest.getInstance("MD5");
-      byte[] imgbytes = new byte[(safeLongToInt(image.total())) * image.channels()];
+      byte[] imgbytes = new byte[ safeLongToInt(image.total()) * image.channels()];
       image.get(0, 0, imgbytes);
       hashbytes = digest.digest(imgbytes);
 

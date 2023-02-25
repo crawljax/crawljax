@@ -66,7 +66,7 @@ public class PerEditOperationStringNodeDataCostModel implements CostModel<String
    * @param n the node considered to be deleted.
    * @return the cost of deleting node n.
    */
-  public float del(AptedNode<StringNodeData> n) {
+  @Override public float del(AptedNode<StringNodeData> n) {
     return delCost;
   }
 
@@ -76,7 +76,7 @@ public class PerEditOperationStringNodeDataCostModel implements CostModel<String
    * @param n the node considered to be inserted.
    * @return the cost of inserting node n.
    */
-  public float ins(AptedNode<StringNodeData> n) {
+  @Override public float ins(AptedNode<StringNodeData> n) {
     return insCost;
   }
 
@@ -87,7 +87,7 @@ public class PerEditOperationStringNodeDataCostModel implements CostModel<String
    * @param n2 the destination node of rename.
    * @return the cost of renaming node n1 to n2.
    */
-  public float ren(AptedNode<StringNodeData> n1, AptedNode<StringNodeData> n2) {
-    return (n1.getNodeData().getLabel().equals(n2.getNodeData().getLabel())) ? 0.0f : renCost;
+  @Override public float ren(AptedNode<StringNodeData> n1, AptedNode<StringNodeData> n2) {
+    return  n1.getNodeData().getLabel().equals(n2.getNodeData().getLabel()) ? 0.0f : renCost;
   }
 }

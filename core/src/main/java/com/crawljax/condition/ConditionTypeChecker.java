@@ -30,8 +30,9 @@ public class ConditionTypeChecker<T extends ConditionType> {
   }
 
   /**
-   * @param browser The browser.
-   * @return a list of {@link ConditionType} where {@link Condition#check(EmbeddedBrowser)} failed.
+   *Returns a list of {@link ConditionType} where {@link Condition#check(EmbeddedBrowser)} failed.
+ @param browser The browser.
+   * 
    */
   public ImmutableList<T> getFailedConditions(EmbeddedBrowser browser) {
     LOGGER.debug("Checking {} ConditionTypes", invariants.size());

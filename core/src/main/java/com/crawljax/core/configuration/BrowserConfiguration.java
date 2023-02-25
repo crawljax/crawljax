@@ -150,7 +150,7 @@ public class BrowserConfiguration {
     if (object instanceof BrowserConfiguration) {
       BrowserConfiguration that = (BrowserConfiguration) object;
       return Objects.equal(this.browserType, that.browserType)
-          && Objects.equal(this.numberOfBrowsers, that.numberOfBrowsers)
+          && (this.numberOfBrowsers == that.numberOfBrowsers)
           && Objects.equal(this.browserBuilder, that.browserBuilder)
           && Objects.equal(this.remoteHubUrl, that.remoteHubUrl)
           && Objects.equal(this.lang, that.lang);
@@ -159,7 +159,8 @@ public class BrowserConfiguration {
   }
 
   /**
-   * @return the language header setting or <code>null</code> if not set.
+   *Returns the language header setting or <code>null</code> if not set.
+ 
    */
   public String getLangOrNull() {
     return lang;

@@ -18,7 +18,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.concurrent.TimeUnit;
 
@@ -116,14 +115,16 @@ public class CrawlRules {
   }
 
   /**
-   * @return in milliseconds
+   *Returns in milliseconds.
+ 
    */
   public long getWaitAfterReloadUrl() {
     return waitAfterReloadUrl;
   }
 
   /**
-   * @return in milliseconds.
+   *Returns in milliseconds.
+ 
    */
   public long getWaitAfterEvent() {
     return waitAfterEvent;
@@ -134,12 +135,13 @@ public class CrawlRules {
   }
 
   /**
-   * @return All Crawl elements: {@link PreCrawlConfiguration#getIncludedElements()},
-   * {@link PreCrawlConfiguration#getExcludedElements()} and
-   * {@link InputSpecification#getCrawlElements()}.
+   *Returns all Crawl elements: {@link PreCrawlConfiguration#getIncludedElements()},
+ {@link PreCrawlConfiguration#getExcludedElements()} and
+ {@link InputSpecification#getCrawlElements()}.
+ 
    */
   public ImmutableList<CrawlElement> getAllCrawlElements() {
-    return new Builder<CrawlElement>().addAll(getPreCrawlConfig().getIncludedElements())
+    return new ImmutableList.Builder<CrawlElement>().addAll(getPreCrawlConfig().getIncludedElements())
         .addAll(getPreCrawlConfig().getExcludedElements())
         .addAll(getInputSpecification().getCrawlElements()).build();
 
@@ -216,16 +218,14 @@ public class CrawlRules {
           && Objects.equal(this.preCrawlConfig, that.preCrawlConfig)
           && Objects.equal(this.formFillMode, that.formFillMode)
           && Objects.equal(this.inputSpecification, that.inputSpecification)
-          && Objects.equal(this.testInvariantsWhileCrawling,
-          that.testInvariantsWhileCrawling)
-          && Objects.equal(this.clickOnce, that.clickOnce)
-          && Objects.equal(this.randomizeCandidateElements,
-          that.randomizeCandidateElements)
-          && Objects.equal(this.crawlFrames, that.crawlFrames)
-          && Objects.equal(this.crawlHiddenAnchors, that.crawlHiddenAnchors)
-          && Objects.equal(this.waitAfterReloadUrl, that.waitAfterReloadUrl)
-          && Objects.equal(this.waitAfterEvent, that.waitAfterEvent)
-          && Objects.equal(this.followExternalLinks, that.followExternalLinks);
+          && (this.testInvariantsWhileCrawling == that.testInvariantsWhileCrawling)
+          && (this.clickOnce == that.clickOnce)
+          && (this.randomizeCandidateElements == that.randomizeCandidateElements)
+          && (this.crawlFrames == that.crawlFrames)
+          && (this.crawlHiddenAnchors == that.crawlHiddenAnchors)
+          && (this.waitAfterReloadUrl == that.waitAfterReloadUrl)
+          && (this.waitAfterEvent == that.waitAfterEvent)
+          && (this.followExternalLinks == that.followExternalLinks);
     }
     return false;
   }
@@ -338,9 +338,9 @@ public class CrawlRules {
     /**
      * maxRepeat default value is 2
      *
-     * @param skipExploredActions
-     * @param maxRepeatExploredActions
-     * @return
+     * 
+     * 
+     * 
      */
     public CrawlRulesBuilder skipExploredActions(boolean skipExploredActions,
         int maxRepeatExploredActions) {
@@ -353,10 +353,10 @@ public class CrawlRules {
     /**
      * avoiding differentbacktracking automatically stops unrelatedbacktracking
      *
-     * @param avoidUnrelatedBacktracking
-     * @param avoidDifferentBacktracking
-     * @param useEquivalentReset
-     * @return
+     * 
+     * 
+     * 
+     * 
      */
     public CrawlRulesBuilder setBacktrackingRules(boolean avoidUnrelatedBacktracking,
         boolean avoidDifferentBacktracking, boolean useEquivalentReset) {
@@ -402,9 +402,10 @@ public class CrawlRules {
     }
 
     /**
-     * @param description The invariants description.
+     *See {@link Invariant#Invariant(String, Condition)}.
+ @param description The invariants description.
      * @param condition   The condition for the invariant.
-     * @see Invariant#Invariant(String, Condition)
+     * 
      */
     public CrawlRulesBuilder addInvariant(String description, Condition condition) {
       Preconditions.checkNotNull(description);
@@ -433,7 +434,8 @@ public class CrawlRules {
     }
 
     /**
-     * @see CrawlCondition#CrawlCondition(String, Condition)
+     *See {@link CrawlCondition#CrawlCondition(String, Condition)}.
+ 
      */
     public PreCrawlConfigurationBuilder addCrawlCondition(String description,
         Condition crawlCondition) {
@@ -528,8 +530,9 @@ public class CrawlRules {
     }
 
     /**
-     * @param tagName
-     * @see com.crawljax.core.configuration.CrawlActionsBuilder#click(java.lang.String)
+     *See {@link com.crawljax.core.configuration.CrawlActionsBuilder#click(java.lang.String)}.
+ 
+     * 
      */
     public CrawlElement click(String tagName) {
       return crawlActionsBuilder.click(tagName);
@@ -540,9 +543,10 @@ public class CrawlRules {
     }
 
     /**
-     * @param tagNames
-     * @return
-     * @see com.crawljax.core.configuration.CrawlActionsBuilder#click(java.lang.String[])
+     *See {@link com.crawljax.core.configuration.CrawlActionsBuilder#click(java.lang.String[])}.
+ 
+     * 
+     * 
      */
     public CrawlRulesBuilder click(String... tagNames) {
       crawlActionsBuilder.click(tagNames);
@@ -550,8 +554,9 @@ public class CrawlRules {
     }
 
     /**
-     * @return
-     * @see com.crawljax.core.configuration.CrawlActionsBuilder#clickDefaultElements()
+     *See {@link com.crawljax.core.configuration.CrawlActionsBuilder#clickDefaultElements()}.
+ 
+     * 
      */
     public CrawlRulesBuilder clickDefaultElements() {
       crawlActionsBuilder.clickDefaultElements();
@@ -559,8 +564,9 @@ public class CrawlRules {
     }
 
     /**
-     * @return
-     * @see CrawlActionsBuilder#clickElementsWithClickEventHandler()
+     *See {@link CrawlActionsBuilder#clickElementsWithClickEventHandler()}.
+ 
+     * 
      */
     public CrawlRulesBuilder clickElementsWithClickEventHandler() {
       crawlActionsBuilder.clickElementsWithClickEventHandler();
@@ -569,15 +575,17 @@ public class CrawlRules {
     }
 
     /**
-     * @see com.crawljax.core.configuration.CrawlActionsBuilder#dontClick(java.lang.String)
+     *See {@link com.crawljax.core.configuration.CrawlActionsBuilder#dontClick(java.lang.String)}.
+ 
      */
     public CrawlElement dontClick(String tagName) {
       return crawlActionsBuilder.dontClick(tagName);
     }
 
     /**
-     * @param tagName
-     * @see com.crawljax.core.configuration.CrawlActionsBuilder#dontClickChildrenOf(java.lang.String)
+     *See {@link com.crawljax.core.configuration.CrawlActionsBuilder#dontClickChildrenOf(java.lang.String)}.
+ 
+     * 
      */
     public ExcludeByParentBuilder dontClickChildrenOf(String tagName) {
       return crawlActionsBuilder.dontClickChildrenOf(tagName);

@@ -33,23 +33,7 @@ public class StructuralVisualStateVertexFactory extends StateVertexFactory {
   private BufferedImage screenshot;
   private DHash visualHashCalculator;
 
-  private static void saveImage(BufferedImage image, File screenshotFileToSave,
-      boolean saveThumbnail) {
-    LOGGER.debug("Saving screenshot for the current state to {}", screenshotFileToSave);
-    try {
-      String parentFolderPath = screenshotFileToSave.getParentFile().getAbsolutePath();
-      FSUtils.directoryCheck(parentFolderPath);
-      ImageIO.write(image, "PNG", screenshotFileToSave);
-      if (saveThumbnail) {
-        writeThumbNail(
-            new File(parentFolderPath + "/" + screenshotFileToSave.getName() + "_small.jpg"),
-            image);
-      }
-
-    } catch (IOException e) {
-      LOGGER.error(e.getMessage());
-    }
-  }
+  
 
   private static void writeThumbNail(File target, BufferedImage screenshot) throws IOException {
     BufferedImage resizedImage =

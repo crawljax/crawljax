@@ -83,16 +83,18 @@ public class CrawlController implements Callable<CrawlSession> {
   }
 
   /**
-   * @return Same as {@link #call()}
-   * @see #call()
+   *See {@link #call()}.
+ @return Same as {@link #call()}
+   * 
    */
   public CrawlSession run() {
     return call();
   }
 
   /**
-   * @return The {@link ExitStatus} crawljax stopped or <code>null</code> when it hasn't stopped
-   * yet.
+   *Returns the {@link ExitStatus} crawljax stopped or <code>null</code> when it hasn't stopped
+ yet.
+ 
    */
   public ExitStatus getReason() {
     return exitReason;
@@ -102,7 +104,7 @@ public class CrawlController implements Callable<CrawlSession> {
     if (maximumCrawlTime == 0) {
       return;
     }
-    executor.submit(() -> {
+    var unused = executor.submit(() -> {
       try {
         LOG.debug("Waiting {} before killing the crawler", maximumCrawlTime);
         Thread.sleep(maximumCrawlTime);
@@ -118,9 +120,9 @@ public class CrawlController implements Callable<CrawlSession> {
 
   private void executeConsumers(CrawlTaskConsumer firstConsumer) {
     LOG.debug("Starting {} consumers", config.getBrowserConfig().getNumberOfBrowsers());
-    executor.submit(firstConsumer);
+    var unused = executor.submit(firstConsumer);
     for (int i = 1; i < config.getBrowserConfig().getNumberOfBrowsers(); i++) {
-      executor.submit(consumerFactory.get());
+      var unused = executor.submit(consumerFactory.get());
     }
     try {
       exitReason = exitNotifier.awaitTermination();

@@ -1,5 +1,7 @@
 package com.crawljax.vips_selenium;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -8,6 +10,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
@@ -116,8 +121,8 @@ public final class VipsOutput {
       // continue segmenting
       if (visualStructure.getChildrenVisualStructures().size() == 0) {
         if (visualStructure.getNestedBlocks().size() > 0) {
-          String src = "";
-          String content = "";
+          
+          
           for (Node block : visualStructure.getNestedBlocks()) {
             Node elementBox = block;
 
@@ -127,12 +132,12 @@ public final class VipsOutput {
 
             if (!elementBox.getNodeName().equalsIgnoreCase("Xdiv") &&
                 !elementBox.getNodeName().equalsIgnoreCase("Xspan")) {
-              src += getSource(elementBox);
+              getSource(elementBox);
             } else {
-              src += elementBox.getTextContent().trim();
+              elementBox.getTextContent().trim();
             }
 
-            content += elementBox.getTextContent().trim() + " ";
+            elementBox.getTextContent().trim() + " ";
 
           }
 //					layoutNode.setAttribute("SRC", src);
@@ -191,7 +196,7 @@ public final class VipsOutput {
     Rectangle finalRect = null;
     Rectangle boxRect = VipsUtils.getRectangle(vipsBlock, driver);
     if (boxRect == null) {
-      boxRect = new Rectangle(rect2.x, rect2.y, rect2.height, rect2.width);
+      boxRect = new Rectangle(rect2.x, rect2.y, /* width= */rect2.height, /* height= */rect2.width);
     }
     Rectangle rect1 = new Rectangle(boxRect.x,
         boxRect.y, boxRect.width,
@@ -263,8 +268,8 @@ public final class VipsOutput {
    * Writes visual structure to output XML
    * @param visualStructure Given visual structure
    * @param pageViewport Page's viewport
-   * @param url
-   * @param title
+   * 
+   * 
    */
   public void writeXML(VisualStructure visualStructure, BufferedImage pageViewport, String url,
       String title) {
@@ -311,7 +316,7 @@ public final class VipsOutput {
         result = result.replaceAll("&quot;", "\"");
 
         if (fragOutput) {
-          FileWriter fstream = new FileWriter(_filename + ".xml");
+          Writer fstream = Files.newBufferedWriter(Paths.get(_filename + ".xml"), UTF_8);
           fstream.write(result);
           fstream.close();
         }
@@ -325,7 +330,7 @@ public final class VipsOutput {
   /**
    * Enables or disables output escaping
    *
-   * @param value
+   * 
    */
   public void setEscapeOutput(boolean value) {
     _escapeOutput = value;

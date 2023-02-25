@@ -159,10 +159,11 @@ public final class FormInputValueHelper {
   }
 
   /**
-   * @param browser            the browser instance
+   *Returns a list with Candidate elements for the inputs.
+ @param browser            the browser instance
    * @param sourceElement      the form elements
    * @param eventableCondition the belonging eventable condition for sourceElement
-   * @return a list with Candidate elements for the inputs
+   * 
    */
   public List<CandidateElement> getCandidateElementsForInputs(EmbeddedBrowser browser,
       Element sourceElement, EventableCondition eventableCondition) {
@@ -198,7 +199,7 @@ public final class FormInputValueHelper {
           }
         }
 
-        String id = eventableCondition.getId() + "_" + curValueIndex;
+        
         //sourceElement.setAttribute("atusa", id);
 
         // clone node inclusive text content
@@ -236,7 +237,7 @@ public final class FormInputValueHelper {
 
       case id: // id and name are handled the same
       case name:
-        String xpath = "";
+        
         String element = "";
 
         if (input.getType().equals(InputType.SELECT)
@@ -245,7 +246,7 @@ public final class FormInputValueHelper {
         } else {
           element = "INPUT";
         }
-        xpath = "//" + element + "[@name='" + input.getIdentification().getValue()
+        String xpath = "//" + element + "[@name='" + input.getIdentification().getValue()
             + "' or @id='" + input.getIdentification().getValue() + "']";
         result = DomUtils.getElementByXpath(dom, xpath);
         break;
@@ -261,7 +262,7 @@ public final class FormInputValueHelper {
   }
 
   /**
-   * @param element
+   * 
    * @return returns the id of the element if set, else the name. If none found, returns xpath
    */
   private Identification getIdentification(Node element) {
@@ -307,17 +308,18 @@ public final class FormInputValueHelper {
   }
 
   /**
-   * @param browser    the current browser instance
+   *Returns the specified value with index indexValue for the belonging elements.
+ @param browser    the current browser instance
    * @param element    the element in the DOM
    * @param indexValue the i-th specified value. if i&gt;#values, first value is used
-   * @return the specified value with index indexValue for the belonging elements
+   * 
    */
   public FormInput getFormInputWithIndexValue(EmbeddedBrowser browser, Node element,
       int indexValue) {
-    return getFormInput(browser, element, indexValue);
+    return getFormInput(browser, element);
   }
 
-  private FormInput getFormInput(EmbeddedBrowser browser, Node element, int indexValue) {
+  private FormInput getFormInput(EmbeddedBrowser browser, Node element) {
 
     FormInput matchedInput = formInputMatchingNode(element);
     if (matchedInput != null) {
@@ -350,8 +352,8 @@ public final class FormInputValueHelper {
   /**
    * return the list of FormInputs that match this element
    *
-   * @param element
-   * @return
+   * 
+   * 
    */
   private FormInput formInputMatchingNode(Node element) {
     NamedNodeMap attributes = element.getAttributes();

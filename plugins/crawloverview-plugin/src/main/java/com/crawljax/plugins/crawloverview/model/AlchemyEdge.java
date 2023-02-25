@@ -31,12 +31,7 @@ public class AlchemyEdge {
     this.eventType = eventType;
   }
 
-  /**
-   * @return The pre-computed hashcode.
-   */
-  private final int buildHash() {
-    return Objects.hashCode(source, target, text, element, eventType);
-  }
+  
 
   public int getSource() {
     return source;
@@ -72,8 +67,8 @@ public class AlchemyEdge {
   public boolean equals(Object object) {
     if (object instanceof AlchemyEdge) {
       AlchemyEdge that = (AlchemyEdge) object;
-      return Objects.equal(this.source, that.source)
-          && Objects.equal(this.target, that.target)
+      return (this.source == that.source)
+          && (this.target == that.target)
           && Objects.equal(this.text, that.text)
           && Objects.equal(this.element, that.element)
           && Objects.equal(this.eventType, that.eventType);

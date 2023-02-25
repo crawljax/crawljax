@@ -90,7 +90,7 @@ public class ClickableDetectorPlugin implements OnNewStatePlugin {
     List<String> xpaths = getXpathList(dom.getElementsByTagName("body").item(0));
     LOG.info("Sending {} xpaths", xpaths.size());
     LOG.info("{}", xpaths);
-    Object attributeString = null;
+    
 
     Gson gson = new Gson();
     String xpathString = gson.toJson(xpaths);
@@ -99,7 +99,7 @@ public class ClickableDetectorPlugin implements OnNewStatePlugin {
     parameters.put("expression", executeScript);
     parameters.put("includeCommandLineAPI", Boolean.TRUE);
     parameters.put("returnByValue", Boolean.TRUE);
-    attributeString = ((ChromeDriver) driver).executeCdpCommand("Runtime.evaluate", parameters);
+    Object attributeString = ((ChromeDriver) driver).executeCdpCommand("Runtime.evaluate", parameters);
     if (attributeString instanceof Map) {
       attributeString = ((Map<?, ?>) attributeString).get("result");
       if (attributeString instanceof Map) {

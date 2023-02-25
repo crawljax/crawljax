@@ -2,9 +2,9 @@ package com.crawljax.util;
 
 import com.crawljax.forms.FormInput;
 import com.crawljax.forms.FormInput.InputType;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,9 +47,9 @@ public final class XPathHelper {
   /**
    * get relative xpath from specific parent
    *
-   * @param child
-   * @param parent
-   * @return
+   * 
+   * 
+   * 
    */
   public static String getXPathFromSpecificParent(Node child, Node parent) {
     if (child == null || parent == null) {
@@ -216,8 +216,8 @@ public final class XPathHelper {
    * Returns the list of nodes which match the expression xpathExpr in the String domStr.
    *
    * @return the list of nodes which match the query
-   * @throws XPathExpressionException
-   * @throws IOException
+   * 
+   * 
    */
   public static NodeList evaluateXpathExpression(String domStr, String xpathExpr)
       throws XPathExpressionException, IOException {
@@ -249,12 +249,12 @@ public final class XPathHelper {
    * @param dom             The dom.
    * @param xpathExpression The expression to find the element.
    * @return list of XPaths retrieved by xpathExpression.
-   * @throws XPathExpressionException
+   * 
    */
   public static ImmutableList<String> getXpathForXPathExpressions(Document dom,
       String xpathExpression) throws XPathExpressionException {
     NodeList nodeList = XPathHelper.evaluateXpathExpression(dom, xpathExpression);
-    Builder<String> result = ImmutableList.builder();
+    ImmutableList.Builder<String> result = ImmutableList.builder();
     if (nodeList.getLength() > 0) {
       for (int i = 0; i < nodeList.getLength(); i++) {
         Node n = nodeList.item(i);
@@ -265,8 +265,9 @@ public final class XPathHelper {
   }
 
   /**
-   * @param xpath The xpath to format.
-   * @return formatted xpath with tag names in uppercase and attributes in lowercase
+   *Returns formatted xpath with tag names in uppercase and attributes in lowercase.
+ @param xpath The xpath to format.
+   * 
    */
   public static String formatXPath(String xpath) {
     String formatted = capitalizeTagNames(xpath);
@@ -297,22 +298,23 @@ public final class XPathHelper {
   }
 
   /**
-   * @param xpath The xpath expression to find the last element of.
-   * @return returns the last element in the xpath expression
+   *Returns returns the last element in the xpath expression.
+ @param xpath The xpath expression to find the last element of.
+   * 
    */
   public static String getLastElementXPath(String xpath) {
-    String[] elements = xpath.split("/");
-    for (int i = elements.length - 1; i >= 0; i--) {
-      if (!elements[i].equals("") && !elements[i].contains("()")
-          && !elements[i].startsWith("@")) {
-        return stripEndSquareBrackets(elements[i]);
+    List<String> elements = Splitter.on('/').splitToList(xpath);
+    for (int i = elements.size() - 1; i >= 0; i--) {
+      if (!elements.get(i).equals("") && !elements.get(i).contains("()")
+          && !elements.get(i).startsWith("@")) {
+        return stripEndSquareBrackets(elements.get(i));
       }
     }
     return "";
   }
 
   /**
-   * @param string
+   * 
    * @return string without the before [
    */
   private static String stripEndSquareBrackets(String string) {
@@ -333,7 +335,7 @@ public final class XPathHelper {
   public static int getXPathLocation(String dom, String xpath) {
     String dom_lower = dom.toLowerCase();
     String xpath_lower = xpath.toLowerCase();
-    String[] elements = xpath_lower.split("/");
+    Iterable<String> elements = Splitter.on('/').split(xpath_lower);
     int pos = 0;
     int temp;
     int number;
@@ -372,10 +374,11 @@ public final class XPathHelper {
   }
 
   /**
-   * @param dom     The dom string.
+   *Returns the position where the close element is.
+ @param dom     The dom string.
    * @param pos     Position where to start searching.
    * @param element The element.
-   * @return the position where the close element is
+   * 
    */
   public static int getCloseElementLocation(String dom, int pos, String element) {
     String[] elements = {"LINK", "META", "INPUT", "BR"};
@@ -416,9 +419,10 @@ public final class XPathHelper {
   }
 
   /**
-   * @param dom   The dom.
+   *Returns the position where the close element is.
+ @param dom   The dom.
    * @param xpath The xpath expression.
-   * @return the position where the close element is
+   * 
    */
   public static int getCloseElementLocation(String dom, String xpath) {
     return getCloseElementLocation(dom, getXPathLocation(dom, xpath) + 1,
@@ -426,9 +430,10 @@ public final class XPathHelper {
   }
 
   /**
-   * @param xpath The xpath expression.
-   * @return the xpath expression for only the element location. Leaves out the attributes and
-   * text()
+   *Returns the xpath expression for only the element location. Leaves out the attributes and
+ text().
+ @param xpath The xpath expression.
+   * 
    */
   public static String stripXPathToElement(String xpath) {
     String xpathStripped = xpath;

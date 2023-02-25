@@ -11,10 +11,10 @@ public class StateVertexResult {
   private final String url;
   private String name;
 
-  private boolean success;
+  
   private boolean identical;
   private String compResult;
-  private List<Invariant> failedInvariants;
+  
   private WarnLevel warnLevel;
   private boolean locatorWarning;
   private int traceState;
@@ -24,7 +24,7 @@ public class StateVertexResult {
     this.id = state.getId();
     this.url = state.getUrl();
     this.setName(state.getName());
-    this.success = true;
+    
     this.identical = true;
     this.compResult = "DUPLICATE";
     this.warnLevel = WarnLevel.LEVEL0;
@@ -48,11 +48,11 @@ public class StateVertexResult {
   }
 
   public void setSuccess(boolean success) {
-    this.success = success;
+    
   }
 
   public void setFailedInvariants(List<Invariant> failedInvariants) {
-    this.failedInvariants = failedInvariants;
+    
   }
 
   public String getCompResult() {

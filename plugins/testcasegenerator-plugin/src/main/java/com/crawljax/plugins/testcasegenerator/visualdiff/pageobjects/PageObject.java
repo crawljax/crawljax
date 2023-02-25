@@ -45,50 +45,57 @@ public abstract class PageObject {
   }
 
   /**
-   * @return {@code true} if the difference between {@code a} and {@code b} is * within
-   * {@code tolerance}.
+   *Returns {@code true} if the difference between {@code a} and {@code b} is * within
+ {@code tolerance}.
+ 
    */
   public static boolean approx(int a, int b, int tolerance) {
     return Math.abs(a - b) < tolerance;
   }
 
   /**
-   * @return the image pixels inside the object's bounding box.
+   *Returns the image pixels inside the object's bounding box.
+ 
    */
   public Mat getImage() {
     return image;
   }
 
   /**
-   * @return the x co-ordinate of the top left of the object's bounding box.
+   *Returns the x co-ordinate of the top left of the object's bounding box.
+ 
    */
   public int getX() {
     return x;
   }
 
   /**
-   * @return the y co-ordinate of the top left of the object's bounding box.
+   *Returns the y co-ordinate of the top left of the object's bounding box.
+ 
    */
   public int getY() {
     return y;
   }
 
   /**
-   * @return the width of the object's bounding box.
+   *Returns the width of the object's bounding box.
+ 
    */
   public int getWidth() {
     return width;
   }
 
   /**
-   * @return the height of the object's bounding box.
+   *Returns the height of the object's bounding box.
+ 
    */
   public int getHeight() {
     return height;
   }
 
   /**
-   * @return the change operation for this object in the diff.
+   *Returns the change operation for this object in the diff.
+ 
    */
   public ChangeType getChangeType() {
     return changeType;
@@ -102,59 +109,68 @@ public abstract class PageObject {
   }
 
   /**
-   * @return The bounding rectangle for the RTree.
+   *Returns the bounding rectangle for the RTree.
+ 
    */
   public Rectangle getRectangle() {
     return Geometries.rectangle(x, y, x + width, y + height);
   }
 
   /**
-   * @return Returns true if the images are equal under some function.
+   *Returns returns true if the images are equal under some function.
+ 
    */
   public boolean imageEquals(PageObject po) {
     return Arrays.equals(this.getImageHash(), po.getImageHash());
   }
 
   /**
-   * @return the hash value of the object image.
+   *Returns the hash value of the object image.
+ 
    */
   public byte[] getImageHash() {
     return this.imageHash;
   }
 
   /**
-   * @return the hash value of the object image.
+   *Returns the hash value of the object image.
+ 
    */
   protected abstract byte[] createImageHash();
 
   /**
-   * @return the text within the object image.
+   *Returns the text within the object image.
+ 
    */
   public String getImageText() {
     return this.imageText;
   }
 
   /**
-   * @return the text within the object image.
+   *Returns the text within the object image.
+ 
    */
   protected abstract String createImageText();
 
   /**
-   * @return a comparator for finding exact matches on the page.
+   *Returns a comparator for finding exact matches on the page.
+ 
    */
   public ExactMatchComparator getComparatorExactMatch() {
     return new ExactMatchComparator(this);
   }
 
   /**
-   * @return a comparator for finding hash matches on the page.
+   *Returns a comparator for finding hash matches on the page.
+ 
    */
   public HashMatchComparator getComparatorHash() {
     return new HashMatchComparator(this);
   }
 
   /**
-   * @return a comparator for finding geographic matches on the page.
+   *Returns a comparator for finding geographic matches on the page.
+ 
    */
   public GeographicMatchComparator getComparatorGeographic() {
     return new GeographicMatchComparator(this);
@@ -251,7 +267,7 @@ public abstract class PageObject {
   /**
    * Compares PageObject based on its position and size.
    */
-  public class GeographicMatchComparator {
+  public static class GeographicMatchComparator {
 
     private PageObject pageObject;
 

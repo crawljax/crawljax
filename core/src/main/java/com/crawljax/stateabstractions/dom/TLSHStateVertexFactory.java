@@ -8,6 +8,7 @@ import com.crawljax.stateabstractions.dom.DOMConfiguration.Mode;
 import com.idealista.tlsh.TLSH;
 import com.idealista.tlsh.digests.Digest;
 import com.idealista.tlsh.digests.DigestBuilder;
+import com.idealista.tlsh.exceptions.InsufficientComplexityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ public class TLSHStateVertexFactory extends StateVertexFactory {
   private static final Logger LOG = LoggerFactory.getLogger(TLSHStateVertexFactory.class.getName());
   private static double threshold = 0.0;
   private static Mode mode;
-  private static final double insufficientComplexityDistance = 200;
+  
   private static EditDistanceComparator editDistanceComparator;
 
   public TLSHStateVertexFactory(double treshold, Mode mode1) {
@@ -31,14 +32,14 @@ public class TLSHStateVertexFactory extends StateVertexFactory {
 
   public static double computeTLSHDistance(String dom1, String dom2)
       throws IllegalArgumentException {
-    int distance = 200;
+    
     TLSH tlsh1, tlsh2;
     Digest digest1, digest2;
 
     try {
       tlsh1 = new TLSH(dom1);
       digest1 = new DigestBuilder().withHash(tlsh1.hash()).build();
-    } catch (com.idealista.tlsh.exceptions.InsufficientComplexityException e) {
+    } catch (InsufficientComplexityException e) {
       LOG.info("Insufficient Complexity in DOM");
       LOG.debug(dom1);
       throw new IllegalArgumentException();
@@ -47,13 +48,13 @@ public class TLSHStateVertexFactory extends StateVertexFactory {
     try {
       tlsh2 = new TLSH(dom2);
       digest2 = new DigestBuilder().withHash(tlsh2.hash()).build();
-    } catch (com.idealista.tlsh.exceptions.InsufficientComplexityException e) {
+    } catch (InsufficientComplexityException e) {
       LOG.info("Insufficient Complexity in DOM");
       LOG.debug(dom2);
       throw new IllegalArgumentException();
     }
 
-    distance = digest2.calculateDifference(digest1, true);
+    int distance = digest2.calculateDifference(digest1, true);
 
     return distance;
   }

@@ -44,7 +44,7 @@ public class TestConfiguration {
 
     @Override
     public String toString() {
-      return this.getClass().getSimpleName() + "." + this.name();
+      return this.getDeclaringClass().getSimpleName() + "." + this.name();
     }
   }
 }

@@ -6,6 +6,7 @@
 
 package com.crawljax.vips_selenium;
 
+import com.google.common.base.Splitter;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -345,8 +346,8 @@ public class VisualStructureConstructor {
       iterator++;
     }
 
-    List<Separator> allSeparatorsInBlock = new ArrayList<Separator>();
-    allSeparatorsInBlock.addAll(_horizontalSeparators);
+    
+    
 
     //remove all children separators
     for (VisualStructure vs : actualStructure.getChildrenVisualStructures()) {
@@ -450,8 +451,8 @@ public class VisualStructureConstructor {
       iterator++;
     }
 
-    List<Separator> allSeparatorsInBlock = new ArrayList<Separator>();
-    allSeparatorsInBlock.addAll(_verticalSeparators);
+    
+    
 
     //remove all children separators
     for (VisualStructure vs : actualStructure.getChildrenVisualStructures()) {
@@ -499,7 +500,8 @@ public class VisualStructureConstructor {
   }
 
   /**
-   * @return Returns VipsBlocks structure with all blocks from page
+   *Returns returns VipsBlocks structure with all blocks from page.
+ 
    */
   public Node getVipsBlocks() {
     return _vipsBlocks;
@@ -519,7 +521,8 @@ public class VisualStructureConstructor {
   }
 
   /**
-   * @return Returns final visual structure
+   *Returns returns final visual structure.
+ 
    */
   public VisualStructure getVisualStructure() {
     return _visualStructure;
@@ -659,12 +662,12 @@ public class VisualStructureConstructor {
   private List<String> generatePathStructures(String path) {
     List<String> pathStructures = new ArrayList<String>();
 
-    String[] aaa = path.split("-");
+    List<String> aaa = Splitter.on('-').splitToList(path);
 
     String tmp = "";
 
-    for (int i = 0; i < aaa.length - 1; i++) {
-      tmp += aaa[i];
+    for (int i = 0; i < aaa.size() - 1; i++) {
+      tmp += aaa.get(i);
       pathStructures.add(tmp);
       tmp += "-";
     }
@@ -728,7 +731,7 @@ public class VisualStructureConstructor {
   /**
    * Sets order to visual structure
    *
-   * @param visualStructure
+   * 
    */
   private void setOrder(VisualStructure visualStructure) {
     visualStructure.setOrder(_srcOrder);
@@ -988,7 +991,7 @@ public class VisualStructureConstructor {
   /**
    * Removes duplicates from list of separators
    *
-   * @param separators
+   * 
    */
   private void removeDuplicates(List<Separator> separators) {
     HashSet<Separator> hashSet = new HashSet<Separator>(separators);
@@ -1097,7 +1100,7 @@ public class VisualStructureConstructor {
   /**
    * Finds minimal DoC in given structure
    *
-   * @param visualStructure
+   * 
    */
   private void findMinimalDoC(VisualStructure visualStructure) {
     if (!visualStructure.getId().equals("1")) {
@@ -1147,7 +1150,7 @@ public class VisualStructureConstructor {
    */
   private double getStdDeviation(List<Separator> separators) {
     double meanValue = 0.0;
-    double stddev = 0.0;
+    
     List<Double> deviations = new ArrayList<Double>();
     List<Double> squaredDeviations = new ArrayList<Double>();
     double sum = 0.0;
@@ -1170,7 +1173,7 @@ public class VisualStructureConstructor {
       sum += squaredDeviation;
     }
 
-    stddev = Math.sqrt(sum / squaredDeviations.size());
+    double stddev = Math.sqrt(sum / squaredDeviations.size());
 
     return stddev;
   }

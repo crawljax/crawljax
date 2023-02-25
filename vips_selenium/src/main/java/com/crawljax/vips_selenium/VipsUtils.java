@@ -1,5 +1,7 @@
 package com.crawljax.vips_selenium;
 
+import com.google.common.base.Splitter;
+import com.google.common.base.Throwables;
 import com.google.gson.Gson;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -387,7 +389,7 @@ public class VipsUtils {
     }
     if (vipsBlock.getAttributes().getNamedItem(ISVISUALBLOCK) != null) {
       String value = vipsBlock.getAttributes().getNamedItem(ISVISUALBLOCK).getNodeValue();
-      return (value.trim().equalsIgnoreCase("true"));
+      return  value.trim().equalsIgnoreCase("true");
 
     }
 
@@ -397,27 +399,27 @@ public class VipsUtils {
 //	static String COMPUTEDSTYLESHEET_ALL = "return Array.from(document.querySelectorAll('*')).map(element => {return {webElement: element, computedStyle: getComputedStyle(element)}});";
 
   public static Rectangle peelRectangleLayer(Rectangle rect, String toRemove) {
-    String[] settings = toRemove.split(" ");
+    List<String> settings = Splitter.on(' ').splitToList(toRemove);
 
-    int top = getNumerals(settings[0]);
-    int right = getNumerals(settings[0]);
-    int bottom = getNumerals(settings[0]);
-    int left = getNumerals(settings[0]);
+    int top = getNumerals(settings.get(0));
+    int right = getNumerals(settings.get(0));
+    int bottom = getNumerals(settings.get(0));
+    int left = getNumerals(settings.get(0));
 
-    if (settings.length == 2) {
-      right = getNumerals(settings[1]);
-      left = getNumerals(settings[1]);
+    if (settings.size() == 2) {
+      right = getNumerals(settings.get(1));
+      left = getNumerals(settings.get(1));
     }
 
-    if (settings.length == 3) {
-      right = getNumerals(settings[1]);
-      bottom = getNumerals(settings[2]);
-      left = getNumerals(settings[1]);
+    if (settings.size() == 3) {
+      right = getNumerals(settings.get(1));
+      bottom = getNumerals(settings.get(2));
+      left = getNumerals(settings.get(1));
     }
-    if (settings.length == 4) {
-      right = getNumerals(settings[1]);
-      bottom = getNumerals(settings[2]);
-      left = getNumerals(settings[3]);
+    if (settings.size() == 4) {
+      right = getNumerals(settings.get(1));
+      bottom = getNumerals(settings.get(2));
+      left = getNumerals(settings.get(3));
     }
 
     Rectangle returnRect = new Rectangle(rect.x + left, rect.y + top, rect.width - (left + right),
@@ -440,13 +442,13 @@ public class VipsUtils {
         CONTENT_RECTANGLE_JAVASCRIPT_FUNCTION + CONTENT_RECTANGLE_RETURN, vipsBlock).toString();
     LOG.debug(javascriptReturn);
 
-    String[] split = javascriptReturn.split(":");
-    if (split.length == 5) {
-      Rectangle rect = new Rectangle(Integer.parseInt(split[0].trim()),
-          Integer.parseInt(split[1].trim()),
-          Integer.parseInt(split[2].trim()), Integer.parseInt(split[3].trim()));
+    List<String> split = Splitter.on(':').splitToList(javascriptReturn);
+    if (split.size() == 5) {
+      Rectangle rect = new Rectangle(Integer.parseInt(split.get(0).trim()),
+          Integer.parseInt(split.get(1).trim()),
+          Integer.parseInt(split.get(2).trim()), Integer.parseInt(split.get(3).trim()));
 
-      int fontSize = Integer.parseInt(split[4].trim());
+      int fontSize = Integer.parseInt(split.get(4).trim());
       setFontSize(node, fontSize);
       return rect;
     }
@@ -491,7 +493,7 @@ public class VipsUtils {
 
     if (vipsBlock.getNodeName().equalsIgnoreCase("text")) {
       Rectangle rect = getRectangle(vipsBlock.getParentNode(), driver);
-      List<Rectangle> siblingRects = new ArrayList<>();
+      
       List<Node> siblings = getChildren(vipsBlock.getParentNode());
       int index = siblings.indexOf(vipsBlock);
       Rectangle beforeRect = null;
@@ -543,15 +545,15 @@ public class VipsUtils {
 
     Rectangle returnRect = new Rectangle(-1, -1, -1, -1);
     if (beforeRect.x + beforeRect.width < afterRect.x) {
-      returnRect.setLocation((beforeRect.x + beforeRect.width), (beforeRect.y));
+      returnRect.setLocation((beforeRect.x + beforeRect.width),  beforeRect.y);
 
-      returnRect.setSize((afterRect.x - returnRect.x), (beforeRect.height));
+      returnRect.setSize((afterRect.x - returnRect.x),  beforeRect.height);
     }
 
     if (beforeRect.y + beforeRect.height < afterRect.y) {
-      returnRect.setLocation((beforeRect.x), (beforeRect.y + beforeRect.height));
+      returnRect.setLocation( beforeRect.x, (beforeRect.y + beforeRect.height));
 
-      returnRect.setSize((beforeRect.width), (afterRect.y - returnRect.y));
+      returnRect.setSize( beforeRect.width, (afterRect.y - returnRect.y));
     }
     return returnRect;
   }
@@ -785,7 +787,7 @@ public class VipsUtils {
       saveToImage(subImage, target);
     } catch (Exception ex) {
       LOG.error("Error exporting rectangle to image " + rect);
-      LOG.debug(ex.getStackTrace().toString());
+      LOG.debug(Throwables.getStackTraceAsString(ex));
     }
   }
 
@@ -840,8 +842,8 @@ public class VipsUtils {
   /**
    * return xpaths of all children
    *
-   * @param node
-   * @return
+   * 
+   * 
    */
   public static List<String> getXpathList(Node node) {
     List<String> returnList = new ArrayList<String>();
@@ -1014,9 +1016,9 @@ public class VipsUtils {
    * Currently only has support for "click" events. JavaScript code for fetching eventhandlers is
    * available in {@link com.crawljax.vips_selenium.Scripts}
    *
-   * @param vipsBlock
-   * @param hasEvent
-   * @param event
+   * 
+   * 
+   * 
    */
   public static void setEventListenerAttributes(Node vipsBlock, boolean hasEvent, String event) {
     if (!hasEvent) {

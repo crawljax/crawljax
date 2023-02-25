@@ -73,7 +73,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
    * @param dom         the current DOM tree of the browser
    * @param strippedDom the stripped dom by the OracleComparators
    * @param threshold   the threshold to be used
-   * @param visualData
+   * 
    */
   public HybridStateVertexImpl(int id, String url, String name, String dom, String strippedDom,
       double threshold, boolean visualData) {
@@ -139,15 +139,15 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     List<Node> postOrder2 = Lists.newArrayList();
     populatePostorder(postOrder2, doc2.getElementsByTagName("body").item(0));
 
-    List<Node> doc1Nodes = new LinkedList<>();
-    List<Node> doc2Nodes = new LinkedList<>();
-    Map<Node, Node> nodeMappings = Maps.newLinkedHashMap();
+    List<Node> doc1Nodes = new ArrayList<>();
+    List<Node> doc2Nodes = new ArrayList<>();
+    
 
     AptedNode<StringNodeData> aptedDoc1 = AptedUtils.getAptedTree(doc1, visualData);
 
     AptedNode<StringNodeData> aptedDoc2 = AptedUtils.getAptedTree(doc2, visualData);
     APTED<StringUnitCostModel, StringNodeData> apted = new APTED<>(new StringUnitCostModel());
-    double structuralDistance = apted.computeEditDistance(aptedDoc1, aptedDoc2);
+    
 
     LinkedList<int[]> mappings = (LinkedList<int[]>) apted.computeEditMapping();
     for (int[] mapping : mappings) {
@@ -162,7 +162,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
         String oldS = AptedUtils.getNodeStringRepresentation(oldNode, visualData);
         String newS = AptedUtils.getNodeStringRepresentation(newNode, visualData);
         if (!oldS.equalsIgnoreCase(newS)) {
-          nodeMappings.put(oldNode, newNode);
+          
           doc2Nodes.add(oldNode);
           doc1Nodes.add(newNode);
         }
@@ -200,10 +200,10 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   /**
    * Returns nodes of doc1 which are mapped to doc2 but have different tag or text value
    *
-   * @param doc1
-   * @param doc2
-   * @param visualData
-   * @return
+   * 
+   * 
+   * 
+   * 
    */
   public static List<Node> getDiffNodes(Document doc1, Document doc2, boolean visualData) {
     List<Node> postOrder1 = Lists.newArrayList();
@@ -212,15 +212,15 @@ public class HybridStateVertexImpl extends StateVertexImpl {
     List<Node> postOrder2 = Lists.newArrayList();
     populatePostorder(postOrder2, doc2.getElementsByTagName("body").item(0));
 
-    List<Node> doc1Nodes = new LinkedList<>();
-    List<Node> doc2Nodes = new LinkedList<>();
-    Map<Node, Node> nodeMappings = Maps.newLinkedHashMap();
+    List<Node> doc1Nodes = new ArrayList<>();
+    
+    
 
     AptedNode<StringNodeData> aptedDoc1 = AptedUtils.getAptedTree(doc1, visualData);
 
     AptedNode<StringNodeData> aptedDoc2 = AptedUtils.getAptedTree(doc2, visualData);
     APTED<StringUnitCostModel, StringNodeData> apted = new APTED<>(new StringUnitCostModel());
-    double structuralDistance = apted.computeEditDistance(aptedDoc1, aptedDoc2);
+    
 
     LinkedList<int[]> mappings = (LinkedList<int[]>) apted.computeEditMapping();
     for (int[] mapping : mappings) {
@@ -235,19 +235,19 @@ public class HybridStateVertexImpl extends StateVertexImpl {
         String doc2Tag = AptedUtils.getNodeStringRepresentation(doc2Node, visualData);
         String doc1Tag = AptedUtils.getNodeStringRepresentation(doc1Node, visualData);
         if (!doc2Tag.equalsIgnoreCase(doc1Tag)) {
-          doc2Nodes.add(doc2Node);
+          
           doc1Nodes.add(doc1Node);
         } else {
           if (doc1Tag.equalsIgnoreCase("#text") && doc2Tag.equalsIgnoreCase("#text")) {
             if (!doc1Node.getTextContent().trim()
                 .equalsIgnoreCase(doc2Node.getTextContent().trim())) {
               doc1Nodes.add(doc1Node);
-              doc2Nodes.add(doc2Node);
+              
             }
           }
         }
 
-        nodeMappings.put(doc2Node, doc1Node);
+        
       }
     }
     return doc1Nodes;
@@ -356,8 +356,8 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   /**
    * Use nearduplicate state to find dynamic fragments. Can be used during state revisit as well.
    *
-   * @param ndState
-   * @return
+   * 
+   * 
    */
   public List<Fragment> assignDynamicFragments(StateVertex ndState) {
     if (!(ndState instanceof HybridStateVertexImpl)) {
@@ -411,7 +411,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
 
   @Override
   public boolean equals(Object object) {
-    HybridStateVertexImpl that = (HybridStateVertexImpl) object;
+    if (!(object instanceof HybridStateVertexImpl)) { return false; }HybridStateVertexImpl that = (HybridStateVertexImpl) object;
     if (this.getId() == that.getId()) {
       return true;
     }
@@ -584,7 +584,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
    */
   private void setFragmentHdn() {
     Node rootNode = DomUtils.getElementsByTagName(getDocument(), "body").get(0);
-    Node fragParentNode = rootFragment.getFragmentParentNode();
+    
     rootFragment.setHdn(rootNode);
     for (Fragment fragment : fragments) {
       if (fragment.getId() <= 0) {
@@ -612,12 +612,12 @@ public class HybridStateVertexImpl extends StateVertexImpl {
    * but just DOM elements that are considered important by VIPS) but use the DOM structure to
    * divide these visual blocks.
    *
-   * @param rootNode
-   * @param nestedBlocks
-   * @param fragmentMap
-   * @param parent
-   * @param driver
-   * @return
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
    */
   private List<Fragment> getDomFragments(Node rootNode, List<Node> nestedBlocks,
       HashMap<Integer, Fragment> fragmentMap, Fragment parent, WebDriver driver) {
@@ -710,12 +710,12 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   /**
    * {@link HybridStateVertexImpl#getDomFragments}
    *
-   * @param fragmentMap
-   * @param driver
+   * 
+   * 
    */
   public void generateDomFragments(HashMap<Integer, Fragment> fragmentMap,
       WebDriver driver) {
-    List<Fragment> added = new ArrayList<>();
+    
     Node rootNode = rootFragment.getFragmentParentNode();
     if (rootNode == null) {
       try {
@@ -732,7 +732,7 @@ public class HybridStateVertexImpl extends StateVertexImpl {
 
     LOG.info("Added {} DOM fragments", domFragments.size());
 
-    added.addAll(domFragments);
+    
 
   }
 
@@ -751,10 +751,10 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   }
 
   private Node leastCommonAncestor(List<Fragment> fragments, Fragment exclude) {
-    Node returnNode = null;
+    
     List<Node> lcas = getSiblingLca(fragments, exclude);
 
-    returnNode = VipsUtils.getParentBox(lcas);
+    Node returnNode = VipsUtils.getParentBox(lcas);
     return returnNode;
   }
 
@@ -859,8 +859,8 @@ public class HybridStateVertexImpl extends StateVertexImpl {
    * Uses DOM hierarchy to determine the smallest fragment (still "useful") in the fragment
    * hierarchy that contains the node
    *
-   * @param node
-   * @return
+   * 
+   * 
    */
   @Override
   public Fragment getClosestFragment(Node node) {
@@ -875,9 +875,9 @@ public class HybridStateVertexImpl extends StateVertexImpl {
   /**
    * {@link  HybridStateVertexImpl#getClosestFragment}
    *
-   * @param node
-   * @param root
-   * @return
+   * 
+   * 
+   * 
    */
   private Fragment getClosestFragment(Node node, Fragment root) {
     //		System.out.println("Node to check :" + XPathHelper.getSkeletonXpath(node));
@@ -930,8 +930,8 @@ public class HybridStateVertexImpl extends StateVertexImpl {
    * {@link HybridStateVertexImpl#getClosestFragment} gets closest fragment for the node for which the candidate element is
    * created
    *
-   * @param element
-   * @return
+   * 
+   * 
    */
   @Override
   public Fragment getClosestFragment(CandidateElement element) {

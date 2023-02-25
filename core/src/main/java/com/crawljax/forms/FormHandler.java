@@ -127,12 +127,7 @@ public class FormHandler {
     }
   }
 
-  private void resetSelectBoxes(FormInput input) {
-    for (InputValue inputValue : input.getInputValues()) {
-      WebElement inputElement = browser.getWebElement(input.getIdentification());
-      inputElement.sendKeys(inputValue.getValue());
-    }
-  }
+  
 
   private void handleSelectBoxes(FormInput input) {
     for (InputValue inputValue : input.getInputValues()) {
@@ -144,7 +139,7 @@ public class FormHandler {
   /**
    * Clear the input for given input text
    *
-   * @param input
+   * 
    */
   private void resetText(FormInput input) {
     String text = input.getInputValues().iterator().next().getValue();
@@ -195,10 +190,10 @@ public class FormHandler {
         Node candidate = nodeList.item(i);
         Node typeAttribute = candidate.getAttributes().getNamedItem("type");
         if (typeAttribute == null
-            || (Enums
+            ||  Enums
             .getIfPresent(FormInput.InputType.class,
                 typeAttribute.getNodeValue().toUpperCase())
-            .isPresent())) {
+            .isPresent()) {
 
           nodes.add(nodeList.item(i));
         }
@@ -220,7 +215,8 @@ public class FormHandler {
   }
 
   /**
-   * @return a list of form inputs.
+   *Returns a list of form inputs.
+ 
    */
   public List<FormInput> getFormInputs() {
 
@@ -242,7 +238,7 @@ public class FormHandler {
   }
 
   public void resetFormInputs(List<FormInput> formInputs) {
-    ArrayList<FormInput> handled = new ArrayList<>();
+    
     FormInput failing = null;
     try {
       Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
@@ -250,14 +246,14 @@ public class FormHandler {
         failing = input;
         LOGGER.info("resetting : {}", input.getIdentification().getValue());
         resetInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
-        handled.add(input);
+        
         failing = null;
       }
     } catch (Exception e) {
       LOGGER.error("Could not reset form elements");
       LOGGER.error(e.getMessage());
     }
-    handled.add(Objects.requireNonNullElseGet(failing, () -> new FormInput(null, null)));
+    
   }
 
   protected void resetInputElementValue(Node element, FormInput input) {
@@ -314,7 +310,7 @@ public class FormHandler {
    * Fills in form/input elements.
    *
    * @param formInputs form input list.
-   * @return
+   * 
    */
   public List<FormInput> handleFormElements(List<FormInput> formInputs) {
     ArrayList<FormInput> handled = new ArrayList<>();
@@ -346,9 +342,10 @@ public class FormHandler {
   }
 
   /**
-   * @param sourceElement      the form element
+   *Returns a list with Candidate elements for the inputs.
+ @param sourceElement      the form element
    * @param eventableCondition the belonging eventable condition for sourceElement
-   * @return a list with Candidate elements for the inputs.
+   * 
    */
   public List<CandidateElement> getCandidateElementsForInputs(Element sourceElement,
       EventableCondition eventableCondition) {

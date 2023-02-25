@@ -227,18 +227,18 @@ public class CrawlOverview
 
   private void checkSFG(StateFlowGraph sfg) {
 
-    Set<String> hashes = new TreeSet<String>();
+    
 
     /* TODO: here we should enumerate all state abstraction functions available. */
     for (StateVertex sv : sfg.getAllStates()) {
       if (sv instanceof ColorHistogramStateVertexImpl) {
         ColorHistogramStateVertexImpl svv = (ColorHistogramStateVertexImpl) sv;
         System.out.println("State: " + svv.getName() + " hash: " + svv.getColorHistogram());
-        hashes.add(svv.getColorHistogram().dump());
+        
       } else if (sv instanceof DHashStateVertexImpl) {
         DHashStateVertexImpl svv = (DHashStateVertexImpl) sv;
         System.out.println("State: " + svv.getName() + " hash: " + svv.getDHashVisual());
-        hashes.add(svv.getDHashVisual());
+        
       } else {
         /* TODO: complete. */
       }
@@ -252,7 +252,8 @@ public class CrawlOverview
   }
 
   /**
-   * @return the result of the Crawl or <code>null</code> if it hasn't finished yet.
+   *Returns the result of the Crawl or <code>null</code> if it hasn't finished yet.
+ 
    */
   public OutPutModel getResult() {
     return result;

@@ -57,21 +57,24 @@ public class ObjectDiff {
   }
 
   /**
-   * @return the old page with change labels.
+   *Returns the old page with change labels.
+ 
    */
   public Mat annotateOldPage() {
     return annotatePage(oldPage);
   }
 
   /**
-   * @return the new page with change labels.
+   *Returns the new page with change labels.
+ 
    */
   public Mat annotateNewPage() {
     return annotatePage(newPage);
   }
 
   /**
-   * @return {@code true} iff the transformation contains one or more edit operations.
+   *Returns {@code true} iff the transformation contains one or more edit operations.
+ 
    */
   public boolean hasChanges() {
     for (PageObject po : oldPage.getPageObjects()) {

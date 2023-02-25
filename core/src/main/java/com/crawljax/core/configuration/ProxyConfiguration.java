@@ -22,28 +22,32 @@ public class ProxyConfiguration {
   }
 
   /**
-   * @see ProxyType#NOTHING
+   *See {@link ProxyType#NOTHING}.
+ 
    */
   public static ProxyConfiguration noProxy() {
     return new ProxyConfiguration(-1, "none", ProxyType.NOTHING);
   }
 
   /**
-   * @see ProxyType#AUTOMATIC
+   *See {@link ProxyType#AUTOMATIC}.
+ 
    */
   public static ProxyConfiguration automatic() {
     return new ProxyConfiguration(-1, "none", ProxyType.AUTOMATIC);
   }
 
   /**
-   * @see ProxyType#SYSTEM_DEFAULT
+   *See {@link ProxyType#SYSTEM_DEFAULT}.
+ 
    */
   public static ProxyConfiguration systemDefault() {
     return new ProxyConfiguration(-1, "none", ProxyType.SYSTEM_DEFAULT);
   }
 
   /**
-   * @see ProxyType#MANUAL
+   *See {@link ProxyType#MANUAL}.
+ 
    */
   public static ProxyConfiguration manualProxyOn(String host, int port) {
     Preconditions.checkNotNull(host);
@@ -53,21 +57,24 @@ public class ProxyConfiguration {
   }
 
   /**
-   * @return The port.
+   *Returns the port.
+ 
    */
   public int getPort() {
     return port;
   }
 
   /**
-   * @return The hostname.
+   *Returns the hostname.
+ 
    */
   public String getHostname() {
     return hostname;
   }
 
   /**
-   * @return The type.
+   *Returns the type.
+ 
    */
   public ProxyType getType() {
     return type;
@@ -90,7 +97,7 @@ public class ProxyConfiguration {
   public boolean equals(Object object) {
     if (object instanceof ProxyConfiguration) {
       ProxyConfiguration that = (ProxyConfiguration) object;
-      return Objects.equal(this.port, that.port)
+      return (this.port == that.port)
           && Objects.equal(this.hostname, that.hostname)
           && Objects.equal(this.type, that.type);
     }

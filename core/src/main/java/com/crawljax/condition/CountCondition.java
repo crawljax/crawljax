@@ -66,7 +66,7 @@ public class CountCondition implements Condition {
     if (object instanceof CountCondition) {
       CountCondition that = (CountCondition) object;
       return Objects.equal(this.condition, that.condition)
-          && Objects.equal(this.maxCount, that.maxCount);
+          && (this.maxCount == that.maxCount);
     }
     return false;
   }

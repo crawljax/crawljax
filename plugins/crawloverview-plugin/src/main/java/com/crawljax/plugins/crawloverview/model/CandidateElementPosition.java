@@ -23,7 +23,7 @@ public class CandidateElementPosition {
   private String xpath;
 
   /**
-   * @param xpath
+   * 
    * @param location The element's offset.
    * @param size     The size of the element.
    */
@@ -47,7 +47,8 @@ public class CandidateElementPosition {
   }
 
   /**
-   * @return The offset to the top of the document.
+   *Returns the offset to the top of the document.
+ 
    */
   public int getTop() {
     return top;
@@ -62,7 +63,8 @@ public class CandidateElementPosition {
   }
 
   /**
-   * @return The offset to the left of the document.
+   *Returns the offset to the left of the document.
+ 
    */
   public int getLeft() {
     return left;
@@ -96,11 +98,11 @@ public class CandidateElementPosition {
   public boolean equals(Object object) {
     if (object instanceof CandidateElementPosition) {
       CandidateElementPosition that = (CandidateElementPosition) object;
-      return Objects.equal(this.top, that.top)
-          && Objects.equal(this.left, that.left)
+      return (this.top == that.top)
+          && (this.left == that.left)
           && Objects.equal(this.xpath, that.xpath)
-          && Objects.equal(this.width, that.width)
-          && Objects.equal(this.height, that.height);
+          && (this.width == that.width)
+          && (this.height == that.height);
     }
     return false;
   }

@@ -36,7 +36,8 @@ public class Identification implements Serializable {
   }
 
   /**
-   * @return the how
+   *Returns the how.
+ 
    */
   public How getHow() {
     return how;
@@ -50,7 +51,8 @@ public class Identification implements Serializable {
   }
 
   /**
-   * @return the value
+   *Returns the value.
+ 
    */
   public String getValue() {
     return value;

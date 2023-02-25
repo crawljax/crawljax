@@ -45,14 +45,14 @@ public class TrainingFormHandler extends FormHandler {
   }
 
   /**
-   * Fills in form/input elements. Because we write to the singleton  @code{FormInputValueHelper},
+   * Fills in form/input elements. Because we write to the singleton  {@code FormInputValueHelper},
    * this method must be mutually exclusive. In practice, this probably has no effect because it is
    * unlikely that someone would train the crawler using multiple browser threads.
    *
    * @param formInputs form input list.
-   * @return
+   * 
    */
-  public synchronized List<FormInput> handleFormElements(List<FormInput> formInputs) {
+  @Override public synchronized List<FormInput> handleFormElements(List<FormInput> formInputs) {
 
     /* If there are no form elements, there is nothing to do. */
     if (formInputs.isEmpty())

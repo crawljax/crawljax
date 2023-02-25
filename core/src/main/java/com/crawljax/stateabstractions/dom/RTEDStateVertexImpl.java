@@ -45,7 +45,7 @@ public class RTEDStateVertexImpl extends StateVertexImpl {
 
   @Override
   public boolean equals(Object object) {
-    RTEDStateVertexImpl that = (RTEDStateVertexImpl) object;
+    if (!(object instanceof RTEDStateVertexImpl)) { return false; }RTEDStateVertexImpl that = (RTEDStateVertexImpl) object;
     double distance = computeDistance(this.getDom(), that.getDom());
     return distance <= threshold;
 

@@ -83,7 +83,8 @@ public class StateStatistics {
   }
 
   /**
-   * @return A mapping from the {@link String} url to the {@link String} state name.
+   *Returns a mapping from the {@link String} url to the {@link String} state name.
+ 
    */
   public ImmutableSetMultimap<String, String> getUrls() {
     return urls;
@@ -103,7 +104,7 @@ public class StateStatistics {
           && Objects.equal(this.leastFanIn, that.leastFanIn)
           && Objects.equal(this.mostFanOut, that.mostFanOut)
           && Objects.equal(this.mostFanIn, that.mostFanIn)
-          && Objects.equal(this.totalNumberOfStates, that.totalNumberOfStates)
+          && (this.totalNumberOfStates == that.totalNumberOfStates)
           && Objects.equal(this.urls, that.urls);
     }
     return false;

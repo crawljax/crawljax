@@ -1,6 +1,7 @@
 package com.crawljax.plugins.testcasegenerator.util;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.crawljax.plugins.testcasegenerator.report.TestRecord;
 import com.crawljax.util.DomUtils;
@@ -16,7 +17,9 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -42,16 +45,7 @@ public class WorkDirManager {
   public WorkDirManager() {
   }
 
-  private static void writeThumbNail(File target, BufferedImage screenshot) throws IOException {
-    int THUMBNAIL_WIDTH = 100;
-    int THUMBNAIL_HEIGHT = 100;
-    BufferedImage resizedImage = new BufferedImage(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
-        BufferedImage.TYPE_INT_RGB);
-    Graphics2D g = resizedImage.createGraphics();
-    g.drawImage(screenshot, 0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Color.WHITE, null);
-    g.dispose();
-    ImageIO.write(resizedImage, "JPEG", target);
-  }
+  
 
   public void saveTestRecordMap(List<TestRecord> records, int testRunIndex, String url,
       String testRunFolder,
@@ -73,7 +67,7 @@ public class WorkDirManager {
       }
       FileOutputStream file = new FileOutputStream(runFile);
       String json = new Gson().toJson(recordMap);
-      file.write(json.getBytes());
+      file.write(json.getBytes(UTF_8));
       file.close();
       copyHTMLReport(testRunFolder, testRunIndex, url, recordMap, reportFileName, templateFile);
     } catch (IOException e) {
@@ -111,7 +105,7 @@ public class WorkDirManager {
     Template template = engine.getTemplate(templateFile);
     FSUtils.directoryCheck(testRunFolder);
     File f = new File(testRunFolder + File.separator + fileName);
-    FileWriter writer = new FileWriter(f);
+    Writer writer = Files.newBufferedWriter(f.toPath(), UTF_8);
     template.merge(context, writer);
     writer.flush();
     writer.close();
@@ -131,7 +125,7 @@ public class WorkDirManager {
     baos.flush();
     return baos.toString("UTF-8");
   }
-  /*
+  /**
    * public List<TestRecord> loadTestRecords(File testFolder) { List<TestRecord>
    * testRecords = new ArrayList<TestRecord>(); File[] testFiles =
    * testFolder.listFiles(); for (File f : testFiles) { if (f.isDirectory()) {
@@ -155,7 +149,7 @@ public class WorkDirManager {
         record.setOutputFolder(recordFile.getParent());
       }
       FileOutputStream file = new FileOutputStream(recordFile);
-      file.write((new Gson().toJson(record).getBytes()));
+      file.write( new Gson().toJson(record).getBytes(UTF_8));
       file.close();
       // mapper.writeValue(recordFile, record);
     } catch (IOException e) {
@@ -201,9 +195,10 @@ public class WorkDirManager {
   }
 
   /**
-   * @param testRunFolderPath the folder in which tests are
+   *Returns the current output folder for the diff.
+ @param testRunFolderPath the folder in which tests are
    * @param testRecord        the actual test outcome
-   * @return the current output folder for the diff.
+   * 
    */
   public File getDiffsFolder(String testRunFolderPath, TestRecord testRecord) {
     File methodFolder = new File(testRunFolderPath + File.separator + testRecord.getMethodName());

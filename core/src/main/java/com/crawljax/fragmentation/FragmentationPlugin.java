@@ -1,6 +1,7 @@
 package com.crawljax.fragmentation;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.CrawlPathInfo;
@@ -25,6 +26,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,15 +53,15 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
    * is useful to determine the similarity between a previously recorded state and the current
    * browser state in a regression test scenario.
    *
-   * @param fragState
-   * @param manager
-   * @param dom
-   * @param screenshot
+   * 
+   * 
+   * 
+   * 
    */
   public static void loadFragmentState(StateVertex fragState, FragmentManager manager, Document dom,
       BufferedImage screenshot) {
 
-    Document fragmentedDom = ((HybridStateVertexImpl) fragState).loadFragmentDom(dom, screenshot);
+    
 
     if (manager != null) {
       int unique = 0;
@@ -91,11 +94,11 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
    * Main function that gets called everytime a new state is discovered. Uses VIPS to perform
    * fragmentation and calls fragment manager to analyze fragments
    *
-   * @param newState
-   * @param manager
-   * @param browser
-   * @param outputDir
-   * @param exportDom
+   * 
+   * 
+   * 
+   * 
+   * 
    */
   public static void fragmentState(StateVertex newState, FragmentManager manager,
       EmbeddedBrowser browser, File outputDir, boolean exportDom) {
@@ -112,8 +115,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     } else {
       screenshot = browser.getScreenShotAsBufferedImage(500);
     }
-    Document fragmentedDom = ((HybridStateVertexImpl) newState).fragmentDom(browser, screenshot,
-        screenshotsFolder);
+    
 
     long end = System.currentTimeMillis();
     LOG.info("Took {} ms to fragment dom ", end - start);
@@ -213,7 +215,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
     File CrawlPathsJson = new File(outputDir, "CrawlPath" + id + ".json");
     try {
-      FileWriter writer = new FileWriter(CrawlPathsJson);
+      Writer writer = Files.newBufferedWriter(CrawlPathsJson.toPath(), UTF_8);
       gson.toJson(crawlPath, writer);
       writer.flush();
       writer.close();
@@ -255,7 +257,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
     File CrawlPathsJson = new File(outputDir, "CrawlPaths.json");
     try {
-      FileWriter writer = new FileWriter(CrawlPathsJson);
+      Writer writer = Files.newBufferedWriter(CrawlPathsJson.toPath(), UTF_8);
       gson.toJson(session.getCrawlPaths(), writer);
       writer.flush();
       writer.close();
@@ -305,7 +307,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
       File cacheGson = new File(outputDir, "comparisionCache.json");
       try {
-        FileWriter writer = new FileWriter(cacheGson);
+        Writer writer = Files.newBufferedWriter(cacheGson.toPath(), UTF_8);
         gson.toJson(cache, writer);
         writer.flush();
         writer.close();
@@ -317,7 +319,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
       File nearDuplicatesJson = new File(outputDir, "nearDuplicates.json");
       try {
-        FileWriter writer = new FileWriter(nearDuplicatesJson);
+        Writer writer = Files.newBufferedWriter(nearDuplicatesJson.toPath(), UTF_8);
         gson.toJson(nearDuplicatesString, writer);
         writer.flush();
         writer.close();
@@ -338,22 +340,22 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
      * */
     //session.getFragmentManager().stopCrawling();
 
-    List<FragmentPair> output = new ArrayList<>();
+    
 
-    HashMap<Fragment, FragmentOutput> fragMap = new HashMap<>();
+    
     for (Fragment fragment : fragments) {
 
       try {
         FragmentOutput fragOutput = new FragmentOutput(fragment);
         fragmentOutputs.add(fragOutput);
-        if (!(FragmentManager.usefulFragment(fragment))) {
+        if (! FragmentManager.usefulFragment(fragment)) {
           continue;
         }
-        fragMap.put(fragment, fragOutput);
+        
 //			System.out.println(fragOutput);
         for (Fragment duplicate : fragment.getDuplicateFragments()) {
           FragmentOutput dupOutput = new FragmentOutput(duplicate);
-          fragMap.put(duplicate, dupOutput);
+          
         }
       } catch (Exception ex) {
         LOG.error("Cannot output fragment {} of {}", fragment.getId(),
@@ -363,7 +365,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
     File globalFragsJson = new File(outputDir, "allGlobalFragments.json");
     try {
-      FileWriter writer = new FileWriter(globalFragsJson);
+      Writer writer = Files.newBufferedWriter(globalFragsJson.toPath(), UTF_8);
       gson.toJson(fragmentOutputs, writer);
       writer.flush();
       writer.close();
@@ -386,7 +388,7 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
     }
     File crawlPathInfoJson = new File(outputDir, "crawlPathsInfo.json");
     try {
-      FileWriter writer = new FileWriter(crawlPathInfoJson);
+      Writer writer = Files.newBufferedWriter(crawlPathInfoJson.toPath(), UTF_8);
       gson.toJson(crawlPathsInfo, writer);
       writer.flush();
       writer.close();

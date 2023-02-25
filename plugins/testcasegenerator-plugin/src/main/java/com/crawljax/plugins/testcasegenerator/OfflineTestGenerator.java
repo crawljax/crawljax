@@ -1,5 +1,7 @@
 package com.crawljax.plugins.testcasegenerator;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawlPathInfo;
 import com.crawljax.core.configuration.BrowserConfiguration;
@@ -44,6 +46,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -160,7 +163,7 @@ public class OfflineTestGenerator {
     }.getType();
 
     try {
-      List<CrawlPathInfo> pathsInfo = gson.fromJson(new FileReader(crawlPathsInfoJson),
+      List<CrawlPathInfo> pathsInfo = gson.fromJson(Files.newBufferedReader(crawlPathsInfoJson.toPath(), UTF_8),
           typeOfObjectsList);
       int index = 0;
       for (List<Eventable> crawlPath : crawlPaths) {
@@ -337,7 +340,7 @@ public class OfflineTestGenerator {
     }
     String crawlLocation = args[0];
     // "/Users/rahulkrishna/git/tackle-test-generator-ui-level/out/crawl0";
-    boolean crawlPathsAvailable = false;
+    
     File crawlPathsJson = new File(crawlLocation, "CrawlPaths.json");
     File resultJson = new File(crawlLocation + File.separator + "result.json");
     File jsonEventables = new File(crawlLocation + File.separator + JSON_EVENTABLES);
@@ -346,12 +349,12 @@ public class OfflineTestGenerator {
     if (Files.exists(jsonEventables.toPath(), LinkOption.NOFOLLOW_LINKS)) {
       try {
 
-        Gson gson = (new GsonBuilder())
+        Gson gson =  new GsonBuilder()
             .registerTypeAdapter(ImmutableMap.class, new GsonUtils.ImmutableMapDeserializer())
             .registerTypeAdapter(ImmutableList.class, new GsonUtils.ImmutableListDeserializer())
             .create();
 
-        mapEventables = gson.fromJson(new BufferedReader(new FileReader(jsonEventables)),
+        mapEventables = gson.fromJson(Files.newBufferedReader(jsonEventables.toPath(), UTF_8),
             new TypeToken<Map<Long, Eventable>>() {
             }.getType());
         if (mapEventables == null) {
@@ -404,14 +407,14 @@ public class OfflineTestGenerator {
 
     JsonArray pluginArray = configObject.getAsJsonArray("plugins");
 
-    boolean isHybridState = false;
+    
     for (JsonElement element : pluginArray) {
       if (element.getAsString().equalsIgnoreCase("fragmentationPlugin")) {
-        isHybridState = true;
+        
       }
     }
     if (crawlPathsJson.exists()) {
-      crawlPathsAvailable = true;
+      
       LOGGER.info("CrawlPathsJson found");
       GsonBuilder builder = new GsonBuilder();
       // builder.registerTypeAdapter(ImmutableMap.class, new
@@ -423,7 +426,7 @@ public class OfflineTestGenerator {
       Gson gson = builder.create();
       try {
         Collection<List<Eventable>> crawlPaths = gson.fromJson(
-            new JsonReader(new FileReader(crawlPathsJson)),
+            new JsonReader(Files.newBufferedReader(crawlPathsJson.toPath(), UTF_8)),
             new TypeToken<ArrayList<CrawlPath>>() {
             }.getType());
         // System.out.println(crawlPaths);
@@ -460,101 +463,18 @@ public class OfflineTestGenerator {
     }
   }
 
-  private static boolean replaceCrawlPaths(Collection<List<Eventable>> crawlPaths,
-      File crawlPathsJson) {
-    File copy = new File(crawlPathsJson.getAbsolutePath() + "_original");
-    try {
-      Files.copy(crawlPathsJson.toPath(), copy.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException e) {
-      LOGGER.error("Error copying eventables {} to {}", crawlPathsJson.getAbsolutePath(),
-          copy.getAbsolutePath());
-      return false;
-    }
-    try {
-      GsonBuilder builder = new GsonBuilder();
-      Gson gson = builder.setPrettyPrinting().create();
+  
 
-      FileWriter writer = new FileWriter(crawlPathsJson);
-      gson.toJson(crawlPaths, writer);
-      writer.flush();
-      writer.close();
-      LOGGER.info("Wrote crawlpaths to CrawlPaths.json");
-      return true;
-    } catch (Exception ex) {
-      LOGGER.error("Error exporting Crawlpaths");
-      return false;
-    }
-  }
+  
 
-  private static boolean replaceJsonEventables(Map<Long, Eventable> mapEventables,
-      File jsonEventables) {
-    File copy = new File(jsonEventables.getAbsolutePath() + "_original");
-    try {
-      Files.copy(jsonEventables.toPath(), copy.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException e) {
-      LOGGER.error("Error copying eventables {} to {}", jsonEventables.getAbsolutePath(),
-          copy.getAbsolutePath());
-      return false;
-    }
-    // Set<Eventable> eventables = new HashSet<Eventable>();
-    // for(Eventable eventable: mapEventables.values()) {
-    // try{eventables.add(eventable);
-    // }catch(Exception ex) {
-    // ex.printStackTrace();
-    // }
-    // }
-    // eventables.addAll(mapEventables.values());
-    try {
-      TestSuiteGeneratorHelper.writeEventableTestDataToJson(jsonEventables.getAbsolutePath(),
-          mapEventables.values());
-    } catch (IOException e) {
-      LOGGER.error("Error writing fixed eventables to the fiel system at {}",
-          jsonEventables.getAbsolutePath());
-      return false;
-    }
-    return true;
-  }
-
-  private static boolean cleanCrawlPaths(Collection<List<Eventable>> crawlPaths,
-      Map<Long, Eventable> mapEventables) {
-    if (mapEventables == null) {
-      return false;
-    } else {
-      boolean fixed = false;
-      // long maxId = 0;
-      // for(long id: mapEventables.keySet()) {
-      // if(id> maxId) {
-      // maxId = id;
-      // }
-      // }
-      for (List<Eventable> crawlPath : crawlPaths) {
-        for (Eventable eventable : crawlPath) {
-          if (!mapEventables.containsKey(eventable.getId())) {
-            fixed = true;
-            LOGGER.info("Added eventable {} {}", eventable.getId(), eventable);
-            // eventable.setSource(null);
-            // eventable.setTarget(null);
-            mapEventables.put(eventable.getId(), eventable);
-          }
-          // if(eventable.getId()<=0) {
-          // fixed = true;
-          // maxId+=1;
-          // eventable.setId(maxId);
-          // mapEventables.put(maxId, eventable);
-          // }
-        }
-      }
-
-      return fixed;
-    }
-  }
+  
 
   /**
    * get eventable that maps source to target
    *
-   * @param source
-   * @param target
-   * @return
+   * 
+   * 
+   * 
    */
   private static List<Eventable> getEventable(int source, int target,
       List<Eventable> allEventables) {
@@ -664,7 +584,7 @@ public class OfflineTestGenerator {
       sourceState = eventable.getEdgeSource();
 
       if (target != -1 && source != target) {
-        List<Eventable> fix = getEventable(target, source, allEventables);
+        List<Eventable> fix = getEventable(/* source= */target, /* target= */source, allEventables);
         if (fix != null) {
           returnPath.addAll(fix);
           LOGGER.info("Found a fix for the path with eventable {}", fix.get(0).getId());
@@ -715,66 +635,7 @@ public class OfflineTestGenerator {
     return returnPath;
   }
 
-  private static List<List<Eventable>> fixCrawlPaths(Collection<List<Eventable>> crawlPaths,
-      Map<Long, Eventable> mapEventables, OutPutModel model) {
-    List<List<Eventable>> finalCrawlPaths = new ArrayList<List<Eventable>>();
-    List<Eventable> allEventables = new ArrayList<Eventable>();
-    for (List<Eventable> crawlPath : crawlPaths) {
-      for (Eventable eventable : crawlPath) {
-        if (!allEventables.contains(eventable)) {
-          allEventables.add(eventable);
-        }
-      }
-    }
-
-    List<String> stateSequence = new ArrayList<String>();
-    int source = -1;
-    int target = -1;
-    for (List<Eventable> crawlPath : crawlPaths) {
-      List<Eventable> fixedPath = null;
-      for (Eventable eventable : crawlPath) {
-        if (source == -1) {
-          if (eventable.getEdgeSource() instanceof StateVertex) {
-            source = eventable.getSourceStateVertex().getId();
-          } else {
-            source = (int) Double
-                .parseDouble(
-                    ((LinkedTreeMap<?, ?>) eventable.getEdgeSource()).get("id").toString());
-          }
-          // stateSequence.add(source);
-        }
-        if (eventable.getEdgeSource() instanceof StateVertex) {
-          source = eventable.getSourceStateVertex().getId();
-        } else {
-          source = (int) Double
-              .parseDouble(((LinkedTreeMap<?, ?>) eventable.getEdgeSource()).get("id").toString());
-        }
-        if (target != -1 && source != target) {
-          LOGGER.info("Found a broken crawlPath {} != {}", source, target);
-          fixedPath = fixCrawlPath(crawlPath, allEventables, mapEventables, model);
-        }
-        if (eventable.getEdgeTarget() instanceof StateVertex) {
-          target = eventable.getTargetStateVertex().getId();
-        } else {
-          target = (int) Double
-              .parseDouble(((LinkedTreeMap<?, ?>) eventable.getEdgeTarget()).get("id").toString());
-        }
-
-        // stateSequence.add(target);
-      }
-      if (fixedPath != null) {
-        finalCrawlPaths.add(fixedPath);
-        stateSequence.add(getCrawlPathEventableString(fixedPath));
-      } else {
-        finalCrawlPaths.add(crawlPath);
-        stateSequence.add(getCrawlPathEventableString(crawlPath));
-      }
-      source = -1;
-      target = -1;
-    }
-    LOGGER.info("State sequence {}", stateSequence);
-    return finalCrawlPaths;
-  }
+  
 
   public static class ImmutableMapTypeAdapterFactory implements TypeAdapterFactory {
 

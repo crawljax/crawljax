@@ -1,5 +1,7 @@
 package com.crawljax.core.state;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.ExitNotifier;
 import com.crawljax.stateabstractions.hybrid.HybridStateVertexImpl;
@@ -99,11 +101,11 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
    * @see org.jgrapht.Graph#addVertex(Object)
    */
   public StateVertex putIfAbsent(StateVertex stateVertex) {
-    return putIfAbsent(stateVertex, true);
+    return putIfAbsent(stateVertex);
   }
 
   public StateVertex putIndex(StateVertex index) {
-    return putIfAbsent(index, false);
+    return putIfAbsent(index);
   }
 
   /**
@@ -122,7 +124,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
    */
   // rahulyk: Modifying the original function to accommodate threshold based clone
   // detection <near duplicates?>
-  private StateVertex putIfAbsent(StateVertex stateVertex, boolean correctName) {
+  private StateVertex putIfAbsent(StateVertex stateVertex) {
     writeLock.lock();
     try {
       boolean clone = this.hasClone(stateVertex);
@@ -331,7 +333,7 @@ public class InMemoryStateFlowGraph implements Serializable, StateFlowGraph {
       final Mean mean = new Mean();
 
       for (StateVertex state : sfg.vertexSet()) {
-        mean.increment(state.getDom().getBytes().length);
+        mean.increment(state.getDom().getBytes(UTF_8).length);
       }
 
       return (int) mean.getResult();

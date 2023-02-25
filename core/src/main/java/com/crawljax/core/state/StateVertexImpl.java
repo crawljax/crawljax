@@ -165,7 +165,7 @@ public class StateVertexImpl implements StateVertex {
     }
   }
 
-  public List<CandidateElement> getCandidateElement(Node equivalentNode) {
+  @Override public List<CandidateElement> getCandidateElement(Node equivalentNode) {
     if (equivalentNode == null) {
       return null;
     }

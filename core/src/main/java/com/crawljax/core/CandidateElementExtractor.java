@@ -14,7 +14,6 @@ import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.inject.assistedinject.Assisted;
@@ -140,16 +139,16 @@ public class CandidateElementExtractor {
       LOG.debug("Extracting TAG: {}", tag);
 
       NodeList frameNodes = dom.getElementsByTagName("FRAME");
-      addFramesCandidates(dom, results, relatedFrame, frameNodes);
+      addFramesCandidates(results, relatedFrame, frameNodes);
 
       NodeList iFrameNodes = dom.getElementsByTagName("IFRAME");
-      addFramesCandidates(dom, results, relatedFrame, iFrameNodes);
+      addFramesCandidates(results, relatedFrame, iFrameNodes);
 
       evaluateElements(dom, tag, results, relatedFrame);
     }
   }
 
-  private void addFramesCandidates(Document dom, List<CandidateElement> results,
+  private void addFramesCandidates(List<CandidateElement> results,
       String relatedFrame, NodeList frameNodes) {
 
     if (frameNodes == null) {
@@ -226,7 +225,7 @@ public class CandidateElementExtractor {
       CrawlElement crawlElement,
       EventableConditionChecker eventableConditionChecker) {
 
-    Builder<Element> result = ImmutableList.builder();
+    ImmutableList.Builder<Element> result = ImmutableList.builder();
 
     if (crawlElement.getTagName() == null) {
       return result.build();
@@ -307,7 +306,7 @@ public class CandidateElementExtractor {
     return ImmutableList.of();
   }
 
-  private void addElement(Element element, Builder<Element> builder,
+  private void addElement(Element element, ImmutableList.Builder<Element> builder,
       CrawlElement crawlElement) {
     if ("A".equalsIgnoreCase(crawlElement.getTagName()) && hrefShouldBeIgnored(element)) {
       return;

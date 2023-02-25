@@ -33,16 +33,18 @@ public class ElementResolver {
   }
 
   /**
-   * @return equivalent xpath of element equivalent to Eventable
+   *Returns equivalent xpath of element equivalent to Eventable.
+ 
    */
   public String resolve() {
     return resolve(false);
   }
 
   /**
-   * @param logging Whether to do logging.
-   * @return equivalent xpath of element equivalent to Eventable or an empty string if the DOM
-   * cannot be read.
+   *Returns equivalent xpath of element equivalent to Eventable or an empty string if the DOM
+ cannot be read.
+ @param logging Whether to do logging.
+   * 
    */
   public String resolve(boolean logging) {
     Document dom = null;

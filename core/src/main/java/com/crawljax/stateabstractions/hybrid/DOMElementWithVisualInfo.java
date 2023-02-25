@@ -62,10 +62,8 @@ public class DOMElementWithVisualInfo {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    
+    if (!(obj instanceof DOMElementWithVisualInfo)) {
       return false;
     }
     DOMElementWithVisualInfo other = (DOMElementWithVisualInfo) obj;

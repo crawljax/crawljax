@@ -64,14 +64,14 @@ public class SSIM {
     GaussianBlur(I1_I2, sigma12, new Size(11, 11), 1.5);
     //sigma12 -= mu1_mu2;
     Core.subtract(sigma12, mu1_mu2, sigma12);
-    Mat t1 = new Mat(), t2 = new Mat(), t3 = new Mat();
+    
 
     Scalar scalar = new Scalar(C1);
     Core.multiply(mu1_mu2, new Scalar(2), t1);
     Core.add(t1, scalar, t1);
     Core.multiply(sigma12, new Scalar(2), t2);
     Core.add(t2, new Scalar(C2), t2);
-    t3 = t1.mul(t2);              // t3 = ((2*mu1_mu2 + C1).*(2*sigma12 + C2))
+    Mat t3 = t1.mul(t2);              // t3 = ((2*mu1_mu2 + C1).*(2*sigma12 + C2))
     Core.add(mu1_2, mu2_2, t1);
     Core.add(t1, new Scalar(C1), t1);
     Core.add(sigma1_2, sigma2_2, t2);
@@ -91,8 +91,8 @@ public class SSIM {
 
     Mat image2 = Imgcodecs.imread("image_difference_input2.png");
 
+    
     long start = System.currentTimeMillis();
-    start = System.currentTimeMillis();
     Imgproc.cvtColor(image1, image1, COLOR_RGB2GRAY);
     Imgproc.cvtColor(image2, image2, COLOR_RGB2GRAY);
 

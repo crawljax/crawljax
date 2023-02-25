@@ -44,9 +44,10 @@ public class FormInput {
   }
 
   /**
-   * @param inputs         form input set.
+   *Returns true if set contains a FormInput that has the same identification.
+ @param inputs         form input set.
    * @param identification the identification to check.
-   * @return true if set contains a FormInput that has the same identification.
+   * 
    */
   public static boolean containsInput(Set<FormInput> inputs, Identification identification) {
     for (FormInput input : inputs) {
@@ -59,9 +60,10 @@ public class FormInput {
   }
 
   /**
-   * @param inputs         form input set.
+   *Returns a FormInput object that has the same identification.
+ @param inputs         form input set.
    * @param identification the identification to check.
-   * @return a FormInput object that has the same identification.
+   * 
    */
   public static FormInput getInput(Set<FormInput> inputs, Identification identification) {
     for (FormInput input : inputs) {
@@ -74,7 +76,8 @@ public class FormInput {
   }
 
   /**
-   * @return the input type.
+   *Returns the input type.
+ 
    */
   public InputType getType() {
     return type;
@@ -106,7 +109,8 @@ public class FormInput {
   }
 
   /**
-   * @return the inputValues
+   *Returns the inputValues.
+ 
    */
   public Set<InputValue> getInputValues() {
     return inputValues;
@@ -141,7 +145,8 @@ public class FormInput {
   }
 
   /**
-   * @return the related eventable for submitting
+   *Returns the related eventable for submitting.
+ 
    */
   public Eventable getEventable() {
     return eventable;
@@ -155,7 +160,8 @@ public class FormInput {
   }
 
   /**
-   * @return the identification
+   *Returns the identification.
+ 
    */
   public Identification getIdentification() {
     return identification;

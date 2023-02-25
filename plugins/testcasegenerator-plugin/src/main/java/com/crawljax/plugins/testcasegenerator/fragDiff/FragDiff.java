@@ -61,7 +61,7 @@ public class FragDiff {
 
   /**
    * return the old page with change labels.
-   * @throws IOException
+   * 
    */
   public void annotateOldPage(boolean drawRectangles, File oldFile) throws IOException {
     boolean detectLevel = true;
@@ -75,7 +75,7 @@ public class FragDiff {
 
   /**
    * return the new page with change labels.
-   * @throws IOException
+   * 
    */
   public void annotateNewPage(boolean drawRectangles, File newFile) throws IOException {
     boolean detectLevel = false;
@@ -188,7 +188,7 @@ public class FragDiff {
   /**
    * Annotate the images with change labels.
    *
-   * @param changedNodes
+   * 
    */
   private ImageAnnotations annotatePage(StateVertex stateVertex, StateVertex toCompare,
       List<Node> changedNodes, boolean detectLevel) {
@@ -298,9 +298,9 @@ public class FragDiff {
 
 
   private boolean annotateFragment(Fragment fragment, Graphics2D g2d, StateVertex toCompare) {
-    List<Fragment> duplicateFragments = new ArrayList<Fragment>();
-    List<Fragment> equivalentFragments = new ArrayList<Fragment>();
-    List<Fragment> differentFragments = new ArrayList<Fragment>();
+    
+    
+    
 
     if (!FragmentManager.usefulFragment(fragment)) {
       return false;
@@ -310,7 +310,7 @@ public class FragDiff {
     for (Fragment duplicate : fragmentManager.getDuplicateFragments(fragment)) {
       if (duplicate.getReferenceState().equals(toCompare)) {
         foundMatch = true;
-        duplicateFragments.add(fragment);
+        
         return true;
       }
     }
@@ -322,7 +322,7 @@ public class FragDiff {
     for (Fragment equivalent : fragmentManager.getEquivalentFragments(fragment)) {
       if (equivalent.getReferenceState().equals(toCompare)) {
         foundMatch = true;
-        equivalentFragments.add(fragment);
+        
 //				g2d.setColor(transparentYellow);
 //				g2d.fill(fragment.getRect());
 
@@ -342,7 +342,7 @@ public class FragDiff {
     }
 
     if (!foundMatch) {
-      differentFragments.add(fragment);
+      
 //			g2d.setColor(transparentRed);
 //			g2d.fill(fragment.getRect());	
       boolean allUseful = true;

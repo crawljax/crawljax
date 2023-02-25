@@ -70,14 +70,16 @@ public class CrawlSession {
   }
 
   /**
-   * @return the stateFlowGraph
+   *Returns the stateFlowGraph.
+ 
    */
   public StateFlowGraph getStateFlowGraph() {
     return stateFlowGraph;
   }
 
   /**
-   * @return the crawlPaths
+   *Returns the crawlPaths.
+ 
    */
   public Collection<List<Eventable>> getCrawlPaths() {
     return crawlPaths;
@@ -92,20 +94,22 @@ public class CrawlSession {
     }
 
     LOGGER.info("Adding CrawlPath to session !!");
-    String pathString = Crawler.printCrawlPath(crawlPath, true);
+    
 
     this.crawlPaths.add(crawlPath);
   }
 
   /**
-   * @return the initialState
+   *Returns the initialState.
+ 
    */
   public StateVertex getInitialState() {
     return initialState;
   }
 
   /**
-   * @return the startTime
+   *Returns the startTime.
+ 
    */
   public long getStartTime() {
     return startTime;

@@ -15,10 +15,9 @@ import org.slf4j.LoggerFactory;
  */
 public class PerceptualImageHashStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(PerceptualImageHashStateVertexFactory.class.getName());
-  private static final int THUMBNAIL_WIDTH = 200;
-  private static final int THUMBNAIL_HEIGHT = 200;
+  
+  
+  
   private static double threshold = 0;
 
   static {

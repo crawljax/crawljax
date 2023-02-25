@@ -40,8 +40,9 @@ public class CrawlerContext {
   }
 
   /**
-   * @return The browser of the current session. If you have configured multiple browsers this will
-   * return the {@link EmbeddedBrowser} that caused the given {@link Plugin} to fire.
+   *Returns the browser of the current session. If you have configured multiple browsers this will
+ return the {@link EmbeddedBrowser} that caused the given {@link Plugin} to fire.
+ 
    */
   public EmbeddedBrowser getBrowser() {
     return browser;
@@ -53,14 +54,16 @@ public class CrawlerContext {
   }
 
   /**
-   * @return The {@link CrawlSession}
+   *Returns the {@link CrawlSession}.
+ 
    */
   public CrawlSession getSession() {
     return sessionProvider.get();
   }
 
   /**
-   * @return The {@link CrawljaxConfiguration} for this crawl.
+   *Returns the {@link CrawljaxConfiguration} for this crawl.
+ 
    */
   public CrawljaxConfiguration getConfig() {
     return config;
@@ -83,8 +86,9 @@ public class CrawlerContext {
   }
 
   /**
-   * @return The current {@link StateVertex} or <code>null</code> when the {@link Crawler} isn't
-   * initialized yet.
+   *Returns the current {@link StateVertex} or <code>null</code> when the {@link Crawler} isn't
+ initialized yet.
+ 
    */
   public StateVertex getCurrentState() {
     if (stateMachine == null) {
@@ -99,7 +103,8 @@ public class CrawlerContext {
   }
 
   /**
-   * @return The current {@link CrawlPath} in this context.
+   *Returns the current {@link CrawlPath} in this context.
+ 
    */
   public CrawlPath getCrawlPath() {
     return crawlpath.immutableCopy();

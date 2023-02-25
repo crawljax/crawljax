@@ -14,8 +14,10 @@ import com.crawljax.forms.InputValue;
 import com.crawljax.forms.RandomInputValueGenerator;
 import com.crawljax.util.DomUtils;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.io.Files;
+import com.google.errorprone.annotations.InlineMe;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -355,7 +357,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     LOGGER.debug("Browser closed...");
   }
 
-  @Override
+  @InlineMe(replacement = "this.getStrippedDom()")
+@Override
   @Deprecated
   public String getDom() {
     return getStrippedDom();
@@ -587,40 +590,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
   }
 
 
-  /**
-   * @return a Document object containing the contents of iframes as well.
-   * @throws CrawljaxException if an exception is thrown.
-   */
-  private Document getDomTreeWithFrames_GoldStandards() throws CrawljaxException {
-
-    try {
-      Document document = DomUtils.asDocument(browser.getPageSource());
-      if (document.getElementsByTagName("title").item(0).getTextContent()
-          .equalsIgnoreCase("Meeting Room Booking System")) {
-        document = DomUtils.removeHiddenInputs(document);
-      }
-      if (document.getElementsByTagName("title").item(0).getTextContent().contains("MantisBT")) {
-        document = DomUtils.removeHiddenInputs(document);
-        document = DomUtils.removeHead(document);
-        try {
-          document = DomUtils.removeElementsUnderXpath(document,
-              "/html[1]/body[1]/table[1]/tbody[1]/tr[1]");
-        } catch (Exception ex) {
-          LOGGER.warn("Could not remove time element for Mantisbt");
-        }
-      }
-
-      if (document.getElementsByTagName("title").item(0).getTextContent().contains("retrospect")) {
-        document = DomUtils.removeHead(document);
-        document = DomUtils.removeComments(document);
-      }
-      appendFrameContent(document.getDocumentElement(), document, "");
-      return document;
-    } catch (IOException e) {
-      throw new CrawljaxException(e.getMessage(), e);
-    }
-
-  }
+  
 
   private void appendFrameContent(Element orig, Document document, String topFrame) {
 
@@ -704,7 +674,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     LOGGER.debug("frame identification: {}", frameIdentification);
 
     if (frameIdentification.contains(".")) {
-      String[] frames = frameIdentification.split("\\.");
+      Iterable<String> frames = Splitter.on('.').split(frameIdentification);
 
       for (String frameId : frames) {
         LOGGER.debug("switching to frame: {}", frameId);
@@ -868,26 +838,11 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     return browser;
   }
 
-  /**
-   * @return the period to wait after an event.
-   */
-  private long getCrawlWaitEvent() {
-    return crawlWaitEvent;
-  }
+  
 
-  /**
-   * @return the list of attributes to be filtered from DOM.
-   */
-  private ImmutableSortedSet<String> getFilterAttributes() {
-    return filterAttributes;
-  }
+  
 
-  /**
-   * @return the period to wait after a reload.
-   */
-  private long getCrawlWaitReload() {
-    return crawlWaitReload;
-  }
+  
 
   @Override
   public void saveScreenShot(File file) throws CrawljaxException {
@@ -941,7 +896,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     Map<String, Object> result =
         chromeDriver.executeCdpCommand("Page.captureScreenshot", new HashMap<>());
     String data = (String) result.get("data");
-    byte[] image = Base64.getDecoder().decode((data));
+    byte[] image = Base64.getDecoder().decode( data);
     InputStream is = new ByteArrayInputStream(image);
     try {
       BufferedImage img = ImageIO.read(is);
@@ -1016,7 +971,8 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
   }
 
   /**
-   * @return the WebDriver used as an EmbeddedBrowser.
+   *Returns the WebDriver used as an EmbeddedBrowser.
+ 
    */
   public WebDriver getBrowser() {
     return browser;
@@ -1042,7 +998,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
   }
 
   private void throwIfNotInteractableException(WebDriverException exception) {
-    boolean b = (exception.getCause() instanceof ElementNotInteractableException);
+    
     if (exceptionIsInteractableException(exception)) {
       throw new ElementNotInteractableException("not interactable");
     }

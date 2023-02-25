@@ -6,6 +6,7 @@ import com.crawljax.plugins.testcasegenerator.visualdiff.pageobjects.PageObject;
 import com.crawljax.stateabstractions.visual.OpenCVLoad;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -47,7 +48,7 @@ public class ObjectDetection {
     this.image = Imgcodecs.imread(inputFile);
     this.adjusted = zeros();
     this.annotated = zeros();
-    this.pageObjects = new LinkedList<PageObject>();
+    this.pageObjects = new ArrayList<PageObject>();
   }
 
   public static void directoryCheck(String dir) throws IOException {
@@ -97,35 +98,40 @@ public class ObjectDetection {
   }
 
   /**
-   * @return The original image.
+   *Returns the original image.
+ 
    */
   public Mat getImage() {
     return image;
   }
 
   /**
-   * @return The adjusted image.
+   *Returns the adjusted image.
+ 
    */
   public Mat getAdjusted() {
     return adjusted;
   }
 
   /**
-   * @return The annotated image.
+   *Returns the annotated image.
+ 
    */
   public Mat getAnnotated() {
     return annotated;
   }
 
   /**
-   * @return The objects found on the page.
+   *Returns the objects found on the page.
+ 
    */
   public List<PageObject> getPageObjects() {
     return pageObjects;
   }
 
   /**
-   * @return the abstract page with identified objects.
+   *Returns the abstract page with identified objects.
+ 
    */
   public Page getPage() {
     return new Page(image, pageObjects);
@@ -226,7 +232,7 @@ public class ObjectDetection {
      * objects. For nested objects, use RETR_LIST (or RETR_TREE to get the actual structure).
      */
     Mat hierarchy = zeros();
-    List<MatOfPoint> contours = new LinkedList<MatOfPoint>();
+    List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
     Imgproc.findContours(adjusted, contours, hierarchy, Imgproc.RETR_EXTERNAL,
         Imgproc.CHAIN_APPROX_SIMPLE);
 

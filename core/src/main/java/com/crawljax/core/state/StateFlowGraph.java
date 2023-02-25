@@ -12,13 +12,15 @@ import org.jgrapht.GraphPath;
 public interface StateFlowGraph {
 
   /**
-   * @param id The ID of the state
-   * @return The state if found or <code>null</code>.
+   *Returns the state if found or <code>null</code>.
+ @param id The ID of the state
+   * 
    */
   StateVertex getById(int id);
 
   /**
-   * @return The index state.
+   *Returns the index state.
+ 
    */
   StateVertex getInitialState();
 
@@ -71,12 +73,14 @@ public interface StateFlowGraph {
   ImmutableSet<Eventable> getAllEdges();
 
   /**
-   * @return Dom string average size (byte).
+   *Returns dom string average size (byte).
+ 
    */
   int getMeanStateStringSize();
 
   /**
-   * @return The number of states, currently in the graph.
+   *Returns the number of states, currently in the graph.
+ 
    */
   int getNumberOfStates();
 
@@ -90,9 +94,10 @@ public interface StateFlowGraph {
       StateVertex index);
 
   /**
-   * @param stateVertex The source {@link StateVertex}
-   * @return a {@link Set} of {@link StateVertex} that are connected to the source
-   * {@link StateVertex} via one of the sources outgoing edges.
+   *Returns a {@link Set} of {@link StateVertex} that are connected to the source
+ {@link StateVertex} via one of the sources outgoing edges.
+ @param stateVertex The source {@link StateVertex}
+   * 
    */
   ImmutableSet<StateVertex> getOutgoingStates(StateVertex stateVertex);
 

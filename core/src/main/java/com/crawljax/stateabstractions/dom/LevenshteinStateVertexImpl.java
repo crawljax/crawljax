@@ -25,7 +25,7 @@ public class LevenshteinStateVertexImpl extends StateVertexImpl {
    * @param name                   the name of the state
    * @param dom                    the current DOM tree of the browser
    * @param strippedDom            the stripped dom by the OracleComparators
-   * @param editDistanceComparator
+   * 
    */
   public LevenshteinStateVertexImpl(int id, String url, String name, String dom,
       String strippedDom,
@@ -41,7 +41,7 @@ public class LevenshteinStateVertexImpl extends StateVertexImpl {
 
   @Override
   public boolean equals(Object object) {
-    LevenshteinStateVertexImpl that = (LevenshteinStateVertexImpl) object;
+    if (!(object instanceof LevenshteinStateVertexImpl)) { return false; }LevenshteinStateVertexImpl that = (LevenshteinStateVertexImpl) object;
     return editDistanceComparator.isEquivalent(this.getStrippedDom(), that.getStrippedDom());
   }
 

@@ -21,7 +21,8 @@ public abstract class StateVertexFactory {
       String strippedDom, EmbeddedBrowser browser);
 
   /**
-   * @return The index {@link StateVertex}.
+   *Returns the index {@link StateVertex}.
+ 
    */
   public StateVertex createIndex(String url, String dom, String strippedDom,
       EmbeddedBrowser browser) {

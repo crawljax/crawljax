@@ -77,9 +77,9 @@ public class RTED_InfoTree_Opt {
   /**
    * The constructor. Parameters passed are the edit operation costs.
    *
-   * @param delCost
-   * @param insCost
-   * @param matchCost
+   * 
+   * 
+   * 
    */
   public RTED_InfoTree_Opt(double delCost, double insCost, double matchCost) {
     this.costDel = delCost;
@@ -90,8 +90,8 @@ public class RTED_InfoTree_Opt {
   /**
    * Computes the tree edit distance between trees t1 and t2.
    *
-   * @param t1
-   * @param t2
+   * 
+   * 
    * @return tree edit distance between trees t1 and t2
    */
   public double nonNormalizedTreeDist(LblTree t1, LblTree t2) {
@@ -114,8 +114,8 @@ public class RTED_InfoTree_Opt {
   /**
    * Initialization method.
    *
-   * @param t1
-   * @param t2
+   * 
+   * 
    */
   public void init(LblTree t1, LblTree t2) {
     LabelDictionary ld = new LabelDictionary();
@@ -258,9 +258,9 @@ public class RTED_InfoTree_Opt {
   /**
    * The recursion step according to the optimal strategy.
    *
-   * @param it1
-   * @param it2
-   * @return
+   * 
+   * 
+   * 
    */
   private double computeDistUsingStrArray(InfoTree it1, InfoTree it2) {
 
@@ -408,8 +408,8 @@ public class RTED_InfoTree_Opt {
   /**
    * Single-path function for the left-most path based on Zhang and Shasha algorithm.
    *
-   * @param it1
-   * @param it2
+   * 
+   * 
    * @return distance between subtrees it1 and it2
    */
   private double spfL(InfoTree it1, InfoTree it2) {
@@ -489,8 +489,8 @@ public class RTED_InfoTree_Opt {
    * Single-path function for right-most path based on symmetric version of Zhang and Shasha
    * algorithm.
    *
-   * @param it1
-   * @param it2
+   * 
+   * 
    * @return distance between subtrees it1 and it2
    */
   private double spfR(InfoTree it1, InfoTree it2) {
@@ -582,9 +582,9 @@ public class RTED_InfoTree_Opt {
   /**
    * Single-path function for heavy path based on Klein/Demaine algorithm.
    *
-   * @param it1
-   * @param it2
-   * @param heavyPath
+   * 
+   * 
+   * 
    * @return distance between subtrees it1 and it2
    */
   private double spfH(InfoTree it1, InfoTree it2, int[] heavyPath) {
@@ -649,11 +649,11 @@ public class RTED_InfoTree_Opt {
   /**
    * Compute period method.
    *
-   * @param it1
-   * @param aVp
-   * @param aNextVp
-   * @param it2
-   * @param aStrategy
+   * 
+   * 
+   * 
+   * 
+   * 
    */
   private void computePeriod(InfoTree it1, int aVp, int aNextVp, InfoTree it2, int aStrategy) {
 
@@ -906,12 +906,12 @@ public class RTED_InfoTree_Opt {
    * Computes an array where preorder/rev.preorder of a subforest of given subtree is stored and can
    * be accessed for given i and j.
    *
-   * @param it
-   * @param subtreePreorder
-   * @param subtreeRevPreorder
-   * @param subtreeSize
-   * @param aStrategy
-   * @param treeSize
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
    */
   private void computeIJTable(InfoTree it, int subtreePreorder, int subtreeRevPreorder,
       int subtreeSize,
@@ -956,13 +956,13 @@ public class RTED_InfoTree_Opt {
   /**
    * Returns j for given i, result of j(i) form Demaine's algorithm.
    *
-   * @param it
-   * @param aI
-   * @param aSubtreeWeight
-   * @param aSubtreeRevPre
-   * @param aSubtreePre
-   * @param aStrategy
-   * @param treeSize
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
    * @return j for given i
    */
   private int jOfI(InfoTree it, int aI, int aSubtreeWeight, int aSubtreeRevPre, int aSubtreePre,

@@ -41,7 +41,7 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
 
   /**
    * @param indexState    the root of the SFG
-   * @param firstConsumer
+   * 
    * @throws IllegalStateException when the method is invoked more than once.
    */
   public void setup(StateVertex indexState, CrawlTaskConsumer firstConsumer) {
@@ -59,8 +59,8 @@ public class CrawlSessionProvider implements Provider<CrawlSession> {
   /**
    * Alternate for consumer
    *
-   * @param indexState
-   * @param context
+   * 
+   * 
    */
   public void setup(StateVertex indexState, CrawlerContext context) {
     if (!isSet.getAndSet(true)) {

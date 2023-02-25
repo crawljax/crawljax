@@ -51,7 +51,7 @@ public class BracketStringInputParser implements InputParser<StringNodeData> {
    * @return tree representation of the bracket notation input.
    * @see AptedNode
    */
-  public AptedNode<StringNodeData> fromString(String s) {
+  @Override public AptedNode<StringNodeData> fromString(String s) {
     s = s.substring(s.indexOf("{"), s.lastIndexOf("}") + 1);
     AptedNode<StringNodeData> node = new AptedNode<>(
         new StringNodeData(FormatUtilities.getRoot(s)));

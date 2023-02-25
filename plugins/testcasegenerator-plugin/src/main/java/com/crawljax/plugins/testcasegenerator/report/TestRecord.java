@@ -20,7 +20,8 @@ public class TestRecord {
   private MethodResult methodResult;
 
   /**
-   * @return the id
+   *Returns the id.
+ 
    */
   public String getMethodName() {
     return methodName;
@@ -34,7 +35,8 @@ public class TestRecord {
   }
 
   /**
-   * @return the createTime
+   *Returns the createTime.
+ 
    */
   public Date getCreateTime() {
     return createTime;
@@ -48,7 +50,8 @@ public class TestRecord {
   }
 
   /**
-   * @return the startTime
+   *Returns the startTime.
+ 
    */
   public Date getStartTime() {
     return startTime;
@@ -62,7 +65,8 @@ public class TestRecord {
   }
 
   /**
-   * @return the duration
+   *Returns the duration.
+ 
    */
   public long getDuration() {
     return duration;
@@ -90,7 +94,8 @@ public class TestRecord {
   }
 
   /**
-   * @return the outputFolder
+   *Returns the outputFolder.
+ 
    */
   public String getOutputFolder() {
     return outputFolder;
@@ -104,7 +109,8 @@ public class TestRecord {
   }
 
   /**
-   * @return the crawlStatus
+   *Returns the crawlStatus.
+ 
    */
   public TestStatusType getTestStatus() {
     return testStatus;

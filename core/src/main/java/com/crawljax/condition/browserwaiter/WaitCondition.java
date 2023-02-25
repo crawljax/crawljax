@@ -107,7 +107,8 @@ public class WaitCondition {
   }
 
   /**
-   * @return the url
+   *Returns the url.
+ 
    */
   protected String getUrl() {
     return url;

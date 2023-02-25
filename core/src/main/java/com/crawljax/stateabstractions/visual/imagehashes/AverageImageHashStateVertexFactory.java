@@ -15,10 +15,9 @@ import org.slf4j.LoggerFactory;
  */
 public class AverageImageHashStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(AverageImageHashStateVertexFactory.class.getName());
-  private static final int THUMBNAIL_WIDTH = 200;
-  private static final int THUMBNAIL_HEIGHT = 200;
+  
+  
+  
 
   static {
     OpenCVLoad.load();

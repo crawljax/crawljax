@@ -37,12 +37,5 @@ public class ImageWriter {
 
   }
 
-  private static void writeThumbNail(File target, BufferedImage screenshot) throws IOException {
-    BufferedImage resizedImage =
-        new BufferedImage(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, BufferedImage.TYPE_INT_RGB);
-    Graphics2D g = resizedImage.createGraphics();
-    g.drawImage(screenshot, 0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, Color.WHITE, null);
-    g.dispose();
-    ImageIO.write(resizedImage, "JPEG", target);
-  }
+  
 }

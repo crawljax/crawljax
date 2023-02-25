@@ -30,7 +30,7 @@ public class AddressbookCleanup implements OnUrlFirstLoadPlugin {
 
     //clear addresses
     driver.findElement(By.id("MassCB")).click();
-    driver.findElement((By.xpath("//*[@id=\"content\"]/form[2]/div[2]/input"))).click();
+    driver.findElement( By.xpath("//*[@id=\"content\"]/form[2]/div[2]/input")).click();
     try {
       Thread.sleep(1000);
     } catch (InterruptedException e) {
@@ -52,7 +52,7 @@ public class AddressbookCleanup implements OnUrlFirstLoadPlugin {
       e.printStackTrace();
     }
     //clear groups
-    driver.findElement((By.xpath("//*[@id=\"nav\"]/ul/li[3]/a"))).click();
+    driver.findElement( By.xpath("//*[@id=\"nav\"]/ul/li[3]/a")).click();
     try {
       Thread.sleep(1000);
     } catch (InterruptedException e) {

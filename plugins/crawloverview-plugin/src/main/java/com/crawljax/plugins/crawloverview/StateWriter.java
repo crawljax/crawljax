@@ -39,7 +39,7 @@ class StateWriter {
     VelocityContext context = new VelocityContext();
     context.put("name", state.getName());
     context.put("screenshot", state.getName() + ".png");
-    context.put("elements", getElements(sfg, state));
+    context.put("elements", getElements(state));
     context.put("fanIn", state.getFanIn());
     context.put("fanOut", state.getFanOut());
     context.put("url", state.getUrl());
@@ -64,7 +64,7 @@ class StateWriter {
     outBuilder.writeState(context, name);
   }
 
-  private List<Map<String, String>> getElements(StateFlowGraph sfg, State state) {
+  private List<Map<String, String>> getElements(State state) {
     List<CandidateElementPosition> candidateElements = state.getCandidateElements();
 
     List<Map<String, String>> elements =
@@ -121,7 +121,7 @@ class StateWriter {
   }
 
   private int getStateNumber(String name) {
-    if ("index".equals(name)) {
+    if (name.equals("index")) {
       return 0;
     }
     return Integer.parseInt(name.replace("state", ""));

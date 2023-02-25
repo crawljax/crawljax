@@ -14,7 +14,6 @@ import com.crawljax.plugins.crawloverview.model.StateStatistics;
 import com.crawljax.plugins.crawloverview.model.Statistics;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 import java.util.Date;
 import java.util.Set;
@@ -50,7 +49,8 @@ class OutPutModelCache {
   }
 
   /**
-   * @return Makes the final calculations and retuns the {@link OutPutModel}.
+   *Returns makes the final calculations and retuns the {@link OutPutModel}.
+ 
    */
   public OutPutModel close(CrawlSession session, ExitStatus exitStatus) {
     ImmutableList<Edge> edgesCopy = asEdges(session.getStateFlowGraph()
@@ -101,7 +101,7 @@ class OutPutModelCache {
   }
 
   private ImmutableMap<String, State> buildStates() {
-    Builder<String, State> builder = ImmutableMap.builder();
+    ImmutableMap.Builder<String, State> builder = ImmutableMap.builder();
     for (StateBuilder state : states.values()) {
       builder.put(state.getName(), state.build());
     }

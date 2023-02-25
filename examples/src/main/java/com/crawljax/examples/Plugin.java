@@ -20,11 +20,11 @@ public class Plugin implements OnNewStatePlugin, OnUrlLoadPlugin, PostCrawlingPl
     PreCrawlingPlugin {
 
 
-  private String testCaseFile;
+  
 
-  private int brokenStep;
+  
 
-  private String templateToMatch = null;
+  
 
   public Plugin() {
   }

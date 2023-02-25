@@ -25,7 +25,7 @@ public class TLSHStateVertexImpl extends StateVertexImpl {
 
   private final double maxRaw = 633;
 
-  private final Mode mode;
+  
 
   private final String usedDom;
 
@@ -46,14 +46,14 @@ public class TLSHStateVertexImpl extends StateVertexImpl {
    * @param name        the name of the state
    * @param dom         the current DOM tree of the browser
    * @param strippedDom the stripped dom by the OracleComparators
-   * @param threshold
-   * @param mode
+   * 
+   * 
    */
   public TLSHStateVertexImpl(int id, String url, String name, String dom, String strippedDom,
       double threshold, Mode mode, EditDistanceComparator editDistanceComparator) {
     super(id, url, name, dom, strippedDom);
     this.threshold = threshold;
-    this.mode = mode;
+    
     this.usedDom = DOMConfiguration.getConfiguredDOM(dom, strippedDom, mode);
     this.editDistanceComparator = editDistanceComparator;
   }
@@ -69,7 +69,7 @@ public class TLSHStateVertexImpl extends StateVertexImpl {
    */
   @Override
   public boolean equals(Object object) {
-    TLSHStateVertexImpl that = (TLSHStateVertexImpl) object;
+    if (!(object instanceof TLSHStateVertexImpl)) { return false; }TLSHStateVertexImpl that = (TLSHStateVertexImpl) object;
     if (this.getName().equalsIgnoreCase(that.getName())) {
       return true;
     }

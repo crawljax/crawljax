@@ -1,5 +1,7 @@
 package com.crawljax.stateabstractions.hybrid.structuralvisualdiff;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.crawljax.stateabstractions.dom.apted.costmodel.StringUnitCostModel;
 import com.crawljax.stateabstractions.dom.apted.distance.APTED;
 import com.crawljax.stateabstractions.dom.apted.node.AptedNode;
@@ -74,7 +76,7 @@ public class StructuralVisualDiff {
    *                  {@link com.crawljax.stateabstractions.hybrid.StateVertexForElementsWithVisualInfo} since it
    *                  relies on the visual information recorded in the previous run of the crawler
    * @param newVertex New state to which we are comparing the old state
-   * @return
+   * 
    */
   public static StructuralVisualDiff calculate(StateVertexForElementsWithVisualInfo oldVertex,
       StateVertexForElementsWithVisualInfo newVertex) {
@@ -298,50 +300,57 @@ public class StructuralVisualDiff {
   }
 
   /**
-   * @return The distance between the two DOM states based on the APTED algorithm and string cost
-   * model
+   *Returns the distance between the two DOM states based on the APTED algorithm and string cost
+ model.
+ 
    */
   public float getStructuralDistance() {
     return this.structuralDistance;
   }
 
   /**
-   * @return Nodes mapped across the two DOMs
+   *Returns nodes mapped across the two DOMs.
+ 
    */
   public Map<String, String> getMappedNodes() {
     return Maps.newLinkedHashMap(nodeMappings);
   }
 
   /**
-   * @return Nodes that have been added to the new DOM
+   *Returns nodes that have been added to the new DOM.
+ 
    */
   public Set<String> getAddedNodes() {
     return Sets.newHashSet(addedNodes);
   }
 
   /**
-   * @return Nodes that have been removed from the old DOM
+   *Returns nodes that have been removed from the old DOM.
+ 
    */
   public Set<String> getRemovedNodes() {
     return Sets.newHashSet(removedNodes);
   }
 
   /**
-   * @return Nodes (from the old state) that are mapped across the two states but are moved
+   *Returns nodes (from the old state) that are mapped across the two states but are moved.
+ 
    */
   public Set<String> getMovedNodes() {
     return Sets.newHashSet(movedNodes);
   }
 
   /**
-   * @return Nodes that are modified (visually or textually) from the old state
+   *Returns nodes that are modified (visually or textually) from the old state.
+ 
    */
   public Set<String> getModifiedNodes() {
     return Sets.newHashSet(modifiedNodes);
   }
 
   /**
-   * @return Time took to compute the edit distance in the APTED algorithm
+   *Returns time took to compute the edit distance in the APTED algorithm.
+ 
    */
   public long getComputationTime() {
     return this.computationTime;
@@ -397,7 +406,7 @@ public class StructuralVisualDiff {
 
   public void serializeDiff(String pathToJSONFile) throws IOException {
     FileOutputStream file = new FileOutputStream(pathToJSONFile);
-    file.write((new Gson().toJson(this).getBytes()));
+    file.write( new Gson().toJson(this).getBytes(UTF_8));
     file.close();
   }
 

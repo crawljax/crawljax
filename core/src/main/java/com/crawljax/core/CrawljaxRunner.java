@@ -68,7 +68,8 @@ public class CrawljaxRunner implements Callable<CrawlSession> {
   }
 
   /**
-   * @return The {@link ExitStatus} Crawljax stopped or <code>null</code> if it hasn't stopped yet.
+   *Returns the {@link ExitStatus} Crawljax stopped or <code>null</code> if it hasn't stopped yet.
+ 
    */
   public ExitStatus getReason() {
     return reason;

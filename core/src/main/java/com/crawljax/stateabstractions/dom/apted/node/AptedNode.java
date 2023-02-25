@@ -90,7 +90,7 @@ public class AptedNode<D> {
    *
    * @return tree in bracket notation.
    */
-  public String toString() {
+  @Override public String toString() {
     String res = "{" + ((StringNodeData) getNodeData()).getLabel();
     for (AptedNode<D> child : getChildren()) {
       res = res + child.toString();

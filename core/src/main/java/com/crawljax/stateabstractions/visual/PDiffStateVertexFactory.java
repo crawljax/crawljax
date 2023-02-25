@@ -13,10 +13,9 @@ import org.slf4j.LoggerFactory;
  */
 public class PDiffStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(PDiffStateVertexFactory.class.getName());
-  private static final int THUMBNAIL_WIDTH = 200;
-  private static final int THUMBNAIL_HEIGHT = 200;
+  
+  
+  
   private static double threshold = 0.0;
 
   static {

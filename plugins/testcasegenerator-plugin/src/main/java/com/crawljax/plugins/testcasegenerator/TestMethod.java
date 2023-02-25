@@ -34,7 +34,8 @@ public class TestMethod {
   }
 
   /**
-   * @return the methodName
+   *Returns the methodName.
+ 
    */
   public String getMethodName() {
     return methodName;
@@ -48,7 +49,8 @@ public class TestMethod {
   }
 
   /**
-   * @return the eventList
+   *Returns the eventList.
+ 
    */
   public List<TestMethodEvent> getEventList() {
     return eventList;

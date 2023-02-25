@@ -3,6 +3,7 @@ package com.crawljax.oraclecomparator.comparators;
 import com.crawljax.oraclecomparator.AbstractComparator;
 import com.crawljax.util.DomUtils;
 import com.crawljax.util.XPathHelper;
+import com.google.common.base.Splitter;
 import java.io.IOException;
 import javax.xml.xpath.XPathExpressionException;
 import org.slf4j.Logger;
@@ -107,7 +108,7 @@ public class StyleComparator extends AbstractComparator {
   }
 
   private String stripStyleProperties(String styleAttribute) {
-    String[] styleProperties = styleAttribute.split(";");
+    Iterable<String> styleProperties = Splitter.on(';').split(styleAttribute);
     String[] styleProperty;
     String badWayOfDoingThis = "";
     StringBuilder buffer = new StringBuilder();

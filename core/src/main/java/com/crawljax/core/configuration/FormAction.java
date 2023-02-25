@@ -13,8 +13,9 @@ public class FormAction {
   private CrawlElement crawlElement;
 
   /**
-   * @param tagName the tag name of the element
-   * @return this CrawlElement
+   *Returns this CrawlElement.
+ @param tagName the tag name of the element
+   * 
    */
   public CrawlElement beforeClickElement(String tagName) {
     this.crawlElement = new CrawlElement(EventType.click, tagName);
@@ -27,7 +28,8 @@ public class FormAction {
   }
 
   /**
-   * @return the crawlTag
+   *Returns the crawlTag.
+ 
    */
   protected CrawlElement getCrawlElement() {
     return crawlElement;

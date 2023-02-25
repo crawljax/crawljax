@@ -144,7 +144,7 @@ public class LblTree extends DefaultMutableTreeNode implements Comparable<Object
   @Override
   public String toString() {
     String res = OPEN_BRACKET + getLabel();
-    if ((getTreeID() >= 0) && (isRoot())) {
+    if ((getTreeID() >= 0) &&  isRoot()) {
       res = getTreeID() + ID_SEPARATOR + res;
     }
     for (Enumeration<?> e = children(); e.hasMoreElements(); ) {
@@ -157,7 +157,7 @@ public class LblTree extends DefaultMutableTreeNode implements Comparable<Object
   /**
    * Compares the labels.
    */
-  public int compareTo(Object o) {
+  @Override public int compareTo(Object o) {
     return getLabel().compareTo(((LblTree) o).getLabel());
   }
 

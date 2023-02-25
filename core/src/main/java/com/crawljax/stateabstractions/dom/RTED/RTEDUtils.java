@@ -4,6 +4,7 @@ import com.crawljax.util.DomUtils;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
@@ -16,9 +17,9 @@ public class RTEDUtils {
   /**
    * Get a scalar value for the DOM diversity using the Robust Tree Edit Distance
    *
-   * @param dom1
-   * @param dom2
-   * @return
+   * 
+   * 
+   * 
    */
   public static double getRobustTreeEditDistance(String dom1, String dom2) {
 
@@ -31,7 +32,7 @@ public class RTEDUtils {
       LOG.error("IO Exception comparing the given two doms");
     }
 
-    double DD = 0.0;
+    
     RTED_InfoTree_Opt rted;
     double ted;
 
@@ -46,20 +47,20 @@ public class RTEDUtils {
     ted = rted.nonNormalizedTreeDist();
     ted /= (double) maxSize;
 
-    DD = ted;
+    double DD = ted;
     return DD;
   }
 
   private static LblTree getDomTree(String dom1) throws IOException {
 
-    org.w3c.dom.Document doc1 = DomUtils.asDocument(dom1);
+    Document doc1 = DomUtils.asDocument(dom1);
 
-    LblTree domTree = null;
+    
 
     DocumentTraversal traversal = (DocumentTraversal) doc1;
     TreeWalker walker = traversal.createTreeWalker(doc1.getElementsByTagName("body").item(0),
         NodeFilter.SHOW_ELEMENT, null, true);
-    domTree = createTree(walker);
+    LblTree domTree = createTree(walker);
 
     return domTree;
   }

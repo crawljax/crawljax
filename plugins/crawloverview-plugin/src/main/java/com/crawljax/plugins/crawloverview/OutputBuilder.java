@@ -1,6 +1,7 @@
 package com.crawljax.plugins.crawloverview;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -20,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -165,27 +167,7 @@ class OutputBuilder {
     LOG.info("Overview report generated");
   }
 
-  private AlchemyGraphModel getAlchemyJson(OutPutModel model) {
-    State[] nodes = new State[model.getStates().size()];
-    AlchemyEdge[] edges = new AlchemyEdge[model.getEdges().size()];
-    int i = 0;
-    for (String stateName : model.getStates().keySet()) {
-      nodes[i] = model.getStates().get(stateName);
-      i++;
-    }
-    i = 0;
-    for (Edge edge : model.getEdges()) {
-      int from = model.getStates().get(edge.getFrom()).getId();
-      int to = model.getStates().get(edge.getTo()).getId();
-      edges[i] =
-          new AlchemyEdge(from, to, edge.hashCode(), edge.getText(), edge.getElement(),
-              edge.getEventType());
-      i++;
-    }
-    AlchemyGraphModel graphModel = new AlchemyGraphModel(nodes, edges);
-    writeJsonToOutDir(Serializer.toPrettyJson(graphModel), "alchemyGraph.json");
-    return graphModel;
-  }
+  
 
   private void writeIndexFile(OutPutModel model, CrawljaxConfiguration config) {
     LOG.debug("Writing index file");
@@ -219,7 +201,7 @@ class OutputBuilder {
 
   private void writeJsonToOutDir(String outModelJson, String filename) {
     try {
-      Files.write(outModelJson, new File(this.outputDir, filename), Charsets.UTF_8);
+      Files.asCharSink(new File(this.outputDir, filename), Charsets.UTF_8).write(outModelJson);
     } catch (IOException e) {
       LOG.warn("Could not write JSON model to output dir. " + e.getMessage());
     }
@@ -228,7 +210,7 @@ class OutputBuilder {
   private void writeFile(VelocityContext context, File outFile, String template) {
     try {
       Template templatee = ve.getTemplate(template);
-      FileWriter writer = new FileWriter(outFile);
+      Writer writer = Files.newWriter(outFile, UTF_8);
       templatee.merge(context, writer);
       writer.flush();
       writer.close();
@@ -250,7 +232,7 @@ class OutputBuilder {
    */
   void persistDom(String name, @Nullable String dom) {
     try {
-      Files.write(Strings.nullToEmpty(dom), new File(doms, name + ".html"), Charsets.UTF_8);
+      Files.asCharSink(new File(doms, name + ".html"), Charsets.UTF_8).write(Strings.nullToEmpty(dom));
     } catch (IOException e) {
       LOG.warn("Could not save dom state for {}", name);
       LOG.debug("Could not save dom state", e);
@@ -259,7 +241,7 @@ class OutputBuilder {
 
   String getDom(String name) {
     try {
-      return Files.toString(new File(doms, name + ".html"), Charsets.UTF_8);
+      return Files.asCharSource(new File(doms, name + ".html"), Charsets.UTF_8).read();
     } catch (IOException e) {
       return "Could not load DOM: " + e.getLocalizedMessage();
     }

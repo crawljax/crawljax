@@ -331,7 +331,7 @@ public class PerceptualImageDifferencing {
     boolean completed = pool.invoke(
         new Comparison(aA, aB, la, bA, bB, lb, pixelsFailed, pixDiff, adaptationLevel, cpd,
             freq).rootTask());
-    assert completed | failFast;
+    assert completed || failFast;
 
     if (imgDiff != null) {
       imgDiff.setRGB(0, 0, w, h, pixDiff, 0, w);
@@ -465,7 +465,7 @@ public class PerceptualImageDifferencing {
       this.height = height;
     }
 
-    public void run() {
+    @Override public void run() {
       convert(rgb, a, b, levels[0]);
       construct(levels, width, height);
     }

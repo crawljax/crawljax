@@ -41,7 +41,7 @@ public class SIFTStateVertexImpl extends StateVertexImpl {
    * @param name        the name of the state
    * @param dom         the current DOM tree of the browser
    * @param strippedDom the stripped dom by the OracleComparators
-   * @param threshold
+   * 
    */
   public SIFTStateVertexImpl(int id, String url, String name, String dom,
       String strippedDom,

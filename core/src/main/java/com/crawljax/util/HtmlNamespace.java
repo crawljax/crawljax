@@ -20,9 +20,9 @@ public class HtmlNamespace implements NamespaceContext {
   public String getNamespaceURI(String prefix) {
     if (prefix == null) {
       throw new NullPointerException("Null prefix");
-    } else if ("html".equals(prefix)) {
+    } else if (prefix.equals("html")) {
       return "http://www.w3.org/1999/xhtml";
-    } else if ("xml".equals(prefix)) {
+    } else if (prefix.equals("xml")) {
       return XMLConstants.XML_NS_URI;
     }
 

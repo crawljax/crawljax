@@ -109,8 +109,8 @@ public class InfoTree {
   /**
    * Transforms a list of Integer objects to an array of primitive int values.
    *
-   * @param integers
-   * @return
+   * 
+   * 
    */
   static int[] toIntArray(List<Integer> integers) {
     int[] ints = new int[integers.size()];
@@ -124,7 +124,7 @@ public class InfoTree {
   /**
    * Returns the size of the tree.
    *
-   * @return
+   * 
    */
   public int getSize() {
     return treeSize;
@@ -141,7 +141,7 @@ public class InfoTree {
   /**
    * For given infoCode and postorder of a node returns requested information of that node.
    *
-   * @param infoCode
+   * 
    * @param nodesPostorder postorder of a node
    * @return a value of requested information
    */
@@ -153,7 +153,7 @@ public class InfoTree {
   /**
    * For given infoCode returns an info array (index array)
    *
-   * @param infoCode
+   * 
    * @return array with requested index
    */
   public int[] getInfoArray(int infoCode) {
@@ -164,7 +164,7 @@ public class InfoTree {
    * Returns relevant subtrees for given node. Assuming that child v of given node belongs to given
    * path, all children of given node are returned but node v.
    *
-   * @param pathType
+   * 
    * @param nodePostorder postorder of a node
    * @return an array with relevant subtrees of a given node
    */
@@ -175,7 +175,7 @@ public class InfoTree {
   /**
    * Returns an array representation of a given path's type.
    *
-   * @param pathType
+   * 
    * @return an array with a requested path
    */
   public int[] getPath(int pathType) {
@@ -185,7 +185,7 @@ public class InfoTree {
   /**
    * Returns the postorder of current root node.
    *
-   * @return
+   * 
    */
   public int getCurrentNode() {
     return currentNode;
@@ -194,7 +194,7 @@ public class InfoTree {
   /**
    * Sets postorder of the current node in the recursion.
    *
-   * @param postorder
+   * 
    */
   public void setCurrentNode(int postorder) {
     currentNode = postorder;
@@ -204,9 +204,9 @@ public class InfoTree {
    * Gathers information of a given tree in corresponding arrays. At this point the given tree is
    * traversed once, but there is a loop over current nodes children to assign them their parents.
    *
-   * @param aT
-   * @param postorder
-   * @return
+   * 
+   * 
+   * 
    */
   private int gatherInfo(LblTree aT, int postorder) {
     int currentSize = 0;

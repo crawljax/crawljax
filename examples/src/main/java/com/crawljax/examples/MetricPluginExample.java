@@ -1,5 +1,7 @@
 package com.crawljax.examples;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Slf4jReporter;
 import com.crawljax.core.CrawlSession;
@@ -51,7 +53,7 @@ public class MetricPluginExample {
       }
 
       int domSizeInKb =
-          context.getBrowser().getUnStrippedDom().getBytes().length / 1000;
+          context.getBrowser().getUnStrippedDom().getBytes(UTF_8).length / 1000;
 
       // Get the histogram or create one. After that update with the DOM value we found.
       context.getRegistry().histogram(metricName).update(domSizeInKb);

@@ -356,7 +356,8 @@ public class Plugins {
   }
 
   /**
-   * @return A {@link ImmutableSet} of the {@link Plugin} names that are installed.
+   *Returns a {@link ImmutableSet} of the {@link Plugin} names that are installed.
+ 
    */
   public ImmutableSet<String> pluginNames() {
     ImmutableSortedSet.Builder<String> names = ImmutableSortedSet

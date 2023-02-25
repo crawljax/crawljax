@@ -574,7 +574,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
    * tag), its weight is set to be higher.
    *
    * @param separator Separator
-   * @param horizontal
+   * 
    */
   private void ruleTwo(Separator separator, boolean horizontal) {
     List<Node> overlappedElements = new ArrayList<Node>();
@@ -664,7 +664,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
    * be increased.
    *
    * @param separator Separator
-   * @param horizontal
+   * 
    */
   private void ruleThree(Separator separator, boolean horizontal) {
     // for vertical is represents elements on left side
@@ -853,7 +853,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 
   /**
    * Saves everything (separators + block) to image with given suffix.
-   * @param suffix
+   * 
    */
   public void exportAllToImage(int suffix) {
     createPool();
@@ -898,7 +898,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
   /**
    * Saves vertical separators to image.
    *
-   * @param suffix
+   * 
    */
   public void exportVerticalSeparatorsToImage(int suffix) {
     createPool();
@@ -910,7 +910,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
    * Adds all detected horizontal separators to pool
    */
   private void drawHorizontalSeparators() {
-    Color c = new Color(0f, 0f, 0.5f, .5f); // Blue with transparency
+     // Blue with transparency
     _pool.setColor(Color.gray);
     for (Separator separator : _horizontalSeparators) {
       Rectangle rect;
@@ -939,7 +939,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
 
   /**
    * Saves horizontal separators to image.
-   * @param suffix
+   * 
    */
   public void exportHorizontalSeparatorsToImage(int suffix) {
     createPool();
@@ -950,7 +950,7 @@ public class VipsSeparatorGraphicsDetector extends JPanel implements VipsSeparat
   /**
    * Saves pool to image
    *
-   * @param filename
+   * 
    */
   public void saveToImage(String filename) {
     filename = System.getProperty("user.dir") + "/" + filename + ".png";

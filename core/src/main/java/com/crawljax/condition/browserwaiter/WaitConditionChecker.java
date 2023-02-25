@@ -26,7 +26,8 @@ public class WaitConditionChecker {
   }
 
   /**
-   * @return the waitConditions
+   *Returns the waitConditions.
+ 
    */
   public List<WaitCondition> getWaitConditions() {
     return waitConditions;

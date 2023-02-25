@@ -95,8 +95,8 @@ public final class XPathHelper {
    * Returns the list of nodes which match the expression xpathExpr in the String domStr.
    *
    * @return the list of nodes which match the query
-   * @throws XPathExpressionException
-   * @throws IOException
+   * 
+   * 
    */
   public static NodeList evaluateXpathExpression(String domStr, String xpathExpr)
       throws XPathExpressionException, IOException {

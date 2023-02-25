@@ -191,8 +191,8 @@ public class Fragment {
   /**
    * Makes use of DOM tree size instead of invoking APTED differencing
    *
-   * @param other
-   * @return
+   * 
+   * 
    */
   public FragmentComparision compareFast(Fragment other) {
 
@@ -210,8 +210,8 @@ public class Fragment {
    * and Histogram are exactly the same Return EQUIVALENT if DOM is the same but Histogram is not.
    * Returns DIFFERENT if DOM is different
    *
-   * @param other
-   * @return
+   * 
+   * 
    */
   public FragmentComparision compare(Fragment other) {
     boolean visualData = ((HybridStateVertexImpl) this.referenceState).isVisualData()
@@ -454,7 +454,7 @@ public class Fragment {
    * For new fragments that have not been access transferred Called for every other duplicate
    * fragment ( to avoid candidate element not being all fragment problem)
    *
-   * @param oldFragment
+   * 
    */
   public void transferDuplicateAccess(Fragment oldFragment) {
     for (CandidateElement element : oldFragment.getCandidates()) {
@@ -531,9 +531,9 @@ public class Fragment {
    * Uses relative Xpath to fetch node that is similar in the current fragment to the one provided
    * as argument
    *
-   * @param element
-   * @param duplicateFragment
-   * @return
+   * 
+   * 
+   * 
    */
   public Node getEquivalentNode(Node element, Fragment duplicateFragment) {
     try {

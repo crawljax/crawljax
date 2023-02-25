@@ -6,6 +6,7 @@ import com.crawljax.plugins.testcasegenerator.visualdiff.pageobjects.PageObject.
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.geometry.Rectangle;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -67,7 +68,7 @@ public class Page {
     }
 
     /* Find exact matches. */
-    List<PageObject> toRemove = new LinkedList<PageObject>();
+    List<PageObject> toRemove = new ArrayList<PageObject>();
     for (PageObject pageObject : this.getUnclassifiedObjects()) {
       PageObject otherObject = otherObjects.get(pageObject.getComparatorExactMatch());
       if (otherObject == null) {
@@ -97,7 +98,7 @@ public class Page {
     }
 
     /* Find exact matches. */
-    List<PageObject> toRemove = new LinkedList<PageObject>();
+    List<PageObject> toRemove = new ArrayList<PageObject>();
     for (PageObject pageObject : this.getUnclassifiedObjects()) {
       PageObject otherObject = otherObjects.get(pageObject.getComparatorHash());
       if (otherObject == null || otherObject.changeType != ChangeType.UNKNOWN) {
@@ -115,7 +116,7 @@ public class Page {
   /**
    * Classifies and filters geographic {@code PageObject} matches as {@code UPDATED}.
    *
-   * @param otherPage
+   * 
    */
   public void filterGeographicMatches(Page otherPage) {
 
@@ -126,7 +127,7 @@ public class Page {
     }
 
     /* Find geographic matches. */
-    List<PageObject> toRemove = new LinkedList<PageObject>();
+    List<PageObject> toRemove = new ArrayList<PageObject>();
     for (PageObject pageObject : this.getUnclassifiedObjects()) {
       List<Entry<PageObject, Rectangle>> results = otherObjects
           .search(pageObject.getRectangle(), 10).toList().toBlocking().single();

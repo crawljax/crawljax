@@ -34,8 +34,8 @@ public class VisualStructure {
   private int _order;
   private boolean _containTable = false;
   private String _id = null;
-  private int _tmpSrcIndex = 0;
-  private int _srcIndex = 0;
+  
+  
   private int _minimalDoC = 0;
   private WebDriver driver = null;
 
@@ -48,7 +48,8 @@ public class VisualStructure {
   }
 
   /**
-   * @return Nested blocks in structure
+   *Returns nested blocks in structure.
+ 
    */
   public List<Node> getNestedBlocks() {
     return _nestedBlocks;
@@ -57,7 +58,7 @@ public class VisualStructure {
   /**
    * Sets blocks as nested blocks
    *
-   * @param vipsBlocks
+   * 
    */
   public void setNestedBlocks(List<Node> vipsBlocks) {
     this._nestedBlocks = vipsBlocks;
@@ -75,7 +76,7 @@ public class VisualStructure {
   /**
    * Adds blocks to nested blocks
    *
-   * @param nestedBlocks
+   * 
    */
   public void addNestedBlocks(List<Node> nestedBlocks) {
     this._nestedBlocks.addAll(nestedBlocks);
@@ -164,7 +165,7 @@ public class VisualStructure {
   /**
    * Adds separator to horizontal separators of structure
    *
-   * @param horizontalSeparator
+   * 
    */
   public void addHorizontalSeparator(Separator horizontalSeparator) {
     this._horizontalSeparators.add(horizontalSeparator);
@@ -174,7 +175,7 @@ public class VisualStructure {
   /**
    * Adds separators to horizontal separators of structure
    *
-   * @param horizontalSeparators
+   * 
    */
   public void addHorizontalSeparators(List<Separator> horizontalSeparators) {
     this._horizontalSeparators.addAll(horizontalSeparators);
@@ -274,7 +275,7 @@ public class VisualStructure {
   /**
    * Adds separator to structure's vertical sepators
    *
-   * @param verticalSeparator
+   * 
    */
   public void addVerticalSeparator(Separator verticalSeparator) {
     this._verticalSeparators.add(verticalSeparator);
@@ -484,8 +485,8 @@ public class VisualStructure {
    */
   public int getFontSize() {
     if (_nestedBlocks.size() > 0) {
-      return (VipsUtils.getFontSize(_nestedBlocks.get(0),
-          driver));//_nestedBlocks.get(0).getFontSize();
+      return  VipsUtils.getFontSize(_nestedBlocks.get(0),
+          driver);//_nestedBlocks.get(0).getFontSize();
     } else {
       return -1;
     }
@@ -594,7 +595,7 @@ public class VisualStructure {
   /**
    * Adds list of separators to visual structure vertical separators list.
    *
-   * @param verticalSeparators
+   * 
    */
   public void addVerticalSeparators(List<Separator> verticalSeparators) {
     this._verticalSeparators.addAll(verticalSeparators);

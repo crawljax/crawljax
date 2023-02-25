@@ -32,7 +32,8 @@ public class ExitNotifier {
   }
 
   /**
-   * @return The new number of states.
+   *Returns the new number of states.
+ 
    */
   public int incrementNumberOfStates() {
     int count = states.incrementAndGet();

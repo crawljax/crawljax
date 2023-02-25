@@ -285,23 +285,7 @@ public class AllPossibleMappingsTED<C extends CostModel, D> {
     return mappings_copy;
   }
 
-  /**
-   * Constructs a string representation of a set of mappings.
-   *
-   * @param mappings set of mappings to convert.
-   * @return string representation of a set of mappings.
-   */
-  private String mappingsToString(ArrayList<ArrayList<int[]>> mappings) {
-    String result = "Mappings:\n";
-    for (ArrayList<int[]> m : mappings) {
-      result += "{";
-      for (int[] me : m) {
-        result += "[" + me[0] + "," + me[1] + "]";
-      }
-      result += "}\n";
-    }
-    return result;
-  }
+  
 
   /**
    * Removes an element (edit operation) from a mapping by its value. In our case the element to

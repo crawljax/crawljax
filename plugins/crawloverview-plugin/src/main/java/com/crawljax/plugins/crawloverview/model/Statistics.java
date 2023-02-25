@@ -96,11 +96,11 @@ public class Statistics {
     if (object instanceof Statistics) {
       Statistics that = (Statistics) object;
       return Objects.equal(this.duration, that.duration)
-          && Objects.equal(this.crawlPaths, that.crawlPaths)
+          && (this.crawlPaths == that.crawlPaths)
           && Objects.equal(this.averageDomSize, that.averageDomSize)
-          && Objects.equal(this.edges, that.edges)
+          && (this.edges == that.edges)
           && Objects.equal(this.stateStats, that.stateStats)
-          && Objects.equal(this.failedEvents, that.failedEvents);
+          && (this.failedEvents == that.failedEvents);
     }
     return false;
   }

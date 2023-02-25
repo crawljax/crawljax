@@ -30,8 +30,9 @@ public class StateComparator {
   }
 
   /**
-   * @param browser the current browser instance
-   * @return the stripped dom using {@link OracleComparator}s.
+   *Returns the stripped dom using {@link OracleComparator}s.
+ @param browser the current browser instance
+   * 
    */
   public String getStrippedDom(EmbeddedBrowser browser) {
     String newDom = browser.getStrippedDom();

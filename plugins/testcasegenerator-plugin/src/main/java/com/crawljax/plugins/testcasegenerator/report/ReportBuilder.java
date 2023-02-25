@@ -4,6 +4,7 @@ import com.crawljax.condition.invariant.Invariant;
 import com.crawljax.core.state.Eventable;
 import com.crawljax.core.state.StateVertex;
 import com.crawljax.plugins.testcasegenerator.report.MethodResult.WarnLevel;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class ReportBuilder {
   private MethodResult currMethod;
 
   public ReportBuilder() {
-    this.methodRuns = new LinkedList<MethodResult>();
+    this.methodRuns = new ArrayList<MethodResult>();
     this.currMethod = null;
   }
 

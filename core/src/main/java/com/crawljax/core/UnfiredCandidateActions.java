@@ -56,14 +56,15 @@ public class UnfiredCandidateActions {
   }
 
   /**
-   * @param state The state you want to poll an {@link CandidateCrawlAction} for.
-   * @return The next to-be-crawled action or <code>null</code> if none available.
+   *Returns the next to-be-crawled action or <code>null</code> if none available.
+ @param state The state you want to poll an {@link CandidateCrawlAction} for.
+   * 
    */
   CandidateCrawlAction pollActionOrNull(StateVertex state) {
     LOG.debug("Polling action for state {}", state.getName());
     Lock lock = locks.get(state.getId());
-    try {
-      lock.lock();
+    lock.lock();try {
+      
       Queue<CandidateCrawlAction> queue = cache.get(state.getId());
       if (queue == null) {
         return null;
@@ -111,8 +112,8 @@ public class UnfiredCandidateActions {
       return;
     }
     Lock lock = locks.get(state.getId());
-    try {
-      lock.lock();
+    lock.lock();try {
+      
       LOG.debug("Adding {} crawl actions for state {}", actions.size(), state.getId());
       if (cache.containsKey(state.getId())) {
         cache.get(state.getId()).addAll(actions);
@@ -128,8 +129,9 @@ public class UnfiredCandidateActions {
   }
 
   /**
-   * @return If there are any pending actions to be crawled. This method is not threadsafe and might
-   * return a stale value.
+   *Returns if there are any pending actions to be crawled. This method is not threadsafe and might
+ return a stale value.
+ 
    */
   public boolean isEmpty() {
     return statesWithCandidates.isEmpty();
@@ -263,8 +265,8 @@ public class UnfiredCandidateActions {
 
   public void purgeActionsForState(StateVertex crawlTask) {
     Lock lock = locks.get(crawlTask.getId());
-    try {
-      lock.lock();
+    lock.lock();try {
+      
       LOG.debug("Removing tasks for target state {}", crawlTask.getName());
       removeStateFromQueue(crawlTask.getId());
       Queue<CandidateCrawlAction> removed = cache.remove(crawlTask.getId());

@@ -302,8 +302,8 @@ public class UnfiredFragmentCandidates {
       return;
     }
     Lock lock = locks.get(state.getId());
-    try {
-      lock.lock();
+    lock.lock();try {
+      
       LOG.debug("Adding {} crawl actions for state {}", actions.size(), state.getId());
       if (cache.containsKey(state.getId())) {
         cache.get(state.getId()).addAll(actions);
@@ -319,15 +319,16 @@ public class UnfiredFragmentCandidates {
   }
 
   /**
-   * @return If there are any pending actions to be crawled. This method is not threadsafe and might
-   * return a stale value.
+   *Returns if there are any pending actions to be crawled. This method is not threadsafe and might
+ return a stale value.
+ 
    */
   public boolean isEmpty() {
     return statesWithCandidates.isEmpty();
   }
 
   /**
-   * @param fragmentManager
+   * 
    * @return A new crawl task as soon as one is ready. Until then, it blocks.
    * @throws InterruptedException when taking from the queue is interrupted.
    */
@@ -416,8 +417,8 @@ public class UnfiredFragmentCandidates {
 
   public void purgeActionsForState(StateVertex crawlTask) {
     Lock lock = locks.get(crawlTask.getId());
-    try {
-      lock.lock();
+    lock.lock();try {
+      
       LOG.debug("Removing tasks for target state {}", crawlTask.getName());
       removeStateFromQueue(crawlTask.getId());
       List<CandidateCrawlAction> removed = cache.remove(crawlTask.getId());
@@ -514,8 +515,8 @@ public class UnfiredFragmentCandidates {
   CandidateCrawlAction pollActionOrNull(StateVertex state) {
     LOG.debug("Polling action for state {}", state.getName());
     Lock lock = locks.get(state.getId());
-    try {
-      lock.lock();
+    lock.lock();try {
+      
       List<CandidateCrawlAction> queue = cache.get(state.getId());
       if (queue == null) {
         return null;

@@ -95,7 +95,8 @@ public class Eventable extends DefaultEdge implements Serializable {
   }
 
   /**
-   * @return the eventType.
+   *Returns the eventType.
+ 
    */
   public EventType getEventType() {
     return eventType;
@@ -109,7 +110,8 @@ public class Eventable extends DefaultEdge implements Serializable {
   }
 
   /**
-   * @return the id
+   *Returns the id.
+ 
    */
   public long getId() {
     return id;
@@ -123,7 +125,8 @@ public class Eventable extends DefaultEdge implements Serializable {
   }
 
   /**
-   * @return the identification
+   *Returns the identification.
+ 
    */
   public Identification getIdentification() {
     return identification;
@@ -137,7 +140,8 @@ public class Eventable extends DefaultEdge implements Serializable {
   }
 
   /**
-   * @return the element
+   *Returns the element.
+ 
    */
   public Element getElement() {
     return element;
@@ -186,7 +190,8 @@ public class Eventable extends DefaultEdge implements Serializable {
   }
 
   /**
-   * @return the relatedFrame
+   *Returns the relatedFrame.
+ 
    */
   public String getRelatedFrame() {
     return relatedFrame;

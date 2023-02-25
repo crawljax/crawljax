@@ -26,14 +26,14 @@ public class VipsSeleniumParser {
   private int _sizeTresholdWidth = 0;
   private int _sizeTresholdHeight = 0;
   private BufferedImage _viewport = null;
-  private int _visualBlocksCount = 0;
+  
   private int _pageWidth = 0;
   private int _pageHeight = 0;
 
   /**
    * Default constructor
    *
-   * @param vips
+   * 
    */
   public VipsSeleniumParser(VipsSelenium vips) {
     this.vips = vips;
@@ -51,7 +51,7 @@ public class VipsSeleniumParser {
   /**
    * Constructor, where we can define element's size treshold
    *
-   * @param vips
+   * 
    * @param sizeTresholdWidth  Element's width treshold
    * @param sizeTresholdHeight Element's height treshold
    */
@@ -73,7 +73,7 @@ public class VipsSeleniumParser {
   public void parse() {
     if (_viewport != null && this.dom != null) {
 //			this._vipsBlocks = new Node();
-      _visualBlocksCount = 0;
+      
       this._vipsBlocks = dom.getDocumentElement().getElementsByTagName("body").item(0);
 //			constructVipsBlockTree(_viewport.getElementBoxByName("body", false), _vipsBlocks);
       divideVipsBlockTree(_vipsBlocks);
@@ -91,13 +91,13 @@ public class VipsSeleniumParser {
    */
   private void getVisualBlocksCount(Node vipsBlock) {
     if (VipsUtils.isVisualBlock(vipsBlock)) {
-      _visualBlocksCount++;
+      
     }
 
     ArrayList<Node> vipsStructureChildren = VipsUtils.getChildren(vipsBlock);
     for (int i = 0; i < vipsStructureChildren.size(); i++) {
       Node vipsBlockChild = vipsStructureChildren.get(i);
-      if (!(VipsUtils.isTextBox(vipsBlockChild))) {
+      if (! VipsUtils.isTextBox(vipsBlockChild)) {
         getVisualBlocksCount(vipsBlockChild);
       }
     }
@@ -166,7 +166,7 @@ public class VipsSeleniumParser {
       ArrayList<Node> vipsStructureChildren = VipsUtils.getChildren(vipsBlock);
       for (int i = 0; i < vipsStructureChildren.size(); i++) {
         Node vipsBlockChild = vipsStructureChildren.get(i);
-        if (!(VipsUtils.isTextBox(vipsBlockChild))) {
+        if (! VipsUtils.isTextBox(vipsBlockChild)) {
           divideVipsBlockTree(vipsBlockChild);
         }
       }
@@ -352,7 +352,7 @@ public class VipsSeleniumParser {
    * @return True, if node is a text node, otherwise false.
    */
   private boolean isTextNode(Node node) {
-    return (node.getNodeName().equalsIgnoreCase("#text")) ? true : false;
+    return  node.getNodeName().equalsIgnoreCase("#text") ? true : false;
   }
 
   /**
@@ -364,8 +364,8 @@ public class VipsSeleniumParser {
    * <q><samp><script><select><small><span>
    * <strong><sub><sup><textarea><time><tt><var>
    *}
-   * @param node
-   * @return
+   * 
+   * 
    */
   public boolean isInlineNode(Node node) {
     String nodeName = node.getNodeName().toLowerCase();
@@ -1133,14 +1133,14 @@ public class VipsSeleniumParser {
       return true;
     }
 
-    String fontWeight = "";
-    int fontSize = 0;
+    
+    
 
     for (int i = 0; i < children.size(); i++)
 //			for (Box box : node.getSubBoxList())
     {
 
-      Node childNode = children.get(i);
+      
 //			int childFontSize = childNode.getVisualContext().getFont().getSize();
 //
 //			if (childNode instanceof TextBox)
@@ -1272,7 +1272,7 @@ public class VipsSeleniumParser {
     for (int i = 0; i < children.size(); i++) {
       Node childNode = children.get(i);
       String bgColor = VipsUtils.getBackgroundColor(childNode, vips.driver);
-      if (!(bgColor.equalsIgnoreCase(nodeBgColor))) {
+      if (! bgColor.equalsIgnoreCase(nodeBgColor)) {
         VipsUtils.setIsDividable(childNode, false);
         VipsUtils.setIsVisualBlock(childNode, true);
         // TODO DoC values
@@ -1455,7 +1455,7 @@ public class VipsSeleniumParser {
   private boolean ruleEleven(Node node) {
     //System.err.println("Applying rule Eleven on " + node.getNode().getNodeName() + " node");
 
-    return (isInlineNode(node)) ? false : true;
+    return  isInlineNode(node) ? false : true;
   }
 
   /**
@@ -1490,7 +1490,8 @@ public class VipsSeleniumParser {
   }
 
   /**
-   * @return the _sizeTresholdWidth
+   *Returns the _sizeTresholdWidth.
+ 
    */
   public int getSizeTresholdWidth() {
     return _sizeTresholdWidth;
@@ -1504,7 +1505,8 @@ public class VipsSeleniumParser {
   }
 
   /**
-   * @return the _sizeTresholdHeight
+   *Returns the _sizeTresholdHeight.
+ 
    */
   public int getSizeTresholdHeight() {
     return _sizeTresholdHeight;
@@ -1518,8 +1520,9 @@ public class VipsSeleniumParser {
   }
 
   /**
-   *
-   * @return _vipsBlocks
+   *Returns _vipsBlocks.
+
+   * 
    */
   public Node getVipsBlocks() {
     return _vipsBlocks;

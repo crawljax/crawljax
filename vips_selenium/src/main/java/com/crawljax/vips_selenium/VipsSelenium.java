@@ -1,6 +1,8 @@
 package com.crawljax.vips_selenium;
 
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.assertthat.selenium_shutterbug.core.Shutterbug;
 import com.assertthat.selenium_shutterbug.utils.web.ScrollStrategy;
 import com.google.gson.Gson;
@@ -14,8 +16,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -208,7 +212,7 @@ public class VipsSelenium {
     outputFolder += sdf.format(cal.getTime());
     outputFolder += "_";
     try {
-      outputFolder += (new URL(url)).getHost().replaceAll("\\.", "_").replaceAll("/", "_");
+      outputFolder +=  new URL(url).getHost().replaceAll("\\.", "_").replaceAll("/", "_");
     } catch (MalformedURLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -220,7 +224,7 @@ public class VipsSelenium {
   /**
    * Performs page segmentation.
    *
-   * @return
+   * 
    */
   private List<VipsRectangle> performSegmentation() {
 
@@ -322,7 +326,7 @@ public class VipsSelenium {
       File jsonTarget = new File(this.outputFolder, "vipsOutput_" + this.filename + ".json");
       Gson gson = new GsonBuilder().setPrettyPrinting().create();
       try {
-        FileWriter fileWriter = new FileWriter(jsonTarget);
+        Writer fileWriter = Files.newBufferedWriter(jsonTarget.toPath(), UTF_8);
         gson.toJson(rectangles, fileWriter);
         fileWriter.flush();
         fileWriter.close();
@@ -344,32 +348,14 @@ public class VipsSelenium {
     return rectangles;
   }
 
-  /**
-   * Restores stdout
-   */
-  private void restoreOut() {
-    if (originalOut != null) {
-      System.setOut(originalOut);
-    }
-  }
+  
 
-  /**
-   * Redirects stdout to nowhere
-   */
-  private void redirectOut() {
-    originalOut = System.out;
-    System.setOut(new PrintStream(new OutputStream() {
-      @Override
-      public void write(int b) throws IOException {
-
-      }
-    }));
-  }
+  
 
   /**
    * Starts visual segmentation of page
    *
-   * @return
+   * 
    */
   public List<VipsRectangle> startSegmentation() {
     try {

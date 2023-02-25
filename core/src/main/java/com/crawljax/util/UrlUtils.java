@@ -1,6 +1,8 @@
 package com.crawljax.util;
 
+import com.google.common.base.Splitter;
 import java.net.URI;
+import java.util.List;
 
 public class UrlUtils {
 
@@ -9,9 +11,10 @@ public class UrlUtils {
   }
 
   /**
-   * @param currentUrl The current url
+   *Returns the new URL.
+ @param currentUrl The current url
    * @param href       The target URL, relative or not
-   * @return The new URL.
+   * 
    */
   public static URI extractNewUrl(String currentUrl, String href) {
     if (href == null || isJavascript(href) || href.startsWith("mailto:")
@@ -34,8 +37,9 @@ public class UrlUtils {
   }
 
   /**
-   * @param url the URL string. It must contain with ":" e.g, http: or https:
-   * @return the base part of the URL.
+   *Returns the base part of the URL.
+ @param url the URL string. It must contain with ":" e.g, http: or https:
+   * 
    */
   public static String getBaseUrl(String url) {
     String head = url.substring(0, url.indexOf(':'));
@@ -69,12 +73,12 @@ public class UrlUtils {
     if (modifiedHaystack.charAt(0) == '?') {
       modifiedHaystack = modifiedHaystack.substring(1);
     }
-    String[] vars = modifiedHaystack.split("&");
+    Iterable<String> vars = Splitter.on('&').split(modifiedHaystack);
 
     for (String var : vars) {
-      String[] tuple = var.split("=");
-      if (tuple.length == 2 && tuple[0].equals(varName)) {
-        return tuple[1];
+      List<String> tuple = Splitter.on('=').splitToList(var);
+      if (tuple.size() == 2 && tuple.get(0).equals(varName)) {
+        return tuple.get(1);
       }
     }
     return null;

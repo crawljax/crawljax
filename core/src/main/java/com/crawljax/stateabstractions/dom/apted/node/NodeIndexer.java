@@ -319,7 +319,7 @@ public class NodeIndexer<D, C extends CostModel> {
     int krSizesSum = 0;
     int revkrSizesSum = 0;
     int preorder = preorderTmp;
-    int preorderR = 0;
+    
     int currentPreorder = -1;
     // Initialise empty array to store children of this node.
     ArrayList<Integer> childrenPreorders = new ArrayList<>();
@@ -366,7 +366,7 @@ public class NodeIndexer<D, C extends CostModel> {
     preL_to_node[preorder] = node;
 
     sizes[preorder] = currentSize + 1;
-    preorderR = treeSize - 1 - postorder;
+    int preorderR = treeSize - 1 - postorder;
     preL_to_preR[preorder] = preorderR;
     preR_to_preL[preorderR] = preorder;
 

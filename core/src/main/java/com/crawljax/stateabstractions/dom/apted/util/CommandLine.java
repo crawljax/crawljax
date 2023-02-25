@@ -23,6 +23,8 @@
 
 package com.crawljax.stateabstractions.dom.apted.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.crawljax.stateabstractions.dom.apted.costmodel.CostModel;
 import com.crawljax.stateabstractions.dom.apted.costmodel.StringUnitCostModel;
 import com.crawljax.stateabstractions.dom.apted.distance.APTED;
@@ -32,6 +34,8 @@ import com.crawljax.stateabstractions.dom.apted.parser.BracketStringInputParser;
 import com.crawljax.stateabstractions.dom.apted.parser.InputParser;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 
@@ -45,9 +49,9 @@ import java.util.List;
  */
 public class CommandLine<C extends CostModel, P extends InputParser> {
 
-  private boolean run, custom, array, strategy, ifSwitch, sota, verbose, demaine, mapping;
-  private int sotaStrategy;
-  private String customStrategy, customStrategyArrayFile;
+  private boolean run,      verbose,  mapping;
+  
+   
   private APTED rted;
 
   private final C costModel;
@@ -223,11 +227,11 @@ public class CommandLine<C extends CostModel, P extends InputParser> {
       System.exit(0);
     }
 
-    long time1 = (new Date()).getTime();
+    long time1 =  new Date().getTime();
 
     double ted = rted.computeEditDistance(t1, t2);
 
-    long time2 = (new Date()).getTime();
+    long time2 =  new Date().getTime();
     if (verbose) {
       System.out.println("distance:             " + ted);
       System.out.println("runtime:              " + ((time2 - time1) / 1000.0));
@@ -278,13 +282,13 @@ public class CommandLine<C extends CostModel, P extends InputParser> {
    */
   private void parseTreesFromFiles(String fs1, String fs2) {
     try {
-      t1 = inputParser.fromString((new BufferedReader(new FileReader(fs1))).readLine());
+      t1 = inputParser.fromString( Files.newBufferedReader(Paths.get(fs1), UTF_8).readLine());
     } catch (Exception e) {
       System.out.println("TREE1 argument has wrong format");
       System.exit(0);
     }
     try {
-      t2 = inputParser.fromString((new BufferedReader(new FileReader(fs2))).readLine());
+      t2 = inputParser.fromString( Files.newBufferedReader(Paths.get(fs2), UTF_8).readLine());
     } catch (Exception e) {
       System.out.println("TREE2 argument has wrong format");
       System.exit(0);

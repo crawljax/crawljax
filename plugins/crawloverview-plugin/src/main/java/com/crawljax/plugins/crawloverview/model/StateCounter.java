@@ -42,7 +42,7 @@ public class StateCounter {
     if (object instanceof StateCounter) {
       StateCounter that = (StateCounter) object;
       return Objects.equal(this.id, that.id)
-          && Objects.equal(this.count, that.count);
+          && (this.count == that.count);
     }
     return false;
   }

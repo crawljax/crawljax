@@ -118,7 +118,8 @@ public class CandidateElement {
   }
 
   /**
-   * @return unique string without atusa attribute
+   *Returns unique string without atusa attribute.
+ 
    */
   public String getGeneralString() {
     ImmutableSet<String> exclude = ImmutableSet.of("atusa");
@@ -135,7 +136,8 @@ public class CandidateElement {
   }
 
   /**
-   * @return unique string of this candidate element
+   *Returns unique string of this candidate element.
+ 
    */
   public String getUniqueString() {
 
@@ -153,14 +155,16 @@ public class CandidateElement {
   }
 
   /**
-   * @return the element
+   *Returns the element.
+ 
    */
   public Element getElement() {
     return element;
   }
 
   /**
-   * @return list with related formInputs
+   *Returns list with related formInputs.
+ 
    */
   public List<FormInput> getFormInputs() {
     return formInputs;
@@ -174,14 +178,16 @@ public class CandidateElement {
   }
 
   /**
-   * @return the identification object.
+   *Returns the identification object.
+ 
    */
   public Identification getIdentification() {
     return identification;
   }
 
   /**
-   * @return the relatedFrame
+   *Returns the relatedFrame.
+ 
    */
   public String getRelatedFrame() {
     return relatedFrame;
@@ -217,7 +223,7 @@ public class CandidateElement {
   }
 
   public boolean wasExplored() {
-    return (isDirectAccess()) || (duplicateAccess > 0) || equivalentAccess > 0;
+    return  isDirectAccess() || (duplicateAccess > 0) || equivalentAccess > 0;
   }
 
   public Fragment getClosestDomFragment() {

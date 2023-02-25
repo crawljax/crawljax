@@ -23,9 +23,9 @@ public class DHash {
   /**
    * Calculate the Hamming distance between two hashes
    *
-   * @param h1
-   * @param h2
-   * @return
+   * 
+   * 
+   * 
    */
   public static Integer distance(String h1, String h2) {
     HammingDistance distance = new HammingDistance();
@@ -99,8 +99,8 @@ public class DHash {
    * compares the DHash of two images and return whether they are perceptually similar (max 10
    * different pixels allowed)
    *
-   * @param img1
-   * @param img2
+   * 
+   * 
    * @return true/false
    */
   public boolean imagesPerceptuallySimilar(String img1, String img2) {
@@ -115,9 +115,9 @@ public class DHash {
   /**
    * compares the DHash of two images and return whether they are perceptually similar (max
    *
-   * @param img1
-   * @param img2
-   * @param threshold
+   * 
+   * 
+   * 
    * @return true/false
    * for threshold different pixels allowed)
    */

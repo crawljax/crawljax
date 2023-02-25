@@ -1,5 +1,7 @@
 package com.crawljax.plugins.testcasegenerator;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
@@ -8,6 +10,8 @@ import com.crawljax.util.FSUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,8 +38,8 @@ public class JavaTestGenerator {
   private final String className;
 
   /**
-   * @param className
-   * @param url
+   * 
+   * 
    */
 //	public JavaTestGenerator(String className, String url, List<TestMethod> testMethods,
 //	        CrawljaxConfiguration config, String testSuitePath, String screenshotPath,
@@ -164,17 +168,17 @@ public class JavaTestGenerator {
   }
 
   /**
-   * @param outputFolder
-   * @param fileNameTemplate
+   * 
+   * 
    * @return filename of generates class
-   * @throws Exception
+   * 
    */
   public String generate(String outputFolder, String fileNameTemplate) throws Exception {
 
     Template template = engine.getTemplate(fileNameTemplate);
     FSUtils.directoryCheck(outputFolder);
     File f = new File(outputFolder + className + ".java");
-    FileWriter writer = new FileWriter(f);
+    Writer writer = Files.newBufferedWriter(f.toPath(), UTF_8);
     template.merge(context, writer);
     writer.flush();
     writer.close();
@@ -203,7 +207,7 @@ public class JavaTestGenerator {
     Template posixRunnerScriptTemplate = engine.getTemplate(POSIX_RUNNER_SCRIPT_TEMPLATE_NAME);
     File posixRunnerScriptFile = new File(
         outputFolder + File.separator + POSIX_RUNNER_SCRIPT_GENERATED_FILE_NAME);
-    FileWriter posixRunnerScriptFileWriter = new FileWriter(posixRunnerScriptFile);
+    Writer posixRunnerScriptFileWriter = Files.newBufferedWriter(posixRunnerScriptFile.toPath(), UTF_8);
     posixRunnerScriptTemplate.merge(runnerScriptContext, posixRunnerScriptFileWriter);
     posixRunnerScriptFileWriter.flush();
     posixRunnerScriptFileWriter.close();
@@ -212,7 +216,7 @@ public class JavaTestGenerator {
     Template windowsRunnerScriptTemplate = engine.getTemplate(WINDOWS_RUNNER_SCRIPT_TEMPLATE_NAME);
     File windowsRunnerScriptFile = new File(
         outputFolder + File.separator + WINDOWS_RUNNER_SCRIPT_GENERATED_FILE_NAME);
-    FileWriter windowsRunnerScriptFileWriter = new FileWriter(windowsRunnerScriptFile);
+    Writer windowsRunnerScriptFileWriter = Files.newBufferedWriter(windowsRunnerScriptFile.toPath(), UTF_8);
     windowsRunnerScriptTemplate.merge(runnerScriptContext, windowsRunnerScriptFileWriter);
     windowsRunnerScriptFileWriter.flush();
     windowsRunnerScriptFileWriter.close();
@@ -222,7 +226,7 @@ public class JavaTestGenerator {
     testngContext.put("generatedTestsQualifiedClassName", testSuitePackageName + "." + className);
     Template testngTemplate = engine.getTemplate(TESTNG_XML_TEMPLATE_NAME);
     File testngXMLFile = new File(outputFolder + File.separator + TESTNG_XML_GENERATED_FILE_NAME);
-    FileWriter testngFileWriter = new FileWriter(testngXMLFile);
+    Writer testngFileWriter = Files.newBufferedWriter(testngXMLFile.toPath(), UTF_8);
     testngTemplate.merge(testngContext, testngFileWriter);
     testngFileWriter.flush();
     testngFileWriter.close();
@@ -230,7 +234,7 @@ public class JavaTestGenerator {
     // Generate pom.xml
     Template pomTemplate = engine.getTemplate(POM_TEMPLATE);
     File pomFile = new File(outputFolder + File.separator + POM_FILE_NAME);
-    FileWriter pomWriter = new FileWriter(pomFile);
+    Writer pomWriter = Files.newBufferedWriter(pomFile.toPath(), UTF_8);
     pomTemplate.merge(runnerScriptContext, pomWriter);
     pomWriter.flush();
     pomWriter.close();

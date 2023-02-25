@@ -11,12 +11,12 @@ public class VipsBrowserAttributes {
   boolean isDisplayed;
   String eventListeners;
 
-  public VipsBrowserAttributes(Rectangle rect, int fontSize, int fontWeight, String bgColor,
+  public VipsBrowserAttributes(Rectangle rect, int fontsize, int fontweight, String bgcolor,
       boolean isDisplayed2, String eventListeners) {
-    this.bgcolor = bgColor;
+    this.bgcolor = bgcolor;
     this.rectangle = rect;
-    this.fontsize = fontSize;
-    this.fontweight = fontWeight;
+    this.fontsize = fontsize;
+    this.fontweight = fontweight;
     this.isDisplayed = isDisplayed2;
     this.eventListeners = eventListeners;
   }

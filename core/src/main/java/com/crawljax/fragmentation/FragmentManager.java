@@ -74,8 +74,8 @@ public class FragmentManager {
    * To decide if the fragment is large enough to be a functional entity This is an approximation
    * and can be configured using {@link FragmentRules}
    *
-   * @param fragment
-   * @return
+   * 
+   * 
    */
   public static boolean usefulFragment(Fragment fragment) {
     try {
@@ -104,8 +104,8 @@ public class FragmentManager {
   /**
    * Leaf fragments are fragments that do not have any useful child fragments
    *
-   * @param fragments
-   * @return
+   * 
+   * 
    */
   public static List<Fragment> getLeafFragments(List<Fragment> fragments) {
     List<Fragment> returnFrags = new ArrayList<>();
@@ -377,9 +377,9 @@ public class FragmentManager {
    * Called after a crawl action is performed. Priority of the remaining candidate elements is
    * updated based on their relationship with the action perfomed.
    *
-   * @param element
-   * @param state
-   * @return
+   * 
+   * 
+   * 
    */
   public boolean recordAccess(CandidateElement element, StateVertex state) {
     if (state.getRootFragment() != null && !state.getRootFragment().isAccessTransferred()) {
@@ -623,17 +623,17 @@ public class FragmentManager {
    * state that has the highest priority Also takes into consideration the back-tracking effort
    * required to reach the state
    *
-   * @param currentState
-   * @param onURLSet
-   * @param statesWithCandidates
-   * @param applyNonSelAdvantage
-   * @return
+   * 
+   * 
+   * 
+   * 
+   * 
    */
   public StateVertex getClosestUnexploredState(StateVertex currentState, List<StateVertex> onURLSet,
       BlockingQueue<Integer> statesWithCandidates, boolean applyNonSelAdvantage) {
     // Selector = Influence - Hops
     long start = System.currentTimeMillis();
-    HashMap<StateVertex, Double> hops = new HashMap<>();
+    
 
     double maxInfluence = -1000000;
     StateVertex maxState = null;
@@ -672,7 +672,7 @@ public class FragmentManager {
       }
 
       try {
-        double influence = 0;
+        
         double candidateInfluence = calculateFragmentCandidateInfluence(state.getRootFragment());
         double hopInfluence = calculateHops(state.getRootFragment(), currentState, onURLSet);
         // Remove this assigning non seelctions: already done in unfiredCandidates.seenState()
@@ -682,7 +682,7 @@ public class FragmentManager {
         }
         double nonSelectionAdvantage = numNonSelections.get(state.getId());
 
-        influence = candidateInfluence - hopInfluence;
+        double influence = candidateInfluence - hopInfluence;
         if (applyNonSelAdvantage) {
           influence += nonSelectionAdvantage;
           LOG.info("{} : candidate {}, hop{}, nonSel {}, influence {}", state.getName(),
@@ -856,9 +856,9 @@ public class FragmentManager {
   /**
    * Uses mapping of leaf fragments to determine if given two states are near-duplicates
    *
-   * @param newState
-   * @param expectedState
-   * @return
+   * 
+   * 
+   * 
    */
   public StateComparision areND2(StateVertex newState, StateVertex expectedState) {
     List<Fragment> newFragments = getLeafFragments(newState.getFragments());
@@ -928,9 +928,9 @@ public class FragmentManager {
   /**
    * Color histogram comparison
    *
-   * @param image1
-   * @param image2
-   * @return
+   * 
+   * 
+   * 
    */
   public boolean compareImages(BufferedImage image1, BufferedImage image2) {
     ColorHistogram colorHistogram = new ColorHistogram();
@@ -945,10 +945,10 @@ public class FragmentManager {
    * The main function that compares two given states and outputs a classification [clone,
    * near-duplicates (ND-data ND-struct), different]
    *
-   * @param newState
-   * @param expectedState
-   * @param assignDynamic
-   * @return
+   * 
+   * 
+   * 
+   * 
    */
   public StateComparision cacheStateComparision(StateVertex newState, StateVertex expectedState,
       boolean assignDynamic) {
@@ -1082,9 +1082,9 @@ public class FragmentManager {
    * Computes which fragments contain the changed nodes. Changed nodes are the result of DOM
    * differencing between two states being compared.
    *
-   * @param changedNodes
-   * @param state
-   * @return
+   * 
+   * 
+   * 
    */
   private List<Fragment> getAffectedFragments(List<Node> changedNodes, StateVertex state) {
 
@@ -1248,7 +1248,7 @@ public class FragmentManager {
    * Updates no of times state has not been polled during crawl (Helps prevent crawler getting stuck
    * in similar states)
    *
-   * @param currentState
+   * 
    */
   public void seenState(StateVertex currentState) {
     if (!numNonSelections.containsKey(currentState.getId())) {

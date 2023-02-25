@@ -17,7 +17,7 @@ public class RandomInputValueGenerator {
   private final Random random = new Random();
 
   /**
-   * @param length
+   * 
    * @return a random string
    */
   private String generate(int length) {
@@ -31,8 +31,9 @@ public class RandomInputValueGenerator {
   }
 
   /**
-   * @param length the length of the random string
-   * @return random string
+   *Returns random string.
+ @param length the length of the random string
+   * 
    */
   public String getRandomString(int length) {
     return generate(length);
@@ -43,15 +44,17 @@ public class RandomInputValueGenerator {
   }
 
   /**
-   * @return whether to check with p=0.5
+   *Returns whether to check with p=0.5.
+ 
    */
   public boolean getCheck() {
     return random.nextDouble() > PROBABILITY_CHECK;
   }
 
   /**
-   * @param options the possible options (e.g. option item in select). The list must be non-empty
-   * @return a random item from the list
+   *Returns a random item from the list.
+ @param options the possible options (e.g. option item in select). The list must be non-empty
+   * 
    */
   public <T> T getRandomItem(List<T> options) {
     checkArgument(!options.isEmpty(), "Options must not be empty");

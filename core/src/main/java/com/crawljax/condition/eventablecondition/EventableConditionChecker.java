@@ -6,7 +6,6 @@ import com.crawljax.core.configuration.CrawlRules;
 import com.crawljax.util.XPathHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import java.util.List;
 import javax.inject.Inject;
 import javax.xml.xpath.XPathExpressionException;
@@ -24,7 +23,7 @@ public class EventableConditionChecker {
 
   @Inject
   public EventableConditionChecker(CrawlRules config) {
-    Builder<EventableCondition> builder = ImmutableList.builder();
+    ImmutableList.Builder<EventableCondition> builder = ImmutableList.builder();
     for (CrawlElement crawlTag : config.getAllCrawlElements()) {
       EventableCondition eventableCondition = crawlTag.getEventableCondition();
       if (eventableCondition != null) {
@@ -37,7 +36,8 @@ public class EventableConditionChecker {
   }
 
   /**
-   * @param id Identifier of the {@link EventableCondition}.
+   *Returns eventableCondition or <code>null</code>.
+ @param id Identifier of the {@link EventableCondition}.
    * @return EventableCondition or <code>null</code>
    */
   public EventableCondition getEventableCondition(String id) {
@@ -58,7 +58,7 @@ public class EventableConditionChecker {
    * @param eventableCondition The eventable condition.
    * @param xpath              The XPath.
    * @return boolean whether xpath starts with xpath location of eventable condition xpath condition
-   * @throws XPathExpressionException
+   * 
    * @throws CrawljaxException        when eventableCondition is null or its inXPath has not been
    *                                  set
    */
@@ -75,9 +75,10 @@ public class EventableConditionChecker {
   }
 
   /**
-   * @param xpath      the xpath to check if its under a certain set of full-xPaths.
+   *Returns true if the xpath is under one of the full-length-xpaths.
+ @param xpath      the xpath to check if its under a certain set of full-xPaths.
    * @param xpathsList the set of full-length-xPaths
-   * @return true if the xpath is under one of the full-length-xpaths.
+   * 
    */
   public boolean checkXPathUnderXPaths(String xpath, List<String> xpathsList) {
     /* check all expressions */

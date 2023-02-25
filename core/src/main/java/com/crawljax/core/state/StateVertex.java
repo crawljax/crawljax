@@ -38,17 +38,20 @@ public interface StateVertex extends Serializable {
   String getDom();
 
   /**
-   * @return the stripped dom by the oracle comparators
+   *Returns the stripped dom by the oracle comparators.
+ 
    */
   String getStrippedDom();
 
   /**
-   * @return the url
+   *Returns the url.
+ 
    */
   String getUrl();
 
   /**
-   * @return the id. This is guaranteed to be unique per state.
+   *Returns the id. This is guaranteed to be unique per state.
+ 
    */
   int getId();
 
@@ -66,10 +69,11 @@ public interface StateVertex extends Serializable {
   void setElementsFound(LinkedList<CandidateElement> elements);
 
   /**
-   * @return A list of {@link CandidateElement} that might have been fired during the crawl. If an
-   * event was fired it is registered as an {@link Eventable} an can be retrieved from
-   * {@link StateFlowGraph#getAllEdges()}. If the candidates were not set because of an error it
-   * returns <code>null</code>.
+   *Returns a list of {@link CandidateElement} that might have been fired during the crawl. If an
+ event was fired it is registered as an {@link Eventable} an can be retrieved from
+ {@link StateFlowGraph#getAllEdges()}. If the candidates were not set because of an error it
+ returns <code>null</code>.
+ 
    */
   ImmutableList<CandidateElement> getCandidateElements();
 

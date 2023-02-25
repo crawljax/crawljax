@@ -51,7 +51,7 @@ public class LabelDictionary {
    */
   public int store(String label) {
     if (StrInt.containsKey(label)) {
-      return (StrInt.get(label));
+      return  StrInt.get(label);
     } else if (!newLabelsAllowed) {
       return KEY_DUMMY_LABEL;
     } else { // store label
@@ -66,7 +66,7 @@ public class LabelDictionary {
   /**
    * Returns the label with a given ID in the dictionary.
    *
-   * @param labelID
+   * 
    * @return the label with the specified labelID, or null if this dictionary contains no label for
    * labelID
    */
@@ -75,7 +75,8 @@ public class LabelDictionary {
   }
 
   /**
-   * @return true iff new labels can be stored into this label dictionary
+   *Returns true iff new labels can be stored into this label dictionary.
+ 
    */
   public boolean isNewLabelsAllowed() {
     return newLabelsAllowed;

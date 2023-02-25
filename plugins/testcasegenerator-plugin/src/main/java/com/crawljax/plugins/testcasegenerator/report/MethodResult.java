@@ -10,20 +10,20 @@ public class MethodResult {
 
   private LinkedList<StateVertexResult> crawlStates;
   private LinkedList<EventableResult> crawlPath;
-  private boolean success;
-  private String methodName;
+  
+  
   private WarnLevel warnLevel;
 
   public MethodResult(String methodName) {
-    this.methodName = methodName;
+    
     this.crawlPath = new LinkedList<EventableResult>();
     this.crawlStates = new LinkedList<StateVertexResult>();
-    this.success = false;
+    
     this.warnLevel = WarnLevel.LEVEL0;
   }
 
   public void setSuccess(boolean success) {
-    this.success = success;
+    
   }
 
   public void addEventable(Eventable eventable) {
