@@ -1,3 +1,6 @@
+## Version 5.1.2
+* [Edge browser/driver support added](https://github.com/crawljax/crawljax/pull/559)
+
 ## Version 5.0
 * [Fragmentation-based crawling](https://github.com/crawljax/crawljax/issues/541) added
 * [CrawlScope](https://github.com/crawljax/crawljax/pull/548) added
