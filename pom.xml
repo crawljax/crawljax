@@ -4,7 +4,7 @@
 
     <groupId>com.crawljax</groupId>
     <artifactId>crawljax-parent-pom</artifactId>
-    <version>5.1-SNAPSHOT</version>
+    <version>5.1.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Crawljax parent POM</name>
@@ -34,6 +34,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/crawljax/crawljax.git</connection>
+        <developerConnection>scm:git:https://github.com/crawljax/crawljax.git</developerConnection>
         <url>https://github.com/crawljax/crawljax</url>
         <tag>HEAD</tag>
     </scm>
@@ -68,6 +69,11 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
                 <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.14.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -269,11 +275,14 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>3.0.0-M7</version>
                 <configuration>
-                    <tagNameFormat>crawljax-@{project.version}</tagNameFormat>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
-                    <goals>deploy</goals>
+                    <tagNameFormat>crawljax-@{project.version}</tagNameFormat>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                    <remoteTagging>false</remoteTagging>
+                    <arguments>-DskipTests=true</arguments>
                 </configuration>
             </plugin>
             <plugin>
@@ -318,6 +327,12 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

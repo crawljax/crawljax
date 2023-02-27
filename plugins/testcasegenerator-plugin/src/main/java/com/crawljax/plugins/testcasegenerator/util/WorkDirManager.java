@@ -85,8 +85,6 @@ public class WorkDirManager {
       HashMap<String, TestRecord> recordMap, String fileName, String templateFile)
       throws IOException {
     VelocityEngine engine = new VelocityEngine();
-    engine.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
-        "org.apache.velocity.runtime.log.NullLogChute");
     engine.setProperty("resource.loader", "file");
     engine.setProperty("file.resource.loader.class",
         "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");

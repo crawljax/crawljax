@@ -91,9 +91,6 @@ public class JavaTestGenerator {
       CrawljaxConfiguration config,
       String absPath, TestConfiguration testConfiguration) {
     engine = new VelocityEngine();
-    /* disable logging */
-    engine.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS,
-        "org.apache.velocity.runtime.log.NullLogChute");
     // tell Velocity to look in classpath for template file
     engine.setProperty("resource.loader", "file");
     engine.setProperty("file.resource.loader.class",

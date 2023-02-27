@@ -151,6 +151,6 @@ public interface EmbeddedBrowser {
    * Browser types.
    */
   enum BrowserType {
-    CHROME, CHROME_HEADLESS, FIREFOX, FIREFOX_HEADLESS, REMOTE
+    CHROME, CHROME_HEADLESS, FIREFOX, FIREFOX_HEADLESS, REMOTE, EDGE, EDGE_HEADLESS
   }
 }

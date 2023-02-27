@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.crawljax.plugins</groupId>
 		<artifactId>crawljax-plugins-parent</artifactId>
-		<version>5.1-SNAPSHOT</version>
+		<version>5.1.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>testcasegenerator</artifactId>
@@ -23,8 +23,8 @@
 
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<version>1.7</version>
+			<artifactId>velocity-engine-core</artifactId>
+			<version>2.3</version>
 		</dependency>
 
 		<dependency>

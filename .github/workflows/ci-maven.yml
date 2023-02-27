@@ -1,10 +1,15 @@
-name: Java CI with Maven
+name: CI / Integration Tests
 
 on:
   push:
     branches: [ "fix-vipstests-github-actions" ]
+    paths-ignore:
+      - '**.md'
+
   pull_request:
     branches: [ "master" ]
+    paths-ignore:
+      - '**.md'
 
 jobs:
   build:
@@ -13,8 +18,7 @@ jobs:
 
     strategy:
       matrix:
-#        os: [ubuntu-latest, macos-latest, windows-latest]
-        os: [windows-latest]
+       os: [ubuntu-latest, macos-latest]
     steps:
     - uses: actions/checkout@v3
     - name: Install prerequisites (libgtk on ubuntu)
@@ -31,4 +35,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -B package -P integrationtests --file pom.xml
+      run: mvn -U -B clean package -P integrationtests --file pom.xml

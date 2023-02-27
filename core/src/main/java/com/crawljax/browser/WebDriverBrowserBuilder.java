@@ -12,6 +12,8 @@ import javax.inject.Provider;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -70,6 +72,12 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
           browser = newFirefoxBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent,
               true);
           break;
+        case EDGE:
+          browser = newEdgeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent, false);
+          break;
+        case EDGE_HEADLESS:
+          browser = newEdgeBrowser(filterAttributes, crawlWaitReload, crawlWaitEvent, true);
+          break;
         case REMOTE:
           browser = WebDriverBackedEmbeddedBrowser.withRemoteDriver(
               configuration.getBrowserConfig().getRemoteHubUrl(), filterAttributes,
@@ -102,6 +110,22 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
 
     plugins.runOnBrowserCreatedPlugins(browser);
     return browser;
+  }
+
+  private EmbeddedBrowser newEdgeBrowser(ImmutableSortedSet<String> filterAttributes,
+      long crawlWaitReload, long crawlWaitEvent, boolean headless) {
+    EdgeOptions edgeOptions = new EdgeOptions();
+
+    if (headless) {
+      edgeOptions.addArguments("headless");
+      edgeOptions.addArguments("disable-gpu");
+    }
+
+    EdgeDriver driver = (EdgeDriver) WebDriverManager.edgedriver().capabilities(edgeOptions)
+        .create();
+
+    return WebDriverBackedEmbeddedBrowser.withDriver(driver,
+        filterAttributes, crawlWaitReload, crawlWaitEvent);
   }
 
   private EmbeddedBrowser newFirefoxBrowser(ImmutableSortedSet<String> filterAttributes,
@@ -160,7 +184,6 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
   private EmbeddedBrowser newChromeBrowser(ImmutableSortedSet<String> filterAttributes,
       long crawlWaitReload, long crawlWaitEvent, boolean headless) {
 
-//    WebDriverManager.chromedriver().create();
     ChromeOptions optionsChrome = new ChromeOptions();
 
     /* enables headless Chrome. */
