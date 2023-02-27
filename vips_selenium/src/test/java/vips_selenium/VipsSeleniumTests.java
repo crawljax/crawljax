@@ -2,8 +2,6 @@ package vips_selenium;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.assertthat.selenium_shutterbug.core.Shutterbug;
-import com.assertthat.selenium_shutterbug.utils.web.ScrollStrategy;
 import com.crawljax.vips_selenium.DomUtils;
 import com.crawljax.vips_selenium.VipsRectangle;
 import com.crawljax.vips_selenium.VipsSelenium;
@@ -19,7 +17,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +30,6 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.w3c.dom.Document;
 
 public class VipsSeleniumTests {
@@ -64,7 +60,6 @@ public class VipsSeleniumTests {
 
   private Document getDomTree(WebDriver driver) {
     try {
-      System.out.println(driver.getPageSource());
       Document dom = DomUtils.asDocument(driver.getPageSource());
       boolean offline = false;
       VipsUtils.cleanDom(dom, offline);
@@ -136,11 +131,8 @@ public class VipsSeleniumTests {
     URI url1 = getUrl(
         "/replay/20230128041350/http://host.docker.internal:9966/petclinic/owners/2.html");
 
-//    driver.navigate().to(url1.toURL());
-    driver.get(url1.toURL().toString());
-//    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-//    wait.until(webDriver -> webDriver.getPageSource().contains("Owner Information"));
-    Thread.sleep(10000);
+    driver.navigate().to(url1.toURL());
+    Thread.sleep(2000);
     Document dom = getDomTree(driver);
 
     BufferedImage screenshot = getScreenShotAsBufferedImage();
