@@ -75,7 +75,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.crawljax.examples.StubMain</mainClass>
+                            <mainClass>com.crawljax.examples.FragCrawlExample</mainClass>
                         </manifest>
                     </archive>
 
