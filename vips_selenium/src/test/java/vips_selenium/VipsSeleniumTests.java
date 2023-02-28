@@ -2,8 +2,6 @@ package vips_selenium;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.assertthat.selenium_shutterbug.core.Shutterbug;
-import com.assertthat.selenium_shutterbug.utils.web.ScrollStrategy;
 import com.crawljax.vips_selenium.DomUtils;
 import com.crawljax.vips_selenium.VipsRectangle;
 import com.crawljax.vips_selenium.VipsSelenium;
@@ -131,7 +129,6 @@ public class VipsSeleniumTests {
 
     driver.navigate().to(url1.toURL());
     Thread.sleep(2000);
-
     Document dom = getDomTree(driver);
 
     BufferedImage screenshot = getScreenShotAsBufferedImage();

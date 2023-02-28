@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
     paths-ignore:
       - '**.md'
+
   pull_request:
     branches: [ "master" ]
     paths-ignore:
@@ -13,10 +14,20 @@ on:
 jobs:
   build:
 
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
 
+    strategy:
+      matrix:
+       os: [ubuntu-latest, macos-latest]
     steps:
     - uses: actions/checkout@v3
+    - name: Install prerequisites (libgtk on ubuntu)
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get update
+            sudo apt-get install -y libgtk2.0-0 
+        fi
+      shell: bash
     - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
