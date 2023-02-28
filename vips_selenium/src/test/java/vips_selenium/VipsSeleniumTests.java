@@ -50,10 +50,6 @@ public class VipsSeleniumTests {
     WebDriverManager wdm = WebDriverManager.chromedriver();
     ChromeOptions optionsChrome = new ChromeOptions();
     optionsChrome.addArguments("--headless");
-    optionsChrome.addArguments("--no-sandbox");
-    optionsChrome.addArguments("--disable-dev-shm-usage");
-    optionsChrome.addArguments("--disable-gpu");
-    optionsChrome.addArguments("--disable-software-rasterizer");
     wdm.capabilities(optionsChrome);
     driver = wdm.create();
   }
