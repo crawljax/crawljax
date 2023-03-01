@@ -1,6 +1,4 @@
-# Automatically check formatting of Java files using Google Java Style guidelines.
-
-name: Format
+name: Formatter
 
 on: 
   pull_request:
@@ -12,9 +10,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: axel-op/googlejavaformat-action@v3
-        with:
-          args: "--replace"
-          skip-commit: true
-      - name: Print diffs
-        run: git --no-pager diff --exit-code
+      - name: Check code formatting
+        run: mvn -B spotless:check
