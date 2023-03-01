@@ -1,0 +1,14 @@
+name: Code formatter
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check code formatting
+        run: mvn -B spotless:check
