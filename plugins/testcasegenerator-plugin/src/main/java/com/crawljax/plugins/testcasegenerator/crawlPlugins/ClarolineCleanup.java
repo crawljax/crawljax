@@ -7,44 +7,41 @@ import org.openqa.selenium.WebDriver;
 
 public class ClarolineCleanup implements OnUrlFirstLoadPlugin {
 
+    @Override
+    public void onUrlFirstLoad(CrawlerContext context) {
+        WebDriver driver = context.getBrowser().getWebDriver();
+        String url = driver.getCurrentUrl();
+        // Clean addressbook case : selenium test case
 
-  @Override
-  public void onUrlFirstLoad(CrawlerContext context) {
-    WebDriver driver = context.getBrowser().getWebDriver();
-    String url = driver.getCurrentUrl();
-    // Clean addressbook case : selenium test case
+        // login
+        driver.findElement(By.id("login")).sendKeys("astocco");
+        driver.findElement(By.id("password")).sendKeys("password");
+        driver.findElement(By.xpath("//*[@id=\"loginBox\"]/form/fieldset/button"))
+                .click();
 
-    // login
-    driver.findElement(By.id("login")).sendKeys("astocco");
-    driver.findElement(By.id("password")).sendKeys("password");
-    driver.findElement(By.xpath("//*[@id=\"loginBox\"]/form/fieldset/button")).click();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        String unregURL = url + "claroline/auth/courses.php?cmd=exUnreg&course=SE123";
+        driver.get(unregURL);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        String logOutURL = url + "index.php?logout=true";
+        driver.get(logOutURL);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-    try {
-      Thread.sleep(2000);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+        driver.get(url);
     }
-    String unregURL = url + "claroline/auth/courses.php?cmd=exUnreg&course=SE123";
-    driver.get(unregURL);
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    String logOutURL = url + "index.php?logout=true";
-    driver.get(logOutURL);
-    try {
-      Thread.sleep(2000);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    driver.get(url);
-
-
-  }
-
 }

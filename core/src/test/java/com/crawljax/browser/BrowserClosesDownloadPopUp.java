@@ -13,11 +13,10 @@ import org.junit.experimental.categories.Category;
 @Category(BrowserTest.class)
 public class BrowserClosesDownloadPopUp {
 
-  @Test
-  public void webBrowserWindowOpensItIsIgnored() {
-    BaseCrawler crawler =
-        new BaseCrawler(Resource.newClassPathResource("/site"), "download/download.html");
-    CrawlSession crawl = crawler.crawl();
-    assertThat(crawl.getStateFlowGraph(), hasStates(2));
-  }
+    @Test
+    public void webBrowserWindowOpensItIsIgnored() {
+        BaseCrawler crawler = new BaseCrawler(Resource.newClassPathResource("/site"), "download/download.html");
+        CrawlSession crawl = crawler.crawl();
+        assertThat(crawl.getStateFlowGraph(), hasStates(2));
+    }
 }

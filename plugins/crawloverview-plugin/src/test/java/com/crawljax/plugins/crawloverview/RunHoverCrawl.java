@@ -19,55 +19,48 @@ import org.slf4j.LoggerFactory;
  */
 public class RunHoverCrawl extends ExternalResource {
 
-  private static File OUT_DIR;
-  private static final Supplier<OutPutModel> CRAWL_TASK = Suppliers
-      .memoize(new Supplier<OutPutModel>() {
+    private static File OUT_DIR;
+    private static final Supplier<OutPutModel> CRAWL_TASK = Suppliers.memoize(new Supplier<OutPutModel>() {
 
         @Override
         public OutPutModel get() {
-          LoggerFactory.getLogger(RunHoverCrawl.class).info(
-              "Running the hover crawl");
-          Resource hoverSiteBase =
-              Resource.newClassPathResource("hover-test-site");
-          BaseCrawler hoverSiteCrawl = new BaseCrawler(hoverSiteBase, "") {
-            @Override
-            protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
-              CrawljaxConfigurationBuilder builder =
-                  super.newCrawlConfigurationBuilder().setOutputDirectory(
-                      getTempDir());
+            LoggerFactory.getLogger(RunHoverCrawl.class).info("Running the hover crawl");
+            Resource hoverSiteBase = Resource.newClassPathResource("hover-test-site");
+            BaseCrawler hoverSiteCrawl = new BaseCrawler(hoverSiteBase, "") {
+                @Override
+                protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
+                    CrawljaxConfigurationBuilder builder =
+                            super.newCrawlConfigurationBuilder().setOutputDirectory(getTempDir());
 
-              return builder;
-            }
-
-            ;
-          };
-          CrawlOverview plugin = new CrawlOverview();
-          hoverSiteCrawl.crawlWith(plugin);
-          return plugin.getResult();
+                    return builder;
+                }
+                ;
+            };
+            CrawlOverview plugin = new CrawlOverview();
+            hoverSiteCrawl.crawlWith(plugin);
+            return plugin.getResult();
         }
+    });
 
-      });
-
-  private static File getTempDir() {
-    OUT_DIR = new File("target/test-data/hover-crawl");
-    if (OUT_DIR.exists()) {
-      FileUtils.deleteQuietly(OUT_DIR);
+    private static File getTempDir() {
+        OUT_DIR = new File("target/test-data/hover-crawl");
+        if (OUT_DIR.exists()) {
+            FileUtils.deleteQuietly(OUT_DIR);
+        }
+        return OUT_DIR;
     }
-    return OUT_DIR;
-  }
 
-  public static File getOutDir() {
-    Preconditions.checkNotNull(OUT_DIR);
-    return OUT_DIR;
-  }
+    public static File getOutDir() {
+        Preconditions.checkNotNull(OUT_DIR);
+        return OUT_DIR;
+    }
 
-  @Override
-  protected void before() throws Throwable {
-    CRAWL_TASK.get();
-  }
+    @Override
+    protected void before() throws Throwable {
+        CRAWL_TASK.get();
+    }
 
-  public OutPutModel getResult() {
-    return CRAWL_TASK.get();
-  }
-
+    public OutPutModel getResult() {
+        return CRAWL_TASK.get();
+    }
 }

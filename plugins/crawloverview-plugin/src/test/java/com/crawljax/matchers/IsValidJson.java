@@ -11,32 +11,31 @@ import org.hamcrest.TypeSafeMatcher;
 
 public class IsValidJson {
 
-  /**
-   * @return a {@link Matcher} that checks if the given {@link File} contains a valid JSON object.
-   */
-  @Factory
-  public static <T> Matcher<File> isValidJson() {
-    return new TypeSafeMatcher<File>() {
+    /**
+     * @return a {@link Matcher} that checks if the given {@link File} contains a valid JSON object.
+     */
+    @Factory
+    public static <T> Matcher<File> isValidJson() {
+        return new TypeSafeMatcher<File>() {
 
-      @Override
-      public void describeTo(Description description) {
-        description.appendText("Valid JSON String");
-      }
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Valid JSON String");
+            }
 
-      @Override
-      protected boolean matchesSafely(File item) {
-        boolean valid = false;
-        try {
-          JsonParser parser = new ObjectMapper().getFactory().createParser(item);
-          while (parser.nextToken() != null) {
-          }
-          valid = true;
-        } catch (IOException e) {
-          throw new AssertionError(e);
-        }
+            @Override
+            protected boolean matchesSafely(File item) {
+                boolean valid = false;
+                try {
+                    JsonParser parser = new ObjectMapper().getFactory().createParser(item);
+                    while (parser.nextToken() != null) {}
+                    valid = true;
+                } catch (IOException e) {
+                    throw new AssertionError(e);
+                }
 
-        return valid;
-      }
-    };
-  }
+                return valid;
+            }
+        };
+    }
 }

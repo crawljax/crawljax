@@ -16,46 +16,44 @@ import java.util.concurrent.TimeUnit;
  */
 public final class CrawlExample {
 
-  private static final long WAIT_TIME_AFTER_EVENT = 500;
-  private static final long WAIT_TIME_AFTER_RELOAD = 500;
-  private static final String URL = "http://localhost:9966/petclinic/";
+    private static final long WAIT_TIME_AFTER_EVENT = 500;
+    private static final long WAIT_TIME_AFTER_RELOAD = 500;
+    private static final String URL = "http://localhost:9966/petclinic/";
 
-  /**
-   * Run this method to start the crawl.
-   *
-   * @throws IOException when the output folder cannot be created or emptied.
-   */
-  public static void main(String[] args) throws IOException {
-    CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+    /**
+     * Run this method to start the crawl.
+     *
+     * @throws IOException when the output folder cannot be created or emptied.
+     */
+    public static void main(String[] args) throws IOException {
+        CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
 
-    builder.crawlRules().setFormFillMode(FormFillMode.RANDOM);
+        builder.crawlRules().setFormFillMode(FormFillMode.RANDOM);
 
-    // click these elements
-    builder.crawlRules().clickDefaultElements();
-		 /*builder.crawlRules().click("A");
-		 builder.crawlRules().click("button");*/
-    builder.crawlRules().crawlHiddenAnchors(true);
-    builder.crawlRules().crawlFrames(false);
-    builder.setUnlimitedCrawlDepth();
-    builder.setUnlimitedRuntime();
-    builder.setUnlimitedStates();
+        // click these elements
+        builder.crawlRules().clickDefaultElements();
+        /*builder.crawlRules().click("A");
+        builder.crawlRules().click("button");*/
+        builder.crawlRules().crawlHiddenAnchors(true);
+        builder.crawlRules().crawlFrames(false);
+        builder.setUnlimitedCrawlDepth();
+        builder.setUnlimitedRuntime();
+        builder.setUnlimitedStates();
 
-    //builder.setMaximumStates(10);
-    //builder.setMaximumDepth(3);
-    builder.crawlRules().clickElementsInRandomOrder(false);
+        // builder.setMaximumStates(10);
+        // builder.setMaximumDepth(3);
+        builder.crawlRules().clickElementsInRandomOrder(false);
 
-    // Set timeouts
-    builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
-    builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
+        // Set timeouts
+        builder.crawlRules().waitAfterReloadUrl(WAIT_TIME_AFTER_RELOAD, TimeUnit.MILLISECONDS);
+        builder.crawlRules().waitAfterEvent(WAIT_TIME_AFTER_EVENT, TimeUnit.MILLISECONDS);
 
-    builder.setBrowserConfig(new BrowserConfiguration(BrowserType.CHROME_HEADLESS, 1));
+        builder.setBrowserConfig(new BrowserConfiguration(BrowserType.CHROME_HEADLESS, 1));
 
-    // CrawlOverview
-    builder.addPlugin(new CrawlOverview());
+        // CrawlOverview
+        builder.addPlugin(new CrawlOverview());
 
-    CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
-    crawljax.call();
-
-  }
-
+        CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+        crawljax.call();
+    }
 }

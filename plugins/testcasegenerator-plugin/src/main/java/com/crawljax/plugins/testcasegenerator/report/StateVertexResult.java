@@ -7,104 +7,103 @@ import java.util.List;
 
 public class StateVertexResult {
 
-  private final int id;
-  private final String url;
-  private String name;
+    private final int id;
+    private final String url;
+    private String name;
 
-  private boolean success;
-  private boolean identical;
-  private String compResult;
-  private List<Invariant> failedInvariants;
-  private WarnLevel warnLevel;
-  private boolean locatorWarning;
-  private int traceState;
-  private double distance = -1.0;
+    private boolean success;
+    private boolean identical;
+    private String compResult;
+    private List<Invariant> failedInvariants;
+    private WarnLevel warnLevel;
+    private boolean locatorWarning;
+    private int traceState;
+    private double distance = -1.0;
 
-  public StateVertexResult(StateVertex state) {
-    this.id = state.getId();
-    this.url = state.getUrl();
-    this.setName(state.getName());
-    this.success = true;
-    this.identical = true;
-    this.compResult = "DUPLICATE";
-    this.warnLevel = WarnLevel.LEVEL0;
-    this.locatorWarning = false;
-  }
-
-  public double getDistance() {
-    return this.distance;
-  }
-
-  public void setDistance(double distance) {
-    this.distance = distance;
-  }
-
-  public int getTraceState() {
-    return traceState;
-  }
-
-  public void setTraceState(int traceState) {
-    this.traceState = traceState;
-  }
-
-  public void setSuccess(boolean success) {
-    this.success = success;
-  }
-
-  public void setFailedInvariants(List<Invariant> failedInvariants) {
-    this.failedInvariants = failedInvariants;
-  }
-
-  public String getCompResult() {
-    return compResult;
-  }
-
-  public void setCompResult(String compResult) {
-    this.compResult = compResult;
-  }
-
-  public boolean isIdentical() {
-    return identical;
-  }
-
-  public void setIdentical(boolean identical) {
-    this.identical = identical;
-
-    if (!identical) {
-      this.compResult = "DIFFERENT";
+    public StateVertexResult(StateVertex state) {
+        this.id = state.getId();
+        this.url = state.getUrl();
+        this.setName(state.getName());
+        this.success = true;
+        this.identical = true;
+        this.compResult = "DUPLICATE";
+        this.warnLevel = WarnLevel.LEVEL0;
+        this.locatorWarning = false;
     }
-  }
 
-  public int getStateVertex() {
-    return id;
-  }
+    public double getDistance() {
+        return this.distance;
+    }
 
-  public String getUrl() {
-    return url;
-  }
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public int getTraceState() {
+        return traceState;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setTraceState(int traceState) {
+        this.traceState = traceState;
+    }
 
-  public WarnLevel getWarnLevel() {
-    return warnLevel;
-  }
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
-  public void setWarnLevel(WarnLevel level) {
-    this.warnLevel = level;
-  }
+    public void setFailedInvariants(List<Invariant> failedInvariants) {
+        this.failedInvariants = failedInvariants;
+    }
 
-  public boolean getLocatorWarning() {
-    return locatorWarning;
-  }
+    public String getCompResult() {
+        return compResult;
+    }
 
-  public void setLocatorWarning(boolean broken) {
-    this.locatorWarning = broken;
-  }
+    public void setCompResult(String compResult) {
+        this.compResult = compResult;
+    }
 
+    public boolean isIdentical() {
+        return identical;
+    }
+
+    public void setIdentical(boolean identical) {
+        this.identical = identical;
+
+        if (!identical) {
+            this.compResult = "DIFFERENT";
+        }
+    }
+
+    public int getStateVertex() {
+        return id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public WarnLevel getWarnLevel() {
+        return warnLevel;
+    }
+
+    public void setWarnLevel(WarnLevel level) {
+        this.warnLevel = level;
+    }
+
+    public boolean getLocatorWarning() {
+        return locatorWarning;
+    }
+
+    public void setLocatorWarning(boolean broken) {
+        this.locatorWarning = broken;
+    }
 }

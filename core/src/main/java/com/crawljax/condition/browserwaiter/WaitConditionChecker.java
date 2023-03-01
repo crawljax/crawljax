@@ -15,34 +15,32 @@ import org.slf4j.LoggerFactory;
 @ThreadSafe
 public class WaitConditionChecker {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(WaitConditionChecker.class
-      .getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(WaitConditionChecker.class.getName());
 
-  private final ImmutableList<WaitCondition> waitConditions;
+    private final ImmutableList<WaitCondition> waitConditions;
 
-  @Inject
-  public WaitConditionChecker(CrawlRules rules) {
-    waitConditions = rules.getPreCrawlConfig().getWaitConditions();
-  }
-
-  /**
-   * @return the waitConditions
-   */
-  public List<WaitCondition> getWaitConditions() {
-    return waitConditions;
-  }
-
-  /**
-   * @param browser The browser to use.
-   */
-  public void wait(EmbeddedBrowser browser) {
-    if (waitConditions == null) {
-      return;
+    @Inject
+    public WaitConditionChecker(CrawlRules rules) {
+        waitConditions = rules.getPreCrawlConfig().getWaitConditions();
     }
-    for (WaitCondition waitCondition : waitConditions) {
-      LOGGER.info("Checking WaitCondition for url: {}", waitCondition.getUrl());
-      waitCondition.testAndWait(browser);
-    }
-  }
 
+    /**
+     * @return the waitConditions
+     */
+    public List<WaitCondition> getWaitConditions() {
+        return waitConditions;
+    }
+
+    /**
+     * @param browser The browser to use.
+     */
+    public void wait(EmbeddedBrowser browser) {
+        if (waitConditions == null) {
+            return;
+        }
+        for (WaitCondition waitCondition : waitConditions) {
+            LOGGER.info("Checking WaitCondition for url: {}", waitCondition.getUrl());
+            waitCondition.testAndWait(browser);
+        }
+    }
 }

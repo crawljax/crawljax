@@ -24,55 +24,70 @@ import org.openqa.selenium.Point;
 
 public class SerializeTest {
 
-  @Rule
-  public TemporaryFolder tmpFolder = new TemporaryFolder();
+    @Rule
+    public TemporaryFolder tmpFolder = new TemporaryFolder();
 
-  @Test
-  public void testSerializability() throws IOException {
-    OutPutModel model = createModel();
-    String json = Serializer.toPrettyJson(model);
-    OutPutModel deserialized = Serializer.read(json);
-    assertThat(deserialized.getStates(), is(model.getStates()));
-    assertThat(deserialized, is(model));
-  }
+    @Test
+    public void testSerializability() throws IOException {
+        OutPutModel model = createModel();
+        String json = Serializer.toPrettyJson(model);
+        OutPutModel deserialized = Serializer.read(json);
+        assertThat(deserialized.getStates(), is(model.getStates()));
+        assertThat(deserialized, is(model));
+    }
 
-  private OutPutModel createModel() throws IOException {
-    ImmutableList<CandidateElementPosition> candidateElements =
-        ImmutableList.of(new CandidateElementPosition("a/b/c", new Point(1, 2),
-            new Dimension(3, 4)));
-    State state1 =
-        new State("state1", "http://example.com/a", candidateElements, 1, 1, 1,
-            ImmutableList.of("failedEvent1"), false, null, 0, 0, 0, false);
-    State state2 =
-        new State("state2", "http://example.com/b", candidateElements, 1, 1, 1,
-            ImmutableList.of("failedEvent2"), false, null, 0, 0, 0, false);
-    ImmutableMap<String, State> states =
-        ImmutableMap.of(state1.getName(), state1, state2.getName(), state2);
-    ImmutableList<Edge> edges =
-        ImmutableList.of(new Edge(state1.getName(), state2.getName(), 1, "the link",
-            "id1", "A", "click"));
-    return new OutPutModel(states, edges, newStatistics(states.values()),
-        ExitStatus.EXHAUSTED);
-  }
+    private OutPutModel createModel() throws IOException {
+        ImmutableList<CandidateElementPosition> candidateElements =
+                ImmutableList.of(new CandidateElementPosition("a/b/c", new Point(1, 2), new Dimension(3, 4)));
+        State state1 = new State(
+                "state1",
+                "http://example.com/a",
+                candidateElements,
+                1,
+                1,
+                1,
+                ImmutableList.of("failedEvent1"),
+                false,
+                null,
+                0,
+                0,
+                0,
+                false);
+        State state2 = new State(
+                "state2",
+                "http://example.com/b",
+                candidateElements,
+                1,
+                1,
+                1,
+                ImmutableList.of("failedEvent2"),
+                false,
+                null,
+                0,
+                0,
+                0,
+                false);
+        ImmutableMap<String, State> states = ImmutableMap.of(state1.getName(), state1, state2.getName(), state2);
+        ImmutableList<Edge> edges =
+                ImmutableList.of(new Edge(state1.getName(), state2.getName(), 1, "the link", "id1", "A", "click"));
+        return new OutPutModel(states, edges, newStatistics(states.values()), ExitStatus.EXHAUSTED);
+    }
 
-  private Statistics newStatistics(Collection<State> states) {
-    StateStatistics stateStats = new StateStatistics(states);
-    return new Statistics("1 hour", 1, "2KB", 1, new Date(), stateStats, 2);
-  }
+    private Statistics newStatistics(Collection<State> states) {
+        StateStatistics stateStats = new StateStatistics(states);
+        return new Statistics("1 hour", 1, "2KB", 1, new Date(), stateStats, 2);
+    }
 
-  @Test
-  public void testConfigSerializibility() throws IOException {
-    CrawljaxConfigurationBuilder builder =
-        CrawljaxConfiguration.builderFor("http://example.com")
-            .addPlugin(new CrawlOverview())
-            .setOutputDirectory(tmpFolder.getRoot());
+    @Test
+    public void testConfigSerializibility() throws IOException {
+        CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor("http://example.com")
+                .addPlugin(new CrawlOverview())
+                .setOutputDirectory(tmpFolder.getRoot());
 
-    builder.crawlRules().addCrawlCondition(
-        new CrawlCondition("kers", new RegexCondition("test")));
+        builder.crawlRules().addCrawlCondition(new CrawlCondition("kers", new RegexCondition("test")));
 
-    builder.crawlRules().addOracleComparator(
-        new OracleComparator("tes", new SimpleComparator()));
+        builder.crawlRules().addOracleComparator(new OracleComparator("tes", new SimpleComparator()));
 
-    Serializer.toPrettyJson(builder.build());
-  }
+        Serializer.toPrettyJson(builder.build());
+    }
 }

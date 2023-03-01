@@ -13,86 +13,82 @@ import net.jcip.annotations.GuardedBy;
  *
  * @author Stefan Lenselink &lt;S.R.Lenselink@student.tudelft.nl&gt;
  */
-public class CrawlQueue extends Stack<Runnable> implements
-    BlockingQueue<Runnable> {
+public class CrawlQueue extends Stack<Runnable> implements BlockingQueue<Runnable> {
 
-  /**
-   * Auto generated serialVersionUID.
-   */
-  private static final long serialVersionUID = 4656244727801517204L;
+    /**
+     * Auto generated serialVersionUID.
+     */
+    private static final long serialVersionUID = 4656244727801517204L;
 
-  @Override
-  public int drainTo(Collection<? super Runnable> c) {
-    return drainTo(c, Integer.MAX_VALUE);
-  }
-
-  @Override
-  public synchronized int drainTo(Collection<? super Runnable> c,
-      int maxRunnableElements) {
-    int counter = 0;
-    for (Runnable object : this) {
-      counter++;
-      if (counter < maxRunnableElements) {
-        c.add(object);
-      } else {
-        break;
-      }
+    @Override
+    public int drainTo(Collection<? super Runnable> c) {
+        return drainTo(c, Integer.MAX_VALUE);
     }
-    for (Object object : c) {
-      this.remove(object);
+
+    @Override
+    public synchronized int drainTo(Collection<? super Runnable> c, int maxRunnableElements) {
+        int counter = 0;
+        for (Runnable object : this) {
+            counter++;
+            if (counter < maxRunnableElements) {
+                c.add(object);
+            } else {
+                break;
+            }
+        }
+        for (Object object : c) {
+            this.remove(object);
+        }
+        return counter;
     }
-    return counter;
-  }
 
-  @Override
-  public boolean offer(Runnable e) {
-    return this.add(e);
-  }
-
-  @Override
-  public boolean offer(Runnable e, long timeout, TimeUnit unit) {
-    return this.add(e);
-  }
-
-  @Override
-  public Runnable poll(long timeout, TimeUnit unit) {
-    return remove();
-  }
-
-  @Override
-  public void put(Runnable e) {
-    this.add(e);
-
-  }
-
-  @Override
-  public int remainingCapacity() {
-    return Integer.MAX_VALUE;
-  }
-
-  @Override
-  public Runnable take() {
-    return remove();
-  }
-
-  @Override
-  @GuardedBy("this")
-  public synchronized Runnable element() {
-    return this.get(this.size() - 1);
-  }
-
-  @Override
-  public Runnable poll() {
-    return remove();
-  }
-
-  @Override
-  @GuardedBy("this")
-  public synchronized Runnable remove() {
-    if (this.size() == 0) {
-      return null;
+    @Override
+    public boolean offer(Runnable e) {
+        return this.add(e);
     }
-    return this.remove(this.size() - 1);
-  }
 
+    @Override
+    public boolean offer(Runnable e, long timeout, TimeUnit unit) {
+        return this.add(e);
+    }
+
+    @Override
+    public Runnable poll(long timeout, TimeUnit unit) {
+        return remove();
+    }
+
+    @Override
+    public void put(Runnable e) {
+        this.add(e);
+    }
+
+    @Override
+    public int remainingCapacity() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public Runnable take() {
+        return remove();
+    }
+
+    @Override
+    @GuardedBy("this")
+    public synchronized Runnable element() {
+        return this.get(this.size() - 1);
+    }
+
+    @Override
+    public Runnable poll() {
+        return remove();
+    }
+
+    @Override
+    @GuardedBy("this")
+    public synchronized Runnable remove() {
+        if (this.size() == 0) {
+            return null;
+        }
+        return this.remove(this.size() - 1);
+    }
 }

@@ -8,41 +8,40 @@ import org.opencv.img_hash.PHash;
 
 public class PerceptualImageHash extends VisHash {
 
-  public PerceptualImageHash() {
-    thresholdCoefficient = 0.0;
-    maxRaw = 32;
-    minThreshold = 0.0;
-    maxThreshold = thresholdCoefficient * maxRaw;
-  }
-
-  public PerceptualImageHash(double thresholdCoefficient) {
-    this.thresholdCoefficient = thresholdCoefficient;
-    maxRaw = 32;
-    minThreshold = 0.0;
-    maxThreshold = this.thresholdCoefficient * maxRaw;
-  }
-
-  @Override
-  public Mat getHash(BufferedImage img) {
-    Mat mat = null;
-    try {
-      mat = ImageUtils.BufferedImage2Mat(img);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    public PerceptualImageHash() {
+        thresholdCoefficient = 0.0;
+        maxRaw = 32;
+        minThreshold = 0.0;
+        maxThreshold = thresholdCoefficient * maxRaw;
     }
-    Mat hash = new Mat();
-    PHash.create().compute(mat, hash);
-    return hash;
-  }
 
-  @Override
-  public double compare(Mat hashMat, Mat hashMat2) {
-    return PHash.create().compare(hashMat, hashMat2);
-  }
+    public PerceptualImageHash(double thresholdCoefficient) {
+        this.thresholdCoefficient = thresholdCoefficient;
+        maxRaw = 32;
+        minThreshold = 0.0;
+        maxThreshold = this.thresholdCoefficient * maxRaw;
+    }
 
-  @Override
-  public String getHashName() {
-    return "PHash" + "_" + this.thresholdCoefficient;
-  }
+    @Override
+    public Mat getHash(BufferedImage img) {
+        Mat mat = null;
+        try {
+            mat = ImageUtils.BufferedImage2Mat(img);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Mat hash = new Mat();
+        PHash.create().compute(mat, hash);
+        return hash;
+    }
 
+    @Override
+    public double compare(Mat hashMat, Mat hashMat2) {
+        return PHash.create().compare(hashMat, hashMat2);
+    }
+
+    @Override
+    public String getHashName() {
+        return "PHash" + "_" + this.thresholdCoefficient;
+    }
 }

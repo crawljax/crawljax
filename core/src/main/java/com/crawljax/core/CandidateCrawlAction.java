@@ -10,41 +10,40 @@ import com.google.common.base.MoreObjects;
  */
 public class CandidateCrawlAction {
 
-  private final CandidateElement candidateElement;
-  private final EventType eventType;
+    private final CandidateElement candidateElement;
+    private final EventType eventType;
 
-  /**
-   * The Constructor for the CandidateCrawlAction, build a new instance with the CandidateElement
-   * and the EventType.
-   *
-   * @param candidateElement the element to execute the eventType on
-   * @param eventType        the eventType to execute on the Candidate Element.
-   */
-  public CandidateCrawlAction(CandidateElement candidateElement,
-      EventType eventType) {
-    this.candidateElement = candidateElement;
-    this.eventType = eventType;
-  }
+    /**
+     * The Constructor for the CandidateCrawlAction, build a new instance with the CandidateElement
+     * and the EventType.
+     *
+     * @param candidateElement the element to execute the eventType on
+     * @param eventType        the eventType to execute on the Candidate Element.
+     */
+    public CandidateCrawlAction(CandidateElement candidateElement, EventType eventType) {
+        this.candidateElement = candidateElement;
+        this.eventType = eventType;
+    }
 
-  /**
-   * @return the candidateElement
-   */
-  public CandidateElement getCandidateElement() {
-    return candidateElement;
-  }
+    /**
+     * @return the candidateElement
+     */
+    public CandidateElement getCandidateElement() {
+        return candidateElement;
+    }
 
-  /**
-   * @return the eventType
-   */
-  public EventType getEventType() {
-    return eventType;
-  }
+    /**
+     * @return the eventType
+     */
+    public EventType getEventType() {
+        return eventType;
+    }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("candidateElement", candidateElement)
-        .add("eventType", eventType).toString();
-  }
-
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("candidateElement", candidateElement)
+                .add("eventType", eventType)
+                .toString();
+    }
 }

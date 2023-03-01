@@ -40,57 +40,55 @@ import java.util.Map;
  */
 public final class InputSpecification {
 
-  private final Map<Identification, FormInput> formInputs =
-      new HashMap<>();
+    private final Map<Identification, FormInput> formInputs = new HashMap<>();
 
-  // private final List<InputField> inputFields = Lists.newLinkedList();
-  private final List<Form> forms = Lists.newLinkedList();
+    // private final List<InputField> inputFields = Lists.newLinkedList();
+    private final List<Form> forms = Lists.newLinkedList();
 
-  public FormInput inputField(InputType type, Identification identification) {
-    FormInput input = new FormInput(type, identification);
-    this.formInputs.put(input.getIdentification(), input);
-    return input;
-  }
-
-  public FormInput inputField(FormInput input) {
-    this.formInputs.put(input.getIdentification(), input);
-    return input;
-  }
-
-  public Map<Identification, FormInput> getFormInputs() {
-    return formInputs;
-  }
-
-  /**
-   * Links the form with an HTML element which can be clicked.
-   *
-   * @param form the collection of the input fields
-   * @return a FormAction
-   * @see Form
-   */
-  public FormAction setValuesInForm(Form form) {
-    FormAction formAction = new FormAction();
-    form.setFormAction(formAction);
-    this.forms.add(form);
-    return formAction;
-  }
-
-  public ImmutableList<Form> getForms() {
-    return ImmutableList.copyOf(this.forms);
-  }
-
-  /**
-   * @return List of crawlelements.
-   */
-  public ImmutableList<CrawlElement> getCrawlElements() {
-    Builder<CrawlElement> builder = ImmutableList.builder();
-    for (Form form : this.forms) {
-      CrawlElement crawlTag = form.getCrawlElement();
-      if (crawlTag != null) {
-        builder.add(crawlTag);
-      }
+    public FormInput inputField(InputType type, Identification identification) {
+        FormInput input = new FormInput(type, identification);
+        this.formInputs.put(input.getIdentification(), input);
+        return input;
     }
-    return builder.build();
-  }
 
+    public FormInput inputField(FormInput input) {
+        this.formInputs.put(input.getIdentification(), input);
+        return input;
+    }
+
+    public Map<Identification, FormInput> getFormInputs() {
+        return formInputs;
+    }
+
+    /**
+     * Links the form with an HTML element which can be clicked.
+     *
+     * @param form the collection of the input fields
+     * @return a FormAction
+     * @see Form
+     */
+    public FormAction setValuesInForm(Form form) {
+        FormAction formAction = new FormAction();
+        form.setFormAction(formAction);
+        this.forms.add(form);
+        return formAction;
+    }
+
+    public ImmutableList<Form> getForms() {
+        return ImmutableList.copyOf(this.forms);
+    }
+
+    /**
+     * @return List of crawlelements.
+     */
+    public ImmutableList<CrawlElement> getCrawlElements() {
+        Builder<CrawlElement> builder = ImmutableList.builder();
+        for (Form form : this.forms) {
+            CrawlElement crawlTag = form.getCrawlElement();
+            if (crawlTag != null) {
+                builder.add(crawlTag);
+            }
+        }
+        return builder.build();
+    }
 }

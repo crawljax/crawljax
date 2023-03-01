@@ -34,327 +34,322 @@ import org.w3c.dom.NodeList;
  */
 public class FormHandler {
 
-  public static final int RANDOM_STRING_LENGTH = 8;
-  private static final Logger LOGGER = LoggerFactory.getLogger(FormHandler.class.getName());
-  protected final EmbeddedBrowser browser;
-  protected final FormInputValueHelper formInputValueHelper;
+    public static final int RANDOM_STRING_LENGTH = 8;
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormHandler.class.getName());
+    protected final EmbeddedBrowser browser;
+    protected final FormInputValueHelper formInputValueHelper;
 
-  @Inject
-  public FormHandler(@Assisted EmbeddedBrowser browser, CrawlRules config) {
-    this.browser = browser;
-    this.formInputValueHelper = FormInputValueHelper.getInstance(
-        config.getInputSpecification(), config.getFormFillMode());
-  }
-
-  /**
-   * Fills in the element with the InputValues for input
-   *
-   * @param element the node element
-   * @param input   the input data
-   */
-  protected void setInputElementValue(Node element, FormInput input) {
-
-    LOGGER.debug("INPUTFIELD: {} ({})", input.getIdentification(), input.getType());
-    if (element == null || input.getInputValues().isEmpty()) {
-      return;
+    @Inject
+    public FormHandler(@Assisted EmbeddedBrowser browser, CrawlRules config) {
+        this.browser = browser;
+        this.formInputValueHelper =
+                FormInputValueHelper.getInstance(config.getInputSpecification(), config.getFormFillMode());
     }
-    try {
 
-      switch (input.getType()) {
-        case TEXT:
-        case TEXTAREA:
-        case PASSWORD:
-        case INPUT:
-        case EMAIL:
-        case NUMBER:
-          handleText(input);
-          break;
-        case HIDDEN:
-          handleHidden(input);
-          break;
-        case CHECKBOX:
-          handleCheckBoxes(input);
-          break;
-        case RADIO:
-          handleRadioSwitches(input);
-          break;
-        case SELECT:
-          handleSelectBoxes(input);
-      }
-    } catch (ElementNotInteractableException e) {
-      LOGGER.warn("Element not interactable, input not completed.");
-      throw e;
-    } catch (BrowserConnectionException e) {
-      throw e;
-    } catch (RuntimeException e) {
-      LOGGER.error("Could not input element values");
-      throw e;
+    /**
+     * Fills in the element with the InputValues for input
+     *
+     * @param element the node element
+     * @param input   the input data
+     */
+    protected void setInputElementValue(Node element, FormInput input) {
+
+        LOGGER.debug("INPUTFIELD: {} ({})", input.getIdentification(), input.getType());
+        if (element == null || input.getInputValues().isEmpty()) {
+            return;
+        }
+        try {
+
+            switch (input.getType()) {
+                case TEXT:
+                case TEXTAREA:
+                case PASSWORD:
+                case INPUT:
+                case EMAIL:
+                case NUMBER:
+                    handleText(input);
+                    break;
+                case HIDDEN:
+                    handleHidden(input);
+                    break;
+                case CHECKBOX:
+                    handleCheckBoxes(input);
+                    break;
+                case RADIO:
+                    handleRadioSwitches(input);
+                    break;
+                case SELECT:
+                    handleSelectBoxes(input);
+            }
+        } catch (ElementNotInteractableException e) {
+            LOGGER.warn("Element not interactable, input not completed.");
+            throw e;
+        } catch (BrowserConnectionException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            LOGGER.error("Could not input element values");
+            throw e;
+        }
     }
-  }
 
-  private void handleCheckBoxes(FormInput input) {
-    for (InputValue inputValue : input.getInputValues()) {
-      boolean check = inputValue.isChecked();
+    private void handleCheckBoxes(FormInput input) {
+        for (InputValue inputValue : input.getInputValues()) {
+            boolean check = inputValue.isChecked();
 
-      WebElement inputElement = browser.getWebElement(input.getIdentification());
+            WebElement inputElement = browser.getWebElement(input.getIdentification());
 
-      if (check && !inputElement.isSelected()) {
-        inputElement.click();
-      } else if (!check && inputElement.isSelected()) {
-        inputElement.click();
-      }
+            if (check && !inputElement.isSelected()) {
+                inputElement.click();
+            } else if (!check && inputElement.isSelected()) {
+                inputElement.click();
+            }
+        }
     }
-  }
 
-  private void resetRadioSwitches(FormInput input) {
-    for (InputValue inputValue : input.getInputValues()) {
-      if (inputValue.isChecked()) {
+    private void resetRadioSwitches(FormInput input) {
+        for (InputValue inputValue : input.getInputValues()) {
+            if (inputValue.isChecked()) {
+                WebElement inputElement = browser.getWebElement(input.getIdentification());
+                if (inputElement != null) {
+                    ((JavascriptExecutor) browser.getWebDriver())
+                            .executeScript("arguments[0].checked=false", inputElement);
+                }
+            }
+        }
+    }
+
+    private void handleRadioSwitches(FormInput input) {
+        for (InputValue inputValue : input.getInputValues()) {
+            if (inputValue.isChecked()) {
+                WebElement inputElement = browser.getWebElement(input.getIdentification());
+                inputElement.click();
+            }
+        }
+    }
+
+    private void resetSelectBoxes(FormInput input) {
+        for (InputValue inputValue : input.getInputValues()) {
+            WebElement inputElement = browser.getWebElement(input.getIdentification());
+            inputElement.sendKeys(inputValue.getValue());
+        }
+    }
+
+    private void handleSelectBoxes(FormInput input) {
+        for (InputValue inputValue : input.getInputValues()) {
+            WebElement inputElement = browser.getWebElement(input.getIdentification());
+            inputElement.sendKeys(inputValue.getValue());
+        }
+    }
+
+    /**
+     * Clear the input for given input text
+     *
+     * @param input
+     */
+    private void resetText(FormInput input) {
+        String text = input.getInputValues().iterator().next().getValue();
+        if (null == text || text.length() == 0) {
+            return;
+        }
         WebElement inputElement = browser.getWebElement(input.getIdentification());
-        if (inputElement != null) {
-          ((JavascriptExecutor) browser.getWebDriver()).executeScript("arguments[0].checked=false",
-              inputElement);
-        }
-      }
+        inputElement.clear();
+        inputElement.sendKeys(Keys.BACK_SPACE);
+        //		inputElement.sendKeys(text);
     }
-  }
 
-  private void handleRadioSwitches(FormInput input) {
-    for (InputValue inputValue : input.getInputValues()) {
-      if (inputValue.isChecked()) {
+    private void handleText(FormInput input) {
+        String text = input.getInputValues().iterator().next().getValue();
+        if (null == text || text.length() == 0) {
+            return;
+        }
         WebElement inputElement = browser.getWebElement(input.getIdentification());
-        inputElement.click();
-      }
+        inputElement.clear();
+        inputElement.sendKeys(text);
     }
-  }
 
-  private void resetSelectBoxes(FormInput input) {
-    for (InputValue inputValue : input.getInputValues()) {
-      WebElement inputElement = browser.getWebElement(input.getIdentification());
-      inputElement.sendKeys(inputValue.getValue());
-    }
-  }
-
-  private void handleSelectBoxes(FormInput input) {
-    for (InputValue inputValue : input.getInputValues()) {
-      WebElement inputElement = browser.getWebElement(input.getIdentification());
-      inputElement.sendKeys(inputValue.getValue());
-    }
-  }
-
-  /**
-   * Clear the input for given input text
-   *
-   * @param input
-   */
-  private void resetText(FormInput input) {
-    String text = input.getInputValues().iterator().next().getValue();
-    if (null == text || text.length() == 0) {
-      return;
-    }
-    WebElement inputElement = browser.getWebElement(input.getIdentification());
-    inputElement.clear();
-    inputElement.sendKeys(Keys.BACK_SPACE);
-//		inputElement.sendKeys(text);
-  }
-
-  private void handleText(FormInput input) {
-    String text = input.getInputValues().iterator().next().getValue();
-    if (null == text || text.length() == 0) {
-      return;
-    }
-    WebElement inputElement = browser.getWebElement(input.getIdentification());
-    inputElement.clear();
-    inputElement.sendKeys(text);
-  }
-
-  /**
-   * Enter information into the hidden input field.
-   *
-   * @param input The input to enter into the hidden field.
-   */
-  private void handleHidden(FormInput input) {
-    String text = input.getInputValues().iterator().next().getValue();
-    if (null == text || text.length() == 0) {
-      return;
-    }
-    WebElement inputElement = browser.getWebElement(input.getIdentification());
-    JavascriptExecutor js = (JavascriptExecutor) browser.getWebDriver();
-    js.executeScript("arguments[0].setAttribute(arguments[1], arguments[2]);", inputElement,
-        "value", text);
-  }
-
-  /**
-   * @return all input element in dom
-   */
-  private List<Node> getInputElements(Document dom) {
-    List<Node> nodes = new ArrayList<>();
-    try {
-      NodeList nodeList = XPathHelper.evaluateXpathExpression(dom, "//INPUT");
-
-      for (int i = 0; i < nodeList.getLength(); i++) {
-        Node candidate = nodeList.item(i);
-        Node typeAttribute = candidate.getAttributes().getNamedItem("type");
-        if (typeAttribute == null
-            || (Enums
-            .getIfPresent(FormInput.InputType.class,
-                typeAttribute.getNodeValue().toUpperCase())
-            .isPresent())) {
-
-          nodes.add(nodeList.item(i));
+    /**
+     * Enter information into the hidden input field.
+     *
+     * @param input The input to enter into the hidden field.
+     */
+    private void handleHidden(FormInput input) {
+        String text = input.getInputValues().iterator().next().getValue();
+        if (null == text || text.length() == 0) {
+            return;
         }
-      }
-      nodeList = XPathHelper.evaluateXpathExpression(dom, "//TEXTAREA");
-      for (int i = 0; i < nodeList.getLength(); i++) {
-        nodes.add(nodeList.item(i));
-      }
-      nodeList = XPathHelper.evaluateXpathExpression(dom, "//SELECT");
-      for (int i = 0; i < nodeList.getLength(); i++) {
-        nodes.add(nodeList.item(i));
-      }
-
-      return nodes;
-    } catch (XPathExpressionException e) {
-      LOGGER.error(e.getMessage(), e);
+        WebElement inputElement = browser.getWebElement(input.getIdentification());
+        JavascriptExecutor js = (JavascriptExecutor) browser.getWebDriver();
+        js.executeScript("arguments[0].setAttribute(arguments[1], arguments[2]);", inputElement, "value", text);
     }
-    return nodes;
-  }
 
-  /**
-   * @return a list of form inputs.
-   */
-  public List<FormInput> getFormInputs() {
+    /**
+     * @return all input element in dom
+     */
+    private List<Node> getInputElements(Document dom) {
+        List<Node> nodes = new ArrayList<>();
+        try {
+            NodeList nodeList = XPathHelper.evaluateXpathExpression(dom, "//INPUT");
 
-    final List<FormInput> formInputs = new ArrayList<>();
-    try {
-      Document dom = DomUtils.asDocument(browser.getStrippedDom());
-      List<Node> nodes = getInputElements(dom);
-      for (Node node : nodes) {
-        FormInput formInput =
-            formInputValueHelper.getFormInputWithIndexValue(browser, node, 0);
-        if (formInput != null) {
-          formInputs.add(formInput);
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node candidate = nodeList.item(i);
+                Node typeAttribute = candidate.getAttributes().getNamedItem("type");
+                if (typeAttribute == null
+                        || (Enums.getIfPresent(
+                                        FormInput.InputType.class,
+                                        typeAttribute.getNodeValue().toUpperCase())
+                                .isPresent())) {
+
+                    nodes.add(nodeList.item(i));
+                }
+            }
+            nodeList = XPathHelper.evaluateXpathExpression(dom, "//TEXTAREA");
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                nodes.add(nodeList.item(i));
+            }
+            nodeList = XPathHelper.evaluateXpathExpression(dom, "//SELECT");
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                nodes.add(nodeList.item(i));
+            }
+
+            return nodes;
+        } catch (XPathExpressionException e) {
+            LOGGER.error(e.getMessage(), e);
         }
-      }
-    } catch (IOException e) {
-      LOGGER.error(e.getMessage(), e);
+        return nodes;
     }
-    return formInputs;
-  }
 
-  public void resetFormInputs(List<FormInput> formInputs) {
-    ArrayList<FormInput> handled = new ArrayList<>();
-    FormInput failing = null;
-    try {
-      Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
-      for (FormInput input : formInputs) {
-        failing = input;
-        LOGGER.info("resetting : {}", input.getIdentification().getValue());
-        resetInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
-        handled.add(input);
-        failing = null;
-      }
-    } catch (Exception e) {
-      LOGGER.error("Could not reset form elements");
-      LOGGER.error(e.getMessage());
-    }
-    handled.add(Objects.requireNonNullElseGet(failing, () -> new FormInput(null, null)));
-  }
+    /**
+     * @return a list of form inputs.
+     */
+    public List<FormInput> getFormInputs() {
 
-  protected void resetInputElementValue(Node element, FormInput input) {
-
-    LOGGER.debug("INPUTFIELD: {} ({})", input.getIdentification(), input.getType());
-    if (element == null || input.getInputValues().isEmpty()) {
-      return;
-    }
-    try {
-
-      switch (input.getType()) {
-        case TEXT:
-        case TEXTAREA:
-        case PASSWORD:
-        case INPUT:
-        case EMAIL:
-          resetText(input);
-          break;
-        case CHECKBOX:
-          LOGGER.info("Resetting checkbox{}", input);
-          resetCheckBoxes(input);
-          break;
-        case RADIO:
-          resetRadioSwitches(input);
-          break;
-        default:
-          break;
-      }
-
-    } catch (ElementNotInteractableException e) {
-      LOGGER.warn("Element not visible, input not completed.");
-    } catch (BrowserConnectionException e) {
-      throw e;
-    } catch (RuntimeException e) {
-      LOGGER.error("Could not input element values");
-      throw e;
-    }
-  }
-
-
-  private void resetCheckBoxes(FormInput input) {
-    for (InputValue inputValue : input.getInputValues()) {
-      boolean check = inputValue.isChecked();
-
-      WebElement inputElement = browser.getWebElement(input.getIdentification());
-
-      if (check && inputElement.isSelected()) {
-        inputElement.click();
-      }
-    }
-  }
-
-  /**
-   * Fills in form/input elements.
-   *
-   * @param formInputs form input list.
-   * @return
-   */
-  public List<FormInput> handleFormElements(List<FormInput> formInputs) {
-    ArrayList<FormInput> handled = new ArrayList<>();
-    FormInput failing = null;
-    try {
-      Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
-      for (FormInput input : formInputs) {
-        failing = input;
-        LOGGER.info("Filling in: {}", input.getIdentification().getValue());
-        Node belongingNode = formInputValueHelper.getBelongingNode(input, dom);
-        setInputElementValue(belongingNode, input);
-        if (belongingNode != null) {
-          String xpath = XPathHelper.getSkeletonXpath(belongingNode);
-          Identification xpathId = new Identification(How.xpath, xpath);
-          FormInput handledInput = new FormInput(input.getType(), xpathId);
-          handledInput.inputValues(input.getInputValues());
-          handled.add(handledInput);
-        } else {
-          handled.add(input);
+        final List<FormInput> formInputs = new ArrayList<>();
+        try {
+            Document dom = DomUtils.asDocument(browser.getStrippedDom());
+            List<Node> nodes = getInputElements(dom);
+            for (Node node : nodes) {
+                FormInput formInput = formInputValueHelper.getFormInputWithIndexValue(browser, node, 0);
+                if (formInput != null) {
+                    formInputs.add(formInput);
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
         }
-        failing = null;
-      }
-    } catch (Exception e) {
-      LOGGER.error("Could not handle form elements");
-      LOGGER.error(e.getMessage());
+        return formInputs;
     }
-    handled.add(Objects.requireNonNullElseGet(failing, () -> new FormInput(null, null)));
-    return handled;
-  }
 
-  /**
-   * @param sourceElement      the form element
-   * @param eventableCondition the belonging eventable condition for sourceElement
-   * @return a list with Candidate elements for the inputs.
-   */
-  public List<CandidateElement> getCandidateElementsForInputs(Element sourceElement,
-      EventableCondition eventableCondition) {
+    public void resetFormInputs(List<FormInput> formInputs) {
+        ArrayList<FormInput> handled = new ArrayList<>();
+        FormInput failing = null;
+        try {
+            Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+            for (FormInput input : formInputs) {
+                failing = input;
+                LOGGER.info("resetting : {}", input.getIdentification().getValue());
+                resetInputElementValue(formInputValueHelper.getBelongingNode(input, dom), input);
+                handled.add(input);
+                failing = null;
+            }
+        } catch (Exception e) {
+            LOGGER.error("Could not reset form elements");
+            LOGGER.error(e.getMessage());
+        }
+        handled.add(Objects.requireNonNullElseGet(failing, () -> new FormInput(null, null)));
+    }
 
-    return formInputValueHelper.getCandidateElementsForInputs(browser, sourceElement,
-        eventableCondition);
-  }
+    protected void resetInputElementValue(Node element, FormInput input) {
 
+        LOGGER.debug("INPUTFIELD: {} ({})", input.getIdentification(), input.getType());
+        if (element == null || input.getInputValues().isEmpty()) {
+            return;
+        }
+        try {
+
+            switch (input.getType()) {
+                case TEXT:
+                case TEXTAREA:
+                case PASSWORD:
+                case INPUT:
+                case EMAIL:
+                    resetText(input);
+                    break;
+                case CHECKBOX:
+                    LOGGER.info("Resetting checkbox{}", input);
+                    resetCheckBoxes(input);
+                    break;
+                case RADIO:
+                    resetRadioSwitches(input);
+                    break;
+                default:
+                    break;
+            }
+
+        } catch (ElementNotInteractableException e) {
+            LOGGER.warn("Element not visible, input not completed.");
+        } catch (BrowserConnectionException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            LOGGER.error("Could not input element values");
+            throw e;
+        }
+    }
+
+    private void resetCheckBoxes(FormInput input) {
+        for (InputValue inputValue : input.getInputValues()) {
+            boolean check = inputValue.isChecked();
+
+            WebElement inputElement = browser.getWebElement(input.getIdentification());
+
+            if (check && inputElement.isSelected()) {
+                inputElement.click();
+            }
+        }
+    }
+
+    /**
+     * Fills in form/input elements.
+     *
+     * @param formInputs form input list.
+     * @return
+     */
+    public List<FormInput> handleFormElements(List<FormInput> formInputs) {
+        ArrayList<FormInput> handled = new ArrayList<>();
+        FormInput failing = null;
+        try {
+            Document dom = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+            for (FormInput input : formInputs) {
+                failing = input;
+                LOGGER.info("Filling in: {}", input.getIdentification().getValue());
+                Node belongingNode = formInputValueHelper.getBelongingNode(input, dom);
+                setInputElementValue(belongingNode, input);
+                if (belongingNode != null) {
+                    String xpath = XPathHelper.getSkeletonXpath(belongingNode);
+                    Identification xpathId = new Identification(How.xpath, xpath);
+                    FormInput handledInput = new FormInput(input.getType(), xpathId);
+                    handledInput.inputValues(input.getInputValues());
+                    handled.add(handledInput);
+                } else {
+                    handled.add(input);
+                }
+                failing = null;
+            }
+        } catch (Exception e) {
+            LOGGER.error("Could not handle form elements");
+            LOGGER.error(e.getMessage());
+        }
+        handled.add(Objects.requireNonNullElseGet(failing, () -> new FormInput(null, null)));
+        return handled;
+    }
+
+    /**
+     * @param sourceElement      the form element
+     * @param eventableCondition the belonging eventable condition for sourceElement
+     * @return a list with Candidate elements for the inputs.
+     */
+    public List<CandidateElement> getCandidateElementsForInputs(
+            Element sourceElement, EventableCondition eventableCondition) {
+
+        return formInputValueHelper.getCandidateElementsForInputs(browser, sourceElement, eventableCondition);
+    }
 }

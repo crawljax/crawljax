@@ -15,60 +15,58 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public class CountCondition implements Condition {
 
-  private final Condition condition;
-  private final AtomicInteger count = new AtomicInteger(0);
-  private final int maxCount;
+    private final Condition condition;
+    private final AtomicInteger count = new AtomicInteger(0);
+    private final int maxCount;
 
-  /**
-   * @param maxCount  number of times the condition can be satisfied.
-   * @param condition the condition.
-   */
-  public CountCondition(int maxCount, Condition condition) {
-    this.maxCount = maxCount;
-    this.condition = condition;
-  }
-
-  /**
-   * Note: Check has a side effect (it increments a counter). Invoking it multiple times may result
-   * in a different answer.
-   */
-  @Override
-  public boolean check(EmbeddedBrowser browser) {
-    if (condition.check(browser)) {
-      count.getAndIncrement();
+    /**
+     * @param maxCount  number of times the condition can be satisfied.
+     * @param condition the condition.
+     */
+    public CountCondition(int maxCount, Condition condition) {
+        this.maxCount = maxCount;
+        this.condition = condition;
     }
-    return count.get() <= maxCount;
-  }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("condition", condition)
-        .add("maxCount", maxCount)
-        .toString();
-  }
-
-  /**
-   * Since "count" is a consequence of invoking "check", it is not included in the equality /
-   * hashCode computation.
-   */
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass(), condition, maxCount);
-  }
-
-  /**
-   * Since "count" is a consequence of invoking "check", it is not included in the equality /
-   * hashCode computation.
-   */
-  @Override
-  public boolean equals(Object object) {
-    if (object instanceof CountCondition) {
-      CountCondition that = (CountCondition) object;
-      return Objects.equal(this.condition, that.condition)
-          && Objects.equal(this.maxCount, that.maxCount);
+    /**
+     * Note: Check has a side effect (it increments a counter). Invoking it multiple times may result
+     * in a different answer.
+     */
+    @Override
+    public boolean check(EmbeddedBrowser browser) {
+        if (condition.check(browser)) {
+            count.getAndIncrement();
+        }
+        return count.get() <= maxCount;
     }
-    return false;
-  }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("condition", condition)
+                .add("maxCount", maxCount)
+                .toString();
+    }
+
+    /**
+     * Since "count" is a consequence of invoking "check", it is not included in the equality /
+     * hashCode computation.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass(), condition, maxCount);
+    }
+
+    /**
+     * Since "count" is a consequence of invoking "check", it is not included in the equality /
+     * hashCode computation.
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof CountCondition) {
+            CountCondition that = (CountCondition) object;
+            return Objects.equal(this.condition, that.condition) && Objects.equal(this.maxCount, that.maxCount);
+        }
+        return false;
+    }
 }

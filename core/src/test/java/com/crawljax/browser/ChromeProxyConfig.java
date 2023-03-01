@@ -17,18 +17,16 @@ import org.junit.experimental.categories.Category;
 @Category(BrowserTest.class)
 public class ChromeProxyConfig {
 
-  @Test
-  public void chromeProxyConfig() {
-    CrawlSession crawl =
-        new BaseCrawler(Resource.newClassPathResource("/site"),
-            "simplelink/simplelink.html") {
-          @Override
-          public CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
-            return super.newCrawlConfigurationBuilder();
-          }
+    @Test
+    public void chromeProxyConfig() {
+        CrawlSession crawl = new BaseCrawler(Resource.newClassPathResource("/site"), "simplelink/simplelink.html") {
+            @Override
+            public CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
+                return super.newCrawlConfigurationBuilder();
+            }
         }.crawl();
 
-    assumeThat(System.getProperty("webdriver.chrome.driver"), is(notNullValue()));
-    assertThat(crawl.getStateFlowGraph(), hasStates(2));
-  }
+        assumeThat(System.getProperty("webdriver.chrome.driver"), is(notNullValue()));
+        assertThat(crawl.getStateFlowGraph(), hasStates(2));
+    }
 }

@@ -13,39 +13,38 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class NotRegexCondition implements Condition {
 
-  private final RegexCondition regexCondition;
+    private final RegexCondition regexCondition;
 
-  /**
-   * @param expression the regular expression.
-   */
-  public NotRegexCondition(String expression) {
-    this.regexCondition = new RegexCondition(expression);
-  }
-
-  @Override
-  public boolean check(EmbeddedBrowser browser) {
-    return Logic.not(regexCondition).check(browser);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass(), regexCondition);
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (object instanceof NotRegexCondition) {
-      NotRegexCondition that = (NotRegexCondition) object;
-      return Objects.equal(this.regexCondition, that.regexCondition);
+    /**
+     * @param expression the regular expression.
+     */
+    public NotRegexCondition(String expression) {
+        this.regexCondition = new RegexCondition(expression);
     }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("regexCondition", regexCondition)
-        .toString();
-  }
+    @Override
+    public boolean check(EmbeddedBrowser browser) {
+        return Logic.not(regexCondition).check(browser);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass(), regexCondition);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof NotRegexCondition) {
+            NotRegexCondition that = (NotRegexCondition) object;
+            return Objects.equal(this.regexCondition, that.regexCondition);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("regexCondition", regexCondition)
+                .toString();
+    }
 }

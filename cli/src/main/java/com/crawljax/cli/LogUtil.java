@@ -10,39 +10,37 @@ import org.slf4j.LoggerFactory;
 
 public class LogUtil {
 
-  private LogUtil() {
+    private LogUtil() {}
 
-  }
+    /**
+     * Configure file logging and stop console logging.
+     *
+     * @param filename Log to this file.
+     */
+    @SuppressWarnings("unchecked")
+    static void logToFile(String filename) {
+        Logger rootLogger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 
-  /**
-   * Configure file logging and stop console logging.
-   *
-   * @param filename Log to this file.
-   */
-  @SuppressWarnings("unchecked")
-  static void logToFile(String filename) {
-    Logger rootLogger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        FileAppender<ILoggingEvent> fileappender = new FileAppender<>();
+        fileappender.setContext(rootLogger.getLoggerContext());
+        fileappender.setFile(filename);
+        fileappender.setName("FILE");
 
-    FileAppender<ILoggingEvent> fileappender = new FileAppender<>();
-    fileappender.setContext(rootLogger.getLoggerContext());
-    fileappender.setFile(filename);
-    fileappender.setName("FILE");
+        ConsoleAppender<?> console = (ConsoleAppender<?>) rootLogger.getAppender("STDOUT");
+        fileappender.setEncoder((Encoder<ILoggingEvent>) console.getEncoder());
 
-    ConsoleAppender<?> console = (ConsoleAppender<?>) rootLogger.getAppender("STDOUT");
-    fileappender.setEncoder((Encoder<ILoggingEvent>) console.getEncoder());
+        fileappender.start();
 
-    fileappender.start();
+        rootLogger.addAppender(fileappender);
 
-    rootLogger.addAppender(fileappender);
+        console.stop();
+    }
 
-    console.stop();
-  }
-
-  /**
-   * @param newLevel for com.crawljax.*
-   */
-  static void setCrawljaxLogLevel(Level newLevel) {
-    Logger rootLogger = (Logger) LoggerFactory.getLogger("com.crawljax");
-    rootLogger.setLevel(newLevel);
-  }
+    /**
+     * @param newLevel for com.crawljax.*
+     */
+    static void setCrawljaxLogLevel(Level newLevel) {
+        Logger rootLogger = (Logger) LoggerFactory.getLogger("com.crawljax");
+        rootLogger.setLevel(newLevel);
+    }
 }

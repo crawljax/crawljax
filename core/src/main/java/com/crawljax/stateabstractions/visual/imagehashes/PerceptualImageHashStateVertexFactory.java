@@ -15,50 +15,47 @@ import org.slf4j.LoggerFactory;
  */
 public class PerceptualImageHashStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(PerceptualImageHashStateVertexFactory.class.getName());
-  private static final int THUMBNAIL_WIDTH = 200;
-  private static final int THUMBNAIL_HEIGHT = 200;
-  private static double threshold = 0;
+    private static final Logger LOG = LoggerFactory.getLogger(PerceptualImageHashStateVertexFactory.class.getName());
+    private static final int THUMBNAIL_WIDTH = 200;
+    private static final int THUMBNAIL_HEIGHT = 200;
+    private static double threshold = 0;
 
-  static {
-    OpenCVLoad.load();
-  }
+    static {
+        OpenCVLoad.load();
+    }
 
-  private PerceptualImageHash visHash = new PerceptualImageHash();
+    private PerceptualImageHash visHash = new PerceptualImageHash();
 
-  public PerceptualImageHashStateVertexFactory(double treshold) {
-    setPerceptualImageHash(new PerceptualImageHash());
-    threshold = treshold;
-  }
+    public PerceptualImageHashStateVertexFactory(double treshold) {
+        setPerceptualImageHash(new PerceptualImageHash());
+        threshold = treshold;
+    }
 
-  @Override
-  public StateVertex newStateVertex(int id, String url, String name, String dom,
-      String strippedDom,
-      EmbeddedBrowser browser) {
+    @Override
+    public StateVertex newStateVertex(
+            int id, String url, String name, String dom, String strippedDom, EmbeddedBrowser browser) {
 
-    BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
-//    String imageFile = saveImage(image, name);
-    Mat hashMat = visHash.getHash(image);
+        BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
+        //    String imageFile = saveImage(image, name);
+        Mat hashMat = visHash.getHash(image);
 
-    return new PerceptualImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat,
-        threshold);
-  }
+        return new PerceptualImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat, threshold);
+    }
 
-  @Override
-  public String toString() {
-    return this.visHash.getHashName() + "_" + threshold;
-  }
+    @Override
+    public String toString() {
+        return this.visHash.getHashName() + "_" + threshold;
+    }
 
-  public double getPerceptualImageHashMaxRaw() {
-    return this.visHash.maxRaw;
-  }
+    public double getPerceptualImageHashMaxRaw() {
+        return this.visHash.maxRaw;
+    }
 
-  public PerceptualImageHash getPerceptualImageHash() {
-    return this.visHash;
-  }
+    public PerceptualImageHash getPerceptualImageHash() {
+        return this.visHash;
+    }
 
-  public void setPerceptualImageHash(PerceptualImageHash visHash) {
-    this.visHash = visHash;
-  }
+    public void setPerceptualImageHash(PerceptualImageHash visHash) {
+        this.visHash = visHash;
+    }
 }

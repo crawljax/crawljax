@@ -19,34 +19,32 @@ import org.junit.experimental.categories.Category;
 @Category(BrowserTest.class)
 public class CrawlWithCustomScopeTest {
 
-  @Test
-  public void crawlsPagesOnlyInCustomScope() throws Exception {
-    CrawlScope crawlScope =
-        url -> url.contains("in_scope") || url.endsWith("crawlscope/index.html");
-    BaseCrawler baseCrawler =
-        new BaseCrawler("crawlscope") {
-          @Override
-          public CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
-            CrawljaxConfigurationBuilder builder = super.newCrawlConfigurationBuilder();
-            builder.setCrawlScope(crawlScope);
-            return builder;
-          }
+    @Test
+    public void crawlsPagesOnlyInCustomScope() throws Exception {
+        CrawlScope crawlScope = url -> url.contains("in_scope") || url.endsWith("crawlscope/index.html");
+        BaseCrawler baseCrawler = new BaseCrawler("crawlscope") {
+            @Override
+            public CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
+                CrawljaxConfigurationBuilder builder = super.newCrawlConfigurationBuilder();
+                builder.setCrawlScope(crawlScope);
+                return builder;
+            }
         };
 
-    CrawlSession crawlSession = baseCrawler.crawl();
+        CrawlSession crawlSession = baseCrawler.crawl();
 
-    URI baseUrl = baseCrawler.getWebServer().getSiteUrl();
-    Set<String> crawledUrls = new HashSet<>();
-    for (StateVertex state : crawlSession.getStateFlowGraph().getAllStates()) {
-      crawledUrls.add(state.getUrl());
+        URI baseUrl = baseCrawler.getWebServer().getSiteUrl();
+        Set<String> crawledUrls = new HashSet<>();
+        for (StateVertex state : crawlSession.getStateFlowGraph().getAllStates()) {
+            crawledUrls.add(state.getUrl());
+        }
+
+        assertThat(
+                crawledUrls,
+                hasItems(
+                        baseUrl + "crawlscope",
+                        baseUrl + "crawlscope/in_scope.html",
+                        baseUrl + "crawlscope/in_scope_inner.html"));
+        assertThat(crawledUrls.size(), is(3));
     }
-
-    assertThat(
-        crawledUrls,
-        hasItems(
-            baseUrl + "crawlscope",
-            baseUrl + "crawlscope/in_scope.html",
-            baseUrl + "crawlscope/in_scope_inner.html"));
-    assertThat(crawledUrls.size(), is(3));
-  }
 }

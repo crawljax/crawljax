@@ -14,34 +14,33 @@ import org.junit.experimental.categories.Category;
 @Category(BrowserTest.class)
 public abstract class SimpleCrawlTest {
 
-  private final int NUMBER_OF_STATES;
-  private final int NUMBER_OF_EDGES;
-  private CrawlSession crawl;
+    private final int NUMBER_OF_STATES;
+    private final int NUMBER_OF_EDGES;
+    private CrawlSession crawl;
 
-  public SimpleCrawlTest(int numberOfStates, int numberOfEdges) {
-    this.NUMBER_OF_STATES = numberOfStates;
-    this.NUMBER_OF_EDGES = numberOfEdges;
-  }
+    public SimpleCrawlTest(int numberOfStates, int numberOfEdges) {
+        this.NUMBER_OF_STATES = numberOfStates;
+        this.NUMBER_OF_EDGES = numberOfEdges;
+    }
 
-  @Before
-  public void setup() {
-    /* Reset the singleton instance between tests. */
-    FormInputValueHelper.reset();
-  }
+    @Before
+    public void setup() {
+        /* Reset the singleton instance between tests. */
+        FormInputValueHelper.reset();
+    }
 
-  @Test
-  public void testInputCrawlerFlowGraph() throws Exception {
-    BaseCrawler crawler = getCrawler();
-    crawl = crawler.crawl();
-    verifyGraphSize(NUMBER_OF_STATES, NUMBER_OF_EDGES);
-  }
+    @Test
+    public void testInputCrawlerFlowGraph() throws Exception {
+        BaseCrawler crawler = getCrawler();
+        crawl = crawler.crawl();
+        verifyGraphSize(NUMBER_OF_STATES, NUMBER_OF_EDGES);
+    }
 
-  public abstract BaseCrawler getCrawler();
+    public abstract BaseCrawler getCrawler();
 
-  protected void verifyGraphSize(int numberOfStates, int numberOfEdges) {
-    StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
-    assertThat(stateFlowGraph, hasStates(numberOfStates));
-    assertThat(stateFlowGraph, hasEdges(numberOfEdges));
-  }
-
+    protected void verifyGraphSize(int numberOfStates, int numberOfEdges) {
+        StateFlowGraph stateFlowGraph = crawl.getStateFlowGraph();
+        assertThat(stateFlowGraph, hasStates(numberOfStates));
+        assertThat(stateFlowGraph, hasEdges(numberOfEdges));
+    }
 }
