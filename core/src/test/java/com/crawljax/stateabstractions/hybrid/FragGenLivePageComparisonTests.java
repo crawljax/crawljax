@@ -58,8 +58,8 @@ public class FragGenLivePageComparisonTests {
                 null);
     }
 
-    public void startServer(String warchDir) {
-        server = new WarchiveServer("src/test/resources/warchives/" + warchDir, 8080);
+    public void startServer(String warchDir, int port) {
+        server = new WarchiveServer("src/test/resources/warchives/" + warchDir, port);
         new Thread(server).start();
         try {
             Thread.sleep(5000);
@@ -68,7 +68,7 @@ public class FragGenLivePageComparisonTests {
         }
         Assert.assertTrue(
                 "server not started properly",
-                server.getSiteUrl().toString().equalsIgnoreCase("http://localhost:8080/"));
+                server.getSiteUrl().toString().equalsIgnoreCase("http://localhost:" + port + "/"));
     }
 
     private FragGenStateVertexFactory factory;
@@ -94,7 +94,7 @@ public class FragGenLivePageComparisonTests {
 
     @Test
     public void petclinicNDTests() throws URISyntaxException, InterruptedException {
-        startServer("petclinic");
+        startServer("petclinic", 8081);
         URI url1 = getUrl("/replay/20230128041350/http://host.docker.internal:9966/petclinic/owners/2.html");
         URI url2 = getUrl("/replay/20230128041350/http://host.docker.internal:9966/petclinic/owners/10.html");
 
