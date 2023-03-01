@@ -17,7 +17,6 @@ public class WarchiveServer implements Runnable {
     private final int port;
     ServerSocket socket;
     private URI demoSite;
-    private WarcServer server;
 
     private boolean started;
 
@@ -32,7 +31,7 @@ public class WarchiveServer implements Runnable {
     public void start() throws Exception {
         List<Path> warcs = Files.list(Paths.get(resource)).collect(Collectors.toList());
         socket = new ServerSocket(port);
-        server = new WarcServer(socket, warcs);
+        WarcServer server = new WarcServer(socket, warcs);
         System.err.println("Listening on port " + port);
         this.started = true;
         this.demoSite = URI.create("http://localhost:" + port + "/");

@@ -77,8 +77,6 @@ public class FragGenLivePageComparisonTests {
                 server.getSiteUrl().toString().equalsIgnoreCase("http://localhost:" + port + "/"));
     }
 
-    private FragGenStateVertexFactory factory;
-
     public StateVertex getState(int id, URI url, EmbeddedBrowser browser, FragmentManager manager) {
         browser.goToUrl(url);
         try {
@@ -86,7 +84,8 @@ public class FragGenLivePageComparisonTests {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        factory = new FragGenStateVertexFactory(0, CrawljaxConfiguration.builderFor(url), false);
+        FragGenStateVertexFactory factory =
+                new FragGenStateVertexFactory(0, CrawljaxConfiguration.builderFor(url), false);
         StateVertex state = factory.newStateVertex(
                 id,
                 browser.getCurrentUrl(),
@@ -99,13 +98,12 @@ public class FragGenLivePageComparisonTests {
     }
 
     @Test
-    public void petclinicNDTests() throws URISyntaxException, InterruptedException {
+    public void petclinicNDTests() throws URISyntaxException {
         startServer("petclinic", 8081);
         URI url1 = getUrl("/replay/20230128041350/http://host.docker.internal:9966/petclinic/owners/2.html");
         URI url2 = getUrl("/replay/20230128041350/http://host.docker.internal:9966/petclinic/owners/10.html");
 
         FragmentManager fragmentManager = new FragmentManager(null);
-        BrowserProvider provider = new BrowserProvider();
 
         StateVertex state1 = getState(0, url1, browser, fragmentManager);
 
