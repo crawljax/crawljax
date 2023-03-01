@@ -14,10 +14,11 @@ public class WarchiveServer implements Runnable {
 
     private final String resource;
 
-    private int port;
+    private final int port;
     ServerSocket socket;
     private URI demoSite;
     private WarcServer server;
+
     private boolean started;
 
     /**
@@ -68,5 +69,12 @@ public class WarchiveServer implements Runnable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * @return true if the server is started
+     */
+    public boolean isStarted() {
+        return started;
     }
 }

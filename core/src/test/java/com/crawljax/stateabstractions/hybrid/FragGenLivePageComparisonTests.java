@@ -61,11 +61,17 @@ public class FragGenLivePageComparisonTests {
     public void startServer(String warchDir, int port) {
         server = new WarchiveServer("src/test/resources/warchives/" + warchDir, port);
         new Thread(server).start();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+
+        int timeout = 0;
+        while (!server.isStarted() && timeout < 10000) {
+            try {
+                Thread.sleep(100);
+                timeout += 100;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
+
         Assert.assertTrue(
                 "server not started properly",
                 server.getSiteUrl().toString().equalsIgnoreCase("http://localhost:" + port + "/"));
