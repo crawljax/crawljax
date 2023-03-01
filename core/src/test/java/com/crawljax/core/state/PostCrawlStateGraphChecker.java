@@ -15,33 +15,32 @@ import com.crawljax.core.plugin.PostCrawlingPlugin;
  */
 public class PostCrawlStateGraphChecker implements PostCrawlingPlugin {
 
-  @Override
-  public void postCrawling(CrawlSession session, ExitStatus status) {
-    StateFlowGraph stateFlowGraph = session.getStateFlowGraph();
+    @Override
+    public void postCrawling(CrawlSession session, ExitStatus status) {
+        StateFlowGraph stateFlowGraph = session.getStateFlowGraph();
 
-    allStatesHaveOneOreMoreIncomingEdges(stateFlowGraph);
+        allStatesHaveOneOreMoreIncomingEdges(stateFlowGraph);
 
-    allEdgesConnectTwoStates(stateFlowGraph);
-  }
-
-  private void allStatesHaveOneOreMoreIncomingEdges(StateFlowGraph stateFlowGraph) {
-    for (StateVertex state : stateFlowGraph.getAllStates()) {
-      if (stateFlowGraph.getInitialState().getId() != state.getId()) {
-        assertThat(stateFlowGraph.getIncomingClickable(state).size(),
-            is(greaterThanOrEqualTo(1)));
-      }
+        allEdgesConnectTwoStates(stateFlowGraph);
     }
-  }
 
-  private void allEdgesConnectTwoStates(StateFlowGraph stateFlowGraph) {
-    for (Eventable eventable : stateFlowGraph.getAllEdges()) {
-      assertThat(eventable.getSourceStateVertex(), is(notNullValue()));
-      assertThat(eventable.getTargetStateVertex(), is(notNullValue()));
+    private void allStatesHaveOneOreMoreIncomingEdges(StateFlowGraph stateFlowGraph) {
+        for (StateVertex state : stateFlowGraph.getAllStates()) {
+            if (stateFlowGraph.getInitialState().getId() != state.getId()) {
+                assertThat(stateFlowGraph.getIncomingClickable(state).size(), is(greaterThanOrEqualTo(1)));
+            }
+        }
     }
-  }
 
-  @Override
-  public String toString() {
-    return this.getClass().getSimpleName();
-  }
+    private void allEdgesConnectTwoStates(StateFlowGraph stateFlowGraph) {
+        for (Eventable eventable : stateFlowGraph.getAllEdges()) {
+            assertThat(eventable.getSourceStateVertex(), is(notNullValue()));
+            assertThat(eventable.getTargetStateVertex(), is(notNullValue()));
+        }
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

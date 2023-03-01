@@ -20,153 +20,148 @@ import org.apache.commons.cli.ParseException;
 
 public class JarRunner {
 
-  static final String MISSING_ARGUMENT_MESSAGE =
-      "Missing required argument URL and/or output folder.";
+    static final String MISSING_ARGUMENT_MESSAGE = "Missing required argument URL and/or output folder.";
 
-  private final ParameterInterpeter options;
+    private final ParameterInterpeter options;
 
-  private final CrawljaxConfiguration config;
+    private final CrawljaxConfiguration config;
 
-  @VisibleForTesting
-  JarRunner(String args[]) {
-    try {
-      this.options = new ParameterInterpeter(args);
-    } catch (ParseException e) {
-      throw new IllegalArgumentException(e.getMessage(), e);
-    }
-    if (options.requestsVersion()) {
-      System.out.println(getCrawljaxVersion());
-      this.config = null;
-    } else if (options.necessaryArgsProvided()) {
-      String url = options.getUrl();
-      String outputDir = options.getOutputDir();
-      configureLogging();
-      this.config = readConfig(url, outputDir);
-    } else {
-      if (!options.requestsHelp()) {
-        System.out.println(MISSING_ARGUMENT_MESSAGE);
-      }
-      options.printHelp();
-      this.config = null;
-    }
-  }
-
-  /**
-   * Main executable method of Crawljax CLI.
-   *
-   * @param args the arguments.
-   */
-  public static void main(String[] args) {
-    try {
-      JarRunner runner = new JarRunner(args);
-      runner.runIfConfigured();
-    } catch (NumberFormatException e) {
-      System.err.println("Could not parse number " + e.getMessage());
-      System.exit(1);
-    } catch (RuntimeException e) {
-      System.err.println(e.getMessage());
-      System.exit(1);
-    }
-  }
-
-  private String getCrawljaxVersion() {
-    try {
-      return Resources
-          .toString(JarRunner.class.getResource("/project.version"), Charsets.UTF_8);
-    } catch (IOException e) {
-      throw new CrawljaxException(e.getMessage(), e);
-    }
-  }
-
-  private void configureLogging() {
-    if (options.requestsVerbosity()) {
-      LogUtil.setCrawljaxLogLevel(Level.INFO);
-    }
-    if (options.specifiesLogFile()) {
-      File f = new File(options.getSpecifiedLogFile());
-      try {
-        if (!f.exists()) {
-          Files.createParentDirs(f);
-          Files.touch(f);
+    @VisibleForTesting
+    JarRunner(String args[]) {
+        try {
+            this.options = new ParameterInterpeter(args);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
-      } catch (IOException e) {
-        throw new CrawljaxException("Could not create log file: " + e.getMessage(), e);
-      }
-      Preconditions.checkArgument(f.canWrite());
-      LogUtil.logToFile(f.getPath());
+        if (options.requestsVersion()) {
+            System.out.println(getCrawljaxVersion());
+            this.config = null;
+        } else if (options.necessaryArgsProvided()) {
+            String url = options.getUrl();
+            String outputDir = options.getOutputDir();
+            configureLogging();
+            this.config = readConfig(url, outputDir);
+        } else {
+            if (!options.requestsHelp()) {
+                System.out.println(MISSING_ARGUMENT_MESSAGE);
+            }
+            options.printHelp();
+            this.config = null;
+        }
     }
 
-  }
-
-  private CrawljaxConfiguration readConfig(String urlValue, String outputDir) {
-    CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlValue);
-
-    builder.setOutputDirectory(new File(outputDir));
-
-    BrowserType browser = BrowserType.CHROME;
-    if (options.specifiesBrowser()) {
-      browser = options.getSpecifiedBrowser();
+    /**
+     * Main executable method of Crawljax CLI.
+     *
+     * @param args the arguments.
+     */
+    public static void main(String[] args) {
+        try {
+            JarRunner runner = new JarRunner(args);
+            runner.runIfConfigured();
+        } catch (NumberFormatException e) {
+            System.err.println("Could not parse number " + e.getMessage());
+            System.exit(1);
+        } catch (RuntimeException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
     }
 
-    int browsers = 1;
-    if (options.specifiesParallelBrowsers()) {
-      browsers = options.getSpecifiedNumberOfBrowsers();
-    }
-    if (browser == BrowserType.REMOTE) {
-      String remoteUrl = options.getSpecifiedRemoteBrowser();
-      builder.setBrowserConfig(BrowserConfiguration.remoteConfig(browsers, remoteUrl));
-    } else {
-      builder.setBrowserConfig(new BrowserConfiguration(browser, browsers));
+    private String getCrawljaxVersion() {
+        try {
+            return Resources.toString(JarRunner.class.getResource("/project.version"), Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new CrawljaxException(e.getMessage(), e);
+        }
     }
 
-    if (options.specifiesDepth()) {
-      builder.setMaximumDepth(options.getSpecifiedDepth());
+    private void configureLogging() {
+        if (options.requestsVerbosity()) {
+            LogUtil.setCrawljaxLogLevel(Level.INFO);
+        }
+        if (options.specifiesLogFile()) {
+            File f = new File(options.getSpecifiedLogFile());
+            try {
+                if (!f.exists()) {
+                    Files.createParentDirs(f);
+                    Files.touch(f);
+                }
+            } catch (IOException e) {
+                throw new CrawljaxException("Could not create log file: " + e.getMessage(), e);
+            }
+            Preconditions.checkArgument(f.canWrite());
+            LogUtil.logToFile(f.getPath());
+        }
     }
 
-    if (options.specifiesMaxStates()) {
-      builder.setMaximumStates(options.getMaxStates());
+    private CrawljaxConfiguration readConfig(String urlValue, String outputDir) {
+        CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(urlValue);
+
+        builder.setOutputDirectory(new File(outputDir));
+
+        BrowserType browser = BrowserType.CHROME;
+        if (options.specifiesBrowser()) {
+            browser = options.getSpecifiedBrowser();
+        }
+
+        int browsers = 1;
+        if (options.specifiesParallelBrowsers()) {
+            browsers = options.getSpecifiedNumberOfBrowsers();
+        }
+        if (browser == BrowserType.REMOTE) {
+            String remoteUrl = options.getSpecifiedRemoteBrowser();
+            builder.setBrowserConfig(BrowserConfiguration.remoteConfig(browsers, remoteUrl));
+        } else {
+            builder.setBrowserConfig(new BrowserConfiguration(browser, browsers));
+        }
+
+        if (options.specifiesDepth()) {
+            builder.setMaximumDepth(options.getSpecifiedDepth());
+        }
+
+        if (options.specifiesMaxStates()) {
+            builder.setMaximumStates(options.getMaxStates());
+        }
+
+        if (options.requestsCrawlHiddenAnchors()) {
+            builder.crawlRules().crawlHiddenAnchors(true);
+        }
+
+        configureTimers(builder);
+
+        builder.addPlugin(new CrawlOverview());
+
+        if (options.specifiesClickElements()) {
+            builder.crawlRules().click(options.getSpecifiedClickElements());
+        } else {
+            builder.crawlRules().clickDefaultElements();
+        }
+
+        return builder.build();
     }
 
-    if (options.requestsCrawlHiddenAnchors()) {
-      builder.crawlRules().crawlHiddenAnchors(true);
+    private void configureTimers(CrawljaxConfigurationBuilder builder) {
+        if (options.specifiesTimeOut()) {
+            builder.setMaximumRunTime(options.getSpecifiedTimeOut(), TimeUnit.MINUTES);
+        }
+        if (options.specifiesWaitAfterEvent()) {
+            builder.crawlRules().waitAfterEvent(options.getSpecifiedWaitAfterEvent(), TimeUnit.MILLISECONDS);
+        }
+        if (options.specifiesWaitAfterReload()) {
+            builder.crawlRules().waitAfterReloadUrl(options.getSpecifiedWaitAfterReload(), TimeUnit.MILLISECONDS);
+        }
     }
 
-    configureTimers(builder);
-
-    builder.addPlugin(new CrawlOverview());
-
-    if (options.specifiesClickElements()) {
-      builder.crawlRules().click(options.getSpecifiedClickElements());
-    } else {
-      builder.crawlRules().clickDefaultElements();
+    private void runIfConfigured() {
+        if (config != null) {
+            CrawljaxRunner runner = new CrawljaxRunner(config);
+            runner.call();
+        }
     }
 
-    return builder.build();
-  }
-
-  private void configureTimers(CrawljaxConfigurationBuilder builder) {
-    if (options.specifiesTimeOut()) {
-      builder.setMaximumRunTime(options.getSpecifiedTimeOut(), TimeUnit.MINUTES);
+    @VisibleForTesting
+    CrawljaxConfiguration getConfig() {
+        return config;
     }
-    if (options.specifiesWaitAfterEvent()) {
-      builder.crawlRules().waitAfterEvent(options.getSpecifiedWaitAfterEvent(),
-          TimeUnit.MILLISECONDS);
-    }
-    if (options.specifiesWaitAfterReload()) {
-      builder.crawlRules().waitAfterReloadUrl(options.getSpecifiedWaitAfterReload(),
-          TimeUnit.MILLISECONDS);
-    }
-  }
-
-  private void runIfConfigured() {
-    if (config != null) {
-      CrawljaxRunner runner = new CrawljaxRunner(config);
-      runner.call();
-    }
-  }
-
-  @VisibleForTesting
-  CrawljaxConfiguration getConfig() {
-    return config;
-  }
 }

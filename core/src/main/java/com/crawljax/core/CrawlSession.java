@@ -24,107 +24,108 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class CrawlSession {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CrawlSession.class
-      .getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrawlSession.class.getName());
 
-  private final StateFlowGraph stateFlowGraph;
+    private final StateFlowGraph stateFlowGraph;
 
-  /**
-   * This ConcurrentLinkedQueue holds all the Paths that are executed during the CrawlSession so
-   * far.
-   */
-  private final Collection<List<Eventable>> crawlPaths =
-      new ConcurrentLinkedQueue<>();
+    /**
+     * This ConcurrentLinkedQueue holds all the Paths that are executed during the CrawlSession so
+     * far.
+     */
+    private final Collection<List<Eventable>> crawlPaths = new ConcurrentLinkedQueue<>();
 
-  private final StateVertex initialState;
+    private final StateVertex initialState;
 
-  private final CrawljaxConfiguration config;
+    private final CrawljaxConfiguration config;
 
-  /**
-   * Denote the time the CrawlSession Started in ms since 1970.
-   */
-  private final long startTime;
+    /**
+     * Denote the time the CrawlSession Started in ms since 1970.
+     */
+    private final long startTime;
 
-  private final MetricRegistry registry;
+    private final MetricRegistry registry;
 
-  private FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
 
-  @Inject
-  public CrawlSession(CrawljaxConfiguration config, FragmentManager fragmentManager,
-      StateFlowGraph stateFlowGraph,
-      StateVertex state, MetricRegistry registry) {
-    this.fragmentManager = fragmentManager;
-    this.stateFlowGraph = stateFlowGraph;
-    this.initialState = state;
-    this.config = config;
-    this.registry = registry;
-    this.startTime = new Date().getTime();
-  }
-
-  public FragmentManager getFragmentManager() {
-    return fragmentManager;
-  }
-
-  public void setFragmentManager(FragmentManager fragmentManager) {
-    this.fragmentManager = fragmentManager;
-  }
-
-  /**
-   * @return the stateFlowGraph
-   */
-  public StateFlowGraph getStateFlowGraph() {
-    return stateFlowGraph;
-  }
-
-  /**
-   * @return the crawlPaths
-   */
-  public Collection<List<Eventable>> getCrawlPaths() {
-    return crawlPaths;
-  }
-
-  /**
-   * @param crawlPath the eventable list
-   */
-  public void addCrawlPath(CrawlPath crawlPath) {
-    if (crawlPath.isEmpty()) {
-      return;
+    @Inject
+    public CrawlSession(
+            CrawljaxConfiguration config,
+            FragmentManager fragmentManager,
+            StateFlowGraph stateFlowGraph,
+            StateVertex state,
+            MetricRegistry registry) {
+        this.fragmentManager = fragmentManager;
+        this.stateFlowGraph = stateFlowGraph;
+        this.initialState = state;
+        this.config = config;
+        this.registry = registry;
+        this.startTime = new Date().getTime();
     }
 
-    LOGGER.info("Adding CrawlPath to session !!");
-    String pathString = Crawler.printCrawlPath(crawlPath, true);
+    public FragmentManager getFragmentManager() {
+        return fragmentManager;
+    }
 
-    this.crawlPaths.add(crawlPath);
-  }
+    public void setFragmentManager(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+    }
 
-  /**
-   * @return the initialState
-   */
-  public StateVertex getInitialState() {
-    return initialState;
-  }
+    /**
+     * @return the stateFlowGraph
+     */
+    public StateFlowGraph getStateFlowGraph() {
+        return stateFlowGraph;
+    }
 
-  /**
-   * @return the startTime
-   */
-  public long getStartTime() {
-    return startTime;
-  }
+    /**
+     * @return the crawlPaths
+     */
+    public Collection<List<Eventable>> getCrawlPaths() {
+        return crawlPaths;
+    }
 
-  /**
-   * Remove the current path from the set of crawlPaths.
-   *
-   * @param path the path to be removed
-   */
-  protected void removeCrawlPath(List<Eventable> path) {
-    this.crawlPaths.remove(path);
-  }
+    /**
+     * @param crawlPath the eventable list
+     */
+    public void addCrawlPath(CrawlPath crawlPath) {
+        if (crawlPath.isEmpty()) {
+            return;
+        }
 
-  public CrawljaxConfiguration getConfig() {
-    return config;
-  }
+        LOGGER.info("Adding CrawlPath to session !!");
+        String pathString = Crawler.printCrawlPath(crawlPath, true);
 
-  public MetricRegistry getRegistry() {
-    return registry;
-  }
+        this.crawlPaths.add(crawlPath);
+    }
+
+    /**
+     * @return the initialState
+     */
+    public StateVertex getInitialState() {
+        return initialState;
+    }
+
+    /**
+     * @return the startTime
+     */
+    public long getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Remove the current path from the set of crawlPaths.
+     *
+     * @param path the path to be removed
+     */
+    protected void removeCrawlPath(List<Eventable> path) {
+        this.crawlPaths.remove(path);
+    }
+
+    public CrawljaxConfiguration getConfig() {
+        return config;
+    }
+
+    public MetricRegistry getRegistry() {
+        return registry;
+    }
 }

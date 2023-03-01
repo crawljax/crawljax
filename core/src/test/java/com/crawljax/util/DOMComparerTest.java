@@ -17,44 +17,39 @@ import org.w3c.dom.Document;
  *
  * @author Singla
  */
-
 public class DOMComparerTest {
 
-  @Test
-  public void compareNoDifference() throws IOException {
-    String html = "<html><body><p>No difference</p></body></html>";
+    @Test
+    public void compareNoDifference() throws IOException {
+        String html = "<html><body><p>No difference</p></body></html>";
 
-    Document control = DomUtils.asDocument(html);
-    assertNotNull(control);
+        Document control = DomUtils.asDocument(html);
+        assertNotNull(control);
 
-    Document test = DomUtils.asDocument(html);
-    assertNotNull(test);
+        Document test = DomUtils.asDocument(html);
+        assertNotNull(test);
 
-    DOMComparer dc = new DOMComparer(control, test);
+        DOMComparer dc = new DOMComparer(control, test);
 
-    List<Difference> differences = dc.compare();
-    assertThat(differences, is(IsEmptyCollection.empty()));
-  }
+        List<Difference> differences = dc.compare();
+        assertThat(differences, is(IsEmptyCollection.empty()));
+    }
 
-  @Test
-  public void comparePartialDifference() throws IOException {
-    String controlHTML =
-        "<html><body><header>Crawljax</header><p>There are differences</p></body></html>";
-    String testHTML =
-        "<html><head><title>Crawljax</title></head><body><p>There are differences.</body></html>";
-    final int EXPECTED_DIFF = 7;
+    @Test
+    public void comparePartialDifference() throws IOException {
+        String controlHTML = "<html><body><header>Crawljax</header><p>There are differences</p></body></html>";
+        String testHTML = "<html><head><title>Crawljax</title></head><body><p>There are differences.</body></html>";
+        final int EXPECTED_DIFF = 7;
 
-    Document control = DomUtils.asDocument(controlHTML);
-    assertNotNull(control);
+        Document control = DomUtils.asDocument(controlHTML);
+        assertNotNull(control);
 
-    Document test = DomUtils.asDocument(testHTML);
-    assertNotNull(test);
+        Document test = DomUtils.asDocument(testHTML);
+        assertNotNull(test);
 
-    DOMComparer dc = new DOMComparer(control, test);
+        DOMComparer dc = new DOMComparer(control, test);
 
-    List<Difference> differences = dc.compare();
-    assertEquals("Error: Did not find 5 differences", differences.size(), EXPECTED_DIFF);
-
-  }
-
+        List<Difference> differences = dc.compare();
+        assertEquals("Error: Did not find 5 differences", differences.size(), EXPECTED_DIFF);
+    }
 }

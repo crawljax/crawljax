@@ -18,62 +18,65 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class OutPutModel {
 
-  private final ImmutableMap<String, State> states;
-  private final ImmutableList<Edge> edges;
-  private final Statistics statistics;
+    private final ImmutableMap<String, State> states;
+    private final ImmutableList<Edge> edges;
+    private final Statistics statistics;
 
-  private final ExitStatus exitStatus;
-  private String[][] clusters;
+    private final ExitStatus exitStatus;
+    private String[][] clusters;
 
-  @JsonCreator
-  public OutPutModel(@JsonProperty("states") ImmutableMap<String, State> states,
-      @JsonProperty("edges") ImmutableList<Edge> edges,
-      @JsonProperty("statistics") Statistics statistics,
-      @JsonProperty("exitStatus") ExitStatus exitStatus) {
-    this.states = states;
-    this.edges = edges;
-    this.statistics = statistics;
-    this.exitStatus = exitStatus;
-  }
-
-  public ImmutableMap<String, State> getStates() {
-    return states;
-  }
-
-  public ImmutableList<Edge> getEdges() {
-    return edges;
-  }
-
-  public Statistics getStatistics() {
-    return statistics;
-  }
-
-  public ExitStatus getExitStatus() {
-    return exitStatus;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(states, edges, statistics, exitStatus);
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (object instanceof OutPutModel) {
-      OutPutModel that = (OutPutModel) object;
-      return Objects.equal(this.states, that.states)
-          && Objects.equal(this.edges, that.edges)
-          && Objects.equal(this.statistics, that.statistics)
-          && Objects.equal(this.exitStatus, that.exitStatus);
+    @JsonCreator
+    public OutPutModel(
+            @JsonProperty("states") ImmutableMap<String, State> states,
+            @JsonProperty("edges") ImmutableList<Edge> edges,
+            @JsonProperty("statistics") Statistics statistics,
+            @JsonProperty("exitStatus") ExitStatus exitStatus) {
+        this.states = states;
+        this.edges = edges;
+        this.statistics = statistics;
+        this.exitStatus = exitStatus;
     }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this).add("exitStatus", exitStatus)
-        .add("states", states).add("edges", edges)
-        .add("statistics", statistics).toString();
-  }
+    public ImmutableMap<String, State> getStates() {
+        return states;
+    }
 
+    public ImmutableList<Edge> getEdges() {
+        return edges;
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
+    }
+
+    public ExitStatus getExitStatus() {
+        return exitStatus;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(states, edges, statistics, exitStatus);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof OutPutModel) {
+            OutPutModel that = (OutPutModel) object;
+            return Objects.equal(this.states, that.states)
+                    && Objects.equal(this.edges, that.edges)
+                    && Objects.equal(this.statistics, that.statistics)
+                    && Objects.equal(this.exitStatus, that.exitStatus);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("exitStatus", exitStatus)
+                .add("states", states)
+                .add("edges", edges)
+                .add("statistics", statistics)
+                .toString();
+    }
 }

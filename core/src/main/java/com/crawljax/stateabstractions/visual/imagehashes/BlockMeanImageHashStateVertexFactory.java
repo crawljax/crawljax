@@ -15,44 +15,41 @@ import org.slf4j.LoggerFactory;
  */
 public class BlockMeanImageHashStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(BlockMeanImageHashStateVertexFactory.class.getName());
-  private static final int THUMBNAIL_WIDTH = 200;
-  private static final int THUMBNAIL_HEIGHT = 200;
-  private static double threshold = 0.0;
+    private static final Logger LOG = LoggerFactory.getLogger(BlockMeanImageHashStateVertexFactory.class.getName());
+    private static final int THUMBNAIL_WIDTH = 200;
+    private static final int THUMBNAIL_HEIGHT = 200;
+    private static double threshold = 0.0;
 
-  static {
-    OpenCVLoad.load();
-  }
+    static {
+        OpenCVLoad.load();
+    }
 
-  private final BlockMeanImageHash visHash = new BlockMeanImageHash();
+    private final BlockMeanImageHash visHash = new BlockMeanImageHash();
 
-  public BlockMeanImageHashStateVertexFactory(double treshold) {
-    threshold = treshold;
-  }
+    public BlockMeanImageHashStateVertexFactory(double treshold) {
+        threshold = treshold;
+    }
 
-  @Override
-  public StateVertex newStateVertex(int id, String url, String name, String dom,
-      String strippedDom,
-      EmbeddedBrowser browser) {
+    @Override
+    public StateVertex newStateVertex(
+            int id, String url, String name, String dom, String strippedDom, EmbeddedBrowser browser) {
 
-    BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
-    Mat hashMat = visHash.getHash(image);
+        BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
+        Mat hashMat = visHash.getHash(image);
 
-    return new BlockMeanImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat,
-        threshold);
-  }
+        return new BlockMeanImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat, threshold);
+    }
 
-  @Override
-  public String toString() {
-    return this.visHash.getHashName() + "_" + threshold;
-  }
+    @Override
+    public String toString() {
+        return this.visHash.getHashName() + "_" + threshold;
+    }
 
-  public double getBlockMeanImageHashMaxRaw() {
-    return this.visHash.maxRaw;
-  }
+    public double getBlockMeanImageHashMaxRaw() {
+        return this.visHash.maxRaw;
+    }
 
-  public BlockMeanImageHash getBlockMeanImageHash() {
-    return this.visHash;
-  }
+    public BlockMeanImageHash getBlockMeanImageHash() {
+        return this.visHash;
+    }
 }

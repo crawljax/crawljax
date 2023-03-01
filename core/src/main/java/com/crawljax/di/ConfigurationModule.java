@@ -23,36 +23,31 @@ import java.net.URI;
  */
 public class ConfigurationModule extends AbstractModule {
 
-  private final CrawljaxConfiguration config;
+    private final CrawljaxConfiguration config;
 
-  public ConfigurationModule(CrawljaxConfiguration config) {
-    this.config = config;
-
-  }
-
-  @Override
-  protected void configure() {
-    bind(URI.class).annotatedWith(BaseUrl.class).toInstance(config.getUrl());
-    bind(CrawljaxConfiguration.class).toInstance(config);
-    bind(CrawlRules.class).toInstance(config.getCrawlRules());
-    bind(ProxyConfiguration.class).toInstance(config.getProxyConfiguration());
-
-    BrowserConfiguration browserConfig = config.getBrowserConfig();
-    bind(BrowserConfiguration.class).toInstance(browserConfig);
-
-    if (browserConfig.isDefaultBuilder()) {
-      bind(EmbeddedBrowser.class).toProvider(WebDriverBrowserBuilder.class);
-    } else {
-      bind(EmbeddedBrowser.class).toProvider(
-          Providers.guicify(browserConfig.getBrowserBuilder()));
+    public ConfigurationModule(CrawljaxConfiguration config) {
+        this.config = config;
     }
-  }
 
-  @BindingAnnotation
-  @Target({FIELD, PARAMETER, METHOD})
-  @Retention(RUNTIME)
-  public @interface BaseUrl {
+    @Override
+    protected void configure() {
+        bind(URI.class).annotatedWith(BaseUrl.class).toInstance(config.getUrl());
+        bind(CrawljaxConfiguration.class).toInstance(config);
+        bind(CrawlRules.class).toInstance(config.getCrawlRules());
+        bind(ProxyConfiguration.class).toInstance(config.getProxyConfiguration());
 
-  }
+        BrowserConfiguration browserConfig = config.getBrowserConfig();
+        bind(BrowserConfiguration.class).toInstance(browserConfig);
 
+        if (browserConfig.isDefaultBuilder()) {
+            bind(EmbeddedBrowser.class).toProvider(WebDriverBrowserBuilder.class);
+        } else {
+            bind(EmbeddedBrowser.class).toProvider(Providers.guicify(browserConfig.getBrowserBuilder()));
+        }
+    }
+
+    @BindingAnnotation
+    @Target({FIELD, PARAMETER, METHOD})
+    @Retention(RUNTIME)
+    public @interface BaseUrl {}
 }

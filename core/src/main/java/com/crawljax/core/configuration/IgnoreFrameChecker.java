@@ -9,11 +9,11 @@ package com.crawljax.core.configuration;
  */
 public interface IgnoreFrameChecker {
 
-  /**
-   * Must a given frame identifier be ignored?
-   *
-   * @param frameId the frame identifier
-   * @return true if the specified frame identifier must be ignored
-   */
-  boolean isFrameIgnored(String frameId);
+    /**
+     * Must a given frame identifier be ignored?
+     *
+     * @param frameId the frame identifier
+     * @return true if the specified frame identifier must be ignored
+     */
+    boolean isFrameIgnored(String frameId);
 }

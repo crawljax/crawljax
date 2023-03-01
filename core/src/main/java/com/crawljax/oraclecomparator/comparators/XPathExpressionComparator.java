@@ -20,61 +20,58 @@ import org.w3c.dom.NodeList;
  */
 public class XPathExpressionComparator extends AbstractComparator {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(XPathExpressionComparator.class
-      .getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(XPathExpressionComparator.class.getName());
 
-  private final ImmutableList<String> expressions;
+    private final ImmutableList<String> expressions;
 
-  /**
-   * @param expressions the xpath expressions to ignore
-   */
-  public XPathExpressionComparator(Collection<String> expressions) {
-    this.expressions = ImmutableList.copyOf(expressions);
-  }
-
-  /**
-   * @param expressions the xpath expressions to ignore
-   */
-  public XPathExpressionComparator(String... expressions) {
-    this.expressions = ImmutableList.copyOf(expressions);
-  }
-
-  /**
-   * @param dom the dom to ignore the xpath expressions from
-   * @return the stripped dom with the elements found with the xpath expressions
-   */
-  @Override
-  public String normalize(String dom) {
-    String curExpression = "";
-    Document doc = null;
-    String domRet;
-    try {
-      doc = DomUtils.asDocument(dom);
-      for (String expression : expressions) {
-        curExpression = expression;
-        NodeList nodeList = XPathHelper.evaluateXpathExpression(doc, expression);
-
-        for (int i = 0; i < nodeList.getLength(); i++) {
-          Node node = nodeList.item(i);
-          if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
-            ((Attr) node).getOwnerElement().removeAttribute(node.getNodeName());
-          } else if (node.getNodeType() == Node.ELEMENT_NODE) {
-            Node parent = node.getParentNode();
-            parent.removeChild(node);
-          }
-
-        }
-      }
-    } catch (XPathExpressionException | DOMException | IOException e) {
-      LOGGER.error("Exception with stripping XPath expression: {}", curExpression, e);
-    } finally {
-      if (doc != null) {
-        domRet = DomUtils.getDocumentToString(doc);
-      } else {
-        domRet = "";
-      }
+    /**
+     * @param expressions the xpath expressions to ignore
+     */
+    public XPathExpressionComparator(Collection<String> expressions) {
+        this.expressions = ImmutableList.copyOf(expressions);
     }
-    return domRet;
-  }
 
+    /**
+     * @param expressions the xpath expressions to ignore
+     */
+    public XPathExpressionComparator(String... expressions) {
+        this.expressions = ImmutableList.copyOf(expressions);
+    }
+
+    /**
+     * @param dom the dom to ignore the xpath expressions from
+     * @return the stripped dom with the elements found with the xpath expressions
+     */
+    @Override
+    public String normalize(String dom) {
+        String curExpression = "";
+        Document doc = null;
+        String domRet;
+        try {
+            doc = DomUtils.asDocument(dom);
+            for (String expression : expressions) {
+                curExpression = expression;
+                NodeList nodeList = XPathHelper.evaluateXpathExpression(doc, expression);
+
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    Node node = nodeList.item(i);
+                    if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
+                        ((Attr) node).getOwnerElement().removeAttribute(node.getNodeName());
+                    } else if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Node parent = node.getParentNode();
+                        parent.removeChild(node);
+                    }
+                }
+            }
+        } catch (XPathExpressionException | DOMException | IOException e) {
+            LOGGER.error("Exception with stripping XPath expression: {}", curExpression, e);
+        } finally {
+            if (doc != null) {
+                domRet = DomUtils.getDocumentToString(doc);
+            } else {
+                domRet = "";
+            }
+        }
+        return domRet;
+    }
 }

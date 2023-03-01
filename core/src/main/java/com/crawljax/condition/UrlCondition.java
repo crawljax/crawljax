@@ -13,39 +13,36 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class UrlCondition implements Condition {
 
-  private final String url;
+    private final String url;
 
-  /**
-   * @param url the URL.
-   */
-  public UrlCondition(String url) {
-    this.url = url;
-  }
-
-  @Override
-  public boolean check(EmbeddedBrowser browser) {
-    return browser.getCurrentUrl().toLowerCase().contains(url);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass(), url);
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (object instanceof UrlCondition) {
-      UrlCondition that = (UrlCondition) object;
-      return Objects.equal(this.url, that.url);
+    /**
+     * @param url the URL.
+     */
+    public UrlCondition(String url) {
+        this.url = url;
     }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("url", url)
-        .toString();
-  }
+    @Override
+    public boolean check(EmbeddedBrowser browser) {
+        return browser.getCurrentUrl().toLowerCase().contains(url);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass(), url);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof UrlCondition) {
+            UrlCondition that = (UrlCondition) object;
+            return Objects.equal(this.url, that.url);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("url", url).toString();
+    }
 }

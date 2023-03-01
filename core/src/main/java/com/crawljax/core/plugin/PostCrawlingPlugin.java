@@ -9,13 +9,12 @@ import com.crawljax.core.ExitNotifier.ExitStatus;
  */
 public interface PostCrawlingPlugin extends Plugin {
 
-  /**
-   * Method that is called after the crawling is finished. Warning: changing the session can change
-   * the behavior of other post crawl plugins. It is not a copy!
-   *
-   * @param session    the crawl session.
-   * @param exitReason The {@link ExitStatus} Crawljax stopped.
-   */
-  void postCrawling(CrawlSession session, ExitStatus exitReason);
-
+    /**
+     * Method that is called after the crawling is finished. Warning: changing the session can change
+     * the behavior of other post crawl plugins. It is not a copy!
+     *
+     * @param session    the crawl session.
+     * @param exitReason The {@link ExitStatus} Crawljax stopped.
+     */
+    void postCrawling(CrawlSession session, ExitStatus exitReason);
 }

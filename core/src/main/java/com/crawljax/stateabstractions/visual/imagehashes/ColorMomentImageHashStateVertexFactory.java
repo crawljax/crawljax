@@ -15,40 +15,36 @@ import org.slf4j.LoggerFactory;
  */
 public class ColorMomentImageHashStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(ColorMomentImageHashStateVertexFactory.class.getName());
-  private static final int THUMBNAIL_WIDTH = 200;
-  private static final int THUMBNAIL_HEIGHT = 200;
+    private static final Logger LOG = LoggerFactory.getLogger(ColorMomentImageHashStateVertexFactory.class.getName());
+    private static final int THUMBNAIL_WIDTH = 200;
+    private static final int THUMBNAIL_HEIGHT = 200;
 
-  static {
-    OpenCVLoad.load();
-  }
+    static {
+        OpenCVLoad.load();
+    }
 
-  private final ColorMomentImageHash visHash = new ColorMomentImageHash();
+    private final ColorMomentImageHash visHash = new ColorMomentImageHash();
 
+    @Override
+    public StateVertex newStateVertex(
+            int id, String url, String name, String dom, String strippedDom, EmbeddedBrowser browser) {
 
-  @Override
-  public StateVertex newStateVertex(int id, String url, String name, String dom,
-      String strippedDom,
-      EmbeddedBrowser browser) {
+        BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
+        Mat hashMat = visHash.getHash(image);
 
-    BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
-    Mat hashMat = visHash.getHash(image);
+        return new ColorMomentImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash, hashMat);
+    }
 
-    return new ColorMomentImageHashStateVertexImpl(id, url, name, dom, strippedDom, visHash,
-        hashMat);
-  }
+    @Override
+    public String toString() {
+        return this.visHash.getHashName();
+    }
 
-  @Override
-  public String toString() {
-    return this.visHash.getHashName();
-  }
+    public double getColorMomentImageHashMaxRaw() {
+        return this.visHash.maxRaw;
+    }
 
-  public double getColorMomentImageHashMaxRaw() {
-    return this.visHash.maxRaw;
-  }
-
-  public ColorMomentImageHash getColorMomentImageHash() {
-    return this.visHash;
-  }
+    public ColorMomentImageHash getColorMomentImageHash() {
+        return this.visHash;
+    }
 }

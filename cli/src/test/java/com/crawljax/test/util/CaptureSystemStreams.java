@@ -10,38 +10,37 @@ import org.junit.rules.ExternalResource;
  */
 public class CaptureSystemStreams extends ExternalResource {
 
-  private ByteArrayOutputStream captureErrorStream = new ByteArrayOutputStream();
-  private ByteArrayOutputStream captureOutStream = new ByteArrayOutputStream();
-  private PrintStream originalErrorStream;
-  private PrintStream originalOutStream;
+    private ByteArrayOutputStream captureErrorStream = new ByteArrayOutputStream();
+    private ByteArrayOutputStream captureOutStream = new ByteArrayOutputStream();
+    private PrintStream originalErrorStream;
+    private PrintStream originalOutStream;
 
-  public CaptureSystemStreams() {
-  }
+    public CaptureSystemStreams() {}
 
-  @Override
-  protected void before() throws Throwable {
-    originalErrorStream = System.err;
-    originalOutStream = System.out;
-    System.setErr(new PrintStream(captureErrorStream));
-    System.setOut(new PrintStream(captureOutStream));
-  }
+    @Override
+    protected void before() throws Throwable {
+        originalErrorStream = System.err;
+        originalOutStream = System.out;
+        System.setErr(new PrintStream(captureErrorStream));
+        System.setOut(new PrintStream(captureOutStream));
+    }
 
-  @Override
-  protected void after() {
-    PrintStream tempErrStream = System.err;
-    System.setErr(originalErrorStream);
-    tempErrStream.close();
+    @Override
+    protected void after() {
+        PrintStream tempErrStream = System.err;
+        System.setErr(originalErrorStream);
+        tempErrStream.close();
 
-    PrintStream tempOutStream = System.out;
-    System.setOut(originalOutStream);
-    tempOutStream.close();
-  }
+        PrintStream tempOutStream = System.out;
+        System.setOut(originalOutStream);
+        tempOutStream.close();
+    }
 
-  public String getConsoleOutput() {
-    return captureOutStream.toString();
-  }
+    public String getConsoleOutput() {
+        return captureOutStream.toString();
+    }
 
-  public String getErrorOutput() {
-    return captureErrorStream.toString();
-  }
+    public String getErrorOutput() {
+        return captureErrorStream.toString();
+    }
 }

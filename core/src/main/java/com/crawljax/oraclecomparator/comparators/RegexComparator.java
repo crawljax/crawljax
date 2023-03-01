@@ -13,24 +13,23 @@ import java.util.Collection;
  */
 public class RegexComparator extends AbstractComparator {
 
-  // NOTE: the ordering can be important
-  private final ImmutableList<String> regexs;
+    // NOTE: the ordering can be important
+    private final ImmutableList<String> regexs;
 
-  public RegexComparator(Collection<String> regexs) {
-    this.regexs = ImmutableList.copyOf(regexs);
-  }
-
-  public RegexComparator(String... regexs) {
-    this.regexs = ImmutableList.copyOf(regexs);
-  }
-
-  @Override
-  public String normalize(String dom) {
-    String normalized = dom;
-    for (String regex : regexs) {
-      normalized = DomUtils.replaceString(normalized, regex, "");
+    public RegexComparator(Collection<String> regexs) {
+        this.regexs = ImmutableList.copyOf(regexs);
     }
-    return normalized;
-  }
 
+    public RegexComparator(String... regexs) {
+        this.regexs = ImmutableList.copyOf(regexs);
+    }
+
+    @Override
+    public String normalize(String dom) {
+        String normalized = dom;
+        for (String regex : regexs) {
+            normalized = DomUtils.replaceString(normalized, regex, "");
+        }
+        return normalized;
+    }
 }

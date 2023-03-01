@@ -8,12 +8,11 @@ import com.crawljax.core.CrawljaxException;
 @SuppressWarnings("serial")
 public class CrawlOverviewException extends CrawljaxException {
 
-  public CrawlOverviewException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public CrawlOverviewException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-  public CrawlOverviewException(String message) {
-    super(message);
-  }
-
+    public CrawlOverviewException(String message) {
+        super(message);
+    }
 }

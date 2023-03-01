@@ -11,14 +11,13 @@ import com.crawljax.browser.EmbeddedBrowser;
  */
 public interface OnBrowserCreatedPlugin extends Plugin {
 
-  /**
-   * This method is executed when a new browser has been created and ready to be used by the
-   * Crawler. The PreCrawling plugins are executed before these plugins are executed except that the
-   * pre-crawling plugins are only executed on the first created browser. while this plugin is
-   * executed on every new browser.
-   *
-   * @param newBrowser the new created browser object
-   */
-  void onBrowserCreated(EmbeddedBrowser newBrowser);
-
+    /**
+     * This method is executed when a new browser has been created and ready to be used by the
+     * Crawler. The PreCrawling plugins are executed before these plugins are executed except that the
+     * pre-crawling plugins are only executed on the first created browser. while this plugin is
+     * executed on every new browser.
+     *
+     * @param newBrowser the new created browser object
+     */
+    void onBrowserCreated(EmbeddedBrowser newBrowser);
 }

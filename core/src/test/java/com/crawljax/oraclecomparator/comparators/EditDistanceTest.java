@@ -17,67 +17,66 @@ import org.slf4j.LoggerFactory;
  */
 public class EditDistanceTest {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EditDistanceTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EditDistanceTest.class);
 
-  private EditDistanceComparator comparator;
+    private EditDistanceComparator comparator;
 
-  @Before
-  public void setup() {
-    comparator = new EditDistanceComparator();
-  }
-
-  /**
-   * Check if threshold calculation works.
-   */
-  @Test
-  public void testGetThreshold() {
-    String x = "<form>bl</form>";
-    String y = "<form>blabla</form>";
-    double p = 0.8;
-
-    double expected = (2 * Math.max(x.length(), y.length()) * (1 - p));
-
-    assertEquals(expected, comparator.getThreshold(x, y, p), .01d);
-  }
-
-  /**
-   * Check if clone detection algorithm works correctly.
-   */
-  @Test
-  public void testIsClone() {
-    String x = "<form>BL</form>";
-    String y = "<form>blabla</form>";
-
-    LOG.debug(new LevenshteinDistance().apply(x, y) + " Threshold: " + comparator
-        .getThreshold(x, y, 0.7));
-    assertTrue(comparator.isClone(x, y, 0.0));
-    assertTrue(comparator.isClone(x, y, 0.5));
-    assertTrue(comparator.isClone(x, y, 0.7));
-    assertTrue(comparator.isClone(x, y, 0.75));
-    assertTrue(comparator.isClone(x, y, 0.84));
-    assertFalse(comparator.isClone(x, y, 0.89));
-    assertFalse(comparator.isClone(x, y, 0.893));
-    assertFalse(comparator.isClone(x, y, 0.9));
-    assertFalse(comparator.isClone(x, y, 1));
-
-    boolean arg = false;
-
-    try {
-      comparator.isClone(x, y, -2);
-    } catch (IllegalArgumentException e) {
-      arg = true;
+    @Before
+    public void setup() {
+        comparator = new EditDistanceComparator();
     }
 
-    assertTrue(arg);
+    /**
+     * Check if threshold calculation works.
+     */
+    @Test
+    public void testGetThreshold() {
+        String x = "<form>bl</form>";
+        String y = "<form>blabla</form>";
+        double p = 0.8;
 
-    arg = false;
+        double expected = (2 * Math.max(x.length(), y.length()) * (1 - p));
 
-    try {
-      comparator.isClone(x, y, 2);
-    } catch (IllegalArgumentException e) {
-      arg = true;
+        assertEquals(expected, comparator.getThreshold(x, y, p), .01d);
     }
 
-    assertTrue(arg);
-  }
+    /**
+     * Check if clone detection algorithm works correctly.
+     */
+    @Test
+    public void testIsClone() {
+        String x = "<form>BL</form>";
+        String y = "<form>blabla</form>";
+
+        LOG.debug(new LevenshteinDistance().apply(x, y) + " Threshold: " + comparator.getThreshold(x, y, 0.7));
+        assertTrue(comparator.isClone(x, y, 0.0));
+        assertTrue(comparator.isClone(x, y, 0.5));
+        assertTrue(comparator.isClone(x, y, 0.7));
+        assertTrue(comparator.isClone(x, y, 0.75));
+        assertTrue(comparator.isClone(x, y, 0.84));
+        assertFalse(comparator.isClone(x, y, 0.89));
+        assertFalse(comparator.isClone(x, y, 0.893));
+        assertFalse(comparator.isClone(x, y, 0.9));
+        assertFalse(comparator.isClone(x, y, 1));
+
+        boolean arg = false;
+
+        try {
+            comparator.isClone(x, y, -2);
+        } catch (IllegalArgumentException e) {
+            arg = true;
+        }
+
+        assertTrue(arg);
+
+        arg = false;
+
+        try {
+            comparator.isClone(x, y, 2);
+        } catch (IllegalArgumentException e) {
+            arg = true;
+        }
+
+        assertTrue(arg);
+    }
 }

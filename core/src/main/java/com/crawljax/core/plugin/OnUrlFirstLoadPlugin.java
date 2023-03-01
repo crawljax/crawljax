@@ -10,16 +10,15 @@ import com.crawljax.core.CrawlerContext;
  */
 public interface OnUrlFirstLoadPlugin extends Plugin {
 
-  /**
-   * Method that is called when the url is loaded the first time. Can be used to clean application
-   * state before beginning the crawl Responsible to return the browser to the correct URL. The
-   * state left by this plugin is used to create index state
-   * <p>
-   * This method can be called from multiple threads with different {@link CrawlerContext}
-   * </p>
-   *
-   * @param context the current crawler context.
-   */
-  void onUrlFirstLoad(CrawlerContext context);
-
+    /**
+     * Method that is called when the url is loaded the first time. Can be used to clean application
+     * state before beginning the crawl Responsible to return the browser to the correct URL. The
+     * state left by this plugin is used to create index state
+     * <p>
+     * This method can be called from multiple threads with different {@link CrawlerContext}
+     * </p>
+     *
+     * @param context the current crawler context.
+     */
+    void onUrlFirstLoad(CrawlerContext context);
 }

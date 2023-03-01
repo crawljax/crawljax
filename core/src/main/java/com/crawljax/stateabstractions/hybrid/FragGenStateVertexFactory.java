@@ -15,32 +15,33 @@ import java.awt.image.BufferedImage;
  */
 public class FragGenStateVertexFactory extends StateVertexFactory {
 
-  private static double threshold = 0.0;
-  private boolean visualData = false;
+    private static double threshold = 0.0;
+    private boolean visualData = false;
 
-  public FragGenStateVertexFactory(double threshold, CrawljaxConfigurationBuilder builder,
-      boolean visualData) {
-    builder.addPlugin(new FragmentationPlugin());
-    FragGenStateVertexFactory.threshold = threshold;
-    this.visualData = visualData;
-  }
-
-  @Override
-  public StateVertex newStateVertex(int id, String url, String name, String dom, String strippedDom,
-      EmbeddedBrowser browser) {
-    HybridStateVertexImpl newVertex = new HybridStateVertexImpl(id, url, name, dom, strippedDom,
-        threshold, visualData);
-    if (visualData && browser != null) {
-      BufferedImage screenshot = browser.getScreenShotAsBufferedImage(500);
-      newVertex.setImage(screenshot);
-      VipsUtils.populateStyle(newVertex.getDocument(), browser.getWebDriver(),
-          ((WebDriverBackedEmbeddedBrowser) browser).isUSE_CDP());
+    public FragGenStateVertexFactory(double threshold, CrawljaxConfigurationBuilder builder, boolean visualData) {
+        builder.addPlugin(new FragmentationPlugin());
+        FragGenStateVertexFactory.threshold = threshold;
+        this.visualData = visualData;
     }
-    return newVertex;
-  }
 
-  @Override
-  public String toString() {
-    return "Hybrid" + threshold;
-  }
+    @Override
+    public StateVertex newStateVertex(
+            int id, String url, String name, String dom, String strippedDom, EmbeddedBrowser browser) {
+        HybridStateVertexImpl newVertex =
+                new HybridStateVertexImpl(id, url, name, dom, strippedDom, threshold, visualData);
+        if (visualData && browser != null) {
+            BufferedImage screenshot = browser.getScreenShotAsBufferedImage(500);
+            newVertex.setImage(screenshot);
+            VipsUtils.populateStyle(
+                    newVertex.getDocument(),
+                    browser.getWebDriver(),
+                    ((WebDriverBackedEmbeddedBrowser) browser).isUSE_CDP());
+        }
+        return newVertex;
+    }
+
+    @Override
+    public String toString() {
+        return "Hybrid" + threshold;
+    }
 }

@@ -12,25 +12,24 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public class ExpectedElementCondition implements ExpectedCondition {
 
-  private final Identification identification;
+    private final Identification identification;
 
-  /**
-   * Constructor.
-   *
-   * @param identification the identification to use.
-   */
-  public ExpectedElementCondition(Identification identification) {
-    this.identification = identification;
-  }
+    /**
+     * Constructor.
+     *
+     * @param identification the identification to use.
+     */
+    public ExpectedElementCondition(Identification identification) {
+        this.identification = identification;
+    }
 
-  @Override
-  public boolean isSatisfied(EmbeddedBrowser browser) {
-    return browser.elementExists(identification);
-  }
+    @Override
+    public boolean isSatisfied(EmbeddedBrowser browser) {
+        return browser.elementExists(identification);
+    }
 
-  @Override
-  public String toString() {
-    return this.getClass().getSimpleName() + ": " + this.identification;
-  }
-
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + ": " + this.identification;
+    }
 }

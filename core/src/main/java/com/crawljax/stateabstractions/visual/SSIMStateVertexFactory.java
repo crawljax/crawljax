@@ -13,33 +13,30 @@ import org.slf4j.LoggerFactory;
  */
 public class SSIMStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(SSIMStateVertexFactory.class.getName());
-  private static final int THUMBNAIL_WIDTH = 200;
-  private static final int THUMBNAIL_HEIGHT = 200;
-  private static double threshold = 1;
+    private static final Logger LOG = LoggerFactory.getLogger(SSIMStateVertexFactory.class.getName());
+    private static final int THUMBNAIL_WIDTH = 200;
+    private static final int THUMBNAIL_HEIGHT = 200;
+    private static double threshold = 1;
 
-  static {
-    OpenCVLoad.load();
-  }
+    static {
+        OpenCVLoad.load();
+    }
 
-  public SSIMStateVertexFactory(double treshold) {
-    threshold = treshold;
-  }
+    public SSIMStateVertexFactory(double treshold) {
+        threshold = treshold;
+    }
 
-  @Override
-  public StateVertex newStateVertex(int id, String url, String name, String dom,
-      String strippedDom,
-      EmbeddedBrowser browser) {
+    @Override
+    public StateVertex newStateVertex(
+            int id, String url, String name, String dom, String strippedDom, EmbeddedBrowser browser) {
 
-    BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
+        BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
 
-    return new SSIMStateVertexImpl(id, url, name, dom, strippedDom, image, threshold);
-  }
+        return new SSIMStateVertexImpl(id, url, name, dom, strippedDom, image, threshold);
+    }
 
-  @Override
-  public String toString() {
-    return "VISUAL_SSIM_" + threshold;
-  }
-
+    @Override
+    public String toString() {
+        return "VISUAL_SSIM_" + threshold;
+    }
 }

@@ -21,47 +21,42 @@ import org.w3c.dom.NodeList;
 @Category(BrowserTest.class)
 public class WebDriverBackedEmbeddedBrowserTest {
 
-  @ClassRule
-  public static final RunWithWebServer SERVER = new RunWithWebServer(
-      "/site/iframe");
+    @ClassRule
+    public static final RunWithWebServer SERVER = new RunWithWebServer("/site/iframe");
 
-  @Rule
-  public final BrowserProvider provider = new BrowserProvider();
+    @Rule
+    public final BrowserProvider provider = new BrowserProvider();
 
-  @Test
-  public void testGetDocument() throws Exception {
+    @Test
+    public void testGetDocument() throws Exception {
 
-    WebDriverBackedEmbeddedBrowser browser = WebDriverBackedEmbeddedBrowser
-        .withDriver(provider.newBrowser(),
-            ImmutableSortedSet.<String>of(), 100, 100);
+        WebDriverBackedEmbeddedBrowser browser = WebDriverBackedEmbeddedBrowser.withDriver(
+                provider.newBrowser(), ImmutableSortedSet.<String>of(), 100, 100);
 
-    Document doc;
-    browser.goToUrl(SERVER.getSiteUrl());
+        Document doc;
+        browser.goToUrl(SERVER.getSiteUrl());
 
-    doc = DomUtils.asDocument(browser.getStrippedDom());
-    NodeList frameNodes = doc.getElementsByTagName("IFRAME");
-    assertEquals(2, frameNodes.getLength());
+        doc = DomUtils.asDocument(browser.getStrippedDom());
+        NodeList frameNodes = doc.getElementsByTagName("IFRAME");
+        assertEquals(2, frameNodes.getLength());
 
-    doc = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
-    frameNodes = doc.getElementsByTagName("IFRAME");
-    assertEquals(2, frameNodes.getLength());
+        doc = DomUtils.asDocument(browser.getStrippedDomWithoutIframeContent());
+        frameNodes = doc.getElementsByTagName("IFRAME");
+        assertEquals(2, frameNodes.getLength());
+    }
 
-  }
+    @Test
+    public void saveScreenShot() throws CrawljaxException, IOException {
 
-  @Test
-  public void saveScreenShot() throws CrawljaxException, IOException {
+        WebDriverBackedEmbeddedBrowser browser = WebDriverBackedEmbeddedBrowser.withDriver(
+                provider.newBrowser(), ImmutableSortedSet.<String>of(), 500, 500);
 
-    WebDriverBackedEmbeddedBrowser browser = WebDriverBackedEmbeddedBrowser
-        .withDriver(provider.newBrowser(),
-            ImmutableSortedSet.<String>of(), 500, 500);
+        File f = File.createTempFile("test-screenshot", ".png");
+        f.deleteOnExit();
 
-    File f = File.createTempFile("test-screenshot", ".png");
-    f.deleteOnExit();
+        browser.goToUrl(SERVER.getSiteUrl());
+        browser.saveScreenShot(f);
 
-    browser.goToUrl(SERVER.getSiteUrl());
-    browser.saveScreenShot(f);
-
-    assertNotEquals(Files.size(f.toPath()), 0);
-
-  }
+        assertNotEquals(Files.size(f.toPath()), 0);
+    }
 }

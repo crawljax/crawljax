@@ -8,40 +8,40 @@ import org.opencv.img_hash.MarrHildrethHash;
 
 public class MarrHildrethImageHash extends VisHash {
 
-  public MarrHildrethImageHash() {
-    thresholdCoefficient = 0.0;
-    maxRaw = 189;
-    minThreshold = 0.0;
-    maxThreshold = thresholdCoefficient * maxRaw;
-  }
-
-  public MarrHildrethImageHash(double thresholdCoefficient) {
-    this.thresholdCoefficient = thresholdCoefficient;
-    maxRaw = 189;
-    minThreshold = 0.0;
-    maxThreshold = this.thresholdCoefficient * maxRaw;
-  }
-
-  @Override
-  public Mat getHash(BufferedImage img) {
-    Mat mat = null;
-    try {
-      mat = ImageUtils.BufferedImage2Mat(img);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    public MarrHildrethImageHash() {
+        thresholdCoefficient = 0.0;
+        maxRaw = 189;
+        minThreshold = 0.0;
+        maxThreshold = thresholdCoefficient * maxRaw;
     }
-    Mat hash = new Mat();
-    MarrHildrethHash.create().compute(mat, hash);
-    return hash;
-  }
 
-  @Override
-  public double compare(Mat hashMat, Mat hashMat2) {
-    return MarrHildrethHash.create().compare(hashMat, hashMat2);
-  }
+    public MarrHildrethImageHash(double thresholdCoefficient) {
+        this.thresholdCoefficient = thresholdCoefficient;
+        maxRaw = 189;
+        minThreshold = 0.0;
+        maxThreshold = this.thresholdCoefficient * maxRaw;
+    }
 
-  @Override
-  public String getHashName() {
-    return "MarrHildrethHash" + "_" + this.thresholdCoefficient;
-  }
+    @Override
+    public Mat getHash(BufferedImage img) {
+        Mat mat = null;
+        try {
+            mat = ImageUtils.BufferedImage2Mat(img);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Mat hash = new Mat();
+        MarrHildrethHash.create().compute(mat, hash);
+        return hash;
+    }
+
+    @Override
+    public double compare(Mat hashMat, Mat hashMat2) {
+        return MarrHildrethHash.create().compare(hashMat, hashMat2);
+    }
+
+    @Override
+    public String getHashName() {
+        return "MarrHildrethHash" + "_" + this.thresholdCoefficient;
+    }
 }

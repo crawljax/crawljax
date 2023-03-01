@@ -17,95 +17,100 @@ import org.slf4j.LoggerFactory;
  */
 public class TLSHStateVertexImpl extends StateVertexImpl {
 
-  private static final Logger LOG = LoggerFactory.getLogger(TLSHStateVertexImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TLSHStateVertexImpl.class.getName());
 
-  private static final long serialVersionUID = 123400017983489L;
+    private static final long serialVersionUID = 123400017983489L;
 
-  private final double threshold;
+    private final double threshold;
 
-  private final double maxRaw = 633;
+    private final double maxRaw = 633;
 
-  private final Mode mode;
+    private final Mode mode;
 
-  private final String usedDom;
+    private final String usedDom;
 
-  private final EditDistanceComparator editDistanceComparator;
+    private final EditDistanceComparator editDistanceComparator;
 
-  /**
-   * Creates a current state without an url and the stripped dom equals the dom.
-   *
-   * @param name
-   *            the name of the state
-   * @param dom
-   *            the current DOM tree of the browser
-   */
-  /**
-   * Defines a State.
-   *
-   * @param url         the current url of the state
-   * @param name        the name of the state
-   * @param dom         the current DOM tree of the browser
-   * @param strippedDom the stripped dom by the OracleComparators
-   * @param threshold
-   * @param mode
-   */
-  public TLSHStateVertexImpl(int id, String url, String name, String dom, String strippedDom,
-      double threshold, Mode mode, EditDistanceComparator editDistanceComparator) {
-    super(id, url, name, dom, strippedDom);
-    this.threshold = threshold;
-    this.mode = mode;
-    this.usedDom = DOMConfiguration.getConfiguredDOM(dom, strippedDom, mode);
-    this.editDistanceComparator = editDistanceComparator;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(this.getName() + "," + this.getUsedDom());
-  }
-
-
-  /**
-   * TODO in the equals, we could also measure the distance between two pHashes
-   */
-  @Override
-  public boolean equals(Object object) {
-    TLSHStateVertexImpl that = (TLSHStateVertexImpl) object;
-    if (this.getName().equalsIgnoreCase(that.getName())) {
-      return true;
+    /**
+     * Creates a current state without an url and the stripped dom equals the dom.
+     *
+     * @param name
+     *            the name of the state
+     * @param dom
+     *            the current DOM tree of the browser
+     */
+    /**
+     * Defines a State.
+     *
+     * @param url         the current url of the state
+     * @param name        the name of the state
+     * @param dom         the current DOM tree of the browser
+     * @param strippedDom the stripped dom by the OracleComparators
+     * @param threshold
+     * @param mode
+     */
+    public TLSHStateVertexImpl(
+            int id,
+            String url,
+            String name,
+            String dom,
+            String strippedDom,
+            double threshold,
+            Mode mode,
+            EditDistanceComparator editDistanceComparator) {
+        super(id, url, name, dom, strippedDom);
+        this.threshold = threshold;
+        this.mode = mode;
+        this.usedDom = DOMConfiguration.getConfiguredDOM(dom, strippedDom, mode);
+        this.editDistanceComparator = editDistanceComparator;
     }
-    try {
-      double distance = TLSHStateVertexFactory.computeTLSHDistance(this.getUsedDom(),
-          that.getUsedDom());
-      return distance <= threshold * maxRaw;
-    } catch (IllegalArgumentException Ex) {
-      LOG.info("DOM not complex enough for TLSH. Falling back on Levenshtein");
-      return editDistanceComparator.isEquivalent(this.getUsedDom(), that.getUsedDom());
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getName() + "," + this.getUsedDom());
     }
-  }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this).add("id", super.getId())
-        .add("name", super.getName()).toString();
-  }
-
-  @Override
-  public double getDist(StateVertex vertexOfGraph) {
-    if (vertexOfGraph instanceof TLSHStateVertexImpl) {
-      TLSHStateVertexImpl vertex = (TLSHStateVertexImpl) vertexOfGraph;
-      try {
-        return TLSHStateVertexFactory.computeTLSHDistance(this.getUsedDom(),
-            vertex.getUsedDom());
-      } catch (IllegalArgumentException IAEx) {
-        LOG.info("DOM not complex enough for TLSH. Falling back on Levenshtein");
-        return StringUtils.getLevenshteinDistance(this.getUsedDom(),
-            vertex.getUsedDom());
-      }
+    /**
+     * TODO in the equals, we could also measure the distance between two pHashes
+     */
+    @Override
+    public boolean equals(Object object) {
+        TLSHStateVertexImpl that = (TLSHStateVertexImpl) object;
+        if (this.getName().equalsIgnoreCase(that.getName())) {
+            return true;
+        }
+        try {
+            double distance = TLSHStateVertexFactory.computeTLSHDistance(this.getUsedDom(), that.getUsedDom());
+            return distance <= threshold * maxRaw;
+        } catch (IllegalArgumentException Ex) {
+            LOG.info("DOM not complex enough for TLSH. Falling back on Levenshtein");
+            return editDistanceComparator.isEquivalent(this.getUsedDom(), that.getUsedDom());
+        }
     }
-    return -1;
-  }
 
-  private String getUsedDom() {
-    return this.usedDom;
-  }
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", super.getId())
+                .add("name", super.getName())
+                .toString();
+    }
+
+    @Override
+    public double getDist(StateVertex vertexOfGraph) {
+        if (vertexOfGraph instanceof TLSHStateVertexImpl) {
+            TLSHStateVertexImpl vertex = (TLSHStateVertexImpl) vertexOfGraph;
+            try {
+                return TLSHStateVertexFactory.computeTLSHDistance(this.getUsedDom(), vertex.getUsedDom());
+            } catch (IllegalArgumentException IAEx) {
+                LOG.info("DOM not complex enough for TLSH. Falling back on Levenshtein");
+                return StringUtils.getLevenshteinDistance(this.getUsedDom(), vertex.getUsedDom());
+            }
+        }
+        return -1;
+    }
+
+    private String getUsedDom() {
+        return this.usedDom;
+    }
 }

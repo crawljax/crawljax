@@ -10,25 +10,22 @@ import com.crawljax.core.state.StateVertexFactory;
  */
 public class RTEDStateVertexFactory extends StateVertexFactory {
 
-  private static double threshold = 0.0;
+    private static double threshold = 0.0;
 
-  public RTEDStateVertexFactory() {
-  }
+    public RTEDStateVertexFactory() {}
 
-  public RTEDStateVertexFactory(double threshold) {
-    RTEDStateVertexFactory.threshold = threshold;
-  }
+    public RTEDStateVertexFactory(double threshold) {
+        RTEDStateVertexFactory.threshold = threshold;
+    }
 
-  @Override
-  public StateVertex newStateVertex(int id, String url, String name, String dom,
-      String strippedDom,
-      EmbeddedBrowser browser) {
-    return new RTEDStateVertexImpl(id, url, name, dom, strippedDom, threshold);
-  }
+    @Override
+    public StateVertex newStateVertex(
+            int id, String url, String name, String dom, String strippedDom, EmbeddedBrowser browser) {
+        return new RTEDStateVertexImpl(id, url, name, dom, strippedDom, threshold);
+    }
 
-  @Override
-  public String toString() {
-    return "DOM-RTED_" + threshold;
-  }
-
+    @Override
+    public String toString() {
+        return "DOM-RTED_" + threshold;
+    }
 }
