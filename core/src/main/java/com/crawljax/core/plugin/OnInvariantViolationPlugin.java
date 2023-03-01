@@ -9,15 +9,14 @@ import com.crawljax.core.CrawlerContext;
  */
 public interface OnInvariantViolationPlugin extends Plugin {
 
-  /**
-   * Method that is called when an invariant is violated.
-   * <p>
-   * This method can be called from multiple threads with different {@link CrawlerContext}
-   * </p>
-   *
-   * @param invariant the failed invariant.
-   * @param context   the browsers context
-   */
-  void onInvariantViolation(Invariant invariant, CrawlerContext context);
-
+    /**
+     * Method that is called when an invariant is violated.
+     * <p>
+     * This method can be called from multiple threads with different {@link CrawlerContext}
+     * </p>
+     *
+     * @param invariant the failed invariant.
+     * @param context   the browsers context
+     */
+    void onInvariantViolation(Invariant invariant, CrawlerContext context);
 }

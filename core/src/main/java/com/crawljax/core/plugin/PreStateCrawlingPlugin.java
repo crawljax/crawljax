@@ -10,18 +10,16 @@ import com.google.common.collect.ImmutableList;
  */
 public interface PreStateCrawlingPlugin extends Plugin {
 
-  /**
-   * Method that is called before firing events on the current DOM state. Warning the session and
-   * candidateElements are not clones, changes will result in changed behavior.
-   * <p>
-   * This method can be called from multiple threads with different {@link CrawlerContext}
-   * </p>
-   *
-   * @param context           the current session data.
-   * @param candidateElements the candidates for the current state.
-   * @param state             The state being crawled
-   */
-  void preStateCrawling(CrawlerContext context,
-      ImmutableList<CandidateElement> candidateElements, StateVertex state);
-
+    /**
+     * Method that is called before firing events on the current DOM state. Warning the session and
+     * candidateElements are not clones, changes will result in changed behavior.
+     * <p>
+     * This method can be called from multiple threads with different {@link CrawlerContext}
+     * </p>
+     *
+     * @param context           the current session data.
+     * @param candidateElements the candidates for the current state.
+     * @param state             The state being crawled
+     */
+    void preStateCrawling(CrawlerContext context, ImmutableList<CandidateElement> candidateElements, StateVertex state);
 }

@@ -3,7 +3,7 @@ package com.crawljax.core.plugin;
 /**
  * Main interface for all type of plugins, there are 8 different types of Plugins.
  * <table>
-*    <caption>Main interface for plugins</caption>
+ *    <caption>Main interface for plugins</caption>
  * <tbody>
  * <tr>
  * <th>Type</th>
@@ -48,6 +48,4 @@ package com.crawljax.core.plugin;
  * </tbody>
  * </table>
  */
-public interface Plugin {
-
-}
+public interface Plugin {}

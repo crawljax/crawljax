@@ -15,32 +15,28 @@ import org.slf4j.LoggerFactory;
  */
 public class DHashStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(DHashStateVertexFactory.class.getName());
-  private static final int THUMBNAIL_WIDTH = 200;
-  private static final int THUMBNAIL_HEIGHT = 200;
+    private static final Logger LOG = LoggerFactory.getLogger(DHashStateVertexFactory.class.getName());
+    private static final int THUMBNAIL_WIDTH = 200;
+    private static final int THUMBNAIL_HEIGHT = 200;
 
-  static {
-    OpenCVLoad.load();
-  }
-
-
-  @Override
-  public StateVertex newStateVertex(int id, String url, String name, String dom,
-      String strippedDom,
-      EmbeddedBrowser browser) {
-
-    BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
-
-    DHash visualDHash = new DHash();
-    String dHash = null;
-    try {
-      dHash = visualDHash.getDHash(image);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    static {
+        OpenCVLoad.load();
     }
 
-    return new DHashStateVertexImpl(id, url, name, dom, strippedDom, dHash);
-  }
+    @Override
+    public StateVertex newStateVertex(
+            int id, String url, String name, String dom, String strippedDom, EmbeddedBrowser browser) {
 
+        BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
+
+        DHash visualDHash = new DHash();
+        String dHash = null;
+        try {
+            dHash = visualDHash.getDHash(image);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new DHashStateVertexImpl(id, url, name, dom, strippedDom, dHash);
+    }
 }

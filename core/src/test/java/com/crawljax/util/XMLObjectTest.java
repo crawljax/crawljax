@@ -11,34 +11,34 @@ import org.junit.Test;
 
 public class XMLObjectTest {
 
-  private final static String filename = "xmlobject-save-to-file-test.xml";
+    private static final String filename = "xmlobject-save-to-file-test.xml";
 
-  @SuppressWarnings("unchecked")
-  @Test
-  public void saveToFile() {
-    ArrayList<String> object = new ArrayList<>();
-    object.add("Bla");
-    object.add("Something else");
+    @SuppressWarnings("unchecked")
+    @Test
+    public void saveToFile() {
+        ArrayList<String> object = new ArrayList<>();
+        object.add("Bla");
+        object.add("Something else");
 
-    try {
-      XMLObject.objectToXML(object, filename);
-    } catch (FileNotFoundException e) {
-      fail("Error saving object");
+        try {
+            XMLObject.objectToXML(object, filename);
+        } catch (FileNotFoundException e) {
+            fail("Error saving object");
+        }
+        File f = new File(filename);
+        assertTrue(f.exists());
+
+        object = null;
+        try {
+            object = (ArrayList<String>) XMLObject.xmlToObject(filename);
+        } catch (FileNotFoundException e) {
+            fail("File not found");
+        }
+
+        assertEquals(2, object.size());
+        assertEquals("Bla", object.get(0));
+        assertEquals("Something else", object.get(1));
+
+        assertTrue(f.delete());
     }
-    File f = new File(filename);
-    assertTrue(f.exists());
-
-    object = null;
-    try {
-      object = (ArrayList<String>) XMLObject.xmlToObject(filename);
-    } catch (FileNotFoundException e) {
-      fail("File not found");
-    }
-
-    assertEquals(2, object.size());
-    assertEquals("Bla", object.get(0));
-    assertEquals("Something else", object.get(1));
-
-    assertTrue(f.delete());
-  }
 }

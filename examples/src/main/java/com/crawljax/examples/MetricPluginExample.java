@@ -21,48 +21,45 @@ import org.slf4j.LoggerFactory;
  */
 public class MetricPluginExample {
 
-  public static void main(String[] args) {
-    CrawljaxConfiguration config =
-        CrawljaxConfiguration.builderFor("http://demo.crawljax.com")
-            .addPlugin(new MetricPlugin())
-            .build();
+    public static void main(String[] args) {
+        CrawljaxConfiguration config = CrawljaxConfiguration.builderFor("http://demo.crawljax.com")
+                .addPlugin(new MetricPlugin())
+                .build();
 
-    new CrawljaxRunner(config).call();
-  }
-
-  /**
-   * This plugins implements {@link OnNewStatePlugin} so that for every new state we can calculate
-   * the DOM size. It also implements the {@link PostCrawlingPlugin} allowing us to print the result
-   * when the crawl is done.
-   */
-  private static class MetricPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
-
-    private final String metricName = MetricRegistry.name(MetricPluginExample.class,
-        "domsize");
-    private AtomicBoolean firstState = new AtomicBoolean(true);
-    private Slf4jReporter reporter;
-
-    @Override
-    public void onNewState(CrawlerContext context, StateVertex newState) {
-      if (firstState.getAndSet(false)) {
-        reporter = Slf4jReporter.forRegistry(context.getRegistry())
-            .outputTo(LoggerFactory.getLogger(MetricPluginExample.class))
-            .build();
-      }
-
-      int domSizeInKb =
-          context.getBrowser().getUnStrippedDom().getBytes().length / 1000;
-
-      // Get the histogram or create one. After that update with the DOM value we found.
-      context.getRegistry().histogram(metricName).update(domSizeInKb);
+        new CrawljaxRunner(config).call();
     }
 
-    /*
-     * The crawl is done. Lets print the metrics to the logger.
+    /**
+     * This plugins implements {@link OnNewStatePlugin} so that for every new state we can calculate
+     * the DOM size. It also implements the {@link PostCrawlingPlugin} allowing us to print the result
+     * when the crawl is done.
      */
-    @Override
-    public void postCrawling(CrawlSession session, ExitStatus exitReason) {
-      reporter.report();
+    private static class MetricPlugin implements OnNewStatePlugin, PostCrawlingPlugin {
+
+        private final String metricName = MetricRegistry.name(MetricPluginExample.class, "domsize");
+        private AtomicBoolean firstState = new AtomicBoolean(true);
+        private Slf4jReporter reporter;
+
+        @Override
+        public void onNewState(CrawlerContext context, StateVertex newState) {
+            if (firstState.getAndSet(false)) {
+                reporter = Slf4jReporter.forRegistry(context.getRegistry())
+                        .outputTo(LoggerFactory.getLogger(MetricPluginExample.class))
+                        .build();
+            }
+
+            int domSizeInKb = context.getBrowser().getUnStrippedDom().getBytes().length / 1000;
+
+            // Get the histogram or create one. After that update with the DOM value we found.
+            context.getRegistry().histogram(metricName).update(domSizeInKb);
+        }
+
+        /*
+         * The crawl is done. Lets print the metrics to the logger.
+         */
+        @Override
+        public void postCrawling(CrawlSession session, ExitStatus exitReason) {
+            reporter.report();
+        }
     }
-  }
 }

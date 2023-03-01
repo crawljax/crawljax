@@ -4,42 +4,44 @@ import java.awt.Rectangle;
 
 public class ImageAnnotation {
 
-  Rectangle rectangle;
-  AnnotationType type;
-  boolean fill;
+    Rectangle rectangle;
+    AnnotationType type;
+    boolean fill;
 
-  public ImageAnnotation(AnnotationType type, Rectangle rect, boolean fill) {
-    this.type = type;
-    this.rectangle = rect;
-    this.fill = fill;
-  }
+    public ImageAnnotation(AnnotationType type, Rectangle rect, boolean fill) {
+        this.type = type;
+        this.rectangle = rect;
+        this.fill = fill;
+    }
 
-  public Rectangle getRectangle() {
-    return rectangle;
-  }
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
 
-  public void setRectangle(Rectangle rectangle) {
-    this.rectangle = rectangle;
-  }
+    public void setRectangle(Rectangle rectangle) {
+        this.rectangle = rectangle;
+    }
 
-  public AnnotationType getType() {
-    return type;
-  }
+    public AnnotationType getType() {
+        return type;
+    }
 
-  public void setType(AnnotationType type) {
-    this.type = type;
-  }
+    public void setType(AnnotationType type) {
+        this.type = type;
+    }
 
-  public boolean isFill() {
-    return fill;
-  }
+    public boolean isFill() {
+        return fill;
+    }
 
-  public void setFill(boolean fill) {
-    this.fill = fill;
-  }
+    public void setFill(boolean fill) {
+        this.fill = fill;
+    }
 
-  public enum AnnotationType {
-    ADDED, CHANGED, DYNAMIC, NONE
-  }
-
-}	
+    public enum AnnotationType {
+        ADDED,
+        CHANGED,
+        DYNAMIC,
+        NONE
+    }
+}

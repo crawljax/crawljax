@@ -14,39 +14,38 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class NotUrlCondition implements Condition {
 
-  private final UrlCondition urlCondition;
+    private final UrlCondition urlCondition;
 
-  /**
-   * @param url the URL.
-   */
-  public NotUrlCondition(String url) {
-    this.urlCondition = new UrlCondition(url);
-  }
-
-  @Override
-  public boolean check(EmbeddedBrowser browser) {
-    return Logic.not(urlCondition).check(browser);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass(), urlCondition);
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (object instanceof NotUrlCondition) {
-      NotUrlCondition that = (NotUrlCondition) object;
-      return Objects.equal(this.urlCondition, that.urlCondition);
+    /**
+     * @param url the URL.
+     */
+    public NotUrlCondition(String url) {
+        this.urlCondition = new UrlCondition(url);
     }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("urlCondition", urlCondition)
-        .toString();
-  }
+    @Override
+    public boolean check(EmbeddedBrowser browser) {
+        return Logic.not(urlCondition).check(browser);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass(), urlCondition);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof NotUrlCondition) {
+            NotUrlCondition that = (NotUrlCondition) object;
+            return Objects.equal(this.urlCondition, that.urlCondition);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("urlCondition", urlCondition)
+                .toString();
+    }
 }

@@ -14,89 +14,87 @@ import org.w3c.dom.Document;
  */
 public class DomHistoryElement {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DomHistoryElement.class);
-  /**
-   * String representation of the DOM.
-   */
-  private String domStr;
+    private static final Logger LOG = LoggerFactory.getLogger(DomHistoryElement.class);
+    /**
+     * String representation of the DOM.
+     */
+    private String domStr;
 
-  /**
-   * Document object of the DOM.
-   */
-  private Document dom;
+    /**
+     * Document object of the DOM.
+     */
+    private Document dom;
 
-  private List<Eventable> eventSequence;
+    private List<Eventable> eventSequence;
 
-  /**
-   * Constructor.
-   *
-   * @param domStr   The DOM string.
-   * @param dom      The DOM.
-   * @param eventSeq The events sequence as a list.
-   */
-  public DomHistoryElement(String domStr, Document dom, List<Eventable> eventSeq) {
-    this.domStr = domStr;
-    this.dom = dom;
-    this.eventSequence = eventSeq;
-  }
-
-  /**
-   * Constructor. Parses domStr into a Document object.
-   *
-   * @param domStr   The DOM string.
-   * @param eventSeq The events sequence as a list.
-   */
-  public DomHistoryElement(String domStr, List<Eventable> eventSeq) {
-    this.domStr = domStr;
-    this.eventSequence = eventSeq;
-    try {
-      this.dom = DomUtils.asDocument(domStr);
-    } catch (IOException e) {
-      LOG.error("Could not construct with dom", e);
+    /**
+     * Constructor.
+     *
+     * @param domStr   The DOM string.
+     * @param dom      The DOM.
+     * @param eventSeq The events sequence as a list.
+     */
+    public DomHistoryElement(String domStr, Document dom, List<Eventable> eventSeq) {
+        this.domStr = domStr;
+        this.dom = dom;
+        this.eventSequence = eventSeq;
     }
 
-  }
+    /**
+     * Constructor. Parses domStr into a Document object.
+     *
+     * @param domStr   The DOM string.
+     * @param eventSeq The events sequence as a list.
+     */
+    public DomHistoryElement(String domStr, List<Eventable> eventSeq) {
+        this.domStr = domStr;
+        this.eventSequence = eventSeq;
+        try {
+            this.dom = DomUtils.asDocument(domStr);
+        } catch (IOException e) {
+            LOG.error("Could not construct with dom", e);
+        }
+    }
 
-  /**
-   * @return the domStr
-   */
-  public String getDomStr() {
-    return this.domStr;
-  }
+    /**
+     * @return the domStr
+     */
+    public String getDomStr() {
+        return this.domStr;
+    }
 
-  /**
-   * @param domStr the domStr to set
-   */
-  public void setDomStr(String domStr) {
-    this.domStr = domStr;
-  }
+    /**
+     * @param domStr the domStr to set
+     */
+    public void setDomStr(String domStr) {
+        this.domStr = domStr;
+    }
 
-  /**
-   * @return the dom
-   */
-  public Document getDom() {
-    return this.dom;
-  }
+    /**
+     * @return the dom
+     */
+    public Document getDom() {
+        return this.dom;
+    }
 
-  /**
-   * @param dom the dom to set
-   */
-  public void setDom(Document dom) {
-    this.dom = dom;
-  }
+    /**
+     * @param dom the dom to set
+     */
+    public void setDom(Document dom) {
+        this.dom = dom;
+    }
 
-  /**
-   * @return The event sequence.
-   */
-  public List<Eventable> getEventSequence() {
-    return eventSequence;
-  }
+    /**
+     * @return The event sequence.
+     */
+    public List<Eventable> getEventSequence() {
+        return eventSequence;
+    }
 
-  /**
-   * @param eventSequence The event sequence.
-   */
-  public void setEventSequence(List<Eventable> eventSequence) {
-    this.eventSequence = eventSequence;
-  }
-
+    /**
+     * @param eventSequence The event sequence.
+     */
+    public void setEventSequence(List<Eventable> eventSequence) {
+        this.eventSequence = eventSequence;
+    }
 }

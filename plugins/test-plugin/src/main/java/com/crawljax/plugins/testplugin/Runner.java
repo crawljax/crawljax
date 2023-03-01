@@ -19,51 +19,49 @@ import java.util.Map;
  */
 public class Runner {
 
-  private static final String URL = "http://www.google.com";
-  private static final int MAX_DEPTH = 1;
-  private static final int MAX_NUMBER_STATES = 3;
+    private static final String URL = "http://www.google.com";
+    private static final int MAX_DEPTH = 1;
+    private static final int MAX_NUMBER_STATES = 3;
 
-  private Runner() {
-    // Utility class
-  }
-
-  /**
-   * Entry point
-   */
-  public static void main(String[] args) {
-    CrawljaxConfiguration.CrawljaxConfigurationBuilder builder =
-        CrawljaxConfiguration.builderFor(URL);
-    builder.crawlRules().setFormFillMode(FormFillMode.NORMAL);
-
-    builder.crawlRules().click("a");
-    builder.crawlRules().click("button");
-
-    // except these
-    builder.crawlRules().dontClick("a").underXPath("//DIV[@id='guser']");
-    builder.crawlRules().dontClick("a").withText("Language Tools");
-
-    // limit the crawling scope
-    builder.setMaximumStates(MAX_NUMBER_STATES);
-    builder.setMaximumDepth(MAX_DEPTH);
-
-    PluginDescriptor descriptor = PluginDescriptor.forPlugin(TestPlugin.class);
-    Map<String, String> parameters = new HashMap<>();
-    for (Parameter parameter : descriptor.getParameters()) {
-      parameters.put(parameter.getId(), "value");
+    private Runner() {
+        // Utility class
     }
-    builder.addPlugin(new TestPlugin(new HostInterfaceImpl(new File("out"), parameters)));
 
-    builder.crawlRules().setInputSpec(getInputSpecification());
+    /**
+     * Entry point
+     */
+    public static void main(String[] args) {
+        CrawljaxConfiguration.CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(URL);
+        builder.crawlRules().setFormFillMode(FormFillMode.NORMAL);
 
-    CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
-    crawljax.call();
-  }
+        builder.crawlRules().click("a");
+        builder.crawlRules().click("button");
 
-  private static InputSpecification getInputSpecification() {
-    InputSpecification input = new InputSpecification();
-    input.inputField(InputType.TEXT, new Identification(How.id, "lst-ib"))
-        .inputValues("Crawljax");
+        // except these
+        builder.crawlRules().dontClick("a").underXPath("//DIV[@id='guser']");
+        builder.crawlRules().dontClick("a").withText("Language Tools");
 
-    return input;
-  }
+        // limit the crawling scope
+        builder.setMaximumStates(MAX_NUMBER_STATES);
+        builder.setMaximumDepth(MAX_DEPTH);
+
+        PluginDescriptor descriptor = PluginDescriptor.forPlugin(TestPlugin.class);
+        Map<String, String> parameters = new HashMap<>();
+        for (Parameter parameter : descriptor.getParameters()) {
+            parameters.put(parameter.getId(), "value");
+        }
+        builder.addPlugin(new TestPlugin(new HostInterfaceImpl(new File("out"), parameters)));
+
+        builder.crawlRules().setInputSpec(getInputSpecification());
+
+        CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+        crawljax.call();
+    }
+
+    private static InputSpecification getInputSpecification() {
+        InputSpecification input = new InputSpecification();
+        input.inputField(InputType.TEXT, new Identification(How.id, "lst-ib")).inputValues("Crawljax");
+
+        return input;
+    }
 }

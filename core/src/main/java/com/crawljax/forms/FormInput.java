@@ -18,151 +18,164 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class FormInput {
 
-  private InputType type = InputType.TEXT;
-  private final Identification identification;
-  private Set<InputValue> inputValues = new HashSet<>();
-  private Eventable eventable;
+    private InputType type = InputType.TEXT;
+    private final Identification identification;
+    private Set<InputValue> inputValues = new HashSet<>();
+    private Eventable eventable;
 
-  public FormInput(InputType type, Identification identification) {
-    this.type = type;
-    this.identification = identification;
-  }
-
-  /**
-   * @param type           the type of the input elements (e.g. text, checkbox)
-   * @param identification the identification.
-   * @param value          the value of the elements. 1 for checked
-   */
-  public FormInput(InputType type, Identification identification, String value) {
-    this.type = type;
-    this.identification = identification;
-    inputValues.add(new InputValue(value, value.equals("1")));
-  }
-
-  public static InputType getTypeFromStr(String type) {
-    return Enums.getIfPresent(InputType.class, type.toUpperCase()).or(InputType.TEXT);
-  }
-
-  /**
-   * @param inputs         form input set.
-   * @param identification the identification to check.
-   * @return true if set contains a FormInput that has the same identification.
-   */
-  public static boolean containsInput(Set<FormInput> inputs, Identification identification) {
-    for (FormInput input : inputs) {
-      if (input.getIdentification().equals(identification)) {
-        return true;
-      }
+    public FormInput(InputType type, Identification identification) {
+        this.type = type;
+        this.identification = identification;
     }
 
-    return false;
-  }
-
-  /**
-   * @param inputs         form input set.
-   * @param identification the identification to check.
-   * @return a FormInput object that has the same identification.
-   */
-  public static FormInput getInput(Set<FormInput> inputs, Identification identification) {
-    for (FormInput input : inputs) {
-      if (input.getIdentification().equals(identification)) {
-        return input;
-      }
+    /**
+     * @param type           the type of the input elements (e.g. text, checkbox)
+     * @param identification the identification.
+     * @param value          the value of the elements. 1 for checked
+     */
+    public FormInput(InputType type, Identification identification, String value) {
+        this.type = type;
+        this.identification = identification;
+        inputValues.add(new InputValue(value, value.equals("1")));
     }
 
-    return null;
-  }
-
-  /**
-   * @return the input type.
-   */
-  public InputType getType() {
-    return type;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof FormInput)) {
-      return false;
+    public static InputType getTypeFromStr(String type) {
+        return Enums.getIfPresent(InputType.class, type.toUpperCase()).or(InputType.TEXT);
     }
 
-    if (this == obj) {
-      return true;
+    /**
+     * @param inputs         form input set.
+     * @param identification the identification to check.
+     * @return true if set contains a FormInput that has the same identification.
+     */
+    public static boolean containsInput(Set<FormInput> inputs, Identification identification) {
+        for (FormInput input : inputs) {
+            if (input.getIdentification().equals(identification)) {
+                return true;
+            }
+        }
+
+        return false;
     }
-    final FormInput rhs = (FormInput) obj;
 
-    return new EqualsBuilder().append(this.identification, rhs.getIdentification())
-        .append(this.type, rhs.getType()).isEquals();
-  }
+    /**
+     * @param inputs         form input set.
+     * @param identification the identification to check.
+     * @return a FormInput object that has the same identification.
+     */
+    public static FormInput getInput(Set<FormInput> inputs, Identification identification) {
+        for (FormInput input : inputs) {
+            if (input.getIdentification().equals(identification)) {
+                return input;
+            }
+        }
 
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder().append(this.identification).append(this.type).toHashCode();
-  }
-
-  @Override
-  public String toString() {
-    return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-  }
-
-  /**
-   * @return the inputValues
-   */
-  public Set<InputValue> getInputValues() {
-    return inputValues;
-  }
-
-  /**
-   * @param inputValues the inputValues to set
-   */
-  public void inputValues(Set<InputValue> inputValues) {
-    this.inputValues = inputValues;
-  }
-
-  public void inputValues(String... values) {
-    for (String value : values) {
-      InputValue inputValue = new InputValue(value);
-      this.inputValues.add(inputValue);
+        return null;
     }
-  }
 
-  /**
-   * Sets the values of this input field. Only Applicable check-boxes and a radio buttons.
-   *
-   * @param values Values to set.
-   */
-  public void inputValues(boolean... values) {
-    for (boolean value : values) {
-      InputValue inputValue = new InputValue();
-      inputValue.setChecked(value);
-
-      this.inputValues.add(inputValue);
+    /**
+     * @return the input type.
+     */
+    public InputType getType() {
+        return type;
     }
-  }
 
-  /**
-   * @return the related eventable for submitting
-   */
-  public Eventable getEventable() {
-    return eventable;
-  }
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof FormInput)) {
+            return false;
+        }
 
-  /**
-   * @param eventable the eventable by which this FormInput is submitted by
-   */
-  public void setEventable(Eventable eventable) {
-    this.eventable = eventable;
-  }
+        if (this == obj) {
+            return true;
+        }
+        final FormInput rhs = (FormInput) obj;
 
-  /**
-   * @return the identification
-   */
-  public Identification getIdentification() {
-    return identification;
-  }
+        return new EqualsBuilder()
+                .append(this.identification, rhs.getIdentification())
+                .append(this.type, rhs.getType())
+                .isEquals();
+    }
 
-  public enum InputType {
-    TEXT, RADIO, CHECKBOX, PASSWORD, HIDDEN, SELECT, TEXTAREA, EMAIL, INPUT, NUMBER
-  }
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(this.identification)
+                .append(this.type)
+                .toHashCode();
+    }
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
+
+    /**
+     * @return the inputValues
+     */
+    public Set<InputValue> getInputValues() {
+        return inputValues;
+    }
+
+    /**
+     * @param inputValues the inputValues to set
+     */
+    public void inputValues(Set<InputValue> inputValues) {
+        this.inputValues = inputValues;
+    }
+
+    public void inputValues(String... values) {
+        for (String value : values) {
+            InputValue inputValue = new InputValue(value);
+            this.inputValues.add(inputValue);
+        }
+    }
+
+    /**
+     * Sets the values of this input field. Only Applicable check-boxes and a radio buttons.
+     *
+     * @param values Values to set.
+     */
+    public void inputValues(boolean... values) {
+        for (boolean value : values) {
+            InputValue inputValue = new InputValue();
+            inputValue.setChecked(value);
+
+            this.inputValues.add(inputValue);
+        }
+    }
+
+    /**
+     * @return the related eventable for submitting
+     */
+    public Eventable getEventable() {
+        return eventable;
+    }
+
+    /**
+     * @param eventable the eventable by which this FormInput is submitted by
+     */
+    public void setEventable(Eventable eventable) {
+        this.eventable = eventable;
+    }
+
+    /**
+     * @return the identification
+     */
+    public Identification getIdentification() {
+        return identification;
+    }
+
+    public enum InputType {
+        TEXT,
+        RADIO,
+        CHECKBOX,
+        PASSWORD,
+        HIDDEN,
+        SELECT,
+        TEXTAREA,
+        EMAIL,
+        INPUT,
+        NUMBER
+    }
 }

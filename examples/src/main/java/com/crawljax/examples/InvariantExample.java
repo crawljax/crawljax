@@ -17,35 +17,30 @@ import org.slf4j.LoggerFactory;
  */
 public class InvariantExample {
 
-  private static final Logger LOG = LoggerFactory
-      .getLogger(InvariantExample.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InvariantExample.class);
 
-  /**
-   * Run this method to start the crawl.
-   */
-  public static void main(String[] args) {
-    CrawljaxConfigurationBuilder builder = CrawljaxConfiguration
-        .builderFor("http://demo.crawljax.com/");
+    /**
+     * Run this method to start the crawl.
+     */
+    public static void main(String[] args) {
+        CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor("http://demo.crawljax.com/");
 
-    // Add the invariant that checks that the string isn't present.
-    builder.crawlRules()
-        .addInvariant(
-            "Detect a string",
-            new NotRegexCondition(
-                "Invariants can be used to perform tests on the current state"));
+        // Add the invariant that checks that the string isn't present.
+        builder.crawlRules()
+                .addInvariant(
+                        "Detect a string",
+                        new NotRegexCondition("Invariants can be used to perform tests on the current state"));
 
-    // This plugin will just print the error.
-    builder.addPlugin(new OnInvariantViolationPlugin() {
+        // This plugin will just print the error.
+        builder.addPlugin(new OnInvariantViolationPlugin() {
 
-      @Override
-      public void onInvariantViolation(Invariant invariant,
-          CrawlerContext context) {
-        LOG.error("\n\n!!! Invariant {} violated !!!\n", invariant);
-      }
+            @Override
+            public void onInvariantViolation(Invariant invariant, CrawlerContext context) {
+                LOG.error("\n\n!!! Invariant {} violated !!!\n", invariant);
+            }
+        });
 
-    });
-
-    CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
-    crawljax.call();
-  }
+        CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+        crawljax.call();
+    }
 }

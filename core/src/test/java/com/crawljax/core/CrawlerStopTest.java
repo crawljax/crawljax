@@ -22,98 +22,95 @@ import org.junit.experimental.categories.Category;
 @Category(BrowserTest.class)
 public class CrawlerStopTest {
 
-  @ClassRule
-  public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
+    @ClassRule
+    public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
 
-  @Test
-  public void maximumDepthIsObliged() {
-    CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
-    builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
-    int depth = 3;
+    @Test
+    public void maximumDepthIsObliged() {
+        CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
+        builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
+        int depth = 3;
 
-    CrawljaxRunner runner = new CrawljaxRunner(builder.setMaximumDepth(depth).build());
-    CrawlSession session = runner.call();
+        CrawljaxRunner runner =
+                new CrawljaxRunner(builder.setMaximumDepth(depth).build());
+        CrawlSession session = runner.call();
 
-    assertThat(session.getStateFlowGraph(), hasStates(depth + 1));
-    assertThat(runner.getReason(), is(ExitStatus.EXHAUSTED));
-  }
+        assertThat(session.getStateFlowGraph(), hasStates(depth + 1));
+        assertThat(runner.getReason(), is(ExitStatus.EXHAUSTED));
+    }
 
-  @Test(timeout = 60_000)
-  public void maximumTimeIsObliged() {
-    CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
-    builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
+    @Test(timeout = 60_000)
+    public void maximumTimeIsObliged() {
+        CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
+        builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
 
-    CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
-        .setMaximumRunTime(25, TimeUnit.SECONDS)
-        .build());
-    runner.call();
-    assertThat(runner.getReason(), is(ExitStatus.MAX_TIME));
+        CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
+                .setMaximumRunTime(25, TimeUnit.SECONDS)
+                .build());
+        runner.call();
+        assertThat(runner.getReason(), is(ExitStatus.MAX_TIME));
+    }
 
-  }
+    @Test(timeout = 60_000)
+    public void maximumStatesIsObliged() {
+        CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
+        builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
 
-  @Test(timeout = 60_000)
-  public void maximumStatesIsObliged() {
-    CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
-    builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
+        CrawljaxRunner runner = new CrawljaxRunner(
+                builder.setUnlimitedCrawlDepth().setMaximumStates(3).build());
+        CrawlSession session = runner.call();
+        assertThat(session.getStateFlowGraph(), hasStates(3));
+        assertThat(runner.getReason(), is(ExitStatus.MAX_STATES));
+    }
 
-    CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
-        .setMaximumStates(3)
-        .build());
-    CrawlSession session = runner.call();
-    assertThat(session.getStateFlowGraph(), hasStates(3));
-    assertThat(runner.getReason(), is(ExitStatus.MAX_STATES));
+    @Test(timeout = 60_000)
+    public void whenStopIsCalledTheCrawlerStopsGracefully() throws Exception {
+        CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
+        builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
 
-  }
+        CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
+                .setUnlimitedCrawlDepth()
+                .setUnlimitedStates()
+                .build());
 
-  @Test(timeout = 60_000)
-  public void whenStopIsCalledTheCrawlerStopsGracefully() throws Exception {
-    CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
-    builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(runner);
+        Thread.sleep(TimeUnit.SECONDS.toMillis(15));
+        runner.stop();
+        executor.shutdown();
+        executor.awaitTermination(30, TimeUnit.SECONDS);
+        assertThat(runner.getReason(), is(ExitStatus.STOPPED));
+    }
 
-    CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
-        .setUnlimitedCrawlDepth()
-        .setUnlimitedStates()
-        .build());
+    @Test(timeout = 60_000)
+    public void whenCrawljaxIsShutDownByAPluginItShutsDown() {
+        CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
+        builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
 
-    ExecutorService executor = Executors.newSingleThreadExecutor();
-    executor.submit(runner);
-    Thread.sleep(TimeUnit.SECONDS.toMillis(15));
-    runner.stop();
-    executor.shutdown();
-    executor.awaitTermination(30, TimeUnit.SECONDS);
-    assertThat(runner.getReason(), is(ExitStatus.STOPPED));
+        CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
+                .addPlugin(new OnNewStatePlugin() {
 
-  }
+                    private int count = 0;
 
-  @Test(timeout = 60_000)
-  public void whenCrawljaxIsShutDownByAPluginItShutsDown() {
-    CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("infinite.html");
-    builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
+                    @Override
+                    public void onNewState(CrawlerContext context, StateVertex newState) {
+                        if (count == 2) {
+                            context.stop();
+                        }
+                        count++;
+                    }
 
-    CrawljaxRunner runner = new CrawljaxRunner(builder.setUnlimitedCrawlDepth()
-        .addPlugin(new OnNewStatePlugin() {
+                    @Override
+                    public String toString() {
+                        return "Stop crawljax plugin";
+                    }
+                })
+                .setUnlimitedCrawlDepth()
+                .setUnlimitedStates()
+                .build());
 
-          private int count = 0;
-
-          @Override
-          public void onNewState(CrawlerContext context, StateVertex newState) {
-            if (count == 2) {
-              context.stop();
-            }
-            count++;
-          }
-
-          @Override
-          public String toString() {
-            return "Stop crawljax plugin";
-          }
-        })
-        .setUnlimitedCrawlDepth()
-        .setUnlimitedStates()
-        .build());
-
-    CrawlSession session = runner.call();
-    assertThat(session.getStateFlowGraph(), hasStates(3));
-    assertThat(runner.getReason(), is(ExitStatus.STOPPED));
-  }
+        CrawlSession session = runner.call();
+        assertThat(session.getStateFlowGraph(), hasStates(3));
+        assertThat(runner.getReason(), is(ExitStatus.STOPPED));
+    }
 }

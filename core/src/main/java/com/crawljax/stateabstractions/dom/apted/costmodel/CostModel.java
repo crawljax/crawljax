@@ -40,28 +40,28 @@ import com.crawljax.stateabstractions.dom.apted.node.AptedNode;
  */
 public interface CostModel<D> {
 
-  /**
-   * Calculates the cost of deleting a node.
-   *
-   * @param n the node considered to be deleted.
-   * @return the cost of deleting node n.
-   */
-  float del(AptedNode<D> n);
+    /**
+     * Calculates the cost of deleting a node.
+     *
+     * @param n the node considered to be deleted.
+     * @return the cost of deleting node n.
+     */
+    float del(AptedNode<D> n);
 
-  /**
-   * Calculates the cost of inserting a node.
-   *
-   * @param n the node considered to be inserted.
-   * @return the cost of inserting node n.
-   */
-  float ins(AptedNode<D> n);
+    /**
+     * Calculates the cost of inserting a node.
+     *
+     * @param n the node considered to be inserted.
+     * @return the cost of inserting node n.
+     */
+    float ins(AptedNode<D> n);
 
-  /**
-   * Calculates the cost of renaming (mapping) two nodes.
-   *
-   * @param n1 the source node of rename.
-   * @param n2 the destination node of rename.
-   * @return the cost of renaming (mapping) node n1 to n2.
-   */
-  float ren(AptedNode<D> n1, AptedNode<D> n2);
+    /**
+     * Calculates the cost of renaming (mapping) two nodes.
+     *
+     * @param n1 the source node of rename.
+     * @param n2 the destination node of rename.
+     * @return the cost of renaming (mapping) node n1 to n2.
+     */
+    float ren(AptedNode<D> n1, AptedNode<D> n2);
 }

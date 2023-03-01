@@ -7,25 +7,24 @@ import com.crawljax.oraclecomparator.AbstractComparator;
  */
 public class SimpleComparator extends AbstractComparator {
 
-  /**
-   * Default argument less constructor.
-   */
-  public SimpleComparator() {
-    super();
-  }
+    /**
+     * Default argument less constructor.
+     */
+    public SimpleComparator() {
+        super();
+    }
 
-  @Override
-  public String normalize(String string) {
-    String strippedStr;
+    @Override
+    public String normalize(String string) {
+        String strippedStr;
 
-    // remove line breaks
-    strippedStr = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
+        // remove line breaks
+        strippedStr = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
 
-    // remove just before and after elements spaces
-    strippedStr = strippedStr.replaceAll(">[ ]*", ">");
-    strippedStr = strippedStr.replaceAll("[ ]*<", "<");
+        // remove just before and after elements spaces
+        strippedStr = strippedStr.replaceAll(">[ ]*", ">");
+        strippedStr = strippedStr.replaceAll("[ ]*<", "<");
 
-    return strippedStr;
-  }
-
+        return strippedStr;
+    }
 }

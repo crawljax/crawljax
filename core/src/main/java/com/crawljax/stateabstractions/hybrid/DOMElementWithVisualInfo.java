@@ -5,93 +5,89 @@ import org.openqa.selenium.Rectangle;
 
 public class DOMElementWithVisualInfo {
 
-  private final String xpath;
-  private final String visualHash;
-  private final Rectangle boundingBox;
+    private final String xpath;
+    private final String visualHash;
+    private final Rectangle boundingBox;
 
-  public DOMElementWithVisualInfo(String xpath, Rectangle boundingBox) {
-    this(xpath, boundingBox, null);
-  }
-
-  public DOMElementWithVisualInfo(String xpath, Rectangle boundingBox, String visualHash) {
-    this.xpath = xpath;
-    this.boundingBox = boundingBox;
-    this.visualHash = visualHash;
-  }
-
-  public static String getBoundingBoxDimensionsString(Rectangle boundingBox) {
-    String toReturn = "<x=%x, y=%s, width= %s, height= %s>";
-    return String.format(toReturn, boundingBox.getX(),
-        boundingBox.getY(),
-        boundingBox.getWidth(),
-        boundingBox.getHeight());
-
-  }
-
-  public String getXpath() {
-    return xpath;
-  }
-
-  public String getVisualHash() {
-    return visualHash;
-  }
-
-  public Rectangle getBoundingBox() {
-    return boundingBox;
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("XPath: ").append(xpath).append(System.lineSeparator());
-    stringBuilder.append("Position:");
-    stringBuilder.append(getBoundingBoxString());
-    if (this.visualHash != null) {
-      stringBuilder.append(System.lineSeparator()).append("Visual Hash: ").append(visualHash);
+    public DOMElementWithVisualInfo(String xpath, Rectangle boundingBox) {
+        this(xpath, boundingBox, null);
     }
-    return stringBuilder.toString();
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(xpath, visualHash, boundingBox);
-  }
+    public DOMElementWithVisualInfo(String xpath, Rectangle boundingBox, String visualHash) {
+        this.xpath = xpath;
+        this.boundingBox = boundingBox;
+        this.visualHash = visualHash;
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
+    public static String getBoundingBoxDimensionsString(Rectangle boundingBox) {
+        String toReturn = "<x=%x, y=%s, width= %s, height= %s>";
+        return String.format(
+                toReturn, boundingBox.getX(), boundingBox.getY(), boundingBox.getWidth(), boundingBox.getHeight());
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    DOMElementWithVisualInfo other = (DOMElementWithVisualInfo) obj;
-    if (boundingBox == null) {
-      if (other.boundingBox != null) {
-        return false;
-      }
-    } else if (!boundingBox.equals(other.boundingBox)) {
-      return false;
-    }
-    if (visualHash == null) {
-      if (other.visualHash != null) {
-        return false;
-      }
-    } else if (!visualHash.equals(other.visualHash)) {
-      return false;
-    }
-    if (xpath == null) {
-      return other.xpath == null;
-    } else {
-      return xpath.equals(other.xpath);
-    }
-  }
 
-  private String getBoundingBoxString() {
-    return getBoundingBoxDimensionsString(boundingBox);
-  }
+    public String getXpath() {
+        return xpath;
+    }
 
+    public String getVisualHash() {
+        return visualHash;
+    }
+
+    public Rectangle getBoundingBox() {
+        return boundingBox;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("XPath: ").append(xpath).append(System.lineSeparator());
+        stringBuilder.append("Position:");
+        stringBuilder.append(getBoundingBoxString());
+        if (this.visualHash != null) {
+            stringBuilder.append(System.lineSeparator()).append("Visual Hash: ").append(visualHash);
+        }
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(xpath, visualHash, boundingBox);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        DOMElementWithVisualInfo other = (DOMElementWithVisualInfo) obj;
+        if (boundingBox == null) {
+            if (other.boundingBox != null) {
+                return false;
+            }
+        } else if (!boundingBox.equals(other.boundingBox)) {
+            return false;
+        }
+        if (visualHash == null) {
+            if (other.visualHash != null) {
+                return false;
+            }
+        } else if (!visualHash.equals(other.visualHash)) {
+            return false;
+        }
+        if (xpath == null) {
+            return other.xpath == null;
+        } else {
+            return xpath.equals(other.xpath);
+        }
+    }
+
+    private String getBoundingBoxString() {
+        return getBoundingBoxDimensionsString(boundingBox);
+    }
 }

@@ -4,39 +4,38 @@ import com.crawljax.oraclecomparator.AbstractComparator;
 
 public class PlainStructureComparator extends AbstractComparator {
 
-  private final boolean removeAttributes;
+    private final boolean removeAttributes;
 
-  public PlainStructureComparator() {
-    this(true);
-  }
-
-  public PlainStructureComparator(boolean removeAttributes) {
-    this.removeAttributes = removeAttributes;
-  }
-
-  @Override
-  public String normalize(String dom) {
-    String normalized = dom;
-    if (removeAttributes) {
-      normalized = stripAttributes(normalized);
+    public PlainStructureComparator() {
+        this(true);
     }
-    return stripContent(normalized);
-  }
 
-  private String stripAttributes(String string) {
-    String regExAttributes = "<(.+?)(\\s.*?)?(/)?>";
-    return string.replaceAll(regExAttributes, "<$1$3>");
-  }
+    public PlainStructureComparator(boolean removeAttributes) {
+        this.removeAttributes = removeAttributes;
+    }
 
-  private String stripContent(String string) {
-    String strippedStr;
+    @Override
+    public String normalize(String dom) {
+        String normalized = dom;
+        if (removeAttributes) {
+            normalized = stripAttributes(normalized);
+        }
+        return stripContent(normalized);
+    }
 
-    // remove line breaks
-    strippedStr = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
+    private String stripAttributes(String string) {
+        String regExAttributes = "<(.+?)(\\s.*?)?(/)?>";
+        return string.replaceAll(regExAttributes, "<$1$3>");
+    }
 
-    // remove content
-    strippedStr = strippedStr.replaceAll(">(.*?)<", "><");
-    return strippedStr;
-  }
+    private String stripContent(String string) {
+        String strippedStr;
 
+        // remove line breaks
+        strippedStr = string.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
+
+        // remove content
+        strippedStr = strippedStr.replaceAll(">(.*?)<", "><");
+        return strippedStr;
+    }
 }

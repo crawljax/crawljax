@@ -7,8 +7,8 @@ package com.crawljax.core.configuration;
  */
 public class AcceptAllFramesChecker implements IgnoreFrameChecker {
 
-  @Override
-  public boolean isFrameIgnored(String frameId) {
-    return false;
-  }
+    @Override
+    public boolean isFrameIgnored(String frameId) {
+        return false;
+    }
 }

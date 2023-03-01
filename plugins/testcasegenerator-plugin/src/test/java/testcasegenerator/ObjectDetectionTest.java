@@ -15,56 +15,54 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class ObjectDetectionTest {
 
-  IPageObjectFactory pageObjectFactory = null;
+    IPageObjectFactory pageObjectFactory = null;
 
-  @Before
-  public void setUp() {
-    pageObjectFactory = new MD5PageObjectFactory();
-    OpenCVLoad.load();
-  }
-
-  @Test
-  public void testObjectDetection() {
-
-    /* Run the detection algorithm. */
-    String name = "townshoes";
-    ObjectDetection detection = new ObjectDetection(pageObjectFactory,
-        "src/test/resources/" + name + ".png");
-
-    detection.detectObjects();
-
-    /* Write the annotated file to disk. */
-    String folderName = "target/output/";
-    String fileName = folderName + "townshoes-objects" + Math.random() + ".png";
-    try {
-      ObjectDetection.directoryCheck(folderName);
-      Imgcodecs.imwrite(fileName, detection.getAnnotated());
-      File created = new File(fileName);
-      assertTrue(created.exists());
-    } catch (IOException e) {
-      fail(e.getMessage());
+    @Before
+    public void setUp() {
+        pageObjectFactory = new MD5PageObjectFactory();
+        OpenCVLoad.load();
     }
-  }
 
-  @Test
-  public void testWebPage() {
+    @Test
+    public void testObjectDetection() {
 
-    /* Run the detection algorithm. */
-    String name = "state12";
-    ObjectDetection detection = new ObjectDetection(pageObjectFactory,
-        "src/test/resources/" + name + ".jpg");
-    detection.detectObjects();
+        /* Run the detection algorithm. */
+        String name = "townshoes";
+        ObjectDetection detection = new ObjectDetection(pageObjectFactory, "src/test/resources/" + name + ".png");
 
-    /* Write the annotated file to disk. */
-    String folderName = "target/output/";
-    String fileName = folderName + "state12" + Math.random() + ".png";
-    try {
-      ObjectDetection.directoryCheck(folderName);
-      Imgcodecs.imwrite(fileName, detection.getAnnotated());
-      File created = new File(fileName);
-      assertTrue(created.exists());
-    } catch (IOException e) {
-      fail(e.getMessage());
+        detection.detectObjects();
+
+        /* Write the annotated file to disk. */
+        String folderName = "target/output/";
+        String fileName = folderName + "townshoes-objects" + Math.random() + ".png";
+        try {
+            ObjectDetection.directoryCheck(folderName);
+            Imgcodecs.imwrite(fileName, detection.getAnnotated());
+            File created = new File(fileName);
+            assertTrue(created.exists());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
     }
-  }
+
+    @Test
+    public void testWebPage() {
+
+        /* Run the detection algorithm. */
+        String name = "state12";
+        ObjectDetection detection = new ObjectDetection(pageObjectFactory, "src/test/resources/" + name + ".jpg");
+        detection.detectObjects();
+
+        /* Write the annotated file to disk. */
+        String folderName = "target/output/";
+        String fileName = folderName + "state12" + Math.random() + ".png";
+        try {
+            ObjectDetection.directoryCheck(folderName);
+            Imgcodecs.imwrite(fileName, detection.getAnnotated());
+            File created = new File(fileName);
+            assertTrue(created.exists());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+    }
 }
