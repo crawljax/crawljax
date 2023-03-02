@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.UsernameAndPassword;
-import org.openqa.selenium.WebDriver;
 
 @Category(BrowserTest.class)
 public class PassBasicHttpAuthTest {
@@ -94,13 +93,13 @@ public class PassBasicHttpAuthTest {
         CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(url);
 
         builder.addPlugin((OnBrowserCreatedPlugin) browser -> {
-            WebDriver driver = browser.getWebDriver();
             Predicate<URI> uriPredicate = uri -> uri.getHost().contains(host);
-            ((HasAuthentication) driver).register(uriPredicate, UsernameAndPassword.of(USERNAME, PASSWORD));
+            ((HasAuthentication) browser.getWebDriver())
+                    .register(uriPredicate, UsernameAndPassword.of(USERNAME, PASSWORD));
         });
 
         builder.setMaximumStates(3);
-        builder.setBrowserConfig(new BrowserConfiguration(EmbeddedBrowser.BrowserType.EDGE_HEADLESS, 1));
+        builder.setBrowserConfig(new BrowserConfiguration(EmbeddedBrowser.BrowserType.CHROME_HEADLESS, 1));
         CrawlSession session = new CrawljaxRunner(builder.build()).call();
 
         assertThat(session.getStateFlowGraph(), hasStates(3));
