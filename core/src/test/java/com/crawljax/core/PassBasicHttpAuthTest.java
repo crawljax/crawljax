@@ -1,5 +1,8 @@
 package com.crawljax.core;
 
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.crawljax.browser.BrowserProvider;
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.BrowserConfiguration;
@@ -7,6 +10,8 @@ import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
 import com.crawljax.core.plugin.OnBrowserCreatedPlugin;
 import com.crawljax.test.BrowserTest;
+import java.net.URI;
+import java.util.function.Predicate;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
@@ -23,12 +28,6 @@ import org.junit.experimental.categories.Category;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriver;
-
-import java.net.URI;
-import java.util.function.Predicate;
-
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(BrowserTest.class)
 public class PassBasicHttpAuthTest {
