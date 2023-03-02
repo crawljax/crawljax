@@ -1,12 +1,11 @@
 package com.crawljax.core;
 
-import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import com.crawljax.browser.BrowserProvider;
+import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.plugin.OnBrowserCreatedPlugin;
 import com.crawljax.test.BrowserTest;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -21,6 +20,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openqa.selenium.HasAuthentication;
+import org.openqa.selenium.UsernameAndPassword;
+import org.openqa.selenium.WebDriver;
+
+import java.net.URI;
+import java.util.function.Predicate;
+
+import static com.crawljax.browser.matchers.StateFlowGraphMatchers.hasStates;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @Category(BrowserTest.class)
 public class PassBasicHttpAuthTest {
@@ -75,6 +83,25 @@ public class PassBasicHttpAuthTest {
         builder.setMaximumStates(3);
         builder.setBasicAuth(USERNAME, PASSWORD);
         builder.setBrowserConfig(new BrowserConfiguration(BrowserProvider.getBrowserType()));
+        CrawlSession session = new CrawljaxRunner(builder.build()).call();
+
+        assertThat(session.getStateFlowGraph(), hasStates(3));
+    }
+
+    @Test
+    public void testRegisterCredentialsWithBiDi() {
+        String host = "localhost";
+        String url = "http://" + host + ":" + port + "/infinite.html";
+        CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor(url);
+
+        builder.addPlugin((OnBrowserCreatedPlugin) browser -> {
+            WebDriver driver = browser.getWebDriver();
+            Predicate<URI> uriPredicate = uri -> uri.getHost().contains(host);
+            ((HasAuthentication) driver).register(uriPredicate, UsernameAndPassword.of(USERNAME, PASSWORD));
+        });
+
+        builder.setMaximumStates(3);
+        builder.setBrowserConfig(new BrowserConfiguration(EmbeddedBrowser.BrowserType.EDGE_HEADLESS, 1));
         CrawlSession session = new CrawljaxRunner(builder.build()).call();
 
         assertThat(session.getStateFlowGraph(), hasStates(3));
