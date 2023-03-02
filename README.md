@@ -13,7 +13,7 @@ Crawljax artifacts are available on [Maven central repository](https://central.s
 	<dependency>
 	    <groupId>com.crawljax</groupId>
 	    <artifactId>crawljax-core</artifactId>
-	    <version>{latest version from maven central}</version>
+	    <version>${crawljax-version}</version>
 	</dependency>
 
 Documentation
