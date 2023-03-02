@@ -12,56 +12,56 @@ import java.util.List;
  */
 public class TestMethod {
 
-  private String methodName;
-  private List<TestMethodEvent> eventList;
+    private String methodName;
+    private List<TestMethodEvent> eventList;
 
-  /**
-   *
-   */
-  public TestMethod() {
-    super();
-    eventList = new ArrayList<TestMethodEvent>();
-  }
+    /**
+     *
+     */
+    public TestMethod() {
+        super();
+        eventList = new ArrayList<TestMethodEvent>();
+    }
 
-  /**
-   * @param methodName the method name.
-   * @param eventList  the list of events.
-   */
-  public TestMethod(String methodName, List<TestMethodEvent> eventList) {
-    super();
-    this.methodName = methodName;
-    this.eventList = eventList;
-  }
+    /**
+     * @param methodName the method name.
+     * @param eventList  the list of events.
+     */
+    public TestMethod(String methodName, List<TestMethodEvent> eventList) {
+        super();
+        this.methodName = methodName;
+        this.eventList = eventList;
+    }
 
-  /**
-   * @return the methodName
-   */
-  public String getMethodName() {
-    return methodName;
-  }
+    /**
+     * @return the methodName
+     */
+    public String getMethodName() {
+        return methodName;
+    }
 
-  /**
-   * @param methodName the methodName to set
-   */
-  public void setMethodName(String methodName) {
-    this.methodName = methodName;
-  }
+    /**
+     * @param methodName the methodName to set
+     */
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
 
-  /**
-   * @return the eventList
-   */
-  public List<TestMethodEvent> getEventList() {
-    return eventList;
-  }
+    /**
+     * @return the eventList
+     */
+    public List<TestMethodEvent> getEventList() {
+        return eventList;
+    }
 
-  /**
-   * @param eventList the eventList to set
-   */
-  public void setEventList(List<TestMethodEvent> eventList) {
-    this.eventList = eventList;
-  }
+    /**
+     * @param eventList the eventList to set
+     */
+    public void setEventList(List<TestMethodEvent> eventList) {
+        this.eventList = eventList;
+    }
 
-  public void addMethodEvent(TestMethodEvent methodEvent) {
-    eventList.add(methodEvent);
-  }
+    public void addMethodEvent(TestMethodEvent methodEvent) {
+        eventList.add(methodEvent);
+    }
 }

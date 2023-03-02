@@ -12,39 +12,38 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class VisibleCondition implements Condition {
 
-  private final Identification identification;
+    private final Identification identification;
 
-  /**
-   * @param identification the identification.
-   */
-  public VisibleCondition(Identification identification) {
-    this.identification = identification;
-  }
-
-  @Override
-  public boolean check(EmbeddedBrowser browser) {
-    return browser.isVisible(identification);
-  }
-
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("identification", identification)
-        .toString();
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(getClass(), identification);
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (object instanceof VisibleCondition) {
-      VisibleCondition that = (VisibleCondition) object;
-      return Objects.equal(this.identification, that.identification);
+    /**
+     * @param identification the identification.
+     */
+    public VisibleCondition(Identification identification) {
+        this.identification = identification;
     }
-    return false;
-  }
 
+    @Override
+    public boolean check(EmbeddedBrowser browser) {
+        return browser.isVisible(identification);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("identification", identification)
+                .toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass(), identification);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof VisibleCondition) {
+            VisibleCondition that = (VisibleCondition) object;
+            return Objects.equal(this.identification, that.identification);
+        }
+        return false;
+    }
 }

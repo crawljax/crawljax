@@ -11,59 +11,56 @@ import com.crawljax.core.plugin.PreCrawlingPlugin;
 import com.crawljax.core.state.StateVertex;
 
 /*
- *  In order to run test steps to get to initial state. 
- *  		https://github.com/aminmf/crawljax/blob/master/core/src/main/java/com/crawljax/core/plugin/ExecuteInitialPathsPlugin.java
-		extends plugin with ExecuteInitialPathsPlugin which can CrawljaxConfiguration config, CrawlTaskConsumer firstConsumer
- */
+*  In order to run test steps to get to initial state.
+*  		https://github.com/aminmf/crawljax/blob/master/core/src/main/java/com/crawljax/core/plugin/ExecuteInitialPathsPlugin.java
+	extends plugin with ExecuteInitialPathsPlugin which can CrawljaxConfiguration config, CrawlTaskConsumer firstConsumer
+*/
 
-public class Plugin implements OnNewStatePlugin, OnUrlLoadPlugin, PostCrawlingPlugin,
-    PreCrawlingPlugin {
+public class Plugin implements OnNewStatePlugin, OnUrlLoadPlugin, PostCrawlingPlugin, PreCrawlingPlugin {
 
+    private String testCaseFile;
 
-  private String testCaseFile;
+    private int brokenStep;
 
-  private int brokenStep;
+    private String templateToMatch = null;
 
-  private String templateToMatch = null;
+    public Plugin() {}
 
-  public Plugin() {
-  }
+    @Override
+    public void preCrawling(CrawljaxConfiguration config) throws RuntimeException {
+        // TODO Auto-generated method stub
 
-  @Override
-  public void preCrawling(CrawljaxConfiguration config) throws RuntimeException {
-    // TODO Auto-generated method stub
+    }
 
-  }
+    @Override
+    public void postCrawling(CrawlSession session, ExitStatus exitReason) {
+        // TODO Auto-generated method stub
 
-  @Override
-  public void postCrawling(CrawlSession session, ExitStatus exitReason) {
-    // TODO Auto-generated method stub
+    }
 
-  }
+    @Override
+    public void onUrlLoad(CrawlerContext context) {
+        /*// TODO Auto-generated method stub
+        StateFlowGraph graph = context.getSession().getStateFlowGraph();
 
-  @Override
-  public void onUrlLoad(CrawlerContext context) {
-		/*// TODO Auto-generated method stub
-		StateFlowGraph graph = context.getSession().getStateFlowGraph();
-		
-		StateVertex currVertex = context.stateMachine.newStateFor(context.getBrowser());
-		if(graph.hasClone(currVertex)) {
-			StateVertex clone = graph.getStateInGraph(currVertex);
-			if(!clone.getName().equalsIgnoreCase("index")){
-				System.out.println("index has changed to : " + clone.getName());
-				context.stateMachine.setCurrentState(clone);
-				if(!context.stateMachine.onURLSet.contains(clone))
-					context.stateMachine.onURLSet.add(clone);
-			}
-		}
-		else {
-			System.out.println("Could not find an existing state for the URL load ");
-		}*/
-  }
+        StateVertex currVertex = context.stateMachine.newStateFor(context.getBrowser());
+        if(graph.hasClone(currVertex)) {
+        	StateVertex clone = graph.getStateInGraph(currVertex);
+        	if(!clone.getName().equalsIgnoreCase("index")){
+        		System.out.println("index has changed to : " + clone.getName());
+        		context.stateMachine.setCurrentState(clone);
+        		if(!context.stateMachine.onURLSet.contains(clone))
+        			context.stateMachine.onURLSet.add(clone);
+        	}
+        }
+        else {
+        	System.out.println("Could not find an existing state for the URL load ");
+        }*/
+    }
 
-  @Override
-  public void onNewState(CrawlerContext context, StateVertex newState) {
-    // TODO Auto-generated method stub
+    @Override
+    public void onNewState(CrawlerContext context, StateVertex newState) {
+        // TODO Auto-generated method stub
 
-  }
+    }
 }

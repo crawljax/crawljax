@@ -12,11 +12,11 @@ import org.junit.experimental.categories.Category;
 @Category(BrowserTest.class)
 public class BrowserDoesNotLeaveUrlTest {
 
-  @Test
-  public void whenJavaScriptNavigatesAwayFromPageItIsBlocked() {
-    BaseCrawler crawler = new BaseCrawler("navigate_other_urls.html");
-    // crawler.showWebSite();
-    CrawlSession session = crawler.crawl();
-    assertThat(session.getStateFlowGraph(), hasStates(5));
-  }
+    @Test
+    public void whenJavaScriptNavigatesAwayFromPageItIsBlocked() {
+        BaseCrawler crawler = new BaseCrawler("navigate_other_urls.html");
+        // crawler.showWebSite();
+        CrawlSession session = crawler.crawl();
+        assertThat(session.getStateFlowGraph(), hasStates(5));
+    }
 }

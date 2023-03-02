@@ -13,33 +13,30 @@ import org.slf4j.LoggerFactory;
  */
 public class PDiffStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(PDiffStateVertexFactory.class.getName());
-  private static final int THUMBNAIL_WIDTH = 200;
-  private static final int THUMBNAIL_HEIGHT = 200;
-  private static double threshold = 0.0;
+    private static final Logger LOG = LoggerFactory.getLogger(PDiffStateVertexFactory.class.getName());
+    private static final int THUMBNAIL_WIDTH = 200;
+    private static final int THUMBNAIL_HEIGHT = 200;
+    private static double threshold = 0.0;
 
-  static {
-    OpenCVLoad.load();
-  }
+    static {
+        OpenCVLoad.load();
+    }
 
-  public PDiffStateVertexFactory(double treshold) {
-    threshold = treshold;
-  }
+    public PDiffStateVertexFactory(double treshold) {
+        threshold = treshold;
+    }
 
+    @Override
+    public StateVertex newStateVertex(
+            int id, String url, String name, String dom, String strippedDom, EmbeddedBrowser browser) {
 
-  @Override
-  public StateVertex newStateVertex(int id, String url, String name, String dom,
-      String strippedDom,
-      EmbeddedBrowser browser) {
+        BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
 
-    BufferedImage image = browser.getScreenShotAsBufferedImage(1000);
+        return new PDiffStateVertexImpl(id, url, name, dom, strippedDom, image, threshold);
+    }
 
-    return new PDiffStateVertexImpl(id, url, name, dom, strippedDom, image, threshold);
-  }
-
-  @Override
-  public String toString() {
-    return "VISUAL_PDiff_" + threshold;
-  }
+    @Override
+    public String toString() {
+        return "VISUAL_PDiff_" + threshold;
+    }
 }

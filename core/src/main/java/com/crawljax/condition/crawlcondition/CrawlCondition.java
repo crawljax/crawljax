@@ -11,39 +11,36 @@ import java.util.List;
  */
 public class CrawlCondition extends ConditionType {
 
-  /**
-   * @param description             Description of the condition.
-   * @param crawlConditionCondition Actual condition.
-   */
-  public CrawlCondition(String description, Condition crawlConditionCondition) {
-    super(description, crawlConditionCondition);
-  }
+    /**
+     * @param description             Description of the condition.
+     * @param crawlConditionCondition Actual condition.
+     */
+    public CrawlCondition(String description, Condition crawlConditionCondition) {
+        super(description, crawlConditionCondition);
+    }
 
-  /**
-   * @param description             Description of the condition.
-   * @param crawlConditionCondition Actual condition.
-   * @param preConditions           Preconditions to check first.
-   */
-  public CrawlCondition(String description, Condition crawlConditionCondition,
-      Condition... preConditions) {
-    super(description, crawlConditionCondition, preConditions);
-  }
+    /**
+     * @param description             Description of the condition.
+     * @param crawlConditionCondition Actual condition.
+     * @param preConditions           Preconditions to check first.
+     */
+    public CrawlCondition(String description, Condition crawlConditionCondition, Condition... preConditions) {
+        super(description, crawlConditionCondition, preConditions);
+    }
 
-  /**
-   * @param description             Description of the condition.
-   * @param crawlConditionCondition Actual condition.
-   * @param preConditions           Preconditions to check first.
-   */
-  public CrawlCondition(String description, Condition crawlConditionCondition,
-      List<Condition> preConditions) {
-    super(description, crawlConditionCondition, preConditions);
-  }
+    /**
+     * @param description             Description of the condition.
+     * @param crawlConditionCondition Actual condition.
+     * @param preConditions           Preconditions to check first.
+     */
+    public CrawlCondition(String description, Condition crawlConditionCondition, List<Condition> preConditions) {
+        super(description, crawlConditionCondition, preConditions);
+    }
 
-  /**
-   * @return Returns the actual crawl condition.
-   */
-  public Condition getCrawlCondition() {
-    return getCondition();
-  }
-
+    /**
+     * @return Returns the actual crawl condition.
+     */
+    public Condition getCrawlCondition() {
+        return getCondition();
+    }
 }

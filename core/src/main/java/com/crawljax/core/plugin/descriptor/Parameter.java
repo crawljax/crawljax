@@ -6,72 +6,70 @@ import java.util.Map;
 
 public class Parameter {
 
-  private String id;
-  private String displayName;
-  private ParameterType type;
-  private Map<String, String> options = new HashMap<>();
-  private String value;
+    private String id;
+    private String displayName;
+    private ParameterType type;
+    private Map<String, String> options = new HashMap<>();
+    private String value;
 
-  public Parameter() {
-  }
+    public Parameter() {}
 
-  public static Parameter fromJaxbParameter(
-      com.crawljax.core.plugin.descriptor.jaxb.generated.Parameter parameter) {
-    Parameter copy = new Parameter();
-    copy.id = parameter.getId();
-    copy.displayName = parameter.getDisplayName();
-    copy.type = Parameter.ParameterType.valueOf(parameter.getType());
-    if (parameter.getOptions() != null) {
-      for (OptionList.Option option : parameter.getOptions().getOption()) {
-        copy.getOptions().put(option.getName(), option.getValue());
-      }
+    public static Parameter fromJaxbParameter(com.crawljax.core.plugin.descriptor.jaxb.generated.Parameter parameter) {
+        Parameter copy = new Parameter();
+        copy.id = parameter.getId();
+        copy.displayName = parameter.getDisplayName();
+        copy.type = Parameter.ParameterType.valueOf(parameter.getType());
+        if (parameter.getOptions() != null) {
+            for (OptionList.Option option : parameter.getOptions().getOption()) {
+                copy.getOptions().put(option.getName(), option.getValue());
+            }
+        }
+        return copy;
     }
-    return copy;
-  }
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public String getDisplayName() {
-    return displayName;
-  }
+    public String getDisplayName() {
+        return displayName;
+    }
 
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
-  }
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
-  public ParameterType getType() {
-    return type;
-  }
+    public ParameterType getType() {
+        return type;
+    }
 
-  public void setType(ParameterType type) {
-    this.type = type;
-  }
+    public void setType(ParameterType type) {
+        this.type = type;
+    }
 
-  public Map<String, String> getOptions() {
-    return options;
-  }
+    public Map<String, String> getOptions() {
+        return options;
+    }
 
-  public void setOptions(Map<String, String> options) {
-    this.options = options;
-  }
+    public void setOptions(Map<String, String> options) {
+        this.options = options;
+    }
 
-  public String getValue() {
-    return value;
-  }
+    public String getValue() {
+        return value;
+    }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-  public enum ParameterType {
-    textbox,
-    checkbox,
-    select
-  }
+    public enum ParameterType {
+        textbox,
+        checkbox,
+        select
+    }
 }

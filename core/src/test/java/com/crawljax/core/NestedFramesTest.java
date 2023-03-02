@@ -14,22 +14,21 @@ import org.openqa.selenium.WebElement;
 @Category(BrowserTest.class)
 public class NestedFramesTest {
 
-  @ClassRule
-  public static final RunWithWebServer SERVER = new RunWithWebServer("/site/iframe");
+    @ClassRule
+    public static final RunWithWebServer SERVER = new RunWithWebServer("/site/iframe");
 
-  @Rule
-  public BrowserProvider provider = new BrowserProvider();
+    @Rule
+    public BrowserProvider provider = new BrowserProvider();
 
-  @Test
-  public void testNestedFramesIndex() {
-    WebDriver driver = provider.newBrowser();
-    driver.get(SERVER.getSiteUrl().toString());
+    @Test
+    public void testNestedFramesIndex() {
+        WebDriver driver = provider.newBrowser();
+        driver.get(SERVER.getSiteUrl().toString());
 
-    driver.switchTo().frame(0);
-    driver.switchTo().frame(0);
+        driver.switchTo().frame(0);
+        driver.switchTo().frame(0);
 
-    WebElement button002 = driver.findElement(By.id("button002"));
-    button002.click();
-  }
-
+        WebElement button002 = driver.findElement(By.id("button002"));
+        button002.click();
+    }
 }

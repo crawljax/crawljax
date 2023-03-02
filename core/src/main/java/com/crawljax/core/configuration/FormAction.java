@@ -10,27 +10,26 @@ import com.crawljax.core.state.Eventable.EventType;
  */
 public class FormAction {
 
-  private CrawlElement crawlElement;
+    private CrawlElement crawlElement;
 
-  /**
-   * @param tagName the tag name of the element
-   * @return this CrawlElement
-   */
-  public CrawlElement beforeClickElement(String tagName) {
-    this.crawlElement = new CrawlElement(EventType.click, tagName);
-    return crawlElement;
-  }
+    /**
+     * @param tagName the tag name of the element
+     * @return this CrawlElement
+     */
+    public CrawlElement beforeClickElement(String tagName) {
+        this.crawlElement = new CrawlElement(EventType.click, tagName);
+        return crawlElement;
+    }
 
-  public CrawlElement beforeEnterElement(String tagName) {
-    this.crawlElement = new CrawlElement(EventType.enter, tagName);
-    return crawlElement;
-  }
+    public CrawlElement beforeEnterElement(String tagName) {
+        this.crawlElement = new CrawlElement(EventType.enter, tagName);
+        return crawlElement;
+    }
 
-  /**
-   * @return the crawlTag
-   */
-  protected CrawlElement getCrawlElement() {
-    return crawlElement;
-  }
-
+    /**
+     * @return the crawlTag
+     */
+    protected CrawlElement getCrawlElement() {
+        return crawlElement;
+    }
 }

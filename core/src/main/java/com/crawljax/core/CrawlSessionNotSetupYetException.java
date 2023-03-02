@@ -11,8 +11,7 @@ import com.crawljax.di.CrawlSessionProvider;
 @SuppressWarnings("serial")
 public class CrawlSessionNotSetupYetException extends CrawljaxException {
 
-  public CrawlSessionNotSetupYetException() {
-    super(
-        "The crawl session is not yet available. Wait until the index state is crawled.");
-  }
+    public CrawlSessionNotSetupYetException() {
+        super("The crawl session is not yet available. Wait until the index state is crawled.");
+    }
 }

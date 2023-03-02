@@ -16,30 +16,29 @@ import org.w3c.dom.Node;
  */
 public interface VipsSeparatorDetector {
 
-  public void fillPool();
+    public void fillPool();
 
-  public Node getVipsBlock();
+    public Node getVipsBlock();
 
-  public void setVipsBlock(Node vipsBlock);
+    public void setVipsBlock(Node vipsBlock);
 
-  public List<Node> getVisualBlocks();
+    public List<Node> getVisualBlocks();
 
-  public void setVisualBlocks(List<Node> visualBlocks);
+    public void setVisualBlocks(List<Node> visualBlocks);
 
-  public void detectHorizontalSeparators();
+    public void detectHorizontalSeparators();
 
-  public void detectVerticalSeparators();
+    public void detectVerticalSeparators();
 
-  public List<Separator> getHorizontalSeparators();
+    public List<Separator> getHorizontalSeparators();
 
-  public void setHorizontalSeparators(List<Separator> separators);
+    public void setHorizontalSeparators(List<Separator> separators);
 
-  public List<Separator> getVerticalSeparators();
+    public List<Separator> getVerticalSeparators();
 
-  public void setVerticalSeparators(List<Separator> separators);
+    public void setVerticalSeparators(List<Separator> separators);
 
-  public void setCleanUpSeparators(int treshold);
+    public void setCleanUpSeparators(int treshold);
 
-  public boolean isCleanUpEnabled();
-
+    public boolean isCleanUpEnabled();
 }

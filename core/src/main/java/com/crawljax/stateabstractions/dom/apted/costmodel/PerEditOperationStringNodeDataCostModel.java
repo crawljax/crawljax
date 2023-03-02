@@ -32,62 +32,62 @@ import com.crawljax.stateabstractions.dom.apted.node.StringNodeData;
  */
 public class PerEditOperationStringNodeDataCostModel implements CostModel<StringNodeData> {
 
-  /**
-   * Stores the cost of deleting a node.
-   */
-  private final float delCost;
+    /**
+     * Stores the cost of deleting a node.
+     */
+    private final float delCost;
 
-  /**
-   * Stores the cost of inserting a node.
-   */
-  private final float insCost;
+    /**
+     * Stores the cost of inserting a node.
+     */
+    private final float insCost;
 
-  /**
-   * Stores the cost of mapping two nodes (renaming their labels).
-   */
-  private final float renCost;
+    /**
+     * Stores the cost of mapping two nodes (renaming their labels).
+     */
+    private final float renCost;
 
-  /**
-   * Initialises the cost model with the passed edit operation costs.
-   *
-   * @param delCost deletion cost.
-   * @param insCost insertion cost.
-   * @param renCost rename cost.
-   */
-  public PerEditOperationStringNodeDataCostModel(float delCost, float insCost, float renCost) {
-    this.delCost = delCost;
-    this.insCost = insCost;
-    this.renCost = renCost;
-  }
+    /**
+     * Initialises the cost model with the passed edit operation costs.
+     *
+     * @param delCost deletion cost.
+     * @param insCost insertion cost.
+     * @param renCost rename cost.
+     */
+    public PerEditOperationStringNodeDataCostModel(float delCost, float insCost, float renCost) {
+        this.delCost = delCost;
+        this.insCost = insCost;
+        this.renCost = renCost;
+    }
 
-  /**
-   * Calculates the cost of deleting a node.
-   *
-   * @param n the node considered to be deleted.
-   * @return the cost of deleting node n.
-   */
-  public float del(AptedNode<StringNodeData> n) {
-    return delCost;
-  }
+    /**
+     * Calculates the cost of deleting a node.
+     *
+     * @param n the node considered to be deleted.
+     * @return the cost of deleting node n.
+     */
+    public float del(AptedNode<StringNodeData> n) {
+        return delCost;
+    }
 
-  /**
-   * Calculates the cost of inserting a node.
-   *
-   * @param n the node considered to be inserted.
-   * @return the cost of inserting node n.
-   */
-  public float ins(AptedNode<StringNodeData> n) {
-    return insCost;
-  }
+    /**
+     * Calculates the cost of inserting a node.
+     *
+     * @param n the node considered to be inserted.
+     * @return the cost of inserting node n.
+     */
+    public float ins(AptedNode<StringNodeData> n) {
+        return insCost;
+    }
 
-  /**
-   * Calculates the cost of renaming the string labels of two nodes.
-   *
-   * @param n1 the source node of rename.
-   * @param n2 the destination node of rename.
-   * @return the cost of renaming node n1 to n2.
-   */
-  public float ren(AptedNode<StringNodeData> n1, AptedNode<StringNodeData> n2) {
-    return (n1.getNodeData().getLabel().equals(n2.getNodeData().getLabel())) ? 0.0f : renCost;
-  }
+    /**
+     * Calculates the cost of renaming the string labels of two nodes.
+     *
+     * @param n1 the source node of rename.
+     * @param n2 the destination node of rename.
+     * @return the cost of renaming node n1 to n2.
+     */
+    public float ren(AptedNode<StringNodeData> n1, AptedNode<StringNodeData> n2) {
+        return (n1.getNodeData().getLabel().equals(n2.getNodeData().getLabel())) ? 0.0f : renCost;
+    }
 }

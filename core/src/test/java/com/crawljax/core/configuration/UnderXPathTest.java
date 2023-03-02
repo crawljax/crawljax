@@ -19,23 +19,22 @@ import org.junit.experimental.categories.Category;
 @Category(BrowserTest.class)
 public class UnderXPathTest {
 
-  @ClassRule
-  public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
+    @ClassRule
+    public static final RunWithWebServer SERVER = new RunWithWebServer("/site");
 
-  @Test
-  public void testDontClickUnderXPath() {
-    CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("underxpath.html");
-    builder.crawlRules().click("a");
-    builder.crawlRules().dontClick("a").underXPath("//A[@class=\"noClickClass\"]");
+    @Test
+    public void testDontClickUnderXPath() {
+        CrawljaxConfigurationBuilder builder = SERVER.newConfigBuilder("underxpath.html");
+        builder.crawlRules().click("a");
+        builder.crawlRules().dontClick("a").underXPath("//A[@class=\"noClickClass\"]");
 
-    CrawlRulesBuilder rules = builder.crawlRules();
-    rules.dontClick("a").withAttribute("id", "noClickId");
-    rules.dontClickChildrenOf("div").withClass("noChildrenOfClass");
-    rules.dontClickChildrenOf("div").withId("noChildrenOfId");
+        CrawlRulesBuilder rules = builder.crawlRules();
+        rules.dontClick("a").withAttribute("id", "noClickId");
+        rules.dontClickChildrenOf("div").withClass("noChildrenOfClass");
+        rules.dontClickChildrenOf("div").withId("noChildrenOfId");
 
-    CrawlSession session = new CrawljaxRunner(builder.build()).call();
+        CrawlSession session = new CrawljaxRunner(builder.build()).call();
 
-    assertThat(session.getStateFlowGraph(), hasStates(2));
-  }
-
+        assertThat(session.getStateFlowGraph(), hasStates(2));
+    }
 }

@@ -14,78 +14,83 @@ import org.opencv.core.Mat;
  */
 public class ColorMomentImageHashStateVertexImpl extends StateVertexImpl {
 
-  private static final long serialVersionUID = 123400017983489L;
-  public final Mat hashMat;
-  final ColorMomentImageHash hash;
+    private static final long serialVersionUID = 123400017983489L;
+    public final Mat hashMat;
+    final ColorMomentImageHash hash;
 
-  /**
-   * Creates a current state without an url and the @strippedDom same as the @dom.
-   *
-   * @param name the name of the state
-   * @param dom  the current DOM tree of the browser
-   */
-  @VisibleForTesting
-  ColorMomentImageHashStateVertexImpl(int id, String name, String dom, ColorMomentImageHash visHash,
-      Mat hashMat) {
-    this(id, null, name, dom, dom, visHash, hashMat);
-  }
-
-  /**
-   * Defines a State.
-   *
-   * @param url         the current url of the state
-   * @param name        the name of the state
-   * @param dom         the current DOM tree of the browser
-   * @param strippedDom the stripped dom by the OracleComparators
-   */
-  public ColorMomentImageHashStateVertexImpl(int id, String url, String name, String dom,
-      String strippedDom,
-      ColorMomentImageHash visHash, Mat hashMat) {
-    super(id, url, name, dom, strippedDom);
-    this.hash = visHash;
-    this.hashMat = hashMat;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(hashMat);
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (object instanceof ColorMomentImageHashStateVertexImpl) {
-      ColorMomentImageHashStateVertexImpl that = (ColorMomentImageHashStateVertexImpl) object;
-      double distance = hash.compare(this.hashMat, that.hashMat);
-      return (distance >= hash.minThreshold && distance <= hash.maxThreshold)
-          || (distance == 0.0);
+    /**
+     * Creates a current state without an url and the @strippedDom same as the @dom.
+     *
+     * @param name the name of the state
+     * @param dom  the current DOM tree of the browser
+     */
+    @VisibleForTesting
+    ColorMomentImageHashStateVertexImpl(int id, String name, String dom, ColorMomentImageHash visHash, Mat hashMat) {
+        this(id, null, name, dom, dom, visHash, hashMat);
     }
-    return false;
-  }
 
-  @Override
-  public String toString() {
-    return MoreObjects.toStringHelper(this).add("id", super.getId())
-        .add("name", super.getName())
-        .add("hash", hash).toString();
-  }
-
-  @Override
-  public boolean inThreshold(StateVertex vertexOfGraph) {
-    // Only implemented when there is a threshold for near duplicates
-    if (vertexOfGraph instanceof ColorMomentImageHashStateVertexImpl) {
-      ColorMomentImageHashStateVertexImpl vertex = (ColorMomentImageHashStateVertexImpl) vertexOfGraph;
-      double distance = hash.compare(this.hashMat, vertex.hashMat);
-      return distance >= hash.minThreshold && distance <= hash.maxThreshold;
+    /**
+     * Defines a State.
+     *
+     * @param url         the current url of the state
+     * @param name        the name of the state
+     * @param dom         the current DOM tree of the browser
+     * @param strippedDom the stripped dom by the OracleComparators
+     */
+    public ColorMomentImageHashStateVertexImpl(
+            int id,
+            String url,
+            String name,
+            String dom,
+            String strippedDom,
+            ColorMomentImageHash visHash,
+            Mat hashMat) {
+        super(id, url, name, dom, strippedDom);
+        this.hash = visHash;
+        this.hashMat = hashMat;
     }
-    return false;
-  }
 
-  @Override
-  public double getDist(StateVertex vertexOfGraph) {
-    if (vertexOfGraph instanceof ColorMomentImageHashStateVertexImpl) {
-      ColorMomentImageHashStateVertexImpl vertex = (ColorMomentImageHashStateVertexImpl) vertexOfGraph;
-      return hash.compare(this.hashMat, vertex.hashMat);
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(hashMat);
     }
-    return -1;
-  }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof ColorMomentImageHashStateVertexImpl) {
+            ColorMomentImageHashStateVertexImpl that = (ColorMomentImageHashStateVertexImpl) object;
+            double distance = hash.compare(this.hashMat, that.hashMat);
+            return (distance >= hash.minThreshold && distance <= hash.maxThreshold) || (distance == 0.0);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", super.getId())
+                .add("name", super.getName())
+                .add("hash", hash)
+                .toString();
+    }
+
+    @Override
+    public boolean inThreshold(StateVertex vertexOfGraph) {
+        // Only implemented when there is a threshold for near duplicates
+        if (vertexOfGraph instanceof ColorMomentImageHashStateVertexImpl) {
+            ColorMomentImageHashStateVertexImpl vertex = (ColorMomentImageHashStateVertexImpl) vertexOfGraph;
+            double distance = hash.compare(this.hashMat, vertex.hashMat);
+            return distance >= hash.minThreshold && distance <= hash.maxThreshold;
+        }
+        return false;
+    }
+
+    @Override
+    public double getDist(StateVertex vertexOfGraph) {
+        if (vertexOfGraph instanceof ColorMomentImageHashStateVertexImpl) {
+            ColorMomentImageHashStateVertexImpl vertex = (ColorMomentImageHashStateVertexImpl) vertexOfGraph;
+            return hash.compare(this.hashMat, vertex.hashMat);
+        }
+        return -1;
+    }
 }

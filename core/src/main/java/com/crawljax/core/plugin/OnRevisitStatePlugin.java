@@ -10,16 +10,15 @@ import com.crawljax.core.state.StateVertex;
  */
 public interface OnRevisitStatePlugin extends Plugin {
 
-  /**
-   * Method that is called every time a state is revisited by Crawljax. Warning: changing the state
-   * can influence crawljax, it is not a copy.
-   * <p>
-   * This method can be called from multiple threads with different {@link CrawlerContext}
-   * </p>
-   *
-   * @param context      the crawlSession
-   * @param currentState the state revisited
-   */
-  void onRevisitState(CrawlerContext context, StateVertex currentState);
-
+    /**
+     * Method that is called every time a state is revisited by Crawljax. Warning: changing the state
+     * can influence crawljax, it is not a copy.
+     * <p>
+     * This method can be called from multiple threads with different {@link CrawlerContext}
+     * </p>
+     *
+     * @param context      the crawlSession
+     * @param currentState the state revisited
+     */
+    void onRevisitState(CrawlerContext context, StateVertex currentState);
 }

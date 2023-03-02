@@ -36,35 +36,35 @@ import com.crawljax.stateabstractions.dom.apted.node.StringNodeData;
 //       faster rename cost computation.
 public class StringUnitCostModel implements CostModel<StringNodeData> {
 
-  /**
-   * Calculates the cost of deleting a node.
-   *
-   * @param n a node considered to be deleted.
-   * @return {@code 1} - a fixed cost of deleting a node.
-   */
-  public float del(AptedNode<StringNodeData> n) {
-    return 1.0f;
-  }
+    /**
+     * Calculates the cost of deleting a node.
+     *
+     * @param n a node considered to be deleted.
+     * @return {@code 1} - a fixed cost of deleting a node.
+     */
+    public float del(AptedNode<StringNodeData> n) {
+        return 1.0f;
+    }
 
-  /**
-   * Calculates the cost of inserting a node.
-   *
-   * @param n a node considered to be inserted.
-   * @return {@code 1} - a fixed cost of inserting a node.
-   */
-  public float ins(AptedNode<StringNodeData> n) {
-    return 1.0f;
-  }
+    /**
+     * Calculates the cost of inserting a node.
+     *
+     * @param n a node considered to be inserted.
+     * @return {@code 1} - a fixed cost of inserting a node.
+     */
+    public float ins(AptedNode<StringNodeData> n) {
+        return 1.0f;
+    }
 
-  /**
-   * Calculates the cost of renaming the label of the source node to the label of the destination
-   * node.
-   *
-   * @param n1 a source node for rename.
-   * @param n2 a destination node for rename.
-   * @return {@code 1} if labels of renamed nodes are equal, and {@code 0} otherwise.
-   */
-  public float ren(AptedNode<StringNodeData> n1, AptedNode<StringNodeData> n2) {
-    return (n1.getNodeData().getLabel().equals(n2.getNodeData().getLabel())) ? 0.0f : 1.0f;
-  }
+    /**
+     * Calculates the cost of renaming the label of the source node to the label of the destination
+     * node.
+     *
+     * @param n1 a source node for rename.
+     * @param n2 a destination node for rename.
+     * @return {@code 1} if labels of renamed nodes are equal, and {@code 0} otherwise.
+     */
+    public float ren(AptedNode<StringNodeData> n1, AptedNode<StringNodeData> n2) {
+        return (n1.getNodeData().getLabel().equals(n2.getNodeData().getLabel())) ? 0.0f : 1.0f;
+    }
 }

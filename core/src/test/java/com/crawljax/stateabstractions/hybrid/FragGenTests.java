@@ -37,192 +37,177 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 @RunWith(MockitoJUnitRunner.class)
-
 public class FragGenTests {
 
-  @Mock
-  private Provider<InMemoryStateFlowGraph> graphProvider;
+    @Mock
+    private Provider<InMemoryStateFlowGraph> graphProvider;
 
-  @Mock
-  private Provider<StateFlowGraph> sfgProvider;
+    @Mock
+    private Provider<StateFlowGraph> sfgProvider;
 
-  @Mock
-  private EmbeddedBrowser browser;
+    @Mock
+    private EmbeddedBrowser browser;
 
-  @Mock
-  private ExtractorManager checker;
+    @Mock
+    private ExtractorManager checker;
 
-  @Mock
-  private FormHandler handler;
+    @Mock
+    private FormHandler handler;
 
-  private InMemoryStateFlowGraph sfg;
+    private InMemoryStateFlowGraph sfg;
 
-  private Object LOG;
+    private Object LOG;
 
+    private EventableConditionChecker eventableChecker;
 
-  private EventableConditionChecker eventableChecker;
+    @Test
+    public void testTreeDiffSimpleDOM() throws IOException {
+        String docString = "<HTML><HEAD><META http-equiv=\"Content-Type\""
+                + " content=\"text/html; charset=UTF-8\"></HEAD><BODY><SPAN id=\"testdiv\"> <a></a>"
+                + "</SPAN><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
+        Document doc1 = DomUtils.asDocument(docString);
 
+        String docString2 = "<HTML><HEAD><META http-equiv=\"Content-Type\""
+                + " content=\"text/html; charset=UTF-8\"></HEAD><BODY><DIV id=\"testdiv\"> <a></a>"
+                + "</DIV><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
 
-  @Test
-  public void testTreeDiffSimpleDOM() throws IOException {
-    String docString = "<HTML><HEAD><META http-equiv=\"Content-Type\"" +
-        " content=\"text/html; charset=UTF-8\"></HEAD><BODY><SPAN id=\"testdiv\"> <a></a>" +
-        "</SPAN><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
-    Document doc1 = DomUtils.asDocument(docString);
+        Document doc2 = DomUtils.asDocument(docString2);
 
-    String docString2 = "<HTML><HEAD><META http-equiv=\"Content-Type\"" +
-        " content=\"text/html; charset=UTF-8\"></HEAD><BODY><DIV id=\"testdiv\"> <a></a>" +
-        "</DIV><DIV style=\"colour:#FF0000\"><H>Header</H></DIV></BODY></HTML>";
+        double distance = HybridStateVertexImpl.computeDistance(doc1, doc2, false);
 
-    Document doc2 = DomUtils.asDocument(docString2);
+        assertEquals(distance, 1.0, 0.0);
 
-    double distance = HybridStateVertexImpl.computeDistance(doc1, doc2, false);
+        List<List<Node>> differentNodes = HybridStateVertexImpl.getChangedNodes(doc1, doc2, false);
 
-    assertEquals(distance, 1.0, 0.0);
+        List<Node> addedNodes = differentNodes.get(0);
+        List<Node> removedNodes = differentNodes.get(1);
 
-    List<List<Node>> differentNodes = HybridStateVertexImpl.getChangedNodes(doc1, doc2, false);
-
-    List<Node> addedNodes = differentNodes.get(0);
-    List<Node> removedNodes = differentNodes.get(1);
-
-    assertTrue(addedNodes.get(0).getNodeName().equalsIgnoreCase("span"));
-    assertTrue(removedNodes.get(0).getNodeName().equalsIgnoreCase("div"));
-  }
-
-
-  private void loadHybridState(String domString, StateVertex state, FragmentManager fragmentManager,
-      File screenshotFile) throws IOException {
-
-    BufferedImage screenshot = ImageIO.read(screenshotFile);
-
-    FragmentationPlugin.loadFragmentState(state, fragmentManager, DomUtils.asDocument(domString),
-        screenshot);
-  }
-
-
-  private CandidateElement getMatchingCandidate(List<CandidateElement> elements,
-      String xpath) {
-    CandidateElement element = null;
-    for (CandidateElement elem : elements) {
-      if (elem.getIdentification().getValue().equalsIgnoreCase(xpath)) {
-        element = elem;
-      }
+        assertTrue(addedNodes.get(0).getNodeName().equalsIgnoreCase("span"));
+        assertTrue(removedNodes.get(0).getNodeName().equalsIgnoreCase("div"));
     }
-    return element;
-  }
 
-  @Test
-  public void testCandidateAddition() throws IOException {
-    CrawljaxConfigurationBuilder configBuilder = CrawljaxConfiguration.builderFor(
-        "http://locahost/dummy.html");
-    configBuilder.crawlRules().clickOnce(false);
+    private void loadHybridState(
+            String domString, StateVertex state, FragmentManager fragmentManager, File screenshotFile)
+            throws IOException {
 
-    File state729 = new File("src/test/resources/crawls/frag_state610.html");
-    File state802 = new File("src/test/resources/crawls/frag_state628.html");
-    String docString1 = FileUtils.readFileToString(state729);
-    String docString2 = FileUtils.readFileToString(state802);
+        BufferedImage screenshot = ImageIO.read(screenshotFile);
 
-    HybridStateVertexImpl state1 = new HybridStateVertexImpl(0, "", "index", docString1, docString1,
-        0.0, false);
+        FragmentationPlugin.loadFragmentState(state, fragmentManager, DomUtils.asDocument(domString), screenshot);
+    }
 
-    sfg = new InMemoryStateFlowGraph(new ExitNotifier(0),
-        new FragGenStateVertexFactory(0, configBuilder, false));
+    private CandidateElement getMatchingCandidate(List<CandidateElement> elements, String xpath) {
+        CandidateElement element = null;
+        for (CandidateElement elem : elements) {
+            if (elem.getIdentification().getValue().equalsIgnoreCase(xpath)) {
+                element = elem;
+            }
+        }
+        return element;
+    }
 
-    FragmentManager manager = new FragmentManager(graphProvider);
+    @Test
+    public void testCandidateAddition() throws IOException {
+        CrawljaxConfigurationBuilder configBuilder = CrawljaxConfiguration.builderFor("http://locahost/dummy.html");
+        configBuilder.crawlRules().clickOnce(false);
 
-    File screenshot1 = new File("src/test/resources/crawls/state652.png");
-    loadHybridState(docString1, state1, manager, screenshot1);
+        File state729 = new File("src/test/resources/crawls/frag_state610.html");
+        File state802 = new File("src/test/resources/crawls/frag_state628.html");
+        String docString1 = FileUtils.readFileToString(state729);
+        String docString2 = FileUtils.readFileToString(state802);
 
-    File screenshot2 = new File("src/test/resources/crawls/state653.png");
+        HybridStateVertexImpl state1 = new HybridStateVertexImpl(0, "", "index", docString1, docString1, 0.0, false);
 
-    when(checker.checkCrawlCondition(browser)).thenReturn(true);
+        sfg = new InMemoryStateFlowGraph(new ExitNotifier(0), new FragGenStateVertexFactory(0, configBuilder, false));
 
-    eventableChecker = new EventableConditionChecker(configBuilder.build().getCrawlRules());
-    when(checker.getEventableConditionChecker()).thenReturn(eventableChecker);
+        FragmentManager manager = new FragmentManager(graphProvider);
 
-    CandidateElementExtractor extractor = new CandidateElementExtractor(checker, browser, handler,
-        configBuilder.build());
+        File screenshot1 = new File("src/test/resources/crawls/state652.png");
+        loadHybridState(docString1, state1, manager, screenshot1);
 
-    List<CandidateElement> elements = extractor.extract(state1);
-    LinkedList<CandidateElement> results = new LinkedList<>();
-    results.addAll(elements);
-    state1.setElementsFound(results);
+        File screenshot2 = new File("src/test/resources/crawls/state653.png");
 
-    Assert.assertEquals("Wrong number of candidates found", 70, elements.size());
+        when(checker.checkCrawlCondition(browser)).thenReturn(true);
 
-    CandidateElement element = getMatchingCandidate(results,
-        "/HTML[1]/BODY[1]/TABLE[2]/TBODY[1]/TR[1]/TD[2]/FORM[1]/INPUT[2]" +
-            "");
+        eventableChecker = new EventableConditionChecker(configBuilder.build().getCrawlRules());
+        when(checker.getEventableConditionChecker()).thenReturn(eventableChecker);
 
-    Assert.assertNotEquals(
-        "A matching candidate should be found for '/HTML[1]/BODY[1]/TABLE[2]/TBODY[1]/TR[1]/TD[2]/FORM[1]/INPUT[2]'",
-        null, element);
+        CandidateElementExtractor extractor =
+                new CandidateElementExtractor(checker, browser, handler, configBuilder.build());
 
-    Assert.assertTrue("Element access should be recorded by fragment manager",
-        manager.recordAccess(element, state1));
+        List<CandidateElement> elements = extractor.extract(state1);
+        LinkedList<CandidateElement> results = new LinkedList<>();
+        results.addAll(elements);
+        state1.setElementsFound(results);
 
-    HybridStateVertexImpl state2 = new HybridStateVertexImpl(1, "", "state1", docString2,
-        docString2, 0.0, false);
+        Assert.assertEquals("Wrong number of candidates found", 70, elements.size());
 
-    loadHybridState(docString2, state2, manager, screenshot2);
+        CandidateElement element =
+                getMatchingCandidate(results, "/HTML[1]/BODY[1]/TABLE[2]/TBODY[1]/TR[1]/TD[2]/FORM[1]/INPUT[2]" + "");
 
-    state1.equals(state2);
+        Assert.assertNotEquals(
+                "A matching candidate should be found for '/HTML[1]/BODY[1]/TABLE[2]/TBODY[1]/TR[1]/TD[2]/FORM[1]/INPUT[2]'",
+                null,
+                element);
 
-    elements = extractor.extract(state2);
-    results = new LinkedList<>();
-    results.addAll(elements);
-    Assert.assertEquals("Wrong number of candidates found", 59, elements.size());
+        Assert.assertTrue(
+                "Element access should be recorded by fragment manager", manager.recordAccess(element, state1));
 
-    state2.setElementsFound(results);
+        HybridStateVertexImpl state2 = new HybridStateVertexImpl(1, "", "state1", docString2, docString2, 0.0, false);
 
-    CandidateElement element2 = getMatchingCandidate(results,
-        "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[3]/FORM[1]/INPUT[1]");
+        loadHybridState(docString2, state2, manager, screenshot2);
 
-    manager.setAccess(state2);
+        state1.equals(state2);
 
-    Assert.assertTrue("Access transfer should be done for new state",
-        state2.getRootFragment().isAccessTransferred());
+        elements = extractor.extract(state2);
+        results = new LinkedList<>();
+        results.addAll(elements);
+        Assert.assertEquals("Wrong number of candidates found", 59, elements.size());
 
-    manager.recordAccess(element2, state2);
-    Assert.assertTrue("element should be set to explored", element2.wasExplored());
+        state2.setElementsFound(results);
 
-    StateComparision comp = manager.cacheStateComparision(state2, state1, true);
+        CandidateElement element2 =
+                getMatchingCandidate(results, "/HTML[1]/BODY[1]/TABLE[1]/TBODY[1]/TR[1]/TD[3]/FORM[1]/INPUT[1]");
 
-    Assert.assertEquals("The two states are DIFFERENT", StateComparision.DIFFERENT, comp);
-  }
+        manager.setAccess(state2);
 
-  @Test
-  public void testFragGenComparisonND2() throws IOException {
-    CrawljaxConfigurationBuilder configBuilder = CrawljaxConfiguration.builderFor(
-        "http://locahost/dummy.html");
+        Assert.assertTrue(
+                "Access transfer should be done for new state",
+                state2.getRootFragment().isAccessTransferred());
 
-    File state729 = new File("src/test/resources/crawls/frag_state296.html");
-    File state802 = new File("src/test/resources/crawls/frag_state297.html");
-    String docString1 = FileUtils.readFileToString(state729);
-    String docString2 = FileUtils.readFileToString(state802);
+        manager.recordAccess(element2, state2);
+        Assert.assertTrue("element should be set to explored", element2.wasExplored());
 
-    HybridStateVertexImpl state1 = new HybridStateVertexImpl(0, "", "index", docString1, docString1,
-        0.0, false);
-    HybridStateVertexImpl state2 = new HybridStateVertexImpl(1, "", "state1", docString2,
-        docString2, 0.0, false);
+        StateComparision comp = manager.cacheStateComparision(state2, state1, true);
 
-    sfg = new InMemoryStateFlowGraph(new ExitNotifier(0),
-        new FragGenStateVertexFactory(0, configBuilder, false));
+        Assert.assertEquals("The two states are DIFFERENT", StateComparision.DIFFERENT, comp);
+    }
 
-    FragmentManager manager = new FragmentManager(graphProvider);
+    @Test
+    public void testFragGenComparisonND2() throws IOException {
+        CrawljaxConfigurationBuilder configBuilder = CrawljaxConfiguration.builderFor("http://locahost/dummy.html");
 
-    File screenshot1 = new File("src/test/resources/crawls/state296.png");
-    loadHybridState(docString1, state1, manager, screenshot1);
+        File state729 = new File("src/test/resources/crawls/frag_state296.html");
+        File state802 = new File("src/test/resources/crawls/frag_state297.html");
+        String docString1 = FileUtils.readFileToString(state729);
+        String docString2 = FileUtils.readFileToString(state802);
 
-    File screenshot2 = new File("src/test/resources/crawls/state297.png");
-    loadHybridState(docString2, state2, manager, screenshot2);
+        HybridStateVertexImpl state1 = new HybridStateVertexImpl(0, "", "index", docString1, docString1, 0.0, false);
+        HybridStateVertexImpl state2 = new HybridStateVertexImpl(1, "", "state1", docString2, docString2, 0.0, false);
 
-    Assert.assertFalse("The two states are near-duplicates, not equal", state1.equals(state2));
+        sfg = new InMemoryStateFlowGraph(new ExitNotifier(0), new FragGenStateVertexFactory(0, configBuilder, false));
 
-    StateComparision comp = manager.cacheStateComparision(state2, state1, true);
+        FragmentManager manager = new FragmentManager(graphProvider);
 
-    Assert.assertEquals("The two states are NEAR_DUPLICATE2", StateComparision.NEARDUPLICATE2,
-        comp);
-  }
+        File screenshot1 = new File("src/test/resources/crawls/state296.png");
+        loadHybridState(docString1, state1, manager, screenshot1);
 
+        File screenshot2 = new File("src/test/resources/crawls/state297.png");
+        loadHybridState(docString2, state2, manager, screenshot2);
+
+        Assert.assertFalse("The two states are near-duplicates, not equal", state1.equals(state2));
+
+        StateComparision comp = manager.cacheStateComparision(state2, state1, true);
+
+        Assert.assertEquals("The two states are NEAR_DUPLICATE2", StateComparision.NEARDUPLICATE2, comp);
+    }
 }

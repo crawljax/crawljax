@@ -11,10 +11,9 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public interface Condition {
 
-  /**
-   * @param browser The browser.
-   * @return whether the evaluated condition is satisfied
-   */
-  boolean check(EmbeddedBrowser browser);
-
+    /**
+     * @param browser The browser.
+     * @return whether the evaluated condition is satisfied
+     */
+    boolean check(EmbeddedBrowser browser);
 }

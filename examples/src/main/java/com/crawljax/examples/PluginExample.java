@@ -15,27 +15,28 @@ import org.slf4j.LoggerFactory;
  */
 public class PluginExample {
 
-  private static final Logger LOG = LoggerFactory.getLogger(PluginExample.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PluginExample.class);
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    CrawljaxConfigurationBuilder builder =
-        CrawljaxConfiguration.builderFor("http://localhost/~qhanam/crawljax/crawljax-demo/");
-    builder.addPlugin(new OnNewStatePlugin() {
+        CrawljaxConfigurationBuilder builder =
+                CrawljaxConfiguration.builderFor("http://localhost/~qhanam/crawljax/crawljax-demo/");
+        builder.addPlugin(new OnNewStatePlugin() {
 
-      @Override
-      public void onNewState(CrawlerContext context, StateVertex newState) {
-        // This will print the DOM when a new state is detected. You should see it in your
-        // console.
-        LOG.info("Found a new dom! Here it is:\n{}", context.getBrowser().getStrippedDom());
-      }
+            @Override
+            public void onNewState(CrawlerContext context, StateVertex newState) {
+                // This will print the DOM when a new state is detected. You should see it in your
+                // console.
+                LOG.info(
+                        "Found a new dom! Here it is:\n{}", context.getBrowser().getStrippedDom());
+            }
 
-      @Override
-      public String toString() {
-        return "Our example plugin";
-      }
-    });
-    CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
-    crawljax.call();
-  }
+            @Override
+            public String toString() {
+                return "Our example plugin";
+            }
+        });
+        CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
+        crawljax.call();
+    }
 }

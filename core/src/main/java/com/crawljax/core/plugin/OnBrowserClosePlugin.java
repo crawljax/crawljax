@@ -9,12 +9,10 @@ import com.crawljax.core.CrawlerContext;
  */
 public interface OnBrowserClosePlugin extends Plugin {
 
-  /**
-   * This method is executed when the browser is closed
-   *
-   * @param context the crawler context
-   */
-
-  void onBrowserClose(CrawlerContext context);
-
+    /**
+     * This method is executed when the browser is closed
+     *
+     * @param context the crawler context
+     */
+    void onBrowserClose(CrawlerContext context);
 }

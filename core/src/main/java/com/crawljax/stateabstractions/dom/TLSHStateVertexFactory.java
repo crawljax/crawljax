@@ -17,57 +17,54 @@ import org.slf4j.LoggerFactory;
  */
 public class TLSHStateVertexFactory extends StateVertexFactory {
 
-  private static final Logger LOG = LoggerFactory.getLogger(TLSHStateVertexFactory.class.getName());
-  private static double threshold = 0.0;
-  private static Mode mode;
-  private static final double insufficientComplexityDistance = 200;
-  private static EditDistanceComparator editDistanceComparator;
+    private static final Logger LOG = LoggerFactory.getLogger(TLSHStateVertexFactory.class.getName());
+    private static double threshold = 0.0;
+    private static Mode mode;
+    private static final double insufficientComplexityDistance = 200;
+    private static EditDistanceComparator editDistanceComparator;
 
-  public TLSHStateVertexFactory(double treshold, Mode mode1) {
-    threshold = treshold;
-    mode = mode1;
-    editDistanceComparator = new EditDistanceComparator(1 - threshold);
-  }
-
-  public static double computeTLSHDistance(String dom1, String dom2)
-      throws IllegalArgumentException {
-    int distance = 200;
-    TLSH tlsh1, tlsh2;
-    Digest digest1, digest2;
-
-    try {
-      tlsh1 = new TLSH(dom1);
-      digest1 = new DigestBuilder().withHash(tlsh1.hash()).build();
-    } catch (com.idealista.tlsh.exceptions.InsufficientComplexityException e) {
-      LOG.info("Insufficient Complexity in DOM");
-      LOG.debug(dom1);
-      throw new IllegalArgumentException();
+    public TLSHStateVertexFactory(double treshold, Mode mode1) {
+        threshold = treshold;
+        mode = mode1;
+        editDistanceComparator = new EditDistanceComparator(1 - threshold);
     }
 
-    try {
-      tlsh2 = new TLSH(dom2);
-      digest2 = new DigestBuilder().withHash(tlsh2.hash()).build();
-    } catch (com.idealista.tlsh.exceptions.InsufficientComplexityException e) {
-      LOG.info("Insufficient Complexity in DOM");
-      LOG.debug(dom2);
-      throw new IllegalArgumentException();
+    public static double computeTLSHDistance(String dom1, String dom2) throws IllegalArgumentException {
+        int distance = 200;
+        TLSH tlsh1, tlsh2;
+        Digest digest1, digest2;
+
+        try {
+            tlsh1 = new TLSH(dom1);
+            digest1 = new DigestBuilder().withHash(tlsh1.hash()).build();
+        } catch (com.idealista.tlsh.exceptions.InsufficientComplexityException e) {
+            LOG.info("Insufficient Complexity in DOM");
+            LOG.debug(dom1);
+            throw new IllegalArgumentException();
+        }
+
+        try {
+            tlsh2 = new TLSH(dom2);
+            digest2 = new DigestBuilder().withHash(tlsh2.hash()).build();
+        } catch (com.idealista.tlsh.exceptions.InsufficientComplexityException e) {
+            LOG.info("Insufficient Complexity in DOM");
+            LOG.debug(dom2);
+            throw new IllegalArgumentException();
+        }
+
+        distance = digest2.calculateDifference(digest1, true);
+
+        return distance;
     }
 
-    distance = digest2.calculateDifference(digest1, true);
+    @Override
+    public StateVertex newStateVertex(
+            int id, String url, String name, String dom, String strippedDom, EmbeddedBrowser browser) {
+        return new TLSHStateVertexImpl(id, url, name, dom, strippedDom, threshold, mode, editDistanceComparator);
+    }
 
-    return distance;
-  }
-
-  @Override
-  public StateVertex newStateVertex(int id, String url, String name, String dom, String strippedDom,
-      EmbeddedBrowser browser) {
-    return new TLSHStateVertexImpl(id, url, name, dom, strippedDom, threshold, mode,
-        editDistanceComparator);
-  }
-
-  @Override
-  public String toString() {
-    return "DOMTLSH_" + mode.toString() + "_" + threshold;
-  }
-
+    @Override
+    public String toString() {
+        return "DOMTLSH_" + mode.toString() + "_" + threshold;
+    }
 }

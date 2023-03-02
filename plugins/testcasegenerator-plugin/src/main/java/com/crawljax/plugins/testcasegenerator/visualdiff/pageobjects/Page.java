@@ -19,130 +19,126 @@ import org.opencv.core.Mat;
  */
 public class Page {
 
-  /**
-   * The image of the page.
-   **/
-  private Mat image;
+    /**
+     * The image of the page.
+     **/
+    private Mat image;
 
-  /**
-   * All objects on the page.
-   **/
-  private List<PageObject> pageObjects;
+    /**
+     * All objects on the page.
+     **/
+    private List<PageObject> pageObjects;
 
-  /**
-   * The set of objects which have not been classified.
-   */
-  private Set<PageObject> unclassified;
+    /**
+     * The set of objects which have not been classified.
+     */
+    private Set<PageObject> unclassified;
 
-  public Page(Mat image, List<PageObject> pageObjects) {
-    this.image = image;
-    this.pageObjects = pageObjects;
-    this.unclassified = new HashSet<PageObject>(pageObjects);
-  }
-
-  public List<PageObject> getPageObjects() {
-    return this.pageObjects;
-  }
-
-  public Set<PageObject> getUnclassifiedObjects() {
-    return this.unclassified;
-  }
-
-  public Mat getImage() {
-    return this.image;
-  }
-
-  /**
-   * Classifies and filters exact {@code PageObject} matches as {@code UNCHANGED}.
-   *
-   * @param otherPage The other version of the page.
-   */
-  public void filterExactMatches(Page otherPage) {
-
-    /* Build the hash set for detecting matches. */
-    Map<ExactMatchComparator, PageObject> otherObjects =
-        new HashMap<ExactMatchComparator, PageObject>();
-    for (PageObject pageObject : otherPage.getUnclassifiedObjects()) {
-      otherObjects.put(pageObject.getComparatorExactMatch(), pageObject);
+    public Page(Mat image, List<PageObject> pageObjects) {
+        this.image = image;
+        this.pageObjects = pageObjects;
+        this.unclassified = new HashSet<PageObject>(pageObjects);
     }
 
-    /* Find exact matches. */
-    List<PageObject> toRemove = new LinkedList<PageObject>();
-    for (PageObject pageObject : this.getUnclassifiedObjects()) {
-      PageObject otherObject = otherObjects.get(pageObject.getComparatorExactMatch());
-      if (otherObject == null) {
-        continue;
-      }
-      otherObject.setChangeType(ChangeType.UNCHANGED);
-      pageObject.setChangeType(ChangeType.UNCHANGED);
-      otherPage.getUnclassifiedObjects().remove(otherObject);
-      toRemove.add(pageObject);
-    }
-    this.getUnclassifiedObjects().removeAll(toRemove);
-
-  }
-
-  /**
-   * Classifies and filters hash {@code PageObject} matches as {@code UNCHANGED}.
-   *
-   * @param otherPage The other version of the page.
-   */
-  public void filterHashMatches(Page otherPage) {
-
-    /* Build the hash set for detecting matches. */
-    Map<HashMatchComparator, PageObject> otherObjects =
-        new HashMap<HashMatchComparator, PageObject>();
-    for (PageObject pageObject : otherPage.getUnclassifiedObjects()) {
-      otherObjects.put(pageObject.getComparatorHash(), pageObject);
+    public List<PageObject> getPageObjects() {
+        return this.pageObjects;
     }
 
-    /* Find exact matches. */
-    List<PageObject> toRemove = new LinkedList<PageObject>();
-    for (PageObject pageObject : this.getUnclassifiedObjects()) {
-      PageObject otherObject = otherObjects.get(pageObject.getComparatorHash());
-      if (otherObject == null || otherObject.changeType != ChangeType.UNKNOWN) {
-        continue;
-      }
-      otherObject.setChangeType(ChangeType.MOVED);
-      pageObject.setChangeType(ChangeType.MOVED);
-      otherPage.getUnclassifiedObjects().remove(otherObject);
-      toRemove.add(pageObject);
-    }
-    this.getUnclassifiedObjects().removeAll(toRemove);
-
-  }
-
-  /**
-   * Classifies and filters geographic {@code PageObject} matches as {@code UPDATED}.
-   *
-   * @param otherPage
-   */
-  public void filterGeographicMatches(Page otherPage) {
-
-    /* Build the RTree for detecting matches. */
-    RTree<PageObject, Rectangle> otherObjects = RTree.star().create();
-    for (PageObject pageObject : otherPage.getUnclassifiedObjects()) {
-      otherObjects = otherObjects.add(pageObject, pageObject.getRectangle());
+    public Set<PageObject> getUnclassifiedObjects() {
+        return this.unclassified;
     }
 
-    /* Find geographic matches. */
-    List<PageObject> toRemove = new LinkedList<PageObject>();
-    for (PageObject pageObject : this.getUnclassifiedObjects()) {
-      List<Entry<PageObject, Rectangle>> results = otherObjects
-          .search(pageObject.getRectangle(), 10).toList().toBlocking().single();
-      for (Entry<PageObject, Rectangle> entry : results) {
-        PageObject otherObject = entry.value();
-        if (pageObject.getComparatorGeographic()
-            .equals(otherObject.getComparatorGeographic())) {
-          otherObject.setChangeType(ChangeType.UPDATED);
-          pageObject.setChangeType(ChangeType.UPDATED);
-          otherPage.getUnclassifiedObjects().remove(otherObject);
-          toRemove.add(pageObject);
+    public Mat getImage() {
+        return this.image;
+    }
+
+    /**
+     * Classifies and filters exact {@code PageObject} matches as {@code UNCHANGED}.
+     *
+     * @param otherPage The other version of the page.
+     */
+    public void filterExactMatches(Page otherPage) {
+
+        /* Build the hash set for detecting matches. */
+        Map<ExactMatchComparator, PageObject> otherObjects = new HashMap<ExactMatchComparator, PageObject>();
+        for (PageObject pageObject : otherPage.getUnclassifiedObjects()) {
+            otherObjects.put(pageObject.getComparatorExactMatch(), pageObject);
         }
-      }
+
+        /* Find exact matches. */
+        List<PageObject> toRemove = new LinkedList<PageObject>();
+        for (PageObject pageObject : this.getUnclassifiedObjects()) {
+            PageObject otherObject = otherObjects.get(pageObject.getComparatorExactMatch());
+            if (otherObject == null) {
+                continue;
+            }
+            otherObject.setChangeType(ChangeType.UNCHANGED);
+            pageObject.setChangeType(ChangeType.UNCHANGED);
+            otherPage.getUnclassifiedObjects().remove(otherObject);
+            toRemove.add(pageObject);
+        }
+        this.getUnclassifiedObjects().removeAll(toRemove);
     }
-    this.getUnclassifiedObjects().removeAll(toRemove);
 
-  }
+    /**
+     * Classifies and filters hash {@code PageObject} matches as {@code UNCHANGED}.
+     *
+     * @param otherPage The other version of the page.
+     */
+    public void filterHashMatches(Page otherPage) {
 
+        /* Build the hash set for detecting matches. */
+        Map<HashMatchComparator, PageObject> otherObjects = new HashMap<HashMatchComparator, PageObject>();
+        for (PageObject pageObject : otherPage.getUnclassifiedObjects()) {
+            otherObjects.put(pageObject.getComparatorHash(), pageObject);
+        }
+
+        /* Find exact matches. */
+        List<PageObject> toRemove = new LinkedList<PageObject>();
+        for (PageObject pageObject : this.getUnclassifiedObjects()) {
+            PageObject otherObject = otherObjects.get(pageObject.getComparatorHash());
+            if (otherObject == null || otherObject.changeType != ChangeType.UNKNOWN) {
+                continue;
+            }
+            otherObject.setChangeType(ChangeType.MOVED);
+            pageObject.setChangeType(ChangeType.MOVED);
+            otherPage.getUnclassifiedObjects().remove(otherObject);
+            toRemove.add(pageObject);
+        }
+        this.getUnclassifiedObjects().removeAll(toRemove);
+    }
+
+    /**
+     * Classifies and filters geographic {@code PageObject} matches as {@code UPDATED}.
+     *
+     * @param otherPage
+     */
+    public void filterGeographicMatches(Page otherPage) {
+
+        /* Build the RTree for detecting matches. */
+        RTree<PageObject, Rectangle> otherObjects = RTree.star().create();
+        for (PageObject pageObject : otherPage.getUnclassifiedObjects()) {
+            otherObjects = otherObjects.add(pageObject, pageObject.getRectangle());
+        }
+
+        /* Find geographic matches. */
+        List<PageObject> toRemove = new LinkedList<PageObject>();
+        for (PageObject pageObject : this.getUnclassifiedObjects()) {
+            List<Entry<PageObject, Rectangle>> results = otherObjects
+                    .search(pageObject.getRectangle(), 10)
+                    .toList()
+                    .toBlocking()
+                    .single();
+            for (Entry<PageObject, Rectangle> entry : results) {
+                PageObject otherObject = entry.value();
+                if (pageObject.getComparatorGeographic().equals(otherObject.getComparatorGeographic())) {
+                    otherObject.setChangeType(ChangeType.UPDATED);
+                    pageObject.setChangeType(ChangeType.UPDATED);
+                    otherPage.getUnclassifiedObjects().remove(otherObject);
+                    toRemove.add(pageObject);
+                }
+            }
+        }
+        this.getUnclassifiedObjects().removeAll(toRemove);
+    }
 }

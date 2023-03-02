@@ -8,19 +8,18 @@ import org.junit.experimental.categories.Category;
 @Category(BrowserTest.class)
 public class LargeFirefoxTest extends LargeTestBase {
 
-  @Override
-  BrowserConfiguration getBrowserConfiguration() {
-    return new BrowserConfiguration(BrowserType.FIREFOX_HEADLESS);
-  }
+    @Override
+    BrowserConfiguration getBrowserConfiguration() {
+        return new BrowserConfiguration(BrowserType.FIREFOX_HEADLESS);
+    }
 
-  @Override
-  long getTimeOutAfterReloadUrl() {
-    return 200;
-  }
+    @Override
+    long getTimeOutAfterReloadUrl() {
+        return 200;
+    }
 
-  @Override
-  long getTimeOutAfterEvent() {
-    return 200;
-  }
-
+    @Override
+    long getTimeOutAfterEvent() {
+        return 200;
+    }
 }

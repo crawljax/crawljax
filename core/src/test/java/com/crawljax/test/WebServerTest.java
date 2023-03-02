@@ -15,30 +15,29 @@ import org.junit.Test;
 
 public class WebServerTest {
 
-  private static final int MAX_PORT = 65535;
-  private static final int MIN_PORT = 0;
-  private WebServer server;
+    private static final int MAX_PORT = 65535;
+    private static final int MIN_PORT = 0;
+    private WebServer server;
 
-  @Before
-  public void setup() throws Exception {
-    URI site = BaseCrawler.class.getResource("/site").toURI();
-    try {
-      server = new WebServer(Resource.newResource(site));
-    } catch (IOException e) {
-      throw new CrawljaxException("Could not load resource", e);
+    @Before
+    public void setup() throws Exception {
+        URI site = BaseCrawler.class.getResource("/site").toURI();
+        try {
+            server = new WebServer(Resource.newResource(site));
+        } catch (IOException e) {
+            throw new CrawljaxException("Could not load resource", e);
+        }
+        server.start();
     }
-    server.start();
-  }
 
-  @After
-  public void stopServer() {
-    server.stop();
-  }
+    @After
+    public void stopServer() {
+        server.stop();
+    }
 
-  @Test
-  public void testPort() {
-    assertThat(server.getPort(), is(lessThanOrEqualTo(MAX_PORT)));
-    assertThat(server.getPort(), is(greaterThanOrEqualTo(MIN_PORT)));
-  }
-
+    @Test
+    public void testPort() {
+        assertThat(server.getPort(), is(lessThanOrEqualTo(MAX_PORT)));
+        assertThat(server.getPort(), is(greaterThanOrEqualTo(MIN_PORT)));
+    }
 }

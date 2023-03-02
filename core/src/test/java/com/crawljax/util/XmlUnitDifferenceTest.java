@@ -15,36 +15,35 @@ import org.junit.Test;
  */
 public class XmlUnitDifferenceTest {
 
-  @Test
-  public void testEmptyDOMs() {
-    String left = "";
-    String right = "";
-    List<Difference> l = DomUtils.getDifferences(left, right);
-    Assert.assertEquals(0, l.size());
-  }
+    @Test
+    public void testEmptyDOMs() {
+        String left = "";
+        String right = "";
+        List<Difference> l = DomUtils.getDifferences(left, right);
+        Assert.assertEquals(0, l.size());
+    }
 
-  @Test
-  public void testSameIdenticalDOMs() {
-    String left = "<abc></abc>";
-    String right = "<abc></abc>";
-    List<Difference> l = DomUtils.getDifferences(left, right);
-    Assert.assertEquals(0, l.size());
-  }
+    @Test
+    public void testSameIdenticalDOMs() {
+        String left = "<abc></abc>";
+        String right = "<abc></abc>";
+        List<Difference> l = DomUtils.getDifferences(left, right);
+        Assert.assertEquals(0, l.size());
+    }
 
-  @Test
-  public void testSameDOMsAttributesSame() {
-    String left = "<abc><def value='bla'/></abc>";
-    String right = "<abc><def value='bla'/></abc>";
-    List<Difference> l = DomUtils.getDifferences(left, right);
-    Assert.assertEquals(0, l.size());
-  }
+    @Test
+    public void testSameDOMsAttributesSame() {
+        String left = "<abc><def value='bla'/></abc>";
+        String right = "<abc><def value='bla'/></abc>";
+        List<Difference> l = DomUtils.getDifferences(left, right);
+        Assert.assertEquals(0, l.size());
+    }
 
-  @Test
-  public void testSameDOMsAttributesFiltered() {
-    String left = "<abc><def value='bla123'/></abc>";
-    String right = "<abc><def value='bla'/></abc>";
-    List<Difference> l = DomUtils.getDifferences(left, right, Lists.newArrayList("value"));
-    Assert.assertEquals(0, l.size());
-  }
-
+    @Test
+    public void testSameDOMsAttributesFiltered() {
+        String left = "<abc><def value='bla123'/></abc>";
+        String right = "<abc><def value='bla'/></abc>";
+        List<Difference> l = DomUtils.getDifferences(left, right, Lists.newArrayList("value"));
+        Assert.assertEquals(0, l.size());
+    }
 }

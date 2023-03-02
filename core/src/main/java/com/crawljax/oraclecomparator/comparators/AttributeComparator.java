@@ -10,22 +10,22 @@ import java.util.List;
  */
 public class AttributeComparator extends AbstractComparator {
 
-  private final List<String> ignoreAttributes = new ArrayList<>();
+    private final List<String> ignoreAttributes = new ArrayList<>();
 
-  /**
-   * @param attributes the attributes to ignore
-   */
-  public AttributeComparator(String... attributes) {
-    Collections.addAll(ignoreAttributes, attributes);
-  }
-
-  @Override
-  public String normalize(String dom) {
-    String strippedDom = dom;
-    for (String attribute : ignoreAttributes) {
-      String regExp = "\\s" + attribute + "=\"[^\"]*\"";
-      strippedDom = strippedDom.replaceAll(regExp, "");
+    /**
+     * @param attributes the attributes to ignore
+     */
+    public AttributeComparator(String... attributes) {
+        Collections.addAll(ignoreAttributes, attributes);
     }
-    return strippedDom;
-  }
+
+    @Override
+    public String normalize(String dom) {
+        String strippedDom = dom;
+        for (String attribute : ignoreAttributes) {
+            String regExp = "\\s" + attribute + "=\"[^\"]*\"";
+            strippedDom = strippedDom.replaceAll(regExp, "");
+        }
+        return strippedDom;
+    }
 }

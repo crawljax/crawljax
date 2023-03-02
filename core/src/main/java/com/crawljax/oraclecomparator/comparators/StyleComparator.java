@@ -19,115 +19,112 @@ import org.w3c.dom.NodeList;
  */
 public class StyleComparator extends AbstractComparator {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(StyleComparator.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(StyleComparator.class.getName());
 
-  private static final String[] IGNORE_ATTRIBUTES = {"align", "bgcolor", "height", "valign",
-      "width", "type", "dir"};
-  private static final String[] IGNORE_TAGS = {"em", "strong", "dfn", "code", "samp", "kdb",
-      "var", "cite", "tt", "b", "i", "u", "big", "small", "pre", "font"};
-  private static final String[] ALLOW_STYLE_TYPES = {"display", "visibility"};
+    private static final String[] IGNORE_ATTRIBUTES = {"align", "bgcolor", "height", "valign", "width", "type", "dir"};
+    private static final String[] IGNORE_TAGS = {
+        "em", "strong", "dfn", "code", "samp", "kdb", "var", "cite", "tt", "b", "i", "u", "big", "small", "pre", "font"
+    };
+    private static final String[] ALLOW_STYLE_TYPES = {"display", "visibility"};
 
-  @Override
-  public String normalize(String dom) {
-    try {
-      return DomUtils.getDocumentToString(stripDom(DomUtils.asDocument(dom)));
-    } catch (IOException e) {
-      LOGGER.warn("Could not complete dom comparison", e);
-      return dom;
-    }
-  }
-
-  private Document stripDom(Document dom) {
-    Document strippedDom = stripElements(dom);
-    strippedDom = stripAttributes(strippedDom);
-    strippedDom = stripStyleAttributes(strippedDom);
-    return strippedDom;
-  }
-
-  private Document stripStyleAttributes(Document dom) {
-    try {
-      NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//*[@style]/@style");
-      for (int i = 0; i < nl.getLength(); i++) {
-        Node attribute = nl.item(i);
-        if (attribute != null) {
-          attribute.setNodeValue(stripStyleProperties(attribute.getNodeValue()));
-          if (attribute.getNodeValue().equals("")) {
-            ((Attr) attribute).getOwnerElement().removeAttribute(
-                attribute.getNodeName());
-          }
+    @Override
+    public String normalize(String dom) {
+        try {
+            return DomUtils.getDocumentToString(stripDom(DomUtils.asDocument(dom)));
+        } catch (IOException e) {
+            LOGGER.warn("Could not complete dom comparison", e);
+            return dom;
         }
-      }
-    } catch (XPathExpressionException | DOMException e) {
-      LOGGER.warn("Error with StyleOracle: {}", e.getMessage(), e);
     }
-    return dom;
-  }
 
-  private Document stripElements(Document dom) {
-    for (String tag : IGNORE_TAGS) {
-      try {
-        NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//" + tag.toUpperCase());
-        for (int i = 0; i < nl.getLength(); i++) {
-          Node removeNode = nl.item(i);
-          Node parent = removeNode.getParentNode();
-          Node nextSibling = removeNode.getNextSibling();
+    private Document stripDom(Document dom) {
+        Document strippedDom = stripElements(dom);
+        strippedDom = stripAttributes(strippedDom);
+        strippedDom = stripStyleAttributes(strippedDom);
+        return strippedDom;
+    }
 
-          NodeList children = removeNode.getChildNodes();
-          if (children.getLength() > 0) {
-            if (nextSibling == null) {
-              parent.appendChild(children.item(0));
-            } else {
-              parent.insertBefore(children.item(0), nextSibling);
+    private Document stripStyleAttributes(Document dom) {
+        try {
+            NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//*[@style]/@style");
+            for (int i = 0; i < nl.getLength(); i++) {
+                Node attribute = nl.item(i);
+                if (attribute != null) {
+                    attribute.setNodeValue(stripStyleProperties(attribute.getNodeValue()));
+                    if (attribute.getNodeValue().equals("")) {
+                        ((Attr) attribute).getOwnerElement().removeAttribute(attribute.getNodeName());
+                    }
+                }
             }
-          }
-          parent.removeChild(removeNode);
+        } catch (XPathExpressionException | DOMException e) {
+            LOGGER.warn("Error with StyleOracle: {}", e.getMessage(), e);
         }
-      } catch (XPathExpressionException | DOMException e) {
-        LOGGER.warn("Error with StyleOracle: {}", e.getMessage());
-        LOGGER.error(e.getMessage(), e);
-      }
+        return dom;
     }
-    return dom;
-  }
 
-  private Document stripAttributes(Document dom) {
-    for (String attributeName : IGNORE_ATTRIBUTES) {
-      String attribute = attributeName.toLowerCase();
-      try {
-        NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//*[@" + attribute + "]");
-        for (int i = 0; i < nl.getLength(); i++) {
-          NamedNodeMap attributes = nl.item(i).getAttributes();
-          attributes.removeNamedItem(attribute);
+    private Document stripElements(Document dom) {
+        for (String tag : IGNORE_TAGS) {
+            try {
+                NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//" + tag.toUpperCase());
+                for (int i = 0; i < nl.getLength(); i++) {
+                    Node removeNode = nl.item(i);
+                    Node parent = removeNode.getParentNode();
+                    Node nextSibling = removeNode.getNextSibling();
+
+                    NodeList children = removeNode.getChildNodes();
+                    if (children.getLength() > 0) {
+                        if (nextSibling == null) {
+                            parent.appendChild(children.item(0));
+                        } else {
+                            parent.insertBefore(children.item(0), nextSibling);
+                        }
+                    }
+                    parent.removeChild(removeNode);
+                }
+            } catch (XPathExpressionException | DOMException e) {
+                LOGGER.warn("Error with StyleOracle: {}", e.getMessage());
+                LOGGER.error(e.getMessage(), e);
+            }
         }
-      } catch (XPathExpressionException | DOMException e) {
-        LOGGER.warn("Error with StyleOracle: {}", e.getMessage());
-      }
+        return dom;
     }
-    return dom;
-  }
 
-  private String stripStyleProperties(String styleAttribute) {
-    String[] styleProperties = styleAttribute.split(";");
-    String[] styleProperty;
-    String badWayOfDoingThis = "";
-    StringBuilder buffer = new StringBuilder();
-
-    for (String property : styleProperties) {
-      styleProperty = property.split(":");
-      if (styleProperty.length == 2) {
-        for (String allowStyleType : ALLOW_STYLE_TYPES) {
-          if (styleProperty[0].trim().equalsIgnoreCase(allowStyleType)) {
-            badWayOfDoingThis +=
-                styleProperty[0].trim() + ": " + styleProperty[1].trim() + ";";
-            buffer.append(styleProperty[0].trim());
-            buffer.append(": ");
-            buffer.append(styleProperty[1].trim());
-            buffer.append(";");
-          }
+    private Document stripAttributes(Document dom) {
+        for (String attributeName : IGNORE_ATTRIBUTES) {
+            String attribute = attributeName.toLowerCase();
+            try {
+                NodeList nl = XPathHelper.evaluateXpathExpression(dom, "//*[@" + attribute + "]");
+                for (int i = 0; i < nl.getLength(); i++) {
+                    NamedNodeMap attributes = nl.item(i).getAttributes();
+                    attributes.removeNamedItem(attribute);
+                }
+            } catch (XPathExpressionException | DOMException e) {
+                LOGGER.warn("Error with StyleOracle: {}", e.getMessage());
+            }
         }
-      }
+        return dom;
     }
-    return badWayOfDoingThis;
-  }
 
+    private String stripStyleProperties(String styleAttribute) {
+        String[] styleProperties = styleAttribute.split(";");
+        String[] styleProperty;
+        String badWayOfDoingThis = "";
+        StringBuilder buffer = new StringBuilder();
+
+        for (String property : styleProperties) {
+            styleProperty = property.split(":");
+            if (styleProperty.length == 2) {
+                for (String allowStyleType : ALLOW_STYLE_TYPES) {
+                    if (styleProperty[0].trim().equalsIgnoreCase(allowStyleType)) {
+                        badWayOfDoingThis += styleProperty[0].trim() + ": " + styleProperty[1].trim() + ";";
+                        buffer.append(styleProperty[0].trim());
+                        buffer.append(": ");
+                        buffer.append(styleProperty[1].trim());
+                        buffer.append(";");
+                    }
+                }
+            }
+        }
+        return badWayOfDoingThis;
+    }
 }

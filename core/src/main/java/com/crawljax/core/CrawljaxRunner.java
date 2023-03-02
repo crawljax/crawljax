@@ -20,58 +20,56 @@ import java.util.concurrent.Callable;
  */
 public class CrawljaxRunner implements Callable<CrawlSession> {
 
-  private final CrawljaxConfiguration config;
-  private CrawlController controller;
-  private ExitStatus reason;
+    private final CrawljaxConfiguration config;
+    private CrawlController controller;
+    private ExitStatus reason;
 
-  public CrawljaxRunner(CrawljaxConfiguration config) {
-    this.config = config;
-    readFormDataFromFile();
-  }
-
-  /**
-   * Reads input data from a JSON file in the output directory.
-   */
-  private void readFormDataFromFile() {
-    List<FormInput> formInputList =
-        FormInputValueHelper.deserializeFormInputs(config.getSiteDir());
-
-    if (formInputList != null) {
-      InputSpecification inputSpecs = config.getCrawlRules().getInputSpecification();
-
-      for (FormInput input : formInputList) {
-        inputSpecs.inputField(input);
-      }
+    public CrawljaxRunner(CrawljaxConfiguration config) {
+        this.config = config;
+        readFormDataFromFile();
     }
-  }
 
-  /**
-   * Runs Crawljax with the given configuration.
-   *
-   * @return The {@link CrawlSession} once the Crawl is done.
-   */
-  @Override
-  public CrawlSession call() {
-    Injector injector = Guice.createInjector(new CoreModule(config));
-    controller = injector.getInstance(CrawlController.class);
-    CrawlSession session = controller.call();
-    reason = controller.getReason();
-    return session;
-  }
+    /**
+     * Reads input data from a JSON file in the output directory.
+     */
+    private void readFormDataFromFile() {
+        List<FormInput> formInputList = FormInputValueHelper.deserializeFormInputs(config.getSiteDir());
 
-  /**
-   * Stops Crawljax. It will try to shutdown gracefully and run the {@link PostCrawlingPlugin}s.
-   */
-  public void stop() {
-    checkNotNull(controller, "Cannot stop Crawljax if you haven't started it");
-    controller.stop();
-  }
+        if (formInputList != null) {
+            InputSpecification inputSpecs = config.getCrawlRules().getInputSpecification();
 
-  /**
-   * @return The {@link ExitStatus} Crawljax stopped or <code>null</code> if it hasn't stopped yet.
-   */
-  public ExitStatus getReason() {
-    return reason;
-  }
+            for (FormInput input : formInputList) {
+                inputSpecs.inputField(input);
+            }
+        }
+    }
 
+    /**
+     * Runs Crawljax with the given configuration.
+     *
+     * @return The {@link CrawlSession} once the Crawl is done.
+     */
+    @Override
+    public CrawlSession call() {
+        Injector injector = Guice.createInjector(new CoreModule(config));
+        controller = injector.getInstance(CrawlController.class);
+        CrawlSession session = controller.call();
+        reason = controller.getReason();
+        return session;
+    }
+
+    /**
+     * Stops Crawljax. It will try to shutdown gracefully and run the {@link PostCrawlingPlugin}s.
+     */
+    public void stop() {
+        checkNotNull(controller, "Cannot stop Crawljax if you haven't started it");
+        controller.stop();
+    }
+
+    /**
+     * @return The {@link ExitStatus} Crawljax stopped or <code>null</code> if it hasn't stopped yet.
+     */
+    public ExitStatus getReason() {
+        return reason;
+    }
 }

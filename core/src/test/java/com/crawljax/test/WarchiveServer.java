@@ -12,61 +12,68 @@ import org.netpreserve.jwarc.net.WarcServer;
 
 public class WarchiveServer implements Runnable {
 
-  private final String resource;
+    private final String resource;
 
-  private int port;
-  ServerSocket socket;
-  private URI demoSite;
-  private WarcServer server;
-  private boolean started;
+    private final int port;
+    ServerSocket socket;
+    private URI demoSite;
 
-  /**
-   * @param directory The directory containing web archives
-   */
-  public WarchiveServer(String directory, int port) {
-    resource = directory;
-    this.port = port;
-  }
+    private boolean started;
 
-  public void start() throws Exception {
-    List<Path> warcs = Files.list(Paths.get(resource)).collect(Collectors.toList());
-    socket = new ServerSocket(port);
-    server = new WarcServer(socket, warcs);
-    System.err.println("Listening on port " + port);
-    this.started = true;
-    this.demoSite = URI.create("http://localhost:" + port + "/");
-    server.listen();
-  }
-
-  public URI getSiteUrl() {
-    checkServerStarted();
-    return demoSite;
-  }
-
-  public int getPort() {
-    checkServerStarted();
-    return port;
-  }
-
-  public synchronized void stop() {
-    checkServerStarted();
-    try {
-      socket.close();
-    } catch (Exception e) {
-      throw new RuntimeException("Could not stop the server", e);
+    /**
+     * @param directory The directory containing web archives
+     */
+    public WarchiveServer(String directory, int port) {
+        resource = directory;
+        this.port = port;
     }
-  }
 
-  private void checkServerStarted() {
-    Preconditions.checkState(started, "Server not started");
-  }
-
-  @Override
-  public void run() {
-    try {
-      start();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    public void start() throws Exception {
+        List<Path> warcs = Files.list(Paths.get(resource)).collect(Collectors.toList());
+        socket = new ServerSocket(port);
+        WarcServer server = new WarcServer(socket, warcs);
+        System.err.println("Listening on port " + port);
+        this.started = true;
+        this.demoSite = URI.create("http://localhost:" + port + "/");
+        server.listen();
     }
-  }
+
+    public URI getSiteUrl() {
+        checkServerStarted();
+        return demoSite;
+    }
+
+    public int getPort() {
+        checkServerStarted();
+        return port;
+    }
+
+    public synchronized void stop() {
+        checkServerStarted();
+        try {
+            socket.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Could not stop the server", e);
+        }
+    }
+
+    private void checkServerStarted() {
+        Preconditions.checkState(started, "Server not started");
+    }
+
+    @Override
+    public void run() {
+        try {
+            start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @return true if the server is started
+     */
+    public boolean isStarted() {
+        return started;
+    }
 }

@@ -7,16 +7,15 @@ import com.crawljax.oraclecomparator.AbstractComparator;
  */
 public class DummyComparator extends AbstractComparator {
 
-  /**
-   * Default argument less constructor.
-   */
-  public DummyComparator() {
-    super();
-  }
+    /**
+     * Default argument less constructor.
+     */
+    public DummyComparator() {
+        super();
+    }
 
-  @Override
-  public String normalize(String string) {
-    return string;
-  }
-
+    @Override
+    public String normalize(String string) {
+        return string;
+    }
 }

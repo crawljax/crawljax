@@ -18,26 +18,25 @@ import org.junit.experimental.categories.Category;
 @Category(BrowserTest.class)
 public class StatesContainElementsTest {
 
-  private CrawlSession crawl;
+    private CrawlSession crawl;
 
-  @Before
-  public void setup() {
-    crawl = new BaseCrawler(Resource.newClassPathResource("demo-site")) {
-      @Override
-      protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
-        return super.newCrawlConfigurationBuilder()
-            .setMaximumStates(2);
-      }
-    }.crawl();
-  }
-
-  @Test
-  public void whenCrawledTheStateVertexesContainEvents() {
-    Set<StateVertex> allStates = crawl.getStateFlowGraph().getAllStates();
-    for (StateVertex stateVertex : allStates) {
-      if ("index".equals(stateVertex.getName())) {
-        assertThat(stateVertex.getCandidateElements(), is(not(empty())));
-      }
+    @Before
+    public void setup() {
+        crawl = new BaseCrawler(Resource.newClassPathResource("demo-site")) {
+            @Override
+            protected CrawljaxConfigurationBuilder newCrawlConfigurationBuilder() {
+                return super.newCrawlConfigurationBuilder().setMaximumStates(2);
+            }
+        }.crawl();
     }
-  }
+
+    @Test
+    public void whenCrawledTheStateVertexesContainEvents() {
+        Set<StateVertex> allStates = crawl.getStateFlowGraph().getAllStates();
+        for (StateVertex stateVertex : allStates) {
+            if ("index".equals(stateVertex.getName())) {
+                assertThat(stateVertex.getCandidateElements(), is(not(empty())));
+            }
+        }
+    }
 }
