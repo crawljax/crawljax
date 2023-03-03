@@ -131,20 +131,18 @@ public class FragGenLivePageComparisonTests {
         frame2.setVisible(true);
 
         Object lock = new Object();
-        Thread t = new Thread() {
-            public void run() {
-                synchronized (lock) {
-                    while (frame.isVisible() && frame2.isVisible()) {
-                        try {
-                            lock.wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+        Thread t = new Thread(() -> {
+            synchronized (lock) {
+                while (frame.isVisible() && frame2.isVisible()) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    System.out.println("Closing!!");
                 }
+                System.out.println("Closing!!");
             }
-        };
+        });
         t.start();
 
         frame.addWindowListener(new WindowAdapter() {
