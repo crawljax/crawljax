@@ -161,7 +161,6 @@ public class JavaTestGenerator {
             builder.append(browserConfig.getNumberOfBrowsers());
             builder.append(", ");
             builder.append("new " + getBrowserOptionsString(browserConfig.getBrowserOptions()));
-            //            builder.append("new " + browserConfig.getBrowserOptions().toString());
             builder.append(")");
         }
         return builder.toString();
