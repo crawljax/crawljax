@@ -30,6 +30,7 @@
         <selenium.version>4.8.1</selenium.version>
         <jetty.version>11.0.13</jetty.version>
         <guice.version>5.1.0</guice.version>
+        <junit.version>4.13.2</junit.version>
     </properties>
 
     <scm>
@@ -58,7 +59,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.13.2</version>
+                <version>${junit.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
@@ -181,6 +182,13 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <groupId>org.apache.maven.plugins</groupId>
                     <version>3.0.0-M9</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-junit4</artifactId>
+                            <version>3.0.0-M9</version>
+                        </dependency>
+                    </dependencies>
                     <configuration>
                         <useSystemClassLoader>false</useSystemClassLoader>
                     </configuration>

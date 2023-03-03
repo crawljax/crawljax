@@ -2,6 +2,7 @@ package com.crawljax.plugins.testcasegenerator;
 
 import com.crawljax.browser.EmbeddedBrowser;
 import com.crawljax.core.configuration.BrowserConfiguration;
+import com.crawljax.core.configuration.BrowserOptions;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.plugin.Plugin;
 import com.crawljax.util.FSUtils;
@@ -138,7 +139,16 @@ public class JavaTestGenerator {
         }
     }
 
-    private Object getBrowserConfigString(BrowserConfiguration browserConfig) {
+    static String getBrowserOptionsString(BrowserOptions browserOptions) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(browserOptions.getClass().getSimpleName() + "(");
+        builder.append(browserOptions.getPixelDensity() + ", ");
+        builder.append(browserOptions.isUSE_CDP());
+        builder.append(")");
+        return builder.toString();
+    }
+
+    static Object getBrowserConfigString(BrowserConfiguration browserConfig) {
         StringBuilder builder = new StringBuilder();
         if (browserConfig.getBrowserType() == EmbeddedBrowser.BrowserType.REMOTE) {
             builder.append("BrowserConfiguration.remoteConfig(");
@@ -150,7 +160,7 @@ public class JavaTestGenerator {
             builder.append(", ");
             builder.append(browserConfig.getNumberOfBrowsers());
             builder.append(", ");
-            builder.append("new " + browserConfig.getBrowserOptions().toString());
+            builder.append("new " + getBrowserOptionsString(browserConfig.getBrowserOptions()));
             builder.append(")");
         }
         return builder.toString();
