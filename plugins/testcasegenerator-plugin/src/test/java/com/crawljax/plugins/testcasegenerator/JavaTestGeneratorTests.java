@@ -144,6 +144,7 @@ public class JavaTestGeneratorTests {
         // THEN
         assertCompiles(classNameWithPackage, output.toString());
         Files.deleteIfExists(Path.of("GeneratedTests.class").toAbsolutePath());
-        Files.deleteIfExists(Path.of("plugins/testcasegenerator/GeneratedTests.class").toAbsolutePath());
+        Files.deleteIfExists(
+                Path.of("plugins/testcasegenerator/GeneratedTests.class").toAbsolutePath());
     }
 }
