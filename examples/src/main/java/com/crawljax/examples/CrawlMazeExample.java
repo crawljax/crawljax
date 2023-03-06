@@ -1,12 +1,13 @@
 package com.crawljax.examples;
 
-import com.crawljax.browser.EmbeddedBrowser;
+import com.crawljax.browser.EmbeddedBrowser.BrowserType;
 import com.crawljax.core.CrawljaxRunner;
 import com.crawljax.core.configuration.BrowserConfiguration;
 import com.crawljax.core.configuration.BrowserOptions;
 import com.crawljax.core.configuration.CrawlRules.FormFillMode;
 import com.crawljax.core.configuration.CrawljaxConfiguration;
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.plugin.OnBrowserCreatedPlugin;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.plugin.PostCrawlingPlugin;
 import com.crawljax.plugins.crawloverview.CrawlOverview;
@@ -21,17 +22,21 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.v108.network.Network;
 
 /**
  * Example of running Crawljax on Google's Crawl Maze. Default output dir is "out".
  */
 public final class CrawlMazeExample {
 
-    private static final long WAIT_TIME_AFTER_EVENT = 500;
-    private static final long WAIT_TIME_AFTER_RELOAD = 500;
+    private static final long WAIT_TIME_AFTER_EVENT = 2000;
+    private static final long WAIT_TIME_AFTER_RELOAD = 2000;
     private static final String URL = "https://security-crawl-maze.app/";
 
     /**
@@ -59,13 +64,27 @@ public final class CrawlMazeExample {
 
         builder.crawlRules().clickElementsWithClickEventHandler();
 
-        builder.setBrowserConfig(
-                new BrowserConfiguration(EmbeddedBrowser.BrowserType.CHROME, 1, new BrowserOptions(true)));
+        builder.setBrowserConfig(new BrowserConfiguration(BrowserType.CHROME_HEADLESS, 1, new BrowserOptions(true)));
 
         // CrawlOverview
         builder.addPlugin(new CrawlOverview());
 
         Set<String> urls = new TreeSet<>();
+
+        builder.addPlugin((OnBrowserCreatedPlugin) (browser) -> {
+            DevTools devTools = ((ChromeDriver) browser.getWebDriver()).getDevTools();
+            devTools.createSession();
+            devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
+            devTools.addListener(Network.requestWillBeSent(), request -> {
+                try {
+                    System.out.println(
+                            "New network request: " + request.getRequest().getUrl());
+                    urls.add(new URL(request.getRequest().getUrl()).getPath());
+                } catch (MalformedURLException e) {
+                    System.err.println(e.getMessage());
+                }
+            });
+        });
 
         builder.addPlugin((OnNewStatePlugin) (context, state) -> {
             System.out.println(" new state with url: " + state.getUrl());
