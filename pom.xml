@@ -176,7 +176,7 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <version>3.10.1</version>
+                    <version>3.11.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
