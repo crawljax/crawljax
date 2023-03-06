@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.concurrent.Immutable;
 import javax.inject.Provider;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 @Immutable
 public class BrowserConfiguration {
@@ -42,6 +43,7 @@ public class BrowserConfiguration {
     private String remoteHubUrl;
     private String lang;
     private BrowserOptions browserOptions;
+    private DesiredCapabilities desiredCapabilities;
 
     /**
      * This configuration will start one browser of the selected type.
@@ -94,10 +96,13 @@ public class BrowserConfiguration {
      * @param numberOfBrowsers The number of browsers you'd like to use. They will be started as soon
      *                         as the crawl starts.
      * @param remoteUrl        the URL of the remote HUB
+     * @param desiredCapabilities the desired capabilities to use.
      */
-    public static BrowserConfiguration remoteConfig(int numberOfBrowsers, String remoteUrl) {
+    public static BrowserConfiguration remoteConfig(
+            int numberOfBrowsers, String remoteUrl, DesiredCapabilities desiredCapabilities) {
         BrowserConfiguration config = new BrowserConfiguration(BrowserType.REMOTE, numberOfBrowsers);
         config.remoteHubUrl = remoteUrl;
+        config.desiredCapabilities = desiredCapabilities;
         return config;
     }
 
@@ -119,6 +124,14 @@ public class BrowserConfiguration {
 
     public boolean isDefaultBuilder() {
         return browserBuilder.equals(DEFAULT_BROWSER_BUILDER);
+    }
+
+    public DesiredCapabilities getDesiredCapabilities() {
+        return this.desiredCapabilities;
+    }
+
+    public void setDesiredCapabilities(DesiredCapabilities desiredCapabilities) {
+        this.desiredCapabilities = desiredCapabilities;
     }
 
     @Override

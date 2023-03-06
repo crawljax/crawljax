@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.cli.ParseException;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class JarRunner {
 
@@ -111,7 +112,9 @@ public class JarRunner {
         }
         if (browser == BrowserType.REMOTE) {
             String remoteUrl = options.getSpecifiedRemoteBrowser();
-            builder.setBrowserConfig(BrowserConfiguration.remoteConfig(browsers, remoteUrl));
+            DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+            desiredCapabilities.setBrowserName(org.openqa.selenium.remote.Browser.CHROME.browserName());
+            builder.setBrowserConfig(BrowserConfiguration.remoteConfig(browsers, remoteUrl, desiredCapabilities));
         } else {
             builder.setBrowserConfig(new BrowserConfiguration(browser, browsers));
         }

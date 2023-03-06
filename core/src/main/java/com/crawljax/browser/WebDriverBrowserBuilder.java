@@ -79,7 +79,8 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
                             configuration.getBrowserConfig().getRemoteHubUrl(),
                             filterAttributes,
                             crawlWaitEvent,
-                            crawlWaitReload);
+                            crawlWaitReload,
+                            configuration.getBrowserConfig().getDesiredCapabilities());
                     break;
                 default:
                     throw new IllegalStateException("Unrecognized browser type "

@@ -44,7 +44,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
@@ -136,12 +135,17 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
      * @param filterAttributes the attributes to be filtered from DOM.
      * @param crawlWaitReload  the period to wait after a reload.
      * @param crawlWaitEvent   the period to wait after an event is fired.
+     * @param desiredCapabilities the desired capabilities to use.
      * @return The EmbeddedBrowser.
      */
     public static WebDriverBackedEmbeddedBrowser withRemoteDriver(
-            String hubUrl, ImmutableSortedSet<String> filterAttributes, long crawlWaitEvent, long crawlWaitReload) {
+            String hubUrl,
+            ImmutableSortedSet<String> filterAttributes,
+            long crawlWaitEvent,
+            long crawlWaitReload,
+            DesiredCapabilities desiredCapabilities) {
         return WebDriverBackedEmbeddedBrowser.withDriver(
-                buildRemoteWebDriver(hubUrl), filterAttributes, crawlWaitEvent, crawlWaitReload);
+                buildRemoteWebDriver(hubUrl, desiredCapabilities), filterAttributes, crawlWaitEvent, crawlWaitReload);
     }
 
     /**
@@ -152,6 +156,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
      * @param crawlWaitReload    the period to wait after a reload.
      * @param crawlWaitEvent     the period to wait after an event is fired.
      * @param ignoreFrameChecker the checker used to determine if a certain frame must be ignored.
+     * @param desiredCapabilities the desired capabilities to use.
      * @return The EmbeddedBrowser.
      */
     public static WebDriverBackedEmbeddedBrowser withRemoteDriver(
@@ -159,9 +164,14 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
             ImmutableSortedSet<String> filterAttributes,
             long crawlWaitEvent,
             long crawlWaitReload,
-            IgnoreFrameChecker ignoreFrameChecker) {
+            IgnoreFrameChecker ignoreFrameChecker,
+            DesiredCapabilities desiredCapabilities) {
         return WebDriverBackedEmbeddedBrowser.withDriver(
-                buildRemoteWebDriver(hubUrl), filterAttributes, crawlWaitEvent, crawlWaitReload, ignoreFrameChecker);
+                buildRemoteWebDriver(hubUrl, desiredCapabilities),
+                filterAttributes,
+                crawlWaitEvent,
+                crawlWaitReload,
+                ignoreFrameChecker);
     }
 
     /**
@@ -202,10 +212,12 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
      * Create a RemoteWebDriver backed EmbeddedBrowser.
      *
      * @param hubUrl Url of the server.
+     * @param desiredCapabilities the desired capabilities to use.
      * @return The EmbeddedBrowser.
      */
-    public static WebDriverBackedEmbeddedBrowser withRemoteDriver(String hubUrl) {
-        return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl));
+    public static WebDriverBackedEmbeddedBrowser withRemoteDriver(
+            String hubUrl, DesiredCapabilities desiredCapabilities) {
+        return WebDriverBackedEmbeddedBrowser.withDriver(buildRemoteWebDriver(hubUrl, desiredCapabilities));
     }
 
     /**
@@ -215,9 +227,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
      * @param hubUrl the url of the hub to use.
      * @return the RemoteWebDriver instance.
      */
-    private static RemoteWebDriver buildRemoteWebDriver(String hubUrl) {
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setPlatform(Platform.ANY);
+    private static RemoteWebDriver buildRemoteWebDriver(String hubUrl, DesiredCapabilities desiredCapabilities) {
         URL url;
         try {
             url = new URL(hubUrl);
@@ -236,7 +246,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
                     "Received unknown exception while creating the " + "HttpCommandExecutor, can not continue!", e);
             return null;
         }
-        return new RemoteWebDriver(executor, capabilities);
+        return new RemoteWebDriver(executor, desiredCapabilities);
     }
 
     /**
