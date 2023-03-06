@@ -113,7 +113,7 @@ public class JarRunner {
         if (browser == BrowserType.REMOTE) {
             String remoteUrl = options.getSpecifiedRemoteBrowser();
             DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-            desiredCapabilities.setBrowserName(org.openqa.selenium.remote.Browser.CHROME.browserName());
+            desiredCapabilities.setBrowserName(Browser.CHROME.browserName());
             builder.setBrowserConfig(BrowserConfiguration.remoteConfig(browsers, remoteUrl, desiredCapabilities));
         } else {
             builder.setBrowserConfig(new BrowserConfiguration(browser, browsers));
