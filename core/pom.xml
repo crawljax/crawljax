@@ -119,7 +119,7 @@
     <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-devtools-v108 -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-devtools-v110</artifactId>
+      <artifactId>${selenium-devtools.version}</artifactId>
       <version>${selenium.version}</version>
     </dependency>
 
