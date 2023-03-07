@@ -1,7 +1,7 @@
 package com.crawljax.browser;
 
+import com.assertthat.selenium_shutterbug.core.Capture;
 import com.assertthat.selenium_shutterbug.core.Shutterbug;
-import com.assertthat.selenium_shutterbug.utils.web.ScrollStrategy;
 import com.crawljax.core.CrawljaxException;
 import com.crawljax.core.configuration.AcceptAllFramesChecker;
 import com.crawljax.core.configuration.IgnoreFrameChecker;
@@ -943,7 +943,7 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
         }
 
         if (this.pixelDensity != -1) {
-            BufferedImage img = Shutterbug.shootPage(getWebDriver(), ScrollStrategy.BOTH_DIRECTIONS, scrollTime, true)
+            BufferedImage img = Shutterbug.shootPage(getWebDriver(), Capture.FULL_SCROLL, scrollTime, true)
                     .getImage();
             BufferedImage resizedImage = new BufferedImage(
                     img.getWidth() / pixelDensity, img.getHeight() / pixelDensity, BufferedImage.TYPE_INT_RGB);
