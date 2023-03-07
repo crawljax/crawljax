@@ -30,7 +30,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.v108.network.Network;
+import org.openqa.selenium.devtools.v110.network.Network;
 
 /**
  * Example of running Crawljax on Google's Crawl Maze. Default output dir is "out".
