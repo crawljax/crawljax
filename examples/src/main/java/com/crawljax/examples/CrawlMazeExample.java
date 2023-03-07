@@ -17,10 +17,12 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Set;
@@ -69,7 +71,7 @@ public final class CrawlMazeExample {
         // CrawlOverview
         builder.addPlugin(new CrawlOverview());
 
-        Set<String> urls = new TreeSet<>();
+        Set<String> detectedUrls = new TreeSet<>();
 
         builder.addPlugin((OnBrowserCreatedPlugin) (browser) -> {
             DevTools devTools = ((ChromeDriver) browser.getWebDriver()).getDevTools();
@@ -79,7 +81,7 @@ public final class CrawlMazeExample {
                 try {
                     System.out.println(
                             "New network request: " + request.getRequest().getUrl());
-                    urls.add(new URL(request.getRequest().getUrl()).getPath());
+                    detectedUrls.add(new URL(request.getRequest().getUrl()).getPath());
                 } catch (MalformedURLException e) {
                     System.err.println(e.getMessage());
                 }
@@ -87,9 +89,9 @@ public final class CrawlMazeExample {
         });
 
         builder.addPlugin((OnNewStatePlugin) (context, state) -> {
-            System.out.println(" new state with url: " + state.getUrl());
+            System.out.println("New state with url: " + state.getUrl());
             try {
-                urls.add(new URL(state.getUrl()).getPath());
+                detectedUrls.add(new URL(state.getUrl()).getPath());
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -101,12 +103,8 @@ public final class CrawlMazeExample {
             try {
                 String folderName = "out/crawlmaze/";
                 FSUtils.directoryCheck(folderName);
-                FileWriter fileWriter = new FileWriter(
-                        Paths.get(folderName + "detected-urls.json").toFile());
-                gson.toJson(urls, fileWriter);
-                fileWriter.flush();
-                fileWriter.close();
-                System.out.println("Total number of urls DETECTED: " + urls.size());
+                WriteJsonToFile(detectedUrls, gson, folderName + "all-detected-urls.json");
+                System.out.println("Total number of urls DETECTED: " + detectedUrls.size());
 
                 String expectedUrls =
                         Resources.toString(Resources.getResource("expected-results.json"), Charsets.UTF_8);
@@ -114,10 +112,14 @@ public final class CrawlMazeExample {
                         gson.fromJson(expectedUrls, new TypeToken<TreeSet<String>>() {}.getType());
                 System.out.println("Total number of urls EXPECTED: " + expectedSet.size());
                 Set<String> intersection = new TreeSet<>(expectedSet);
-                intersection.retainAll(urls);
+                intersection.retainAll(detectedUrls);
 
-                System.out.println("intersection size: " + intersection.size());
-                System.out.println("intersection: " + intersection);
+                System.out.println("Covered urls size: " + intersection.size());
+                System.out.println("Covered urls: " + intersection);
+                WriteJsonToFile(intersection, gson, folderName + "covered-urls.json");
+
+                System.out.println("Detected URLs are saved in: " + folderName + "all-detected-urls.json");
+                System.out.println("Covered URLs are saved in: " + folderName + "covered-urls.json");
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -126,5 +128,12 @@ public final class CrawlMazeExample {
 
         CrawljaxRunner crawljax = new CrawljaxRunner(builder.build());
         crawljax.call();
+    }
+
+    private static void WriteJsonToFile(Set<String> urls, Gson gson, String filePath) throws IOException {
+        Writer fileWriter = Files.newBufferedWriter(Paths.get(filePath).toFile().toPath(), Charset.defaultCharset());
+        gson.toJson(urls, fileWriter);
+        fileWriter.flush();
+        fileWriter.close();
     }
 }
