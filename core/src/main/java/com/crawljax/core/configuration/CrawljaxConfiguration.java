@@ -422,17 +422,9 @@ public class CrawljaxConfiguration {
             for (Plugin plugin : config.plugins) {
                 if (plugin instanceof ClickableDetectorPlugin) {
                     // Clickable detector requires CDP
-                    boolean USE_CDP =
-                            config.getBrowserConfig().getBrowserOptions().isUSE_CDP();
                     BrowserType browserType = config.getBrowserConfig().getBrowserType();
-                    if (USE_CDP) {
-                        if (!(browserType == EmbeddedBrowser.BrowserType.CHROME_HEADLESS
-                                || browserType == EmbeddedBrowser.BrowserType.CHROME)) {
-                            throw new IllegalArgumentException(
-                                    "Chrome Developer Protocol (CDP) is compatible only with Chrome Browser. It cannot be used with"
-                                            + config.getBrowserConfig().getBrowserType());
-                        }
-                    } else {
+                    if (!(browserType == EmbeddedBrowser.BrowserType.CHROME_HEADLESS
+                            || browserType == EmbeddedBrowser.BrowserType.CHROME)) {
                         throw new IllegalArgumentException(
                                 "Clickable detection is only available for CHROME with CDP enabled. "
                                         + "Please use BrowserOptions.setUSE_CDP(true) to enable CDP");

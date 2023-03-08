@@ -6,7 +6,6 @@ import static com.crawljax.vips_selenium.VipsUtils.setEventListeners;
 import static com.crawljax.vips_selenium.VipsUtils.setPopulated;
 
 import com.crawljax.browser.EmbeddedBrowser;
-import com.crawljax.browser.WebDriverBackedEmbeddedBrowser;
 import com.crawljax.core.CrawlerContext;
 import com.crawljax.core.plugin.OnNewStatePlugin;
 import com.crawljax.core.state.StateVertex;
@@ -54,12 +53,11 @@ public class ClickableDetectorPlugin implements OnNewStatePlugin {
 
     @Override
     public void onNewState(CrawlerContext context, StateVertex newState) {
-        boolean isUseCDP = ((WebDriverBackedEmbeddedBrowser) context.getBrowser()).isUSE_CDP();
         boolean isChrome = context.getConfig().getBrowserConfig().getBrowserType() == EmbeddedBrowser.BrowserType.CHROME
                 || context.getConfig().getBrowserConfig().getBrowserType()
                         == EmbeddedBrowser.BrowserType.CHROME_HEADLESS;
 
-        if (isChrome && isUseCDP) {
+        if (isChrome) {
             try {
                 findClickables(context.getBrowser(), newState);
             } catch (IOException e) {
