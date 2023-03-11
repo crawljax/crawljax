@@ -24,7 +24,7 @@ public class RemoteExample {
     public static void main(String[] args) {
         String remoteUrl = "http://localhost:4444/wd/hub";
         int numberOfBrowsers = 1;
-        CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor("https://www.cnn.com/");
+        CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor("http://demo.crawljax.com/");
         builder.crawlRules().setFormFillMode(FormFillMode.NORMAL);
 
         builder.crawlRules().clickDefaultElements();
