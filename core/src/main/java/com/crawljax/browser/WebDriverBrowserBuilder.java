@@ -206,6 +206,9 @@ public class WebDriverBrowserBuilder implements Provider<EmbeddedBrowser> {
                     + configuration.getProxyConfiguration().getPort());
         }
 
+        // Issue 587 fix for Chrome 111
+        optionsChrome.addArguments("--remote-allow-origins=*");
+
         WebDriverManager manager = WebDriverManager.getInstance(DriverManagerType.CHROME);
         manager.capabilities(optionsChrome);
         ChromeDriver driverChrome = (ChromeDriver) manager.create();
