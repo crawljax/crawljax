@@ -22,10 +22,10 @@ public class RemoteExample {
      * Run this method to start the crawl.
      */
     public static void main(String[] args) {
-        //Learn how to start selenium grid with selenium-server.jar here: 
-        //https://www.selenium.dev/documentation/grid/getting_started/
+        // Learn how to start selenium grid with selenium-server.jar here:
+        // https://www.selenium.dev/documentation/grid/getting_started/
         // or with docker here:
-        //https://github.com/SeleniumHQ/docker-selenium
+        // https://github.com/SeleniumHQ/docker-selenium
         String remoteUrl = "http://localhost:4444/wd/hub";
         int numberOfBrowsers = 1;
         CrawljaxConfigurationBuilder builder = CrawljaxConfiguration.builderFor("https://www.dictionary.com");
