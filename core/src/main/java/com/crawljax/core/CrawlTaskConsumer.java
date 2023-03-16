@@ -44,13 +44,17 @@ public class CrawlTaskConsumer implements Callable<Void> {
                 pollAndHandleCrawlTasks();
                 runningConsumers.decrementAndGet();
             }
-            crawler.close();
         } catch (InterruptedException e) {
             LOG.debug("Consumer interrupted");
-            crawler.close();
         } catch (RuntimeException e) {
             LOG.error("Unexpected error " + e.getMessage(), e);
             throw e;
+        } finally {
+            try {
+                crawler.close();
+            } catch (Exception e) {
+                LOG.error("Error occurred while closing the browser:", e);
+            }
         }
         return null;
     }

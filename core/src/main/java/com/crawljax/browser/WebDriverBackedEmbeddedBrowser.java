@@ -34,6 +34,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
@@ -71,6 +75,9 @@ import ru.yandex.qatools.ashot.shooting.ViewportPastingDecorator;
 public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverBackedEmbeddedBrowser.class);
+
+    private static final int BROWSER_CLOSE_TIMEOUT_SECS = 20;
+
     private final ImmutableSortedSet<String> filterAttributes;
     private final WebDriver browser;
     private int pixelDensity = -1;
@@ -346,19 +353,38 @@ public final class WebDriverBackedEmbeddedBrowser implements EmbeddedBrowser {
     @Override
     public void close() {
         LOGGER.info("Closing the browser...");
+        // close browser and close every associated window.
+        CompletableFuture<?> closeTask = CompletableFuture.runAsync(this::quit);
         try {
-            // close browser and close every associated window.
-            WebDriverManager.getInstance().quit();
-        } catch (WebDriverException e) {
-            if (e.getCause() instanceof InterruptedException
-                    || e.getCause().getCause() instanceof InterruptedException) {
-                LOGGER.info("Interrupted while waiting for the browser to close. It might not close correctly");
-                Thread.currentThread().interrupt();
-                return;
-            }
-            throw wrapWebDriverExceptionIfConnectionException(e);
+            awaitForCloseTask(closeTask, BROWSER_CLOSE_TIMEOUT_SECS);
+        } catch (InterruptedException e) {
+            LOGGER.debug("Interrupted while waiting for the browser to close.");
+            Thread.currentThread().interrupt();
+            return;
         }
-        LOGGER.debug("Browser closed...");
+        LOGGER.debug("Browser closed: {}", closeTask.isDone());
+    }
+
+    private void quit() {
+        if (!WebDriverManager.getInstance().getWebDriverList().isEmpty()) {
+            WebDriverManager.getInstance().quit();
+        } else {
+            browser.quit();
+        }
+    }
+
+    private void awaitForCloseTask(CompletableFuture<?> closeTask, int timeoutSeconds) throws InterruptedException {
+        try {
+            closeTask.get(timeoutSeconds, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            LOGGER.debug("Browser not closed after {} seconds.", timeoutSeconds);
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof WebDriverException) {
+                throw wrapWebDriverExceptionIfConnectionException((WebDriverException) cause);
+            }
+            LOGGER.warn("An exception occurred while closing the browser:", cause);
+        }
     }
 
     @Override
