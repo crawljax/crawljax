@@ -50,6 +50,7 @@ public class VipsSeleniumTests {
         WebDriverManager wdm = WebDriverManager.chromedriver();
         ChromeOptions optionsChrome = new ChromeOptions();
         optionsChrome.addArguments("--headless");
+        optionsChrome.addArguments("--remote-allow-origins=*");
         wdm.capabilities(optionsChrome);
         driver = wdm.create();
     }
