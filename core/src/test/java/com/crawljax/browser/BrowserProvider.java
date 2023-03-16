@@ -45,10 +45,11 @@ public class BrowserProvider extends ExternalResource {
         switch (getBrowserType()) {
             case CHROME:
                 WebDriverManager wdm = WebDriverManager.chromedriver();
+                wdm.capabilities(createChromeOptions());
                 driver = (RemoteWebDriver) wdm.create();
                 break;
             case CHROME_HEADLESS:
-                ChromeOptions optionsChrome = new ChromeOptions();
+                ChromeOptions optionsChrome = createChromeOptions();
                 optionsChrome.addArguments("--headless");
                 wdm = WebDriverManager.chromedriver();
                 wdm.capabilities(optionsChrome);
@@ -82,6 +83,12 @@ public class BrowserProvider extends ExternalResource {
         driver.manage().deleteAllCookies();
 
         return driver;
+    }
+
+    private static ChromeOptions createChromeOptions() {
+        ChromeOptions optionsChrome = new ChromeOptions();
+        optionsChrome.addArguments("--remote-allow-origins=*");
+        return optionsChrome;
     }
 
     @Override
