@@ -75,14 +75,20 @@ public class CrawlController implements Callable<CrawlSession> {
      */
     @Override
     public CrawlSession call() {
-        setMaximumCrawlTimeIfNeeded();
-        plugins.runPreCrawlingPlugins(config);
-        CrawlTaskConsumer firstConsumer = consumerFactory.get();
-        StateVertex firstState = firstConsumer.crawlIndex();
-        crawlSessionProvider.setup(firstState, firstConsumer);
-        //		plugins.runOnNewStatePlugins(firstConsumer.getContext(), firstState);
-        executeConsumers(firstConsumer);
-        return crawlSessionProvider.get();
+        try {
+            setMaximumCrawlTimeIfNeeded();
+            plugins.runPreCrawlingPlugins(config);
+            CrawlTaskConsumer firstConsumer = consumerFactory.get();
+            StateVertex firstState = firstConsumer.crawlIndex();
+            crawlSessionProvider.setup(firstState, firstConsumer);
+            // plugins.runOnNewStatePlugins(firstConsumer.getContext(), firstState);
+            executeConsumers(firstConsumer);
+            return crawlSessionProvider.get();
+        } finally {
+            if (!executor.isShutdown()) {
+                executor.shutdownNow();
+            }
+        }
     }
 
     /**
