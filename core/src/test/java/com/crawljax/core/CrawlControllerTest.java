@@ -2,6 +2,7 @@ package com.crawljax.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -25,7 +26,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Provider;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -145,12 +145,14 @@ public class CrawlControllerTest {
     public void withASingleTaskTheCrawlerTerminates() {
         setupForConsumers(1);
         runWithOneTask();
+        verifyPerfectEndState();
     }
 
     @Test(timeout = 5000L)
     public void withASingleTaskMultipleConsumersTheCrawlerTerminates() {
         setupForConsumers(4);
         runWithOneTask();
+        verifyPerfectEndState();
     }
 
     private void runWithOneTask() {
@@ -167,6 +169,7 @@ public class CrawlControllerTest {
         candidateActions.addActions(mockActions(2), state3);
         controller.call();
         assertThat(polledActions.get(), is(6));
+        verifyPerfectEndState();
     }
 
     @Test(timeout = 50_000)
@@ -174,6 +177,7 @@ public class CrawlControllerTest {
         setupForConsumers(4);
         runWith300Actions();
         verify(crawler, times(4)).close();
+        verifyPerfectEndState();
     }
 
     private void runWith300Actions() {
@@ -193,10 +197,23 @@ public class CrawlControllerTest {
         return list;
     }
 
-    @After
-    public void verifyPerfectEndState() {
+    private void verifyPerfectEndState() {
         assertThat(candidateActions.isEmpty(), is(true));
         assertThat(consumersDoneLatch.isExitCalled(), is(true));
         verify(postCrawlPlugin).postCrawling(crawlSessionProvider.get(), ExitStatus.EXHAUSTED);
+    }
+
+    @Test
+    public void withErrorFromConsumerFactoryShutsDownExecutor() {
+        ExecutorService executor = mock(ExecutorService.class);
+        config = mock(CrawljaxConfiguration.class);
+        consumersDoneLatch = mock(ExitNotifier.class);
+        crawlSessionProvider = mock(CrawlSessionProvider.class);
+        Plugins plugins = mock(Plugins.class);
+        when(consumerFactory.get()).thenThrow(RuntimeException.class);
+        controller = new CrawlController(
+                executor, consumerFactory, config, consumersDoneLatch, crawlSessionProvider, plugins);
+        assertThrows(RuntimeException.class, () -> controller.call());
+        verify(executor).shutdownNow();
     }
 }
