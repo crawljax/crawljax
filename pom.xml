@@ -202,7 +202,7 @@
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <version>3.1.0</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
