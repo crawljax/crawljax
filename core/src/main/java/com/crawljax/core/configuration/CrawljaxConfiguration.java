@@ -116,6 +116,9 @@ public class CrawljaxConfiguration {
      * @return The output directory for site-specific data such as form inputs.
      */
     public File getSiteDir() {
+        if (output == null) {
+            return null;
+        }
 
         // If we've already created the folder, return it.
         if (siteOutput != null) {
@@ -139,6 +142,9 @@ public class CrawljaxConfiguration {
      * @return The output directory for crawl-specific data such as crawl-overview output.
      */
     public File getOutputDir() {
+        if (output == null) {
+            return null;
+        }
 
         // If we've already created the folder, return it.
         if (pluginOutput != null) {
@@ -389,7 +395,9 @@ public class CrawljaxConfiguration {
          */
         public CrawljaxConfigurationBuilder setOutputDirectory(File output) {
             config.output = output;
-            checkOutputDirWritable();
+            if (config.output != null) {
+                checkOutputDirWritable();
+            }
             return this;
         }
 
@@ -416,6 +424,10 @@ public class CrawljaxConfiguration {
 
             if (config.crawlScope == null) {
                 config.crawlScope = new DefaultCrawlScope(config.getUrl());
+            }
+
+            if (!config.plugins.isEmpty() && config.output == null) {
+                throw new IllegalArgumentException("The output directory should be specified when using plugins.");
             }
 
             // If Clickable detection is enabled, make sure CDP is enabled.

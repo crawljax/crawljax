@@ -11,6 +11,7 @@ import com.crawljax.forms.FormInput;
 import com.crawljax.forms.FormInputValueHelper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -33,7 +34,12 @@ public class CrawljaxRunner implements Callable<CrawlSession> {
      * Reads input data from a JSON file in the output directory.
      */
     private void readFormDataFromFile() {
-        List<FormInput> formInputList = FormInputValueHelper.deserializeFormInputs(config.getSiteDir());
+        File siteDir = config.getSiteDir();
+        if (siteDir == null) {
+            return;
+        }
+
+        List<FormInput> formInputList = FormInputValueHelper.deserializeFormInputs(siteDir);
 
         if (formInputList != null) {
             InputSpecification inputSpecs = config.getCrawlRules().getInputSpecification();
