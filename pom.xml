@@ -27,8 +27,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <slf4j.version>2.0.7</slf4j.version>
         <logback.version>1.4.6</logback.version>
-        <selenium.version>4.8.1</selenium.version>
-        <selenium-devtools.version>selenium-devtools-v110</selenium-devtools.version>
+        <selenium.version>4.9.0</selenium.version>
+        <selenium-devtools.version>selenium-devtools-v112</selenium-devtools.version>
         <jetty.version>11.0.14</jetty.version>
         <guice.version>5.1.0</guice.version>
         <junit.version>4.13.2</junit.version>
