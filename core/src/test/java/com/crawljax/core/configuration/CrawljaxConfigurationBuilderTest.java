@@ -2,16 +2,25 @@ package com.crawljax.core.configuration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertThrows;
 
 import com.crawljax.core.configuration.CrawljaxConfiguration.CrawljaxConfigurationBuilder;
+import com.crawljax.core.plugin.Plugin;
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.hamcrest.core.Is;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class CrawljaxConfigurationBuilderTest {
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Test(expected = IllegalArgumentException.class)
     public void negativeMaximumStatesIsNotAllowed() {
@@ -73,5 +82,34 @@ public class CrawljaxConfigurationBuilderTest {
         CrawlScope crawlScope = url -> true;
         CrawljaxConfiguration conf = testBuilder().setCrawlScope(crawlScope).build();
         assertThat(conf.getCrawlScope(), is(crawlScope));
+    }
+
+    @Test
+    public void shouldBuildWithOutputDirAndPlugins() throws IOException {
+        File outputDir = folder.newFolder();
+        Plugin plugin = new Plugin() {};
+        CrawljaxConfiguration conf =
+                testBuilder().setOutputDirectory(outputDir).addPlugin(plugin).build();
+        assertThat(
+                conf.getOutputDir().getParentFile(),
+                is(new File(outputDir, conf.getUrl().getHost())));
+        assertThat(conf.getPlugins(), hasItem(plugin));
+    }
+
+    @Test
+    public void shouldThrowForMissingOutputDirWithPlugins() {
+        File outputDir = null;
+        Plugin plugin = new Plugin() {};
+        CrawljaxConfigurationBuilder builder =
+                testBuilder().setOutputDirectory(outputDir).addPlugin(plugin);
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> builder.build());
+        assertThat(ex.getMessage(), is("The output directory should be specified when using plugins."));
+    }
+
+    @Test
+    public void shouldBuildWithoutOutputDirAndPlugins() {
+        File outputDir = null;
+        CrawljaxConfiguration conf = testBuilder().setOutputDirectory(outputDir).build();
+        assertThat(conf.getOutputDir(), is(outputDir));
     }
 }

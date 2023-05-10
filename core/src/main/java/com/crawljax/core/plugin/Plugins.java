@@ -60,7 +60,9 @@ public class Plugins {
         Preconditions.checkNotNull(plugins);
         ImmutableListMultimap.Builder<Class<? extends Plugin>, Plugin> builder = ImmutableListMultimap.builder();
         if (plugins.isEmpty()) {
-            LOGGER.warn("No plugins loaded. There will be no output");
+            if (config.getOutputDir() != null) {
+                LOGGER.warn("No plugins loaded. There will be no output");
+            }
         } else {
             addPlugins(plugins, builder);
         }

@@ -212,6 +212,9 @@ public class FragmentationPlugin implements OnNewStatePlugin, OnRevisitStatePlug
 
     public static void writeCrawlPath(CrawlSession session, CrawlPath crawlPath, int id) {
         File outputDir = session.getConfig().getOutputDir();
+        if (outputDir == null) {
+            return;
+        }
 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().create();
