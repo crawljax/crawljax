@@ -1008,7 +1008,7 @@ public class Crawler {
             }
         } catch (Exception e) {
             // TODO: handle exception
-            LOG.error("Eventable element is not valid : ", e.getMessage());
+            LOG.error("Eventable element is not valid: {}", e.getMessage());
         }
 
         return false;
