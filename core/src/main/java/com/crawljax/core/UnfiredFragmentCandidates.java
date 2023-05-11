@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -54,6 +56,11 @@ public class UnfiredFragmentCandidates {
     private final List<Eventable> skipInputsForPath;
     private final Map<Long, List<FormInput>> inputMap = new HashMap<>();
     private final boolean applyNonSelAdvantage;
+    private final ReadWriteLock consumersStateLock;
+    private final Lock consumersWriteLock;
+    private final Lock consumersReadLock;
+    private int runningConsumers;
+    private int pendingStates;
 
     private boolean unexploredStates = true;
 
@@ -78,6 +85,10 @@ public class UnfiredFragmentCandidates {
         skipExploredActions = crawlRules.isSkipExploredActions();
         MAX_REPEAT = crawlRules.getMaxRepeatExploredActions();
         restoreConnectedEdges = crawlRules.isRestoreConnectedEdges();
+
+        consumersStateLock = new ReentrantReadWriteLock();
+        consumersWriteLock = consumersStateLock.writeLock();
+        consumersReadLock = consumersStateLock.readLock();
     }
 
     private CandidateCrawlAction getBestAction(
@@ -268,8 +279,15 @@ public class UnfiredFragmentCandidates {
     }
 
     private void removeStateFromQueue(int id) {
-        while (statesWithCandidates.remove(id)) {
-            LOG.trace("Removed id {} from the queue", id);
+        consumersWriteLock.lock();
+        try {
+            while (statesWithCandidates.remove(id)) {
+                LOG.trace("Removed id {} from the queue", id);
+                pendingStates--;
+            }
+            LOG.debug("statesWithCandidates={}", statesWithCandidates);
+        } finally {
+            consumersWriteLock.unlock();
         }
     }
 
@@ -305,19 +323,41 @@ public class UnfiredFragmentCandidates {
             } else {
                 cache.put(state.getId(), actions);
             }
-            statesWithCandidates.add(state.getId());
-            LOG.info("There are {} states with unfired actions", statesWithCandidates.size());
         } finally {
             lock.unlock();
         }
+
+        consumersWriteLock.lock();
+        try {
+            addPendingState(state);
+        } finally {
+            consumersWriteLock.unlock();
+        }
+    }
+
+    private void addPendingState(StateVertex state) {
+        pendingStates++;
+        statesWithCandidates.add(state.getId());
+        LOG.info("There are {} states with unfired actions: {}", pendingStates, statesWithCandidates);
     }
 
     /**
-     * @return If there are any pending actions to be crawled. This method is not threadsafe and might
-     * return a stale value.
+     * @return If there are any pending actions to be crawled (and no state is being crawled).
      */
     public boolean isEmpty() {
-        return statesWithCandidates.isEmpty();
+        consumersReadLock.lock();
+        try {
+            boolean empty = runningConsumers == 0 && pendingStates == 0;
+            LOG.debug(
+                    "isEmpty={} runningConsumers={} pendingStates={} statesWithCandidates={}",
+                    empty,
+                    runningConsumers,
+                    pendingStates,
+                    statesWithCandidates);
+            return empty;
+        } finally {
+            consumersReadLock.unlock();
+        }
     }
 
     /**
@@ -329,9 +369,7 @@ public class UnfiredFragmentCandidates {
             StateVertex currentState, List<StateVertex> onURLSet, FragmentManager fragmentManager)
             throws InterruptedException {
         if (currentState == null) {
-            int id = statesWithCandidates.take();
-            // Put it back the end of the queue. It will be removed later.
-            statesWithCandidates.add(id);
+            int id = consumeTask();
             return sfg.get().getById(id);
         }
 
@@ -352,9 +390,7 @@ public class UnfiredFragmentCandidates {
             if (fragmentManager.getAllFragments() == null) {
                 return null;
             }
-            int id = statesWithCandidates.take();
-            // Put it back the end of the queue. It will be removed later.
-            statesWithCandidates.add(id);
+            int id = consumeTask();
             return sfg.get().getById(id);
         }
 
@@ -369,12 +405,69 @@ public class UnfiredFragmentCandidates {
     }
 
     public StateVertex awaitNewTask() throws InterruptedException {
-        int id = statesWithCandidates.take();
-        // Put it back the end of the queue. It will be removed later.
-        statesWithCandidates.add(id);
+        int id = consumeTask();
         LOG.debug("New task polled for state {}", id);
-        LOG.info("There are {} states with unfired actions", statesWithCandidates.size());
         return sfg.get().getById(id);
+    }
+
+    private int consumeTask() throws InterruptedException {
+        int id = statesWithCandidates.take();
+
+        consumersWriteLock.lock();
+        try {
+            runningConsumers++;
+            pendingStates--;
+
+            LOG.debug(
+                    "Took state {}, there are {} running consumers and {} pending states",
+                    id,
+                    runningConsumers,
+                    pendingStates);
+        } finally {
+            consumersWriteLock.unlock();
+        }
+
+        return id;
+    }
+
+    /**
+     * Indicates that a task is done.
+     *
+     * <p> Should be called after processing a task.
+     *
+     * @param state the state of the task done.
+     * @see #awaitNewTask()
+     */
+    void taskDone(StateVertex state) {
+        if (state == null) {
+            return;
+        }
+
+        consumersWriteLock.lock();
+        try {
+            runningConsumers--;
+
+            int stateId = state.getId();
+            Lock lock = locks.get(stateId);
+            try {
+                lock.lock();
+                List<CandidateCrawlAction> queue = cache.get(stateId);
+                if (queue != null && !queue.isEmpty()) {
+                    addPendingState(state);
+                }
+            } finally {
+                lock.unlock();
+            }
+
+            LOG.debug(
+                    "Task done={} runningConsumers={} pendingStates={} statesWithCandidates={}",
+                    stateId,
+                    runningConsumers,
+                    pendingStates,
+                    statesWithCandidates);
+        } finally {
+            consumersWriteLock.unlock();
+        }
     }
 
     public StateVertex getNextNonDuplicate() {
@@ -395,8 +488,7 @@ public class UnfiredFragmentCandidates {
 
         while (true) {
             try {
-                int id = statesWithCandidates.take();
-                statesWithCandidates.put(id);
+                int id = consumeTask();
                 if (id == nextUniqueId) {
                     break;
                 }
