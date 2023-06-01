@@ -3,7 +3,6 @@ package com.crawljax.core;
 import com.crawljax.core.state.StateVertex;
 import com.google.inject.Inject;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.openqa.selenium.NoSuchWindowException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +15,6 @@ public class CrawlTaskConsumer implements Callable<Void> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CrawlTaskConsumer.class);
 
-    private final AtomicInteger runningConsumers;
-
     private final Crawler crawler;
 
     private final UnfiredFragmentCandidates candidates;
@@ -29,20 +26,18 @@ public class CrawlTaskConsumer implements Callable<Void> {
         this.candidates = candidates;
         this.exitNotifier = exitNotifier;
         this.crawler = crawler;
-        this.runningConsumers = new AtomicInteger(0);
     }
 
     @Override
     public Void call() {
         try {
             while (!Thread.interrupted()) {
-                if (runningConsumers.get() == 0 && candidates.isEmpty()) {
+                if (candidates.isEmpty()) {
                     LOG.debug("No consumers active and the cache is empty. Crawl is done. Shutting down...");
                     exitNotifier.signalCrawlExhausted();
                     break;
                 }
                 pollAndHandleCrawlTasks();
-                runningConsumers.decrementAndGet();
             }
         } catch (InterruptedException e) {
             LOG.debug("Consumer interrupted");
@@ -60,9 +55,9 @@ public class CrawlTaskConsumer implements Callable<Void> {
     }
 
     private void pollAndHandleCrawlTasks() throws InterruptedException {
+        StateVertex crawlTask = null;
         try {
             LOG.debug("Awaiting task");
-            StateVertex crawlTask = null;
 
             if (crawler.getCrawlRules().isDelayNearDuplicateCrawling()) {
                 crawlTask = candidates.awaitNewTask(
@@ -77,11 +72,11 @@ public class CrawlTaskConsumer implements Callable<Void> {
                 LOG.error("Set NearDuplicateCrawling flag in crawl rules");
                 System.exit(-1);
             }
-            int activeConsumers = runningConsumers.incrementAndGet();
-            LOG.info("There are {} active consumers", activeConsumers);
             handleTask(crawlTask);
         } catch (RuntimeException e) {
             LOG.error("Could not complete state crawl: " + e.getMessage(), e);
+        } finally {
+            candidates.taskDone(crawlTask);
         }
     }
 
