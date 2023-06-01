@@ -386,6 +386,10 @@ public class Crawler {
             if (crawlpath == null) {
                 crawlpath = new CrawlPath(stateMachine.getCurrentState().getId());
             }
+            // New browser, without the page open yet.
+            if (!url.toASCIIString().equals(browser.getCurrentUrl())) {
+                browser.goToUrl(url);
+            }
         }
         try {
             if (crawlTask.getId() == stateMachine.getCurrentState().getId()) {
