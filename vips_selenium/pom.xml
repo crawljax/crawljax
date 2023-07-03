@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.netpreserve</groupId>
             <artifactId>jwarc</artifactId>
-            <version>0.21.0</version>
+            <version>0.24.0</version>
             <scope>test</scope>
         </dependency>
 
