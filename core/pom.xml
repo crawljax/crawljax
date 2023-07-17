@@ -184,7 +184,7 @@
     <dependency>
       <groupId>org.netpreserve</groupId>
       <artifactId>jwarc</artifactId>
-      <version>0.21.0</version>
+      <version>0.25.0</version>
       <scope>test</scope>
     </dependency>
 
